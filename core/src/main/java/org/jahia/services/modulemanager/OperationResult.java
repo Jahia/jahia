@@ -53,7 +53,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Represents the result of the bundle operation, conducted by the {@link ModuleManager} service.
- * 
+ *
  * @author bdjiba
  * @author Sergiy Shyrkov
  */
@@ -149,7 +149,7 @@ public class OperationResult implements Serializable {
 
     /**
      * Get the bundle info list
-     * 
+     *
      * @return the bundleInfoList the list of info
      */
     public List<BundleInfo> getBundleInfos() {
@@ -158,7 +158,7 @@ public class OperationResult implements Serializable {
 
     /**
      * Get the operation result flag
-     * 
+     *
      * @return true if the operation is successfully performed otherwise false
      */
     public String getMessage() {
@@ -167,7 +167,7 @@ public class OperationResult implements Serializable {
 
     /**
      * Returns the status code of the operation.
-     * 
+     *
      * @return the status code of the operation
      */
     public StatusCode getStatusCode() {
@@ -176,7 +176,7 @@ public class OperationResult implements Serializable {
 
     /**
      * Get the operation result flag
-     * 
+     *
      * @return true if the operation is successfully performed otherwise false
      */
     public boolean isSuccess() {
@@ -185,7 +185,7 @@ public class OperationResult implements Serializable {
 
     /**
      * Set the bundle info list
-     * 
+     *
      * @param bundleInfoList
      *            the bundleInfoList to set
      */

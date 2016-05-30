@@ -49,7 +49,7 @@ import org.osgi.framework.BundleException;
 
 /**
  * Service for bundle related operations.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public interface BundleService {
@@ -57,58 +57,39 @@ public interface BundleService {
     /**
      * Install the specified bundle on the target group of cluster nodes, optionally starting it right after if the <code>start</code>
      * parameter is <code>true</code>.
-     * 
-     * @param uri
-     *            the bundle location
-     * @param target
-     *            the group of cluster nodes targeted by the install operation (see JavaDoc of {@link ModuleManager} class for the supported
-     *            values)
-     * @param start
-     *            <code>true</code> if the installed bundle should be started right away; <code>false</code> to keep it in the installed
-     *            stated
-     * @return the result of the install operation
-     * @throws BundleException
-     *             thrown exception is case of problems
+     *
+     * @param uri The bundle location
+     * @param target The group of cluster nodes targeted by the install operation (see JavaDoc of {@link ModuleManager} class for the supported values)
+     * @param start Whether the installed bundle should be started right away
+     * @return The result of the install operation
+     * @throws BundleException In case of problems
      */
     void install(String uri, String target, boolean start) throws BundleException;
 
     /**
      * Performs the start operation with the provided bundle on the target group of cluster nodes.
-     * 
-     * @param bundleInfo
-     *            the bundle to perform operation for (see JavaDoc of {@link ModuleManager} class for the supported key format)
-     * @param target
-     *            the group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
-     *            values)
-     * @throws BundleException
-     *             thrown exception is case of problems
+     *
+     * @param bundleInfo The bundle to perform operation for
+     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported values)
+     * @throws BundleException In case of problems
      */
     void start(BundleInfo bundleInfo, String target) throws BundleException;
 
     /**
      * Performs the stop operation with the provided bundle on the target group of cluster nodes.
-     * 
-     * @param bundleInfo
-     *            the bundle to perform operation for (see JavaDoc of {@link ModuleManager} class for the supported key format)
-     * @param target
-     *            the group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
-     *            values)
-     * @throws BundleException
-     *             thrown exception is case of problems
+     *
+     * @param bundleInfo The bundle to perform operation for
+     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported values)
+     * @throws BundleException In case of problems
      */
     void stop(BundleInfo bundleInfo, String target) throws BundleException;
 
     /**
      * Performs the uninstall operation with the provided bundle on the target group of cluster nodes.
-     * 
-     * @param bundleInfo
-     *            the bundle to perform operation for (see JavaDoc of {@link ModuleManager} class for the supported key format)
-     * @param target
-     *            the group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
-     *            values)
-     * @throws BundleException
-     *             thrown exception is case of problems
+     *
+     * @param bundleInfo The bundle to perform operation for
+     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported values)
+     * @throws BundleException In case of problems
      */
     void uninstall(BundleInfo bundleInfo, String target) throws BundleException;
-
 }

@@ -66,12 +66,14 @@ public class ModuleUrlTransformer implements ArtifactUrlTransformer {
 
     private static final Set<String> KNOWN_DX_FRAGMENT_HOSTS = new HashSet<>(Arrays.asList("tools", "ckeditor"));
 
-    // @Override
+    @Override
     public boolean canHandle(File file) {
+
         if (file == null || !file.getName().endsWith(".jar")) {
             // we are not dealing with non-JAR files -> return
             return false;
         }
+
         try (JarFile jar = new JarFile(file)) {
             Manifest mf = jar.getManifest();
             if (mf != null) {
@@ -85,9 +87,7 @@ public class ModuleUrlTransformer implements ArtifactUrlTransformer {
                         // it is a fragment bundle, check its host
                         Bundle hostBundle = BundleUtils.getBundleBySymbolicName(host, null);
                         // is its host an our module?
-                        return hostBundle != null
-                                && hostBundle.getHeaders().get(Constants.ATTR_JAHIA_MODULE_TYPE) != null
-                                || KNOWN_DX_FRAGMENT_HOSTS.contains(host);
+                        return hostBundle != null && hostBundle.getHeaders().get(Constants.ATTR_JAHIA_MODULE_TYPE) != null || KNOWN_DX_FRAGMENT_HOSTS.contains(host);
                     }
                 }
                 return false;
@@ -103,5 +103,4 @@ public class ModuleUrlTransformer implements ArtifactUrlTransformer {
     public URL transform(URL artifact) throws Exception {
         return ModulePersistenceTransformer.transform(artifact);
     }
-
 }

@@ -54,7 +54,7 @@ import org.osgi.framework.Bundle;
 
 /**
  * Represents the bundle basic information.
- * 
+ *
  * @author bdjiba
  */
 @XmlType(propOrder = { "groupId", "symbolicName", "version" })
@@ -62,13 +62,18 @@ public class BundleInfo implements Serializable {
 
     private static final long serialVersionUID = -2594724069028562931L;
 
+    private String groupId;
+    private String key;
+    private String symbolicName;
+    private String version;
+
     /**
      * Creates the {@link BundleInfo} instance using provided bundle key.
-     * 
-     * @param key
-     *            the bundle key
+     *
+     * @param key The bundle key
      */
     public static BundleInfo fromKey(String key) {
+
         if (key == null || key.indexOf('/') == -1) {
             throw new IllegalArgumentException("Illegal bundle key: " + key);
         }
@@ -87,37 +92,22 @@ public class BundleInfo implements Serializable {
     /**
      * Creates the {@link BundleInfo} instance using provided module ID and version.
      *
-     * @param moduleId
-     *            the ID of the module
-     * @param moduleVersion
-     *            the module version
+     * @param moduleId The ID of the module
+     * @param moduleVersion The module version
      */
     public static BundleInfo fromModuleInfo(String moduleId, String moduleVersion) {
         if (moduleId == null || moduleVersion == null) {
             throw new IllegalArgumentException("Illegal module info (id/version): " + moduleId + '/' + moduleVersion);
         }
-
         Bundle bundle = BundleUtils.getBundle(moduleId, moduleVersion);
-
-        return bundle != null ? new BundleInfo(BundleUtils.getModuleGroupId(bundle), bundle.getSymbolicName(),
-                bundle.getVersion().toString()) : null;
+        return bundle != null ? new BundleInfo(BundleUtils.getModuleGroupId(bundle), bundle.getSymbolicName(), bundle.getVersion().toString()) : null;
     }
-
-    private String groupId;
-
-    private String key;
-
-    private String symbolicName;
-
-    private String version;
 
     /**
      * Initializes an instance of this class.
-     * 
-     * @param symbolicName
-     *            the symbolic name of this bundle
-     * @param version
-     *            the version of this bundle
+     *
+     * @param symbolicName The symbolic name of this bundle
+     * @param version The version of this bundle
      */
     public BundleInfo(String symbolicName, String version) {
         this(null, symbolicName, version);
@@ -125,16 +115,12 @@ public class BundleInfo implements Serializable {
 
     /**
      * Initializes an instance of this class.
-     * 
-     * @param groupId
-     *            the ID of the group for this bundle
-     * @param symbolicName
-     *            the symbolic name of this bundle
-     * @param version
-     *            the version of this bundle
+     *
+     * @param groupId The ID of the group for this bundle
+     * @param symbolicName The symbolic name of this bundle
+     * @param version The version of this bundle
      */
     public BundleInfo(String groupId, String symbolicName, String version) {
-        super();
         if (symbolicName == null || symbolicName.length() == 0 || version == null || version.length() == 0) {
             throw new IllegalArgumentException("Symbolic name and version for the bundle cannot be null or empty");
         }
@@ -144,45 +130,28 @@ public class BundleInfo implements Serializable {
         this.key = groupId != null ? (groupId + '/' + symbolicName + '/' + version) : (symbolicName + '/' + version);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        return obj != null && obj.getClass() == this.getClass() && ((BundleInfo) obj).getKey().equals(getKey());
-    }
-
     /**
-     * Returns the ID of the group for this bundle. This value could be null.
-     * 
-     * @return the ID of the group for this bundle
+     * @return The ID of the group for this bundle; can be null
      */
     public String getGroupId() {
         return groupId;
     }
 
     /**
-     * The unique key of this bundle, which is composed of the group ID, symbolic name and version.
-     * 
-     * @return unique key of this bundle, which is composed of the group ID, symbolic name and version
+     * @return The unique key of this bundle, which is composed of the group ID, symbolic name and version
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * Returns the symbolic name for this bundle.
-     * 
-     * @return the symbolic name for this bundle
+     * @return The symbolic name for this bundle
      */
     public String getSymbolicName() {
         return symbolicName;
     }
 
     /**
-     * Returns the version of this bundle.
-     * 
      * @return the version of this bundle
      */
     public String getVersion() {
@@ -193,7 +162,15 @@ public class BundleInfo implements Serializable {
     public int hashCode() {
         return getKey().hashCode();
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        return obj != null && obj.getClass() == this.getClass() && ((BundleInfo) obj).getKey().equals(getKey());
+    }
+
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);

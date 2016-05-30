@@ -52,60 +52,30 @@ import org.springframework.core.io.Resource;
 
 /**
  * DTO for handling persisted bundle information.
- * 
+ *
  * @author Ahmed Chaabni
  */
 public class PersistedBundle extends BundleInfo {
 
     private static final long serialVersionUID = -1719708168071531703L;
 
-    /**
-     * Checksum.
-     */
     private String checksum;
-
-    /**
-     * Display name.
-     */
     private String displayName;
-
-    /**
-     * Basic bundle information
-     */
+    private Resource resource;
     private transient BundleInfo info;
 
     /**
-     * Resource.
-     */
-    private Resource resource;
-
-    /**
      * Initializes an instance of this class.
-     * 
-     * @param groupId
-     *            the ID of the group for this bundle
-     * @param symbolicName
-     *            the symbolic name of this bundle
-     * @param version
-     *            the version of this bundle
+     *
+     * @param groupId The ID of the group for this bundle
+     * @param symbolicName The symbolic name of this bundle
+     * @param version The version of this bundle
      */
     public PersistedBundle(String groupId, String symbolicName, String version) {
         super(groupId, symbolicName, version);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (!super.equals(obj)) {
-            return false;
-        }
-
-        return (obj instanceof PersistedBundle)
-                && StringUtils.equals(getChecksum(), ((PersistedBundle) obj).getChecksum());
-    }
-
     /**
-     * Returns basic information about this bundle.
-     * 
      * @return basic information about this bundle
      */
     public BundleInfo getBundleInfo() {
@@ -116,8 +86,6 @@ public class PersistedBundle extends BundleInfo {
     }
 
     /**
-     * Returns bundle file checksum.
-     * 
      * @return bundle file checksum
      */
     public String getChecksum() {
@@ -125,8 +93,6 @@ public class PersistedBundle extends BundleInfo {
     }
 
     /**
-     * The display name for this bundle.
-     * 
      * @return display name for this bundle
      */
     public String getDisplayName() {
@@ -134,8 +100,6 @@ public class PersistedBundle extends BundleInfo {
     }
 
     /**
-     * Returns the bundle location.
-     * 
      * @return the bundle location
      */
     public String getLocation() {
@@ -143,24 +107,16 @@ public class PersistedBundle extends BundleInfo {
     }
 
     /**
-     * Returns a resource, which represents the bundle.
-     * 
      * @return a resource, which represents the bundle
      */
     public Resource getResource() {
         return resource;
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(getKey()).append(getChecksum()).toHashCode();
-    }
-
     /**
      * Sets the checksum of the bundle file.
-     * 
-     * @param checksum
-     *            the checksum of the bundle file
+     *
+     * @param checksum The checksum of the bundle file
      */
     public void setChecksum(String checksum) {
         this.checksum = checksum;
@@ -168,9 +124,8 @@ public class PersistedBundle extends BundleInfo {
 
     /**
      * Set the displayable name for this bundle.
-     * 
-     * @param displayName
-     *            the displayable name for this bundle
+     *
+     * @param displayName The displayable name for this bundle
      */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
@@ -178,12 +133,24 @@ public class PersistedBundle extends BundleInfo {
 
     /**
      * Sets the resource, which represents this bundle.
-     * 
-     * @param jarFile
-     *            the resource, which represents this bundle
+     *
+     * @param jarFile The resource, which represents this bundle
      */
     public void setResource(Resource jarFile) {
         this.resource = jarFile;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(getKey()).append(getChecksum()).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
+        return (obj instanceof PersistedBundle) && StringUtils.equals(getChecksum(), ((PersistedBundle) obj).getChecksum());
     }
 
     @Override

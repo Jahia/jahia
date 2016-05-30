@@ -91,9 +91,8 @@ public class ModuleDependencyTransformer {
 
         /**
          * Initializes an instance of this class.
-         * 
-         * @param url
-         *            the URL to be transformed
+         *
+         * @param url the URL to be transformed
          */
         protected TransformedURLConnection(URL url) {
             super(url);
@@ -112,37 +111,31 @@ public class ModuleDependencyTransformer {
 
     /**
      * Modifies the manifest attributes for Provide-Capability and Require-Capability (if needed) based on the module dependencies.
-     * 
-     * @param atts
-     *            the manifest attributes to be modified
-     * 
+     *
+     * @param atts the manifest attributes to be modified
+     *
      * @return <code>true</code> if the manifest attributes were modified; <code>false</code> if nothing was touched
      */
-    public static boolean addCapabilities(Attributes atts) {
+    static boolean addCapabilities(Attributes atts) {
         if (!requiresTransformation(atts)) {
             // the manifest already contains the required capabilities thus no modification is needed
             return false;
         }
         String moduleId = atts.getValue(ATTR_NAME_BUNDLE_SYMBOLIC_NAME);
-
         populateProvideCapabilities(moduleId, atts);
-
         populateRequireCapabilities(moduleId, atts);
-
         return true;
     }
 
     /**
      * Modifies the manifest attributes for Provide-Capability and Require-Capability based on the module dependencies (if needed).
-     * 
-     * @param is
-     *            the original JAR input stream
-     * @param os
-     *            the target output stream
-     * @throws IOException
-     *             in case of an I/O error
+     *
+     * @param is the original JAR input stream
+     * @param os the target output stream
+     * @throws IOException in case of an I/O error
      */
     private static void addDependsCapabilitiesToManifest(InputStream is, OutputStream os) throws IOException {
+
         // we read the manifest from the source stream
         Manifest mf = new Manifest();
         mf.read(is);
@@ -156,26 +149,24 @@ public class ModuleDependencyTransformer {
 
     /**
      * Builds a single clause for the Provide-Capability header.
-     * 
-     * @param dependency
-     *            the dependency to use in the clause
+     *
+     * @param dependency the dependency to use in the clause
      * @return a single clause for the Require-Capability header
      */
-    public static String buildClauseProvideCapability(String dependency) {
-        return new StringBuilder(96)
+    static String buildClauseProvideCapability(String dependency) {
+        return new StringBuilder()
                 .append(OSGI_CAPABILITY_MODULE_DEPENDENCIES + ";" + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY + "=\"")
                 .append(dependency).append("\"").toString();
     }
 
     /**
      * Builds a single clause for the Require-Capability header.
-     * 
-     * @param dependency
-     *            the dependency to use in the clause
+     *
+     * @param dependency the dependency to use in the clause
      * @return a single clause for the Require-Capability header
      */
-    public static String buildClauseRequireCapability(String dependency) {
-        return new StringBuilder(96).append(
+    static String buildClauseRequireCapability(String dependency) {
+        return new StringBuilder().append(
                 OSGI_CAPABILITY_MODULE_DEPENDENCIES + ";filter:=\"(" + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY + "=")
                 .append(dependency).append(")\"").toString();
     }
@@ -191,13 +182,12 @@ public class ModuleDependencyTransformer {
 
     /**
      * Returns required capabilities for the specified module and its dependencies.
-     * 
-     * @param moduleId
-     *            the ID of the module
-     * @param dependencies
-     *            the module dependencies (comma-separated)
+     *
+     * @param moduleId the ID of the module
+     * @param dependencies the module dependencies (comma-separated)
      */
     private static List<String> getRequireCapabilities(String moduleId, String dependencies) {
+
         List<String> capabilities = new LinkedList<>();
         Set<String> dependsList = new LinkedHashSet<>();
 
@@ -227,14 +217,13 @@ public class ModuleDependencyTransformer {
 
     /**
      * Performs the transformation of the capability attributes in the MANIFEST.MF file of the supplied stream.
-     * 
-     * @param sourceStream
-     *            the source stream for the bundle, which manifest has to be adjusted w.r.t. module dependencies
+     *
+     * @param sourceStream the source stream for the bundle, which manifest has to be adjusted w.r.t. module dependencies
      * @return the transformed stream for the bundle with adjusted manifest
-     * @throws IOException
-     *             in case of I/O errors
+     * @throws IOException in case of I/O errors
      */
     public static InputStream getTransformedInputStream(InputStream sourceStream) throws IOException {
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try (ZipInputStream zis = new ZipInputStream(sourceStream)) {
@@ -260,12 +249,14 @@ public class ModuleDependencyTransformer {
     /**
      * Returns an instance of the {@link URLStreamHandlerService} that is capable of transforming the manifest of the underlying module
      * bundle to handle module dependencies based on OSGi capabilities.
-     * 
+     *
      * @return an instance of the {@link URLStreamHandlerService} that is capable of transforming the manifest of the underlying module
      *         bundle to handle module dependencies based on OSGi capabilities
      */
     public static URLStreamHandlerService getURLStreamHandlerService() {
+
         return new AbstractURLStreamHandlerService() {
+
             @Override
             public URLConnection openConnection(URL url) throws IOException {
                 return new TransformedURLConnection(url);
@@ -275,14 +266,12 @@ public class ModuleDependencyTransformer {
 
     /**
      * Calculates the value and set the Provide-Capability manifest attribute and modifies it.
-     * 
-     * @param moduleId
-     *            the ID of the module.
-     * @param atts
-     *            the manifest attributes
+     *
+     * @param moduleId the ID of the module.
+     * @param atts the manifest attributes
      */
     private static void populateProvideCapabilities(String moduleId, Attributes atts) {
-        StringBuilder provide = new StringBuilder(256);
+        StringBuilder provide = new StringBuilder();
         String existingProvideValue = atts.getValue(ATTR_NAME_PROVIDE_CAPABILITY);
         if (StringUtils.isNotEmpty(existingProvideValue)) {
             provide.append(existingProvideValue).append(",");
@@ -297,16 +286,14 @@ public class ModuleDependencyTransformer {
 
     /**
      * Calculates the value and set the Require-Capability manifest attribute.
-     * 
-     * @param moduleId
-     *            the ID of the module
-     * @param atts
-     *            the manifest attributes
+     *
+     * @param moduleId the ID of the module
+     * @param atts the manifest attributes
      */
     private static void populateRequireCapabilities(String moduleId, Attributes atts) {
         List<String> caps = getRequireCapabilities(moduleId, atts.getValue(ATTR_NAME_JAHIA_DEPENDS));
         if (caps.size() > 0) {
-            StringBuilder require = new StringBuilder(256);
+            StringBuilder require = new StringBuilder();
             String existingRequireValue = atts.getValue(ATTR_NAME_REQUIRE_CAPABILITY);
             if (StringUtils.isNotEmpty(existingRequireValue)) {
                 require.append(existingRequireValue);
@@ -317,21 +304,19 @@ public class ModuleDependencyTransformer {
                 }
                 require.append(cap);
             }
-
             atts.put(ATTR_NAME_REQUIRE_CAPABILITY, require.toString());
         }
     }
 
     /**
      * Checks if the artifact manifest requires adjustments in the capability headers w.r.t. module dependencies.
-     * 
-     * @param atts
-     *            the manifest attributes to be checked
-     * 
+     *
+     * @param atts the manifest attributes to be checked
+     *
      * @return <code>true</code> if the artifact manifest requires adjustments in the capability headers w.r.t. module dependencies;
      *         <code>false</code> if it already contains that info
      */
-    public static boolean requiresTransformation(Attributes atts) {
+    private static boolean requiresTransformation(Attributes atts) {
         return !StringUtils.contains(atts.getValue(ATTR_NAME_PROVIDE_CAPABILITY), OSGI_CAPABILITY_MODULE_DEPENDENCIES)
                 && !atts.containsKey(ATTR_NAME_FRAGMENT_HOST);
     }

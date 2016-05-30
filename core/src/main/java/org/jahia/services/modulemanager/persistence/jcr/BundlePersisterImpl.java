@@ -79,8 +79,11 @@ public class BundlePersisterImpl implements BundlePersister {
 
     @Override
     public boolean delete(final String bundleKey) throws ModuleManagementException {
+
         try {
+
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+
                 @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     return delete(bundleKey, session);
@@ -93,19 +96,19 @@ public class BundlePersisterImpl implements BundlePersister {
 
     /**
      * Deletes the JCR node, which corresponds to the provided bundle key, if present.
-     * 
-     * @param bundleKey
-     *            the key of the bundle to delete the node for
-     * @param session
-     *            current JCR session
+     *
+     * @param bundleKey The key of the bundle to delete the node for
+     * @param session Current JCR session
      * @return <code>true</code> if the node was deleted; <code>false</code> in case the corresponding node is not present in JCR
-     * @throws RepositoryException
-     *             in case of JCR errors
+     * @throws RepositoryException In case of JCR errors
      */
     protected boolean delete(String bundleKey, JCRSessionWrapper session) throws RepositoryException {
+
         boolean removed = false;
         String path = getJcrPath(bundleKey);
+
         try {
+
             JCRNodeWrapper target = session.getNode(path);
             JCRNodeWrapper folder = target.getParent();
             target.remove();
@@ -131,8 +134,11 @@ public class BundlePersisterImpl implements BundlePersister {
 
     @Override
     public InputStream download(final String bundleKey) throws ModuleManagementException {
+
         try {
+
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<InputStream>() {
+
                 @Override
                 public InputStream doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = findTargetNode(bundleKey, session);
@@ -147,22 +153,20 @@ public class BundlePersisterImpl implements BundlePersister {
     @Override
     public PersistedBundle extract(Resource resource) throws IOException {
         long startTime = System.currentTimeMillis();
-
         PersistedBundle bundleInfo = PersistedBundleInfoBuilder.build(resource);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Extracted bundle info {} from resource {} in {} ms",
-                    new Object[] { bundleInfo, resource, System.currentTimeMillis() - startTime });
-        }
-
+        logger.debug("Extracted bundle info {} from resource {} in {} ms", new Object[] {bundleInfo, resource, System.currentTimeMillis() - startTime});
         return bundleInfo;
     }
 
     @Override
     public PersistedBundle find(final String bundleKey) {
+
         PersistedBundle found = null;
+
         try {
+
             found = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<PersistedBundle>() {
+
                 @Override
                 public PersistedBundle doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     return find(bundleKey, session);
@@ -171,27 +175,24 @@ public class BundlePersisterImpl implements BundlePersister {
         } catch (RepositoryException e) {
             throw new ModuleManagementException("Unable to find information for bundle " + bundleKey, e);
         }
+
         return found;
     }
 
     /**
      * Finds the JCR node, which corresponds to the provided key and reads the bundle information from it.
-     * 
-     * @param bundleKey
-     *            the key of the bundle we are looking for
-     * @param session
-     *            current JCR session
-     * @return the information of the target bundle, which corresponds to the supplied key
-     * @throws RepositoryException
-     *             in case of JCR errors
+     *
+     * @param bundleKey The key of the bundle we are looking for
+     * @param session Current JCR session
+     * @return The information of the target bundle, which corresponds to the supplied key
+     * @throws RepositoryException In case of JCR errors
      */
     protected PersistedBundle find(String bundleKey, JCRSessionWrapper session) throws RepositoryException {
         PersistedBundle info = null;
         JCRNodeWrapper node = findTargetNode(bundleKey, session);
         if (node != null) {
             // we've found bundle node for the specified key
-            info = new PersistedBundle(node.getPropertyAsString("j:groupId"),
-                    node.getPropertyAsString("j:symbolicName"), node.getPropertyAsString("j:version"));
+            info = new PersistedBundle(node.getPropertyAsString("j:groupId"), node.getPropertyAsString("j:symbolicName"), node.getPropertyAsString("j:version"));
             info.setChecksum(node.getPropertyAsString("j:checksum"));
             info.setDisplayName(node.getPropertyAsString("j:displayName"));
         }
@@ -199,11 +200,14 @@ public class BundlePersisterImpl implements BundlePersister {
     }
 
     @Override
-    public void store(final PersistedBundle bundleInfo) throws IOException, ModuleManagementException {
+    public void store(final PersistedBundle bundleInfo) throws ModuleManagementException {
+
         long startTime = System.currentTimeMillis();
 
         try {
+
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+
                 @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
@@ -222,27 +226,21 @@ public class BundlePersisterImpl implements BundlePersister {
 
     /**
      * Stores the bundle information in a JCR node.
-     * 
-     * @param bundleInfo
-     *            the bundle information to persist
-     * @param session
-     *            current JCR session
+     *
+     * @param bundleInfo The bundle information to persist
+     * @param session Current JCR session
      * @return <code>true</code> if the node was updated/created; <code>false</code> in case there is no update needed (same bundle already
      *         present)
-     * @throws RepositoryException
-     *             in case of JCR errors
+     * @throws RepositoryException In case of JCR errors
      */
-    protected boolean store(PersistedBundle bundleInfo, JCRSessionWrapper session)
-            throws RepositoryException, IOException {
+    protected boolean store(PersistedBundle bundleInfo, JCRSessionWrapper session) throws RepositoryException, IOException {
+
         String path = getJcrPath(bundleInfo);
         JCRNodeWrapper bundleNode = null;
         try {
             bundleNode = session.getNode(path);
-            if (bundleNode.hasProperty("j:checksum")
-                    && bundleInfo.getChecksum().equals(bundleNode.getProperty("j:checksum").getString())) {
-                logger.debug(
-                        "Resource {} represents same bundle as alreday stored under {}." + " Skip storing it again.",
-                        bundleInfo, path);
+            if (bundleNode.hasProperty("j:checksum") && bundleInfo.getChecksum().equals(bundleNode.getProperty("j:checksum").getString())) {
+                logger.debug("Resource {} represents same bundle as alreday stored under {}." + " Skip storing it again.", bundleInfo, path);
                 return false;
             }
         } catch (PathNotFoundException e) {
@@ -267,15 +265,18 @@ public class BundlePersisterImpl implements BundlePersister {
 
     @Override
     public PersistedBundle store(Resource resource) throws IOException, ModuleManagementException {
-        long startTime = System.currentTimeMillis();
-        final PersistedBundle bundleInfo = extract(resource);
 
+        long startTime = System.currentTimeMillis();
+
+        final PersistedBundle bundleInfo = extract(resource);
         if (bundleInfo == null) {
             throw new ModuleManagementException("Invalid resource for bundle: " + resource);
         }
 
         try {
+
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+
                 @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
@@ -289,12 +290,8 @@ public class BundlePersisterImpl implements BundlePersister {
             throw new ModuleManagementException("Unable to store information for bundle " + bundleInfo, e);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Stored bundle info {} from resource {} in {} ms",
-                    new Object[] { bundleInfo, resource, System.currentTimeMillis() - startTime });
-        }
+        logger.debug("Stored bundle info {} from resource {} in {} ms", new Object[] {bundleInfo, resource, System.currentTimeMillis() - startTime});
 
         return bundleInfo;
     }
-
 }

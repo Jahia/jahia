@@ -67,18 +67,19 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
 /**
- * Utility class that transforms the bundle URL by reading it from a persistence storage and applying additional the module dependency
+ * Utility class that transforms the bundle URL by reading it from a persistence storage and applying additionally the module dependency
  * transformation using OSGi capabilities (see {@link ModuleDependencyTransformer}}.
  */
 public class ModulePersistenceTransformer {
+
+    private static final Logger logger = LoggerFactory.getLogger(ModulePersistenceTransformer.class);
 
     private static class TransformedURLConnection extends URLConnection {
 
         /**
          * Initializes an instance of this class.
-         * 
-         * @param url
-         *            the URL to be transformed
+         *
+         * @param url the URL to be transformed
          */
         protected TransformedURLConnection(URL url) {
             super(url);
@@ -101,36 +102,28 @@ public class ModulePersistenceTransformer {
         }
     }
 
-    protected static final Logger logger = LoggerFactory.getLogger(ModulePersistenceTransformer.class);
-
     private static File getBundleFile(Bundle bundle) {
         try {
             Method m = bundle.getClass().getDeclaredMethod("getArchive");
             m.setAccessible(true);
-            return (File) BeanUtilsBean.getInstance().getPropertyUtils().getProperty(m.invoke(bundle),
-                    "currentRevision.content.file");
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException
-                | IllegalArgumentException e) {
-            logger.error("Unable to detect the file for the deployed bundle " + bundle + ". Cause: " + e.getMessage(),
-                    e);
+            return (File) BeanUtilsBean.getInstance().getPropertyUtils().getProperty(m.invoke(bundle), "currentRevision.content.file");
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
+            logger.error("Unable to detect the file for the deployed bundle " + bundle + ". Cause: " + e.getMessage(), e);
         }
         return null;
     }
 
     protected static BundlePersister getBundlePersister() {
-        return (BundlePersister) SpringContextSingleton
-                .getBean("org.jahia.services.modulemanager.persistence.BundlePersister");
+        return (BundlePersister) SpringContextSingleton.getBean("org.jahia.services.modulemanager.persistence.BundlePersister");
     }
 
     /**
-     * Returns an instance of the {@link URLStreamHandlerService} that can perform the transformation of bundle URL by reading it from a
-     * persistence storage.
-     * 
-     * @return an instance of the {@link URLStreamHandlerService} that can perform the transformation of bundle URL by reading it from a
-     *         persistence storage
+     * @return an instance of the {@link URLStreamHandlerService} that can perform the transformation of bundle URL by reading it from a persistence storage
      */
     public static URLStreamHandlerService getURLStreamHandlerService() {
+
         return new AbstractURLStreamHandlerService() {
+
             @Override
             public URLConnection openConnection(URL url) throws IOException {
                 return new TransformedURLConnection(url);
@@ -141,9 +134,8 @@ public class ModulePersistenceTransformer {
     /**
      * Performs the persistence of the supplied bundle (if needed) and returns the transformed input stream of its content, including module
      * dependency transformation (see {@link ModuleDependencyTransformer}).
-     * 
-     * @param bundle
-     *            the source bundle
+     *
+     * @param bundle the source bundle
      * @return the transformed input stream of its content
      */
     public static InputStream transform(Bundle bundle) {
@@ -157,44 +149,35 @@ public class ModulePersistenceTransformer {
                 bundleResource = new UrlResource(bundle.getLocation());
             }
             logger.info("Persisting bundle {} from resource {}", bundle, bundleResource);
-
             PersistedBundle persistedBundle = getBundlePersister().store(bundleResource);
-
-            logger.info("Bundle {} has been successfully transformed into {} in {} ms",
-                    new Object[] { bundle, persistedBundle.getLocation(), System.currentTimeMillis() - startTime });
-
-            return ModuleDependencyTransformer
-                    .getTransformedInputStream(getBundlePersister().download(persistedBundle.getKey()));
+            logger.info("Bundle {} has been successfully transformed into {} in {} ms", new Object[] { bundle, persistedBundle.getLocation(), System.currentTimeMillis() - startTime });
+            return ModuleDependencyTransformer.getTransformedInputStream(getBundlePersister().download(persistedBundle.getKey()));
         } catch (Exception e) {
             logger.error("Unable to transform bundle " + bundle + ". Cause: " + e.getMessage(), e);
         }
-
         return null;
     }
 
     /**
-     * Performs the persistence of the supplied bundle (if needed) and modifies it URL.
-     * 
-     * @param artifact
-     *            the source bundle URL
+     * Performs the persistence of the supplied bundle (if needed) and modifies its URL.
+     *
+     * @param artifact the source bundle URL
      * @return the modified bundle URL which uses persistence or the original one if no modification is needed
      */
     public static URL transform(URL artifact) {
+
         if (Constants.URL_PROTOCOL_DX.equals(artifact.getProtocol())) {
             // no need to transform it
             return artifact;
         }
 
         URL transformed = null;
-
         long startTime = System.currentTimeMillis();
         logger.info("Transforming artifact {}", artifact);
         try {
             PersistedBundle persistedBundle = getBundlePersister().store(new UrlResource(artifact));
             transformed = new URL(persistedBundle.getLocation());
-
-            logger.info("Artifact {} has been successfully transformed into {} in {} ms",
-                    new Object[] { artifact, transformed, System.currentTimeMillis() - startTime });
+            logger.info("Artifact {} has been successfully transformed into {} in {} ms", new Object[] { artifact, transformed, System.currentTimeMillis() - startTime });
         } catch (Exception e) {
             logger.error("Unable to transform artifact " + artifact + ". Cause: " + e.getMessage(), e);
         }

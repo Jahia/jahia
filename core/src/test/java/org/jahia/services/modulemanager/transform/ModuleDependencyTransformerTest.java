@@ -64,17 +64,15 @@ import org.junit.Test;
 
 /**
  * Unit test for the {@link ModuleDependencyTransformer}.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ModuleDependencyTransformerTest {
 
-    private static final Attributes ATTS_TEMPLATE;
-
     private static final String BUNDLE_ID = "my-bundle";
-
     private static final String BUNDLE_NAME = "My Bundle";
 
+    private static final Attributes ATTS_TEMPLATE;
     static {
         ATTS_TEMPLATE = new Attributes();
         ATTS_TEMPLATE.put(ATTR_NAME_BUNDLE_SYMBOLIC_NAME, BUNDLE_ID);

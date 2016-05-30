@@ -51,52 +51,45 @@ import org.springframework.core.io.Resource;
 
 /**
  * Defines service, responsible for module bundle persistence.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public interface BundlePersister {
 
     /**
      * Deletes the stored info of the specified bundle.
-     * 
-     * @param bundleKey
-     *            the key of the bundle to delete the info for
-     * @return the result of the operation: <code>true</code> in case the info was deleted successfully; <code>false</code> - if no info for
+     *
+     * @param bundleKey The key of the bundle to delete the info for
+     * @return The result of the operation: <code>true</code> in case the info was deleted successfully; <code>false</code> - if no info for
      *         the specified key was found
-     * @throws ModuleManagementException
-     *             in case of unexpected error during the delete process
+     * @throws ModuleManagementException In case of unexpected error during the delete process
      */
     boolean delete(String bundleKey) throws ModuleManagementException;
 
     /**
      * Returns the input stream for the persisted bundle considering the requested key.
-     * 
-     * @param bundleKey
-     *            the key of the bundle to be looked up
-     * @return the input stream for the persisted bundle considering the requested key or <code>null</code> if the corresponding bundle
+     *
+     * @param bundleKey The key of the bundle to be looked up
+     * @return The input stream for the persisted bundle considering the requested key or <code>null</code> if the corresponding bundle
      *         cannot be found for the provided key
-     * @throws ModuleManagementException
-     *             in case of unexpected error during the download process
+     * @throws ModuleManagementException In case of unexpected error during the download process
      */
     InputStream download(String bundleKey) throws ModuleManagementException;
 
     /**
      * Extracts the information from the specified bundle resource.
-     * 
-     * @param resource
-     *            the bundle resource as a source
-     * @return the information, extracted from the provided resource
-     * @throws IOException
-     *             in case of a resource read issue
+     *
+     * @param resource The bundle resource as a source
+     * @return The information, extracted from the provided resource
+     * @throws IOException In case of a resource read issue
      */
     PersistedBundle extract(Resource resource) throws IOException;
 
     /**
      * Returns the info for the persisted bundle considering the requested key.
-     * 
-     * @param bundleKey
-     *            the key of the bundle to be looked up
-     * @return the info for the persisted bundle considering the requested key or <code>null</code> if the corresponding info cannot be
+     *
+     * @param bundleKey The key of the bundle to be looked up
+     * @return The info for the persisted bundle considering the requested key or <code>null</code> if the corresponding info cannot be
      *         found for the provided key
      */
     PersistedBundle find(String bundleKey);
@@ -104,28 +97,21 @@ public interface BundlePersister {
     /**
      * Persists the specified bundle resource either creating a new info in the storage or updating the existing entry with the supplied
      * data.
-     * 
-     * @param bundleInfo
-     *            the bundle info as a source
-     * @throws IOException
-     *             in case of a resource read issue
-     * @throws ModuleManagementException
-     *             in case of issues during persistence operation
+     *
+     * @param bundleInfo The bundle info as a source
+     * @throws IOException In case of a resource read issue
+     * @throws ModuleManagementException In case of issues during persistence operation
      */
-    void store(PersistedBundle bundleInfo) throws IOException, ModuleManagementException;
+    void store(PersistedBundle bundleInfo) throws ModuleManagementException;
 
     /**
      * Persists the info for the specified resources either creating a new info in the storage or updating the existing entry with the
      * supplied data.
-     * 
-     * @param resource
-     *            the bundle bundle resource as a source
-     * @return the bundle information, extracted from the provided resource
-     * @throws IOException
-     *             in case of a resource read issue
-     * @throws ModuleManagementException
-     *             in case of issues during persistence operation
+     *
+     * @param resource The bundle bundle resource as a source
+     * @return The bundle information, extracted from the provided resource
+     * @throws IOException In case of a resource read issue
+     * @throws ModuleManagementException In case of issues during persistence operation
      */
     PersistedBundle store(Resource resource) throws IOException, ModuleManagementException;
-
 }

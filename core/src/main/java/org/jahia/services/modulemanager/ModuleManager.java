@@ -71,78 +71,60 @@ import org.springframework.core.io.Resource;
  * </code>
  * <p>
  * The value of the <code>target</code> group of cluster nodes could be specified as <code>null</code>, meaning the default group is
- * concerned, which includes all cluster node.
- * 
+ * concerned, which includes all cluster nodes.
+ *
  * @author Sergiy Shyrkov
  */
 public interface ModuleManager {
 
     /**
      * Install the specified bundle on the target group of cluster nodes.
-     * 
-     * @param bundleResource
-     *            the resource, representing a bundle to install
-     * @param target
-     *            the group of cluster nodes targeted by the install operation (see class JavaDoc for the supported values)
-     * @return the result of the install operation
-     * @throws ModuleManagementException
-     *             thrown exception is case of problems
+     *
+     * @param bundleResource The resource representing a bundle to install
+     * @param target The group of cluster nodes targeted by the install operation (see class JavaDoc for the supported values)
+     * @return The result of the install operation
+     * @throws ModuleManagementException Is case of problems
      */
     OperationResult install(Resource bundleResource, String target) throws ModuleManagementException;
 
     /**
-     * Install the specified bundle on the target group of cluster nodes, optionally starting it right after if the <code>start</code>
-     * parameter is <code>true</code>.
-     * 
-     * @param bundleResource
-     *            the resource, representing a bundle to install
-     * @param target
-     *            the group of cluster nodes targeted by the install operation (see class JavaDoc for the supported values)
-     * @param start
-     *            <code>true</code> if the installed bundle should be started right away; <code>false</code> to keep it in the installed
-     *            stated
-     * @return the result of the install operation
-     * @throws ModuleManagementException
-     *             thrown exception is case of problems
+     * Install the specified bundle on the target group of cluster nodes, optionally starting it right after.
+     *
+     * @param bundleResource The resource, representing a bundle to install
+     * @param target The group of cluster nodes targeted by the install operation (see class JavaDoc for the supported values)
+     * @param start Whether the installed bundle should be started right away
+     * @return The result of the install operation
+     * @throws ModuleManagementException In case of problems
      */
     OperationResult install(Resource bundleResource, String target, boolean start) throws ModuleManagementException;
 
     /**
      * Start the specified bundle on the target group of cluster nodes.
-     * 
-     * @param bundleKey
-     *            bundle key to start (see class JavaDoc for the supported key format)
-     * @param target
-     *            the group of cluster nodes targeted by the start operation (see class JavaDoc for the supported values)
-     * @return the result of the start operation
-     * @throws ModuleManagementException
-     *             thrown exception is case of problems
+     *
+     * @param bundleKey Bundle key to start (see class JavaDoc for the supported key format)
+     * @param target The group of cluster nodes targeted by the start operation (see class JavaDoc for the supported values)
+     * @return The result of the start operation
+     * @throws ModuleManagementException In case of problems
      */
     OperationResult start(String bundleKey, String target) throws ModuleManagementException;
 
     /**
      * Stop the specified bundle on the target group of cluster nodes.
-     * 
-     * @param bundleKey
-     *            bundle key to stop (see class JavaDoc for the supported key format)
-     * @param target
-     *            the group of cluster nodes targeted by the stop operation (see class JavaDoc for the supported values)
-     * @return the result of the stop operation
-     * @throws ModuleManagementException
-     *             thrown exception is case of problems
+     *
+     * @param bundleKey Bundle key to stop (see class JavaDoc for the supported key format)
+     * @param target The group of cluster nodes targeted by the stop operation (see class JavaDoc for the supported values)
+     * @return The result of the stop operation
+     * @throws ModuleManagementException In case of problems
      */
     OperationResult stop(String bundleKey, String target) throws ModuleManagementException;
 
     /**
      * Uninstall the specified bundle on the target group of cluster nodes.
-     * 
-     * @param bundleKey
-     *            bundle key to uninstall (see class JavaDoc for the supported key format)
-     * @param target
-     *            the group of cluster nodes targeted by the uninstall operation (see class JavaDoc for the supported values)
-     * @return the result of the uninstall operation
-     * @throws ModuleManagementException
-     *             thrown exception is case of problems
+     *
+     * @param bundleKey Bundle key to uninstall (see class JavaDoc for the supported key format)
+     * @param target The group of cluster nodes targeted by the uninstall operation (see class JavaDoc for the supported values)
+     * @return The result of the uninstall operation
+     * @throws ModuleManagementException In case of problems
      */
     OperationResult uninstall(String bundleKey, String target) throws ModuleManagementException;
 }

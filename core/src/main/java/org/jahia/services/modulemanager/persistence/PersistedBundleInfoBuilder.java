@@ -76,16 +76,19 @@ public final class PersistedBundleInfoBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistedBundleInfoBuilder.class);
 
+    private PersistedBundleInfoBuilder() {
+        super();
+    }
+
     /**
      * Parses the supplied resource and builds the information for the bundle.
-     * 
-     * @param resource
-     *            the bundle resource
-     * @return the information about the supplied bundle
-     * @throws IOException
-     *             in case of resource read errors
+     *
+     * @param resource The bundle resource
+     * @return The information about the supplied bundle
+     * @throws IOException In case of resource read errors
      */
     public static PersistedBundle build(Resource resource) throws IOException {
+
         // populate data from manifest
         String groupId = null;
         String symbolicName = null;
@@ -97,10 +100,8 @@ public final class PersistedBundleInfoBuilder {
                 Attributes attrs = mf.getMainAttributes();
                 groupId = attrs.getValue(ATTR_NAME_GROUP_ID);
                 symbolicName = attrs.getValue(ATTR_NAME_BUNDLE_SYMBOLIC_NAME);
-                version = StringUtils.defaultIfBlank(attrs.getValue(ATTR_NAME_BUNDLE_VERSION),
-                        attrs.getValue(ATTR_NAME_IMPL_VERSION));
-                displayName = StringUtils.defaultIfBlank(attrs.getValue(ATTR_NAME_IMPL_TITLE),
-                        attrs.getValue(ATTR_NAME_BUNDLE_NAME));
+                version = StringUtils.defaultIfBlank(attrs.getValue(ATTR_NAME_BUNDLE_VERSION), attrs.getValue(ATTR_NAME_IMPL_VERSION));
+                displayName = StringUtils.defaultIfBlank(attrs.getValue(ATTR_NAME_IMPL_TITLE), attrs.getValue(ATTR_NAME_BUNDLE_NAME));
             }
         }
 
@@ -112,44 +113,22 @@ public final class PersistedBundleInfoBuilder {
 
         PersistedBundle bundleInfo = new PersistedBundle(groupId, symbolicName, version);
         bundleInfo.setDisplayName(displayName);
-
-        // calculate checksum
         bundleInfo.setChecksum(calculateDigest(resource));
-
         bundleInfo.setResource(resource);
-
         return bundleInfo;
     }
 
-    /**
-     * Computes the digest for the supplied resource.
-     * 
-     * @param resource
-     *            the resource to calculate digest for
-     * @return the digest for the supplied resource
-     * @throws IOException
-     *             in case of resource read errors
-     */
     private static String calculateDigest(Resource resource) throws IOException {
-        try (DigestInputStream digestInputStream = toDigestInputStream(
-                new BufferedInputStream(resource.getInputStream()))) {
+        try (DigestInputStream digestInputStream = toDigestInputStream(new BufferedInputStream(resource.getInputStream()))) {
             byte[] b = new byte[1024 * 8];
             int read = 0;
             while (read != -1) {
                 read = digestInputStream.read(b);
             }
-
             return Hex.encodeHexString(digestInputStream.getMessageDigest().digest());
         }
     }
 
-    /**
-     * Wraps the supplied input stream into digest input stream.
-     * 
-     * @param is
-     *            the source input stream
-     * @return the digest input stream, wrapping the source one
-     */
     private static DigestInputStream toDigestInputStream(InputStream is) {
         try {
             return new DigestInputStream(is, MessageDigest.getInstance("MD5"));
@@ -157,12 +136,4 @@ public final class PersistedBundleInfoBuilder {
             throw new RuntimeException(e);
         }
     }
-
-    /**
-     * Initializes an instance of this class.
-     */
-    private PersistedBundleInfoBuilder() {
-        super();
-    }
-
 }

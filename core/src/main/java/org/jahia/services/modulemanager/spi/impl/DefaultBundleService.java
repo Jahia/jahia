@@ -54,27 +54,17 @@ import org.osgi.framework.BundleException;
  * The default implementation of the {@link BundleService} which is using direct bundle operations (BundleContext.installBundle(),
  * bundle.start()/stop()/uninstall()). The implementation is used in a standalone DX instance or in case DX clustering is not activated (
  * <code>cluster.activated=false</code>).
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class DefaultBundleService implements BundleService {
 
-    /**
-     * Obtains the specified bundle or throws an exception if it does not exist.
-     * 
-     * @param bundleInfo
-     *            the information about the bundle to get
-     * @return the specified bundle
-     * @throws BundleException
-     *             in case the corresponding bundle could not be found
-     */
     private Bundle getBundleEnsureExists(BundleInfo bundleInfo) throws BundleException {
         Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
         if (bundle == null) {
             throw new BundleException("Unable to find bundle for symbolic name " + bundleInfo.getSymbolicName()
                     + " and version " + bundleInfo.getVersion(), BundleException.RESOLVE_ERROR);
         }
-
         return bundle;
     }
 
@@ -99,6 +89,5 @@ public class DefaultBundleService implements BundleService {
     @Override
     public void uninstall(BundleInfo bundleInfo, String target) throws BundleException {
         getBundleEnsureExists(bundleInfo).uninstall();
-        ;
     }
 }

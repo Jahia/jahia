@@ -106,51 +106,39 @@ import java.util.*;
  */
 public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent> {
 
-    public static final Set<String> DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY = new HashSet<>(
-            Arrays.asList("default", "jquery", "ckeditor", "assets"));
+    private static final Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
+    public static final Set<String> DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY = new HashSet<>(Arrays.asList("default", "jquery", "ckeditor", "assets"));
     public static final String MODULE_TYPE_MODULE = "module";
-
     public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
-
     public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
 
     public static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_NAME_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
+
+        @Override
         public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
             return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
         }
     };
-
-    private static final Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
     private Map<Bundle, ModuleState> moduleStates = new TreeMap<>();
     private final Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<>();
     private final Set<Bundle> installedBundles = new HashSet<>();
     private final Set<Bundle> initializedBundles = new HashSet<>();
     private final Map<String, List<Bundle>> toBeResolved = new HashMap<>();
-
     private final OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
-
     private TemplatePackageDeployer templatePackageDeployer;
-
     private TemplatePackageRegistry templatePackageRegistry;
-
     private JahiaSitesService siteService;
-
     private ApplicationEventPublisher applicationEventPublisher;
-
     private ModuleBuildHelper moduleBuildHelper;
-
     private ModuleInstallationHelper moduleInstallationHelper;
-
     private SourceControlHelper scmHelper;
-
     private ForgeHelper forgeHelper;
-
     private List<String> nonManageableModules;
-    
     private Set<String> modulesWithNoDefaultDependency = DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY;
 
+    @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
@@ -192,14 +180,17 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         this.nonManageableModules = nonManageableModules;
     }
 
+    @Override
     public void start() throws JahiaInitializationException {
         // do nothing
     }
 
+    @Override
     public void stop() throws JahiaException {
         // do nothing
     }
 
+    @Override
     public void onApplicationEvent(final ApplicationEvent event) {
         if (event instanceof TemplatePackageRedeployedEvent) {
             // flush resource bundle cache
@@ -783,7 +774,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     @SuppressWarnings("unchecked")
     public Map<String, JahiaTemplatesPackage> getTemplatePackageByNodeName() {
+
         return LazyMap.decorate(new HashMap<String, JahiaTemplatesPackage>(), new Transformer() {
+
+            @Override
             public Object transform(Object input) {
                 return templatePackageRegistry.lookupById(String.valueOf(input));
             }
@@ -812,31 +806,30 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public Set<String> getTemplateSetNames() {
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    new JCRCallback<Set<String>>() {
-                        public Set<String> doInJCR(JCRSessionWrapper session)
-                                throws RepositoryException {
-                            QueryManager qm = session.getWorkspace().getQueryManager();
-                            Set<String> templateSets = new TreeSet<>();
-                            for (NodeIterator nodes = qm
-                                    .createQuery(
-                                            "select * from [jnt:module] as module " +
-                                                    "inner join [jnt:moduleVersion] as version on ischildnode(version,module) " +
-                                                    "where isdescendantnode(module,'/modules') " +
-                                                    "and name(module) <> 'templates-system' " +
-                                                    "and version.[j:moduleType]='templatesSet'",
-                                            Query.JCR_SQL2
-                                    ).execute().getNodes(); nodes.hasNext(); ) {
-                                Node node = nodes.nextNode();
-                                if (getTemplatePackageById(node.getName()) != null) {
-                                    templateSets.add(node.getName());
-                                }
-                            }
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Set<String>>() {
 
-                            return templateSets;
+                @Override
+                public Set<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    QueryManager qm = session.getWorkspace().getQueryManager();
+                    Set<String> templateSets = new TreeSet<>();
+                    for (NodeIterator nodes = qm
+                            .createQuery(
+                                    "select * from [jnt:module] as module " +
+                                            "inner join [jnt:moduleVersion] as version on ischildnode(version,module) " +
+                                            "where isdescendantnode(module,'/modules') " +
+                                            "and name(module) <> 'templates-system' " +
+                                            "and version.[j:moduleType]='templatesSet'",
+                                    Query.JCR_SQL2
+                            ).execute().getNodes(); nodes.hasNext(); ) {
+                        Node node = nodes.nextNode();
+                        if (getTemplatePackageById(node.getName()) != null) {
+                            templateSets.add(node.getName());
                         }
                     }
-            );
+
+                    return templateSets;
+                }
+            });
         } catch (RepositoryException e) {
             logger.error("Unable to get template set names. Cause: " + e.getMessage(), e);
             return Collections.emptySet();
@@ -844,8 +837,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public JahiaTemplatesPackage activateModuleVersion(String moduleId, String version) throws RepositoryException, BundleException {
-        JahiaTemplatesPackage module = templatePackageRegistry.lookupByIdAndVersion(moduleId, new ModuleVersion(
-                version));
+        JahiaTemplatesPackage module = templatePackageRegistry.lookupByIdAndVersion(moduleId, new ModuleVersion(version));
         module.getBundle().start();
         return module;
     }
@@ -898,14 +890,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
         boolean present = true;
         try {
-            present = JCRTemplate.getInstance().doExecuteWithSystemSession(
-                    new JCRCallback<Boolean>() {
-                        public Boolean doInJCR(JCRSessionWrapper session)
-                                throws RepositoryException {
-                            return isTemplatePresent(templateName, templateSetNames, session);
-                        }
-                    }
-            );
+            present = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+
+                @Override
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    return isTemplatePresent(templateName, templateSetNames, session);
+                }
+            });
         } catch (RepositoryException e) {
             logger.error("Unable to check presence of the template '" + templateName
                     + "' in the modules '" + templateSetNames + "'. Cause: " + e.getMessage(), e);
@@ -923,9 +914,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return present;
     }
 
-    private boolean isTemplatePresent(String templateName, Set<String> templateSetNames,
-                                      JCRSessionWrapper session) throws
-            RepositoryException {
+    private boolean isTemplatePresent(String templateName, Set<String> templateSetNames, JCRSessionWrapper session) throws RepositoryException {
+
         QueryManager queryManager = session.getWorkspace().getQueryManager();
 
         StringBuilder query = new StringBuilder(512);

@@ -75,26 +75,21 @@ final class BundleInfoJcrHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(BundleInfoJcrHelper.class);
 
-    static final String NODE_NAME_BUNDLES = "bundles";
-
-    static final String NODE_NAME_ROOT = "module-management";
-
+    private static final String NODE_NAME_BUNDLES = "bundles";
+    private static final String NODE_NAME_ROOT = "module-management";
     private static final String NODE_TYPE_BUNDLE = "jnt:moduleManagementBundle";
-
     private static final String NODE_TYPE_FOLDER = "jnt:moduleManagementBundleFolder";
-
     private static final String NODE_TYPE_ROOT = "jnt:moduleManagement";
 
     static final String PATH_BUNDLES = '/' + NODE_NAME_ROOT + '/' + NODE_NAME_BUNDLES;
-
     static final String PATH_ROOT = '/' + NODE_NAME_ROOT;
 
     @SuppressWarnings("unchecked")
-    private static Comparator<Version> VERSION_COMPARATOR = ComparatorUtils
-            .reversedComparator(new Comparator<Version>() {
+    private static Comparator<Version> VERSION_COMPARATOR = ComparatorUtils.reversedComparator(new Comparator<Version>() {
 
                 @Override
                 public int compare(Version o1, Version o2) {
+
                     if (o1 == o2) {
                         return 0;
                     }
@@ -109,12 +104,10 @@ final class BundleInfoJcrHelper {
                     if (result != 0) {
                         return result;
                     }
-
                     result = o1.getMinor() - o2.getMinor();
                     if (result != 0) {
                         return result;
                     }
-
                     result = o1.getMicro() - o2.getMicro();
                     if (result != 0) {
                         return result;
@@ -123,31 +116,26 @@ final class BundleInfoJcrHelper {
                     if (o1.getQualifier().equals(o2.getQualifier())) {
                         return 0;
                     }
-
                     if ("SNAPSHOT".equals(o1.getQualifier())) {
                         return -1;
                     }
-
                     if ("SNAPSHOT".equals(o2.getQualifier())) {
                         return 1;
                     }
-
                     return o1.getQualifier().compareTo(o2.getQualifier());
                 }
             });
 
     /**
      * Looks up the target bundle node for specified bundle key.
-     * 
-     * @param bundleKey
-     *            the bundle key to lookup node for
-     * @param session
-     *            the current JCR session
-     * @return the found JCR node for the bundle or null if the node could not be found
-     * @throws RepositoryException
-     *             in case of a JCR error
+     *
+     * @param bundleKey The bundle key to lookup node for
+     * @param session The current JCR session
+     * @return The found JCR node for the bundle or null if the node could not be found
+     * @throws RepositoryException In case of a JCR error
      */
     static JCRNodeWrapper findTargetNode(String bundleKey, JCRSessionWrapper session) throws RepositoryException {
+
         JCRNodeWrapper target = null;
         String groupId = null;
         String symbolicName = null;
@@ -162,6 +150,7 @@ final class BundleInfoJcrHelper {
             symbolicName = info.getSymbolicName();
             version = info.getVersion();
         }
+
         if (info != null) {
             String path = getJcrPath(info);
             if (session.nodeExists(path)) {
@@ -185,25 +174,19 @@ final class BundleInfoJcrHelper {
      * best to find the best matching node: in case no version was specified, we find the result with the highest version; if the version
      * was specified, we log a warning that multiple candidates match the requested bundle (meaning we have multiple bundles with same
      * symbolic name and version, but different group ID) and we take the first one from the list of matching nodes.
-     * 
-     * @param bundleKey
-     *            the original bundle key
-     * @param groupId
-     *            the group ID for the bundle
-     * @param symbolicName
-     *            bundle symbolic name
-     * @param version
-     *            the version of the bundle
-     * @param session
-     *            current JCR session
+     *
+     * @param bundleKey the original bundle key
+     * @param groupId the group ID for the bundle
+     * @param symbolicName bundle symbolic name
+     * @param version the version of the bundle
+     * @param session current JCR session
      * @return the found bundle or <code>null</code> if no bundle could be found
-     * @throws RepositoryException
-     *             in case of JCR errors
+     * @throws RepositoryException in case of JCR errors
      */
-    private static JCRNodeWrapper guessTargetNode(String bundleKey, String groupId, String symbolicName, String version,
-            JCRSessionWrapper session) throws RepositoryException {
+    private static JCRNodeWrapper guessTargetNode(String bundleKey, String groupId, String symbolicName, String version, JCRSessionWrapper session) throws RepositoryException {
+
         JCRNodeWrapper target = null;
-        StringBuilder queryBuilder = new StringBuilder(128)
+        StringBuilder queryBuilder = new StringBuilder()
                 .append("select * from [jnt:moduleManagementBundle] where [j:symbolicName]='")
                 .append(JCRContentUtils.sqlEncode(symbolicName)).append("'");
 
@@ -216,8 +199,7 @@ final class BundleInfoJcrHelper {
 
         String query = queryBuilder.toString();
         logger.debug("Search bundle using query: {}", query);
-        JCRNodeIteratorWrapper nodes = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2)
-                .execute().getNodes();
+        JCRNodeIteratorWrapper nodes = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2).execute().getNodes();
         long resultCount = nodes.getSize();
         if (resultCount > 1) {
             if (version != null) {
@@ -242,8 +224,7 @@ final class BundleInfoJcrHelper {
                             foundGroupId = candidate.getPropertyAsString("j:groupId");
                         }
                     }
-                    matchingNodes.put(candidate.hasProperty("j:version")
-                            ? new Version(candidate.getPropertyAsString("j:version")) : null, candidate);
+                    matchingNodes.put(candidate.hasProperty("j:version") ? new Version(candidate.getPropertyAsString("j:version")) : null, candidate);
                 }
                 Entry<Version, JCRNodeWrapper> match = matchingNodes.entrySet().iterator().next();
                 target = match.getValue();
@@ -253,10 +234,7 @@ final class BundleInfoJcrHelper {
             }
         } else if (resultCount > 0) {
             target = (JCRNodeWrapper) nodes.nextNode();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Bundle node for key {} found at {}. Query used: {}",
-                        new Object[] { bundleKey, target.getPath(), query });
-            }
+            logger.debug("Bundle node for key {} found at {}. Query used: {}", new Object[] { bundleKey, target.getPath(), query });
         } else {
             logger.debug("No bundle for key {} was found. Query used: {}", bundleKey, query);
         }
@@ -275,13 +253,12 @@ final class BundleInfoJcrHelper {
 
     /**
      * Gets the JCR node path, which corresponds to the specified bundle info.
-     * 
-     * @param bundleInfo
-     *            the bundle info to get JCR path for
+     *
+     * @param bundleInfo the bundle info to get JCR path for
      * @return the JCR node path, which corresponds to the specified bundle info
      */
     static String getJcrPath(BundleInfo bundleInfo) {
-        StringBuilder path = new StringBuilder(96);
+        StringBuilder path = new StringBuilder();
         path.append(PATH_BUNDLES + '/');
         if (StringUtils.isNotEmpty(bundleInfo.getGroupId())) {
             path.append(bundleInfo.getGroupId().replace('.', '/')).append('/');
@@ -294,13 +271,12 @@ final class BundleInfoJcrHelper {
 
     /**
      * Get the JCR node path, which corresponds to the specified bundle info.
-     * 
-     * @param bundleInfo
-     *            the bundle info object to get JCR path for
+     *
+     * @param bundleInfo the bundle info object to get JCR path for
      * @return the JCR node path, which corresponds to the specified bundle info
      */
     static String getJcrPath(PersistedBundle bundleInfo) {
-        StringBuilder path = new StringBuilder(96);
+        StringBuilder path = new StringBuilder();
         path.append(PATH_BUNDLES + '/');
         if (StringUtils.isNotEmpty(bundleInfo.getGroupId())) {
             path.append(bundleInfo.getGroupId().replace('.', '/')).append('/');
@@ -312,9 +288,8 @@ final class BundleInfoJcrHelper {
 
     /**
      * Gets the JCR node path, which corresponds to the specified bundle key.
-     * 
-     * @param bundleKey
-     *            the key of the bundle to get JCR path for
+     *
+     * @param bundleKey the key of the bundle to get JCR path for
      * @return the JCR node path, which corresponds to the specified bundle key
      */
     static String getJcrPath(String bundleKey) {
@@ -324,17 +299,14 @@ final class BundleInfoJcrHelper {
     /**
      * Returns the JCR node, which corresponds to the provided bundle info, creating it if does not exist yet. This method also creates the
      * intermediate JCR structure if not yet created.
-     * 
-     * @param bundleInfo
-     *            the info of the module
-     * @param session
-     *            the current JCR session
+     *
+     * @param bundleInfo the info of the module
+     * @param session the current JCR session
      * @return the JCR node, which corresponds to the provided bundle info
-     * @throws RepositoryException
-     *             in case of a JCR error
+     * @throws RepositoryException in case of a JCR error
      */
-    static JCRNodeWrapper getOrCreateTargetNode(PersistedBundle bundleInfo, JCRSessionWrapper session)
-            throws RepositoryException {
+    static JCRNodeWrapper getOrCreateTargetNode(PersistedBundle bundleInfo, JCRSessionWrapper session) throws RepositoryException {
+
         JCRNodeWrapper target = getBundlesNode(session);
         if (bundleInfo.getGroupId() != null) {
             // create sub-folder structure for group ID
@@ -359,12 +331,10 @@ final class BundleInfoJcrHelper {
 
     /**
      * Returns the module manager JCR root node, creating it if does not exist yet.
-     * 
-     * @param session
-     *            the current JCR session
+     *
+     * @param session the current JCR session
      * @return the module manager JCR root node, creating it if does not exist yet
-     * @throws RepositoryException
-     *             in case of JCR errors
+     * @throws RepositoryException in case of JCR errors
      */
     private static JCRNodeWrapper getRootNode(JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper root = null;
@@ -373,50 +343,38 @@ final class BundleInfoJcrHelper {
         } catch (PathNotFoundException e) {
             root = session.getRootNode().addNode(NODE_NAME_ROOT, NODE_TYPE_ROOT);
         }
-
         return root;
     }
 
     /**
      * Creates the child node for the provided one if not yet exist. Otherwise returns the existing one.
-     * 
-     * @param startNode
-     *            the target node to create child for
-     * @param childName
-     *            the name of the child node
-     * @param session
-     *            current JCR session
+     *
+     * @param startNode the target node to create child for
+     * @param childName the name of the child node
+     * @param session current JCR session
      * @return the child node
-     * @throws RepositoryException
-     *             in case of a JCR error
+     * @throws RepositoryException in case of a JCR error
      */
-    private static JCRNodeWrapper mkdir(JCRNodeWrapper startNode, String childName, JCRSessionWrapper session)
-            throws RepositoryException {
+    private static JCRNodeWrapper mkdir(JCRNodeWrapper startNode, String childName, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper child = null;
         try {
             child = startNode.getNode(childName);
         } catch (PathNotFoundException e) {
             child = startNode.addNode(childName, NODE_TYPE_FOLDER);
         }
-
         return child;
     }
 
     /**
      * Creates the intermediate JCR tree structure if does not exist and returns the last leaf node.
-     * 
-     * @param startNode
-     *            the start node to create structure from
-     * @param pathSegments
-     *            an array of recursive node names to create JCR
-     * @param session
-     *            the current JCR session
+     *
+     * @param startNode the start node to create structure from
+     * @param pathSegments an array of recursive node names to create JCR
+     * @param session the current JCR session
      * @return the last leaf node
-     * @throws RepositoryException
-     *             in case of a JCR error
+     * @throws RepositoryException in case of a JCR error
      */
-    private static JCRNodeWrapper mkdirs(JCRNodeWrapper startNode, String[] pathSegments, JCRSessionWrapper session)
-            throws RepositoryException {
+    private static JCRNodeWrapper mkdirs(JCRNodeWrapper startNode, String[] pathSegments, JCRSessionWrapper session) throws RepositoryException {
         for (String childName : pathSegments) {
             startNode = mkdir(startNode, childName, session);
         }
@@ -429,5 +387,4 @@ final class BundleInfoJcrHelper {
     private BundleInfoJcrHelper() {
         super();
     }
-
 }

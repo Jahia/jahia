@@ -57,6 +57,7 @@ public class BundleInfoTest {
 
     @Test
     public void testFromKey() throws Exception {
+
         BundleInfo info = BundleInfo.fromKey("org.jahia.modules/article/2.0.0");
         assertEquals("org.jahia.modules", info.getGroupId());
         assertEquals("article", info.getSymbolicName());
@@ -75,11 +76,8 @@ public class BundleInfoTest {
 
     @Test
     public void testKey() throws Exception {
-        assertEquals("org.jahia.modules/article/2.0.0",
-                new BundleInfo("org.jahia.modules", "article", "2.0.0").getKey());
-        assertEquals("org.jahia.modules/advanced-visibility/2.0.1-SNAPSHOT",
-                new BundleInfo("org.jahia.modules", "advanced-visibility", "2.0.1-SNAPSHOT").getKey());
+        assertEquals("org.jahia.modules/article/2.0.0", new BundleInfo("org.jahia.modules", "article", "2.0.0").getKey());
+        assertEquals("org.jahia.modules/advanced-visibility/2.0.1-SNAPSHOT", new BundleInfo("org.jahia.modules", "advanced-visibility", "2.0.1-SNAPSHOT").getKey());
         assertEquals("myTest-module/1.0", new BundleInfo("myTest-module", "1.0").getKey());
     }
-
 }

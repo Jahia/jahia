@@ -59,6 +59,7 @@ import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.PersistedBundle;
 import org.osgi.framework.Version;
 import org.slf4j.Logger;
@@ -220,13 +221,27 @@ final class BundleInfoJcrHelper {
         long resultCount = nodes.getSize();
         if (resultCount > 1) {
             if (version != null) {
-                logger.warn("Found multiple ({}) bundle nodes matching key {}. Will take the first one found.",
-                        resultCount, bundleKey);
-                target = (JCRNodeWrapper) nodes.nextNode();
+                throw new ModuleManagementException("Found multiple (" + resultCount + ") bundle nodes matching key "
+                        + bundleKey + ". Use unique bundle key (with group ID).");
             } else {
                 Map<Version, JCRNodeWrapper> matchingNodes = new TreeMap<>(VERSION_COMPARATOR);
+                String foundGroupId = null;
                 while (nodes.hasNext()) {
                     JCRNodeWrapper candidate = (JCRNodeWrapper) nodes.nextNode();
+                    if (groupId == null) {
+                        // need to check the group
+                        if (foundGroupId != null) {
+                            if (!StringUtils.equals(foundGroupId, candidate.getPropertyAsString("j:groupId"))) {
+                                // we have in the result bundles from different groups -> non-unique result
+                                throw new ModuleManagementException(
+                                        "Found multiple (" + resultCount + ") bundle nodes matching key " + bundleKey
+                                                + ". Use unique bundle key (with group ID).");
+                            }
+                        } else {
+                            // first result: read groupID
+                            foundGroupId = candidate.getPropertyAsString("j:groupId");
+                        }
+                    }
                     matchingNodes.put(candidate.hasProperty("j:version")
                             ? new Version(candidate.getPropertyAsString("j:version")) : null, candidate);
                 }

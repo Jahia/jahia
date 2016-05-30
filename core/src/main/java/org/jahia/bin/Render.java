@@ -245,7 +245,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = new RenderContext(req, resp, user);
-        int index = req.getPathInfo().indexOf("/", 1);
+        int index = req.getPathInfo().indexOf('/', 1);
         if (index == -1 || index == req.getPathInfo().length()-1) {
             throw new JahiaBadRequestException("Invalid path");
         }

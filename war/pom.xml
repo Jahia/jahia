@@ -395,10 +395,10 @@
                                 <move todir="${project.build.directory}/jahia/WEB-INF/karaf">
                                     <fileset dir="${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}" />
                                 </move>
-                                <move todir="${project.build.directory}/etc">
+                                <move todir="${project.build.directory}/karaf/etc">
                                     <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/etc" />
                                 </move>
-                                <move todir="${project.build.directory}/karaf">
+                                <move todir="${project.build.directory}/karaf/data">
                                     <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/data" />
                                 </move>
                                 <move todir="${project.build.directory}/karaf/deploy">
@@ -576,7 +576,7 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
-                <directory>src/main/webapp/WEB-INF/karaf/etc</directory>
+                <directory>src/data/resources/karaf/etc</directory>
                 <includes>
                     <include>config.properties</include>
                 </includes>

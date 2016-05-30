@@ -10,9 +10,10 @@
             <outputDirectory>/</outputDirectory>
             <excludes>
                 <exclude>db/*.script</exclude>
-                <exclude>etc/branding.properties</exclude>
-                <exclude>etc/org.apache.karaf.features.cfg</exclude>
-                <exclude>etc/startup.properties</exclude>
+                <exclude>karaf/etc/branding.properties</exclude>
+                <exclude>karaf/etc/config.properties</exclude>
+                <exclude>karaf/etc/org.apache.karaf.features.cfg</exclude>
+                <exclude>karaf/etc/startup.properties</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -21,9 +22,9 @@
             <filtered>true</filtered>
             <includes>
                 <include>db/*.script</include>
-                <include>etc/branding.properties</include>
-                <include>etc/org.apache.karaf.features.cfg</include>
-                <include>etc/startup.properties</include>
+                <include>karaf/etc/branding.properties</include>
+                <include>karaf/etc/org.apache.karaf.features.cfg</include>
+                <include>karaf/etc/startup.properties</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -32,13 +33,13 @@
             <filtered>false</filtered>
         </fileSet>
         <fileSet>
-            <directory>${basedir}/target/etc</directory>
-            <outputDirectory>/etc</outputDirectory>
+            <directory>${basedir}/target/karaf/etc</directory>
+            <outputDirectory>karaf/etc</outputDirectory>
             <filtered>false</filtered>
         </fileSet>
         <fileSet>
             <directory>${basedir}/target/generated-resources</directory>
-            <outputDirectory>/etc</outputDirectory>
+            <outputDirectory>karaf//etc</outputDirectory>
             <filtered>false</filtered>
         </fileSet>
     </fileSets>

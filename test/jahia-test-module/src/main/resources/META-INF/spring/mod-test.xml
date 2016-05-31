@@ -63,6 +63,7 @@
                 <value>org.jahia.test.services.render.filter.cache.OldCacheFilterTest</value>
                 <value>org.jahia.test.services.render.filter.cache.NewCacheFilterTest</value>
                 <value>org.jahia.test.services.render.filter.channels.ChannelResolutionAndExclusionTest</value>
+                <value>org.jahia.test.services.render.filter.aggregate.AggregateFilterTest</value>
                 <value>org.jahia.test.services.search.SimpleSearchTest</value>
                 <value>org.jahia.test.services.seo.urlrewrite.UrlRewriteTest</value>
                 <value>org.jahia.test.services.tags.TaggingTest</value>

@@ -127,6 +127,8 @@ public class NewCacheFilterTest extends CacheFilterTest{
         assertTrue("Free thread spent too much time generating the fragment: " + r3.timer, r3.timer >=  0 && r3.timer < 100);
     }
 
+    // TODO: test not cacheable fragments
+    // TODO: test not cacheable fragments + latch (not cacheable fragment shouldn't aquier latchs)
 
     @Test
     public void testMaxWait() throws Exception{

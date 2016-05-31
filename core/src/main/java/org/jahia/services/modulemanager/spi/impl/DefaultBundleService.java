@@ -71,7 +71,7 @@ public class DefaultBundleService implements BundleService {
     @Override
     public void install(String uri, String target, boolean start) throws BundleException {
         Bundle installedBundle = FrameworkService.getBundleContext().installBundle(uri);
-        if (installedBundle != null && start) {
+        if (start) {
             installedBundle.start();
         }
     }

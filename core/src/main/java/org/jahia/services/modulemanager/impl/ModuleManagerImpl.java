@@ -100,10 +100,10 @@ public class ModuleManagerImpl implements ModuleManager {
     private OperationResult install(PersistedBundle info, final String target, boolean start) throws ModuleManagementException {
         try {
             getBundleService().install(info.getLocation(), target, start);
-            return OperationResult.success(info.getBundleInfo());
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
         }
+        return OperationResult.success(info.getBundleInfo());
     }
 
     @Override
@@ -135,7 +135,7 @@ public class ModuleManagerImpl implements ModuleManager {
         } catch (Exception e) {
             throw new ModuleManagementException(e);
         } finally {
-            logger.info("Installation completed for bundle {} on target {} in {} ms. Opearation result: {}",
+            logger.info("Installation completed for bundle {} on target {} in {} ms. Operation result: {}",
                     new Object[] {bundleInfo != null ? bundleInfo.getBundleInfo() : bundleResource, target, System.currentTimeMillis() - startTime, result});
         }
 

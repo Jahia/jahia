@@ -45,6 +45,7 @@ package org.jahia.osgi;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -88,8 +89,7 @@ public final class BundleUtils {
     /**
      * Returns a String representation for the given bundle event.
      *
-     * @param eventType
-     *            OSGi <code>BundleEvent</code> given as an int
+     * @param eventType OSGi <code>BundleEvent</code> given as an int
      * @return String representation for the bundle event
      * @see org.eclipse.gemini.blueprint.util.OsgiStringUtils
      */
@@ -106,8 +106,7 @@ public final class BundleUtils {
      * Creates an instance of the {@link BundleDelegatingClassLoader} baked by the provided bundle and having Jahia root Spring context's
      * class loader as a parent.
      *
-     * @param bundle
-     *            the bundle to create class loader for
+     * @param bundle the bundle to create class loader for
      * @return an instance of the {@link BundleDelegatingClassLoader} baked by the provided bundle and having Jahia root Spring context's
      *         class loader as a parent
      */
@@ -119,10 +118,8 @@ public final class BundleUtils {
     /**
      * Finds the bundle by its symbolic name.
      *
-     * @param symbolicName
-     *            the bundle symbolic name 
-     * @param version
-     *            the bundle version; or <code>null</code> to get the first matching bundle, found 
+     * @param symbolicName the bundle symbolic name
+     * @param version the bundle version; or <code>null</code> to get the first matching bundle, found
      * @return the bundle for the specified symbolic name and version or <code>null</code> if the corresponding bundle is not present
      */
     public static Bundle getBundleBySymbolicName(String symbolicName, String version) {
@@ -140,10 +137,8 @@ public final class BundleUtils {
     /**
      * Find the bundle that is represented by the specified module and version.
      *
-     * @param moduleId
-     *            the module Id
-     * @param version
-     *            the module version
+     * @param moduleId the module Id
+     * @param version the module version
      * @return the bundle for the specified module and version or <code>null</code> if the corresponding bundle is not present
      */
     public static Bundle getBundle(String moduleId, String version) {
@@ -162,8 +157,7 @@ public final class BundleUtils {
     /**
      * Returns the bundle display name containing module name (ID) and the version.
      *
-     * @param bundle
-     *            the bundle to get display name for
+     * @param bundle the bundle to get display name for
      * @return the bundle display name containing module name (ID) and the version
      */
     public static String getDisplayName(Bundle bundle) {
@@ -174,11 +168,11 @@ public final class BundleUtils {
      * Returns the module instance that corresponds to the provided OSGi bundle. If the instance is not present yet, creates it and stores
      * internally.
      *
-     * @param bundle
-     *            the corresponding OSGi bundle
+     * @param bundle the corresponding OSGi bundle
      * @return the module instance that corresponds to the provided OSGi bundle
      */
     public static JahiaTemplatesPackage getModule(Bundle bundle) {
+
         JahiaTemplatesPackage pkg = null;
 
         String moduleId = getModuleId(bundle);
@@ -223,8 +217,7 @@ public final class BundleUtils {
     /**
      * Returns the module name read from the provided bundle.
      *
-     * @param bundle
-     *            the bundle to read module name from
+     * @param bundle the bundle to read module name from
      * @return the module name read from the provided bundle
      */
     public static String getModuleId(Bundle bundle) {
@@ -239,8 +232,7 @@ public final class BundleUtils {
     /**
      * Returns a version of the module read from the provided bundle.
      *
-     * @param bundle
-     *            the bundle to read the module version from
+     * @param bundle the bundle to read the module version from
      * @return a version of the module read from the provided bundle
      */
     public static String getModuleVersion(Bundle bundle) {
@@ -254,8 +246,7 @@ public final class BundleUtils {
     /**
      * Returns the groupId of the module read from the provided bundle.
      *
-     * @param bundle
-     *            the bundle to read the module groupId from
+     * @param bundle the bundle to read the module groupId from
      * @return groupId of the module read from the provided bundle
      */
     public static String getModuleGroupId(Bundle bundle) {
@@ -265,8 +256,7 @@ public final class BundleUtils {
     /**
      * Returns <code>true</code> if the provided bundle represents Jahia-related bundle (either a module or a service).
      *
-     * @param bundle
-     *            the OSGi bundle to check
+     * @param bundle the OSGi bundle to check
      * @return <code>true</code> if the provided bundle represents Jahia-related bundle (either a module or a service)
      */
     public static boolean isJahiaBundle(Bundle bundle) {
@@ -278,8 +268,7 @@ public final class BundleUtils {
     /**
      * Returns <code>true</code> if the provided bundle represents Jahia module.
      *
-     * @param bundle
-     *            the OSGi bundle to check
+     * @param bundle the OSGi bundle to check
      * @return <code>true</code> if the provided bundle represents Jahia module
      */
     public static boolean isJahiaModuleBundle(Bundle bundle) {
@@ -287,6 +276,7 @@ public final class BundleUtils {
     }
 
     public static Class<?> loadModuleClass(String className) throws ClassNotFoundException {
+
         Class<?> clazz = null;
         String[] moduleKey = moduleForClass.get(className); // [moduleId, moduleVersion]
         if (moduleKey != null) {
@@ -326,10 +316,10 @@ public final class BundleUtils {
     /**
      * Removes the module instance that corresponds to the provided OSGi bundle from internal registry.
      *
-     * @param bundle
-     *            the corresponding OSGi bundle
+     * @param bundle the corresponding OSGi bundle
      */
     public static void unregisterModule(Bundle bundle) {
+
         String moduleId = getModuleId(bundle);
         String version = getModuleVersion(bundle);
         String groupId = getModuleGroupId(bundle);
@@ -372,26 +362,24 @@ public final class BundleUtils {
     /**
      * Looks up an OSGi service for the specified class and filter. If multiple services are found matching the criteria, returns the best
      * one, based on the service ranking. If no matching service has been found, returns <code>null</code>.
-     * 
-     * @param serviceClass
-     *            the class of the service to be looked up
-     * @param filter
-     *            the filter expression or <code>null</code> for all services of the specified type
+     *
+     * @param serviceClass the class of the service to be looked up
+     * @param filter the filter expression or <code>null</code> for all services of the specified type
      * @return an OSGi service instance matching the specified criteria or <code>null</code> if no match was found
-     * @throws IllegalArgumentException
-     *             in case the filter expression is syntactically invalid
+     * @throws IllegalArgumentException in case the filter expression is syntactically invalid
      */
-    public static <S> S getOsgiService(Class<S> serviceClass, String filter) throws IllegalArgumentException {
+    public static <S> S getOsgiService(Class<S> serviceClass, String filter) {
+
         S serviceInstance = null;
         BundleContext bundleContext = FrameworkService.getBundleContext();
         Collection<ServiceReference<S>> serviceReferences;
         try {
             serviceReferences = bundleContext.getServiceReferences(serviceClass, filter);
         } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
+            throw new JahiaRuntimeException(e);
         }
-        if (serviceReferences != null) {
-            ServiceReference<S> bestServiceReferefnce = null;
+        if (serviceReferences != null && !serviceReferences.isEmpty()) {
+            ServiceReference<S> bestServiceReferefnce;
             if (serviceReferences.size() > 1) {
                 List<ServiceReference<S>> matchingServices = new ArrayList<>(serviceReferences);
                 // sort references by ranking (ascending)

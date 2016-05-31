@@ -76,7 +76,6 @@ public class ModuleManagerImpl implements ModuleManager {
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
 
     private BundleService bundleService;
-    
     private BundlePersister persister;
 
     /**

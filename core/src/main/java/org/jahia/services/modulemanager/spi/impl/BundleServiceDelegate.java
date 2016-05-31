@@ -61,11 +61,9 @@ import org.slf4j.LoggerFactory;
 public class BundleServiceDelegate implements BundleService {
 
     private static final String CLUSTERED_SERVICE_FILTER = "(" + Constants.BUNDLE_SERVICE_PROPERTY_CLUSTERED + "=true)";
-
     private static final Logger logger = LoggerFactory.getLogger(BundleServiceDelegate.class);
 
     private BundleService defaultBundleService;
-
     private SettingsBean settingsBean;
 
     @Override
@@ -73,14 +71,21 @@ public class BundleServiceDelegate implements BundleService {
         lookupService().install(uri, target, start);
     }
 
-    /**
-     * Looks up an OSGi service instance for {@link BundleService}. Throws a {@link ModuleManagementException} if the service cannot be
-     * found.
-     *
-     * @return an OSGi service instance for {@link BundleService}
-     * @throws ModuleManagementException
-     *             if the service cannot be found
-     */
+    @Override
+    public void start(BundleInfo bundleInfo, String target) throws BundleException {
+        lookupService().start(bundleInfo, target);
+    }
+
+    @Override
+    public void stop(BundleInfo bundleInfo, String target) throws BundleException {
+        lookupService().stop(bundleInfo, target);
+    }
+
+    @Override
+    public void uninstall(BundleInfo bundleInfo, String target) throws BundleException {
+        lookupService().uninstall(bundleInfo, target);
+    }
+
     private BundleService lookupClusteredService() {
 
         long startTime = System.currentTimeMillis();
@@ -98,14 +103,8 @@ public class BundleServiceDelegate implements BundleService {
         return service;
     }
 
-    /**
-     * Looks up the most suitable instance of the {@link BundleService}.
-     *
-     * @return the most suitable instance of the {@link BundleService}
-     */
     private BundleService lookupService() {
-        BundleService service = settingsBean.isClusterActivated() ? lookupClusteredService() : null;
-        return service != null ? service : defaultBundleService;
+        return (settingsBean.isClusterActivated() ? lookupClusteredService() : defaultBundleService);
     }
 
     public void setDefaultBundleService(BundleService defaultBundleService) {
@@ -114,20 +113,5 @@ public class BundleServiceDelegate implements BundleService {
 
     public void setSettingsBean(SettingsBean settingsBean) {
         this.settingsBean = settingsBean;
-    }
-
-    @Override
-    public void start(BundleInfo bundleInfo, String target) throws BundleException {
-        lookupService().start(bundleInfo, target);
-    }
-
-    @Override
-    public void stop(BundleInfo bundleInfo, String target) throws BundleException {
-        lookupService().stop(bundleInfo, target);
-    }
-
-    @Override
-    public void uninstall(BundleInfo bundleInfo, String target) throws BundleException {
-        lookupService().uninstall(bundleInfo, target);
     }
 }

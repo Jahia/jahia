@@ -173,7 +173,13 @@ public class AreaTag extends ModuleTag implements ParamParent {
             boolean enableArea = !showAreaButton;
             JCRNodeWrapper createdNode = null;
             if (enableArea) {
-                createdNode = session.getNode(StringUtils.substringBeforeLast(areaPath,"/")).addNode(StringUtils.substringAfterLast(areaPath,"/"), areaType);
+                try {
+                    createdNode = session.getNode(StringUtils.substringBeforeLast(areaPath, "/")).addNode(StringUtils.substringAfterLast(areaPath, "/"), areaType);
+                } catch (RepositoryException e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("unable to auto create area due to the following error", e);
+                    }
+                }
                 session.save();
                 List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                 if (contributeTypes != null) {

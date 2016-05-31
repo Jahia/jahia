@@ -41,79 +41,52 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.modulemanager.spi;
+package org.jahia.services.modulemanager.spi.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import org.jahia.osgi.FrameworkService;
+import org.jahia.osgi.BundleUtils;
+import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.Constants;
 import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.settings.SettingsBean;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Factory class for looking up the {@link BundleService} instances.
+ * Delegate class that is dispatching the calls to an appropriate service implementation of the {@link BundleService}.
  *
  * @author Sergiy Shyrkov
  */
-public class BundleServiceLocator {
+public class BundleServiceDelegate implements BundleService {
 
     private static final String CLUSTERED_SERVICE_FILTER = "(" + Constants.BUNDLE_SERVICE_PROPERTY_CLUSTERED + "=true)";
 
-    private static final Logger logger = LoggerFactory.getLogger(BundleServiceLocator.class);
+    private static final Logger logger = LoggerFactory.getLogger(BundleServiceDelegate.class);
 
     private BundleService defaultBundleService;
+
     private SettingsBean settingsBean;
 
-    /**
-     * Looks up the most suitable instance of the {@link BundleService}.
-     *
-     * @return the most suitable instance of the {@link BundleService}
-     */
-    public BundleService lookup() {
-        BundleService service = settingsBean.isClusterActivated() ? lookupClusteredService() : null;
-        return service != null ? service : defaultBundleService;
+    @Override
+    public void install(String uri, String target, boolean start) throws BundleException {
+        lookupService().install(uri, target, start);
     }
 
     /**
-     * Looks up an OSGi service instance for {@link BundleService}. Returns <code>null</code> if no instance is found.
+     * Looks up an OSGi service instance for {@link BundleService}. Throws a {@link ModuleManagementException} if the service cannot be
+     * found.
      *
-     * @return an OSGi service instance for {@link BundleService}. Returns <code>null</code> if no instance is found
+     * @return an OSGi service instance for {@link BundleService}
+     * @throws ModuleManagementException
+     *             if the service cannot be found
      */
     private BundleService lookupClusteredService() {
 
-        BundleService service = null;
         long startTime = System.currentTimeMillis();
         logger.debug("Looking up suitable BundleService instance using filter " + CLUSTERED_SERVICE_FILTER + "...");
 
-        BundleContext bundleContext = FrameworkService.getBundleContext();
-        Collection<ServiceReference<BundleService>> serviceReferences;
-        try {
-            serviceReferences = bundleContext.getServiceReferences(BundleService.class, CLUSTERED_SERVICE_FILTER);
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
-        if (serviceReferences != null) {
-            ServiceReference<BundleService> bestServiceReferefnce = null;
-            if (serviceReferences.size() > 1) {
-                List<ServiceReference<BundleService>> matchingServices = new ArrayList<>(serviceReferences);
-                // sort references by ranking (ascending)
-                Collections.sort(matchingServices);
-                // get the service with the highest ranking
-                bestServiceReferefnce = matchingServices.get(matchingServices.size() - 1);
-            } else {
-                bestServiceReferefnce = serviceReferences.iterator().next();
-            }
-            // obtain the service
-            service = bundleContext.getService(bestServiceReferefnce);
-        }
+        BundleService service = BundleUtils.getOsgiService(BundleService.class, CLUSTERED_SERVICE_FILTER);
 
         if (service == null) {
             throw new ModuleManagementException("Unable to find suitable cluster-aware BundleService instance");
@@ -125,11 +98,36 @@ public class BundleServiceLocator {
         return service;
     }
 
+    /**
+     * Looks up the most suitable instance of the {@link BundleService}.
+     *
+     * @return the most suitable instance of the {@link BundleService}
+     */
+    private BundleService lookupService() {
+        BundleService service = settingsBean.isClusterActivated() ? lookupClusteredService() : null;
+        return service != null ? service : defaultBundleService;
+    }
+
     public void setDefaultBundleService(BundleService defaultBundleService) {
         this.defaultBundleService = defaultBundleService;
     }
 
     public void setSettingsBean(SettingsBean settingsBean) {
         this.settingsBean = settingsBean;
+    }
+
+    @Override
+    public void start(BundleInfo bundleInfo, String target) throws BundleException {
+        lookupService().start(bundleInfo, target);
+    }
+
+    @Override
+    public void stop(BundleInfo bundleInfo, String target) throws BundleException {
+        lookupService().stop(bundleInfo, target);
+    }
+
+    @Override
+    public void uninstall(BundleInfo bundleInfo, String target) throws BundleException {
+        lookupService().uninstall(bundleInfo, target);
     }
 }

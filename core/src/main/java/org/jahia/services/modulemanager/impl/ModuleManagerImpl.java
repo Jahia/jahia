@@ -49,7 +49,6 @@ import org.jahia.services.modulemanager.OperationResult;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistedBundle;
 import org.jahia.services.modulemanager.spi.BundleService;
-import org.jahia.services.modulemanager.spi.BundleServiceLocator;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,17 +75,9 @@ public class ModuleManagerImpl implements ModuleManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
 
-    private BundleServiceLocator bundleServiceLocator;
+    private BundleService bundleService;
+    
     private BundlePersister persister;
-
-    /**
-     * Returns the most suitable instance of the {@link BundleService}.
-     *
-     * @return the most suitable instance of the {@link BundleService}
-     */
-    private BundleService getBundleService() {
-        return bundleServiceLocator.lookup();
-    }
 
     /**
      * Performs an installation of the bundle calling the bundle services.
@@ -99,7 +90,7 @@ public class ModuleManagerImpl implements ModuleManager {
      */
     private OperationResult install(PersistedBundle info, final String target, boolean start) throws ModuleManagementException {
         try {
-            getBundleService().install(info.getLocation(), target, start);
+            bundleService.install(info.getLocation(), target, start);
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
         }
@@ -162,13 +153,13 @@ public class ModuleManagerImpl implements ModuleManager {
             if (info != null) {
                 switch (operation) {
                     case START:
-                        getBundleService().start(info, target);
+                        bundleService.start(info, target);
                         break;
                     case STOP:
-                        getBundleService().stop(info, target);
+                        bundleService.stop(info, target);
                         break;
                     case UNINSTALL:
-                        getBundleService().uninstall(info, target);
+                        bundleService.uninstall(info, target);
                         break;
                     default:
                         throw new UnsupportedOperationException("Unknown bundle operation: " + operation);
@@ -192,12 +183,12 @@ public class ModuleManagerImpl implements ModuleManager {
     }
 
     /**
-     * Injects an instance of the bundle locator.
+     * Injects an instance of the bundle service.
      *
-     * @param bundleServiceLocator an instance of the bundle locator
+     * @param bundleService an instance of the bundle service
      */
-    public void setBundleServiceLocator(BundleServiceLocator bundleServiceLocator) {
-        this.bundleServiceLocator = bundleServiceLocator;
+    public void setBundleService(BundleService bundleService) {
+        this.bundleService = bundleService;
     }
 
     /**

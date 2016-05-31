@@ -5,11 +5,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
     <bean id="ModuleManager" class="org.jahia.services.modulemanager.impl.ModuleManagerImpl">
-        <property name="bundleServiceLocator" ref="org.jahia.services.modulemanager.spi.BundleServiceLocator"/>
+        <property name="bundleService" ref="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate"/>
         <property name="persister" ref="org.jahia.services.modulemanager.persistence.BundlePersister"/>
     </bean>
     
-    <bean id="org.jahia.services.modulemanager.spi.BundleServiceLocator" class="org.jahia.services.modulemanager.spi.BundleServiceLocator">
+    <bean id="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate" class="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate">
         <property name="settingsBean" ref="settingsBean"/>
         <property name="defaultBundleService" ref="org.jahia.services.modulemanager.spi.impl.DefaultBundleService"/>
     </bean>

@@ -47,14 +47,21 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.SpringContextSingleton;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.ConstantException;
 import org.springframework.core.Constants;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -362,5 +369,43 @@ public final class BundleUtils {
         contextException.put(key, exception);
     }
 
+    /**
+     * Looks up an OSGi service for the specified class and filter. If multiple services are found matching the criteria, returns the best
+     * one, based on the service ranking. If no matching service has been found, returns <code>null</code>.
+     * 
+     * @param serviceClass
+     *            the class of the service to be looked up
+     * @param filter
+     *            the filter expression or <code>null</code> for all services of the specified type
+     * @return an OSGi service instance matching the specified criteria or <code>null</code> if no match was found
+     * @throws IllegalArgumentException
+     *             in case the filter expression is syntactically invalid
+     */
+    public static <S> S getOsgiService(Class<S> serviceClass, String filter) throws IllegalArgumentException {
+        S serviceInstance = null;
+        BundleContext bundleContext = FrameworkService.getBundleContext();
+        Collection<ServiceReference<S>> serviceReferences;
+        try {
+            serviceReferences = bundleContext.getServiceReferences(serviceClass, filter);
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+        if (serviceReferences != null) {
+            ServiceReference<S> bestServiceReferefnce = null;
+            if (serviceReferences.size() > 1) {
+                List<ServiceReference<S>> matchingServices = new ArrayList<>(serviceReferences);
+                // sort references by ranking (ascending)
+                Collections.sort(matchingServices);
+                // get the service with the highest ranking
+                bestServiceReferefnce = matchingServices.get(matchingServices.size() - 1);
+            } else {
+                bestServiceReferefnce = serviceReferences.iterator().next();
+            }
+            // obtain the service
+            serviceInstance = bundleContext.getService(bestServiceReferefnce);
+        }
+
+        return serviceInstance;
+    }
 
 }

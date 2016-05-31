@@ -107,6 +107,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
     private final Map<String, ScriptEngineFactory> mimeTypesToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<Long, List<BundleScriptEngineFactory>> bundleIdsToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<String, BundleScriptEngineFactoryConfigurator> configurators = new ConcurrentHashMap<>(17);
+    private final Map<ClassLoader, Map<String, ScriptEngine>> engineCache = new ConcurrentHashMap<>(173);
 
     private enum KeyType {extension, mimeType, name}
 
@@ -143,32 +144,52 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
     }
 
     private ScriptEngine getEngine(String key, Map<String, ScriptEngineFactory> factoriesForKeyType, KeyType keyType) {
-        final ScriptEngineFactory scriptEngineFactory = factoriesForKeyType.get(key);
-        if (scriptEngineFactory != null) {
-            // perform configuration of the factory if needed
-            if (scriptEngineFactory instanceof BundleScriptEngineFactory) {
-                BundleScriptEngineFactory factory = (BundleScriptEngineFactory) scriptEngineFactory;
-                final BundleScriptEngineFactoryConfigurator configurator = getConfiguratorFor(factory.getWrappedFactoryClassName());
-                if (configurator != null) {
-                    configurator.configurePreScriptEngineCreation(factory.getWrappedFactory());
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+
+        Map<String, ScriptEngine> stringScriptEngineMap = engineCache.get(contextClassLoader);
+
+        if (stringScriptEngineMap == null) {
+            stringScriptEngineMap = new ConcurrentHashMap<>();
+            engineCache.put(contextClassLoader, stringScriptEngineMap);
+        }
+
+        ScriptEngine scriptEngine = stringScriptEngineMap.get(key);
+        if (scriptEngine == null) {
+
+            final ScriptEngineFactory scriptEngineFactory = factoriesForKeyType.get(key);
+            if (scriptEngineFactory != null) {
+                // perform configuration of the factory if needed
+                if (scriptEngineFactory instanceof BundleScriptEngineFactory) {
+                    BundleScriptEngineFactory factory = (BundleScriptEngineFactory) scriptEngineFactory;
+                    final BundleScriptEngineFactoryConfigurator configurator = getConfiguratorFor(factory.getWrappedFactoryClassName());
+                    if (configurator != null) {
+                        configurator.configurePreScriptEngineCreation(factory.getWrappedFactory());
+                    }
+                }
+
+                scriptEngine = scriptEngineFactory.getScriptEngine();
+                scriptEngine.setBindings(getBindings(), ScriptContext.GLOBAL_SCOPE);
+            } else {
+                switch (keyType) {
+                    case extension:
+                        scriptEngine = super.getEngineByExtension(key);
+                        break;
+                    case mimeType:
+                        scriptEngine = super.getEngineByMimeType(key);
+                        break;
+                    case name:
+                        scriptEngine = super.getEngineByName(key);
+                        break;
+                    default:
+                        scriptEngine = null;
                 }
             }
 
-            final ScriptEngine scriptEngine = scriptEngineFactory.getScriptEngine();
-            scriptEngine.setBindings(getBindings(), ScriptContext.GLOBAL_SCOPE);
-            return scriptEngine;
-        } else {
-            switch (keyType) {
-                case extension:
-                    return super.getEngineByExtension(key);
-                case mimeType:
-                    return super.getEngineByMimeType(key);
-                case name:
-                    return super.getEngineByName(key);
-                default:
-                    return null;
+            if (scriptEngine != null) {
+                stringScriptEngineMap.put(key, scriptEngine);
             }
         }
+        return scriptEngine;
     }
 
     public ScriptEngine getEngineByExtension(String extension) {

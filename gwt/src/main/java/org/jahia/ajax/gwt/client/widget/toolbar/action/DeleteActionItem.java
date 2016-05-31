@@ -46,6 +46,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
@@ -139,10 +140,11 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                 updateTitle(getGwtToolbarItem().getTitle() + " " + selection.size() + " " + Messages.get("label.items"));
             }
         }
-        Module selectedModule = ModuleHelper.getModulesByPath().get(lh.getSingleSelection().getPath()).get(0);
+        String selectedPath = lh.getSingleSelection().getPath();
+        Module selectedModule = ModuleHelper.getModulesByPath().get(selectedPath).get(0);
         boolean autoCreated = false;
         if (selectedModule instanceof AreaModule) {
-           autoCreated = ((AreaModule) selectedModule).isAutoCreated();
+           autoCreated = JahiaGWTParameters.isAreaAutoActivated() && !selectedPath.startsWith("/modules/");
        }
         boolean enabled = !autoCreated && selection != null && selection.size() > 0
                 && !lh.isRootNode()

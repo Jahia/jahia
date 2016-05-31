@@ -83,7 +83,6 @@ public class AreaModule extends SimpleModule {
     private boolean missingList;
     private final LayoutContainer content;
     private String conflictsWith = null;
-    private boolean autoCreated;
 
     private static int MIN_WIDTH = 100;
     
@@ -241,13 +240,5 @@ public class AreaModule extends SimpleModule {
         } else {
             callback.onSuccess(node);
         }
-    }
-
-    public boolean isAutoCreated() {
-        return autoCreated;
-    }
-
-    public void setAreaAuto(boolean autoCreated) {
-        this.autoCreated = autoCreated;
     }
 }

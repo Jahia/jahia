@@ -144,6 +144,9 @@ public class GWTInitializer {
         params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
         boolean devMode = SettingsBean.getInstance().isDevelopmentMode();
         params.put(JahiaGWTParameters.DEVELOPMENT_MODE, devMode ? "true" : "false");
+        boolean areaAutoActivated = SettingsBean.getInstance().isAreaAutoActivated();
+        params.put(JahiaGWTParameters.AREA_AUTO_ACTIVATED, areaAutoActivated ? "true" : "false");
+
         if (devMode) {
             params.put(JahiaGWTParameters.MODULES_SOURCES_DISK_PATH, StringEscapeUtils.escapeJavaScript(SettingsBean.getInstance().getModulesSourcesDiskPath()));
         }

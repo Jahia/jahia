@@ -44,7 +44,6 @@
 package org.jahia.ajax.gwt.client.core;
 
 import com.google.gwt.i18n.client.Dictionary;
-
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -87,6 +86,7 @@ public class JahiaGWTParameters {
     public static final String MODULES_SOURCES_DISK_PATH = "modulesSourcesDiskPath";
     public static final String TOOLBAR_MESSAGES = "toolbarMessages";
     public static final String USE_WEBSOCKETS = "useWebsockets";
+    public static final String AREA_AUTO_ACTIVATED = "areaAutoActivated";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
@@ -142,6 +142,10 @@ public class JahiaGWTParameters {
         } catch (MissingResourceException e) {
             return false;
         }
+    }
+
+    public static boolean isAreaAutoActivated() {
+        return "true".equals(jahiaParamDictionary.get(AREA_AUTO_ACTIVATED));
     }
 
     public static String getUILanguage() {

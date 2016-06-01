@@ -41,6 +41,8 @@ import static org.junit.Assert.*;
 public class AggregateFilterTest extends JahiaTestCase {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateFilterTest.class);
 
+    private static final String ESI_TAG_START = "<jahia_esi:include src=\"";
+    private static final String ESI_TAG_END = "\"></jahia_esi:include>";
     public final static String TESTSITE_NAME = "test";
     private static List<RenderFilter> renderServiceFilters;
     private static List<RenderFilter> templatePackageRegistryFilters;
@@ -72,6 +74,7 @@ public class AggregateFilterTest extends JahiaTestCase {
 
         // test filters
         List<RenderFilter> filters = new LinkedList<>();
+        filters.add(new BaseAttributesFilter());
         filters.add((RenderFilter) SpringContextSingleton.getInstance().getContext().getBean("org.jahia.services.render.filter.AggregateFilter"));
         filters.add(new OutFilter());
 
@@ -100,8 +103,12 @@ public class AggregateFilterTest extends JahiaTestCase {
         ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getRenderFilters().addAll(new LinkedList<>(templatePackageRegistryFilters));
     }
 
+    /** main resoure rendering have to initialize the Aggregation, init the key stack and the moduleMap parameters
+     *
+     * @throws Exception
+     */
     @Test
-    public void testPrepareOnMainResource() throws Exception {
+    public void testMainResource() throws Exception {
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
         AggregateFilter aggregateFilter = (AggregateFilter) SpringContextSingleton.getInstance().getContext().getBean("org.jahia.services.render.filter.AggregateFilter");
@@ -116,27 +123,94 @@ public class AggregateFilterTest extends JahiaTestCase {
 
         // test prepare on main resource
         String result = aggregateFilter.prepare(context, mainResource, null);
-        Map<String, Object> updatedModuleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
         String key = generator.generate(mainResource, context, generator.getAttributesForKey(context, mainResource));
         String finalKey = generator.replacePlaceholdersInCacheKey(context, key);
         Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
 
         assertNull(result);
-        assertTrue(updatedModuleMap.size() == 4);
-        assertTrue(!((Boolean) updatedModuleMap.get(AggregateFilter.AGGREGATING)));
-        assertEquals(key, updatedModuleMap.get(AggregateFilter.RENDERING_KEY));
-        assertEquals(finalKey, updatedModuleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
+        assertTrue(moduleMap.size() == 4);
+        assertTrue(!((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
+        assertEquals(key, moduleMap.get(AggregateFilter.RENDERING_KEY));
+        assertEquals(finalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
         assertTrue(stack != null && stack.size() == 0);
+
+        // test execute
+        result = aggregateFilter.execute("MR render", context, mainResource, null);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
+
+        assertTrue(result != null && result.equals("MR render"));
+        assertTrue(moduleMap.size() == 4);
+        assertTrue(!((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
+        assertEquals(key, moduleMap.get(AggregateFilter.RENDERING_KEY));
+        assertEquals(finalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
+        assertTrue(stack.size() == 0);
+
+        // test finalize
+        aggregateFilter.finalize(context, mainResource, null);
+        // stack should be flushed
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        assertTrue(stack == null);
     }
 
+    /**
+     * Module alone should not be catch by the AggregateFilter, to be able to start an aggregation the render chain
+     * it's mandatory that the renderchain start by Resource in configuration "page"
+     * @throws Exception
+     */
     @Test
-    public void testExecuteOnMainResource() throws Exception {
+    public void testModuleAlone() throws Exception {
+        AggregateFilter aggregateFilter = (AggregateFilter) SpringContextSingleton.getInstance().getContext().getBean("org.jahia.services.render.filter.AggregateFilter");
+
+        // init mainResource and render context
+        Resource mainResource = new Resource(session.getNode("/sites/" + TESTSITE_NAME + "/home/testPage"), "html", null, Resource.CONFIGURATION_MODULE);
+        RenderContext context = mockRenderContext(mainResource, mainResource.getNode().getResolveSite());
+
+        // module map init
+        Map<String, Object> moduleMap = new HashMap<>();
+        context.getRequest().setAttribute("moduleMap", moduleMap);
+
+        // test prepare
+        String result = aggregateFilter.prepare(context, mainResource, null);
+        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
+
+        assertNull(result);
+        assertNull(stack);
+        assertTrue(moduleMap.size() == 0);
+
+        // test execute
+        result = aggregateFilter.execute("Module render", context, mainResource, null);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
+
+        assertNull(stack);
+        assertTrue(result != null && result.equals("Module render"));
+        assertTrue(moduleMap.size() == 0);
+
+        // test finalize
+        aggregateFilter.finalize(context, mainResource, null);
+        // stack should be flushed
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
+        assertTrue(stack == null);
+        assertTrue(moduleMap.size() == 0);
+    }
+
+    /**
+     * Sub fragment rendering should return esi:include tag
+     * @throws Exception
+     */
+    @Test
+    public void testSubFragmentOfMainResource() throws Exception {
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
         AggregateFilter aggregateFilter = (AggregateFilter) SpringContextSingleton.getInstance().getContext().getBean("org.jahia.services.render.filter.AggregateFilter");
 
         // init mainResource and render context
         Resource mainResource = new Resource(session.getNode("/sites/" + TESTSITE_NAME + "/home/testPage"), "html", null, Resource.CONFIGURATION_PAGE);
+        Resource fragmentResource = new Resource(session.getNode("/sites/" + TESTSITE_NAME + "/home/testPage/fragment"), "html", null, Resource.CONFIGURATION_MODULE);
         RenderContext context = mockRenderContext(mainResource, mainResource.getNode().getResolveSite());
 
         // module map init
@@ -151,34 +225,140 @@ public class AggregateFilterTest extends JahiaTestCase {
         // init key stack
         context.getRequest().setAttribute(AggregateFilter.FRAGMENT_KEYS_STACK, new Stack<String>());
 
-        // test execute on main resource
-        String result = aggregateFilter.execute("MR render", context, mainResource, null);
-        Map<String, Object> updatedModuleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
-        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        // calculate fragment key
+        String fragmentKey = generator.generate(fragmentResource, context, generator.getAttributesForKey(context, fragmentResource));
+        String fragmentFinalKey = generator.replacePlaceholdersInCacheKey(context, fragmentKey);
 
-        assertTrue(result != null && result.equals("MR render"));
-        assertTrue(updatedModuleMap.size() == 3);
-        assertTrue(!((Boolean) updatedModuleMap.get(AggregateFilter.AGGREGATING)));
-        assertEquals(key, updatedModuleMap.get(AggregateFilter.RENDERING_KEY));
-        assertEquals(finalKey, updatedModuleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
+        // prepare test, should return an esi tag include
+        String result = aggregateFilter.prepare(context, fragmentResource, null);
+        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
+        String expectedResult = ESI_TAG_START + fragmentKey + ESI_TAG_END;
+
+        assertTrue(result.equals(expectedResult));
+        assertTrue(moduleMap.size() == 3);
+        assertTrue(!((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
+        assertEquals(key, moduleMap.get(AggregateFilter.RENDERING_KEY));
+        assertEquals(finalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
+        assertTrue(stack != null && stack.size() == 0);
+
+        // execute test
+        result = aggregateFilter.execute(result, context, fragmentResource, null);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
+
+        assertTrue(result.equals(expectedResult));
+        assertTrue(moduleMap.size() == 3);
+        assertTrue(!((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
+        assertEquals(key, moduleMap.get(AggregateFilter.RENDERING_KEY));
+        assertEquals(finalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
+        assertTrue(stack != null && stack.size() == 0);
+
+        // finalize test
+        aggregateFilter.finalize(context, fragmentResource, null);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
+
+        assertTrue(moduleMap.size() == 3);
+        assertTrue(!((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
+        assertEquals(key, moduleMap.get(AggregateFilter.RENDERING_KEY));
+        assertEquals(finalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
         assertTrue(stack != null && stack.size() == 0);
     }
 
-    // TODO: test that a module render out of a page rendering do nothing
-    // TODO: test prepare on sub fragments and esi:tag
-    // TODO: test execute on sub fragments and esi:tag
-    // TODO: test finalize
-    // TODO: test simple aggregation
+    /**
+     * Simple aggregation of a fragment that contain a subfragment, the renderchain only contain the 3 filters from set up.
+     * keys stack should be manage for this fragment
+     * sub fragment will start new render chains in his own render
+     * @throws Exception
+     */
+    @Test
+    public void testSimpleAggregation() throws Exception {
+        ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
+        CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
+        AggregateFilter aggregateFilter = (AggregateFilter) SpringContextSingleton.getInstance().getContext().getBean("org.jahia.services.render.filter.AggregateFilter");
+
+        // init mainResource and render context
+        Resource mainResource = new Resource(session.getNode("/sites/" + TESTSITE_NAME + "/home/testPage"), "html", null, Resource.CONFIGURATION_PAGE);
+        Resource fragmentResource = new Resource(session.getNode("/sites/" + TESTSITE_NAME + "/home/testPage/fragment"), "html", null, Resource.CONFIGURATION_MODULE);
+        Resource subFragmentResource = new Resource(session.getNode("/sites/" + TESTSITE_NAME + "/home/testPage/fragment/fragment"), "html", null, Resource.CONFIGURATION_MODULE);
+        RenderContext context = mockRenderContext(mainResource, mainResource.getNode().getResolveSite());
+
+        String fragmentKey = generator.generate(fragmentResource, context, generator.getAttributesForKey(context, fragmentResource));
+        String fragmentFinalKey = generator.replacePlaceholdersInCacheKey(context, fragmentKey);
+        String subFragmentKey = generator.generate(subFragmentResource, context, generator.getAttributesForKey(context, subFragmentResource));
+
+        // set aggreting key in fragment resource
+        fragmentResource.getModuleParams().put(AggregateFilter.AGGREGATING_KEY, fragmentKey);
+
+        // init key stack
+        context.getRequest().setAttribute(AggregateFilter.FRAGMENT_KEYS_STACK, new Stack<String>());
+
+        // module map init
+        Map<String, Object> moduleMap = new HashMap<>();
+        context.getRequest().setAttribute("moduleMap", moduleMap);
+
+        // test prepare
+        String result = aggregateFilter.prepare(context, fragmentResource, null);
+        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
+
+        // result should be null to continue render chain
+        assertNull(result);
+        // moduleMap should be fill with keys
+        assertTrue(moduleMap.size() == 4);
+        assertTrue(((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
+        assertEquals(fragmentKey, moduleMap.get(AggregateFilter.RENDERING_KEY));
+        assertEquals(fragmentFinalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
+        // key stack should now contain fragment final key
+        assertTrue(stack != null && stack.size() == 1);
+        assertTrue(stack.get(0).equals(fragmentFinalKey));
+        // aggregating key should be removed
+        assertTrue(!fragmentResource.getModuleParams().containsKey(AggregateFilter.AGGREGATING_KEY));
+
+        // create fake content for fragment that contain already an esi:include tag
+        String fragmentRender = "Render for fragment: " + fragmentResource.getNode().getPath() + "\n";
+        String subfragmentRender = ESI_TAG_START + subFragmentKey + ESI_TAG_END;
+
+        // test execute
+        result = aggregateFilter.execute(fragmentRender + subfragmentRender, context, fragmentResource, null);
+        moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+
+        // moduleMap should be fill with keys
+        assertTrue(moduleMap.size() == 4);
+        // key stack still contain only fragment final key
+        assertTrue(stack != null && stack.size() == 1);
+        assertTrue(stack.get(0).equals(fragmentFinalKey));
+        // test the result str
+        assertTrue(result.substring(fragmentRender.length()).equals(getTestNodesPaths(subFragmentResource.getNode(), new StringBuilder())));
+
+        // test finalize
+        aggregateFilter.finalize(context, fragmentResource, null);
+        moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+
+        // moduleMap should be fill with keys from the fragment resource only
+        assertTrue(moduleMap.size() == 4);
+        assertTrue(((Boolean) moduleMap.get(AggregateFilter.AGGREGATING)));
+        assertEquals(fragmentKey, moduleMap.get(AggregateFilter.RENDERING_KEY));
+        assertEquals(fragmentFinalKey, moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
+        // key stack should be empty
+        assertTrue(stack != null && stack.size() == 0);
+    }
+
     // TODO: test key stack and fragments including them selfs
 
+    /**
+     * Test a full aggregation of all the fragments nodes
+     *
+     * @throws Exception
+     */
     @Test
     public void testFullAggregation() throws Exception{
         JCRNodeWrapper rootNode = session.getNode("/sites/" + TESTSITE_NAME + "/home/testPage");
         Resource resource = new Resource(rootNode, "html", null, Resource.CONFIGURATION_PAGE);
         RenderContext context = mockRenderContext(resource, resource.getNode().getResolveSite());
-
-        Map<String, Object> moduleMap = new HashMap<>();
-        context.getRequest().setAttribute("moduleMap", moduleMap);
 
         String result = RenderService.getInstance().render(resource, context);
         // key stack should be flushed
@@ -256,6 +436,24 @@ public class AggregateFilterTest extends JahiaTestCase {
         return context;
     }
 
+    public static class BaseAttributesFilter extends AbstractFilter {
+        @Override
+        public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+            chain.pushAttribute(renderContext.getRequest(), "moduleMap", new HashMap());
+            return null;
+        }
+
+        @Override
+        public String getDescription() {
+            return "Base attribute filter, use to instantiate new moduleMap";
+        }
+
+        @Override
+        public float getPriority() {
+            return 15;
+        }
+    }
+
     public static class OutFilter extends AbstractFilter {
 
         @Override
@@ -266,7 +464,10 @@ public class AggregateFilterTest extends JahiaTestCase {
                 JCRNodeWrapper subNode;
                 while (iteratorWrapper.hasNext()) {
                     subNode = (JCRNodeWrapper) iteratorWrapper.nextNode();
+
+                    // start new render chain for a sub fragment that need to be part of the parent html
                     Resource subResource = new Resource(subNode, "html", null, Resource.CONFIGURATION_MODULE);
+
                     String renderedSubModule = RenderService.getInstance().render(subResource, renderContext);
                     out += renderedSubModule;
                 }

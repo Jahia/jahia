@@ -188,6 +188,7 @@ public class Constants {
     public static final String JAHIANT_CATEGORY = "jnt:category";
     public static final String JAHIANT_TRANSLATION = "jnt:translation";
     public static final String JAHIANT_ACL = "jnt:acl";
+    public static final String JAHIANT_ACE = "jnt:ace";
     public static final String JAHIANT_REFERENCEINFIELD = "jnt:referenceInField";
 
     public static final String JAHIANT_JAHIACONTENT = "jnt:jahiacontent";

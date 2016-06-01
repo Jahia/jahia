@@ -94,8 +94,10 @@ import com.ibm.icu.text.DateFormat;
 public final class Jahia {
 
     public static final String CODE_NAME = "Gaia";
-    public static final String COPYRIGHT = "&copy; Copyright 2002-2016  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
-    public static final String COPYRIGHT_TXT = "2016 Jahia Solutions Group SA" ;
+    public static final String VENDOR_NAME = "Jahia Solutions Group SA";
+    public static final String COPYRIGHT = "&copy; Copyright 2002-2016  <a href=\"http://www.jahia.com\" target=\"newJahia\">"
+            + VENDOR_NAME + "</a> -";
+    public static final String COPYRIGHT_TXT = "2016 " + VENDOR_NAME;
 
     private static final Version JAHIA_VERSION;
     static {

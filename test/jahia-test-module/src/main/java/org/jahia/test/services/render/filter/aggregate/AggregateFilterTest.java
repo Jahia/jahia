@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -48,6 +49,7 @@ public class AggregateFilterTest extends JahiaTestCase {
     private static List<RenderFilter> templatePackageRegistryFilters;
     private JCRSessionWrapper session;
 
+    private OutFilter outFilter = new OutFilter();
     private int testNodesLvls = 3;
     private int testNodesChilds = 3;
 
@@ -76,7 +78,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         List<RenderFilter> filters = new LinkedList<>();
         filters.add(new BaseAttributesFilter());
         filters.add((RenderFilter) SpringContextSingleton.getInstance().getContext().getBean("org.jahia.services.render.filter.AggregateFilter"));
-        filters.add(new OutFilter());
+        filters.add(outFilter);
 
         // overide RenderService filters
         Field field = RenderService.class.getDeclaredField("filters");
@@ -347,7 +349,26 @@ public class AggregateFilterTest extends JahiaTestCase {
         assertTrue(stack != null && stack.size() == 0);
     }
 
-    // TODO: test key stack and fragments including them selfs
+    @Test
+    public void testInfiteLoopRendering() throws Exception {
+        try {
+            outFilter.infiniteLoopRender = true;
+
+            JCRNodeWrapper rootNode = session.getNode("/sites/" + TESTSITE_NAME + "/home/testPage");
+            Resource resource = new Resource(rootNode, "html", null, Resource.CONFIGURATION_PAGE);
+            RenderContext context = mockRenderContext(resource, resource.getNode().getResolveSite());
+
+            String result = RenderService.getInstance().render(resource, context);
+            // key stack should be flushed
+            assertTrue(context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK) == null);
+            // test that the render is good with subfragments
+            assertTrue(!result.equals(getTestNodesPaths(rootNode, new StringBuilder())));
+            // assert that result contain error message about recursion detected
+            assertTrue(result.contains("Loop detected while rendering resource /sites/test/home/testPage/fragment/fragment.default.html. Please check your content structure and references."));
+        } finally {
+            outFilter.infiniteLoopRender = false;
+        }
+    }
 
     /**
      * Test a full aggregation of all the fragments nodes
@@ -390,12 +411,32 @@ public class AggregateFilterTest extends JahiaTestCase {
         return result.toString();
     }
 
+    private HttpSession mockHttpSession() {
+        return (HttpSession) Proxy.newProxyInstance(
+                HttpSession.class.getClassLoader(),
+                new Class[] { HttpSession.class },
+                new InvocationHandler() {
+                    Map<String, Object> attributes = new HashMap<String, Object>();
+
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        if (method.getName().equals("setAttribute")) {
+                            attributes.put((String) args[0], args[1]);
+                        } if (method.getName().equals("getAttribute")) {
+                            return attributes.get(args[0]);
+                        }
+                        return null;
+                    }
+                });
+    }
+
     private HttpServletRequest mockNewServletRequest() {
         return (HttpServletRequest) Proxy.newProxyInstance(
                 HttpServletRequest.class.getClassLoader(),
                 new Class[] { HttpServletRequest.class },
                 new InvocationHandler() {
                     Map<String, Object> attributes = new HashMap<String, Object>();
+                    HttpSession session = mockHttpSession();
 
                     @Override
                     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -407,6 +448,8 @@ public class AggregateFilterTest extends JahiaTestCase {
                             return new HashMap<String, String[]>();
                         } if (method.getName().equals("removeAttribute")) {
                             attributes.remove(args[0]);
+                        } if (method.getName().equals("getSession")) {
+                            return session;
                         }
                         return null;
                     }
@@ -455,6 +498,7 @@ public class AggregateFilterTest extends JahiaTestCase {
     }
 
     public static class OutFilter extends AbstractFilter {
+        public boolean infiniteLoopRender = false;
 
         @Override
         public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
@@ -462,6 +506,12 @@ public class AggregateFilterTest extends JahiaTestCase {
             String out = "\nRender for fragment: " + resource.getNode().getPath();
             if(iteratorWrapper.getSize() > 0) {
                 JCRNodeWrapper subNode;
+
+                if (infiniteLoopRender && resource.getNode().getPath().equals("/sites/" + TESTSITE_NAME + "/home/testPage/fragment/fragment")) {
+                    Resource sameResource = new Resource(resource.getNode(), "html", null, Resource.CONFIGURATION_MODULE);
+                    out += RenderService.getInstance().render(sameResource, renderContext);
+                }
+
                 while (iteratorWrapper.hasNext()) {
                     subNode = (JCRNodeWrapper) iteratorWrapper.nextNode();
 

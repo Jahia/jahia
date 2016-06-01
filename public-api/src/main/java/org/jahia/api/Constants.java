@@ -187,6 +187,7 @@ public class Constants {
     public static final String JAHIANT_USER = "jnt:user";
     public static final String JAHIANT_CATEGORY = "jnt:category";
     public static final String JAHIANT_TRANSLATION = "jnt:translation";
+    public static final String JAHIANT_ACL = "jnt:acl";
     public static final String JAHIANT_REFERENCEINFIELD = "jnt:referenceInField";
 
     public static final String JAHIANT_JAHIACONTENT = "jnt:jahiacontent";
@@ -241,6 +242,7 @@ public class Constants {
     public static final String AREA_NAME = "j:areaName";
     public static final String SITETYPE = "j:moduleType";
 
+    public static final String ACL = "j:acl";
     public static final String APPLY_ACL = "j:applyAcl";
     public static final String THUMBNAIL = "j:thumbnail";
     public static final String FULLPATH = "j:fullpath";

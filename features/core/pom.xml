@@ -128,20 +128,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>org.jahia.bundles</groupId>
-            <artifactId>org.jahia.bundles.hazelcast.discovery</artifactId>
-            <version>${project.version}</version>
-        </dependency>-->
-        
-        <!--
-        <dependency>
-            <groupId>org.jahia.bundles</groupId>
-            <artifactId>org.jahia.bundles.slf4j.loglistener</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        -->
-        
         <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.configadmin.persistence</artifactId>

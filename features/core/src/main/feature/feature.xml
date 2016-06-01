@@ -9,6 +9,7 @@
         <feature>dx-gemini-blueprint</feature>
         <feature>dx-jax-rs</feature>
         <feature>shell</feature>
+        <feature>scr</feature>
     </feature>
 
 </features>

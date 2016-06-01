@@ -175,6 +175,12 @@ public class AreaTag extends ModuleTag implements ParamParent {
             if (enableArea) {
                 try {
                     createdNode = session.getNode(StringUtils.substringBeforeLast(areaPath, "/")).addNode(StringUtils.substringAfterLast(areaPath, "/"), areaType);
+                    session.save();
+                    List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
+                    if (contributeTypes != null) {
+                        nodeTypes = StringUtils.join(contributeTypes, " ");
+                    }
+                    additionalParameters.append(" areaAutoEnabled=\"true\"");
                 } catch (RepositoryException e) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("unable to auto create area due to the following error", e);
@@ -182,12 +188,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
                         logger.warn(String.format("Unable to automaticaly enable an area, cannot create node %s of type %s", areaPath, areaType));
                     }
                 }
-                session.save();
-                List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
-                if (contributeTypes != null) {
-                    nodeTypes = StringUtils.join(contributeTypes, " ");
-                }
-                additionalParameters.append(" areaAutoEnabled=\"true\"");
             } else {
                 additionalParameters.append(" missingList=\"true\"");
             }

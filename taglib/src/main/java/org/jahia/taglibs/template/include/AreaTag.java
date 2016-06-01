@@ -178,6 +178,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 } catch (RepositoryException e) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("unable to auto create area due to the following error", e);
+                    } else {
+                        logger.warn(String.format("Unable to automaticaly enable an area, cannot create node %s of type %s", areaPath, areaType));
                     }
                 }
                 session.save();

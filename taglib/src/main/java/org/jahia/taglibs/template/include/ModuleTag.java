@@ -225,7 +225,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             }
                             while (st.hasMoreTokens()) {
                                 String tok = st.nextToken();
-                                if (displayedNode.isNodeType(tok) || tok.equals(resourceNodeType)) {
+                                //ISO-43 if restrictions is on contentReference then ensure that the node is of type contentReference too
+                                if (displayedNode.isNodeType(tok) || tok.equals(resourceNodeType) || (tok.equals("jnt:contentReference") && node.isNodeType("jnt:contentReference") && node.hasProperty(Constants.NODE))) {
                                     found = true;
                                     break;
                                 }

@@ -47,9 +47,11 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.cache.CacheFilter;
 import org.slf4j.profiler.Profiler;
 
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 /**
  * MetricsLoggingFilter
@@ -68,11 +70,10 @@ public class MetricsLoggingFilter extends AbstractFilter {
         if (!loggingService.isProfilingEnabled()) {
             return null;
         }
-        JCRNodeWrapper node = resource.getNode();
 
-        String profilerName = "render module " + node.getPath();
+        String profilerName = "render module " + resource.getNodePath();
         Profiler profiler = loggingService.createNestedProfiler("MAIN", profilerName);
-        profiler.start("render filters for " + node.getPath());
+        profiler.start("render filters for " + resource.getNodePath());
         context.getRequest().setAttribute("profiler", profiler);
         return null;
     }
@@ -84,9 +85,10 @@ public class MetricsLoggingFilter extends AbstractFilter {
         if (!loggingService.isProfilingEnabled()) {
             return previousOut;
         }
-        JCRNodeWrapper node = resource.getNode();
 
-        String profilerName = "render module " + node.getPath();
+        @SuppressWarnings("unchecked")
+        Map<String, Object> moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
+        String profilerName = "render module " + resource.getNodePath();
 
         String sessionID = "";
         HttpSession session = context.getRequest().getSession(false);
@@ -94,7 +96,15 @@ public class MetricsLoggingFilter extends AbstractFilter {
             sessionID = session.getId();
         }
         if (loggingService.isEnabled()) {
-            loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, node.getIdentifier(), node.getPath(), node.getNodeTypes().get(0), "moduleViewed", resource.getResolvedTemplate());
+            boolean fragmentServedFromCache = moduleMap.get(CacheFilter.FRAGMENT_SERVED_FROM_CACHE) != null &&  (Boolean) moduleMap.get(CacheFilter.FRAGMENT_SERVED_FROM_CACHE);
+            if (fragmentServedFromCache) {
+                // fragment served from the cache avoid to read the jcr node for performances
+                loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, "", resource.getNodePath(), "", "moduleViewed", resource.getResolvedTemplate(), "the cache filter");
+            } else {
+                // fragment not served from the cache, we can read the JCR node
+                JCRNodeWrapper node = resource.getNode();
+                loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, node.getIdentifier(), node.getPath(), node.getNodeTypes().get(0), "moduleViewed", resource.getResolvedTemplate(), "the full render chain");
+            }
         }
 
         loggingService.stopNestedProfiler("MAIN", profilerName);

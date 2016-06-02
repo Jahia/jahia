@@ -13,7 +13,7 @@
         <property name="logTemplatesMap">
             <map>
                 <entry key="fileAccessed" value="file accessed with status {}"/>
-                <entry key="moduleViewed" value="module viewed with template {}"/>
+                <entry key="moduleViewed" value="module viewed with template {}, served by {} "/>
                 <entry key="pageViewed" value="page viewed with {} from {} in {} ms"/>
                 <entry key="nodeUpdated" value="node updated with {}"/>
                 <entry key="nodeCreated" value="node created with {}"/>

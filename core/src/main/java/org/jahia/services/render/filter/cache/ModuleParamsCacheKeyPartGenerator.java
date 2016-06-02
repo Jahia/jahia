@@ -52,8 +52,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -82,21 +80,23 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
     }
 
     private String encodeString(String toBeEncoded) {
-        return toBeEncoded != null ? StringUtils.replace(toBeEncoded, "@@", "##").replace('"', '\'') : toBeEncoded;
+        return toBeEncoded != null ? toBeEncoded.replace("#", "#1").replace("@@", "#2") : null;
+    }
+
+    private String decodeString(String toBeDecoded) {
+        return toBeDecoded != null && toBeDecoded.contains("#") ? toBeDecoded.replace("#2", "@@").replace("#1", "#") : toBeDecoded;
     }
 
     @Override
     public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
         if (StringUtils.isNotEmpty(value)) {
             try {
-                JSONObject map = new JSONObject(URLDecoder.decode(value, "UTF-8"));
+                JSONObject map = new JSONObject(decodeString(value));
                 Iterator<?> keys = map.keys();
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
                     resource.getModuleParams().put(key, (Serializable) map.get(key));
                 }
-            } catch (UnsupportedEncodingException e) {
-                logger.error(e.getMessage(), e);
             } catch (JSONException e) {
                 logger.error(e.getMessage(), e);
             }

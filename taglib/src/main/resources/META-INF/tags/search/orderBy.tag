@@ -8,16 +8,7 @@
 <%@ attribute name="order" required="false" type="java.lang.String" description="The order direction. [descending]" %>
 <%@ attribute name="normalize" required="false" type="java.lang.Boolean" description="Defines whether umlaut, accent,... characters should be normalized before sorting. [false]" %>
 <%@ attribute name="caseConversion" required="false" type="java.lang.String" description="Defines whether all characters should be set lower/upper case before sorting. []" %>
-
-<%@ attribute name="orderBy" required="false" type="java.lang.String"
-              description="Comma separated list of fields to search in. [content]" %>
-<%@ attribute name="orderByAllowSelection" required="false" type="java.lang.Boolean"
-              description="Do we need to display search order by options to allow user selection? [false]" %>
-<%@ attribute name="orderBySelectionOptions" required="false" type="java.lang.String"
-              description="Comma separated list of fields to order by that are available for user selection.
-              This option has effect only in case the orderByAllowSelection attribute is set to true. [score,modificationDate]" %>
-<%@ attribute name="applyFilterOnWildcardTerm" required="false" type="java.lang.Boolean"
-              description="As Lucene omits running analysers on terms with wildcards, control whether Jahia should run the ISOLatin1AccentFilter on wildcard terms instead. [true]" %>              
+            
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -26,7 +17,6 @@
 <%@ taglib prefix="search" uri="http://www.jahia.org/tags/search"%>
 
 <c:set var="display" value="${functions:default(display, true)}"/>
-<c:set var="orderByAllowSelection" value="${functions:default(orderByAllowSelection, false)}"/>
 <c:set var="order" value="${functions:default(order, 'descending')}"/>
 <c:set var="normalize" value="${functions:default(normalize, false)}"/>
 

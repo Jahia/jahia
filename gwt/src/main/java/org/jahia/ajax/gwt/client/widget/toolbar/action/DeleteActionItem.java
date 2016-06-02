@@ -141,9 +141,9 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
             }
         }
         String selectedPath = lh.getSingleSelection().getPath();
-        Module selectedModule = ModuleHelper.getModulesByPath().get(selectedPath).get(0);
+       List<Module>  selectedModule = ModuleHelper.getModulesByPath().get(selectedPath);
         boolean autoCreated = false;
-        if (selectedModule instanceof AreaModule) {
+        if (selectedModule != null && selectedModule instanceof AreaModule) {
            autoCreated = JahiaGWTParameters.isAreaAutoActivated() && !selectedPath.startsWith("/modules/");
        }
         boolean enabled = !autoCreated && selection != null && selection.size() > 0

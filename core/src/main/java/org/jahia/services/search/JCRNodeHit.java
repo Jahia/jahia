@@ -43,8 +43,6 @@
  */
 package org.jahia.services.search;
 
-<<<<<<< .working
-=======
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -58,8 +56,10 @@ import java.util.regex.Pattern;
 import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.query.Row;
 
->>>>>>> .merge-right.r54474
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
@@ -77,13 +77,6 @@ import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.query.Row;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * Search result item, represented by the JCR node. Used as a view object in JSP

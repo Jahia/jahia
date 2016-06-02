@@ -301,6 +301,10 @@
         <path>/META-INF/tags/search/lastModifiedBy.tag</path>
     </tag-file>
     <tag-file>
+        <name>orderBy</name>
+        <path>/META-INF/tags/search/orderBy.tag</path>
+    </tag-file>    
+    <tag-file>
         <name>pagePath</name>
         <path>/META-INF/tags/search/pagePath.tag</path>
     </tag-file>

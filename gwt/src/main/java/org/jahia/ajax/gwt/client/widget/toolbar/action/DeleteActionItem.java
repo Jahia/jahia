@@ -140,12 +140,24 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                 updateTitle(getGwtToolbarItem().getTitle() + " " + selection.size() + " " + Messages.get("label.items"));
             }
         }
-        String selectedPath = lh.getSingleSelection().getPath();
-       List<Module>  selectedModule = ModuleHelper.getModulesByPath().get(selectedPath);
         boolean autoCreated = false;
-        if (selectedModule != null && selectedModule instanceof AreaModule) {
-           autoCreated = JahiaGWTParameters.isAreaAutoActivated() && !selectedPath.startsWith("/modules/");
-       }
+        if (ModuleHelper.getModulesByPath() != null && JahiaGWTParameters.isAreaAutoActivated()) {
+            for (GWTJahiaNode selectedNode : lh.getMultipleSelection()) {
+                String selectedNodePath = selectedNode.getPath();
+                List<Module> selectedModule = ModuleHelper.getModulesByPath().get(selectedNodePath);
+                if (!selectedNodePath.startsWith("/modules/") && selectedModule != null && selectedModule.size() > 0) {
+                    for (Module module : selectedModule) {
+                        if (module instanceof AreaModule) {
+                            autoCreated = true;
+                            break;
+                        }
+                    }
+                    if (autoCreated) {
+                        break;
+                    }
+                }
+            }
+        }
         boolean enabled = !autoCreated && selection != null && selection.size() > 0
                 && !lh.isRootNode()
                 && hasPermission(lh.getSelectionPermissions()) && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())

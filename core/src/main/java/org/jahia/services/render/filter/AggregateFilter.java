@@ -178,8 +178,7 @@ public class AggregateFilter extends AbstractFilter {
             moduleMap.put(RENDERING_TIMER, System.currentTimeMillis());
             moduleMap.put(AGGREGATING, aggregating);
 
-            logger.debug("Rendering node " + resource.getPath());
-            logger.debug("Aggregate filter for {}, key with placeholders: {}", resource.getPath(), key);
+            logger.debug("Rendering fragment {} with key {}", resource.getPath(), key);
 
             // Continue the chain to the next filter
             return null;
@@ -206,10 +205,9 @@ public class AggregateFilter extends AbstractFilter {
 
             if (logger.isDebugEnabled()) {
                 long start = (Long) moduleMap.get(RENDERING_TIMER);
-                logger.debug("AggregateFilter for {}  took {} ms.", resource.getPath(), System.currentTimeMillis() - start);
+                logger.debug("Rendered fragment for {} took {} ms.", resource.getPath(), System.currentTimeMillis() - start);
             }
 
-            logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), moduleMap.get(RENDERING_KEY));
             return aggregateContent(previousOut, renderContext);
         } else {
             // we are rendering a sub fragment, break the chain to return the placeholder

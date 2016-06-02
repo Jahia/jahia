@@ -194,7 +194,47 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 } catch (RepositoryException e) {
                     logger.error("Error when getting list constraints", e);
                 }
+<<<<<<< .working
 
+=======
+                if (checkConstraints && !hasParentConstraint && (path == null || path.equals("*"))) {
+                    String constrainedNodeTypes = null;
+                    if (currentLevel != null) {
+                        constrainedNodeTypes = (String) pageContext.getAttribute(
+                                "areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
+                    }
+                    try {
+                        if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim()) && !node.isNodeType("jmix:skipConstraintCheck") && !node.getParent().isNodeType("jmix:skipConstraintCheck")) {
+                            StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
+                            boolean found = false;
+                            Node displayedNode = node;
+                            if (node.isNodeType("jnt:contentReference") && node.hasProperty(Constants.NODE)) {
+                                JCRPropertyWrapper nodeProperty = node.getProperty(Constants.NODE);
+                                try {
+                                    displayedNode = nodeProperty.getNode();
+                                } catch (ItemNotFoundException e) {
+                                    currentResource.getDependencies().add(nodeProperty.getString());
+                                    return EVAL_PAGE;
+                                }
+                            }
+                            while (st.hasMoreTokens()) {
+                                String tok = st.nextToken();
+                                //ISO-43 if restrictions is on contentReference then ensure that the node is of type contentReference too
+                                if (displayedNode.isNodeType(tok) || tok.equals(resourceNodeType) || (tok.equals("jnt:contentReference") && node.isNodeType("jnt:contentReference") && node.hasProperty(Constants.NODE))) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            // Remove test until we find a better solution to avoid displaying unecessary nodes
+                            if (!found) {
+                                return EVAL_PAGE;
+                            }
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+>>>>>>> .merge-right.r54477
                 if (templateType == null) {
                     templateType = currentResource.getTemplateType();
                 }

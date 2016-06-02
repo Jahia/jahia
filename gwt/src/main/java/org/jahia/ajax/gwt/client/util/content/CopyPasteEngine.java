@@ -221,6 +221,9 @@ public class CopyPasteEngine {
                                 || (source.isReference() && source.getReferencedNode() != null && source.getReferencedNode().isNodeType(type))) {
                             nodeAllowed = true;
                             break;
+                        } else if(type.equals("jnt:contentReference") && source.isNodeType("jmix:droppableContent")) {
+                            nodeAllowed = true;
+                            break;
                         }
                     }
                     allowed &= nodeAllowed;

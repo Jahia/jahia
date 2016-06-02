@@ -61,6 +61,9 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.*;
 import org.jahia.services.search.SearchCriteria.DateValue;
 import org.jahia.services.search.SearchCriteria.NodeProperty;
+import org.jahia.services.search.SearchCriteria.Ordering;
+import org.jahia.services.search.SearchCriteria.Ordering.CaseConversion;
+import org.jahia.services.search.SearchCriteria.Ordering.Order;
 import org.jahia.services.search.SearchCriteria.Term;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
@@ -369,9 +372,9 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             query.append(")");
         }
 
-        query = appendConstraints(params, query, false, session);
-
-        query.append(" order by score() desc");
+        query = appendConstraints(params, query, false);
+        query = appendOrdering(params, query, false);
+        
         return query.toString();
     }
 
@@ -457,8 +460,9 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                     getNodeType(params)).append(")");
         }
 
-        query = appendConstraints(params, query, true, session);
-        query.append(" order by jcr:score() descending");
+        query = appendConstraints(params, query, true);
+        query = appendOrdering(params, query, true);
+        
         xpathQuery = query.toString();
 
         if (logger.isDebugEnabled()) {
@@ -506,10 +510,10 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     }
 
     private StringBuilder appendConstraints(SearchCriteria params,
-                                            StringBuilder query, boolean xpath, JCRSessionWrapper session) {
+                                            StringBuilder query, boolean xpath) {
         StringBuilder constraints = new StringBuilder(64);
 
-        addTermConstraints(params, constraints, session, xpath);
+        addTermConstraints(params, constraints, xpath);
 
         addDateAndAuthorConstraints(params, constraints, xpath);
 
@@ -535,6 +539,45 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             }
         }
 
+        return query;
+    }
+    
+    private StringBuilder appendOrdering(SearchCriteria params, StringBuilder query, boolean xpath) {
+        StringBuilder orderByClause = new StringBuilder();
+        if (params.getOrderings().isEmpty()) {
+            orderByClause.append(xpath ? " order by jcr:score() descending" : " order by score() desc");
+        } else {
+            for (Ordering ordering : params.getOrderings()) {
+                StringBuilder orderingBuilder = new StringBuilder();
+                switch (ordering.getOperand()) {
+                    case SCORE:
+                        orderingBuilder.append(xpath ? "jcr:score()" : "SCORE()");
+                        break;
+                    case PROPERTY:
+                        orderingBuilder.append(xpath ? "@" : "[").append(ordering.getPropertyName()).append(xpath ? "" : "]");
+                        break;
+                }
+                if (ordering.getCaseConversion() != null) {
+                    orderingBuilder.insert(0, ordering.getCaseConversion() == CaseConversion.LOWER ? xpath ? "fn:lower-case(" : "LOWER("
+                            : xpath ? "fn:upper-case(" : "UPPER(");
+                    orderingBuilder.append(")");
+                }
+                // there is no normalize function for SQL-2 yet, so for now we use it only for xpath and ignore it for SQL-2
+                if (ordering.isNormalize() && xpath) {
+                    orderingBuilder.insert(0, "rep:normalize(");
+                    orderingBuilder.append(")");
+                }
+
+                orderingBuilder
+                        .append(ordering.getOrder() == Order.ASCENDING ? xpath ? " ascending" : " asc" : xpath ? " descending" : " desc");
+                if (orderByClause.length() > 0) {
+                    orderByClause.append(", ");
+                }
+                orderByClause.append(orderingBuilder);
+            }
+            orderByClause.insert(0, " order by ");
+        }
+        query.append(orderByClause);
         return query;
     }
 
@@ -727,7 +770,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     }
 
     private void addTermConstraints(SearchCriteria params,
-                                    StringBuilder constraints, JCRSessionWrapper session, boolean xpath) {
+                                    StringBuilder constraints, boolean xpath) {
 
         for (Term textSearch : params.getTerms()) {
 

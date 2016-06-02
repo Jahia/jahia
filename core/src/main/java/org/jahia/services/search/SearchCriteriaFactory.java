@@ -75,6 +75,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.SearchCriteria.DateValue;
 import org.jahia.services.search.SearchCriteria.NodeProperty;
 import org.jahia.services.search.SearchCriteria.NodePropertyDescriptor;
+import org.jahia.services.search.SearchCriteria.Ordering;
 import org.jahia.services.search.SearchCriteria.Term;
 
 /**
@@ -105,6 +106,9 @@ public class SearchCriteriaFactory {
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER,
                 NodeProperty.Type.class);
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Term.MatchType.class);
+        CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Ordering.Operand.class);        
+        CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Ordering.CaseConversion.class);        
+        CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Ordering.Order.class);        
         
         ArrayConverter converter = new ArrayConverter(String[].class, new StringConverter());
         converter.setAllowedChars(new char[] {'.', '-', '_'});

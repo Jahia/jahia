@@ -43,11 +43,29 @@
  */
 package org.jahia.services.search;
 
+<<<<<<< .working
+=======
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.jcr.Node;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
+
+>>>>>>> .merge-right.r54474
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -86,6 +104,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     private List<Hit> usages;
 
     private JCRNodeWrapper displayableNode = null;
+    private Node foundNode = null;
     private boolean isDisplayableNodeChecked = false;
 
     private Set<String> usageFilterSites;
@@ -105,21 +124,48 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     public String getContentType() {
         return "text/html";
     }
+    
+    private Node getFoundNode() throws RepositoryException {
+        if (foundNode == null) {
+            foundNode = resource;
+            String path = getRows().get(0).getPath();
+            if (!resource.getPath().equals(path)) {
+                foundNode = resource.getSession().getNode(path);
+            }
+        }
+        return foundNode;
+    }
 
     public Date getCreated() {
-        return resource.getCreationDateAsDate();
+        try {
+            return getFoundNode().getProperty(Constants.JCR_CREATED).getDate().getTime();
+        } catch (RepositoryException e) {
+            throw new JahiaRuntimeException(e);
+        }
     }
 
     public String getCreatedBy() {
-        return resource.getCreationUser();
+        try {
+            return getFoundNode().getProperty(Constants.JCR_CREATEDBY).getString();
+        } catch (RepositoryException e) {
+            throw new JahiaRuntimeException(e);            
+        }
     }
 
     public Date getLastModified() {
-        return resource.getLastModifiedAsDate();
+        try {
+            return getFoundNode().getProperty(Constants.JCR_LASTMODIFIED).getDate().getTime();
+        } catch (RepositoryException e) {
+            throw new JahiaRuntimeException(e);
+        }
     }
 
     public String getLastModifiedBy() {
-        return resource.getModificationUser();
+        try {
+            return getFoundNode().getProperty(Constants.JCR_LASTMODIFIEDBY).getString();
+        } catch (RepositoryException e) {
+            throw new JahiaRuntimeException(e);            
+        }
     }
 
     public String getLink() {
@@ -178,14 +224,11 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
 
     public String getType() {
-        String type = null;
         try {
-            type = resource.getPrimaryNodeTypeName();
+            return resource.getPrimaryNodeTypeName();
         } catch (RepositoryException e) {
-            logger.warn("Unable to retrieve primary node type for the resource " + getPath(), e);
+            throw new JahiaRuntimeException("Unable to retrieve primary node type for the resource " + getPath(), e);            
         }
-
-        return type;
     }
 
     public String getIconType() {

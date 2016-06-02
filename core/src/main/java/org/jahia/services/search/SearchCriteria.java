@@ -637,7 +637,7 @@ public class SearchCriteria implements Serializable {
                         TO_STRING_STYLE);
             }
 
-        }
+        }   
 
         private static final long serialVersionUID = -3881090179063748926L;
 
@@ -692,6 +692,70 @@ public class SearchCriteria implements Serializable {
         }
     }
 
+    /**
+     * Represents an ordering definition
+     * 
+     * @author Benjamin Papez
+     */
+    public static class Ordering implements Serializable {
+
+        private static final long serialVersionUID = -8242956239071973316L;
+        public enum Order {
+            ASCENDING, DESCENDING;
+        }
+        
+        public enum CaseConversion {
+            LOWER, UPPER;
+        }
+        
+        public enum Operand {
+            SCORE, PROPERTY;
+        }
+        
+        private Order order = Order.DESCENDING;
+        private CaseConversion caseConversion;
+        private Operand operand = Operand.SCORE;        
+        private boolean normalize;
+        private String propertyName;
+        
+        public Order getOrder() {
+            return order;
+        }
+        public void setOrder(Order order) {
+            this.order = order;
+        }
+        public CaseConversion getCaseConversion() {
+            return caseConversion;
+        }
+        public void setCaseConversion(CaseConversion caseConversion) {
+            this.caseConversion = caseConversion;
+        }
+        public boolean isNormalize() {
+            return normalize;
+        }
+        public void setNormalize(boolean normalize) {
+            this.normalize = normalize;
+        }
+        public String getPropertyName() {
+            return propertyName;
+        }
+        public void setPropertyName(String propertyName) {
+            this.propertyName = propertyName;
+        }
+        public Operand getOperand() {
+            return operand;
+        }
+        public void setOperand(Operand operand) {
+            this.operand = operand;
+        }
+        
+        @Override
+        public String toString() {
+            return ReflectionToStringBuilder.reflectionToString(this,
+                    TO_STRING_STYLE);
+        }
+    }            
+    
     private static final long serialVersionUID = 4633533116047727827L;
 
     private static final ToStringStyle TO_STRING_STYLE = ToStringStyle.MULTI_LINE_STYLE;
@@ -758,6 +822,9 @@ public class SearchCriteria implements Serializable {
     
     private List<Term> terms = LazyList.decorate(new LinkedList<Term>(),
             FactoryUtils.instantiateFactory(Term.class));
+    
+    private List<Ordering> orderings = LazyList.decorate(new LinkedList<Ordering>(),
+            FactoryUtils.instantiateFactory(Ordering.class));    
     
     /**
      * Initializes an instance of this class.
@@ -867,6 +934,10 @@ public class SearchCriteria implements Serializable {
 
     public List<Term> getTerms() {
         return terms;
+    }
+    
+    public List<Ordering> getOrderings() {
+        return orderings;
     }
 
     /**
@@ -1016,6 +1087,10 @@ public class SearchCriteria implements Serializable {
     public void setTerms(List<Term> textSearches) {
         this.terms = textSearches;
     }
+    
+    public void setOrderings(List<Ordering> orderings) {
+        this.orderings = orderings;
+    }
 
     @Override
     public String toString() {
@@ -1024,6 +1099,7 @@ public class SearchCriteria implements Serializable {
                 .append("lastModified", this.getLastModified()).append("pagePath", this.getPagePath())
                 .append("fileType", this.getFileType()).append("nodeType", this.getNodeType()).append("filePath", this.getFilePath())
                 .append("properties", listToString(this.getPropertiesAll())).append("terms", listToString(this.getTerms()))
+                .append("orderings", listToString(this.getOrderings()))
                 .append("itemsPerPage", this.getItemsPerPage()).append("sites", this.getSites())
                 .append("sitesForReferences", this.getSitesForReferences()).append("languages", this.getLanguages())
                 .append("limit", this.getLimit()).append("offset", this.getOffset()).append("originSiteKey", this.getOriginSiteKey())

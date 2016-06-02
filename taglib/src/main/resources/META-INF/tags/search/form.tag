@@ -3,6 +3,7 @@
 <jsp:useBean id="searchTermIndexes" class="java.util.HashMap" scope="request"/>
 <jsp:useBean id="searchTermMatchIndexes" class="java.util.HashMap" scope="request"/>
 <jsp:useBean id="searchTermFieldIndexes" class="java.util.HashMap" scope="request"/>
+<jsp:useBean id="searchOrderingIndexes" class="java.util.HashMap" scope="request"/>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
@@ -12,6 +13,7 @@
 <c:set target="${searchTermIndexes}" property="${formId}" value="0"/>
 <c:set target="${searchTermMatchIndexes}" property="${formId}" value="0"/>
 <c:set target="${searchTermFieldIndexes}" property="${formId}" value="0"/>
+<c:set target="${searchOrderingIndexes}" property="${formId}" value="0"/>
 <c:if test="${empty attributes.action}">
 	<c:url var="actionUrl" value="${url.base}${renderContext.mainResource.node.path}.search.html"/>
 </c:if>

@@ -70,6 +70,7 @@ import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
+import org.jahia.services.modulemanager.transform.ModuleDependencyTransformer;
 import org.jahia.services.notification.ToolbarWarningsService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
@@ -124,7 +125,7 @@ public class ModuleBuildHelper implements InitializingBean {
         if (bundle != null) {
             FileInputStream is = new FileInputStream(moduleInfo.getFile());
             try {
-                bundle.update(is);
+                bundle.update(ModuleDependencyTransformer.getTransformedInputStream(is));
 
                 // start the bundle to make sure its template is available to be displayed
                 bundle.start();
@@ -140,7 +141,8 @@ public class ModuleBuildHelper implements InitializingBean {
         // No existing module found, deploy new one
         FileInputStream is = new FileInputStream(moduleInfo.getFile());
         try {
-            bundle = FrameworkService.getBundleContext().installBundle(moduleInfo.getFile().toURI().toString(), is);
+            bundle = FrameworkService.getBundleContext().installBundle(org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES + ":" + moduleInfo.getFile().toURI
+                    ().toString(), is);
             bundle.adapt(BundleStartLevel.class).setStartLevel(moduleStartLevel);
             bundle.start();
         } finally {
@@ -609,7 +611,8 @@ public class ModuleBuildHelper implements InitializingBean {
         FileInputStream is = new FileInputStream(compiledModuleInfo.getFile());
         Bundle bundle;
         try {
-            bundle = FrameworkService.getBundleContext().installBundle(compiledModuleInfo.getFile().toURI().toString(), is);
+            bundle = FrameworkService.getBundleContext().installBundle(org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES + ":"  +compiledModuleInfo.getFile
+                    ().toURI().toString(), ModuleDependencyTransformer.getTransformedInputStream(is));
             bundle.adapt(BundleStartLevel.class).setStartLevel(moduleStartLevel);
             bundle.start();
         } finally {

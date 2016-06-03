@@ -64,9 +64,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>
-                            org.jahia.bundles.jaas.Activator
-                        </Bundle-Activator>
+                        <_dsannotations>org.jahia.bundles.jaas.JahiaJaasRealmService</_dsannotations>
                     </instructions>
                 </configuration>
             </plugin>

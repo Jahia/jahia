@@ -45,7 +45,12 @@ package org.jahia.bundles.jaas;
 
 import org.apache.karaf.jaas.boot.ProxyLoginModule;
 import org.apache.karaf.jaas.config.JaasRealm;
+import org.jahia.bin.Jahia;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 
 import javax.security.auth.login.AppConfigurationEntry;
 import java.util.HashMap;
@@ -54,8 +59,10 @@ import java.util.Map;
 /**
  * JAAS Realm definition for DX.
  */
+@Component(name = "org.jahia.bundles.jaas", service = JaasRealm.class, property = {
+        Constants.SERVICE_DESCRIPTION + "=DX JAAS Realm Service",
+        Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME }, immediate = true)
 public class JahiaJaasRealmService implements JaasRealm {
-
 
     public static final String REALM_NAME = "jahia";
 
@@ -63,10 +70,16 @@ public class JahiaJaasRealmService implements JaasRealm {
 
     private BundleContext bundleContext;
 
-    public JahiaJaasRealmService(BundleContext bundleContext) {
+    @Activate
+    protected void activate(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }
 
+    @Deactivate
+    protected void deactivate() {
+        bundleContext = null;
+    }
+    
     @Override
     public AppConfigurationEntry[] getEntries() {
         Map<String, Object> options = new HashMap<>();
@@ -74,15 +87,11 @@ public class JahiaJaasRealmService implements JaasRealm {
         options.put(ProxyLoginModule.PROPERTY_MODULE, JahiaLoginModule.class.getName());
         options.put(BundleContext.class.getName(), bundleContext);
 
-        configEntries = new AppConfigurationEntry[] {
-            new AppConfigurationEntry(ProxyLoginModule.class.getName(),
-                    AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL, options)
-        };
+        configEntries = new AppConfigurationEntry[] { new AppConfigurationEntry(ProxyLoginModule.class.getName(),
+                AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL, options) };
 
         return configEntries;
     }
-
-    // return the name and the rank of the realm
 
     @Override
     public String getName() {
@@ -95,4 +104,3 @@ public class JahiaJaasRealmService implements JaasRealm {
     }
 
 }
-

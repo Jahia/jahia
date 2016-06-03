@@ -33,12 +33,12 @@
 
 <c:choose>
   <c:when test="${!display}">
-    <input type="hidden" name="${operandKey}" value="${fn:escapeXml(operand)}"/>
-    <input type="hidden" name="${propertyNameKey}" value="${fn:escapeXml(propertyName)}"/>
-    <input type="hidden" name="${orderKey}" value="${fn:escapeXml(order)}"/>    
-    <input type="hidden" name="${normalizeKey}" value="${fn:escapeXml(normalize)}"/>
-    <c:if test="${not empty caseConversion}">
-        <input type="hidden" name="${caseConversionKey}" value="${fn:escapeXml(caseConversion)}"/>
+    <input type="hidden" name="${operandKey}" value="${fn:escapeXml(functions:default(param[operandKey], operand))}"/>
+    <input type="hidden" name="${propertyNameKey}" value="${fn:escapeXml(functions:default(param[propertyNameKey], propertyName))}"/>
+    <input type="hidden" name="${orderKey}" value="${fn:escapeXml(functions:default(param[orderKey], order))}"/>    
+    <input type="hidden" name="${normalizeKey}" value="${fn:escapeXml(functions:default(param[normalizeKey], normalize))}"/>
+    <c:if test="${not empty caseConversion or not empty param[caseConversionKey]}">
+        <input type="hidden" name="${caseConversionKey}" value="${fn:escapeXml(functions:default(param[caseConversionKey], caseConversion))}"/>
     </c:if>            
   </c:when>
   <c:otherwise>
@@ -65,3 +65,4 @@
     </select>  
   </c:otherwise>
 </c:choose>  
+<c:set target="${searchOrderingIndexes}" property="${formId}" value="${searchOrderingIndexes[formId] + 1}"/>

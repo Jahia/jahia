@@ -180,7 +180,12 @@ public class RenderService {
      * @throws RenderException in case of rendering issues
      */
     public String render(Resource resource, RenderContext context) throws RenderException {
-        // TODO: BACKLOG-6496, this check is not need anymore with new AggregateFilter that handle the stack of fragments generated
+        /*
+            TODO BACKLOG-6561: used for retro compatibility for AggregateCacheFilter
+                the stack of resources is now handle internally by the AggregateFilter
+                we need to remove this the day we stop supporting the AggregateCacheFilter implementation
+         */
+
         if (context.getResourcesStack().contains(resource)) {
             String resourceMessage = Messages.getInternal("label.render.loop", context.getUILocale());
             String formattedMessage = MessageFormat.format(resourceMessage, resource.getPath());

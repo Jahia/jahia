@@ -55,7 +55,6 @@ import org.slf4j.profiler.Profiler;
 import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -80,7 +79,15 @@ public class TemplateScriptFilter extends AbstractFilter {
 
         HttpServletRequest request = renderContext.getRequest();
         Script script = (Script) request.getAttribute("script");
+
+
+        /*
+            TODO BACKLOG-6561: used for retro compatibility for AggregateCacheFilter
+                the stack of resources is now handle internally by the AggregateFilter
+                we need to remove this line the day we stop supporting the AggregateCacheFilter implementation
+         */
         renderContext.getResourcesStack().push(resource);
+
         StringBuilder output = null;
         String outputString = null;
         Stack<StopWatch> stopWatchStack = null;
@@ -153,6 +160,11 @@ public class TemplateScriptFilter extends AbstractFilter {
                 outputString = output.toString();
             }
         } finally {
+            /*
+                TODO BACKLOG-6561: used for retro compatibility for AggregateCacheFilter
+                    the stack of resources is now handle internally by the AggregateFilter
+                    we need to remove this line the day we stop supporting the AggregateCacheFilter implementation
+             */
             renderContext.getResourcesStack().pop();
 
             if (stopWatchStack != null) {

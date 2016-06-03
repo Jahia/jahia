@@ -265,6 +265,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         String viewExpiration = properties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION);
         final Object requestExpiration = request.getAttribute("expiration");
         if (requestExpiration != null) {
+            // TODO BACKLOG-6561: we should avoid that, the day we remove AggregateCacheFilter, we can remove this one
             properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, requestExpiration);
         } else if (node.hasProperty("j:expiration")) {
             properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, node.getProperty("j:expiration").getString());

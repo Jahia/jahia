@@ -94,6 +94,12 @@ public class TemplateAttributesFilter extends AbstractFilter {
             params.put(key, entry.getValue());
         }
 
+        /*
+          TODO BACKLOG-6561: we should avoid that, if we remove the AggregateCacheFilter some day
+              this is used to reset cache request attributes that should not be used
+              like request attribute "expiration" that is used to set an expiration on error fragment
+              It's not used anymore with new CacheFilter implementation
+        */
         ExtendedNodeType cache = NodeTypeRegistry.getInstance().getNodeType("jmix:cache");
         overrideProperties(node, params, moduleParams, cache);
 

@@ -163,7 +163,19 @@ public class CacheFilter extends AbstractFilter {
         return execute(previousOut, renderContext, resource, false);
     }
 
-    private String execute(String previousOut, RenderContext renderContext, Resource resource, boolean bypassDependencies) throws RepositoryException {
+    /**
+     * main execute method have been extract from original method, because also used in case of rendering an error fragment
+     * In case of isAnError=true, dependencies are not processed and the fragment is cached with an expiration of 5sec by default
+     * The error expiration is configurable using variable: errorCacheExpiration
+     *
+     * @param previousOut Html render of the fragment
+     * @param renderContext current render context
+     * @param resource current resource
+     * @param isAnError true if the fragment is an error, false if not
+     * @return
+     * @throws RepositoryException
+     */
+    private String execute(String previousOut, RenderContext renderContext, Resource resource, boolean isAnError) throws RepositoryException {
 
         HttpServletRequest request = renderContext.getRequest();
         @SuppressWarnings("unchecked")
@@ -188,7 +200,7 @@ public class CacheFilter extends AbstractFilter {
 
             String finalKey = (String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY);
 
-            if (!bypassDependencies) {
+            if (!isAnError) {
                 // Add self path as dependency for this fragment (for cache flush - will not impact the key)
                 // necessary even if resource is already storing self node in dep, because of referenced nodes, for exemple:
                 // resource: /sites/ACMESPACE/home/main/content-reference@/news_36-3
@@ -205,7 +217,9 @@ public class CacheFilter extends AbstractFilter {
 
             logger.debug("Caching fragment {} for final key: {}", resource.getPath(), finalKey);
 
-            doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)), cacheProvider.getCache(), finalKey, bypassDependencies);
+            doCache(previousOut, renderContext, resource,
+                    isAnError ? errorCacheExpiration : Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)),
+                    cacheProvider.getCache(), finalKey, isAnError);
             // content is in cache and available, release latch for other threads waiting for this fragment
             generatorQueue.releaseLatch(finalKey);
         }
@@ -251,30 +265,14 @@ public class CacheFilter extends AbstractFilter {
 
         super.getContentForError(renderContext, resource, chain, e);
         HttpServletRequest request = renderContext.getRequest();
+        @SuppressWarnings("unchecked")
         Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
         if (!isCacheFilterEnabled(moduleMap) || cascadeFragmentErrors || Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration())) {
             return null;
         }
 
         try {
-
-            request.setAttribute("expiration", Integer.toString(errorCacheExpiration));
             logger.error(e.getMessage(), e);
-
-            final String key = (String) moduleMap.get(AggregateFilter.RENDERING_KEY);
-            final String finalKey = (String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY);
-
-            Element element = null;
-            try {
-                Cache cache = cacheProvider.getCache();
-                element = cache.get(finalKey);
-            } catch (LockTimeoutException ex) {
-                logger.warn("Error while rendering " + renderContext.getMainResource() + ex.getMessage(), ex);
-            }
-
-            if (element != null && element.getObjectValue() != null) {
-                return returnFromCache(renderContext, key, finalKey, element, (Map<String, Object>) request.getAttribute("moduleMap"));
-            }
 
             // Returns a fragment with an error comment
             return execute("<!-- Module error : " + HtmlUtils.htmlEscape(e.getMessage()) + "-->", renderContext, resource, true);

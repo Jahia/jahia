@@ -66,8 +66,6 @@ public class JahiaJaasRealmService implements JaasRealm {
 
     public static final String REALM_NAME = "jahia";
 
-    private AppConfigurationEntry[] configEntries;
-
     private BundleContext bundleContext;
 
     @Activate
@@ -79,15 +77,16 @@ public class JahiaJaasRealmService implements JaasRealm {
     protected void deactivate() {
         bundleContext = null;
     }
-    
+
     @Override
     public AppConfigurationEntry[] getEntries() {
+
         Map<String, Object> options = new HashMap<>();
         options.put(ProxyLoginModule.PROPERTY_BUNDLE, Long.toString(bundleContext.getBundle().getBundleId()));
         options.put(ProxyLoginModule.PROPERTY_MODULE, JahiaLoginModule.class.getName());
         options.put(BundleContext.class.getName(), bundleContext);
 
-        configEntries = new AppConfigurationEntry[] { new AppConfigurationEntry(ProxyLoginModule.class.getName(),
+        AppConfigurationEntry[] configEntries = new AppConfigurationEntry[] { new AppConfigurationEntry(ProxyLoginModule.class.getName(),
                 AppConfigurationEntry.LoginModuleControlFlag.OPTIONAL, options) };
 
         return configEntries;
@@ -102,5 +101,4 @@ public class JahiaJaasRealmService implements JaasRealm {
     public int getRank() {
         return 0;
     }
-
 }

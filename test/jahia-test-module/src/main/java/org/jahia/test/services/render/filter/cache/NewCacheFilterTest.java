@@ -195,8 +195,8 @@ public class NewCacheFilterTest extends CacheFilterTest{
             assertNotNull(r1.result);
             assertNull(r2.result);
             assertTrue(r2.error != null && r2.error.getMessage().contains("Module generation takes too long due to maximum parallel processing reached (1)"));
-            assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer > 3000 && r1.timer < 4000);
-            assertTrue("Waiting thread don't spent the correct time waiting before throw error", r2.timer > 1000 && r2.timer < 2000);
+            assertTrue("Long thread don't spent the correct time to generate the fragment: " + r1.timer, r1.timer > 3000 && r1.timer < 4000);
+            assertTrue("Waiting thread don't spent the correct time waiting before throw error:" + r2.timer, r2.timer > 1000 && r2.timer < 2000);
         } finally {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousModuleGenerateInParallel);

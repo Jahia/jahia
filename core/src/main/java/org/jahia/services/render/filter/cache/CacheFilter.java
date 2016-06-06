@@ -76,17 +76,15 @@ public class CacheFilter extends AbstractFilter {
     private static final String FLAG_RANDOM = "ec";
     private static final String FLAG_ALL = "ALL";
     private static final Set<String> FLAGS_ALL_SET = Collections.singleton(FLAG_ALL);
+    private static final String RENDERING_TIMER = "cacheFilter.rendering.timer";
+
+    private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
 
     // Flags used to know if we have to cache the fragment or not,
     // - used when the fragment is return from the cache in the prepare() to avoid cache it again in execute()
     // - used when the fragment is not cacheable (this is calculate in the prepare)
     public static final String FRAGMENT_SERVED_FROM_CACHE = "cacheFilter.fragment.servedFromCache";
     public static final String FRAGMENT_NOT_CACHEABLE = "cacheFilter.fragment.notCacheable";
-
-    // Used to measure the rendering time of fragments
-    private static final String RENDERING_TIMER = "cacheFilter.rendering.time";
-
-    private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
 
     protected ModuleCacheProvider cacheProvider;
     protected boolean cascadeFragmentErrors = false;
@@ -236,7 +234,7 @@ public class CacheFilter extends AbstractFilter {
         return result;
     }
 
-    private void logCacheFilterRenderingTime(Resource resource, Map<String ,Object> moduleMap) {
+    private void logCacheFilterRenderingTime(Resource resource, Map<String, Object> moduleMap) {
         if (!logger.isDebugEnabled()) {
             return;
         }
@@ -395,7 +393,7 @@ public class CacheFilter extends AbstractFilter {
      * Restore properties that have been stored in cache entry
      */
     @SuppressWarnings("unchecked")
-    private void restorePropertiesFromCacheEntry(CacheEntry cacheEntry, RenderContext renderContext) {
+    private void restorePropertiesFromCacheEntry(CacheEntry<?> cacheEntry, RenderContext renderContext) {
         if (cacheEntry.getProperty("requestAttributes") != null) {
             Map<String,Serializable> requestAttributesToCache = (Map<String, Serializable>) cacheEntry.getProperty("requestAttributes");
             for (Map.Entry<String, Serializable> entry : requestAttributesToCache.entrySet()) {

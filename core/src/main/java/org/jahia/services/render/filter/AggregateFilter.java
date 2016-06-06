@@ -102,6 +102,7 @@ public class AggregateFilter extends AbstractFilter {
     private static final String ESI_TAG_START = "<jahia_esi:include src=\"";
     private static final String ESI_TAG_END = "\"></jahia_esi:include>";
     private static final int ESI_TAG_END_LENGTH = ESI_TAG_END.length();
+    private static final String RENDERING_TIMER = "aggregateFilter.rendering.timer";
 
     // Use to store the current fragment key in the module map,
     // so it can be use by next filters only in the current render chain
@@ -110,9 +111,6 @@ public class AggregateFilter extends AbstractFilter {
     // Use to store the current fragment final key in the module map,
     // so it can be use by next filters only in the current render chain
     public static final String RENDERING_FINAL_KEY = "aggregateFilter.rendering.final.key";
-
-    // timer to debug rendering time of fragment
-    public static final String RENDERING_TIMER = "aggregateFilter.rendering.timer";
 
     // aggregating key, use to communicate the key of a fragment between render chains when a new render chain is started by aggregation
     public static final String AGGREGATING_KEY = "aggregateFilter.aggregating.key";
@@ -134,7 +132,7 @@ public class AggregateFilter extends AbstractFilter {
         boolean isPageResource = Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration());
 
         // render chain haven't been start by a configuration page, aggregation can't be done
-        if(!isPageResource && request.getAttribute(FRAGMENT_KEYS_STACK) == null) {
+        if (!isPageResource && request.getAttribute(FRAGMENT_KEYS_STACK) == null) {
             return null;
         }
 
@@ -194,9 +192,10 @@ public class AggregateFilter extends AbstractFilter {
         HttpServletRequest request = renderContext.getRequest();
 
         // no keys stack, no aggregation
-        if(request.getAttribute(FRAGMENT_KEYS_STACK) == null) {
+        if (request.getAttribute(FRAGMENT_KEYS_STACK) == null) {
             return previousOut;
         }
+
         @SuppressWarnings("unchecked")
         Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
 

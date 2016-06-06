@@ -95,7 +95,7 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
-        <property name="disabled" value="${disableAggregateCacheFilter:true}"/>
+        <property name="disabled" value="${useNewAggregateAndCacheImplementation:true}"/>
         <property name="priority" value="16" />
         <property name="description" value="Module content caching filter." />
         <property name="cacheProvider" ref="ModuleCacheProvider"/>
@@ -117,7 +117,7 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean class="org.jahia.services.render.filter.cache.CacheFilter">
-        <property name="disabled" value="${disableCacheFilter:false}"/>
+        <property name="disabled" value="#{jahiaProperties['useNewAggregateAndCacheImplementation'] != null ? !jahiaProperties['useNewAggregateAndCacheImplementation'] : false}"/>
         <property name="priority" value="16.5"/>
         <property name="description" value="Cache filter, provides the html result (either from the cache or by generating it) of the fragment and caches it if necessary"/>
         <property name="skipOnTemplateTypes" value="json"/>

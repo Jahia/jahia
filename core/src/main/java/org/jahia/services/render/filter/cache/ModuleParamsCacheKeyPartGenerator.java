@@ -62,6 +62,9 @@ import java.util.Properties;
 public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator, RenderContextTuner {
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleParamsCacheKeyPartGenerator.class);
+    private static final String ENCODED_DOUBLE_AT = "&dblAt;";
+    private static final String ENCODED_DOUBLE_QUOTES = "&dblQuote;";
+    private static final String ENCODED_PREFIX = "&amp;";
 
     @Override
     public String getKey() {
@@ -79,12 +82,12 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
         return keyPart;
     }
 
-    private String encodeString(String toBeEncoded) {
-        return toBeEncoded != null ? toBeEncoded.replace("#", "#1").replace("@@", "#2") : null;
+    protected static String encodeString(String toBeEncoded) {
+        return toBeEncoded != null ? toBeEncoded.replace("&", ENCODED_PREFIX).replace("@@", ENCODED_DOUBLE_AT).replace("\"",ENCODED_DOUBLE_QUOTES) : null;
     }
 
-    private String decodeString(String toBeDecoded) {
-        return toBeDecoded != null && toBeDecoded.contains("#") ? toBeDecoded.replace("#2", "@@").replace("#1", "#") : toBeDecoded;
+    protected static String decodeString(String toBeDecoded) {
+        return toBeDecoded != null && toBeDecoded.contains("&") ? toBeDecoded.replace(ENCODED_DOUBLE_AT, "@@").replace(ENCODED_DOUBLE_QUOTES, "\"").replace(ENCODED_PREFIX, "&") : toBeDecoded;
     }
 
     @Override

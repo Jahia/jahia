@@ -934,7 +934,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             String params = keyAttrbs.get("moduleParams");
             if (StringUtils.isNotEmpty(params)) {
                 try {
-                    JSONObject map = new JSONObject(keyAttrbs.get("moduleParams"));
+                    JSONObject map = new JSONObject(ModuleParamsCacheKeyPartGenerator.decodeString(keyAttrbs.get("moduleParams")));
                     Iterator keys = map.keys();
                     while (keys.hasNext()) {
                         String next = (String) keys.next();

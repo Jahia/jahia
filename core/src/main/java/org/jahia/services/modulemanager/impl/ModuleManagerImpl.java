@@ -43,8 +43,10 @@
  */
 package org.jahia.services.modulemanager.impl;
 
+import org.jahia.services.modulemanager.InvalidModuleException;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.ModuleNotFoundException;
 import org.jahia.services.modulemanager.OperationResult;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistedBundle;
@@ -109,24 +111,34 @@ public class ModuleManagerImpl implements ModuleManager {
 
         OperationResult result = null;
         PersistedBundle bundleInfo = null;
+        Exception resultError = null;
         try {
 
             bundleInfo = persister.extract(bundleResource);
 
             if (bundleInfo == null) {
-                return OperationResult.BUNDLE_NOT_VALID;
+                throw new InvalidModuleException();
             }
-
-            // TODO check for missing dependencies before installing?
 
             persister.store(bundleInfo);
 
             result = install(bundleInfo, target, start);
+        } catch (ModuleManagementException e) {
+            resultError = e;
+            throw e;
         } catch (Exception e) {
+            resultError = e;
             throw new ModuleManagementException(e);
         } finally {
-            logger.info("Installation completed for bundle {} on target {} in {} ms. Operation result: {}",
-                    new Object[] {bundleInfo != null ? bundleInfo.getBundleInfo() : bundleResource, target, System.currentTimeMillis() - startTime, result});
+            if (resultError == null) {
+                logger.info("Installation completed for bundle {} on target {} in {} ms. Operation result: {}",
+                        new Object[] { bundleInfo != null ? bundleInfo.getBundleInfo() : bundleResource, target,
+                                System.currentTimeMillis() - startTime, result });
+            } else {
+                logger.info("Installation failed for bundle {} on target {} (took {} ms). Operation error: {}",
+                        new Object[] { bundleInfo != null ? bundleInfo.getBundleInfo() : bundleResource, target,
+                                System.currentTimeMillis() - startTime, resultError.getMessage() });
+            }
         }
 
         return result;
@@ -147,6 +159,7 @@ public class ModuleManagerImpl implements ModuleManager {
 
         OperationResult opResult = null;
         PersistedBundle info = null;
+        Exception resultError = null;
         try {
             info = persister.find(bundleKey);
             if (info != null) {
@@ -165,17 +178,31 @@ public class ModuleManagerImpl implements ModuleManager {
                 }
                 opResult = OperationResult.success(info.getBundleInfo());
             } else {
-                opResult = OperationResult.BUNDLE_NOT_FOUND;
+                throw new ModuleNotFoundException(bundleKey);
             }
         } catch (BundleException e) {
-            if (BundleException.RESOLVE_ERROR == e.getType()) {
-                opResult = OperationResult.notFound(info != null ? info.getBundleInfo() : null);
+            resultError = e;
+            if (BundleException.RESOLVE_ERROR == ((BundleException) e).getType()) {
+                throw new ModuleNotFoundException(info != null ? info.getBundleInfo().getKey() : bundleKey);
             } else {
                 throw new ModuleManagementException(e);
             }
+        } catch (ModuleManagementException e) {
+            resultError = e;
+            throw e;
+        } catch (Exception e) {
+            resultError = e;
+            throw new ModuleManagementException(e);
         } finally {
-            logger.info("{} operation completed for bundle {} on target {} in {} ms. Opearation result: {}",
-                    new Object[] {operation, bundleKey, target, System.currentTimeMillis() - startTime, opResult});
+            if (resultError == null) {
+                logger.info("{} operation completed for bundle {} on target {} in {} ms. Opearation result: {}",
+                        new Object[] { operation, bundleKey, target, System.currentTimeMillis() - startTime,
+                                opResult });
+            } else {
+                logger.info("{} operation failed for bundle {} on target {} (took {} ms). Opearation error: {}",
+                        new Object[] { operation, bundleKey, target, System.currentTimeMillis() - startTime,
+                                resultError });
+            }
         }
 
         return opResult;

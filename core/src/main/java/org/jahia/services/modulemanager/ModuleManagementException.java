@@ -64,7 +64,7 @@ public class ModuleManagementException extends JahiaRuntimeException {
     /**
      * Initializes an instance of this class.
      * 
-     * @param message
+     * @param message the detail error message
      */
     public ModuleManagementException(String message) {
         super(message);
@@ -73,8 +73,8 @@ public class ModuleManagementException extends JahiaRuntimeException {
     /**
      * Initializes an instance of this class.
      * 
-     * @param message
-     * @param cause
+     * @param message the detail error message
+     * @param cause the cause of the error
      */
     public ModuleManagementException(String message, Throwable cause) {
         super(message, cause);
@@ -83,7 +83,7 @@ public class ModuleManagementException extends JahiaRuntimeException {
     /**
      * Initializes an instance of this class.
      * 
-     * @param cause
+     * @param cause the cause of the error
      */
     public ModuleManagementException(Throwable cause) {
         super(cause);

@@ -1,4 +1,4 @@
-/*
+/**
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -43,91 +43,21 @@
  */
 package org.jahia.services.modulemanager;
 
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAttribute;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 /**
- * Represents the result of the bundle operation, conducted by the {@link ModuleManager} service.
- *
- * @author bdjiba
+ * Signals that a submitted JAR file does not correspond to a valid OSGi module.
+ * 
  * @author Sergiy Shyrkov
  */
-public class OperationResult implements Serializable {
+public class InvalidModuleException extends ModuleManagementException {
 
-    private static final long serialVersionUID = 5330025844927356487L;
-
-    /**
-     * Returns an operation result indicating successful operation for the specified bundle.
-     *
-     * @param bundleInfo the information about the target bundle
-     */
-    public static OperationResult success(BundleInfo bundleInfo) {
-        return new OperationResult("Operation successful", bundleInfo);
-    }
-
-    @XmlAttribute(name = "bundleInfos", required = false)
-    private List<BundleInfo> bundleInfos = new LinkedList<>();
-
-    private String message;
+    private static final long serialVersionUID = -2692789581026091598L;
 
     /**
      * Initializes an instance of this class.
-     *
-     * @param message description of the operation result
      */
-    public OperationResult(String message) {
-        super();
-        this.message = message;
-    }
-
-    /**
-     * Initializes an instance of this class.
-     *
-     * @param message description of the operation result
-     * @param bundleInfo the information about the target bundle
-     */
-    public OperationResult(String message, BundleInfo bundleInfo) {
-        this(message);
-        if (bundleInfo != null) {
-            this.bundleInfos.add(bundleInfo);
-        }
-    }
-
-    /**
-     * Get the bundle info list
-     *
-     * @return the bundleInfoList the list of info
-     */
-    public List<BundleInfo> getBundleInfos() {
-        return bundleInfos;
-    }
-
-    /**
-     * Get the operation result flag
-     *
-     * @return true if the operation is successfully performed otherwise false
-     */
-    public String getMessage() {
-        return message;
-    }
-
-    /**
-     * Set the bundle info list
-     *
-     * @param bundleInfoList the bundleInfoList to set
-     */
-    public void setBundleInfos(List<BundleInfo> bundleInfoList) {
-        this.bundleInfos = bundleInfoList;
-    }
-
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
+    public InvalidModuleException() {
+        super("Submitted bundle is either not a valid OSGi bundle or has no required manifest headers"
+                + " Bundle-SymbolicName and Implementation-Version/Bundle-Version");
     }
 
 }

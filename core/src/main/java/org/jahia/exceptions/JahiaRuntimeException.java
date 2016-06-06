@@ -62,7 +62,7 @@ public class JahiaRuntimeException extends RuntimeException {
     /**
      * Initializes an instance of this class.
      * 
-     * @param message
+     * @param message the detail error message
      */
     public JahiaRuntimeException(String message) {
         super(message);
@@ -71,8 +71,8 @@ public class JahiaRuntimeException extends RuntimeException {
     /**
      * Initializes an instance of this class.
      * 
-     * @param message
-     * @param cause
+     * @param message the detail error message
+     * @param cause the cause of the error
      */
     public JahiaRuntimeException(String message, Throwable cause) {
         super(message, cause);
@@ -81,7 +81,7 @@ public class JahiaRuntimeException extends RuntimeException {
     /**
      * Initializes an instance of this class.
      * 
-     * @param cause
+     * @param cause the cause of the error
      */
     public JahiaRuntimeException(Throwable cause) {
         super(cause);

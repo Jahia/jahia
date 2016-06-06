@@ -1,4 +1,4 @@
-/*
+/**
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -43,91 +43,33 @@
  */
 package org.jahia.services.modulemanager;
 
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAttribute;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 /**
- * Represents the result of the bundle operation, conducted by the {@link ModuleManager} service.
- *
- * @author bdjiba
+ * Signals that a module management operation has failed because the target module bundle cannot be found.
+ * 
  * @author Sergiy Shyrkov
  */
-public class OperationResult implements Serializable {
+public class ModuleNotFoundException extends ModuleManagementException {
 
-    private static final long serialVersionUID = 5330025844927356487L;
+    private static final long serialVersionUID = -2692789581026091598L;
 
-    /**
-     * Returns an operation result indicating successful operation for the specified bundle.
-     *
-     * @param bundleInfo the information about the target bundle
-     */
-    public static OperationResult success(BundleInfo bundleInfo) {
-        return new OperationResult("Operation successful", bundleInfo);
-    }
-
-    @XmlAttribute(name = "bundleInfos", required = false)
-    private List<BundleInfo> bundleInfos = new LinkedList<>();
-
-    private String message;
+    private String bundleKey;
 
     /**
      * Initializes an instance of this class.
-     *
-     * @param message description of the operation result
+     * 
+     * @param message the detail error message
      */
-    public OperationResult(String message) {
-        super();
-        this.message = message;
+    public ModuleNotFoundException(String bundleKey) {
+        super("Unable to find a module bundle corresponding to the key: " + bundleKey);
     }
 
     /**
-     * Initializes an instance of this class.
-     *
-     * @param message description of the operation result
-     * @param bundleInfo the information about the target bundle
+     * Returns the key of the target bundle which could not be found.
+     * 
+     * @return the key of the target bundle which could not be found
      */
-    public OperationResult(String message, BundleInfo bundleInfo) {
-        this(message);
-        if (bundleInfo != null) {
-            this.bundleInfos.add(bundleInfo);
-        }
-    }
-
-    /**
-     * Get the bundle info list
-     *
-     * @return the bundleInfoList the list of info
-     */
-    public List<BundleInfo> getBundleInfos() {
-        return bundleInfos;
-    }
-
-    /**
-     * Get the operation result flag
-     *
-     * @return true if the operation is successfully performed otherwise false
-     */
-    public String getMessage() {
-        return message;
-    }
-
-    /**
-     * Set the bundle info list
-     *
-     * @param bundleInfoList the bundleInfoList to set
-     */
-    public void setBundleInfos(List<BundleInfo> bundleInfoList) {
-        this.bundleInfos = bundleInfoList;
-    }
-
-    @Override
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this);
+    public String getBundleKey() {
+        return bundleKey;
     }
 
 }

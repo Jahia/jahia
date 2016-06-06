@@ -40,7 +40,7 @@ public class OldCacheFilterTest extends CacheFilterTest {
 
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(true);
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(true);
-        ((AbstractFilter) SpringContextSingleton.getBean("oldTestCacheFilter")).setDisabled(false);
+        ((AbstractFilter) SpringContextSingleton.getBean("cacheFilter")).setDisabled(false);
     }
 
     @AfterClass
@@ -49,7 +49,7 @@ public class OldCacheFilterTest extends CacheFilterTest {
 
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(false);
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(false);
-        ((AbstractFilter) SpringContextSingleton.getBean("oldTestCacheFilter")).setDisabled(true);
+        ((AbstractFilter) SpringContextSingleton.getBean("cacheFilter")).setDisabled(true);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class OldCacheFilterTest extends CacheFilterTest {
         attributesFilter.setRenderService(RenderService.getInstance());
         attributesFilter.setConfigurationToSkipInResourceRenderedPath(new HashSet<String>(Arrays.asList("include","wrapper")));
 
-        RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getBean("oldTestCacheFilter");
+        RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getBean("cacheFilter");
 
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
@@ -133,7 +133,7 @@ public class OldCacheFilterTest extends CacheFilterTest {
         attributesFilter.setRenderService(RenderService.getInstance());
         attributesFilter.setConfigurationToSkipInResourceRenderedPath(new HashSet<String>(Arrays.asList("include","wrapper")));
 
-        RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getBean("oldTestCacheFilter");
+        RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getBean("cacheFilter");
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
 
         moduleCacheProvider.getCache().removeAll();

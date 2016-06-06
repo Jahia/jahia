@@ -46,7 +46,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
 
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(false);
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(false);
-        ((AbstractFilter) SpringContextSingleton.getBean("oldTestCacheFilter")).setDisabled(true);
+        ((AbstractFilter) SpringContextSingleton.getBean("cacheFilter")).setDisabled(true);
     }
 
     @Test

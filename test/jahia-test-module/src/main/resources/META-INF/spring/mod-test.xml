@@ -418,28 +418,6 @@
         </property>
     </bean>
 
-    <bean id="oldTestCacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
-        <property name="disabled" value="true"/>
-        <property name="priority" value="16" />
-        <property name="description" value="Module content caching filter." />
-        <property name="cacheProvider" ref="ModuleCacheProvider"/>
-        <property name="skipOnTemplateTypes" value="json"/>
-        <property name="skipOnConfigurations" value="include,wrapper,option"/>
-        <property name="applyOnModes" value="live"/>
-        <property name="generatorQueue" ref="moduleGeneratorQueue"/>
-        <property name="dependenciesLimit" value="1000"/>
-        <property name="skipLatchForPaths" >
-            <set>
-                <value>/modules</value>
-            </set>
-        </property>
-        <property name="skipLatchForConfigurations">
-            <set>
-                <value>page</value>
-            </set>
-        </property>
-    </bean>
-
     <!-- first filter in chain -->
     <bean id="CacheHttpTestRenderFitler1"  class="org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter">
         <property name="priority" value="-99"/>

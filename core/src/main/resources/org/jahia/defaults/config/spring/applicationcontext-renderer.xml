@@ -176,6 +176,7 @@
     </bean>
 
     <bean class="org.jahia.services.render.filter.AggregateFilter">
+        <property name="disabled" value="${disableAggregateFilter:false}"/>
         <property name="priority" value="16.0"/>
         <property name="description" value="Aggregate filter, aggregates contents by resolving sub fragments"/>
         <property name="skipOnTemplateTypes" value="json"/>

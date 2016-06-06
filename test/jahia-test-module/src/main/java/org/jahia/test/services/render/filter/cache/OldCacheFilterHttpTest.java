@@ -23,7 +23,7 @@ public class OldCacheFilterHttpTest extends CacheFilterHttpTest {
 
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(true);
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(true);
-        ((AbstractFilter) SpringContextSingleton.getBean("oldTestCacheFilter")).setDisabled(false);
+        ((AbstractFilter) SpringContextSingleton.getBean("cacheFilter")).setDisabled(false);
     }
 
     @AfterClass
@@ -32,7 +32,7 @@ public class OldCacheFilterHttpTest extends CacheFilterHttpTest {
 
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(false);
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(false);
-        ((AbstractFilter) SpringContextSingleton.getBean("oldTestCacheFilter")).setDisabled(true);
+        ((AbstractFilter) SpringContextSingleton.getBean("cacheFilter")).setDisabled(true);
     }
 
 

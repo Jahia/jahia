@@ -94,7 +94,30 @@ when we flush this entry we will flush the whole cache
         <property name="threadDumpToFile" value="${moduleGenerationTthreadDumpToFile}"/>
     </bean>
 
+    <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
+        <property name="disabled" value="${disableAggregateCacheFilter:true}"/>
+        <property name="priority" value="16" />
+        <property name="description" value="Module content caching filter." />
+        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+        <property name="skipOnTemplateTypes" value="json"/>
+        <property name="skipOnConfigurations" value="include,wrapper,option"/>
+        <property name="applyOnModes" value="live"/>
+        <property name="generatorQueue" ref="moduleGeneratorQueue"/>
+        <property name="dependenciesLimit" value="1000"/>
+        <property name="skipLatchForPaths" >
+            <set>
+                <value>/modules</value>
+            </set>
+        </property>
+        <property name="skipLatchForConfigurations">
+            <set>
+                <value>page</value>
+            </set>
+        </property>
+    </bean>
+
     <bean class="org.jahia.services.render.filter.cache.CacheFilter">
+        <property name="disabled" value="${disableCacheFilter:false}"/>
         <property name="priority" value="16.5"/>
         <property name="description" value="Cache filter, provides the html result (either from the cache or by generating it) of the fragment and caches it if necessary"/>
         <property name="skipOnTemplateTypes" value="json"/>

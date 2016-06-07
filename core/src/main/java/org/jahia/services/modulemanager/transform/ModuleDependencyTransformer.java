@@ -72,6 +72,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -199,13 +200,13 @@ public class ModuleDependencyTransformer {
         }
 
         // check if we need to automatically add dependency to default module
-        boolean addDependencyToDefault = !dependsList.contains("default")
-                && !dependsList.contains("Default Jahia Templates")
+        boolean addDependencyToDefault = !dependsList.contains(JahiaTemplatesPackage.ID_DEFAULT)
+                && !dependsList.contains(JahiaTemplatesPackage.NAME_DEFAULT)
                 && !getModulesWithNoDefaultDependency().contains(moduleId);
 
         if (addDependencyToDefault || !dependsList.isEmpty()) {
             if (addDependencyToDefault) {
-                capabilities.add(buildClauseRequireCapability("default"));
+                capabilities.add(buildClauseRequireCapability(JahiaTemplatesPackage.ID_DEFAULT));
             }
             for (String dependency : dependsList) {
                 capabilities.add(buildClauseRequireCapability(dependency));
@@ -226,9 +227,7 @@ public class ModuleDependencyTransformer {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        try (ZipInputStream zis = new ZipInputStream(sourceStream)) {
-            ZipOutputStream zos = new ZipOutputStream(out);
-
+        try (ZipInputStream zis = new ZipInputStream(sourceStream); ZipOutputStream zos = new ZipOutputStream(out);) {
             ZipEntry zipEntry = zis.getNextEntry();
             while (zipEntry != null) {
                 zos.putNextEntry(new ZipEntry(zipEntry.getName()));
@@ -240,7 +239,6 @@ public class ModuleDependencyTransformer {
                 zis.closeEntry();
                 zipEntry = zis.getNextEntry();
             }
-            zos.close();
         }
 
         return new ByteArrayInputStream(out.toByteArray());

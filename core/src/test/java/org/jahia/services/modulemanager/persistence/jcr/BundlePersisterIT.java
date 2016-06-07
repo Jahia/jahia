@@ -44,7 +44,8 @@
 package org.jahia.services.modulemanager.persistence.jcr;
 
 import static org.jahia.services.modulemanager.persistence.PersistedBundleInfoBuilderTest.getResource;
-import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper.*;
+import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper.PATH_BUNDLES;
+import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper.PATH_ROOT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -63,8 +64,8 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
-import org.jahia.services.modulemanager.persistence.PersistedBundle;
-import org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
+import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.test.framework.AbstractJUnitTest;
 import org.junit.After;
 import org.junit.Test;
@@ -79,7 +80,7 @@ public class BundlePersisterIT extends AbstractJUnitTest {
 
     private static BundlePersister service;
 
-    private static long verify(final PersistedBundle info) throws RepositoryException {
+    private static long verify(final PersistentBundle info) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Long>() {
             public Long doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String path = BundleInfoJcrHelper.getJcrPath(info);
@@ -129,7 +130,7 @@ public class BundlePersisterIT extends AbstractJUnitTest {
     @Test
     public void testDelete() throws ModuleManagementException, IOException, RepositoryException {
         ClassPathResource resource = getResource("dx-module-released");
-        final PersistedBundle info = service.extract(resource);
+        final PersistentBundle info = PersistentBundleInfoBuilder.build(resource);
         // store the resource
         service.store(resource);
 
@@ -138,7 +139,7 @@ public class BundlePersisterIT extends AbstractJUnitTest {
 
         // store another bundle
         ClassPathResource anotherResource = getResource("dx-module-snapshot");
-        PersistedBundle anotherInfo = service.extract(anotherResource);
+        PersistentBundle anotherInfo = PersistentBundleInfoBuilder.build(anotherResource);
         service.store(anotherResource);
         verify(anotherInfo);
 
@@ -163,12 +164,12 @@ public class BundlePersisterIT extends AbstractJUnitTest {
     @Test
     public void testFind() throws ModuleManagementException, IOException, RepositoryException {
         ClassPathResource resource = getResource("dx-module-released");
-        PersistedBundle info = service.extract(resource);
+        PersistentBundle info = PersistentBundleInfoBuilder.build(resource);
         // store the resource
         service.store(resource);
         
         // search by fully-qualified key
-        PersistedBundle found = service.find(info.getKey());
+        PersistentBundle found = service.find(info.getKey());
         assertEquals(info, found);
 
         // search by short key
@@ -179,7 +180,7 @@ public class BundlePersisterIT extends AbstractJUnitTest {
     @Test
     public void testStore() throws ModuleManagementException, IOException, RepositoryException {
         ClassPathResource resource = getResource("dx-module-released");
-        PersistedBundle info = service.extract(resource);
+        PersistentBundle info = PersistentBundleInfoBuilder.build(resource);
         // store the resource
         service.store(resource);
 
@@ -193,7 +194,7 @@ public class BundlePersisterIT extends AbstractJUnitTest {
 
         // store the updated resources
         ClassPathResource updatedResource = getResource("dx-module-released-updated");
-        PersistedBundle updatedInfo = service.extract(updatedResource);
+        PersistentBundle updatedInfo = PersistentBundleInfoBuilder.build(updatedResource);
         service.store(updatedResource);
         newLastModified = verify(updatedInfo);
         assertNotEquals("The bundle node should have been updated", lastModified, newLastModified);

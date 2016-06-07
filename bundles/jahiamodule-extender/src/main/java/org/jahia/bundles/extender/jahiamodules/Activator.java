@@ -80,6 +80,7 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.osgi.service.http.HttpService;
+import org.osgi.service.url.URLConstants;
 import org.osgi.service.url.URLStreamHandlerService;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
@@ -928,12 +929,12 @@ public class Activator implements BundleActivator, EventHandler {
 
         // register protocol handlers
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("url.handler.protocol", URL_PROTOCOL_DX);
+        props.put(URLConstants.URL_HANDLER_PROTOCOL, URL_PROTOCOL_DX);
         props.put(Constants.SERVICE_DESCRIPTION, "URL stream protocol handler for DX modules that handles bundle storage and dependencies between modules");
-        props.put(Constants.SERVICE_VENDOR, "Jahia Solutions Group SA");
+        props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
         serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, ModulePersistenceTransformer.getURLStreamHandlerService(), props));
         props = new Hashtable<String, Object>();
-        props.put("url.handler.protocol", URL_PROTOCOL_MODULE_DEPENDENCIES);
+        props.put(URLConstants.URL_HANDLER_PROTOCOL, URL_PROTOCOL_MODULE_DEPENDENCIES);
         props.put(Constants.SERVICE_DESCRIPTION, "URL stream protocol handler for DX modules that handles dependencies between them using OSGi capabilities");
         props.put(Constants.SERVICE_VENDOR, "Jahia Solutions Group SA");
         serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, ModuleDependencyTransformer.getURLStreamHandlerService(), props));
@@ -941,7 +942,7 @@ public class Activator implements BundleActivator, EventHandler {
         // register artifact listener and URL transformer
         props = new Hashtable<String, Object>();
         props.put(Constants.SERVICE_DESCRIPTION, "Artifact listener to perist the underlying bundle and transform its URL");
-        props.put(Constants.SERVICE_VENDOR, "Jahia Solutions Group SA");
+        props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
         serviceRegistrations.add(context.registerService(
                 new String[] { ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName() },
                 new ModuleUrlTransformer(), null));

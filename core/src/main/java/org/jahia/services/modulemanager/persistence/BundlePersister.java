@@ -43,7 +43,6 @@
  */
 package org.jahia.services.modulemanager.persistence;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.jahia.services.modulemanager.ModuleManagementException;
@@ -67,6 +66,15 @@ public interface BundlePersister {
     boolean delete(String bundleKey) throws ModuleManagementException;
 
     /**
+     * Returns the info for the persisted bundle considering the requested key.
+     *
+     * @param bundleKey The key of the bundle to be looked up
+     * @return The info for the persisted bundle considering the requested key or <code>null</code> if the corresponding info cannot be
+     *         found for the provided key
+     */
+    PersistentBundle find(String bundleKey);
+
+    /**
      * Returns the input stream for the persisted bundle considering the requested key.
      *
      * @param bundleKey The key of the bundle to be looked up
@@ -74,35 +82,16 @@ public interface BundlePersister {
      *         cannot be found for the provided key
      * @throws ModuleManagementException In case of unexpected error during the download process
      */
-    InputStream download(String bundleKey) throws ModuleManagementException;
-
-    /**
-     * Extracts the information from the specified bundle resource.
-     *
-     * @param resource The bundle resource as a source
-     * @return The information, extracted from the provided resource
-     * @throws IOException In case of a resource read issue
-     */
-    PersistedBundle extract(Resource resource) throws IOException;
-
-    /**
-     * Returns the info for the persisted bundle considering the requested key.
-     *
-     * @param bundleKey The key of the bundle to be looked up
-     * @return The info for the persisted bundle considering the requested key or <code>null</code> if the corresponding info cannot be
-     *         found for the provided key
-     */
-    PersistedBundle find(String bundleKey);
+    InputStream getInputStream(String bundleKey) throws ModuleManagementException;
 
     /**
      * Persists the specified bundle resource either creating a new info in the storage or updating the existing entry with the supplied
      * data.
      *
      * @param bundleInfo The bundle info as a source
-     * @throws IOException In case of a resource read issue
      * @throws ModuleManagementException In case of issues during persistence operation
      */
-    void store(PersistedBundle bundleInfo) throws ModuleManagementException;
+    void store(PersistentBundle bundleInfo) throws ModuleManagementException;
 
     /**
      * Persists the info for the specified resources either creating a new info in the storage or updating the existing entry with the
@@ -110,8 +99,7 @@ public interface BundlePersister {
      *
      * @param resource The bundle bundle resource as a source
      * @return The bundle information, extracted from the provided resource
-     * @throws IOException In case of a resource read issue
      * @throws ModuleManagementException In case of issues during persistence operation
      */
-    PersistedBundle store(Resource resource) throws IOException, ModuleManagementException;
+    PersistentBundle store(Resource resource) throws ModuleManagementException;
 }

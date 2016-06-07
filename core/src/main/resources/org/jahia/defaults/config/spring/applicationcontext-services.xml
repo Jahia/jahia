@@ -179,12 +179,18 @@
             </list>
         </property>
         <property name="modulesWithNoDefaultDependency" ref="modulesWithNoDefaultDependency"/>
+        <property name="knownFragmentHosts" ref="knownFragmentHosts"/>
     </bean>
     <util:set id="modulesWithNoDefaultDependency">
         <value>default</value>
         <value>jquery</value>
         <value>ckeditor</value>
         <value>assets</value>
+    </util:set>
+
+    <util:set id="knownFragmentHosts">
+        <value>ckeditor</value>
+        <value>tools</value>
     </util:set>
 
     <bean id="ModuleInstallationHelper" class="org.jahia.services.templates.ModuleInstallationHelper">

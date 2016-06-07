@@ -46,7 +46,7 @@ package org.jahia.services.modulemanager.persistence.jcr;
 import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper.*;
 import static org.junit.Assert.assertEquals;
 
-import org.jahia.services.modulemanager.persistence.PersistedBundle;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper;
 import org.junit.Test;
 
@@ -73,14 +73,14 @@ public class BundleInfoJcrHelperTest {
     @Test
     public void testInfoToPath() throws Exception {
         assertEquals(PATH_BUNDLES + "/org/jahia/modules/article/2.0.0/article-2.0.0.jar",
-                getJcrPath(new PersistedBundle("org.jahia.modules", "article", "2.0.0")));
+                getJcrPath(new PersistentBundle("org.jahia.modules", "article", "2.0.0")));
         assertEquals(
                 PATH_BUNDLES
                         + "/org/jahia/modules/advanced-visibility/2.0.1-SNAPSHOT/advanced-visibility-2.0.1-SNAPSHOT.jar",
-                getJcrPath(new PersistedBundle("org.jahia.modules", "advanced-visibility", "2.0.1-SNAPSHOT")));
+                getJcrPath(new PersistentBundle("org.jahia.modules", "advanced-visibility", "2.0.1-SNAPSHOT")));
         assertEquals(PATH_BUNDLES + "/info/shyrkov/modules/myTest-module/1.0/myTest-module-1.0.jar",
-                getJcrPath(new PersistedBundle("info.shyrkov.modules", "myTest-module", "1.0")));
+                getJcrPath(new PersistentBundle("info.shyrkov.modules", "myTest-module", "1.0")));
         assertEquals(PATH_BUNDLES + "/myTest-module/2.1/myTest-module-2.1.jar",
-                getJcrPath(new PersistedBundle(null, "myTest-module", "2.1")));
+                getJcrPath(new PersistentBundle(null, "myTest-module", "2.1")));
     }
 }

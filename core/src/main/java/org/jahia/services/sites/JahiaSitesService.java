@@ -490,7 +490,7 @@ public class JahiaSitesService extends JahiaService {
         // first remove all modules that are in common with the new modules list
         modulesToUninstall.removeAll(newModuleIds);
         // remove default and template set so that they don't get un-installed
-        modulesToUninstall.remove("default");
+        modulesToUninstall.remove(JahiaTemplatesPackage.ID_DEFAULT);
         modulesToUninstall.remove(((JCRSiteNode) site).getTemplatePackage().getId());
 
         String siteKey = site.getSiteKey();
@@ -540,7 +540,7 @@ public class JahiaSitesService extends JahiaService {
 
     private void deployModules(String target, String[] modulesToDeploy, JahiaTemplatesPackage templateSet, JCRSessionWrapper session, JahiaTemplateManagerService templateService) {
         List<JahiaTemplatesPackage> modules = moduleIdsToTemplatesPackage(modulesToDeploy != null ? Arrays.asList(modulesToDeploy) : Collections.<String>emptyList(), templateService);
-        modules.add(templateService.getAnyDeployedTemplatePackage("default"));
+        modules.add(templateService.getAnyDeployedTemplatePackage(JahiaTemplatesPackage.ID_DEFAULT));
         modules.add(templateSet);
 
         try {

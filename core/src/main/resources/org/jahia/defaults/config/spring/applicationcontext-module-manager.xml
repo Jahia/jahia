@@ -16,6 +16,6 @@
     
     <bean id="org.jahia.services.modulemanager.spi.impl.DefaultBundleService" class="org.jahia.services.modulemanager.spi.impl.DefaultBundleService"/>
     
-    <bean id="org.jahia.services.modulemanager.persistence.BundlePersister" class="org.jahia.services.modulemanager.persistence.jcr.BundlePersisterImpl"/>
+    <bean id="org.jahia.services.modulemanager.persistence.BundlePersister" class="org.jahia.services.modulemanager.persistence.jcr.JCRBundlePersister"/>
 
 </beans>

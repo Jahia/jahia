@@ -61,8 +61,8 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
-import org.jahia.services.modulemanager.persistence.PersistedBundle;
-import org.jahia.services.modulemanager.persistence.PersistedBundleInfoBuilder;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
+import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -73,9 +73,9 @@ import org.springframework.core.io.Resource;
  * @author Ahmed Chaabni
  * @author Sergiy Shyrkov
  */
-public class BundlePersisterImpl implements BundlePersister {
+public class JCRBundlePersister implements BundlePersister {
 
-    private static final Logger logger = LoggerFactory.getLogger(BundlePersisterImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(JCRBundlePersister.class);
 
     @Override
     public boolean delete(final String bundleKey) throws ModuleManagementException {
@@ -133,42 +133,16 @@ public class BundlePersisterImpl implements BundlePersister {
     }
 
     @Override
-    public InputStream download(final String bundleKey) throws ModuleManagementException {
+    public PersistentBundle find(final String bundleKey) {
+
+        PersistentBundle found = null;
 
         try {
 
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<InputStream>() {
+            found = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<PersistentBundle>() {
 
                 @Override
-                public InputStream doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRNodeWrapper node = findTargetNode(bundleKey, session);
-                    return node != null ? node.getFileContent().downloadFile() : null;
-                }
-            });
-        } catch (RepositoryException e) {
-            throw new ModuleManagementException("Unable to find bundle " + bundleKey, e);
-        }
-    }
-
-    @Override
-    public PersistedBundle extract(Resource resource) throws IOException {
-        long startTime = System.currentTimeMillis();
-        PersistedBundle bundleInfo = PersistedBundleInfoBuilder.build(resource);
-        logger.debug("Extracted bundle info {} from resource {} in {} ms", new Object[] {bundleInfo, resource, System.currentTimeMillis() - startTime});
-        return bundleInfo;
-    }
-
-    @Override
-    public PersistedBundle find(final String bundleKey) {
-
-        PersistedBundle found = null;
-
-        try {
-
-            found = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<PersistedBundle>() {
-
-                @Override
-                public PersistedBundle doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                public PersistentBundle doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     return find(bundleKey, session);
                 }
             });
@@ -187,12 +161,12 @@ public class BundlePersisterImpl implements BundlePersister {
      * @return The information of the target bundle, which corresponds to the supplied key
      * @throws RepositoryException In case of JCR errors
      */
-    protected PersistedBundle find(String bundleKey, JCRSessionWrapper session) throws RepositoryException {
-        PersistedBundle info = null;
+    protected PersistentBundle find(String bundleKey, JCRSessionWrapper session) throws RepositoryException {
+        PersistentBundle info = null;
         JCRNodeWrapper node = findTargetNode(bundleKey, session);
         if (node != null) {
             // we've found bundle node for the specified key
-            info = new PersistedBundle(node.getPropertyAsString("j:groupId"), node.getPropertyAsString("j:symbolicName"), node.getPropertyAsString("j:version"));
+            info = new PersistentBundle(node.getPropertyAsString("j:groupId"), node.getPropertyAsString("j:symbolicName"), node.getPropertyAsString("j:version"));
             info.setChecksum(node.getPropertyAsString("j:checksum"));
             info.setDisplayName(node.getPropertyAsString("j:displayName"));
         }
@@ -200,7 +174,25 @@ public class BundlePersisterImpl implements BundlePersister {
     }
 
     @Override
-    public void store(final PersistedBundle bundleInfo) throws ModuleManagementException {
+    public InputStream getInputStream(final String bundleKey) throws ModuleManagementException {
+
+        try {
+
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<InputStream>() {
+
+                @Override
+                public InputStream doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRNodeWrapper node = findTargetNode(bundleKey, session);
+                    return node != null ? node.getFileContent().downloadFile() : null;
+                }
+            });
+        } catch (RepositoryException e) {
+            throw new ModuleManagementException("Unable to find bundle " + bundleKey, e);
+        }
+    }
+
+    @Override
+    public void store(final PersistentBundle bundleInfo) throws ModuleManagementException {
 
         long startTime = System.currentTimeMillis();
 
@@ -233,7 +225,7 @@ public class BundlePersisterImpl implements BundlePersister {
      *         present)
      * @throws RepositoryException In case of JCR errors
      */
-    protected boolean store(PersistedBundle bundleInfo, JCRSessionWrapper session) throws RepositoryException, IOException {
+    protected boolean store(PersistentBundle bundleInfo, JCRSessionWrapper session) throws RepositoryException, IOException {
 
         String path = getJcrPath(bundleInfo);
         JCRNodeWrapper bundleNode = null;
@@ -264,13 +256,18 @@ public class BundlePersisterImpl implements BundlePersister {
     }
 
     @Override
-    public PersistedBundle store(Resource resource) throws IOException, ModuleManagementException {
+    public PersistentBundle store(Resource resource) throws ModuleManagementException {
 
         long startTime = System.currentTimeMillis();
 
-        final PersistedBundle bundleInfo = extract(resource);
-        if (bundleInfo == null) {
-            throw new ModuleManagementException("Invalid resource for bundle: " + resource);
+        final PersistentBundle bundleInfo;
+        try {
+            bundleInfo = PersistentBundleInfoBuilder.build(resource);
+            if (bundleInfo == null) {
+                throw new ModuleManagementException("Invalid resource for bundle: " + resource);
+            }
+        } catch (IOException e) {
+            throw new ModuleManagementException("Unable to read bundle resource", e);
         }
 
         try {

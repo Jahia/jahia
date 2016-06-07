@@ -862,7 +862,7 @@ public class ContentDefinitionHelper {
                             types.add(extendedNodeType);
                         }
                     }
-                    if (pkg.getId().equals("default")) {
+                    if (pkg.isDefault()) {
                         for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti.hasNext(); ) {
                             ExtendedNodeType extendedNodeType = (ExtendedNodeType) nti.nextNodeType();
                             if (isValidNodeType(extendedNodeType, nodeTypes, excludedNodeTypes, includeSubTypes, site)) {

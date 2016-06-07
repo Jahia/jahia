@@ -42,8 +42,9 @@
       <operations public="true" package="true" protected="false" private="false" static="true"/>    
     </display>  
   </interface>  
-  <class id="5" language="java" name="org.jahia.services.modulemanager.persistence.PersistedBundle" project="jahia-impl" 
-    file="/jahia-impl/src/main/java/org/jahia/services/modulemanager/persistence/PersistedBundle.java" binary="false" 
+  <class id="5" language="java" name="org.jahia.services.modulemanager.persistence.PersistentBundle" 
+    project="jahia-impl" 
+    file="/jahia-impl/src/main/java/org/jahia/services/modulemanager/persistence/PersistentBundle.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="854" y="468"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -52,9 +53,9 @@
       <operations public="true" package="true" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="org.jahia.services.modulemanager.persistence.jcr.BundlePersisterImpl" 
+  <class id="6" language="java" name="org.jahia.services.modulemanager.persistence.jcr.JCRBundlePersister" 
     project="jahia-impl" 
-    file="/jahia-impl/src/main/java/org/jahia/services/modulemanager/persistence/jcr/BundlePersisterImpl.java" 
+    file="/jahia-impl/src/main/java/org/jahia/services/modulemanager/persistence/jcr/JCRBundlePersister.java" 
     binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="587" y="672"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

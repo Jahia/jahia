@@ -44,6 +44,7 @@
 package org.jahia.services.templates;
 
 import com.google.common.collect.ImmutableSet;
+
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.FileUtils;
@@ -108,7 +109,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private static final Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
-    public static final Set<String> DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY = new HashSet<>(Arrays.asList("default", "jquery", "ckeditor", "assets"));
+    public static final Set<String> DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("default", "jquery", "ckeditor", "assets")));
     public static final String MODULE_TYPE_MODULE = "module";
     public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
     public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
@@ -137,6 +138,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private ForgeHelper forgeHelper;
     private List<String> nonManageableModules;
     private Set<String> modulesWithNoDefaultDependency = DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY;
+    private Set<String> knownFragmentHosts = Collections.emptySet();
 
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -1086,5 +1088,23 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         } else {
             this.modulesWithNoDefaultDependency = DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY;
         }
+    }
+
+    /**
+     * Returns a set of symbolic names for bundles, which are known to be target hosts for fragments.
+     * 
+     * @return a set of symbolic names for bundles, which are known to be target hosts for fragments
+     */
+    public Set<String> getKnownFragmentHosts() {
+        return knownFragmentHosts;
+    }
+
+    /**
+     * Defines a set of symbolic names for bundles, which are known to be target hosts for fragments.
+     * 
+     * @param knownFragmentHosts a set of symbolic names for bundles, which are known to be target hosts for fragments
+     */
+    public void setKnownFragmentHosts(Set<String> knownFragmentHosts) {
+        this.knownFragmentHosts = knownFragmentHosts;
     }
 }

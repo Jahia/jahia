@@ -47,8 +47,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
@@ -70,7 +68,6 @@ public class OperationResult implements Serializable {
         return new OperationResult("Operation successful", bundleInfo);
     }
 
-    @XmlAttribute(name = "bundleInfos", required = false)
     private List<BundleInfo> bundleInfos = new LinkedList<>();
 
     private String message;

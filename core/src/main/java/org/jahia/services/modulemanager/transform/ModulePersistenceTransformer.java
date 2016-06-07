@@ -56,7 +56,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.modulemanager.Constants;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
-import org.jahia.services.modulemanager.persistence.PersistedBundle;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.osgi.framework.Bundle;
 import org.osgi.service.url.AbstractURLStreamHandlerService;
 import org.osgi.service.url.URLStreamHandlerService;
@@ -94,7 +94,7 @@ public class ModulePersistenceTransformer {
         public InputStream getInputStream() throws IOException {
             String bundleKey = url.getFile();
             try {
-                return ModuleDependencyTransformer.getTransformedInputStream(getBundlePersister().download(bundleKey));
+                return ModuleDependencyTransformer.getTransformedInputStream(getBundlePersister().getInputStream(bundleKey));
             } catch (ModuleManagementException e) {
                 logger.warn("Couldn't resolve the {}: protocol path for: {}", Constants.URL_PROTOCOL_DX, bundleKey);
                 throw new IOException(e);
@@ -149,13 +149,14 @@ public class ModulePersistenceTransformer {
                 bundleResource = new UrlResource(bundle.getLocation());
             }
             logger.info("Persisting bundle {} from resource {}", bundle, bundleResource);
-            PersistedBundle persistedBundle = getBundlePersister().store(bundleResource);
+            PersistentBundle persistedBundle = getBundlePersister().store(bundleResource);
             logger.info("Bundle {} has been successfully transformed into {} in {} ms", new Object[] { bundle, persistedBundle.getLocation(), System.currentTimeMillis() - startTime });
-            return ModuleDependencyTransformer.getTransformedInputStream(getBundlePersister().download(persistedBundle.getKey()));
+            return ModuleDependencyTransformer.getTransformedInputStream(getBundlePersister().getInputStream(persistedBundle.getKey()));
         } catch (Exception e) {
-            logger.error("Unable to transform bundle " + bundle + ". Cause: " + e.getMessage(), e);
+            String msg = "Unable to transform bundle " + bundle + ". Cause: " + e.getMessage();
+            logger.error(msg, e);
+            throw new ModuleManagementException(msg, e);
         }
-        return null;
     }
 
     /**
@@ -175,7 +176,7 @@ public class ModulePersistenceTransformer {
         long startTime = System.currentTimeMillis();
         logger.info("Transforming artifact {}", artifact);
         try {
-            PersistedBundle persistedBundle = getBundlePersister().store(new UrlResource(artifact));
+            PersistentBundle persistedBundle = getBundlePersister().store(new UrlResource(artifact));
             transformed = new URL(persistedBundle.getLocation());
             logger.info("Artifact {} has been successfully transformed into {} in {} ms", new Object[] { artifact, transformed, System.currentTimeMillis() - startTime });
         } catch (Exception e) {

@@ -48,15 +48,15 @@ import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
-import org.jahia.services.modulemanager.persistence.PersistedBundle;
-import org.jahia.services.modulemanager.persistence.PersistedBundleInfoBuilder;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
+import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * Unit tests for the {@link PersistedBundleInfoBuilder} helper, which extract module information from the provided bundle resource.
+ * Unit tests for the {@link PersistentBundleInfoBuilder} helper, which extract module information from the provided bundle resource.
  * 
  * @author Sergiy Shyrkov
  */
@@ -71,19 +71,19 @@ public class PersistedBundleInfoBuilderTest {
         return new ClassPathResource(PACKAGE_PATH + resource + ".jar");
     }
 
-    private PersistedBundle build(String resource) throws IOException {
-        return PersistedBundleInfoBuilder.build(getResource(resource));
+    private PersistentBundle build(String resource) throws IOException {
+        return PersistentBundleInfoBuilder.build(getResource(resource));
     }
 
     @Test
     public void testBuildDxModuleLegacy() throws IOException {
-        PersistedBundle info = build("dx-module-legacy");
+        PersistentBundle info = build("dx-module-legacy");
         assertNull(info);
     }
 
     @Test
     public void testBuildDxModuleReleased() throws IOException {
-        PersistedBundle info = build("dx-module-released");
+        PersistentBundle info = build("dx-module-released");
         logger.info("Module info parsed for {}: {}", info.getResource(), info);
 
         assertEquals("org.jahia.modules", info.getGroupId());
@@ -96,7 +96,7 @@ public class PersistedBundleInfoBuilderTest {
 
     @Test
     public void testBuildDxModuleSnapshot() throws IOException {
-        PersistedBundle info = build("dx-module-snapshot");
+        PersistentBundle info = build("dx-module-snapshot");
         logger.info("Module info parsed for {}: {}", info.getResource(), info);
 
         assertEquals("org.jahia.modules", info.getGroupId());
@@ -108,13 +108,13 @@ public class PersistedBundleInfoBuilderTest {
 
     @Test
     public void testBuildNonBundle() throws IOException {
-        PersistedBundle info = build("non-bundle");
+        PersistentBundle info = build("non-bundle");
         assertNull(info);
     }
 
     @Test
     public void testBuildNonDxBundle() throws IOException {
-        PersistedBundle info = build("non-dx-bundle");
+        PersistentBundle info = build("non-dx-bundle");
         logger.info("Module info parsed for {}: {}", info.getResource(), info);
 
         assertEquals(null, info.getGroupId());

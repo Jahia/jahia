@@ -60,7 +60,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.ModuleManagementException;
-import org.jahia.services.modulemanager.persistence.PersistedBundle;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,9 +149,7 @@ final class BundleInfoJcrHelper {
             groupId = info.getGroupId();
             symbolicName = info.getSymbolicName();
             version = info.getVersion();
-        }
 
-        if (info != null) {
             String path = getJcrPath(info);
             if (session.nodeExists(path)) {
                 target = session.getNode(path);
@@ -275,7 +273,7 @@ final class BundleInfoJcrHelper {
      * @param bundleInfo the bundle info object to get JCR path for
      * @return the JCR node path, which corresponds to the specified bundle info
      */
-    static String getJcrPath(PersistedBundle bundleInfo) {
+    static String getJcrPath(PersistentBundle bundleInfo) {
         StringBuilder path = new StringBuilder();
         path.append(PATH_BUNDLES + '/');
         if (StringUtils.isNotEmpty(bundleInfo.getGroupId())) {
@@ -305,7 +303,7 @@ final class BundleInfoJcrHelper {
      * @return the JCR node, which corresponds to the provided bundle info
      * @throws RepositoryException in case of a JCR error
      */
-    static JCRNodeWrapper getOrCreateTargetNode(PersistedBundle bundleInfo, JCRSessionWrapper session) throws RepositoryException {
+    static JCRNodeWrapper getOrCreateTargetNode(PersistentBundle bundleInfo, JCRSessionWrapper session) throws RepositoryException {
 
         JCRNodeWrapper target = getBundlesNode(session);
         if (bundleInfo.getGroupId() != null) {

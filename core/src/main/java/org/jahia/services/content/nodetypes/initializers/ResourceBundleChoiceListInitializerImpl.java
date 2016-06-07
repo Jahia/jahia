@@ -69,7 +69,7 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         JahiaTemplatesPackage pkg = epd.getDeclaringNodeType().getTemplatePackage();
-        java.util.ResourceBundle rb = ResourceBundles.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("default"), locale);
+        java.util.ResourceBundle rb = ResourceBundles.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(JahiaTemplatesPackage.ID_DEFAULT), locale);
 
         if (values == null || values.size() == 0) {
             List<ChoiceListValue> l = new ArrayList<ChoiceListValue>();
@@ -104,7 +104,7 @@ public class ResourceBundleChoiceListInitializerImpl extends AbstractChoiceListR
         String propValue = propertyValue.toString();
 
         JahiaTemplatesPackage pkg = propDef.getDeclaringNodeType().getTemplatePackage();
-        return Messages.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("default"),
+        return Messages.get(pkg != null ? pkg : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(JahiaTemplatesPackage.ID_DEFAULT),
                 propDef.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(propValue), locale, propValue);
     }
 }

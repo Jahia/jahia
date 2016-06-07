@@ -54,13 +54,13 @@ public interface Constants {
     
     String ATTR_JAHIA_MODULE_TYPE = "Jahia-Module-Type";
     
-    Attributes.Name ATTR_NAME_BUNDLE_NAME = new Attributes.Name("Bundle-Name");
+    Attributes.Name ATTR_NAME_BUNDLE_NAME = new Attributes.Name(org.osgi.framework.Constants.BUNDLE_NAME);
 
-    Attributes.Name ATTR_NAME_BUNDLE_SYMBOLIC_NAME = new Attributes.Name("Bundle-SymbolicName");
+    Attributes.Name ATTR_NAME_BUNDLE_SYMBOLIC_NAME = new Attributes.Name(org.osgi.framework.Constants.BUNDLE_SYMBOLICNAME);
     
-    Attributes.Name ATTR_NAME_BUNDLE_VERSION = new Attributes.Name("Bundle-Version");
+    Attributes.Name ATTR_NAME_BUNDLE_VERSION = new Attributes.Name(org.osgi.framework.Constants.BUNDLE_VERSION);
 
-    Attributes.Name ATTR_NAME_FRAGMENT_HOST = new Attributes.Name("Fragment-Host");
+    Attributes.Name ATTR_NAME_FRAGMENT_HOST = new Attributes.Name(org.osgi.framework.Constants.FRAGMENT_HOST);
 
     Attributes.Name ATTR_NAME_GROUP_ID = new Attributes.Name("Jahia-GroupId");
 

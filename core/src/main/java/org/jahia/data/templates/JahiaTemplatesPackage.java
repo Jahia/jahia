@@ -78,6 +78,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Khue ng
  */
 public class JahiaTemplatesPackage {
+    
+    /**
+     * The ID of the default module.
+     */
+    public static final String ID_DEFAULT = "default";
+    
+    /**
+     * The name of the default module.
+     */
+    public static final String NAME_DEFAULT = "Default Jahia Templates";
 
     private static final Resource[] NO_RESOURCES = new Resource[0];
 
@@ -388,7 +398,7 @@ public class JahiaTemplatesPackage {
      * @return <code>true</code> if this package is the default template set
      */
     public boolean isDefault() {
-        return getId() != null && "default".equals(getId());
+        return getId() != null && ID_DEFAULT.equals(getId());
     }
 
     public List<String> getInitialImports() {

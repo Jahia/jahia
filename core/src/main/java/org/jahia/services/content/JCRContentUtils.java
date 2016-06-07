@@ -792,7 +792,7 @@ public final class JCRContentUtils implements ServletContextAware {
      */
     public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
         String systemId = primaryNodeType.getSystemId();
-        JahiaTemplatesPackage aPackage = !systemId.startsWith("system-") && !"default".equals(systemId) ? ServicesRegistry
+        JahiaTemplatesPackage aPackage = !systemId.startsWith("system-") && !JahiaTemplatesPackage.ID_DEFAULT.equals(systemId) ? ServicesRegistry
                 .getInstance().getJahiaTemplateManagerService().getTemplatePackageById(systemId) : null;
 
         return aPackage != null ? aPackage.getId() + "/icons/" : "assets/icons/";

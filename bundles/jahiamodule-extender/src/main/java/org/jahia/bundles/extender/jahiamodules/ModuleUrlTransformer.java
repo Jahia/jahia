@@ -46,15 +46,13 @@ package org.jahia.bundles.extender.jahiamodules;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.jahia.osgi.BundleUtils;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.modulemanager.Constants;
 import org.jahia.services.modulemanager.transform.ModulePersistenceTransformer;
 import org.osgi.framework.Bundle;
@@ -63,8 +61,6 @@ import org.osgi.framework.Bundle;
  * Bundle URL transformer that allows to use special DX handler.
  */
 public class ModuleUrlTransformer implements ArtifactUrlTransformer {
-
-    private static final Set<String> KNOWN_DX_FRAGMENT_HOSTS = new HashSet<>(Arrays.asList("tools", "ckeditor"));
 
     @Override
     public boolean canHandle(File file) {
@@ -87,7 +83,7 @@ public class ModuleUrlTransformer implements ArtifactUrlTransformer {
                         // it is a fragment bundle, check its host
                         Bundle hostBundle = BundleUtils.getBundleBySymbolicName(host, null);
                         // is its host an our module?
-                        return hostBundle != null && hostBundle.getHeaders().get(Constants.ATTR_JAHIA_MODULE_TYPE) != null || KNOWN_DX_FRAGMENT_HOSTS.contains(host);
+                        return hostBundle != null && hostBundle.getHeaders().get(Constants.ATTR_JAHIA_MODULE_TYPE) != null || ServicesRegistry.getInstance().getJahiaTemplateManagerService().getKnownFragmentHosts().contains(host);
                     }
                 }
                 return false;

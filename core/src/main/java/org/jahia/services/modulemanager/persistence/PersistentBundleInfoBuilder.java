@@ -72,11 +72,11 @@ import org.springframework.core.io.Resource;
  * @author Ahmed Chaabni
  * @author Sergiy Shyrkov
  */
-public final class PersistedBundleInfoBuilder {
+public final class PersistentBundleInfoBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(PersistedBundleInfoBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(PersistentBundleInfoBuilder.class);
 
-    private PersistedBundleInfoBuilder() {
+    private PersistentBundleInfoBuilder() {
         super();
     }
 
@@ -87,7 +87,7 @@ public final class PersistedBundleInfoBuilder {
      * @return The information about the supplied bundle
      * @throws IOException In case of resource read errors
      */
-    public static PersistedBundle build(Resource resource) throws IOException {
+    public static PersistentBundle build(Resource resource) throws IOException {
 
         // populate data from manifest
         String groupId = null;
@@ -111,7 +111,7 @@ public final class PersistedBundleInfoBuilder {
             return null;
         }
 
-        PersistedBundle bundleInfo = new PersistedBundle(groupId, symbolicName, version);
+        PersistentBundle bundleInfo = new PersistentBundle(groupId, symbolicName, version);
         bundleInfo.setDisplayName(displayName);
         bundleInfo.setChecksum(calculateDigest(resource));
         bundleInfo.setResource(resource);

@@ -217,7 +217,7 @@ public class ComponentRegistry {
             }
             JCRNodeWrapper components = permissions.getNode("components");
 
-            if (pkg.getId().equals("default")) {
+            if (pkg.isDefault()) {
                 for (NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes("system-jahia"); nti.hasNext(); ) {
                     if (registerComponent(components, (ExtendedNodeType) nti.nextNodeType())) {
                         count++;

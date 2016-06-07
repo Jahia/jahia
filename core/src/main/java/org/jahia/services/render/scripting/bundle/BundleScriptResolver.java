@@ -642,7 +642,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                     }
                 }
                 if (!defaultModuleProcessed) {
-                    JahiaTemplatesPackage defaultModule = templateManagerService.getTemplatePackageById("default");
+                    JahiaTemplatesPackage defaultModule = templateManagerService.getTemplatePackageById(JahiaTemplatesPackage.ID_DEFAULT);
                     if (defaultModule != null) {
                         for (String templateType : templateTypes) {
                             getViewsSet(type, views, templateType, defaultModule);
@@ -705,7 +705,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             defaultProperties = new Properties();
             JahiaTemplatesPackage aPackage = nt.getTemplatePackage();
             if (aPackage == null) {
-                aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("default");
+                aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(JahiaTemplatesPackage.ID_DEFAULT);
             }
             if (!aPackage.getId().equals(tplPackage.getId())) {
                 Set<ViewResourceInfo> defaultScripts = findBundleScripts(aPackage.getId(), pathBuilder.toString());

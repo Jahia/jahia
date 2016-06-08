@@ -44,32 +44,33 @@
 package org.jahia.services.modulemanager;
 
 /**
- * Signals that a module management operation has failed because the target module bundle cannot be found.
+ * Signals that a submitted target for module operation is not valid.
  * 
  * @author Sergiy Shyrkov
  */
-public class ModuleNotFoundException extends ModuleManagementClientException {
+public class InvalidTargetException extends ModuleManagementClientException {
 
-    private static final long serialVersionUID = -2692789581026091598L;
+    private static final long serialVersionUID = 6875456034010172813L;
 
-    private String bundleKey;
+    private String target;
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param message the detail error message
+     * @param target the invalid target
      */
-    public ModuleNotFoundException(String bundleKey) {
-        super("Unable to find a module bundle corresponding to the key: " + bundleKey);
+    public InvalidTargetException(String target) {
+        super("Supplied target " + target + " for module operation is not valid");
+        this.target = target;
     }
 
     /**
-     * Returns the key of the target bundle which could not be found.
+     * Returns the operation target.
      * 
-     * @return the key of the target bundle which could not be found
+     * @return the operation target
      */
-    public String getBundleKey() {
-        return bundleKey;
+    public String getTarget() {
+        return target;
     }
 
 }

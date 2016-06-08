@@ -44,6 +44,7 @@
 package org.jahia.services.modulemanager.spi;
 
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.InvalidTargetException;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.osgi.framework.BundleException;
 
@@ -63,8 +64,9 @@ public interface BundleService {
      * @param start Whether the installed bundle should be started right away
      * @return The result of the install operation
      * @throws BundleException In case of problems
+     * @throws InvalidTargetException in case target is not a valid target for module operation
      */
-    void install(String uri, String target, boolean start) throws BundleException;
+    void install(String uri, String target, boolean start) throws BundleException, InvalidTargetException;
 
     /**
      * Performs the start operation with the provided bundle on the target group of cluster nodes.
@@ -72,8 +74,9 @@ public interface BundleService {
      * @param bundleInfo The bundle to perform operation for
      * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported values)
      * @throws BundleException In case of problems
+     * @throws InvalidTargetException in case target is not a valid target for module operation
      */
-    void start(BundleInfo bundleInfo, String target) throws BundleException;
+    void start(BundleInfo bundleInfo, String target) throws BundleException, InvalidTargetException;
 
     /**
      * Performs the stop operation with the provided bundle on the target group of cluster nodes.
@@ -81,8 +84,9 @@ public interface BundleService {
      * @param bundleInfo The bundle to perform operation for
      * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported values)
      * @throws BundleException In case of problems
+     * @throws InvalidTargetException in case target is not a valid target for module operation
      */
-    void stop(BundleInfo bundleInfo, String target) throws BundleException;
+    void stop(BundleInfo bundleInfo, String target) throws BundleException, InvalidTargetException;
 
     /**
      * Performs the uninstall operation with the provided bundle on the target group of cluster nodes.
@@ -90,6 +94,7 @@ public interface BundleService {
      * @param bundleInfo The bundle to perform operation for
      * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported values)
      * @throws BundleException In case of problems
+     * @throws InvalidTargetException in case target is not a valid target for module operation
      */
-    void uninstall(BundleInfo bundleInfo, String target) throws BundleException;
+    void uninstall(BundleInfo bundleInfo, String target) throws BundleException, InvalidTargetException;
 }

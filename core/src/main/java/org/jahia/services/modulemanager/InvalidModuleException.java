@@ -48,7 +48,7 @@ package org.jahia.services.modulemanager;
  * 
  * @author Sergiy Shyrkov
  */
-public class InvalidModuleException extends ModuleManagementException {
+public class InvalidModuleException extends ModuleManagementClientException {
 
     private static final long serialVersionUID = -2692789581026091598L;
 

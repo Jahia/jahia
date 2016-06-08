@@ -257,7 +257,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
             updatedRequestParameters = new StringBuilder("ec,v");
         }
         if (SettingsBean.getInstance().isDevelopmentMode()) {
-            updatedRequestParameters.append(",cacheinfo,moduleinfo");
+            updatedRequestParameters.append(",moduleinfo");
         }
         properties.put("cache.requestParameters", updatedRequestParameters.toString());
 

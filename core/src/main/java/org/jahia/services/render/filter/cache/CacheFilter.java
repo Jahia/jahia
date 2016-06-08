@@ -227,7 +227,7 @@ public class CacheFilter extends AbstractFilter {
         // Append debug information
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(request.getParameter("cacheinfo"));
         if (displayCacheInfo && !result.contains("<body") && result.trim().length() > 0) {
-            result = appendDebugInformation(renderContext, key, result);
+            result = appendDebugInformation(moduleMap, result);
         }
 
         logCacheFilterRenderingTime(resource, moduleMap);
@@ -464,22 +464,17 @@ public class CacheFilter extends AbstractFilter {
         // Add attr to say that this fragment have been served by the cache, to avoid cache it again
         moduleMap.put(FRAGMENT_SERVED_FROM_CACHE, Boolean.TRUE);
 
-        boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
-        if (displayCacheInfo && !cachedContent.contains("<body") && cachedContent.trim().length() > 0) {
-            return appendDebugInformation(renderContext, key, cachedContent);
-        } else {
-            return cachedContent;
-        }
+        return cachedContent;
     }
 
-    protected String appendDebugInformation(RenderContext renderContext, String key, String renderContent) {
+    protected String appendDebugInformation(Map<String, Object> moduleMap, String renderContent) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<div class=\"cacheDebugInfo\">");
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Expiration: </span><span>");
-        String key1 = cacheProvider.getKeyGenerator().replacePlaceholdersInCacheKey(renderContext, key);
-        if (!cacheProvider.isNonCacheableFragment(key)) {
+        if ((moduleMap.containsKey(FRAGMENT_SERVED_FROM_CACHE) && ((Boolean) moduleMap.get(FRAGMENT_SERVED_FROM_CACHE))) ||
+                moduleMap.get(FRAGMENT_NOT_CACHEABLE) == null) {
             stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(cacheProvider.getCache().get(
-                    key1).getExpirationTime())));
+                    moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY)).getExpirationTime())));
         } else {
             stringBuilder.append("Not cached fragment ").append(SimpleDateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
         }

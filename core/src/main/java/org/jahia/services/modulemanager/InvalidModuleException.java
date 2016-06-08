@@ -45,10 +45,10 @@ package org.jahia.services.modulemanager;
 
 /**
  * Signals that a submitted JAR file does not correspond to a valid OSGi module.
- * 
+ *
  * @author Sergiy Shyrkov
  */
-public class InvalidModuleException extends ModuleManagementClientException {
+public class InvalidModuleException extends ModuleManagementInvalidArgumentException {
 
     private static final long serialVersionUID = -2692789581026091598L;
 
@@ -59,5 +59,4 @@ public class InvalidModuleException extends ModuleManagementClientException {
         super("Submitted bundle is either not a valid OSGi bundle or has no required manifest headers"
                 + " Bundle-SymbolicName and Implementation-Version/Bundle-Version");
     }
-
 }

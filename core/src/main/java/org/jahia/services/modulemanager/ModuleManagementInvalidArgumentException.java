@@ -44,21 +44,20 @@
 package org.jahia.services.modulemanager;
 
 /**
- * Module management related exception, that indicates a client "fault", i.e. bad request or parameter value / format.
- * 
+ * Module management related exception that indicates bad parameter data passed by the invoker.
+ *
  * @author Sergiy Shyrkov
  */
-public class ModuleManagementClientException extends ModuleManagementException {
+public class ModuleManagementInvalidArgumentException extends ModuleManagementException {
 
     private static final long serialVersionUID = 161593298158556639L;
 
     /**
      * Initializes an instance of this class.
-     * 
-     * @param message the detail error message
+     *
+     * @param message the detailed error message
      */
-    public ModuleManagementClientException(String message) {
+    public ModuleManagementInvalidArgumentException(String message) {
         super(message);
     }
-
 }

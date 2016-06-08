@@ -45,10 +45,10 @@ package org.jahia.services.modulemanager;
 
 /**
  * Signals that a submitted target for module operation is not valid.
- * 
+ *
  * @author Sergiy Shyrkov
  */
-public class InvalidTargetException extends ModuleManagementClientException {
+public class InvalidTargetException extends ModuleManagementInvalidArgumentException {
 
     private static final long serialVersionUID = 6875456034010172813L;
 
@@ -56,7 +56,7 @@ public class InvalidTargetException extends ModuleManagementClientException {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param target the invalid target
      */
     public InvalidTargetException(String target) {
@@ -66,11 +66,10 @@ public class InvalidTargetException extends ModuleManagementClientException {
 
     /**
      * Returns the operation target.
-     * 
+     *
      * @return the operation target
      */
     public String getTarget() {
         return target;
     }
-
 }

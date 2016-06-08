@@ -45,10 +45,10 @@ package org.jahia.services.modulemanager;
 
 /**
  * Signals that a module management operation has failed because the target module bundle cannot be found.
- * 
+ *
  * @author Sergiy Shyrkov
  */
-public class ModuleNotFoundException extends ModuleManagementClientException {
+public class ModuleNotFoundException extends ModuleManagementInvalidArgumentException {
 
     private static final long serialVersionUID = -2692789581026091598L;
 
@@ -56,7 +56,7 @@ public class ModuleNotFoundException extends ModuleManagementClientException {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param message the detail error message
      */
     public ModuleNotFoundException(String bundleKey) {
@@ -65,11 +65,10 @@ public class ModuleNotFoundException extends ModuleManagementClientException {
 
     /**
      * Returns the key of the target bundle which could not be found.
-     * 
+     *
      * @return the key of the target bundle which could not be found
      */
     public String getBundleKey() {
         return bundleKey;
     }
-
 }

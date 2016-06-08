@@ -936,7 +936,7 @@ public class Activator implements BundleActivator, EventHandler {
         props = new Hashtable<String, Object>();
         props.put(URLConstants.URL_HANDLER_PROTOCOL, URL_PROTOCOL_MODULE_DEPENDENCIES);
         props.put(Constants.SERVICE_DESCRIPTION, "URL stream protocol handler for DX modules that handles dependencies between them using OSGi capabilities");
-        props.put(Constants.SERVICE_VENDOR, "Jahia Solutions Group SA");
+        props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
         serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, ModuleDependencyTransformer.getURLStreamHandlerService(), props));
 
         // register artifact listener and URL transformer

@@ -69,7 +69,6 @@ public class OperationResult implements Serializable {
     }
 
     private List<BundleInfo> bundleInfos = new LinkedList<>();
-
     private String message;
 
     /**
@@ -78,7 +77,6 @@ public class OperationResult implements Serializable {
      * @param message description of the operation result
      */
     public OperationResult(String message) {
-        super();
         this.message = message;
     }
 
@@ -126,5 +124,4 @@ public class OperationResult implements Serializable {
     public String toString() {
         return ReflectionToStringBuilder.toString(this);
     }
-
 }

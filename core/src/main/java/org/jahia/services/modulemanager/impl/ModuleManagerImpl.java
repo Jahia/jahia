@@ -70,14 +70,9 @@ public class ModuleManagerImpl implements ModuleManager {
      *
      * @author Sergiy Shyrkov
      */
-    private interface OperationCallback {
-        /**
-         * Perform the operation for the specified bundle and target.
-         * 
-         * @param info the bundle to perform operation on
-         * @param target the target of this operation
-         * @throws BundleException in case of operation failure
-         */
+    private interface BundleOperation {
+
+        String getName();
         void perform(PersistentBundle info, String target) throws BundleException;
     }
 
@@ -117,33 +112,29 @@ public class ModuleManagerImpl implements ModuleManager {
 
         OperationResult result = null;
         PersistentBundle bundleInfo = null;
-        Exception resultError = null;
+        Exception error = null;
         try {
-
             bundleInfo = PersistentBundleInfoBuilder.build(bundleResource);
-
             if (bundleInfo == null) {
                 throw new InvalidModuleException();
             }
-
             persister.store(bundleInfo);
-
             result = install(bundleInfo, target, start);
         } catch (ModuleManagementException e) {
-            resultError = e;
+            error = e;
             throw e;
         } catch (Exception e) {
-            resultError = e;
+            error = e;
             throw new ModuleManagementException(e);
         } finally {
-            if (resultError == null) {
+            if (error == null) {
                 logger.info("Installation completed for bundle {} on target {} in {} ms. Operation result: {}",
                         new Object[] { bundleInfo != null ? bundleInfo.toBundleInfo() : bundleResource, target,
                                 System.currentTimeMillis() - startTime, result });
             } else {
                 logger.info("Installation failed for bundle {} on target {} (took {} ms). Operation error: {}",
                         new Object[] { bundleInfo != null ? bundleInfo.toBundleInfo() : bundleResource, target,
-                                System.currentTimeMillis() - startTime, resultError.getMessage() });
+                                System.currentTimeMillis() - startTime, error });
             }
         }
 
@@ -154,55 +145,52 @@ public class ModuleManagerImpl implements ModuleManager {
      * Performs the specified operation of the bundle.
      *
      * @param bundleKey the key of the bundle to perform operation on
-     * @param operationName the display name of the operation to be performed
-     * @param operationCallback the operation callback to be used to effectively execute the operation
      * @param target the target cluster group
+     * @param operation the operation callback to be used to effectively execute the operation
      * @return the result of the operation
      */
-    private OperationResult performOperation(String bundleKey, String operationName,
-            OperationCallback operationCallback, String target) {
+    private OperationResult performOperation(String bundleKey, String target, BundleOperation operation) {
 
         long startTime = System.currentTimeMillis();
         logger.info("Performing {} operation for bundle {} on target {}",
-                new Object[] { operationName, bundleKey, target });
+                new Object[] { operation.getName(), bundleKey, target });
 
-        OperationResult opResult = null;
+        OperationResult result = null;
         PersistentBundle info = null;
-        Exception resultError = null;
+        Exception error = null;
         try {
             info = persister.find(bundleKey);
-            if (info != null) {
-                operationCallback.perform(info, target);
-                opResult = OperationResult.success(info.toBundleInfo());
-            } else {
+            if (info == null) {
                 throw new ModuleNotFoundException(bundleKey);
             }
+            operation.perform(info, target);
+            result = OperationResult.success(info.toBundleInfo());
         } catch (BundleException e) {
-            resultError = e;
+            error = e;
             if (BundleException.RESOLVE_ERROR == ((BundleException) e).getType()) {
                 throw new ModuleNotFoundException(info != null ? info.toBundleInfo().getKey() : bundleKey);
             } else {
                 throw new ModuleManagementException(e);
             }
         } catch (ModuleManagementException e) {
-            resultError = e;
+            error = e;
             throw e;
         } catch (Exception e) {
-            resultError = e;
+            error = e;
             throw new ModuleManagementException(e);
         } finally {
-            if (resultError == null) {
+            if (error == null) {
                 logger.info("{} operation completed for bundle {} on target {} in {} ms. Opearation result: {}",
-                        new Object[] { operationName, bundleKey, target, System.currentTimeMillis() - startTime,
-                                opResult });
+                        new Object[] { operation.getName(), bundleKey, target, System.currentTimeMillis() - startTime,
+                                result });
             } else {
                 logger.info("{} operation failed for bundle {} on target {} (took {} ms). Opearation error: {}",
-                        new Object[] { operationName, bundleKey, target, System.currentTimeMillis() - startTime,
-                                resultError });
+                        new Object[] { operation.getName(), bundleKey, target, System.currentTimeMillis() - startTime,
+                                error });
             }
         }
 
-        return opResult;
+        return result;
     }
 
     /**
@@ -225,31 +213,52 @@ public class ModuleManagerImpl implements ModuleManager {
 
     @Override
     public OperationResult start(String bundleKey, String target) {
-        return performOperation(bundleKey, "start", new OperationCallback() {
+
+        return performOperation(bundleKey, target, new BundleOperation() {
+
+            @Override
+            public String getName() {
+                return "Start";
+            }
+
             @Override
             public void perform(PersistentBundle info, String target) throws BundleException {
                 bundleService.start(info, target);
             }
-        }, target);
+        });
     }
 
     @Override
     public OperationResult stop(String bundleKey, String target) {
-        return performOperation(bundleKey, "stop", new OperationCallback() {
+
+        return performOperation(bundleKey, target, new BundleOperation() {
+
+            @Override
+            public String getName() {
+                return "Stop";
+            }
+
             @Override
             public void perform(PersistentBundle info, String target) throws BundleException {
                 bundleService.stop(info, target);
             }
-        }, target);
+        });
     }
 
     @Override
     public OperationResult uninstall(String bundleKey, String target) {
-        return performOperation(bundleKey, "uninstall", new OperationCallback() {
+
+        return performOperation(bundleKey, target, new BundleOperation() {
+
+            @Override
+            public String getName() {
+                return "Uninstall";
+            }
+
             @Override
             public void perform(PersistentBundle info, String target) throws BundleException {
                 bundleService.uninstall(info, target);
             }
-        }, target);
+        });
     }
 }

@@ -109,6 +109,7 @@ public class ModulePersistenceTransformer {
             return (File) BeanUtilsBean.getInstance().getPropertyUtils().getProperty(m.invoke(bundle), "currentRevision.content.file");
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
             logger.error("Unable to detect the file for the deployed bundle " + bundle + ". Cause: " + e.getMessage(), e);
+            // we do not propagate here the exception; will use the bundle.getLocation() instead
         }
         return null;
     }
@@ -180,7 +181,9 @@ public class ModulePersistenceTransformer {
             transformed = new URL(persistedBundle.getLocation());
             logger.info("Artifact {} has been successfully transformed into {} in {} ms", new Object[] { artifact, transformed, System.currentTimeMillis() - startTime });
         } catch (Exception e) {
-            logger.error("Unable to transform artifact " + artifact + ". Cause: " + e.getMessage(), e);
+            String msg = "Unable to transform artifact " + artifact + ". Cause: " + e.getMessage();
+            logger.error(msg, e);
+            throw new ModuleManagementException(msg, e);
         }
 
         return transformed != null ? transformed : artifact;

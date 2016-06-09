@@ -76,6 +76,8 @@ public interface Constants {
     
     Attributes.Name ATTR_NAME_REQUIRE_CAPABILITY = new Attributes.Name("Require-Capability");
 
+    Attributes.Name ATTR_NAME_ROOT_FOLDER = new Attributes.Name("root-folder");
+
     String BUNDLE_SERVICE_PROPERTY_CLUSTERED = "clustered";
     
     String OSGI_CAPABILITY_MODULE_DEPENDENCIES = "com.jahia.modules.dependencies";

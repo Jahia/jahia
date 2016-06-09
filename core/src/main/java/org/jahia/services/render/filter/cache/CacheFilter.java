@@ -81,8 +81,8 @@ public class CacheFilter extends AbstractFilter {
     private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
 
     // Flags used to know if we have to cache the fragment or not,
-    // - used when the fragment is return from the cache in the prepare() to avoid cache it again in execute()
-    // - used when the fragment is not cacheable (this is calculate in the prepare)
+    // - used when the fragment is returned from the cache in the prepare() to avoid cache it again in execute()
+    // - used when the fragment is not cacheable (this is calculated in the prepare)
     public static final String FRAGMENT_SERVED_FROM_CACHE = "cacheFilter.fragment.servedFromCache";
     public static final String FRAGMENT_NOT_CACHEABLE = "cacheFilter.fragment.notCacheable";
 
@@ -184,7 +184,7 @@ public class CacheFilter extends AbstractFilter {
 
         String key = (String) moduleMap.get(AggregateFilter.RENDERING_KEY);
 
-        // Check if we have to put the fragment in cache
+        // Check if we have to put the fragment to the cache
         if (moduleMap.get(FRAGMENT_NOT_CACHEABLE) == null && moduleMap.get(FRAGMENT_SERVED_FROM_CACHE) == null) {
 
             Properties fragmentProperties = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);
@@ -240,7 +240,7 @@ public class CacheFilter extends AbstractFilter {
         }
         Object servedFromCacheAttribute = moduleMap.get(FRAGMENT_SERVED_FROM_CACHE);
         Boolean isServerFromCache = servedFromCacheAttribute != null && (Boolean) servedFromCacheAttribute;
-        String cacheLogMsg = isServerFromCache ? "served fragment {} from cache in {} ms" : "generated fragment {} in {} ms";
+        String cacheLogMsg = isServerFromCache ? "Served fragment {} from cache in {} ms" : "Generated fragment {} in {} ms";
         long start = (Long) moduleMap.get(RENDERING_TIMER);
         logger.debug(cacheLogMsg, resource.getPath(), System.currentTimeMillis() - start);
     }

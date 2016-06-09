@@ -60,17 +60,18 @@ import java.util.Map;
  * Also initializes profiling information.
  */
 public class MetricsLoggingFilter extends AbstractFilter {
+
     private MetricsLoggingService loggingService;
 
     public void setLoggingService(MetricsLoggingService loggingService) {
         this.loggingService = loggingService;
     }
 
+    @Override
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         if (!loggingService.isProfilingEnabled()) {
             return null;
         }
-
         String profilerName = "render module " + resource.getNodePath();
         Profiler profiler = loggingService.createNestedProfiler("MAIN", profilerName);
         profiler.start("render filters for " + resource.getNodePath());
@@ -82,12 +83,11 @@ public class MetricsLoggingFilter extends AbstractFilter {
     @Override
     public String execute(String previousOut, RenderContext context, Resource resource,
                           RenderChain chain) throws Exception {
+
         if (!loggingService.isProfilingEnabled()) {
             return previousOut;
         }
 
-        @SuppressWarnings("unchecked")
-        Map<String, Object> moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
         String profilerName = "render module " + resource.getNodePath();
 
         String sessionID = "";
@@ -95,7 +95,9 @@ public class MetricsLoggingFilter extends AbstractFilter {
         if (session != null) {
             sessionID = session.getId();
         }
+
         if (loggingService.isEnabled()) {
+            @SuppressWarnings("unchecked") Map<String, Object> moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
             boolean fragmentServedFromCache = moduleMap.get(CacheFilter.FRAGMENT_SERVED_FROM_CACHE) != null &&  (Boolean) moduleMap.get(CacheFilter.FRAGMENT_SERVED_FROM_CACHE);
             if (fragmentServedFromCache) {
                 // fragment served from the cache avoid to read the jcr node for performances

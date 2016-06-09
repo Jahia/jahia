@@ -98,8 +98,7 @@ public class MetricsLoggingFilter extends AbstractFilter {
 
         if (loggingService.isEnabled()) {
             @SuppressWarnings("unchecked") Map<String, Object> moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
-            boolean fragmentServedFromCache = moduleMap.get(CacheFilter.FRAGMENT_SERVED_FROM_CACHE) != null &&  (Boolean) moduleMap.get(CacheFilter.FRAGMENT_SERVED_FROM_CACHE);
-            if (fragmentServedFromCache) {
+            if (Boolean.TRUE.equals(moduleMap.get(CacheFilter.FRAGMENT_SERVED_FROM_CACHE))) {
                 // fragment served from the cache avoid to read the jcr node for performances
                 loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, "", resource.getNodePath(), "", "moduleViewed", resource.getResolvedTemplate(), "the cache filter");
             } else {

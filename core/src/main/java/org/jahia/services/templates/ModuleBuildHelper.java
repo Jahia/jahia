@@ -142,7 +142,7 @@ public class ModuleBuildHelper implements InitializingBean {
         FileInputStream is = new FileInputStream(moduleInfo.getFile());
         try {
             bundle = FrameworkService.getBundleContext().installBundle(org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES + ":" + moduleInfo.getFile().toURI
-                    ().toString(), is);
+                    ().toString(), ModuleDependencyTransformer.getTransformedInputStream(is));
             bundle.adapt(BundleStartLevel.class).setStartLevel(moduleStartLevel);
             bundle.start();
         } finally {

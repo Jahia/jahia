@@ -55,6 +55,10 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
+import org.apache.tika.detect.DefaultDetector;
+import org.apache.tika.detect.Detector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MimeTypes;
 
 /**
  * Represents the content node.
@@ -63,7 +67,9 @@ import java.io.InputStream;
  * Time: 11:53:30
  */
 public class JCRFileContent {
-    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRFileContent.class);
+
+    private static final Detector DETECTOR = new DefaultDetector(MimeTypes.getDefaultMimeTypes());
+    protected static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(JCRFileContent.class);
     protected JCRNodeWrapper node;
     protected Node objectNode;
     protected Node contentNode;
@@ -78,7 +84,7 @@ public class JCRFileContent {
             Property p = getContentNode().getProperty(Constants.JCR_DATA);
             return p.getBinary().getStream();
         } catch (RepositoryException e) {
-            logger.error("Repository error",e);
+            LOGGER.error("Repository error", e);
         }
         return null;
     }
@@ -97,23 +103,28 @@ public class JCRFileContent {
                 content.getProperty(Constants.JCR_DATA).remove();
             }
             Binary bin = null;
+            // Content type has to be checked before the instanciation of "BinaryImpl"
+            // otherwise, the content type is always "application/octet-stream"
+            if (contentType == null) {
+                contentType = DETECTOR.detect(is, new Metadata()).toString();
+                if (contentType == null) {
+                    contentType = "application/binary";
+                }
+            }
             try {
                 bin = new BinaryImpl(is);
                 content.setProperty(Constants.JCR_DATA, bin);
             } catch (IOException e) {
-                logger.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             } finally {
                 if (bin != null) {
                     bin.dispose();
                 }
             }
-            if (contentType == null) {
-                contentType = "application/binary";
-            }
             content.setProperty(Constants.JCR_MIMETYPE, contentType);
             contentNode = content;
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+        } catch (RepositoryException | IOException ex) {
+            LOGGER.error(ex.getMessage(), ex);
         }
 
     }

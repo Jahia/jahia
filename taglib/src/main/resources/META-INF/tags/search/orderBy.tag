@@ -30,11 +30,13 @@
 <c:set var="caseConversionKey" value="src_orderings[${orderingIndex}].caseConversion"/>
 
 <c:set target="${attributes}" property="name" value="${key}"/>
+<c:set var="propertyName" value="${functions:default(param[propertyNameKey], propertyName)}"/>
+
+<input type="hidden" name="${operandKey}" value="${fn:escapeXml(functions:default(param[operandKey], empty operand ? 'score' : operand))}"/>
 
 <c:choose>
   <c:when test="${!display}">
-    <input type="hidden" name="${operandKey}" value="${fn:escapeXml(functions:default(param[operandKey], operand))}"/>
-    <input type="hidden" name="${propertyNameKey}" value="${fn:escapeXml(functions:default(param[propertyNameKey], propertyName))}"/>
+    <input type="hidden" name="${propertyNameKey}" value="${propertyName}"/>
     <input type="hidden" name="${orderKey}" value="${fn:escapeXml(functions:default(param[orderKey], order))}"/>    
     <input type="hidden" name="${normalizeKey}" value="${fn:escapeXml(functions:default(param[normalizeKey], normalize))}"/>
     <c:if test="${not empty caseConversion or not empty param[caseConversionKey]}">
@@ -57,8 +59,6 @@
             </script>
         </template:addResources>
     </c:if>  
-    <c:set var="propertyName" value="${functions:default(param[propertyNameKey], propertyName)}"/>
-    <input type="hidden" name="${operandKey}" value="${fn:escapeXml(functions:default(param[operandKey], operand))}"/>
     <select ${functions:attributes(attributes)} name="${propertyNameKey}" onchange="searchOrderByToggle(this, document.getElementsByName('${operandKey}')[0]);">
         <option value="score" ${propertyName == 'score' ? 'selected="selected"' : ''}><fmt:message key="searchForm.orderBy.score"/></option>
         <option value="jcr:lastModified" ${propertyName == 'jcr:lastModified' ? 'selected="selected"' : ''}><fmt:message key="searchForm.orderBy.date"/></option>            

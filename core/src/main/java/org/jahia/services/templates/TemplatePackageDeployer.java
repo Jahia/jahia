@@ -86,9 +86,6 @@ public class TemplatePackageDeployer {
 
     private ImportExportBaseService importExportService;
 
-
-    private List<JahiaTemplatesPackage> modulesToInitialize = new LinkedList<JahiaTemplatesPackage>();
-
     public void setComponentRegistry(ComponentRegistry componentRegistry) {
         this.componentRegistry = componentRegistry;
     }
@@ -397,7 +394,7 @@ public class TemplatePackageDeployer {
     public JahiaTemplatesPackage deployModule(File jarFile, JCRSessionWrapper session) throws RepositoryException {
         try {
             String location = jarFile.toURI().toString();
-            Bundle bundle = FrameworkService.getInstance().getBundleContext().installBundle(location);
+            Bundle bundle = FrameworkService.getBundleContext().installBundle(location);
             bundle.update();
             bundle.start();
             String moduleId = BundleUtils.getModuleId(bundle);
@@ -411,7 +408,7 @@ public class TemplatePackageDeployer {
     }
 
     public void undeployModule(String id, String version) throws RepositoryException {
-        Bundle[] bundles = FrameworkService.getInstance().getBundleContext().getBundles();
+        Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
         for (Bundle bundle : bundles) {
             String moduleId = BundleUtils.getModuleId(bundle);
             String moduleVersion = BundleUtils.getModuleVersion(bundle);

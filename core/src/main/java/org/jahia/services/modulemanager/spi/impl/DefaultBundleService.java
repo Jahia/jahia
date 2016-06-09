@@ -47,8 +47,10 @@ import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.spi.BundleService;
+import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.startlevel.BundleStartLevel;
 
 /**
  * The default implementation of the {@link BundleService} which is using direct bundle operations (BundleContext.installBundle(),
@@ -71,6 +73,7 @@ public class DefaultBundleService implements BundleService {
     @Override
     public void install(String uri, String target, boolean start) throws BundleException {
         Bundle installedBundle = FrameworkService.getBundleContext().installBundle(uri);
+        installedBundle.adapt(BundleStartLevel.class).setStartLevel(SettingsBean.getInstance().getModuleStartLevel());
         if (start) {
             installedBundle.start();
         }

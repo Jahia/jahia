@@ -190,6 +190,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String modulesSourcesDiskPath;
     private String jahiaDatabaseScriptsPath;
     private String  jahiaGeneratedResourcesDiskPath;
+    
+    private int moduleStartLevel;
 
     /**
      * @param   pathResolver a path resolver used to locate files on the disk.
@@ -445,6 +447,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             useWebsockets = getBoolean("atmosphere.useWebsockets", false);
 
             areaAutoActivated = getBoolean("area.auto.activated", true);
+            
+            moduleStartLevel = getInt("jahia.moduleStartLevel", 90);
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");
@@ -502,6 +506,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             logger.error("Properties file is not valid...!", nfe);
         }
     } // end load
+
+    public int getModuleStartLevel() {
+        return moduleStartLevel;
+    }
 
     /**
      * Initializes the JerichoHTML parser logging.

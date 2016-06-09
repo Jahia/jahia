@@ -184,7 +184,8 @@ public class FilesAclImportHandler extends DefaultHandler {
                     } else {
                         f = f.addNode(StringUtils.substringAfterLast(path, "/"), "jnt:file", null, created, createdBy, lastModified, lastModifiedBy);
                         if (content != null) {
-                            f.getFileContent().uploadFile(content, attributes.getValue("dav:getcontenttype"));
+                            // We don't use the content type value from "dav:getcontenttype" to force its calculation
+                            f.getFileContent().uploadFile(content, null);
                         } else {
                             f.getFileContent().uploadFile(zis, attributes.getValue("dav:getcontenttype"));
                         }

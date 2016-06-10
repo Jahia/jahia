@@ -71,6 +71,12 @@ public interface Constants {
     Attributes.Name ATTR_NAME_JAHIA_DEPENDS = new Attributes.Name("Jahia-Depends");
 
     Attributes.Name ATTR_NAME_JAHIA_MODULE_TYPE = new Attributes.Name(ATTR_JAHIA_MODULE_TYPE);
+
+    Attributes.Name ATTR_NAME_JAHIA_PACKAGE_LICENSE = new Attributes.Name("Jahia-Package-License");
+
+    Attributes.Name ATTR_NAME_JAHIA_PACKAGE_NAME = new Attributes.Name("Jahia-Package-Name");
+
+    Attributes.Name ATTR_NAME_JAHIA_REQUIRED_VERSION = new Attributes.Name("Jahia-Required-Version");
     
     Attributes.Name ATTR_NAME_PROVIDE_CAPABILITY = new Attributes.Name("Provide-Capability");
     

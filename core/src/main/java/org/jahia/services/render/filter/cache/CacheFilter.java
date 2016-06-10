@@ -82,7 +82,6 @@ public class CacheFilter extends AbstractFilter {
 
     // Flags used to know if we have to cache the fragment or not,
     // - used when the fragment is returned from the cache in the prepare() to avoid cache it again in execute()
-    // - used when the fragment is not cacheable (this is calculated in the prepare)
     public static final String FRAGMENT_SERVED_FROM_CACHE = "cacheFilter.fragment.servedFromCache";
 
     protected ModuleCacheProvider cacheProvider;
@@ -180,7 +179,7 @@ public class CacheFilter extends AbstractFilter {
 
         String key = (String) moduleMap.get(AggregateFilter.RENDERING_KEY);
 
-        // Check if we have to put the fragment to the cache
+        // Check if we have to put the fragment in cache
         if (moduleMap.get(FRAGMENT_SERVED_FROM_CACHE) == null) {
 
             Properties fragmentProperties = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);

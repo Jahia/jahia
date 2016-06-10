@@ -139,15 +139,11 @@ public class ModuleBuildHelper implements InitializingBean {
                     moduleInfo.getVersion()));
         }
         // No existing module found, deploy new one
-        FileInputStream is = new FileInputStream(moduleInfo.getFile());
-        try {
-            bundle = FrameworkService.getBundleContext().installBundle(org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES + ":" + moduleInfo.getFile().toURI
-                    ().toString(), ModuleDependencyTransformer.getTransformedInputStream(is));
-            bundle.adapt(BundleStartLevel.class).setStartLevel(moduleStartLevel);
-            bundle.start();
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
+        bundle = FrameworkService.getBundleContext().installBundle(org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES + ":"
+                        + moduleInfo.getFile().toURI().toString());
+        bundle.adapt(BundleStartLevel.class).setStartLevel(moduleStartLevel);
+        bundle.start();
+
         JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
         if (pkg == null) {
             throw new IOException("Cannot deploy module");
@@ -608,16 +604,11 @@ public class ModuleBuildHelper implements InitializingBean {
             throw e;
         }
 
-        FileInputStream is = new FileInputStream(compiledModuleInfo.getFile());
-        Bundle bundle;
-        try {
-            bundle = FrameworkService.getBundleContext().installBundle(org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES + ":"  +compiledModuleInfo.getFile
-                    ().toURI().toString(), ModuleDependencyTransformer.getTransformedInputStream(is));
-            bundle.adapt(BundleStartLevel.class).setStartLevel(moduleStartLevel);
-            bundle.start();
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
+        Bundle bundle = FrameworkService.getBundleContext().installBundle(org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES + ":"
+                        + compiledModuleInfo.getFile().toURI().toString());
+        bundle.adapt(BundleStartLevel.class).setStartLevel(moduleStartLevel);
+        bundle.start();
+
         JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
         if (pkg == null) {
             FileUtils.deleteQuietly(dstFolder);

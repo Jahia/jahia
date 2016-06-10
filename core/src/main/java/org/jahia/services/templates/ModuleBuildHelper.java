@@ -956,7 +956,7 @@ public class ModuleBuildHelper implements InitializingBean {
         }
     }
 
-    static public class SvnCleaner extends DirectoryWalker {
+    static public class SvnCleaner extends DirectoryWalker<File> {
 
         public List<File> clean(File startDirectory) throws IOException {
             ArrayList<File> results = new ArrayList<File>();
@@ -964,7 +964,7 @@ public class ModuleBuildHelper implements InitializingBean {
             return results;
         }
 
-        protected boolean handleDirectory(File directory, int depth, Collection results) {
+        protected boolean handleDirectory(File directory, int depth, Collection<File> results) {
             if (".svn".equals(directory.getName())) {
                 FileUtils.deleteQuietly(directory);
                 results.add(directory);

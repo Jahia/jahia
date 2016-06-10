@@ -119,7 +119,7 @@ public class ModuleDeploymentTest {
                 FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "1.0" + ".jar"));
                 FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "1.1" + ".jar"));
 
-                Bundle[] bundles = FrameworkService.getInstance().getBundleContext().getBundles();
+                Bundle[] bundles = FrameworkService.getBundleContext().getBundles();
                 for (Bundle bundle : bundles) {
                     if (bundle.getSymbolicName().equals("dummy1")) {
                         try {

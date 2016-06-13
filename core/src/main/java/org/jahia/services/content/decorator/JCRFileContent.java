@@ -103,13 +103,13 @@ public class JCRFileContent {
                 content.getProperty(Constants.JCR_DATA).remove();
             }
             Binary bin = null;
-            // Content type has to be checked before the instanciation of "BinaryImpl"
+            // Content type has to be checked before the instantiation of "BinaryImpl"
             // otherwise, the content type is always "application/octet-stream"
-            if (contentType == null) {
+            if (contentType == null && is.markSupported()) {
                 contentType = DETECTOR.detect(is, new Metadata()).toString();
-                if (contentType == null) {
-                    contentType = "application/binary";
-                }
+            }
+            if (contentType == null) {
+                contentType = "application/binary";
             }
             try {
                 bin = new BinaryImpl(is);

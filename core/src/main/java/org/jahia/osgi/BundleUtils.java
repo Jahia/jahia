@@ -52,6 +52,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -394,6 +395,15 @@ public final class BundleUtils {
         }
 
         return serviceInstance;
+    }
+    
+    /**
+     * Resolves the specified bundles.
+     * 
+     * @param bundles The bundles to resolve or {@code null} to resolve all unresolved bundles installed in the Framework.
+     */
+    public static void resolveBundles(Collection<Bundle> bundlesToResolve) {
+        FrameworkService.getBundleContext().getBundle(0).adapt(FrameworkWiring.class).resolveBundles(bundlesToResolve);
     }
 
 }

@@ -44,6 +44,8 @@
 package org.jahia.osgi;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -55,6 +57,7 @@ import org.apache.karaf.util.config.PropertiesLoader;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
@@ -144,12 +147,31 @@ public class FrameworkService implements FrameworkListener {
     @Override
     public void frameworkEvent(FrameworkEvent event) {
         if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED) {
+            forceBundleResolution();
             final FrameworkService instance = getInstance();
             synchronized (instance) {
                 instance.frameworkStartLevelChanged = true;
                 logger.info("Framework start level changed");
                 notifyStarted(instance);
             }
+        }
+    }
+
+    /**
+     * For the bundles in INSTALLED state we force the resolution so they are moved to RESOLVED state.
+     */
+    private void forceBundleResolution() {
+        List<Bundle> toResolve = new ArrayList<>();
+
+        for (Bundle bundle : getBundleContext().getBundles()) {
+            if (bundle.getState() == Bundle.INSTALLED && BundleUtils.isJahiaModuleBundle(bundle)) {
+                toResolve.add(bundle);
+            }
+        }
+        for (Bundle bundle : toResolve) {
+            logger.info("Trigger resolution of the bundle {}", BundleUtils.getDisplayName(bundle));
+            // this forces the resolution of the bundle
+            bundle.getResource("dummy.resource");
         }
     }
 

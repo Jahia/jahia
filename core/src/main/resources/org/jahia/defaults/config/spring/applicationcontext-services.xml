@@ -180,6 +180,7 @@
         </property>
         <property name="modulesWithNoDefaultDependency" ref="modulesWithNoDefaultDependency"/>
         <property name="knownFragmentHosts" ref="knownFragmentHosts"/>
+        <property name="moduleManager" ref="ModuleManager"/>
     </bean>
 
     <util:set id="modulesWithNoDefaultDependency">
@@ -235,6 +236,7 @@
         <property name="moduleStartLevel" value="#{settingsBean.moduleStartLevel}"/>
         <property name="sourceControlHelper" ref="SourceControlHelper"/>
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
+        <property name="moduleManager" ref="ModuleManager"/>
     </bean>
 
     <bean id="ComponentRegistry" class="org.jahia.services.templates.ComponentRegistry"/>

@@ -61,7 +61,6 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleUtils;
-import org.jahia.osgi.FrameworkService;
 import org.jahia.security.license.LicenseCheckException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -70,6 +69,9 @@ import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
+import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.OperationResult;
 import org.jahia.services.modulemanager.transform.ModuleDependencyTransformer;
 import org.jahia.services.notification.ToolbarWarningsService;
 import org.jahia.settings.SettingsBean;
@@ -77,10 +79,10 @@ import org.jahia.utils.PomUtils;
 import org.jahia.utils.ProcessHelper;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.io.FileSystemResource;
 import org.xml.sax.SAXException;
 
 import javax.jcr.RepositoryException;
@@ -112,6 +114,7 @@ public class ModuleBuildHelper implements InitializingBean {
     private String mavenArchetypeVersion;
     private String mavenMinRequiredVersion;
     private String mavenReleasePlugin;
+    private ModuleManager moduleManager;
     private int moduleStartLevel;
     private SourceControlHelper scmHelper;
     private SettingsBean settingsBean;
@@ -123,6 +126,7 @@ public class ModuleBuildHelper implements InitializingBean {
         CompiledModuleInfo moduleInfo = compileModule(sources);
         Bundle bundle = BundleUtils.getBundle(moduleId, moduleInfo.getVersion());
         if (bundle != null) {
+            // we deal with an existing bundle
             FileInputStream is = new FileInputStream(moduleInfo.getFile());
             try {
                 bundle.update(ModuleDependencyTransformer.getTransformedInputStream(is));
@@ -137,24 +141,22 @@ public class ModuleBuildHelper implements InitializingBean {
             }
             return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
                     moduleInfo.getVersion()));
+        } else {
+            // No existing bundle found, deploy new one
+            OperationResult operationResult = moduleManager.install(new FileSystemResource(moduleInfo.getFile()), null, true);
+            BundleInfo bundleInfo = operationResult.getBundleInfos().get(0);
+            bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
+    
+            JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
+            if (pkg == null) {
+                throw new IOException("Cannot deploy module");
+            }
+            if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
+                throw new IOException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
+            }
+    
+            return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
         }
-        // No existing module found, deploy new one
-        bundle = FrameworkService.getBundleContext().installBundle(org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES + ":"
-                        + moduleInfo.getFile().toURI().toString());
-        bundle.adapt(BundleStartLevel.class).setStartLevel(moduleStartLevel);
-        bundle.start();
-
-        JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
-        if (pkg == null) {
-            throw new IOException("Cannot deploy module");
-        }
-        bundle.start();
-        if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
-            throw new IOException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
-        }
-
-        return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
-                moduleInfo.getVersion()));
     }
 
     public CompiledModuleInfo compileModule(File sources) throws IOException {
@@ -604,17 +606,15 @@ public class ModuleBuildHelper implements InitializingBean {
             throw e;
         }
 
-        Bundle bundle = FrameworkService.getBundleContext().installBundle(org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES + ":"
-                        + compiledModuleInfo.getFile().toURI().toString());
-        bundle.adapt(BundleStartLevel.class).setStartLevel(moduleStartLevel);
-        bundle.start();
+        OperationResult operationResult = moduleManager.install(new FileSystemResource(compiledModuleInfo.getFile()), null, true);
+        BundleInfo bundleInfo = operationResult.getBundleInfos().get(0);
+        Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
 
         JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
         if (pkg == null) {
             FileUtils.deleteQuietly(dstFolder);
             throw new IOException("Cannot deploy module");
         }
-        bundle.start();
         if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
             throw new BundleException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
         }
@@ -993,5 +993,9 @@ public class ModuleBuildHelper implements InitializingBean {
 
     public void setModuleStartLevel(int moduleStartLevel) {
         this.moduleStartLevel = moduleStartLevel;
+    }
+
+    public void setModuleManager(ModuleManager moduleManager) {
+        this.moduleManager = moduleManager;
     }
 }

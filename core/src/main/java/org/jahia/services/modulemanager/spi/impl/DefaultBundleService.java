@@ -76,6 +76,9 @@ public class DefaultBundleService implements BundleService {
         installedBundle.adapt(BundleStartLevel.class).setStartLevel(SettingsBean.getInstance().getModuleStartLevel());
         if (start) {
             installedBundle.start();
+        } else {
+            // used to force bundle resolution
+            installedBundle.getResource("dummy.resource");
         }
     }
 

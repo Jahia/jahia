@@ -43,6 +43,8 @@
  */
 package org.jahia.services.modulemanager.impl;
 
+import org.drools.core.util.StringUtils;
+import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidModuleException;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
@@ -73,13 +75,30 @@ public class ModuleManagerImpl implements ModuleManager {
     private interface BundleOperation {
 
         String getName();
-        void perform(PersistentBundle info, String target) throws BundleException;
+        
+        void perform(BundleInfo info, String target) throws BundleException;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
 
     private BundleService bundleService;
     private BundlePersister persister;
+
+    private BundleInfo getBundleInfo(String bundleKey) {
+        BundleInfo info = null;
+        // first check if we have the full key and all the info needed already
+        if (bundleKey.indexOf('/') != -1) {
+            info = BundleInfo.fromKey(bundleKey);
+            if (info.getGroupId() != null && info.getSymbolicName() != null && info.getVersion() != null) {
+                // we have everything
+                return info;
+            }
+        }
+        // let's try to search for a matching persistent bundle
+        PersistentBundle persistentBundle = persister.find(bundleKey);
+
+        return persistentBundle != null ? persistentBundle.toBundleInfo() : info;
+    }
 
     /**
      * Performs an installation of the bundle calling the bundle services.
@@ -150,25 +169,28 @@ public class ModuleManagerImpl implements ModuleManager {
      * @return the result of the operation
      */
     private OperationResult performOperation(String bundleKey, String target, BundleOperation operation) {
-
+        if (StringUtils.isEmpty(bundleKey)) {
+            throw new IllegalArgumentException("Bundle '" + bundleKey + "' key in invalid");
+        }
+        
         long startTime = System.currentTimeMillis();
         logger.info("Performing {} operation for bundle {} on target {}",
                 new Object[] { operation.getName(), bundleKey, target });
 
         OperationResult result = null;
-        PersistentBundle info = null;
+        BundleInfo info = null;
         Exception error = null;
         try {
-            info = persister.find(bundleKey);
+            info = getBundleInfo(bundleKey);
             if (info == null) {
                 throw new ModuleNotFoundException(bundleKey);
             }
             operation.perform(info, target);
-            result = OperationResult.success(info.toBundleInfo());
+            result = OperationResult.success(info);
         } catch (BundleException e) {
             error = e;
             if (BundleException.RESOLVE_ERROR == ((BundleException) e).getType()) {
-                throw new ModuleNotFoundException(info != null ? info.toBundleInfo().getKey() : bundleKey);
+                throw new ModuleNotFoundException(info != null ? info.getKey() : bundleKey);
             } else {
                 throw new ModuleManagementException(e);
             }
@@ -222,7 +244,7 @@ public class ModuleManagerImpl implements ModuleManager {
             }
 
             @Override
-            public void perform(PersistentBundle info, String target) throws BundleException {
+            public void perform(BundleInfo info, String target) throws BundleException {
                 bundleService.start(info, target);
             }
         });
@@ -239,7 +261,7 @@ public class ModuleManagerImpl implements ModuleManager {
             }
 
             @Override
-            public void perform(PersistentBundle info, String target) throws BundleException {
+            public void perform(BundleInfo info, String target) throws BundleException {
                 bundleService.stop(info, target);
             }
         });
@@ -256,7 +278,7 @@ public class ModuleManagerImpl implements ModuleManager {
             }
 
             @Override
-            public void perform(PersistentBundle info, String target) throws BundleException {
+            public void perform(BundleInfo info, String target) throws BundleException {
                 bundleService.uninstall(info, target);
             }
         });

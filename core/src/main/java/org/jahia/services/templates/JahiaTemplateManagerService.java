@@ -48,7 +48,6 @@ import com.google.common.collect.ImmutableSet;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -63,7 +62,6 @@ import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.osgi.FrameworkService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
@@ -72,6 +70,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
+import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -80,13 +79,13 @@ import org.jahia.utils.PomUtils;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
+import org.springframework.core.io.FileSystemResource;
 import org.xml.sax.SAXException;
 
 import javax.jcr.Node;
@@ -96,7 +95,6 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.xml.transform.TransformerException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -139,6 +137,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private List<String> nonManageableModules;
     private Set<String> modulesWithNoDefaultDependency = DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY;
     private Set<String> knownFragmentHosts = Collections.emptySet();
+    private ModuleManager moduleManager;
 
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -367,13 +366,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             throw new IOException("Module release failed.");
         }
 
-        FileInputStream is = new FileInputStream(generatedWar);
-        try {
-            Bundle bundle = FrameworkService.getBundleContext().installBundle(generatedWar.toURI().toString(), is);
-            bundle.adapt(BundleStartLevel.class).setStartLevel(moduleBuildHelper.getModuleStartLevel());
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
+        moduleManager.install(new FileSystemResource(generatedWar), null);
+
         JahiaTemplatesPackage pack = compileAndDeploy(module.getId(), sources, session);
         JCRNodeWrapper node = session.getNode("/modules/" + pack.getIdWithVersion());
         node.getNode("j:versionInfo").setProperty("j:sourcesFolder", sources.getPath());
@@ -1106,5 +1100,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public void setKnownFragmentHosts(Set<String> knownFragmentHosts) {
         this.knownFragmentHosts = knownFragmentHosts;
+    }
+
+    public void setModuleManager(ModuleManager moduleManager) {
+        this.moduleManager = moduleManager;
     }
 }

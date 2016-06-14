@@ -41,7 +41,7 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.modulemanager.transform;
+package org.jahia.services.modulemanager.util;
 
 import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_NAME;
 import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_SYMBOLIC_NAME;
@@ -54,11 +54,12 @@ import static org.jahia.services.modulemanager.Constants.OSGI_CAPABILITY_MODULE_
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -70,45 +71,30 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.services.modulemanager.persistence.BundlePersister;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.osgi.service.url.AbstractURLStreamHandlerService;
-import org.osgi.service.url.URLStreamHandlerService;
+import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 /**
- * Utility class that transforms Jahia-Depends header values of module bundles into corresponding Require-Capability header and also adds
+ * Utility class that contains common module methods for persisting bundle and transforming Jahia-Depends header values of module bundles into corresponding Require-Capability header and also adding
  * the Provide-Capability for the module itself.
  */
-public class ModuleDependencyTransformer {
+public class ModuleUtils {
 
-    /**
-     * A wrapper class for the underlying {@link URLConnection} to perform MANIFEST.MF modifications on the fly.
-     */
-    private static class TransformedURLConnection extends URLConnection {
-
-        /**
-         * Initializes an instance of this class.
-         *
-         * @param url the URL to be transformed
-         */
-        protected TransformedURLConnection(URL url) {
-            super(url);
-        }
-
-        @Override
-        public void connect() throws IOException {
-            // Do nothing
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            return getTransformedInputStream(new URL(url.getFile()).openConnection().getInputStream());
-        }
-    }
+    private static final Logger logger = LoggerFactory.getLogger(ModuleUtils.class);
 
     /**
      * Modifies the manifest attributes for Provide-Capability and Require-Capability (if needed) based on the module dependencies.
@@ -149,6 +135,34 @@ public class ModuleDependencyTransformer {
     }
 
     /**
+     * Performs the transformation of the capability attributes in the MANIFEST.MF file of the supplied stream.
+     *
+     * @param sourceStream the source stream for the bundle, which manifest has to be adjusted w.r.t. module dependencies
+     * @return the transformed stream for the bundle with adjusted manifest
+     * @throws IOException in case of I/O errors
+     */
+    public static InputStream addModuleDependencies(InputStream sourceStream) throws IOException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try (ZipInputStream zis = new ZipInputStream(sourceStream); ZipOutputStream zos = new ZipOutputStream(out);) {
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                zos.putNextEntry(new ZipEntry(zipEntry.getName()));
+                if (JarFile.MANIFEST_NAME.equals(zipEntry.getName())) {
+                    addDependsCapabilitiesToManifest(zis, zos);
+                } else {
+                    IOUtils.copy(zis, zos);
+                }
+                zis.closeEntry();
+                zipEntry = zis.getNextEntry();
+            }
+        }
+
+        return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    /**
      * Builds a single clause for the Provide-Capability header.
      *
      * @param dependency the dependency to use in the clause
@@ -159,7 +173,7 @@ public class ModuleDependencyTransformer {
                 .append(OSGI_CAPABILITY_MODULE_DEPENDENCIES + ";" + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY + "=\"")
                 .append(dependency).append("\"").toString();
     }
-
+    
     /**
      * Builds a single clause for the Require-Capability header.
      *
@@ -170,6 +184,29 @@ public class ModuleDependencyTransformer {
         return new StringBuilder().append(
                 OSGI_CAPABILITY_MODULE_DEPENDENCIES + ";filter:=\"(" + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY + "=")
                 .append(dependency).append(")\"").toString();
+    }
+
+    private static File getBundleFile(Bundle bundle) {
+        // The most reliable way to get the bundle JAR file is to access the Felix's
+        // Bundle.getArchive().getCurrentRevision().getContent().getFile().
+        // As we do not have a compile time dependency to Felix, we use reflection here.
+        try {
+            Method m = bundle.getClass().getDeclaredMethod("getArchive");
+            m.setAccessible(true);
+            return (File) BeanUtilsBean.getInstance().getPropertyUtils().getProperty(m.invoke(bundle),
+                    "currentRevision.content.file");
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException
+                | IllegalArgumentException e) {
+            logger.error("Unable to detect the file for the deployed bundle " + bundle + ". Cause: " + e.getMessage(),
+                    e);
+            // we do not propagate here the exception; will use the bundle.getLocation() instead
+        }
+        return null;
+    }
+
+    protected static BundlePersister getBundlePersister() {
+        return (BundlePersister) SpringContextSingleton
+                .getBean("org.jahia.services.modulemanager.persistence.BundlePersister");
     }
 
     private static Set<String> getModulesWithNoDefaultDependency() {
@@ -217,49 +254,66 @@ public class ModuleDependencyTransformer {
     }
 
     /**
-     * Performs the transformation of the capability attributes in the MANIFEST.MF file of the supplied stream.
+     * Performs the persistence of the supplied bundle and returns the information about it.
      *
-     * @param sourceStream the source stream for the bundle, which manifest has to be adjusted w.r.t. module dependencies
-     * @return the transformed stream for the bundle with adjusted manifest
-     * @throws IOException in case of I/O errors
+     * @param bundle the source bundle
+     * @return information about persisted bundle
+     * @throws ModuleManagementException in case of an error during persistence of the bundle
      */
-    public static InputStream getTransformedInputStream(InputStream sourceStream) throws IOException {
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        try (ZipInputStream zis = new ZipInputStream(sourceStream); ZipOutputStream zos = new ZipOutputStream(out);) {
-            ZipEntry zipEntry = zis.getNextEntry();
-            while (zipEntry != null) {
-                zos.putNextEntry(new ZipEntry(zipEntry.getName()));
-                if (JarFile.MANIFEST_NAME.equals(zipEntry.getName())) {
-                    addDependsCapabilitiesToManifest(zis, zos);
-                } else {
-                    IOUtils.copy(zis, zos);
-                }
-                zis.closeEntry();
-                zipEntry = zis.getNextEntry();
+    public static PersistentBundle persist(Bundle bundle) throws ModuleManagementException {
+        try {
+            Resource bundleResource = null;
+            File bundleFile = getBundleFile(bundle);
+            if (bundleFile != null) {
+                bundleResource = new FileSystemResource(bundleFile);
+            } else {
+                bundleResource = new UrlResource(bundle.getLocation());
             }
-        }
 
-        return new ByteArrayInputStream(out.toByteArray());
+            return persist(bundleResource);
+        } catch (Exception e) {
+            if (e instanceof ModuleManagementException) {
+                // re-throw
+                throw (ModuleManagementException) e;
+            }
+            String msg = "Unable to persist bundle " + bundle + ". Cause: " + e.getMessage();
+            logger.error(msg, e);
+            throw new ModuleManagementException(msg, e);
+        }
+    }
+    
+    public static InputStream loadPersistedBundle(String bundleKey) throws ModuleManagementException {
+        try {
+            return getBundlePersister().getInputStream(bundleKey);
+        } catch (Exception e) {
+            if (e instanceof ModuleManagementException) {
+                // re-throw
+                throw e;
+            }
+            throw new ModuleManagementException("Unable to load persistent bundle for key " + bundleKey + ". Cause: " + e.getMessage(), e);
+        }
     }
 
     /**
-     * Returns an instance of the {@link URLStreamHandlerService} that is capable of transforming the manifest of the underlying module
-     * bundle to handle module dependencies based on OSGi capabilities.
+     * Performs the persistence of the supplied bundle resource and returns the information about it.
      *
-     * @return an instance of the {@link URLStreamHandlerService} that is capable of transforming the manifest of the underlying module
-     *         bundle to handle module dependencies based on OSGi capabilities
+     * @param bundleResource the source bundle resource
+     * @return information about persisted bundle
+     * @throws ModuleManagementException in case of an error during persistence of the bundle
      */
-    public static URLStreamHandlerService getURLStreamHandlerService() {
-
-        return new AbstractURLStreamHandlerService() {
-
-            @Override
-            public URLConnection openConnection(URL url) throws IOException {
-                return new TransformedURLConnection(url);
-            }
-        };
+    public static PersistentBundle persist(Resource bundleResource) throws ModuleManagementException {
+        long startTime = System.currentTimeMillis();
+        try {
+            logger.debug("Persisting from resource {}", bundleResource);
+            PersistentBundle persistedBundle = getBundlePersister().store(bundleResource);
+            logger.debug("Bundle resource has been successfully persisted under {} in {} ms",
+                    persistedBundle.getLocation(), System.currentTimeMillis() - startTime);
+            return persistedBundle;
+        } catch (Exception e) {
+            String msg = "Unable to persist bundle from resource " + bundleResource + ". Cause: " + e.getMessage();
+            logger.error(msg, e);
+            throw new ModuleManagementException(msg, e);
+        }
     }
 
     /**

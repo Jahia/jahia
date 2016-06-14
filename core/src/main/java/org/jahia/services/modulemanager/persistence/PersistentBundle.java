@@ -142,13 +142,6 @@ public class PersistentBundle extends BundleInfo {
         this.resource = jarFile;
     }
 
-    /**
-     * @return basic information about this bundle as a new {@link BundleInfo} object
-     */
-    public BundleInfo toBundleInfo() {
-        return new BundleInfo(getGroupId(), getSymbolicName(), getVersion());
-    }
-
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);

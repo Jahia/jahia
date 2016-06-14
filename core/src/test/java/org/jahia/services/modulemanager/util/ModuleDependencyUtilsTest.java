@@ -41,7 +41,7 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.modulemanager.transform;
+package org.jahia.services.modulemanager.util;
 
 import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_NAME;
 import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_SYMBOLIC_NAME;
@@ -50,9 +50,9 @@ import static org.jahia.services.modulemanager.Constants.ATTR_NAME_PROVIDE_CAPAB
 import static org.jahia.services.modulemanager.Constants.ATTR_NAME_REQUIRE_CAPABILITY;
 import static org.jahia.services.modulemanager.Constants.OSGI_CAPABILITY_MODULE_DEPENDENCIES;
 import static org.jahia.services.modulemanager.Constants.OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY;
-import static org.jahia.services.modulemanager.transform.ModuleDependencyTransformer.addCapabilities;
-import static org.jahia.services.modulemanager.transform.ModuleDependencyTransformer.buildClauseProvideCapability;
-import static org.jahia.services.modulemanager.transform.ModuleDependencyTransformer.buildClauseRequireCapability;
+import static org.jahia.services.modulemanager.util.ModuleUtils.addCapabilities;
+import static org.jahia.services.modulemanager.util.ModuleUtils.buildClauseProvideCapability;
+import static org.jahia.services.modulemanager.util.ModuleUtils.buildClauseRequireCapability;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -60,14 +60,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.jar.Attributes;
 
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.junit.Test;
 
 /**
- * Unit test for the {@link ModuleDependencyTransformer}.
+ * Unit test for the {@link ModuleUtils}.
  *
  * @author Sergiy Shyrkov
  */
-public class ModuleDependencyTransformerTest {
+public class ModuleDependencyUtilsTest {
 
     private static final String BUNDLE_ID = "my-bundle";
     private static final String BUNDLE_NAME = "My Bundle";

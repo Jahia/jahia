@@ -72,7 +72,7 @@ import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.OperationResult;
-import org.jahia.services.modulemanager.transform.ModuleDependencyTransformer;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.notification.ToolbarWarningsService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
@@ -129,7 +129,7 @@ public class ModuleBuildHelper implements InitializingBean {
             // we deal with an existing bundle
             FileInputStream is = new FileInputStream(moduleInfo.getFile());
             try {
-                bundle.update(ModuleDependencyTransformer.getTransformedInputStream(is));
+                bundle.update(ModuleUtils.addModuleDependencies(is));
 
                 // start the bundle to make sure its template is available to be displayed
                 bundle.start();

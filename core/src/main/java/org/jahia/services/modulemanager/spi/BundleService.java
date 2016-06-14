@@ -45,8 +45,9 @@ package org.jahia.services.modulemanager.spi;
 
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidTargetException;
+import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
-import org.osgi.framework.BundleException;
+import org.jahia.services.modulemanager.ModuleNotFoundException;
 
 /**
  * Service for bundle related operations.
@@ -60,41 +61,51 @@ public interface BundleService {
      * parameter is <code>true</code>.
      *
      * @param uri The bundle location
-     * @param target The group of cluster nodes targeted by the install operation (see JavaDoc of {@link ModuleManager} class for the supported values)
+     * @param target The group of cluster nodes targeted by the install operation (see JavaDoc of {@link ModuleManager} class for the
+     *            supported values)
      * @param start Whether the installed bundle should be started right away
      * @return The result of the install operation
-     * @throws BundleException In case of problems
+     * @throws ModuleManagementException in case of operation failure
      * @throws InvalidTargetException in case target is not a valid target for module operation
      */
-    void install(String uri, String target, boolean start) throws BundleException, InvalidTargetException;
+    void install(String uri, String target, boolean start) throws ModuleManagementException, InvalidTargetException;
 
     /**
      * Performs the start operation with the provided bundle on the target group of cluster nodes.
      *
      * @param bundleInfo The bundle to perform operation for
-     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported values)
-     * @throws BundleException In case of problems
+     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
+     *            values)
+     * @throws ModuleManagementException in case of operation failure
+     * @throws ModuleNotFoundException in case the corresponding bundle cannot be found
      * @throws InvalidTargetException in case target is not a valid target for module operation
      */
-    void start(BundleInfo bundleInfo, String target) throws BundleException, InvalidTargetException;
+    void start(BundleInfo bundleInfo, String target)
+            throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
 
     /**
      * Performs the stop operation with the provided bundle on the target group of cluster nodes.
      *
      * @param bundleInfo The bundle to perform operation for
-     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported values)
-     * @throws BundleException In case of problems
+     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
+     *            values)
+     * @throws ModuleManagementException in case of operation failure
+     * @throws ModuleNotFoundException in case the corresponding bundle cannot be found
      * @throws InvalidTargetException in case target is not a valid target for module operation
      */
-    void stop(BundleInfo bundleInfo, String target) throws BundleException, InvalidTargetException;
+    void stop(BundleInfo bundleInfo, String target)
+            throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
 
     /**
      * Performs the uninstall operation with the provided bundle on the target group of cluster nodes.
      *
      * @param bundleInfo The bundle to perform operation for
-     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported values)
-     * @throws BundleException In case of problems
+     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
+     *            values)
+     * @throws ModuleManagementException in case of operation failure
+     * @throws ModuleNotFoundException in case the corresponding bundle cannot be found
      * @throws InvalidTargetException in case target is not a valid target for module operation
      */
-    void uninstall(BundleInfo bundleInfo, String target) throws BundleException, InvalidTargetException;
+    void uninstall(BundleInfo bundleInfo, String target)
+            throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
 }

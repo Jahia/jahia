@@ -54,7 +54,6 @@ import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.spi.BundleService;
-import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -76,10 +75,17 @@ public class ModuleManagerImpl implements ModuleManager {
 
         String getName();
         
-        void perform(BundleInfo info, String target) throws BundleException;
+        void perform(BundleInfo info, String target) throws ModuleManagementException;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
+    
+    /**
+     * @return basic information about this bundle as a new {@link BundleInfo} object
+     */
+    private static BundleInfo toBundleInfo(PersistentBundle persistentBundle) {
+        return new BundleInfo(persistentBundle.getGroupId(), persistentBundle.getSymbolicName(), persistentBundle.getVersion());
+    }
 
     private BundleService bundleService;
     private BundlePersister persister;
@@ -97,7 +103,7 @@ public class ModuleManagerImpl implements ModuleManager {
         // let's try to search for a matching persistent bundle
         PersistentBundle persistentBundle = persister.find(bundleKey);
 
-        return persistentBundle != null ? persistentBundle.toBundleInfo() : info;
+        return persistentBundle != null ? toBundleInfo(persistentBundle) : info;
     }
 
     /**
@@ -109,13 +115,11 @@ public class ModuleManagerImpl implements ModuleManager {
      * @return the result of the operation
      * @throws ModuleManagementException in case of bundle service errors
      */
-    private OperationResult install(PersistentBundle info, final String target, boolean start) throws ModuleManagementException {
-        try {
-            bundleService.install(info.getLocation(), target, start);
-        } catch (BundleException e) {
-            throw new ModuleManagementException(e);
-        }
-        return OperationResult.success(info.toBundleInfo());
+    private OperationResult install(PersistentBundle info, final String target, boolean start)
+            throws ModuleManagementException {
+        bundleService.install(info.getLocation(), target, start);
+
+        return OperationResult.success(toBundleInfo(info));
     }
 
     @Override
@@ -148,11 +152,11 @@ public class ModuleManagerImpl implements ModuleManager {
         } finally {
             if (error == null) {
                 logger.info("Installation completed for bundle {} on target {} in {} ms. Operation result: {}",
-                        new Object[] { bundleInfo != null ? bundleInfo.toBundleInfo() : bundleResource, target,
+                        new Object[] { bundleInfo != null ? toBundleInfo(bundleInfo) : bundleResource, target,
                                 System.currentTimeMillis() - startTime, result });
             } else {
                 logger.info("Installation failed for bundle {} on target {} (took {} ms). Operation error: {}",
-                        new Object[] { bundleInfo != null ? bundleInfo.toBundleInfo() : bundleResource, target,
+                        new Object[] { bundleInfo != null ? toBundleInfo(bundleInfo) : bundleResource, target,
                                 System.currentTimeMillis() - startTime, error });
             }
         }
@@ -187,13 +191,6 @@ public class ModuleManagerImpl implements ModuleManager {
             }
             operation.perform(info, target);
             result = OperationResult.success(info);
-        } catch (BundleException e) {
-            error = e;
-            if (BundleException.RESOLVE_ERROR == ((BundleException) e).getType()) {
-                throw new ModuleNotFoundException(info != null ? info.getKey() : bundleKey);
-            } else {
-                throw new ModuleManagementException(e);
-            }
         } catch (ModuleManagementException e) {
             error = e;
             throw e;
@@ -244,7 +241,7 @@ public class ModuleManagerImpl implements ModuleManager {
             }
 
             @Override
-            public void perform(BundleInfo info, String target) throws BundleException {
+            public void perform(BundleInfo info, String target) throws ModuleManagementException {
                 bundleService.start(info, target);
             }
         });
@@ -261,7 +258,7 @@ public class ModuleManagerImpl implements ModuleManager {
             }
 
             @Override
-            public void perform(BundleInfo info, String target) throws BundleException {
+            public void perform(BundleInfo info, String target) throws ModuleManagementException {
                 bundleService.stop(info, target);
             }
         });
@@ -278,7 +275,7 @@ public class ModuleManagerImpl implements ModuleManager {
             }
 
             @Override
-            public void perform(BundleInfo info, String target) throws BundleException {
+            public void perform(BundleInfo info, String target) throws ModuleManagementException {
                 bundleService.uninstall(info, target);
             }
         });

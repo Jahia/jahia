@@ -46,10 +46,11 @@ package org.jahia.services.modulemanager.spi.impl;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.Constants;
+import org.jahia.services.modulemanager.InvalidTargetException;
 import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.services.modulemanager.ModuleNotFoundException;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.settings.SettingsBean;
-import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,22 +68,22 @@ public class BundleServiceDelegate implements BundleService {
     private SettingsBean settingsBean;
 
     @Override
-    public void install(String uri, String target, boolean start) throws BundleException {
+    public void install(String uri, String target, boolean start) throws ModuleManagementException, InvalidTargetException {
         lookupService().install(uri, target, start);
     }
 
     @Override
-    public void start(BundleInfo bundleInfo, String target) throws BundleException {
+    public void start(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
         lookupService().start(bundleInfo, target);
     }
 
     @Override
-    public void stop(BundleInfo bundleInfo, String target) throws BundleException {
+    public void stop(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
         lookupService().stop(bundleInfo, target);
     }
 
     @Override
-    public void uninstall(BundleInfo bundleInfo, String target) throws BundleException {
+    public void uninstall(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
         lookupService().uninstall(bundleInfo, target);
     }
 

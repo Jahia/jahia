@@ -48,6 +48,9 @@ import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.bundles.extender.jahiamodules.transform.DxModuleURLStreamHandler;
+import org.jahia.bundles.extender.jahiamodules.transform.ModuleDependencyURLStreamHandler;
+import org.jahia.bundles.extender.jahiamodules.transform.ModuleUrlTransformer;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleResource;
@@ -60,8 +63,9 @@ import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.modulemanager.transform.ModuleDependencyTransformer;
-import org.jahia.services.modulemanager.transform.ModulePersistenceTransformer;
+import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.render.scripting.bundle.BundleScriptEngineManager;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.jahia.services.render.scripting.bundle.ScriptBundleObserver;
@@ -91,6 +95,7 @@ import org.springframework.core.io.Resource;
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -265,11 +270,11 @@ public class Activator implements BundleActivator, EventHandler {
                         try {
                             if (!l.startsWith(URL_PROTOCOL_DX)) {
                                 // transform the module
-                                bundle.update(ModulePersistenceTransformer.transform(bundle));
+                                bundle.update(transform(bundle));
                             } else {
                                 bundle.update();
                             }
-                        } catch (BundleException e) {
+                        } catch (BundleException | ModuleManagementException e) {
                             logger.warn("Cannot update bundle : " + e.getMessage(), e);
                         }
                     } catch (Exception e) {
@@ -284,6 +289,29 @@ public class Activator implements BundleActivator, EventHandler {
             } catch (Exception e) {
                 logger.error("Unable to start the bundle " + bundle, e);
             }
+        }
+    }
+
+    /**
+     * Performs the persistence of the supplied bundle (if needed) and returns the transformed input stream of its content, including module
+     * dependency transformation (see {@link ModuleDependencyTransformer}).
+     *
+     * @param bundle the source bundle
+     * @return the transformed input stream of its content
+     */
+    private static InputStream transform(Bundle bundle) throws ModuleManagementException {
+        try {
+            PersistentBundle persistentBundle = ModuleUtils.persist(bundle);
+            return ModuleUtils
+                    .addModuleDependencies(ModuleUtils.loadPersistedBundle(persistentBundle.getKey()));
+        } catch (Exception e) {
+            if (e instanceof ModuleManagementException) {
+                // re-throw
+                throw (ModuleManagementException) e;
+            }
+            String msg = "Unable to transform bundle " + bundle + ". Cause: " + e.getMessage();
+            logger.error(msg, e);
+            throw new ModuleManagementException(msg, e);
         }
     }
 
@@ -932,12 +960,12 @@ public class Activator implements BundleActivator, EventHandler {
         props.put(URLConstants.URL_HANDLER_PROTOCOL, URL_PROTOCOL_DX);
         props.put(Constants.SERVICE_DESCRIPTION, "URL stream protocol handler for DX modules that handles bundle storage and dependencies between modules");
         props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
-        serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, ModulePersistenceTransformer.getURLStreamHandlerService(), props));
+        serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, new DxModuleURLStreamHandler(), props));
         props = new Hashtable<String, Object>();
         props.put(URLConstants.URL_HANDLER_PROTOCOL, URL_PROTOCOL_MODULE_DEPENDENCIES);
         props.put(Constants.SERVICE_DESCRIPTION, "URL stream protocol handler for DX modules that handles dependencies between them using OSGi capabilities");
         props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
-        serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, ModuleDependencyTransformer.getURLStreamHandlerService(), props));
+        serviceRegistrations.add(context.registerService(URLStreamHandlerService.class, new ModuleDependencyURLStreamHandler(), props));
 
         // register artifact listener and URL transformer
         props = new Hashtable<String, Object>();

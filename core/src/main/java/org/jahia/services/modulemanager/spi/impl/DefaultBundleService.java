@@ -48,6 +48,8 @@ import java.util.Collections;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.services.modulemanager.ModuleNotFoundException;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
@@ -63,39 +65,55 @@ import org.osgi.framework.startlevel.BundleStartLevel;
  */
 public class DefaultBundleService implements BundleService {
 
-    private Bundle getBundleEnsureExists(BundleInfo bundleInfo) throws BundleException {
+    private Bundle getBundleEnsureExists(BundleInfo bundleInfo) throws ModuleNotFoundException {
         Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
         if (bundle == null) {
-            throw new BundleException("Unable to find bundle for symbolic name " + bundleInfo.getSymbolicName()
-                    + " and version " + bundleInfo.getVersion(), BundleException.RESOLVE_ERROR);
+            throw new ModuleNotFoundException(bundleInfo.getKey());
         }
         return bundle;
     }
 
     @Override
-    public void install(String uri, String target, boolean start) throws BundleException {
-        Bundle installedBundle = FrameworkService.getBundleContext().installBundle(uri);
-        installedBundle.adapt(BundleStartLevel.class).setStartLevel(SettingsBean.getInstance().getModuleStartLevel());
-        if (start) {
-            installedBundle.start();
-        } else {
-            // force bundle resolution
-            BundleUtils.resolveBundles(Collections.singleton(installedBundle));
+    public void install(String uri, String target, boolean start) throws ModuleManagementException {
+        try {
+            Bundle installedBundle = FrameworkService.getBundleContext().installBundle(uri);
+            installedBundle.adapt(BundleStartLevel.class)
+                    .setStartLevel(SettingsBean.getInstance().getModuleStartLevel());
+            if (start) {
+                installedBundle.start();
+            } else {
+                // force bundle resolution
+                BundleUtils.resolveBundles(Collections.singleton(installedBundle));
+            }
+        } catch (BundleException e) {
+            throw new ModuleManagementException(e);
         }
     }
 
     @Override
-    public void start(BundleInfo bundleInfo, String target) throws BundleException {
-        getBundleEnsureExists(bundleInfo).start();
+    public void start(BundleInfo bundleInfo, String target) throws ModuleNotFoundException {
+        try {
+            getBundleEnsureExists(bundleInfo).start();
+        } catch (BundleException e) {
+            throw new ModuleManagementException(e);
+        }
     }
 
     @Override
-    public void stop(BundleInfo bundleInfo, String target) throws BundleException {
-        getBundleEnsureExists(bundleInfo).stop();
+    public void stop(BundleInfo bundleInfo, String target) throws ModuleNotFoundException {
+        try {
+            getBundleEnsureExists(bundleInfo).stop();
+        } catch (BundleException e) {
+            throw new ModuleManagementException(e);
+        }
     }
 
     @Override
-    public void uninstall(BundleInfo bundleInfo, String target) throws BundleException {
-        getBundleEnsureExists(bundleInfo).uninstall();
+    public void uninstall(BundleInfo bundleInfo, String target) throws ModuleNotFoundException {
+        try {
+            getBundleEnsureExists(bundleInfo).uninstall();
+        } catch (BundleException e) {
+            throw new ModuleManagementException(e);
+        }
     }
 }

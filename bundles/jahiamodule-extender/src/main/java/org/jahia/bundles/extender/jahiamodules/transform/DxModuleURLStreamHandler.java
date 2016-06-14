@@ -41,62 +41,47 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.extender.jahiamodules;
+package org.jahia.bundles.extender.jahiamodules.transform;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
+import java.net.URLConnection;
 
-import org.apache.felix.fileinstall.ArtifactUrlTransformer;
-import org.jahia.osgi.BundleUtils;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.modulemanager.Constants;
-import org.jahia.services.modulemanager.transform.ModulePersistenceTransformer;
-import org.osgi.framework.Bundle;
+import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.services.modulemanager.util.ModuleUtils;
+import org.osgi.service.url.AbstractURLStreamHandlerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Bundle URL transformer that allows to use special DX handler.
+ * URL stream handler that transforms the bundle URL by reading it from a persistence storage and applying additionally the module
+ * dependency transformation using OSGi capabilities (see {@link ModuleUtils}}.
  */
-public class ModuleUrlTransformer implements ArtifactUrlTransformer {
+public class DxModuleURLStreamHandler extends AbstractURLStreamHandlerService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DxModuleURLStreamHandler.class);
 
     @Override
-    public boolean canHandle(File file) {
+    public URLConnection openConnection(URL u) throws IOException {
+        return new URLConnection(u) {
 
-        if (file == null || !file.getName().endsWith(".jar")) {
-            // we are not dealing with non-JAR files -> return
-            return false;
-        }
-
-        try (JarFile jar = new JarFile(file)) {
-            Manifest mf = jar.getManifest();
-            if (mf != null) {
-                Attributes attrs = mf.getMainAttributes();
-                // it should be our module
-                if (attrs.getValue(Constants.ATTR_NAME_JAHIA_MODULE_TYPE) != null) {
-                    return true;
-                } else {
-                    String host = attrs.getValue(Constants.ATTR_NAME_FRAGMENT_HOST);
-                    if (host != null) {
-                        // it is a fragment bundle, check its host
-                        Bundle hostBundle = BundleUtils.getBundleBySymbolicName(host, null);
-                        // is its host an our module?
-                        return hostBundle != null && hostBundle.getHeaders().get(Constants.ATTR_JAHIA_MODULE_TYPE) != null || ServicesRegistry.getInstance().getJahiaTemplateManagerService().getKnownFragmentHosts().contains(host);
-                    }
-                }
-                return false;
+            @Override
+            public void connect() throws IOException {
+                // Do nothing
             }
-        } catch (IOException e) {
-            // ignore
-        }
 
-        return false;
-    }
-
-    @Override
-    public URL transform(URL artifact) throws Exception {
-        return ModulePersistenceTransformer.transform(artifact);
+            @Override
+            public InputStream getInputStream() throws IOException {
+                String bundleKey = url.getFile();
+                try {
+                    return ModuleUtils.addModuleDependencies(ModuleUtils.loadPersistedBundle(bundleKey));
+                } catch (ModuleManagementException e) {
+                    logger.warn("Couldn't resolve the {}: protocol path for: {}", Constants.URL_PROTOCOL_DX, bundleKey);
+                    throw new IOException(e);
+                }
+            }
+        };
     }
 }

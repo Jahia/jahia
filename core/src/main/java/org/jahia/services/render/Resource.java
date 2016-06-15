@@ -142,7 +142,7 @@ public class Resource {
      * @return The JCR Node if found, null if not
      */
     public JCRNodeWrapper getNode() {
-        if (node == null) {
+        if (!isNodeLoaded()) {
             try {
                 if (lazyNodeFlagWarning &&
                         sessionWrapper.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) &&
@@ -173,6 +173,14 @@ public class Resource {
         return getNode();
     }
 
+    /**
+     * Know if the JCR Node is available on the current resource, since Resource can be lazy and JCR node not available
+     * @return true if JCR Node is available
+     */
+    public boolean isNodeLoaded() {
+        return node != null;
+    }
+
     public void setNode(JCRNodeWrapper node) {
         this.node = node;
     }
@@ -186,7 +194,7 @@ public class Resource {
     }
 
     private JCRSessionWrapper getSession() throws RepositoryException {
-        return node == null ? sessionWrapper : node.getSession();
+        return !isNodeLoaded() ? sessionWrapper : node.getSession();
     }
 
     public String getWorkspace() {
@@ -395,7 +403,7 @@ public class Resource {
 
     @Override
     public int hashCode() {
-        int result = node != null ? node.hashCode() : 0;
+        int result = isNodeLoaded() ? node.hashCode() : 0;
         result = 31 * result + (nodePath != null ? nodePath.hashCode() : 0);
         result = 31 * result + (templateType != null ? templateType.hashCode() : 0);
         result = 31 * result + (getTemplate() != null ? getTemplate().hashCode() : 0);

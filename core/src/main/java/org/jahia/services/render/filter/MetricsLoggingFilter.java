@@ -47,11 +47,9 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.filter.cache.CacheFilter;
 import org.slf4j.profiler.Profiler;
 
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 
 /**
  * MetricsLoggingFilter
@@ -97,14 +95,13 @@ public class MetricsLoggingFilter extends AbstractFilter {
         }
 
         if (loggingService.isEnabled()) {
-            @SuppressWarnings("unchecked") Map<String, Object> moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
-            if (Boolean.TRUE.equals(moduleMap.get(CacheFilter.FRAGMENT_SERVED_FROM_CACHE))) {
-                // fragment served from the cache avoid to read the jcr node for performances
-                loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, "", resource.getNodePath(), "", "moduleViewed", resource.getResolvedTemplate(), "the cache filter");
-            } else {
+            if (resource.isNodeLoaded()) {
                 // fragment not served from the cache, we can read the JCR node
                 JCRNodeWrapper node = resource.getNode();
                 loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, node.getIdentifier(), node.getPath(), node.getNodeTypes().get(0), "moduleViewed", resource.getResolvedTemplate(), "the full render chain");
+            } else {
+                // fragment served from the cache avoid to read the jcr node for performances
+                loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, "", resource.getNodePath(), "", "moduleViewed", resource.getResolvedTemplate(), "the cache filter");
             }
         }
 

@@ -137,7 +137,8 @@ public class ModuleUtils {
     /**
      * Performs the transformation of the capability attributes in the MANIFEST.MF file of the supplied stream.
      *
-     * @param sourceStream the source stream for the bundle, which manifest has to be adjusted w.r.t. module dependencies
+     * @param sourceStream the source stream for the bundle, which manifest has to be adjusted w.r.t. module dependencies; the stream is
+     *            closed after returning from this method
      * @return the transformed stream for the bundle with adjusted manifest
      * @throws IOException in case of I/O errors
      */

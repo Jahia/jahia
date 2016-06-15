@@ -68,7 +68,7 @@ import org.junit.Test;
  *
  * @author Sergiy Shyrkov
  */
-public class ModuleDependencyUtilsTest {
+public class ModuleUtilsTest {
 
     private static final String BUNDLE_ID = "my-bundle";
     private static final String BUNDLE_NAME = "My Bundle";

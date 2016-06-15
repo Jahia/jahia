@@ -58,6 +58,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -290,15 +291,15 @@ public class FileUploader extends Window {
                     String s = new HTML(results[i]).getText();
                     if (s.startsWith("OK:")) {
                         if (selectFileAfterDataUpdate == null) {
-                            selectFileAfterDataUpdate = s.substring("OK: ".length()); 
+                            selectFileAfterDataUpdate = URL.decode(s.substring("OK: ".length()));
                         }
                     } else if (s.startsWith("EXISTS:")) {
                         int i1 = s.indexOf(' ');
                         int i2 = s.indexOf(' ', i1 + 1);
                         int i3 = s.indexOf(' ', i2 + 1);
-                        final String key = s.substring(i1 + 1, i2);
-                        final String tmp = s.substring(i2 + 1, i3);
-                        final String name = s.substring(i3 + 1);
+                        final String key = URL.decode(s.substring(i1 + 1, i2));
+                        final String tmp = URL.decode(s.substring(i2 + 1, i3));
+                        final String name = URL.decode(s.substring(i3 + 1));
 
                         addExistingToForm(exists, key, tmp, name);
                     }

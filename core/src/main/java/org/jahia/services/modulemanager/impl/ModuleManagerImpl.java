@@ -74,12 +74,12 @@ public class ModuleManagerImpl implements ModuleManager {
     private interface BundleOperation {
 
         String getName();
-        
+
         void perform(BundleInfo info, String target) throws ModuleManagementException;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
-    
+
     /**
      * @return basic information about this bundle as a new {@link BundleInfo} object
      */
@@ -91,7 +91,9 @@ public class ModuleManagerImpl implements ModuleManager {
     private BundlePersister persister;
 
     private BundleInfo getBundleInfo(String bundleKey) {
+
         BundleInfo info = null;
+
         // first check if we have the full key and all the info needed already
         if (bundleKey.indexOf('/') != -1) {
             info = BundleInfo.fromKey(bundleKey);
@@ -100,6 +102,7 @@ public class ModuleManagerImpl implements ModuleManager {
                 return info;
             }
         }
+
         // let's try to search for a matching persistent bundle
         PersistentBundle persistentBundle = persister.find(bundleKey);
 
@@ -173,10 +176,11 @@ public class ModuleManagerImpl implements ModuleManager {
      * @return the result of the operation
      */
     private OperationResult performOperation(String bundleKey, String target, BundleOperation operation) {
+
         if (StringUtils.isEmpty(bundleKey)) {
             throw new IllegalArgumentException("Bundle '" + bundleKey + "' key in invalid");
         }
-        
+
         long startTime = System.currentTimeMillis();
         logger.info("Performing {} operation for bundle {} on target {}",
                 new Object[] { operation.getName(), bundleKey, target });

@@ -104,7 +104,7 @@ import java.util.zip.ZipInputStream;
  */
 public class ModuleBuildHelper implements InitializingBean {
 
-    private static Logger logger = LoggerFactory.getLogger(ModuleBuildHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModuleBuildHelper.class);
     private static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
 
     private String mavenExecutable;
@@ -146,7 +146,7 @@ public class ModuleBuildHelper implements InitializingBean {
             OperationResult operationResult = moduleManager.install(new FileSystemResource(moduleInfo.getFile()), null, true);
             BundleInfo bundleInfo = operationResult.getBundleInfos().get(0);
             bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
-    
+
             JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
             if (pkg == null) {
                 throw new IOException("Cannot deploy module");
@@ -154,7 +154,7 @@ public class ModuleBuildHelper implements InitializingBean {
             if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
                 throw new IOException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
             }
-    
+
             return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
         }
     }

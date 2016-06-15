@@ -64,8 +64,9 @@ public class DxModuleURLStreamHandler extends AbstractURLStreamHandlerService {
     private static final Logger logger = LoggerFactory.getLogger(DxModuleURLStreamHandler.class);
 
     @Override
-    public URLConnection openConnection(URL u) throws IOException {
-        return new URLConnection(u) {
+    public URLConnection openConnection(URL url) throws IOException {
+
+        return new URLConnection(url) {
 
             @Override
             public void connect() throws IOException {

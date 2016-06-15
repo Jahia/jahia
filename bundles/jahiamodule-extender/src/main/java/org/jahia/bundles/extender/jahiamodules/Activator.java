@@ -246,9 +246,12 @@ public class Activator implements BundleActivator, EventHandler {
     private void checkExistingModules(BundleContext context) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, BundleException, IOException {
 
         List<Bundle> toStart = new ArrayList<>();
+
         // parse existing bundles
         for (Bundle bundle : context.getBundles()) {
+
             if (BundleUtils.isJahiaModuleBundle(bundle)) {
+
                 int state = bundle.getState();
                 boolean isRegistered = registeredBundles.containsKey(bundle);
 
@@ -260,15 +263,15 @@ public class Activator implements BundleActivator, EventHandler {
                 // Parse bundle if activator has not seen them before
                 if (!isRegistered && state > Bundle.INSTALLED) {
                     try {
-                        String l = bundle.getLocation();
+                        String bundleLocation = bundle.getLocation();
                         logger.info("Found bundle {} which needs to be processed by a module extender. Location {}",
-                                BundleUtils.getDisplayName(bundle), l);
+                                BundleUtils.getDisplayName(bundle), bundleLocation);
                         if (state == Bundle.ACTIVE) {
                             bundle.stop();
                             toStart.add(bundle);
                         }
                         try {
-                            if (!l.startsWith(URL_PROTOCOL_DX)) {
+                            if (!bundleLocation.startsWith(URL_PROTOCOL_DX)) {
                                 // transform the module
                                 bundle.update(transform(bundle));
                             } else {
@@ -294,7 +297,7 @@ public class Activator implements BundleActivator, EventHandler {
 
     /**
      * Performs the persistence of the supplied bundle (if needed) and returns the transformed input stream of its content, including module
-     * dependency transformation (see {@link ModuleDependencyTransformer}).
+     * dependency transformation.
      *
      * @param bundle the source bundle
      * @return the transformed input stream of its content

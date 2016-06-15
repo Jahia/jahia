@@ -100,7 +100,6 @@ public class ModuleUtils {
      * Modifies the manifest attributes for Provide-Capability and Require-Capability (if needed) based on the module dependencies.
      *
      * @param atts the manifest attributes to be modified
-     *
      * @return <code>true</code> if the manifest attributes were modified; <code>false</code> if nothing was touched
      */
     static boolean addCapabilities(Attributes atts) {
@@ -174,7 +173,7 @@ public class ModuleUtils {
                 .append(OSGI_CAPABILITY_MODULE_DEPENDENCIES + ";" + OSGI_CAPABILITY_MODULE_DEPENDENCIES_KEY + "=\"")
                 .append(dependency).append("\"").toString();
     }
-    
+
     /**
      * Builds a single clause for the Require-Capability header.
      *
@@ -205,7 +204,7 @@ public class ModuleUtils {
         return null;
     }
 
-    protected static BundlePersister getBundlePersister() {
+    private static BundlePersister getBundlePersister() {
         return (BundlePersister) SpringContextSingleton
                 .getBean("org.jahia.services.modulemanager.persistence.BundlePersister");
     }
@@ -270,7 +269,6 @@ public class ModuleUtils {
             } else {
                 bundleResource = new UrlResource(bundle.getLocation());
             }
-
             return persist(bundleResource);
         } catch (Exception e) {
             if (e instanceof ModuleManagementException) {
@@ -282,7 +280,7 @@ public class ModuleUtils {
             throw new ModuleManagementException(msg, e);
         }
     }
-    
+
     public static InputStream loadPersistedBundle(String bundleKey) throws ModuleManagementException {
         try {
             return getBundlePersister().getInputStream(bundleKey);

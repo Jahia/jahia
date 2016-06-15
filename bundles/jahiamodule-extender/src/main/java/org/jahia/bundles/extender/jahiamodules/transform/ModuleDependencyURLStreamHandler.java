@@ -58,8 +58,9 @@ import org.osgi.service.url.AbstractURLStreamHandlerService;
 public class ModuleDependencyURLStreamHandler extends AbstractURLStreamHandlerService {
 
     @Override
-    public URLConnection openConnection(URL u) throws IOException {
-        return new URLConnection(u) {
+    public URLConnection openConnection(URL url) throws IOException {
+
+        return new URLConnection(url) {
 
             @Override
             public void connect() throws IOException {

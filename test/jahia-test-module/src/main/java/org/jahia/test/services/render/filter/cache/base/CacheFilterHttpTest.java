@@ -1,3 +1,46 @@
+/**
+ * ==========================================================================================
+ * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
+ * ==========================================================================================
+ *
+ *                                 http://www.jahia.com
+ *
+ *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *
+ *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ *     1/GPL OR 2/JSEL
+ *
+ *     1/ GPL
+ *     ==================================================================================
+ *
+ *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ *     2/ JSEL - Commercial and Supported Versions of the program
+ *     ===================================================================================
+ *
+ *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *
+ *     Alternatively, commercial and supported versions of the program - also known as
+ *     Enterprise Distributions - must be used in accordance with the terms and conditions
+ *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ *
+ *     If you are unsure which license is appropriate for your use,
+ *     please contact the sales department at sales@jahia.com.
+ */
 package org.jahia.test.services.render.filter.cache.base;
 
 import net.sf.ehcache.Cache;
@@ -16,6 +59,9 @@ import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.render.filter.AggregateFilter;
+import org.jahia.services.render.filter.cache.AggregateCacheFilter;
+import org.jahia.services.render.filter.cache.CacheFilter;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
 import org.jahia.services.sites.JahiaSite;
@@ -42,13 +88,18 @@ import java.util.regex.Pattern;
 import static org.junit.Assert.*;
 
 /**
- * Created by jkevan on 19/05/2016.
+ * Base Cache filter test for both old and new implementation of CacheFilter
+ * provide unit tests that are based on HTTP calls on current server to serve pages and tests different states
  */
 public class CacheFilterHttpTest extends JahiaTestCase {
 
     public static final Logger logger = LoggerFactory.getLogger(CacheFilterTest.class);
     public static final String TESTSITE_NAME = "cachetest";
     public static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+
+    private static boolean cacheFilterDisabled;
+    private static boolean aggregateFilterDisabled;
+    private static boolean aggregateCacheFilterDisabled;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -90,6 +141,14 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
             JCRPublicationService.getInstance().publishByMainId(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
+            // store filters config
+            cacheFilterDisabled = ((CacheFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).isDisabled();
+            aggregateFilterDisabled = ((AggregateFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).isDisabled();
+            aggregateCacheFilterDisabled = ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).isDisabled();
+
+            //enable test filters
+            getCheckFilter("CacheHttpTestRenderFilter1").setDisabled(false);
+            getCheckFilter("CacheHttpTestRenderFilter2").setDisabled(false);
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
         }
@@ -109,6 +168,17 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             userManagerProvider.deleteUser(userManagerProvider.lookupUser("user2").getPath(), session);
             userManagerProvider.deleteUser(userManagerProvider.lookupUser("user3").getPath(), session);
             session.save();
+
+            // restore filters config
+            ((CacheFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(cacheFilterDisabled);
+            ((AggregateFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(aggregateFilterDisabled);
+            ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).setDisabled(aggregateCacheFilterDisabled);
+
+            //enable test filters
+            getCheckFilter("CacheHttpTestRenderFilter1").setDisabled(true);
+            getCheckFilter("CacheHttpTestRenderFilter2").setDisabled(true);
+            getCheckFilter("CacheHttpTestRenderFilter1").clear();
+            getCheckFilter("CacheHttpTestRenderFilter2").clear();
         } catch (Exception e) {
             logger.warn("Exception during test tearDown", e);
         }
@@ -125,8 +195,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         depCache.flush();
         depCache.removeAll();
         cacheProvider.flushNonCacheableFragments();
-        getCheckFilter("CacheHttpTestRenderFitler1").clear();
-        getCheckFilter("CacheHttpTestRenderFitler2").clear();
+        getCheckFilter("CacheHttpTestRenderFilter1").clear();
+        getCheckFilter("CacheHttpTestRenderFilter2").clear();
         cache.getCacheConfiguration().setEternal(true);
         depCache.getCacheConfiguration().setEternal(true);
     }

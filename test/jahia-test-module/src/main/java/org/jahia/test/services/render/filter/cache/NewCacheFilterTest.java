@@ -1,3 +1,46 @@
+/**
+ * ==========================================================================================
+ * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
+ * ==========================================================================================
+ *
+ *                                 http://www.jahia.com
+ *
+ *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *
+ *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ *     1/GPL OR 2/JSEL
+ *
+ *     1/ GPL
+ *     ==================================================================================
+ *
+ *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ *     2/ JSEL - Commercial and Supported Versions of the program
+ *     ===================================================================================
+ *
+ *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *
+ *     Alternatively, commercial and supported versions of the program - also known as
+ *     Enterprise Distributions - must be used in accordance with the terms and conditions
+ *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ *
+ *     If you are unsure which license is appropriate for your use,
+ *     please contact the sales department at sales@jahia.com.
+ */
 package org.jahia.test.services.render.filter.cache;
 
 import net.sf.ehcache.Element;
@@ -21,6 +64,7 @@ import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.services.render.filter.cache.base.CacheFilterTest;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -35,27 +79,31 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 /**
- * Created by jkevan on 25/05/2016.
+ * New implementation of CacheFilter specific unit tests
  */
 public class NewCacheFilterTest extends CacheFilterTest{
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
 
+    private ModuleGeneratorQueue moduleGeneratorQueue = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue"));
+
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         CacheFilterTest.oneTimeSetUp();
+        NewCacheFilterHttpTest.switchCacheImplem();
+    }
 
-        ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(false);
-        ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(false);
-        ((AbstractFilter) SpringContextSingleton.getBean("cacheFilter")).setDisabled(true);
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+        CacheFilterTest.oneTimeTearDown();
     }
 
     @Test
     public void testCacheFilter() throws Exception {
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
-        String[] result = cacheFilterRender();
-        final Element element = moduleCacheProvider.getCache().get(result[2]);
+        CacheFilterRenderResult result = cacheFilterRender();
+        final Element element = moduleCacheProvider.getCache().get(result.finalKey);
         assertNotNull("Html Cache does not contains our html rendering", element);
-        assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result[0]));
+        assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result.fragmentHtml));
     }
 
     @Test
@@ -100,18 +148,18 @@ public class NewCacheFilterTest extends CacheFilterTest{
         assertNotNull(r2.result);
         assertNotNull(r1.result);
         if (onError) {
-            assertTrue(r1.result[0].contains("<!-- Module error : Error filter triggered in render chain-->"));
+            assertTrue(r1.result.fragmentHtml.contains("<!-- Module error : Error filter triggered in render chain-->"));
             // error is cached so r2 should also see an error when r1 release the latch
-            assertTrue(r2.result[0].contains("<!-- Module error : Error filter triggered in render chain-->"));
+            assertTrue(r2.result.fragmentHtml.contains("<!-- Module error : Error filter triggered in render chain-->"));
         } else {
-            assertTrue(r1.result[0].contains("render for:/sites/test/home/testContent"));
-            assertTrue(r2.result[0].contains("render for:/sites/test/home/testContent"));
+            assertTrue(r1.result.fragmentHtml.contains("render for:/sites/test/home/testContent"));
+            assertTrue(r2.result.fragmentHtml.contains("render for:/sites/test/home/testContent"));
         }
 
         // r1 is the long thread, it take 3000ms to generate the fragment
-        assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer > 3000 && r1.timer < 4000);
+        assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer > 3000);
         // waiting thread r2 wait that r1 release the latch, r2 is started 500ms after r1 so the fragment should be resolve in 2500ms approximately
-        assertTrue("Waiting thread don't spent the correct time to get the fragment", r2.timer > 2300 && r2.timer < 3000);
+        assertTrue("Waiting thread don't spent the correct time to get the fragment", r2.timer > 2300);
 
 
         // new r3 thread alone with no wait
@@ -121,22 +169,16 @@ public class NewCacheFilterTest extends CacheFilterTest{
 
         assertNull(r3.error);
         assertNotNull(r3.result);
-        assertTrue(r3.result[0].contains("render for:/sites/test/home"));
-
-        // free thread r3 should really speed, 1ms approximately
-        assertTrue("Free thread spent too much time generating the fragment: " + r3.timer, r3.timer >=  0 && r3.timer < 100);
+        assertTrue(r3.result.fragmentHtml.contains("render for:/sites/test/home"));
     }
-
-    // TODO: test not cacheable fragments
-    // TODO: test not cacheable fragments + latch (not cacheable fragment shouldn't aquier latchs)
 
     @Test
     public void testMaxWait() throws Exception{
-        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
+        long previousModuleGenerationWaitTime = moduleGeneratorQueue.getModuleGenerationWaitTime();
 
         try {
             // set generation wait to 1000 ms
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
+            moduleGeneratorQueue.setModuleGenerationWaitTime(1000);
 
             JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
 
@@ -157,23 +199,23 @@ public class NewCacheFilterTest extends CacheFilterTest{
             assertNotNull(r1.result);
             assertNull(r2.result);
             assertTrue(r2.error != null && r2.error.getMessage().contains("Module generation takes too long due to module not generated fast enough (1000 ms)"));
-            assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer > 3000 && r1.timer < 4000);
-            assertTrue("Waiting thread don't spent the correct time waiting before throw error", r2.timer > 1000 && r2.timer < 2000);
+            assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer > 3000);
+            assertTrue("Waiting thread don't spent the correct time waiting before throw error", r2.timer > 1000);
         } finally {
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+            moduleGeneratorQueue.setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
         }
     }
 
     @Test
     public void testMaxConcurrent() throws Exception{
-        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
-        int previousModuleGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
+        long previousModuleGenerationWaitTime = moduleGeneratorQueue.getModuleGenerationWaitTime();
+        int previousModuleGenerateInParallel = moduleGeneratorQueue.getMaxModulesToGenerateInParallel();
 
         try {
             // set generation wait to 1000 ms
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
+            moduleGeneratorQueue.setModuleGenerationWaitTime(1000);
             // set number of fragment generate in parallel to 1 for the test
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(1);
+            moduleGeneratorQueue.setMaxModulesToGenerateInParallel(1);
 
             JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
 
@@ -195,11 +237,11 @@ public class NewCacheFilterTest extends CacheFilterTest{
             assertNotNull(r1.result);
             assertNull(r2.result);
             assertTrue(r2.error != null && r2.error.getMessage().contains("Module generation takes too long due to maximum parallel processing reached (1)"));
-            assertTrue("Long thread don't spent the correct time to generate the fragment: " + r1.timer, r1.timer > 3000 && r1.timer < 4000);
-            assertTrue("Waiting thread don't spent the correct time waiting before throw error:" + r2.timer, r2.timer > 1000 && r2.timer < 2000);
+            assertTrue("Long thread don't spent the correct time to generate the fragment: " + r1.timer, r1.timer > 3000);
+            assertTrue("Waiting thread don't spent the correct time waiting before throw error:" + r2.timer, r2.timer > 1000);
         } finally {
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousModuleGenerateInParallel);
+            moduleGeneratorQueue.setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+            moduleGeneratorQueue.setMaxModulesToGenerateInParallel(previousModuleGenerateInParallel);
         }
     }
 
@@ -210,19 +252,19 @@ public class NewCacheFilterTest extends CacheFilterTest{
 
         // test module error
         Exception exception = null;
-        String[] result = null;
+        CacheFilterRenderResult result = null;
         try {
             result = cacheFilterRender(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_MODULE, null, true);
         } catch (Exception e) {
             exception = e;
         }
         //error should be cache
-        final Element element = moduleCacheProvider.getCache().get(result[2]);
+        final Element element = moduleCacheProvider.getCache().get(result.finalKey);
 
         assertNull(exception);
-        assertTrue("<!-- Module error : Error filter triggered in render chain-->".equals(result[0]));
+        assertTrue("<!-- Module error : Error filter triggered in render chain-->".equals(result.fragmentHtml));
         assertNotNull("Html Cache does not contains our error rendering", element);
-        assertTrue("Error Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result[0]));
+        assertTrue("Error Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result.fragmentHtml));
 
         // test page error
         exception = null;
@@ -236,7 +278,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
         assertTrue(exception != null && exception.getMessage().contains("Error filter triggered in render chain"));
     }
 
-    public String[] cacheFilterRender() throws Exception {
+    public CacheFilterRenderResult cacheFilterRender() throws Exception {
         return cacheFilterRender(JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH),
                     "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_PAGE, null, false);
     }
@@ -274,8 +316,20 @@ public class NewCacheFilterTest extends CacheFilterTest{
                 });
     }
 
-    public static String[] cacheFilterRender(JCRSessionWrapper sessionWrapper, final String nodePath, String resourceConfig, final Integer waitBeforeGenerate,
-                                              final boolean renderError) throws Exception {
+    private static class CacheFilterRenderResult {
+        public String key;
+        public String finalKey;
+        public String fragmentHtml;
+
+        public CacheFilterRenderResult(String key, String finalKey, String fragmentHtml) {
+            this.key = key;
+            this.finalKey = finalKey;
+            this.fragmentHtml = fragmentHtml;
+        }
+    }
+
+    public static CacheFilterRenderResult cacheFilterRender(JCRSessionWrapper sessionWrapper, final String nodePath, String resourceConfig, final Integer waitBeforeGenerate,
+                                                            final boolean renderError) throws Exception {
         RenderFilter outFilter = new AbstractFilter() {
             @Override
             public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
@@ -377,7 +431,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
 
         String result = chain.doFilter(context, resource);
 
-        return new String[]{result, key, finalKey};
+        return new CacheFilterRenderResult(key, finalKey, result);
     }
 
     public static class CacheRenderThread extends Thread {
@@ -386,7 +440,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
         boolean renderError;
         String nodePath;
         String resourceConfig;
-        public String[] result;
+        public CacheFilterRenderResult result;
         public Exception error;
         public long timer;
 

@@ -53,6 +53,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Render filter use for testing purpose, store data for render chains executions
+ */
 public class CacheFilterCheckFilter extends AbstractFilter {
 
     private Map<String,RequestData> data = new HashMap<String, RequestData>();

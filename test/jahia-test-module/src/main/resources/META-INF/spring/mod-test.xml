@@ -419,13 +419,15 @@
     </bean>
 
     <!-- first filter in chain -->
-    <bean id="CacheHttpTestRenderFitler1"  class="org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter">
+    <bean id="CacheHttpTestRenderFilter1"  class="org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter">
         <property name="priority" value="-99"/>
+        <property name="disabled" value="true"/>
     </bean>
 
     <!-- filter coming just after the cache in chain -->
-    <bean id="CacheHttpTestRenderFitler2" class="org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter">
+    <bean id="CacheHttpTestRenderFilter2" class="org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter">
         <property name="priority" value="16.6"/>
+        <property name="disabled" value="true"/>
     </bean>
 
 </beans>

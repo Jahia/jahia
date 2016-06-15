@@ -55,6 +55,9 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.TemplateNotFoundException;
+import org.jahia.services.render.filter.AggregateFilter;
+import org.jahia.services.render.filter.cache.AggregateCacheFilter;
+import org.jahia.services.render.filter.cache.CacheFilter;
 import org.jahia.services.render.filter.cache.CacheKeyGenerator;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSite;
@@ -76,6 +79,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
+ * base unit tests for both old and new implementation of CacheFilter
  * @author rincevent
  * @since JAHIA 6.5
  * Created : 12 janv. 2010
@@ -84,6 +88,10 @@ public class CacheFilterTest extends JahiaTestCase {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
     public final static String TESTSITE_NAME = "test";
     private static boolean isJsessionIdActive;
+
+    private static boolean cacheFilterDisabled;
+    private static boolean aggregateFilterDisabled;
+    private static boolean aggregateCacheFilterDisabled;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -117,6 +125,11 @@ public class CacheFilterTest extends JahiaTestCase {
 
             session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
             node = session.getNode("/sites/"+site.getSiteKey()+"/home/testContent");
+
+            // store filters config
+            cacheFilterDisabled = ((CacheFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).isDisabled();
+            aggregateFilterDisabled = ((AggregateFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).isDisabled();
+            aggregateCacheFilterDisabled = ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).isDisabled();
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
         }
@@ -131,6 +144,11 @@ public class CacheFilterTest extends JahiaTestCase {
         }
         JCRSessionFactory.getInstance().closeAllSessions();
         SettingsBean.getInstance().setDisableJsessionIdParameter(isJsessionIdActive);
+
+        // restore filters config
+        ((CacheFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(cacheFilterDisabled);
+        ((AggregateFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(aggregateFilterDisabled);
+        ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).setDisabled(aggregateCacheFilterDisabled);
     }
 
     @Test

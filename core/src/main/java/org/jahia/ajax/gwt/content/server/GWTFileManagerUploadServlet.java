@@ -43,23 +43,8 @@
  */
 package org.jahia.ajax.gwt.content.server;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileItemHeaders;
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.commons.fileupload.FileUploadException;
+import com.google.gwt.safehtml.shared.UriUtils;
+import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
 import org.apache.commons.fileupload.FileUploadBase.FileUploadIOException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -67,10 +52,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.LimitedInputStream;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.VersioningHelper;
 import org.jahia.ajax.gwt.helper.ZipHelper;
@@ -84,12 +65,21 @@ import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.*;
 
 /**
  * File upload servlet to handle requests from GWT upload form.
@@ -231,17 +221,17 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                             if (unzip && fileName.toLowerCase().endsWith(".zip")) {
                                 pathsToUnzip.add(new StringBuilder(location).append("/").append(name.toString()).toString());
                             }
-                            printWriter.write("OK: " + name.toString() + "\n");
+                            printWriter.write("OK: " + UriUtils.encode(name.toString()) + "\n");
                             break;
                         case EXISTS:
                             storeUploadedFile(request.getSession().getId(), fileItem);
-                            printWriter.write("EXISTS: " + fileItem.getFieldName() + " " + fileItem.getName() + " " + fileName + "\n");
+                            printWriter.write("EXISTS: " + UriUtils.encode(fileItem.getFieldName()) + " " + UriUtils.encode(fileItem.getName()) + " " + UriUtils.encode(fileName) + "\n");
                             break;
                         case READONLY:
-                            printWriter.write("READONLY: " + fileItem.getFieldName() + "\n");
+                            printWriter.write("READONLY: " + UriUtils.encode(fileItem.getFieldName()) + "\n");
                             break;
                         default:
-                            printWriter.write("UPLOAD-FAILED: " + fileItem.getFieldName() + "\n");
+                            printWriter.write("UPLOAD-FAILED: " + UriUtils.encode(fileItem.getFieldName()) + "\n");
                             break;
                     }
                 } catch (IOException e) {

@@ -106,12 +106,28 @@ public class LoggingConfigListener extends Log4jConfigListener {
                         File earFolder = war.getParentFile();
                         if (earFolder != null) {
                             File deploymentsFolder = earFolder.getParentFile();
-                            if (deploymentsFolder != null && "deployments".equals(deploymentsFolder.getName())) {
-                                File standaloneFolder = deploymentsFolder.getParentFile();
-                                if (standaloneFolder != null) {
-                                    File log = new File(standaloneFolder, "log");
-                                    if (log.isDirectory() && log.canWrite()) {
-                                        logDir = log.getAbsolutePath();
+                            if (deploymentsFolder != null) {
+                                if ("deployments".equals(deploymentsFolder.getName())) {
+                                    // exploded EAR deployment on JBoss
+                                    File standaloneFolder = deploymentsFolder.getParentFile();
+                                    if (standaloneFolder != null) {
+                                        File log = new File(standaloneFolder, "log");
+                                        if (log.isDirectory() && log.canWrite()) {
+                                            logDir = log.getAbsolutePath();
+                                        }
+                                    }
+                                } else if ("deployment".equals(deploymentsFolder.getName())) {
+                                    // packaged EAR deployment on JBoss
+                                    File vfsFolder = deploymentsFolder.getParentFile();
+                                    if (vfsFolder != null && "vfs".equals(vfsFolder.getName())) {
+                                        File standaloneFolder = vfsFolder.getParentFile() != null ? vfsFolder.getParentFile()
+                                                .getParentFile() : null;
+                                        if (standaloneFolder != null) {
+                                            File log = new File(standaloneFolder, "log");
+                                            if (log.isDirectory() && log.canWrite()) {
+                                                logDir = log.getAbsolutePath();
+                                            }
+                                        }
                                     }
                                 }
                             }

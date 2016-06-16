@@ -101,7 +101,7 @@ public class OldCacheFilterHttpTest extends CacheFilterHttpTest {
             URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/long");
             HttpThread t1 = new HttpThread(url, "root", "root1234", "testModuleWait1");
             t1.start();
-            Thread.sleep(200);
+            Thread.sleep(1000);
 
             HttpThread t2 = new HttpThread(url, "root", "root1234", "testModuleWait2");
             t2.start();

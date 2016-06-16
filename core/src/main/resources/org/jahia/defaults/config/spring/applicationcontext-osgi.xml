@@ -26,7 +26,7 @@
             <props value-type="java.lang.String">
 
                 <prop key="karaf.name">dx</prop>
-                
+
                 <prop key="karaf.home">${jahiaWebAppRoot}/WEB-INF/karaf</prop>
                 <prop key="karaf.base">#{settingsBean.jahiaVarDiskPath}/karaf</prop>
                 <prop key="karaf.data">#{settingsBean.jahiaVarDiskPath}/karaf/data</prop>
@@ -35,7 +35,8 @@
                 <prop key="karaf.instances">#{settingsBean.jahiaVarDiskPath}/karaf/instances</prop>
 
                 <prop key="karaf.startLocalConsole">false</prop>
-                <prop key="karaf.startRemoteShell">true</prop>
+                <prop key="karaf.startRemoteShell">#{T(java.lang.Boolean).toString(settingsBean.karafRemoteShellPort >= 0)}</prop>
+                <prop key="karaf.remoteShellPort">#{T(java.lang.Integer).toString(settingsBean.karafRemoteShellPort)}</prop>
                 <prop key="karaf.lock">false</prop>
 
                 <prop key="org.osgi.framework.storage">#{settingsBean.jahiaVarDiskPath}/bundles-deployed</prop>

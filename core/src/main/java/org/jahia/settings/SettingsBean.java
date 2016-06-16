@@ -189,9 +189,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String jahiaModulesDiskPath;
     private String modulesSourcesDiskPath;
     private String jahiaDatabaseScriptsPath;
-    private String  jahiaGeneratedResourcesDiskPath;
-    
+    private String jahiaGeneratedResourcesDiskPath;
+
     private int moduleStartLevel;
+    private int karafRemoteShellPort;
 
     /**
      * @param   pathResolver a path resolver used to locate files on the disk.
@@ -447,8 +448,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             useWebsockets = getBoolean("atmosphere.useWebsockets", false);
 
             areaAutoActivated = getBoolean("area.auto.activated", true);
-            
+
             moduleStartLevel = getInt("jahia.moduleStartLevel", 90);
+
+            karafRemoteShellPort = getInt("karaf.remoteShell.port", -1);
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");
@@ -511,6 +514,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return moduleStartLevel;
     }
 
+    public int getKarafRemoteShellPort() {
+        return karafRemoteShellPort;
+    }
+
     /**
      * Initializes the JerichoHTML parser logging.
      */
@@ -559,9 +566,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         setSystemProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
 
         setSystemProperty(StatManager.QUERY_STATS_ENABLED_PROPERTY, getString("jahia.jackrabbit.queryStatsEnabled", "true"));
-        
+
         setSystemProperty(JahiaSearchManager.INDEX_LOCK_TYPES_SYSTEM_PROPERTY, getString("jahia.jackrabbit.searchIndex.indexLockTypesProperty", "true"));
-        
+
         setSystemProperty("jahia.jackrabbit.ismLocking", getString("jahia.jackrabbit.ismLocking", "org.apache.jackrabbit.core.state.DefaultISMLocking"));
 
         try {
@@ -595,7 +602,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 setSystemProperty("org.apache.jackrabbit.server.remoting.davex.batchread-config",
                         "/jahia/batchread.properties");
             }
-            
+
             if (System.getProperty("jahia.jackrabbit.bundleCacheSize.workspace") == null
                     && properties.getProperty("jahia.jackrabbit.bundleCacheSize.workspace") != null) {
                 setSystemProperty("jahia.jackrabbit.bundleCacheSize.workspace",

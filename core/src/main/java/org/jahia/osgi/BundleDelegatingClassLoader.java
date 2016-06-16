@@ -99,9 +99,9 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
      * @return class loader adapter over the given bundle and class loader
      */
     public static BundleDelegatingClassLoader createBundleClassLoaderFor(final Bundle bundle, final ClassLoader bridge) {
-        return (BundleDelegatingClassLoader) AccessController.doPrivileged(new PrivilegedAction() {
+        return AccessController.doPrivileged(new PrivilegedAction<BundleDelegatingClassLoader>() {
 
-            public Object run() {
+            public BundleDelegatingClassLoader run() {
                 return new BundleDelegatingClassLoader(bundle, bridge);
             }
         });
@@ -121,7 +121,7 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
         this.bridge = bridgeLoader;
     }
 
-    protected Class findClass(String name) throws ClassNotFoundException {
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
         try {
             return this.backingBundle.loadClass(name);
         } catch (ClassNotFoundException cnfe) {
@@ -199,8 +199,8 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
         };
     }
 
-    protected Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        Class clazz = null;
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        Class<?> clazz = null;
         try {
             clazz = findClass(name);
         } catch (ClassNotFoundException cnfe) {

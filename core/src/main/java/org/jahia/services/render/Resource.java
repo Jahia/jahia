@@ -174,8 +174,8 @@ public class Resource {
     }
 
     /**
-     * Know if the JCR Node is available on the current resource, since Resource can be lazy and JCR node not available
-     * @return true if JCR Node is available
+     * Know if the JCR Node is available immediately, since the node may require lazy loading from JCR
+     * @return true if JCR Node is available immediately
      */
     public boolean isNodeLoaded() {
         return node != null;
@@ -194,7 +194,7 @@ public class Resource {
     }
 
     private JCRSessionWrapper getSession() throws RepositoryException {
-        return !isNodeLoaded() ? sessionWrapper : node.getSession();
+        return isNodeLoaded() ? node.getSession() : sessionWrapper;
     }
 
     public String getWorkspace() {

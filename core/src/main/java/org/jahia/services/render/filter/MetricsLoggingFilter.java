@@ -96,11 +96,11 @@ public class MetricsLoggingFilter extends AbstractFilter {
 
         if (loggingService.isEnabled()) {
             if (resource.isNodeLoaded()) {
-                // fragment not served from the cache, we can read the JCR node
+                // The resource has its node loaded from JCR, so node properties are available immediately and can be accessed safely.
                 JCRNodeWrapper node = resource.getNode();
                 loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, node.getIdentifier(), node.getPath(), node.getNodeTypes().get(0), "moduleViewed", resource.getResolvedTemplate(), "the full render chain");
             } else {
-                // fragment served from the cache avoid to read the jcr node for performances
+                // The resource does not have its node loaded from JCR, so we avoid accessing node properties to avoid loading it from JCR for better performance.
                 loggingService.logContentEvent(context.getUser().getName(), context.getRequest().getRemoteAddr(), sessionID, "", resource.getNodePath(), "", "moduleViewed", resource.getResolvedTemplate(), "the cache filter");
             }
         }

@@ -78,11 +78,11 @@ public class CacheFilter extends AbstractFilter {
     private static final Set<String> FLAGS_ALL_SET = Collections.singleton(FLAG_ALL);
     private static final String RENDERING_TIMER = "cacheFilter.rendering.timer";
 
-    private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
+    // Flag used to know if we have cached the fragment or not; used when the fragment is returned from the cache in the prepare()
+    // to avoid caching it again in execute()
+    private static final String FRAGMENT_SERVED_FROM_CACHE = "cacheFilter.fragment.servedFromCache";
 
-    // Flags used to know if we have to cache the fragment or not,
-    // - used when the fragment is returned from the cache in the prepare() to avoid cache it again in execute()
-    public static final String FRAGMENT_SERVED_FROM_CACHE = "cacheFilter.fragment.servedFromCache";
+    private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
 
     protected ModuleCacheProvider cacheProvider;
     protected boolean cascadeFragmentErrors = false;

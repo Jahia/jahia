@@ -451,7 +451,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             moduleStartLevel = getInt("jahia.moduleStartLevel", 90);
 
-            karafRemoteShellPort = getInt("karaf.remoteShell.port", -1);
+            karafRemoteShellPort = getInt("karaf.remoteShell.port", 8101);
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");

@@ -43,9 +43,13 @@
  */
 package org.jahia.services.modulemanager.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.util.StringUtils;
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidModuleException;
 import org.jahia.services.modulemanager.ModuleManagementException;
@@ -93,6 +97,30 @@ public class ModuleManagerImpl implements ModuleManager {
     private BundleService bundleService;
     private BundlePersister persister;
 
+    private BundleInfo findTargetBundle(String bundleKey, String symbolicName, String version) {
+        BundleInfo targetInfo = null;
+        List<Bundle> matches = new ArrayList<>();
+        Bundle[] allBundles = FrameworkService.getBundleContext().getBundles();
+        for (Bundle b : allBundles) {
+            if (symbolicName.equals(b.getSymbolicName())
+                    && (version == null || version.equals(b.getVersion().toString()))
+                    && b.getState() != Bundle.UNINSTALLED) {
+                matches.add(b);
+            }
+        }
+
+        if (matches.size() > 1) {
+            logger.warn("Found multiple bundles matching the key {}. Unable to uniquely identify target bundle",
+                    bundleKey);
+        } else if (!matches.isEmpty()) {
+            Bundle target = matches.get(0);
+            targetInfo = new BundleInfo(BundleUtils.getModuleGroupId(target), target.getSymbolicName(),
+                    target.getVersion().toString());
+        }
+
+        return targetInfo;
+    }
+
     private BundleInfo getBundleInfo(String bundleKey) {
 
         BundleInfo info = null;
@@ -106,10 +134,8 @@ public class ModuleManagerImpl implements ModuleManager {
             }
         }
 
-        // let's try to search for a matching persistent bundle
-        PersistentBundle persistentBundle = persister.find(bundleKey);
-
-        return persistentBundle != null ? toBundleInfo(persistentBundle) : info;
+        return findTargetBundle(bundleKey, info != null ? info.getSymbolicName() : bundleKey,
+                info != null ? info.getVersion() : null);
     }
 
     /**
@@ -162,14 +188,14 @@ public class ModuleManagerImpl implements ModuleManager {
             error = e;
             throw new ModuleManagementException(e);
         } finally {
+            Object info = bundleInfo != null ? toBundleInfo(bundleInfo) : bundleResource;
+            long timeTaken = System.currentTimeMillis() - startTime;
             if (error == null) {
                 logger.info("Installation completed for bundle {} on target {} in {} ms. Operation result: {}",
-                        new Object[] { bundleInfo != null ? toBundleInfo(bundleInfo) : bundleResource, target,
-                                System.currentTimeMillis() - startTime, result });
+                        new Object[] { info, target, timeTaken, result });
             } else {
                 logger.info("Installation failed for bundle {} on target {} (took {} ms). Operation error: {}",
-                        new Object[] { bundleInfo != null ? toBundleInfo(bundleInfo) : bundleResource, target,
-                                System.currentTimeMillis() - startTime, error });
+                        new Object[] { info, target, timeTaken, error });
             }
         }
 

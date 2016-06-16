@@ -50,6 +50,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -172,9 +173,9 @@ public class BundlePersisterIT extends AbstractJUnitTest {
         PersistentBundle found = service.find(info.getKey());
         assertEquals(info, found);
 
-        // search by short key
+        // search by short key should return null
         found = service.find(info.getSymbolicName() + '/' + info.getVersion());
-        assertEquals(info, found);
+        assertNull(found);
     }
 
     @Test

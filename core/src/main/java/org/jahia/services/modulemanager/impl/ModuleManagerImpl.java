@@ -44,6 +44,8 @@
 package org.jahia.services.modulemanager.impl;
 
 import org.drools.core.util.StringUtils;
+import org.jahia.osgi.BundleLifecycleUtils;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidModuleException;
 import org.jahia.services.modulemanager.ModuleManagementException;
@@ -54,6 +56,7 @@ import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.spi.BundleService;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -146,6 +149,12 @@ public class ModuleManagerImpl implements ModuleManager {
             }
             persister.store(bundleInfo);
             result = install(bundleInfo, target, start);
+            
+            Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
+            if (bundle != null && !start) {
+                BundleLifecycleUtils.refreshBundle(bundle);
+            }
+            BundleLifecycleUtils.startAllBundles();
         } catch (ModuleManagementException e) {
             error = e;
             throw e;
@@ -193,8 +202,15 @@ public class ModuleManagerImpl implements ModuleManager {
             if (info == null) {
                 throw new ModuleNotFoundException(bundleKey);
             }
+            Bundle bundle = BundleUtils.getBundleBySymbolicName(info.getSymbolicName(), info.getVersion());
             operation.perform(info, target);
             result = OperationResult.success(info);
+            if (bundle != null) {
+                BundleLifecycleUtils.refreshBundle(bundle);
+            }
+            if (Bundle.UNINSTALLED != bundle.getState()) {
+                BundleLifecycleUtils.startAllBundles();
+            }
         } catch (ModuleManagementException e) {
             error = e;
             throw e;

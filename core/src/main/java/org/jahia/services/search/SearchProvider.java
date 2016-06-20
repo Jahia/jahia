@@ -77,7 +77,7 @@ public interface SearchProvider {
      *         checker does not know how to correct the query <code>null</code>
      *         is returned.
      *
-     * @deprecated Use Suggestion interface instead
+     * @deprecated Use SupportsSuggestion interface instead
      *
      */
     Suggestion suggest(String originalQuery, RenderContext context, int maxTermsToSuggest);
@@ -98,7 +98,7 @@ public interface SearchProvider {
          * not know how to correct the query or the provider does not support this
          * feature <code>null</code> is returned.
          *
-         * @param originalQuery original query string
+         * @param originalQuery original search criteria
          * @param context context object, containing information about current site, workspace, locale etc.
          * @param maxTermsToSuggest the maximum number of terms to suggest
          * @return a modified suggestion for the original query based on the spell

@@ -99,8 +99,14 @@ public class UserPropertyTag extends AbstractJCRTag {
     }
 
     public int doEndTag() throws JspException {
-        cssClassName = null;
+        resetState();
         return EVAL_PAGE;
+    }
+
+    @Override
+    protected void resetState() {
+        propertyName = null;
+        super.resetState();
     }
 
     public String getPropertyName() {

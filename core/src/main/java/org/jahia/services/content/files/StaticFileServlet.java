@@ -112,7 +112,12 @@ public class StaticFileServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        basePath = SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath();
+        String basePathValue = SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath();
+        try {
+            basePath = (new File(basePathValue)).getCanonicalPath();
+        } catch (IOException e) {
+            throw new ServletException(e);
+        }
         enableGzip = Boolean.valueOf(StringUtils.defaultString(config.getInitParameter("enable-gzip"), "true"));
     }
 
@@ -168,6 +173,12 @@ public class StaticFileServlet extends HttpServlet {
         if (!file.exists() || !file.isFile()) {
             // Do your thing if the file appears to be non-existing.
             // Throw an exception, or send 404, or show default/warning page, or just ignore it.
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        // Verify the file requested is a descendant of the base directory.
+        if (!file.getCanonicalPath().startsWith(basePath)) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
@@ -521,5 +532,4 @@ public class StaticFileServlet extends HttpServlet {
         }
 
     }
-
 }

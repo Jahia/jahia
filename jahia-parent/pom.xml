@@ -104,8 +104,12 @@
         <assertj.version>1.6.0</assertj.version>		
         <izpack.version>4.3.5-jahia10</izpack.version>
         <launch4j.version>3.4</launch4j.version>
+<<<<<<< .working
         <log4j.version>1.2.17</log4j.version>
         <jahia.tomcat.version>8.0.23</jahia.tomcat.version>
+=======
+        <jahia.tomcat.version>8.0.36</jahia.tomcat.version>
+>>>>>>> .merge-right.r54550
 
         <driver.derby.version>10.12.1.1</driver.derby.version>
         <driver.mssql.version>4.2.6420.100</driver.mssql.version>

@@ -126,14 +126,8 @@ public class StaticFileServlet extends HttpServlet {
      *
      * @see HttpServlet#doHead(HttpServletRequest, HttpServletResponse).
      */
-<<<<<<< .working
     @Override
     protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-=======
-    @Override
-    protected void doHead(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
->>>>>>> .merge-right.r54557
         // Process request without content.
         processRequest(request, response, false);
     }
@@ -143,14 +137,8 @@ public class StaticFileServlet extends HttpServlet {
      *
      * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse).
      */
-<<<<<<< .working
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-=======
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
->>>>>>> .merge-right.r54557
         // Process request with content.
         processRequest(request, response, true);
     }

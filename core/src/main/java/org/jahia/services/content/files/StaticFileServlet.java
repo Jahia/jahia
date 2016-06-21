@@ -126,6 +126,7 @@ public class StaticFileServlet extends HttpServlet {
      *
      * @see HttpServlet#doHead(HttpServletRequest, HttpServletResponse).
      */
+    @Override
     protected void doHead(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Process request without content.
@@ -137,6 +138,7 @@ public class StaticFileServlet extends HttpServlet {
      *
      * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse).
      */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Process request with content.
@@ -512,6 +514,7 @@ public class StaticFileServlet extends HttpServlet {
      * This class represents a byte range.
      */
     protected class Range {
+
         long start;
         long end;
         long length;
@@ -530,6 +533,5 @@ public class StaticFileServlet extends HttpServlet {
             this.length = end - start + 1;
             this.total = total;
         }
-
     }
 }

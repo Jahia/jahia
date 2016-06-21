@@ -64,6 +64,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.management.*;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
@@ -133,8 +134,22 @@ public class ErrorFileDumper {
         private String remoteAddr;
 
         public HttpRequestData(HttpServletRequest request) {
-            this.requestURL = request.getRequestURI();
-            this.queryString = request.getQueryString();
+
+            // When dealing with a forwarded request, we are still interested in the original URL and query string
+            // which are stored as a dedicated request attributes
+            String originalRequestUri = (String) request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
+            if (originalRequestUri == null) {
+                this.requestURL = request.getRequestURI();
+            } else {
+                this.requestURL = originalRequestUri;
+            }
+            String originalQueryString = (String) request.getAttribute(RequestDispatcher.FORWARD_QUERY_STRING);
+            if (originalQueryString == null) {
+                this.queryString = request.getQueryString();
+            } else {
+                this.queryString = originalQueryString;
+            }
+
             this.method = request.getMethod();
             this.remoteHost = request.getRemoteHost();
             this.remoteAddr = request.getRemoteAddr();
@@ -371,7 +386,8 @@ public class ErrorFileDumper {
             if (requestData.getQueryString() != null) {
                 strOut.println("?" + requestData.getQueryString());
             }
-            strOut.println("   Method: " + requestData.getMethod());
+            strOut.println("");
+            strOut.println("Method: " + requestData.getMethod());
             strOut.println("");
             strOut.println(
                     "Remote host: " + requestData.getRemoteHost() + "     Remote Address: " + requestData.getRemoteAddr());

@@ -63,6 +63,7 @@ import org.apache.catalina.servlets.RangeUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
+import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
@@ -110,8 +111,10 @@ public class FileServlet extends HttpServlet {
         return cacheFromExternalProviders || n.getProvider().canCacheNode(n);
     }
 
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,
             IOException {
+
         long timer = System.currentTimeMillis();
         int code = HttpServletResponse.SC_OK;
         try {
@@ -145,7 +148,7 @@ public class FileServlet extends HttpServlet {
                         res.sendError(HttpServletResponse.SC_NOT_FOUND);
                         return;
                     }
-                    
+
                     Date lastModifiedDate = n.getLastModifiedAsDate();
                     long lastModified = lastModifiedDate != null ? lastModifiedDate.getTime() : 0;
                     String eTag = generateETag(n.getIdentifier(), lastModified);
@@ -298,7 +301,9 @@ public class FileServlet extends HttpServlet {
 
     protected JCRNodeWrapper getContentNode(JCRNodeWrapper n, String thumbnail)
             throws RepositoryException {
+
         JCRNodeWrapper content;
+        thumbnail = Text.escapeIllegalJcrChars(thumbnail);
         if (StringUtils.isNotEmpty(thumbnail) && n.hasNode(thumbnail)) {
             // thumbnail requested -> try to find it
             content = n.getNode(thumbnail);
@@ -320,6 +325,7 @@ public class FileServlet extends HttpServlet {
 
     protected FileCacheEntry getFileEntry(FileKey fileKey, JCRNodeWrapper node,
             FileLastModifiedCacheEntry lastModifiedEntry) throws RepositoryException, IOException {
+
         FileCacheEntry fileEntry = null;
 
         JCRNodeWrapper content = getContentNode(node, fileKey.getThumbnail());
@@ -403,6 +409,7 @@ public class FileServlet extends HttpServlet {
                 && VisibilityService.getInstance().matchesConditions(n);
     }
 
+    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         characterEncoding = SettingsBean.getInstance().getCharacterEncoding();

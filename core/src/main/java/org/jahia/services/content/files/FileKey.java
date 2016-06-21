@@ -47,7 +47,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * File entry data.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 class FileKey {
@@ -62,7 +62,7 @@ class FileKey {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param workspace
      * @param path
      */
@@ -72,7 +72,7 @@ class FileKey {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param workspace
      * @param path
      * @param versionDate
@@ -85,7 +85,7 @@ class FileKey {
         this.path = path;
         this.versionDate = versionDate;
         this.versionLabel = versionLabel;
-        this.thumbnail = thumbnail != null ? thumbnail.replaceAll("[^A-Za-z0-9]+", "") : null;
+        this.thumbnail = thumbnail;
     }
 
     public String getCacheKey() {

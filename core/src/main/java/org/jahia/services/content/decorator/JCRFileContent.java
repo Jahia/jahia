@@ -106,7 +106,19 @@ public class JCRFileContent {
             // Content type has to be checked before the instantiation of "BinaryImpl"
             // otherwise, the content type is always "application/octet-stream"
             if (contentType == null && is.markSupported()) {
+                long startTime = 0;
+                if (LOGGER.isDebugEnabled()) {
+                    startTime = System.currentTimeMillis();
+                    LOGGER.debug(
+                            "We don't have a proper content type for file content {}, let's detecting it...",
+                            node.getPath());
+                }
                 contentType = DETECTOR.detect(is, new Metadata()).toString();
+                if (LOGGER.isDebugEnabled()) {
+                    startTime = System.currentTimeMillis();
+                    LOGGER.debug("Detected content type for file content of node {}: {}. Detection took {} ms",
+                            new Object[] { node.getPath(), contentType, System.currentTimeMillis() - startTime });
+                }
             }
             if (contentType == null) {
                 contentType = "application/binary";

@@ -183,11 +183,20 @@ public class FilesAclImportHandler extends DefaultHandler {
                                 lastModified, lastModifiedBy);
                     } else {
                         f = f.addNode(StringUtils.substringAfterLast(path, "/"), "jnt:file", null, created, createdBy, lastModified, lastModifiedBy);
+                        String contentType = attributes.getValue("dav:getcontenttype");
                         if (content != null) {
-                            // We don't use the content type value from "dav:getcontenttype" to force its calculation
-                            f.getFileContent().uploadFile(content, null);
+                            if (contentType == null || contentType.length() == 0 || "application/binary".equals(contentType)) {
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug(
+                                            "We don't have a proper content type for file content {}, let's force its detection",
+                                            f.getPath());
+                                }
+                                // We don't have a proper content type, let's force its detection
+                                contentType = null;
+                            }
+                            f.getFileContent().uploadFile(content, contentType);
                         } else {
-                            f.getFileContent().uploadFile(zis, attributes.getValue("dav:getcontenttype"));
+                            f.getFileContent().uploadFile(zis, contentType);
                         }
                     }
                     if (acl != null && acl.length() > 0) {

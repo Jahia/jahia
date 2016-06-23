@@ -109,12 +109,23 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         return "text/html";
     }
     
+    /**
+     * Because of our 18n model it could be that search via Jackrabbit index either finds the main or the
+     * translation node. As both could have different metadata values and to provide consistent list order when 
+     * ordering on metadata, we need to retrieve the metadata from the found node. The node stored in resource 
+     * variable is always the main one.
+     * @return the Node found by Jackrabbit search (either main or translation node) 
+     * @throws RepositoryException
+     */
     private Node getFoundNode() throws RepositoryException {
         if (foundNode == null) {
             foundNode = resource;
-            String path = getRows().get(0).getPath();
-            if (!resource.getPath().equals(path)) {
-                foundNode = resource.getSession().getNode(path);
+            if (getRows() != null) {
+                // If using ElasticSearch module, JCR row objects are not set to the hit, so we continue using the main node
+                String path = getRows().get(0).getPath();
+                if (!resource.getPath().equals(path)) {
+                    foundNode = resource.getSession().getNode(path);
+                }
             }
         }
         return foundNode;

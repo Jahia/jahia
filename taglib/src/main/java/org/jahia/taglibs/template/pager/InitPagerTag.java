@@ -64,6 +64,7 @@ public class InitPagerTag extends TagSupport {
     private int pageSize;
     private long totalSize;
     private boolean sizeNotExact = false;
+    private final static int DEFAULT_PAGE_SIZE=10;
 
     private String id;
 
@@ -79,6 +80,8 @@ public class InitPagerTag extends TagSupport {
     public int doStartTag() throws JspException {
         try {
             @SuppressWarnings("unchecked")
+            //To escape dividing by zero we test if the page size is equal to zero if yes we put it to a default pagesize value
+
             Map<String,Object> moduleMap  = (HashMap<String,Object>)  pageContext.getRequest().getAttribute("moduleMap");
             if (moduleMap == null) {
                 moduleMap = new HashMap<String,Object>();
@@ -116,6 +119,12 @@ public class InitPagerTag extends TagSupport {
 
             if (pageContext.getRequest().getParameter("pagesize"+id) != null) {
                 pageSize = Integer.parseInt(StringEscapeUtils.escapeXml(pageContext.getRequest().getParameter("pagesize"+id)));
+            }
+
+            //To escape dividing by zero we test if the page size is equal to zero if yes we put it to a default pagesize value
+            if(pageSize== 0)
+            {
+                pageSize = DEFAULT_PAGE_SIZE;
             }
 
             int begin = beginStr == null ? 0 : Integer.parseInt(beginStr);

@@ -80,8 +80,6 @@ public class InitPagerTag extends TagSupport {
     public int doStartTag() throws JspException {
         try {
             @SuppressWarnings("unchecked")
-            //To escape dividing by zero we test if the page size is equal to zero if yes we put it to a default pagesize value
-
             Map<String,Object> moduleMap  = (HashMap<String,Object>)  pageContext.getRequest().getAttribute("moduleMap");
             if (moduleMap == null) {
                 moduleMap = new HashMap<String,Object>();

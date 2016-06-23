@@ -886,35 +886,18 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
             return null;
         }
 
-        boolean existing = true;
         Property decoratedProperty = property;
         ExtendedPropertyDefinition extendedPropertyDefinition = null;
         while (decoratedProperty instanceof JCRPropertyWrapper) {
             JCRPropertyWrapper jcrPropertyWrapper = (JCRPropertyWrapper) decoratedProperty;
-<<<<<<< .working
             decoratedProperty = jcrPropertyWrapper.getRealProperty();
             if (decoratedProperty == null) {
                 return null;
-=======
-            Property realProperty = jcrPropertyWrapper.getRealProperty();
-            if (realProperty == null) {
-                // null wrapped real property means non-existing one.
-                existing = false;
             }
-            if (extendedPropertyDefinition == null) {
-                extendedPropertyDefinition = (ExtendedPropertyDefinition) jcrPropertyWrapper.getDefinition();
->>>>>>> .merge-right.r54576
-            }
-<<<<<<< .working
             extendedPropertyDefinition = (ExtendedPropertyDefinition) jcrPropertyWrapper.getDefinition();
-=======
-            decoratedProperty = realProperty;
->>>>>>> .merge-right.r54576
         }
 
-        // We commonly represent non-existing properties with a JCRPropertyWrapperImpl that has its realProperty == null.
-        // Here we take this into account via tolerating non-existing properties that do not have an extended node definition.
-        if (extendedPropertyDefinition != null || !existing) {
+        if (extendedPropertyDefinition != null) {
             return new JCRPropertyWrapperImpl(this, decoratedProperty, getSession(), getProvider(), extendedPropertyDefinition);
         } else {
             throw new ConstraintViolationException("Couldn't find definition for property " + property.getPath());

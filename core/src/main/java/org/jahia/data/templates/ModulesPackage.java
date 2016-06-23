@@ -45,11 +45,22 @@ package org.jahia.data.templates;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.plexus.util.dag.CycleDetectedException;
+import org.codehaus.plexus.util.dag.DAG;
+import org.codehaus.plexus.util.dag.TopologicalSorter;
 import org.jahia.commons.Version;
+import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.services.modulemanager.Constants;
+
 import java.io.*;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -87,12 +98,49 @@ public class ModulesPackage {
         return new ModulesPackage(jarFile);
     }
 
+    private static Set<String> parseDependencies(Attributes manifestAttributes) {
+        Set<String> dependencies = Collections.emptySet();
+        String dependsValue = manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_DEPENDS);
+        if (dependsValue != null && dependsValue.length() > 0) {
+            dependencies = new LinkedHashSet<>();
+            dependencies.addAll(Arrays.asList(StringUtils.split(dependsValue, ", ")));
+        }
+
+        return dependencies;
+    }
+    
+    private static void sortByDependencies(Map<String, PackagedModule> modules) throws CycleDetectedException {
+        if (modules.size() <= 1) {
+            return;
+        }
+        Map<String, PackagedModule> copy = new LinkedHashMap<>(modules);
+        // we build a Directed Acyclic Graph of dependencies (only those, which are present in the package)
+        DAG dag = new DAG();
+        for (PackagedModule m : modules.values()) {
+            dag.addVertex(m.getName());
+            for (String dep : m.getDepends()) {
+                if (modules.containsKey(dep)) {
+                    dag.addEdge(m.getName(), dep);
+                }
+            }
+        }
+
+        // use topological sort (Depth First Search) on the created graph
+        @SuppressWarnings("unchecked")
+        List<String> vertexes = TopologicalSorter.sort(dag);
+
+        modules.clear();
+        for (String v : vertexes) {
+            modules.put(v, copy.get(v));
+        }
+    }
+
     private ModulesPackage(JarFile jarFile) throws IOException {
         modules = new LinkedHashMap<String, PackagedModule>();
         Attributes manifestAttributes = jarFile.getManifest().getMainAttributes();
-        version = new Version(manifestAttributes.getValue("Jahia-Package-Version"));
-        name = manifestAttributes.getValue("Jahia-Package-Name");
-        description = manifestAttributes.getValue("Jahia-Package-Description");
+        version = new Version(manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_PACKAGE_VERSION));
+        name = manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_PACKAGE_NAME);
+        description = manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_PACKAGE_DESCRIPTION);
         // read jars
         Enumeration<JarEntry> jars = jarFile.entries();
 
@@ -113,12 +161,12 @@ public class ModulesPackage {
                     }
                     moduleJarFile = new JarFile(moduleFile);
                     Attributes moduleManifestAttributes = moduleJarFile.getManifest().getMainAttributes();
-                    String bundleName = moduleManifestAttributes.getValue("Bundle-SymbolicName");
-                    String jahiaGroupId = moduleManifestAttributes.getValue("Jahia-GroupId");
-                    if(bundleName==null || jahiaGroupId==null) {
-                        throw new IOException("Jar file "+jar.getName()+ " in package does not seems to be a Jahia bundle.");
+                    String bundleName = moduleManifestAttributes.getValue(Constants.ATTR_NAME_BUNDLE_SYMBOLIC_NAME);
+                    String jahiaGroupId = moduleManifestAttributes.getValue(Constants.ATTR_NAME_GROUP_ID);
+                    if (bundleName == null || jahiaGroupId == null) {
+                        throw new IOException("Jar file "+jar.getName()+ " in package does not seems to be a DX bundle.");
                     }
-                    modules.put(bundleName, new PackagedModule(moduleManifestAttributes, moduleFile));
+                    modules.put(bundleName, new PackagedModule(bundleName, moduleManifestAttributes, moduleFile));
                 } finally {
                     IOUtils.closeQuietly(output);
                     if (moduleJarFile != null) {
@@ -126,6 +174,13 @@ public class ModulesPackage {
                     }
                 }
             }
+        }
+        
+        // we finally sort modules based on dependencies
+        try {
+            sortByDependencies(modules);
+        } catch (CycleDetectedException e) {
+            throw new JahiaRuntimeException("A cyclic dependency detected in the modules of the supplied package", e);
         }
     }
 
@@ -148,10 +203,14 @@ public class ModulesPackage {
     public class PackagedModule {
         private final Attributes manifestAttributes;
         private final File moduleFile;
+        private final String name;
+        private final Set<String> depends;
 
-        public PackagedModule(Attributes manifestAttributes, File moduleFile) {
+        public PackagedModule(String name, Attributes manifestAttributes, File moduleFile) {
+            this.name = name;
             this.manifestAttributes = manifestAttributes;
             this.moduleFile = moduleFile;
+            this.depends = parseDependencies(manifestAttributes);
         }
 
         public Attributes getManifestAttributes() {
@@ -160,6 +219,14 @@ public class ModulesPackage {
 
         public File getModuleFile() {
             return moduleFile;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Set<String> getDepends() {
+            return depends;
         }
     }
 }

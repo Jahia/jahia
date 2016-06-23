@@ -111,12 +111,14 @@ public class ModuleUrlTransformer implements ArtifactUrlTransformer {
 
         URL transformed = null;
         long startTime = System.currentTimeMillis();
-        logger.info("Transforming artifact {}", artifact);
+        logger.debug("Transforming artifact {}", artifact);
         try {
             PersistentBundle persistedBundle = ModuleUtils.persist(new UrlResource(artifact));
             transformed = new URL(persistedBundle.getLocation());
-            logger.info("Artifact {} has been successfully transformed into {} in {} ms",
-                    new Object[] { artifact, transformed, System.currentTimeMillis() - startTime });
+            if (logger.isDebugEnabled()) {
+                logger.debug("Artifact {} has been successfully transformed into {} in {} ms",
+                        new Object[] { artifact, transformed, System.currentTimeMillis() - startTime });
+            }
         } catch (Exception e) {
             String msg = "Unable to transform artifact " + artifact + ". Cause: " + e.getMessage();
             logger.error(msg, e);

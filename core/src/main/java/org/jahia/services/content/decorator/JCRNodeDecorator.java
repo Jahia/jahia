@@ -301,7 +301,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {
         node.copyProperties(destinationNode, references);
     }
-    
+
     public boolean lockAndStoreToken(String type, String userID) throws RepositoryException {
         return node.lockAndStoreToken(type, userID);
     }
@@ -832,7 +832,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public String getDisplayableName() {
         return node.getDisplayableName();
     }
-    
+
     public String getUnescapedName() {
         return node.getUnescapedName();
     }
@@ -856,7 +856,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public void unmarkForDeletion() throws RepositoryException {
         node.unmarkForDeletion();
     }
-    
+
     public String toString() {
         return node.toString();
     }
@@ -864,14 +864,14 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     public String getCanonicalPath() {
         return node.getCanonicalPath();
     }
-    
+
     public boolean equals(final Object o) {
         if (o != null && this.getClass() == o.getClass()) {
             return node.equals(((JCRNodeDecorator) o).node);
         }
         return false;
     }
-    
+
     public int hashCode() {
         return node.hashCode();
     }
@@ -881,20 +881,40 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
 
     public JCRPropertyWrapper decorateProperty(final Property property) throws RepositoryException {
+
         if (property == null) {
             return null;
         }
+
+        boolean existing = true;
         Property decoratedProperty = property;
         ExtendedPropertyDefinition extendedPropertyDefinition = null;
         while (decoratedProperty instanceof JCRPropertyWrapper) {
             JCRPropertyWrapper jcrPropertyWrapper = (JCRPropertyWrapper) decoratedProperty;
+<<<<<<< .working
             decoratedProperty = jcrPropertyWrapper.getRealProperty();
             if (decoratedProperty == null) {
                 return null;
+=======
+            Property realProperty = jcrPropertyWrapper.getRealProperty();
+            if (realProperty == null) {
+                // null wrapped real property means non-existing one.
+                existing = false;
             }
+            if (extendedPropertyDefinition == null) {
+                extendedPropertyDefinition = (ExtendedPropertyDefinition) jcrPropertyWrapper.getDefinition();
+>>>>>>> .merge-right.r54576
+            }
+<<<<<<< .working
             extendedPropertyDefinition = (ExtendedPropertyDefinition) jcrPropertyWrapper.getDefinition();
+=======
+            decoratedProperty = realProperty;
+>>>>>>> .merge-right.r54576
         }
-        if (extendedPropertyDefinition != null) {
+
+        // We commonly represent non-existing properties with a JCRPropertyWrapperImpl that has its realProperty == null.
+        // Here we take this into account via tolerating non-existing properties that do not have an extended node definition.
+        if (extendedPropertyDefinition != null || !existing) {
             return new JCRPropertyWrapperImpl(this, decoratedProperty, getSession(), getProvider(), extendedPropertyDefinition);
         } else {
             throw new ConstraintViolationException("Couldn't find definition for property " + property.getPath());

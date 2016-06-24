@@ -108,14 +108,13 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     public String getContentType() {
         return "text/html";
     }
-    
+
     /**
-     * Because of our 18n model it could be that search via Jackrabbit index either finds the main or the
-     * translation node. As both could have different metadata values and to provide consistent list order when 
-     * ordering on metadata, we need to retrieve the metadata from the found node. The node stored in resource 
+     * Because of our i18n model, it could be that search via JackRabbit index either finds the main or the
+     * translation node. As both could have different metadata values and to provide consistent list order when
+     * ordering on metadata, we need to retrieve the metadata from the found node. The node stored in resource
      * variable is always the main one.
-     * @return the Node found by Jackrabbit search (either main or translation node) 
-     * @throws RepositoryException
+     * @return the Node found by Jackrabbit search (either main or translation node)
      */
     private Node getFoundNode() throws RepositoryException {
         if (foundNode == null) {
@@ -143,7 +142,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         try {
             return getFoundNode().getProperty(Constants.JCR_CREATEDBY).getString();
         } catch (RepositoryException e) {
-            throw new JahiaRuntimeException(e);            
+            throw new JahiaRuntimeException(e);
         }
     }
 
@@ -159,7 +158,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         try {
             return getFoundNode().getProperty(Constants.JCR_LASTMODIFIEDBY).getString();
         } catch (RepositoryException e) {
-            throw new JahiaRuntimeException(e);            
+            throw new JahiaRuntimeException(e);
         }
     }
 
@@ -203,9 +202,9 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
 
     public String getTitle() {
-    	if (getDisplayableNode() == null) {
-    		return null;
-    	}
+        if (getDisplayableNode() == null) {
+            return null;
+        }
         return getDisplayableNode().getDisplayableName();
     }
 
@@ -222,7 +221,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         try {
             return resource.getPrimaryNodeTypeName();
         } catch (RepositoryException e) {
-            throw new JahiaRuntimeException("Unable to retrieve primary node type for the resource " + getPath(), e);            
+            throw new JahiaRuntimeException("Unable to retrieve primary node type for the resource " + getPath(), e);
         }
     }
 
@@ -271,7 +270,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
     public JCRNodeWrapper getDisplayableNode() {
         if (!isDisplayableNodeChecked && displayableNode == null) {
-        	isDisplayableNodeChecked = true;
+            isDisplayableNodeChecked = true;
             JCRSiteNode site;
             try {
                 site = resource.getResolveSite();
@@ -283,19 +282,19 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
                  displayableNode = ((JCRNodeHit)getUsages().get(0)).getDisplayableNode();
             }
             //search.displayableNodeCompat... don't allow to return null, if customers has own searchprovider implementations
-            if (displayableNode == null 
-            	  && Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("search.displayableNodeCompat"))) {
-            	displayableNode = resource;
+            if (displayableNode == null
+                  && Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("search.displayableNodeCompat"))) {
+                displayableNode = resource;
             }
         }
         return displayableNode;
     }
 
     private String resolveURL(String templateType) {
-    	if (getDisplayableNode() != null) {
+        if (getDisplayableNode() != null) {
             return context.getURLGenerator().buildURL(getDisplayableNode(), getDisplayableNode().getLanguage(), null, templateType);
-    	}
-    	return null;
+        }
+        return null;
     }
 
     public void setUsageFilterSites(Set<String> usageFilterSites) {

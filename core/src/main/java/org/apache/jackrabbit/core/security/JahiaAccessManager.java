@@ -111,13 +111,13 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     protected JahiaPrincipal jahiaPrincipal;
 
-    private Session securitySession;
+    private JahiaSystemSession securitySession;
 
     private RepositoryContext repositoryContext;
     private WorkspaceConfig workspaceConfig;
 
     private Map<String, Boolean> pathPermissionCache = null;
-    private Map<String, AccessManagerUtils.CompiledAcl> compiledAcls = new HashMap<String, AccessManagerUtils.CompiledAcl>();
+    private Map<Object, AccessManagerUtils.CompiledAcl> compiledAcls = new HashMap<>();
 
     private boolean isAliased = false;
     private DefaultNamePathResolver pr;
@@ -147,7 +147,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         init(amContext, null, null, null, null);
     }
 
-    public Session getSecuritySession() throws RepositoryException {
+    public JahiaSystemSession getSecuritySession() throws RepositoryException {
         if (securitySession != null) {
             return securitySession;
         }
@@ -272,12 +272,15 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
      */
     @Override
     protected void checkValidNodePath(String absPath) throws PathNotFoundException, RepositoryException {
-        Path p = resolver.getQPath(absPath);
+        checkValidNodePath(resolver.getQPath(absPath));
+    }
+
+    protected void checkValidNodePath(Path p) throws RepositoryException {
         if (!p.isAbsolute()) {
             throw new RepositoryException("Absolute path expected.");
         }
         if (hierMgr.resolveNodePath(p) == null) {
-            throw new PathNotFoundException("No such node " + absPath);
+            throw new PathNotFoundException("No such node " + p);
         }
     }
 
@@ -341,7 +344,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public boolean isGranted(Path absPath, Set<String> permissions) throws RepositoryException {
-        return AccessManagerUtils.isGranted(pr.getJCRPath(absPath), permissions, getSecuritySession(), pr.getJCRName(absPath.getName()), jahiaPrincipal,
+        JahiaJCRPathWrapperImpl pathImpl = new JahiaJCRPathWrapperImpl(absPath.getCanonicalPath(), pr, getSecuritySession());
+        return AccessManagerUtils.isGranted(pathImpl, permissions, getSecuritySession(), jahiaPrincipal,
                 workspaceName, isAliased, pathPermissionCache, compiledAcls, privilegeRegistry);
     }
 
@@ -375,6 +379,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public boolean hasPrivileges(String absPath, Privilege[] privileges) throws PathNotFoundException, RepositoryException {
+        return hasPrivileges(resolver.getQPath(absPath), privileges);
+    }
+
+    public boolean hasPrivileges(Path absPath, Privilege[] privileges) throws PathNotFoundException, RepositoryException {
         checkInitialized();
         checkValidNodePath(absPath);
         if (privileges == null || privileges.length == 0) {
@@ -390,9 +398,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 privs.add(privilege.getName());
             }
 
-            Path p = resolver.getQPath(absPath);
-
-            return isGranted(p, privs);
+            return isGranted(absPath, privs);
         }
     }
 

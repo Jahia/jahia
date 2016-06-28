@@ -201,12 +201,11 @@ public class AccessManagerUtils {
 
     /**
      * Entry point to test if the given jahiaPrincipal match the given permissions on a node
-     * @param jcrPath the path to the node
+     * @param pathWrapper the path to the node
      * @param permissions the permissions ask for check
      * @param securitySession the session used to read the j:acl nodes, it should be a system session to be sure that nodes are readable in any case,
      *                        the workspace of the session is important because acls under nodes can be different depending on the workspace.
      *                        Normally the workspace of this session should be the same ot the workspace where you want to do the check of permissions.
-     * @param childNodeName name of the node
      * @param jahiaPrincipal the jahiaPrincipal to test
      * @param workspaceName the workspace to check (used to construct the privilege names)
      * @param isAliased if the current user is aliased
@@ -216,20 +215,22 @@ public class AccessManagerUtils {
      * @return true if the jahiaPrincipal match the permissions for the given path, if not return false
      * @throws RepositoryException
      */
-    public static boolean isGranted(String jcrPath, Set<String> permissions, Session securitySession,
-                                    String childNodeName, JahiaPrincipal jahiaPrincipal, String workspaceName,
+    public static boolean isGranted(PathWrapper pathWrapper, Set<String> permissions, Session securitySession,
+                                    JahiaPrincipal jahiaPrincipal, String workspaceName,
                                     boolean isAliased, Map<String, Boolean> pathPermissionCache,
-                                    Map<String, CompiledAcl> compiledAcls, JahiaPrivilegeRegistry privilegeRegistry) throws RepositoryException {
+                                    Map<Object, CompiledAcl> compiledAcls, JahiaPrivilegeRegistry privilegeRegistry) throws RepositoryException {
 
         if (isSystemPrincipal(jahiaPrincipal) && deniedPathes.get() == null) {
             return true;
         }
 
-        if (permissions.size() == 1 && jcrPath.equals("/") && permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {
+        if (permissions.size() == 1 && pathWrapper.isRoot() && permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {
             return true;
         }
 
         boolean res = false;
+
+        String jcrPath = pathWrapper.getPathStr();
 
         String cacheKey = jcrPath + " : " + permissions;
 
@@ -256,9 +257,9 @@ public class AccessManagerUtils {
             if (permissions.contains(getPrivilegeName(Privilege.JCR_WRITE, workspaceName)) ||
                     permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)) ||
                     permissions.contains(getPrivilegeName(Privilege.JCR_REMOVE_NODE, workspaceName))) {
-                itemExists = securitySession.itemExists(jcrPath);
+                itemExists = pathWrapper.itemExist();
                 if (itemExists) {
-                    i = securitySession.getItem(jcrPath);
+                    i = pathWrapper.getItem();
                     if (i.isNode()) {
                         if (((Node) i).isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
                             pathPermissionCachePut(cacheKey, false, isAliased, pathPermissionCache);
@@ -277,7 +278,7 @@ public class AccessManagerUtils {
             }
 
             if (itemExists == null) {
-                itemExists = securitySession.itemExists(jcrPath);
+                itemExists = pathWrapper.itemExist();
             }
 
             if (!itemExists) {
@@ -286,18 +287,20 @@ public class AccessManagerUtils {
             }
 
             if (i == null) {
-                i = securitySession.getItem(jcrPath);
+                i = pathWrapper.getItem();
             }
 
             if (i instanceof Version) {
                 i = ((Version) i).getContainingHistory();
             }
+
+            PathWrapper nodePathWrapper = pathWrapper;
             if (i instanceof VersionHistory) {
                 PropertyIterator pi = ((VersionHistory) i).getReferences();
                 if (pi.hasNext()) {
                     Property p = pi.nextProperty();
                     i = p.getParent();
-                    jcrPath = i.getPath();
+                    nodePathWrapper = pathWrapper.getNewPathWrapper(i.getPath());
                 }
             }
 
@@ -307,8 +310,10 @@ public class AccessManagerUtils {
                 n = (Node) i;
             } else {
                 n = i.getParent();
-                jcrPath = StringUtils.substringBeforeLast(jcrPath, "/");
+                nodePathWrapper = nodePathWrapper.getAncestor();
             }
+
+            jcrPath = !nodePathWrapper.equals(pathWrapper) ? nodePathWrapper.getPathStr() : jcrPath;
 
             // Translation permissions
             if (permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))) {
@@ -332,9 +337,10 @@ public class AccessManagerUtils {
             // Always allow to add child nodes when it's a translation node and the user have the translate permission
 
             if(permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
-                if((childNodeName.startsWith("j:translation_") || childNodeName.startsWith("j:referenceInField_")) &&
-                        isGranted(jcrPath, Collections.singleton(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)),
-                                securitySession, childNodeName, jahiaPrincipal, workspaceName, isAliased,
+                String nodeName = pathWrapper.getNodeName();
+                if((nodeName.startsWith("j:translation_") || nodeName.startsWith("j:referenceInField_")) &&
+                        isGranted(nodePathWrapper, Collections.singleton(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)),
+                                securitySession, jahiaPrincipal, workspaceName, isAliased,
                                 pathPermissionCache, compiledAcls, privilegeRegistry)){
                     return true;
                 }
@@ -360,7 +366,7 @@ public class AccessManagerUtils {
 //            }
 
 
-            res = recurseOnACPs(jcrPath, securitySession, permissions, site, compiledAcls, jahiaPrincipal, isAliased, privilegeRegistry, workspaceName);
+            res = recurseOnACPs(nodePathWrapper, securitySession, permissions, site, compiledAcls, jahiaPrincipal, isAliased, privilegeRegistry, workspaceName);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -589,20 +595,20 @@ public class AccessManagerUtils {
         return site;
     }
 
-    private static boolean recurseOnACPs(String jcrPath, Session s, Set<String> permissions, String site, Map<String, CompiledAcl> compiledAcls, JahiaPrincipal jahiaPrincipal,
+    private static boolean recurseOnACPs(PathWrapper pathWrapper, Session s, Set<String> permissions, String site, Map<Object, CompiledAcl> compiledAcls, JahiaPrincipal jahiaPrincipal,
                                          boolean isAliased, JahiaPrivilegeRegistry privilegeRegistry, String workspaceName) throws RepositoryException {
 
         Set<String> foundRoles = new HashSet<String>();
         permissions = new HashSet<String>(permissions);
-        while (jcrPath.length() > 0) {
+        while (pathWrapper.getLength() > 0) {
 
-            CompiledAcl acl = compiledAcls.get(jcrPath);
+            CompiledAcl acl = compiledAcls.get(pathWrapper.getInnerObject());
 
             if (acl == null) {
                 acl = new CompiledAcl();
-                compiledAcls.put(jcrPath, acl);
+                compiledAcls.put(pathWrapper.getInnerObject(), acl);
 
-                Item i = s.getItem(jcrPath);
+                Item i = pathWrapper.getItem();
                 if (i.isNode()) {
                     Node node = (Node) i;
                     if (node.hasNode("j:acl")) {
@@ -663,12 +669,10 @@ public class AccessManagerUtils {
                 return false;
             }
 
-            if ("/".equals(jcrPath)) {
+            if (pathWrapper.isRoot()) {
                 return false;
-            } else if (jcrPath.lastIndexOf('/') > 0) {
-                jcrPath = jcrPath.substring(0, jcrPath.lastIndexOf('/'));
             } else {
-                jcrPath = "/";
+                pathWrapper = pathWrapper.getAncestor();
             }
         }
         return false;

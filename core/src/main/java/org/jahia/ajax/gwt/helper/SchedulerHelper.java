@@ -73,7 +73,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
-
 import java.util.*;
 
 /**
@@ -153,23 +152,29 @@ public class SchedulerHelper {
                 if (publicationInfos != null && publicationInfos.size() > 0) {
                     description += " " + publicationInfos.get(0).getValues();
                 }
-                final List<String> uuids = (List<String>) jobDataMap.get("publicationInfos");
-                try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                        @Override
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            for (String uuid : uuids) {
-                                try {
-                                    targetPaths.add(session.getNodeByIdentifier(uuid).getPath());
-                                } catch (ItemNotFoundException e) {
-                                    logger.debug("Cannot get item " + uuid, e);
+                List<String> publicationPathsFromJob = (List<String>) jobDataMap.get(PublicationJob.PUBLICATION_PATHS);
+                // get target paths from job if specified, if not, use uuids to get the nodes
+                if(publicationPathsFromJob != null && publicationPathsFromJob.size() > 0) {
+                    targetPaths.addAll(publicationPathsFromJob);
+                } else {
+                    final List<String> uuids = (List<String>) jobDataMap.get("publicationInfos");
+                    try {
+                        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                            @Override
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                for (String uuid : uuids) {
+                                    try {
+                                        targetPaths.add(session.getNodeByIdentifier(uuid).getPath());
+                                    } catch (ItemNotFoundException e) {
+                                        logger.debug("Cannot get item " + uuid, e);
+                                    }
                                 }
+                                return null;
                             }
-                            return null;
-                        }
-                    });
-                } catch (RepositoryException e) {
-                    logger.error("Cannot get publication details", e);
+                        });
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot get publication details", e);
+                    }
                 }
             } else if (BackgroundJob.getGroupName(ImportJob.class).equals(jobDetail.getGroup())) {
                 String uri = (String) jobDataMap.get(ImportJob.URI);

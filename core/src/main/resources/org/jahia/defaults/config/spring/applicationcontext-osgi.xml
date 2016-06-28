@@ -35,8 +35,9 @@
                 <prop key="karaf.instances">#{settingsBean.jahiaVarDiskPath}/karaf/instances</prop>
 
                 <prop key="karaf.startLocalConsole">false</prop>
-                <prop key="karaf.startRemoteShell">#{T(java.lang.Boolean).toString(settingsBean.karafRemoteShellPort >= 0)}</prop>
-                <prop key="karaf.remoteShellPort">#{T(java.lang.Integer).toString(settingsBean.karafRemoteShellPort)}</prop>
+                <prop key="karaf.startRemoteShell">#{T(java.lang.Boolean).toString(jahiaProperties['karaf.remoteShell.port'] != '-1')}</prop>
+                <prop key="karaf.remoteShellPort">#{jahiaProperties['karaf.remoteShell.port'] != null ? jahiaProperties['karaf.remoteShell.port'] : '8101'}</prop>
+                <prop key="karaf.remoteShellHost">#{jahiaProperties['karaf.remoteShell.host'] != null ? jahiaProperties['karaf.remoteShell.host'] : '0.0.0.0'}</prop>
                 <prop key="karaf.lock">false</prop>
 
                 <prop key="org.osgi.framework.storage">#{settingsBean.jahiaVarDiskPath}/bundles-deployed</prop>

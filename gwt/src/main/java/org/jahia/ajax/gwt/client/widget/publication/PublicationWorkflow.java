@@ -401,9 +401,6 @@ public class PublicationWorkflow implements CustomWorkflow {
                 Info.display(status, status);
                 WorkInProgressActionItem.setStatus(status);
 
-                final Map<String, Object> refreshData = new HashMap<String, Object>();
-                refreshData.put(Linker.REFRESH_ALL, true);
-
                 final List<Component> components = new ArrayList<Component>(cards.getComponents());
                 final int[] nbWF = {components.size()};
                 for (Component component : components) {
@@ -421,28 +418,28 @@ public class PublicationWorkflow implements CustomWorkflow {
                             if (customWorkflow instanceof UnpublicationWorkflow) {
                                 JahiaContentManagementService.App.getInstance().unpublish(getAllUuids(thisWFInfo),
                                         getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"),
-                                                Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, refreshData));
+                                                Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, null));
                             } else {
                                 JahiaContentManagementService.App.getInstance().publish(getAllUuids(thisWFInfo), nodeProperties, null,
                                         getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"),
-                                                Messages.get("message.content.published.error", "Cannot publish"), status, linker, refreshData));
+                                                Messages.get("message.content.published.error", "Cannot publish"), status, linker, null));
                             }
                         } else {
-                            close(cards, nbWF, Messages.get("message.content.published", "Content published"), status, dialog.getLinker(), refreshData);
+                            close(cards, nbWF, Messages.get("message.content.published", "Content published"), status, dialog.getLinker(), null);
                         }
                     } else if (component instanceof PublicationStatusWindow) {
                         final PublicationStatusWindow dialog = (PublicationStatusWindow) component;
                         if (dialog.isUnpublish()) {
                             JahiaContentManagementService.App.getInstance().unpublish(dialog.getUuids(),
                                     getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"),
-                                            Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, refreshData));
+                                            Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, null));
                         } else {
                             JahiaContentManagementService.App.getInstance().publish(dialog.getUuids(), null, null,
                                     getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"),
-                                            Messages.get("message.content.published.error", "Cannot publish"), status, linker, refreshData));
+                                            Messages.get("message.content.published.error", "Cannot publish"), status, linker, null));
                         }
                     } else {
-                        close(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), status, linker, refreshData);
+                        close(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), status, linker, null);
                     }
                 }
 

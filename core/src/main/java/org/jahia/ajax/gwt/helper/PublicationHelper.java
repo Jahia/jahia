@@ -496,13 +496,21 @@ public class PublicationHelper {
             // todo : if workflow started on untranslated node, translation will be created and not added into the publish tree calculated here
 
             final String workspaceName = session.getWorkspace().getName();
-
+            List<String> publicationPath = new ArrayList<>();
+            for (String uuid : uuids) {
+                try {
+                    publicationPath.add(session.getNodeByIdentifier(uuid).getPath());
+                } catch (RepositoryException e) {
+                    logger.debug("Cannot get item " + uuid, e);
+                }
+            }
             JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
             jobDataMap.put(BackgroundJob.JOB_SITEKEY, site.getName());
             jobDataMap.put(PublicationJob.PUBLICATION_PROPERTIES, properties);
             jobDataMap.put(PublicationJob.PUBLICATION_COMMENTS, comments);
             jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuids);
+            jobDataMap.put(PublicationJob.PUBLICATION_PATHS, publicationPath);
             jobDataMap.put(PublicationJob.SOURCE, workspaceName);
             jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
             jobDataMap.put(PublicationJob.CHECK_PERMISSIONS, true);

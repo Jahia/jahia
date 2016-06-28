@@ -43,12 +43,13 @@
  */
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -58,6 +59,8 @@ import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,17 +74,37 @@ public class PublishWorkItemHandler extends AbstractWorkItemHandler implements W
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         @SuppressWarnings("unchecked")
-        List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
+        final List<String> uuids = (List<String>) workItem.getParameter("nodeIds");
         String workspace = (String) workItem.getParameter("workspace");
         String userKey = (String) workItem.getParameter("user");
         if (workItem.getParameter("currentUser") != null) {
             userKey = (String) workItem.getParameter("currentUser");
         }
 
+        List<String> publicationPath = null;
+        try {
+            publicationPath = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<List<String>>() {
+                public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    List<String> result = new ArrayList<>();
+                    for (String uuid : uuids) {
+                        try {
+                            result.add(session.getNodeByIdentifier(uuid).getPath());
+                        } catch (RepositoryException e) {
+                            logger.debug("Cannot get item " + uuid, e);
+                        }
+                    }
+                    return result;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.debug("Error occured when getting node paths for uuids", e);
+        }
+
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         jobDataMap.put(BackgroundJob.JOB_USERKEY, userKey);
         jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuids);
+        jobDataMap.put(PublicationJob.PUBLICATION_PATHS, publicationPath);
         jobDataMap.put(PublicationJob.SOURCE, workspace);
         jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
         jobDataMap.put(PublicationJob.LOCK, "publication-process-" + workItem.getProcessInstanceId());

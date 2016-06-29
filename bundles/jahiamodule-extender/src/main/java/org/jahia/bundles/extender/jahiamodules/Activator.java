@@ -508,7 +508,7 @@ public class Activator implements BundleActivator, EventHandler {
         }
     }
 
-    private void resolve(final Bundle bundle) {
+    private synchronized void resolve(final Bundle bundle) {
 
         final JahiaTemplatesPackage pkg = BundleUtils.isJahiaModuleBundle(bundle) ? BundleUtils.getModule(bundle) : null;
 
@@ -622,7 +622,7 @@ public class Activator implements BundleActivator, EventHandler {
         }
     }
 
-    private void unresolve(Bundle bundle) {
+    private synchronized void unresolve(Bundle bundle) {
         setModuleState(bundle, ModuleState.State.UNRESOLVED, null);
     }
 

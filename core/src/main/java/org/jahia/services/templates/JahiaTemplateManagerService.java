@@ -44,6 +44,7 @@
 package org.jahia.services.templates;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
@@ -97,6 +98,8 @@ import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * Template and template set deployment and management service.
@@ -120,11 +123,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     };
 
-    private Map<Bundle, ModuleState> moduleStates = new TreeMap<>();
-    private final Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<>();
-    private final Set<Bundle> installedBundles = new HashSet<>();
-    private final Set<Bundle> initializedBundles = new HashSet<>();
-    private final Map<String, List<Bundle>> toBeResolved = new HashMap<>();
+    private Map<Bundle, ModuleState> moduleStates = new ConcurrentSkipListMap<>();
+    private final Map<Bundle, JahiaTemplatesPackage> registeredBundles = new ConcurrentHashMap<>();
+    private final Set<Bundle> installedBundles = Sets.newConcurrentHashSet();
+    private final Set<Bundle> initializedBundles = Sets.newConcurrentHashSet();
+    private final Map<String, List<Bundle>> toBeResolved = new ConcurrentHashMap<>();
     private final OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
     private TemplatePackageDeployer templatePackageDeployer;
     private TemplatePackageRegistry templatePackageRegistry;

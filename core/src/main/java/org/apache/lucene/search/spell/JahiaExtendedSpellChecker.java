@@ -93,6 +93,14 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
     }
 
     /**
+     * @deprecated
+     */
+    public String[] suggestSimilar(String word, int numSug, IndexReader ir, String field, boolean morePopular,
+                                   String sites, String language) throws IOException {
+        return suggestSimilar(word, numSug, ir, morePopular, new String[]{sites}, language);
+    }
+
+    /**
      * Suggest similar words (optionally restricted to a field of an index).
      * 
      * <p>

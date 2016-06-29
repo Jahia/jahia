@@ -272,8 +272,19 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
      * Returns a list of available workflow definitions for the specified type.
      *
      * @param type   workflow type
-     * @param siteNode
-     *@param uiLocale the locale used to localize workflow labels  @return a list of available workflow definitions for the specified type
+     * @param uiLocale the locale used to localize workflow labels  @return a list of available workflow definitions for the specified type
+     * @throws RepositoryException in case of an error
+     */
+    public List<WorkflowDefinition> getWorkflowDefinitionsForType(String type, Locale uiLocale) throws RepositoryException {
+        return getWorkflowDefinitionsForType(type, null, uiLocale);
+    }
+
+    /**
+     * Returns a list of available workflow definitions for the specified type.
+     *
+     * @param type   workflow type
+     * @param siteNode site node
+     * @param uiLocale the locale used to localize workflow labels  @return a list of available workflow definitions for the specified type
      * @throws RepositoryException in case of an error
      */
     public List<WorkflowDefinition> getWorkflowDefinitionsForType(String type, JCRSiteNode siteNode, Locale uiLocale) throws RepositoryException {
@@ -282,7 +293,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
             List<WorkflowDefinition> defs = providerEntry.getValue().getAvailableWorkflows(uiLocale);
             for (WorkflowDefinition def : defs) {
                 WorklowTypeRegistration worklowTypeRegistration = workflowRegistrationByDefinition.get(def.getKey());
-                if (worklowTypeRegistration.getType().equals(type) && isRegistrationAvailableForSite(siteNode, worklowTypeRegistration)) {
+                if (worklowTypeRegistration.getType().equals(type) && (siteNode == null || isRegistrationAvailableForSite(siteNode, worklowTypeRegistration))) {
                     workflowsByProvider.add(def);
                 }
             }
@@ -291,8 +302,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     }
 
     private boolean isRegistrationAvailableForSite(JCRSiteNode siteNode, WorklowTypeRegistration worklowTypeRegistration) {
-        return siteNode == null ||
-                worklowTypeRegistration.getModule().getModuleType().equals("system") ||
+        return worklowTypeRegistration.getModule().getModuleType().equals("system") ||
                 siteNode.getInstalledModulesWithAllDependencies().contains(worklowTypeRegistration.getModule().getId());
     }
 
@@ -894,7 +904,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     public boolean hasActiveWorkflowForType(JCRNodeWrapper node, String type) {
         List<Workflow> workflows = new ArrayList<Workflow>();
         try {
-            final List<WorkflowDefinition> forAction = getWorkflowDefinitionsForType(type, null, null);
+            final List<WorkflowDefinition> forAction = getWorkflowDefinitionsForType(type, null);
             if (node.isNodeType(Constants.JAHIAMIX_WORKFLOW) && node.hasProperty(Constants.PROCESSID)) {
                 addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID), node.getSession().getLocale());
             }
@@ -1004,10 +1014,10 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
         if ("/".equals(nodePath)) {
             results = getDefaultRules(n);
         } else {
-            results = recurseOnRules(n.getParent());
-
             if (n.isNodeType("jnt:virtualsite")) {
-                results = new HashMap<String, WorkflowRule>(getDefaultRules(n));
+                results = getDefaultRules(n);
+            } else {
+                results = recurseOnRules(n.getParent());
             }
 
             if (n.hasNode(WORKFLOWRULES_NODE_NAME)) {
@@ -1039,8 +1049,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     }
 
     private Map<String, WorkflowRule> getDefaultRules(JCRNodeWrapper n) throws RepositoryException {
-        Map<String, WorkflowRule> results;
-        results = new HashMap<String, WorkflowRule>();
+        Map<String, WorkflowRule> results = new HashMap<String, WorkflowRule>();
         Map<String, WorklowTypeRegistration> m = new HashMap<String, WorklowTypeRegistration>();
         for (WorklowTypeRegistration registration : workflowRegistrationByDefinition.values()) {
             if (registration.isCanBeUsedForDefault() &&

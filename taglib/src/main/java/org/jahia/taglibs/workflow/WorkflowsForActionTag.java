@@ -44,6 +44,7 @@
 package org.jahia.taglibs.workflow;
 
 import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -75,7 +76,8 @@ public class WorkflowsForActionTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         List<WorkflowDefinition> defs = null;
         try {
-            defs = WorkflowService.getInstance().getWorkflowDefinitionsForType(workflowAction, null, locale != null ? locale : getUILocale());
+            RenderContext renderContext = (RenderContext) pageContext.findAttribute("renderContext");
+            defs = WorkflowService.getInstance().getWorkflowDefinitionsForType(workflowAction, renderContext != null ? renderContext.getSite() : null, locale != null ? locale : getUILocale());
         } catch (RepositoryException e) {
             logger.error("Could not retrieve workflows", e);
         }

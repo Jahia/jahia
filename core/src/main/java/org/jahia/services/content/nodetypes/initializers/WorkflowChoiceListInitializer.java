@@ -44,6 +44,8 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
@@ -71,7 +73,17 @@ public class WorkflowChoiceListInitializer implements ChoiceListInitializer {
 
             List<WorkflowDefinition> defs;
             if (!StringUtils.isEmpty(param)) {
-                defs = workflowService.getWorkflowDefinitionsForType(param, null, locale);
+                JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
+                JCRNodeWrapper parentNode = (JCRNodeWrapper) context.get("contextParent");
+                JCRSiteNode site = null;
+                if (node != null) {
+                    site = node.getResolveSite();
+                }
+                if (site == null && parentNode != null) {
+                    site = parentNode.getResolveSite();
+                }
+
+                defs = workflowService.getWorkflowDefinitionsForType(param, site, locale);
             } else {
                 defs = workflowService.getWorkflows(locale);
             }

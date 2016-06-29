@@ -493,7 +493,8 @@ public class PublicationWorkflow implements CustomWorkflow {
                         String workflowGroup = thisWFInfo.get(0).getWorkflowGroup();
                         String locale = workflowGroup.substring(0, workflowGroup.indexOf("/"));
                         JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(thisWFInfo), dialog.getWfDefinition(), nodeProperties,
-                                dialog.getComments(), map, locale, getCallback(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), Messages.get("label.workflow.cannotStart", "Cannot start workflow"), status, linker, refreshData)
+                                dialog.getComments(), map, locale, getCallback(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"),
+                                        Messages.get("label.workflow.cannotStart", "Cannot start workflow"), status, linker, refreshData)
                         );
                     } else {
                         close(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), status, linker, refreshData);
@@ -523,7 +524,9 @@ public class PublicationWorkflow implements CustomWorkflow {
         if (nbWF[0] == 0) {
             Info.display(message, message);
             WorkInProgressActionItem.removeStatus(statusMessage);
-            linker.refresh(refreshData);
+            if(refreshData != null) {
+                linker.refresh(refreshData);
+            }
             cards.closeAllEngines();
         }
     }

@@ -67,6 +67,9 @@ import javax.jcr.version.VersionManager;
 
 import org.apache.jackrabbit.api.JackrabbitWorkspace;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
+import org.apache.jackrabbit.core.RepositoryImpl;
+import org.apache.jackrabbit.core.SessionImpl;
+import org.apache.jackrabbit.core.state.PropertyStateMerger;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
@@ -110,9 +113,9 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                 }
             }
             super.start();
+            session = getSystemSession();
+            Session providerSession = session.getProviderSession(this);
             if (liveWorkspaceCreated) {
-                session = getSystemSession();
-                Session providerSession = session.getProviderSession(this);
                 Node n = providerSession.getNode("/");
                 recurseCheckin(n, providerSession.getWorkspace().getVersionManager());
                 NodeIterator ni = n.getNodes();
@@ -134,6 +137,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                     }
                 }
             }
+            registerPropertyMergers((SessionImpl) providerSession);
         } catch (RepositoryException e) {
             logger.error("Error starting store provider", e);
         } finally {
@@ -144,6 +148,13 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                 livesession.logout();
             }
         }
+    }
+
+    private void registerPropertyMergers(SessionImpl session) throws RepositoryException {
+        Name lastPublished = session.getQName("j:lastPublished");
+        Name lastPublishedBy = session.getQName("j:lastPublishedBy");
+        PropertyStateMerger.registerMerger(lastPublished, new PropertyStateMerger.MostRecentDateValueMergerAlgorithm(null));
+        PropertyStateMerger.registerMerger(lastPublishedBy, new PropertyStateMerger.MostRecentDateValueMergerAlgorithm(lastPublished));
     }
 
     private void recurseCheckin(Node node, VersionManager versionManager) throws RepositoryException {

@@ -44,6 +44,7 @@
 package org.jahia.osgi;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -55,6 +56,7 @@ import org.apache.karaf.util.config.PropertiesLoader;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.settings.SettingsBean;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
@@ -136,6 +138,8 @@ public class FrameworkService implements FrameworkListener {
     private final ServletContext servletContext;
 
     private long startTime;
+    
+    private Map<String, String> filteredOutSystemProperties;
 
     private FrameworkService(ServletContext servletContext) {
         this.servletContext = servletContext;
@@ -202,7 +206,7 @@ public class FrameworkService implements FrameworkListener {
         try {
             karafConfigProperties = PropertiesLoader.loadConfigProperties(file);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Unable to load properties from file " + file + ". Cause: " + e.getMessage(), e);
             karafConfigProperties = new org.apache.felix.utils.properties.Properties();
         }
 
@@ -220,6 +224,36 @@ public class FrameworkService implements FrameworkListener {
 
     }
 
+    private void filterOutSystemProperties() {
+        if (!"was".equals(SettingsBean.getInstance().getServer())) {
+            // we skip filtering out system properties on any server except WebSphere, which sets OSGi-related properties for its internal
+            // container
+            return;
+        }
+        filteredOutSystemProperties = new HashMap<>();
+        Properties sysProps = System.getProperties();
+        for (String prop : sysProps.stringPropertyNames()) {
+            if (prop.startsWith("org.osgi.framework.")) {
+                logger.info("Filtering out system property {}", prop);
+                filteredOutSystemProperties.put(prop, sysProps.getProperty(prop));
+                sysProps.remove(prop);
+            }
+        }
+    }
+
+    private void restoreSystemProperties() {
+        if (filteredOutSystemProperties == null || filteredOutSystemProperties.isEmpty()) {
+            // nothing to restore
+            return;
+        }
+
+        for (Map.Entry<String, String> prop : filteredOutSystemProperties.entrySet()) {
+            logger.info("Restoring system property {}", prop.getKey());
+            System.setProperty(prop.getKey(), prop.getValue());
+        }
+
+    }
+
     public void start() {
         startTime = System.currentTimeMillis();
         logger.info("Starting OSGi platform service");
@@ -229,6 +263,7 @@ public class FrameworkService implements FrameworkListener {
 
     private void startKaraf() {
         try {
+            filterOutSystemProperties();
             setupSystemProperties();
             main = new Main(new String[0]);
             main.launch();
@@ -237,6 +272,8 @@ public class FrameworkService implements FrameworkListener {
             main = null;
             logger.error("Error starting OSGi container", e);
             throw new JahiaRuntimeException("Error starting OSGi container", e);
+        } finally {
+            restoreSystemProperties();
         }
 
     }

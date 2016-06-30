@@ -601,9 +601,14 @@ public class JCRPublicationService extends JahiaService {
                                 destinationNode.getBaseVersion().getName()
                 );
             }
-            String parentDestinationPath = node.getParent().getPath().equals("/") ? "" : node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
-            String expectedDestinationPath = parentDestinationPath + "/" + node.getName();
-            if (!expectedDestinationPath.equals(destinationPath)) {
+            String expectedDestinationPath = null;
+            try {
+                String parentDestinationPath = node.getParent().getPath().equals("/") ? "" : node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+                expectedDestinationPath = parentDestinationPath + "/" + node.getName();
+            } catch (ItemNotFoundException e) {
+                // Not found - parent is not yet published
+            }
+            if (expectedDestinationPath == null || !expectedDestinationPath.equals(destinationPath)) {
                 try {
                     destinationSession.checkout(destinationNode.getParent()); // previous parent
                     JCRNodeWrapper nodeParent = node.getParent();

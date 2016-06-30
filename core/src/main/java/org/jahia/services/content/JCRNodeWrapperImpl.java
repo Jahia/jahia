@@ -3599,17 +3599,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         Locale locale = getSession().getLocale();
         try {
             JCRSiteNode site = getResolveSite();
-
             for (String module : site.getInstalledModules()) {
                 try {
-                    return Messages.get(null,
+                    String r = Messages.get(null,
                             ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(module),
-                            title, locale != null ? locale : session.getFallbackLocale(), title);
+                            title, locale != null ? locale : session.getFallbackLocale(), null);
+                    if (r != null) {
+                        return r;
+                    }
                 } catch (Exception e) {
                     // ignore
-                    return title;
                 }
             }
+            return title;
         } catch (RepositoryException e) {
             logger.warn("Unable to resolve the site for node {}. Cause: {}", getPath(),
                     e.getMessage());

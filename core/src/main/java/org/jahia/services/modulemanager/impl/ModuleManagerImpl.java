@@ -176,9 +176,12 @@ public class ModuleManagerImpl implements ModuleManager {
             persister.store(bundleInfo);
             result = install(bundleInfo, target, start);
             
-            Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
-            if (bundle != null && !start) {
-                BundleLifecycleUtils.refreshBundle(bundle);
+            if (!start) {
+                // if the bundle won't be started we do a refresh on it (this refreshes the dependencies)
+                Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
+                if (bundle != null) {
+                    BundleLifecycleUtils.refreshBundle(bundle);
+                }
             }
             BundleLifecycleUtils.startAllBundles();
         } catch (ModuleManagementException e) {

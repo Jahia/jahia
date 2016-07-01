@@ -163,7 +163,7 @@ public class FrameworkService implements FrameworkListener {
      */
     private void forceBundleResolution() {
         logger.info("Trigger resolution of bundles");
-        BundleUtils.resolveBundles(null);
+        BundleLifecycleUtils.resolveBundles(null);
     }
 
     /**

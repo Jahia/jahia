@@ -2,44 +2,44 @@
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
- * <p/>
- * http://www.jahia.com
- * <p/>
- * Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
- * <p/>
- * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- * 1/GPL OR 2/JSEL
- * <p/>
- * 1/ GPL
- * ==================================================================================
- * <p/>
- * IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- * <p/>
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * <p/>
- * <p/>
- * 2/ JSEL - Commercial and Supported Versions of the program
- * ===================================================================================
- * <p/>
- * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- * <p/>
- * Alternatively, commercial and supported versions of the program - also known as
- * Enterprise Distributions - must be used in accordance with the terms and conditions
- * contained in a separate written agreement between you and Jahia Solutions Group SA.
- * <p/>
- * If you are unsure which license is appropriate for your use,
- * please contact the sales department at sales@jahia.com.
+ *
+ *                                 http://www.jahia.com
+ *
+ *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *
+ *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ *     1/GPL OR 2/JSEL
+ *
+ *     1/ GPL
+ *     ==================================================================================
+ *
+ *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ *     2/ JSEL - Commercial and Supported Versions of the program
+ *     ===================================================================================
+ *
+ *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *
+ *     Alternatively, commercial and supported versions of the program - also known as
+ *     Enterprise Distributions - must be used in accordance with the terms and conditions
+ *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ *
+ *     If you are unsure which license is appropriate for your use,
+ *     please contact the sales department at sales@jahia.com.
  */
 package org.jahia.osgi;
 
@@ -80,6 +80,9 @@ import org.slf4j.LoggerFactory;
  * @author Sergiy Shyrkov
  */
 public final class BundleLifecycleUtils {
+
+    private static final int BUNDLE_REFRESH_WAIT_TIMEOUT_SECONDS = Integer
+            .valueOf(System.getProperty("org.jahia.osgi.BundleLifecycleUtils.bundleRefreshWaitTimeoutSeconds", "600"));
 
     private static final Logger logger = LoggerFactory.getLogger(BundleLifecycleUtils.class);
 
@@ -165,7 +168,7 @@ public final class BundleLifecycleUtils {
      * @return a set of fragment bundles, which are related to the provided list of bundles, i.e. provided bundles are hosts for the
      *         collected fragments
      */
-    private static Set<Bundle> findFragmentsForBundes(Collection<Bundle> bundles) {
+    private static Set<Bundle> findFragmentsForBundles(Collection<Bundle> bundles) {
         Set<Bundle> fragments = new HashSet<Bundle>();
         Bundle[] allBundles = getAllBundles();
         for (Bundle b : allBundles) {
@@ -274,7 +277,10 @@ public final class BundleLifecycleUtils {
             }
         });
         try {
-            latch.await(20, TimeUnit.SECONDS);
+            if (!latch.await(BUNDLE_REFRESH_WAIT_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+                logger.warn(BUNDLE_REFRESH_WAIT_TIMEOUT_SECONDS
+                        + " seconds ellapsed waiting for the refresh of bundles. Stopped waiting.");
+            }
         } catch (InterruptedException e) {
             logger.warn("Waiting for refresh of bundles was interrupted", e);
         }
@@ -292,7 +298,7 @@ public final class BundleLifecycleUtils {
         logger.info("Requested refresh for the following {} bundle(s): {}", bundlesToRefresh.size(), bundlesToRefresh);
         Collection<Bundle> fullBundleList = bundlesToRefresh;
         if (considerFragments) {
-            Set<Bundle> fragments = findFragmentsForBundes(bundlesToRefresh);
+            Set<Bundle> fragments = findFragmentsForBundles(bundlesToRefresh);
             if (!fragments.isEmpty()) {
                 fullBundleList = new HashSet<>(bundlesToRefresh);
                 fullBundleList.addAll(fragments);
@@ -319,9 +325,11 @@ public final class BundleLifecycleUtils {
      * Resolves the specified bundles.
      * 
      * @param bundlesToResolve the bundles to resolve or {@code null} to resolve all unresolved bundles installed in the Framework
+     * @return {@code true} if all specified bundles are resolved; {@code false}
+     *         otherwise.
      */
-    public static void resolveBundles(Collection<Bundle> bundlesToResolve) {
-        getFrameworkWiring().resolveBundles(bundlesToResolve);
+    public static boolean resolveBundles(Collection<Bundle> bundlesToResolve) {
+        return getFrameworkWiring().resolveBundles(bundlesToResolve);
     }
 
     /**

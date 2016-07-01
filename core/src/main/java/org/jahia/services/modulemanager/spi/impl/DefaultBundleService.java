@@ -45,6 +45,7 @@ package org.jahia.services.modulemanager.spi.impl;
 
 import java.util.Collections;
 
+import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
@@ -83,7 +84,7 @@ public class DefaultBundleService implements BundleService {
                 installedBundle.start();
             } else {
                 // force bundle resolution
-                BundleUtils.resolveBundles(Collections.singleton(installedBundle));
+                BundleLifecycleUtils.resolveBundles(Collections.singleton(installedBundle));
             }
         } catch (BundleException e) {
             throw new ModuleManagementException(e);

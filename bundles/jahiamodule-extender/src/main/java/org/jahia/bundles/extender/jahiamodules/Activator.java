@@ -481,31 +481,8 @@ public class Activator implements BundleActivator, EventHandler {
         installedBundles.remove(bundle);
         initializedBundles.remove(bundle);
 
-        deleteBundleFileIfNeeded(bundle);
-
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished uninstalling DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
-    }
-
-    private void deleteBundleFileIfNeeded(Bundle bundle) {
-        File bundleFile = null;
-        try {
-            URL bundleUrl = new URL(bundle.getLocation());
-            if (bundleUrl.getProtocol().equals("file")) {
-                bundleFile = new File(bundleUrl.getFile());
-            }
-        } catch (MalformedURLException e) {
-            // not located in a file
-        }
-        if (bundleFile != null
-                && bundleFile.getAbsolutePath().startsWith(
-                SettingsBean.getInstance().getJahiaModulesDiskPath() + File.separatorChar)
-                && bundleFile.exists()) {
-            // remove bundle file from var/modules
-            if (!bundleFile.delete()) {
-                logger.warn("Unable to delete file for uninstalled bundle {}", bundleFile);
-            }
-        }
     }
 
     private synchronized void resolve(final Bundle bundle) {

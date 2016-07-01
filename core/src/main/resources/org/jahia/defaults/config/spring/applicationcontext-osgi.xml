@@ -14,6 +14,7 @@
                 <prop key="felix.fileinstall.active.level">#{settingsBean.moduleStartLevel}</prop>
                 <prop key="felix.fileinstall.log.level">3</prop>
                 <prop key="felix.fileinstall.bundles.new.start">${jahia.modules.fileinstall.bundles.new.start:true}</prop>
+                <prop key="felix.fileinstall.bundles.uninstall.remove">${jahia.modules.fileinstall.bundles.uninstall.remove:true}</prop>
                 <prop key="felix.fileinstall.noInitialDelay">true</prop>
                 <prop key="felix.fileinstall.enableConfigSave">false</prop>
             </props>

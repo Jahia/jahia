@@ -52,6 +52,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -68,7 +69,6 @@ public class MenusChoiceListInitializerImpl implements ChoiceListInitializer{
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
         final ArrayList<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
         Set<ChoiceListValue> set = new  TreeSet<ChoiceListValue>();
-        String nodetype = "jmix:navMenuComponent";
         try {
             QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
             JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
@@ -79,26 +79,13 @@ public class MenusChoiceListInitializerImpl implements ChoiceListInitializer{
 
             final JahiaTemplateManagerService service = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
-            QueryResult result = qm.createQuery(
-                    "select * from [" + nodetype + "] as n where isdescendantnode(n,['" +site.getPath()+"'])", Query.JCR_SQL2).execute();
-            final NodeIterator resultNodes = result.getNodes();
-            while (resultNodes.hasNext()) {
-                JCRNodeWrapperImpl nodeWrapper = (JCRNodeWrapperImpl) resultNodes.nextNode();
-                String displayName = nodeWrapper.getDisplayableName();
-                set.add(new ChoiceListValue(displayName, nodeWrapper.getName()));
-            }
+            scanForNavMenus(site.getPath(), set, qm);
 
             for (String s : site.getAllInstalledModules()) {
                 JahiaTemplatesPackage module = service.getTemplatePackageById(s);
                 if (module != null) {
-                    result = qm.createQuery(
-                            "select * from [" + nodetype + "] as n where isdescendantnode(n,['/modules/" + JCRContentUtils.sqlEncode(module.getIdWithVersion()) + "'])", Query.JCR_SQL2).execute();
-                    final NodeIterator ni = result.getNodes();
-                    while (ni.hasNext()) {
-                        JCRNodeWrapperImpl nodeWrapper = (JCRNodeWrapperImpl) ni.nextNode();
-                        String displayName = nodeWrapper.getDisplayableName();
-                        set.add(new ChoiceListValue(displayName, nodeWrapper.getName()));
-                    }
+                    final String modulePath = "/modules/" + JCRContentUtils.sqlEncode(module.getIdWithVersion());
+                    scanForNavMenus(modulePath, set, qm);
                 }
             }
 
@@ -108,5 +95,16 @@ public class MenusChoiceListInitializerImpl implements ChoiceListInitializer{
         listValues.addAll(set);
         return listValues;
 
+    }
+
+    private void scanForNavMenus(String rootPath, Set<ChoiceListValue> set, QueryManager qm) throws RepositoryException {
+        QueryResult result = qm.createQuery(
+                "select * from [jmix:navMenuComponent] as n where isdescendantnode(n,['" + rootPath + "'])", Query.JCR_SQL2).execute();
+        final NodeIterator resultNodes = result.getNodes();
+        while (resultNodes.hasNext()) {
+            JCRNodeWrapperImpl nodeWrapper = (JCRNodeWrapperImpl) resultNodes.nextNode();
+            String displayName = nodeWrapper.getDisplayableName();
+            set.add(new ChoiceListValue(displayName, nodeWrapper.getName()));
+        }
     }
 }

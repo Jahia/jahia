@@ -98,13 +98,13 @@ public class FrameworkService implements FrameworkListener {
 
     /**
      * Returns a singleton instance of this class.
-     * 
+     *
      * @return a singleton instance of this class
      */
     public static FrameworkService getInstance() {
         return Holder.INSTANCE;
     }
-    
+
     /**
      * Notifies the service that the FileInstall watcher has been started and processed the found modules.
      */
@@ -138,8 +138,6 @@ public class FrameworkService implements FrameworkListener {
     private final ServletContext servletContext;
 
     private long startTime;
-    
-    private Map<String, String> filteredOutSystemProperties;
 
     private FrameworkService(ServletContext servletContext) {
         this.servletContext = servletContext;
@@ -224,13 +222,15 @@ public class FrameworkService implements FrameworkListener {
 
     }
 
-    private void filterOutSystemProperties() {
+    private Map<String, String> filterOutSystemProperties() {
+
         if (!"was".equals(SettingsBean.getInstance().getServer())) {
             // we skip filtering out system properties on any server except WebSphere, which sets OSGi-related properties for its internal
             // container
-            return;
+            return null;
         }
-        filteredOutSystemProperties = new HashMap<>();
+
+        Map<String, String> filteredOutSystemProperties = new HashMap<>();
         Properties sysProps = System.getProperties();
         for (String prop : sysProps.stringPropertyNames()) {
             if (prop.startsWith("org.osgi.framework.")) {
@@ -239,19 +239,20 @@ public class FrameworkService implements FrameworkListener {
                 sysProps.remove(prop);
             }
         }
+        return filteredOutSystemProperties;
     }
 
-    private void restoreSystemProperties() {
-        if (filteredOutSystemProperties == null || filteredOutSystemProperties.isEmpty()) {
+    private void restoreSystemProperties(Map<String, String> systemPropertiesToRestore) {
+
+        if (systemPropertiesToRestore == null || systemPropertiesToRestore.isEmpty()) {
             // nothing to restore
             return;
         }
 
-        for (Map.Entry<String, String> prop : filteredOutSystemProperties.entrySet()) {
+        for (Map.Entry<String, String> prop : systemPropertiesToRestore.entrySet()) {
             logger.info("Restoring system property {}", prop.getKey());
             System.setProperty(prop.getKey(), prop.getValue());
         }
-
     }
 
     public void start() {
@@ -262,8 +263,8 @@ public class FrameworkService implements FrameworkListener {
     }
 
     private void startKaraf() {
+        Map<String, String> filteredOutSystemProperties = filterOutSystemProperties();
         try {
-            filterOutSystemProperties();
             setupSystemProperties();
             main = new Main(new String[0]);
             main.launch();
@@ -273,9 +274,8 @@ public class FrameworkService implements FrameworkListener {
             logger.error("Error starting OSGi container", e);
             throw new JahiaRuntimeException("Error starting OSGi container", e);
         } finally {
-            restoreSystemProperties();
+            restoreSystemProperties(filteredOutSystemProperties);
         }
-
     }
 
     /**

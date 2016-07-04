@@ -99,7 +99,6 @@ public final class BundleUtils {
         } catch (ConstantException cex) {
             return "Unknown";
         }
-
     }
 
     /**

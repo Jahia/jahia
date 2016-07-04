@@ -55,7 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
@@ -81,15 +80,12 @@ import org.slf4j.LoggerFactory;
  */
 public final class BundleLifecycleUtils {
 
-    private static final int BUNDLE_REFRESH_WAIT_TIMEOUT_SECONDS = Integer
-            .valueOf(System.getProperty("org.jahia.osgi.BundleLifecycleUtils.bundleRefreshWaitTimeoutSeconds", "600"));
-
     private static final Logger logger = LoggerFactory.getLogger(BundleLifecycleUtils.class);
 
     /**
      * Collects a set of bundles, which have optional package dependencies to one of the bundles in the provided list. Inspired by the
      * DirectoryWatcher from Felix FileInstall.
-     * 
+     *
      * @param bundles a collection of bundles to collect bundles with optional packages for
      * @return a set of bundles, which have optional package dependencies to one of the bundles in the provided list. Inspired by the
      *         DirectoryWatcher from Felix FileInstall
@@ -163,7 +159,7 @@ public final class BundleLifecycleUtils {
     /**
      * Collects a set of fragment bundles, which are related to the provided list of bundles, i.e. provided bundles are hosts for the
      * collected fragments. Inspired by the DirectoryWatcher from Felix FileInstall.
-     * 
+     *
      * @param bundles a collection of bundles to collect fragments for
      * @return a set of fragment bundles, which are related to the provided list of bundles, i.e. provided bundles are hosts for the
      *         collected fragments
@@ -215,7 +211,7 @@ public final class BundleLifecycleUtils {
 
     /**
      * Obtains the {@link FrameworkWiring}.
-     * 
+     *
      * @return the {@link FrameworkWiring}
      */
     private static FrameworkWiring getFrameworkWiring() {
@@ -236,7 +232,7 @@ public final class BundleLifecycleUtils {
 
     /**
      * Returns the system bundle of the OSGi framework.
-     * 
+     *
      * @return the system bundle of the OSGi framework
      */
     private static Bundle getSystemBundle() {
@@ -245,7 +241,7 @@ public final class BundleLifecycleUtils {
 
     /**
      * Check if a bundle is a fragment.
-     * 
+     *
      * @return <code>true</code> if the supplied bundle is a fragment; <code>false</code> otherwise
      */
     private static boolean isFragment(Bundle bundle) {
@@ -255,7 +251,7 @@ public final class BundleLifecycleUtils {
 
     /**
      * Refreshes the specified bundle and its "dependencies".
-     * 
+     *
      * @param bundle the bundle to refresh
      */
     public static void refreshBundle(Bundle bundle) {
@@ -264,23 +260,24 @@ public final class BundleLifecycleUtils {
 
     /**
      * Refreshes the specified bundles.
-     * 
+     *
      * @param bundlesToRefresh the bundles to refresh
-     * @param withFragments should we also refresh the related fragment bundles?
      */
     private static void refreshBundles(Collection<Bundle> bundlesToRefresh) {
+
         final CountDownLatch latch = new CountDownLatch(1);
+
         FrameworkWiring wiring = getFrameworkWiring();
         wiring.refreshBundles(bundlesToRefresh, new FrameworkListener() {
+
+            @Override
             public void frameworkEvent(FrameworkEvent event) {
                 latch.countDown();
             }
         });
+
         try {
-            if (!latch.await(BUNDLE_REFRESH_WAIT_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
-                logger.warn(BUNDLE_REFRESH_WAIT_TIMEOUT_SECONDS
-                        + " seconds ellapsed waiting for the refresh of bundles. Stopped waiting.");
-            }
+            latch.await();
         } catch (InterruptedException e) {
             logger.warn("Waiting for refresh of bundles was interrupted", e);
         }
@@ -288,7 +285,7 @@ public final class BundleLifecycleUtils {
 
     /**
      * Refreshes the specified bundles and optionally their "dependencies".
-     * 
+     *
      * @param bundlesToRefresh the bundles to refresh
      * @param considerFragments should we also refresh the related fragment bundles?
      * @param considerBundlesWithOptionalPackages should we consider bundles with optional package dependencies?
@@ -323,7 +320,7 @@ public final class BundleLifecycleUtils {
 
     /**
      * Resolves the specified bundles.
-     * 
+     *
      * @param bundlesToResolve the bundles to resolve or {@code null} to resolve all unresolved bundles installed in the Framework
      * @return {@code true} if all specified bundles are resolved; {@code false}
      *         otherwise.
@@ -355,7 +352,7 @@ public final class BundleLifecycleUtils {
 
     /**
      * Starts a bundle and removes it from the Collection when successfully started.
-     * 
+     *
      * @param bundlesToStart a collection of bundles to be started
      */
     private static void startBundles(Collection<Bundle> bundlesToStart) {

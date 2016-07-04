@@ -149,6 +149,10 @@
         <level value="error"/>
     </logger>
     
+    <logger name="org.jahia.bundles.extender.jahiamodules.Activator">
+        <level value="debug"/>
+    </logger>
+
     <root>
         <level value="info"/>
         <appender-ref ref="ROLL"/>

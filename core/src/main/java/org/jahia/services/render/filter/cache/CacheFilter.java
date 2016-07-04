@@ -132,7 +132,7 @@ public class CacheFilter extends AbstractFilter {
                 // The element is not found in the cache with that key. use latch to allow only one thread to generate the fragment
                 // All other threads will wait until the first thread finish the generation, then the LatchReleasedCallback will be executed
                 // for all the waiting threads.
-                logger.debug("Use latch to decide between generate or waiting fragment: ", path);
+                logger.debug("Use latch to decide between generate or waiting fragment: {}", path);
 
                 if (generatorQueue.getLatch(renderContext, finalKey)) {
                     element = cache.get(finalKey);

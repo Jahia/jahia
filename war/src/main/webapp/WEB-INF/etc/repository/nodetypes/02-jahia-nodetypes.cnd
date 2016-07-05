@@ -1012,6 +1012,7 @@ extends = jnt:content
 
 [jmix:legacyContent] mixin
     - jmix:legacySiteKey (string) hidden nofulltext
+    - jmix:legacyUuid (string) hidden nofulltext
 
 [jmix:legacyPage] > jmix:legacyContent mixin
     - jmix:legacyPid (string) hidden nofulltext

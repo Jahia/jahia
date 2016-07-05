@@ -225,6 +225,7 @@ public class LegacyImportHandler extends DefaultHandler {
                             uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"),
                             attributes.getValue("jcr:mixinTypes"), getAdditionalProperties(attributes.getValue("jcr:additionalProperties")));
                     setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
+                    setSeoURLs(attributes.getValue(HTTP_WWW_JAHIA_ORG, "urlMappings"));
                     return;
                 }
 

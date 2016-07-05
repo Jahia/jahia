@@ -658,10 +658,10 @@
 [jnt:contentFolderReference] > jnt:content, jmix:nodeReference, jmix:editorialContent, jmix:listContent
  - j:node (weakreference,picker[type='contentfolder']) < jnt:contentFolder
 
-[jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:navMenuItem
+[jnt:nodeLink] > jnt:content, jmix:nodeReference, jmix:link, jmix:navMenuItem, jmix:publication
  - j:node (weakreference,picker[type='editoriallink']) < jmix:droppableContent, jnt:page, jnt:contentFolder, jnt:folder
 
-[jnt:externalLink] > jnt:content, jmix:link, jmix:navMenuItem
+[jnt:externalLink] > jnt:content, jmix:link, jmix:navMenuItem, jmix:publication
  - j:url (string)
 
 [jnt:referenceInField] > nt:base

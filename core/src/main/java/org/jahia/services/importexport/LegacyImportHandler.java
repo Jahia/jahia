@@ -285,7 +285,15 @@ public class LegacyImportHandler extends DefaultHandler {
                     } else {
                         logger.debug("create field " + localName);
                         ExtendedItemDefinition itemDef;
-                        if (getCurrentContentType().getChildNodeDefinitionsAsMap().containsKey(localName)) {
+                        if (getCurrentContentType().getChildNodeDefinitionsAsMap().containsKey(localName) && getCurrentContentType().getPropertyDefinitionsAsMap().containsKey(localName)) {
+                            itemDef = getCurrentContentType().getChildNodeDefinitionsAsMap().get(localName);
+                            if (!itemDef.getDeclaringNodeType().getName().equals(getCurrentContentType().getNodeTypeDefinition().getName())) {
+                                ExtendedItemDefinition itemDef2 = getCurrentContentType().getPropertyDefinitionsAsMap().get(localName);
+                                if (itemDef2.getDeclaringNodeType().getName().equals(getCurrentContentType().getNodeTypeDefinition().getName())) {
+                                    itemDef = itemDef2;
+                                }
+                            }
+                        } else if (getCurrentContentType().getChildNodeDefinitionsAsMap().containsKey(localName)) {
                             itemDef = getCurrentContentType().getChildNodeDefinitionsAsMap().get(localName);
                         } else {
                             itemDef = getCurrentContentType().getPropertyDefinitionsAsMap().get(localName);

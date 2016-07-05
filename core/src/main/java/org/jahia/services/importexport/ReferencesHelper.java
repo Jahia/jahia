@@ -147,7 +147,7 @@ public class ReferencesHelper {
         for (String uuid : resolvedUUIDStringList) {
             references.remove(uuid);
         }
-        
+
         if (useReferencesKeeper && session != referencesKeeperSession) {
             referencesKeeperSession.save();
         }
@@ -197,11 +197,11 @@ public class ReferencesHelper {
                 refNode.remove();
             }
         }
-        
+
         if (session != referencesKeeperSession) {
             referencesKeeperSession.save();
         }
-        
+
         return referencesKeeperSession;
     }
 
@@ -252,6 +252,9 @@ public class ReferencesHelper {
             JCRNodeWrapper ref = n.addNode("j:referenceInField_" + Text.escapeIllegalJcrChars(pName) + "_" + id, "jnt:referenceInField");
             ref.setProperty("j:fieldName", pName);
             ref.setProperty("j:reference", value);
+        } else if (pName.startsWith("@")) {
+            JCRNodeWrapper ref = n.addNode(pName.substring(1), "jnt:contentReference");
+            updateProperty(session, ref, Constants.NODE, value, false);
         } else {
             final ExtendedPropertyDefinition propertyDefinition = n.getApplicablePropertyDefinition(pName);
             if (propertyDefinition == null) {

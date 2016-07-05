@@ -1170,10 +1170,16 @@ public class LegacyImportHandler extends DefaultHandler {
                                         buf.replace(from, to, "##doc-context##/{workspace}/##ref:link" + count + "##");
                                     } else if (ref.startsWith("###file:")) {
                                         ref = StringUtils.substringAfter(ref, "###file:");
-                                        if (ref.indexOf('?') != -1) {
-                                            ref = StringUtils.substringBefore(ref, "?");
+                                        final int qmPos = ref.indexOf('?');
+                                        boolean isUuid = false;
+                                        if (qmPos != -1) {
+                                            if (StringUtils.substring(ref, qmPos+1).startsWith("uuid=default:")) {
+                                                ref = StringUtils.substring(ref, qmPos+14);
+                                                isUuid = true;
                                             }
-                                        ref = correctFilename(ref);
+                                            else ref = StringUtils.substringBefore(ref, "?");
+                                        }
+                                        if (!isUuid) ref = correctFilename(ref);
                                         buf.replace(from, to, "##doc-context##/{workspace}/##ref:link" + count + "##");
                                     } else {
                                         ref = StringUtils.substringAfterLast(ref, "/");

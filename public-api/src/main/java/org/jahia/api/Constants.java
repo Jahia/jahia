@@ -259,6 +259,7 @@ public class Constants {
     public static final String JAHIANT_MEMBER = "jnt:member";
 
     public static final String JCR_READ_RIGHTS = "jcr:read";
+    public static final String JCR_ALL_RIGHTS = "jcr:all";
     public static final String JCR_WRITE_RIGHTS = "jcr:write";
     public static final String JCR_MODIFYACCESSCONTROL_RIGHTS = "jcr:modifyAccessControl";
 
@@ -314,6 +315,7 @@ public class Constants {
     public static final String JAHIANT_PERMISSION = "jnt:permission";
     public static final String JAHIANT_ROLE = "jnt:role";
     public static final String JAHIANT_ROLES = "jnt:roles";
+    public static final String J_PERMISSIONNAMES = "j:permissionNames";
 
     public static final Set<String> forbiddenPropertiesToSerialize = new HashSet<String>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_BASEVERSION,

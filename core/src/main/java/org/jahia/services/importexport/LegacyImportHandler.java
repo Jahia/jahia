@@ -781,9 +781,11 @@ public class LegacyImportHandler extends DefaultHandler {
                 node.addMixin("jmix:orderedList");
                 node.setProperty("firstField", targetProperty);
                 node.setProperty("firstDirection", direction != null && "desc".equals(direction) ? "desc" : "asc");
+            } else {
+                logger.error("Unable to handle container list sorting property " + sortHandler + " as the target node is not a list: " + path);
             }
         } catch (Exception e) {
-            logger.warn("Unable to handle container list sorting property " + sortHandler + " on node " + path, e);
+            logger.error("Unable to handle container list sorting property " + sortHandler + " on node " + path, e);
         }
     }
 

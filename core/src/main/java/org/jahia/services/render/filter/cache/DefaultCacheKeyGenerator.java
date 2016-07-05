@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.*;
 
 /**
@@ -67,6 +68,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     private static final Logger logger = LoggerFactory.getLogger(DefaultCacheKeyGenerator.class);
 
     private static final String KEY_PART_DELIMITER = "@@";
+
+    private static final String KEY_PART_DELIMITER_ESCAPE = "&dblAt;";
+    private static final String AMPERSAND_ESCAPE = "&amp;";
 
     // All part generators coming from the core and the modules. This map defines the order of elements in the key.
     // It's important to maintain this order everywhere in key parsing, construction, transformation.
@@ -93,7 +97,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     public String generate(Resource resource, RenderContext renderContext, Properties properties) {
         List<String> args = new LinkedList<>();
         for (CacheKeyPartGenerator generator : partGeneratorsByKey.values()) {
-            args.add(generator.getValue(resource, renderContext, properties));
+            String value = generator.getValue(resource, renderContext, properties);
+            args.add(encodeKeyPart(value));
         }
         return StringUtils.join(args, KEY_PART_DELIMITER);
     }
@@ -160,14 +165,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         int start = 0;
         int end;
         while ((end = key.indexOf(KEY_PART_DELIMITER, start)) > -1) {
-            res[ index ++ ] = key.substring(start, end);
-            start = end + 2;
+            String value = key.substring(start, end);
+            res[index++] = decodeKeyPart(value);
+            start = end + KEY_PART_DELIMITER.length();
         }
-        res[ index ++ ] = key.substring(start);
-        while (index < res.length) res[ index ++ ] = "";
-
-        if(res.length != partGeneratorsByKey.size( )) {
-            throw new IllegalStateException("Mismatched number of parts in key");
+        res[index++] = key.substring(start);
+        while (index < res.length) {
+            res[index++] = "";
         }
 
         return res;
@@ -300,5 +304,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         for (CacheKeyPartGenerator partGenerator : partGenerators) {
             registerPartGenerator(partGenerator);
         }
+    }
+
+    private static String encodeKeyPart(String keyPart) {
+        return keyPart.replace("&", AMPERSAND_ESCAPE).replace(KEY_PART_DELIMITER, KEY_PART_DELIMITER_ESCAPE);
+    }
+
+    private static String decodeKeyPart(String keyPart) {
+        return keyPart.replace(KEY_PART_DELIMITER_ESCAPE, KEY_PART_DELIMITER).replace(AMPERSAND_ESCAPE, "&");
     }
 }

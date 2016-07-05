@@ -131,7 +131,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
             i++;
         }
 
-        args[index] = newValue;
+        args[index] = encodeKeyPart(newValue);
         return StringUtils.join(args, KEY_PART_DELIMITER);
     }
 
@@ -146,7 +146,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         String[] newArgs = new String[args.length];
         int index = 0;
         for (CacheKeyPartGenerator keyPartGenerator : partGeneratorsByKey.values()) {
-            newArgs[index] = keyPartGenerator.replacePlaceholders(renderContext, args[index]);
+            String value = keyPartGenerator.replacePlaceholders(renderContext, args[index]);
+            newArgs[index] = encodeKeyPart(value);
             index++;
         }
         return StringUtils.join(newArgs, KEY_PART_DELIMITER);

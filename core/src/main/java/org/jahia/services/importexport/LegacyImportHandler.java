@@ -821,13 +821,26 @@ public class LegacyImportHandler extends DefaultHandler {
             JCRNodeWrapper node = null;
             if (uuidMapping.containsKey(uuid)) {
                 node = session.getNodeByIdentifier(uuidMapping.get(uuid));
-                currentCtx.peek().pushContainer(node, t);
+                if (pickerRelationshipUuid != null) currentCtx.peek().pushSkip();
+                else currentCtx.peek().pushContainer(node, t);
             } else if (pickerRelationshipUuid != null) {
+                node = addOrCheckoutNode(getCurrentContentNode(),
+                        StringUtils.substringAfter(nodeType, ":") + "_" + (ctnId++), "jnt:contentReference", null, creationMetadata);
+                final String contentRefUuid = node.getIdentifier();
+                uuidMapping.put(uuid, contentRefUuid);
+                performActions(mapping.getActions(t), node);
+
+                if (uuidMapping.containsKey(pickerRelationshipUuid)) {
+                    final JCRNodeWrapper source = session.getNodeByIdentifier(uuidMapping.get(pickerRelationshipUuid));
+                    node.setProperty(Constants.NODE, source);
+                } else {
                     if (!references.containsKey(pickerRelationshipUuid)) {
                         references.put(pickerRelationshipUuid, new ArrayList<String>());
                     }
                     references.get(pickerRelationshipUuid)
-                        .add(getCurrentContentNode().getIdentifier() + "/@ctn" + (ctnId++));
+                            .add(contentRefUuid + "/" + Constants.NODE);
+                }
+
                 currentCtx.peek().pushSkip();
             } else {
                 try {

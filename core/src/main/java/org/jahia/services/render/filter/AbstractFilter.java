@@ -43,8 +43,6 @@
  */
 package org.jahia.services.render.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -52,9 +50,10 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -180,7 +179,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
         @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
-            return (renderContext.getMainResource().getNode().getPath().equals(resource.getNode().getPath()));
+            return (renderContext.getMainResource().getNodePath().equals(resource.getNodePath()));
         }
 
         @Override

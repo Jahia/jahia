@@ -140,6 +140,7 @@ public class LegacyImportHandler extends DefaultHandler {
     private static final String HTTP_WWW_JAHIA_ORG = "http://www.jahia.org/";
     private static final String PAGE = "page";
     private static final String LINK = "link";
+    private static final String EMPTY = "empty";
 
     public static final Set<String> READ_ROLES = new HashSet<String>(Arrays.asList("reader"));
     public static final Set<String> WRITE_ROLES = new HashSet<String>(Arrays.asList("editor", "contributor"));
@@ -219,7 +220,8 @@ public class LegacyImportHandler extends DefaultHandler {
                 logger.debug(StringUtils.repeat(" ", level) + "<" + currentNode + "> , ctx = " + ctx);
             }
             level++;
-            if (ctx == -1 && HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
+            if (ctx == -1) {
+                if (HTTP_WWW_JAHIA_ORG.equals(uri) && PAGE.equals(localName)) {
                     createPage(attributes.getValue(Name.NS_JCR_URI, "primaryType"), attributes.getValue("jahia:title"),
                             attributes.getValue("jahia:template"), attributes.getValue(HTTP_WWW_JAHIA_ORG, "pageKey"),
                             uuid, getMetadataForNodeCreation(attributes), attributes.getValue("jahia:pid"),
@@ -227,7 +229,13 @@ public class LegacyImportHandler extends DefaultHandler {
                     setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
                     setSeoURLs(attributes.getValue(HTTP_WWW_JAHIA_ORG, "urlMappings"));
                     return;
+                } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && EMPTY.equals(localName)) {
+                    logger.warn("The site " + currentSiteNode.getDisplayableName() + " was not published in language " + locale + ", nothing to import");
+                    return;
                 }
+                logger.error("Unexpected root markup: <" + uri + ":" + localName + " /> for site" + currentSiteNode.getDisplayableName());
+                return;
+            }
 
             switch (ctx) {
                 case CTX_PAGE:

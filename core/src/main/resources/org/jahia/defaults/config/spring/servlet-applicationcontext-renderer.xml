@@ -197,6 +197,11 @@
                         <property name="view" value="/modules/tools/textExtractor.jsp"/>
                     </bean>
                 </entry>
+                <entry key="/resolve/**">
+                    <bean class="org.jahia.bin.TemplateResolverServlet">
+                        <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>

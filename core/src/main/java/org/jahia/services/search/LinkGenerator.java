@@ -70,7 +70,7 @@ public class LinkGenerator {
     public static String composeLink(MatchInfo info, RenderContext context) {
         Objects.requireNonNull(info);
 
-        final String contextPath = context.getURLGenerator().getContext() + "/cms";
+        final String contextPath = context != null ? context.getURLGenerator().getContext() + "/cms" : null;
         final String initialPath = StringUtils.isEmpty(contextPath) ? RESOLVE_CONTEXT : context + RESOLVE_CONTEXT;
 
         return initialPath + info.getWorkspace() + "/" + info.getLang() + "/" + info.getId();

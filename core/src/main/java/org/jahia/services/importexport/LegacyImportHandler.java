@@ -1062,6 +1062,7 @@ public class LegacyImportHandler extends DefaultHandler {
             // todo : add a link here ??
         } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
             String reference = attributes.getValue("jahia:reference");
+            if (StringUtils.isNotBlank(reference)) {
                 if (!isProperty && !node.hasNode(propertyName)) {
                     JCRNodeWrapper sub = addOrCheckoutNode(node, propertyName, "jnt:nodeLink", null, getMetadataForNodeCreation(attributes));
 
@@ -1086,6 +1087,9 @@ public class LegacyImportHandler extends DefaultHandler {
                     }
                     references.get(reference).add(target.getIdentifier() + "/" + propertyName);
                 }
+            } else {
+                logger.error("Invalid reference on markup " + uuid);
+            }
             currentCtx.peek().pushSkip();
         } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
 

@@ -83,6 +83,7 @@ public class ReferencesHelper {
         boolean resolved;
         List<String> resolvedUUIDStringList = new LinkedList<String>();
         for (String uuid : references.keySet()) {
+            if (StringUtils.isBlank(uuid)) continue;
             final List<String> paths = references.get(uuid);
             resolved = true;
             if (uuidMapping.containsKey(uuid)) {

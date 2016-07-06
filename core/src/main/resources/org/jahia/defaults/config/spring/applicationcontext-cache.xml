@@ -84,6 +84,7 @@ when we flush this entry we will flush the whole cache
         <property name="cacheProvider" ref="bigEhCacheProvider"/>
         <property name="keyGenerator" ref="cacheKeyGenerator"/>
         <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
+        <property name="aggregateCacheFilter" ref="cacheFilter"/>
     </bean>
 
     <bean id="moduleGeneratorQueue" class="org.jahia.services.render.filter.cache.ModuleGeneratorQueue">

@@ -46,7 +46,6 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.jahia.services.SpringContextSingleton;
@@ -62,14 +61,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -95,6 +87,9 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     private Set<String> nonCacheableFragments = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
     private CacheKeyGenerator keyGenerator;
     private JCRSessionFactory jcrSessionFactory;
+
+    // needed for retro compatibility with old cache implem
+    private AggregateCacheFilter aggregateCacheFilter;
 
     /**
      * @return an instance of this class
@@ -342,16 +337,21 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      * @param key fragment key of the fragment
      */
     public void removeNonCacheableFragmentsByEncodedPath(String key) {
-        Map<String, String> keyAttrs = keyGenerator.parse(key);
-        String path = keyAttrs.get("path");
-        List<String> removableKeys = new ArrayList<String>();
-        for (String nonCacheableKey : nonCacheableFragments) {
-            if (nonCacheableKey.contains(path)) {
-                removableKeys.add(nonCacheableKey);
+        if (aggregateCacheFilter.isDisabled()) {
+            Map<String, String> keyAttrs = keyGenerator.parse(key);
+            String path = keyAttrs.get("path");
+            List<String> removableKeys = new ArrayList<String>();
+            for (String nonCacheableKey : nonCacheableFragments) {
+                if (nonCacheableKey.contains(path)) {
+                    removableKeys.add(nonCacheableKey);
+                }
             }
-        }
-        for (String removableKey : removableKeys) {
-            nonCacheableFragments.remove(removableKey);
+            for (String removableKey : removableKeys) {
+                nonCacheableFragments.remove(removableKey);
+            }
+        } else {
+            // needed for retro compatibility with old cache implem
+            aggregateCacheFilter.removeNotCacheableFragment(key);
         }
     }
 
@@ -359,7 +359,12 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      * Flush the non-cacheable fragments list
      */
     public void flushNonCacheableFragments() {
-        nonCacheableFragments.clear();
+        if (aggregateCacheFilter.isDisabled()) {
+            nonCacheableFragments.clear();
+        } else {
+            // needed for retro compatibility with old cache implem
+            AggregateCacheFilter.flushNotCacheableFragment();
+        }
     }
 
     /**
@@ -391,6 +396,10 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
 
     public Cache getSyncCache() {
         return syncCache;
+    }
+
+    public void setAggregateCacheFilter(AggregateCacheFilter aggregateCacheFilter) {
+        this.aggregateCacheFilter = aggregateCacheFilter;
     }
 
     @Override

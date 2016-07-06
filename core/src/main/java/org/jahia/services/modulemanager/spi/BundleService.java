@@ -60,6 +60,8 @@ public interface BundleService {
      * Install the specified bundle on the target group of cluster nodes, optionally starting it right after if the <code>start</code>
      * parameter is <code>true</code>.
      *
+     * In case the same version of the bundle is already installed, update it with the snapshot referenced by the uri.
+     *
      * @param uri The bundle location
      * @param target The group of cluster nodes targeted by the install operation (see JavaDoc of {@link ModuleManager} class for the
      *            supported values)

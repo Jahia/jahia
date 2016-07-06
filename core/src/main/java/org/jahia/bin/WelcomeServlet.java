@@ -318,7 +318,7 @@ public class WelcomeServlet extends HttpServlet {
     }
 
     private boolean isLocaleSupported(JCRSiteNode site, List<Locale> siteLanguages, Locale locale) {
-        return site.isAllowsUnlistedLanguages() || siteLanguages == null || siteLanguages.contains(locale) && ensureHomePageExists(site, locale);
+        return (site != null && site.isAllowsUnlistedLanguages()) || siteLanguages == null || siteLanguages.contains(locale) && ensureHomePageExists(site, locale);
     }
 
     private boolean ensureHomePageExists(final JCRSiteNode site, final Locale curLocale) {

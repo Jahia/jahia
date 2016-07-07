@@ -71,7 +71,7 @@ public class LinkGenerator {
         Objects.requireNonNull(info);
 
         final String contextPath = context != null ? context.getURLGenerator().getContext() + "/cms" : null;
-        final String initialPath = StringUtils.isEmpty(contextPath) ? RESOLVE_CONTEXT : context + RESOLVE_CONTEXT;
+        final String initialPath = StringUtils.isEmpty(contextPath) ? RESOLVE_CONTEXT : contextPath + RESOLVE_CONTEXT;
 
         return initialPath + info.getWorkspace() + "/" + info.getLang() + "/" + info.getId();
     }

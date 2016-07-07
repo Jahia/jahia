@@ -109,7 +109,7 @@ public class PublicationManagerEngine extends Window {
 
         // tree component
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites/"+linker.getSelectionContext().getMainNode().getSiteKey()), true);
-        factory.setNodeTypes(Arrays.asList("jmix:publication","jmix:workflowRulesable"));
+        factory.setNodeTypes(Arrays.asList("jmix:publication","jmix:workflowRulesable","jmix:navMenuItem"));
         factory.setFields(Arrays.asList(GWTJahiaNode.NAME, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.PUBLICATION_INFOS,
                                         GWTJahiaNode.WORKFLOW_INFOS));
         factory.setSelectedPath(linker.getSelectionContext().getMainNode().getPath());

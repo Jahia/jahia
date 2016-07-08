@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -43,8 +43,24 @@
  */
 package org.apache.jackrabbit.core.query.lucene.join;
 
-import java.io.IOException;
-import java.util.*;
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.commons.JcrUtils;
+import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
+import org.apache.jackrabbit.commons.query.qom.OperandEvaluator;
+import org.apache.jackrabbit.core.JahiaSessionImpl;
+import org.apache.jackrabbit.core.query.FacetedQueryResult;
+import org.apache.jackrabbit.core.query.JahiaSimpleQueryResult;
+import org.apache.jackrabbit.core.query.lucene.*;
+import org.apache.jackrabbit.core.query.lucene.sort.DynamicOperandFieldComparatorSource;
+import org.apache.jackrabbit.core.session.SessionContext;
+import org.apache.jackrabbit.spi.commons.query.qom.PropertyValueImpl;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.jahia.api.Constants;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -53,50 +69,22 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
-import javax.jcr.query.qom.And;
-import javax.jcr.query.qom.Column;
-import javax.jcr.query.qom.Comparison;
-import javax.jcr.query.qom.Constraint;
-import javax.jcr.query.qom.DynamicOperand;
-import javax.jcr.query.qom.EquiJoinCondition;
-import javax.jcr.query.qom.FullTextSearchScore;
+import javax.jcr.query.qom.*;
 import javax.jcr.query.qom.Join;
-import javax.jcr.query.qom.LowerCase;
-import javax.jcr.query.qom.Not;
-import javax.jcr.query.qom.Or;
 import javax.jcr.query.qom.Ordering;
-import javax.jcr.query.qom.PropertyValue;
-import javax.jcr.query.qom.QueryObjectModelConstants;
-import javax.jcr.query.qom.Selector;
-import javax.jcr.query.qom.Source;
-import javax.jcr.query.qom.UpperCase;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.JcrConstants;
-import org.apache.jackrabbit.commons.JcrUtils;
-import org.apache.jackrabbit.commons.iterator.RowIteratorAdapter;
-import org.apache.jackrabbit.commons.query.qom.OperandEvaluator;
-import org.apache.jackrabbit.core.query.FacetedQueryResult;
-import org.apache.jackrabbit.core.query.JahiaSimpleQueryResult;
-import org.apache.jackrabbit.core.query.lucene.FacetRow;
-import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
-import org.apache.jackrabbit.core.query.lucene.LuceneQueryFactory;
-import org.apache.jackrabbit.core.query.lucene.sort.DynamicOperandFieldComparatorSource;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
-import org.jahia.api.Constants;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Override QueryEngine :
- *  - add facet handling in execute()
+ * - add facet handling in execute()
  */
 public class JahiaQueryEngine extends QueryEngine {
     private static final Logger log = LoggerFactory.getLogger(QueryEngine.class);
 
     protected final OperandEvaluator evaluator;
+
+    protected SharedFieldComparatorSource scs;
 
     public static boolean nativeSort = Boolean.valueOf(System
             .getProperty(NATIVE_SORT_SYSTEM_PROPERTY, "false"));
@@ -108,7 +96,16 @@ public class JahiaQueryEngine extends QueryEngine {
 
         Locale locale = null;
         if (lqf instanceof JahiaLuceneQueryFactoryImpl) {
-            locale = ((JahiaLuceneQueryFactoryImpl)lqf).getLocale();
+            JahiaLuceneQueryFactoryImpl jlqf = (JahiaLuceneQueryFactoryImpl) lqf;
+            locale = jlqf.getLocale();
+
+            if (session instanceof JahiaSessionImpl) {
+                JahiaSessionImpl jahiaSession = (JahiaSessionImpl) session;
+                SessionContext context = jahiaSession.getContext();
+
+                scs = new SharedFieldComparatorSource(FieldNames.PROPERTIES, context.getItemStateManager(),
+                        context.getHierarchyManager(), jlqf.getNamespaceMappings());
+            }
         }
         this.evaluator = new JahiaOperandEvaluator(valueFactory, variables, locale);
     }
@@ -162,7 +159,7 @@ public class JahiaQueryEngine extends QueryEngine {
             QueryResult r = sort(result, orderings, evaluator, offset, limit);
             if (log.isDebugEnabled()) {
                 log.debug("{}SQL2 SORT took {} ms.", genString(printIndentation),
-                    System.currentTimeMillis() - timeSort);
+                        System.currentTimeMillis() - timeSort);
             }
             if (r != result) {
                 return new JahiaSimpleQueryResult(columnNames, selectorNames, r.getRows(), limit > 0 ? result.getRows().getSize() : 0);
@@ -176,7 +173,7 @@ public class JahiaQueryEngine extends QueryEngine {
             throws RepositoryException {
 
         if (orderings == null || orderings.length == 0) {
-            return new SortField[] { SortField.FIELD_SCORE };
+            return new SortField[]{SortField.FIELD_SCORE};
         }
         // orderings[] -> (property, ordering)
         Map<String, Ordering> orderByProperties = new HashMap<String, Ordering>();
@@ -203,8 +200,10 @@ public class JahiaQueryEngine extends QueryEngine {
                     .equals(o.getOrder());
             if (o.getOperand() instanceof FullTextSearchScore || JcrConstants.JCR_SCORE.equals(p)) {
                 sortFields.add(new SortField(null, SortField.SCORE, isAsc));
+            } else if (nativeSort && o.getOperand() instanceof PropertyValueImpl && scs != null) {
+                String qname = ((PropertyValueImpl) o.getOperand()).getPropertyQName().toString();
+                sortFields.add(new SortField(qname, scs, !isAsc));
             } else {
-                // TODO use native sort if available
                 sortFields.add(new SortField(p, dofcs, !isAsc));
             }
         }
@@ -235,7 +234,7 @@ public class JahiaQueryEngine extends QueryEngine {
     protected boolean isEquiJoinWithUuid(Join join, Constraint constraint) {
         boolean result = false;
         if (join.getJoinCondition() instanceof EquiJoinCondition) {
-            EquiJoinCondition condition = (EquiJoinCondition)join.getJoinCondition();
+            EquiJoinCondition condition = (EquiJoinCondition) join.getJoinCondition();
             if (condition.getProperty2Name().equals(Constants.JCR_UUID)) {
                 result = true;
             }

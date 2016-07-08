@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -707,6 +707,10 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
         // if we didn't find a language-specific analyzer, just return the default one
         return super.getTextAnalyzer();
+    }
+
+    public NamespaceMappings getNamespaceMappings() {
+        return this.nsMappings;
     }
 
     class IndexedNodeInfo {

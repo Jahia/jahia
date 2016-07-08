@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -46,6 +46,7 @@ package org.apache.jackrabbit.core;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
+import org.apache.jackrabbit.core.session.SessionContext;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Item;
@@ -85,6 +86,7 @@ public class JahiaSessionImpl extends XASessionImpl {
         if (myNtInstanceHandler == null) {
             myNtInstanceHandler = super.getNodeTypeInstanceHandler();
         }
+
         return (JahiaNodeTypeInstanceHandler) myNtInstanceHandler;
     }
 
@@ -131,4 +133,14 @@ public class JahiaSessionImpl extends XASessionImpl {
     public void removeItemForce(Item itemToRemove) throws RepositoryException {
         new ItemRemoveOperation((ItemImpl) itemToRemove, false).perform(this.context);
     }
+
+    /**
+     * Get the internal sessionContext
+     * @return SessionContext
+     */
+    public SessionContext getContext() {
+        return this.context;
+    }
+
+
 }

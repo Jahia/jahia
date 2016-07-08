@@ -47,7 +47,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -79,6 +78,7 @@ import org.springframework.context.ApplicationListener;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
+
 import java.util.*;
 
 /**
@@ -88,13 +88,14 @@ import java.util.*;
  * @since JAHIA 6.5
  */
 public class WorkflowService implements BeanPostProcessor, ApplicationListener<JahiaTemplateManagerService.ModuleDeployedOnSiteEvent> {
+
     public static final String CANDIDATE = "candidate";
     public static final String START_ROLE = "start";
     public static final String WORKFLOWRULES_NODE_NAME = "j:workflowRules";
 
-    private static WorkflowService instance = new WorkflowService();;
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowService.class);
 
-    private transient static Logger logger = LoggerFactory.getLogger(WorkflowService.class);
+    private static WorkflowService instance = new WorkflowService();;
 
     private Map<String, WorkflowProvider> providers = new HashMap<String, WorkflowProvider>();
     private Map<String, WorklowTypeRegistration> workflowRegistrationByDefinition = new HashMap<String, WorklowTypeRegistration>();
@@ -103,6 +104,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     private WorkflowObservationManager observationManager = new WorkflowObservationManager(this);
     private CacheService cacheService;
     private Cache<String, Map<String,WorkflowRule>> cache;
+    private boolean servicesStarted = false;
 
     /**
      * Returns a singleton instance of this service.
@@ -129,22 +131,33 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
      * @param type the helper object instance for registerng a new workflow type
      */
     public synchronized void registerWorkflowType(final WorklowTypeRegistration type) {
+
         if (type != null && !workflowRegistrationByDefinition.containsKey(type.getDefinition())) {
+
             workflowRegistrationByDefinition.put(type.getDefinition(), type);
-            if (JahiaContextLoaderListener.isContextInitialized()) {
+
+            // During startup, when things are still being registered by multiple threads, registration cannot be
+            // completed reliably. So, avoid finishing it and rely on registerWorkflowTypes invoked during the post-
+            // initialization phase instead.
+            if (servicesStarted) {
                 doRegisterWorkflowType(type);
             }
         }
     }
 
     private void doRegisterWorkflowType(final WorklowTypeRegistration type) {
+
         if (type.getModule() != null) {
+
             modulesForWorkflowDefinition.put(type.getDefinition(), type.getModule().getId());
             for (WorkflowProvider provider : providers.values()) {
                 final WorkflowDefinition def = provider.getWorkflowDefinitionByKey(type.getDefinition(), null);
                 if (def != null) {
+
                     try {
+
                         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
                             @Override
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 boolean updated = initializePermission(session, def, type.getModule());
@@ -167,6 +180,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                 }
             }
         }
+
         if (type.getProvider() == null) {
             workflowRegistrationByDefinition.remove(type.getDefinition());
             modulesForWorkflowDefinition.remove(type.getDefinition());
@@ -365,7 +379,10 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
     public List<JahiaPrincipal> getAssignedRole(final WorkflowDefinition definition,
                                                 final String activityName, final String processId) throws RepositoryException {
+
         return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<List<JahiaPrincipal>>() {
+
+            @Override
             public List<JahiaPrincipal> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 return getAssignedRole(definition, activityName, processId, session);
             }
@@ -387,9 +404,9 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                 for (Map.Entry<String, Object> entry : w.getVariables().entrySet()) {
                     Object value = entry.getValue();
                     if (value instanceof List) {
-                        List list = (List) entry.getValue();
+                        List<?> list = (List<?>) entry.getValue();
                         StringBuilder sb = new StringBuilder();
-                        Iterator iterator = list.iterator();
+                        Iterator<?> iterator = list.iterator();
                         while (iterator.hasNext()) {
                             Object o = iterator.next();
                             if (o instanceof WorkflowVariable) {
@@ -583,6 +600,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
      * @param provider  The provider executing the process
      */
     public void abortProcess(String processId, String provider) {
+
         Workflow workflow = lookupProvider(provider).getWorkflow(processId, null);
         final Set<String> actionIds = new HashSet<String>();
         for (final WorkflowAction action : workflow.getAvailableActions()) {
@@ -590,9 +608,13 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                 actionIds.add(((WorkflowTask) action).getId());
             }
         }
+
         if (!actionIds.isEmpty()) {
+
             try {
+
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
                     @Override
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         for (String actionId : actionIds) {
@@ -684,7 +706,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
             wfComments.add(new WorkflowComment(comment, timestamp, userKey));
         }
     }
-    
+
     public synchronized void addProcessId(JCRNodeWrapper stageNode, String provider, String processId)
             throws RepositoryException {
         stageNode.checkout();
@@ -964,11 +986,11 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     }
 
     public Collection<WorkflowRule> getWorkflowRules(JCRNodeWrapper objectNode) {
+
         try {
+
             Map<String,WorkflowRule> rules = recurseOnRules(objectNode);
-
             Map<String,List<String>> perms = new HashMap<>();
-
 
             JCRNodeWrapper rootNode = objectNode.getSession().getNode("/");
             JahiaAccessManager accessControlManager = (JahiaAccessManager) rootNode.getRealNode().getSession().getAccessControlManager();
@@ -1005,6 +1027,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
     private Map<String, WorkflowRule> recurseOnRules(final JCRNodeWrapper n)
             throws RepositoryException {
+
         String nodePath = n.getPath();
         Map<String, WorkflowRule> results = cache.get(nodePath);
         if (results != null) {
@@ -1014,6 +1037,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
         if ("/".equals(nodePath)) {
             results = getDefaultRules(n);
         } else {
+
             if (n.isNodeType("jnt:virtualsite")) {
                 results = getDefaultRules(n);
             } else {
@@ -1040,10 +1064,12 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                 }
             }
         }
+
         cache.put(nodePath, results);
         return results;
     }
 
+    @Override
     public void onApplicationEvent(JahiaTemplateManagerService.ModuleDeployedOnSiteEvent event) {
         cache.flush();
     }
@@ -1113,11 +1139,13 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
         observationManager.addWorkflowListener(listener);
     }
 
+    @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
             throws BeansException {
         return bean;
     }
 
+    @Override
     public Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
         if (bean instanceof WorklowTypeRegistration) {
@@ -1136,5 +1164,11 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
     public WorkflowObservationManager getObservationManager() {
         return observationManager;
+    }
+
+    // TODO: implement JahiaAfterInitializationService instead of relying on invocation of this method from JBPM6WorkflowProvider.
+    public synchronized void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        servicesStarted = true;
+        registerWorkflowTypes();
     }
 }

@@ -95,8 +95,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     public static final List<Status> OPEN_STATUS_LIST_NON_RESERVED = Arrays.asList(Status.Created, Status.InProgress, Status.Ready);
     public static final List<Status> RESERVED_STATUS_LIST = Arrays.asList(Status.Reserved);
 
-    private transient static Logger logger = LoggerFactory.getLogger(JBPM6WorkflowProvider.class);
-    private transient static JBPM6WorkflowProvider instance = new JBPM6WorkflowProvider();
+    private static final Logger logger = LoggerFactory.getLogger(JBPM6WorkflowProvider.class);
+    private static final JBPM6WorkflowProvider instance = new JBPM6WorkflowProvider();
 
     private String key;
     private WorkflowService workflowService;
@@ -302,7 +302,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
 
     @Override
     public void completeTask(final String taskId, final JahiaUser jahiaUser, final String outcome, final Map<String, Object> args) {
-
         if (loop.get() != null) {
             return;
         }
@@ -312,7 +311,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
         } finally {
             loop.set(null);
         }
-
     }
 
     @Override
@@ -350,7 +348,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
         // do nothing
     }
 
-
     /**
      * This method is used to handle process IDs that start with a number, in order to retain compatibility with
      * older versions of Jahia that used process IDs that start with such characters
@@ -376,7 +373,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
         return ISO9075.decode(processKey);
     }
 
-
     public void addResource(Resource kieResource) throws IOException {
         synchronized (workflowService) {
             kieFileSystem.write(kieServices.getResources().newUrlResource(kieResource.getURL()));
@@ -390,7 +386,9 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     }
 
     public void recompilePackages() {
+
         synchronized (workflowService) {
+
             long timer = System.currentTimeMillis();
             KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
             kieBuilder.buildAll();
@@ -447,6 +445,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     }
 
     private PersistenceContextManager createKieSpringContextManager(TransactionManager transactionManager) {
+
         Environment env = EnvironmentFactory.newEnvironment();
         env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
         env.set(EnvironmentName.APP_SCOPED_ENTITY_MANAGER, sharedEm);
@@ -480,6 +479,6 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     @Override
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
         recompilePackages();
-        workflowService.registerWorkflowTypes();
+        workflowService.initAfterAllServicesAreStarted();
     }
 }

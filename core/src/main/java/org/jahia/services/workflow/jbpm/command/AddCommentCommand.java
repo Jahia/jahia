@@ -56,7 +56,8 @@ import java.util.List;
 /**
 * Add a comment to a process
 */
-public class AddCommentCommand extends BaseCommand {
+public class AddCommentCommand extends BaseCommand<Object> {
+
     private final String processId;
     private final String comment;
     private final String user;
@@ -73,7 +74,7 @@ public class AddCommentCommand extends BaseCommand {
         ProcessInstance processInstance = ksession.getProcessInstance(Long.parseLong(processId));
         WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
         List<WorkflowComment> comments = (List<WorkflowComment>) workflowProcessInstance.getVariable("comments");
-        if ( comments == null) {
+        if (comments == null) {
             comments = new ArrayList<WorkflowComment>();
         }
         final WorkflowComment wfComment = new WorkflowComment();

@@ -46,6 +46,9 @@ package org.jahia.bundles.extender.jahiamodules;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
+import org.codehaus.plexus.util.dag.CycleDetectedException;
+import org.codehaus.plexus.util.dag.DAG;
+import org.codehaus.plexus.util.dag.TopologicalSorter;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bundles.extender.jahiamodules.transform.DxModuleURLStreamHandler;
@@ -100,6 +103,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_DX;
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES;
@@ -140,6 +144,7 @@ public class Activator implements BundleActivator, EventHandler {
     private ExtensionObserverRegistry extensionObservers;
     private BundleScriptEngineManager scriptEngineManager;
     private Map<String, List<Bundle>> toBeResolved;
+    private Map<Bundle, JahiaTemplatesPackage> toBeStarted;
     private Map<Bundle, ModuleState> moduleStates;
     private FileInstallConfigurer fileInstallConfigurer;
 
@@ -178,6 +183,10 @@ public class Activator implements BundleActivator, EventHandler {
         initializedBundles = templatesService.getInitializedBundles();
         toBeResolved = templatesService.getToBeResolved();
         moduleStates = templatesService.getModuleStates();
+        if (FrameworkService.getInstance().isFirstStartup()) {
+            // will auto-start modules on first framework startup
+            toBeStarted = new ConcurrentHashMap<>();
+        }
 
         // register view script observers
         bundleScriptResolver.registerObservers();
@@ -260,28 +269,39 @@ public class Activator implements BundleActivator, EventHandler {
                     registerHttpResources(bundle);
                 }
 
-                // Parse bundle if activator has not seen them before
-                if (!isRegistered && state > Bundle.INSTALLED) {
-                    try {
-                        String bundleLocation = bundle.getLocation();
-                        logger.info("Found bundle {} which needs to be processed by a module extender. Location {}",
-                                BundleUtils.getDisplayName(bundle), bundleLocation);
-                        if (state == Bundle.ACTIVE) {
-                            bundle.stop();
-                            toStart.add(bundle);
-                        }
+                if (!isRegistered) {
+                    if (state > Bundle.INSTALLED) {
+                        // Parse bundle if activator has not seen them before
                         try {
-                            if (!bundleLocation.startsWith(URL_PROTOCOL_DX)) {
-                                // transform the module
-                                bundle.update(transform(bundle));
-                            } else {
-                                bundle.update();
+                            String bundleLocation = bundle.getLocation();
+                            logger.info("Found bundle {} which needs to be processed by a module extender. Location {}",
+                                    BundleUtils.getDisplayName(bundle), bundleLocation);
+                            if (state == Bundle.ACTIVE) {
+                                bundle.stop();
+                                toStart.add(bundle);
                             }
-                        } catch (BundleException | ModuleManagementException e) {
-                            logger.warn("Cannot update bundle : " + e.getMessage(), e);
+                            try {
+                                if (!bundleLocation.startsWith(URL_PROTOCOL_DX)) {
+                                    // transform the module
+                                    bundle.update(transform(bundle));
+                                } else {
+                                    bundle.update();
+                                }
+                            } catch (BundleException | ModuleManagementException e) {
+                                logger.warn("Cannot update bundle : " + e.getMessage(), e);
+                            }
+                        } catch (Exception e) {
+                            logger.error("Unable to process the bundle " + bundle, e);
                         }
-                    } catch (Exception e) {
-                        logger.error("Unable to process the bundle " + bundle, e);
+                    } else if (state == Bundle.INSTALLED) {
+                        final JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
+
+                        if (pkg != null) {
+                            // we register the bundle state
+                            setModuleState(bundle, ModuleState.State.INSTALLED, null);
+                            pkg.setState(getModuleState(bundle));
+                            registeredBundles.put(bundle, pkg);
+                        }
                     }
                 }
             }
@@ -421,6 +441,12 @@ public class Activator implements BundleActivator, EventHandler {
             registeredBundles.put(bundle, pkg);
             installedBundles.add(bundle);
             setModuleState(bundle, ModuleState.State.INSTALLED, null);
+            
+            if (toBeStarted != null) {
+                // we collect bundles to be started
+                toBeStarted.put(bundle, pkg);
+            }
+
         }
     }
 
@@ -504,10 +530,7 @@ public class Activator implements BundleActivator, EventHandler {
         }
 
         List<String> dependsList = pkg.getDepends();
-        if (!dependsList.contains("default")
-                && !dependsList.contains("Default Jahia Templates")
-                && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
-                .contains(pkg.getId())) {
+        if (needsDefaultModuleDependency(pkg)) {
             dependsList.add("default");
         }
 
@@ -540,7 +563,7 @@ public class Activator implements BundleActivator, EventHandler {
 
         logger.info("--- Done resolving DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
-        if (installedBundles.remove(bundle) || !checkImported(pkg)) {
+        if (!checkImported(pkg)) {
             scanForImportFiles(bundle, pkg);
 
             if (SettingsBean.getInstance().isProcessingServer()) {
@@ -972,7 +995,85 @@ public class Activator implements BundleActivator, EventHandler {
 
     @Override
     public void handleEvent(Event event) {
+        if (toBeStarted != null) {
+            startAllBundles();
+        }
         // notify the framework that the file install watcher has started and processed found modules
         FrameworkService.notifyFileInstallStarted();
+    }
+
+    private void startAllBundles() {
+        long startTime = System.currentTimeMillis();
+        logger.info("Will start {} bundles", toBeStarted.size());
+        Collection<Bundle> sortedBundles = getSortedModules(toBeStarted);
+
+        try {
+            for (Bundle bundle : sortedBundles) {
+                try {
+                    logger.info("Triggering start for bundle {}", getDisplayName(bundle));
+                    bundle.start();
+                } catch (BundleException e) {
+                    if (BundleException.RESOLVE_ERROR == e.getType()) {
+                        // log warning for the resolution (dependencies) error
+                        logger.warn(e.getMessage());
+                    } else {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+        } finally {
+            logger.info("Finished starting {} bundles in {} ms", toBeStarted.size(),
+                    System.currentTimeMillis() - startTime);
+            toBeStarted = null;
+        }
+    }
+
+    private static boolean needsDefaultModuleDependency(final JahiaTemplatesPackage pkg) {
+        return !pkg.getDepends().contains("default")
+                && !pkg.getDepends().contains("Default Jahia Templates")
+                && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
+                .contains(pkg.getId());
+    }
+
+    private static Collection<Bundle> getSortedModules(Map<Bundle, JahiaTemplatesPackage> toBeStarted) {
+        long startTime = System.currentTimeMillis();
+        try {
+            // we build a Directed Acyclic Graph of dependencies (only those, which are present in the package)
+            DAG dag = new DAG();
+
+            Map<String, Bundle> allBundles = new HashMap<>();
+            for (Map.Entry<Bundle, JahiaTemplatesPackage> entry : toBeStarted.entrySet()) {
+                JahiaTemplatesPackage pkg = entry.getValue();
+                String pkgId = pkg.getId();
+                allBundles.put(pkgId, entry.getKey());
+
+                dag.addVertex(pkgId);
+                for (String depPkg : pkg.getDepends()) {
+                    dag.addEdge(pkgId, depPkg);
+                }
+                if (needsDefaultModuleDependency(pkg)) {
+                    dag.addEdge(pkgId, "default");
+                }
+            }
+
+            List<Bundle> sortedBundles = new LinkedList<>();
+
+            // use topological sort (Depth First Search) on the created graph
+            @SuppressWarnings("unchecked")
+            List<String> vertexes = TopologicalSorter.sort(dag);
+            for (String v : vertexes) {
+                Bundle b = allBundles.get(v);
+                if (b != null) {
+                    sortedBundles.add(b);
+                }
+            }
+         
+            logger.info("Sorted bundles in {} ms", System.currentTimeMillis() - startTime);
+            return sortedBundles;
+        } catch (CycleDetectedException e) {
+            logger.error("A cyclic dependency detected in the modules to be started", e);
+
+            return toBeStarted.keySet();
+        }
     }
 }

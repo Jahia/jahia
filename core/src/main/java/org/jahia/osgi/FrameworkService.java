@@ -131,6 +131,8 @@ public class FrameworkService implements FrameworkListener {
 
     private boolean fileInstallStarted;
 
+    private boolean firstStartup;
+
     private boolean frameworkStartLevelChanged;
 
     private Main main;
@@ -141,6 +143,38 @@ public class FrameworkService implements FrameworkListener {
 
     private FrameworkService(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    private void checkFirstStartup() {
+        firstStartup = !new File(System.getProperty("org.osgi.framework.storage"), "bundle0").exists();
+    }
+
+    private Map<String, String> filterOutSystemProperties() {
+
+        if (!"was".equals(SettingsBean.getInstance().getServer())) {
+            // we skip filtering out system properties on any server except WebSphere, which sets OSGi-related properties for its internal
+            // container
+            return null;
+        }
+
+        Map<String, String> filteredOutSystemProperties = new HashMap<>();
+        Properties sysProps = System.getProperties();
+        for (String prop : sysProps.stringPropertyNames()) {
+            if (prop.startsWith("org.osgi.framework.")) {
+                logger.info("Filtering out system property {}", prop);
+                filteredOutSystemProperties.put(prop, sysProps.getProperty(prop));
+                sysProps.remove(prop);
+            }
+        }
+        return filteredOutSystemProperties;
+    }
+
+    /**
+     * For the bundles in INSTALLED state we force the resolution so they are moved to RESOLVED state.
+     */
+    private void forceBundleResolution() {
+        logger.info("Trigger resolution of bundles");
+        BundleLifecycleUtils.resolveBundles(null);
     }
 
     @Override
@@ -157,11 +191,12 @@ public class FrameworkService implements FrameworkListener {
     }
 
     /**
-     * For the bundles in INSTALLED state we force the resolution so they are moved to RESOLVED state.
+     * Indicates the first startup of the OSGi framework.
+     * 
+     * @return <code>true</code> if this is the first startup of the framework; <code>false</code> otherwise
      */
-    private void forceBundleResolution() {
-        logger.info("Trigger resolution of bundles");
-        BundleLifecycleUtils.resolveBundles(null);
+    public boolean isFirstStartup() {
+        return firstStartup;
     }
 
     /**
@@ -171,6 +206,19 @@ public class FrameworkService implements FrameworkListener {
      */
     public boolean isStarted() {
         return frameworkStartLevelChanged && fileInstallStarted;
+    }
+
+    private void restoreSystemProperties(Map<String, String> systemPropertiesToRestore) {
+
+        if (systemPropertiesToRestore == null || systemPropertiesToRestore.isEmpty()) {
+            // nothing to restore
+            return;
+        }
+
+        for (Map.Entry<String, String> prop : systemPropertiesToRestore.entrySet()) {
+            logger.info("Restoring system property {}", prop.getKey());
+            System.setProperty(prop.getKey(), prop.getValue());
+        }
     }
 
     private void setupStartupListener() {
@@ -222,39 +270,6 @@ public class FrameworkService implements FrameworkListener {
 
     }
 
-    private Map<String, String> filterOutSystemProperties() {
-
-        if (!"was".equals(SettingsBean.getInstance().getServer())) {
-            // we skip filtering out system properties on any server except WebSphere, which sets OSGi-related properties for its internal
-            // container
-            return null;
-        }
-
-        Map<String, String> filteredOutSystemProperties = new HashMap<>();
-        Properties sysProps = System.getProperties();
-        for (String prop : sysProps.stringPropertyNames()) {
-            if (prop.startsWith("org.osgi.framework.")) {
-                logger.info("Filtering out system property {}", prop);
-                filteredOutSystemProperties.put(prop, sysProps.getProperty(prop));
-                sysProps.remove(prop);
-            }
-        }
-        return filteredOutSystemProperties;
-    }
-
-    private void restoreSystemProperties(Map<String, String> systemPropertiesToRestore) {
-
-        if (systemPropertiesToRestore == null || systemPropertiesToRestore.isEmpty()) {
-            // nothing to restore
-            return;
-        }
-
-        for (Map.Entry<String, String> prop : systemPropertiesToRestore.entrySet()) {
-            logger.info("Restoring system property {}", prop.getKey());
-            System.setProperty(prop.getKey(), prop.getValue());
-        }
-    }
-
     public void start() {
         startTime = System.currentTimeMillis();
         logger.info("Starting OSGi platform service");
@@ -266,6 +281,7 @@ public class FrameworkService implements FrameworkListener {
         Map<String, String> filteredOutSystemProperties = filterOutSystemProperties();
         try {
             setupSystemProperties();
+            checkFirstStartup();
             main = new Main(new String[0]);
             main.launch();
             setupStartupListener();

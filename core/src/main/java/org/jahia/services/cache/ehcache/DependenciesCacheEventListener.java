@@ -56,9 +56,8 @@ import java.util.Set;
 /**
  * This Listener is flushing HTMLCache entries upon eviction/expiration of entries on the HTML dependencies cache.
  *
- * @author : cedric mailleux at jahia dot com
- * @since : JAHIA 7.0.5
- * Created : 28/01/15
+ * @author cedric mailleux at jahia dot com
+ * @since JAHIA 7.0.5
  */
 public class DependenciesCacheEventListener extends CacheEventListenerAdapter {
     private static Logger logger = LoggerFactory.getLogger(DependenciesCacheEventListener.class);
@@ -88,21 +87,21 @@ public class DependenciesCacheEventListener extends CacheEventListenerAdapter {
     private void removeDependentElements(Ehcache cache, Element element) {
         // Element is not present in the cache anymore
         ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
-        if(cache.getName().equals(cacheProvider.getDependenciesCache().getName())) {
+        Cache htmlCache = cacheProvider.getCache();
+        String cacheName = cache.getName();
+        if(cacheName.equals(cacheProvider.getDependenciesCache().getName()) || cacheName.equals(cacheProvider.getRegexpDependenciesCache().getName())) {
             // This is a dependency path that has been evicted
+            @SuppressWarnings("unchecked")
             Set<String> deps = (Set<String>) element.getObjectValue();
             if (logger.isDebugEnabled()) {
                 logger.debug("Evicting/Expiring "+deps.size()+" dependencies related to "+element.getObjectKey()+".");
             }
-            if (deps.contains("ALL")) {
+            if (deps.contains(DependenciesCacheEvictionPolicy.ALL)) {
                 // do not propagate
-                cacheProvider.getCache().removeAll(true);
+                htmlCache.removeAll(true);
             } else {
-                invalidateDependencies(deps, cacheProvider.getCache());
+                invalidateDependencies(deps, htmlCache);
             }
-        } else if(cache.getName().equals(cacheProvider.getRegexpDependenciesCache().getName())) {
-            Set<String> deps = (Set<String>) element.getObjectValue();
-            invalidateDependencies(deps, cacheProvider.getCache());
         }
     }
 

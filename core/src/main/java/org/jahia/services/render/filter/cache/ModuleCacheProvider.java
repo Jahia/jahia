@@ -124,6 +124,7 @@ public class ModuleCacheProvider implements InitializingBean {
             cacheManager.addCache(REGEXPDEPS_CACHE_NAME);
             regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);
         }
+        regexpDependenciesCache.setMemoryStoreEvictionPolicy(new DependenciesCacheEvictionPolicy());
 
         if (SettingsBean.getInstance().isClusterActivated()) {
             // only create syncCache in cluster

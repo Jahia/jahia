@@ -50,6 +50,7 @@ import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.CacheEntry;
+import org.jahia.services.cache.ehcache.DependenciesCacheEvictionPolicy;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -94,7 +95,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final String CACHE_PER_USER = "cache.perUser";
     public static final String PER_USER = "j:perUser";
     public static final String CACHE_EXPIRATION = "cache.expiration";
-    public static final String ALL = "ALL";
+    public static final String ALL = DependenciesCacheEvictionPolicy.ALL;
     public static final Set<String> ALL_SET = Collections.singleton(ALL);
 
     private static final String CACHE_TAG_START_1_NOSRC = "<!-- cache:include";
@@ -528,29 +529,32 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             depNodeWrappers = resource.getDependencies();
             for (String path : depNodeWrappers) {
                 if(!path.startsWith("/modules")) {
-                    Element element1 = dependenciesCache.get(path);
-                    Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-                    if (!dependencies.contains(ALL)) {
-                        if ((dependencies.size() + 1) > dependenciesLimit) {
-                            Element element = new Element(path, ALL_SET);
-                            element.setEternal(true);
-                            dependenciesCache.put(element);
-                        } else {
-                            addDependencies(renderContext, finalKey, dependenciesCache, path, dependencies);
-                        }
-                    }
+                    storeDependency(renderContext, finalKey, dependenciesCache, path);
                 }
             }
             final Cache regexpDependenciesCache = cacheProvider.getRegexpDependenciesCache();
             Set<String> regexpDepNodeWrappers = resource.getRegexpDependencies();
             for (String regexp : regexpDepNodeWrappers) {
-                Element element1 = regexpDependenciesCache.get(regexp);
-                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-                addDependencies(renderContext, finalKey, regexpDependenciesCache, regexp, dependencies);
+                storeDependency(renderContext, finalKey, regexpDependenciesCache, regexp);
             }
         }
         resource.getDependencies().clear();
         resource.getRegexpDependencies().clear();
+    }
+
+    private void storeDependency(RenderContext renderContext, String finalKey, final Cache dependenciesCache, String path) {
+        Element element1 = dependenciesCache.get(path);
+        @SuppressWarnings("unchecked")
+        Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+        if (!dependencies.contains(ALL)) {
+            if ((dependencies.size() + 1) > dependenciesLimit) {
+                Element element = new Element(path, ALL_SET);
+                element.setEternal(true);
+                dependenciesCache.put(element);
+            } else {
+                addDependencies(renderContext, finalKey, dependenciesCache, path, dependencies);
+            }
+        }
     }
 
     /**

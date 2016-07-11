@@ -1472,7 +1472,7 @@ public class LegacyImportHandler extends DefaultHandler {
             contentsType.push(type);
             propertyNames.push(null);
             acls.push(null);
-            properties.push(properties.peek());
+            properties.push(properties.peek() != null ? new HashMap<>(properties.peek()) : null);
             ctx.push(CTX_LIST);
         }
 
@@ -1484,7 +1484,7 @@ public class LegacyImportHandler extends DefaultHandler {
             contentsType.push(type);
             propertyNames.push(null);
             acls.push(null);
-            properties.push(properties.peek());
+            properties.push(properties.peek() != null ? new HashMap<>(properties.peek()) : null);
             ctx.push(CTX_CTN);
         }
 
@@ -1517,7 +1517,7 @@ public class LegacyImportHandler extends DefaultHandler {
             contentsType.push(contentsType.peek());
             propertyNames.push(null);
             acls.push(acl);
-            properties.push(ctx.peek() == CTX_NAVLINK && properties.peek() != null ? properties.peek() : new HashMap<String, String>());
+            properties.push(ctx.peek() == CTX_NAVLINK && properties.peek() != null ? new HashMap<>(properties.peek()) : new HashMap<String, String>());
             ctx.push(CTX_NAVLINK);
         }
 

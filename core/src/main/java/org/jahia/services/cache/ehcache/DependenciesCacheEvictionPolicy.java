@@ -51,13 +51,13 @@ import org.slf4j.LoggerFactory;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * Implements a specific eviction policy for dependencies, extending LruPolicy from EHCache, which has a special handling for ALL
+ * dependency.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- * Created : 24/03/15
+ * @author rincevent
  */
 public class DependenciesCacheEvictionPolicy extends LruPolicy {
+    public static final String ALL = "ALL";
     private static Logger logger = LoggerFactory.getLogger(DependenciesCacheEvictionPolicy.class);
 
     /**
@@ -72,11 +72,12 @@ public class DependenciesCacheEvictionPolicy extends LruPolicy {
         return NAME;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean compare(Element element1, Element element2) {
         if(logger.isDebugEnabled()){
             logger.debug("Comparing desirableness of element:\n"+element1+"\nto element:\n"+element2);
         }
-        return ((Set<String>) element1.getObjectValue()).contains("ALL") || !((Set<String>) element2.getObjectValue()).contains("ALL") && super.compare(element1, element2);
+        return ((Set<String>) element1.getObjectValue()).contains(ALL) || !((Set<String>) element2.getObjectValue()).contains(ALL) && super.compare(element1, element2);
     }
 }

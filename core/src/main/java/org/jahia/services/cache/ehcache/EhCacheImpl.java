@@ -43,6 +43,8 @@
  */
 package org.jahia.services.cache.ehcache;
 
+import static org.jahia.services.cache.ehcache.DependenciesCacheEvictionPolicy.ALL;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -198,7 +200,7 @@ public class EhCacheImpl implements CacheImplementation, CacheStatistics {
     }
 
     protected void flushKeys(Set keysToFlush) {
-        if (keysToFlush.contains("ALL")) {
+        if (keysToFlush.contains(ALL)) {
             flushAll(true);
             logger.warn("Due to presence of big groups we are flushing the whole cache " + ehCache.getName());
         } else {
@@ -239,11 +241,11 @@ public class EhCacheImpl implements CacheImplementation, CacheStatistics {
             currentKeys = new HashSet();
         }
 
-        if (!currentKeys.contains("ALL") && currentKeys.size() <= groupsSizeLimit)
+        if (!currentKeys.contains(ALL) && currentKeys.size() <= groupsSizeLimit)
             currentKeys.add(key);
         if (currentKeys.size() > groupsSizeLimit) {
             currentKeys = new HashSet();
-            currentKeys.add("ALL");
+            currentKeys.add(ALL);
             logger.warn("Number of keys for group " + groupName + "inside cache " + ehCache.getName() + " is exceeding " +
                     groupsSizeLimit + " entries so we are putting only one entries to tell jahia to flush all this cache when needed");
         }

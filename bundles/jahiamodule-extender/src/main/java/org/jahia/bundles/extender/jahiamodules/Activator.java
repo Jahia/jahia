@@ -637,18 +637,21 @@ public class Activator implements BundleActivator, EventHandler {
         JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupById(bundle.getSymbolicName());
         if (jahiaTemplatesPackage != null) {
             try {
-                logger.info("Stopping module {} before activating new version...", getDisplayName(bundle));
+                logger.info("Stopping module {} before activating {}...", getDisplayName(jahiaTemplatesPackage.getBundle()), getDisplayName(bundle));
                 jahiaTemplatesPackage.getBundle().stop();
             } catch (BundleException e) {
-                logger.info("--- Cannot stop previous version of module " + bundle.getSymbolicName(), e);
+                logger.info("--- Cannot stop module " + getDisplayName(jahiaTemplatesPackage.getBundle()), e);
             }
         }
         for (Map.Entry<Bundle, ModuleState> entry : moduleStates.entrySet()) {
             if (entry.getKey().getSymbolicName().equals(bundle.getSymbolicName()) && entry.getKey() != bundle) {
                 try {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Stopping module {} before starting {}", getDisplayName(entry.getKey()), getDisplayName(bundle));
+                    }
                     entry.getKey().stop();
                 } catch (BundleException e) {
-                    logger.info("--- Cannot stop previous version of module " + bundle.getSymbolicName(), e);
+                    logger.info("--- Cannot stop module " + getDisplayName(entry.getKey()) + " while starting " + getDisplayName(bundle), e);
                 }
             }
         }

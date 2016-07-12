@@ -1432,4 +1432,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public boolean isAreaAutoActivated() {
         return areaAutoActivated;
     }
+
+    public void setLicenseFile(Resource licenseFile) {
+        this.licenseFile = licenseFile;
+    }
 }

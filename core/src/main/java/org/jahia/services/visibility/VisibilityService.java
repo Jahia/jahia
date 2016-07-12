@@ -43,6 +43,7 @@
  */
 package org.jahia.services.visibility;
 
+import org.jahia.security.license.LicenseChangedListener;
 import org.jahia.services.Conditional;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -51,8 +52,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Service implementation for evaluating visibility conditions on a content item.
@@ -61,7 +64,7 @@ import java.util.Map;
  * @since JAHIA 6.6
  * Created : 8/29/11
  */
-public class VisibilityService {
+public class VisibilityService implements LicenseChangedListener {
     
     public static final String NODE_NAME = "j:conditionalVisibility";
 
@@ -70,6 +73,8 @@ public class VisibilityService {
     private static volatile VisibilityService instance;
 
     private Map<String, VisibilityConditionRule> conditions = new HashMap<String, VisibilityConditionRule>(1);
+
+    private Map<String, VisibilityConditionRule> disabledConditions = new HashMap<String, VisibilityConditionRule>(1);
 
     public static VisibilityService getInstance() {
         if (instance == null) {
@@ -99,6 +104,7 @@ public class VisibilityService {
             if (!((Conditional) instance).evaluate()) {
                 logger.info("Visibility condition of type {} is considered disabled. Skipping it.",
                         conditionType);
+                this.disabledConditions.put(conditionType, instance);
                 return;
             }
         }
@@ -106,14 +112,8 @@ public class VisibilityService {
     }
 
     public void removeCondition(String conditionType) {
-        if (instance instanceof Conditional) {
-            if (!((Conditional) instance).evaluate()) {
-                logger.info("Visibility condition of type {} is considered disabled. Skipping it.",
-                        conditionType);
-                return;
-            }
-        }
         this.conditions.remove(conditionType);
+        this.disabledConditions.remove(conditionType);
     }
 
     public boolean matchesConditions(JCRNodeWrapper node) {
@@ -178,5 +178,33 @@ public class VisibilityService {
             logger.error(e.getMessage(), e);
         }
         return conditions;
+    }
+
+    @Override
+    public void onLicenseChanged() {
+        // react on license change and re-register conditions
+        for (Iterator<Map.Entry<String, VisibilityConditionRule>> it = conditions.entrySet().iterator(); it
+                .hasNext();) {
+            Entry<String, VisibilityConditionRule> cond = it.next();
+            if (cond.getValue() instanceof Conditional) {
+                if (!((Conditional) cond.getValue()).evaluate()) {
+                    logger.info("Visibility condition of type {} is now disabled. Removing it.", cond.getKey());
+                    it.remove();
+                    disabledConditions.put(cond.getKey(), cond.getValue());
+                }
+            }
+        }
+
+        for (Iterator<Map.Entry<String, VisibilityConditionRule>> it = disabledConditions.entrySet().iterator(); it
+                .hasNext();) {
+            Entry<String, VisibilityConditionRule> cond = it.next();
+            if (cond.getValue() instanceof Conditional) {
+                if (((Conditional) cond.getValue()).evaluate()) {
+                    logger.info("Visibility condition of type {} is now enabled. Adding it.", cond.getKey());
+                    it.remove();
+                    conditions.put(cond.getKey(), cond.getValue());
+                }
+            }
+        }
     }
 }

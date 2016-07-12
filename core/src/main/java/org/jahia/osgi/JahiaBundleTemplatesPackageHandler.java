@@ -43,16 +43,16 @@
  */
 package org.jahia.osgi;
 
-import java.io.File;
-import java.net.URL;
-import java.util.Enumeration;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
+
+import java.io.File;
+import java.net.URL;
+import java.util.Enumeration;
 
 /**
  * Utility class for creating {@link JahiaTemplatesPackage} from a provided bundle and populating data from the manifest headers.
@@ -171,14 +171,14 @@ class JahiaBundleTemplatesPackageHandler {
     private static boolean hasResourceBundle(Bundle bundle, String resourceBundleName) {
         boolean found = false;
         // check if there is a resource bundle file in the resources folder
-        if (bundle.getEntry("/resources/" + resourceBundleName + ".properties") != null) {
-            found = true;
-        } else {
-            Enumeration<?> entries = bundle.findEntries("/resources", resourceBundleName + "_*.properties", false);
-            found = entries != null && entries.hasMoreElements();
+        Enumeration<String> paths = bundle.getEntryPaths("/resources/");
+        while (paths != null && paths.hasMoreElements()) {
+            String path = paths.nextElement();
+            if (StringUtils.startsWith(path, "resources/" +resourceBundleName) && StringUtils.endsWith(path, ".properties")) {
+                return true;
+            }
         }
-
-        return found;
+        return false;
     }
 
     private static String getHeader(Bundle bundle, String... headerNamesToLookup) {

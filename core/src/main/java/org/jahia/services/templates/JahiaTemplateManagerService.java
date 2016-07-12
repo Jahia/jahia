@@ -874,6 +874,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @return <code>true</code> if the specified template is present; <code>false</code> otherwise
      */
     public boolean isTemplatePresent(final String templateName, final Set<String> templateSetNames) {
+
         long timer = System.currentTimeMillis();
         if (logger.isDebugEnabled()) {
             logger.debug("Checking presense of the template {} in modules {}", templateName,
@@ -1089,7 +1090,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Returns a set of symbolic names for bundles, which are known to be target hosts for fragments.
-     * 
+     *
      * @return a set of symbolic names for bundles, which are known to be target hosts for fragments
      */
     public Set<String> getKnownFragmentHosts() {
@@ -1098,7 +1099,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     /**
      * Defines a set of symbolic names for bundles, which are known to be target hosts for fragments.
-     * 
+     *
      * @param knownFragmentHosts a set of symbolic names for bundles, which are known to be target hosts for fragments
      */
     public void setKnownFragmentHosts(Set<String> knownFragmentHosts) {

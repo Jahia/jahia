@@ -50,6 +50,7 @@ package org.jahia.services.sites;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
@@ -71,6 +72,7 @@ import org.springframework.core.io.Resource;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -80,14 +82,16 @@ import java.util.*;
  * @author Khue ng
  */
 public class JahiaSitesService extends JahiaService {
+
     // authorized chars
     private static final String AUTHORIZED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-";
-    private static Logger logger = LoggerFactory.getLogger(JahiaSitesService.class);
 
-    private static final String[] TRANSLATOR_NODES_PATTERN = new String[]{"translator-*"};
+    private static final String[] TRANSLATOR_NODES_PATTERN = new String[] {"translator-*"};
 
     public static final String SYSTEM_SITE_KEY = "systemsite";
     public static final String SITES_JCR_PATH = "/sites";
+
+    private static final Logger logger = LoggerFactory.getLogger(JahiaSitesService.class);
 
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
@@ -96,8 +100,6 @@ public class JahiaSitesService extends JahiaService {
     private SelfPopulatingCache siteDefaultLanguageBySiteKey;
     private SelfPopulatingCache sitesListCache;
     private String validServerNameRegex;
-
-
 
     public synchronized void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;
@@ -108,12 +110,9 @@ public class JahiaSitesService extends JahiaService {
     }
 
     /**
-     * Default constructor, creates a new <code>JahiaSitesBaseService</code> instance.
-     *
-     * @throws JahiaException
+     * Default constructor, creates a new <code>JahiaSitesService</code> instance.
      */
     private JahiaSitesService() {
-        super();
     }
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
@@ -130,19 +129,21 @@ public class JahiaSitesService extends JahiaService {
         return Holder.INSTANCE;
     }
 
-
     /**
      * return the list of all sites names
      *
      * @return List<String> List of site names
      */
+    @SuppressWarnings("unchecked")
     public List<String> getSitesNames() {
         return (List<String>) getSitesListCache().get("/").getObjectValue();
     }
 
     private SelfPopulatingCache getSitesListCache() {
+
         if (sitesListCache == null) {
             sitesListCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.sitesService.sitesListCache", new CacheEntryFactory() {
+
                 @Override
                 public Object createEntry(Object o) throws Exception {
                     List<String> sites = new ArrayList<String>();
@@ -179,9 +180,11 @@ public class JahiaSitesService extends JahiaService {
         return list;
     }
 
+    @Override
     public void start() throws JahiaInitializationException {
     }
 
+    @Override
     public void stop() {
     }
 
@@ -192,6 +195,7 @@ public class JahiaSitesService extends JahiaService {
      * @return JahiaSite the JahiaSite bean
      */
     public JahiaSite getSiteByKey(final String siteKey) throws JahiaException {
+
         if (StringUtils.isEmpty(siteKey)) {
             return null;
         }
@@ -230,6 +234,7 @@ public class JahiaSitesService extends JahiaService {
      */
     public JahiaSite getSiteByServerName(final String serverName)
             throws JahiaException {
+
         if (serverName == null) {
             return null;
         }
@@ -257,7 +262,6 @@ public class JahiaSitesService extends JahiaService {
         if (serverName == null) {
             return null;
         }
-
         String siteName = getSiteKeyByServerNameCache().get(serverName).getObjectValue().toString();
         return "".equals(siteName) ? null : siteName;
     }
@@ -301,8 +305,12 @@ public class JahiaSitesService extends JahiaService {
 
         JahiaSite site = null;
         final List<Exception> errors = new ArrayList<Exception>(1);
+
         try {
+
             site = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
+
+                @Override
                 public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         session.getPathMapping().putAll(JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping());
@@ -312,13 +320,13 @@ public class JahiaSitesService extends JahiaService {
                     } catch (JahiaException e) {
                         errors.add(e);
                     }
-
                     return null;
                 }
             });
         } catch (RepositoryException e) {
             throw new JahiaException("", "", 0, 0, e);
         }
+
         if (!errors.isEmpty()) {
             Exception e = errors.get(0);
             if (e instanceof JahiaException) {
@@ -337,6 +345,7 @@ public class JahiaSitesService extends JahiaService {
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
+
         // check there is no site with same server name before adding
         boolean importingSystemSite = false;
         final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
@@ -353,6 +362,7 @@ public class JahiaSitesService extends JahiaService {
                     sitesFolder.getNode(siteKey);
                     throw new IOException("site already exists");
                 } catch (PathNotFoundException e) {
+
                     JCRNodeWrapper siteNode = sitesFolder.addNode(siteKey, "jnt:virtualsite");
 
                     if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
@@ -482,13 +492,16 @@ public class JahiaSitesService extends JahiaService {
     }
 
     public void updateModules(JahiaSite site, List<String> newModuleIds, JCRSessionWrapper session) {
+
         final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         final List<String> installedModules = site.getInstalledModules();
 
         // compute list of modules to uninstall
         List<String> modulesToUninstall = new LinkedList<String>(installedModules);
+
         // first remove all modules that are in common with the new modules list
         modulesToUninstall.removeAll(newModuleIds);
+
         // remove default and template set so that they don't get un-installed
         modulesToUninstall.remove(JahiaTemplatesPackage.ID_DEFAULT);
         modulesToUninstall.remove(((JCRSiteNode) site).getTemplatePackage().getId());
@@ -501,20 +514,20 @@ public class JahiaSitesService extends JahiaService {
                 modulesToUninstall.remove(availableTemplatePackage.getId());
             }
         }
+
         // un-install modules if there are any
         if (!modulesToUninstall.isEmpty()) {
             Set<String> moduleIds = new LinkedHashSet<>();
-            // uninstall modules that are not needed anymore
+            for (String moduleToUninstall : modulesToUninstall) {
+                JahiaTemplatesPackage pkg = templateService.getAnyDeployedTemplatePackage(moduleToUninstall);
+                moduleIds.add(pkg != null ? pkg.getId() : moduleToUninstall);
+            }
+            List<String> ids = new ArrayList<>(moduleIds);
+            logger.info("Uninstalling modules {} from {}", ids.toArray(), siteKey);
             try {
-                for (String s : modulesToUninstall) {
-                    JahiaTemplatesPackage pkg = templateService.getAnyDeployedTemplatePackage(s);
-                    moduleIds.add(pkg != null ? pkg.getId() : s);
-                }
-                List<String> ids = new ArrayList<>(moduleIds);
-                logger.info("Uninstalling modules {} from {}", ids.toArray(), siteKey);
                 templateService.uninstallModulesByIds(ids, site.getJCRLocalPath(), session);
             } catch (RepositoryException re) {
-                logger.error("Unable to uninstall modules " + modulesToUninstall + " from "
+                logger.error("Unable to uninstall modules " + ids.toArray() + " from "
                         + siteKey + ". Cause: " + re.getMessage(), re);
             }
         }
@@ -574,13 +587,19 @@ public class JahiaSitesService extends JahiaService {
      * @param site the JahiaSite bean
      */
     public synchronized void removeSite(final JahiaSite site) throws JahiaException {
+
         String siteKey = null;
         String serverName = null;
+
         try {
+
             siteKey = site.getSiteKey();
             serverName = site.getServerName();
-            final String key = siteKey; 
+            final String key = siteKey;
+
             JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {
+
+                @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper sites = session.getNode(SITES_JCR_PATH);
                     if (!sites.isCheckedOut()) {
@@ -598,8 +617,10 @@ public class JahiaSitesService extends JahiaService {
                     return true;
                 }
             };
+
             // First delete all groups
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+
                 @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     for (String groupPath : groupService.getGroupList(key)) {
@@ -612,6 +633,7 @@ public class JahiaSitesService extends JahiaService {
                     return true;
                 }
             });
+
             // Now let's delete the live workspace site.
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, deleteCallback);
             JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCallback);
@@ -622,15 +644,18 @@ public class JahiaSitesService extends JahiaService {
         }
     }
 
-
     /**
      * Update a JahiaSite definition
      *
      * @param site the site bean object
      */
     public synchronized void updateSystemSitePermissions(final JahiaSite site) throws JahiaException {
+
         try {
+
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
+                @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     updateSystemSitePermissions(site, session);
                     session.save();
@@ -643,6 +668,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     public void updateSystemSitePermissions(JahiaSite site, JCRSessionWrapper session) throws RepositoryException {
+
         JCRNodeWrapper sites = session.getNode(SITES_JCR_PATH);
         if (!sites.isCheckedOut()) {
             session.checkout(sites);
@@ -662,12 +688,7 @@ public class JahiaSitesService extends JahiaService {
         }
     }
 
-
-    // javadocs automaticaly imported from the JahiaSitesService class.
-    //
-
-    public int getNbSites()
-            throws JahiaException {
+    public int getNbSites() throws JahiaException {
         try {
             return getSitesNodeList().size();
         } catch (RepositoryException e) {
@@ -677,13 +698,11 @@ public class JahiaSitesService extends JahiaService {
 
     public JahiaSite getDefaultSite() {
         JahiaSite site = null;
-
         try {
             site = getDefaultSite(getUserSession());
         } catch (RepositoryException e) {
             logger.error("cannot get site", e);
         }
-
         return site;
     }
 
@@ -705,8 +724,12 @@ public class JahiaSitesService extends JahiaService {
     }
 
     public void setDefaultSite(final JahiaSite site) {
+
         try {
+
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
+                @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JahiaSitesService.this.setDefaultSite(site, session);
                     session.save();
@@ -761,6 +784,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     private boolean updateWorkspacePermissions(JCRSessionWrapper session, String ws, JahiaSite site) throws RepositoryException {
+
         Node n = session.getNode("/permissions/repository-permissions/jcr:all_" + ws + "/jcr:write_" + ws + "/jcr:modifyProperties_" + ws);
         Set<String> languages = new HashSet<String>();
 
@@ -780,6 +804,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     private void updateTranslatorRoles(JCRSessionWrapper session, JahiaSite site) throws RepositoryException {
+
         if (!session.itemExists("/roles/translator")) {
             return;
         }
@@ -808,6 +833,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     public boolean isSiteKeyValid(String name) {
+
         if (StringUtils.isEmpty(name)) {
             return false;
         }
@@ -855,7 +881,6 @@ public class JahiaSitesService extends JahiaService {
         if (siteKey == null) {
             return null;
         }
-
         return (String) getSiteDefaultLanguageBySiteKeyCache().get(siteKey).getObjectValue();
     }
 
@@ -893,6 +918,7 @@ public class JahiaSitesService extends JahiaService {
      * Factory to fill the site key by server name cache.
      */
     public class SiteKeyByServerNameCacheEntryFactory implements CacheEntryFactory {
+
         @Override
         public Object createEntry(final Object key) throws Exception {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
@@ -906,6 +932,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     public class SiteDefaultLanguageBySiteKeyCacheEntryFactory implements CacheEntryFactory {
+
         @Override
         public Object createEntry(final Object key) throws Exception {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
@@ -927,6 +954,4 @@ public class JahiaSitesService extends JahiaService {
     public void setValidServerNameRegex(String validServerNameRegex) {
         this.validServerNameRegex = validServerNameRegex;
     }
-
-
 }

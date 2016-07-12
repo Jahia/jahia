@@ -130,15 +130,10 @@ public class FrameworkService implements FrameworkListener {
     }
 
     private boolean fileInstallStarted;
-
     private boolean firstStartup;
-
     private boolean frameworkStartLevelChanged;
-
     private Main main;
-
     private final ServletContext servletContext;
-
     private long startTime;
 
     private FrameworkService(ServletContext servletContext) {
@@ -192,7 +187,7 @@ public class FrameworkService implements FrameworkListener {
 
     /**
      * Indicates the first startup of the OSGi framework.
-     * 
+     *
      * @return <code>true</code> if this is the first startup of the framework; <code>false</code> otherwise
      */
     public boolean isFirstStartup() {

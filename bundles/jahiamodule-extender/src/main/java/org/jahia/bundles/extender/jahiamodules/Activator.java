@@ -113,7 +113,7 @@ import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEP
  */
 public class Activator implements BundleActivator, EventHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(Activator.class);
+    private static final Logger logger = LoggerFactory.getLogger(Activator.class);
 
     private static final BundleURLScanner CND_SCANNER = new BundleURLScanner("META-INF", "*.cnd", false);
     private static final BundleURLScanner DSL_SCANNER = new BundleURLScanner("META-INF", "*.dsl", false);
@@ -441,7 +441,7 @@ public class Activator implements BundleActivator, EventHandler {
             registeredBundles.put(bundle, pkg);
             installedBundles.add(bundle);
             setModuleState(bundle, ModuleState.State.INSTALLED, null);
-            
+
             if (toBeStarted != null) {
                 // we collect bundles to be started
                 toBeStarted.put(bundle, pkg);
@@ -1006,6 +1006,7 @@ public class Activator implements BundleActivator, EventHandler {
     }
 
     private void startAllBundles() {
+
         long startTime = System.currentTimeMillis();
         logger.info("Will start {} bundles", toBeStarted.size());
         Collection<Bundle> sortedBundles = getSortedModules(toBeStarted);
@@ -1038,17 +1039,20 @@ public class Activator implements BundleActivator, EventHandler {
                 .contains(pkg.getId());
     }
 
-    private static Collection<Bundle> getSortedModules(Map<Bundle, JahiaTemplatesPackage> toBeStarted) {
+    private static Collection<Bundle> getSortedModules(Map<Bundle, JahiaTemplatesPackage> modulesByBundle) {
+
         long startTime = System.currentTimeMillis();
         try {
+
             // we build a Directed Acyclic Graph of dependencies (only those, which are present in the package)
             DAG dag = new DAG();
 
-            Map<String, Bundle> allBundles = new HashMap<>();
-            for (Map.Entry<Bundle, JahiaTemplatesPackage> entry : toBeStarted.entrySet()) {
+            Map<String, Bundle> bundlesByModuleId = new HashMap<>();
+            for (Map.Entry<Bundle, JahiaTemplatesPackage> entry : modulesByBundle.entrySet()) {
+
                 JahiaTemplatesPackage pkg = entry.getValue();
                 String pkgId = pkg.getId();
-                allBundles.put(pkgId, entry.getKey());
+                bundlesByModuleId.put(pkgId, entry.getKey());
 
                 dag.addVertex(pkgId);
                 for (String depPkg : pkg.getDepends()) {
@@ -1065,18 +1069,17 @@ public class Activator implements BundleActivator, EventHandler {
             @SuppressWarnings("unchecked")
             List<String> vertexes = TopologicalSorter.sort(dag);
             for (String v : vertexes) {
-                Bundle b = allBundles.get(v);
+                Bundle b = bundlesByModuleId.get(v);
                 if (b != null) {
                     sortedBundles.add(b);
                 }
             }
-         
+
             logger.info("Sorted bundles in {} ms", System.currentTimeMillis() - startTime);
             return sortedBundles;
         } catch (CycleDetectedException e) {
             logger.error("A cyclic dependency detected in the modules to be started", e);
-
-            return toBeStarted.keySet();
+            return modulesByBundle.keySet();
         }
     }
 }

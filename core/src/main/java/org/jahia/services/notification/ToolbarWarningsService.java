@@ -43,21 +43,41 @@
  */
 package org.jahia.services.notification;
 
-
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.i18n.Messages;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
 /**
  * Simple service used to fill potential warnings during startup/execution
- * return them as translated messages
+ * return them as translated messages.
  */
 public class ToolbarWarningsService {
 
+    private class Message {
+
+        /**
+         * Initializes an instance of this class.
+         *
+         * @param key
+         *            the resource bundle key
+         * @param args
+         *            message arguments
+         */
+        Message(String key, Object[] args) {
+            super();
+            this.key = key;
+            this.args = args;
+        }
+
+        private String key;
+
+        private Object[] args;
+    }
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -68,26 +88,58 @@ public class ToolbarWarningsService {
         return Holder.INSTANCE;
     }
 
-    List<String> messages;
+    private List<Message> messages = Collections.synchronizedList(new ArrayList<Message>());
 
     /**
      * Add a message as a resource key
      * @param message
      */
     public void addMessage(String message) {
-        if (messages == null) {
-            messages = new ArrayList<String>();
-        }
-        messages.add(message);
-    }
-
-    public String getMessagesAsString() {
-        return messages != null?StringUtils.join(messages, "||"):"";
+        addMessage(false, message);
     }
 
     /**
-     * return resources messages as a String using || as separator
-     * @param locale
+     * Add a message as a resource key to the list of messages.
+     *
+     * @param message
+     *            the message resource key to be added
+     *
+     * @param atTheTop
+     *            <code>true</code> if the messages should be put at the top of the message list; otherwise it is appended to the end
+     */
+    public void addMessage(boolean atTheTop, String message, Object... args) {
+        removeMessage(message);
+        Message m = new Message(message, args);
+        if (atTheTop) {
+            messages.add(0, m);
+        } else {
+            messages.add(m);
+        }
+    }
+
+    /**
+     * Removes the specified message from the messages list.
+     *
+     * @param message
+     *            the message to be removed
+     */
+    public void removeMessage(String message) {
+        if (messages != null) {
+            for (Iterator<Message> it = messages.iterator(); it.hasNext();) {
+                if (it.next().key.equals(message)) {
+                    it.remove();
+                }
+            }
+        }
+    }
+
+    public String getMessagesAsString() {
+        return messages != null ? StringUtils.join(messages, "||") : "";
+    }
+
+    /**
+     * Return resources messages as a String using || as separator.
+     * @param locale the locale to be used to translate the resource bundle messages into localized ones
      * @return messages joined
      */
     public String getMessagesValueAsString(Locale locale) {
@@ -95,8 +147,9 @@ public class ToolbarWarningsService {
             return "";
         }
         List<String> translatedMessages = new ArrayList<String>();
-        for (String m : messages) {
-            translatedMessages.add(Messages.getInternal(m,locale,m));
+        for (Message m : messages) {
+            translatedMessages.add(m.args != null ? Messages.getInternalWithArguments(m.key, m.key, locale, m.args)
+                    : Messages.getInternal(m.key, locale, m.key));
         }
         return StringUtils.join(translatedMessages, "||");
     }

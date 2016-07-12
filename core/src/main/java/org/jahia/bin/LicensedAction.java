@@ -45,6 +45,7 @@ package org.jahia.bin;
 
 import javax.jcr.RepositoryException;
 
+import org.jahia.security.license.LicenseChangedListener;
 import org.jahia.security.license.LicenseCheckerService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.springframework.beans.factory.InitializingBean;
@@ -54,7 +55,7 @@ import org.springframework.beans.factory.InitializingBean;
  * 
  * @author Sergiy Shyrkov
  */
-public abstract class LicensedAction extends Action implements InitializingBean {
+public abstract class LicensedAction extends Action implements InitializingBean, LicenseChangedListener {
 
     private boolean allowedByLicense;
 
@@ -62,6 +63,10 @@ public abstract class LicensedAction extends Action implements InitializingBean 
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        evaluateLicenseFeature();
+    }
+
+    private void evaluateLicenseFeature() {
         allowedByLicense = licenseFeature == null || LicenseCheckerService.Stub.isAllowed(licenseFeature);
     }
 
@@ -80,5 +85,10 @@ public abstract class LicensedAction extends Action implements InitializingBean 
 
     public final void setLicenseFeature(String licenseFeature) {
         this.licenseFeature = licenseFeature;
+    }
+
+    @Override
+    public void onLicenseChanged() {
+        evaluateLicenseFeature();
     }
 }

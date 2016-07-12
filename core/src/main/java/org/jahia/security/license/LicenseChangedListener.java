@@ -52,5 +52,5 @@ public interface LicenseChangedListener {
     /**
      * Called by the Digital Factory license checker service when the license has bean reloaded/changed.
      */
-    void onChange();
+    void onLicenseChanged();
 }

@@ -109,6 +109,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      * @throws Exception in the event of misconfiguration (such as failure to
      *                   set an essential property) or if initialization fails.
      */
+    @Override
     public void afterPropertiesSet() throws Exception {
 
         CacheManager cacheManager = cacheProvider.getCacheManager();

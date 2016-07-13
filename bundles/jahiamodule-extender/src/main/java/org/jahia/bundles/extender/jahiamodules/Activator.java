@@ -183,7 +183,10 @@ public class Activator implements BundleActivator, EventHandler {
         initializedBundles = templatesService.getInitializedBundles();
         toBeResolved = templatesService.getToBeResolved();
         moduleStates = templatesService.getModuleStates();
-        if (FrameworkService.getInstance().isFirstStartup()) {
+
+        fileInstallConfigurer = new FileInstallConfigurer();
+        
+        if (!fileInstallConfigurer.isStartNewBundles() && FrameworkService.getInstance().isFirstStartup()) {
             // will auto-start modules on first framework startup
             toBeStarted = new ConcurrentHashMap<>();
         }
@@ -246,7 +249,6 @@ public class Activator implements BundleActivator, EventHandler {
 
         registerFileInstallEventHandler(context);
 
-        fileInstallConfigurer = new FileInstallConfigurer();
         fileInstallConfigurer.start(context);
 
         logger.info("== DX Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
@@ -561,7 +563,7 @@ public class Activator implements BundleActivator, EventHandler {
             return;
         }
 
-        logger.info("--- Done resolving DX OSGi bundle {} v{} .State {} --", new Object[] {pkg.getId(), pkg.getVersion(), bundle.getState()});
+        logger.info("--- Done resolving DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
         if (!checkImported(pkg)) {
             scanForImportFiles(bundle, pkg);
@@ -588,6 +590,14 @@ public class Activator implements BundleActivator, EventHandler {
         }
 
         resolveDependantBundles(pkg.getId());
+        
+        if (Bundle.ACTIVE == bundle.getState()) {
+            // we've got an event for already started bundles
+            // sometimes FileInstall sends the STARTED event before RESOLVED, so we have to handle this case 
+            logger.info("Got RESOLVED event for an already started bundle {} v{}. Proccesing started bundle.",
+                    pkg.getId(), pkg.getVersion());
+            start(bundle);
+        }
     }
 
     private boolean checkRequiredVersion(Bundle bundle) {
@@ -661,7 +671,7 @@ public class Activator implements BundleActivator, EventHandler {
 
         final JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
         if (jahiaTemplatesPackage == null) {
-            logger.error("--- Bundle {} is starting but has not yet been parsed. State: {}", bundle, bundle.getState());
+            logger.info("--- Bundle {} is starting but has not yet been parsed. Delaying its startup.", bundle);
             return;
         }
 

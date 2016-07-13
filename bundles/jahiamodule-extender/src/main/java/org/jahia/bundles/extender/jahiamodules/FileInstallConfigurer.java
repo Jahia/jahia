@@ -105,6 +105,15 @@ class FileInstallConfigurer {
 
     private ServiceTracker<ConfigurationAdmin, ConfigurationAdmin> serviceTracker;
 
+    private Properties felixProperties;
+
+    private boolean startNewBundles;
+    
+    FileInstallConfigurer() {
+        felixProperties = (Properties) SpringContextSingleton.getBean("felixFileInstallConfig");
+        startNewBundles = Boolean.valueOf(felixProperties.getProperty("felix.fileinstall.bundles.new.start", "true"));
+    }
+
     private Configuration findExisting(ConfigurationAdmin configurationAdmin, String dirPath) {
         try {
             Configuration[] existingCfgs = configurationAdmin
@@ -126,7 +135,6 @@ class FileInstallConfigurer {
     }
 
     private void register(ConfigurationAdmin configurationAdmin) {
-        Properties felixProperties = ((Properties) SpringContextSingleton.getBean("felixFileInstallConfig"));
         String watchedDir = felixProperties.getProperty("felix.fileinstall.dir");
         Configuration cfg = findExisting(configurationAdmin, watchedDir);
         if (cfg != null) {
@@ -187,5 +195,9 @@ class FileInstallConfigurer {
                 logger.error("Unable to remove FileInstall configuration", e);
             }
         }
+    }
+    
+    boolean isStartNewBundles() {
+        return startNewBundles;
     }
 }

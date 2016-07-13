@@ -561,7 +561,7 @@ public class Activator implements BundleActivator, EventHandler {
             return;
         }
 
-        logger.info("--- Done resolving DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
+        logger.info("--- Done resolving DX OSGi bundle {} v{} .State {} --", new Object[] {pkg.getId(), pkg.getVersion(), bundle.getState()});
 
         if (!checkImported(pkg)) {
             scanForImportFiles(bundle, pkg);
@@ -661,7 +661,7 @@ public class Activator implements BundleActivator, EventHandler {
 
         final JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
         if (jahiaTemplatesPackage == null) {
-            logger.error("--- Bundle " + bundle + " is starting but has not yet been parsed");
+            logger.error("--- Bundle {} is starting but has not yet been parsed. State: {}", bundle, bundle.getState());
             return;
         }
 

@@ -151,16 +151,6 @@
     </filter>
 
     <filter>
-        <filter-name>LicenseFilter</filter-name>
-        <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
-        <async-supported>true</async-supported>
-        <init-param>
-            <param-name>targetFilterLifecycle</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </filter>
-
-    <filter>
         <description>Protects access to the content manager and content picker by enforcing permission checks and validating parameters.</description>
         <filter-name>ContentManagerAccessCheckFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -174,11 +164,6 @@
 
     <filter-mapping>
         <filter-name>MaintenanceFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>LicenseFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 

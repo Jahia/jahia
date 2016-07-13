@@ -60,6 +60,7 @@ import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
@@ -327,11 +328,11 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     private static void requireLicense() {
         try {
+            AbstractFilter editModeFilter = (AbstractFilter) ContextLoader.getCurrentWebApplicationContext().getBean("editModeFilter");
             if (!ContextLoader.getCurrentWebApplicationContext().getBean("licenseChecker")
                     .getClass().getName().equals("org.jahia.security.license.LicenseChecker")
-                    || !ContextLoader.getCurrentWebApplicationContext().getBean("LicenseFilter")
-                            .getClass().getName()
-                            .equals("org.jahia.security.license.LicenseFilter")) {
+                    || !editModeFilter.getClass().getName().equals("org.jahia.services.render.filter.SecureEditModeFilter")
+                    || editModeFilter.isDisabled()) {
                 throw new FatalBeanException("Required classes for license manager were not found");
             }
         } catch (NoSuchBeanDefinitionException e) {

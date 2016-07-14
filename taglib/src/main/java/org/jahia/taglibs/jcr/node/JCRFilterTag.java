@@ -178,10 +178,22 @@ public class JCRFilterTag extends AbstractJCRTag {
             logger.error(e.getMessage(), e);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            resetState();
         }
         return super.doEndTag();
     }
 
+    @Override
+    protected void resetState() {
+        list = null;
+        node = null;
+        properties = null;
+        scope = PageContext.PAGE_SCOPE;
+        var = null;
+        super.resetState();
+    }
+    
     private String getValueOrDefaultIfMissingOrEmpty(final JSONObject jsonObject, final String paramName, final String defaultValue) {
         String paramValue = null;
         try {

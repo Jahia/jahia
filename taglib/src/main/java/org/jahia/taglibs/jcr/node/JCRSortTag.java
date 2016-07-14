@@ -107,7 +107,7 @@ public class JCRSortTag extends AbstractJCRTag {
         Collections.sort(res, new NodeComparator(props));
 
         pageContext.setAttribute(var, res, scope);
-        list = null;
+        resetState();
 
         return super.doEndTag();
     }
@@ -213,5 +213,12 @@ public class JCRSortTag extends AbstractJCRTag {
 
     }
 
-
+    @Override
+    protected void resetState() {
+        list = null;
+        var = null;
+        scope = PageContext.PAGE_SCOPE;
+        properties = null;
+        super.resetState();
+    }
 }

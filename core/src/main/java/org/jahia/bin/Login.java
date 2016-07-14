@@ -118,9 +118,20 @@ public class Login implements Controller {
                     if ("bad_password".equals(result)) {
                         result = "unknown_user";
                     }
+<<<<<<< .working
                     //[QA-7582] FIXME: we need to sanitize the URL a dirty quick fix to avoid working on jsp templates that depend on this Servlet
                     String failureRedirectUrl = sanitizeRedirectURL(request);
                     response.sendRedirect(failureRedirectUrl + ((failureRedirectUrl.indexOf("?") > -1) ? "&" + LOGIN_ERR_PARAM_NAME + "=" : "?" + LOGIN_ERR_PARAM_NAME + "=") + result);
+=======
+                    StringBuilder url = new StringBuilder(64);
+                    url.append(failureRedirect);
+                    if (failureRedirect.indexOf('?') == -1) {
+                        url.append("?loginError=").append(result);
+                    } else if (failureRedirect.indexOf("?loginError=") == -1 && failureRedirect.indexOf("&loginError=") == -1) {
+                        url.append("&loginError=").append(result);
+                    }
+                    response.sendRedirect(url.toString());
+>>>>>>> .merge-right.r54708
                 } else {
                     if (request.getParameter("redirect") != null) {
                         request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));

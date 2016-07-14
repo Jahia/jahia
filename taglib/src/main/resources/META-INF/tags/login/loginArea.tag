@@ -62,11 +62,7 @@
                     </c:forEach>
                 </c:url>
                 <input type="hidden" name="redirect" value="${redirect}"/>
-<<<<<<< .working
-                 <input type="hidden" name="failureRedirect" value="${url.context}${renderContext.mainResource.node.path}${urlEnd}"/>
-=======
                 <input type="hidden" name="failureRedirect" value="${redirect}"/>
->>>>>>> .merge-right.r54708
             </c:when>
         </c:choose>
         <jsp:doBody/>

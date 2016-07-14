@@ -137,8 +137,7 @@ public class RandomImageTag extends AbstractJCRTag {
 
     public int doEndTag() {
 
-        path = "";
-        fileTypes = "jpg";
+        resetState();
         return EVAL_PAGE;
     }
 
@@ -206,4 +205,12 @@ public class RandomImageTag extends AbstractJCRTag {
         output.append(" return imgarray[randomNum]; } ");
         out.print(output.toString());
     }
+
+    @Override
+    protected void resetState() {
+        path = "";
+        fileTypes = "jpg";
+        super.resetState();
+    }
+
 }

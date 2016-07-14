@@ -101,14 +101,14 @@ class FileInstallConfigurer {
         }
     }
 
-    static Logger logger = LoggerFactory.getLogger(FileInstallConfigurer.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileInstallConfigurer.class);
 
     private ServiceTracker<ConfigurationAdmin, ConfigurationAdmin> serviceTracker;
 
     private Properties felixProperties;
 
     private boolean startNewBundles;
-    
+
     FileInstallConfigurer() {
         felixProperties = (Properties) SpringContextSingleton.getBean("felixFileInstallConfig");
         startNewBundles = Boolean.valueOf(felixProperties.getProperty("felix.fileinstall.bundles.new.start", "true"));
@@ -164,7 +164,7 @@ class FileInstallConfigurer {
 
     /**
      * Performs the registration of the FileInstall configuration for DX modules.
-     * 
+     *
      * @param bundleContext
      *            the OSGi bundle context
      */
@@ -196,7 +196,7 @@ class FileInstallConfigurer {
             }
         }
     }
-    
+
     boolean isStartNewBundles() {
         return startNewBundles;
     }

@@ -51,7 +51,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.Factory;
-import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
@@ -488,16 +487,44 @@ public class SearchCriteria implements Serializable {
         }
     }
     
+    protected static class NodePropertyFactory implements Factory, Serializable {
+        private static final long serialVersionUID = 3303613294641347422L;
+
+        @Override
+        public Object create() {
+            return new NodeProperty();
+        }
+    }
+
     protected static class NodePropertyMapFactory implements Factory, Serializable {
         private static final long serialVersionUID = 5271166314214230283L;
 
         public Object create() {
             return LazyMap.decorate(
                     new HashMap<String, NodeProperty>(),
-                    FactoryUtils.instantiateFactory(NodeProperty.class));
+                    new NodePropertyFactory());
         }
     }
 
+    private static class OrderingFactory implements Factory, Serializable {
+        private static final long serialVersionUID = -2291640852801927345L;
+
+        @Override
+        public Object create() {
+            return new Ordering();
+        }
+    }
+    
+    private static class TermFactory implements Factory, Serializable {
+
+        private static final long serialVersionUID = -7196425250357122068L;
+
+        @Override
+        public Object create() {
+            return new Term();
+        }
+    }
+    
     /**
      * Single text search criterion with a search text and match type.
      * 
@@ -821,12 +848,10 @@ public class SearchCriteria implements Serializable {
     private CommaSeparatedMultipleValue sites = new CommaSeparatedMultipleValue();
     private CommaSeparatedMultipleValue sitesForReferences = new CommaSeparatedMultipleValue();
     
-    private List<Term> terms = LazyList.decorate(new LinkedList<Term>(),
-            FactoryUtils.instantiateFactory(Term.class));
-    
-    private List<Ordering> orderings = LazyList.decorate(new LinkedList<Ordering>(),
-            FactoryUtils.instantiateFactory(Ordering.class));    
-    
+    private List<Term> terms = LazyList.decorate(new LinkedList<Term>(), new TermFactory());
+
+    private List<Ordering> orderings = LazyList.decorate(new LinkedList<Ordering>(), new OrderingFactory());
+
     /**
      * Initializes an instance of this class.
      */

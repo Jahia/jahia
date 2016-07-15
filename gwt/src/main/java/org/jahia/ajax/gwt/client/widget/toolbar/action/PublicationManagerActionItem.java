@@ -46,6 +46,9 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 
  * User: ktlili
@@ -54,13 +57,21 @@ import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
  * 
  */
 public class PublicationManagerActionItem extends BaseActionItem{
+    private String nodeTypes;
 
     public void onComponentSelection() {
-        new PublicationManagerEngine(linker,JahiaGWTParameters.getSiteLanguages()).show();
+        new PublicationManagerEngine(linker,JahiaGWTParameters.getSiteLanguages(), Arrays.asList(nodeTypes.split(","))).show();
     }
 
     public void handleNewLinkerSelection() {
         setEnabled(true);
     }
 
+    public void setNodeTypes(String nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
+
+    public String getNodeTypes() {
+        return nodeTypes;
+    }
 }

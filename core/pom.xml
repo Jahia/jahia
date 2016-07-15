@@ -1141,7 +1141,7 @@
         <dependency>
             <groupId>org.artofsolving.jodconverter</groupId>
             <artifactId>jodconverter-core</artifactId>
-            <version>3.0-beta-4-jahia5-SNAPSHOT</version>
+            <version>3.0-beta-4-jahia5</version>
         </dependency>
 
         <!-- Apache Shiro -->

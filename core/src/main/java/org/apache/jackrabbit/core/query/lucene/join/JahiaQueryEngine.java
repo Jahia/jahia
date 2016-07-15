@@ -96,18 +96,20 @@ public class JahiaQueryEngine extends QueryEngine {
 
         Locale locale = null;
         if (lqf instanceof JahiaLuceneQueryFactoryImpl) {
-            JahiaLuceneQueryFactoryImpl jlqf = (JahiaLuceneQueryFactoryImpl) lqf;
-            locale = jlqf.getLocale();
-
-            if (session instanceof JahiaSessionImpl) {
-                JahiaSessionImpl jahiaSession = (JahiaSessionImpl) session;
-                SessionContext context = jahiaSession.getContext();
-
-                scs = new SharedFieldComparatorSource(FieldNames.PROPERTIES, context.getItemStateManager(),
-                        context.getHierarchyManager(), jlqf.getNamespaceMappings());
-            }
+            locale = ((JahiaLuceneQueryFactoryImpl) lqf).getLocale();
         }
         this.evaluator = new JahiaOperandEvaluator(valueFactory, variables, locale);
+    }
+    
+    protected SharedFieldComparatorSource getSharedFieldComparatorSource() {
+        if (scs == null && lqf instanceof JahiaLuceneQueryFactoryImpl && session instanceof JahiaSessionImpl) {
+            SessionContext context = ((JahiaSessionImpl) session).getContext();
+
+            scs = new SharedFieldComparatorSource(FieldNames.PROPERTIES, context.getItemStateManager(),
+                    context.getHierarchyManager(), ((JahiaLuceneQueryFactoryImpl) lqf).getNamespaceMappings());
+        }
+
+        return scs;
     }
 
     /**
@@ -200,9 +202,9 @@ public class JahiaQueryEngine extends QueryEngine {
                     .equals(o.getOrder());
             if (o.getOperand() instanceof FullTextSearchScore || JcrConstants.JCR_SCORE.equals(p)) {
                 sortFields.add(new SortField(null, SortField.SCORE, isAsc));
-            } else if (nativeSort && o.getOperand() instanceof PropertyValueImpl && scs != null) {
+            } else if (nativeSort && o.getOperand() instanceof PropertyValueImpl && getSharedFieldComparatorSource() != null) {
                 String qname = ((PropertyValueImpl) o.getOperand()).getPropertyQName().toString();
-                sortFields.add(new SortField(qname, scs, !isAsc));
+                sortFields.add(new SortField(qname, getSharedFieldComparatorSource(), !isAsc));
             } else {
                 sortFields.add(new SortField(p, dofcs, !isAsc));
             }

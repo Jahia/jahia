@@ -85,11 +85,13 @@ public class PublicationManagerEngine extends Window {
 
     private List<GWTJahiaLanguage> languages;
     private Map<String, LayoutContainer> checkboxMap;
+    private List<String> nodeTypes;
 
-    public PublicationManagerEngine(Linker linker, List<GWTJahiaLanguage> result) {
+    public PublicationManagerEngine(Linker linker, List<GWTJahiaLanguage> result, List<String> nodeTypes) {
         super();
         this.linker = linker;
         this.languages = result;
+        this.nodeTypes = nodeTypes;
         setLayout(new FitLayout());
         init();
     }
@@ -109,7 +111,7 @@ public class PublicationManagerEngine extends Window {
 
         // tree component
         GWTJahiaNodeTreeFactory factory = new GWTJahiaNodeTreeFactory(Arrays.asList("/sites/"+linker.getSelectionContext().getMainNode().getSiteKey()), true);
-        factory.setNodeTypes(Arrays.asList("jmix:publication","jmix:workflowRulesable","jmix:navMenuItem"));
+        factory.setNodeTypes(nodeTypes);
         factory.setFields(Arrays.asList(GWTJahiaNode.NAME, GWTJahiaNode.DISPLAY_NAME, GWTJahiaNode.PUBLICATION_INFOS,
                                         GWTJahiaNode.WORKFLOW_INFOS));
         factory.setSelectedPath(linker.getSelectionContext().getMainNode().getPath());

@@ -1232,7 +1232,9 @@
 
     <bean id="Toolbar.Item.PublicationManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublicationManagerActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublicationManagerActionItem">
+                <property name="nodeTypes" value="${jahia.publicationManagerNodeTypes:jmix:publication,jmix:workflowRulesable}"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.publicationmanager"/>
         <property name="icon" value="publicationManager"/>

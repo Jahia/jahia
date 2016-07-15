@@ -46,32 +46,29 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationManagerEngine;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
- * User: ktlili
- * Date: Apr 29, 2010
- * Time: 9:41:53 AM
- * 
+ * Toolbar action item that launches the publication manager engine window.
+ *  
+ * @author ktlili
  */
-public class PublicationManagerActionItem extends BaseActionItem{
-    private String nodeTypes;
+public class PublicationManagerActionItem extends BaseActionItem {
+    private List<String> nodeTypes;
 
     public void onComponentSelection() {
-        new PublicationManagerEngine(linker,JahiaGWTParameters.getSiteLanguages(), Arrays.asList(nodeTypes.split(","))).show();
+        new PublicationManagerEngine(linker,JahiaGWTParameters.getSiteLanguages(), nodeTypes).show();
     }
 
     public void handleNewLinkerSelection() {
         setEnabled(true);
     }
 
-    public void setNodeTypes(String nodeTypes) {
-        this.nodeTypes = nodeTypes;
-    }
-
-    public String getNodeTypes() {
-        return nodeTypes;
+    public void setNodeTypes(String nodeTypesString) {
+        this.nodeTypes = new ArrayList<String>();
+        for (String token : nodeTypesString.split(",")) {
+            nodeTypes.add(token.trim());
+        }
     }
 }

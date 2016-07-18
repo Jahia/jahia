@@ -157,9 +157,9 @@ public class NewCacheFilterTest extends CacheFilterTest{
         }
 
         // r1 is the long thread, it take 3000ms to generate the fragment
-        assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer > 3000);
+        assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer >= 3000);
         // waiting thread r2 wait that r1 release the latch, r2 is started 500ms after r1 so the fragment should be resolve in 2500ms approximately
-        assertTrue("Waiting thread don't spent the correct time to get the fragment", r2.timer > 2300);
+        assertTrue("Waiting thread don't spent the correct time to get the fragment", r2.timer >= 2300);
 
 
         // new r3 thread alone with no wait
@@ -199,8 +199,8 @@ public class NewCacheFilterTest extends CacheFilterTest{
             assertNotNull(r1.result);
             assertNull(r2.result);
             assertTrue(r2.error != null && r2.error.getMessage().contains("Module generation takes too long due to module not generated fast enough (1000 ms)"));
-            assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer > 3000);
-            assertTrue("Waiting thread don't spent the correct time waiting before throw error", r2.timer > 1000);
+            assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer >= 3000);
+            assertTrue("Waiting thread don't spent the correct time waiting before throw error", r2.timer >= 1000);
         } finally {
             moduleGeneratorQueue.setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
         }
@@ -237,8 +237,8 @@ public class NewCacheFilterTest extends CacheFilterTest{
             assertNotNull(r1.result);
             assertNull(r2.result);
             assertTrue(r2.error != null && r2.error.getMessage().contains("Module generation takes too long due to maximum parallel processing reached (1)"));
-            assertTrue("Long thread don't spent the correct time to generate the fragment: " + r1.timer, r1.timer > 3000);
-            assertTrue("Waiting thread don't spent the correct time waiting before throw error:" + r2.timer, r2.timer > 1000);
+            assertTrue("Long thread don't spent the correct time to generate the fragment: " + r1.timer, r1.timer >= 3000);
+            assertTrue("Waiting thread don't spent the correct time waiting before throw error:" + r2.timer, r2.timer >= 1000);
         } finally {
             moduleGeneratorQueue.setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
             moduleGeneratorQueue.setMaxModulesToGenerateInParallel(previousModuleGenerateInParallel);

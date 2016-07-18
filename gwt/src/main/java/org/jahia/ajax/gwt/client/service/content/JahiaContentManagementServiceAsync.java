@@ -64,7 +64,6 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.SessionValidationResult;
 
 import java.util.Date;
@@ -442,4 +441,11 @@ public interface JahiaContentManagementServiceAsync {
      * @param async Callback to handle the permissions returned 
      */
     void getAvailablePermissions(AsyncCallback<List<String>> async);
+
+    /**
+     * get the warning messages to display in the toolbars
+     *
+     * @return the warning messages
+     */
+    void getToolbarWarnings(AsyncCallback<String> async);
 }

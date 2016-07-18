@@ -44,13 +44,14 @@
 package org.jahia.services.notification;
 
 import org.apache.commons.lang.StringUtils;
+import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.cpr.BroadcasterFactory;
+import org.jahia.ajax.gwt.client.widget.poller.ToolbarWarningEvent;
+import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
+import org.jahia.services.atmosphere.AtmosphereServlet;
 import org.jahia.utils.i18n.Messages;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Simple service used to fill potential warnings during startup/execution
@@ -112,8 +113,10 @@ public class ToolbarWarningsService {
         Message m = new Message(message, args);
         if (atTheTop) {
             messages.add(0, m);
+            broadcastMessagesUpdate();
         } else {
             messages.add(m);
+            broadcastMessagesUpdate();
         }
     }
 
@@ -128,8 +131,17 @@ public class ToolbarWarningsService {
             for (Iterator<Message> it = messages.iterator(); it.hasNext();) {
                 if (it.next().key.equals(message)) {
                     it.remove();
+                    broadcastMessagesUpdate();
                 }
             }
+        }
+    }
+
+    private void broadcastMessagesUpdate() {
+        final BroadcasterFactory broadcasterFactory = AtmosphereServlet.getBroadcasterFactory();
+        Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID);
+        if (broadcaster != null) {
+            broadcaster.broadcast(new ToolbarWarningEvent());
         }
     }
 

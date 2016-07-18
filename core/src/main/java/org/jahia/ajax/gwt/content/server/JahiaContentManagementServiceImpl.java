@@ -87,6 +87,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
+import org.jahia.services.notification.ToolbarWarningsService;
 import org.jahia.services.seo.jcr.NonUniqueUrlMappingException;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.translation.TranslationException;
@@ -153,6 +154,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private StubHelper stubHelper;
     private ModuleHelper moduleHelper;
     private TaggingService taggingService;
+    private ToolbarWarningsService toolbarWarningsService;
 
     public void setAcl(ACLHelper acl) {
         this.aclHelper = acl;
@@ -261,6 +263,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void setTaggingService(TaggingService taggingService) {
         this.taggingService = taggingService;
+    }
+
+    public void setToolbarWarningsService(ToolbarWarningsService toolbarWarningsService) {
+        this.toolbarWarningsService = toolbarWarningsService;
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
@@ -2577,6 +2583,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     @Override
     public String convertTag(String tag) {
         return taggingService.getTagHandler().execute(tag);
+    }
+
+    @Override
+    public String getToolbarWarnings() throws GWTJahiaServiceException{
+        return toolbarWarningsService.getMessagesValueAsString(getUILocale());
     }
 
     @Override

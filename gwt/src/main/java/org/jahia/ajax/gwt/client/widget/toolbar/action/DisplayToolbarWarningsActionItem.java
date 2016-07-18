@@ -47,44 +47,62 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.poller.Poller;
+import org.jahia.ajax.gwt.client.widget.poller.ToolbarWarningEvent;
 
 /**
  * toolbar item that display warnings if available
  * Created by david on 21/05/14.
  */
-public class DisplayToolbarWarningsActionItem extends BaseActionItem {
+public class DisplayToolbarWarningsActionItem extends BaseActionItem implements Poller.PollListener<ToolbarWarningEvent> {
     private static final long serialVersionUID = 3328698500846922180L;
-    private transient Button b;
+
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
-        b = new Button();
+        refreshMessages();
+        Poller.getInstance().registerListener(this, ToolbarWarningEvent.class);
     }
 
     @Override
     public Component createNewToolItem() {
-        String messages = JahiaGWTParameters.getParam(JahiaGWTParameters.TOOLBAR_MESSAGES);
-        if (messages != null &&  messages.length() > 0) {
-            b.setEnabled(false);
-            b.setText(Messages.get("label.notifications","Notifications"));
-            String[] messagesTab = messages.split("\\|\\|");
-            final Menu menu = new Menu();
-            b.setMenu(menu);
-            for (String s : messagesTab) {
-                MenuItem m = new MenuItem();
-                m.setText(s);
-                menu.add(m);
-            }
-            b.setEnabled(true);
-        } else {
-            b.hide();
-        }
+        Button b = new Button();
+        b.setText(Messages.get("label.notifications","Notifications"));
+        b.setEnabled(false);
         return b;
     }
 
+    private void refreshMessages() {
+        JahiaContentManagementService.App.getInstance().getToolbarWarnings(new BaseAsyncCallback<String>() {
+            @Override
+            public void onSuccess(String toolbarWarnings) {
+                Button b = (Button) getTextToolItem();
+                if (toolbarWarnings != null &&  toolbarWarnings.length() > 0) {
+                    String[] messagesTab = toolbarWarnings.split("\\|\\|");
+                    final Menu menu = new Menu();
+                    b.setMenu(menu);
+                    for (String s : messagesTab) {
+                        MenuItem m = new MenuItem();
+                        m.setText(s);
+                        menu.add(m);
+                    }
+                    b.setEnabled(true);
+                    b.show();
+                } else {
+                    b.setEnabled(false);
+                    b.hide();
+                }
+            }
+        });
+    }
 
+    @Override
+    public void handlePollingResult(ToolbarWarningEvent result) {
+        refreshMessages();
+    }
 }

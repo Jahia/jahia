@@ -54,7 +54,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.notification.ToolbarWarningsService;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLGenerator;
@@ -202,7 +201,6 @@ public class GWTInitializer {
         } else {
             params.put(JahiaGWTParameters.BASE_URL, contextPath + Render.getRenderServletPath() + "/" + params.get("workspace")  + "/" + locale.toString());
         }
-        params.put(JahiaGWTParameters.TOOLBAR_MESSAGES, ToolbarWarningsService.getInstance().getMessagesValueAsString(uilocale));
 
         if (SettingsBean.getInstance().isUseWebsockets()) {
             params.put(JahiaGWTParameters.USE_WEBSOCKETS, "true");

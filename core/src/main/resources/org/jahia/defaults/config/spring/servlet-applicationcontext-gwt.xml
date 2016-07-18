@@ -58,6 +58,7 @@
         <property name="stubHelper" ref="StubHelper"/>
         <property name="moduleHelper" ref="ModuleHelper"/>
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
+        <property name="toolbarWarningsService" ref="toolbarNotificationService"/>
     </bean>
 
     <bean id="localeResolver" class="org.jahia.services.multilang.UILocaleResolver" />

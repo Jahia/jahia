@@ -520,6 +520,13 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     String convertTag(String tag);
 
+    /**
+     * get the warning messages to display in the admin toolbars
+     *
+     * @return the warning messages
+     */
+    String getToolbarWarnings() throws GWTJahiaServiceException;
+
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;
         private static int windowId = Random.nextInt();

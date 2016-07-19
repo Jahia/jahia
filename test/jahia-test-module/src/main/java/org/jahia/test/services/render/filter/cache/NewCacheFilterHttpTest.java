@@ -120,7 +120,7 @@ public class NewCacheFilterHttpTest extends CacheFilterHttpTest {
             // Long module is left blank
             assertFalse(t2.getResult().contains("Very long to appear"));
             assertTrue(t2.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertTrue("Second thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait2").getTime() > 1000 && getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait2").getTime() < 5900);
+            assertTrue("Second thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait2").getTime() >= 1000);
 
             // Entry is cached without the long module
             assertFalse(content.contains("Very long to appear"));
@@ -129,7 +129,7 @@ public class NewCacheFilterHttpTest extends CacheFilterHttpTest {
 
             assertTrue(t1.getResult().contains("Very long to appear"));
             assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertTrue("First thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait1").getTime() > 6000 && getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait1").getTime() < 10000);
+            assertTrue("First thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait1").getTime() >= 6000);
 
             // Entry is now cached with the long module
             assertTrue(content1.contains("Very long to appear"));

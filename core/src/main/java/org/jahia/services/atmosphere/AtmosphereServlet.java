@@ -76,11 +76,15 @@ public class AtmosphereServlet extends org.atmosphere.cpr.AtmosphereServlet {
     /**
      * Looks up an instance of the {@link BroadcasterFactory}.
      * 
-     * @return an instance of the {@link BroadcasterFactory}
+     * @return an instance of the {@link BroadcasterFactory},
+     * or null if broadcasterFactory can be accessed because ServletContext not ready
      */
     public static BroadcasterFactory getBroadcasterFactory() {
-        return (BroadcasterFactory) ServletContextFactory.getDefault().getServletContext()
-                .getAttribute(BroadcasterFactory.class.getName());
+        ServletContext servletContext = ServletContextFactory.getDefault().getServletContext();
+        if(servletContext != null) {
+            return (BroadcasterFactory)  servletContext.getAttribute(BroadcasterFactory.class.getName());
+        }
+        return null;
     }
 
     @Override

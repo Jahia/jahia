@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.widget.poller.ToolbarWarningEvent;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
 import org.jahia.services.atmosphere.AtmosphereServlet;
 import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
 
 import java.util.*;
 
@@ -58,6 +59,7 @@ import java.util.*;
  * return them as translated messages.
  */
 public class ToolbarWarningsService {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ToolbarWarningsService.class);
 
     private class Message {
 
@@ -139,9 +141,15 @@ public class ToolbarWarningsService {
 
     private void broadcastMessagesUpdate() {
         final BroadcasterFactory broadcasterFactory = AtmosphereServlet.getBroadcasterFactory();
-        Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID);
-        if (broadcaster != null) {
-            broadcaster.broadcast(new ToolbarWarningEvent());
+        if(broadcasterFactory != null) {
+            Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID);
+            if (broadcaster != null) {
+                broadcaster.broadcast(new ToolbarWarningEvent());
+            } else {
+                logger.debug("Fail to broadcast Toolbar warning message event update, because broadcaster not found");
+            }
+        } else {
+            logger.debug("Fail to broadcast Toolbar warning message event update, because broadcaster factory not ready");
         }
     }
 

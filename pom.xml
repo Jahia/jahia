@@ -159,6 +159,23 @@
                     <revisionOnScmFailure>00000</revisionOnScmFailure>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>jahia-maven-plugin</artifactId>
+                <version>${jahia.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>gitbuildnumber</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <allBranches>true</allBranches>
+                    <baseBuildNumber>25622</baseBuildNumber>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 </project>

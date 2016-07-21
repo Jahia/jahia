@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia.bundles</groupId>
         <artifactId>jahia-bundles</artifactId>
-        <version>7.1.2.1-SNAPSHOT</version>
+        <version>7.1.2.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.jahia.bundles.url.jahiawar</artifactId>
@@ -167,7 +167,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>7.1.2.1-SNAPSHOT</version>
+            <version>7.1.2.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -181,7 +181,7 @@
         <dependency>
             <groupId>org.jahia.test</groupId>
             <artifactId>module-test-framework</artifactId>
-            <version>7.1.2.1-SNAPSHOT</version>
+            <version>7.1.2.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>

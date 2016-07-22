@@ -349,7 +349,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         } else if (!params.getSites().isEmpty()) {
             query.append("where (");
             if ("-all-".equals(params.getSites().getValue())) {
-                //
+                query.append("isdescendantnode(n,'/sites/')"); // ticket PEU-468
             } else {
                 Set<String> sites = new LinkedHashSet<String>();
                 for (String site : params.getSites().getValues()) {

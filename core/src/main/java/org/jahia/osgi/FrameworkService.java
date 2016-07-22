@@ -44,6 +44,8 @@
 package org.jahia.osgi;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -51,6 +53,7 @@ import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.karaf.main.Main;
 import org.apache.karaf.util.config.PropertiesLoader;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -61,6 +64,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.PropertyPlaceholderHelper;
@@ -79,6 +84,10 @@ public class FrameworkService implements FrameworkListener {
         private Holder() {
         }
     }
+    
+    public static final String EVENT_TOPIC_LIFECYCLE = "org/jahia/dx/lifecycle";
+    
+    public static final String EVENT_TYPE_OSGI_STARTED = "osgiContainerStarted";
 
     private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
 
@@ -122,10 +131,47 @@ public class FrameworkService implements FrameworkListener {
      */
     private static void notifyStarted(FrameworkService instance) {
         if (instance.frameworkStartLevelChanged && instance.fileInstallStarted) {
+            // send synchronous event about startup
+            sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_OSGI_STARTED), false);
+            
             // both pre-requisites for stratup are fulfilled
             // notify any threads waiting
             instance.notifyAll();
             logger.info("OSGi platform service initialized in {} ms", (System.currentTimeMillis() - instance.startTime));
+        }
+    }
+
+    /**
+     * Initiate synchronous or asynchronous delivery of an OSGi event using {@link EventAdmin} service. If synchronous delivery is
+     * requested, this method does not return to the caller until delivery of the event is completed.
+     * 
+     * @param topic the topic of the event
+     * @param properties the event's properties (may be {@code null}). A property whose key is not of type {@code String} will be ignored.
+     * @param asynchronous if <code>true</code> an event is delivered asynchronously; in case of <code>false</code> this method does not
+     *            return to the caller until delivery of the event is completed
+     */
+    public static void sendEvent(String topic, Map<String, ?> properties, boolean asynchronous) {
+        BundleContext context = FrameworkService.getBundleContext();
+        ServiceReference<?> ref = context.getServiceReference(EventAdmin.class.getName());
+        if (ref != null) {
+            Object service = context.getService(ref);
+            try {
+                // have to use the class loader of the EventAdmin service
+                ClassLoader classLoader = service.getClass().getClassLoader();
+
+                Object evt = classLoader.loadClass("org.osgi.service.event.Event")
+                        .getConstructor(String.class, Map.class).newInstance(topic, properties);
+
+                logger.info("Sending {} event with the properties {} to the topic {}...",
+                        new Object[] { asynchronous ? "asynchronous" : "synchronous", properties, topic });
+
+                MethodUtils.invokeExactMethod(service, asynchronous ? "postEvent" : "sendEvent", evt);
+
+                logger.info("Event sent to the topic {}", topic);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException
+                    | InstantiationException | IllegalArgumentException | SecurityException e) {
+                throw new IllegalArgumentException(e);
+            }
         }
     }
 

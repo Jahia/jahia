@@ -148,6 +148,8 @@ public class Activator implements BundleActivator, EventHandler {
     private Map<Bundle, ModuleState> moduleStates;
     private FileInstallConfigurer fileInstallConfigurer;
 
+    private ServiceRegistration<?> fileInstallEventHandlerRegistration;
+
     public Activator() {
         instance = this;
     }
@@ -1003,11 +1005,13 @@ public class Activator implements BundleActivator, EventHandler {
         Dictionary<String, Object> props = new Hashtable<>();
         props.put(EventConstants.EVENT_TOPIC, new String[] { "org/apache/felix/fileinstall" });
         props.put(EventConstants.EVENT_FILTER, "(type=watcherStarted)");
-        context.registerService(EventHandler.class.getName(), this, props);
+        fileInstallEventHandlerRegistration = context.registerService(EventHandler.class.getName(), this, props);
     }
 
     @Override
     public void handleEvent(Event event) {
+        unregisterFileInstallEventHandler();
+        
         if (toBeStarted != null) {
             startAllBundles();
         }
@@ -1090,6 +1094,16 @@ public class Activator implements BundleActivator, EventHandler {
         } catch (CycleDetectedException e) {
             logger.error("A cyclic dependency detected in the modules to be started", e);
             return modulesByBundle.keySet();
+        }
+    }
+
+    private void unregisterFileInstallEventHandler() {
+        if (fileInstallEventHandlerRegistration != null) {
+            try {
+                fileInstallEventHandlerRegistration.unregister();
+            } catch (Exception e) {
+                logger.warn("Unable to unregister EventHandler for FileInstall events", e);
+            }
         }
     }
 }

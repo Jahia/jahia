@@ -172,7 +172,8 @@
                 </executions>
                 <configuration>
                     <allBranches>true</allBranches>
-                    <baseBuildNumber>25622</baseBuildNumber>
+                    <baseBuildNumber>54753</baseBuildNumber>
+                    <baseGitRevision>60702fbfd1e1acd6a9c86912deb00121e0681a01</baseGitRevision>
                 </configuration>
             </plugin>
 		</plugins>

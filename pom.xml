@@ -162,7 +162,6 @@
             <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>jahia-maven-plugin</artifactId>
-                <version>${jahia.plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>

@@ -61,9 +61,10 @@
     <description>Jahia Base Package</description>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH</url>
+        <connection>scm:git:git@github.com:Jahia/dxm-private.git</connection>
+        <developerConnection>scm:git:git@github.com:Jahia/dxm-private.git</developerConnection>
+        <url>https://github.com/Jahia/dxm-private</url>
+        <tag>JAHIA-7-1-X-X-BRANCH</tag>
     </scm>
 
     <repositories>

@@ -59,7 +59,7 @@
     <scm>
         <connection>scm:dummy:uri</connection>
         <developerConnection>scm:dummy:uri</developerConnection>
-      <tag>DEVBACKLOG1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <repositories>

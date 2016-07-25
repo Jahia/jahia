@@ -61,9 +61,10 @@
     <description>Jahia Base Package</description>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk</url>
+        <connection>scm:git:git@github.com:Jahia/dxm-private.git</connection>
+        <developerConnection>scm:git:git@github.com:Jahia/dxm-private.git</developerConnection>
+        <url>https://github.com/Jahia/dxm-private</url>
+        <tag>HEAD</tag>
     </scm>
 
     <repositories>

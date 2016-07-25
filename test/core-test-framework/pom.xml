@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses/>.
+        along with this program. If not, see <http://www.gnu.org/licenses />.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -59,7 +59,8 @@
     <scm>
         <connection>scm:dummy:uri</connection>
         <developerConnection>scm:dummy:uri</developerConnection>
-    </scm>
+      <tag>DEVBACKLOG1</tag>
+  </scm>
 
     <repositories>
         <repository>
@@ -160,32 +161,32 @@
                             <target>
                                 <copy todir="${project.build.directory}/classes">
                                     <fileset dir="${project.basedir}/../../war/src/main/resources">
-                                        <include name="ehcache*.xml"/>
-                                        <include name="tika-config-*.xml"/>
+                                        <include name="ehcache*.xml" />
+                                        <include name="tika-config-*.xml" />
                                     </fileset>
                                     <fileset dir="${project.basedir}/../../war/src/main/webapp">
-                                        <include name="WEB-INF/etc/repository/*.xml"/>
-                                        <include name="WEB-INF/etc/repository/nodetypes/**"/>
-                                        <include name="WEB-INF/etc/repository/rules/**"/>
+                                        <include name="WEB-INF/etc/repository/*.xml" />
+                                        <include name="WEB-INF/etc/repository/nodetypes/**" />
+                                        <include name="WEB-INF/etc/repository/rules/**" />
                                     </fileset>
                                 </copy>
                                 <copy todir="${project.build.directory}/classes/WEB-INF/var">
                                     <fileset dir="${project.basedir}/../../war/src/data/resources">
-                                        <include name="repository/**"/>
+                                        <include name="repository/**" />
                                     </fileset>
                                 </copy>
                                 <copy todir="${project.build.directory}/classes/WEB-INF/var/patches">
                                     <fileset dir="${project.basedir}/../../war/src/data/resources/db">
-                                        <include name="derby_embedded.script"/>
+                                        <include name="derby_embedded.script" />
                                     </fileset>
                                 </copy>
                                 <copy todir="${project.build.directory}/classes/WEB-INF/var/patches/sql">
                                     <fileset dir="${project.basedir}/../../war/src/data/resources/db/sql/schema">
-                                        <include name="derby/**"/>
+                                        <include name="derby/**" />
                                     </fileset>
                                 </copy>
-                                <replace file="${project.build.directory}/classes/WEB-INF/var/patches/derby_embedded.script" token="{hibernateDialect.derby}" value="hibernateDialect.derby"/>
-                                <replace file="${project.build.directory}/classes/WEB-INF/var/patches/derby_embedded.script" token="$hibernateDialect.derby" value="${hibernateDialect.derby}"/>
+                                <replace file="${project.build.directory}/classes/WEB-INF/var/patches/derby_embedded.script" token="{hibernateDialect.derby}" value="hibernateDialect.derby" />
+                                <replace file="${project.build.directory}/classes/WEB-INF/var/patches/derby_embedded.script" token="$hibernateDialect.derby" value="${hibernateDialect.derby}" />
                             </target>
                         </configuration>
                     </execution>

@@ -544,10 +544,6 @@ public class ModuleBuildHelper implements InitializingBean {
         this.mavenMinRequiredVersion = mavenRequiredVersion;
     }
 
-    /**
-     * before setting the executable, test if can be executed and if it matches the required version
-     * @param mavenExecutable
-     */
     public void setMavenExecutable(String mavenExecutable) {
         this.mavenExecutable = mavenExecutable;
     }

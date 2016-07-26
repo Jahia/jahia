@@ -160,6 +160,11 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     public CompiledModuleInfo compileModule(File sources) throws IOException {
+        if(!isMavenConfigured()) {
+            throw new JahiaRuntimeException("Cannot compile module, either current instance is not " +
+                    "in development mode or maven configuration is not good");
+        }
+
         File pom = new File(sources, "pom.xml");
         try {
             Model model = PomUtils.read(pom);
@@ -198,6 +203,10 @@ public class ModuleBuildHelper implements InitializingBean {
 
     public JCRNodeWrapper createModule(final String moduleName, String artifactId, final String groupId, final String moduleType, final File moduleSources,
                                        final JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+        if(!isMavenConfigured()) {
+            throw new JahiaRuntimeException("Cannot create module, either current instance is not " +
+                    "in development mode or maven configuration is not good");
+        }
         if (StringUtils.isBlank(moduleName)) {
             throw new RepositoryException("Cannot create module because no module name has been specified");
         }
@@ -276,6 +285,11 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     public void deployToMaven(String groupId, String artifactId, ModuleReleaseInfo releaseInfo, File generatedJar) throws IOException {
+        if(!isMavenConfigured()) {
+            throw new JahiaRuntimeException("Cannot deploy module to maven, either current instance is not " +
+                    "in development mode or maven configuration is not good");
+        }
+
         File settings = null;
         File pomFile = null;
         try {
@@ -353,6 +367,11 @@ public class ModuleBuildHelper implements InitializingBean {
 
     protected File releaseModuleInternal(Model model, String lastVersion, String releaseVersion,
                                          ModuleReleaseInfo releaseInfo, File sources, String scmUrl) throws IOException, XmlPullParserException {
+        if(!isMavenConfigured()) {
+            throw new JahiaRuntimeException("Cannot release module, either current instance is not " +
+                    "in development mode or maven configuration is not good");
+        }
+
         String nextVersion = releaseInfo.getNextVersion();
         String artifactId = model.getArtifactId();
         File pom = new File(sources, "pom.xml");
@@ -422,51 +441,15 @@ public class ModuleBuildHelper implements InitializingBean {
         templatePackageRegistry = registry;
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        boolean isProjectInSnapshotVersion = Constants.JAHIA_PROJECT_VERSION.contains("-SNAPSHOT");
-        if (mavenArchetypeCatalog == null || mavenArchetypeCatalog.length() == 0) {
-            if (isProjectInSnapshotVersion) {
-                mavenArchetypeCatalog = "https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml";
-                if (!mavenArchetypeVersion.endsWith("-SNAPSHOT")) {
-                    Version v = new Version(mavenArchetypeVersion);
-                    v.getOrderedVersionNumbers().set(v.getOrderedVersionNumbers().size() - 1,
-                            v.getOrderedVersionNumbers().get(v.getOrderedVersionNumbers().size() - 1).intValue() + 1);
-                    mavenArchetypeVersion = v.toString() + "-SNAPSHOT";
-                }
-            } else {
-                mavenArchetypeCatalog = "https://devtools.jahia.com/nexus/content/repositories/jahia-releases/archetype-catalog.xml";
-            }
-        }
-
-        logger.info("Using version {} for the module archetypes from catalog {}", mavenArchetypeVersion,
-                mavenArchetypeCatalog);
-
-        if (ignoreSnapshots == null || ignoreSnapshots.length() == 0) {
-            ignoreSnapshotsFlag = isProjectInSnapshotVersion;
-        } else {
-            ignoreSnapshotsFlag = Boolean.valueOf(ignoreSnapshots.trim());
-        }
-        if (mavenReleasePlugin == null || mavenReleasePlugin.length() == 0) {
-            mavenReleasePlugin = "release";
-        }
+    private boolean isMavenConfigured() {
+        return settingsBean.isDevelopmentMode() && settingsBean.isMavenExecutableSet();
     }
 
-    public void setMavenReleasePlugin(String mavenReleasePlugin) {
-        this.mavenReleasePlugin = mavenReleasePlugin;
-    }
-
-    public void setMavenMinRequiredVersion(String mavenRequiredVersion) {
-        this.mavenMinRequiredVersion = mavenRequiredVersion;
-    }
-
-    /**
-     * before setting the executable, test if can be executed and if it matches the required version
-     * @param mavenExecutable
-     */
-    public void setMavenExecutable(String mavenExecutable) {
-        // test maven version
+    private void checkMavenExecutable() {
         if (settingsBean.isDevelopmentMode()) {
+            settingsBean.setMavenExecutableSet(false);
+
+            String mavenExecutable = this.mavenExecutable;
             StringBuilder resultOut = new StringBuilder();
             try {
                 String[] args = new String[]{"-version"};
@@ -514,11 +497,59 @@ public class ModuleBuildHelper implements InitializingBean {
                 toolbarWarningsService.addMessage("warning.maven.missing");
                 logger.error("Cannot set maven executable to " + mavenExecutable + ", please check your configuration", e);
             }
-            if (StringUtils.isEmpty(this.mavenExecutable)) {
+            if(!settingsBean.isMavenExecutableSet()) {
                 logger.error("Until maven executable is correctly set, the studio will not be available");
-                settingsBean.setMavenExecutableSet(false);
             }
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        // check maven executable
+        checkMavenExecutable();
+
+        boolean isProjectInSnapshotVersion = Constants.JAHIA_PROJECT_VERSION.contains("-SNAPSHOT");
+        if (mavenArchetypeCatalog == null || mavenArchetypeCatalog.length() == 0) {
+            if (isProjectInSnapshotVersion) {
+                mavenArchetypeCatalog = "https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml";
+                if (!mavenArchetypeVersion.endsWith("-SNAPSHOT")) {
+                    Version v = new Version(mavenArchetypeVersion);
+                    v.getOrderedVersionNumbers().set(v.getOrderedVersionNumbers().size() - 1,
+                            v.getOrderedVersionNumbers().get(v.getOrderedVersionNumbers().size() - 1).intValue() + 1);
+                    mavenArchetypeVersion = v.toString() + "-SNAPSHOT";
+                }
+            } else {
+                mavenArchetypeCatalog = "https://devtools.jahia.com/nexus/content/repositories/jahia-releases/archetype-catalog.xml";
+            }
+        }
+
+        logger.info("Using version {} for the module archetypes from catalog {}", mavenArchetypeVersion,
+                mavenArchetypeCatalog);
+
+        if (ignoreSnapshots == null || ignoreSnapshots.length() == 0) {
+            ignoreSnapshotsFlag = isProjectInSnapshotVersion;
+        } else {
+            ignoreSnapshotsFlag = Boolean.valueOf(ignoreSnapshots.trim());
+        }
+        if (mavenReleasePlugin == null || mavenReleasePlugin.length() == 0) {
+            mavenReleasePlugin = "release";
+        }
+    }
+
+    public void setMavenReleasePlugin(String mavenReleasePlugin) {
+        this.mavenReleasePlugin = mavenReleasePlugin;
+    }
+
+    public void setMavenMinRequiredVersion(String mavenRequiredVersion) {
+        this.mavenMinRequiredVersion = mavenRequiredVersion;
+    }
+
+    /**
+     * before setting the executable, test if can be executed and if it matches the required version
+     * @param mavenExecutable
+     */
+    public void setMavenExecutable(String mavenExecutable) {
+        this.mavenExecutable = mavenExecutable;
     }
 
     public void setToolbarWarningsService(ToolbarWarningsService toolbarWarningsService) {

@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia.test</groupId>
         <artifactId>jahia-test-parent</artifactId>        
-        <version>7.2.0.0-SNAPSHOT</version>
+        <version>7.2.0.0-BACKLOG5637-SNAPSHOT</version>
     </parent>
     <artifactId>core-test-framework</artifactId>
     <name>Jahia Core Test Framework</name>
@@ -59,7 +59,7 @@
     <scm>
         <connection>scm:dummy:uri</connection>
         <developerConnection>scm:dummy:uri</developerConnection>
-      <tag>HEAD</tag>
+      <tag>BACKLOG-5637</tag>
   </scm>
 
     <repositories>

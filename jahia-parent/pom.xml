@@ -966,7 +966,7 @@
                 <plugin>
                     <groupId>external.atlassian.jgitflow</groupId>
                     <artifactId>jgitflow-maven-plugin</artifactId>
-                    <version>1.0-m5-jahia1</version>
+                    <version>1.0-m5.jahia1</version>
                     <configuration>
                         <flowInitContext>
                             <masterBranchName>production</masterBranchName>

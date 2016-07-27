@@ -1,4 +1,4 @@
-/*
+/**
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -101,18 +101,9 @@ class FileInstallConfigurer {
         }
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(FileInstallConfigurer.class);
+    static Logger logger = LoggerFactory.getLogger(FileInstallConfigurer.class);
 
     private ServiceTracker<ConfigurationAdmin, ConfigurationAdmin> serviceTracker;
-
-    private Properties felixProperties;
-
-    private boolean startNewBundles;
-
-    FileInstallConfigurer() {
-        felixProperties = (Properties) SpringContextSingleton.getBean("felixFileInstallConfig");
-        startNewBundles = Boolean.valueOf(felixProperties.getProperty("felix.fileinstall.bundles.new.start", "true"));
-    }
 
     private Configuration findExisting(ConfigurationAdmin configurationAdmin, String dirPath) {
         try {
@@ -135,6 +126,7 @@ class FileInstallConfigurer {
     }
 
     private void register(ConfigurationAdmin configurationAdmin) {
+        Properties felixProperties = ((Properties) SpringContextSingleton.getBean("felixFileInstallConfig"));
         String watchedDir = felixProperties.getProperty("felix.fileinstall.dir");
         Configuration cfg = findExisting(configurationAdmin, watchedDir);
         if (cfg != null) {
@@ -164,7 +156,7 @@ class FileInstallConfigurer {
 
     /**
      * Performs the registration of the FileInstall configuration for DX modules.
-     *
+     * 
      * @param bundleContext
      *            the OSGi bundle context
      */
@@ -195,9 +187,5 @@ class FileInstallConfigurer {
                 logger.error("Unable to remove FileInstall configuration", e);
             }
         }
-    }
-
-    boolean isStartNewBundles() {
-        return startNewBundles;
     }
 }

@@ -44,9 +44,13 @@
 package org.jahia.osgi;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -56,10 +60,16 @@ import javax.servlet.ServletContext;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.karaf.main.Main;
 import org.apache.karaf.util.config.PropertiesLoader;
+import org.codehaus.plexus.util.dag.CycleDetectedException;
+import org.codehaus.plexus.util.dag.DAG;
+import org.codehaus.plexus.util.dag.TopologicalSorter;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
@@ -119,6 +129,17 @@ public class FrameworkService implements FrameworkListener {
      */
     public static void notifyFileInstallStarted() {
         final FrameworkService instance = getInstance();
+
+        if (instance.firstStartup) {
+            // this is a first framework startup
+            instance.firstStartup = false;
+            Properties felixProperties = (Properties) SpringContextSingleton.getBean("felixFileInstallConfig");
+            if (!Boolean.valueOf(felixProperties.getProperty("felix.fileinstall.bundles.new.start", "true"))) {
+                // as the bundles are not started automatically by Fileinstall we need to start them manually
+                startAllModules();
+            }
+        }
+        
         synchronized (instance) {
             instance.fileInstallStarted = true;
             logger.info("FileInstall watcher started");
@@ -175,6 +196,99 @@ public class FrameworkService implements FrameworkListener {
         }
     }
 
+    private static void startAllModules() {
+
+        long startTime = System.currentTimeMillis();
+        Map<Bundle, JahiaTemplatesPackage> toBeStarted = collectBundlesToBeStarted();
+
+        logger.info("Will start {} bundles", toBeStarted.size());
+        Collection<Bundle> sortedBundles = getSortedModules(toBeStarted);
+
+        try {
+            for (Bundle bundle : sortedBundles) {
+                try {
+                    logger.info("Triggering start for bundle {}/{}", bundle.getSymbolicName(), bundle.getVersion());
+                    bundle.start();
+                } catch (BundleException e) {
+                    if (BundleException.RESOLVE_ERROR == e.getType()) {
+                        // log warning for the resolution (dependencies) error
+                        logger.warn(e.getMessage());
+                    } else {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+        } finally {
+            logger.info("Finished starting {} bundles in {} ms", toBeStarted.size(),
+                    System.currentTimeMillis() - startTime);
+            toBeStarted = null;
+        }
+    }
+
+    private static Map<Bundle, JahiaTemplatesPackage> collectBundlesToBeStarted() {
+        Map<Bundle, JahiaTemplatesPackage> toBeStarted = new HashMap<>();
+        for (Bundle bundle : getBundleContext().getBundles()) {
+
+            if (bundle.getState() != Bundle.ACTIVE && bundle.getState() != Bundle.UNINSTALLED
+                    && !BundleUtils.isFragment(bundle) && BundleUtils.isJahiaModuleBundle(bundle)) {
+                JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
+                if (pkg != null) {
+                    toBeStarted.put(bundle, pkg);
+                }
+            }
+        }
+
+        return toBeStarted;
+    }
+
+    private static Collection<Bundle> getSortedModules(Map<Bundle, JahiaTemplatesPackage> modulesByBundle) {
+
+        long startTime = System.currentTimeMillis();
+        try {
+
+            // we build a Directed Acyclic Graph of dependencies (only those, which are present in the package)
+            DAG dag = new DAG();
+
+            Map<String, Bundle> bundlesByModuleId = new HashMap<>();
+            for (Map.Entry<Bundle, JahiaTemplatesPackage> entry : modulesByBundle.entrySet()) {
+
+                JahiaTemplatesPackage pkg = entry.getValue();
+                String pkgId = pkg.getId();
+                bundlesByModuleId.put(pkgId, entry.getKey());
+
+                dag.addVertex(pkgId);
+                for (String depPkg : pkg.getDepends()) {
+                    dag.addEdge(pkgId, depPkg);
+                }
+                if (!pkg.getDepends().contains(JahiaTemplatesPackage.ID_DEFAULT)
+                        && !pkg.getDepends().contains(JahiaTemplatesPackage.NAME_DEFAULT)
+                        && !ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                                .getModulesWithNoDefaultDependency().contains(pkg.getId())) {
+                    dag.addEdge(pkgId, JahiaTemplatesPackage.ID_DEFAULT);
+                }
+            }
+
+            List<Bundle> sortedBundles = new LinkedList<>();
+
+            // use topological sort (Depth First Search) on the created graph
+            @SuppressWarnings("unchecked")
+            List<String> vertexes = TopologicalSorter.sort(dag);
+            for (String v : vertexes) {
+                Bundle b = bundlesByModuleId.get(v);
+                if (b != null) {
+                    sortedBundles.add(b);
+                }
+            }
+
+            logger.info("Sorted bundles in {} ms", System.currentTimeMillis() - startTime);
+            return sortedBundles;
+        } catch (CycleDetectedException e) {
+            logger.error("A cyclic dependency detected in the modules to be started", e);
+            // will start bundles in non-sorted order; the OSGi framework will handle the startup correctly if all the dependencies are available
+            return modulesByBundle.keySet();
+        }
+    }
+    
     private boolean fileInstallStarted;
     private boolean firstStartup;
     private boolean frameworkStartLevelChanged;
@@ -186,7 +300,7 @@ public class FrameworkService implements FrameworkListener {
         this.servletContext = servletContext;
     }
 
-    private void checkFirstStartup() {
+    private void checkFirstStartup() throws IOException {
         firstStartup = !new File(System.getProperty("org.osgi.framework.storage"), "bundle0").exists();
     }
 
@@ -229,15 +343,6 @@ public class FrameworkService implements FrameworkListener {
                 notifyStarted(instance);
             }
         }
-    }
-
-    /**
-     * Indicates the first startup of the OSGi framework.
-     *
-     * @return <code>true</code> if this is the first startup of the framework; <code>false</code> otherwise
-     */
-    public boolean isFirstStartup() {
-        return firstStartup;
     }
 
     /**

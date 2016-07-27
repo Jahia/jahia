@@ -1,4 +1,4 @@
-/*
+/**
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -46,9 +46,6 @@ package org.jahia.bundles.extender.jahiamodules;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
-import org.codehaus.plexus.util.dag.CycleDetectedException;
-import org.codehaus.plexus.util.dag.DAG;
-import org.codehaus.plexus.util.dag.TopologicalSorter;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bundles.extender.jahiamodules.transform.DxModuleURLStreamHandler;
@@ -103,7 +100,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_DX;
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES;
@@ -134,7 +130,6 @@ public class Activator implements BundleActivator, EventHandler {
     private CndBundleObserver cndBundleObserver;
     private List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<ServiceRegistration<?>>();
     private BundleListener bundleListener;
-    private Set<Bundle> installedBundles;
     private Set<Bundle> initializedBundles;
     private Map<Bundle, JahiaTemplatesPackage> registeredBundles;
     private Map<Bundle, ServiceTracker<HttpService, HttpService>> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker<HttpService, HttpService>>();
@@ -144,7 +139,6 @@ public class Activator implements BundleActivator, EventHandler {
     private ExtensionObserverRegistry extensionObservers;
     private BundleScriptEngineManager scriptEngineManager;
     private Map<String, List<Bundle>> toBeResolved;
-    private Map<Bundle, JahiaTemplatesPackage> toBeStarted;
     private Map<Bundle, ModuleState> moduleStates;
     private FileInstallConfigurer fileInstallConfigurer;
 
@@ -181,17 +175,9 @@ public class Activator implements BundleActivator, EventHandler {
 
         // Get all module state information from the service
         registeredBundles = templatesService.getRegisteredBundles();
-        installedBundles = templatesService.getInstalledBundles();
         initializedBundles = templatesService.getInitializedBundles();
         toBeResolved = templatesService.getToBeResolved();
         moduleStates = templatesService.getModuleStates();
-
-        fileInstallConfigurer = new FileInstallConfigurer();
-        
-        if (!fileInstallConfigurer.isStartNewBundles() && FrameworkService.getInstance().isFirstStartup()) {
-            // will auto-start modules on first framework startup
-            toBeStarted = new ConcurrentHashMap<>();
-        }
 
         // register view script observers
         bundleScriptResolver.registerObservers();
@@ -251,6 +237,7 @@ public class Activator implements BundleActivator, EventHandler {
 
         registerFileInstallEventHandler(context);
 
+        fileInstallConfigurer = new FileInstallConfigurer();
         fileInstallConfigurer.start(context);
 
         logger.info("== DX Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
@@ -443,14 +430,7 @@ public class Activator implements BundleActivator, EventHandler {
 
             logger.info("--- Installing DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
             registeredBundles.put(bundle, pkg);
-            installedBundles.add(bundle);
             setModuleState(bundle, ModuleState.State.INSTALLED, null);
-
-            if (toBeStarted != null) {
-                // we collect bundles to be started
-                toBeStarted.put(bundle, pkg);
-            }
-
         }
     }
 
@@ -469,7 +449,6 @@ public class Activator implements BundleActivator, EventHandler {
 
             logger.info("--- Updating DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
             registeredBundles.put(bundle, pkg);
-            installedBundles.add(bundle);
             setModuleState(bundle, ModuleState.State.UPDATED, null);
         }
     }
@@ -508,7 +487,6 @@ public class Activator implements BundleActivator, EventHandler {
             templatePackageRegistry.unregisterPackageVersion(jahiaTemplatesPackage);
         }
         moduleStates.remove(bundle);
-        installedBundles.remove(bundle);
         initializedBundles.remove(bundle);
 
         long totalTime = System.currentTimeMillis() - startTime;
@@ -521,7 +499,6 @@ public class Activator implements BundleActivator, EventHandler {
 
         if (null == pkg) {
             // is not a Jahia module -> skip
-            installedBundles.remove(bundle);
             moduleStates.remove(bundle);
             return;
         }
@@ -535,7 +512,7 @@ public class Activator implements BundleActivator, EventHandler {
 
         List<String> dependsList = pkg.getDepends();
         if (needsDefaultModuleDependency(pkg)) {
-            dependsList.add("default");
+            dependsList.add(JahiaTemplatesPackage.ID_DEFAULT);
         }
 
         for (String depend : dependsList) {
@@ -1012,89 +989,15 @@ public class Activator implements BundleActivator, EventHandler {
     public void handleEvent(Event event) {
         unregisterFileInstallEventHandler();
         
-        if (toBeStarted != null) {
-            startAllBundles();
-        }
         // notify the framework that the file install watcher has started and processed found modules
         FrameworkService.notifyFileInstallStarted();
     }
 
-    private void startAllBundles() {
-
-        long startTime = System.currentTimeMillis();
-        logger.info("Will start {} bundles", toBeStarted.size());
-        Collection<Bundle> sortedBundles = getSortedModules(toBeStarted);
-
-        try {
-            for (Bundle bundle : sortedBundles) {
-                try {
-                    logger.info("Triggering start for bundle {}", getDisplayName(bundle));
-                    bundle.start();
-                } catch (BundleException e) {
-                    if (BundleException.RESOLVE_ERROR == e.getType()) {
-                        // log warning for the resolution (dependencies) error
-                        logger.warn(e.getMessage());
-                    } else {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            }
-        } finally {
-            logger.info("Finished starting {} bundles in {} ms", toBeStarted.size(),
-                    System.currentTimeMillis() - startTime);
-            toBeStarted = null;
-        }
-    }
-
     private static boolean needsDefaultModuleDependency(final JahiaTemplatesPackage pkg) {
-        return !pkg.getDepends().contains("default")
-                && !pkg.getDepends().contains("Default Jahia Templates")
+        return !pkg.getDepends().contains(JahiaTemplatesPackage.ID_DEFAULT)
+                && !pkg.getDepends().contains(JahiaTemplatesPackage.NAME_DEFAULT)
                 && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
                 .contains(pkg.getId());
-    }
-
-    private static Collection<Bundle> getSortedModules(Map<Bundle, JahiaTemplatesPackage> modulesByBundle) {
-
-        long startTime = System.currentTimeMillis();
-        try {
-
-            // we build a Directed Acyclic Graph of dependencies (only those, which are present in the package)
-            DAG dag = new DAG();
-
-            Map<String, Bundle> bundlesByModuleId = new HashMap<>();
-            for (Map.Entry<Bundle, JahiaTemplatesPackage> entry : modulesByBundle.entrySet()) {
-
-                JahiaTemplatesPackage pkg = entry.getValue();
-                String pkgId = pkg.getId();
-                bundlesByModuleId.put(pkgId, entry.getKey());
-
-                dag.addVertex(pkgId);
-                for (String depPkg : pkg.getDepends()) {
-                    dag.addEdge(pkgId, depPkg);
-                }
-                if (needsDefaultModuleDependency(pkg)) {
-                    dag.addEdge(pkgId, "default");
-                }
-            }
-
-            List<Bundle> sortedBundles = new LinkedList<>();
-
-            // use topological sort (Depth First Search) on the created graph
-            @SuppressWarnings("unchecked")
-            List<String> vertexes = TopologicalSorter.sort(dag);
-            for (String v : vertexes) {
-                Bundle b = bundlesByModuleId.get(v);
-                if (b != null) {
-                    sortedBundles.add(b);
-                }
-            }
-
-            logger.info("Sorted bundles in {} ms", System.currentTimeMillis() - startTime);
-            return sortedBundles;
-        } catch (CycleDetectedException e) {
-            logger.error("A cyclic dependency detected in the modules to be started", e);
-            return modulesByBundle.keySet();
-        }
     }
 
     private void unregisterFileInstallEventHandler() {

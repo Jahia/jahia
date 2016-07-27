@@ -395,4 +395,15 @@ public final class BundleUtils {
         return serviceInstance;
     }
 
+
+    /**
+     * Checks if the provided bundle is a fragment bundle.
+     * 
+     * @param bundle the bundle to be checked
+     * @return <code>true</code> in case the supplied bundle is a fragment bundle; <code>false</code> otherwise
+     */
+    public static boolean isFragment(Bundle bundle) {
+        return StringUtils.isNotBlank((String) bundle.getHeaders().get(org.osgi.framework.Constants.FRAGMENT_HOST));
+    }
+
 }

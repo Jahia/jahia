@@ -125,7 +125,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private Map<Bundle, ModuleState> moduleStates = new ConcurrentSkipListMap<>();
     private final Map<Bundle, JahiaTemplatesPackage> registeredBundles = new ConcurrentHashMap<>();
-    private final Set<Bundle> installedBundles = Sets.newConcurrentHashSet();
     private final Set<Bundle> initializedBundles = Sets.newConcurrentHashSet();
     private final Map<String, List<Bundle>> toBeResolved = new ConcurrentHashMap<>();
     private final OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
@@ -952,8 +951,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return registeredBundles;
     }
 
+    /**
+     * @deprecated since DX 7.2 with no replacement
+     */
+    @Deprecated
     public Set<Bundle> getInstalledBundles() {
-        return installedBundles;
+        return Collections.emptySet();
     }
 
     public Set<Bundle> getInitializedBundles() {

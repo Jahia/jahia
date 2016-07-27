@@ -963,6 +963,28 @@
                     <version>${release.plugin.version}</version>
                 </plugin>
             </plugins>
+                <plugin>
+                    <groupId>external.atlassian.jgitflow</groupId>
+                    <artifactId>jgitflow-maven-plugin</artifactId>
+                    <version>1.0-m5-jahia1</version>
+                    <configuration>
+                        <flowInitContext>
+                            <masterBranchName>production</masterBranchName>
+                            <developBranchName>master</developBranchName>
+                            <featureBranchPrefix>feature-</featureBranchPrefix>
+                            <releaseBranchPrefix>release-</releaseBranchPrefix>
+                            <hotfixBranchPrefix>hotfix-</hotfixBranchPrefix>
+                            <versionTagPrefix>blither-</versionTagPrefix>
+                        </flowInitContext>
+                        <allowSnapshots>true</allowSnapshots>
+                        <allowUntracked>true</allowUntracked>
+                        <enableFeatureVersions>true</enableFeatureVersions>
+                        <pushFeatures>true</pushFeatures>
+                        <noFeatureBuild>true</noFeatureBuild>
+                        <scmCommentPrefix>[jgitflow-maven-plugin] </scmCommentPrefix>
+                        <versionChangeFilesPath>..</versionChangeFilesPath>
+                     </configuration>
+                </plugin>
         </pluginManagement>
         <plugins>
             <plugin>

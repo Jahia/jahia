@@ -962,7 +962,6 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>${release.plugin.version}</version>
                 </plugin>
-            </plugins>
                 <plugin>
                     <groupId>external.atlassian.jgitflow</groupId>
                     <artifactId>jgitflow-maven-plugin</artifactId>
@@ -985,6 +984,7 @@
                         <versionChangeFilesPath>..</versionChangeFilesPath>
                      </configuration>
                 </plugin>
+            </plugins>
         </pluginManagement>
         <plugins>
             <plugin>

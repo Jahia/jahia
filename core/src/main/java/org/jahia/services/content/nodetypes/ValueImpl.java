@@ -219,6 +219,11 @@ public class ValueImpl implements Value {
     }
 
     public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
-        return null;  
+        String s = getString();
+        try {
+            return new BigDecimal(s);
+        } catch (NumberFormatException e) {
+            throw new ValueFormatException(s);
+        }
     }
 }

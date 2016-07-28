@@ -88,7 +88,7 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
                 .addBeanPostProcessor(new JahiaModuleAwareProcessor(BundleUtils.getModule(bundleContext.getBundle())));
 
         for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
-            if (aPackage.getContext() != null) {
+            if (aPackage.getContext() != null && aPackage.getContext().isActive()) {
                 Map<String, JahiaModulesBeanPostProcessor> postProcessors = aPackage.getContext().getBeansOfType(JahiaModulesBeanPostProcessor.class);
                 for (JahiaModulesBeanPostProcessor pp : postProcessors.values()) {
                     beanFactory.addBeanPostProcessor(pp);

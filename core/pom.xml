@@ -752,38 +752,31 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>1.7</version>
+            <version>1.13</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>1.7</version>
+            <version>1.13</version>
             <exclusions>
                 <exclusion>
-                    <groupId>asm</groupId>
-                    <artifactId>asm</artifactId>
+                    <!--
+                        guava 17.0 is used by edu.ucar:cdm:jar:4.5.5, but core already declare guava 15.0 as dependency
+                        Looking at edu.ucar:cdm:jar:4.5.5 sources, guava 15.0 should work for runtime
+                     -->
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.geronimo.specs</groupId>
-                    <artifactId>geronimo-stax-api_1.0_spec</artifactId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jdom</artifactId>
-                    <groupId>jdom</groupId>
+                    <!--
+                        ehcache-core 2.6.2 is used by edu.ucar:cdm:jar:4.5.5, but core already declare ehcache 2.8.5
+                        Looking at edu.ucar:cdm:jar:4.5.5 sources, ehcache 2.8.5 should work for runtime
+                    -->
+                    <groupId>net.sf.ehcache</groupId>
+                    <artifactId>ehcache-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- PDFBox dependency we override form Tika -->
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-             <version>1.8.9</version>
-        </dependency>
-        <!-- End of PDFBox dependency we override form Tika -->
 
         <dependency>
             <groupId>net.sf.ehcache</groupId>
@@ -925,6 +918,10 @@
                 <exclusion>
                     <groupId>org.apache.cxf</groupId>
                     <artifactId>cxf-rt-transports-http</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jdom</groupId>
+                    <artifactId>jdom</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

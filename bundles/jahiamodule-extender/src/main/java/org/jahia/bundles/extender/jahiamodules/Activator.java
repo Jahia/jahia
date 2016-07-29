@@ -261,7 +261,7 @@ public class Activator implements BundleActivator, EventHandler {
                 }
 
                 if (!isRegistered) {
-                    if (state > Bundle.INSTALLED) {
+                    if (state >= Bundle.INSTALLED) {
                         // Parse bundle if activator has not seen them before
                         try {
                             String bundleLocation = bundle.getLocation();
@@ -270,12 +270,21 @@ public class Activator implements BundleActivator, EventHandler {
                             if (state == Bundle.ACTIVE) {
                                 bundle.stop();
                                 toStart.add(bundle);
+                            } else if (state == Bundle.INSTALLED) {
+                                final JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
+
+                                if (pkg != null) {
+                                    // we register the bundle state
+                                    setModuleState(bundle, ModuleState.State.INSTALLED, null);
+                                    pkg.setState(getModuleState(bundle));
+                                    registeredBundles.put(bundle, pkg);
+                                }
                             }
                             try {
                                 if (!bundleLocation.startsWith(URL_PROTOCOL_DX)) {
                                     // transform the module
                                     bundle.update(transform(bundle));
-                                } else {
+                                } else if (state > Bundle.INSTALLED) {
                                     bundle.update();
                                 }
                             } catch (BundleException | ModuleManagementException e) {
@@ -283,15 +292,6 @@ public class Activator implements BundleActivator, EventHandler {
                             }
                         } catch (Exception e) {
                             logger.error("Unable to process the bundle " + bundle, e);
-                        }
-                    } else if (state == Bundle.INSTALLED) {
-                        final JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
-
-                        if (pkg != null) {
-                            // we register the bundle state
-                            setModuleState(bundle, ModuleState.State.INSTALLED, null);
-                            pkg.setState(getModuleState(bundle));
-                            registeredBundles.put(bundle, pkg);
                         }
                     }
                 }
@@ -316,8 +316,9 @@ public class Activator implements BundleActivator, EventHandler {
     private static InputStream transform(Bundle bundle) throws ModuleManagementException {
         try {
             PersistentBundle persistentBundle = ModuleUtils.persist(bundle);
-            return ModuleUtils
-                    .addModuleDependencies(ModuleUtils.loadPersistedBundle(persistentBundle.getKey()));
+            return ModuleUtils.addBundleUpdateLocation(
+                    ModuleUtils.addModuleDependencies(ModuleUtils.loadPersistedBundle(persistentBundle.getKey())),
+                    persistentBundle.getLocation());
         } catch (Exception e) {
             if (e instanceof ModuleManagementException) {
                 // re-throw

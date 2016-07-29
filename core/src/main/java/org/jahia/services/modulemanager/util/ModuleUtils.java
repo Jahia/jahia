@@ -57,7 +57,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
@@ -82,6 +81,7 @@ import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -93,8 +93,34 @@ import org.springframework.core.io.UrlResource;
  * the Provide-Capability for the module itself.
  */
 public class ModuleUtils {
+    
+    private interface ManifestModifier {
+        void modify(Manifest mf);
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleUtils.class);
+
+    /**
+     * Performs the transformation of the MANIFEST.MF file in the supplied stream to change/add the attribute value
+     * {@link Constants.BUNDLE_UPDATELOCATION}.
+     *
+     * @param sourceStream the source stream for the bundle, which manifest has to be adjusted; the stream is closed after returning from
+     *            this method
+     * @param bundleUpdateLocation the bundle update location URL
+     * @return the transformed stream for the bundle with adjusted manifest
+     * @throws IOException in case of I/O errors
+     */
+    public static InputStream addBundleUpdateLocation(InputStream sourceStream, final String bundleUpdateLocation)
+            throws IOException {
+        return modifyManifest(sourceStream, new ManifestModifier() {
+            @Override
+            public void modify(Manifest mf) {
+                // adjust the manifest headers
+                Attributes attrs = mf.getMainAttributes();
+                attrs.putValue(Constants.BUNDLE_UPDATELOCATION, bundleUpdateLocation);
+            }
+        });
+    }
 
     /**
      * Modifies the manifest attributes for Provide-Capability and Require-Capability (if needed) based on the module dependencies.
@@ -114,26 +140,6 @@ public class ModuleUtils {
     }
 
     /**
-     * Modifies the manifest attributes for Provide-Capability and Require-Capability based on the module dependencies (if needed).
-     *
-     * @param is the original JAR input stream
-     * @param os the target output stream
-     * @throws IOException in case of an I/O error
-     */
-    private static void addDependsCapabilitiesToManifest(InputStream is, OutputStream os) throws IOException {
-
-        // we read the manifest from the source stream
-        Manifest mf = new Manifest();
-        mf.read(is);
-
-        // adjust the manifest headers
-        addCapabilities(mf.getMainAttributes());
-
-        // write the manifest entry into the target output stream
-        mf.write(os);
-    }
-
-    /**
      * Performs the transformation of the capability attributes in the MANIFEST.MF file of the supplied stream.
      *
      * @param sourceStream the source stream for the bundle, which manifest has to be adjusted w.r.t. module dependencies; the stream is
@@ -142,24 +148,12 @@ public class ModuleUtils {
      * @throws IOException in case of I/O errors
      */
     public static InputStream addModuleDependencies(InputStream sourceStream) throws IOException {
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        try (ZipInputStream zis = new ZipInputStream(sourceStream); ZipOutputStream zos = new ZipOutputStream(out);) {
-            ZipEntry zipEntry = zis.getNextEntry();
-            while (zipEntry != null) {
-                zos.putNextEntry(new ZipEntry(zipEntry.getName()));
-                if (JarFile.MANIFEST_NAME.equals(zipEntry.getName())) {
-                    addDependsCapabilitiesToManifest(zis, zos);
-                } else {
-                    IOUtils.copy(zis, zos);
-                }
-                zis.closeEntry();
-                zipEntry = zis.getNextEntry();
+        return modifyManifest(sourceStream, new ManifestModifier() {
+            @Override
+            public void modify(Manifest mf) {
+                addCapabilities(mf.getMainAttributes());
             }
-        }
-
-        return new ByteArrayInputStream(out.toByteArray());
+        });
     }
 
     /**
@@ -293,6 +287,43 @@ public class ModuleUtils {
         }
     }
 
+    /**
+     * Performs the transformation of the MANIFEST.MF file in the supplied stream to change/add attribute values.
+     *
+     * @param sourceStream the source stream for the bundle, which manifest has to be adjusted; the stream is closed after returning from
+     *            this method
+     * @param modifier the callback which is responsible for the modification of MANIFEST.MF file
+     * @return the transformed stream for the bundle with adjusted manifest
+     * @throws IOException in case of I/O errors
+     */
+    private static InputStream modifyManifest(InputStream sourceStream, ManifestModifier modifier) throws IOException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try (ZipInputStream zis = new ZipInputStream(sourceStream); ZipOutputStream zos = new ZipOutputStream(out);) {
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                zos.putNextEntry(new ZipEntry(zipEntry.getName()));
+                if (JarFile.MANIFEST_NAME.equals(zipEntry.getName())) {
+                    // we read the manifest from the source stream
+                    Manifest mf = new Manifest();
+                    mf.read(zis);
+
+                    modifier.modify(mf);
+
+                    // write the manifest entry into the target output stream
+                    mf.write(zos);
+                } else {
+                    IOUtils.copy(zis, zos);
+                }
+                zis.closeEntry();
+                zipEntry = zis.getNextEntry();
+            }
+        }
+
+        return new ByteArrayInputStream(out.toByteArray());
+    }
+    
     /**
      * Performs the persistence of the supplied bundle resource and returns the information about it.
      *

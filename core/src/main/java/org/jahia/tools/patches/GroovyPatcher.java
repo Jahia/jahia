@@ -265,7 +265,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
             if (patchesFolder != null) {
                 String absolutePath = patchesFolder.getAbsolutePath();
                 absolutePath = StringUtils.replaceChars(absolutePath, '\\', '/');
-                absolutePath = StringUtils.replaceChars(absolutePath, " ", "%20");
+                absolutePath = StringUtils.replace(absolutePath, " ", "%20");
                 patchesLookup = "file://" + absolutePath + "/**/*.groovy";
             }
         }

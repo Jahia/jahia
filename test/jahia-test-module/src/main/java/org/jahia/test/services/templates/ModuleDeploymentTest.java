@@ -338,6 +338,12 @@ public class ModuleDeploymentTest {
 
                 managerService.installModule(pack, site.getJCRLocalPath(), session);
                 session.save();
+                
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    logger.error(e.getMessage(), e);
+                }                
 
                 assertTrue("Module has not been installed on site", site.getInstalledModules().contains("dummy1"));
                 assertTrue("Module content has not been copied", session.itemExists("/sites/"+TESTSITE_NAME+"/contents/test-contents"));

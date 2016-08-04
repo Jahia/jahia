@@ -117,8 +117,8 @@
         
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-junit</artifactId>
-            <version>1.0.0.1</version>
+            <artifactId>hamcrest-all</artifactId>
+            <version>${hamcrest.version}</version>
         </dependency>        
         
         <dependency>
@@ -144,6 +144,12 @@
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        
+        <dependency>
+	        <groupId>org.awaitility</groupId>
+	        <artifactId>awaitility</artifactId>
+	        <version>${awaitility.version}</version>
+        </dependency>        
     </dependencies>            
 
     <build>

@@ -44,6 +44,7 @@
 package org.jahia.test.services.templates;
 
 import org.apache.commons.io.FileUtils;
+import org.awaitility.Duration;
 import org.jahia.bin.Action;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
@@ -67,8 +68,11 @@ import org.slf4j.Logger;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.*;
+import java.util.concurrent.Callable;
 
 import static org.junit.Assert.*;
+import static org.awaitility.Awaitility.*;
+import static java.util.concurrent.TimeUnit.*;
 
 public class ModuleDeploymentTest {
 
@@ -229,24 +233,11 @@ public class ModuleDeploymentTest {
             FileUtils.copyFileToDirectory(tmpFile, new File(settingsBean.getJahiaModulesDiskPath()));
             tmpFile.delete();
             f = new File(settingsBean.getJahiaModulesDiskPath(), tmpFile.getName());
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                logger.error(e.getMessage(), e);
-            }
 
-//        managerService.scanSharedModulesFolderNow();
-
+            with().pollInterval(Duration.ONE_SECOND).await().atMost(20, SECONDS).until(isPackageDeployedAndServiceInstalled("dummy1"));
+            
             JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
-            if (pack == null || pack.getContext() == null || !pack.isServiceInitialized()) {
-                // system is slow, so wait some more
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    logger.error(e.getMessage(), e);
-                }                
-                pack = managerService.getTemplatePackageById("dummy1");
-            }
+            
             assertNotNull(pack);
             assertEquals("Module is not started", ModuleState.State.STARTED, pack.getState().getState());
             assertNotNull("Spring context is null", pack.getContext());
@@ -274,6 +265,16 @@ public class ModuleDeploymentTest {
 
     }
 
+    private Callable<Boolean> isPackageDeployedAndServiceInstalled(final String packageId) {
+        return new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
+                return pack != null && pack.getContext() != null && pack.isServiceInitialized();
+            }
+        };
+    }
+    
+    
     @Test
     public void testJarUndeploy() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
@@ -339,12 +340,6 @@ public class ModuleDeploymentTest {
                 managerService.installModule(pack, site.getJCRLocalPath(), session);
                 session.save();
                 
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    logger.error(e.getMessage(), e);
-                }                
-
                 assertTrue("Module has not been installed on site", site.getInstalledModules().contains("dummy1"));
                 assertTrue("Module content has not been copied", session.itemExists("/sites/"+TESTSITE_NAME+"/contents/test-contents"));
 
@@ -355,5 +350,4 @@ public class ModuleDeploymentTest {
             }
         });
     }
-
 }

@@ -149,16 +149,22 @@ public class AclListener extends DefaultEventListener {
                         if (nodeByIdentifier.isNodeType("jnt:ace") && !nodeByIdentifier.isNodeType(
                                 "jnt:externalAce") && nodeByIdentifier.getProperty(
                                 "j:aceType").getValue().getString().equals("GRANT")) {
-                            aceIdentifiers.add(next.getIdentifier());
-                            if (next.getType() == Event.PROPERTY_ADDED) {
-                                addedAceIdentifiers.add(next.getIdentifier());
+                            String identifier = next.getIdentifier();
+                            if (identifier != null) {
+                                aceIdentifiers.add(identifier);
+                                if (next.getType() == Event.PROPERTY_ADDED) {
+                                    addedAceIdentifiers.add(identifier);
+                                }
                             }
                         }
                     } catch (ItemNotFoundException e) {
                         logger.error("unable to read node " + next.getPath());
                     }
                 } else if (next.getType() == Event.NODE_REMOVED && StringUtils.substringAfterLast(next.getPath(), "/").startsWith("GRANT_")) {
-                    aceIdentifiers.add(next.getIdentifier());
+                    String identifier = next.getIdentifier();
+                    if (identifier != null) {
+                        aceIdentifiers.add(identifier);
+                    }
                     removedAcePaths.add(next.getPath());
                 }
             } else if (next.getPath().startsWith("/roles/")) {

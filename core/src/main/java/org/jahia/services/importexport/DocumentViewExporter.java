@@ -42,6 +42,7 @@
  *     please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.importexport;
+import java.util.Observable;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.Name;
@@ -73,7 +74,7 @@ import java.util.regex.Pattern;
  * Time: 3:02:35 PM
  *
  */
-public class DocumentViewExporter {
+public class DocumentViewExporter extends Observable{
     protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewExporter.class);
 
     private static final String CDATA = "CDATA";
@@ -145,6 +146,63 @@ public class DocumentViewExporter {
         export(node, set);
     }
 
+    public int calculateNodes(JCRNodeWrapper rootNode, TreeSet<JCRNodeWrapper> nodes) throws SAXException, RepositoryException  {
+        this.rootNode = rootNode;
+        int result = 0;
+
+
+        nodesList = new ArrayList<JCRNodeWrapper>(nodes);
+        for (int i = 0; i<nodesList.size(); i++) {
+            List<JCRNodeWrapper> subList = new ArrayList<JCRNodeWrapper>(nodesList.subList(i, nodesList.size()));
+            Collections.sort(subList, nodes.comparator());
+            nodesList.removeAll(subList);
+            nodesList.addAll(subList);
+            if (nodesList.get(i).getProvider().canExportNode(nodesList.get(i))) {
+                result = calculateNodeNumber(nodesList.get(i), result);
+            }
+        }
+        return result;
+    }
+
+    private int calculateNodeNumber(JCRNodeWrapper node, int nodeNumber) throws SAXException, RepositoryException  {
+        int result = nodeNumber;
+        if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+            result++;
+            String path = "";
+            Node current = node;
+            while (!current.getPath().equals("/")) {
+                path = "/" + current.getName() + path;
+                current = current.getParent();
+            }
+            if (path.equals("")) {
+                path = "/";
+            }
+
+
+            if (!noRecurse) {
+                List<String> exportedMountPointNodes = new ArrayList<String>();
+                NodeIterator ni = node.getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
+                    if (c.getProvider().canExportNode(c) && !exportedMountPointNodes.contains(c.getName())) {
+                        if (!"/".equals(path) && !c.getProvider().equals(node.getProvider())) { // is external provider root
+                            String mountPointName = c.getName() + JCRMountPointNode.MOUNT_SUFFIX;
+                            if (node.hasNode(mountPointName) && !exportedMountPointNodes.contains(mountPointName)) { // mounted from a dynamic mountPoint
+                                JCRNodeWrapper mountPointNode = node.getNode(mountPointName);
+                                if (mountPointNode.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
+                                    result = calculateNodeNumber(mountPointNode, result);
+                                }
+                            }
+                        }
+
+                        result = calculateNodeNumber(c, result);
+                    }
+                }
+            }
+        }
+        return  result;
+    }
+
     public void export(JCRNodeWrapper rootNode, SortedSet<JCRNodeWrapper> nodes) throws SAXException, RepositoryException {
         this.rootNode = rootNode;
 
@@ -176,7 +234,7 @@ public class DocumentViewExporter {
 
     private void exportNode(JCRNodeWrapper node) throws SAXException, RepositoryException {
         if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
-
+            notifyListObservers(node.getPath());
             String path = "";
             Node current = node;
             while (!current.getPath().equals("/")) {
@@ -337,6 +395,11 @@ public class DocumentViewExporter {
                 }
             }
         }
+    }
+
+    private void notifyListObservers(String path) {
+        setChanged();
+        notifyObservers(path);
     }
 
     private void setProviderRootAttribute(JCRNodeWrapper node, AttributesImpl atts) throws RepositoryException {

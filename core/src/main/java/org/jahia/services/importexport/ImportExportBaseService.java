@@ -122,7 +122,7 @@ import java.util.zip.ZipOutputStream;
  *
  * @author Thomas Draier
  */
-public class ImportExportBaseService extends JahiaService implements ImportExportService {
+public class ImportExportBaseService extends JahiaService implements ImportExportService, Observer{
 
     private static Logger logger = LoggerFactory.getLogger(ImportExportBaseService.class);
     private static final Set<String> KNOWN_IMPORT_CONTENT_TYPES = ImmutableSet.of("application/zip", "application/xml", "text/xml");
@@ -155,6 +155,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private List<AttributeProcessor> attributeProcessors;
     private TemplatePackageRegistry templatePackageRegistry;
 
+    private int exportedNodes = 0;
+    private int step = 0;
+    private int stepNodes = 0;
+    private int actualStepDecimal = 0;
+
     private ImportExportBaseService() {
     }
 
@@ -170,7 +175,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     /**
      * Helper method to determine which type of the import the uploaded file represents.
      *
-     * @param item the uploaded file item
+     * @param declaredContentType the declared content type
+     * @param fileName the uploaded file name
      * @return type of the import the uploaded file represents
      */
     public static String detectImportContentType(String declaredContentType, String fileName) {
@@ -416,10 +422,16 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             zzout.finish();
         }
 
-
+        exportedNodes = 0;
         zout.finish();
     }
 
+    /**
+     * Get the zip output stream
+     * @param outputStream the output stream
+     * @param serverDirectory the server directory
+     * @return the zip output stream
+     */
     private ZipOutputStream getZipOutputStream(OutputStream outputStream, String serverDirectory) {
         ZipOutputStream zout = null;
         if (serverDirectory != null) {
@@ -449,10 +461,21 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return zout;
     }
 
+    /**
+     * Export a site
+     * @param site the site node
+     * @param out the output stream
+     * @param externalReferences list of external references
+     * @param params map of parameters for site export
+     * @param serverDirectory server directory
+     * @throws RepositoryException
+     * @throws SAXException
+     * @throws IOException
+     * @throws TransformerException
+     */
     private void exportSite(final JCRSiteNode site, OutputStream out, Set<String> externalReferences, Map<String, Object> params, String serverDirectory)
             throws RepositoryException, SAXException, IOException, TransformerException {
         ZipOutputStream zout = getZipOutputStream(out, serverDirectory);
-
         zout.putNextEntry(new ZipEntry(SITE_PROPERTIES));
         exportSiteInfos(zout, site);
         final JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
@@ -463,10 +486,28 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         tti.add("jnt:templatesFolder");
         tti.add("jnt:externalUser");
         tti.add("jnt:workflowTask");
+        this.step = 0;
+        this.exportedNodes = 0;
+        this.actualStepDecimal = 0;
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti,
                 externalReferences, params);
         zout.finish();
     }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        exportedNodes ++;
+
+        if(logger.isDebugEnabled()) {
+            logger.debug("Exporting  : " + arg);
+        }
+        if(exportedNodes*10/stepNodes>actualStepDecimal && actualStepDecimal <9)
+        {
+            actualStepDecimal = exportedNodes*10/stepNodes;
+            logger.info("[Step "+ step + "] - " + actualStepDecimal*10 + "%");
+        }
+    }
+
 
     @Override
     public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException {
@@ -490,6 +531,19 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         exportNodes(exportRoot == null ? node : exportRoot, nodes, out, new HashSet<String>(), null, params);
     }
 
+    /**
+     * Export list of nodes with binaries
+     * @param rootNode the root node
+     * @param nodes list of nodes to export
+     * @param zout Zip output stream
+     * @param typesToIgnore list of types to ignore
+     * @param externalReferences list of external references
+     * @param params list of parameters for export operation
+     * @throws SAXException
+     * @throws IOException
+     * @throws RepositoryException
+     * @throws TransformerException
+     */
     private void exportNodesWithBinaries(JCRNodeWrapper rootNode, Set<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params)
             throws SAXException, IOException, RepositoryException, TransformerException {
 
@@ -546,13 +600,26 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         exportNodesBinary(rootNode, sortedNodes, zout, typesToIgnore, "/content");
     }
 
+    /**
+     * Export list of nodes
+     * @param rootNode the root node
+     * @param sortedNodes list of nodes to export
+     * @param outputStream  output stream
+     * @param typesToIgnore list of types to ignore
+     * @param externalReferences list of external references
+     * @param params list of parameters for export operation
+     * @throws SAXException
+     * @throws IOException
+     * @throws RepositoryException
+     * @throws TransformerException
+     */
     private void exportNodes(JCRNodeWrapper rootNode, TreeSet<JCRNodeWrapper> sortedNodes, OutputStream outputStream,
                              Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params)
             throws IOException, RepositoryException, SAXException, TransformerException {
         final String xsl = (String) params.get(XSL_PATH);
         final boolean skipBinary = !Boolean.FALSE.equals(params.get(SKIP_BINARY));
         final boolean noRecurse = Boolean.TRUE.equals(params.get(NO_RECURSE));
-
+        step ++;
         OutputStream tmpOut = outputStream;
         if (xsl != null) {
             String filename = Patterns.SPACE.matcher(rootNode.getName()).replaceAll("_");
@@ -564,7 +631,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             SystemViewExporter exporter = new SystemViewExporter(rootNode.getSession(), dw, !noRecurse, !skipBinary);
             exporter.export(rootNode);
         } else {
+            exportedNodes = 0;
             DocumentViewExporter exporter = new DocumentViewExporter(rootNode.getSession(), dw, skipBinary, noRecurse);
+            exporter.addObserver(this);
             if (externalReferences != null) {
                 exporter.setExternalReferences(externalReferences);
             }
@@ -578,8 +647,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
             }
             exporter.setTypesToIgnore(typesToIgnore);
+            this.stepNodes=  exporter.calculateNodes(rootNode,sortedNodes);
+            this.actualStepDecimal = 0;
             exporter.export(rootNode, sortedNodes);
-
+            logger.info("[Step " + step + "] - 100%");
             sortedNodes.addAll(exporter.getNodesList());
         }
 
@@ -597,6 +668,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
     }
 
+    /**
+     * Get the XML transformer from a defined XSL
+     * @param xsl XSL filename
+     * @return XML transformer
+     * @throws TransformerConfigurationException
+     */
     private Transformer getTransformer(String xsl) throws TransformerConfigurationException {
         Templates templates = xsltTemplates.get(xsl);
         if (templates == null) {

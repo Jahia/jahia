@@ -71,4 +71,7 @@
             </list>
         </property>
     </bean>
+
+    <bean class="org.jahia.osgi.spring.SpringBridge"/>
+
 </beans>

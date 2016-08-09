@@ -146,7 +146,15 @@ public class DocumentViewExporter extends Observable{
         export(node, set);
     }
 
-    public int calculateNodes(JCRNodeWrapper rootNode, TreeSet<JCRNodeWrapper> nodes) throws SAXException, RepositoryException  {
+    /**
+     * Estimate the number of nodes to export under a list of nodes
+     * @param rootNode the root node
+     * @param nodes a treeset of nodes
+     * @return
+     * @throws SAXException
+     * @throws RepositoryException
+     */
+    public int estimateListOfNodesNumberForExport(JCRNodeWrapper rootNode, TreeSet<JCRNodeWrapper> nodes) throws SAXException, RepositoryException  {
         this.rootNode = rootNode;
         int result = 0;
 
@@ -158,14 +166,23 @@ public class DocumentViewExporter extends Observable{
             nodesList.removeAll(subList);
             nodesList.addAll(subList);
             if (nodesList.get(i).getProvider().canExportNode(nodesList.get(i))) {
-                result = calculateNodeNumber(nodesList.get(i), result);
+                result = estimateNodeNumberForExport(nodesList.get(i), result);
             }
         }
         return result;
     }
 
-    private int calculateNodeNumber(JCRNodeWrapper node, int nodeNumber) throws SAXException, RepositoryException  {
-        int result = nodeNumber;
+    /**
+     * Estimate the number of nodes to export under a node
+     * @param node the root node
+     * @param startingNodeNumber starting node number for recursive calls
+     * @return
+     * @throws SAXException
+     * @throws RepositoryException
+     */
+    private int estimateNodeNumberForExport(JCRNodeWrapper node, int startingNodeNumber) throws SAXException,
+            RepositoryException  {
+        int result = startingNodeNumber;
         if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
             result++;
             String path = "";
@@ -190,12 +207,12 @@ public class DocumentViewExporter extends Observable{
                             if (node.hasNode(mountPointName) && !exportedMountPointNodes.contains(mountPointName)) { // mounted from a dynamic mountPoint
                                 JCRNodeWrapper mountPointNode = node.getNode(mountPointName);
                                 if (mountPointNode.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
-                                    result = calculateNodeNumber(mountPointNode, result);
+                                    result = estimateNodeNumberForExport(mountPointNode, result);
                                 }
                             }
                         }
 
-                        result = calculateNodeNumber(c, result);
+                        result = estimateNodeNumberForExport(c, result);
                     }
                 }
             }
@@ -397,6 +414,10 @@ public class DocumentViewExporter extends Observable{
         }
     }
 
+    /**
+     * Notify the list of observers about a node path being exported
+     * @param path the node path
+     */
     private void notifyListObservers(String path) {
         setChanged();
         notifyObservers(path);

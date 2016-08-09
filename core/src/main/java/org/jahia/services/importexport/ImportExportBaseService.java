@@ -647,7 +647,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
             }
             exporter.setTypesToIgnore(typesToIgnore);
-            this.stepNodes=  exporter.calculateNodes(rootNode,sortedNodes);
+            this.stepNodes=  exporter.estimateListOfNodesNumberForExport(rootNode, sortedNodes);
             this.actualStepDecimal = 0;
             exporter.export(rootNode, sortedNodes);
             logger.info("[Step " + step + "] - 100%");

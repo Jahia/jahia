@@ -43,21 +43,58 @@
  */
 package org.jahia.osgi.spring;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.Collection;
+import java.util.Map;
 
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.query.QueryService;
-import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.tags.TagHandler;
+import org.osgi.framework.BundleContext;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Exposes a set of Spring beans as an OSGi services.
  */
 public class SpringBridge implements JahiaAfterInitializationService {
+
+    public interface BeanSelector {
+
+        Map<String, Object> selectBeans(ApplicationContext applicationContext);
+    }
+
+    public interface BeanExposer {
+
+        void exposeBean(String beanID, Object bean, BundleContext bundleContext);
+    }
+
+    public static class BeanExposition {
+
+        private BeanSelector selector;
+        private BeanExposer exposer;
+
+        public BeanSelector getSelector() {
+            return selector;
+        }
+
+        public void setSelector(BeanSelector selector) {
+            this.selector = selector;
+        }
+
+        public BeanExposer getExposer() {
+            return exposer;
+        }
+
+        public void setExposer(BeanExposer exposer) {
+            this.exposer = exposer;
+        }
+    }
+
+    private Collection<BeanExposition> beanExpositions;
+
+    public void setBeanExpositions(Collection<BeanExposition> beanExpositions) {
+        this.beanExpositions = beanExpositions;
+    }
 
     @Override
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
@@ -65,21 +102,16 @@ public class SpringBridge implements JahiaAfterInitializationService {
     }
 
     private void exposeSpringBeans() {
-
-        // As own class
-        exposeSpringBean("JahiaSitesService", JahiaSitesService.class);
-
-        // As a superclass
-        exposeSpringBean("QueryService", QueryService.class);
-
-        // As an interface implemented
-        exposeSpringBean("org.jahia.services.tags.TagHandler", TagHandler.class);
-    }
-
-    private static <T> void exposeSpringBean(String beanID, Class<T> as) {
-        @SuppressWarnings("unchecked") T bean = (T) SpringContextSingleton.getBean(beanID);
-        Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put("springBeanID", beanID);
-        FrameworkService.getBundleContext().registerService(as, bean, properties);
+        ApplicationContext applicationContext = SpringContextSingleton.getInstance().getContext();
+        BundleContext bundleContext = FrameworkService.getBundleContext();
+        for (BeanExposition beanExposition : beanExpositions) {
+            Map<String, Object> beansByID = beanExposition.getSelector().selectBeans(applicationContext);
+            BeanExposer beanExposer = beanExposition.getExposer();
+            for (Map.Entry<String, Object> beanEntry : beansByID.entrySet()) {
+                String beanID = beanEntry.getKey();
+                Object bean = beanEntry.getValue();
+                beanExposer.exposeBean(beanID, bean, bundleContext);
+            }
+        }
     }
 }

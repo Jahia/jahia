@@ -72,6 +72,45 @@
         </property>
     </bean>
 
-    <bean class="org.jahia.osgi.spring.SpringBridge"/>
+    <bean class="org.jahia.osgi.spring.SpringBridge">
+        <property name="beanExpositions">
+            <list>
+                <bean class="org.jahia.osgi.spring.SpringBridge$BeanExposition">
+                    <property name="selector">
+                        <bean class="org.jahia.osgi.spring.BeanSelectorByBeanID">
+                            <constructor-arg value="JahiaSitesService"/>
+                        </bean>
+                    </property>
+                    <property name="exposer">
+                        <bean class="org.jahia.osgi.spring.BeanExposerAsOwnClass"/>
+                    </property>
+                </bean>
+                <bean class="org.jahia.osgi.spring.SpringBridge$BeanExposition">
+                    <property name="selector">
+                        <bean class="org.jahia.osgi.spring.BeanSelectorByBeanID">
+                            <constructor-arg value="QueryService"/>
+                        </bean>
+                    </property>
+                    <property name="exposer">
+                        <bean class="org.jahia.osgi.spring.BeanExposerAsOwnClass">
+                            <constructor-arg value="org.jahia.services.query.QueryService"/>
+                        </bean>
+                    </property>
+                </bean>
+                <bean class="org.jahia.osgi.spring.SpringBridge$BeanExposition">
+                    <property name="selector">
+                        <bean class="org.jahia.osgi.spring.BeanSelectorByBeanID">
+                            <constructor-arg value="org.jahia.services.tags.TagHandler"/>
+                        </bean>
+                    </property>
+                    <property name="exposer">
+                        <bean class="org.jahia.osgi.spring.BeanExposerAsOwnClass">
+                            <constructor-arg value="org.jahia.services.tags.TagHandler"/>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
 
 </beans>

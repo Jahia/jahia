@@ -54,37 +54,71 @@ import org.osgi.framework.BundleContext;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Exposes a set of Spring beans as an OSGi services.
+ * Exposes a configurable set of Spring beans as an OSGi services.
  */
 public class SpringBridge implements JahiaAfterInitializationService {
 
+    /**
+     * Selects a set of beans from the application context, to expose them as an OSGi services.
+     */
     public interface BeanSelector {
 
+        /**
+         * Select a set of beans from the application context, to expose them as an OSGi services.
+         * @param applicationContext Spring application context
+         * @return A map of beans to be exposed as an OSGi services, by their IDs
+         */
         Map<String, Object> selectBeans(ApplicationContext applicationContext);
     }
 
+    /**
+     * Exposes Spring beans as an OSGi services.
+     *
+     * Implementations may expose a bean as its class, as an interface implemented by the bean, etc.
+     */
     public interface BeanExposer {
 
+        /**
+         * Expose the bean as an OSGi service.
+         * @param beanID Spring bean ID
+         * @param bean Spring bean to expose as an OSGi service
+         * @param bundleContext OSGi bundle context
+         */
         void exposeBean(String beanID, Object bean, BundleContext bundleContext);
     }
 
+    /**
+     * Incapsulates bean exposition rules: which beans to expose, and how to expose.
+     */
     public static class BeanExposition {
 
         private BeanSelector selector;
         private BeanExposer exposer;
 
+        /**
+         * @return Selector of beans to expose as an OSGi services
+         */
         public BeanSelector getSelector() {
             return selector;
         }
 
+        /**
+         * @param selector Selector of beans to expose as an OSGi services
+         */
         public void setSelector(BeanSelector selector) {
             this.selector = selector;
         }
 
+        /**
+         * @return Exposer of beans selected
+         */
         public BeanExposer getExposer() {
             return exposer;
         }
 
+        /**
+         * @param exposer Exposer of beans selected
+         */
         public void setExposer(BeanExposer exposer) {
             this.exposer = exposer;
         }
@@ -92,6 +126,9 @@ public class SpringBridge implements JahiaAfterInitializationService {
 
     private Collection<BeanExposition> beanExpositions;
 
+    /**
+     * @param beanExpositions A set of bean exposition rules, so that various beans can be exposed in various ways.
+     */
     public void setBeanExpositions(Collection<BeanExposition> beanExpositions) {
         this.beanExpositions = beanExpositions;
     }

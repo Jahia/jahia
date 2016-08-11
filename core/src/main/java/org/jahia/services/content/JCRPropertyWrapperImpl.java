@@ -46,7 +46,7 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.api.Constants;
-import org.jahia.data.beans.CategoryBean;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.slf4j.Logger;
 
@@ -414,8 +414,13 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         node.checkLock();
         JCRStoreService.getInstance().getInterceptorChain().beforeRemove(node, name, def);
         property.remove();
-        if (node instanceof JCRNodeWrapperImpl)
-            ((JCRNodeWrapperImpl) node).flushLocalCaches();
+        JCRNodeWrapper n = node;
+        if (n instanceof JCRNodeDecorator) {
+            n = ((JCRNodeDecorator) n).getDecoratedNode();
+        }
+        if (n instanceof JCRNodeWrapperImpl) {
+            ((JCRNodeWrapperImpl) n).flushLocalCaches();
+        }
     }
 
     public boolean isMultiple() throws RepositoryException {

@@ -3,12 +3,16 @@ package org.jahia.osgi.spring;
 import java.text.MessageFormat;
 
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Exposes a bean as one of bean's own classes (either bean class, or one of the super classes,
  * or one of the interfaces implemented), dependent on exposer's own configuration.
  */
 public class BeanExposerAsOwnClass extends BeanExposerSupport implements SpringBridge.BeanExposer {
+
+    private static final Logger logger = LoggerFactory.getLogger(BeanExposerAsOwnClass.class);
 
     private Class<?> clazz;
 
@@ -34,10 +38,11 @@ public class BeanExposerAsOwnClass extends BeanExposerSupport implements SpringB
             cl = bean.getClass();
         } else {
             if (!clazz.isInstance(bean)) {
-                throw new IllegalArgumentException(MessageFormat.format("'{0}' bean is not a {1} instance", clazz.getName()));
+                throw new IllegalArgumentException(MessageFormat.format("{0} bean is not a {1} instance", clazz.getName()));
             }
             cl = clazz;
         }
         bundleContext.registerService(cl.getName(), bean, getBasicServiceProperties(beanID, bean));
+        logBeanExposed(logger, beanID, bean, cl);
     }
 }

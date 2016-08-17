@@ -60,6 +60,7 @@ public class BeanSelectorByBeanID implements SpringBridge.BeanSelector {
 
     /**
      * Create an instance that will select a single bean by its ID.
+     *
      * @param beanID Spring bean ID
      */
     public BeanSelectorByBeanID(String beanID) {
@@ -68,15 +69,16 @@ public class BeanSelectorByBeanID implements SpringBridge.BeanSelector {
 
     /**
      * Create an instance that will select multiple beans by their IDs.
+     *
      * @param beanIDs Spring bean IDs
      */
     public BeanSelectorByBeanID(Collection<String> beanIDs) {
-        this.beanIDs = new ArrayList<String>(beanIDs);
+        this.beanIDs = new ArrayList<>(beanIDs);
     }
 
     @Override
     public Map<String, Object> selectBeans(ApplicationContext applicationContext) {
-        LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>(beanIDs.size());
+        LinkedHashMap<String, Object> result = new LinkedHashMap<>(beanIDs.size());
         for (String beanID : beanIDs) {
             Object bean = applicationContext.getBean(beanID);
             result.put(beanID, bean);

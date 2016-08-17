@@ -68,6 +68,7 @@ public class BeanExposerAsOwnClass extends BeanExposerSupport implements SpringB
     /**
      * Create an instance that will expose a bean as a specific class or interface;
      * the class/interface must be extended/implemented by the bean class.
+     *
      * @param clazz Class or interface to expose a bean as
      */
     public BeanExposerAsOwnClass(Class<?> clazz) {

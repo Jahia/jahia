@@ -65,6 +65,7 @@ public class SpringBridge implements JahiaAfterInitializationService {
 
         /**
          * Select a set of beans from the application context, to expose them as an OSGi services.
+         *
          * @param applicationContext Spring application context
          * @return A map of beans to be exposed as an OSGi services, by their IDs
          */
@@ -80,8 +81,9 @@ public class SpringBridge implements JahiaAfterInitializationService {
 
         /**
          * Expose the bean as an OSGi service.
-         * @param beanID Spring bean ID
-         * @param bean Spring bean to expose as an OSGi service
+         *
+         * @param beanID        Spring bean ID
+         * @param bean          Spring bean to expose as an OSGi service
          * @param bundleContext OSGi bundle context
          */
         void exposeBean(String beanID, Object bean, BundleContext bundleContext);

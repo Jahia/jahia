@@ -183,6 +183,11 @@ public class JCRBundlePersister implements BundlePersister {
                 @Override
                 public InputStream doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = findTargetNode(bundleKey, session);
+                    if (node == null) {
+                        // Karaf cellar was faster than JCR cluster sync, call session refresh to synchronizes the cluster
+                        session.refresh(true);
+                        node = findTargetNode(bundleKey, session);
+                    }
                     return node != null ? node.getFileContent().downloadFile() : null;
                 }
             });

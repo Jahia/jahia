@@ -783,6 +783,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         this.templateManagerService = templateManagerService;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof TemplatePackageRedeployedEvent || event instanceof ModuleDeployedOnSiteEvent
                 || event instanceof ModuleDependenciesEvent) {
@@ -790,6 +793,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         }
     }
 
+    /**
+     * Utility method to clear all view caches
+     */
     public static void clearCaches() {
         viewSetCache.clear();
     }

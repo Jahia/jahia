@@ -44,6 +44,7 @@
 package org.jahia.services.render.scripting.bundle;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,20 +58,24 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A replacement for the JDK's {@link ScriptEngineManager} that properly deals with {@link ScriptEngineFactory} implementations provided in OSGi modules. In particular,
- * bundles that provide a {@code javax.script.ScriptEngineFactory} file in their {@code META-INF/services} directory (Java Service Provider infrastructure) will be handled by
- * this ScriptEngineManager, wrapping the provided ScriptEngineFactory implementation in a {@link BundleScriptEngineFactory} so that the appropriate class loader will be used
- * to resolve views and associated resources. Additionally, provided script extensions will now be listened to and installed bundles will be scanned so that any installed
- * module that provides views that can be handled by the newly installed ScriptEngineFactory will be now able to answer to view requests.
- * <p>
- * Additionally, for each ScriptEngineFactory, this BundleScriptEngineManager will attempt to load an associated {@link BundleScriptEngineFactoryConfigurator} which should be
- * named {@code <fully qualified ScriptEngineFactory name>Configurator} so that additional set up / clean up can be performed when the bundle is started or stopped.
+ * A replacement for the JDK's {@link ScriptEngineManager} that properly deals with {@link ScriptEngineFactory} implementations
+ * provided in OSGi modules.
+ * In particular, bundles that provide a {@code javax.script.ScriptEngineFactory} file in their {@code META-INF/services} directory
+ * (Java Service Provider infrastructure) will be handled by this ScriptEngineManager, wrapping the provided ScriptEngineFactory implementation in a
+ * {@link BundleScriptEngineFactory} so that the appropriate class loader will be used to resolve views and associated resources. Additionally, provided
+ * script extensions will now be listened to and installed bundles will be scanned so that any installed module that provides views that can be handled by
+ * the newly installed ScriptEngineFactory will be now able to answer to view requests.
+ *
+ * Additionally, for each ScriptEngineFactory, this BundleScriptEngineManager will attempt to load an associated
+ * {@link BundleScriptEngineFactoryConfigurator} which should be named {@code <fully qualified ScriptEngineFactory name>Configurator} so that additional set
+ * up / clean up can be performed when the bundle is started or stopped.
  */
 public class BundleScriptEngineManager extends ScriptEngineManager {
 
     private static final String SCRIPT_ENGINE_FACTORY_CLASS_NAME = ScriptEngineFactory.class.getName();
     private static final String META_INF_SERVICES = "META-INF/services";
     private static Logger logger = LoggerFactory.getLogger(BundleScriptEngineManager.class);
+
     private Bindings globalScopeBindings;
 
     private final Map<String, ScriptEngineFactory> extensionsToScriptFactories = new ConcurrentHashMap<>(17);
@@ -80,7 +85,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
     private final Map<String, BundleScriptEngineFactoryConfigurator> configurators = new ConcurrentHashMap<>(17);
     private final Map<ClassLoader, Map<String, ScriptEngine>> engineCache = new ConcurrentHashMap<>(17);
 
-    private enum KeyType {extension, mimeType, name}
+    private enum KeyType {EXTENSION, MIME_TYPE, NAME}
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -90,6 +95,11 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         }
     }
 
+    /**
+     * Returns a singleton instance of this class.
+     *
+     * @return a singleton instance of this class
+     */
     public static BundleScriptEngineManager getInstance() {
         return Holder.INSTANCE;
     }
@@ -98,18 +108,30 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         this.globalScopeBindings = new SimpleBindings();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Object get(String key) {
         return globalScopeBindings.get(key);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Bindings getBindings() {
         return globalScopeBindings;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void put(String key, Object value) {
         globalScopeBindings.put(key, value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setBindings(Bindings bindings) {
         this.globalScopeBindings = bindings;
     }
@@ -133,7 +155,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 if (scriptEngineFactory instanceof BundleScriptEngineFactory) {
                     BundleScriptEngineFactory factory = (BundleScriptEngineFactory) scriptEngineFactory;
                     final BundleScriptEngineFactoryConfigurator configurator = getConfiguratorFor(factory.getWrappedFactoryClassName());
-                    if (configurator != null) {
+                    if (configurator != null ) {
                         configurator.configurePreScriptEngineCreation(factory.getWrappedFactory());
                     }
                 }
@@ -142,13 +164,13 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 scriptEngine.setBindings(getBindings(), ScriptContext.GLOBAL_SCOPE);
             } else {
                 switch (keyType) {
-                    case extension:
+                    case EXTENSION:
                         scriptEngine = super.getEngineByExtension(key);
                         break;
-                    case mimeType:
+                    case MIME_TYPE:
                         scriptEngine = super.getEngineByMimeType(key);
                         break;
-                    case name:
+                    case NAME:
                         scriptEngine = super.getEngineByName(key);
                         break;
                     default:
@@ -163,18 +185,29 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         return scriptEngine;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ScriptEngine getEngineByExtension(String extension) {
-        return getEngine(extension, extensionsToScriptFactories, KeyType.extension);
+        return getEngine(extension, extensionsToScriptFactories, KeyType.EXTENSION);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ScriptEngine getEngineByMimeType(String mimeType) {
-        return getEngine(mimeType, mimeTypesToScriptFactories, KeyType.mimeType);
+        return getEngine(mimeType, mimeTypesToScriptFactories, KeyType.MIME_TYPE);
     }
 
-    public ScriptEngine getEngineByName(String shortName) {
-        return getEngine(shortName, namesToScriptFactories, KeyType.name);
+    /**
+     * {@inheritDoc}
+     */    public ScriptEngine getEngineByName(String shortName) {
+        return getEngine(shortName, namesToScriptFactories, KeyType.NAME);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<ScriptEngineFactory> getEngineFactories() {
         List<ScriptEngineFactory> bundleScriptEngineFactories = new ArrayList<>();
         bundleScriptEngineFactories.addAll(extensionsToScriptFactories.values());
@@ -183,14 +216,23 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         return bundleScriptEngineFactories;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void registerEngineExtension(String extension, ScriptEngineFactory factory) {
         extensionsToScriptFactories.put(extension, factory);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void registerEngineMimeType(String type, ScriptEngineFactory factory) {
         mimeTypesToScriptFactories.put(type, factory);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void registerEngineName(String name, ScriptEngineFactory factory) {
         namesToScriptFactories.put(name, factory);
     }
@@ -283,14 +325,19 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
             return null;
         }
 
-        URL u = bundle.getEntry(META_INF_SERVICES + "/" + SCRIPT_ENGINE_FACTORY_CLASS_NAME);
-        if (u != null) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(u.openStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                factoryCandidates.add(line.trim());
+        if (bundle.getState() == Bundle.ACTIVE) {
+            Enumeration<URL> urls = bundle.findEntries(META_INF_SERVICES, SCRIPT_ENGINE_FACTORY_CLASS_NAME, false);
+            if (urls == null) {
+                return null;
             }
-            return factoryCandidates;
+            while (urls.hasMoreElements()) {
+                URL u = urls.nextElement();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(u.openStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    factoryCandidates.add(line.trim());
+                }
+            }
         }
         return null;
     }

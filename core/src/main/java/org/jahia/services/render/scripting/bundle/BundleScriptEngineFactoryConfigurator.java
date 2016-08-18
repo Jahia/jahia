@@ -48,7 +48,8 @@ import org.osgi.framework.Bundle;
 import javax.script.ScriptEngineFactory;
 
 /**
- * A configuration helper so that {@link ScriptEngineFactory} providers from modules can have the opportunity to perform set up or clean up operations when the bundle is started
+ * A configuration helper so that {@link ScriptEngineFactory} providers from modules can have the opportunity to perform set up or clean up operations when
+ * the bundle is started
  * and/or stopped.
  *
  * @param <T> the type parameter
@@ -72,12 +73,12 @@ public interface BundleScriptEngineFactoryConfigurator<T extends ScriptEngineFac
     void destroy(final T factory);
 
     /**
-     * Configures the specified {@link ScriptEngineFactory} if needed right before a {@link javax.script.ScriptEngine} instance is created. This is useful when some
-     * configuration details are not yet available when the bundle that declared the {@link ScriptEngineFactory} is started (e.g. when the configuration is in a Spring context
-     * that is not yet available during module startup).
-     * <p/>
-     * Note that this method is called each time a {@link javax.script.ScriptEngine} instance is retrieved so it needs to be efficient, be thread-safe and guard against multiple
-     * calls when the configuration needs to happen only once.
+     * Configures the specified {@link ScriptEngineFactory} if needed right before a {@link javax.script.ScriptEngine} instance is created. This is useful
+     * when some configuration details are not yet available when the bundle that declared the {@link ScriptEngineFactory} is started (e.g. when the
+     * configuration is in a Spring context that is not yet available during module startup).
+     *
+     * Note that this method is called each time a {@link javax.script.ScriptEngine} instance is retrieved so it needs to be efficient, be thread-safe and
+     * guard against multipl calls when the configuration needs to happen only once.
      *
      * @param scriptEngineFactory the factory to configure
      */

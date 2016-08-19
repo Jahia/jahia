@@ -339,7 +339,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 }
             }
         }
-        return null;
+        return factoryCandidates;
     }
 
     public void removeScriptEngineFactoriesIfNeeded(Bundle bundle) {

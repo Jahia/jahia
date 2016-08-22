@@ -618,6 +618,9 @@ public class ModuleBuildHelper implements InitializingBean {
             if (uninstallSrcModule) {
                 undeployAllModuleVersions(srcModuleId);
             }
+            // clean up dest repository
+            session.getNode("/modules/" + dstModuleId).remove();
+            session.save();
 
         } catch (IOException e) {
             FileUtils.deleteQuietly(dstFolder);

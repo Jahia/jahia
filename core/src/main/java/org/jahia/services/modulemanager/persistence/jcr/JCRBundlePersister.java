@@ -63,6 +63,7 @@ import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -183,8 +184,11 @@ public class JCRBundlePersister implements BundlePersister {
                 @Override
                 public InputStream doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper node = findTargetNode(bundleKey, session);
-                    if (node == null) {
-                        // Karaf cellar was faster than JCR cluster sync, call session refresh to synchronizes the cluster
+                    if (node == null && SettingsBean.getInstance().isClusterActivated()) {
+                        // When running in a cluster, Cellar inter-node communication may be faster than JCR replication,
+                        // so this method may be invoked before the bundle node is created in the local repository.
+                        // In this case, session refresh effectively forces JCR cluster synchronization and lets us succeed
+                        // fetching the node on second attempt.
                         session.refresh(true);
                         node = findTargetNode(bundleKey, session);
                     }

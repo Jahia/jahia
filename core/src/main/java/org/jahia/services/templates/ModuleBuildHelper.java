@@ -618,9 +618,6 @@ public class ModuleBuildHelper implements InitializingBean {
             if (uninstallSrcModule) {
                 undeployAllModuleVersions(srcModuleId);
             }
-            // clean up dest repository
-            session.getNode("/modules/" + dstModuleId).remove();
-            session.save();
 
         } catch (IOException e) {
             FileUtils.deleteQuietly(dstFolder);
@@ -723,10 +720,12 @@ public class ModuleBuildHelper implements InitializingBean {
         FileUtils.deleteQuietly(new File(dstFolder, "src/main/import/content/modules/" + srcModule.getId()));
         try {
             regenerateImportFile(session, new ArrayList<File>(), dstFolder, dstModuleId, dstModuleId + "/" + dstVersion);
-        } catch (SAXException e) {
+        } catch (SAXException | TransformerException e) {
             throw new IOException("Unable to generate import files in " + dstFolder);
-        } catch (TransformerException e) {
-            throw new IOException("Unable to generate import files in " + dstFolder);
+        } finally {
+            // clean up dest repository
+            session.getNode("/modules/" + dstModuleId).remove();
+            session.save();
         }
     }
 

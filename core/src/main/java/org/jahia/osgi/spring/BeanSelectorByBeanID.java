@@ -41,49 +41,48 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.render.scripting.bundle;
+package org.jahia.osgi.spring;
 
-import javax.script.ScriptEngineFactory;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.springframework.context.ApplicationContext;
+
 /**
- * Contextual information resulting from the loading of {@link ScriptEngineFactory} from OSGi bundles.
+ * Selects beans with specific bean IDs.
  */
-class BundleScriptingContext {
-    private final ClassLoader classLoader;
-    private final Map<String, Integer> extensionPriorities;
-    private final List<ScriptEngineFactory> engineFactories;
+public class BeanSelectorByBeanID implements SpringBridge.BeanSelector {
 
-    BundleScriptingContext(List<ScriptEngineFactory> engineFactories, ClassLoader classLoader, Map<String, Integer> extensionsPrioritiesMap) {
-        this.classLoader = classLoader;
-        this.extensionPriorities = extensionsPrioritiesMap;
-        this.engineFactories = engineFactories;
+    private Collection<String> beanIDs;
+
+    /**
+     * Create an instance that will select a single bean by its ID.
+     *
+     * @param beanID Spring bean ID
+     */
+    public BeanSelectorByBeanID(String beanID) {
+        this.beanIDs = Collections.singleton(beanID);
     }
 
-    ClassLoader getClassLoader() {
-        return classLoader;
+    /**
+     * Create an instance that will select multiple beans by their IDs.
+     *
+     * @param beanIDs Spring bean IDs
+     */
+    public BeanSelectorByBeanID(Collection<String> beanIDs) {
+        this.beanIDs = new ArrayList<>(beanIDs);
     }
 
-    int getPriorityFor(String extension, int defaultPriority) {
-        if (extensionPriorities != null) {
-            final Integer priority = extensionPriorities.get(extension);
-            return priority == null ? defaultPriority : Math.abs(priority);
-        } else {
-            return defaultPriority;
+    @Override
+    public Map<String, Object> selectBeans(ApplicationContext applicationContext) {
+        LinkedHashMap<String, Object> result = new LinkedHashMap<>(beanIDs.size());
+        for (String beanID : beanIDs) {
+            Object bean = applicationContext.getBean(beanID);
+            result.put(beanID, bean);
         }
-    }
-
-    boolean specifiesExtensionPriorities() {
-        return extensionPriorities != null && !extensionPriorities.isEmpty();
-    }
-
-    List<ScriptEngineFactory> getEngineFactories() {
-        return engineFactories;
-    }
-
-    Map<String, Integer> getExtensionPriorities() {
-        return extensionPriorities != null ? extensionPriorities : Collections.<String, Integer>emptyMap();
+        return result;
     }
 }

@@ -72,7 +72,11 @@ import org.springframework.core.io.Resource;
  * @author Sergiy Shyrkov
  */
 public class ModuleManagerImpl implements ModuleManager {
+    private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
 
+    private BundleService bundleService;
+    private BundlePersister persister;
+    
     /**
      * Operation callback which implementation performs the actual operation.
      *
@@ -85,17 +89,12 @@ public class ModuleManagerImpl implements ModuleManager {
         void perform(BundleInfo info, String target) throws ModuleManagementException;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
-
     /**
      * @return basic information about this bundle as a new {@link BundleInfo} object
      */
     private static BundleInfo toBundleInfo(PersistentBundle persistentBundle) {
         return new BundleInfo(persistentBundle.getGroupId(), persistentBundle.getSymbolicName(), persistentBundle.getVersion());
     }
-
-    private BundleService bundleService;
-    private BundlePersister persister;
 
     private BundleInfo findTargetBundle(String bundleKey, String symbolicName, String version) {
         BundleInfo targetInfo = null;
@@ -183,7 +182,7 @@ public class ModuleManagerImpl implements ModuleManager {
                     BundleLifecycleUtils.refreshBundle(bundle);
                 }
             }
-            BundleLifecycleUtils.startAllBundles();
+            BundleLifecycleUtils.startAllBundles(target);
         } catch (ModuleManagementException e) {
             error = e;
             throw e;
@@ -234,11 +233,10 @@ public class ModuleManagerImpl implements ModuleManager {
             Bundle bundle = BundleUtils.getBundleBySymbolicName(info.getSymbolicName(), info.getVersion());
             operation.perform(info, target);
             result = OperationResult.success(info);
-            if (bundle != null) {
-                BundleLifecycleUtils.refreshBundle(bundle);
-            }
             if (Bundle.UNINSTALLED != bundle.getState()) {
-                BundleLifecycleUtils.startAllBundles();
+                BundleLifecycleUtils.startAllBundles(target);
+            } else {
+                BundleLifecycleUtils.refreshBundle(bundle);
             }
         } catch (ModuleManagementException e) {
             error = e;

@@ -41,49 +41,38 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.render.scripting.bundle;
+package org.jahia.test.osgi;
 
-import javax.script.ScriptEngineFactory;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import org.jahia.osgi.FrameworkService;
+import org.jahia.services.query.QueryService;
+import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.tags.TagHandler;
+import org.junit.Test;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
- * Contextual information resulting from the loading of {@link ScriptEngineFactory} from OSGi bundles.
+ * Tests Spring beans exposed as an OSGi services via retrieving them from OSGi and invoking their methods.
  */
-class BundleScriptingContext {
-    private final ClassLoader classLoader;
-    private final Map<String, Integer> extensionPriorities;
-    private final List<ScriptEngineFactory> engineFactories;
+public class SpringBridgeTest {
 
-    BundleScriptingContext(List<ScriptEngineFactory> engineFactories, ClassLoader classLoader, Map<String, Integer> extensionsPrioritiesMap) {
-        this.classLoader = classLoader;
-        this.extensionPriorities = extensionsPrioritiesMap;
-        this.engineFactories = engineFactories;
+    @Test
+    public void testSpringBeansAsOsgiServices() throws Exception {
+
+        JahiaSitesService sitesService = getOsgiService(JahiaSitesService.class);
+        sitesService.getSitesNames();
+
+        QueryService queryService = getOsgiService(QueryService.class);
+        queryService.getValueFactory();
+
+        TagHandler tagHandler = getOsgiService(TagHandler.class);
+        tagHandler.execute("");
     }
 
-    ClassLoader getClassLoader() {
-        return classLoader;
-    }
-
-    int getPriorityFor(String extension, int defaultPriority) {
-        if (extensionPriorities != null) {
-            final Integer priority = extensionPriorities.get(extension);
-            return priority == null ? defaultPriority : Math.abs(priority);
-        } else {
-            return defaultPriority;
-        }
-    }
-
-    boolean specifiesExtensionPriorities() {
-        return extensionPriorities != null && !extensionPriorities.isEmpty();
-    }
-
-    List<ScriptEngineFactory> getEngineFactories() {
-        return engineFactories;
-    }
-
-    Map<String, Integer> getExtensionPriorities() {
-        return extensionPriorities != null ? extensionPriorities : Collections.<String, Integer>emptyMap();
+    private <T> T getOsgiService(Class<T> serviceClass) {
+        BundleContext bundleContext = FrameworkService.getBundleContext();
+        ServiceReference<T> serviceReference = bundleContext.getServiceReference(serviceClass);
+        T service = bundleContext.getService(serviceReference);
+        return service;
     }
 }

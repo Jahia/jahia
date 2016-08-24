@@ -41,49 +41,52 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.render.scripting.bundle;
+package org.jahia.osgi.spring;
 
-import javax.script.ScriptEngineFactory;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.text.MessageFormat;
+
+import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Contextual information resulting from the loading of {@link ScriptEngineFactory} from OSGi bundles.
+ * Exposes a bean as one of bean's own classes (either bean class, or one of the super classes,
+ * or one of the interfaces implemented), dependent on exposer's own configuration.
  */
-class BundleScriptingContext {
-    private final ClassLoader classLoader;
-    private final Map<String, Integer> extensionPriorities;
-    private final List<ScriptEngineFactory> engineFactories;
+public class BeanExposerAsOwnClass extends BeanExposerSupport implements SpringBridge.BeanExposer {
 
-    BundleScriptingContext(List<ScriptEngineFactory> engineFactories, ClassLoader classLoader, Map<String, Integer> extensionsPrioritiesMap) {
-        this.classLoader = classLoader;
-        this.extensionPriorities = extensionsPrioritiesMap;
-        this.engineFactories = engineFactories;
+    private static final Logger logger = LoggerFactory.getLogger(BeanExposerAsOwnClass.class);
+
+    private Class<?> clazz;
+
+    /**
+     * Create an instance that will expose a bean as its class as returned by bean.getClass()
+     */
+    public BeanExposerAsOwnClass() {
     }
 
-    ClassLoader getClassLoader() {
-        return classLoader;
+    /**
+     * Create an instance that will expose a bean as a specific class or interface;
+     * the class/interface must be extended/implemented by the bean class.
+     *
+     * @param clazz Class or interface to expose a bean as
+     */
+    public BeanExposerAsOwnClass(Class<?> clazz) {
+        this.clazz = clazz;
     }
 
-    int getPriorityFor(String extension, int defaultPriority) {
-        if (extensionPriorities != null) {
-            final Integer priority = extensionPriorities.get(extension);
-            return priority == null ? defaultPriority : Math.abs(priority);
+    @Override
+    public void exposeBean(String beanID, Object bean, BundleContext bundleContext) {
+        Class<?> cl;
+        if (clazz == null) {
+            cl = bean.getClass();
         } else {
-            return defaultPriority;
+            if (!clazz.isInstance(bean)) {
+                throw new IllegalArgumentException(MessageFormat.format("{0} bean is not a {1} instance", clazz.getName()));
+            }
+            cl = clazz;
         }
-    }
-
-    boolean specifiesExtensionPriorities() {
-        return extensionPriorities != null && !extensionPriorities.isEmpty();
-    }
-
-    List<ScriptEngineFactory> getEngineFactories() {
-        return engineFactories;
-    }
-
-    Map<String, Integer> getExtensionPriorities() {
-        return extensionPriorities != null ? extensionPriorities : Collections.<String, Integer>emptyMap();
+        bundleContext.registerService(cl.getName(), bean, getBasicServiceProperties(beanID, bean));
+        logBeanExposed(logger, beanID, bean, cl);
     }
 }

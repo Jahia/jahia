@@ -46,7 +46,7 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.api.Constants;
-import org.jahia.data.beans.CategoryBean;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.slf4j.Logger;
 
@@ -76,11 +76,21 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     private String name;
     private ExtendedPropertyDefinition def;
 
-    public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider, ExtendedPropertyDefinition def) {
+    /**
+     * Constructor
+     * 
+     * @param objectNode JCRNodeWrapper of the node holding this property
+     * @param property wrapped property object
+     * @param session wrapped session which loaded this property
+     * @param provider JCR store provider for this property
+     * @param def definition of this property
+     */
+    public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider,
+            ExtendedPropertyDefinition def) {
         super(session, provider);
         this.node = objectNode;
         this.property = property;
-        setItem(property);
+        this.item = property;
         if (property != null) {
             try {
                 this.localPath = property.getPath();
@@ -93,11 +103,22 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         }
     }
 
-    public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider, ExtendedPropertyDefinition def, String name) {
+    /**
+     * Constructor
+     * 
+     * @param objectNode JCRNodeWrapper of the node holding this property
+     * @param property wrapped property object
+     * @param session wrapped session which loaded this property
+     * @param provider JCR store provider for this property
+     * @param def definition of this property
+     * @param name name of this property
+     */
+    public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider,
+            ExtendedPropertyDefinition def, String name) {
         super(session, provider);
         this.node = objectNode;
         this.property = property;
-        setItem(property);
+        this.item = property;
         this.name = name;
         this.localPath = node.getPath() + "/" + name; // todo : node.getPath() returns the global path, not local path - should use node.getRealNode()
         this.localPathInProvider = localPath;
@@ -106,14 +127,14 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         node.checkLock();
-        value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(node, name, def, value);
-        property.setValue(value);
+        Value modifiedValue = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(node, name, def, value);
+        property.setValue(modifiedValue);
     }
 
     public void setValue(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         node.checkLock();
-        values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(node, name, def, values);
-        property.setValue(values);
+        Value[] modifiedValues = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(node, name, def, values);
+        property.setValue(modifiedValues);
     }
 
     public void setValue(String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -126,15 +147,12 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public void setValue(String[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (values != null) {
-            Value[] v = null;
-            if (values != null) {
-                v = new Value[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    if (values[i] != null) {
-                        v[i] = getSession().getValueFactory().createValue(values[i]);
-                    } else {
-                        v[i] = null;
-                    }
+            Value[] v = new Value[values.length];
+            for (int i = 0; i < values.length; i++) {
+                if (values[i] != null) {
+                    v[i] = getSession().getValueFactory().createValue(values[i]);
+                } else {
+                    v[i] = null;
                 }
             }
             setValue(v);
@@ -176,10 +194,8 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public void setValue(Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (value != null) {
-            if (value instanceof JCRNodeWrapper) {
-                value = ((JCRNodeWrapper) value).getRealNode();
-            }
-            setValue(getSession().getValueFactory().createValue(value,
+            setValue(getSession().getValueFactory().createValue(
+                    value instanceof JCRNodeWrapper ? ((JCRNodeWrapper) value).getRealNode() : value,
                     def.getRequiredType() == PropertyType.WEAKREFERENCE));
         } else {
             remove();
@@ -202,50 +218,63 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         }
     }
 
+    @Override
     public void addValue(String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         addValue(getSession().getValueFactory().createValue(value));
     }
 
+    @Override
     public void addValue(InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         addValue(getSession().getValueFactory().createValue(value));
     }
 
+    @Override
     public void addValue(long value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         addValue(getSession().getValueFactory().createValue(value));
     }
 
+    @Override
     public void addValue(double value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         addValue(getSession().getValueFactory().createValue(value));
     }
 
+    @Override
     public void addValue(Calendar value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         addValue(getSession().getValueFactory().createValue(value));
     }
 
+    @Override
     public void addValue(boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         addValue(getSession().getValueFactory().createValue(value));
     }
 
+    @Override
     public void addValue(Node value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         addValue(value, true);
     }
 
-    public void addValue(Node value, boolean weak) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+    @Override
+    public void addValue(Node value, boolean weak)
+            throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         addValue(getSession().getValueFactory().createValue(value, weak));
     }
 
+    @Override
     public void addValue(Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         addValue(getSession().getValueFactory().createValue(value));
     }
 
+    @Override
     public void addValue(BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         addValue(getSession().getValueFactory().createValue(value));
     }
 
+    @Override
     public void addValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         addValues(new Value[]{value});
     }
 
+    @Override
     public void addValues(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         List<Value> newValues = new ArrayList<Value>(Arrays.asList(getValues()));
         boolean updated = false;
@@ -366,6 +395,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         return name;
     }
 
+    @Override
     public JCRItemWrapper getAncestor(int i) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         return provider.getItemWrapper(property.getAncestor(i), session);
     }
@@ -390,10 +420,12 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         return property.isModified();
     }
 
+    @Override
     public boolean isSame(Item item) throws RepositoryException {
         return property.isSame(item) || (item instanceof JCRItemWrapperImpl && item.isSame(property));
     }
 
+    @Override
     public void accept(ItemVisitor itemVisitor) throws RepositoryException {
         property.accept(itemVisitor);
     }
@@ -402,20 +434,28 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
      * @deprecated As of JCR 2.0, {@link Session#save()} should
      *             be used instead.
      */
-    public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
+    public void save() throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
+            ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
         property.save();
     }
 
+    @Override
     public void refresh(boolean b) throws InvalidItemStateException, RepositoryException {
         property.refresh(b);
     }
 
+    @Override
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         node.checkLock();
         JCRStoreService.getInstance().getInterceptorChain().beforeRemove(node, name, def);
         property.remove();
-        if (node instanceof JCRNodeWrapperImpl)
-            ((JCRNodeWrapperImpl) node).flushLocalCaches();
+        JCRNodeWrapper n = node;
+        if (n instanceof JCRNodeDecorator) {
+            n = ((JCRNodeDecorator) n).getDecoratedNode();
+        }
+        if (n instanceof JCRNodeWrapperImpl) {
+            ((JCRNodeWrapperImpl) n).flushLocalCaches();
+        }
     }
 
     public boolean isMultiple() throws RepositoryException {
@@ -471,11 +511,13 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         return null;
     }
 
+    @Override
     public boolean removeValue(Value value) throws ValueFormatException, VersionException,
             LockException, ConstraintViolationException, RepositoryException {
         return removeValues(new Value[]{value});
     }
-
+    
+    @Override
     public boolean removeValues(Value[] values) throws ValueFormatException, VersionException,
             LockException, ConstraintViolationException, RepositoryException {
         Value[] valueArray = getValues();

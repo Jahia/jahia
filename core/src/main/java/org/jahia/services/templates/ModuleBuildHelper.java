@@ -123,6 +123,7 @@ public class ModuleBuildHelper implements InitializingBean {
 
     public JahiaTemplatesPackage compileAndDeploy(final String moduleId, File sources, JCRSessionWrapper session)
             throws RepositoryException, IOException, BundleException {
+
         CompiledModuleInfo moduleInfo = compileModule(sources);
         Bundle bundle = BundleUtils.getBundle(moduleId, moduleInfo.getVersion());
         if (bundle != null) {
@@ -154,13 +155,13 @@ public class ModuleBuildHelper implements InitializingBean {
             if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
                 throw new IOException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
             }
-
             return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(moduleInfo.getVersion()));
         }
     }
 
     public CompiledModuleInfo compileModule(File sources) throws IOException {
-        if(!isMavenConfigured()) {
+
+        if (!isMavenConfigured()) {
             throw new JahiaRuntimeException("Cannot compile module, either current instance is not " +
                     "in development mode or maven configuration is not good");
         }
@@ -203,7 +204,8 @@ public class ModuleBuildHelper implements InitializingBean {
 
     public JCRNodeWrapper createModule(final String moduleName, String artifactId, final String groupId, final String moduleType, final File moduleSources,
                                        final JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
-        if(!isMavenConfigured()) {
+
+        if (!isMavenConfigured()) {
             throw new JahiaRuntimeException("Cannot create module, either current instance is not " +
                     "in development mode or maven configuration is not good");
         }
@@ -253,7 +255,6 @@ public class ModuleBuildHelper implements InitializingBean {
         archetypeParams.add("-DdigitalFactoryVersion=" + Constants.JAHIA_PROJECT_VERSION);
         archetypeParams.add("-DinteractiveMode=false");
 
-
         StringBuilder out = new StringBuilder();
         int ret = ProcessHelper.execute(mavenExecutable, archetypeParams.toArray(new String[archetypeParams.size()]), null, sources, out,
                 out);
@@ -285,7 +286,8 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     public void deployToMaven(String groupId, String artifactId, ModuleReleaseInfo releaseInfo, File generatedJar) throws IOException {
-        if(!isMavenConfigured()) {
+
+        if (!isMavenConfigured()) {
             throw new JahiaRuntimeException("Cannot deploy module to maven, either current instance is not " +
                     "in development mode or maven configuration is not good");
         }
@@ -346,8 +348,6 @@ public class ModuleBuildHelper implements InitializingBean {
         }
     }
 
-
-
     private String getMavenError(String out) {
         Matcher m = Pattern.compile("^\\[ERROR\\](.*)$", Pattern.MULTILINE).matcher(out);
         StringBuilder s = new StringBuilder();
@@ -367,6 +367,7 @@ public class ModuleBuildHelper implements InitializingBean {
 
     protected File releaseModuleInternal(Model model, String lastVersion, String releaseVersion,
                                          ModuleReleaseInfo releaseInfo, File sources, String scmUrl) throws IOException, XmlPullParserException {
+
         if(!isMavenConfigured()) {
             throw new JahiaRuntimeException("Cannot release module, either current instance is not " +
                     "in development mode or maven configuration is not good");
@@ -446,6 +447,7 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     private void checkMavenExecutable() {
+
         if (settingsBean.isDevelopmentMode()) {
             settingsBean.setMavenExecutableSet(false);
 
@@ -505,7 +507,7 @@ public class ModuleBuildHelper implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        // check maven executable
+
         checkMavenExecutable();
 
         boolean isProjectInSnapshotVersion = Constants.JAHIA_PROJECT_VERSION.contains("-SNAPSHOT");
@@ -555,6 +557,7 @@ public class ModuleBuildHelper implements InitializingBean {
     public JahiaTemplatesPackage duplicateModule(String dstModuleName, String dstModuleId, String dstGroupId, String srcPath, String scmURI, String branchOrTag,
                                                  String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, boolean deleteSrcFolder, JCRSessionWrapper session)
             throws IOException, RepositoryException, BundleException {
+
         if (StringUtils.isBlank(dstModuleName)) {
             throw new SourceControlException("Cannot create module because no module name has been specified");
         }
@@ -603,6 +606,7 @@ public class ModuleBuildHelper implements InitializingBean {
 
         CompiledModuleInfo compiledModuleInfo;
         try {
+
             String dstVersion = "1.0-SNAPSHOT";
             updateDuplicatedPom(dstModuleName, dstModuleId, dstGroupId, dstVersion, dstFolder);
 
@@ -686,6 +690,7 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     private void updateDuplicatedImportFiles(JahiaTemplatesPackage srcModule, String dstModuleName, String dstModuleId, String dstVersion, File dstFolder, JCRSessionWrapper session) throws RepositoryException, IOException {
+
         JCRNodeWrapper srcModuleNode = session.getNode("/modules/" + srcModule.getIdWithVersion());
         JCRNodeWrapper dstModuleNode = session.getNode("/modules");
         if (dstModuleNode.hasNode(dstModuleId)) {
@@ -720,10 +725,12 @@ public class ModuleBuildHelper implements InitializingBean {
         FileUtils.deleteQuietly(new File(dstFolder, "src/main/import/content/modules/" + srcModule.getId()));
         try {
             regenerateImportFile(session, new ArrayList<File>(), dstFolder, dstModuleId, dstModuleId + "/" + dstVersion);
-        } catch (SAXException e) {
+        } catch (SAXException | TransformerException e) {
             throw new IOException("Unable to generate import files in " + dstFolder);
-        } catch (TransformerException e) {
-            throw new IOException("Unable to generate import files in " + dstFolder);
+        } finally {
+            // clean up dest repository
+            session.getNode("/modules/" + dstModuleId).remove();
+            session.save();
         }
     }
 
@@ -960,6 +967,7 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     static class CompiledModuleInfo {
+
         private final File file;
         private final String moduleName;
         private final String version;
@@ -991,6 +999,7 @@ public class ModuleBuildHelper implements InitializingBean {
             return results;
         }
 
+        @Override
         protected boolean handleDirectory(File directory, int depth, Collection<File> results) {
             if (".svn".equals(directory.getName())) {
                 FileUtils.deleteQuietly(directory);
@@ -1001,7 +1010,6 @@ public class ModuleBuildHelper implements InitializingBean {
             }
 
         }
-
     }
 
     /**

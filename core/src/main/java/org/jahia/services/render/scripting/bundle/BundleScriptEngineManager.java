@@ -1,78 +1,50 @@
-package org.jahia.services.render.scripting.bundle;
-
 /**
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- * Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ *                                 http://www.jahia.com
  *
- * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- * 1/GPL OR 2/JSEL
+ *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
  *
- * 1/ GPL
- * ======================================================================================
+ *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ *     1/GPL OR 2/JSEL
  *
- * IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *     1/ GPL
+ *     ==================================================================================
  *
- * "This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *     GNU General Public License for more details.
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, also available here:
- * http://www.jahia.com/license"
- *
- * 2/ JSEL - Commercial and Supported Versions of the program
- * ======================================================================================
- *
- * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- * Alternatively, commercial and supported versions of the program - also known as
- * Enterprise Distributions - must be used in accordance with the terms and conditions
- * contained in a separate written agreement between you and Jahia Solutions Group SA.
- *
- * If you are unsure which license is appropriate for your use,
- * please contact the sales department at sales@jahia.com.
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * ==========================================================================================
- * =                                   ABOUT JAHIA                                          =
- * ==========================================================================================
+ *     2/ JSEL - Commercial and Supported Versions of the program
+ *     ===================================================================================
  *
- * Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- * streamlining Enterprise digital projects across channels to truly control
- * time-to-market and TCO, project after project.
- * Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- * marketing teams to collaboratively and iteratively build cutting-edge
- * online business solutions.
- * These, in turn, are securely and easily deployed as modules and apps,
- * reusable across any digital projects, thanks to the Jahia Private App Store Software.
- * Each solution provided by Jahia stems from this overarching vision:
- * Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- * Founded in 2002 and headquartered in Geneva, Switzerland,
- * Jahia Solutions Group has its North American headquarters in Washington DC,
- * with offices in Chicago, Toronto and throughout Europe.
- * Jahia counts hundreds of global brands and governmental organizations
- * among its loyal customers, in more than 20 countries across the globe.
+ *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- * For more information, please visit http://www.jahia.com
+ *     Alternatively, commercial and supported versions of the program - also known as
+ *     Enterprise Distributions - must be used in accordance with the terms and conditions
+ *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ *
+ *     If you are unsure which license is appropriate for your use,
+ *     please contact the sales department at sales@jahia.com.
  */
+package org.jahia.services.render.scripting.bundle;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,20 +58,24 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A replacement for the JDK's {@link ScriptEngineManager} that properly deals with {@link ScriptEngineFactory} implementations provided in OSGi modules. In particular,
- * bundles that provide a {@code javax.script.ScriptEngineFactory} file in their {@code META-INF/services} directory (Java Service Provider infrastructure) will be handled by
- * this ScriptEngineManager, wrapping the provided ScriptEngineFactory implementation in a {@link BundleScriptEngineFactory} so that the appropriate class loader will be used
- * to resolve views and associated resources. Additionally, provided script extensions will now be listened to and installed bundles will be scanned so that any installed
- * module that provides views that can be handled by the newly installed ScriptEngineFactory will be now able to answer to view requests.
- * <p>
- * Additionally, for each ScriptEngineFactory, this BundleScriptEngineManager will attempt to load an associated {@link BundleScriptEngineFactoryConfigurator} which should be
- * named {@code <fully qualified ScriptEngineFactory name>Configurator} so that additional set up / clean up can be performed when the bundle is started or stopped.
+ * A replacement for the JDK's {@link ScriptEngineManager} that properly deals with {@link ScriptEngineFactory} implementations
+ * provided in OSGi modules.
+ * In particular, bundles that provide a {@code javax.script.ScriptEngineFactory} file in their {@code META-INF/services} directory
+ * (Java Service Provider infrastructure) will be handled by this ScriptEngineManager, wrapping the provided ScriptEngineFactory implementation in a
+ * {@link BundleScriptEngineFactory} so that the appropriate class loader will be used to resolve views and associated resources. Additionally, provided
+ * script extensions will now be listened to and installed bundles will be scanned so that any installed module that provides views that can be handled by
+ * the newly installed ScriptEngineFactory will be now able to answer to view requests.
+ *
+ * Additionally, for each ScriptEngineFactory, this BundleScriptEngineManager will attempt to load an associated
+ * {@link BundleScriptEngineFactoryConfigurator} which should be named {@code <fully qualified ScriptEngineFactory name>Configurator} so that additional set
+ * up / clean up can be performed when the bundle is started or stopped.
  */
 public class BundleScriptEngineManager extends ScriptEngineManager {
 
     private static final String SCRIPT_ENGINE_FACTORY_CLASS_NAME = ScriptEngineFactory.class.getName();
     private static final String META_INF_SERVICES = "META-INF/services";
     private static Logger logger = LoggerFactory.getLogger(BundleScriptEngineManager.class);
+
     private Bindings globalScopeBindings;
 
     private final Map<String, ScriptEngineFactory> extensionsToScriptFactories = new ConcurrentHashMap<>(17);
@@ -107,9 +83,9 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
     private final Map<String, ScriptEngineFactory> mimeTypesToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<Long, List<BundleScriptEngineFactory>> bundleIdsToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<String, BundleScriptEngineFactoryConfigurator> configurators = new ConcurrentHashMap<>(17);
-    private final Map<ClassLoader, Map<String, ScriptEngine>> engineCache = new ConcurrentHashMap<>(173);
+    private final Map<ClassLoader, Map<String, ScriptEngine>> engineCache = new ConcurrentHashMap<>(17);
 
-    private enum KeyType {extension, mimeType, name}
+    private enum KeyType {EXTENSION, MIME_TYPE, NAME}
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -119,6 +95,11 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         }
     }
 
+    /**
+     * Returns a singleton instance of this class.
+     *
+     * @return a singleton instance of this class
+     */
     public static BundleScriptEngineManager getInstance() {
         return Holder.INSTANCE;
     }
@@ -127,18 +108,30 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         this.globalScopeBindings = new SimpleBindings();
     }
 
-    public Object get(String key) { // ramzy: getBindingByKey
+    /**
+     * {@inheritDoc}
+     */
+    public Object get(String key) {
         return globalScopeBindings.get(key);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Bindings getBindings() {
         return globalScopeBindings;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void put(String key, Object value) {
         globalScopeBindings.put(key, value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setBindings(Bindings bindings) {
         this.globalScopeBindings = bindings;
     }
@@ -162,7 +155,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 if (scriptEngineFactory instanceof BundleScriptEngineFactory) {
                     BundleScriptEngineFactory factory = (BundleScriptEngineFactory) scriptEngineFactory;
                     final BundleScriptEngineFactoryConfigurator configurator = getConfiguratorFor(factory.getWrappedFactoryClassName());
-                    if (configurator != null) {
+                    if (configurator != null ) {
                         configurator.configurePreScriptEngineCreation(factory.getWrappedFactory());
                     }
                 }
@@ -171,13 +164,13 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 scriptEngine.setBindings(getBindings(), ScriptContext.GLOBAL_SCOPE);
             } else {
                 switch (keyType) {
-                    case extension:
+                    case EXTENSION:
                         scriptEngine = super.getEngineByExtension(key);
                         break;
-                    case mimeType:
+                    case MIME_TYPE:
                         scriptEngine = super.getEngineByMimeType(key);
                         break;
-                    case name:
+                    case NAME:
                         scriptEngine = super.getEngineByName(key);
                         break;
                     default:
@@ -192,18 +185,29 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         return scriptEngine;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ScriptEngine getEngineByExtension(String extension) {
-        return getEngine(extension, extensionsToScriptFactories, KeyType.extension);
+        return getEngine(extension, extensionsToScriptFactories, KeyType.EXTENSION);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ScriptEngine getEngineByMimeType(String mimeType) {
-        return getEngine(mimeType, mimeTypesToScriptFactories, KeyType.mimeType);
+        return getEngine(mimeType, mimeTypesToScriptFactories, KeyType.MIME_TYPE);
     }
 
-    public ScriptEngine getEngineByName(String shortName) {
-        return getEngine(shortName, namesToScriptFactories, KeyType.name);
+    /**
+     * {@inheritDoc}
+     */    public ScriptEngine getEngineByName(String shortName) {
+        return getEngine(shortName, namesToScriptFactories, KeyType.NAME);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<ScriptEngineFactory> getEngineFactories() {
         List<ScriptEngineFactory> bundleScriptEngineFactories = new ArrayList<>();
         bundleScriptEngineFactories.addAll(extensionsToScriptFactories.values());
@@ -212,14 +216,23 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         return bundleScriptEngineFactories;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void registerEngineExtension(String extension, ScriptEngineFactory factory) {
         extensionsToScriptFactories.put(extension, factory);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void registerEngineMimeType(String type, ScriptEngineFactory factory) {
         mimeTypesToScriptFactories.put(type, factory);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void registerEngineName(String name, ScriptEngineFactory factory) {
         namesToScriptFactories.put(name, factory);
     }

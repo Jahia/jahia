@@ -182,7 +182,7 @@ public class ModuleManagerImpl implements ModuleManager {
                     BundleLifecycleUtils.refreshBundle(bundle);
                 }
             }
-            BundleLifecycleUtils.startAllBundles(target);
+            BundleLifecycleUtils.startAllBundles();
         } catch (ModuleManagementException e) {
             error = e;
             throw e;
@@ -234,7 +234,7 @@ public class ModuleManagerImpl implements ModuleManager {
             operation.perform(info, target);
             result = OperationResult.success(info);
             if (Bundle.UNINSTALLED != bundle.getState()) {
-                BundleLifecycleUtils.startAllBundles(target);
+                BundleLifecycleUtils.startAllBundles();
             } else {
                 BundleLifecycleUtils.refreshBundle(bundle);
             }

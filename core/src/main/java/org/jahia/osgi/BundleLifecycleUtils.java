@@ -60,10 +60,6 @@ import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
 import org.apache.felix.utils.version.VersionRange;
 import org.apache.felix.utils.version.VersionTable;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.modulemanager.BundleInfo;
-import org.jahia.services.modulemanager.ModuleManagementException;
-import org.jahia.services.modulemanager.spi.BundleService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
@@ -337,7 +333,7 @@ public final class BundleLifecycleUtils {
      * Tries to start all the bundles which somehow got stopped mainly due to a missing dependencies. Inspired by the DirectoryWatcher from
      * Felix FileInstall.
      */
-    public static void startAllBundles(String target) {
+    public static void startAllBundles() {
         int frameworkStartLevel = getFrameworkStartLevel();
         List<Bundle> bundlesToStart = new ArrayList<Bundle>();
         Bundle[] allBundles = getAllBundles();
@@ -349,8 +345,9 @@ public final class BundleLifecycleUtils {
                     bundlesToStart.add(bundle);
                 }
             }
-        }        
-        startBundles(bundlesToStart, target);
+        }
+
+        startBundles(bundlesToStart);
     }
 
     /**
@@ -358,7 +355,7 @@ public final class BundleLifecycleUtils {
      *
      * @param bundlesToStart a collection of bundles to be started
      */
-    private static void startBundles(Collection<Bundle> bundlesToStart, String target) {
+    private static void startBundles(Collection<Bundle> bundlesToStart) {
         for (Bundle bundle : bundlesToStart) {
             int frameworkStartLevel = getFrameworkStartLevel();
             // Fragments can never be started.
@@ -369,9 +366,9 @@ public final class BundleLifecycleUtils {
                     && frameworkStartLevel >= getBundleStartLevel(bundle)) {
                 try {
                     logger.info("Starting bundle: {}", bundle);
-                    getBundleService().start(toBundleInfo(bundle), target);
-                } catch (ModuleManagementException e) {
-                    if (e.getCause() instanceof BundleException && BundleException.RESOLVE_ERROR == ((BundleException)e.getCause()).getType()) {
+                    bundle.start(Bundle.START_ACTIVATION_POLICY);
+                } catch (BundleException e) {
+                    if (BundleException.RESOLVE_ERROR == e.getType()) {
                         // we log unresolved dependencies in DEBUG
                         logger.debug("Error while starting bundle " + bundle + ". Cause: " + e.getMessage(), e);
                     } else {
@@ -380,14 +377,5 @@ public final class BundleLifecycleUtils {
                 }
             }
         }
-    }
-    
-    private static BundleInfo toBundleInfo(Bundle bundle) {
-        return new BundleInfo(BundleUtils.getModuleGroupId(bundle), bundle.getSymbolicName(), bundle.getVersion().toString());
-    }
-    
-    private static BundleService getBundleService() {
-        return (BundleService) SpringContextSingleton
-                .getBean("org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate");
     }
 }

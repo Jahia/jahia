@@ -174,15 +174,13 @@ public class ModuleManagerImpl implements ModuleManager {
             }
             persister.store(bundleInfo);
             result = install(bundleInfo, target, start);
-            
-            if (!start) {
+            Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());            
+            if (!start && bundle != null) {
                 // if the bundle won't be started we do a refresh on it (this refreshes the dependencies)
-                Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
-                if (bundle != null) {
-                    BundleLifecycleUtils.refreshBundle(bundle);
-                }
+                BundleLifecycleUtils.refreshBundle(bundle);
             }
             BundleLifecycleUtils.startAllBundles();
+            bundleService.runFinalTasks(bundle, target);
         } catch (ModuleManagementException e) {
             error = e;
             throw e;
@@ -238,6 +236,7 @@ public class ModuleManagerImpl implements ModuleManager {
             } else {
                 BundleLifecycleUtils.refreshBundle(bundle);
             }
+            bundleService.runFinalTasks(bundle, target);
         } catch (ModuleManagementException e) {
             error = e;
             throw e;

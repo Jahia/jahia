@@ -123,4 +123,10 @@ public class DefaultBundleService implements BundleService {
             throw new ModuleManagementException(e);
         }
     }
+    
+    @Override
+    public void runFinalTasks(Bundle bundle, String target)  {
+        // so far there are no tasks for default implementation
+    }
+
 }

@@ -43,11 +43,13 @@
  */
 package org.jahia.services.modulemanager.spi;
 
+import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidTargetException;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.ModuleNotFoundException;
+import org.osgi.framework.Bundle;
 
 /**
  * Service for bundle related operations.
@@ -110,4 +112,16 @@ public interface BundleService {
      */
     void uninstall(BundleInfo bundleInfo, String target)
             throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
+
+    /**
+     * This method is called after running {@link install(String, String, boolean)}/{@link start(BundleInfo, String)}/{@link stop(BundleInfo, String)} or {@link uninstall(BundleInfo, String)} triggered from {@link ModuleManagerImpl}. 
+     * Before this method is called, we also have called {@link BundleLifecycleUtils.refreshBundle(Bundle)} (after install/uninstall) and/or the method 
+     * {@link BundleLifecycleUtils.startAllBundles()} to start dependent modules. 
+     * This method gives the opportunity to run some final tasks, like for instance to synchronize the bundle state in cluster. 
+     *
+     * @param bundle the bundle which was installed/started/stopped or uninstalled
+     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
+     *            values)
+     */
+    public void runFinalTasks(Bundle bundle, String target);    
 }

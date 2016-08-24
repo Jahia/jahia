@@ -51,6 +51,7 @@ import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleNotFoundException;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.settings.SettingsBean;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +86,11 @@ public class BundleServiceDelegate implements BundleService {
     @Override
     public void uninstall(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
         lookupService().uninstall(bundleInfo, target);
+    }
+    
+    @Override
+    public void runFinalTasks(Bundle bundle,String target)  {
+        lookupService().runFinalTasks(bundle, target);
     }
 
     private BundleService lookupClusteredService() {

@@ -163,7 +163,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     public void setScriptFactoryMap(Map<String, ScriptFactory> scriptFactoryMap) {
         if (!(scriptFactoryMap instanceof LinkedHashMap)) {
-            throw new IllegalArgumentException("Error instantiating BundleScriptResolver: Spring is supposed to create a SortedMap when using a <map> property but didn't. Was: "
+            throw new IllegalArgumentException("Error instantiating BundleScriptResolver: Spring is supposed to create a SortedMap when using a <map> " +
+                    "property but didn't. Was: "
                     + scriptFactoryMap.getClass().getName());
         }
         this.scriptFactoryMap = (LinkedHashMap<String, ScriptFactory>) scriptFactoryMap;
@@ -208,21 +209,21 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             scriptFactoryMap.put(extension, bundleScriptFactory);
 
             // compute or retrieve the extensions priority and record it
-            final int priority = getPriorityFor(extension, context);
+            final int priority = getPriority(extension, context);
             extensionPriorities.put(extension, priority);
 
             logger.info("ScriptEngineFactory {} registered extension {} with priority {}", new Object[]{scriptEngineFactory, extension, priority});
 
             // now we need to activate the bundle script scanner inside of newly deployed or existing bundles
             // register view script observers
-            addBundleScripts(bundle, extension, scriptEngineFactory);
+            addBundleScripts(bundle, extension);
 
             // check existing bundles to see if they provide views for the newly deployed scripting language
             final BundleContext bundleContext = bundle.getBundleContext();
             if (bundleContext != null) {
                 for (Bundle otherBundle : bundleContext.getBundles()) {
                     if (otherBundle.getState() == Bundle.ACTIVE) {
-                        addBundleScripts(otherBundle, extension, scriptEngineFactory);
+                        addBundleScripts(otherBundle, extension);
                     }
                 }
             }
@@ -259,12 +260,12 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         registerObservers(extensions);
     }
 
-    private int getPriorityFor(String extension, BundleScriptingContext context) {
+    private int getPriority(String extension, BundleScriptingContext context) {
         final int defaultPriority = extensionPriorities.size() * PRIORITY_STAGGER_FACTOR;
         if (context == null) {
             return defaultPriority;
         } else {
-            return context.getPriorityFor(extension, defaultPriority);
+            return context.getPriority(extension, defaultPriority);
         }
     }
 
@@ -364,7 +365,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         return getInstance().preRegisteredExtensions.contains(viewExtension);
     }
 
-    private void addBundleScripts(Bundle bundle, String extension, ScriptEngineFactory scriptEngineFactory) {
+    private void addBundleScripts(Bundle bundle, String extension) {
         // only add views if we need to
         if (!shouldNotBeScannedForViews(bundle, extension)) {
             final String extensionPattern = getExtensionPattern(extension);

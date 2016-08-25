@@ -66,7 +66,7 @@ class BundleScriptingContext {
         return classLoader;
     }
 
-    int getPriorityFor(String extension, int defaultPriority) {
+    int getPriority(String extension, int defaultPriority) {
         if (extensionPriorities != null) {
             final Integer priority = extensionPriorities.get(extension);
             return priority == null ? defaultPriority : Math.abs(priority);

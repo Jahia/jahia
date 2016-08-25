@@ -167,6 +167,7 @@ public class ModuleManagerImpl implements ModuleManager {
         OperationResult result = null;
         PersistentBundle bundleInfo = null;
         Exception error = null;
+        Bundle bundle = null;
         try {
             bundleInfo = PersistentBundleInfoBuilder.build(bundleResource);
             if (bundleInfo == null) {
@@ -174,13 +175,12 @@ public class ModuleManagerImpl implements ModuleManager {
             }
             persister.store(bundleInfo);
             result = install(bundleInfo, target, start);
-            Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());            
+            bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());            
             if (!start && bundle != null) {
                 // if the bundle won't be started we do a refresh on it (this refreshes the dependencies)
                 BundleLifecycleUtils.refreshBundle(bundle);
             }
             BundleLifecycleUtils.startAllBundles();
-            bundleService.runFinalTasks(bundle, target);
         } catch (ModuleManagementException e) {
             error = e;
             throw e;
@@ -188,6 +188,8 @@ public class ModuleManagerImpl implements ModuleManager {
             error = e;
             throw new ModuleManagementException(e);
         } finally {
+            bundleService.runFinalTasks(bundle, target);
+
             Object info = bundleInfo != null ? toBundleInfo(bundleInfo) : bundleResource;
             long timeTaken = System.currentTimeMillis() - startTime;
             if (error == null) {
@@ -223,12 +225,13 @@ public class ModuleManagerImpl implements ModuleManager {
         OperationResult result = null;
         BundleInfo info = null;
         Exception error = null;
+        Bundle bundle = null;
         try {
             info = getBundleInfo(bundleKey);
             if (info == null) {
                 throw new ModuleNotFoundException(bundleKey);
             }
-            Bundle bundle = BundleUtils.getBundleBySymbolicName(info.getSymbolicName(), info.getVersion());
+            bundle = BundleUtils.getBundleBySymbolicName(info.getSymbolicName(), info.getVersion());
             operation.perform(info, target);
             result = OperationResult.success(info);
             if (Bundle.UNINSTALLED != bundle.getState()) {
@@ -236,7 +239,6 @@ public class ModuleManagerImpl implements ModuleManager {
             } else {
                 BundleLifecycleUtils.refreshBundle(bundle);
             }
-            bundleService.runFinalTasks(bundle, target);
         } catch (ModuleManagementException e) {
             error = e;
             throw e;
@@ -244,6 +246,8 @@ public class ModuleManagerImpl implements ModuleManager {
             error = e;
             throw new ModuleManagementException(e);
         } finally {
+            bundleService.runFinalTasks(bundle, target);
+
             if (error == null) {
                 logger.info("{} operation completed for bundle {} on target {} in {} ms. Opearation result: {}",
                         new Object[] { operation.getName(), bundleKey, target, System.currentTimeMillis() - startTime,

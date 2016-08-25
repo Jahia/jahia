@@ -125,7 +125,7 @@ public class DefaultBundleService implements BundleService {
     }
     
     @Override
-    public void runFinalTasks(Bundle bundle, String target)  {
+    public void runFinalTasks(String bundleKey, String operation, String target)  {
         // so far there are no tasks for default implementation
     }
 

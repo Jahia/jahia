@@ -115,13 +115,14 @@ public interface BundleService {
 
     /**
      * This method is called after running {@link install(String, String, boolean)}/{@link start(BundleInfo, String)}/{@link stop(BundleInfo, String)} or {@link uninstall(BundleInfo, String)} triggered from {@link ModuleManagerImpl}. 
-     * Before this method is called, we also have called {@link BundleLifecycleUtils.refreshBundle(Bundle)} (after install/uninstall) and/or the method 
-     * {@link BundleLifecycleUtils.startAllBundles()} to start dependent modules. 
+     * If no error happened, then before this method is called, we also have called {@link BundleLifecycleUtils.refreshBundle(Bundle)} (after install/uninstall) and/or the method 
+     * {@link BundleLifecycleUtils.startAllBundles()} to start dependent modules. This method is called also if an error happened during the operation.  
      * This method gives the opportunity to run some final tasks, like for instance to synchronize the bundle state in cluster. 
      *
-     * @param bundle the bundle which was installed/started/stopped or uninstalled
+     * @param bundleKey the key of the bundle which was installed/started/stopped or uninstalled
+     * @param operation either "Install", "Start", "Stop", "Uninstall"
      * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
      *            values)
      */
-    public void runFinalTasks(Bundle bundle, String target);    
+    public void runFinalTasks(String bundleKey, String operation, String target);    
 }

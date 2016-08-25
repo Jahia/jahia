@@ -167,7 +167,6 @@ public class ModuleManagerImpl implements ModuleManager {
         OperationResult result = null;
         PersistentBundle bundleInfo = null;
         Exception error = null;
-        Bundle bundle = null;
         try {
             bundleInfo = PersistentBundleInfoBuilder.build(bundleResource);
             if (bundleInfo == null) {
@@ -175,7 +174,7 @@ public class ModuleManagerImpl implements ModuleManager {
             }
             persister.store(bundleInfo);
             result = install(bundleInfo, target, start);
-            bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());            
+            Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());            
             if (!start && bundle != null) {
                 // if the bundle won't be started we do a refresh on it (this refreshes the dependencies)
                 BundleLifecycleUtils.refreshBundle(bundle);
@@ -188,9 +187,8 @@ public class ModuleManagerImpl implements ModuleManager {
             error = e;
             throw new ModuleManagementException(e);
         } finally {
-            bundleService.runFinalTasks(bundle, target);
-
             Object info = bundleInfo != null ? toBundleInfo(bundleInfo) : bundleResource;
+            bundleService.runFinalTasks(info.toString(), "Install", target);
             long timeTaken = System.currentTimeMillis() - startTime;
             if (error == null) {
                 logger.info("Installation completed for bundle {} on target {} in {} ms. Operation result: {}",
@@ -225,13 +223,12 @@ public class ModuleManagerImpl implements ModuleManager {
         OperationResult result = null;
         BundleInfo info = null;
         Exception error = null;
-        Bundle bundle = null;
         try {
             info = getBundleInfo(bundleKey);
             if (info == null) {
                 throw new ModuleNotFoundException(bundleKey);
             }
-            bundle = BundleUtils.getBundleBySymbolicName(info.getSymbolicName(), info.getVersion());
+            Bundle bundle = BundleUtils.getBundleBySymbolicName(info.getSymbolicName(), info.getVersion());
             operation.perform(info, target);
             result = OperationResult.success(info);
             if (Bundle.UNINSTALLED != bundle.getState()) {
@@ -246,7 +243,7 @@ public class ModuleManagerImpl implements ModuleManager {
             error = e;
             throw new ModuleManagementException(e);
         } finally {
-            bundleService.runFinalTasks(bundle, target);
+            bundleService.runFinalTasks(bundleKey, operation.getName(), target);
 
             if (error == null) {
                 logger.info("{} operation completed for bundle {} on target {} in {} ms. Opearation result: {}",

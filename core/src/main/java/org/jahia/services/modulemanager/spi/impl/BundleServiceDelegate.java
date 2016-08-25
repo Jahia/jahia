@@ -89,8 +89,8 @@ public class BundleServiceDelegate implements BundleService {
     }
     
     @Override
-    public void runFinalTasks(Bundle bundle,String target)  {
-        lookupService().runFinalTasks(bundle, target);
+    public void runFinalTasks(String bundleKey, String operation, String target)  {
+        lookupService().runFinalTasks(bundleKey, operation, target);
     }
 
     private BundleService lookupClusteredService() {

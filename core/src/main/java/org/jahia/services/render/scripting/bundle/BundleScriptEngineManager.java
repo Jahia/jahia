@@ -370,6 +370,10 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                     configurator.destroy(bundleScriptEngineFactory.getWrappedFactory());
                 }
                 configurators.remove(bundleScriptEngineFactory.getWrappedFactoryClassName());
+
+                //clean up engine cache
+                engineCache.clear();
+
             }
         }
     }
@@ -416,6 +420,9 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
             }
 
             BundleScriptResolver.getInstance().register(bundleScriptEngineFactory, bundle);
+
+            // clean engine cache after installing a new script engine
+            engineCache.clear();
         }
 
         bundleIdsToScriptFactories.put(bundle.getBundleId(), factories);

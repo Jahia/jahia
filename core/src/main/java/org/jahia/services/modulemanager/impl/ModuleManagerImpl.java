@@ -47,7 +47,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.util.StringUtils;
-import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
@@ -174,12 +173,6 @@ public class ModuleManagerImpl implements ModuleManager {
             }
             persister.store(bundleInfo);
             result = install(bundleInfo, target, start);
-            Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());            
-            if (!start && bundle != null) {
-                // if the bundle won't be started we do a refresh on it (this refreshes the dependencies)
-                BundleLifecycleUtils.refreshBundle(bundle);
-            }
-            BundleLifecycleUtils.startAllBundles();
         } catch (ModuleManagementException e) {
             error = e;
             throw e;
@@ -188,7 +181,6 @@ public class ModuleManagerImpl implements ModuleManager {
             throw new ModuleManagementException(e);
         } finally {
             Object info = bundleInfo != null ? toBundleInfo(bundleInfo) : bundleResource;
-            bundleService.runFinalTasks(info.toString(), "Install", target);
             long timeTaken = System.currentTimeMillis() - startTime;
             if (error == null) {
                 logger.info("Installation completed for bundle {} on target {} in {} ms. Operation result: {}",
@@ -228,14 +220,8 @@ public class ModuleManagerImpl implements ModuleManager {
             if (info == null) {
                 throw new ModuleNotFoundException(bundleKey);
             }
-            Bundle bundle = BundleUtils.getBundleBySymbolicName(info.getSymbolicName(), info.getVersion());
             operation.perform(info, target);
             result = OperationResult.success(info);
-            if (Bundle.UNINSTALLED != bundle.getState()) {
-                BundleLifecycleUtils.startAllBundles();
-            } else {
-                BundleLifecycleUtils.refreshBundle(bundle);
-            }
         } catch (ModuleManagementException e) {
             error = e;
             throw e;
@@ -243,8 +229,6 @@ public class ModuleManagerImpl implements ModuleManager {
             error = e;
             throw new ModuleManagementException(e);
         } finally {
-            bundleService.runFinalTasks(bundleKey, operation.getName(), target);
-
             if (error == null) {
                 logger.info("{} operation completed for bundle {} on target {} in {} ms. Opearation result: {}",
                         new Object[] { operation.getName(), bundleKey, target, System.currentTimeMillis() - startTime,

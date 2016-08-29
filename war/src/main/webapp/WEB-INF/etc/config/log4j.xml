@@ -153,10 +153,6 @@
         <level value="debug"/>
     </logger>
 
-    <logger name="org.apache.karaf.cellar">
-        <level value="debug"/>
-    </logger>
-
     <root>
         <level value="info"/>
         <appender-ref ref="ROLL"/>

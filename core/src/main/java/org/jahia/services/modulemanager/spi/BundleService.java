@@ -43,13 +43,11 @@
  */
 package org.jahia.services.modulemanager.spi;
 
-import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidTargetException;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.ModuleNotFoundException;
-import org.osgi.framework.Bundle;
 
 /**
  * Service for bundle related operations.

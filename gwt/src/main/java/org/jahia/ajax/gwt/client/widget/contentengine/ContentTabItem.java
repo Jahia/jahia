@@ -316,7 +316,7 @@ public class ContentTabItem extends PropertiesTabItem {
 
                 flowPanel.add(new HTML("<b>" + Messages.get("nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
                 flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.jcr.edit.tags.tab", "Tags") + ":</b> " + selectedNode.getTags() != null ? selectedNode.getTags() : ""));
-                if (engine.getNode() != null) {
+                if ( engine.getNode() != null && ModuleHelper.getModulesByPath() != null) {
                     List<Module> modules = ModuleHelper.getModulesByPath().get(engine
                             .getNode()
                             .getPath());

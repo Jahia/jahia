@@ -188,7 +188,8 @@ public abstract class BaseView implements View, Comparable<View> {
 
     @Override
     public String getInfo() {
-        String modulePath = module.getSourcesFolder() != null ? getModule().getSourcesFolder().getPath() + "/src/main/resources" : module.getRootFolderPath();
+        String modulePath = module.getSourcesFolder() != null ? getModule().getSourcesFolder().getPath() + "/src/main/resources" : "/modules/" + module
+                .getIdWithVersion();
         return "Path dispatch: " + modulePath +  path;
     }
 

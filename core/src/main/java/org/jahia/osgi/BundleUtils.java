@@ -134,6 +134,17 @@ public final class BundleUtils {
     }
 
     /**
+     * Returns the bundle with the specified identifier.
+     * 
+     * @param id The identifier of the bundle to retrieve.
+     * @return A {@code Bundle} object or {@code null} if the identifier does
+     *         not match any installed bundle.
+     */
+    public static Bundle getBundle(long id) {
+        return FrameworkService.getBundleContext().getBundle(id);
+    }
+
+    /**
      * Find the bundle that is represented by the specified module and version.
      *
      * @param moduleId the module Id
@@ -152,7 +163,7 @@ public final class BundleUtils {
         }
         return null;
     }
-
+    
     /**
      * Returns the bundle display name containing module name (ID) and the version.
      *

@@ -61,6 +61,7 @@ when we flush this entry we will flush the whole cache
                 <bean class="org.jahia.services.render.filter.cache.TemplateTypeCacheKeyPartGenerator"/>
                 <ref bean="aclCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.ContextCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.EditableModuleCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.WrappedCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.CustomCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.QueryStringCacheKeyPartGenerator"/>

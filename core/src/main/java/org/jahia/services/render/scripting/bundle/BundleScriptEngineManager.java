@@ -421,9 +421,10 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
 
             BundleScriptResolver.getInstance().register(bundleScriptEngineFactory, bundle);
 
-            // clean engine cache after installing a new script engine
-            engineCache.clear();
         }
+
+        // clean engine cache after installing a new script engine
+        engineCache.clear();
 
         bundleIdsToScriptFactories.put(bundle.getBundleId(), factories);
     }

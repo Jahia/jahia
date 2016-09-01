@@ -122,7 +122,7 @@ import java.util.zip.ZipOutputStream;
  *
  * @author Thomas Draier
  */
-public class ImportExportBaseService extends JahiaService implements ImportExportService, Observer{
+public class ImportExportBaseService extends JahiaService implements ImportExportService, Observer {
 
     private static Logger logger = LoggerFactory.getLogger(ImportExportBaseService.class);
     private static final Set<String> KNOWN_IMPORT_CONTENT_TYPES = ImmutableSet.of("application/zip", "application/xml", "text/xml");
@@ -496,18 +496,17 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     @Override
     public void update(Observable o, Object arg) {
+
         exportedNodes ++;
 
-        if(logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             logger.debug("Exporting  : " + arg);
         }
-        if(exportedNodes*10/stepNodes>actualStepDecimal && actualStepDecimal <9)
-        {
-            actualStepDecimal = exportedNodes*10/stepNodes;
-            logger.info("[Step "+ step + "] - " + actualStepDecimal*10 + "%");
+        if (exportedNodes * 10 / stepNodes > actualStepDecimal && actualStepDecimal < 9) {
+            actualStepDecimal = exportedNodes * 10 / stepNodes;
+            logger.info("[Step " + step + "] - " + actualStepDecimal * 10 + "%");
         }
     }
-
 
     @Override
     public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException {
@@ -616,6 +615,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private void exportNodes(JCRNodeWrapper rootNode, TreeSet<JCRNodeWrapper> sortedNodes, OutputStream outputStream,
                              Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params)
             throws IOException, RepositoryException, SAXException, TransformerException {
+
         final String xsl = (String) params.get(XSL_PATH);
         final boolean skipBinary = !Boolean.FALSE.equals(params.get(SKIP_BINARY));
         final boolean noRecurse = Boolean.TRUE.equals(params.get(NO_RECURSE));
@@ -647,7 +647,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
             }
             exporter.setTypesToIgnore(typesToIgnore);
-            this.stepNodes=  exporter.estimateListOfNodesNumberForExport(rootNode, sortedNodes);
+            this.stepNodes = exporter.estimateListOfNodesNumberForExport(rootNode, sortedNodes);
             this.actualStepDecimal = 0;
             exporter.export(rootNode, sortedNodes);
             logger.info("[Step " + step + "] - 100%");

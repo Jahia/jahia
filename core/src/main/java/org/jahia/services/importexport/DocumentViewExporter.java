@@ -42,6 +42,7 @@
  *     please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.importexport;
+
 import java.util.Observable;
 
 import org.apache.commons.lang.StringUtils;
@@ -58,11 +59,13 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.jcr.*;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -74,14 +77,12 @@ import java.util.regex.Pattern;
  * Time: 3:02:35 PM
  *
  */
-public class DocumentViewExporter extends Observable{
-    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewExporter.class);
+public class DocumentViewExporter extends Observable {
 
+    private static final Logger logger = LoggerFactory.getLogger(DocumentViewExporter.class);
     private static final String CDATA = "CDATA";
     private static final String NS_URI = "http://www.w3.org/2000/xmlns/";
-
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/sites/[^/]*/templates/(.*)");
-
 
     private JCRSessionWrapper session;
     private JCRSessionWrapper publicationStatusSession;
@@ -95,15 +96,14 @@ public class DocumentViewExporter extends Observable{
     private JCRNodeWrapper rootNode;
     private List<JCRNodeWrapper> nodesList;
     private Stack<String> stack;
-
     private List<String> propertiestoIgnore = Arrays.asList("jcr:predecessors", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:uuid", "jcr:mergeFailed");
 
     public DocumentViewExporter(JCRSessionWrapper session, ContentHandler ch, boolean skipBinary, boolean noRecurse) {
+
         this.session = session;
         this.ch = ch;
         this.noRecurse = noRecurse;
         this.skipBinary = skipBinary;
-
         this.stack = new Stack<String>();
 
         prefixes = new HashMap<String, String>();
@@ -155,12 +155,12 @@ public class DocumentViewExporter extends Observable{
      * @throws RepositoryException
      */
     public int estimateListOfNodesNumberForExport(JCRNodeWrapper rootNode, TreeSet<JCRNodeWrapper> nodes) throws SAXException, RepositoryException  {
+
         this.rootNode = rootNode;
         int result = 0;
 
-
         nodesList = new ArrayList<JCRNodeWrapper>(nodes);
-        for (int i = 0; i<nodesList.size(); i++) {
+        for (int i = 0; i < nodesList.size(); i++) {
             List<JCRNodeWrapper> subList = new ArrayList<JCRNodeWrapper>(nodesList.subList(i, nodesList.size()));
             Collections.sort(subList, nodes.comparator());
             nodesList.removeAll(subList);
@@ -169,6 +169,7 @@ public class DocumentViewExporter extends Observable{
                 result = estimateNodeNumberForExport(nodesList.get(i), result);
             }
         }
+
         return result;
     }
 
@@ -182,8 +183,11 @@ public class DocumentViewExporter extends Observable{
      */
     private int estimateNodeNumberForExport(JCRNodeWrapper node, int startingNodeNumber) throws SAXException,
             RepositoryException  {
+
         int result = startingNodeNumber;
+
         if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+
             result++;
             String path = "";
             Node current = node;
@@ -194,7 +198,6 @@ public class DocumentViewExporter extends Observable{
             if (path.equals("")) {
                 path = "/";
             }
-
 
             if (!noRecurse) {
                 List<String> exportedMountPointNodes = new ArrayList<String>();
@@ -211,13 +214,13 @@ public class DocumentViewExporter extends Observable{
                                 }
                             }
                         }
-
                         result = estimateNodeNumberForExport(c, result);
                     }
                 }
             }
         }
-        return  result;
+
+        return result;
     }
 
     public void export(JCRNodeWrapper rootNode, SortedSet<JCRNodeWrapper> nodes) throws SAXException, RepositoryException {

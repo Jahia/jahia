@@ -273,10 +273,12 @@ public class AddResourcesTag extends AbstractJahiaTag {
         StringBuilder builder = new StringBuilder();
         builder.append("<jahia:resource type=\"");
         builder.append(type != null ? type : "").append("\"");
-        try {
-            builder.append(" path=\"").append(URLEncoder.encode(path != null ? path : "", "UTF-8")).append("\"");
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage(), e);
+        if (!StringUtils.equals(type,"inline")) {
+            try {
+                builder.append(" path=\"").append(URLEncoder.encode(path != null ? path : "", "UTF-8")).append("\"");
+            } catch (UnsupportedEncodingException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
         builder.append(" insert=\"").append(insert).append("\"");
         if (targetTag != null) {
@@ -294,8 +296,14 @@ public class AddResourcesTag extends AbstractJahiaTag {
         builder.append(" resource=\"").append(resource != null ? resource : "").append("\"");
         builder.append(" title=\"").append(title != null ? title : "").append("\"");
         builder.append(" key=\"").append(key != null ? key : "").append("\"");
-        builder.append(" />\n");
-        try {
+        if (!StringUtils.equals(type,"inline")) {
+            builder.append(" />\n");
+        } else {
+            builder.append(">");
+            builder.append(path);
+            builder.append("</jahia:resource>\n");
+        }
+            try {
             pageContext.getOut().print(builder.toString());
         } catch (IOException e) {
             logger.error(e.getMessage(), e);

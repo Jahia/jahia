@@ -47,9 +47,7 @@ import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import com.yahoo.platform.yui.org.mozilla.javascript.ErrorReporter;
 import com.yahoo.platform.yui.org.mozilla.javascript.EvaluatorException;
-
 import net.htmlparser.jericho.*;
-
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.collections.Transformer;
@@ -82,7 +80,6 @@ import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import javax.script.*;
-
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -239,54 +236,57 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         Source source = new Source(previousOut);
         Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget = new LinkedHashMap<String, Map<String, Map<String, Map<String, String>>>>();
 
-        List<StartTag> esiResourceTags = source.getAllStartTags("jahia:resource");
+        List<Element> elements = source.getAllElements();
         Set<String> keys = new HashSet<String>();
-        for (StartTag esiResourceTag : esiResourceTags) {
-            Map<String, Map<String, Map<String, String>>> assets;
-            String targetTag = esiResourceTag.getAttributeValue(TARGET_TAG);
-            if (targetTag == null) {
-                targetTag = "HEAD";
-            } else {
-                targetTag = targetTag.toUpperCase();
-            }
+        for (Element el : elements) {
+            StartTag esiResourceTag = el.getStartTag();
+            if (StringUtils.equals("jahia:resource", esiResourceTag.getName())) {
+                Map<String, Map<String, Map<String, String>>> assets;
+                String targetTag = esiResourceTag.getAttributeValue(TARGET_TAG);
+                if (targetTag == null) {
+                    targetTag = "HEAD";
+                } else {
+                    targetTag = targetTag.toUpperCase();
+                }
 
-            if (!assetsByTarget.containsKey(targetTag)) {
-                assets = LazySortedMap.decorate(TransformedSortedMap.decorate(new TreeMap<String, Map<String, Map<String, String>>>(ASSET_COMPARATOR),
-                        LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new AssetsMapFactory());
-                assetsByTarget.put(targetTag,assets);
-            } else {
-                assets = assetsByTarget.get(targetTag);
-            }
+                if (!assetsByTarget.containsKey(targetTag)) {
+                    assets = LazySortedMap.decorate(TransformedSortedMap.decorate(new TreeMap<String, Map<String, Map<String, String>>>(ASSET_COMPARATOR),
+                            LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new AssetsMapFactory());
+                    assetsByTarget.put(targetTag, assets);
+                } else {
+                    assets = assetsByTarget.get(targetTag);
+                }
 
-            String type = esiResourceTag.getAttributeValue("type");
-            String path = esiResourceTag.getAttributeValue("path");
-            path = URLDecoder.decode(path, "UTF-8");
-            Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
-            String key = esiResourceTag.getAttributeValue("key");
+                String type = esiResourceTag.getAttributeValue("type");
+                String path = StringUtils.equals(type, "inline") ? StringUtils.substring(out, el.getStartTag().getEnd(), el.getEndTag().getBegin()) :
+                        URLDecoder.decode(esiResourceTag.getAttributeValue("path"), "UTF-8");
+                Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
+                String key = esiResourceTag.getAttributeValue("key");
 
-            // get options
-            Map<String, String> optionsMap = getOptionMaps(esiResourceTag);
+                // get options
+                Map<String, String> optionsMap = getOptionMaps(esiResourceTag);
 
-            Map<String, Map<String, String>> stringMap = assets.get(type);
-            if (stringMap == null) {
-                Map<String, Map<String, String>> assetMap = new LinkedHashMap<String, Map<String, String>>();
-                stringMap = assets.put(type, assetMap);
-            }
+                Map<String, Map<String, String>> stringMap = assets.get(type);
+                if (stringMap == null) {
+                    Map<String, Map<String, String>> assetMap = new LinkedHashMap<String, Map<String, String>>();
+                    stringMap = assets.put(type, assetMap);
+                }
 
-            if (insert) {
-                Map<String, Map<String, String>> my = new LinkedHashMap<String, Map<String, String>>();
-                my.put(path, optionsMap);
-                my.putAll(stringMap);
-                stringMap = my;
-            } else {
-                if ("".equals(key) || !keys.contains(key)) {
+                if (insert) {
                     Map<String, Map<String, String>> my = new LinkedHashMap<String, Map<String, String>>();
                     my.put(path, optionsMap);
-                    stringMap.putAll(my);
-                    keys.add(key);
+                    my.putAll(stringMap);
+                    stringMap = my;
+                } else {
+                    if ("" .equals(key) || !keys.contains(key)) {
+                        Map<String, Map<String, String>> my = new LinkedHashMap<String, Map<String, String>>();
+                        my.put(path, optionsMap);
+                        stringMap.putAll(my);
+                        keys.add(key);
+                    }
                 }
+                assets.put(type, stringMap);
             }
-            assets.put(type, stringMap);
         }
 
         OutputDocument outputDocument = new OutputDocument(source);
@@ -373,10 +373,12 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
         // Clean all jahia:resource tags
         source = new Source(out);
-        esiResourceTags = (new Source(out)).getAllStartTags("jahia:resource");
         outputDocument = new OutputDocument(source);
-        for (StartTag segment : esiResourceTags) {
-            outputDocument.replace(segment,"");
+        for (Element el : source.getAllElements()) {
+            StartTag esiResourceTag = el.getStartTag();
+            if (StringUtils.equals("jahia:resource", esiResourceTag.getName())) {
+                outputDocument.replace(el, "");
+            }
         }
         String s = outputDocument.toString();
         s = removeTempTags(s);

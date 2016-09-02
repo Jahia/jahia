@@ -151,6 +151,14 @@ public class ContentManagerHelper {
         this.fileStorage = fileStorage;
     }
 
+    /**
+     * @deprecated : This method is used only to maintain compatibility with existing modules. Do not use it !
+     */
+    @Deprecated
+    public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, Locale uiLocale) throws GWTJahiaServiceException {
+        return addNode(parentNode, name, nodeType, mixin, props, uiLocale, null);
+    }
+
     public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, Locale uiLocale, String httpSessionID) throws GWTJahiaServiceException {
         if (!parentNode.hasPermission(Privilege.JCR_ADD_CHILD_NODES)) {
             throw new GWTJahiaServiceException(parentNode.getPath() + " - ACCESS DENIED");
@@ -173,6 +181,15 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.node.creation.failed", uiLocale));
         }
         return childNode;
+    }
+
+    /**
+     * @deprecated : This method is used only to maintain compatibility with existing modules. Do not use it !
+     */
+    @Deprecated
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, JCRSessionWrapper
+            currentUserSession, Locale uiLocale, Map<String, String> parentNodesType, boolean forceCreation)  throws GWTJahiaServiceException {
+        return createNode(parentPath, name, nodeType, mixin, props, currentUserSession, uiLocale, parentNodesType, forceCreation, null);
     }
 
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, JCRSessionWrapper currentUserSession, Locale uiLocale, Map<String, String> parentNodesType, boolean forceCreation, String httpSessionID)

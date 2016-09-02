@@ -389,7 +389,7 @@ public class PropertiesHelper {
                         if (prop.getValues().size() > 0) {
 
                             GWTJahiaNodePropertyValue propValue = prop.getValues().get(0);
-                            if (propValue.getType() == GWTJahiaNodePropertyType.ASYNC_UPLOAD) {
+                            if (httpSessionID != null && propValue.getType() == GWTJahiaNodePropertyType.ASYNC_UPLOAD) {
 
                                 // propValue.getString() value is actually file content type like "application/pdf" rather than file name in case we
                                 // open a file component for edit, but do not change its content, and then save. Code below relies on the fact that

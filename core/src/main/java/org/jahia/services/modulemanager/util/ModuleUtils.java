@@ -256,6 +256,27 @@ public class ModuleUtils {
      */
     public static PersistentBundle persist(Bundle bundle) throws ModuleManagementException {
         try {
+            return persist(loadBundleResource(bundle));
+        } catch (Exception e) {
+            if (e instanceof ModuleManagementException) {
+                // re-throw
+                throw (ModuleManagementException) e;
+            }
+            String msg = "Unable to persist bundle " + bundle + ". Cause: " + e.getMessage();
+            logger.error(msg, e);
+            throw new ModuleManagementException(msg, e);
+        }
+    }
+
+    /**
+     * Load the bundle .jar resource.
+     *
+     * @param bundle the bundle to be load
+     * @return the bundle resource
+     * @throws java.net.MalformedURLException
+     */
+    public static Resource loadBundleResource(Bundle bundle) throws java.net.MalformedURLException {
+        try {
             Resource bundleResource = null;
             File bundleFile = getBundleFile(bundle);
             if (bundleFile != null) {
@@ -263,13 +284,13 @@ public class ModuleUtils {
             } else {
                 bundleResource = new UrlResource(bundle.getLocation());
             }
-            return persist(bundleResource);
+            return bundleResource;
         } catch (Exception e) {
             if (e instanceof ModuleManagementException) {
                 // re-throw
                 throw (ModuleManagementException) e;
             }
-            String msg = "Unable to persist bundle " + bundle + ". Cause: " + e.getMessage();
+            String msg = "Unable to load bundle resource using location " + bundle.getLocation() + ". Cause: " + e.getMessage();
             logger.error(msg, e);
             throw new ModuleManagementException(msg, e);
         }

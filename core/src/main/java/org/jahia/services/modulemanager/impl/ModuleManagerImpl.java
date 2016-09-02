@@ -47,7 +47,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.util.StringUtils;
-import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
@@ -174,15 +173,6 @@ public class ModuleManagerImpl implements ModuleManager {
             }
             persister.store(bundleInfo);
             result = install(bundleInfo, target, start);
-            
-            if (!start) {
-                // if the bundle won't be started we do a refresh on it (this refreshes the dependencies)
-                Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
-                if (bundle != null) {
-                    BundleLifecycleUtils.refreshBundle(bundle);
-                }
-            }
-            BundleLifecycleUtils.startAllBundles(target);
         } catch (ModuleManagementException e) {
             error = e;
             throw e;
@@ -230,14 +220,8 @@ public class ModuleManagerImpl implements ModuleManager {
             if (info == null) {
                 throw new ModuleNotFoundException(bundleKey);
             }
-            Bundle bundle = BundleUtils.getBundleBySymbolicName(info.getSymbolicName(), info.getVersion());
             operation.perform(info, target);
             result = OperationResult.success(info);
-            if (Bundle.UNINSTALLED != bundle.getState()) {
-                BundleLifecycleUtils.startAllBundles(target);
-            } else {
-                BundleLifecycleUtils.refreshBundle(bundle);
-            }
         } catch (ModuleManagementException e) {
             error = e;
             throw e;

@@ -2,49 +2,48 @@
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
- *
- *                                 http://www.jahia.com
- *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
- *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
- *
- *     1/ GPL
- *     ==================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ===================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
- *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * <p>
+ * http://www.jahia.com
+ * <p>
+ * Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ * <p>
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
+ * <p>
+ * 1/ GPL
+ * ==================================================================================
+ * <p>
+ * IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * <p>
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ===================================================================================
+ * <p>
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p>
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * <p>
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.render.scripting.bundle;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,17 +57,18 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A replacement for the JDK's {@link ScriptEngineManager} that properly deals with {@link ScriptEngineFactory} implementations
- * provided in OSGi modules.
- * In particular, bundles that provide a {@code javax.script.ScriptEngineFactory} file in their {@code META-INF/services} directory
- * (Java Service Provider infrastructure) will be handled by this ScriptEngineManager, wrapping the provided ScriptEngineFactory implementation in a
- * {@link BundleScriptEngineFactory} so that the appropriate class loader will be used to resolve views and associated resources. Additionally, provided
- * script extensions will now be listened to and installed bundles will be scanned so that any installed module that provides views that can be handled by
- * the newly installed ScriptEngineFactory will be now able to answer to view requests.
- *
- * Additionally, for each ScriptEngineFactory, this BundleScriptEngineManager will attempt to load an associated
- * {@link BundleScriptEngineFactoryConfigurator} which should be named {@code <fully qualified ScriptEngineFactory name>Configurator} so that additional set
- * up / clean up can be performed when the bundle is started or stopped.
+ * A replacement for the JDK's {@link ScriptEngineManager} that properly deals with {@link ScriptEngineFactory}
+ * implementations provided in OSGi modules. In particular, bundles that provide a {@code
+ * javax.script.ScriptEngineFactory} file in their {@code META-INF/services} directory (Java Service Provider
+ * infrastructure) will be handled by this ScriptEngineManager, wrapping the provided ScriptEngineFactory implementation
+ * in a {@link BundleScriptEngineFactory} so that the appropriate class loader will be used to resolve views and
+ * associated resources. Additionally, provided script extensions will now be listened to and installed bundles will be
+ * scanned so that any installed module that provides views that can be handled by the newly installed
+ * ScriptEngineFactory will be now able to answer to view requests.
+ * <p>
+ * Additionally, for each ScriptEngineFactory, this BundleScriptEngineManager will attempt to load an associated {@link
+ * BundleScriptEngineFactoryConfigurator} which should be named {@code <fully qualified ScriptEngineFactory
+ * name>Configurator} so that additional set up / clean up can be performed when the bundle is started or stopped.
  */
 public class BundleScriptEngineManager extends ScriptEngineManager {
 
@@ -154,8 +154,8 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 // perform configuration of the factory if needed
                 if (scriptEngineFactory instanceof BundleScriptEngineFactory) {
                     BundleScriptEngineFactory factory = (BundleScriptEngineFactory) scriptEngineFactory;
-                    final BundleScriptEngineFactoryConfigurator configurator = getConfiguratorFor(factory.getWrappedFactoryClassName());
-                    if (configurator != null ) {
+                    final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(factory);
+                    if (configurator != null) {
                         configurator.configurePreScriptEngineCreation(factory.getWrappedFactory());
                     }
                 }
@@ -201,7 +201,8 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
 
     /**
      * {@inheritDoc}
-     */    public ScriptEngine getEngineByName(String shortName) {
+     */
+    public ScriptEngine getEngineByName(String shortName) {
         return getEngine(shortName, namesToScriptFactories, KeyType.NAME);
     }
 
@@ -239,7 +240,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
 
     private BundleScriptingContext getScriptingContext(Bundle bundle) throws IOException {
         List<String> factoryCandidates = findFactoryCandidates(bundle);
-        if (factoryCandidates == null) {
+        if (factoryCandidates.isEmpty()) {
             return null;
         }
 
@@ -256,30 +257,30 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
             } catch (InstantiationException | IllegalAccessException e) {
                 logger.warn("Couldn't instantiate ScriptEngineFactory {}. Cause: {}. Ignoring.", factoryCandidate, e.getLocalizedMessage());
                 continue;
+            } catch (ClassCastException e) {
+                logger.warn("Registered ScriptEngineFactory {} doesn't implement ScriptEngineFactory in bundle {}. Ignoring.", factoryCandidate, bundle);
+                continue;
             }
 
             if (factoryLoader == null) {
                 // retrieve the class loader associated with the bundle
-                try {
-                    factoryLoader = factoryClass.getClassLoader();
-                } catch (ClassCastException e) {
-                    logger.warn("Registered ScriptEngineFactory {} doesn't implement ScriptEngineFactory in bundle {}. Ignoring.", factoryCandidate, bundle);
-                    continue;
-                }
+                factoryLoader = factoryClass.getClassLoader();
             }
 
             // attempt to load a configurator for the current script engine factory
             final String configuratorName = factoryCandidate + "Configurator";
             try {
                 final Class<?> configuratorClass = bundle.loadClass(configuratorName);
-                final BundleScriptEngineFactoryConfigurator configurator = configuratorClass.asSubclass(BundleScriptEngineFactoryConfigurator.class).newInstance();
+                final BundleScriptEngineFactoryConfigurator configurator = configuratorClass.asSubclass(BundleScriptEngineFactoryConfigurator.class)
+                        .newInstance();
                 configurators.put(factoryCandidate, configurator);
             } catch (ClassNotFoundException e) {
                 // no configurator found for this script engine factory
             } catch (ClassCastException e) {
                 logger.warn("Found class {} that doesn't implement BundleScriptEngineFactoryConfigurator in bundle {}. Ignoring.", configuratorName, bundle);
             } catch (InstantiationException | IllegalAccessException e) {
-                logger.error("Couldn't instantiate configurator class {} in bundle {}. Cause: {}", new String[]{configuratorName, bundle.toString(), e.getLocalizedMessage()});
+                logger.error("Couldn't instantiate configurator class {} in bundle {}. Cause: {}", new String[]{configuratorName, bundle.toString(), e
+                        .getLocalizedMessage()});
             }
         }
 
@@ -304,8 +305,8 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 }
 
                 if (!valid) {
-                    logger.warn("Invalid extension - priority pair: {}. Format is extension=priority, priority should be an integer. Extension will be ignored.",
-                            extensionPriorityPair);
+                    logger.warn("Invalid extension - priority pair: {}. Format is extension=priority, priority should be an integer. Extension will be " +
+                            "ignored.", extensionPriorityPair);
                 }
             }
         } else {
@@ -315,33 +316,45 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         return new BundleScriptingContext(factories, factoryLoader, extensionsPrioritiesMap);
     }
 
-    private BundleScriptEngineFactoryConfigurator getConfiguratorFor(String factory) {
-        return configurators.get(factory);
+    private BundleScriptEngineFactoryConfigurator getConfigurator(BundleScriptEngineFactory factory) {
+        return configurators.get(factory.getWrappedFactoryClassName());
     }
 
     private List<String> findFactoryCandidates(Bundle bundle) throws IOException {
-        List<String> factoryCandidates = new ArrayList<>();
         if ("system.bundle".equals(bundle.getSymbolicName())) {
-            return null;
+            return Collections.emptyList();
         }
 
         if (bundle.getState() == Bundle.ACTIVE) {
             Enumeration<URL> urls = bundle.findEntries(META_INF_SERVICES, SCRIPT_ENGINE_FACTORY_CLASS_NAME, false);
             if (urls == null) {
-                return null;
+                return Collections.emptyList();
             }
+
+            List<String> factoryCandidates = new ArrayList<>();
             while (urls.hasMoreElements()) {
                 URL u = urls.nextElement();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(u.openStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    factoryCandidates.add(line.trim());
+
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(u.openStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        factoryCandidates.add(line.trim());
+                    }
                 }
             }
+            return factoryCandidates;
         }
-        return factoryCandidates;
+
+        return Collections.emptyList();
     }
 
+    /**
+     * Removes the {@link ScriptEngineFactory} instances associated with the specified {@link Bundle} when it is
+     * stopped, making sure that the associated views are also made unavailable by calling {@link
+     * BundleScriptResolver#remove(ScriptEngineFactory, Bundle)}.
+     *
+     * @param bundle the stopping bundle for which we want to deactivate ScriptEngineFactories if needed
+     */
     public void removeScriptEngineFactoriesIfNeeded(Bundle bundle) {
         final List<BundleScriptEngineFactory> factories = bundleIdsToScriptFactories.remove(bundle.getBundleId());
         if (factories != null) {
@@ -364,31 +377,46 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 BundleScriptResolver.getInstance().remove(bundleScriptEngineFactory, bundle);
 
                 // check if we have a configurator to call
-                final String factoryClassName = bundleScriptEngineFactory.getWrappedFactoryClassName();
-                final BundleScriptEngineFactoryConfigurator configurator = getConfiguratorFor(factoryClassName);
+                final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(bundleScriptEngineFactory);
                 if (configurator != null) {
                     configurator.destroy(bundleScriptEngineFactory.getWrappedFactory());
                 }
-                configurators.remove(factoryClassName);
+                configurators.remove(bundleScriptEngineFactory.getWrappedFactoryClassName());
             }
+            //clean up engine cache
+            engineCache.clear();
         }
     }
 
+    /**
+     * Register any {@link ScriptEngineFactory} instances defined in the context of the specified {@link Bundle}.
+     * Any ScriptEngineFactory implementation that is declared in the
+     * {@code META-INF/services/javax.script.ScriptEngineFactory} file of the Bundle is instantiated and configured.
+     * Additionally, the OSGi headers are examined to look for any {@code Jahia-Scripting-Extensions-Priorities}
+     * header value to configure ordering of scripting languages. If the Bundle contains any
+     * {@link BundleScriptEngineFactoryConfigurator} implementations matching a declared ScriptEngineFactory
+     * implementation, then such classes are instantiated and associated with the appropriate ScriptEngineFactory
+     * instance to configure it when appropriate. Finally,
+     * {@link BundleScriptResolver#register(ScriptEngineFactory, Bundle)} is called for each such configured
+     * ScriptEngineFactory in order to be notify it that new scripting languages are available and activate
+     * associated views if needed.
+     *
+     * @param bundle the starting bundle for which we want to activate ScriptEngineFactories if needed
+     */
     public void addScriptEngineFactoriesIfNeeded(Bundle bundle) {
         try {
             final BundleScriptingContext scriptingContext = getScriptingContext(bundle);
             if (scriptingContext != null) {
-                final List<ScriptEngineFactory> engineFactories = scriptingContext.getEngineFactories();
-
-                addFactories(bundle, scriptingContext, engineFactories);
+                addFactories(bundle, scriptingContext);
             }
         } catch (IOException e) {
             logger.error("Error trying to get bundle " + bundle + " script engine factory information", e);
         }
     }
 
-    private void addFactories(Bundle bundle, BundleScriptingContext scriptingContext, List<ScriptEngineFactory> engineFactories) {
-        final List<BundleScriptEngineFactory> existingFactories = new ArrayList<>(engineFactories.size());
+    private void addFactories(Bundle bundle, BundleScriptingContext scriptingContext) {
+        List<ScriptEngineFactory> engineFactories = scriptingContext.getEngineFactories();
+        final List<BundleScriptEngineFactory> factories = new ArrayList<>(engineFactories.size());
 
         for (ScriptEngineFactory factory : engineFactories) {
             final BundleScriptEngineFactory bundleScriptEngineFactory = new BundleScriptEngineFactory(factory, scriptingContext);
@@ -408,18 +436,20 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 namesToScriptFactories.put(name, bundleScriptEngineFactory);
             }
 
-            existingFactories.add(bundleScriptEngineFactory);
+            factories.add(bundleScriptEngineFactory);
 
             // check if we need to further configure the factory
-            final BundleScriptEngineFactoryConfigurator configurator = getConfiguratorFor(bundleScriptEngineFactory.getWrappedFactoryClassName());
+            final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(bundleScriptEngineFactory);
             if (configurator != null) {
                 configurator.configure(factory, bundle, scriptingContext.getClassLoader());
             }
-
-            BundleScriptResolver.getInstance().register(bundleScriptEngineFactory, bundle);
+           BundleScriptResolver.getInstance().register(bundleScriptEngineFactory, bundle);
         }
 
-        bundleIdsToScriptFactories.put(bundle.getBundleId(), existingFactories);
+        // clean engine cache after installing a new script engine
+        engineCache.clear();
+
+        bundleIdsToScriptFactories.put(bundle.getBundleId(), factories);
     }
 
     ScriptEngineFactory getFactoryForExtension(String extension) {

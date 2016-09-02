@@ -67,6 +67,8 @@ import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
 import java.util.*;
 
@@ -314,6 +316,14 @@ public class ContentTabItem extends PropertiesTabItem {
 
                 flowPanel.add(new HTML("<b>" + Messages.get("nodes.label", "Types") + ":</b> " + selectedNode.getNodeTypes()));
                 flowPanel.add(new HTML("<b>" + Messages.get("org.jahia.jcr.edit.tags.tab", "Tags") + ":</b> " + selectedNode.getTags() != null ? selectedNode.getTags() : ""));
+                if ( engine.getNode() != null && ModuleHelper.getModulesByPath() != null) {
+                    List<Module> modules = ModuleHelper.getModulesByPath().get(engine
+                            .getNode()
+                            .getPath());
+                    if (modules != null && modules.size() > 0 &&  modules.get(0).getScriptInfo() != null) {
+                        flowPanel.add(new HTML("<b>" + Messages.get("script.info.label", "Script info") + ":</b> " + modules.get(0).getScriptInfo()));
+                    }
+                }
                 g.setWidget(0, 1, flowPanel);
             }
             if (preview != null || JahiaGWTParameters.isDevelopmentMode()) {

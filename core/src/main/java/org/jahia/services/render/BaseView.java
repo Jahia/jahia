@@ -43,16 +43,16 @@
  */
 package org.jahia.services.render;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Properties;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Properties;
 
 /**
  * Base class for resources views.
@@ -188,7 +188,9 @@ public abstract class BaseView implements View, Comparable<View> {
 
     @Override
     public String getInfo() {
-        return "Path dispatch: " + path;
+        String modulePath = module.getSourcesFolder() != null ? getModule().getSourcesFolder().getPath() + "/src/main/resources" : "/modules/" + module
+                .getIdWithVersion();
+        return "Path dispatch: " + modulePath +  path;
     }
 
     /**

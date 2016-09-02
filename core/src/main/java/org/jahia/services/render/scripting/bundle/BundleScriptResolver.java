@@ -2,44 +2,44 @@
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
- *
- *                                 http://www.jahia.com
- *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
- *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
- *
- *     1/ GPL
- *     ==================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ===================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
- *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * <p>
+ * http://www.jahia.com
+ * <p>
+ * Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ * <p>
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
+ * <p>
+ * 1/ GPL
+ * ==================================================================================
+ * <p>
+ * IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * <p>
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ===================================================================================
+ * <p>
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p>
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * <p>
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.render.scripting.bundle;
 
@@ -113,7 +113,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     private ExtensionObserverRegistry observerRegistry;
     private final ScriptBundleObserver scriptBundleObserver = new ScriptBundleObserver(this);
     /**
-     * Prefixes for bundles that are excluded from bundle scanning for views since they contain lots of files with registered extensions that would be considered as views.
+     * Prefixes for bundles that are excluded from bundle scanning for views since they contain lots of files with
+     * registered extensions that would be considered as views.
      */
     private Set<String> ignoredBundlePrefixes = new HashSet<>(7);
 
@@ -131,18 +132,17 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     public void registerObservers() {
         // add scanners for all types of scripts of the views to register them in the BundleScriptResolver
-        registerObservers(scriptFactoryMap.keySet());
+        for (String scriptExtension : scriptFactoryMap.keySet()) {
+            registerObserver(scriptExtension);
+        }
     }
 
     private void registerObserver(String extension) {
         observerRegistry.put(new ScriptBundleURLScanner("/", extension, true), scriptBundleObserver);
     }
 
-    public void registerObservers(Iterable<String> extensions) {
-        // add scanners for all types of scripts of the views to register them in the BundleScriptResolver
-        for (String scriptExtension : extensions) {
-            registerObserver(scriptExtension);
-        }
+    private void removeObserver(String extension) {
+        observerRegistry.remove(new ScriptBundleURLScanner("/", extension, true));
     }
 
     public ScriptBundleObserver getBundleObserver() {
@@ -163,7 +163,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     public void setScriptFactoryMap(Map<String, ScriptFactory> scriptFactoryMap) {
         if (!(scriptFactoryMap instanceof LinkedHashMap)) {
-            throw new IllegalArgumentException("Error instantiating BundleScriptResolver: Spring is supposed to create a SortedMap when using a <map> property but didn't. Was: "
+            throw new IllegalArgumentException("Error instantiating BundleScriptResolver: Spring is supposed to create a SortedMap when using a <map> " +
+                    "property but didn't. Was: "
                     + scriptFactoryMap.getClass().getName());
         }
         this.scriptFactoryMap = (LinkedHashMap<String, ScriptFactory>) scriptFactoryMap;
@@ -181,6 +182,18 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         }
     }
 
+    /**
+     * Registers the specified {@link ScriptEngineFactory} defined in the context of the specified starting
+     * {@link Bundle}. This results in registering the associated view extensions along with activating any existing
+     * views in active bundles. This registration operation also takes care of script extension re-ordering if
+     * necessary since bundles defining ScriptEngineFactories can do so.
+     * <p>
+     * <p>Additionally, {@link ScriptBundleURLScanner} are also activated to look for any files with the newly
+     * registered extensions during future bundle deployments.</p>
+     *
+     * @param scriptEngineFactory the ScriptEngineFactory instance we want to register
+     * @param bundle              the starting bundle defining the given ScriptEngineFactory
+     */
     public void register(ScriptEngineFactory scriptEngineFactory, Bundle bundle) {
         final List<String> extensions = scriptEngineFactory.getExtensions();
 
@@ -208,24 +221,27 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             scriptFactoryMap.put(extension, bundleScriptFactory);
 
             // compute or retrieve the extensions priority and record it
-            final int priority = getPriorityFor(extension, context);
+            final int priority = getPriority(extension, context);
             extensionPriorities.put(extension, priority);
 
             logger.info("ScriptEngineFactory {} registered extension {} with priority {}", new Object[]{scriptEngineFactory, extension, priority});
 
             // now we need to activate the bundle script scanner inside of newly deployed or existing bundles
             // register view script observers
-            addBundleScripts(bundle, extension, scriptEngineFactory);
+            addBundleScripts(bundle, extension);
 
             // check existing bundles to see if they provide views for the newly deployed scripting language
             final BundleContext bundleContext = bundle.getBundleContext();
             if (bundleContext != null) {
                 for (Bundle otherBundle : bundleContext.getBundles()) {
                     if (otherBundle.getState() == Bundle.ACTIVE) {
-                        addBundleScripts(otherBundle, extension, scriptEngineFactory);
+                        addBundleScripts(otherBundle, extension);
                     }
                 }
             }
+
+            // register extension observer
+            registerObserver(extension);
         }
 
         // deal with extension priorities if needed
@@ -254,22 +270,28 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
             logger.info("Extension priorities got re-ordered by module {} to {}", bundle.getSymbolicName(), orderedPriorities);
         }
-
-        // add observers for the extensions
-        registerObservers(extensions);
     }
 
-    private int getPriorityFor(String extension, BundleScriptingContext context) {
+    private int getPriority(String extension, BundleScriptingContext context) {
         final int defaultPriority = extensionPriorities.size() * PRIORITY_STAGGER_FACTOR;
         if (context == null) {
             return defaultPriority;
         } else {
-            return context.getPriorityFor(extension, defaultPriority);
+            return context.getPriority(extension, defaultPriority);
         }
     }
 
+    /**
+     * Removes the specified {@link ScriptEngineFactory} from the known ones, deactivating any associated views from
+     * currently active bundles. This is called when a bundle declaring ScriptEngineFactories is stopping. Previously
+     * registered extension observers associated with the ScriptEngineFactory's supported extensions are also removed.
+     *
+     * @param factory the factory to be removed
+     * @param bundle  the bundle which declared the factory and which is being stopped
+     */
     public void remove(ScriptEngineFactory factory, Bundle bundle) {
-        for (String extension : factory.getExtensions()) {
+        List<String> extensions = factory.getExtensions();
+        for (String extension : extensions) {
             // we need to remove the views associated with our bundle
             availableScripts.remove(bundle.getSymbolicName());
 
@@ -282,15 +304,19 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
             scriptFactoryMap.remove(extension);
             extensionPriorities.remove(extension);
+
+            // remove associated observer
+            removeObserver(extension);
         }
     }
 
     /**
      * Whether or not to scan the specified bundle for views with the specified extension.
      *
-     * @param bundle the bundle to possibly scan
+     * @param bundle        the bundle to possibly scan
      * @param viewExtension the extension for views we're looking for in bundles
-     * @return {@code true} if the specified bundle should be scanned for views with the specified extension, {@code false} otherwise
+     * @return {@code true} if the specified bundle should be scanned for views with the specified extension, {@code
+     * false} otherwise
      */
     static boolean shouldNotBeScannedForViews(Bundle bundle, String viewExtension) {
         if (isIgnoredBundle(bundle)) {
@@ -364,7 +390,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         return getInstance().preRegisteredExtensions.contains(viewExtension);
     }
 
-    private void addBundleScripts(Bundle bundle, String extension, ScriptEngineFactory scriptEngineFactory) {
+    private void addBundleScripts(Bundle bundle, String extension) {
         // only add views if we need to
         if (!shouldNotBeScannedForViews(bundle, extension)) {
             final String extensionPattern = getExtensionPattern(extension);
@@ -399,7 +425,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     /**
      * Callback for registering new resource views for a bundle.
-     * @param bundle the bundle to register views for
+     *
+     * @param bundle  the bundle to register views for
      * @param scripts the URLs of the views to register
      */
     public void addBundleScripts(Bundle bundle, List<URL> scripts) {
@@ -414,8 +441,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     /**
      * Method for registering a new resource view for a bundle.
+     *
      * @param bundle the bundle to register views for
-     * @param path the path of the view to register
+     * @param path   the path of the view to register
      */
     public void addBundleScript(Bundle bundle, String path) {
         if (path.split("/").length != 4) {
@@ -455,7 +483,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     /**
      * Callback for unregistering resource views for a bundle.
-     * @param bundle the bundle to unregister views for
+     *
+     * @param bundle  the bundle to unregister views for
      * @param scripts the URLs of the views to unregister
      */
     public void removeBundleScripts(Bundle bundle, List<URL> scripts) {
@@ -484,8 +513,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     /**
      * Method for unregistering a resource view for a bundle.
+     *
      * @param bundle the bundle to unregister views for
-     * @param path the path of the view to unregister
+     * @param path   the path of the view to unregister
      */
     public void removeBundleScript(Bundle bundle, String path) {
         final SortedMap<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
@@ -741,10 +771,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     /**
      * Returns view scripts for the specified module bundle which match the specified path.
      *
-     * @param module
-     *            the module bundle to perform lookup in
-     * @param pathPrefix
-     *            the resource path prefix to match
+     * @param module     the module bundle to perform lookup in
+     * @param pathPrefix the resource path prefix to match
      * @return a set of matching view scripts ordered by the extension (script type)
      */
     private Set<ViewResourceInfo> findBundleScripts(String module, String pathPrefix) {

@@ -91,7 +91,12 @@ public class DefaultBundleService implements BundleService {
             } else {
                 // force bundle resolution
                 BundleLifecycleUtils.resolveBundles(Collections.singleton(bundle));
+                
+                // if the bundle won't be started we do a refresh on it (this refreshes the dependencies)
+                BundleLifecycleUtils.refreshBundle(bundle);
             }
+            
+            BundleLifecycleUtils.startAllBundles();
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
         }
@@ -101,6 +106,8 @@ public class DefaultBundleService implements BundleService {
     public void start(BundleInfo bundleInfo, String target) throws ModuleNotFoundException {
         try {
             getBundleEnsureExists(bundleInfo).start();
+            
+            BundleLifecycleUtils.startAllBundles();
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
         }
@@ -110,6 +117,8 @@ public class DefaultBundleService implements BundleService {
     public void stop(BundleInfo bundleInfo, String target) throws ModuleNotFoundException {
         try {
             getBundleEnsureExists(bundleInfo).stop();
+            
+            BundleLifecycleUtils.startAllBundles();
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
         }
@@ -118,9 +127,18 @@ public class DefaultBundleService implements BundleService {
     @Override
     public void uninstall(BundleInfo bundleInfo, String target) throws ModuleNotFoundException {
         try {
-            getBundleEnsureExists(bundleInfo).uninstall();
+            Bundle bundle = getBundleEnsureExists(bundleInfo);
+            bundle.uninstall();
+            
+            refreshBundle(bundle);
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
+        }
+    }
+    
+    protected void refreshBundle(Bundle bundle) {
+        if (Bundle.UNINSTALLED == bundle.getState()) {
+             BundleLifecycleUtils.refreshBundle(bundle);
         }
     }
 }

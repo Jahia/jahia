@@ -119,6 +119,8 @@ public class JSR223Script implements Script {
 
                         StringWriter writer = (StringWriter) scriptContext.getWriter();
                         return writer.toString().trim();
+                    } else {
+                        throw new RenderException("Error while retrieving input stream for the resource " + view.getPath());
                     }
                 } catch (ScriptException e) {
                     throw new RenderException("Error while executing script " + view.getPath(), e);

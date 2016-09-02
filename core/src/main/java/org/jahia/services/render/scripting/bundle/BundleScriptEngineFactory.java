@@ -48,8 +48,8 @@ import javax.script.ScriptEngineFactory;
 import java.util.List;
 
 /**
- * A {@link ScriptEngineFactory} implementation that makes sure that {@link ScriptEngine} are created using the appropriate class loader as some implementations have this
- * requirement in order to work properly in an OSGi environment.
+ * A {@link ScriptEngineFactory} implementation that makes sure that {@link ScriptEngine} are created using the appropriate class loader as some
+ * implementations have this requirement in order to work properly in an OSGi environment.
  */
 class BundleScriptEngineFactory implements ScriptEngineFactory {
 

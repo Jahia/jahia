@@ -65,6 +65,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
+import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.render.scripting.bundle.BundleScriptEngineManager;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
@@ -130,6 +131,7 @@ public class Activator implements BundleActivator, EventHandler {
     private CndBundleObserver cndBundleObserver;
     private List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<ServiceRegistration<?>>();
     private BundleListener bundleListener;
+    private Set<Bundle> installedBundles;
     private Set<Bundle> initializedBundles;
     private Map<Bundle, JahiaTemplatesPackage> registeredBundles;
     private Map<Bundle, ServiceTracker<HttpService, HttpService>> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker<HttpService, HttpService>>();
@@ -175,6 +177,7 @@ public class Activator implements BundleActivator, EventHandler {
 
         // Get all module state information from the service
         registeredBundles = templatesService.getRegisteredBundles();
+        installedBundles = templatesService.getInstalledBundles();
         initializedBundles = templatesService.getInitializedBundles();
         toBeResolved = templatesService.getToBeResolved();
         moduleStates = templatesService.getModuleStates();
@@ -284,6 +287,8 @@ public class Activator implements BundleActivator, EventHandler {
                                 if (!bundleLocation.startsWith(URL_PROTOCOL_DX)) {
                                     // transform the module
                                     bundle.update(transform(bundle));
+                                    // then persist
+                                    ModuleUtils.persist(bundle);
                                 } else if (state > Bundle.INSTALLED) {
                                     bundle.update();
                                 }
@@ -307,18 +312,21 @@ public class Activator implements BundleActivator, EventHandler {
     }
 
     /**
-     * Performs the persistence of the supplied bundle (if needed) and returns the transformed input stream of its content, including module
-     * dependency transformation.
+     * Returns the transformed input stream of its content, including module
+     * dependency transformation and bundle location update.
      *
      * @param bundle the source bundle
      * @return the transformed input stream of its content
      */
     private static InputStream transform(Bundle bundle) throws ModuleManagementException {
         try {
-            PersistentBundle persistentBundle = ModuleUtils.persist(bundle);
-            return ModuleUtils.addBundleUpdateLocation(
-                    ModuleUtils.addModuleDependencies(ModuleUtils.loadPersistedBundle(persistentBundle.getKey())),
-                    persistentBundle.getLocation());
+            Resource bundleResource = ModuleUtils.loadBundleResource(bundle);
+            PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(bundleResource);
+            if (bundleInfo == null) {
+                throw new ModuleManagementException("Invalid resource for bundle: " + bundleResource);
+            }
+
+            return ModuleUtils.addBundleUpdateLocation(ModuleUtils.addModuleDependencies(bundleResource.getInputStream()), bundleInfo.getLocation());
         } catch (Exception e) {
             if (e instanceof ModuleManagementException) {
                 // re-throw
@@ -431,6 +439,7 @@ public class Activator implements BundleActivator, EventHandler {
 
             logger.info("--- Installing DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
             registeredBundles.put(bundle, pkg);
+            installedBundles.add(bundle);
             setModuleState(bundle, ModuleState.State.INSTALLED, null);
         }
     }
@@ -450,6 +459,7 @@ public class Activator implements BundleActivator, EventHandler {
 
             logger.info("--- Updating DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
             registeredBundles.put(bundle, pkg);
+            installedBundles.add(bundle);
             setModuleState(bundle, ModuleState.State.UPDATED, null);
         }
     }
@@ -488,6 +498,7 @@ public class Activator implements BundleActivator, EventHandler {
             templatePackageRegistry.unregisterPackageVersion(jahiaTemplatesPackage);
         }
         moduleStates.remove(bundle);
+        installedBundles.remove(bundle);
         initializedBundles.remove(bundle);
 
         long totalTime = System.currentTimeMillis() - startTime;
@@ -501,6 +512,7 @@ public class Activator implements BundleActivator, EventHandler {
         if (null == pkg) {
             // is not a Jahia module -> skip
             moduleStates.remove(bundle);
+            installedBundles.remove(bundle);
             return;
         }
 
@@ -545,7 +557,7 @@ public class Activator implements BundleActivator, EventHandler {
 
         logger.info("--- Done resolving DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
-        if (!checkImported(pkg)) {
+        if (installedBundles.remove(bundle) || !checkImported(pkg)) {
             scanForImportFiles(bundle, pkg);
 
             if (SettingsBean.getInstance().isProcessingServer()) {

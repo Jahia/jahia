@@ -107,4 +107,8 @@ class ViewResourceInfo {
         return path.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return path;
+    }
 }

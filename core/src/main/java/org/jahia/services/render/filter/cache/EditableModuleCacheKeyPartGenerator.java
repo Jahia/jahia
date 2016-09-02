@@ -41,49 +41,41 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.render.scripting.bundle;
+package org.jahia.services.render.filter.cache;
 
-import javax.script.ScriptEngineFactory;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+
+import java.util.Properties;
 
 /**
- * Contextual information resulting from the loading of {@link ScriptEngineFactory} from OSGi bundles.
+ * Key part that contains the value of editableModule define by ModuleTag
  */
-class BundleScriptingContext {
-    private final ClassLoader classLoader;
-    private final Map<String, Integer> extensionPriorities;
-    private final List<ScriptEngineFactory> engineFactories;
+public class EditableModuleCacheKeyPartGenerator implements CacheKeyPartGenerator, RenderContextTuner {
 
-    BundleScriptingContext(List<ScriptEngineFactory> engineFactories, ClassLoader classLoader, Map<String, Integer> extensionsPrioritiesMap) {
-        this.classLoader = classLoader;
-        this.extensionPriorities = extensionsPrioritiesMap;
-        this.engineFactories = engineFactories;
+    @Override
+    public String getKey() {
+        return "editableModule";
     }
 
-    ClassLoader getClassLoader() {
-        return classLoader;
+    @Override
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
+        return String.valueOf(renderContext.getRequest().getAttribute("editableModule"));
     }
 
-    int getPriority(String extension, int defaultPriority) {
-        if (extensionPriorities != null) {
-            final Integer priority = extensionPriorities.get(extension);
-            return priority == null ? defaultPriority : Math.abs(priority);
-        } else {
-            return defaultPriority;
-        }
+    @Override
+    public String replacePlaceholders(RenderContext renderContext, String keyPart) {
+        return keyPart;
     }
 
-    boolean specifiesExtensionPriorities() {
-        return extensionPriorities != null && !extensionPriorities.isEmpty();
+    @Override
+    public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
+        renderContext.getRequest().setAttribute("editableModule", Boolean.valueOf(value));
+        return null;
     }
 
-    List<ScriptEngineFactory> getEngineFactories() {
-        return engineFactories;
-    }
-
-    Map<String, Integer> getExtensionPriorities() {
-        return extensionPriorities != null ? extensionPriorities : Collections.<String, Integer>emptyMap();
+    @Override
+    public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
+        renderContext.getRequest().removeAttribute("editableModule");
     }
 }

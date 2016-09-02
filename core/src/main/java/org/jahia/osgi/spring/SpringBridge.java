@@ -90,7 +90,7 @@ public class SpringBridge implements JahiaAfterInitializationService {
     }
 
     /**
-     * Incapsulates bean exposition rules: which beans to expose, and how to expose.
+     * Encapsulates bean exposition rules: which beans to expose, and how to expose.
      */
     public static class BeanExposition {
 

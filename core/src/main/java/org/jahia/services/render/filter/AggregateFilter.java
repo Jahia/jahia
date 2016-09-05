@@ -121,10 +121,17 @@ public class AggregateFilter extends AbstractFilter {
     // Stack of final fragment keys, used to avoid fragment recursion and infinite loop
     public static final String FRAGMENT_KEYS_STACK = "aggregateFilter.keysStack";
 
+    // if this parameter is set to true in the request attributes, the aggregation is skipped
+    public static final String SKIP_AGGREGATION = "aggregateFilter.skip";
+
     private CacheKeyGenerator keyGenerator;
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+
+        if (skipAggregation(renderContext)) {
+            return null;
+        }
 
         HttpServletRequest request = renderContext.getRequest();
 
@@ -186,10 +193,21 @@ public class AggregateFilter extends AbstractFilter {
         }
     }
 
+    private boolean skipAggregation(RenderContext renderContext) {
+        if (renderContext.getRequest().getAttribute(SKIP_AGGREGATION) != null && (Boolean) renderContext.getRequest().getAttribute(SKIP_AGGREGATION)) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
-        HttpServletRequest request = renderContext.getRequest();
+        if (skipAggregation(renderContext)) {
+            return previousOut;
+        }
+
+        HttpServletRequest request =  renderContext.getRequest();
 
         // no keys stack, no aggregation
         if (request.getAttribute(FRAGMENT_KEYS_STACK) == null) {
@@ -216,6 +234,10 @@ public class AggregateFilter extends AbstractFilter {
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain) {
+
+        if (skipAggregation(renderContext)) {
+            return;
+        }
 
         HttpServletRequest request = renderContext.getRequest();
 

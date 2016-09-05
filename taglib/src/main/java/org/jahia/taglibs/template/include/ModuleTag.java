@@ -227,7 +227,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             resource.getNode()) && !isExcluded(renderContext, resource);
 
                     boolean nodeEditable = checkNodeEditable(renderContext, node);
-                    pageContext.getRequest().setAttribute("editableModule", canEdit && nodeEditable);
+                    resource.getModuleParams().put("editableModule", canEdit && nodeEditable);
                     if (canEdit) {
                         String type = getModuleType(renderContext);
                         List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());

@@ -2337,10 +2337,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (objectNode.hasProperty("j:lockTypes")) {
             Property property = objectNode.getProperty("j:lockTypes");
             Value[] oldValues = property.getValues();
-            Value[] newValues = new Value[oldValues.length + 1];
-            System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
-            newValues[oldValues.length] = getSession().getValueFactory().createValue(l);
-            property.setValue(newValues);
+            boolean addValue = true;
+            for (Value oldValue : oldValues) {
+                if(l.equals(oldValue.getString())) {
+                    addValue = false;
+                    break;
+                }
+            }
+            //Avoid having twice the same lock
+            if(addValue) {
+                Value[] newValues = new Value[oldValues.length + 1];
+                System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
+                newValues[oldValues.length] = getSession().getValueFactory().createValue(l);
+                property.setValue(newValues);
+            }
         } else {
             objectNode.setProperty("j:lockTypes", new String[]{l});
         }

@@ -287,7 +287,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         // check if the bundle defined any view extension priorities
         // todo: add more validation and better specify how this functionality should work
         final Dictionary<String, String> headers = bundle.getHeaders();
-        final String extensionsPriorities = headers.get("Jahia-Scripting-Extensions-Priorities");
+        final String extensionsPriorities = headers.get(BundleScriptingConfigurationConstants.JAHIA_SCRIPTING_EXTENSIONS_PRIORITIES);
         final Map<String, Integer> extensionsPrioritiesMap;
         if (extensionsPriorities != null) {
             final String[] extensionPriorityPairs = StringUtils.split(extensionsPriorities);
@@ -452,7 +452,11 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         bundleIdsToScriptFactories.put(bundle.getBundleId(), factories);
     }
 
-    ScriptEngineFactory getFactoryForExtension(String extension) {
+    public ScriptEngineFactory getFactoryForExtension(String extension) {
+        if (StringUtils.isEmpty(extension)) {
+            throw new IllegalArgumentException("Null or empty extension");
+        }
+
         return extensionsToScriptFactories.get(extension);
     }
 }

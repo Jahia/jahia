@@ -351,7 +351,7 @@ public final class BundleLifecycleUtils {
     }
 
     /**
-     * Starts a bundle and removes it from the Collection when successfully started.
+     * Starts provided bundle.
      *
      * @param bundlesToStart a collection of bundles to be started
      */
@@ -371,6 +371,7 @@ public final class BundleLifecycleUtils {
                     if (BundleException.RESOLVE_ERROR == e.getType()) {
                         // we log unresolved dependencies in DEBUG
                         logger.debug("Error while starting bundle " + bundle + ". Cause: " + e.getMessage(), e);
+                        logger.info("Bundle {} has unresolved dependencies and won't be started", bundle);
                     } else {
                         logger.warn("Error while starting bundle " + bundle + ". Cause: " + e.getMessage(), e);
                     }

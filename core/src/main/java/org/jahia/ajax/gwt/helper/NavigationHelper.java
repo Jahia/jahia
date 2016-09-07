@@ -379,7 +379,7 @@ public class NavigationHelper {
         }
     }
 
-    public List<GWTJahiaNode> retrieveRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, final JCRSiteNode site, Locale uiLocale, JCRSessionWrapper currentUserSession, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws RepositoryException, GWTJahiaServiceException {
+    public List<GWTJahiaNode> retrieveRoot(List<String> paths, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, final List<String> fields, final JCRSiteNode site, Locale uiLocale, JCRSessionWrapper currentUserSession, boolean checkSubChild, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex) throws RepositoryException, GWTJahiaServiceException {
         final List<GWTJahiaNode> userNodes = new ArrayList<GWTJahiaNode>();
         final boolean checkLicense = haveToCheckLicense(fields);
 
@@ -429,7 +429,7 @@ public class NavigationHelper {
                         while (nodes.hasNext()) {
                             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodes.next();
                             if (!checkLicense || isAllowedByLicense(nodeWrapper)) {
-                                userNodes.add(getGWTJahiaNode(nodeWrapper));
+                                userNodes.add(getGWTJahiaNode(nodeWrapper, fields));
                             }
                         }
                         return null;

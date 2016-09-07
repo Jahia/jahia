@@ -221,7 +221,16 @@ public class Export extends JahiaController implements ServletContextAware {
                     params.put(ImportExportService.XSL_PATH, cleanupXsl);
 
                     OutputStream outputStream = response.getOutputStream();
-                    importExportService.exportSites(outputStream, params, sites);
+                    logger.info("Sites " + sites + " export started");
+                    long startSitesExportTime = System.currentTimeMillis();
+                    int numberOfNodesToExport = importExportService.estimateNodesSites(params, sites);
+                    if(logger.isDebugEnabled()) {
+                        logger.debug("Number of nodes to export : " + numberOfNodesToExport);
+                    }
+                    importExportService.exportSites(outputStream, params, sites, numberOfNodesToExport);
+                    long endSitesExportTime = System.currentTimeMillis();
+                    logger.info("Sites " + sites + " export ended in " +  (endSitesExportTime - startSitesExportTime)
+                            /1000 + " seconds");
                     outputStream.close();
                 }
             } else if ("xml".equals(exportFormat)) {

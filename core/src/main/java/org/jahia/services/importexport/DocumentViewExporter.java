@@ -57,6 +57,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -74,7 +75,7 @@ import java.util.regex.Pattern;
  *
  */
 public class DocumentViewExporter extends Observable {
-    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewExporter.class);
+    protected static final Logger logger = LoggerFactory.getLogger(DocumentViewExporter.class);
 
     private static final String CDATA = "CDATA";
     private static final String NS_URI = "http://www.w3.org/2000/xmlns/";

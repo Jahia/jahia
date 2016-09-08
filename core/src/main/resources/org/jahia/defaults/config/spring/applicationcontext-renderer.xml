@@ -198,7 +198,7 @@
     </bean>
 
     <bean id="urlSystemAttributesAppenderFilter" class="org.jahia.services.render.filter.URLSystemAttributesAppenderFilter">
-        <property name="priority" value="20"/>
+        <property name="priority" value="15.5"/>
         <property name="description"
                   value="Defines attributes to keep in the links of a rendering when met in the urls"/>
         <property name="applyOnConfigurations" value="page"/>

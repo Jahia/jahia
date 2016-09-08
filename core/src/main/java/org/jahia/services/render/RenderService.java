@@ -216,14 +216,9 @@ public class RenderService {
                 Script s = scriptResolver.resolveScript(resource, context);
                 if (s != null) {
                     return s;
-                } else {
-                    // todo : Added to track issue related to QA-8692 - remove this logger when issue fixed
-                    logger.error("no script found for resource " + resource.getPath());
                 }
             } catch (TemplateNotFoundException tnfe) {
                 // skip this resolver and continue with the next one
-                // todo : Added to track issue related to QA-8692 - remove this logger when issue fixed
-                logger.error("unable to resolve view for resource " + resource.getPath(), tnfe);
             }
         }
         throw new TemplateNotFoundException("Unable to find the template for resource " + resource);

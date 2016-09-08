@@ -174,8 +174,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             JCRNodeWrapper createdNode = null;
             if (enableArea) {
                 try {
-                    createdNode = session.getNode(StringUtils.substringBeforeLast(areaPath, "/")).addNode(StringUtils.substringAfterLast(areaPath, "/"), areaType);
-                    session.save();
+                    createdNode = createAreaNode(areaPath, session);
                     List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                     if (contributeTypes != null) {
                         nodeTypes = StringUtils.join(contributeTypes, " ");
@@ -228,6 +227,19 @@ public class AreaTag extends ModuleTag implements ParamParent {
             }
             printModuleEnd();
         }
+    }
+
+    private JCRNodeWrapper createAreaNode(String areaPath, JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper areaNode = session.getNode(StringUtils.substringBeforeLast(areaPath, "/"));
+        String areaName = StringUtils.substringAfterLast(areaPath, "/");
+        JCRNodeWrapper createdNode = null;
+        try {
+            createdNode = areaNode.getNode(areaName);
+        } catch (PathNotFoundException e) {
+            createdNode = areaNode.addNode(areaName, areaType);
+            session.save();
+        }
+        return createdNode;
     }
 
     protected String getConfiguration() {

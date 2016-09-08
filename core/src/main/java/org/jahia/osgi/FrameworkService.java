@@ -43,8 +43,7 @@
  */
 package org.jahia.osgi;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -60,6 +59,8 @@ import java.util.TreeMap;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.karaf.main.ConfigProperties;
 import org.apache.karaf.main.Main;
@@ -137,16 +138,19 @@ public class FrameworkService implements FrameworkListener {
     public static void notifyFileInstallStarted() {
         final FrameworkService instance = getInstance();
 
+        Properties felixProperties = (Properties) SpringContextSingleton.getBean("felixFileInstallConfig");
         if (instance.firstStartup) {
             // this is a first framework startup
             instance.firstStartup = false;
-            Properties felixProperties = (Properties) SpringContextSingleton.getBean("felixFileInstallConfig");
             if (!Boolean.valueOf(felixProperties.getProperty("felix.fileinstall.bundles.new.start", "true"))) {
                 // as the bundles are not started automatically by Fileinstall we need to start them manually
                 startAllModules();
             }
+        } else if (!SettingsBean.getInstance().isDevelopmentMode() &&
+                !Boolean.valueOf(felixProperties.getProperty("felix.fileinstall.bundles.new.start", "true"))) {
+            startMigrateBundlesIfNeeded();
         }
-        
+
         synchronized (instance) {
             instance.fileInstallStarted = true;
             logger.info("FileInstall watcher started");
@@ -498,6 +502,56 @@ public class FrameworkService implements FrameworkListener {
         }
         logger.info("All initial bundles installed and set to start");
         FileUtils.deleteQuietly(marker);
+    }
+
+    private static void startMigrateBundlesIfNeeded() {
+        // as the bundles are not started automatically after a migration whe should do it manually
+        File deployedBundlesDir = new File(System.getProperty("org.osgi.framework.storage"));
+        File marker = new File(deployedBundlesDir, "[migrate-bundles].dostart");
+        if (!marker.exists()) {
+            return;
+        }
+        logger.info("Starting migrate bundles");
+
+        try {
+            BundleContext ctx = getBundleContext();
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(marker));
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.trim().length() == 0) {
+                    continue;
+                }
+                String[] lineParts = line.split(",");
+                String bundleSymbolicName = lineParts[0].trim();
+                String bundleVersion = lineParts[1].trim();
+                logger.info("Re-starting module " + bundleSymbolicName + " v" + bundleVersion + " purged by FixApplier ...");
+                try {
+                    Bundle b = null;
+                    for (Bundle bundle : ctx.getBundles()) {
+                        String n = BundleUtils.getModuleId(bundle);
+                        if (StringUtils.equals(n, bundleSymbolicName)) {
+                            if (StringUtils.equals(bundle.getVersion().toString(), bundleVersion)) {
+                                b = bundle;
+                                break;
+                            }
+                        }
+                    }
+                    if (b != null) {
+                        b.start();
+                    } else {
+                        logger.info("Cannot find module " + bundleSymbolicName + " v" + bundleVersion + ". Skip starting it.");
+                    }
+
+                } catch (Exception e) {
+                    logger.error("Error starting module " + bundleSymbolicName + " v" + bundleVersion + ". Cause: " + e.getMessage(), e);
+                }
+            }
+            IOUtils.closeQuietly(bufferedReader);
+            logger.info("All migrate bundles installed and set to start");
+            FileUtils.deleteQuietly(marker);
+        } catch (IOException e) {
+            logger.error("Error reading [migrate-bundles].dostart Cause: " + e.getMessage(), e);
+        }
     }
 
     private List<File> getBundleRepos() {

@@ -852,8 +852,16 @@ public class ExtendedNodeType implements NodeType {
 
     protected String lookupLabel(String key, Locale locale, String defaultValue) {
         JahiaTemplatesPackage pkg = getTemplatePackage();
-        return pkg != null ? Messages.get(pkg, key, locale, defaultValue) : Messages.getTypes(key, locale,
-                defaultValue);
+        try {
+            return pkg != null ? Messages.get(pkg, key, locale, defaultValue) : Messages.getTypes(key, locale,
+                    defaultValue);
+        } catch (Exception e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Unable to resolve {} with locale {}", key, locale.getDisplayName());
+                logger.debug(e.getMessage(), e);
+            }
+            return StringUtils.isEmpty(defaultValue) ? key : defaultValue;
+        }
     }
 
     public String getLabel(Locale locale) {

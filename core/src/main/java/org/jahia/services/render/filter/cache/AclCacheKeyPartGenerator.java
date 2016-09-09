@@ -53,9 +53,7 @@ import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -64,10 +62,7 @@ import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
 /**
@@ -90,14 +85,13 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     private static final String CACHE_NAME = "HTMLNodeUsersACLs";
     private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
-    private static final String NODEPATH_ROLES_CACHE_NAME = "HTMLNodePathRoles";
 
     private final Object objForSync = new Object();
     private EhCacheProvider cacheProvider;
     private Cache cache;
     private JahiaGroupManagerService groupManagerService;
     private Cache permissionCache;
-    private Cache nodePathRolesCache;
+
 
     private JCRTemplate template;
 
@@ -135,12 +129,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         if (permissionCache == null) {
             cacheManager.addCache(PROPERTY_CACHE_NAME);
             permissionCache = cacheManager.getCache(PROPERTY_CACHE_NAME);
-        }
-
-        nodePathRolesCache = cacheManager.getCache(NODEPATH_ROLES_CACHE_NAME);
-        if (nodePathRolesCache == null) {
-            cacheManager.addCache(NODEPATH_ROLES_CACHE_NAME);
-            nodePathRolesCache = cacheManager.getCache(NODEPATH_ROLES_CACHE_NAME);
         }
     }
 
@@ -253,7 +241,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         Map<String, Set<String>> rolesForKey = new TreeMap<String, Set<String>>();
         StringBuilder r = new StringBuilder();
         try {
-            List<Map<String, UUIDSet>> principalAcl = null;
+            List<Map<String, Set<String>>> principalAcl = null;
 
             for (String s : paths) {
                 if (s.equals(PER_USER)) {
@@ -296,31 +284,31 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         return keyPart;
     }
 
-    private void populateRolesForKey(String nodePath, List<Map<String, UUIDSet>> principalAcl, Map<String, Set<String>> rolesForKey, Pattern pattern) {
+    private void populateRolesForKey(String nodePath, List<Map<String, Set<String>>> principalAcl, Map<String, Set<String>> rolesForKey, Pattern pattern) {
         if (pattern == null) {
             nodePath += "/";
-            for (Map<String, UUIDSet> map : principalAcl) {
-                for (Map.Entry<String, UUIDSet> entry : map.entrySet()) {
+            for (Map<String, Set<String>> map : principalAcl) {
+                for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
                     String grantPath = entry.getKey() + "/";
                     if ((nodePath.startsWith(grantPath) || grantPath.startsWith(nodePath))) {
-                        UUIDSet roles = entry.getValue();
+                        Set<String> roles = entry.getValue();
                         if (!rolesForKey.containsKey(entry.getKey())) {
-                            rolesForKey.put(entry.getKey(), getStrings(nodePath, roles));
+                            rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
                         } else {
-                            rolesForKey.get(entry.getKey()).addAll(getStrings(nodePath, roles));
+                            rolesForKey.get(entry.getKey()).addAll(roles);
                         }
                     }
                 }
             }
         } else {
-            for (Map<String, UUIDSet> map : principalAcl) {
-                for (Map.Entry<String, UUIDSet> entry : map.entrySet()) {
+            for (Map<String, Set<String>> map : principalAcl) {
+                for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
                     if (pattern.matcher(entry.getKey()).matches()) {
-                        UUIDSet roles = entry.getValue();
+                        Set<String> roles = entry.getValue();
                         if (!rolesForKey.containsKey(entry.getKey())) {
-                            rolesForKey.put(entry.getKey(), getStrings(nodePath, roles));
+                            rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
                         } else {
-                            rolesForKey.get(entry.getKey()).addAll(getStrings(nodePath, roles));
+                            rolesForKey.get(entry.getKey()).addAll(roles);
                         }
                     }
                 }
@@ -328,27 +316,8 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         }
     }
 
-    private Set<String> getStrings(String nodePath, UUIDSet roles) {
-        final String cacheKey = nodePath + roles.getUuid();
-        Element element = nodePathRolesCache.get(cacheKey);
-        if (element == null) {
-            Set<String> realRoles = new TreeSet<>();
-            for (String role : roles.getSet()) {
-                if (!role.contains("->")) {
-                    realRoles.add(role);
-                } else if (nodePath.startsWith(role.split("->")[1].trim())) {
-                    realRoles.add(role);
-                }
-            }
-            element = new Element(cacheKey, realRoles);
-            element.setEternal(true);
-            nodePathRolesCache.put(element);
-        }
-        return (Set<String>) element.getObjectValue();
-    }
-
-    private List<Map<String, UUIDSet>> getUserAcl(JahiaUser principal) throws RepositoryException {
-        List<Map<String, UUIDSet>> principalAcl = new ArrayList<>();
+    private List<Map<String, Set<String>>> getUserAcl(JahiaUser principal) throws RepositoryException {
+        List<Map<String, Set<String>>> principalAcl = new ArrayList<>();
         principalAcl.add(getPrincipalAcl("u:" + principal.getName(), principal.getRealm()));
 
         List<String> groups = groupManagerService.getMembershipByPath(principal.getLocalPath());
@@ -361,7 +330,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();
 
-    private Map<String, UUIDSet> getPrincipalAcl(final String aclKey, final String siteKey) throws RepositoryException {
+    private Map<String, Set<String>> getPrincipalAcl(final String aclKey, final String siteKey) throws RepositoryException {
         final String cacheKey = siteKey != null ? aclKey + ":" + siteKey : aclKey;
         Element element = cache.get(cacheKey);
         if (element == null) {
@@ -374,23 +343,23 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 semaphore.tryAcquire(500, TimeUnit.MILLISECONDS);
                 element = cache.get(cacheKey);
                 if (element != null) {
-                    return (Map<String, UUIDSet>) element.getObjectValue();
+                    return (Map<String, Set<String>>) element.getObjectValue();
                 }
 
                 logger.debug("Getting ACL for {}", cacheKey);
                 long l = System.currentTimeMillis();
 
-                Map<String, UUIDSet> map = template.doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Map<String, UUIDSet>>() {
+                Map<String, Set<String>> map = template.doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Map<String, Set<String>>>() {
                     @SuppressWarnings("unchecked")
-                    public Map<String, UUIDSet> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    public Map<String, Set<String>> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query query = session.getWorkspace().getQueryManager().createQuery(
                                 "select * from [jnt:ace] as ace where ace.[j:principal] = '" + JCRContentUtils.sqlEncode(aclKey) + "'",
                                 Query.JCR_SQL2);
                         QueryResult queryResult = query.execute();
                         NodeIterator rowIterator = queryResult.getNodes();
 
-                        Map<String, UUIDSet> mapGranted = new ConcurrentHashMap<String, UUIDSet>();
-                        Map<String, UUIDSet> mapDenied = new LinkedHashMap<String, UUIDSet>();
+                        Map<String, Set<String>> mapGranted = new ConcurrentHashMap<String, Set<String>>();
+                        Map<String, Set<String>> mapDenied = new LinkedHashMap<String, Set<String>>();
 
                         while (rowIterator.hasNext()) {
                             JCRNodeWrapper node = (JCRNodeWrapper) rowIterator.next();
@@ -398,13 +367,13 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                                 continue;
                             }
                             String path = node.getParent().getParent().getPath();
-                            UUIDSet foundRoles = new UUIDSet(UUID.randomUUID().toString());
+                            Set<String> foundRoles = new HashSet<String>();
                             boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
                             Value[] roles = node.getProperty(Constants.J_ROLES).getValues();
                             for (Value r : roles) {
                                 String role = r.getString();
-                                if (!foundRoles.getSet().contains(role)) {
-                                    foundRoles.getSet().add(role);
+                                if (!foundRoles.contains(role)) {
+                                    foundRoles.add(role);
                                 }
                             }
                             if (path.equals("/")) {
@@ -421,9 +390,9 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                             while (grantedPath.length() > 0) {
                                 grantedPath = StringUtils.substringBeforeLast(grantedPath, "/");
                                 if (mapGranted.containsKey(grantedPath)) {
-                                    Collection<String> intersection = CollectionUtils.intersection(mapGranted.get(grantedPath).getSet(), mapDenied.get(deniedPath).getSet());
+                                    Collection<String> intersection = CollectionUtils.intersection(mapGranted.get(grantedPath), mapDenied.get(deniedPath));
                                     for (String s : intersection) {
-                                        mapGranted.get(grantedPath).getSet().add(s + " -> " + deniedPath);
+                                        mapGranted.get(grantedPath).add(s + " -> " + deniedPath);
                                     }
                                 }
                             }
@@ -444,7 +413,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
 
         }
-        return (Map<String, UUIDSet>) element.getObjectValue();
+        return (Map<String, Set<String>>) element.getObjectValue();
     }
 
     public void flushUsersGroupsKey() {
@@ -455,8 +424,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         synchronized (objForSync) {
             cache.removeAll(!propageToOtherClusterNodes);
             cache.flush();
-            nodePathRolesCache.removeAll(!propageToOtherClusterNodes);
-            nodePathRolesCache.flush();
             logger.debug("Flushed HTMLNodeUsersACLs cache");
         }
     }
@@ -464,8 +431,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     public void flushUsersGroupsKey(String key, boolean propageToOtherClusterNodes) {
         synchronized (objForSync) {
             cache.remove(key, !propageToOtherClusterNodes);
-            nodePathRolesCache.removeAll(!propageToOtherClusterNodes);
-            nodePathRolesCache.flush();
         }
     }
 

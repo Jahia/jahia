@@ -336,21 +336,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     }
 
     /**
-     * Check all known path (from all Principal ACL) and populates roles for these path.
-     * @param principalAcls List of all PrincipalAcl that apply to the current user
-     * @param rolesForPath The final map where to put the results, with all roles per paths
-     */
-    private void populateRolesForAllPaths(List<PrincipalAcl> principalAcls, Map<String, Set<String>> rolesForPath) {
-        Set<String> paths = new HashSet<>();
-        for (PrincipalAcl principalAcl : principalAcls) {
-            principalAcl.fillAllPaths(paths);
-        }
-        for (String path : paths) {
-            populateRolesForPath(path, principalAcls, rolesForPath);
-        }
-    }
-
-    /**
      * Check all known path (from all Principal ACL) that could match the pattern, and populates roles for these path.
      * @param pattern Pattern to check on all known paths
      * @param principalAcls List of all PrincipalAcl that apply to the current user

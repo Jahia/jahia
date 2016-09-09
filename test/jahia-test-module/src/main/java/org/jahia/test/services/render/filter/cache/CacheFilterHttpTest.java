@@ -134,16 +134,16 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
         try {
-//            TestHelper.deleteSite(TESTSITE_NAME);
-//            final JahiaUserManagerService userManagerProvider = JahiaUserManagerService.getInstance();
-//            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAB").getPath(), session);
-//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAC").getPath(), session);
-//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userBC").getPath(), session);
-//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user1").getPath(), session);
-//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user2").getPath(), session);
-//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user3").getPath(), session);
-//            session.save();
+            TestHelper.deleteSite(TESTSITE_NAME);
+            final JahiaUserManagerService userManagerProvider = JahiaUserManagerService.getInstance();
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAB").getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAC").getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userBC").getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user1").getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user2").getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user3").getPath(), session);
+            session.save();
         } catch (Exception e) {
             logger.warn("Exception during test tearDown", e);
         }
@@ -267,171 +267,171 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         }
     }
 
-//    @Test
-//    public void testModuleError() throws Exception {
-//        String s = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error1");
-//        assertTrue(s.contains("<!-- Module error :"));
-//        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error2");
-//        // All served from cache
-//        assertEquals(1, CacheFilterCheckFilter.getData("error2").getCount());
-//        Thread.sleep(5000);
-//        // Error should be flushed
-//        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error3");
-//        assertEquals(2, CacheFilterCheckFilter.getData("error3").getCount());
-//    }
-//
-//    @Test
-//    public void testModuleWait() throws Exception {
-//        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
-//        try {
-//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
-//            URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/long");
-//            HttpThread t1 = new HttpThread(url, "root", "root1234", "testModuleWait1");
-//            t1.start();
-//            Thread.sleep(200);
-//
-//            HttpThread t2 = new HttpThread(url, "root", "root1234", "testModuleWait2");
-//            t2.start();
-//            t2.join();
-//
-//            String content = getContent(url, "root", "root1234", "testModuleWait3");
-//
-//            t1.join();
-//
-//            String content1 = getContent(url, "root", "root1234", "testModuleWait4");
-//
-//            // Long module is left blank
-//            assertFalse(t2.getResult().contains("Very long to appear"));
-//            assertTrue(t2.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
-//            assertTrue("Second thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait2").getTime() >= 1000);
-//
-//            // Entry is cached without the long module
-//            assertFalse(content.contains("Very long to appear"));
-//            assertTrue(content.contains("<h2 class=\"pageTitle\">long</h2>"));
-//            assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait3").getCount());
-//
-//            assertTrue(t1.getResult().contains("Very long to appear"));
-//            assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
-//            assertTrue("First thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait1").getTime() >= 6000);
-//
-//            // Entry is now cached with the long module
-//            assertTrue(content1.contains("Very long to appear"));
-//            assertTrue(content1.contains("<h2 class=\"pageTitle\">long</h2>"));
-//            assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait4").getCount());
-//        } finally {
-//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
-//        }
-//    }
-//
-//    @Test
-//    public void testMaxConcurrent() throws Exception {
-//        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
-//        int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
-//        try {
-//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
-//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(1);
-//
-//            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long"), "root", "root1234", "testMaxConcurrent1");
-//            t1.start();
-//            Thread.sleep(500);
-//
-//            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent2");
-//            t2.start();
-//            t2.join();
-//            t1.join();
-//
-//            assertEquals("Incorrect response code for first thread", 200, t1.resultCode);
-//            assertEquals("Incorrect response code for second thread", 500, t2.resultCode);
-//
-//            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent3").contains("<title>Home</title>"));
-//        } finally {
-//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
-//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
-//        }
-//    }
-//
-//    @Test
-//    public void testReferencesFlush() throws Exception {
-//        URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/references");
-//        getContent(url, "root", "root1234", null);
-//
-//        try {
-//            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
-//            JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/main/simple-text");
-//            try {
-//                n.setProperty("text", "text content updated");
-//                session.save();
-//                String newvalue = getContent(url, "root", "root1234", "testReferencesFlush1");
-//                Matcher m = Pattern.compile("text content updated").matcher(newvalue);
-//                assertTrue("Value has not been updated", m.find());
-//                assertTrue("References have not been flushed", m.find());
-//                assertTrue("References have not been flushed", m.find());
-//            } finally {
-//                n.setProperty("text", "text content");
-//                session.save();
-//            }
-//        } catch (Exception e) {
-//            logger.error(e.getMessage(), e);
-//        }
-//    }
-//
-//    @Test
-//    public void testRandomFlush() throws Exception {
-//        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
-//        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
-//        List<String> paths = new ArrayList<String>();
-//        NodeIterator nodes = q.execute().getNodes();
-//        Set<String> skipped = new HashSet<>(Arrays.asList("long", "error", "user-per-content-test"));
-//        while (nodes.hasNext()) {
-//            JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
-//            if (!skipped.contains(next.getName())) {
-//                paths.add(next.getPath());
-//            }
-//        }
-//        List<String> users = Arrays.asList("userAB", "userAC", "userBC");
-//        Map<String, String> m = new HashMap<String, String>();
-//        for (String user : users) {
-//            for (String path : paths) {
-//                m.put(user + path, getContent(getUrl(path), user, "password", null));
-//            }
-//        }
-//
-//        final Cache cache = ModuleCacheProvider.getInstance().getCache();
-//        List<String> keysBefore = cache.getKeys();
-//
-//        Map<String, Object> cacheCopy = new HashMap<String, Object>();
-//        for (String s : keysBefore) {
-//            final Element element = cache.get(s);
-//            if (element != null) {
-//                cacheCopy.put(s, element.getObjectValue());
-//            }
-//        }
-//
-//        for (int j = 0; j < 10; j++) {
-//            System.out.println("flush " + j);
-//            List<String> toFlush = randomizeFlush(keysBefore, 10);
-//            for (String user : users) {
-//                for (String path : paths) {
-//                    System.out.println(user + " - " + path);
-//                    if (!m.get(user + path).equals(getContent(getUrl(path), user, "password", null))) {
-//                        fail("Different content for " + user + " , " + path + " when flushing : " + toFlush);
-//                    }
-//                    checkCacheContent(cache, cacheCopy, toFlush);
-//                }
-//            }
-//            List<String> keysAfter = cache.getKeys();
-//            Collections.sort(keysBefore);
-//            Collections.sort(keysAfter);
-//            if (!keysBefore.equals(keysAfter)) {
-//                List<String> onlyInBefore = new ArrayList<String>(keysBefore);
-//                onlyInBefore.removeAll(keysAfter);
-//                List<String> onlyInAfter = new ArrayList<String>(keysAfter);
-//                onlyInAfter.removeAll(keysBefore);
-//                fail("Key sets are not the same before and after flushing : " + toFlush + "\n Before flushs :" + onlyInBefore + " ,\n After flush : " + onlyInAfter);
-//            }
-//            checkCacheContent(cache, cacheCopy, toFlush);
-//        }
-//    }
+    @Test
+    public void testModuleError() throws Exception {
+        String s = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error1");
+        assertTrue(s.contains("<!-- Module error :"));
+        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error2");
+        // All served from cache
+        assertEquals(1, CacheFilterCheckFilter.getData("error2").getCount());
+        Thread.sleep(5000);
+        // Error should be flushed
+        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error3");
+        assertEquals(2, CacheFilterCheckFilter.getData("error3").getCount());
+    }
+
+    @Test
+    public void testModuleWait() throws Exception {
+        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
+        try {
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
+            URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/long");
+            HttpThread t1 = new HttpThread(url, "root", "root1234", "testModuleWait1");
+            t1.start();
+            Thread.sleep(200);
+
+            HttpThread t2 = new HttpThread(url, "root", "root1234", "testModuleWait2");
+            t2.start();
+            t2.join();
+
+            String content = getContent(url, "root", "root1234", "testModuleWait3");
+
+            t1.join();
+
+            String content1 = getContent(url, "root", "root1234", "testModuleWait4");
+
+            // Long module is left blank
+            assertFalse(t2.getResult().contains("Very long to appear"));
+            assertTrue(t2.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertTrue("Second thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait2").getTime() >= 1000);
+
+            // Entry is cached without the long module
+            assertFalse(content.contains("Very long to appear"));
+            assertTrue(content.contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait3").getCount());
+
+            assertTrue(t1.getResult().contains("Very long to appear"));
+            assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertTrue("First thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait1").getTime() >= 6000);
+
+            // Entry is now cached with the long module
+            assertTrue(content1.contains("Very long to appear"));
+            assertTrue(content1.contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait4").getCount());
+        } finally {
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+        }
+    }
+
+    @Test
+    public void testMaxConcurrent() throws Exception {
+        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
+        int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
+        try {
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(1);
+
+            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long"), "root", "root1234", "testMaxConcurrent1");
+            t1.start();
+            Thread.sleep(500);
+
+            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent2");
+            t2.start();
+            t2.join();
+            t1.join();
+
+            assertEquals("Incorrect response code for first thread", 200, t1.resultCode);
+            assertEquals("Incorrect response code for second thread", 500, t2.resultCode);
+
+            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent3").contains("<title>Home</title>"));
+        } finally {
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
+        }
+    }
+
+    @Test
+    public void testReferencesFlush() throws Exception {
+        URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/references");
+        getContent(url, "root", "root1234", null);
+
+        try {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+            JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/main/simple-text");
+            try {
+                n.setProperty("text", "text content updated");
+                session.save();
+                String newvalue = getContent(url, "root", "root1234", "testReferencesFlush1");
+                Matcher m = Pattern.compile("text content updated").matcher(newvalue);
+                assertTrue("Value has not been updated", m.find());
+                assertTrue("References have not been flushed", m.find());
+                assertTrue("References have not been flushed", m.find());
+            } finally {
+                n.setProperty("text", "text content");
+                session.save();
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    @Test
+    public void testRandomFlush() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
+        List<String> paths = new ArrayList<String>();
+        NodeIterator nodes = q.execute().getNodes();
+        Set<String> skipped = new HashSet<>(Arrays.asList("long", "error", "user-per-content-test"));
+        while (nodes.hasNext()) {
+            JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
+            if (!skipped.contains(next.getName())) {
+                paths.add(next.getPath());
+            }
+        }
+        List<String> users = Arrays.asList("userAB", "userAC", "userBC");
+        Map<String, String> m = new HashMap<String, String>();
+        for (String user : users) {
+            for (String path : paths) {
+                m.put(user + path, getContent(getUrl(path), user, "password", null));
+            }
+        }
+
+        final Cache cache = ModuleCacheProvider.getInstance().getCache();
+        List<String> keysBefore = cache.getKeys();
+
+        Map<String, Object> cacheCopy = new HashMap<String, Object>();
+        for (String s : keysBefore) {
+            final Element element = cache.get(s);
+            if (element != null) {
+                cacheCopy.put(s, element.getObjectValue());
+            }
+        }
+
+        for (int j = 0; j < 10; j++) {
+            System.out.println("flush " + j);
+            List<String> toFlush = randomizeFlush(keysBefore, 10);
+            for (String user : users) {
+                for (String path : paths) {
+                    System.out.println(user + " - " + path);
+                    if (!m.get(user + path).equals(getContent(getUrl(path), user, "password", null))) {
+                        fail("Different content for " + user + " , " + path + " when flushing : " + toFlush);
+                    }
+                    checkCacheContent(cache, cacheCopy, toFlush);
+                }
+            }
+            List<String> keysAfter = cache.getKeys();
+            Collections.sort(keysBefore);
+            Collections.sort(keysAfter);
+            if (!keysBefore.equals(keysAfter)) {
+                List<String> onlyInBefore = new ArrayList<String>(keysBefore);
+                onlyInBefore.removeAll(keysAfter);
+                List<String> onlyInAfter = new ArrayList<String>(keysAfter);
+                onlyInAfter.removeAll(keysBefore);
+                fail("Key sets are not the same before and after flushing : " + toFlush + "\n Before flushs :" + onlyInBefore + " ,\n After flush : " + onlyInAfter);
+            }
+            checkCacheContent(cache, cacheCopy, toFlush);
+        }
+    }
 
     @Test
     public void testACLsUserPerContent() throws Exception {

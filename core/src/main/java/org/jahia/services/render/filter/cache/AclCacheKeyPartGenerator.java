@@ -116,7 +116,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     private JCRTemplate template;
 
     private boolean usePerUser = false;
-    private boolean useGroupsSignature = true;
+    private boolean useGroupsSignature = false;
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;

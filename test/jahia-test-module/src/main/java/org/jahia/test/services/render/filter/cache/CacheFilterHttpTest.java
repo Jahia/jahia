@@ -2,51 +2,50 @@
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
- *
- *                                 http://www.jahia.com
- *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
- *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
- *
- *     1/ GPL
- *     ==================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ===================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
- *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * <p>
+ * http://www.jahia.com
+ * <p>
+ * Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ * <p>
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
+ * <p>
+ * 1/ GPL
+ * ==================================================================================
+ * <p>
+ * IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * <p>
+ * <p>
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ===================================================================================
+ * <p>
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p>
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * <p>
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
  */
 package org.jahia.test.services.render.filter.cache;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -55,14 +54,12 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
-import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -73,16 +70,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.NodeIterator;
-import javax.jcr.query.Query;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -94,7 +86,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         try {
-            JahiaSite site = TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web-blue");
+            JahiaSite site = TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.BOOTSTRAP_ACME_SPACE_TEMPLATES);
             assertNotNull(site);
             JCRStoreService jcrService = ServicesRegistry.getInstance()
                     .getJCRStoreService();
@@ -142,16 +134,16 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
         try {
-            TestHelper.deleteSite(TESTSITE_NAME);
-            final JahiaUserManagerService userManagerProvider = JahiaUserManagerService.getInstance();
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAB").getPath(), session);
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAC").getPath(), session);
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userBC").getPath(), session);
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user1").getPath(), session);
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user2").getPath(), session);
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user3").getPath(), session);
-            session.save();
+//            TestHelper.deleteSite(TESTSITE_NAME);
+//            final JahiaUserManagerService userManagerProvider = JahiaUserManagerService.getInstance();
+//            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAB").getPath(), session);
+//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAC").getPath(), session);
+//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userBC").getPath(), session);
+//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user1").getPath(), session);
+//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user2").getPath(), session);
+//            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user3").getPath(), session);
+//            session.save();
         } catch (Exception e) {
             logger.warn("Exception during test tearDown", e);
         }
@@ -160,6 +152,10 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     @Before
     public void setUp() {
+        clearAll();
+    }
+
+    private void clearAll() {
         ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
         Ehcache cache = cacheProvider.getCache();
         Ehcache depCache = cacheProvider.getDependenciesCache();
@@ -185,251 +181,279 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     @Test
     public void testACLs() throws Exception {
         testACLs(SITECONTENT_ROOT_NODE + "/home/acl1");
-        testACLs(SITECONTENT_ROOT_NODE + "/home/acl2");
+    }
+
+    static void permute(List<String> arr, int k, List<List<String>> res) {
+        for (int i = k; i < arr.size(); i++) {
+            Collections.swap(arr, i, k);
+            permute(arr, k + 1, res);
+            Collections.swap(arr, k, i);
+        }
+        if (k == arr.size() - 1) {
+            res.add(new ArrayList<String>(arr));
+        }
     }
 
     private void testACLs(String path) throws Exception {
-        String guest = getContent(getUrl(path), null, null, null);
-        String root = getContent(getUrl(path), "root", "root1234", null);
-        String userAB = getContent(getUrl(path), "userAB", "password", null);
-        String userBC = getContent(getUrl(path), "userBC", "password", null);
-        String userAC = getContent(getUrl(path), "userAC", "password", null);
+        List<String> users = Arrays.asList(null, "root", "userAB", "userAC");
 
-        checkAcl(guest, new boolean[]{false, false, false, false, false, false, false, false});
-        checkAcl(root, new boolean[]{true, true, true, true, true, true, true, true});
-        checkAcl(userAB, new boolean[]{false, true, true, false, false, true, true, false});
-        checkAcl(userBC, new boolean[]{false, true, false, true, false, false, true, true});
-        checkAcl(userAC, new boolean[]{false, true, false, false, true, true, false, true});
+        List<List<String>> allPerms = new ArrayList<>();
+        permute(users, 0, allPerms);
+
+        Map<String, String> results = new HashMap<>();
+
+        for (List<String> allPerm : allPerms) {
+            results.clear();
+            clearAll();
+
+            for (String user : allPerm) {
+                results.put(user, getContent(getUrl(path), user, getPassword(user), null));
+            }
+
+            try {
+                checkAcl(allPerm + ", guest : ", results.get(null), new boolean[]{false, false, false, false, false, false, false, false});
+                checkAcl(allPerm + ", root : ", results.get("root"), new boolean[]{true, true, true, true, true, true, true, true});
+                checkAcl(allPerm + ", userAB : ", results.get("userAB"), new boolean[]{false, true, true, false, false, true, true, false});
+                checkAcl(allPerm + ", userAC : ", results.get("userAC"), new boolean[]{false, true, false, false, true, true, false, true});
+            } catch (AssertionError e) {
+                logger.error(e.getMessage(), e);
+                throw e;
+            }
+        }
+
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
-        JCRNodeWrapper n = session.getNode(path + "/maincontent/simple-text-A");
+        JCRNodeWrapper n = session.getNode(path + "/main/simple-text-A");
+        JCRNodeWrapper n2 = session.getNode(path + "/simple-page-A");
         try {
             n.revokeRolesForPrincipal("g:groupA");
             n.grantRoles("g:groupB", new HashSet<String>(Arrays.asList("reader")));
+            n2.revokeRolesForPrincipal("g:groupA");
+            n2.grantRoles("g:groupB", new HashSet<String>(Arrays.asList("reader")));
             session.save();
 
-            String guest2 = getContent(getUrl(path), null, null, "testACLs1");
-            String root2 = getContent(getUrl(path), "root", "root1234", "testACLs2");
-            String userAB2 = getContent(getUrl(path), "userAB", "password", "testACLs3");
-            String userBC2 = getContent(getUrl(path), "userBC", "password", "testACLs4");
-            String userAC2 = getContent(getUrl(path), "userAC", "password", "testACLs5");
+            Map<String, String> results2 = new HashMap<>();
 
-            checkAcl(guest2, new boolean[]{false, false, false, false, false, false, false, false});
-            checkAcl(root2, new boolean[]{true, true, true, true, true, true, true, true});
-            checkAcl(userAB2, new boolean[]{false, true, true, false, false, true, true, false});
-            checkAcl(userBC2, new boolean[]{false, true, false, true, false, true, true, true});
-            checkAcl(userAC2, new boolean[]{false, true, false, false, true, false, false, true});
+            for (String user : users) {
+                results2.put(user, getContent(getUrl(path), user, getPassword(user), null));
+            }
+            checkAcl(users + ", guest : ", results2.get(null), new boolean[]{false, false, false, false, false, false, false, false});
+            checkAcl(users + ", root : ", results2.get("root"), new boolean[]{true, true, true, true, true, true, true, true});
+            checkAcl(users + ", userAB : ", results2.get("userAB"), new boolean[]{false, true, true, false, false, true, true, false});
+            checkAcl(users + ", userAC : ", results2.get("userAC"), new boolean[]{false, true, false, false, true, false, false, true});
         } finally {
             n.revokeRolesForPrincipal("g:groupB");
             n.grantRoles("g:groupA", new HashSet<String>(Arrays.asList("reader")));
+            n2.revokeRolesForPrincipal("g:groupB");
+            n2.grantRoles("g:groupA", new HashSet<String>(Arrays.asList("reader")));
             session.save();
         }
 
-        assertEquals("Content served is not the same", guest, getContent(getUrl(path), null, null, "testACLs6"));
-        assertEquals("Content served is not the same", root, getContent(getUrl(path), "root", "root1234", "testACLs7"));
-        assertEquals("Content served is not the same", userAB, getContent(getUrl(path), "userAB", "password", "testACLs8"));
-        assertEquals("Content served is not the same", userBC, getContent(getUrl(path), "userBC", "password", "testACLs9"));
-        assertEquals("Content served is not the same", userAC, getContent(getUrl(path), "userAC", "password", "testACLs10"));
-    }
-
-    private void checkAcl(String content, boolean[] b) {
-        assertEquals(b[0], content.contains("visible for root"));
-        assertEquals(b[1], content.contains("visible for users only"));
-        assertEquals(b[2], content.contains("visible for userAB"));
-        assertEquals(b[3], content.contains("visible for userBC"));
-        assertEquals(b[4], content.contains("visible for userAC"));
-        assertEquals(b[5], content.contains("visible for groupA"));
-        assertEquals(b[6], content.contains("visible for groupB"));
-        assertEquals(b[7], content.contains("visible for groupC"));
-    }
-
-    @Test
-    public void testModuleError() throws Exception {
-        String s = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error1");
-        assertTrue(s.contains("<!-- Module error :"));
-        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error2");
-        // All served from cache
-        assertEquals(1, CacheFilterCheckFilter.getData("error2").getCount());
-        Thread.sleep(5000);
-        // Error should be flushed
-        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error3");
-        assertEquals(2, CacheFilterCheckFilter.getData("error3").getCount());
-    }
-
-    @Test
-    public void testModuleWait() throws Exception {
-        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
-        try {
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
-            URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/long");
-            HttpThread t1 = new HttpThread(url, "root", "root1234", "testModuleWait1");
-            t1.start();
-            Thread.sleep(200);
-
-            HttpThread t2 = new HttpThread(url, "root", "root1234", "testModuleWait2");
-            t2.start();
-            t2.join();
-
-            String content = getContent(url, "root", "root1234", "testModuleWait3");
-
-            t1.join();
-
-            String content1 = getContent(url, "root", "root1234", "testModuleWait4");
-
-            // Long module is left blank
-            assertFalse(t2.getResult().contains("Very long to appear"));
-            assertTrue(t2.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertTrue("Second thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait2").getTime() >= 1000);
-
-            // Entry is cached without the long module
-            assertFalse(content.contains("Very long to appear"));
-            assertTrue(content.contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait3").getCount());
-
-            assertTrue(t1.getResult().contains("Very long to appear"));
-            assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertTrue("First thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait1").getTime() >= 6000);
-
-            // Entry is now cached with the long module
-            assertTrue(content1.contains("Very long to appear"));
-            assertTrue(content1.contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait4").getCount());
-        } finally {
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
-        }
-    }
-
-    @Test
-    public void testMaxConcurrent() throws Exception {
-        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
-        int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
-        try {
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(1);
-
-            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long"), "root", "root1234", "testMaxConcurrent1");
-            t1.start();
-            Thread.sleep(500);
-
-            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent2");
-            t2.start();
-            t2.join();
-            t1.join();
-
-            assertEquals("Incorrect response code for first thread", 200, t1.resultCode);
-            assertEquals("Incorrect response code for second thread", 500, t2.resultCode);
-
-            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent3").contains("<title>Home</title>"));
-        } finally {
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
-        }
-    }
-
-    @Test
-    public void testReferencesFlush() throws Exception {
-        URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/references");
-        getContent(url, "root", "root1234", null);
-
-        try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
-            JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/maincontent/simple-text");
-            try {
-                n.setProperty("text", "text content updated");
-                session.save();
-                String newvalue = getContent(url, "root", "root1234", "testReferencesFlush1");
-                Matcher m = Pattern.compile("text content updated").matcher(newvalue);
-                assertTrue("Value has not been updated", m.find());
-                assertTrue("References have not been flushed", m.find());
-                assertTrue("References have not been flushed", m.find());
-            } finally {
-                n.setProperty("text", "text content");
-                session.save();
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
-    @Test
-    public void testRandomFlush() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
-        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
-        List<String> paths = new ArrayList<String>();
-        NodeIterator nodes = q.execute().getNodes();
-        Set<String> skipped = new HashSet<>(Arrays.asList("long", "error", "user-per-content-test"));
-        while (nodes.hasNext()) {
-            JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
-            if (!skipped.contains(next.getName())) {
-                paths.add(next.getPath());
-            }
-        }
-        List<String> users = Arrays.asList("userAB", "userAC", "userBC");
-        Map<String, String> m = new HashMap<String, String>();
         for (String user : users) {
-            for (String path : paths) {
-                m.put(user + path, getContent(getUrl(path), user, "password", null));
-            }
-        }
-
-        final Cache cache = ModuleCacheProvider.getInstance().getCache();
-        List<String> keysBefore = cache.getKeys();
-
-        Map<String, Object> cacheCopy = new HashMap<String, Object>();
-        for (String s : keysBefore) {
-            final Element element = cache.get(s);
-            if (element != null) {
-                cacheCopy.put(s, element.getObjectValue());
-            }
-        }
-
-        for (int j = 0; j < 10; j++) {
-            System.out.println("flush " + j);
-            List<String> toFlush = randomizeFlush(keysBefore, 10);
-            for (String user : users) {
-                for (String path : paths) {
-                    System.out.println(user + " - " + path);
-                    if (!m.get(user + path).equals(getContent(getUrl(path), user, "password", null))) {
-                        fail("Different content for " + user + " , " + path + " when flushing : " + toFlush);
-                    }
-                    checkCacheContent(cache, cacheCopy, toFlush);
-                }
-            }
-            List<String> keysAfter = cache.getKeys();
-            Collections.sort(keysBefore);
-            Collections.sort(keysAfter);
-            if (!keysBefore.equals(keysAfter)) {
-                List<String> onlyInBefore = new ArrayList<String>(keysBefore);
-                onlyInBefore.removeAll(keysAfter);
-                List<String> onlyInAfter = new ArrayList<String>(keysAfter);
-                onlyInAfter.removeAll(keysBefore);
-                fail("Key sets are not the same before and after flushing : " + toFlush + "\n Before flushs :" + onlyInBefore + " ,\n After flush : " + onlyInAfter);
-            }
-            checkCacheContent(cache, cacheCopy, toFlush);
+            assertEquals("Content served is not the same for " + user, results.get(user), getContent(getUrl(path), user, getPassword(user), null));
         }
     }
-    
+
+    private String getPassword(String user) {
+        return user == null ? null : (user.equals("root") ? "root1234" : "password");
+    }
+
+    private String[] texts = {"visible for root", "visible for users only", "visible for userAB", "visible for userBC", "visible for userAC", "visible for groupA", "visible for groupB", "visible for groupC"};
+
+    private void checkAcl(String message, String content, boolean[] b) {
+        for (int i = 0; i < texts.length; i++) {
+
+            assertEquals(message + " , " + texts[i], b[i], content.contains(texts[i]));
+        }
+    }
+
+//    @Test
+//    public void testModuleError() throws Exception {
+//        String s = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error1");
+//        assertTrue(s.contains("<!-- Module error :"));
+//        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error2");
+//        // All served from cache
+//        assertEquals(1, CacheFilterCheckFilter.getData("error2").getCount());
+//        Thread.sleep(5000);
+//        // Error should be flushed
+//        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error3");
+//        assertEquals(2, CacheFilterCheckFilter.getData("error3").getCount());
+//    }
+//
+//    @Test
+//    public void testModuleWait() throws Exception {
+//        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
+//        try {
+//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
+//            URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/long");
+//            HttpThread t1 = new HttpThread(url, "root", "root1234", "testModuleWait1");
+//            t1.start();
+//            Thread.sleep(200);
+//
+//            HttpThread t2 = new HttpThread(url, "root", "root1234", "testModuleWait2");
+//            t2.start();
+//            t2.join();
+//
+//            String content = getContent(url, "root", "root1234", "testModuleWait3");
+//
+//            t1.join();
+//
+//            String content1 = getContent(url, "root", "root1234", "testModuleWait4");
+//
+//            // Long module is left blank
+//            assertFalse(t2.getResult().contains("Very long to appear"));
+//            assertTrue(t2.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
+//            assertTrue("Second thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait2").getTime() >= 1000);
+//
+//            // Entry is cached without the long module
+//            assertFalse(content.contains("Very long to appear"));
+//            assertTrue(content.contains("<h2 class=\"pageTitle\">long</h2>"));
+//            assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait3").getCount());
+//
+//            assertTrue(t1.getResult().contains("Very long to appear"));
+//            assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
+//            assertTrue("First thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait1").getTime() >= 6000);
+//
+//            // Entry is now cached with the long module
+//            assertTrue(content1.contains("Very long to appear"));
+//            assertTrue(content1.contains("<h2 class=\"pageTitle\">long</h2>"));
+//            assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait4").getCount());
+//        } finally {
+//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+//        }
+//    }
+//
+//    @Test
+//    public void testMaxConcurrent() throws Exception {
+//        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
+//        int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
+//        try {
+//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
+//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(1);
+//
+//            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long"), "root", "root1234", "testMaxConcurrent1");
+//            t1.start();
+//            Thread.sleep(500);
+//
+//            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent2");
+//            t2.start();
+//            t2.join();
+//            t1.join();
+//
+//            assertEquals("Incorrect response code for first thread", 200, t1.resultCode);
+//            assertEquals("Incorrect response code for second thread", 500, t2.resultCode);
+//
+//            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent3").contains("<title>Home</title>"));
+//        } finally {
+//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+//            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
+//        }
+//    }
+//
+//    @Test
+//    public void testReferencesFlush() throws Exception {
+//        URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/references");
+//        getContent(url, "root", "root1234", null);
+//
+//        try {
+//            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+//            JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/main/simple-text");
+//            try {
+//                n.setProperty("text", "text content updated");
+//                session.save();
+//                String newvalue = getContent(url, "root", "root1234", "testReferencesFlush1");
+//                Matcher m = Pattern.compile("text content updated").matcher(newvalue);
+//                assertTrue("Value has not been updated", m.find());
+//                assertTrue("References have not been flushed", m.find());
+//                assertTrue("References have not been flushed", m.find());
+//            } finally {
+//                n.setProperty("text", "text content");
+//                session.save();
+//            }
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//        }
+//    }
+//
+//    @Test
+//    public void testRandomFlush() throws Exception {
+//        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+//        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
+//        List<String> paths = new ArrayList<String>();
+//        NodeIterator nodes = q.execute().getNodes();
+//        Set<String> skipped = new HashSet<>(Arrays.asList("long", "error", "user-per-content-test"));
+//        while (nodes.hasNext()) {
+//            JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
+//            if (!skipped.contains(next.getName())) {
+//                paths.add(next.getPath());
+//            }
+//        }
+//        List<String> users = Arrays.asList("userAB", "userAC", "userBC");
+//        Map<String, String> m = new HashMap<String, String>();
+//        for (String user : users) {
+//            for (String path : paths) {
+//                m.put(user + path, getContent(getUrl(path), user, "password", null));
+//            }
+//        }
+//
+//        final Cache cache = ModuleCacheProvider.getInstance().getCache();
+//        List<String> keysBefore = cache.getKeys();
+//
+//        Map<String, Object> cacheCopy = new HashMap<String, Object>();
+//        for (String s : keysBefore) {
+//            final Element element = cache.get(s);
+//            if (element != null) {
+//                cacheCopy.put(s, element.getObjectValue());
+//            }
+//        }
+//
+//        for (int j = 0; j < 10; j++) {
+//            System.out.println("flush " + j);
+//            List<String> toFlush = randomizeFlush(keysBefore, 10);
+//            for (String user : users) {
+//                for (String path : paths) {
+//                    System.out.println(user + " - " + path);
+//                    if (!m.get(user + path).equals(getContent(getUrl(path), user, "password", null))) {
+//                        fail("Different content for " + user + " , " + path + " when flushing : " + toFlush);
+//                    }
+//                    checkCacheContent(cache, cacheCopy, toFlush);
+//                }
+//            }
+//            List<String> keysAfter = cache.getKeys();
+//            Collections.sort(keysBefore);
+//            Collections.sort(keysAfter);
+//            if (!keysBefore.equals(keysAfter)) {
+//                List<String> onlyInBefore = new ArrayList<String>(keysBefore);
+//                onlyInBefore.removeAll(keysAfter);
+//                List<String> onlyInAfter = new ArrayList<String>(keysAfter);
+//                onlyInAfter.removeAll(keysBefore);
+//                fail("Key sets are not the same before and after flushing : " + toFlush + "\n Before flushs :" + onlyInBefore + " ,\n After flush : " + onlyInAfter);
+//            }
+//            checkCacheContent(cache, cacheCopy, toFlush);
+//        }
+//    }
+
     @Test
     public void testACLsUserPerContent() throws Exception {
         // test for https://jira.jahia.org/browse/QA-7383
         String path = SITECONTENT_ROOT_NODE + "/home/user-per-content-test";
-        
+
         String contentForUser1 = getContent(getUrl(path), "user1", "password", "testACLs11");
         assertTrue("user1 cannot see content, she should see", contentForUser1.contains("content for user1"));
         assertFalse("user1 sees content, she should not see", contentForUser1.contains("content for user2"));
         assertFalse("user1 sees content, she should not see", contentForUser1.contains("content for user3"));
-        
+
         String contentForUser2 = getContent(getUrl(path), "user2", "password", "testACLs12");
         assertTrue("user2 cannot see content, she should see", contentForUser2.contains("content for user2"));
         assertFalse("user2 sees content, she should not see", contentForUser2.contains("content for user1"));
         assertFalse("user2 sees content, she should not see", contentForUser2.contains("content for user3"));
-        
+
         String contentForUser3 = getContent(getUrl(path), "user3", "password", "testACLs13");
         assertTrue("user3 cannot see content, she should see", contentForUser3.contains("content for user3"));
         assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user1"));
         assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user2"));
     }
-    
+
 
     private void checkCacheContent(Cache cache, Map<String, Object> cacheCopy, List<String> toFlush) {
         List<String> keysNow = cache.getKeys();
@@ -526,7 +550,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             } finally {
                 if (method != null) {
                     method.releaseConnection();
-                }    
+                }
             }
         }
     }

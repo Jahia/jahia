@@ -46,6 +46,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
@@ -119,6 +120,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     private boolean usePerUser = false;
     private boolean useGroupsSignature = false;
 
+    // legacy support
+    private boolean legacyGeneratorEnabled = false;
+    private LegacyAclCacheKeyPartGenerator legacy;
+
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
     }
@@ -137,6 +142,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     public void setUseGroupsSignature(boolean useGroupsSignature) {
         this.useGroupsSignature = useGroupsSignature;
+    }
+
+    public void setLegacyGeneratorEnabled(boolean legacyGeneratorEnabled) {
+        this.legacyGeneratorEnabled = legacyGeneratorEnabled;
     }
 
     /**
@@ -162,6 +171,14 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             cacheManager.addCache(PROPERTY_CACHE_NAME);
             permissionCache = cacheManager.getCache(PROPERTY_CACHE_NAME);
         }
+
+        if (legacyGeneratorEnabled) {
+            legacy = new LegacyAclCacheKeyPartGenerator();
+            legacy.setTemplate(template);
+            legacy.setCacheProvider(cacheProvider);
+            legacy.setGroupManagerService(groupManagerService);
+            legacy.afterPropertiesSet();
+        }
     }
 
 
@@ -172,6 +189,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     @Override
     public String getValue(Resource resource, final RenderContext renderContext, Properties properties) {
+        if (legacyGeneratorEnabled) {
+            return legacy.getValue(resource, renderContext, properties);
+        }
+
         try {
             final Set<String> aclsKeys = new TreeSet<String>();
 
@@ -273,6 +294,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     @Override
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
+        if (legacyGeneratorEnabled) {
+            return legacy.replacePlaceholders(renderContext, keyPart);
+        }
+
         String[] paths = keyPart.split(",");
         Map<String, Set<String>> rolesForPath = new TreeMap<>();
         StringBuilder r = new StringBuilder();
@@ -546,5 +571,378 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     private String decodeSpecificChars(String toDecode) {
         return StringUtils.replaceEach(toDecode, SUBSTITUTION_STR, SPECIFIC_STR);
+    }
+
+    @Deprecated
+    private class LegacyAclCacheKeyPartGenerator implements CacheKeyPartGenerator {
+        private static final String PER_USER = "_perUser_";
+        private static final String MR_ACL = "_mraclmr_";
+        private static final String PER_USER_MR_ACL = PER_USER + "," + MR_ACL;
+        private static final String LOGGED_USER = "_logged_";
+
+        private static final String CACHE_NAME = "HTMLNodeUsersACLs";
+        private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
+
+        private final Object objForSync = new Object();
+        private EhCacheProvider cacheProvider;
+        private Cache cache;
+        private JahiaGroupManagerService groupManagerService;
+        private Cache permissionCache;
+
+
+        private JCRTemplate template;
+
+        public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+            this.groupManagerService = groupManagerService;
+        }
+
+        public void setCacheProvider(EhCacheProvider cacheProvider) {
+            this.cacheProvider = cacheProvider;
+        }
+
+        public void setTemplate(JCRTemplate template) {
+            this.template = template;
+        }
+
+        /**
+         * Invoked by a BeanFactory after it has set all bean properties supplied
+         * (and satisfied BeanFactoryAware and ApplicationContextAware).
+         * <p>This method allows the bean instance to perform initialization only
+         * possible when all bean properties have been set and to throw an
+         * exception in the event of misconfiguration.
+         *
+         * @throws Exception in the event of misconfiguration (such
+         *                   as failure to set an essential property) or if initialization fails.
+         */
+        public void afterPropertiesSet() throws Exception {
+            CacheManager cacheManager = cacheProvider.getCacheManager();
+            cache = cacheManager.getCache(CACHE_NAME);
+            if (cache == null) {
+                cacheManager.addCache(CACHE_NAME);
+                cache = cacheManager.getCache(CACHE_NAME);
+            }
+
+            permissionCache = cacheManager.getCache(PROPERTY_CACHE_NAME);
+            if (permissionCache == null) {
+                cacheManager.addCache(PROPERTY_CACHE_NAME);
+                permissionCache = cacheManager.getCache(PROPERTY_CACHE_NAME);
+            }
+        }
+
+        @Override
+        public String getKey() {
+            return "acls";
+        }
+
+        @Override
+        public String getValue(Resource resource, final RenderContext renderContext, Properties properties) {
+            try {
+
+                final Set<String> aclsKeys = new TreeSet<String>();
+
+                if ("true".equals(properties.get(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER))) {
+                    aclsKeys.add(PER_USER);
+                }
+
+                JCRNodeWrapper node = resource.getNode();
+                final String nodePath = node.getPath();
+
+                aclsKeys.add(encodeSpecificChars(nodePath));
+
+                String s = (String) properties.get("cache.dependsOnVisibilityOf");
+                if (s != null) {
+                    String[] dependencies = s.split(",");
+                    for (int i = 0; i < dependencies.length; i++) {
+                        String dep = dependencies[i];
+                        dep = dep.replace("$currentNode", nodePath);
+                        dep = dep.replace("$currentSite", renderContext.getSite().getPath());
+                        dep = dep.replace("$mainResource", renderContext.getMainResource().getNode().getPath());
+                        aclsKeys.add("*" + encodeSpecificChars(dep));
+                    }
+                }
+
+                String ref = (String) properties.get("cache.dependsOnReference");
+                if (ref != null && ref.length() > 0) {
+                    String[] refProperties = ref.split(",");
+                    for (int i = 0; i < refProperties.length; i++) {
+                        String refPropertyName = refProperties[i];
+                        if (node.hasProperty(refPropertyName)) {
+                            JCRPropertyWrapper refProperty = node.getProperty(refPropertyName);
+                            JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(node.getSession().getWorkspace().getName(), node.getSession().getLocale(), null);
+                            if (refProperty != null) {
+                                int propertyRequiredType = refProperty.getDefinition().getRequiredType();
+                                if (propertyRequiredType == PropertyType.REFERENCE || propertyRequiredType == PropertyType.WEAKREFERENCE) {
+                                    if (refProperty.isMultiple() && refProperty.getValues().length > 0) {
+                                        for (JCRValueWrapper value : refProperty.getValues()) {
+                                            try {
+                                                Node refNode = systemSession.getNodeByIdentifier(value.getString());
+                                                aclsKeys.add(encodeSpecificChars(refNode.getPath()));
+                                            } catch (ItemNotFoundException e) {
+                                                logger.debug("Trying to add cache dependency for reference but reference node '{}' not found", refProperty.getString());
+                                            }
+                                        }
+                                    } else {
+                                        try {
+                                            Node refNode = systemSession.getNodeByIdentifier(refProperty.getString());
+                                            aclsKeys.add(encodeSpecificChars(refNode.getPath()));
+                                        } catch (ItemNotFoundException e) {
+                                            logger.debug("Trying to add cache dependency for reference but reference node '{}' not found", refProperty.getString());
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            logger.debug("Trying to add cache dependency for reference but property '{}' not found on node '{}'", refPropertyName, nodePath);
+                        }
+                    }
+                }
+
+                Element element = permissionCache.get(node.getPath());
+                Boolean[] values;
+                if (element != null && element.getObjectValue() != null) {
+                    values = (Boolean[]) element.getObjectValue();
+                } else {
+                    values = new Boolean[3];
+                    values[0] = node.hasProperty("j:requiredPermissionNames") || node.hasProperty("j:requiredPermissions");
+                    values[1] = node.hasProperty("j:requirePrivilegedUser") && node.getProperty("j:requirePrivilegedUser").getBoolean();
+                    values[2] = node.hasProperty("j:requireLoggedUser") && node.getProperty("j:requireLoggedUser").getBoolean();
+                    permissionCache.put(new Element(node.getPath(), values));
+                }
+
+                if ("true".equals(properties.get("cache.mainResource"))) {
+                    aclsKeys.add(MR_ACL);
+                } else {
+                    if (values[0]) {
+                        aclsKeys.add(MR_ACL);
+                    }
+                }
+                if (values[1]) {
+                    aclsKeys.add(renderContext.getSite().getPath());
+                }
+                if (values[2] || "true".equals(properties.get("cache.useLoggedInState"))) {
+                    aclsKeys.add(LOGGED_USER);
+                }
+
+                return StringUtils.join(aclsKeys, ",");
+
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+            return "";
+
+        }
+
+        @Override
+        public String replacePlaceholders(RenderContext renderContext, String keyPart) {
+            String[] paths = keyPart.split(",");
+            Map<String, Set<String>> rolesForKey = new TreeMap<String, Set<String>>();
+            StringBuilder r = new StringBuilder();
+            try {
+                List<Map<String, Set<String>>> principalAcl = null;
+
+                for (String s : paths) {
+                    if (s.equals(PER_USER)) {
+                        if (r.length() > 0) {
+                            r.append("|");
+                        }
+                        r.append(renderContext.getUser().getUserKey());
+                    } else if (s.equals(LOGGED_USER)) {
+                        if (r.length() > 0) {
+                            r.append("|");
+                        }
+                        r.append(Boolean.toString(renderContext.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)));
+                    } else {
+                        if (principalAcl == null) {
+                            principalAcl = getUserAcl(renderContext.getUser());
+                        }
+                        if (s.equals(MR_ACL)) {
+                            populateRolesForKey(renderContext.getMainResource().getNode().getPath(), principalAcl, rolesForKey, null);
+                        } else if (s.startsWith("*")) {
+                            String decodedNodePath = decodeSpecificChars(s.substring(1));
+                            populateRolesForKey(decodedNodePath, principalAcl, rolesForKey, Pattern.compile(decodedNodePath));
+                        } else {
+                            populateRolesForKey(decodeSpecificChars(s), principalAcl, rolesForKey, null);
+                        }
+                    }
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);  //To change body of catch statement use File | Settings | File Templates.
+            }
+
+            for (Map.Entry<String, Set<String>> entry : rolesForKey.entrySet()) {
+                if (r.length() > 0) {
+                    r.append("|");
+                }
+                r.append((StringUtils.join(entry.getValue(), ","))).append(":").append(entry.getKey());
+            }
+
+            keyPart = StringUtils.replace(r.toString(), "@@", "%0");
+
+            return keyPart;
+        }
+
+        private void populateRolesForKey(String nodePath, List<Map<String, Set<String>>> principalAcl, Map<String, Set<String>> rolesForKey, Pattern pattern) {
+            if (pattern == null) {
+                nodePath += "/";
+                for (Map<String, Set<String>> map : principalAcl) {
+                    for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
+                        String grantPath = entry.getKey() + "/";
+                        if ((nodePath.startsWith(grantPath) || grantPath.startsWith(nodePath))) {
+                            Set<String> roles = entry.getValue();
+                            if (!rolesForKey.containsKey(entry.getKey())) {
+                                rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
+                            } else {
+                                rolesForKey.get(entry.getKey()).addAll(roles);
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (Map<String, Set<String>> map : principalAcl) {
+                    for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
+                        if (pattern.matcher(entry.getKey()).matches()) {
+                            Set<String> roles = entry.getValue();
+                            if (!rolesForKey.containsKey(entry.getKey())) {
+                                rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
+                            } else {
+                                rolesForKey.get(entry.getKey()).addAll(roles);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private List<Map<String, Set<String>>> getUserAcl(JahiaUser principal) throws RepositoryException {
+            List<Map<String, Set<String>>> principalAcl = new ArrayList<>();
+            principalAcl.add(getPrincipalAcl("u:" + principal.getName(), principal.getRealm()));
+
+            List<String> groups = groupManagerService.getMembershipByPath(principal.getLocalPath());
+            for (String group : groups) {
+                principalAcl.add(getPrincipalAcl("g:" + StringUtils.substringAfterLast(group, "/"), JCRContentUtils.getSiteKey(group)));
+            }
+
+            return principalAcl;
+        }
+
+        private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();
+
+        @SuppressWarnings("unchecked")
+        private Map<String, Set<String>> getPrincipalAcl(final String aclKey, final String siteKey) throws RepositoryException {
+
+            final String cacheKey = siteKey != null ? aclKey + ":" + siteKey : aclKey;
+            Element element = cache.get(cacheKey);
+            if (element == null) {
+                Semaphore semaphore = processings.get(cacheKey);
+                if (semaphore == null) {
+                    semaphore = new Semaphore(1);
+                    processings.putIfAbsent(cacheKey, semaphore);
+                }
+                try {
+                    semaphore.tryAcquire(500, TimeUnit.MILLISECONDS);
+                    element = cache.get(cacheKey);
+                    if (element != null) {
+                        return (Map<String, Set<String>>) element.getObjectValue();
+                    }
+
+                    logger.debug("Getting ACL for {}", cacheKey);
+                    long l = System.currentTimeMillis();
+
+                    Map<String, Set<String>> map = template.doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Map<String, Set<String>>>() {
+
+                        @Override
+                        public Map<String, Set<String>> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            Query query = session.getWorkspace().getQueryManager().createQuery(
+                                    "select * from [jnt:ace] as ace where ace.[j:principal] = '" + JCRContentUtils.sqlEncode(aclKey) + "'",
+                                    Query.JCR_SQL2);
+                            QueryResult queryResult = query.execute();
+                            NodeIterator rowIterator = queryResult.getNodes();
+
+                            Map<String, Set<String>> mapGranted = new ConcurrentHashMap<String, Set<String>>();
+                            Map<String, Set<String>> mapDenied = new LinkedHashMap<String, Set<String>>();
+
+                            while (rowIterator.hasNext()) {
+                                JCRNodeWrapper node = (JCRNodeWrapper) rowIterator.next();
+                                if (siteKey != null && !node.getResolveSite().getName().equals(siteKey)) {
+                                    continue;
+                                }
+                                String path = node.getParent().getParent().getPath();
+                                Set<String> foundRoles = new HashSet<String>();
+                                boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
+                                Value[] roles = node.getProperty(Constants.J_ROLES).getValues();
+                                for (Value r : roles) {
+                                    String role = r.getString();
+                                    if (!foundRoles.contains(role)) {
+                                        foundRoles.add(role);
+                                    }
+                                }
+                                if (path.equals("/")) {
+                                    path = "";
+                                }
+                                if (granted) {
+                                    mapGranted.put(path, foundRoles);
+                                } else {
+                                    mapDenied.put(path, foundRoles);
+                                }
+                            }
+                            for (String deniedPath : mapDenied.keySet()) {
+                                String grantedPath = deniedPath;
+                                while (grantedPath.length() > 0) {
+                                    grantedPath = StringUtils.substringBeforeLast(grantedPath, "/");
+                                    if (mapGranted.containsKey(grantedPath)) {
+                                        Collection<String> intersection = CollectionUtils.intersection(mapGranted.get(grantedPath), mapDenied.get(deniedPath));
+                                        for (String s : intersection) {
+                                            mapGranted.get(grantedPath).add(s + " -> " + deniedPath);
+                                        }
+                                    }
+                                }
+                            }
+                            return mapGranted;
+                        }
+                    });
+                    element = new Element(cacheKey, map);
+                    element.setEternal(true);
+                    cache.put(element);
+                    logger.debug("Getting ACL for {} took {} ms", cacheKey, System.currentTimeMillis() - l);
+                } catch (InterruptedException e) {
+                    logger.debug(e.getMessage(), e);
+                } finally {
+                    semaphore.release();
+                }
+            }
+            return (Map<String, Set<String>>) element.getObjectValue();
+        }
+
+        public void flushUsersGroupsKey() {
+            flushUsersGroupsKey(true);
+        }
+
+        public void flushUsersGroupsKey(boolean propageToOtherClusterNodes) {
+            synchronized (objForSync) {
+                cache.removeAll(!propageToOtherClusterNodes);
+                cache.flush();
+                logger.debug("Flushed HTMLNodeUsersACLs cache");
+            }
+        }
+
+        public void flushUsersGroupsKey(String key, boolean propageToOtherClusterNodes) {
+            synchronized (objForSync) {
+                cache.remove(key, !propageToOtherClusterNodes);
+            }
+        }
+
+        public void flushPermissionCacheEntry(String path, boolean propageToOtherClusterNodes) {
+            synchronized (objForSync) {
+                permissionCache.remove(path);
+            }
+        }
+
+        private String encodeSpecificChars(String toEncode) {
+            return StringUtils.replaceEach(toEncode, SPECIFIC_STR, SUBSTITUTION_STR);
+        }
+
+        private String decodeSpecificChars(String toDecode) {
+            return StringUtils.replaceEach(toDecode, SUBSTITUTION_STR, SPECIFIC_STR);
+        }
     }
 }

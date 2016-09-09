@@ -78,6 +78,9 @@ when we flush this entry we will flush the whole cache
         <property name="groupManagerService" ref="JahiaGroupManagerService"/>
         <property name="cacheProvider" ref="ehCacheProvider"/>
         <property name="template" ref="jcrTemplate"/>
+        <property name="useGroupsSignature" value="${org.jahia.aclCacheKeyPartGenerator.useGroupsSignature:false}"/>
+        <property name="usePerUser" value="${org.jahia.aclCacheKeyPartGenerator.usePerUser:false}"/>
+        <property name="legacyGeneratorEnabled" value="${org.jahia.aclCacheKeyPartGenerator.legacyGeneratorEnabled:false}"/>
     </bean>
 
     <bean id="ModuleCacheProvider" class="org.jahia.services.render.filter.cache.ModuleCacheProvider">

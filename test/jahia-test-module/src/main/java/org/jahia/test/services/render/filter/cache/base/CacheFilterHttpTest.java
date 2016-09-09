@@ -253,7 +253,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
         List<String> paths = new ArrayList<String>();
         NodeIterator nodes = q.execute().getNodes();
-        Set<String> skipped = new HashSet<>(Arrays.asList("long", "error", "user-per-content-test"));
+        Set<String> skipped = new HashSet<>(Arrays.asList("long", "error", "user-per-content-test", "simple-page-A", "simple-page-B", "simple-page-C", "simple-page-AC", "simple-page-BC", "simple-page-AB", "simple-page-root", "simple-page-users"));
         while (nodes.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
             if (!skipped.contains(next.getName())) {

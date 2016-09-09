@@ -104,6 +104,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     private static final Logger logger = LoggerFactory.getLogger(AclCacheKeyPartGenerator.class);
 
     private static final String CACHE_NAME = "HTMLNodeUsersACLs";
+    private static final String CACHE_ALL_PRINCIPALS_ENTRY_KEY = "all principals";
     private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
 
     private final Object objForSync = new Object();
@@ -402,30 +403,12 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         return principalAcl;
     }
 
-    private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();
-
-    @SuppressWarnings("unchecked")
     private PrincipalAcl getPrincipalAcl(final String aclKey, final String siteKey) throws RepositoryException {
 
-        final String cacheKey = siteKey != null ? aclKey + ":" + siteKey : aclKey;
-        Element element = cache.get(cacheKey);
-        if (element == null) {
-            Semaphore semaphore = processings.get(cacheKey);
-            if (semaphore == null) {
-                semaphore = new Semaphore(1);
-                processings.putIfAbsent(cacheKey, semaphore);
-            }
-            try {
-                semaphore.tryAcquire(500, TimeUnit.MILLISECONDS);
-                element = cache.get(cacheKey);
-                if (element != null) {
-                    return (PrincipalAcl) element.getObjectValue();
-                }
-
-                logger.debug("Getting ACL for {}", cacheKey);
-                long l = System.currentTimeMillis();
-
-                PrincipalAcl principalAcl = template.doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<PrincipalAcl>() {
+        return getCacheEntryOrGenerate(siteKey != null ? aclKey + ":" + siteKey : aclKey, new CacheEntryNotFoundCallback<PrincipalAcl>() {
+            @Override
+            public PrincipalAcl generateCacheEntry() throws RepositoryException {
+                return  template.doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<PrincipalAcl>() {
 
                     @Override
                     public PrincipalAcl doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -466,39 +449,16 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                         return new PrincipalAcl(mapGranted, mapDenied);
                     }
                 });
-                element = new Element(cacheKey, principalAcl);
-                element.setEternal(true);
-                cache.put(element);
-                logger.debug("Getting ACL for {} took {} ms", cacheKey, System.currentTimeMillis() - l);
-            } catch (InterruptedException e) {
-                logger.debug(e.getMessage(), e);
-            } finally {
-                semaphore.release();
             }
-        }
-        return (PrincipalAcl) element.getObjectValue();
+        });
     }
 
     public Set<String> getAllPrincipalsWithAcl() throws RepositoryException {
-        final String cacheKey = "all principals";
-        Element element = cache.get(cacheKey);
-        if (element == null) {
-            Semaphore semaphore = processings.get(cacheKey);
-            if (semaphore == null) {
-                semaphore = new Semaphore(1);
-                processings.putIfAbsent(cacheKey, semaphore);
-            }
-            try {
-                semaphore.tryAcquire(500, TimeUnit.MILLISECONDS);
-                element = cache.get(cacheKey);
-                if (element != null) {
-                    return (Set<String>) element.getObjectValue();
-                }
 
-                logger.debug("Getting ACL for {}", cacheKey);
-                long l = System.currentTimeMillis();
-
-                Set<String> result = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Set<String>>() {
+        return getCacheEntryOrGenerate(CACHE_ALL_PRINCIPALS_ENTRY_KEY, new CacheEntryNotFoundCallback<Set<String>>() {
+            @Override
+            public Set<String> generateCacheEntry() throws RepositoryException {
+                return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Set<String>>() {
                     @Override
                     public Set<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Set<String> results = new HashSet<String>();
@@ -514,19 +474,46 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                         return results;
                     }
                 });
-                element = new Element(cacheKey, result);
+            }
+        });
+    }
+
+    private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();
+
+    @SuppressWarnings("unchecked")
+    private <X> X getCacheEntryOrGenerate(final String cacheKey, CacheEntryNotFoundCallback<X> callback) throws RepositoryException {
+        Element element = cache.get(cacheKey);
+        if (element == null) {
+            Semaphore semaphore = processings.get(cacheKey);
+            if (semaphore == null) {
+                semaphore = new Semaphore(1);
+                processings.putIfAbsent(cacheKey, semaphore);
+            }
+            try {
+                semaphore.tryAcquire(500, TimeUnit.MILLISECONDS);
+                element = cache.get(cacheKey);
+                if (element != null) {
+                    return (X) element.getObjectValue();
+                }
+
+                logger.debug("Getting ACL for {}", cacheKey);
+                long l = System.currentTimeMillis();
+
+                element = new Element(cacheKey, callback.generateCacheEntry());
                 element.setEternal(true);
                 cache.put(element);
-                logger.debug("Getting all principals from ACLs {} took {} ms", cacheKey, System.currentTimeMillis() - l);
+                logger.debug("Getting ACL for {} took {} ms", cacheKey, System.currentTimeMillis() - l);
             } catch (InterruptedException e) {
                 logger.debug(e.getMessage(), e);
             } finally {
                 semaphore.release();
             }
-
-
         }
-        return (Set<String>) element.getObjectValue();
+        return (X) element.getObjectValue();
+    }
+
+    private interface CacheEntryNotFoundCallback<T> {
+        T generateCacheEntry() throws RepositoryException;
     }
 
     public void flushUsersGroupsKey() {

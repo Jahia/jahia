@@ -162,21 +162,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private ImportExportBaseService() {
     }
 
-    @Override
-    public void update(Observable o, Object arg)
-    {
-        exportIndex++;
-        if (logger.isDebugEnabled()) {
-            logger.debug("Exporting  : " + arg);
-        }
-
-        // this will show the percentage of export done by 10% increment will start by 10 and end by 90
-        if(exportIndex*10/nodesToExport>step && step <9){
-            step = exportIndex * 10 / nodesToExport;
-            logger.info("Export " + step * 10 + "%");
-        }
-    }
-
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
         static final ImportExportBaseService INSTANCE = new ImportExportBaseService();
@@ -332,26 +317,26 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     @Override
     public int estimateNodesSites(Map<String, Object> params, List<JCRSiteNode> sites) throws RepositoryException {
+
         int result = 0;
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
         for (JCRSiteNode jahiaSite : sites) {
-                result+= estimateNodesSite(jahiaSite);
+                result += estimateNodesSite(jahiaSite);
         }
 
         if (params.containsKey(INCLUDE_USERS)) {
-            result= estimateSubnodesNumber(session.getNode("/users"), result);
+            result = estimateSubnodesNumber(session.getNode("/users"), result);
         }
 
         if (params.containsKey(INCLUDE_ROLES)) {
-            result= estimateSubnodesNumber(session.getNode("/roles"), result);
+            result = estimateSubnodesNumber(session.getNode("/roles"), result);
         }
 
         if (params.containsKey(INCLUDE_MOUNTS)) {
-            result= estimateSubnodesNumber(session.getNode("/mounts"), result);
+            result = estimateSubnodesNumber(session.getNode("/mounts"), result);
         }
 
-        if (params.containsKey(INCLUDE_LIVE_EXPORT))
-        {
+        if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
             // as this is an estimation not a calculation of the real number of nodes we multiply the number
             // of nodes by two as if every node in default workspace has another node in live workspace
             result = result * 2;
@@ -368,10 +353,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      */
     private int estimateNodesSite(JCRSiteNode jahiaSite) throws RepositoryException {
         int result = 1;
-
         final Iterator<JCRNodeWrapper> iterator = jahiaSite.getNodes().iterator();
-        while (iterator.hasNext())
-        {
+        while (iterator.hasNext()) {
             result = estimateSubnodesNumber(iterator.next(), result);
         }
         return result;
@@ -391,19 +374,19 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         tti.add("jnt:workflowTask");
         if (!tti.contains(node.getPrimaryNodeTypeName())) {
             result++;
-                NodeIterator ni = node.getNodes();
-                while (ni.hasNext()) {
-                    JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
-                        result = estimateSubnodesNumber(c, result);
-                }
+            NodeIterator ni = node.getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
+                result = estimateSubnodesNumber(c, result);
+            }
         }
         return  result;
     }
 
-
     @Override
     public void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites, int numberOfNodesToExport)
             throws RepositoryException, IOException, SAXException, TransformerException {
+
         exportIndex = 0;
         nodesToExport = numberOfNodesToExport;
         String serverDirectory = (String) params.get(SERVER_DIRECTORY);
@@ -526,8 +509,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-
-
     private ZipOutputStream getZipOutputStream(OutputStream outputStream, String serverDirectory) {
         ZipOutputStream zout = null;
         if (serverDirectory != null) {
@@ -559,6 +540,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private void exportSite(final JCRSiteNode site, OutputStream out, Set<String> externalReferences, Map<String, Object> params, String serverDirectory)
             throws RepositoryException, SAXException, IOException, TransformerException {
+
         ZipOutputStream zout = getZipOutputStream(out, serverDirectory);
 
         zout.putNextEntry(new ZipEntry(SITE_PROPERTIES));
@@ -2146,5 +2128,20 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void setTemplatePackageRegistry(TemplatePackageRegistry templatePackageRegistry) {
         this.templatePackageRegistry = templatePackageRegistry;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
+        exportIndex++;
+        if (logger.isDebugEnabled()) {
+            logger.debug("Exporting  : " + arg);
+        }
+
+        // this will show the percentage of export done by 10% increment will start by 10 and end by 90
+        if (exportIndex * 10 / nodesToExport > step && step < 9){
+            step = exportIndex * 10 / nodesToExport;
+            logger.info("Export " + step * 10 + "%");
+        }
     }
 }

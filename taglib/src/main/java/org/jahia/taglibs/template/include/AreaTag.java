@@ -122,15 +122,6 @@ public class AreaTag extends ModuleTag implements ParamParent {
     }
 
     @Override
-    public int doStartTag() throws JspException {
-        Resource currentResource = (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
-        if (currentResource.getNode() !=  null) {
-            pageContext.getRequest().setAttribute("areaResource", currentResource.getNode());
-        }
-        return super.doStartTag();
-    }
-
-    @Override
     protected String getModuleType(RenderContext renderContext) throws RepositoryException {
         return moduleType;
     }

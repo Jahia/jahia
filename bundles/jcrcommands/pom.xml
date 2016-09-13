@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     ==========================================================================================
@@ -44,49 +43,50 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <groupId>org.jahia.server</groupId>
-        <artifactId>jahia-root</artifactId>
-        <version>7.2.0.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jahia.bundles</groupId>
-    <artifactId>jahia-bundles</artifactId>
-    <name>Jahia OSGi Bundles</name>
-    <packaging>pom</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modules>
-        <module>blueprint-extender-config</module>
-        <module>configadmin-persistence</module>
-        <module>http-bridge</module>
-        <module>jahiamodule-extender</module>
-        <!--
-        <module>jahiamodules</module>
-        -->
-        <module>webconsole-config</module>
-        <module>jspapiusage-repackaging</module>
-        <module>slf4j-loglistener</module>
-        <module>bridging-log4j-appender</module>
-        <module>jaas-module</module>
-        <module>jcrcommands</module>
-    </modules>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jahia.bundles</groupId>
+        <artifactId>jahia-bundles</artifactId>
+        <version>7.2.0.0-devbacklog_72-SNAPSHOT</version>
+    </parent>
+
+    <name>Jahia Module OSGi Extender bundle</name>
+    <description>This OSGi module provides an extender that recognizes Jahia modules and installs them in the Jahia xCM
+        server.
+    </description>
+    <artifactId>org.jahia.bundles.jcrcommands</artifactId>
+    <packaging>bundle</packaging>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <instructions>
-                            <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                            <Bundle-Version>${project.version}</Bundle-Version>
-                        </instructions>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Karaf-Commands>*</Karaf-Commands>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.console</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>7.2.0.0-devbacklog_72-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
 </project>

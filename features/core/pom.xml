@@ -103,7 +103,13 @@
             <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
+        <dependency>
+            <groupId>org.jahia.bundles</groupId>
+            <artifactId>org.jahia.bundles.jcrcommands</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.http.bridge</artifactId>

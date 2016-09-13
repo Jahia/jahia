@@ -43,8 +43,6 @@
  */
 package org.jahia.services.modulemanager.spi.impl;
 
-import java.util.Collections;
-
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
@@ -88,17 +86,33 @@ public class DefaultBundleService implements BundleService {
             }
             if (start) {
                 bundle.start();
-            } else {
-                // force bundle resolution
-                BundleLifecycleUtils.resolveBundles(Collections.singleton(bundle));
-                
-                // if the bundle won't be started we do a refresh on it (this refreshes the dependencies)
-                BundleLifecycleUtils.refreshBundle(bundle);
             }
-            
-            BundleLifecycleUtils.startAllBundles();
+            postInstall(bundle, start);
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
+        }
+    }
+    
+    protected void postInstall(Bundle bundle, boolean startTriggered) {
+        if (!startTriggered) {
+            // force bundle resolution
+            BundleLifecycleUtils.resolveBundle(bundle);
+            
+            // if the bundle won't be started we do a refresh on it (this refreshes the dependencies)
+            BundleLifecycleUtils.refreshBundle(bundle);
+            
+            if (bundle.getState() == Bundle.INSTALLED) {
+                // trigger bundle resolution again to move it into resolved state 
+                BundleLifecycleUtils.resolveBundle(bundle);
+            }
+        }
+        
+        BundleLifecycleUtils.startAllBundles();
+    }
+
+    protected void refreshBundle(Bundle bundle) {
+        if (Bundle.UNINSTALLED == bundle.getState()) {
+             BundleLifecycleUtils.refreshBundle(bundle);
         }
     }
 
@@ -123,7 +137,7 @@ public class DefaultBundleService implements BundleService {
             throw new ModuleManagementException(e);
         }
     }
-
+    
     @Override
     public void uninstall(BundleInfo bundleInfo, String target) throws ModuleNotFoundException {
         try {
@@ -133,12 +147,6 @@ public class DefaultBundleService implements BundleService {
             refreshBundle(bundle);
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
-        }
-    }
-    
-    protected void refreshBundle(Bundle bundle) {
-        if (Bundle.UNINSTALLED == bundle.getState()) {
-             BundleLifecycleUtils.refreshBundle(bundle);
         }
     }
 }

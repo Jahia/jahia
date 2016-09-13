@@ -319,6 +319,16 @@ public final class BundleLifecycleUtils {
     }
 
     /**
+     * Resolves the specified bundle.
+     *
+     * @param bundle the bundle to be resolved
+     * @return {@code true} if the specified bundle is resolved; {@code false} otherwise.
+     */
+    public static boolean resolveBundle(Bundle bundle) {
+        return resolveBundles(Collections.singleton(bundle));
+    }
+
+    /**
      * Resolves the specified bundles.
      *
      * @param bundlesToResolve the bundles to resolve or {@code null} to resolve all unresolved bundles installed in the Framework
@@ -326,6 +336,11 @@ public final class BundleLifecycleUtils {
      *         otherwise.
      */
     public static boolean resolveBundles(Collection<Bundle> bundlesToResolve) {
+        if (bundlesToResolve != null) {
+            logger.info("Requested resolve for the following {} bundle(s): {}", bundlesToResolve.size(), bundlesToResolve);
+        } else {
+            logger.info("Requested resolve for all bundles");
+        }
         return getFrameworkWiring().resolveBundles(bundlesToResolve);
     }
 

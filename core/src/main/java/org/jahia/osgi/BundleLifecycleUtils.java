@@ -91,6 +91,7 @@ public final class BundleLifecycleUtils {
      *         DirectoryWatcher from Felix FileInstall
      */
     private static Set<Bundle> findBundlesWithOptionalPackagesToRefresh(Collection<Bundle> bundles) {
+
         Set<Bundle> targets = new HashSet<Bundle>(Arrays.asList(getAllBundles()));
         targets.removeAll(bundles);
 
@@ -113,6 +114,7 @@ public final class BundleLifecycleUtils {
         if (targets.isEmpty()) {
             return Collections.emptySet();
         }
+
         // Third pass: compute a list of packages that are exported by our bundles and see if
         // some exported packages can be wired to the optional imports
         List<Clause> exports = new ArrayList<Clause>();
@@ -193,7 +195,6 @@ public final class BundleLifecycleUtils {
                 }
             }
         }
-
         return fragments;
     }
 
@@ -292,6 +293,7 @@ public final class BundleLifecycleUtils {
      */
     public static void refreshBundles(Collection<Bundle> bundlesToRefresh, boolean considerFragments,
             boolean considerBundlesWithOptionalPackages) {
+
         logger.info("Requested refresh for the following {} bundle(s): {}", bundlesToRefresh.size(), bundlesToRefresh);
         Collection<Bundle> fullBundleList = bundlesToRefresh;
         if (considerFragments) {
@@ -348,7 +350,7 @@ public final class BundleLifecycleUtils {
      * Tries to start all the bundles which somehow got stopped mainly due to a missing dependencies. Inspired by the DirectoryWatcher from
      * Felix FileInstall.
      */
-    public static void startAllBundles() {
+    public static void startBundlesPendingDependencies() {
         int frameworkStartLevel = getFrameworkStartLevel();
         List<Bundle> bundlesToStart = new ArrayList<Bundle>();
         Bundle[] allBundles = getAllBundles();
@@ -361,7 +363,6 @@ public final class BundleLifecycleUtils {
                 }
             }
         }
-
         startBundles(bundlesToStart);
     }
 

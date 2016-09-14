@@ -359,6 +359,18 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         final List<BundleScriptEngineFactory> factories = bundleIdsToScriptFactories.remove(bundle.getBundleId());
         if (factories != null) {
             for (BundleScriptEngineFactory bundleScriptEngineFactory : factories) {
+                // removing scripts associated with the ScriptEngineFactory needs extension information so it needs
+                // to occur before we remove the extension to factory mapping
+                BundleScriptResolver.getInstance().remove(bundleScriptEngineFactory, bundle);
+
+                // check if we have a configurator to call
+                final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(bundleScriptEngineFactory);
+                if (configurator != null) {
+                    configurator.destroy(bundleScriptEngineFactory.getWrappedFactory());
+                }
+                configurators.remove(bundleScriptEngineFactory.getWrappedFactoryClassName());
+
+                // clean-up our maps last since we might need that information to perform the rest of the clean-up
                 final List<String> extensions = bundleScriptEngineFactory.getExtensions();
                 for (String extension : extensions) {
                     extensionsToScriptFactories.remove(extension);
@@ -373,15 +385,6 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 for (String name : names) {
                     namesToScriptFactories.remove(name);
                 }
-
-                BundleScriptResolver.getInstance().remove(bundleScriptEngineFactory, bundle);
-
-                // check if we have a configurator to call
-                final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(bundleScriptEngineFactory);
-                if (configurator != null) {
-                    configurator.destroy(bundleScriptEngineFactory.getWrappedFactory());
-                }
-                configurators.remove(bundleScriptEngineFactory.getWrappedFactoryClassName());
             }
             //clean up engine cache
             engineCache.clear();
@@ -443,7 +446,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
             if (configurator != null) {
                 configurator.configure(factory, bundle, scriptingContext.getClassLoader());
             }
-           BundleScriptResolver.getInstance().register(bundleScriptEngineFactory, bundle);
+            BundleScriptResolver.getInstance().register(bundleScriptEngineFactory, bundle);
         }
 
         // clean engine cache after installing a new script engine

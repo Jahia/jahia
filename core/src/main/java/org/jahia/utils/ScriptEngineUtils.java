@@ -130,8 +130,8 @@ public class ScriptEngineUtils {
                         }
                     }
 
-                    return scriptNames.contains(scriptFactory.getEngineName().toLowerCase()) ||
-                            scriptNames.contains(scriptFactory.getLanguageName().toLowerCase());
+                    return scriptNames.contains(scriptFactory.getEngineName().trim().toLowerCase()) ||
+                            scriptNames.contains(scriptFactory.getLanguageName().trim().toLowerCase());
                 }
             }
         }

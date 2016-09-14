@@ -92,22 +92,25 @@ public class DefaultBundleService implements BundleService {
             throw new ModuleManagementException(e);
         }
     }
-    
+
     protected void postInstall(Bundle bundle, boolean startTriggered) {
+
         if (!startTriggered) {
-            // force bundle resolution
+
+            // Force bundle resolution
             BundleLifecycleUtils.resolveBundle(bundle);
-            
-            // if the bundle won't be started we do a refresh on it (this refreshes the dependencies)
+
+            // If the bundle won't be started we do a refresh on it (this refreshes the dependencies)
             BundleLifecycleUtils.refreshBundle(bundle);
-            
+
+            // Refreshing bundles often brings the bundle back to INSTALLED state for unclear reasons,
+            // so we try to resolve it again if so
             if (bundle.getState() == Bundle.INSTALLED) {
-                // trigger bundle resolution again to move it into resolved state 
                 BundleLifecycleUtils.resolveBundle(bundle);
             }
         }
-        
-        BundleLifecycleUtils.startAllBundles();
+
+        BundleLifecycleUtils.startBundlesPendingDependencies();
     }
 
     protected void refreshBundle(Bundle bundle) {
@@ -120,8 +123,7 @@ public class DefaultBundleService implements BundleService {
     public void start(BundleInfo bundleInfo, String target) throws ModuleNotFoundException {
         try {
             getBundleEnsureExists(bundleInfo).start();
-            
-            BundleLifecycleUtils.startAllBundles();
+            BundleLifecycleUtils.startBundlesPendingDependencies();
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
         }
@@ -131,19 +133,17 @@ public class DefaultBundleService implements BundleService {
     public void stop(BundleInfo bundleInfo, String target) throws ModuleNotFoundException {
         try {
             getBundleEnsureExists(bundleInfo).stop();
-            
-            BundleLifecycleUtils.startAllBundles();
+            BundleLifecycleUtils.startBundlesPendingDependencies();
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
         }
     }
-    
+
     @Override
     public void uninstall(BundleInfo bundleInfo, String target) throws ModuleNotFoundException {
         try {
             Bundle bundle = getBundleEnsureExists(bundleInfo);
             bundle.uninstall();
-            
             refreshBundle(bundle);
         } catch (BundleException e) {
             throw new ModuleManagementException(e);

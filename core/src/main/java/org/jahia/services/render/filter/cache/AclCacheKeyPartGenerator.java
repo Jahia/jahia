@@ -108,6 +108,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
 
     private final Object objForSync = new Object();
+    private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<>();
     private EhCacheProvider cacheProvider;
     private Cache cache;
     private JahiaGroupManagerService groupManagerService;
@@ -149,6 +150,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
      * @throws Exception in the event of misconfiguration (such
      *                   as failure to set an essential property) or if initialization fails.
      */
+    @Override
     public void afterPropertiesSet() throws Exception {
         CacheManager cacheManager = cacheProvider.getCacheManager();
         cache = cacheManager.getCache(CACHE_NAME);
@@ -173,7 +175,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     @Override
     public String getValue(Resource resource, final RenderContext renderContext, Properties properties) {
         try {
-            final Set<String> aclsKeys = new TreeSet<String>();
+            final Set<String> aclsKeys = new TreeSet<>();
 
             if (usePerUser || "true".equals(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER)) {
                 return PER_USER;
@@ -213,20 +215,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                             if (propertyRequiredType == PropertyType.REFERENCE || propertyRequiredType == PropertyType.WEAKREFERENCE) {
                                 if (refProperty.isMultiple() && refProperty.getValues().length > 0) {
                                     for (JCRValueWrapper value : refProperty.getValues()) {
-                                        try {
-                                            Node refNode = systemSession.getNodeByIdentifier(value.getString());
-                                            aclsKeys.add(encodeSpecificChars(refNode.getPath()));
-                                        } catch (ItemNotFoundException e) {
-                                            logger.debug("Trying to add cache dependency for reference but reference node '{}' not found", refProperty.getString());
-                                        }
+                                        addReferenceDependency(value.getString(), aclsKeys, systemSession);
                                     }
                                 } else {
-                                    try {
-                                        Node refNode = systemSession.getNodeByIdentifier(refProperty.getString());
-                                        aclsKeys.add(encodeSpecificChars(refNode.getPath()));
-                                    } catch (ItemNotFoundException e) {
-                                        logger.debug("Trying to add cache dependency for reference but reference node '{}' not found", refProperty.getString());
-                                    }
+                                    addReferenceDependency(refProperty.getString(), aclsKeys, systemSession);
                                 }
                             }
                         }
@@ -270,6 +262,15 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         return "";
 
     }
+    
+    private void addReferenceDependency(String identifier, Set<String> aclsKeys, JCRSessionWrapper systemSession) throws RepositoryException {
+        try {
+            Node refNode = systemSession.getNodeByIdentifier(identifier);
+            aclsKeys.add(encodeSpecificChars(refNode.getPath()));
+        } catch (ItemNotFoundException e) {
+            logger.debug("Trying to add cache dependency for reference but reference node '{}' not found", identifier);
+        }
+    }
 
     @Override
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
@@ -291,7 +292,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     }
                     r.append(Boolean.toString(renderContext.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)));
                 } else if (s.equals(GROUPS_SIGNATURE)) {
-                    r.append(getGroupsSignature(renderContext.getUser()).toString());
+                    r.append(getGroupsSignature(renderContext.getUser()));
                 } else {
                     if (principalAclList == null) {
                         principalAclList = getUserAcl(renderContext.getUser());
@@ -316,7 +317,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             if (r.length() > 0) {
                 r.append("|");
             }
-            r.append((StringUtils.join(entry.getValue(), ","))).append(":").append(entry.getKey());
+            r.append(StringUtils.join(entry.getValue(), ",")).append(":").append(entry.getKey());
         }
 
         String replacedKeyPart = StringUtils.replace(r.toString(), "@@", "%0");
@@ -403,9 +404,9 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         return principalAcl;
     }
 
-    private PrincipalAcl getPrincipalAcl(final String aclKey, final String siteKey) throws RepositoryException {
+    private PrincipalAcl getPrincipalAcl(final String principallKey, final String siteKey) throws RepositoryException {
 
-        return getCacheEntryOrGenerate(siteKey != null ? aclKey + ":" + siteKey : aclKey, new CacheEntryNotFoundCallback<PrincipalAcl>() {
+        return getCacheEntryOrGenerate(siteKey != null ? principallKey + ":" + siteKey : principallKey, new CacheEntryNotFoundCallback<PrincipalAcl>() {
             @Override
             public PrincipalAcl generateCacheEntry() throws RepositoryException {
                 return  template.doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<PrincipalAcl>() {
@@ -413,13 +414,13 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     @Override
                     public PrincipalAcl doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query query = session.getWorkspace().getQueryManager().createQuery(
-                                "select * from [jnt:ace] as ace where ace.[j:principal] = '" + JCRContentUtils.sqlEncode(aclKey) + "'",
+                                "select * from [jnt:ace] as ace where ace.[j:principal] = '" + JCRContentUtils.sqlEncode(principallKey) + "'",
                                 Query.JCR_SQL2);
                         QueryResult queryResult = query.execute();
                         NodeIterator rowIterator = queryResult.getNodes();
 
-                        Map<String, Set<String>> mapGranted = new LinkedHashMap<String, Set<String>>();
-                        Map<String, Set<String>> mapDenied = new LinkedHashMap<String, Set<String>>();
+                        Map<String, Set<String>> mapGranted = new LinkedHashMap<>();
+                        Map<String, Set<String>> mapDenied = new LinkedHashMap<>();
 
                         while (rowIterator.hasNext()) {
                             JCRNodeWrapper node = (JCRNodeWrapper) rowIterator.next();
@@ -427,8 +428,8 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                                 continue;
                             }
                             String path = node.getParent().getParent().getPath();
-                            Set<String> foundRoles = new HashSet<String>();
-                            boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
+                            Set<String> foundRoles = new HashSet<>();
+                            boolean granted = "GRANT".equals(node.getProperty("j:aceType").getString());
                             Value[] roles = node.getProperty(Constants.J_ROLES).getValues();
                             for (Value r : roles) {
                                 String role = r.getString();
@@ -436,7 +437,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                                     foundRoles.add(role);
                                 }
                             }
-                            if (path.equals("/")) {
+                            if ("/".equals(path)) {
                                 path = "";
                             }
                             if (granted) {
@@ -461,7 +462,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Set<String>>() {
                     @Override
                     public Set<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        Set<String> results = new HashSet<String>();
+                        Set<String> results = new HashSet<>();
                         QueryWrapper query = session.getWorkspace().getQueryManager().createQuery(
                                 "SELECT [j:principal] FROM [jnt:ace]", Query.JCR_SQL2);
                         JCRNodeIteratorWrapper r = query.execute().getNodes();
@@ -477,8 +478,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             }
         });
     }
-
-    private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();
 
     @SuppressWarnings("unchecked")
     private <X> X getCacheEntryOrGenerate(final String cacheKey, CacheEntryNotFoundCallback<X> callback) throws RepositoryException {
@@ -505,6 +504,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 logger.debug("Getting ACL for {} took {} ms", cacheKey, System.currentTimeMillis() - l);
             } catch (InterruptedException e) {
                 logger.debug(e.getMessage(), e);
+                Thread.currentThread().interrupt();
             } finally {
                 semaphore.release();
             }
@@ -528,24 +528,24 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         }
     }
 
-    public void flushUsersGroupsKey(String key, boolean propageToOtherClusterNodes) {
+    public void flushUsersGroupsKey(String key, boolean propagateToOtherClusterNodes) {
         synchronized (objForSync) {
-            cache.remove(key, !propageToOtherClusterNodes);
+            cache.remove(key, !propagateToOtherClusterNodes);
             Element element = cache.get(CACHE_ALL_PRINCIPALS_ENTRY_KEY);
             if (element != null) {
                 Set<String> allPrincipalsWithAcl = (Set<String>) element.getObjectValue();
                 if (key.lastIndexOf(':') == 1 && !allPrincipalsWithAcl.contains(key)) {
                     // The principal is not present in the list, flush the list
                     // Don't need to flush it if a principal has been removed from all ACEs
-                    cache.remove(CACHE_ALL_PRINCIPALS_ENTRY_KEY);
+                    cache.remove(CACHE_ALL_PRINCIPALS_ENTRY_KEY, !propagateToOtherClusterNodes);
                 }
             }
         }
     }
 
-    public void flushPermissionCacheEntry(String path, boolean propageToOtherClusterNodes) {
+    public void flushPermissionCacheEntry(String path, boolean propagateToOtherClusterNodes) {
         synchronized (objForSync) {
-            permissionCache.remove(path);
+            permissionCache.remove(path, !propagateToOtherClusterNodes);
         }
     }
 

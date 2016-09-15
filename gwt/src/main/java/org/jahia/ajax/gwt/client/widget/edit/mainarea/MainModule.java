@@ -1235,7 +1235,7 @@ public class MainModule extends Module {
             IFrameElement iframe = IFrameElement.as(frame.getElement());
             iframe.setAttribute("frameborder", "0");
 //            iframe.setAttribute("sandbox","allows-scripts");
-            if (url != null && !super.getUrl().endsWith(url)) {
+            if (url != null && !super.getUrl().endsWith(URL.encode(url))) {
                 super.setUrl(url);
             }
         }

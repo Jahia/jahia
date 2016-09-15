@@ -384,12 +384,11 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
      * @return List of PrincipalAcl
      * @throws RepositoryException
      */
-    private Set<String> getGroupsSignature(JahiaUser principal) throws RepositoryException {
+    private String getGroupsSignature(JahiaUser principal) throws RepositoryException {
         SortedSet<String> principals = new TreeSet<>();
 
         if (principal.isRoot()) {
-            principals.add("u:" + principal.getName());
-            return principals;
+            return "u:" + principal.getName();
         }
 
         Set<String> all = getAllPrincipalsWithAcl();
@@ -400,7 +399,8 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             addPrincipalIfAcl(principals, all, "g:" + StringUtils.substringAfterLast(group, "/"));
         }
 
-        return principals;
+        // Adds the hashcode of all list to ensure the key is generated with same set of principals having ACE
+        return Integer.toString(all.hashCode()) + principals;
     }
 
     private void addPrincipalIfAcl(Collection<String> principalAcl, Collection<String> all, String principal) {
@@ -556,6 +556,15 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     public void flushUsersGroupsKey(String key, boolean propageToOtherClusterNodes) {
         synchronized (objForSync) {
             cache.remove(key, !propageToOtherClusterNodes);
+            Element element = cache.get(CACHE_ALL_PRINCIPALS_ENTRY_KEY);
+            if (element != null) {
+                Set<String> allPrincipalsWithAcl = (Set<String>) element.getObjectValue();
+                if (key.lastIndexOf(':') == 1 && !allPrincipalsWithAcl.contains(key)) {
+                    // The principal is not present in the list, flush the list
+                    // Don't need to flush it if a principal has been removed from all ACEs
+                    cache.remove(CACHE_ALL_PRINCIPALS_ENTRY_KEY);
+                }
+            }
         }
     }
 

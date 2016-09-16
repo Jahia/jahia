@@ -91,7 +91,7 @@ public class NewCacheFilterHttpTest extends CacheFilterHttpTest {
         getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error3");
         CacheFilterCheckFilter.RequestData data = getCheckFilter("CacheHttpTestRenderFilter2").getData("error3");
         assertEquals(1, data.getCount());
-        assertEquals("/sites/cachetest/home/error/maincontent/simple-text.error.html", data.getRenderCalled().toArray()[0]);
+        assertEquals("/sites/cachetest/home/error/main/simple-text.error.html", data.getRenderCalled().toArray()[0]);
     }
 
     @Test
@@ -119,21 +119,21 @@ public class NewCacheFilterHttpTest extends CacheFilterHttpTest {
 
             // Long module is left blank
             assertFalse(t2.getResult().contains("Very long to appear"));
-            assertTrue(t2.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertTrue(t2.getResult().contains("<h1>long</h1>"));
             assertTrue("Second thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait2").getTime() >= 1000);
 
             // Entry is cached without the long module
             assertFalse(content.contains("Very long to appear"));
-            assertTrue(content.contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertTrue(content.contains("<h1>long</h1>"));
             assertNull(getCheckFilter("CacheHttpTestRenderFilter2").getData("testModuleWait3"));
 
             assertTrue(t1.getResult().contains("Very long to appear"));
-            assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertTrue("First thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait1").getTime() >= 6000);
+            assertTrue(t1.getResult().contains("<h1>long</h1>"));
+            assertTrue("First thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait1").getTime() >= 15000);
 
             // Entry is now cached with the long module
             assertTrue(content1.contains("Very long to appear"));
-            assertTrue(content1.contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertTrue(content1.contains("<h1>long</h1>"));
             assertNull(getCheckFilter("CacheHttpTestRenderFilter2").getData("testModuleWait4"));
         } finally {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);

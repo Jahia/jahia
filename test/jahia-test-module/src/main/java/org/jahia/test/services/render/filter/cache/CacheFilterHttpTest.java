@@ -308,21 +308,21 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
             // Long module is left blank
             assertFalse(t2.getResult().contains("Very long to appear"));
-            assertTrue(t2.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertTrue(t2.getResult().contains("<h1>long</h1>"));
             assertTrue("Second thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait2").getTime() >= 1000);
 
             // Entry is cached without the long module
             assertFalse(content.contains("Very long to appear"));
-            assertTrue(content.contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertTrue(content.contains("<h1>long</h1>"));
             assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait3").getCount());
 
             assertTrue(t1.getResult().contains("Very long to appear"));
-            assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertTrue("First thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait1").getTime() >= 6000);
+            assertTrue(t1.getResult().contains("<h1>long</h1>"));
+            assertTrue("First thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait1").getTime() >= 15000);
 
             // Entry is now cached with the long module
             assertTrue(content1.contains("Very long to appear"));
-            assertTrue(content1.contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertTrue(content1.contains("<h1>long</h1>"));
             assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait4").getCount());
         } finally {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);

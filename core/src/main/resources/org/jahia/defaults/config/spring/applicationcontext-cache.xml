@@ -59,7 +59,7 @@ when we flush this entry we will flush the whole cache
                 <bean class="org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.TemplateCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.TemplateTypeCacheKeyPartGenerator"/>
-                <ref bean="aclCacheKeyPartGenerator"/>
+                <ref bean="${org.jahia.aclCacheKeyPartGenerator.implementation:aclCacheKeyPartGenerator}"/>
                 <bean class="org.jahia.services.render.filter.cache.ContextCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.WrappedCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.CustomCacheKeyPartGenerator"/>
@@ -75,6 +75,14 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean id="aclCacheKeyPartGenerator" class="org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator">
+        <property name="groupManagerService" ref="JahiaGroupManagerService"/>
+        <property name="cacheProvider" ref="ehCacheProvider"/>
+        <property name="template" ref="jcrTemplate"/>
+        <property name="useGroupsSignature" value="${org.jahia.aclCacheKeyPartGenerator.useGroupsSignature:true}"/>
+        <property name="usePerUser" value="${org.jahia.aclCacheKeyPartGenerator.usePerUser:false}"/>
+    </bean>
+
+    <bean id="legacyAclCacheKeyPartGenerator" class="org.jahia.services.render.filter.cache.LegacyAclCacheKeyPartGenerator">
         <property name="groupManagerService" ref="JahiaGroupManagerService"/>
         <property name="cacheProvider" ref="ehCacheProvider"/>
         <property name="template" ref="jcrTemplate"/>

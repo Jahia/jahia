@@ -58,7 +58,7 @@ public class PrincipalAcl implements Serializable {
 
     private static final long serialVersionUID = -9194400174386788272L;
 
-    private Map<String, Map<String, SortedSet<String>>> grantAceByPath = new ConcurrentHashMap<String, Map<String, SortedSet<String>>>();
+    private Map<String, Map<String, SortedSet<String>>> grantAceByPath = new ConcurrentHashMap<>();
     private Set<String> allPaths = new HashSet<>();
 
     public PrincipalAcl(Map<String,Set<String>> mapGranted, Map<String,Set<String>> mapDenied) {
@@ -110,12 +110,12 @@ public class PrincipalAcl implements Serializable {
      * @param rolesForPath The final map where to put the results, with all roles per paths
      */
     public void fillRolesForPath(String nodePath, Map<String, Set<String>> rolesForPath) {
-        nodePath += "/";
+        String unambiguosNodePath = nodePath + "/";
 
         for (Map.Entry<String, Map<String, SortedSet<String>>> entry : grantAceByPath.entrySet()) {
             String grantPath = entry.getKey() + "/";
-            if (nodePath.startsWith(grantPath)) {
-                fillRolesForPath(nodePath, rolesForPath, entry.getValue());
+            if (unambiguosNodePath.startsWith(grantPath)) {
+                fillRolesForPath(unambiguosNodePath, rolesForPath, entry.getValue());
             }
         }
     }

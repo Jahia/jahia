@@ -67,7 +67,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -489,7 +488,8 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 processings.putIfAbsent(cacheKey, semaphore);
             }
             try {
-                semaphore.tryAcquire(500, TimeUnit.MILLISECONDS);
+                semaphore.acquire();
+
                 element = cache.get(cacheKey);
                 if (element != null) {
                     return (X) element.getObjectValue();

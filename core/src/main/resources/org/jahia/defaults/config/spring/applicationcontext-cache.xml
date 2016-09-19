@@ -59,7 +59,7 @@ when we flush this entry we will flush the whole cache
                 <bean class="org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.TemplateCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.TemplateTypeCacheKeyPartGenerator"/>
-                <ref bean="${org.jahia.aclCacheKeyPartGenerator.implementation:aclCacheKeyPartGenerator}"/>
+                <ref bean="${org.jahia.aclCacheKeyPartGenerator.implementation:legacyAclCacheKeyPartGenerator}"/>
                 <bean class="org.jahia.services.render.filter.cache.ContextCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.WrappedCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.CustomCacheKeyPartGenerator"/>

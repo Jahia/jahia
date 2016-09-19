@@ -41,9 +41,6 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-/*
- * Copyright (c) 2004 Your Corporation. All Rights Reserved.
- */
 package org.jahia.services;
 
 

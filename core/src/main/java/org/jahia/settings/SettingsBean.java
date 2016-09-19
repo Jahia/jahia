@@ -178,6 +178,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String atmosphereAsyncSupport;
     private boolean areaAutoActivated;
 
+    // wait for a bean to be available when using SpringContextSingleton
+    // Mostly used when modules need to access beans from an other module
+    // in 7.2+ spring context can start in a random order
+    // -1 to disable wait/notify mechanism,
+    // 0 to infinite wait (not recommended)
+    private long moduleSpringBeansWaitingTimeout = 5000;
+
     // this is the list of jahia.properties server disk path and context path values...
     private String server;
     private String serverVersion;
@@ -447,7 +454,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             useWebsockets = getBoolean("atmosphere.useWebsockets", false);
 
             areaAutoActivated = getBoolean("area.auto.activated", true);
-            
+
+            moduleSpringBeansWaitingTimeout = getLong("jahia.moduleSpringBeansWaitingTimeout", 5000);
+
             moduleStartLevel = getInt("jahia.moduleStartLevel", 90);
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
@@ -1431,6 +1440,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public boolean isAreaAutoActivated() {
         return areaAutoActivated;
+    }
+
+    public long getModuleSpringBeansWaitingTimeout() {
+        return moduleSpringBeansWaitingTimeout;
     }
 
     public void setLicenseFile(Resource licenseFile) {

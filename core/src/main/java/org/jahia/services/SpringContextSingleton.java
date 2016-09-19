@@ -48,14 +48,15 @@ package org.jahia.services;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -79,6 +80,8 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
     private transient static Logger logger = LoggerFactory.getLogger(SpringContextSingleton.class);
 
     private static SpringContextSingleton ourInstance = new SpringContextSingleton();
+
+    private static List<ExpectedBean> expectedBeans = Collections.synchronizedList(new ArrayList<ExpectedBean>());
     
     private Map<String, Resource[]> resourcesCache;
 
@@ -97,11 +100,37 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
     }
 
     public static Object getBeanInModulesContext(String beanId) {
+        return getBeanInModulesContext(beanId, SettingsBean.getInstance().getModuleSpringBeansWaitingTimeout());
+    }
+
+    private static Object getBeanInModulesContext(String beanId, long waitTimeout) {
+        Object bean = null;
         for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null && aPackage.getContext().containsBean(beanId)) {
-                return aPackage.getContext().getBean(beanId);
+                bean = aPackage.getContext().getBean(beanId);
+                break;
             }
         }
+
+        if(bean != null) {
+            return bean;
+        } else if(waitTimeout != -1) {
+            logger.info("Bean: {} not found yet in other modules, wait {}ms until it's available ...", beanId, waitTimeout);
+            ExpectedBean expectedBean = new ExpectedBean(beanId);
+            expectedBeans.add(expectedBean);
+            try {
+                expectedBean.waitBean(waitTimeout);
+                expectedBeans.remove(expectedBean);
+                logger.debug("Bean: {}, wait have been released or timed out, try to access it again ...", beanId);
+                return getBeanInModulesContext(beanId, -1);
+            } catch (InterruptedException e) {
+                logger.error("Bean: {}, waiting process have been interrupted, bean removed from waiting beans.", beanId, e);
+                expectedBeans.remove(expectedBean);
+                throw new NoSuchBeanDefinitionException(beanId);
+            }
+        }
+
+        logger.error("Bean: {} definitely not found in modules context", beanId);
         throw new NoSuchBeanDefinitionException(beanId);
     }
     
@@ -260,4 +289,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         return allResources;
     }
 
+    public static List<ExpectedBean> getExpectedBeans() {
+        return expectedBeans;
+    }
 }

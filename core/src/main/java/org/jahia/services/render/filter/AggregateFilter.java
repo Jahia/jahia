@@ -267,7 +267,7 @@ public class AggregateFilter extends AbstractFilter {
      * @param content The fragment
      * @param renderContext The render context
      */
-    protected String aggregateContent(String content, RenderContext renderContext) {
+    protected String aggregateContent(String content, RenderContext renderContext) throws RenderException {
         int esiTagStartIndex = content.indexOf(ESI_TAG_START);
         if (esiTagStartIndex == -1) {
             return content;
@@ -276,17 +276,12 @@ public class AggregateFilter extends AbstractFilter {
             while (esiTagStartIndex != -1) {
                 int esiTagEndIndex = sb.indexOf(ESI_TAG_END, esiTagStartIndex);
                 if (esiTagEndIndex != -1) {
-                    String key = sb.substring(esiTagStartIndex + ESI_TAG_START.length(), esiTagEndIndex);
-                    try {
-                        String replacement = generateContent(renderContext, key);
-                        if (replacement == null) {
-                            replacement = "";
-                        }
-                        sb.replace(esiTagStartIndex, esiTagEndIndex + ESI_TAG_END_LENGTH, replacement);
-                        esiTagStartIndex = sb.indexOf(ESI_TAG_START, esiTagStartIndex + replacement.length());
-                    } catch (RenderException e) {
-                        throw new RuntimeException(e.getMessage(), e);
+                    String replacement = generateContent(renderContext, sb.substring(esiTagStartIndex + ESI_TAG_START.length(), esiTagEndIndex));
+                    if (replacement == null) {
+                        replacement = "";
                     }
+                    sb.replace(esiTagStartIndex, esiTagEndIndex + ESI_TAG_END_LENGTH, replacement);
+                    esiTagStartIndex = sb.indexOf(ESI_TAG_START, esiTagStartIndex + replacement.length());
                 } else {
                     // no closed esi end tag found
                     return sb.toString();

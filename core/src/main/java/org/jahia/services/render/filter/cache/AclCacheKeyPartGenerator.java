@@ -176,11 +176,11 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         try {
             final Set<String> aclsKeys = new TreeSet<>();
 
-            if (usePerUser || "true".equals(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER)) {
+            if (usePerUser || "true".equals(properties.get(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER))) {
                 return PER_USER;
             }
 
-            if (useGroupsSignature || "true".equals(CacheUtils.FRAGMENT_PROPERTY_CACHE_GROUPS_SIGNATURE)) {
+            if (useGroupsSignature || "true".equals(properties.get(CacheUtils.FRAGMENT_PROPERTY_CACHE_GROUPS_SIGNATURE))) {
                 return GROUPS_SIGNATURE;
             }
 

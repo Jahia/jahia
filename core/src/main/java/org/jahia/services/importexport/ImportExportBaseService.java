@@ -170,7 +170,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     /**
      * Helper method to determine which type of the import the uploaded file represents.
      *
-     * @param item the uploaded file item
+     * @param declaredContentType the declared content type
+     * @param fileName the uploaded file name
      * @return type of the import the uploaded file represents
      */
     public static String detectImportContentType(String declaredContentType, String fileName) {

@@ -121,16 +121,14 @@ public interface ImportExportService {
      * @param outputStream
      * @param params
      * @param sites
-     * @param numberOfNodesToExport
      * @throws JahiaException
      * @throws RepositoryException
      * @throws IOException
      * @throws SAXException
      */
-    void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites, int numberOfNodesToExport)
+    void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites)
             throws RepositoryException, IOException, SAXException, TransformerException;
 
-    int estimateNodesSites(Map<String, Object> params, List<JCRSiteNode> sites) throws RepositoryException;
 
     /**
      * Export JCR node as xml
@@ -139,11 +137,12 @@ public interface ImportExportService {
      * @param exportRoot
      * @param out outputstream
      * @param params   @throws JahiaException
+     * @param exportContext
      * @throws RepositoryException
      * @throws SAXException
      * @throws IOException
      */
-    void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException;
+    void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params, ExportContext exportContext) throws RepositoryException, SAXException, IOException, TransformerException;
 
     /**
      * Export JCR content along with binaries into a zip

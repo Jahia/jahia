@@ -97,13 +97,13 @@ public class DocumentViewExporter extends Observable {
     private Stack<String> stack;
 
     private List<String> propertiestoIgnore = Arrays.asList("jcr:predecessors", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:uuid", "jcr:mergeFailed");
+    private ExportContext exportContext;
 
     public DocumentViewExporter(JCRSessionWrapper session, ContentHandler ch, boolean skipBinary, boolean noRecurse) {
         this.session = session;
         this.ch = ch;
         this.noRecurse = noRecurse;
         this.skipBinary = skipBinary;
-
         this.stack = new Stack<String>();
 
         prefixes = new HashMap<String, String>();
@@ -126,6 +126,7 @@ public class DocumentViewExporter extends Observable {
         }
 
         exportedShareable = new HashMap<String, String>();
+        this.exportContext = new ExportContext(0,0,0,null);
     }
 
     public void setTypesToIgnore(Set<String> typesToIgnore) {
@@ -177,7 +178,6 @@ public class DocumentViewExporter extends Observable {
 
     private void exportNode(JCRNodeWrapper node) throws SAXException, RepositoryException {
         if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
-            notifyListObservers(node.getPath());
             String path = "";
             Node current = node;
             while (!current.getPath().equals("/")) {
@@ -238,6 +238,7 @@ public class DocumentViewExporter extends Observable {
                     String encodedName = ISO9075.encode(node.getName());
                     startElement(encodedName, atts);
                     endElement(encodedName);
+                    notifyListObservers(node.getPath());
                     return;
                 } else {
                     exportedShareable.put(node.getIdentifier(), node.getPath());
@@ -337,6 +338,7 @@ public class DocumentViewExporter extends Observable {
                     }
                 }
             }
+            notifyListObservers(node.getPath());
         }
     }
 
@@ -345,8 +347,11 @@ public class DocumentViewExporter extends Observable {
      * @param path the node path
      */
     private void notifyListObservers(String path) {
-        setChanged();
-        notifyObservers(path);
+        if(exportContext!= null) {
+            setChanged();
+            exportContext.setActualPath(path);
+            notifyObservers(exportContext);
+        }
     }
 
     private void setProviderRootAttribute(JCRNodeWrapper node, AttributesImpl atts) throws RepositoryException {
@@ -448,5 +453,13 @@ public class DocumentViewExporter extends Observable {
 
     public List<JCRNodeWrapper> getNodesList() {
         return nodesList;
+    }
+
+    public void setExportContext(ExportContext exportContext) {
+        this.exportContext = exportContext;
+    }
+
+    public ExportContext getExportContext() {
+        return exportContext;
     }
 }

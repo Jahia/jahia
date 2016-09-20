@@ -223,16 +223,7 @@ public class Export extends JahiaController implements ServletContextAware {
                     params.put(ImportExportService.XSL_PATH, cleanupXsl);
 
                     OutputStream outputStream = response.getOutputStream();
-                    logger.info("Sites " + sites + " export started");
-                    long startSitesExportTime = System.currentTimeMillis();
-                    int numberOfNodesToExport = importExportService.estimateNodesSites(params, sites);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Number of nodes to export : " + numberOfNodesToExport);
-                    }
-                    importExportService.exportSites(outputStream, params, sites, numberOfNodesToExport);
-                    long endSitesExportTime = System.currentTimeMillis();
-                    logger.info("Sites " + sites + " export ended in " +  (endSitesExportTime - startSitesExportTime)
-                            /1000 + " seconds");
+                    importExportService.exportSites(outputStream, params, sites);
                     outputStream.close();
                 }
 
@@ -253,7 +244,8 @@ public class Export extends JahiaController implements ServletContextAware {
                 exportedNode.setMaxAge(60);
                 exportedNode.setPath("/");
                 response.addCookie(exportedNode);
-                importExportService.exportNode(node, exportRoot, outputStream, params);
+                //No export log for the node export
+                importExportService.exportNode(node, exportRoot, outputStream, params, null);
 
             } else if ("zip".equals(exportFormat)) {
 

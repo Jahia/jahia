@@ -571,8 +571,7 @@ public class ImportExportTest {
             zipFile = File.createTempFile("simpleimportexporttest", ".zip");
             OutputStream outputStream = new FileOutputStream(zipFile);
             List<JCRSiteNode> sites = Lists.newArrayList((JCRSiteNode)ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteName));
-            importExportService.exportSites(outputStream, params, sites, importExportService.estimateNodesSites
-                    (params,sites));
+            importExportService.exportSites(outputStream, params, sites);
             outputStream.close();
         } catch (FileNotFoundException e) {
             logger.error("Exception during ImportExportTest", e);

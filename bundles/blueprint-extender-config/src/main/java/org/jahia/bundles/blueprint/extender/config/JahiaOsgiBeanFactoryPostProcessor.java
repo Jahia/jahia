@@ -48,7 +48,6 @@ import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.ExpectedBean;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.templates.JahiaModuleAwareProcessor;
 import org.jahia.services.templates.JahiaModulesBeanPostProcessor;
@@ -116,11 +115,7 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
         }
 
         // check if there is expected beans for this spring context
-        for (ExpectedBean expectedBean : SpringContextSingleton.getExpectedBeans()) {
-            if(beanFactory.containsBean(expectedBean.getBeanId())) {
-                expectedBean.notifyBean();
-            }
-        }
+        SpringContextSingleton.checkExpectedBeansInBeanFactory(beanFactory);
 
         logger.info("Finished post-processing of the Spring bean factory for bundle {} in {} ms", bundleName,
                 System.currentTimeMillis() - timer);

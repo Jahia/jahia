@@ -51,6 +51,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -60,6 +62,7 @@ import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -81,7 +84,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
 
     private static SpringContextSingleton ourInstance = new SpringContextSingleton();
 
-    private static List<ExpectedBean> expectedBeans = Collections.synchronizedList(new ArrayList<ExpectedBean>());
+    private static final List<ExpectedBean> expectedBeans = Collections.synchronizedList(new ArrayList<ExpectedBean>());
     
     private Map<String, Resource[]> resourcesCache;
 
@@ -132,6 +135,18 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
 
         logger.error("Bean: {} definitely not found in modules context", beanId);
         throw new NoSuchBeanDefinitionException(beanId);
+    }
+
+    public static void checkExpectedBeansInBeanFactory(BeanFactory beanFactory) {
+        synchronized (expectedBeans) {
+            Iterator i = expectedBeans.iterator();
+            while (i.hasNext()) {
+                ExpectedBean expectedBean = (ExpectedBean) i.next();
+                if (beanFactory.containsBean(expectedBean.getBeanId())) {
+                    expectedBean.notifyBean();
+                }
+            }
+        }
     }
     
     /**
@@ -287,9 +302,5 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         }
 
         return allResources;
-    }
-
-    public static List<ExpectedBean> getExpectedBeans() {
-        return expectedBeans;
     }
 }

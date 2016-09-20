@@ -370,15 +370,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      */
     private int estimateSubnodesNumber(JCRNodeWrapper node) throws RepositoryException {
         int result = 0;
-        Set<String> tti = new HashSet<String>();
-        tti.add(Constants.JAHIANT_VIRTUALSITE);
-        tti.add("jnt:workflowTask");
-        if (!tti.contains(node.getPrimaryNodeTypeName())) {
+        Set<String> typesToIgnore = new HashSet<String>();
+        typesToIgnore.add(Constants.JAHIANT_VIRTUALSITE);
+        typesToIgnore.add("jnt:workflowTask");
+        if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
             result++;
-            NodeIterator ni = node.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
-                result+= estimateSubnodesNumber(c);
+            NodeIterator nodeChildIterator = node.getNodes();
+            while (nodeChildIterator.hasNext()) {
+                JCRNodeWrapper childNode = (JCRNodeWrapper) nodeChildIterator.next();
+                result+= estimateSubnodesNumber(childNode);
             }
         }
         return  result;

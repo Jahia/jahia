@@ -49,10 +49,6 @@ package org.jahia.services;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -75,22 +71,22 @@ import org.springframework.core.io.Resource;
 
 /**
  * Spring application context holder.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class SpringContextSingleton implements ApplicationContextAware, ApplicationListener<TemplatePackageRedeployedEvent> {
 
-    private transient static Logger logger = LoggerFactory.getLogger(SpringContextSingleton.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(SpringContextSingleton.class);
     private static SpringContextSingleton ourInstance = new SpringContextSingleton();
-
     private static final List<ExpectedBean> expectedBeans = Collections.synchronizedList(new ArrayList<ExpectedBean>());
-    
+
+    private ApplicationContext context;
+    private boolean initialized;
     private Map<String, Resource[]> resourcesCache;
 
     /**
      * Returns an instance of the requested bean.
-     * 
+     *
      * @param beanId the requested bean ID
      * @return an instance of the requested bean
      */
@@ -107,6 +103,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
     }
 
     private static Object getBeanInModulesContext(String beanId, long waitTimeout) {
+
         Object bean = null;
         for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null && aPackage.getContext().containsBean(beanId)) {
@@ -115,7 +112,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
             }
         }
 
-        if(bean != null) {
+        if (bean != null) {
             return bean;
         } else if(waitTimeout != -1) {
             logger.info("Bean: {} not found yet in other modules, wait {}ms until it's available ...", beanId, waitTimeout);
@@ -139,19 +136,19 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
 
     public static void checkExpectedBeansInBeanFactory(BeanFactory beanFactory) {
         synchronized (expectedBeans) {
-            Iterator i = expectedBeans.iterator();
+            Iterator<ExpectedBean> i = expectedBeans.iterator();
             while (i.hasNext()) {
-                ExpectedBean expectedBean = (ExpectedBean) i.next();
+                ExpectedBean expectedBean = i.next();
                 if (beanFactory.containsBean(expectedBean.getBeanId())) {
                     expectedBean.notifyBean();
                 }
             }
         }
     }
-    
+
     /**
      * Returns a map with beans of the specified type, including beans in modules.
-     * 
+     *
      * @param type
      *            the bean type to search for
      * @return a map with beans of the specified type, including beans in modules
@@ -167,7 +164,6 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
                 found.putAll(aPackage.getContext().getBeansOfType(type));
             }
         }
-
         return found;
     }
 
@@ -175,18 +171,13 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         return ourInstance;
     }
 
-    private ApplicationContext context;
-
-    private boolean initialized;
-
     private SpringContextSingleton() {
-        super();
         resourcesCache = new HashMap<String, Resource[]>(2);
     }
 
     /**
      * Returns the Spring application context instance.
-     * 
+     *
      * @return the Spring application context instance
      */
     public ApplicationContext getContext() {
@@ -200,7 +191,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
      * Publishes the specified event in the core Spring context and publishes to each module's context. When publishing the event to a
      * module, the {@link ApplicationEventMulticaster#multicastEvent(ApplicationEvent)} method is used to skip publishing event to the
      * module's parent context (which is our Spring core context).
-     * 
+     *
      * @param event
      *            the Spring event to be published
      */
@@ -213,7 +204,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
      * to each module's context. When publishing the event to a module, the
      * {@link ApplicationEventMulticaster#multicastEvent(ApplicationEvent)} method is used to skip publishing event to the module's parent
      * context (which is our Spring core context).
-     * 
+     *
      * @param event
      *            the Spring event to be published
      * @param propagateToModules
@@ -258,7 +249,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
     /**
      * Searches for Spring resource locations given the specified (pattern-based) location. Multiple locations can be provided separated by
      * comma (or any delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} ).
-     * 
+     *
      * @param locationPatterns
      *            (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any delimiter,
      *            defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
@@ -273,7 +264,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
     /**
      * Searches for Spring resource locations given the specified (pattern-based) location. Multiple locations can be provided separated by
      * comma (or any delimiter, defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} ).
-     * 
+     *
      * @param locationPatterns
      *            (pattern-based) location to search for resources. Multiple locations can be provided separated by comma (or any delimiter,
      *            defined in {@link org.springframework.context.ConfigurableApplicationContext#CONFIG_LOCATION_DELIMITERS} )
@@ -300,7 +291,6 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
                 resourcesCache.put(locationPatterns, allResources);
             }
         }
-
         return allResources;
     }
 }

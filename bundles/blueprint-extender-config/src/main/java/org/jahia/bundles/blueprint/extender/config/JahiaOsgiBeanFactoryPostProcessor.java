@@ -64,10 +64,10 @@ import java.util.Map;
 
 /**
  * Post processor that registers the {@link JahiaModuleAwareProcessor} for beans, that would like to be aware of the current module.
- * 
+ *
  * Also exposes Spring beans which are in the <code>Export-Package</code> manifest header as OSGi services and "imports" external services
  * as Spring beans in the module Spring context if they are mentioned in the <code>Import-Package</code> manifest header.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostProcessor {
@@ -77,6 +77,7 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
     @Override
     public void postProcessBeanFactory(BundleContext bundleContext, ConfigurableListableBeanFactory beanFactory)
             throws BeansException, InvalidSyntaxException, BundleException {
+
         if (!BundleUtils.isJahiaModuleBundle(bundleContext.getBundle())) {
             return;
         }
@@ -101,7 +102,7 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
 
         // register new bean post processor, send all already defined beans to this processor
         Map<String, JahiaModulesBeanPostProcessor> newPostProcessors = beanFactory.getBeansOfType(JahiaModulesBeanPostProcessor.class);
-        if(newPostProcessors != null && newPostProcessors.size() > 0) {
+        if (newPostProcessors != null && newPostProcessors.size() > 0) {
             for (JahiaTemplatesPackage aPackage : jahiaTemplatePackages) {
                 if (aPackage.getContext() != null && aPackage.getContext().isActive()) {
                     for (JahiaModulesBeanPostProcessor newPostProcessor : newPostProcessors.values()) {
@@ -120,5 +121,4 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
         logger.info("Finished post-processing of the Spring bean factory for bundle {} in {} ms", bundleName,
                 System.currentTimeMillis() - timer);
     }
-
 }

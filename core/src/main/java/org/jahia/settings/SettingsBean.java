@@ -178,11 +178,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String atmosphereAsyncSupport;
     private boolean areaAutoActivated;
 
-    // wait for a bean to be available when using SpringContextSingleton
-    // Mostly used when modules need to access beans from an other module
-    // in 7.2+ spring context can start in a random order
-    // -1 to disable wait/notify mechanism,
-    // 0 to infinite wait (not recommended)
+    // Timeout waiting for a bean to be available when using SpringContextSingleton.
+    // Mostly used during startup when a module needs to access beans from another module starting independently.
+    // -1 to not wait, 0 to wait infinitely (not recommended)
     private long moduleSpringBeansWaitingTimeout = 5000;
 
     // this is the list of jahia.properties server disk path and context path values...
@@ -197,7 +195,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String modulesSourcesDiskPath;
     private String jahiaDatabaseScriptsPath;
     private String  jahiaGeneratedResourcesDiskPath;
-    
+
     private int moduleStartLevel;
 
     /**
@@ -568,9 +566,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         setSystemProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
 
         setSystemProperty(StatManager.QUERY_STATS_ENABLED_PROPERTY, getString("jahia.jackrabbit.queryStatsEnabled", "true"));
-        
+
         setSystemProperty(JahiaSearchManager.INDEX_LOCK_TYPES_SYSTEM_PROPERTY, getString("jahia.jackrabbit.searchIndex.indexLockTypesProperty", "true"));
-        
+
         setSystemProperty("jahia.jackrabbit.ismLocking", getString("jahia.jackrabbit.ismLocking", "org.apache.jackrabbit.core.state.DefaultISMLocking"));
 
         try {
@@ -604,7 +602,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 setSystemProperty("org.apache.jackrabbit.server.remoting.davex.batchread-config",
                         "/jahia/batchread.properties");
             }
-            
+
             if (System.getProperty("jahia.jackrabbit.bundleCacheSize.workspace") == null
                     && properties.getProperty("jahia.jackrabbit.bundleCacheSize.workspace") != null) {
                 setSystemProperty("jahia.jackrabbit.bundleCacheSize.workspace",

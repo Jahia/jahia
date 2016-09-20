@@ -126,7 +126,6 @@ public class DocumentViewExporter extends Observable {
         }
 
         exportedShareable = new HashMap<String, String>();
-        this.exportContext = new ExportContext(0,0,0,null);
     }
 
     public void setTypesToIgnore(Set<String> typesToIgnore) {

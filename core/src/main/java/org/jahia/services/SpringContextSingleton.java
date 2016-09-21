@@ -140,7 +140,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
             while (i.hasNext()) {
                 ExpectedBean expectedBean = i.next();
                 if (beanFactory.containsBean(expectedBean.getBeanId())) {
-                    expectedBean.notifyBean();
+                    expectedBean.releaseBean();
                 }
             }
         }

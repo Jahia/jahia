@@ -79,9 +79,9 @@ public class ExpectedBean {
     }
 
     /**
-     * Notify, release this bean, meaning it's now available in the modules context
+     * Release this bean meaning it's now available in the modules context
      */
-    public void notifyBean() {
+    public void releaseBean() {
         synchronized (this) {
             notify();
         }

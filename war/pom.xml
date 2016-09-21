@@ -430,6 +430,7 @@
                                 <feature>dx-standard</feature>
                             </features>
                             <repository>${project.build.directory}/jahia/WEB-INF/karaf/system</repository>
+                            <includeMvnBasedDescriptors>true</includeMvnBasedDescriptors>
                         </configuration>
                     </execution>
                 </executions>

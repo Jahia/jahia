@@ -60,11 +60,11 @@ import org.springframework.core.io.ClassPathResource;
  * 
  * @author Sergiy Shyrkov
  */
-public class PersistedBundleInfoBuilderTest {
+public class PersistentBundleInfoBuilderTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(PersistedBundleInfoBuilderTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PersistentBundleInfoBuilderTest.class);
 
-    private static final String PACKAGE_PATH = PersistedBundleInfoBuilderTest.class.getPackage().getName().replace('.', '/')
+    private static final String PACKAGE_PATH = PersistentBundleInfoBuilderTest.class.getPackage().getName().replace('.', '/')
             + '/';
 
     public static ClassPathResource getResource(String resource) {

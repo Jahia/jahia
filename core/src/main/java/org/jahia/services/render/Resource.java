@@ -150,7 +150,12 @@ public class Resource {
 
                     logger.warn("Performance warning: node loaded from JCR before the cache filter for resource: " +
                             nodePath + ", render filter implementations have to be review, " +
-                            "to avoid reading the node from the resource before the cache");
+                            "to avoid reading the node from the resource before the cache. " +
+                            "You can enable debug log level to look at the current thread stack, " +
+                            "this could help to identify the calling method");
+                    if(logger.isDebugEnabled()) {
+                        Thread.dumpStack();
+                    }
                 }
 
                 node = sessionWrapper.getNode(nodePath);

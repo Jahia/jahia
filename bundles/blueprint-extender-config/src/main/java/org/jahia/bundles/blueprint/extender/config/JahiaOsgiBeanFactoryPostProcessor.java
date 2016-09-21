@@ -90,27 +90,11 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
         beanFactory
                 .addBeanPostProcessor(new JahiaModuleAwareProcessor(BundleUtils.getModule(bundleContext.getBundle())));
 
-        List<JahiaTemplatesPackage> jahiaTemplatePackages = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages();
-        for (JahiaTemplatesPackage aPackage : jahiaTemplatePackages) {
+        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null && aPackage.getContext().isActive()) {
                 Map<String, JahiaModulesBeanPostProcessor> postProcessors = aPackage.getContext().getBeansOfType(JahiaModulesBeanPostProcessor.class);
                 for (JahiaModulesBeanPostProcessor pp : postProcessors.values()) {
                     beanFactory.addBeanPostProcessor(pp);
-                }
-            }
-        }
-
-        // register new bean post processor, send all already defined beans to this processor
-        Map<String, JahiaModulesBeanPostProcessor> newPostProcessors = beanFactory.getBeansOfType(JahiaModulesBeanPostProcessor.class);
-        if (newPostProcessors != null && newPostProcessors.size() > 0) {
-            for (JahiaTemplatesPackage aPackage : jahiaTemplatePackages) {
-                if (aPackage.getContext() != null && aPackage.getContext().isActive()) {
-                    for (JahiaModulesBeanPostProcessor newPostProcessor : newPostProcessors.values()) {
-                        Map<String, Object> beans = aPackage.getContext().getBeansOfType(Object.class);
-                        for (Map.Entry<String, Object> bean : beans.entrySet()) {
-                            newPostProcessor.postProcessAfterInitialization(bean.getValue(), bean.getKey());
-                        }
-                    }
                 }
             }
         }

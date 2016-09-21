@@ -116,7 +116,7 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
         }
 
         // check if there is expected beans for this spring context
-        SpringContextSingleton.checkExpectedBeansInBeanFactory(beanFactory);
+        SpringContextSingleton.releaseExpectedBeans(beanFactory);
 
         logger.info("Finished post-processing of the Spring bean factory for bundle {} in {} ms", bundleName,
                 System.currentTimeMillis() - timer);

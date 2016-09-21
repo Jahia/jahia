@@ -115,26 +115,26 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         if (bean != null) {
             return bean;
         } else if(waitTimeout != -1) {
-            logger.info("Bean: {} not found yet in other modules, wait {}ms until it's available ...", beanId, waitTimeout);
+            logger.info("Bean '{}' not found yet, will wait for its availability max {} ms...", beanId, waitTimeout);
             ExpectedBean expectedBean = new ExpectedBean(beanId);
             expectedBeans.add(expectedBean);
             try {
                 expectedBean.waitBean(waitTimeout);
                 expectedBeans.remove(expectedBean);
-                logger.debug("Bean: {}, wait have been released or timed out, try to access it again ...", beanId);
+                logger.debug("Waiting for bean '{}' either succeeded or timed out, will try to get the bean again...", beanId);
                 return getBeanInModulesContext(beanId, -1);
             } catch (InterruptedException e) {
-                logger.error("Bean: {}, waiting process have been interrupted, bean removed from waiting beans.", beanId, e);
+                logger.error("Waiting for bean '{}' was interrupted", beanId, e);
                 expectedBeans.remove(expectedBean);
                 throw new NoSuchBeanDefinitionException(beanId);
             }
         }
 
-        logger.error("Bean: {} definitely not found in modules context", beanId);
+        logger.error("Bean '{}' not found in module contexts", beanId);
         throw new NoSuchBeanDefinitionException(beanId);
     }
 
-    public static void checkExpectedBeansInBeanFactory(BeanFactory beanFactory) {
+    public static void releaseExpectedBeans(BeanFactory beanFactory) {
         synchronized (expectedBeans) {
             Iterator<ExpectedBean> i = expectedBeans.iterator();
             while (i.hasNext()) {

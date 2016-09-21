@@ -434,43 +434,6 @@
                         </configuration>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.karaf.features</groupId>
-                        <artifactId>standard</artifactId>
-                        <version>${karaf.version}</version>
-                        <classifier>features</classifier>
-                        <type>xml</type>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jahia.features</groupId>
-                        <artifactId>dx-core</artifactId>
-                        <version>${project.version}</version>
-                        <classifier>features</classifier>
-                        <type>xml</type>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jahia.features</groupId>
-                        <artifactId>dx-gemini-blueprint</artifactId>
-                        <version>${project.version}</version>
-                        <classifier>features</classifier>
-                        <type>xml</type>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jahia.features</groupId>
-                        <artifactId>dx-jax-rs</artifactId>
-                        <version>${project.version}</version>
-                        <classifier>features</classifier>
-                        <type>xml</type>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jahia.features</groupId>
-                        <artifactId>dx-standard</artifactId>
-                        <version>${project.version}</version>
-                        <classifier>features</classifier>
-                        <type>xml</type>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>

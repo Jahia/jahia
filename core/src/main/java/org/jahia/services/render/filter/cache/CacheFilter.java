@@ -184,12 +184,12 @@ public class CacheFilter extends AbstractFilter {
 
             Properties fragmentProperties = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);
 
-            if(isCacheable(renderContext, key, resource, fragmentProperties)) {
+            if (isCacheable(renderContext, key, resource, fragmentProperties)) {
                 // because fragment is not served from the cache, but the all render chain, we check that the key is still
                 // the same after prepare() and execute() of all the render filters after the cache.
                 String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, fragmentProperties);
                 if (!generatedKey.equals(key)) {
-                    logger.warn("Key generation does not give the same result after execution , was" + key + " , now is " + generatedKey);
+                    logger.warn("Key generation does not give the same result after execution: was '{}', now is '{}'", key, generatedKey);
                 }
 
                 String finalKey = (String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY);

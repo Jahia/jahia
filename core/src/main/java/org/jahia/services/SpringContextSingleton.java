@@ -104,17 +104,13 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
 
     private static Object getBeanInModulesContext(String beanId, long waitTimeout) {
 
-        Object bean = null;
         for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null && aPackage.getContext().containsBean(beanId)) {
-                bean = aPackage.getContext().getBean(beanId);
-                break;
+                return aPackage.getContext().getBean(beanId);
             }
         }
 
-        if (bean != null) {
-            return bean;
-        } else if(waitTimeout != -1) {
+        if(waitTimeout != -1) {
             logger.info("Bean '{}' not found yet, will wait for its availability max {} ms...", beanId, waitTimeout);
             ExpectedBean expectedBean = new ExpectedBean(beanId);
             expectedBeans.add(expectedBean);

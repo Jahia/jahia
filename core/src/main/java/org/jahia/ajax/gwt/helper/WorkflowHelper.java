@@ -401,6 +401,10 @@ public class WorkflowHelper {
             if (historyWorkflow != null) {
                 if (gwtWfHistory == null) {
                     gwtWfHistory = getGWTJahiaHistoryProcess(historyWorkflow);
+                    Workflow w = service.getWorkflow(historyWorkflow.getProvider(),historyWorkflow.getProcessId(), uiLocale);
+                    if (w != null && w.getVariables() != null && w.getVariables().get("jcr_title") != null) {
+                        gwtWfHistory.setDisplayName(((WorkflowVariable) w.getVariables().get("jcr_title")).getValue());
+                    }
                     gwtWfHistory.setAvailableTasks(new ArrayList<GWTJahiaWorkflowTask>());
                     gwtWorkflowsMap.put(task.getProcessId(), gwtWfHistory);
 

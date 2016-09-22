@@ -1,5 +1,6 @@
 package org.jahia.bundles.jcrcommands;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.apache.karaf.shell.api.console.CommandLine;
 import org.apache.karaf.shell.api.console.Completer;
@@ -14,29 +15,46 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class JCRNodeCompleter  extends JCRCommandSupport implements Completer {
+public class JCRNodeCompleter extends JCRCommandSupport implements Completer {
 
     @Override
-    public int complete(final Session session, CommandLine commandLine, List<String> candidates) {
-        final Set<String> strings = new HashSet<String>();
-
+    public int complete(final Session session, final CommandLine commandLine, final List<String> candidates) {
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, getCurrentWorkspace(session), null, new JCRCallback<Object>() {
                 @Override
                 public Object doInJCR(JCRSessionWrapper jcrsession) throws RepositoryException {
+                    String arg = commandLine.getCursorArgument();
+                    if (arg == null) {
+                        arg = "";
+                    } else {
+                        arg = arg.substring(0, commandLine.getArgumentPosition());
+                    }
+
                     JCRNodeWrapper n = jcrsession.getNode(getCurrentPath(session));
+                    String prefix = "";
+                    if (arg.indexOf('/') > -1) {
+                        prefix = StringUtils.substringBeforeLast(arg, "/") + "/";
+                        if (prefix.startsWith("/")) {
+                            n = jcrsession.getNode(prefix);
+                        } else {
+                            n = n.getNode(prefix);
+                        }
+                        arg = StringUtils.substringAfterLast(arg, "/");
+                    }
                     JCRNodeIteratorWrapper nodes = n.getNodes();
                     while (nodes.hasNext()) {
                         JCRNodeWrapper next = (JCRNodeWrapper) nodes.nextNode();
-                        strings.add(next.getName());
+                        if (next.getName().startsWith(arg)) {
+                            candidates.add(prefix + next.getName()+"/");
+                        }
                     }
                     return null;
                 }
             });
         } catch (RepositoryException e) {
-            System.err.print(e.getMessage());
+            // ignore
         }
-        return new StringsCompleter(strings).complete(session, commandLine, candidates);
+        return candidates.isEmpty() ? -1 : commandLine.getBufferPosition() - commandLine.getArgumentPosition();
     }
 
 }

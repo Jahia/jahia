@@ -310,21 +310,21 @@ public class JahiaClusterNode extends ClusterNode {
 
     public void reallySetRevision(long revision) {
         // Should be called by NodeLevelLockableJournal when syncing
-        log.debug("Set revision : " + revision);
+        log.debug("Set revision: {}", revision);
         super.setRevision(revision);
     }
 
 
     public static class ExternalChangeLog extends ChangeLog {
         public ExternalChangeLog(ChangeLog changes) {
-            for (ItemState state : changes.addedStates()) {
-                added(state);
-            }
             for (ItemState state : changes.deletedStates()) {
                 deleted(state);
             }
             for (ItemState state : changes.modifiedStates()) {
                 modified(state);
+            }
+            for (ItemState state : changes.addedStates()) {
+                added(state);
             }
             for (NodeReferences ref : changes.modifiedRefs()) {
                 modified(ref);

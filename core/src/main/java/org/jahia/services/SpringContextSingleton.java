@@ -297,4 +297,40 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         }
         return allResources;
     }
+
+    /**
+     * Expected bean is used to wait a specific bean when using SpringContextSingleton to access beans defined
+     * in other modules, from a module.
+     *
+     * In 7.2 a module Spring context can start independently from its dependencies Spring contexts. This class
+     * supports waiting for a bean to become accessible before returning it to a module that needs it.
+     */
+    private static class ExpectedBean {
+
+        private String beanId;
+
+        public ExpectedBean(String beanId) {
+            this.beanId = beanId;
+        }
+
+        public String getBeanId() {
+            return beanId;
+        }
+
+        /**
+         * Wait for this bean, put the current thread in waiting until notified or the timeout is reached
+         * @param timeout timeout for the wait in ms
+         * @throws InterruptedException
+         */
+        synchronized public void waitBean(long timeout) throws InterruptedException {
+            wait(timeout);
+        }
+
+        /**
+         * Release this bean meaning it's now available in the modules context
+         */
+        synchronized public void releaseBean() {
+            notify();
+        }
+    }
 }

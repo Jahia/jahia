@@ -210,7 +210,7 @@ public class TemplatePackageRegistry {
                 dependentPack = packagesByName.get(depends);
             }
             if (dependentPack == null) {
-                return false;
+               return false;
             }
             if (!pack.getDependencies().contains(dependentPack)) {
                 if (!computeDependencies(pack, dependentPack)) {
@@ -582,8 +582,9 @@ public class TemplatePackageRegistry {
 
     public boolean computeDependencies(JahiaTemplatesPackage pack) {
         pack.resetDependencies();
-        if (computeDependencies(pack, pack)) {
-            computeResourceBundleHierarchy(pack);
+        // Resource Bundles should be computed even if the package dependencies are not started. As now we can start
+        // a package and had one of its dependencies stopped
+        computeResourceBundleHierarchy(pack);
 
             for (JahiaTemplatesPackage aPackage : packagesById.values()) {
                 if (aPackage.getDepends().contains(pack.getId()) || aPackage.getDepends().contains(pack.getName())) {
@@ -591,9 +592,7 @@ public class TemplatePackageRegistry {
                 }
             }
 
-            return true;
-        }
-        return false;
+        return computeDependencies(pack, pack);
     }
 
     public List<JahiaTemplatesPackage> getDependantModules(JahiaTemplatesPackage module) {

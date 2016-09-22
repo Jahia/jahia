@@ -118,20 +118,28 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
             // In that case the waiting thread will time out, and then will get the bean on second recursive getBeanInModulesContext invocation.
             try {
                 expectedBean.waitBean(waitTimeout);
-                expectedBeans.remove(expectedBean);
-                logger.debug("Waiting for bean '{}' either succeeded or timed out, will try to get the bean again...", beanId);
-                return getBeanInModulesContext(beanId, 0);
             } catch (InterruptedException e) {
-                logger.error("Waiting for bean '{}' was interrupted", beanId, e);
+                throw new RuntimeException(e);
+            } finally {
                 expectedBeans.remove(expectedBean);
-                throw new NoSuchBeanDefinitionException(beanId);
             }
+
+            logger.debug("Waiting for bean '{}' either succeeded or timed out, will try to get the bean again...", beanId);
+            return getBeanInModulesContext(beanId, 0);
         }
 
         logger.error("Bean '{}' not found in module contexts", beanId);
         throw new NoSuchBeanDefinitionException(beanId);
     }
 
+    /**
+     * Used to release an expected bean for the given bean name,
+     * Potentially some threads are waiting for this bean to be available, this method is used to notify them that this
+     * bean is now available.
+     * We iterate on the expected beans list, each expected beans with this beanName is then released using notify()
+     *
+     * @param beanName the bean name
+     */
     public static void releaseExpectedBean(String beanName) {
         if (StringUtils.isEmpty(beanName)) {
             return;

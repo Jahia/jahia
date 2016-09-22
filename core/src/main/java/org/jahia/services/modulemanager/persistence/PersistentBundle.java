@@ -61,6 +61,7 @@ public class PersistentBundle extends BundleInfo {
 
     private String checksum;
     private String displayName;
+    private long lastModified;
     private Resource resource;
 
     /**
@@ -94,6 +95,15 @@ public class PersistentBundle extends BundleInfo {
      */
     public String getDisplayName() {
         return displayName;
+    }
+
+    /**
+     * Returns the last modified timestamp for this bundle.
+     * 
+     * @return the last modified timestamp for this bundle or <code>0</code> if the last modified data is not available
+     */
+    public long getLastModified() {
+        return lastModified;
     }
 
     /**
@@ -131,6 +141,15 @@ public class PersistentBundle extends BundleInfo {
      */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    /**
+     * Sets the last modified timestamp for this bundle.
+     * 
+     * @param lastModified the last modified timestamp for this bundle
+     */
+    public void setLastModified(long lastModified) {
+        this.lastModified = lastModified;
     }
 
     /**

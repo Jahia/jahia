@@ -51,6 +51,7 @@ import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelp
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -170,6 +171,10 @@ public class JCRBundlePersister implements BundlePersister {
             info = new PersistentBundle(node.getPropertyAsString("j:groupId"), node.getPropertyAsString("j:symbolicName"), node.getPropertyAsString("j:version"));
             info.setChecksum(node.getPropertyAsString("j:checksum"));
             info.setDisplayName(node.getPropertyAsString("j:displayName"));
+            Date lastModified = node.getLastModifiedAsDate();
+            if (lastModified != null) {
+                info.setLastModified(lastModified.getTime());
+            }
         }
         return info;
     }

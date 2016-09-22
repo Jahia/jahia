@@ -59,6 +59,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -271,11 +272,11 @@ public class ModuleUtils {
     /**
      * Load the bundle .jar resource.
      *
-     * @param bundle the bundle to be load
+     * @param bundle the bundle to be loaded
      * @return the bundle resource
      * @throws java.net.MalformedURLException
      */
-    public static Resource loadBundleResource(Bundle bundle) throws java.net.MalformedURLException {
+    public static Resource loadBundleResource(Bundle bundle) throws MalformedURLException {
         try {
             Resource bundleResource = null;
             File bundleFile = getBundleFile(bundle);
@@ -296,7 +297,34 @@ public class ModuleUtils {
         }
     }
 
-    public static InputStream loadPersistedBundle(String bundleKey) throws ModuleManagementException {
+    /**
+     * Returns the persistent bundle info for the specified key.
+     * 
+     * @param bundleKey the key of the bundle to look up
+     * @return the persistent bundle info for the specified key
+     * @throws ModuleManagementException in case of a lookup error
+     */
+    public static PersistentBundle loadPersistentBundle(String bundleKey) throws ModuleManagementException {
+        try {
+            return getBundlePersister().find(bundleKey);
+        } catch (Exception e) {
+            if (e instanceof ModuleManagementException) {
+                // re-throw
+                throw e;
+            }
+            throw new ModuleManagementException(
+                    "Unable to load persistent bundle for key " + bundleKey + ". Cause: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Returns the input stream for the specified persistent bundle.
+     * 
+     * @param bundleKey the key of the bundle to look up
+     * @return the input stream for the specified persistent bundle
+     * @throws ModuleManagementException in case of a lookup error
+     */
+    public static InputStream loadPersistentBundleStream(String bundleKey) throws ModuleManagementException {
         try {
             return getBundlePersister().getInputStream(bundleKey);
         } catch (Exception e) {

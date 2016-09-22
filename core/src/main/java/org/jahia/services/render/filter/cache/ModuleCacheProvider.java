@@ -46,8 +46,6 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-import org.apache.jackrabbit.core.JahiaRepositoryImpl;
-import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.DependenciesCacheEvictionPolicy;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
@@ -388,8 +386,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     }
 
     private long getClusterRevision() {
-        final ClusterNode clusterNode = ((JahiaRepositoryImpl) ((SpringJackrabbitRepository) jcrSessionFactory.getDefaultProvider().getRepository()).getRepository()).getContext().getClusterNode();
-        return clusterNode.getRevision();
+        return SpringJackrabbitRepository.getInstance().getClusterRevision();
     }
 
     public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {

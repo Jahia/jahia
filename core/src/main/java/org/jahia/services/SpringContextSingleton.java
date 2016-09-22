@@ -110,7 +110,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
             }
         }
 
-        if(waitTimeout != -1) {
+        if(waitTimeout > 0) {
             logger.info("Bean '{}' not found yet, will wait for its availability max {} ms...", beanId, waitTimeout);
             ExpectedBean expectedBean = new ExpectedBean(beanId);
             expectedBeans.add(expectedBean);
@@ -118,7 +118,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
                 expectedBean.waitBean(waitTimeout);
                 expectedBeans.remove(expectedBean);
                 logger.debug("Waiting for bean '{}' either succeeded or timed out, will try to get the bean again...", beanId);
-                return getBeanInModulesContext(beanId, -1);
+                return getBeanInModulesContext(beanId, 0);
             } catch (InterruptedException e) {
                 logger.error("Waiting for bean '{}' was interrupted", beanId, e);
                 expectedBeans.remove(expectedBean);

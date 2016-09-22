@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.util.*;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
@@ -58,7 +59,6 @@ import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -134,12 +134,16 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         throw new NoSuchBeanDefinitionException(beanId);
     }
 
-    public static void releaseExpectedBeans(BeanFactory beanFactory) {
+    public static void releaseExpectedBean(String beanName) {
+        if (StringUtils.isEmpty(beanName)) {
+            return;
+        }
         synchronized (expectedBeans) {
             Iterator<ExpectedBean> i = expectedBeans.iterator();
             while (i.hasNext()) {
                 ExpectedBean expectedBean = i.next();
-                if (beanFactory.containsBean(expectedBean.getBeanId())) {
+                if (beanName.equals(expectedBean.getBeanId())) {
+                    logger.debug("Excepted bean '{}' detected, notify it", beanName);
                     expectedBean.releaseBean();
                 }
             }

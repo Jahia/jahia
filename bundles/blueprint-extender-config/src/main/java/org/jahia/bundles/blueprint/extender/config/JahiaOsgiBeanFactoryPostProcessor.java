@@ -57,9 +57,9 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -86,10 +86,44 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
 
         logger.info("Start post-processing of the Spring bean factory for bundle {}", bundleName);
 
-        // register bean post-processor for JahiaModuleAware implementors
-        beanFactory
-                .addBeanPostProcessor(new JahiaModuleAwareProcessor(BundleUtils.getModule(bundleContext.getBundle())));
+        registerCoreBeanPostProcessors(bundleContext, beanFactory);
 
+        registerModulesBeanPostProcessors(beanFactory);
+
+        logger.info("Finished post-processing of the Spring bean factory for bundle {} in {} ms", bundleName,
+                System.currentTimeMillis() - timer);
+    }
+
+    private void registerCoreBeanPostProcessors(BundleContext bundleContext, ConfigurableListableBeanFactory beanFactory) {
+        // Register bean post-processor for JahiaModuleAware implementors
+        beanFactory.addBeanPostProcessor(new JahiaModuleAwareProcessor(BundleUtils.getModule(bundleContext.getBundle())));
+
+        // Register bean post-processor for expected beans lookup
+        beanFactory.addBeanPostProcessor(new BeanPostProcessor() {
+            @Override
+            public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+                return bean;
+            }
+
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+                // check if there is expected beans for this spring context
+                SpringContextSingleton.releaseExpectedBean(beanName);
+                return bean;
+            }
+        });
+    }
+
+    /**
+     * This function is kept to maintain compatibility with JahiaModulesBeanPostProcessor from modules,
+     * but this mechanism is buggy since 7.2.0.0 because spring context are started independently from this version.
+     * Beans could be registered before the JahiaModulesBeanPostProcessor causing unintended side-effects.
+     *
+     * we recommend to use a more OSGI compliant to make beans communication between modules
+     * (service trackers, osgi:list, etc.)
+     * @param beanFactory current bean factory
+     */
+    private void registerModulesBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
         for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null && aPackage.getContext().isActive()) {
                 Map<String, JahiaModulesBeanPostProcessor> postProcessors = aPackage.getContext().getBeansOfType(JahiaModulesBeanPostProcessor.class);
@@ -98,11 +132,5 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
                 }
             }
         }
-
-        // check if there is expected beans for this spring context
-        SpringContextSingleton.releaseExpectedBeans(beanFactory);
-
-        logger.info("Finished post-processing of the Spring bean factory for bundle {} in {} ms", bundleName,
-                System.currentTimeMillis() - timer);
     }
 }

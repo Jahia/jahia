@@ -110,10 +110,12 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
             }
         }
 
-        if(waitTimeout > 0) {
+        if (waitTimeout > 0) {
             logger.info("Bean '{}' not found yet, will wait for its availability max {} ms...", beanId, waitTimeout);
             ExpectedBean expectedBean = new ExpectedBean(beanId);
             expectedBeans.add(expectedBean);
+            // It's possible that a thread find the expected bean before the waitBean() call,
+            // In that case the waiting thread will time out, and then will get the bean on second recursive getBeanInModulesContext invocation.
             try {
                 expectedBean.waitBean(waitTimeout);
                 expectedBeans.remove(expectedBean);

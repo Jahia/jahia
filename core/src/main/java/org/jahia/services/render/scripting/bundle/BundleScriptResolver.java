@@ -215,8 +215,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             // first check that we don't already have a script factory assigned to that extension
             final ScriptFactory scriptFactory = scriptFactoryMap.get(extension);
             if (scriptFactory != null) {
-                // todo: do something different here?
-                throw new IllegalArgumentException("Extension " + extension + " is already associated with ScriptEngineFactory " + scriptEngineFactory);
+                ScriptEngineFactory alreadyRegistered = BundleScriptEngineManager.getInstance().getFactoryForExtension(extension);
+                throw new IllegalArgumentException("Extension " + extension + " is already associated with ScriptEngineFactory " + alreadyRegistered);
             }
 
             scriptFactoryMap.put(extension, bundleScriptFactory);

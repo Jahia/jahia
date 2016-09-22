@@ -718,10 +718,15 @@ public class Activator implements BundleActivator, EventHandler {
         }
 
         // check for script engine factories
-        scriptEngineManager.addScriptEngineFactoriesIfNeeded(bundle);
+        try {
+            scriptEngineManager.addScriptEngineFactoriesIfNeeded(bundle);
+            logger.info("--- Finished starting DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
+            setModuleState(bundle, ModuleState.State.STARTED, null);
+        } catch (Exception e) {
+            logger.error("Unable to add script engine factories", e);
+            setModuleState(bundle, ModuleState.State.STARTED, e);
+        }
 
-        logger.info("--- Finished starting DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
-        setModuleState(bundle, ModuleState.State.STARTED, null);
 
         if (hasSpringFile(bundle)) {
             try {

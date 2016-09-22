@@ -74,6 +74,9 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
 
     private static final String SCRIPT_ENGINE_FACTORY_CLASS_NAME = ScriptEngineFactory.class.getName();
     private static final String META_INF_SERVICES = "META-INF/services";
+    private static final String EXTENSION = "extension";
+    private static final String MIME_TYPE = "MIME type";
+    private static final String NAME = "name";
     private static Logger logger = LoggerFactory.getLogger(BundleScriptEngineManager.class);
 
     private Bindings globalScopeBindings;
@@ -82,7 +85,8 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
     private final Map<String, ScriptEngineFactory> namesToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<String, ScriptEngineFactory> mimeTypesToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<Long, List<BundleScriptEngineFactory>> bundleIdsToScriptFactories = new ConcurrentHashMap<>(17);
-    private final Map<String, BundleScriptEngineFactoryConfigurator> configurators = new ConcurrentHashMap<>(17);
+    private final Map<Class<? extends ScriptEngineFactory>, BundleScriptEngineFactoryConfigurator> configurators =
+            new ConcurrentHashMap<>(17);
     private final Map<ClassLoader, Map<String, ScriptEngine>> engineCache = new ConcurrentHashMap<>(17);
 
     private enum KeyType {EXTENSION, MIME_TYPE, NAME}
@@ -154,7 +158,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 // perform configuration of the factory if needed
                 if (scriptEngineFactory instanceof BundleScriptEngineFactory) {
                     BundleScriptEngineFactory factory = (BundleScriptEngineFactory) scriptEngineFactory;
-                    final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(factory);
+                    final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(factory, false);
                     if (configurator != null) {
                         configurator.configurePreScriptEngineCreation(factory.getWrappedFactory());
                     }
@@ -210,32 +214,48 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
      * {@inheritDoc}
      */
     public List<ScriptEngineFactory> getEngineFactories() {
-        List<ScriptEngineFactory> bundleScriptEngineFactories = new ArrayList<>();
+        Set<ScriptEngineFactory> bundleScriptEngineFactories = new HashSet<>();
         bundleScriptEngineFactories.addAll(extensionsToScriptFactories.values());
         bundleScriptEngineFactories.addAll(namesToScriptFactories.values());
         bundleScriptEngineFactories.addAll(mimeTypesToScriptFactories.values());
-        return bundleScriptEngineFactories;
+        return new ArrayList<>(bundleScriptEngineFactories);
+    }
+
+    private void registerFactory(String key, ScriptEngineFactory factory, Map<String, ScriptEngineFactory>
+            registrations, String keyType) {
+        final ScriptEngineFactory existing = registrations.get(key);
+        if (existing != null) {
+            throw new IllegalArgumentException(getFactoryClassName(factory) + " cannot be registered with " + keyType + " '" + key + "' " +
+                    "because this " + keyType + " is already registered with " + getFactoryClassName(existing));
+        }
+        registrations.put(key, factory);
+    }
+
+    private String getFactoryClassName(ScriptEngineFactory factory) {
+        return factory instanceof BundleScriptEngineFactory ?
+                ((BundleScriptEngineFactory) factory).getWrappedFactory().getClass().getCanonicalName()
+                : factory.getClass().getCanonicalName();
     }
 
     /**
      * {@inheritDoc}
      */
     public void registerEngineExtension(String extension, ScriptEngineFactory factory) {
-        extensionsToScriptFactories.put(extension, factory);
+        registerFactory(extension, factory, extensionsToScriptFactories, EXTENSION);
     }
 
     /**
      * {@inheritDoc}
      */
     public void registerEngineMimeType(String type, ScriptEngineFactory factory) {
-        mimeTypesToScriptFactories.put(type, factory);
+        registerFactory(type, factory, mimeTypesToScriptFactories, MIME_TYPE);
     }
 
     /**
      * {@inheritDoc}
      */
     public void registerEngineName(String name, ScriptEngineFactory factory) {
-        namesToScriptFactories.put(name, factory);
+        registerFactory(name, factory, namesToScriptFactories, NAME);
     }
 
     private BundleScriptingContext getScriptingContext(Bundle bundle) throws IOException {
@@ -252,13 +272,15 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 factoryClass = bundle.loadClass(factoryCandidate).asSubclass(ScriptEngineFactory.class);
                 factories.add(factoryClass.cast(factoryClass.newInstance()));
             } catch (ClassNotFoundException e) {
-                logger.warn("ScriptEngineFactory {} was registered to be loaded but no associated class was found in bundle {}. Ignoring.", factoryCandidate, bundle);
+                logger.warn("ScriptEngineFactory {} was registered to be loaded but no associated class was found in bundle {}. Ignoring" +
+                        ".", factoryCandidate, bundle);
                 continue;
             } catch (InstantiationException | IllegalAccessException e) {
                 logger.warn("Couldn't instantiate ScriptEngineFactory {}. Cause: {}. Ignoring.", factoryCandidate, e.getLocalizedMessage());
                 continue;
             } catch (ClassCastException e) {
-                logger.warn("Registered ScriptEngineFactory {} doesn't implement ScriptEngineFactory in bundle {}. Ignoring.", factoryCandidate, bundle);
+                logger.warn("Registered ScriptEngineFactory {} doesn't implement ScriptEngineFactory in bundle {}. Ignoring.",
+                        factoryCandidate, bundle);
                 continue;
             }
 
@@ -271,16 +293,17 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
             final String configuratorName = factoryCandidate + "Configurator";
             try {
                 final Class<?> configuratorClass = bundle.loadClass(configuratorName);
-                final BundleScriptEngineFactoryConfigurator configurator = configuratorClass.asSubclass(BundleScriptEngineFactoryConfigurator.class)
-                        .newInstance();
-                configurators.put(factoryCandidate, configurator);
+                final BundleScriptEngineFactoryConfigurator configurator =
+                        configuratorClass.asSubclass(BundleScriptEngineFactoryConfigurator.class).newInstance();
+                configurators.put(factoryClass, configurator);
             } catch (ClassNotFoundException e) {
                 // no configurator found for this script engine factory
             } catch (ClassCastException e) {
-                logger.warn("Found class {} that doesn't implement BundleScriptEngineFactoryConfigurator in bundle {}. Ignoring.", configuratorName, bundle);
+                logger.warn("Found class {} that doesn't implement BundleScriptEngineFactoryConfigurator in bundle {}. Ignoring.",
+                        configuratorName, bundle);
             } catch (InstantiationException | IllegalAccessException e) {
-                logger.error("Couldn't instantiate configurator class {} in bundle {}. Cause: {}", new String[]{configuratorName, bundle.toString(), e
-                        .getLocalizedMessage()});
+                logger.error("Couldn't instantiate configurator class {} in bundle {}. Cause: {}",
+                        new String[]{configuratorName, bundle.toString(), e.getLocalizedMessage()});
             }
         }
 
@@ -305,8 +328,8 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 }
 
                 if (!valid) {
-                    logger.warn("Invalid extension - priority pair: {}. Format is extension=priority, priority should be an integer. Extension will be " +
-                            "ignored.", extensionPriorityPair);
+                    logger.warn("Invalid extension - priority pair: {}. Format is extension=priority, priority should" +
+                            " be an integer. Extension will be ignored.", extensionPriorityPair);
                 }
             }
         } else {
@@ -316,8 +339,9 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         return new BundleScriptingContext(factories, factoryLoader, extensionsPrioritiesMap);
     }
 
-    private BundleScriptEngineFactoryConfigurator getConfigurator(BundleScriptEngineFactory factory) {
-        return configurators.get(factory.getWrappedFactoryClassName());
+    private BundleScriptEngineFactoryConfigurator getConfigurator(BundleScriptEngineFactory factory, boolean remove) {
+        final Class<? extends ScriptEngineFactory> factoryClass = factory.getWrappedFactory().getClass();
+        return remove ? configurators.remove(factoryClass) : configurators.get(factoryClass);
     }
 
     private List<String> findFactoryCandidates(Bundle bundle) throws IOException {
@@ -364,30 +388,34 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 BundleScriptResolver.getInstance().remove(bundleScriptEngineFactory, bundle);
 
                 // check if we have a configurator to call
-                final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(bundleScriptEngineFactory);
+                final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(bundleScriptEngineFactory,
+                        true);
                 if (configurator != null) {
                     configurator.destroy(bundleScriptEngineFactory.getWrappedFactory());
                 }
-                configurators.remove(bundleScriptEngineFactory.getWrappedFactoryClassName());
 
                 // clean-up our maps last since we might need that information to perform the rest of the clean-up
-                final List<String> extensions = bundleScriptEngineFactory.getExtensions();
-                for (String extension : extensions) {
-                    extensionsToScriptFactories.remove(extension);
-                }
-
-                final List<String> mimeTypes = bundleScriptEngineFactory.getMimeTypes();
-                for (String mimeType : mimeTypes) {
-                    mimeTypesToScriptFactories.remove(mimeType);
-                }
-
-                final List<String> names = bundleScriptEngineFactory.getNames();
-                for (String name : names) {
-                    namesToScriptFactories.remove(name);
-                }
+                removeFactoryFromRegistrationMaps(bundleScriptEngineFactory);
             }
             //clean up engine cache
             engineCache.clear();
+        }
+    }
+
+    private void removeFactoryFromRegistrationMaps(BundleScriptEngineFactory bundleScriptEngineFactory) {
+        final List<String> extensions = bundleScriptEngineFactory.getExtensions();
+        for (String extension : extensions) {
+            extensionsToScriptFactories.remove(extension);
+        }
+
+        final List<String> mimeTypes = bundleScriptEngineFactory.getMimeTypes();
+        for (String mimeType : mimeTypes) {
+            mimeTypesToScriptFactories.remove(mimeType);
+        }
+
+        final List<String> names = bundleScriptEngineFactory.getNames();
+        for (String name : names) {
+            namesToScriptFactories.remove(name);
         }
     }
 
@@ -422,27 +450,36 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         final List<BundleScriptEngineFactory> factories = new ArrayList<>(engineFactories.size());
 
         for (ScriptEngineFactory factory : engineFactories) {
-            final BundleScriptEngineFactory bundleScriptEngineFactory = new BundleScriptEngineFactory(factory, scriptingContext);
+            final BundleScriptEngineFactory bundleScriptEngineFactory =
+                    new BundleScriptEngineFactory(factory, scriptingContext);
 
-            final List<String> extensions = factory.getExtensions();
-            for (String extension : extensions) {
-                extensionsToScriptFactories.put(extension, bundleScriptEngineFactory);
-            }
+            try {
+                final List<String> extensions = factory.getExtensions();
+                for (String extension : extensions) {
+                    registerEngineExtension(extension, bundleScriptEngineFactory);
+                }
 
-            final List<String> mimeTypes = factory.getMimeTypes();
-            for (String mimeType : mimeTypes) {
-                mimeTypesToScriptFactories.put(mimeType, bundleScriptEngineFactory);
-            }
+                final List<String> mimeTypes = factory.getMimeTypes();
+                for (String mimeType : mimeTypes) {
+                    registerEngineMimeType(mimeType, bundleScriptEngineFactory);
+                }
 
-            final List<String> names = factory.getNames();
-            for (String name : names) {
-                namesToScriptFactories.put(name, bundleScriptEngineFactory);
+                final List<String> names = factory.getNames();
+                for (String name : names) {
+                    registerEngineName(name, bundleScriptEngineFactory);
+                }
+            } catch (Exception e) {
+                // if we encounter an exception during the registration process, remove the factory from where it already was potentially
+                // registered
+                removeFactoryFromRegistrationMaps(bundleScriptEngineFactory);
+                throw e;
             }
 
             factories.add(bundleScriptEngineFactory);
 
             // check if we need to further configure the factory
-            final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(bundleScriptEngineFactory);
+            final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(bundleScriptEngineFactory,
+                    false);
             if (configurator != null) {
                 configurator.configure(factory, bundle, scriptingContext.getClassLoader());
             }

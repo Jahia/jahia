@@ -4,7 +4,9 @@ import org.apache.karaf.shell.api.console.Session;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import java.util.UUID;
 
 public class JCRCommandSupport {
 
@@ -46,8 +48,18 @@ public class JCRCommandSupport {
             JCRNodeWrapper n = jcrsession.getNode(getCurrentPath(session));
             return n.getParent();
         } else {
-            JCRNodeWrapper n = jcrsession.getNode(getCurrentPath(session));
-            return n.getNode(path);
+            try {
+                JCRNodeWrapper n = jcrsession.getNode(getCurrentPath(session));
+                return n.getNode(path);
+            } catch (PathNotFoundException e) {
+                try {
+                    // Try with UUID
+                    UUID.fromString(path);
+                    return jcrsession.getNodeByIdentifier(path);
+                } catch (IllegalArgumentException e1) {
+                    throw e;
+                }
+            }
         }
     }
 

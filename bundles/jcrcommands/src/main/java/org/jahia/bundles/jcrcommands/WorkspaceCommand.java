@@ -14,7 +14,7 @@ import org.apache.karaf.shell.support.completers.StringsCompleter;
 public class WorkspaceCommand extends JCRCommandSupport implements Action {
 
     @Argument(description = "Workspace")
-    @Completion(value=StringsCompleter.class , values = { "workspace", "live" })
+    @Completion(value=StringsCompleter.class , values = { "default", "live" })
     private String ws;
 
     @Reference

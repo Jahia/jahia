@@ -782,8 +782,169 @@
                     <groupId>org.apache.cxf</groupId>
                     <artifactId>cxf-rt-rs-client</artifactId>
                 </exclusion>
+                
+                <!-- We exclude support for the following formats, which we do not parse -->
+                <exclusion>
+                    <!-- Matlab -->
+                    <artifactId>jmatio</artifactId>
+                    <groupId>net.sourceforge.jmatio</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- MS Access -->
+                    <artifactId>jackcess</artifactId>
+                    <groupId>com.healthmarketscience.jackcess</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- MS Access -->
+                    <artifactId>jackcess-encrypt</artifactId>
+                    <groupId>com.healthmarketscience.jackcess</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Compressed files -->
+                    <artifactId>xz</artifactId>
+                    <groupId>org.tukaani</groupId>
+                </exclusion>
+                <exclusion>
+                    <!--  MP4 video -->
+                    <artifactId>isoparser</artifactId>
+                    <groupId>com.googlecode.mp4parser</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- RSS -->
+                    <artifactId>rome</artifactId>
+                    <groupId>com.rometools</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Source code (C++, Java, Groovy) -->
+                    <artifactId>jhighlight</artifactId>
+                    <groupId>org.codelibs</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Outlook PST mail files -->
+                    <artifactId>java-libpst</artifactId>
+                    <groupId>com.pff</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- RAR archives -->
+                    <artifactId>junrar</artifactId>
+                    <groupId>com.github.junrar</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Natural language processing stuff -->
+                    <artifactId>opennlp-tools</artifactId>
+                    <groupId>org.apache.opennlp</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- JSON -->
+                    <artifactId>json-simple</artifactId>
+                    <groupId>com.googlecode.json-simple</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- JSON -->
+                    <artifactId>gson</artifactId>
+                    <groupId>com.google.code.gson</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Network Common Data Form: scientific data -->
+                    <artifactId>netcdf4</artifactId>
+                    <groupId>edu.ucar</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Meteorology data -->
+                    <artifactId>grib</artifactId>
+                    <groupId>edu.ucar</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Unidata's Common Data Model -->
+                    <artifactId>cdm</artifactId>
+                    <groupId>edu.ucar</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Unidata's  httpservices -->
+                    <artifactId>httpservices</artifactId>
+                    <groupId>edu.ucar</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Spatial Information System -->
+                    <artifactId>sis-utility</artifactId>
+                    <groupId>org.apache.sis.core</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Spatial Information System -->
+                    <artifactId>sis-netcdf</artifactId>
+                    <groupId>org.apache.sis.storage</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Spatial Information System -->
+                    <artifactId>sis-metadata</artifactId>
+                    <groupId>org.apache.sis.core</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Geospatial data -->
+                    <artifactId>geoapi</artifactId>
+                    <groupId>org.opengis</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- CSV files -->
+                    <artifactId>commons-csv</artifactId>
+                    <groupId>org.apache.commons</groupId>
+                </exclusion>
+                <!-- end of excluded dependencies for various formats -->
+
+                <!-- We exclude PDFBox to override its version and use newer one -->
+                <exclusion>
+                    <artifactId>pdfbox</artifactId>
+                    <groupId>org.apache.pdfbox</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>pdfbox-tools</artifactId>
+                    <groupId>org.apache.pdfbox</groupId>
+                </exclusion>
+                <!-- We exclude POI to override its version and use newer one -->
+                <exclusion>
+                    <artifactId>poi</artifactId>
+                    <groupId>org.apache.poi</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>poi-scratchpad</artifactId>
+                    <groupId>org.apache.poi</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>poi-ooxml</artifactId>
+                    <groupId>org.apache.poi</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- PDFBox dependency we override form Tika -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox-tools</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+        <!-- End of PDFBox dependency we override form Tika -->
+        <!-- POI dependency we override form Tika -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>3.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.15</version>
+        </dependency>
+        <!-- End of POI dependency we override form Tika -->
 
         <dependency>
             <groupId>net.sf.ehcache</groupId>
@@ -1104,6 +1265,10 @@
                 <exclusion>
                     <groupId>org.jboss.weld.se</groupId>
                     <artifactId>weld-se-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>poi-ooxml</artifactId>
+                    <groupId>org.apache.poi</groupId>
                 </exclusion>
             </exclusions>
         </dependency>

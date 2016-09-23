@@ -168,7 +168,8 @@ public class EhCacheProvider implements CacheProvider {
             // get the default configuration four the self populating Caches
             Configuration configuration = cacheManager.getConfiguration();
             Map<String,CacheConfiguration> cacheConfigurations = configuration.getCacheConfigurations();
-            CacheConfiguration cacheConfiguration = cacheConfigurations.get("org.jahia.selfPopulatingReplicatedCache");
+            // Use config for cacheName, or org.jahia.selfPopulatingReplicatedCache by default
+            CacheConfiguration cacheConfiguration = cacheConfigurations.get(cacheConfigurations.containsKey(cacheName) ? cacheName : "org.jahia.selfPopulatingReplicatedCache");
             if (searchable != null) {
                 cacheConfiguration.addSearchable(searchable);
             }

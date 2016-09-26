@@ -60,6 +60,7 @@ import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.ItemExistsException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -172,10 +173,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
             StringBuilder additionalParameters = new StringBuilder();
             boolean enableArea = !showAreaButton;
-            JCRNodeWrapper createdNode = null;
+            JCRNodeWrapper areaNode = null;
             if (enableArea) {
                 try {
-                    createdNode = createAreaNode(areaPath, session);
+                    areaNode = getOrCreateAreaNode(areaPath, session);
                     List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                     if (contributeTypes != null) {
                         nodeTypes = StringUtils.join(contributeTypes, " ");
@@ -216,11 +217,11 @@ public class AreaTag extends ModuleTag implements ParamParent {
             }
             
             printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters.toString());
-            if (enableArea && createdNode != null) {
+            if (enableArea && areaNode != null) {
                 try {
-                    render(renderContext, new Resource(createdNode, resource.getTemplateType(), resource.getTemplate(), Resource.CONFIGURATION_WRAPPEDCONTENT));
+                    render(renderContext, new Resource(areaNode, resource.getTemplateType(), resource.getTemplate(), Resource.CONFIGURATION_WRAPPEDCONTENT));
                 } catch (RenderException e) {
-                    logger.error("error while rendering auto created node {}", createdNode.getPath(), e);
+                    logger.error("error while rendering auto created node {}", areaNode.getPath(), e);
                 }
             }
             if (getBodyContent() != null) {
@@ -230,17 +231,22 @@ public class AreaTag extends ModuleTag implements ParamParent {
         }
     }
 
-    private JCRNodeWrapper createAreaNode(String areaPath, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper areaNode = session.getNode(StringUtils.substringBeforeLast(areaPath, "/"));
+    private JCRNodeWrapper getOrCreateAreaNode(String areaPath, JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper areaParentNode = session.getNode(StringUtils.substringBeforeLast(areaPath, "/"));
         String areaName = StringUtils.substringAfterLast(areaPath, "/");
-        JCRNodeWrapper createdNode = null;
+        JCRNodeWrapper areaNode = null;
         try {
-            createdNode = areaNode.getNode(areaName);
+            areaNode = areaParentNode.getNode(areaName);
         } catch (PathNotFoundException e) {
-            createdNode = areaNode.addNode(areaName, areaType);
-            session.save();
+            try {
+                areaNode = areaParentNode.addNode(areaName, areaType);
+                session.save();
+            } catch (ItemExistsException e1) {
+                // possible race condition when page is accessed concurrently in edit mode 
+                areaNode = areaParentNode.getNode(areaName);
+            }
         }
-        return createdNode;
+        return areaNode;
     }
 
     protected String getConfiguration() {

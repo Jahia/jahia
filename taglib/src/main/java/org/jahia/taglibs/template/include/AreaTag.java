@@ -447,7 +447,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             conflictsWith = null;
             areaType = "jnt:contentList";
             pageContext.getRequest().setAttribute("inArea", o);
-            pageContext.getRequest().removeAttribute("org.jahia.areaPath");
+            pageContext.getRequest().removeAttribute(AreaResourceCacheKeyPartGenerator.AREA_PATH);
         }
     }
 

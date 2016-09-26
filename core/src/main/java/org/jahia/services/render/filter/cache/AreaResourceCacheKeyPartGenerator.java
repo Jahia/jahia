@@ -90,6 +90,7 @@ public class AreaResourceCacheKeyPartGenerator extends ModuleParamsCacheKeyPartG
 
 
     public static final String AREA_PATH = "org.jahia.areaPath";
+    public static final String SAVED_AREA_PATH = "org.jahia.savedAreaPath";
 
     private static final Logger logger = LoggerFactory.getLogger(AclCacheKeyPartGenerator.class);
 
@@ -102,11 +103,14 @@ public class AreaResourceCacheKeyPartGenerator extends ModuleParamsCacheKeyPartG
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         // area path is defined by the tag area or the parent fragment
         String areaPath = (String) renderContext.getRequest().getAttribute(AREA_PATH);
+        String savedAreaPath = (String) renderContext.getRequest().getAttribute(SAVED_AREA_PATH);
         if (logger.isDebugEnabled()) {
-            logger.debug("resource: {} areaPath: {}", new String[] {resource.getPath(), areaPath});
+            logger.debug("READ value - areaPath: {} savedAreaPath: {} resource: {}", new String[] {areaPath, savedAreaPath, resource.getPath()});
         }
         if (areaPath != null) {
             return areaPath;
+        } else if (savedAreaPath != null) {
+            return savedAreaPath;
         }
         return "";
     }
@@ -119,8 +123,8 @@ public class AreaResourceCacheKeyPartGenerator extends ModuleParamsCacheKeyPartG
     @Override
     public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
         if (StringUtils.isNotEmpty(value)) {
-            // set the value of area path for the next render chain
-            renderContext.getRequest().setAttribute(AREA_PATH, value);
+            // set the request attribute for the next render chain
+            renderContext.getRequest().setAttribute(SAVED_AREA_PATH, value);
             return value;
         }
         return null;
@@ -129,7 +133,7 @@ public class AreaResourceCacheKeyPartGenerator extends ModuleParamsCacheKeyPartG
     @Override
     public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
         if (original != null) {
-            renderContext.getRequest().removeAttribute(AREA_PATH);
+            renderContext.getRequest().removeAttribute(SAVED_AREA_PATH);
         }
     }
 }

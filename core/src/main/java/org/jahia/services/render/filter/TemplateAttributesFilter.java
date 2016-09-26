@@ -118,8 +118,8 @@ public class TemplateAttributesFilter extends AbstractFilter {
                 new LocalizationContext(ResourceBundles.get(templatePackage.getResourceBundleName(), script.getView()
                         .getModule(), locale),locale));
 
-        // set areaResource as a request Attribute
-        String areaResourcePath = (String) request.getAttribute(AreaResourceCacheKeyPartGenerator.AREA_PATH);
+        // get areaResourcePath if defined.
+        String areaResourcePath = (String) request.getAttribute(AreaResourceCacheKeyPartGenerator.SAVED_AREA_PATH);
         if (areaResourcePath != null) {
             chain.pushAttribute(request, AREA_RESOURCE, resource.getNode().getSession().getNode(areaResourcePath));
         }

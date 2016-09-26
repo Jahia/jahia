@@ -308,6 +308,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     }
 
     private static String encodeKeyPart(String keyPart) {
+        if (keyPart == null) {
+            return null;
+        }
         return keyPart.replace("&", AMPERSAND_ESCAPE).replace(KEY_PART_DELIMITER, KEY_PART_DELIMITER_ESCAPE);
     }
 

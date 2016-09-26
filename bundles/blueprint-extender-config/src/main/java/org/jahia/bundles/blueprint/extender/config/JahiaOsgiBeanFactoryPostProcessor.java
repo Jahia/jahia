@@ -95,11 +95,13 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
     }
 
     private void registerCoreBeanPostProcessors(BundleContext bundleContext, ConfigurableListableBeanFactory beanFactory) {
+
         // Register bean post-processor for JahiaModuleAware implementors
         beanFactory.addBeanPostProcessor(new JahiaModuleAwareProcessor(BundleUtils.getModule(bundleContext.getBundle())));
 
         // Register bean post-processor for expected beans lookup
         beanFactory.addBeanPostProcessor(new BeanPostProcessor() {
+
             @Override
             public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
                 return bean;
@@ -115,12 +117,12 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
     }
 
     /**
-     * This function is kept to maintain compatibility with JahiaModulesBeanPostProcessor from modules,
-     * but this mechanism is buggy since 7.2.0.0 because spring context are started independently from this version.
-     * Beans could be registered before the JahiaModulesBeanPostProcessor causing unintended side-effects.
+     * This function is kept to maintain compatibility with JahiaModulesBeanPostProcessor instances defined in modules,
+     * but this mechanism is buggy because modules' spring contexts are started independently since 7.2, so beans could
+     * be registered before the JahiaModulesBeanPostProcessor causing unintended side effects.
      *
-     * we recommend to use a more OSGI compliant to make beans communication between modules
-     * (service trackers, osgi:list, etc.)
+     * We recommend to use a more OSGI compliant way to perform intermodule beans communication (service trackers, osgi:list, etc.)
+     *
      * @param beanFactory current bean factory
      */
     private void registerModulesBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {

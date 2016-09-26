@@ -85,7 +85,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
     private final Map<String, ScriptEngineFactory> namesToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<String, ScriptEngineFactory> mimeTypesToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<Long, List<BundleScriptEngineFactory>> bundleIdsToScriptFactories = new ConcurrentHashMap<>(17);
-    private final Map<Class<? extends ScriptEngineFactory>, BundleScriptEngineFactoryConfigurator> configurators =
+    private final Map<String, BundleScriptEngineFactoryConfigurator > configurators =
             new ConcurrentHashMap<>(17);
     private final Map<ClassLoader, Map<String, ScriptEngine>> engineCache = new ConcurrentHashMap<>(17);
 
@@ -152,13 +152,12 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
 
         ScriptEngine scriptEngine = stringScriptEngineMap.get(key);
         if (scriptEngine == null) {
-
             final ScriptEngineFactory scriptEngineFactory = factoriesForKeyType.get(key);
             if (scriptEngineFactory != null) {
                 // perform configuration of the factory if needed
                 if (scriptEngineFactory instanceof BundleScriptEngineFactory) {
                     BundleScriptEngineFactory factory = (BundleScriptEngineFactory) scriptEngineFactory;
-                    final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(factory, false);
+                    final BundleScriptEngineFactoryConfigurator configurator = configurators.get(scriptEngine);
                     if (configurator != null) {
                         configurator.configurePreScriptEngineCreation(factory.getWrappedFactory());
                     }
@@ -295,7 +294,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 final Class<?> configuratorClass = bundle.loadClass(configuratorName);
                 final BundleScriptEngineFactoryConfigurator configurator =
                         configuratorClass.asSubclass(BundleScriptEngineFactoryConfigurator.class).newInstance();
-                configurators.put(factoryClass, configurator);
+                configurators.put(configuratorName, configurator);
             } catch (ClassNotFoundException e) {
                 // no configurator found for this script engine factory
             } catch (ClassCastException e) {
@@ -478,8 +477,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
             factories.add(bundleScriptEngineFactory);
 
             // check if we need to further configure the factory
-            final BundleScriptEngineFactoryConfigurator configurator = getConfigurator(bundleScriptEngineFactory,
-                    false);
+            final BundleScriptEngineFactoryConfigurator configurator = configurators.get(bundle.getBundleId());
             if (configurator != null) {
                 configurator.configure(factory, bundle, scriptingContext.getClassLoader());
             }

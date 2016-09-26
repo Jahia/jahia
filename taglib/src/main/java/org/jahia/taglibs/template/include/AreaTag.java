@@ -55,6 +55,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
+import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -363,6 +364,9 @@ public class AreaTag extends ModuleTag implements ParamParent {
                                 } else {
                                     found = true;
                                     pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
+                                    // if the processed resource is an area, set area path to this node, else set it to the generated node.
+                                    renderContext.getRequest().setAttribute(AreaResourceCacheKeyPartGenerator.AREA_PATH,
+                                            currentResource.getNode().isNodeType("jnt:area") ? currentResource.getNodePath() : this.node.getPath());
                                     break;
                                 }
                             }
@@ -437,6 +441,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             conflictsWith = null;
             areaType = "jnt:contentList";
             pageContext.getRequest().setAttribute("inArea", o);
+            pageContext.getRequest().removeAttribute("org.jahia.areaPath");
         }
     }
 

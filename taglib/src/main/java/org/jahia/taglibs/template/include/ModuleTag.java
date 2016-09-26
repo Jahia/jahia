@@ -56,6 +56,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.TemplateAttributesFilter;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -397,7 +398,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         if (areaListResource != null) {
             contributeNode = (JCRNodeWrapper) areaListResource;
         } else {
-            contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaResource");
+            contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute(TemplateAttributesFilter.AREA_RESOURCE);
         }
 
         try {

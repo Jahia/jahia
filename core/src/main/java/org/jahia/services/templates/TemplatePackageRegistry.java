@@ -512,11 +512,7 @@ public class TemplatePackageRegistry {
 
         // handle dependencies
         computeDependencies(templatePackage);
-
-        // handle resource bundles
-//        for (JahiaTemplatesPackage sourcePack : registry.values()) {
-//        computeResourceBundleHierarchy(templatePackage);
-//        }
+        computeResourceBundleHierarchy(templatePackage);
 
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
@@ -582,18 +578,17 @@ public class TemplatePackageRegistry {
 
     public boolean computeDependencies(JahiaTemplatesPackage pack) {
         pack.resetDependencies();
-        if (computeDependencies(pack, pack)) {
-            computeResourceBundleHierarchy(pack);
+        // Resource Bundles should be computed even if the package dependencies are not started. As now we can start
+        // a package and had one of its dependencies stopped
+        computeResourceBundleHierarchy(pack);
 
-            for (JahiaTemplatesPackage aPackage : packagesById.values()) {
-                if (aPackage.getDepends().contains(pack.getId()) || aPackage.getDepends().contains(pack.getName())) {
-                    computeDependencies(aPackage);
-                }
+        for (JahiaTemplatesPackage aPackage : packagesById.values()) {
+            if (aPackage.getDepends().contains(pack.getId()) || aPackage.getDepends().contains(pack.getName())) {
+                computeDependencies(aPackage);
             }
-
-            return true;
         }
-        return false;
+
+        return computeDependencies(pack, pack);
     }
 
     public List<JahiaTemplatesPackage> getDependantModules(JahiaTemplatesPackage module) {

@@ -78,7 +78,7 @@ public interface BundleScriptEngineFactoryConfigurator<T extends ScriptEngineFac
      * configuration is in a Spring context that is not yet available during module startup).
      *
      * Note that this method is called each time a {@link javax.script.ScriptEngine} instance is retrieved so it needs to be efficient, be thread-safe and
-     * guard against multipl calls when the configuration needs to happen only once.
+     * guard against multiple calls when the configuration needs to happen only once.
      *
      * @param scriptEngineFactory the factory to configure
      */

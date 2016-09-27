@@ -41,7 +41,7 @@ to bring more so it helps if people play fair :)
 
  Requirements:
  - JDK 1.7 or later
- - Maven 2.1 / 3.x
+ - Maven 3.x
  - Subversion client (for Windows at http://www.collab.net/downloads/subversion/
    for Mac OS X from http://www.finkproject.org/ or Xcode tools, under
    Linux install a subversion client from your package repository). Basically,

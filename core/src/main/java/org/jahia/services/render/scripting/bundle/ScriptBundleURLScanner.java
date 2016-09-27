@@ -86,10 +86,10 @@ class ScriptBundleURLScanner extends BundleURLScanner {
 
     @Override
     public List<URL> scan(Bundle bundle) {
-        if (BundleScriptResolver.shouldNotBeScannedForViews(bundle, extension)) {
-            return Collections.emptyList();
-        } else {
+        if (BundleScriptResolver.shouldBeScannedForViews(bundle, extension)) {
             return super.scan(bundle);
+        } else {
+            return Collections.emptyList();
         }
     }
 }

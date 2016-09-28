@@ -53,12 +53,14 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.cache.CacheKeyGenerator;
 import org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
 import java.util.Map;
@@ -129,7 +131,7 @@ public class AggregateFilter extends AbstractFilter {
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
-        if (skipAggregation(renderContext)) {
+        if (skipAggregation(renderContext.getRequest())) {
             return null;
         }
 
@@ -193,17 +195,10 @@ public class AggregateFilter extends AbstractFilter {
         }
     }
 
-    private boolean skipAggregation(RenderContext renderContext) {
-        if (renderContext.getRequest().getAttribute(SKIP_AGGREGATION) != null && (Boolean) renderContext.getRequest().getAttribute(SKIP_AGGREGATION)) {
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
-        if (skipAggregation(renderContext)) {
+        if (skipAggregation(renderContext.getRequest())) {
             return previousOut;
         }
 
@@ -235,7 +230,7 @@ public class AggregateFilter extends AbstractFilter {
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain) {
 
-        if (skipAggregation(renderContext)) {
+        if (skipAggregation(renderContext.getRequest())) {
             return;
         }
 
@@ -318,8 +313,11 @@ public class AggregateFilter extends AbstractFilter {
             try {
                 // Dispatch to the render service to generate the content
                 content = RenderService.getInstance().render(resource, renderContext);
-                if (StringUtils.isBlank(content) && renderContext.getRedirect() == null) {
-                    logger.error("Empty generated content for key " + key);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("fragment generated for resource {}", resource);
+                    if (SettingsBean.getInstance().isDevelopmentMode()) {
+                        logger.debug(content);
+                    }
                 }
             } finally {
                 keyGenerator.restoreContextAfterContentGeneration(keyAttrs, resource, renderContext, original);
@@ -336,4 +334,14 @@ public class AggregateFilter extends AbstractFilter {
     public void setKeyGenerator(CacheKeyGenerator keyGenerator) {
         this.keyGenerator = keyGenerator;
     }
+
+    /**
+     * Utility method to check if the aggregation is skipped.
+     * @param request is the current request
+     * @return
+     */
+    public static boolean skipAggregation(ServletRequest request) {
+        return request.getAttribute(SKIP_AGGREGATION) != null && (Boolean) request.getAttribute(SKIP_AGGREGATION);
+    }
+
 }

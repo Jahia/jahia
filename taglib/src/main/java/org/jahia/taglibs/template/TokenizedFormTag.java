@@ -76,15 +76,18 @@ public class TokenizedFormTag extends BodyTagSupport {
 
     private boolean disableXSSFiltering = false;
     private boolean allowsMultipleSubmits = false;
+    private boolean skipAggregation = false;
 
     @Override
     public int doStartTag() throws JspException {
         String id = java.util.UUID.randomUUID().toString();
-
         pageContext.setAttribute("currentFormId", id,PageContext.REQUEST_SCOPE);
 
         // Skip the aggregation in the body of the tag
-        pageContext.getRequest().setAttribute(AggregateFilter.SKIP_AGGREGATION, Boolean.TRUE);
+        if(!AggregateFilter.skipAggregation(pageContext.getRequest())) {
+            skipAggregation = true;
+            pageContext.getRequest().setAttribute(AggregateFilter.SKIP_AGGREGATION, true);
+        }
 
         return EVAL_BODY_BUFFERED;
     }
@@ -156,7 +159,10 @@ public class TokenizedFormTag extends BodyTagSupport {
         pageContext.removeAttribute("currentFormId",PageContext.REQUEST_SCOPE);
 
         // Restore the aggregation for the following fragments
-        pageContext.getRequest().setAttribute(AggregateFilter.SKIP_AGGREGATION, Boolean.FALSE);
+        if (skipAggregation) {
+            pageContext.getRequest().removeAttribute(AggregateFilter.SKIP_AGGREGATION);
+            skipAggregation = false;
+        }
         return super.doEndTag();
     }
 

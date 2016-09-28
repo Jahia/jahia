@@ -159,7 +159,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
 
         // skip aggregation for potentials fragments under the webflow
         boolean aggregationSkippedForWebflow = false;
-        if(context.getRequest().getAttribute(AggregateFilter.SKIP_AGGREGATION) == null) {
+        if(!AggregateFilter.skipAggregation(context.getRequest())) {
             aggregationSkippedForWebflow = true;
             context.getRequest().setAttribute(AggregateFilter.SKIP_AGGREGATION, true);
         }

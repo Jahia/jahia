@@ -891,6 +891,24 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     public void afterPropertiesSet() throws Exception {
         jahiaContext = Jahia.getContextPath() + "/";
         generatedResourcesFolder = new File(SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath());
+        performPurgeIfNeeded();
+    }
+
+    private void performPurgeIfNeeded() {
+        if (!generatedResourcesFolder.isDirectory()) {
+            return;
+        }
+        File marker = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[generated-resources].dodelete");
+        if (marker.exists()) {
+            logger.info("Cleaning existing generated resources folder {}", generatedResourcesFolder);
+            try {
+                FileUtils.cleanDirectory(generatedResourcesFolder);
+                FileUtils.deleteQuietly(marker);
+            } catch (IOException e) {
+                logger.warn("Unable to purge content of the generated resources folder: " + generatedResourcesFolder,
+                        e);
+            }
+        }
     }
 
     @Override

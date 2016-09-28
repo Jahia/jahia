@@ -49,9 +49,9 @@ package org.jahia.services;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
@@ -79,7 +79,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
 
     private static final Logger logger = LoggerFactory.getLogger(SpringContextSingleton.class);
     private static SpringContextSingleton ourInstance = new SpringContextSingleton();
-    private static final List<ExpectedBean> expectedBeans = Collections.synchronizedList(new ArrayList<ExpectedBean>());
+    private static final Set<String> expectedBeans = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
     private ApplicationContext context;
     private boolean initialized;
@@ -111,22 +111,25 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
             }
         }
 
-        if (waitTimeout > 0) {
-
+        if (waitTimeout > 500) {
             logger.info("Bean '{}' not found yet, will wait for its availability max {} ms...", beanId, waitTimeout);
-            ExpectedBean expectedBean = new ExpectedBean(beanId);
-            expectedBeans.add(expectedBean);
+            synchronized (expectedBeans) {
+                // must get the lock before entering here
+                expectedBeans.add(beanId);
 
-            // It is possible that a concurrent thread instantiates the expected bean after current thread does not find it among existing beans,
-            // and before it starts waiting for the bean via waitBean() call below. In this case current thread will time out, and then will get
-            // the bean on second recursive getBeanInModulesContext invocation.
+                long startTime = System.currentTimeMillis();
+                try {
+                    expectedBeans.wait(waitTimeout); // release the lock
+                } catch (InterruptedException e) {
+                    throw new JahiaRuntimeException(e);
+                }
+                // must regain the lock to reentering here
+                long endTime = System.currentTimeMillis();
 
-            try {
-                expectedBean.waitBean(waitTimeout);
-            } catch (InterruptedException e) {
-                throw new JahiaRuntimeException(e);
-            } finally {
-                expectedBeans.remove(expectedBean);
+                if (expectedBeans.contains(beanId)) {
+                    // beanId still in the set, go back to wait
+                    getBeanInModulesContext(beanId, waitTimeout - (endTime - startTime));
+                }
             }
 
             logger.debug("Waiting for bean '{}' either succeeded or timed out, will try to get the bean again...", beanId);
@@ -138,23 +141,22 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
     }
 
     /**
-     * Release any threads waiting for this bean to appear in the application context.
+     * Release any threads waiting for bean(s) to appear.
      *
-     * @param beanName the bean name
+     * @param context the application context, check if this context contains expected beans
      */
-    public static void releaseExpectedBean(String beanName) {
-        if (StringUtils.isEmpty(beanName)) {
-            return;
-        }
-        synchronized (expectedBeans) {
-            Iterator<ExpectedBean> i = expectedBeans.iterator();
-            while (i.hasNext()) {
-                ExpectedBean expectedBean = i.next();
-                if (beanName.equals(expectedBean.getBeanId())) {
-                    logger.debug("Excepted bean '{}' detected, notify it", beanName);
-                    expectedBean.releaseBean();
-                }
-            }
+    public static void releaseExpectedBeans(AbstractApplicationContext context) {
+         synchronized (expectedBeans) {
+             boolean expectedBeanFound = false;
+             for (String expectedBean : expectedBeans) {
+                 if (context.containsBean(expectedBean)) {
+                     expectedBeans.remove(expectedBean);
+                     expectedBeanFound = true;
+                 }
+             }
+             if (expectedBeanFound) {
+                 expectedBeans.notifyAll();
+             }
         }
     }
 
@@ -304,41 +306,5 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
             }
         }
         return allResources;
-    }
-
-    /**
-     * Expected bean is used to wait for a specific bean when using SpringContextSingleton to access beans defined
-     * in other modules, from a module.
-     *
-     * In 7.2+ a module Spring context can start independently from its dependencies Spring contexts. This class
-     * supports waiting for a bean to become accessible before returning it to a module that needs it.
-     */
-    private static class ExpectedBean {
-
-        private String beanId;
-
-        public ExpectedBean(String beanId) {
-            this.beanId = beanId;
-        }
-
-        public String getBeanId() {
-            return beanId;
-        }
-
-        /**
-         * Wait for this bean, put the current thread in waiting until notified or the timeout is reached
-         * @param timeout timeout for the wait in ms
-         * @throws InterruptedException
-         */
-        public synchronized void waitBean(long timeout) throws InterruptedException {
-            wait(timeout);
-        }
-
-        /**
-         * Release this bean meaning it's now available in the modules context
-         */
-        public synchronized void releaseBean() {
-            notify();
-        }
     }
 }

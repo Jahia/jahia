@@ -48,7 +48,6 @@ import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.templates.JahiaModuleAwareProcessor;
 import org.jahia.services.templates.JahiaModulesBeanPostProcessor;
 import org.osgi.framework.BundleContext;
@@ -57,7 +56,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 import java.util.Map;
@@ -98,22 +96,6 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
 
         // Register bean post-processor for JahiaModuleAware implementors
         beanFactory.addBeanPostProcessor(new JahiaModuleAwareProcessor(BundleUtils.getModule(bundleContext.getBundle())));
-
-        // Register bean post-processor for expected beans lookup
-        beanFactory.addBeanPostProcessor(new BeanPostProcessor() {
-
-            @Override
-            public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-                return bean;
-            }
-
-            @Override
-            public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-                // check if there is expected beans for this spring context
-                SpringContextSingleton.releaseExpectedBean(beanName);
-                return bean;
-            }
-        });
     }
 
     /**

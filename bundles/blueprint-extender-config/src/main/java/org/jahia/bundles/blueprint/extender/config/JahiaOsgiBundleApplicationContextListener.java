@@ -53,6 +53,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseCheckException;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
@@ -135,6 +136,11 @@ public class JahiaOsgiBundleApplicationContextListener implements
             JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
             // set the context
             module.setContext((AbstractApplicationContext) event.getApplicationContext());
+            if(module.getContext() != null) {
+                // context is set for this module we can now check if other modules are waiting for beans from this context
+                SpringContextSingleton.releaseExpectedBeans(module.getContext());
+            }
+
             BundleUtils.setContextStartException(bundle.getSymbolicName(), null);
 
             TemplatePackageRegistry moduleRegistry = null;

@@ -512,11 +512,7 @@ public class TemplatePackageRegistry {
 
         // handle dependencies
         computeDependencies(templatePackage);
-
-        // handle resource bundles
-//        for (JahiaTemplatesPackage sourcePack : registry.values()) {
-//        computeResourceBundleHierarchy(templatePackage);
-//        }
+        computeResourceBundleHierarchy(templatePackage);
 
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {

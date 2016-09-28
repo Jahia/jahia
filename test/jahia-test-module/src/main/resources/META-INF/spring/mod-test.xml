@@ -25,6 +25,7 @@
                 <value>org.jahia.test.bin.FindPrincipalTest</value>
                 <value>org.jahia.test.bin.FindTest</value>
                 <value>org.jahia.test.bin.RenderTest</value>
+                <value>org.jahia.test.osgi.SpringContextSingletonTest</value>
                 <value>org.jahia.test.services.acl.AclTest</value>
                 <!--<value>org.jahia.test.services.acl.AclExtendedNodesPerformanceTest</value>-->
                 <!--<value>org.jahia.test.services.applications.ApplicationsManagerServiceTest</value>-->

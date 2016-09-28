@@ -1444,6 +1444,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return moduleSpringBeansWaitingTimeout;
     }
 
+    public void setModuleSpringBeansWaitingTimeout(long moduleSpringBeansWaitingTimeout) {
+        this.moduleSpringBeansWaitingTimeout = moduleSpringBeansWaitingTimeout;
+    }
+
     public void setLicenseFile(Resource licenseFile) {
         this.licenseFile = licenseFile;
     }

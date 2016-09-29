@@ -188,7 +188,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
 
-    void getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
+    void getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale, boolean findDisplayable, AsyncCallback<String> async);
 
     void getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel, String workspace, String locale, AsyncCallback<String> async);
 

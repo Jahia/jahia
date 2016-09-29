@@ -265,7 +265,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                     String path = node.getPath();
                     String locale = JahiaGWTParameters.getLanguage();
                     JahiaContentManagementService.App.getInstance().getNodeURL(null, path, null, null, "default",
-                            locale, new BaseAsyncCallback<String>() {
+                            locale, false, new BaseAsyncCallback<String>() {
                         public void onSuccess(String url) {
                             GWTJahiaNode selectedItem = userGrid.getSelectionModel().getSelectedItem();
                             String alias = null;

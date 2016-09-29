@@ -247,7 +247,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException;
 
-    String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale) throws GWTJahiaServiceException;
+    String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace, String locale, boolean findDisplayable) throws GWTJahiaServiceException;
 
     String getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel,
                                   String workspace, String locale) throws GWTJahiaServiceException;

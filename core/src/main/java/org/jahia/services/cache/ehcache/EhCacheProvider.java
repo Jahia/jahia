@@ -164,7 +164,12 @@ public class EhCacheProvider implements CacheProvider {
      */
     public synchronized SelfPopulatingCache registerSelfPopulatingCache(String cacheName, Searchable searchable, CacheEntryFactory factory) {
         // Call getEhCache to be sure to have the decorated cache. We manipulate only EhCache not Cache object
-        if (cacheManager.getEhcache(cacheName) == null) {
+        Ehcache cache = cacheManager.getEhcache(cacheName);
+        if (cache != null) {
+            if (cache instanceof SelfPopulatingCache) {
+                return (SelfPopulatingCache) cache;
+            }
+        } else {
             // get the default configuration four the self populating Caches
             Configuration configuration = cacheManager.getConfiguration();
             Map<String,CacheConfiguration> cacheConfigurations = configuration.getCacheConfigurations();
@@ -177,18 +182,17 @@ public class EhCacheProvider implements CacheProvider {
             pinningConfiguration.setStore("INCACHE");
             cacheConfiguration.addPinning(pinningConfiguration);
             // Create a new cache with the configuration
-            Ehcache cache = new Cache(cacheConfiguration);
+            cache = new Cache(cacheConfiguration);
             cache.setName(cacheName);
             // Cache name has been set now we can initialize it by putting it in the manager.
             // Only Cache manager is initializing caches.
             cache = cacheManager.addCacheIfAbsent(cache);
-            // Create a decorated cache from an initialized cache.
-            SelfPopulatingCache selfPopulatingCache = new SelfPopulatingCache(cache, factory);
-            // replace the cache in the manager to be sure that everybody is using the decorated instance.
-            cacheManager.replaceCacheWithDecoratedCache(cache, selfPopulatingCache);
-            return selfPopulatingCache;
-        } else {
-            return (SelfPopulatingCache) cacheManager.getEhcache(cacheName);
         }
+
+        // Create a decorated cache from an initialized cache.
+        SelfPopulatingCache selfPopulatingCache = new SelfPopulatingCache(cache, factory);
+        // replace the cache in the manager to be sure that everybody is using the decorated instance.
+        cacheManager.replaceCacheWithDecoratedCache(cache, selfPopulatingCache);
+        return selfPopulatingCache;
     }
 }

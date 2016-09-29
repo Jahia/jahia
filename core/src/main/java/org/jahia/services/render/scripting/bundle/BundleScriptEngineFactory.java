@@ -54,19 +54,18 @@ import java.util.List;
  * appropriate class loader as some implementations have this requirement in order to work properly in an OSGi
  * environment.
  */
-class BundleScriptEngineFactory implements ScriptEngineFactory {
+class BundleScriptEngineFactory implements ConfigurableScriptEngineFactory {
 
     private final ScriptEngineFactory factory;
     private final BundleScriptingContext context;
     private final String wrappedFactoryClassName;
-    private final BundleScriptEngineFactoryConfigurator configurator;
+    private final boolean isConfigurableFactory;
 
-    BundleScriptEngineFactory(ScriptEngineFactory factory, BundleScriptEngineFactoryConfigurator configurator,
-                              BundleScriptingContext context) {
+    BundleScriptEngineFactory(ScriptEngineFactory factory, BundleScriptingContext context) {
         this.factory = factory;
+        isConfigurableFactory = factory instanceof ConfigurableScriptEngineFactory;
         wrappedFactoryClassName = factory.getClass().getCanonicalName();
         this.context = context;
-        this.configurator = configurator;
     }
 
     public String getEngineName() {
@@ -146,44 +145,25 @@ class BundleScriptEngineFactory implements ScriptEngineFactory {
         return wrappedFactoryClassName;
     }
 
-    private ScriptEngineFactory getWrappedFactory() {
-        return factory;
+    private ConfigurableScriptEngineFactory getWrappedAsConfigurable() {
+        return (ConfigurableScriptEngineFactory) factory;
     }
 
-    /**
-     * Configures the {@link ScriptEngineFactory} when its bundle is started but before it is registered with the
-     * {@link BundleScriptResolver}. Note that this means that Spring context is not available at this time.
-     *
-     * @param bundle the bundle the factory was loaded from
-     */
-    void configurePreRegistration(Bundle bundle) {
-        if (configurator != null) {
-            configurator.configure(getWrappedFactory(), bundle, getContext().getClassLoader());
+    public void configurePreRegistration(Bundle bundle) {
+        if (isConfigurableFactory) {
+            getWrappedAsConfigurable().configurePreRegistration(bundle);
         }
     }
 
-    /**
-     * Performs any clean up operations when the bundle this factory was loaded from is stopped.
-     */
-    public void destroy() {
-        if (configurator != null) {
-            configurator.destroy(getWrappedFactory());
+    public void destroy(Bundle bundle) {
+        if (isConfigurableFactory) {
+            getWrappedAsConfigurable().destroy(bundle);
         }
     }
 
-    /**
-     * Configures this {@link ScriptEngineFactory} if needed right before a {@link javax.script.ScriptEngine}
-     * instance is created. This is useful when some configuration details are not yet available when the bundle that
-     * declared it is started (e.g. when the configuration is in a Spring context that is not yet available during
-     * module startup).
-     *
-     * Note that this method is called each time a {@link javax.script.ScriptEngine} instance is retrieved so it needs
-     * to be efficient, be thread-safe and guard against multiple calls when the configuration needs to happen only
-     * once.
-     */
     public void configurePreScriptEngineCreation() {
-        if (configurator != null) {
-            configurator.configurePreScriptEngineCreation(getWrappedFactory());
+        if (isConfigurableFactory) {
+            getWrappedAsConfigurable().configurePreScriptEngineCreation();
         }
     }
 }

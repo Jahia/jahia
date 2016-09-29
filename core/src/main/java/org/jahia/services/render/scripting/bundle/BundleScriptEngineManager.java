@@ -67,9 +67,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * scanned so that any installed module that provides views that can be handled by the newly installed
  * ScriptEngineFactory will be now able to answer to view requests.
  * <p>
- * Additionally, for each ScriptEngineFactory, this BundleScriptEngineManager will attempt to load an associated {@link
- * BundleScriptEngineFactoryConfigurator} which should be named {@code <fully qualified ScriptEngineFactory
- * name>Configurator} so that additional set up / clean up can be performed when the bundle is started or stopped.
+ * Additionally, if the provided ScriptEngineFactory implementations also implement {@link ConfigurableScriptEngineFactory}, this
+ * BundleScriptEngineManager will call its methods so that additional set up / clean up can be performed when the bundle
+ * is started or stopped.
  */
 public class BundleScriptEngineManager extends ScriptEngineManager {
 
@@ -316,23 +316,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 continue;
             }
 
-            // attempt to load a configurator for the current script engine factory
-            final String configuratorName = factoryCandidate + "Configurator";
-            BundleScriptEngineFactoryConfigurator configurator = null;
-            try {
-                final Class<?> configuratorClass = bundle.loadClass(configuratorName);
-                configurator = configuratorClass.asSubclass(BundleScriptEngineFactoryConfigurator.class).newInstance();
-            } catch (ClassNotFoundException e) {
-                // no configurator found for this script engine factory
-            } catch (ClassCastException e) {
-                logger.warn("Found class {} that doesn't implement BundleScriptEngineFactoryConfigurator in bundle {}. Ignoring.",
-                        configuratorName, bundle);
-            } catch (InstantiationException | IllegalAccessException e) {
-                logger.error("Couldn't instantiate configurator class {} in bundle {}. Cause: {}",
-                        new String[]{configuratorName, bundle.toString(), e.getLocalizedMessage()});
-            }
-
-            bundleScriptEngineFactory = new BundleScriptEngineFactory(factory, configurator, scriptingContext);
+            bundleScriptEngineFactory = new BundleScriptEngineFactory(factory, scriptingContext);
             factories.add(bundleScriptEngineFactory);
         }
 
@@ -383,7 +367,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 BundleScriptResolver.getInstance().remove(bundleScriptEngineFactory, bundle);
 
                 // check if we have a configurator to call
-                bundleScriptEngineFactory.destroy();
+                bundleScriptEngineFactory.destroy(bundle);
 
                 // clean-up our maps last since we might need that information to perform the rest of the clean-up
                 removeFactoryFromRegistrationMaps(bundleScriptEngineFactory);
@@ -415,10 +399,8 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
      * Any ScriptEngineFactory implementation that is declared in the
      * {@code META-INF/services/javax.script.ScriptEngineFactory} file of the Bundle is instantiated and configured.
      * Additionally, the OSGi headers are examined to look for any {@code Jahia-Scripting-Extensions-Priorities}
-     * header value to configure ordering of scripting languages. If the Bundle contains any
-     * {@link BundleScriptEngineFactoryConfigurator} implementations matching a declared ScriptEngineFactory
-     * implementation, then such classes are instantiated and associated with the appropriate ScriptEngineFactory
-     * instance to configure it when appropriate. Finally,
+     * header value to configure ordering of scripting languages. If the declared ScriptEngineFactory implements
+     * {@link ConfigurableScriptEngineFactory}, its method will be called when appropriate automatically. Finally,
      * {@link BundleScriptResolver#register(ScriptEngineFactory, Bundle)} is called for each such configured
      * ScriptEngineFactory in order to be notify it that new scripting languages are available and activate
      * associated views if needed.

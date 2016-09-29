@@ -57,6 +57,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeTypeDefinition;
 import javax.jcr.nodetype.NodeTypeIterator;
@@ -67,7 +68,6 @@ import javax.jcr.version.VersionManager;
 
 import org.apache.jackrabbit.api.JackrabbitWorkspace;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
-import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.state.PropertyStateMerger;
 import org.apache.jackrabbit.spi.Name;
@@ -87,7 +87,15 @@ import org.slf4j.LoggerFactory;
  * @author hollis
  */
 public class JackrabbitStoreProvider extends JCRStoreProvider {
-    private static Logger logger = LoggerFactory.getLogger(JackrabbitStoreProvider.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(JackrabbitStoreProvider.class);
+
+    private static final PropertyMergerInfo[] PROPERTY_MERGERS = {
+        new PropertyMergerInfo(Constants.JCR_LASTMODIFIED),
+        new PropertyMergerInfo(Constants.JCR_LASTMODIFIEDBY, Constants.JCR_LASTMODIFIED),
+        new PropertyMergerInfo(Constants.LASTPUBLISHED),
+        new PropertyMergerInfo(Constants.LASTPUBLISHEDBY, Constants.LASTPUBLISHED),
+    };
 
     @Override
     public void start() throws JahiaInitializationException {
@@ -127,7 +135,6 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                     liveRootNode.addMixin(Constants.MIX_REFERENCEABLE);
                     livesession.save();
                 }
-
                 while (ni.hasNext()) {
                     Node node = (Node) ni.next();
                     if (!node.getName().equals("jcr:system") && !node.isNodeType("jmix:nolive")) {
@@ -151,10 +158,11 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     }
 
     private void registerPropertyMergers(SessionImpl session) throws RepositoryException {
-        Name lastPublished = session.getQName("j:lastPublished");
-        Name lastPublishedBy = session.getQName("j:lastPublishedBy");
-        PropertyStateMerger.registerMerger(lastPublished, new PropertyStateMerger.MostRecentDateValueMergerAlgorithm(null));
-        PropertyStateMerger.registerMerger(lastPublishedBy, new PropertyStateMerger.MostRecentDateValueMergerAlgorithm(lastPublished));
+        for (PropertyMergerInfo mergerInfo : PROPERTY_MERGERS) {
+            Name propertyName = session.getQName(mergerInfo.getProperty());
+            Name datePropertyName = session.getQName(mergerInfo.getDateProperty());
+            PropertyStateMerger.registerMerger(propertyName, new PropertyStateMerger.MostRecentDateValueMergerAlgorithm(datePropertyName));
+        }
     }
 
     private void recurseCheckin(Node node, VersionManager versionManager) throws RepositoryException {
@@ -168,10 +176,12 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         }
     }
 
+    @Override
     public void stop() {
         super.stop();
     }
 
+    @Override
     protected void registerCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
         NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(systemId);
         long timer = System.currentTimeMillis();
@@ -209,7 +219,9 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         logger.info("Custom node types registered for {} in {} ms", systemId, System.currentTimeMillis() - timer);
     }
 
+    @Override
     protected void unregisterCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
+
         org.apache.jackrabbit.core.nodetype.NodeTypeRegistry.disableCheckForReferencesInContentException = true;
         NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(systemId);
         List<String> names = new ArrayList<String>();
@@ -230,6 +242,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         }
     }
 
+    @Override
     protected boolean canRegisterCustomNodeTypes() {
         return true;
     }
@@ -237,8 +250,11 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public PropertyIterator getWeakReferences(JCRNodeWrapper node, String propertyName, Session session) throws RepositoryException {
+
         if (propertyName == null) {
+
             Iterable<Node> referringNodes = ((org.apache.jackrabbit.core.query.QueryManagerImpl)session.getWorkspace().getQueryManager())
                     .getWeaklyReferringNodes(node);
             if (node.getSession().getLocale() != null) {
@@ -275,7 +291,9 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
             }
 
             return new PropertyIteratorAdapter(props);
+
         } else {
+
             StringBuilder stmt = new StringBuilder();
             stmt.append("//*[@").append(ISO9075.encode(propertyName));
             stmt.append(" = '").append(node.getIdentifier()).append("'");
@@ -302,9 +320,32 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
             }
         }
     }
-    
+
     @Override
     public boolean canCacheNode(Node node) {
         return true;
+    }
+
+    private static class PropertyMergerInfo {
+
+        private String property;
+        private String dateProperty;
+
+        public PropertyMergerInfo(String dateProperty) {
+            this(dateProperty, dateProperty);
+        }
+
+        public PropertyMergerInfo(String property, String dateProperty) {
+            this.property = property;
+            this.dateProperty = dateProperty;
+        }
+
+        public String getProperty() {
+            return property;
+        }
+
+        public String getDateProperty() {
+            return dateProperty;
+        }
     }
 }

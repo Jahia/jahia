@@ -49,7 +49,7 @@ package org.jahia.services;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -79,7 +79,10 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
 
     private static final Logger logger = LoggerFactory.getLogger(SpringContextSingleton.class);
     private static SpringContextSingleton ourInstance = new SpringContextSingleton();
-    private static final Set<String> expectedBeans = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+    private static final String[] beanWaitSupportedClassesInStack = new String[] {
+            "org.jahia.test.osgi.SpringContextSingletonTest$GetBeanThread", //used by unit tests
+            "org.jahia.bundles.blueprint.extender.config.JahiaOsgiBundleXmlApplicationContext" // used when a spring context is starting up
+    };
 
     private ApplicationContext context;
     private boolean initialized;
@@ -103,7 +106,7 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         return getBeanInModulesContext(beanId, SettingsBean.getInstance().getModuleSpringBeansWaitingTimeout());
     }
 
-    private static Object getBeanInModulesContext(String beanId, long waitTimeout) {
+    private static Object getBeanInModulesContext(final String beanId, long waitTimeout) {
 
         for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null && aPackage.getContext().containsBean(beanId)) {
@@ -111,53 +114,51 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
             }
         }
 
-        if (waitTimeout > 500) {
-            logger.info("Bean '{}' not found yet, will wait for its availability max {} ms...", beanId, waitTimeout);
-            synchronized (expectedBeans) {
-                // must get the lock before entering here
-                expectedBeans.add(beanId);
+        if (waitTimeout > 0 && currentStackTraceContainsClasses(beanWaitSupportedClassesInStack)) {
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Future<Object> future = executor.submit(new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    while (true) {
+                        Thread.sleep(100);
 
-                long startTime = System.currentTimeMillis();
-                try {
-                    expectedBeans.wait(waitTimeout); // release the lock
-                } catch (InterruptedException e) {
-                    throw new JahiaRuntimeException(e);
+                        try {
+                            return getBeanInModulesContext(beanId, 0);
+                        } catch (NoSuchBeanDefinitionException e) {
+                            logger.debug("Bean '{}' not found by the task loop, retry in 100ms", beanId);
+                        }
+                    }
                 }
-                // must regain the lock to reentering here
-                long endTime = System.currentTimeMillis();
+            });
 
-                if (expectedBeans.contains(beanId)) {
-                    // beanId still in the set, go back to wait
-                    getBeanInModulesContext(beanId, waitTimeout - (endTime - startTime));
-                }
+            try {
+                logger.info("Bean '{}' not found yet, will wait for its availability max {} seconds ...", beanId, waitTimeout);
+                return future.get(waitTimeout, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+                future.cancel(true);
+                logger.debug("Waiting for bean '{}' timed out", beanId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new JahiaRuntimeException(e);
             }
 
-            logger.debug("Waiting for bean '{}' either succeeded or timed out, will try to get the bean again...", beanId);
-            return getBeanInModulesContext(beanId, 0);
+            executor.shutdownNow();
+            logger.info("Bean '{}' not found in module contexts", beanId);
         }
 
-        logger.error("Bean '{}' not found in module contexts", beanId);
         throw new NoSuchBeanDefinitionException(beanId);
     }
 
-    /**
-     * Release any threads waiting for bean(s) to appear.
-     *
-     * @param context the application context, check if this context contains expected beans
-     */
-    public static void releaseExpectedBeans(AbstractApplicationContext context) {
-         synchronized (expectedBeans) {
-             boolean expectedBeanFound = false;
-             for (String expectedBean : expectedBeans) {
-                 if (context.containsBean(expectedBean)) {
-                     expectedBeans.remove(expectedBean);
-                     expectedBeanFound = true;
-                 }
-             }
-             if (expectedBeanFound) {
-                 expectedBeans.notifyAll();
-             }
+    private static boolean currentStackTraceContainsClasses(String ... classes) {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+
+        for (StackTraceElement element : stackTrace) {
+            for (String clazz : classes) {
+                if (element.getClassName().equals(clazz)) {
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
     /**

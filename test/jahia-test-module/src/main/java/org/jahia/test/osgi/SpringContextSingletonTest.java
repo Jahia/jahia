@@ -98,7 +98,7 @@ public class SpringContextSingletonTest {
             originalTagBundleState = tagsBundle.getState();
 
             originalModuleSpringBeansWaitingTimeout = SettingsBean.getInstance().getModuleSpringBeansWaitingTimeout();
-            SettingsBean.getInstance().setModuleSpringBeansWaitingTimeout(10000);
+            SettingsBean.getInstance().setModuleSpringBeansWaitingTimeout(10);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
             fail();
@@ -221,6 +221,32 @@ public class SpringContextSingletonTest {
         dummy1Bundle.stop();
     }
 
+    @Test
+    public void testUnsupportedCallStack() throws Exception {
+        StartModuleThread s1 = new StartModuleThread(dummy1Bundle, 5000);
+        s1.start();
+
+        UnsupporteGetBeanThread g1 = new UnsupporteGetBeanThread("dummy1Action");
+        GetBeanThread g3 = new GetBeanThread("dummy1Action");
+        g1.start();
+        g3.start();
+
+        g1.join();
+        assertNull(g1.getResult());
+        assertFalse(s1.isModuleStarted()); // G1 will not wait since UnsupporteGetBeanThread is not allowed in the call stack
+
+        g3.join();
+        assertNotNull(g3.getResult());
+        assertTrue(s1.isModuleStarted()); // G3 will wait, GetBeanThread is allowed in the call stack
+
+        UnsupporteGetBeanThread g2 = new UnsupporteGetBeanThread("dummy1Action");
+        g2.start();
+        g2.join();
+        assertNotNull(g2.getResult()); // G2 will not wait, but bean will be found since module is started
+
+        dummy1Bundle.stop();
+    }
+
     public class GetBeanThread extends Thread {
         String beanId;
         Object result = null;
@@ -239,9 +265,21 @@ public class SpringContextSingletonTest {
         }
     }
 
+    public class UnsupporteGetBeanThread extends GetBeanThread {
+        public UnsupporteGetBeanThread(String beanId) {
+            super(beanId);
+        }
+
+        @Override
+        public void run() {
+            result = SpringContextSingleton.getBeanInModulesContext(beanId);
+        }
+    }
+
     public class StartModuleThread extends Thread {
         Bundle bundleToStart;
         long sleepTime = 0;
+        boolean moduleStarted = false;
 
         public StartModuleThread(Bundle bundle, long sleepTime) {
             this.bundleToStart = bundle;
@@ -257,6 +295,7 @@ public class SpringContextSingletonTest {
 
                 try {
                     bundleToStart.start();
+                    moduleStarted = true;
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                     fail(e.getMessage());
@@ -265,6 +304,10 @@ public class SpringContextSingletonTest {
             } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
             }
+        }
+
+        public boolean isModuleStarted() {
+            return moduleStarted;
         }
     }
 

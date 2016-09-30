@@ -53,6 +53,7 @@ import org.jahia.bundles.extender.jahiamodules.transform.ModuleDependencyURLStre
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleUrlTransformer;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
+import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.ExtensionObserverRegistry;
@@ -73,6 +74,7 @@ import org.jahia.services.render.scripting.bundle.ScriptBundleObserver;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JCRModuleListener;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.TemplatePackageDeployer;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.services.usermanager.JahiaUser;
@@ -736,6 +738,19 @@ public class Activator implements BundleActivator, EventHandler {
                 }
             } catch (Exception e) {
                 logger.error("Unable to create application context for [" + bundle.getSymbolicName() + "]", e);
+            }
+        }
+        
+        SortedMap<ModuleVersion, JahiaTemplatesPackage> allModuleVersions = templatePackageRegistry
+                .getAllModuleVersions().get(bundle.getSymbolicName());
+        if (allModuleVersions.size() > 1) {
+            for (JahiaTemplatesPackage pkg : allModuleVersions.values()) {
+                Bundle otherBundle = pkg.getBundle();
+                if (otherBundle != null && otherBundle.getBundleId() != bundle.getBundleId()
+                        && otherBundle.getState() == Bundle.RESOLVED) {
+                    // force other bundle to move to Installed state
+                    BundleLifecycleUtils.getFrameworkWiring().refreshBundles(Collections.singleton(otherBundle));
+                }
             }
         }
     }

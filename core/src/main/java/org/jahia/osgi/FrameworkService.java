@@ -47,6 +47,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -58,8 +59,11 @@ import org.apache.karaf.main.Main;
 import org.apache.karaf.util.config.PropertiesLoader;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.settings.SettingsBean;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
@@ -214,8 +218,22 @@ public class FrameworkService implements FrameworkListener {
      * For the bundles in INSTALLED state we force the resolution so they are moved to RESOLVED state.
      */
     private void forceBundleResolution() {
-        logger.info("Trigger resolution of bundles");
-        BundleLifecycleUtils.resolveBundles(null);
+        Map<String, Bundle> toResolve = new LinkedHashMap<>();
+        TemplatePackageRegistry pkgRegistry = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getTemplatePackageRegistry();
+        for (Bundle b : getBundleContext().getBundles()) {
+            String name = b.getSymbolicName();
+            if (BundleUtils.isJahiaModuleBundle(b) && !pkgRegistry.areVersionsForModuleAvailable(name)) {
+                // we resolve either a single existing version of a module or find the one with the highest version
+                if (!toResolve.containsKey(name) || toResolve.get(name).getVersion().compareTo(b.getVersion()) < 0) {
+                    toResolve.put(name, b);
+                }
+            }
+        }
+        if (!toResolve.isEmpty()) {
+            logger.info("Trigger resolution of {} bundle(s)", toResolve.size());
+            BundleLifecycleUtils.resolveBundles(toResolve.values());
+        }
     }
 
     @Override

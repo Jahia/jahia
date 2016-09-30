@@ -215,7 +215,7 @@ public final class BundleLifecycleUtils {
      *
      * @return the {@link FrameworkWiring}
      */
-    private static FrameworkWiring getFrameworkWiring() {
+    public static FrameworkWiring getFrameworkWiring() {
         return getSystemBundle().adapt(FrameworkWiring.class);
     }
 

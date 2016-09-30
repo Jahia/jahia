@@ -46,6 +46,7 @@ package org.jahia.services.modulemanager.spi.impl;
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleNotFoundException;
@@ -94,19 +95,22 @@ public class DefaultBundleService implements BundleService {
     }
 
     protected void postInstall(Bundle bundle, boolean startTriggered) {
-
         if (!startTriggered) {
-
-            // Force bundle resolution
-            BundleLifecycleUtils.resolveBundle(bundle);
+            boolean resolutionNeeded = !ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                    .getTemplatePackageRegistry().areVersionsForModuleAvailable(bundle.getSymbolicName());
+            if (resolutionNeeded) {
+                // Force bundle resolution
+                BundleLifecycleUtils.resolveBundle(bundle);
+            }
 
             // If the bundle won't be started we do a refresh on it (this refreshes the dependencies)
             BundleLifecycleUtils.refreshBundle(bundle);
 
-            // Refreshing bundles often brings the bundle back to INSTALLED state for unclear reasons,
-            // so we try to resolve it again if so
-            if (bundle.getState() == Bundle.INSTALLED) {
-                BundleLifecycleUtils.resolveBundle(bundle);
+            if (resolutionNeeded) {
+                // Refreshing bundles often brings the bundle back to INSTALLED state so we try to resolve it again if so
+                if (bundle.getState() == Bundle.INSTALLED) {
+                    BundleLifecycleUtils.resolveBundle(bundle);
+                }
             }
         }
 

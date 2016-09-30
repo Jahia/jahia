@@ -273,7 +273,8 @@ public class AddResourcesTag extends AbstractJahiaTag {
         StringBuilder builder = new StringBuilder();
         builder.append("<jahia:resource type=\"");
         builder.append(type != null ? type : "").append("\"");
-        if (!StringUtils.equals(type,"inline")) {
+        boolean isTypeInline = StringUtils.equals(type,"inline");
+        if (!isTypeInline) {
             try {
                 builder.append(" path=\"").append(URLEncoder.encode(path != null ? path : "", "UTF-8")).append("\"");
             } catch (UnsupportedEncodingException e) {
@@ -296,7 +297,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         builder.append(" resource=\"").append(resource != null ? resource : "").append("\"");
         builder.append(" title=\"").append(title != null ? title : "").append("\"");
         builder.append(" key=\"").append(key != null ? key : "").append("\"");
-        if (!StringUtils.equals(type,"inline")) {
+        if (!isTypeInline) {
             builder.append(" />\n");
         } else {
             builder.append(">");

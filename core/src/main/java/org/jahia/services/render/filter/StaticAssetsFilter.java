@@ -373,11 +373,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         // Clean all jahia:resource tags
         source = new Source(out);
         outputDocument = new OutputDocument(source);
-        for (Element el : source.getAllElements()) {
-            StartTag esiResourceTag = el.getStartTag();
-            if (StringUtils.equals("jahia:resource", esiResourceTag.getName())) {
-                outputDocument.replace(el, "");
-            }
+        for (Element el : source.getAllElements("jahia:resource")) {
+            outputDocument.replace(el, "");
         }
         String s = outputDocument.toString();
         s = removeTempTags(s);

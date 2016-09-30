@@ -43,6 +43,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.core.XDOM;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -56,6 +57,7 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
@@ -254,14 +256,15 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                     final GWTJahiaNode nodewrapper = (GWTJahiaNode) historyItem.getProperties().get("nodeWrapper");
                     if (nodewrapper != null && historyItem.getProcessId().equals(model.getProcessId()) &&
                             historyItem instanceof GWTJahiaWorkflowHistoryProcess) {
-                        Button button = new Button(Messages.get("label.preview"));
-                        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        ButtonBar buttonBar = new ButtonBar();
+                        Button previewButton = new Button(Messages.get("label.preview"));
+                        previewButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                             @Override
                             public void componentSelected(ButtonEvent ce) {
                                 String path = nodewrapper.getPath();
                                 String locale = JahiaGWTParameters.getLanguage();
                                 JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
-                                        "default", locale, new BaseAsyncCallback<String>() {
+                                        "default", locale, false, new BaseAsyncCallback<String>() {
                                             public void onSuccess(String url) {
                                                 Window window = new Window();
                                                 window.setMaximizable(true);
@@ -274,7 +277,30 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                         });
                             }
                         });
-                        return button;
+                        buttonBar.add(previewButton);
+                        
+                        Button inContextButton = new Button(Messages.get("label.preview.context"));
+                        inContextButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            @Override
+                            public void componentSelected(ButtonEvent ce) {
+                                String path = nodewrapper.getPath();
+                                String locale = JahiaGWTParameters.getLanguage();
+                                JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
+                                        "default", locale, true, new BaseAsyncCallback<String>() {
+                                            public void onSuccess(String url) {
+                                                Window window = new Window();
+                                                window.setMaximizable(true);
+                                                window.setSize(1000, 750);
+                                                window.setUrl(url);
+                                                window.setPosition(engine.getPosition(true).x + 50, engine.getPosition(true).y + 50);
+                                                window.show();
+                                            }
+
+                                        });
+                            }
+                        });
+                        buttonBar.add(inContextButton);
+                        return buttonBar;
                     }
                 }
                 return new Label("");

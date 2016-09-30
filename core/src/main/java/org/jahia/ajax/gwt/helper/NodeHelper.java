@@ -98,7 +98,7 @@ class NodeHelper {
      * @param locale
      */
     static String getNodeURL(String servlet, JCRNodeWrapper node, Date versionDate,
-                             String versionLabel, final String workspace, final Locale locale)
+                             String versionLabel, final String workspace, final Locale locale, boolean findDisplayable)
             throws RepositoryException {
         if (servlet == null) {
             servlet = "render";
@@ -109,11 +109,18 @@ class NodeHelper {
         RenderContext renderContext = new RenderContext(null, null, node.getSession().getUser());
         renderContext.setMainResource(resource);
         renderContext.setServletPath("/cms/" + servlet);
+        JCRNodeWrapper nodeForURL = node; 
+        if (findDisplayable) {
+            nodeForURL = JCRContentUtils.findDisplayableNode(node, renderContext);
+            if (nodeForURL != null && !nodeForURL.getIdentifier().equals(node.getIdentifier())) {
+                resource = new Resource(nodeForURL, "html", null, Resource.CONFIGURATION_PAGE);
+            }
+        }
         Template template = RenderService.getInstance().resolveTemplate(resource, renderContext);
         if (template != null) {
-            url += node.getPath() + ".html";
+            url += nodeForURL.getPath() + ".html";
         } else {
-            url += node.getPath() + ".content-template.html";
+            url += nodeForURL.getPath() + ".content-template.html";
         }
 
         if (versionDate != null) {
@@ -504,7 +511,7 @@ class NodeHelper {
                         v.getName(), v.getCreated().getTime(), versionInfo.getLabel(), workspace, n);
                 String url = getNodeURL(null, node,
                         versionInfo.getVersion().getCreated().getTime(), versionInfo.getLabel(),
-                        workspace, node.getSession().getLocale());
+                        workspace, node.getSession().getLocale(), false);
                 jahiaNodeVersion.setUrl(url);
                 versions.add(jahiaNodeVersion);
             }

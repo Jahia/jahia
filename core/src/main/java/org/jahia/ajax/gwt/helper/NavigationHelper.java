@@ -775,8 +775,8 @@ public class NavigationHelper {
      * @param locale
      */
     public String getNodeURL(String servlet, JCRNodeWrapper node, Date versionDate, String versionLabel, final String workspace,
-                             final Locale locale) throws RepositoryException {
-        return NodeHelper.getNodeURL(servlet, node, versionDate, versionLabel, workspace, locale);
+                             final Locale locale, boolean findDisplayable) throws RepositoryException {
+        return NodeHelper.getNodeURL(servlet, node, versionDate, versionLabel, workspace, locale, findDisplayable);
     }
 
     private boolean isAllowedByLicense(JCRNodeWrapper node) {

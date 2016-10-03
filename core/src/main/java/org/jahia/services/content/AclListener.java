@@ -46,7 +46,6 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.sites.JahiaSitesService;
@@ -65,21 +64,20 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class AclListener extends DefaultEventListener {
-    private static final Pattern CURRENT_SITE_PATTERN = Pattern.compile("^currentSite");
-    private static Logger logger = LoggerFactory.getLogger(AclListener.class);
-    private JCRPublicationService publicationService;
-    private static ThreadLocal<Boolean> inListener = new ThreadLocal<Boolean>();
 
+    private static final Pattern CURRENT_SITE_PATTERN = Pattern.compile("^currentSite");
+    private static final Logger logger = LoggerFactory.getLogger(AclListener.class);
+    private static ThreadLocal<Boolean> inListener = new ThreadLocal<Boolean>();
     public static final List<String> PRIVILEGED_GROUPS = Arrays.asList("g:privileged", "g:site-privileged");
 
+    private JCRPublicationService publicationService;
     private JahiaUserManagerService userService;
     private JahiaGroupManagerService groupService;
+    private Map<String, String> foundRoles = new HashMap<String, String>();
 
     public void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;
     }
-
-    private Map<String, String> foundRoles = new HashMap<String, String>();
 
     public void setUserService(JahiaUserManagerService userService) {
         this.userService = userService;
@@ -95,12 +93,16 @@ public class AclListener extends DefaultEventListener {
                 Event.PROPERTY_REMOVED;
     }
 
+    @Override
     public void onEvent(final EventIterator events) {
+
         final JCRSessionWrapper session = ((JCREventIterator) events).getSession();
         if (inListener.get() == Boolean.TRUE) {
             return;
         }
+
         try {
+
             inListener.set(Boolean.TRUE);
             final List<Event> aclEvents = new ArrayList<Event>();
             while (events.hasNext()) {
@@ -114,8 +116,10 @@ public class AclListener extends DefaultEventListener {
             }
 
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
+
                 @Override
                 public Object doInJCR(final JCRSessionWrapper systemSession) throws RepositoryException {
+
                     final Set<String> aceIdentifiers = new HashSet<String>();
                     final Set<String> addedAceIdentifiers = new HashSet<String>();
                     final Set<String> removedAcePaths = new HashSet<String>();
@@ -136,7 +140,6 @@ public class AclListener extends DefaultEventListener {
         } finally {
             inListener.set(Boolean.FALSE);
         }
-
     }
 
     private void parseEvents(JCRSessionWrapper systemSession, List<Event> aclEvents, Set<String> aceIdentifiers, Set<String> addedAceIdentifiers, Set<String> removedAcePaths, Set<String> addedExtPermIds, Set<List<String>> removedExtPermissions, Set<String> removedRoles) throws RepositoryException {
@@ -190,12 +193,12 @@ public class AclListener extends DefaultEventListener {
     }
 
     private void handleAclModifications(final JCRSessionWrapper systemSession, Set<String> aceIdentifiers, final Set<String> addedAceIdentifiers, Set<String> removedAcePaths, final JCREventIterator events) throws RepositoryException {
+
         final Map<String, Set<String>> privilegedAdded = new HashMap<String, Set<String>>();
         final Map<String, Set<String>> privilegedToCheck = new HashMap<String, Set<String>>();
         final Map<String, JCRNodeWrapper> roleNodes = new HashMap<String, JCRNodeWrapper>();
         for (final String aceIdentifier : aceIdentifiers) {
             final Set<String> roles = new HashSet<String>();
-
             JCRNodeWrapper ace = null;
             String principal = null;
             try {
@@ -238,6 +241,7 @@ public class AclListener extends DefaultEventListener {
                     }
                 }
             }
+
             if (!roles.isEmpty()) {
                 if (systemSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
                     final JCRNodeWrapper finalAce = ace;
@@ -265,14 +269,12 @@ public class AclListener extends DefaultEventListener {
                 if (name.startsWith("REF")) {
                     continue;
                 }
-
                 String site;
                 if (acePath.startsWith("/sites/")) {
                     site = StringUtils.substringBefore(acePath.substring("/sites/".length()), "/");
                 } else {
                     site = "systemsite";
                 }
-
                 String principal = StringUtils.substringAfter(name, "_").replaceFirst("_", ":");
                 if (principal.startsWith("jcr:read") || principal.startsWith("jcr:write")) {
                     principal = StringUtils.substringAfter(principal, "_").replaceFirst("_", ":");
@@ -298,7 +300,6 @@ public class AclListener extends DefaultEventListener {
                 if (priv != null) {
                     for (String principal : entry.getValue()) {
                         JCRNodeWrapper p = getPrincipal(site, principal);
-
                         if (p == null || priv.isMember(p)) {
                             continue;
                         }
@@ -314,11 +315,9 @@ public class AclListener extends DefaultEventListener {
                 if (priv != null) {
                     for (String principal : entry.getValue()) {
                         JCRNodeWrapper p = getPrincipal(site, principal);
-
                         if (p == null || !priv.isMember(p)) {
                             continue;
                         }
-
                         List<String> rolesName = new ArrayList<String>();
                         boolean needPrivileged = false;
 
@@ -357,7 +356,9 @@ public class AclListener extends DefaultEventListener {
     }
 
     private void handleAclModifications(JCRSessionWrapper session, JCRSessionWrapper defaultSession, Set<String> roles, JCRNodeWrapper ace, String principal, Map<String, Set<String>> privilegedAdded, Map<String, Set<String>> privilegedRemoved, Map<String, JCRNodeWrapper> roleNodes, boolean isNewAce, boolean publish) throws RepositoryException {
+
         boolean needPrivileged = false;
+
         for (String role : roles) {
             JCRNodeWrapper roleNode = getRole(defaultSession, role, roleNodes);
             if (roleNode != null) {
@@ -431,6 +432,7 @@ public class AclListener extends DefaultEventListener {
     }
 
     private List<String> getRolesName(JCRSessionWrapper session, String sql) throws RepositoryException {
+
         QueryManager q = session.getWorkspace().getQueryManager();
         // (not ([j:externalPermissionsName] is not null)) => do not return jnt:externalAce
         List<String> rolesName = new ArrayList<String>();
@@ -447,6 +449,7 @@ public class AclListener extends DefaultEventListener {
     }
 
     private void handleRoleModifications(JCRSessionWrapper session, Set<String> addedExtPermIds, Set<List<String>> removedExtPermissions, Set<String> removedRoles) {
+
         for (String extPermId : addedExtPermIds) {
             try {
                 JCRNodeWrapper externalPermission = session.getNodeByIdentifier(extPermId);
@@ -518,6 +521,7 @@ public class AclListener extends DefaultEventListener {
 
     private void createOrUpdateExternalACE(JCRSessionWrapper session, JCRNodeWrapper ace, String principal, String role,
                                            JCRNodeWrapper externalPermissions) throws RepositoryException {
+
         JCRNodeWrapper refNode = getRefAclNode(session, ace, role, externalPermissions);
         if (refNode == null) {
             return;

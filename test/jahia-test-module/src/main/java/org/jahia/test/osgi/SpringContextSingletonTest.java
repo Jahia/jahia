@@ -68,7 +68,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 /**
  * SpringContextSingleton is using wait/notify mechanism when a bean is not found in module contexts
@@ -77,24 +76,24 @@ import static org.junit.Assert.assertTrue;
  */
 public class SpringContextSingletonTest {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(SpringContextSingletonTest.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(SpringContextSingletonTest.class);
 
     private static JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-
-    private static long originalModuleSpringBeansWaitingTimeout;
+    private static int originalModuleSpringBeansWaitingTimeout;
     private static int originalTagBundleState;
-
     private static Bundle dummy1Bundle;
     private static Bundle tagsBundle;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
+
         try {
+
             installTestModule("dummy1-1.0.jar");
             dummy1Bundle = BundleUtils.getBundle("dummy1", "1.0");
 
-            JahiaTemplatesPackage articlePack = managerService.getTemplatePackageById("tags");
-            tagsBundle = articlePack.getBundle();
+            JahiaTemplatesPackage tagsPack = managerService.getTemplatePackageById("tags");
+            tagsBundle = tagsPack.getBundle();
             originalTagBundleState = tagsBundle.getState();
 
             originalModuleSpringBeansWaitingTimeout = SettingsBean.getInstance().getModuleSpringBeansWaitingTimeout();
@@ -112,7 +111,6 @@ public class SpringContextSingletonTest {
             if (originalTagBundleState == Bundle.ACTIVE && tagsBundle.getState() != Bundle.ACTIVE) {
                 tagsBundle.start();
             }
-
             SettingsBean.getInstance().setModuleSpringBeansWaitingTimeout(originalModuleSpringBeansWaitingTimeout);
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
@@ -121,6 +119,7 @@ public class SpringContextSingletonTest {
 
     @Test
     public void simpleTestGetBeanInModulesContext() throws Exception {
+
         new StartModuleThread(dummy1Bundle, 5000).start();
 
         GetBeanThread g1 = new GetBeanThread("dummy1Action");
@@ -139,6 +138,7 @@ public class SpringContextSingletonTest {
 
     @Test
     public void testOtherModuleStartedDuringWait() throws Exception {
+
         tagsBundle.stop();
         new StartModuleThread(tagsBundle, 5000).start();
 
@@ -157,6 +157,7 @@ public class SpringContextSingletonTest {
 
     @Test
     public void testOtherModuleStartedDuringWait2() throws Exception {
+
         tagsBundle.stop();
         new StartModuleThread(tagsBundle, 3000).start();
         new StartModuleThread(dummy1Bundle, 5000).start();
@@ -177,6 +178,7 @@ public class SpringContextSingletonTest {
 
     @Test
     public void testMultipleWaits() throws Exception {
+
         tagsBundle.stop();
         new StartModuleThread(tagsBundle, 7000).start();
         new StartModuleThread(dummy1Bundle, 3000).start();
@@ -211,6 +213,7 @@ public class SpringContextSingletonTest {
 
     @Test
     public void testSimultaneousOperation() throws Exception {
+
         GetBeanThread g1 = new GetBeanThread("dummy1Action");
         new StartModuleThread(dummy1Bundle, 0).start();
 
@@ -223,6 +226,7 @@ public class SpringContextSingletonTest {
 
     @Test
     public void testUnsupportedCallStack() throws Exception {
+
         StartModuleThread s1 = new StartModuleThread(dummy1Bundle, 5000);
         s1.start();
 
@@ -248,8 +252,9 @@ public class SpringContextSingletonTest {
     }
 
     public class GetBeanThread extends Thread {
-        String beanId;
-        Object result = null;
+
+        protected String beanId;
+        protected Object result;
 
         public GetBeanThread(String beanId) {
             this.beanId = beanId;
@@ -266,6 +271,7 @@ public class SpringContextSingletonTest {
     }
 
     public class UnsupporteGetBeanThread extends GetBeanThread {
+
         public UnsupporteGetBeanThread(String beanId) {
             super(beanId);
         }
@@ -277,9 +283,10 @@ public class SpringContextSingletonTest {
     }
 
     public class StartModuleThread extends Thread {
-        Bundle bundleToStart;
-        long sleepTime = 0;
-        boolean moduleStarted = false;
+
+        private Bundle bundleToStart;
+        private long sleepTime;
+        private boolean moduleStarted;
 
         public StartModuleThread(Bundle bundle, long sleepTime) {
             this.bundleToStart = bundle;
@@ -292,7 +299,6 @@ public class SpringContextSingletonTest {
                 if (sleepTime > 0) {
                     sleep(sleepTime);
                 }
-
                 try {
                     bundleToStart.start();
                     moduleStarted = true;
@@ -300,7 +306,6 @@ public class SpringContextSingletonTest {
                     logger.error(e.getMessage(), e);
                     fail(e.getMessage());
                 }
-
             } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -312,9 +317,12 @@ public class SpringContextSingletonTest {
     }
 
     private static void installTestModule(final String moduleName) throws RepositoryException {
+
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+
                 try {
 
                     File tmpFile = File.createTempFile("module",".jar");

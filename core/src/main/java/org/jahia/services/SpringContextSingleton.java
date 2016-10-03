@@ -78,11 +78,12 @@ import org.springframework.core.io.Resource;
 public class SpringContextSingleton implements ApplicationContextAware, ApplicationListener<TemplatePackageRedeployedEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(SpringContextSingleton.class);
-    private static SpringContextSingleton ourInstance = new SpringContextSingleton();
-    private static final String[] beanWaitSupportedClassesInStack = new String[] {
+    private static final String[] APPLICATION_CONTEXT_INITIALIZATION_IN_PROGRESS_INDICATORS = new String[] {
             "org.jahia.test.osgi.SpringContextSingletonTest$GetBeanThread", //used by unit tests
             "org.jahia.bundles.blueprint.extender.config.JahiaOsgiBundleXmlApplicationContext" // used when a spring context is starting up
     };
+
+    private static SpringContextSingleton ourInstance = new SpringContextSingleton();
 
     private ApplicationContext context;
     private boolean initialized;
@@ -114,25 +115,31 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
             }
         }
 
-        if (waitTimeout > 0 && currentStackTraceContainsClasses(beanWaitSupportedClassesInStack)) {
+        // Waiting for a missing bean only makes sense in case it is a part of application context initialization
+        // during module startup, because there is a chance for the bean to appear later. Otherwise, multiple threads
+        // waiting for missing beans could cause application collapse.
+        if (waitTimeout > 0 && isApplicationContextInitializationInProgress()) {
+
             ExecutorService executor = Executors.newSingleThreadExecutor();
+
             Future<Object> future = executor.submit(new Callable<Object>() {
+
                 @Override
                 public Object call() throws Exception {
                     while (true) {
                         Thread.sleep(100);
-
                         try {
                             return getBeanInModulesContext(beanId, 0);
                         } catch (NoSuchBeanDefinitionException e) {
-                            logger.debug("Bean '{}' not found by the task loop, retry in 100ms", beanId);
+                            logger.debug("Bean '{}' not found by the task loop, will retry in 100 ms", beanId);
                         }
                     }
                 }
             });
 
+            logger.info("Bean '{}' not found yet, will wait for its availability max {} seconds...", beanId, waitTimeout);
+
             try {
-                logger.info("Bean '{}' not found yet, will wait for its availability max {} seconds ...", beanId, waitTimeout);
                 return future.get(waitTimeout, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
                 future.cancel(true);
@@ -149,12 +156,11 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         throw new NoSuchBeanDefinitionException(beanId);
     }
 
-    private static boolean currentStackTraceContainsClasses(String ... classes) {
+    private static boolean isApplicationContextInitializationInProgress() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-
         for (StackTraceElement element : stackTrace) {
-            for (String clazz : classes) {
-                if (element.getClassName().equals(clazz)) {
+            for (String className : APPLICATION_CONTEXT_INITIALIZATION_IN_PROGRESS_INDICATORS) {
+                if (element.getClassName().equals(className)) {
                     return true;
                 }
             }

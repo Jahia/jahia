@@ -181,7 +181,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     // Timeout (in seconds) waiting for a bean to be available when using SpringContextSingleton.
     // Mostly used during startup when a module needs to access beans from another module starting independently.
     // 0 (or any negative value) to not wait
-    private long moduleSpringBeansWaitingTimeout;
+    private int moduleSpringBeansWaitingTimeout;
 
     // this is the list of jahia.properties server disk path and context path values...
     private String server;
@@ -453,7 +453,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             areaAutoActivated = getBoolean("area.auto.activated", true);
 
-            moduleSpringBeansWaitingTimeout = getLong("jahia.moduleSpringBeansWaitingTimeout", 5 * 60L);
+            moduleSpringBeansWaitingTimeout = getInt("jahia.moduleSpringBeansWaitingTimeout", 5 * 60);
 
             moduleStartLevel = getInt("jahia.moduleStartLevel", 90);
 
@@ -1440,11 +1440,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return areaAutoActivated;
     }
 
-    public long getModuleSpringBeansWaitingTimeout() {
+    public int getModuleSpringBeansWaitingTimeout() {
         return moduleSpringBeansWaitingTimeout;
     }
 
-    public void setModuleSpringBeansWaitingTimeout(long moduleSpringBeansWaitingTimeout) {
+    public void setModuleSpringBeansWaitingTimeout(int moduleSpringBeansWaitingTimeout) {
         this.moduleSpringBeansWaitingTimeout = moduleSpringBeansWaitingTimeout;
     }
 

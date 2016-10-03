@@ -175,6 +175,18 @@ public class TokenizedFormTag extends BodyTagSupport {
     public int doAfterBody() throws JspException {
         return super.doAfterBody();
     }
+    
+    @Override
+    public void release() {
+        resetState();
+        super.release();
+    }
+
+    protected void resetState() {
+        disableXSSFiltering = false;
+        allowsMultipleSubmits = false;
+        skipAggregation = false;
+    }
 
     public void setDisableXSSFiltering(boolean disableXSSFiltering) {
         this.disableXSSFiltering = disableXSSFiltering;

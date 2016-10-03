@@ -43,6 +43,7 @@
  */
 package org.jahia.services.render.filter;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionFactory;
@@ -341,7 +342,7 @@ public class AggregateFilter extends AbstractFilter {
      * @return
      */
     public static boolean skipAggregation(ServletRequest request) {
-        return request.getAttribute(SKIP_AGGREGATION) != null && (Boolean) request.getAttribute(SKIP_AGGREGATION);
+        return BooleanUtils.isTrue((Boolean)request.getAttribute(SKIP_AGGREGATION));
     }
 
 }

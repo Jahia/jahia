@@ -139,9 +139,10 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
                 logger.debug("Waiting for bean '{}' timed out", beanId);
             } catch (InterruptedException | ExecutionException e) {
                 throw new JahiaRuntimeException(e);
+            } finally {
+                executor.shutdownNow();
             }
 
-            executor.shutdownNow();
             logger.info("Bean '{}' not found in module contexts", beanId);
         }
 

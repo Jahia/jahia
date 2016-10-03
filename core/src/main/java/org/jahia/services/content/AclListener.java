@@ -246,7 +246,9 @@ public class AclListener extends DefaultEventListener {
                 if (systemSession.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE)) {
                     final JCRNodeWrapper finalAce = ace;
                     final String fprincipal = principal;
+
                     JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.EDIT_WORKSPACE, systemSession.getLocale(), new JCRCallback<Object>() {
+
                         @Override
                         public Object doInJCR(JCRSessionWrapper defaultSystemSession) throws RepositoryException {
                             final boolean publish = events.getOperationType() == JCRObservationManager.WORKSPACE_CLONE || events.getLastOperationType() == JCRObservationManager.WORKSPACE_CLONE;

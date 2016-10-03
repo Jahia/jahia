@@ -48,12 +48,13 @@ import org.osgi.framework.Bundle;
 import javax.script.ScriptEngineFactory;
 
 /**
- * A configurable {@link ScriptEngineFactory} so that providers of new scripting language from modules can have the
- * opportunity to perform set up or clean up operations when the bundle is started and/or stopped.
+ * A configuration interface for {@link ScriptEngineFactory} implementations so that providers of new scripting
+ * language from modules can have the opportunity to perform set up or clean up operations when the bundle is started
+ * and/or stopped.
  *
  * @author Christophe Laprun
  */
-public interface ConfigurableScriptEngineFactory extends ScriptEngineFactory {
+public interface Configurable {
 
     /**
      * Configures the {@link ScriptEngineFactory} when its bundle is started but before it is registered with the

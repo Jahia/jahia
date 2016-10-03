@@ -54,16 +54,16 @@ import java.util.List;
  * appropriate class loader as some implementations have this requirement in order to work properly in an OSGi
  * environment.
  */
-class BundleScriptEngineFactory implements ConfigurableScriptEngineFactory {
+class BundleScriptEngineFactory implements Configurable, ScriptEngineFactory {
 
     private final ScriptEngineFactory factory;
     private final BundleScriptingContext context;
     private final String wrappedFactoryClassName;
-    private final boolean isConfigurableFactory;
+    private final boolean isConfigurable;
 
     BundleScriptEngineFactory(ScriptEngineFactory factory, BundleScriptingContext context) {
         this.factory = factory;
-        isConfigurableFactory = factory instanceof ConfigurableScriptEngineFactory;
+        isConfigurable = factory instanceof Configurable;
         wrappedFactoryClassName = factory.getClass().getCanonicalName();
         this.context = context;
     }
@@ -145,24 +145,24 @@ class BundleScriptEngineFactory implements ConfigurableScriptEngineFactory {
         return wrappedFactoryClassName;
     }
 
-    private ConfigurableScriptEngineFactory getWrappedAsConfigurable() {
-        return (ConfigurableScriptEngineFactory) factory;
+    private Configurable getWrappedAsConfigurable() {
+        return (Configurable) factory;
     }
 
     public void configurePreRegistration(Bundle bundle) {
-        if (isConfigurableFactory) {
+        if (isConfigurable) {
             getWrappedAsConfigurable().configurePreRegistration(bundle);
         }
     }
 
     public void destroy(Bundle bundle) {
-        if (isConfigurableFactory) {
+        if (isConfigurable) {
             getWrappedAsConfigurable().destroy(bundle);
         }
     }
 
     public void configurePreScriptEngineCreation() {
-        if (isConfigurableFactory) {
+        if (isConfigurable) {
             getWrappedAsConfigurable().configurePreScriptEngineCreation();
         }
     }

@@ -67,7 +67,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * scanned so that any installed module that provides views that can be handled by the newly installed
  * ScriptEngineFactory will be now able to answer to view requests.
  * <p>
- * Additionally, if the provided ScriptEngineFactory implementations also implement {@link ConfigurableScriptEngineFactory}, this
+ * Additionally, if the provided ScriptEngineFactory implementations also implement {@link Configurable}, this
  * BundleScriptEngineManager will call its methods so that additional set up / clean up can be performed when the bundle
  * is started or stopped.
  */
@@ -400,7 +400,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
      * {@code META-INF/services/javax.script.ScriptEngineFactory} file of the Bundle is instantiated and configured.
      * Additionally, the OSGi headers are examined to look for any {@code Jahia-Scripting-Extensions-Priorities}
      * header value to configure ordering of scripting languages. If the declared ScriptEngineFactory implements
-     * {@link ConfigurableScriptEngineFactory}, its method will be called when appropriate automatically. Finally,
+     * {@link Configurable}, its method will be called when appropriate automatically. Finally,
      * {@link BundleScriptResolver#register(ScriptEngineFactory, Bundle)} is called for each such configured
      * ScriptEngineFactory in order to be notify it that new scripting languages are available and activate
      * associated views if needed.

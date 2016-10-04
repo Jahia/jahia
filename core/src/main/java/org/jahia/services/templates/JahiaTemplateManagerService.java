@@ -282,7 +282,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             JCRNodeWrapper vi = n.getNode("j:versionInfo");
             if (vi.hasProperty("j:sourcesFolder")) {
                 File sources = new File(vi.getProperty("j:sourcesFolder").getString());
-
                 if (checkValidSources(pack, sources)) {
                     pack.setSourcesFolder(sources);
                     return sources;
@@ -319,7 +318,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             if (sources != null) {
                 JCRNodeWrapper vi = session.getNode("/modules/" + pack.getIdWithVersion() + "/j:versionInfo");
                 regenerateImportFile(moduleId, sources, session);
-
                 if (vi.hasProperty("j:scmURI")) {
                     SourceControlManagement scm;
                     scm = pack.getSourceControl();
@@ -336,6 +334,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public File releaseModule(final JahiaTemplatesPackage module, ModuleReleaseInfo releaseInfo, File sources, String scmUrl, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
+
         File pom = new File(sources, "pom.xml");
         Model model;
         try {
@@ -401,6 +400,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public List<File> regenerateImportFile(String moduleId, File sources, JCRSessionWrapper session) throws RepositoryException {
+
         logger.info("Re-generating initial import file for module {} in source folder {}", moduleId, sources);
         long startTime = System.currentTimeMillis();
         List<File> modifiedFiles = new ArrayList<>();
@@ -455,7 +455,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (pack.getSourcesFolder() != null) {
             setDependenciesInPom(pack.getSourcesFolder(), depends, shouldUsePropertiesInPom(pack));
         }
-
         applicationEventPublisher.publishEvent(new ModuleDependenciesEvent(pack.getId(), this));
     }
 
@@ -497,6 +496,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public List<JahiaTemplatesPackage> getInstalledModulesForSite(String siteKey,
                                                                   boolean includeTemplateSet, boolean includeDirectDependencies,
                                                                   boolean includeTransitiveDependencies) throws JahiaException {
+
         JahiaSite site = siteService.getSiteByKey(siteKey);
         if (site == null) {
             throw new JahiaException("Site cannot be found for key " + siteKey,
@@ -607,7 +607,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         uninstallModules(Collections.singletonList(module), sitePath, session);
     }
 
-
     public void uninstallModules(final List<JahiaTemplatesPackage> modules, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
         List<String> moduleIds = new ArrayList<>();
         for (JahiaTemplatesPackage module : modules) {
@@ -703,7 +702,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return templatePackageRegistry.getErrorHandlers();
     }
 
-
     /**
      * Returns the requested template package for the specified site or
      * <code>null</code> if the package with the specified fileName is not
@@ -797,14 +795,15 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return pack;
     }
 
-
     /**
      * Returns a set of existing template sets that are available for site creation.
      *
      * @return a set of existing template sets that are available for site creation
      */
     public Set<String> getTemplateSetNames() {
+
         try {
+
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Set<String>>() {
 
                 @Override
@@ -996,6 +995,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @author Sergiy Shyrkov
      */
     public static class TemplatePackageRedeployedEvent extends ApplicationEvent {
+
         private static final long serialVersionUID = 789720524077775537L;
 
         public TemplatePackageRedeployedEvent(Object source) {
@@ -1007,6 +1007,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * Event indicates that a module was either installed to the specified site or uninstalled from it.
      */
     public static class ModuleDeployedOnSiteEvent extends ApplicationEvent {
+
         private static final long serialVersionUID = -6693201714720533228L;
         private final String targetSitePath;
 

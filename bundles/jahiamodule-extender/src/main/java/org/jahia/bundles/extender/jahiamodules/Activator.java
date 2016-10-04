@@ -145,7 +145,6 @@ public class Activator implements BundleActivator, EventHandler {
     private Map<String, List<Bundle>> toBeResolved;
     private Map<Bundle, ModuleState> moduleStates;
     private FileInstallConfigurer fileInstallConfigurer;
-
     private ServiceRegistration<?> fileInstallEventHandlerRegistration;
 
     public Activator() {
@@ -520,7 +519,7 @@ public class Activator implements BundleActivator, EventHandler {
 
         pkg.setState(getModuleState(bundle));
 
-        //Check required version
+        // Check required version
         if (!checkRequiredVersion(bundle)) {
             return;
         }
@@ -584,10 +583,10 @@ public class Activator implements BundleActivator, EventHandler {
         }
 
         resolveDependantBundles(pkg.getId());
-        
+
         if (Bundle.ACTIVE == bundle.getState()) {
             // we've got an event for already started bundles
-            // sometimes FileInstall sends the STARTED event before RESOLVED, so we have to handle this case 
+            // sometimes FileInstall sends the STARTED event before RESOLVED, so we have to handle this case
             logger.info("Got RESOLVED event for an already started bundle {} v{}. Proccesing started bundle.",
                     pkg.getId(), pkg.getVersion());
             start(bundle);
@@ -740,7 +739,7 @@ public class Activator implements BundleActivator, EventHandler {
                 logger.error("Unable to create application context for [" + bundle.getSymbolicName() + "]", e);
             }
         }
-        
+
         SortedMap<ModuleVersion, JahiaTemplatesPackage> allModuleVersions = templatePackageRegistry
                 .getAllModuleVersions().get(bundle.getSymbolicName());
         if (allModuleVersions.size() > 1) {
@@ -1017,7 +1016,7 @@ public class Activator implements BundleActivator, EventHandler {
     @Override
     public void handleEvent(Event event) {
         unregisterFileInstallEventHandler();
-        
+
         // notify the framework that the file install watcher has started and processed found modules
         FrameworkService.notifyFileInstallStarted();
     }

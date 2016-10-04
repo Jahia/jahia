@@ -810,12 +810,10 @@ public class Activator implements BundleActivator, EventHandler {
         }
 
         if (JahiaContextLoaderListener.isRunning()) {
-            final String pkgId = jahiaTemplatesPackage.getId();
-            final String pkgName = jahiaTemplatesPackage.getName();
 
             templatePackageRegistry.unregister(jahiaTemplatesPackage);
-
             boolean cachesNeedFlushing = true;
+
             if (jahiaTemplatesPackage.getInitialImports().isEmpty()) {
                 // check for initial imports
                 Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
@@ -827,6 +825,7 @@ public class Activator implements BundleActivator, EventHandler {
                     }
                 }
             }
+
             jahiaTemplatesPackage.setActiveVersion(false);
             templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
 
@@ -844,18 +843,15 @@ public class Activator implements BundleActivator, EventHandler {
                 }
             }
 
-            if (cachesNeedFlushing) {
-                flushOutputCachesForModule(bundle, pkgId, pkgName);
-            }
-
             // deal with script engine factories
             scriptEngineManager.removeScriptEngineFactoriesIfNeeded(bundle);
 
             if (cachesNeedFlushing) {
-                flushOutputCachesForModule(bundle, pkgId, pkgName);
+                flushOutputCachesForModule(jahiaTemplatesPackage);
             }
 
             ServiceTracker<HttpService, HttpService> tracker = bundleHttpServiceTrackers.remove(bundle);
+
             if (tracker != null) {
                 tracker.close();
             }
@@ -865,7 +861,7 @@ public class Activator implements BundleActivator, EventHandler {
         logger.info("--- Finished stopping DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
     }
 
-    private void flushOutputCachesForModule(Bundle bundle, final String pkgId, final String pkgName) {
+    private void flushOutputCachesForModule(final JahiaTemplatesPackage pkg) {
 
         try {
 
@@ -874,10 +870,10 @@ public class Activator implements BundleActivator, EventHandler {
                 @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<JCRSiteNode> sitesNodeList = JahiaSitesService.getInstance().getSitesNodeList(session);
-                    Set<String> pathsToFlush = new HashSet<String>();
+                    Set<String> pathsToFlush = new HashSet<>();
                     for (JCRSiteNode site : sitesNodeList) {
                         Set<String> installedModules = site.getInstalledModulesWithAllDependencies();
-                        if (installedModules.contains(pkgId) || installedModules.contains(pkgName)) {
+                        if (installedModules.contains(pkg.getId()) || installedModules.contains(pkg.getName())) {
                             pathsToFlush.add(site.getPath());
                         }
                     }

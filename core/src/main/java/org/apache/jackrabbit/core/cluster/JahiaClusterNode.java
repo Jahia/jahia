@@ -63,6 +63,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by toto on 06/12/13.
  */
 public class JahiaClusterNode extends ClusterNode {
+
     /**
      * Status constant.
      */
@@ -81,7 +82,7 @@ public class JahiaClusterNode extends ClusterNode {
     /**
      * Logger.
      */
-    private static Logger log = LoggerFactory.getLogger(JahiaClusterNode.class);
+    private static final Logger log = LoggerFactory.getLogger(JahiaClusterNode.class);
 
     /**
      * Our record producer.
@@ -92,7 +93,6 @@ public class JahiaClusterNode extends ClusterNode {
      * Status flag, one of {@link #NONE}, {@link #STARTED} or {@link #STOPPED}.
      */
     private final AtomicInteger status = new AtomicInteger(NONE);
-
 
     /**
      * Starts this cluster node.
@@ -160,10 +160,10 @@ public class JahiaClusterNode extends ClusterNode {
      * @param workspace workspace name
      * @return lock event channel
      */
+    @Override
     public UpdateEventChannel createUpdateChannel(String workspace) {
         return new WorkspaceUpdateChannel(workspace);
     }
-
 
     /**
      * Workspace update channel.
@@ -193,14 +193,13 @@ public class JahiaClusterNode extends ClusterNode {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void updateCreated(Update update) throws ClusterException {
             if (status.get() != STARTED) {
                 log.info("not started: update create ignored.");
                 return;
             }
-
             super.updateCreated(update);
-
             try {
                 storeNodeIds(update);
                 lockNodes(update);
@@ -217,6 +216,7 @@ public class JahiaClusterNode extends ClusterNode {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void updateCommitted(Update update, String path) {
             if (status.get() != STARTED) {
                 log.info("not started: update commit ignored.");
@@ -251,7 +251,6 @@ public class JahiaClusterNode extends ClusterNode {
                 }
             }
         }
-
     }
 
     private void unlockNodes(Update update) throws JournalException {
@@ -339,6 +338,7 @@ public class JahiaClusterNode extends ClusterNode {
         super.process(record);
     }
 
+    @Override
     public void setRevision(long revision) {
         if (!(getJournal() instanceof NodeLevelLockableJournal)) {
             super.setRevision(revision);
@@ -351,7 +351,12 @@ public class JahiaClusterNode extends ClusterNode {
     }
 
     public static class ExternalChangeLog extends ChangeLog {
+
         public ExternalChangeLog(ChangeLog changes) {
+
+            // It is essential to keep this order of deleted/modified/added items processing, since
+            // "deleted"/"modified"/"added" method invocations modify each other's internal lists of
+            // deleted/modified/added items.
             for (ItemState state : changes.deletedStates()) {
                 deleted(state);
             }
@@ -361,10 +366,10 @@ public class JahiaClusterNode extends ClusterNode {
             for (ItemState state : changes.addedStates()) {
                 added(state);
             }
+
             for (NodeReferences ref : changes.modifiedRefs()) {
                 modified(ref);
             }
         }
     }
-
 }

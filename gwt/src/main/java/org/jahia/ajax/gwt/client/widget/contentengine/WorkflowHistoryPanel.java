@@ -43,7 +43,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import com.extjs.gxt.ui.client.core.XDOM;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.RpcProxy;
@@ -79,12 +78,14 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.poller.Poller;
 import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -173,7 +174,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         ColumnConfig column = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 160);
         column.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
             @Override
-            public Widget getWidget(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
+            public Widget getWidget(final GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
                                     int rowIndex, int colIndex,
                                     ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
                                     Grid<GWTJahiaWorkflowHistoryItem> grid) {
@@ -186,7 +187,10 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent ce) {
                                     EnginePanel container = new EnginePanel();
-
+                                    // remove workflow tab before displaying it
+                                    final GWTJahiaNode nodewrapper = (GWTJahiaNode) parent.get("nodeWrapper");
+                                    linker.getSelectionContext().setSelectedNodes(Arrays.asList(nodewrapper));
+                                    linker.getSelectionContext().refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
                                     new WorkflowActionDialog(parent.getRunningWorkflow(), task, linker,
                                             parent.getRunningWorkflow().getCustomWorkflowInfo(), container);
                                     container.showEngine();

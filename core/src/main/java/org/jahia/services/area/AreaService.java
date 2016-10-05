@@ -41,38 +41,33 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.modulemanager.spi.impl;
+package org.jahia.services.area;
 
-import org.jahia.services.DelegateService;
-import org.jahia.services.modulemanager.BundleInfo;
-import org.jahia.services.modulemanager.InvalidTargetException;
-import org.jahia.services.modulemanager.ModuleManagementException;
-import org.jahia.services.modulemanager.ModuleNotFoundException;
-import org.jahia.services.modulemanager.spi.BundleService;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+
+import javax.jcr.RepositoryException;
 
 /**
- * Delegate class that is dispatching the calls to an appropriate service implementation of the {@link BundleService}.
+ * Service for area related operations
  *
- * @author Sergiy Shyrkov
+ * @author Kevan
  */
-public class BundleServiceDelegate extends DelegateService<BundleService> implements BundleService {
-    @Override
-    public void install(String uri, String target, boolean start) throws ModuleManagementException, InvalidTargetException {
-        lookupService(BundleService.class).install(uri, target, start);
-    }
+public interface AreaService {
 
-    @Override
-    public void start(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
-        lookupService(BundleService.class).start(bundleInfo, target);
-    }
-
-    @Override
-    public void stop(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
-        lookupService(BundleService.class).stop(bundleInfo, target);
-    }
-
-    @Override
-    public void uninstall(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
-        lookupService(BundleService.class).uninstall(bundleInfo, target);
-    }
+    /**
+     * Get the node corresponding to the given area and create the node in case it's not found.
+     * Because of it's nature and logic (create if not found) the implementations should be aware of the
+     * potential multi threads calls.
+     * In a non cluster env, only one thread can create the node to avoid race condition.
+     * In a cluster env, only one thread on one server node can create the node to avoid race condition.
+     * (This function is mostly used by the AreaTag from taglib bundle)
+     *
+     * @param areaPath the area path
+     * @param areaType the area type
+     * @param session the session
+     * @return the area node
+     * @throws RepositoryException
+     */
+    JCRNodeWrapper getOrCreateAreaNode(String areaPath, String areaType, JCRSessionWrapper session) throws RepositoryException;
 }

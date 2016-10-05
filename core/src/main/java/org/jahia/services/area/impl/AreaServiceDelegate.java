@@ -41,38 +41,37 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.modulemanager.spi.impl;
+package org.jahia.services.area.impl;
 
 import org.jahia.services.DelegateService;
-import org.jahia.services.modulemanager.BundleInfo;
-import org.jahia.services.modulemanager.InvalidTargetException;
-import org.jahia.services.modulemanager.ModuleManagementException;
-import org.jahia.services.modulemanager.ModuleNotFoundException;
-import org.jahia.services.modulemanager.spi.BundleService;
+import org.jahia.services.area.AreaService;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+
+import javax.jcr.RepositoryException;
 
 /**
- * Delegate class that is dispatching the calls to an appropriate service implementation of the {@link BundleService}.
+ * Delegate class that is dispatching the calls to an appropriate service implementation of the {@link AreaService}.
  *
- * @author Sergiy Shyrkov
+ * @author Kevan
  */
-public class BundleServiceDelegate extends DelegateService<BundleService> implements BundleService {
-    @Override
-    public void install(String uri, String target, boolean start) throws ModuleManagementException, InvalidTargetException {
-        lookupService(BundleService.class).install(uri, target, start);
+public class AreaServiceDelegate extends DelegateService<AreaService> implements AreaService {
+
+    private static volatile AreaServiceDelegate instance;
+
+    public static AreaServiceDelegate getInstance() {
+        if (instance == null) {
+            synchronized (AreaServiceDelegate.class) {
+                if (instance == null) {
+                    instance = new AreaServiceDelegate();
+                }
+            }
+        }
+        return instance;
     }
 
     @Override
-    public void start(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
-        lookupService(BundleService.class).start(bundleInfo, target);
-    }
-
-    @Override
-    public void stop(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
-        lookupService(BundleService.class).stop(bundleInfo, target);
-    }
-
-    @Override
-    public void uninstall(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
-        lookupService(BundleService.class).uninstall(bundleInfo, target);
+    public JCRNodeWrapper getOrCreateAreaNode(String areaPath, String areaType, JCRSessionWrapper session) throws RepositoryException {
+        return lookupService(AreaService.class).getOrCreateAreaNode(areaPath, areaType, session);
     }
 }

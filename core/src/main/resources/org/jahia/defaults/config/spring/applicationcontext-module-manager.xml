@@ -11,11 +11,11 @@
     
     <bean id="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate" class="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate">
         <property name="settingsBean" ref="settingsBean"/>
-        <property name="defaultBundleService" ref="org.jahia.services.modulemanager.spi.impl.DefaultBundleService"/>
+        <property name="defaultService" ref="org.jahia.services.modulemanager.spi.impl.DefaultBundleService"/>
     </bean>
     
     <bean id="org.jahia.services.modulemanager.spi.impl.DefaultBundleService" class="org.jahia.services.modulemanager.spi.impl.DefaultBundleService"/>
-    
+
     <bean id="org.jahia.services.modulemanager.persistence.BundlePersister" class="org.jahia.services.modulemanager.persistence.jcr.JCRBundlePersister"/>
 
 </beans>

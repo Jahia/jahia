@@ -346,4 +346,13 @@
     <bean id="BaseTagAction" class="org.jahia.services.tags.BaseTagAction" abstract="true">
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
     </bean>
+
+    <bean id="org.jahia.services.area.impl.AreaServiceDelegate" class="org.jahia.services.area.impl.AreaServiceDelegate"
+        factory-method="getInstance">
+        <property name="settingsBean" ref="settingsBean"/>
+        <property name="defaultService" ref="org.jahia.services.area.impl.DefaultAreaService"/>
+    </bean>
+
+    <bean id="org.jahia.services.area.impl.DefaultAreaService" class="org.jahia.services.area.impl.DefaultAreaService"/>
+
 </beans>

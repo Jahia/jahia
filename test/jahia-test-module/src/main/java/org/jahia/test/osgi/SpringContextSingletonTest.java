@@ -122,7 +122,7 @@ public class SpringContextSingletonTest {
 
         new StartModuleThread(dummy1Bundle, 5000).start();
 
-        GetBeanThread g1 = new GetBeanThread("dummy1Action");
+        GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
         GetBeanThread g2 = new GetBeanThread("BeanThatDoesNotExist");
 
         g1.start();
@@ -142,7 +142,7 @@ public class SpringContextSingletonTest {
         tagsBundle.stop();
         new StartModuleThread(tagsBundle, 5000).start();
 
-        GetBeanThread g1 = new GetBeanThread("dummy1Action");
+        GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
         GetBeanThread g2 = new GetBeanThread("BeanThatDoesNotExist");
 
         g1.start();
@@ -162,7 +162,7 @@ public class SpringContextSingletonTest {
         new StartModuleThread(tagsBundle, 3000).start();
         new StartModuleThread(dummy1Bundle, 5000).start();
 
-        GetBeanThread g1 = new GetBeanThread("dummy1Action");
+        GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
         GetBeanThread g2 = new GetBeanThread("BeanThatDoesNotExist");
 
         g1.start();
@@ -183,7 +183,7 @@ public class SpringContextSingletonTest {
         new StartModuleThread(tagsBundle, 7000).start();
         new StartModuleThread(dummy1Bundle, 3000).start();
 
-        GetBeanThread g1 = new GetBeanThread("dummy1Action");
+        GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
         GetBeanThread g2 = new GetBeanThread("org.jahia.modules.tags.actions.RemoveTag#0");
         GetBeanThread g3 = new GetBeanThread("org.jahia.modules.tags.actions.MatchingTags#0");
         GetBeanThread g4 = new GetBeanThread("BeanThatDoesNotExist");
@@ -214,7 +214,7 @@ public class SpringContextSingletonTest {
     @Test
     public void testSimultaneousOperation() throws Exception {
 
-        GetBeanThread g1 = new GetBeanThread("dummy1Action");
+        GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
         new StartModuleThread(dummy1Bundle, 0).start();
 
         g1.start();
@@ -230,8 +230,8 @@ public class SpringContextSingletonTest {
         StartModuleThread s1 = new StartModuleThread(dummy1Bundle, 5000);
         s1.start();
 
-        UnsupporteGetBeanThread g1 = new UnsupporteGetBeanThread("dummy1Action");
-        GetBeanThread g3 = new GetBeanThread("dummy1Action");
+        UnsupporteGetBeanThread g1 = new UnsupporteGetBeanThread("dummyModuleBean");
+        GetBeanThread g3 = new GetBeanThread("dummyModuleBean");
         g1.start();
         g3.start();
 
@@ -243,7 +243,7 @@ public class SpringContextSingletonTest {
         assertNotNull(g3.getResult());
         assertTrue(s1.isModuleStarted()); // G3 will wait, GetBeanThread is allowed in the call stack
 
-        UnsupporteGetBeanThread g2 = new UnsupporteGetBeanThread("dummy1Action");
+        UnsupporteGetBeanThread g2 = new UnsupporteGetBeanThread("dummyModuleBean");
         g2.start();
         g2.join();
         assertNotNull(g2.getResult()); // G2 will not wait, but bean will be found since module is started

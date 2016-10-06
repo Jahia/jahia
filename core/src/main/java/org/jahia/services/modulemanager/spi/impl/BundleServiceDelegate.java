@@ -43,36 +43,76 @@
  */
 package org.jahia.services.modulemanager.spi.impl;
 
-import org.jahia.services.DelegateService;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.Constants;
 import org.jahia.services.modulemanager.InvalidTargetException;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleNotFoundException;
 import org.jahia.services.modulemanager.spi.BundleService;
+import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Delegate class that is dispatching the calls to an appropriate service implementation of the {@link BundleService}.
  *
  * @author Sergiy Shyrkov
  */
-public class BundleServiceDelegate extends DelegateService<BundleService> implements BundleService {
+public class BundleServiceDelegate implements BundleService {
+
+    private static final String CLUSTERED_SERVICE_FILTER = "(" + Constants.BUNDLE_SERVICE_PROPERTY_CLUSTERED + "=true)";
+    private static final Logger logger = LoggerFactory.getLogger(BundleServiceDelegate.class);
+
+    private BundleService defaultBundleService;
+    private SettingsBean settingsBean;
+
     @Override
     public void install(String uri, String target, boolean start) throws ModuleManagementException, InvalidTargetException {
-        lookupService(BundleService.class).install(uri, target, start);
+        lookupService().install(uri, target, start);
     }
 
     @Override
     public void start(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
-        lookupService(BundleService.class).start(bundleInfo, target);
+        lookupService().start(bundleInfo, target);
     }
 
     @Override
     public void stop(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
-        lookupService(BundleService.class).stop(bundleInfo, target);
+        lookupService().stop(bundleInfo, target);
     }
 
     @Override
     public void uninstall(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
-        lookupService(BundleService.class).uninstall(bundleInfo, target);
+        lookupService().uninstall(bundleInfo, target);
+    }
+    
+    private BundleService lookupClusteredService() {
+
+        long startTime = System.currentTimeMillis();
+        logger.debug("Looking up suitable BundleService instance using filter " + CLUSTERED_SERVICE_FILTER + "...");
+
+        BundleService service = BundleUtils.getOsgiService(BundleService.class, CLUSTERED_SERVICE_FILTER);
+
+        if (service == null) {
+            throw new ModuleManagementException("Unable to find suitable cluster-aware BundleService instance");
+        }
+
+        logger.debug("Found suitable BundleService instance of type {} in {} ms", service.getClass().getName(),
+                System.currentTimeMillis() - startTime);
+
+        return service;
+    }
+
+    private BundleService lookupService() {
+        return (settingsBean.isClusterActivated() ? lookupClusteredService() : defaultBundleService);
+    }
+
+    public void setDefaultBundleService(BundleService defaultBundleService) {
+        this.defaultBundleService = defaultBundleService;
+    }
+
+    public void setSettingsBean(SettingsBean settingsBean) {
+        this.settingsBean = settingsBean;
     }
 }

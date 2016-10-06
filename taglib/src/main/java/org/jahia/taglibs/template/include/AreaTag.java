@@ -46,7 +46,6 @@ package org.jahia.taglibs.template.include;
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.api.Constants;
-import org.jahia.services.area.impl.AreaServiceDelegate;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -61,6 +60,7 @@ import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.ItemExistsException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -176,7 +176,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             JCRNodeWrapper areaNode = null;
             if (enableArea) {
                 try {
-                    areaNode = AreaServiceDelegate.getInstance().getOrCreateAreaNode(areaPath, areaType, session);
+                    areaNode = getOrCreateAreaNode(areaPath, session);
                     List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                     if (contributeTypes != null) {
                         nodeTypes = StringUtils.join(contributeTypes, " ");
@@ -229,6 +229,24 @@ public class AreaTag extends ModuleTag implements ParamParent {
             }
             printModuleEnd();
         }
+    }
+
+    private JCRNodeWrapper getOrCreateAreaNode(String areaPath, JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper areaParentNode = session.getNode(StringUtils.substringBeforeLast(areaPath, "/"));
+        String areaName = StringUtils.substringAfterLast(areaPath, "/");
+        JCRNodeWrapper areaNode = null;
+        try {
+            areaNode = areaParentNode.getNode(areaName);
+        } catch (PathNotFoundException e) {
+            try {
+                areaNode = areaParentNode.addNode(areaName, areaType);
+                session.save();
+            } catch (ItemExistsException e1) {
+                // possible race condition when page is accessed concurrently in edit mode 
+                areaNode = areaParentNode.getNode(areaName);
+            }
+        }
+        return areaNode;
     }
 
     protected String getConfiguration() {

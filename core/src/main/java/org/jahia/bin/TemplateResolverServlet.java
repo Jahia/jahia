@@ -71,11 +71,15 @@
  */
 package org.jahia.bin;
 
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.LinkGenerator;
 import org.jahia.services.search.MatchInfo;
+import org.jahia.services.seo.VanityUrl;
+import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -94,9 +98,10 @@ import java.util.Locale;
  */
 public class TemplateResolverServlet extends JahiaController {
     private JCRSessionFactory sessionFactory;
+    private VanityUrlService urlService;
 
     @Override
-    public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public ModelAndView handleRequest(final HttpServletRequest req, HttpServletResponse resp) throws Exception {
         final JahiaUser currentUser = sessionFactory.getCurrentUser();
         final RenderContext context = new RenderContext(req, resp, currentUser);
         final String pathInfo = req.getPathInfo();
@@ -112,20 +117,35 @@ public class TemplateResolverServlet extends JahiaController {
             final MatchInfo info = LinkGenerator.decomposeLink(pathInfo);
 
             // retrieve the path of the displayable node associated with the node identified by the match info
+            final String workspace = info.getWorkspace();
+            final String lang = info.getLang();
+            final Locale locale = Locale.forLanguageTag(lang);
             final String redirect = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(
-                    currentUser, info.getWorkspace(), Locale.forLanguageTag(info.getLang()), new JCRCallback<String>() {
+                    currentUser, workspace, locale, new JCRCallback<String>() {
                         @Override
                         public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             final JCRNodeWrapper node = session.getNodeByIdentifier(info.getId());
                             final JCRNodeWrapper displayableNode = JCRContentUtils.findDisplayableNode(node, context);
-                            return displayableNode != null ? displayableNode.getPath() : null;
+                            if (displayableNode != null) {
+                                if (Constants.LIVE_WORKSPACE.equals(workspace)) {
+                                    JCRSiteNode site = displayableNode.getResolveSite();
+                                    final VanityUrl vanityUrl = urlService.getVanityUrlForWorkspaceAndLocale(displayableNode,
+                                            workspace, locale, site.getSiteKey());
+                                    if (vanityUrl != null && vanityUrl.isActive()) {
+                                        return req.getContextPath() + vanityUrl.getUrl();
+                                    }
+                                }
+                                return req.getContextPath() + Render.getRenderServletPath() + '/' + workspace +
+                                        '/' + lang + displayableNode.getPath() + ".html";
+                            }
+
+                            return null;
                         }
                     });
 
             // if we have found a displayable node, redirect to it
             if (redirect != null) {
-                resp.sendRedirect(req.getContextPath() + Render.getRenderServletPath() + '/' + info.getWorkspace() +
-                        '/' + info.getLang() + redirect + ".html");
+                resp.sendRedirect(redirect);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -138,5 +158,9 @@ public class TemplateResolverServlet extends JahiaController {
 
     public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
         this.sessionFactory = jcrSessionFactory;
+    }
+
+    public void setUrlService(VanityUrlService urlService) {
+        this.urlService = urlService;
     }
 }

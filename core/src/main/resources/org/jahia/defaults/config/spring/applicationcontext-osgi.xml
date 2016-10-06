@@ -17,7 +17,7 @@
                 <prop key="felix.fileinstall.bundles.uninstall.remove">${jahia.modules.fileinstall.bundles.uninstall.remove:true}</prop>
                 <prop key="felix.fileinstall.noInitialDelay">true</prop>
                 <prop key="felix.fileinstall.enableConfigSave">false</prop>
-                <prop key="felix.fileinstall.bundleLocationMapFile">#{settingsBean.jahiaVarDiskPath}/karaf/data/module-bundle-location.map</prop>
+                <prop key="felix.fileinstall.bundleLocationMapFile">#{settingsBean.jahiaVarDiskPath}/bundles-deployed/module-bundle-location.map</prop>
             </props>
         </property>
     </bean>

@@ -50,6 +50,7 @@ import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextFailedEvent;
 import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextRefreshedEvent;
 import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseCheckException;
@@ -107,6 +108,11 @@ public class JahiaOsgiBundleApplicationContextListener implements
         if (event instanceof OsgiBundleContextFailedEvent) {
             Throwable cause = getRootCause(((OsgiBundleContextFailedEvent) event).getFailureCause());
             BundleUtils.setContextStartException(bundle.getSymbolicName(),cause);
+            JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getRegisteredModules().get(bundle.getSymbolicName());
+            if (module != null) {
+                module.getState().setState(ModuleState.State.SPRING_NOT_STARTED);
+            }
+
             if (cause instanceof LicenseCheckException) {
                 logger.info("Stopping module, no license");
                 try {

@@ -127,6 +127,7 @@ public class TemplateResolverServlet extends JahiaController {
                             final JCRNodeWrapper node = session.getNodeByIdentifier(info.getId());
                             final JCRNodeWrapper displayableNode = JCRContentUtils.findDisplayableNode(node, context);
                             if (displayableNode != null) {
+                                // check if we have a vanity URL for this node
                                 if (Constants.LIVE_WORKSPACE.equals(workspace)) {
                                     JCRSiteNode site = displayableNode.getResolveSite();
                                     final VanityUrl vanityUrl = urlService.getVanityUrlForWorkspaceAndLocale(displayableNode,
@@ -156,10 +157,20 @@ public class TemplateResolverServlet extends JahiaController {
         return null;
     }
 
+    /**
+     * Injects the entry point to the JCR repository to resolve JCR nodes.
+     *
+     * @param jcrSessionFactory the JCR repository to resolve JCR nodes
+     */
     public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
         this.sessionFactory = jcrSessionFactory;
     }
 
+    /**
+     * Injects the {@link VanityUrlService} to resolve potential vanity URLs.
+     *
+     * @param urlService the {@link VanityUrlService}
+     */
     public void setUrlService(VanityUrlService urlService) {
         this.urlService = urlService;
     }

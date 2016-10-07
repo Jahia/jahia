@@ -44,7 +44,6 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import com.google.common.collect.Sets;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math.util.MathUtils;
@@ -71,7 +70,10 @@ import org.apache.lucene.util.OpenBitSet;
 import org.apache.lucene.util.OpenBitSetDISI;
 import org.apache.solr.schema.SchemaField;
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.search.facets.JahiaQueryParser;
+import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -82,7 +84,6 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Row;
 import javax.jcr.query.qom.*;
 import javax.jcr.security.Privilege;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -103,7 +104,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
     private Locale locale;
     private String queryLanguage;
-    
+
     @SuppressWarnings("serial")
     public static final FieldSelector ONLY_MAIN_NODE_UUID = new FieldSelector() {
         public FieldSelectorResult accept(String fieldName) {
@@ -126,9 +127,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             } else if (JahiaNodeIndexer.ACL_UUID == fieldName) {
                 return FieldSelectorResult.LOAD;
             } else if (JahiaNodeIndexer.CHECK_VISIBILITY == fieldName) {
-                return FieldSelectorResult.LOAD;                
+                return FieldSelectorResult.LOAD;
             } else if (JahiaNodeIndexer.PUBLISHED == fieldName) {
-                return FieldSelectorResult.LOAD;                                    
+                return FieldSelectorResult.LOAD;
             } else if (JahiaNodeIndexer.INVALID_LANGUAGES == fieldName) {
                 return FieldSelectorResult.LOAD;
             } else {
@@ -146,8 +147,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
      */
     @Override
     public List<Row> execute(Map<String, PropertyValue> columns,
-            Selector selector, Constraint constraint, Sort sort,
-            boolean externalSort, long offsetIn, long limitIn)
+                             Selector selector, Constraint constraint, Sort sort,
+                             boolean externalSort, long offsetIn, long limitIn)
             throws RepositoryException, IOException {
         final IndexReader reader = index.getIndexReader(true);
         final int offset = offsetIn < 0 ? 0 : (int) offsetIn;
@@ -168,7 +169,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             if (constraint != null) {
                 String name = selector.getSelectorName();
                 NodeType type =
-                    ntManager.getNodeType(selector.getNodeTypeName());
+                        ntManager.getNodeType(selector.getNodeTypeName());
                 filter = mapConstraintToQueryAndFilter(qp,
                         constraint, Collections.singletonMap(name, type),
                         searcher, reader);
@@ -211,49 +212,45 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 if (foundIds.add(infos.getMainNodeUuid())) { // <-- Added by jahia
                     if (isCount && countType.isSkipChecks()) {
                         resultCount++;
-                    } else {                        
+                    } else {
                         try {
                             boolean canRead = true;
                             if (isAclUuidInIndex()) {
                                 canRead = checkIndexedAcl(checkedAcls, infos);
                             }
+                            boolean checkVisibility = "1".equals(infos.getCheckVisibility()) && Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName());
+
                             if (canRead
                                     && (!Constants.LIVE_WORKSPACE.equals(session
-                                            .getWorkspace().getName())
-                                            || ((infos.getPublished() == null || "true"
-                                                .equals(infos.getPublished())) &&
-                                                (infos.getCheckInvalidLanguages()==null || !infos.getCheckInvalidLanguages().contains(getLocale().toString()))))) {
+                                    .getWorkspace().getName())
+                                    || ((infos.getPublished() == null || "true"
+                                    .equals(infos.getPublished())) &&
+                                    (infos.getCheckInvalidLanguages()==null || !infos.getCheckInvalidLanguages().contains(getLocale().toString()))))) {
                                 if (filter == Predicate.TRUE) { // <-- Added by jahia
                                     if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
                                         Row row = null;
 
-                                        if ("1".equals(infos.getCheckVisibility()) || !isAclUuidInIndex()) {
-                                            NodeImpl objectNode = session
-                                                    .getNodeById(node.getNodeId());
-                                            if (objectNode
-                                                    .isNodeType("jnt:translation")) {
-                                                objectNode = (NodeImpl) objectNode
-                                                        .getParent();
-                                            }
+                                        if (checkVisibility || !isAclUuidInIndex()) {
+                                            NodeImpl objectNode = getNodeWithAclAndVisibilityCheck(node, checkVisibility);
                                             if (isCount) {
                                                 resultCount++;
                                             } else {
                                                 row = new LazySelectorRow(
-                                                    columns,
-                                                    evaluator,
-                                                    selector.getSelectorName(),
-                                                    objectNode,
-                                                    node.getScore());
+                                                        columns,
+                                                        evaluator,
+                                                        selector.getSelectorName(),
+                                                        objectNode,
+                                                        node.getScore());
                                             }
                                         } else {
                                             if (isCount) {
                                                 resultCount++;
                                             } else {
                                                 row = new LazySelectorRow(columns,
-                                                    evaluator,
-                                                    selector.getSelectorName(),
-                                                    node.getNodeId(),
-                                                    node.getScore());
+                                                        evaluator,
+                                                        selector.getSelectorName(),
+                                                        node.getNodeId(),
+                                                        node.getScore());
                                             }
                                         }
 
@@ -281,18 +278,14 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                     if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
                                         //Added by Jahia
                                         //can be added to bitset when ACL checked and not in live mode or no visibility rule to check
-                                        if (isAclUuidInIndex() && (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName()) ||
-                                                !"1".equals(infos.getCheckVisibility()))) { 
-                                           bitset.set(infos.getDocNumber()); 
+                                        if (isAclUuidInIndex() && !checkVisibility) {
+                                            bitset.set(infos.getDocNumber());
                                         } else { //try to load nodeWrapper to check the visibility rules
-                                            NodeImpl objectNode = session.getNodeById(node.getNodeId());
-                                            if (objectNode.isNodeType("jnt:translation")) {
-                                                objectNode = (NodeImpl) objectNode.getParent();
-                                            }
+                                            NodeImpl objectNode = getNodeWithAclAndVisibilityCheck(node, checkVisibility);
                                             bitset.set(infos.getDocNumber());
                                         }
-                                      //!Added by Jahia
-                                    }                                    
+                                        //!Added by Jahia
+                                    }
                                 } else {
                                     NodeImpl objectNode = session.getNodeById(node
                                             .getNodeId());
@@ -343,7 +336,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                             && !isCount
                             && !externalSort
                             && !infos.getMainNodeUuid().equals(
-                                    node.getNodeId().toString())
+                            node.getNodeId().toString())
                             && rows.containsKey(infos.getMainNodeUuid())) {
                         // we've got the translation node -> adjusting the position of the original node in the result list
                         rows.put(infos.getMainNodeUuid(), rows.remove(infos.getMainNodeUuid()));
@@ -362,7 +355,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             // Added by jahia
             if ((hasFacets & FacetHandler.FACET_COLUMNS) == FacetHandler.FACET_COLUMNS) {
                 OpenBitSet docIdSet = new OpenBitSetDISI(new DocIdBitSet(bitset).iterator(), bitset.size());
-                
+
                 FacetHandler h = new FacetHandler(columns, selector, docIdSet, index, session, nsMappings);
                 h.handleFacets(reader);
                 rowList.add(0, h.getFacetsRow());
@@ -383,9 +376,23 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         } finally {
             if(hits != null){
                 hits.close();
-            }            
+            }
             Util.closeOrRelease(reader);
         }
+    }
+
+    private NodeImpl getNodeWithAclAndVisibilityCheck(ScoreNode node, boolean checkVisibility) throws RepositoryException {
+        NodeImpl objectNode = session
+                .getNodeById(node.getNodeId());
+        if (objectNode.isNodeType("jnt:translation")) {
+            objectNode = (NodeImpl) objectNode.getParent();
+        }
+        JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession("live");
+        if (checkVisibility && currentUserSession.itemExists(objectNode.getPath()) &&
+                !VisibilityService.getInstance().matchesConditions(currentUserSession.getNode(objectNode.getPath()))) {
+            throw new ItemNotFoundException(node.getNodeId().toString());
+        }
+        return objectNode;
     }
 
     private boolean checkIndexedAcl(Map<String, Boolean> checkedAcls, IndexedNodeInfo infos) throws RepositoryException {
@@ -436,7 +443,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 canRead = aclChecked;
             }
             break;
-        } 
+        }
         return canRead;
     }
 
@@ -446,9 +453,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
      * which has a large subtree using the same rights, as all these nodes will need
      * to be reindexed. On the other side the advantage is that the queries are faster,
      * as the user rights are resolved faster.
-     * 
+     *
      * @return Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
-     */    
+     */
     public boolean isAclUuidInIndex() {
         return index instanceof JahiaSearchIndex
                 && ((JahiaSearchIndex) index).isAddAclUuidInIndex();
@@ -568,7 +575,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                     // check if query is a single range query with mixed inclusive/exclusive endpoints, then
                     // directly create range query as the Lucene parser fails with ParseException (LUCENE-996)
                     qobj = resolveSingleMixedInclusiveExclusiveRangeQuery(expression);
-                    
+
                     if (qobj == null) {
                         QueryParser qp = new JahiaQueryParser(FieldNames.FULLTEXT, new KeywordAnalyzer());
                         qp.setLowercaseExpandedTerms(false);
@@ -585,7 +592,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         }
         return qobj;
     }
-    
+
     private Query resolveSingleMixedInclusiveExclusiveRangeQuery(String expression) {
         Query qobj = null;
         boolean inclusiveEndRange = expression.endsWith("]");
@@ -613,7 +620,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                 qobj = JahiaQueryParser.STRING_TYPE.getRangeQuery(null, sf,
                         part1.equals("*") ? null : part1,
                         part2.equals("*") ? null : part2,
-                        !inclusiveEndRange, inclusiveEndRange);                    
+                        !inclusiveEndRange, inclusiveEndRange);
             }
         }
         return qobj;
@@ -644,7 +651,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         } catch (PathNotFoundException e) {
             // not found
             query.subQuery.add(new JackrabbitTermQuery(new Term(
-                    FieldNames.UUID, "invalid-node-id")), // never matches
+                            FieldNames.UUID, "invalid-node-id")), // never matches
                     MUST);
         }
 
@@ -680,14 +687,14 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
     @Override
     protected Query getComparisonQuery(DynamicOperand left, int transform,
-            String operator, StaticOperand rigth,
-            Map<String, NodeType> selectorMap) throws RepositoryException {
+                                       String operator, StaticOperand rigth,
+                                       Map<String, NodeType> selectorMap) throws RepositoryException {
         if (left instanceof PropertyValue) {
             PropertyValue pv = (PropertyValue) left;
             if (pv.getPropertyName().equals("_PARENT")) {
                 return new JackrabbitTermQuery(new Term(FieldNames.PARENT, getValueString(evaluator.getValue(rigth), PropertyType.REFERENCE)));
             }
-        } 
+        }
         return super.getComparisonQuery(left, transform, operator, rigth, selectorMap);
     }
 
@@ -773,7 +780,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             checkInvalidLanguages.add(invalidLanguage);
         }
     }
-    
+
     class LazySelectorRow extends SelectorRow {   // <-- Added by jahia
         private Node node;
         private NodeId nodeId;
@@ -781,8 +788,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         LazySelectorRow(Map<String, PropertyValue> columns, OperandEvaluator evaluator, String selector, NodeId nodeId, double score) {
             super(columns, evaluator, selector, null, score);
             this.nodeId = nodeId;
-        }        
-        
+        }
+
         LazySelectorRow(Map<String, PropertyValue> columns, OperandEvaluator evaluator, String selector, Node node, double score) {
             super(columns, evaluator, selector, node, score);
             this.node = node;
@@ -801,7 +808,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                     }
                 }
             } catch (ItemNotFoundException e) {
-            } catch (PathNotFoundException e) {                
+            } catch (PathNotFoundException e) {
             } catch (RepositoryException e) {
                 logger.error("Cannot get node "+nodeId,e);
             }

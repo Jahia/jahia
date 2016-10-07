@@ -98,6 +98,10 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
                             logger.debug("Flushed file cache for node {}", path);
                         }
                     }
+                    cacheProvider.flushRegexpDependenciesOfPath(path, true);
+                    if (log) {
+                        logger.debug("Flushed regexp dependencies for node {}", path);
+                    }
                 }
                 currentNode = currentNode.getParent();
             }
@@ -110,6 +114,10 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
                     fileCacheManager.invalidate(workspace, currentNodePath);
                     if (log) {
                         logger.debug("Flushed output and file caches for node {}", currentNodePath);
+                    }
+                    cacheProvider.flushRegexpDependenciesOfPath(currentNodePath, true);
+                    if (log) {
+                        logger.debug("Flushed regexp dependencies for node {}", currentNodePath);
                     }
                 }
                 currentNodePath = StringUtils.substringBeforeLast(currentNodePath,"/");

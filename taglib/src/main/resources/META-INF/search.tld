@@ -350,9 +350,4 @@
         <path>/META-INF/tags/search/termMatch.tag</path>
     </tag-file>
 
-    <tag-file>
-        <name>findUser</name>
-        <path>/META-INF/tags/findUser.tag</path>
-    </tag-file>
-
 </taglib>

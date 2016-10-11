@@ -43,7 +43,6 @@
  */
 package org.jahia.test.osgi;
 
-import org.apache.commons.io.FileUtils;
 import org.jahia.bin.Action;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
@@ -55,6 +54,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.test.ModuleTestHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -65,7 +65,6 @@ import org.slf4j.Logger;
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import static org.junit.Assert.*;
 
@@ -77,7 +76,7 @@ import static org.junit.Assert.*;
 public class SpringContextSingletonTest {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(SpringContextSingletonTest.class);
-
+    private static final String TEST_MODULE = "springbean-dummy";
     private static JahiaTemplateManagerService managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
     private static int originalModuleSpringBeansWaitingTimeout;
     private static int originalTagBundleState;
@@ -89,8 +88,8 @@ public class SpringContextSingletonTest {
 
         try {
 
-            installTestModule("dummy1-1.0.jar");
-            dummy1Bundle = BundleUtils.getBundle("dummy1", "1.0");
+            String installedVersion = installTestModule(TEST_MODULE);
+            dummy1Bundle = BundleUtils.getBundle(TEST_MODULE, installedVersion);
 
             JahiaTemplatesPackage tagsPack = managerService.getTemplatePackageById("tags");
             tagsBundle = tagsPack.getBundle();
@@ -121,19 +120,21 @@ public class SpringContextSingletonTest {
     public void simpleTestGetBeanInModulesContext() throws Exception {
 
         new StartModuleThread(dummy1Bundle, 5000).start();
+        try {
+            GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
+            GetBeanThread g2 = new GetBeanThread("BeanThatDoesNotExist");
 
-        GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
-        GetBeanThread g2 = new GetBeanThread("BeanThatDoesNotExist");
+            g1.start();
+            g2.start();
 
-        g1.start();
-        g2.start();
+            g1.join();
+            g2.join();
 
-        g1.join();
-        g2.join();
-
-        assertNull(g2.getResult());
-        assertNotNull(g1.getResult());
-        dummy1Bundle.stop();
+            assertNull(g2.getResult());
+            assertNotNull(g1.getResult());
+        } finally {
+            dummy1Bundle.stop();
+        }
     }
 
     @Test
@@ -161,19 +162,21 @@ public class SpringContextSingletonTest {
         tagsBundle.stop();
         new StartModuleThread(tagsBundle, 3000).start();
         new StartModuleThread(dummy1Bundle, 5000).start();
+        try {
+            GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
+            GetBeanThread g2 = new GetBeanThread("BeanThatDoesNotExist");
 
-        GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
-        GetBeanThread g2 = new GetBeanThread("BeanThatDoesNotExist");
+            g1.start();
+            g2.start();
 
-        g1.start();
-        g2.start();
+            g1.join();
+            g2.join();
 
-        g1.join();
-        g2.join();
-
-        assertNull(g2.getResult());
-        assertNotNull(g1.getResult());
-        dummy1Bundle.stop();
+            assertNull(g2.getResult());
+            assertNotNull(g1.getResult());
+        } finally {
+            dummy1Bundle.stop();
+        }
     }
 
     @Test
@@ -182,33 +185,34 @@ public class SpringContextSingletonTest {
         tagsBundle.stop();
         new StartModuleThread(tagsBundle, 7000).start();
         new StartModuleThread(dummy1Bundle, 3000).start();
+        try {
+            GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
+            GetBeanThread g2 = new GetBeanThread("org.jahia.modules.tags.actions.RemoveTag#0");
+            GetBeanThread g3 = new GetBeanThread("org.jahia.modules.tags.actions.MatchingTags#0");
+            GetBeanThread g4 = new GetBeanThread("BeanThatDoesNotExist");
 
-        GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
-        GetBeanThread g2 = new GetBeanThread("org.jahia.modules.tags.actions.RemoveTag#0");
-        GetBeanThread g3 = new GetBeanThread("org.jahia.modules.tags.actions.MatchingTags#0");
-        GetBeanThread g4 = new GetBeanThread("BeanThatDoesNotExist");
+            g1.start();
+            g2.start();
+            g3.start();
+            g4.start();
 
-        g1.start();
-        g2.start();
-        g3.start();
-        g4.start();
+            g1.join(); // G1 is released first because only 3 sec before start dummy module, g2, g3 and g4 are still waiting at that point
+            assertNotNull(g1.getResult());
+            assertNull(g2.getResult());
+            assertNull(g3.getResult());
+            assertNull(g4.getResult());
 
-        g1.join(); // G1 is released first because only 3 sec before start dummy module, g2, g3 and g4 are still waiting at that point
-        assertNotNull(g1.getResult());
-        assertNull(g2.getResult());
-        assertNull(g3.getResult());
-        assertNull(g4.getResult());
+            g2.join(); // g2 and g3 will be release when tag bundle is started
+            g3.join();
+            assertNotNull(g2.getResult());
+            assertNotNull(g3.getResult());
+            assertNull(g4.getResult()); // g4 at that moment is still waiting and will be timed out
 
-        g2.join(); // g2 and g3 will be release when tag bundle is started
-        g3.join();
-        assertNotNull(g2.getResult());
-        assertNotNull(g3.getResult());
-        assertNull(g4.getResult()); // g4 at that moment is still waiting and will be timed out
-
-        g4.join(); // g4 timed out
-        assertNull(g4.getResult());
-
-        dummy1Bundle.stop();
+            g4.join(); // g4 timed out
+            assertNull(g4.getResult());
+        } finally {
+            dummy1Bundle.stop();
+        }
     }
 
     @Test
@@ -216,39 +220,43 @@ public class SpringContextSingletonTest {
 
         GetBeanThread g1 = new GetBeanThread("dummyModuleBean");
         new StartModuleThread(dummy1Bundle, 0).start();
+        try {
+            g1.start();
+            g1.join();
 
-        g1.start();
-        g1.join();
-
-        assertNotNull(g1.getResult());
-        dummy1Bundle.stop();
+            assertNotNull(g1.getResult());
+        } finally {
+            dummy1Bundle.stop();
+        }
     }
 
     @Test
     public void testUnsupportedCallStack() throws Exception {
 
         StartModuleThread s1 = new StartModuleThread(dummy1Bundle, 5000);
-        s1.start();
+        try {
+            s1.start();
 
-        UnsupporteGetBeanThread g1 = new UnsupporteGetBeanThread("dummyModuleBean");
-        GetBeanThread g3 = new GetBeanThread("dummyModuleBean");
-        g1.start();
-        g3.start();
+            UnsupporteGetBeanThread g1 = new UnsupporteGetBeanThread("dummyModuleBean");
+            GetBeanThread g3 = new GetBeanThread("dummyModuleBean");
+            g1.start();
+            g3.start();
 
-        g1.join();
-        assertNull(g1.getResult());
-        assertFalse(s1.isModuleStarted()); // G1 will not wait since UnsupporteGetBeanThread is not allowed in the call stack
+            g1.join();
+            assertNull(g1.getResult());
+            assertFalse(s1.isModuleStarted()); // G1 will not wait since UnsupporteGetBeanThread is not allowed in the call stack
 
-        g3.join();
-        assertNotNull(g3.getResult());
-        assertTrue(s1.isModuleStarted()); // G3 will wait, GetBeanThread is allowed in the call stack
+            g3.join();
+            assertNotNull(g3.getResult());
+            assertTrue(s1.isModuleStarted()); // G3 will wait, GetBeanThread is allowed in the call stack
 
-        UnsupporteGetBeanThread g2 = new UnsupporteGetBeanThread("dummyModuleBean");
-        g2.start();
-        g2.join();
-        assertNotNull(g2.getResult()); // G2 will not wait, but bean will be found since module is started
-
-        dummy1Bundle.stop();
+            UnsupporteGetBeanThread g2 = new UnsupporteGetBeanThread("dummyModuleBean");
+            g2.start();
+            g2.join();
+            assertNotNull(g2.getResult()); // G2 will not wait, but bean will be found since module is started
+        } finally {
+            dummy1Bundle.stop();
+        }
     }
 
     public class GetBeanThread extends Thread {
@@ -316,21 +324,17 @@ public class SpringContextSingletonTest {
         }
     }
 
-    private static void installTestModule(final String moduleName) throws RepositoryException {
+    private static String installTestModule(final String moduleName) throws RepositoryException {
 
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+        final JahiaTemplatesPackage module = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaTemplatesPackage>() {
 
             @Override
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-
+            public JahiaTemplatesPackage doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JahiaTemplatesPackage module = null;
                 try {
-
-                    File tmpFile = File.createTempFile("module",".jar");
-                    InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource(moduleName).getInputStream();
-                    FileUtils.copyInputStreamToFile(stream,  tmpFile);
-                    managerService.deployModule(tmpFile, session);
+                    File moduleFile = ModuleTestHelper.getModuleFromMaven("org.jahia.modules", moduleName);
+                    module = managerService.deployModule(moduleFile, session);
                     logger.info("Module " + moduleName + " deployed");
-                    tmpFile.delete();
                 } catch (IOException e) {
                     logger.error(e.getMessage(), e);
                     fail(e.toString());
@@ -341,7 +345,7 @@ public class SpringContextSingletonTest {
                 } catch (InterruptedException e) {
                     logger.error(e.getMessage(), e);
                 }
-                JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
+                JahiaTemplatesPackage pack = managerService.getTemplatePackageById(moduleName);
                 assertNotNull(pack);
                 assertEquals("Module is not started", ModuleState.State.STARTED, pack.getState().getState());
                 assertNotNull("Spring context is null", pack.getContext());
@@ -354,8 +358,9 @@ public class SpringContextSingletonTest {
                     logger.error(e.getMessage(), e);
                     fail(e.toString());
                 }
-                return null;
+                return module;
             }
         });
+        return module != null ? module.getVersion().toString() : null;
     }
 }

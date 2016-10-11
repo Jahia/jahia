@@ -72,11 +72,10 @@
     </repositories>
 
     <modules>
-        <!--
-		<module>dummy-modules</module>
-		-->
 		<module>core-test-framework</module>
         <module>module-test-framework</module>
+        
+		<module>dummy-modules</module>        
         <module>jahia-test-module</module>
     </modules>
 </project>

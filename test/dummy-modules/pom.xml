@@ -57,7 +57,10 @@
     <packaging>pom</packaging>
 
     <modules>
+    <!-- dummy1 and dummy1.1 have fixed versions, so they should not be re-built and touched
         <module>dummy1</module>
         <module>dummy1.1</module>
+    --> 
+        <module>springbean-dummy</module>       
     </modules>
 </project>

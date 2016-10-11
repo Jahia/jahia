@@ -46,7 +46,11 @@ package org.jahia.bin.filters;
 import javax.servlet.Filter;
 import javax.servlet.ServletException;
 
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.SpringContextSingleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
@@ -56,12 +60,27 @@ import org.springframework.web.filter.DelegatingFilterProxy;
  * @author Sergiy Shyrkov
  */
 public class ModuleDelegatingFilterProxy extends DelegatingFilterProxy {
-
+    
+    private static final Logger logger = LoggerFactory.getLogger(ModuleDelegatingFilterProxy.class);
+    
     @Override
     protected Filter initDelegate(WebApplicationContext wac) throws ServletException {
-        Filter delegate = (Filter) SpringContextSingleton.getBeanInModulesContext(getTargetBeanName());
-        if (isTargetFilterLifecycle()) {
-            delegate.init(getFilterConfig());
+        Filter delegate = null;
+        String targetBeanName = getTargetBeanName();
+        try {
+            delegate = (Filter) SpringContextSingleton.getBeanInModulesContext(targetBeanName);
+            logger.info("Found filter delegate for {}: {}", targetBeanName, delegate);
+            if (isTargetFilterLifecycle()) {
+                delegate.init(getFilterConfig());
+            }
+        } catch (NoSuchBeanDefinitionException e) {
+            // we re-throw the exception if context has been initialized already; if not, we defer delegate lookup
+            if (JahiaContextLoaderListener.isContextInitialized()) {
+                throw e;
+            } else {
+                logger.info("Deferring fiilter delegate lookup {} as context has not been fully initialized yet",
+                        targetBeanName);
+            }
         }
         return delegate;
     }

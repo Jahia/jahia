@@ -78,7 +78,7 @@ public class ModuleDelegatingFilterProxy extends DelegatingFilterProxy {
             if (JahiaContextLoaderListener.isContextInitialized()) {
                 throw e;
             } else {
-                logger.info("Deferring fiilter delegate lookup {} as context has not been fully initialized yet",
+                logger.info("Deferring filter delegate lookup {} as context has not been fully initialized yet",
                         targetBeanName);
             }
         }

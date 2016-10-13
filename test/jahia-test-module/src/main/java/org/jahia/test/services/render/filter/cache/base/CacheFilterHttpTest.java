@@ -60,7 +60,9 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.filter.AggregateFilter;
+import org.jahia.services.render.filter.AreaResourceFilter;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
+import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
 import org.jahia.services.render.filter.cache.CacheFilter;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
@@ -100,6 +102,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     private static boolean cacheFilterDisabled;
     private static boolean aggregateFilterDisabled;
     private static boolean aggregateCacheFilterDisabled;
+    private static boolean areaResourceCacheKeyPartGeneratorDisabled;    
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -145,7 +148,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             cacheFilterDisabled = ((CacheFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).isDisabled();
             aggregateFilterDisabled = ((AggregateFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).isDisabled();
             aggregateCacheFilterDisabled = ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).isDisabled();
-
+            areaResourceCacheKeyPartGeneratorDisabled = ((AreaResourceCacheKeyPartGenerator) SpringContextSingleton.getBean("areaResourceCacheKeyPartGenerator")).isDisabled();
+            
             //enable test filters
             getCheckFilter("CacheHttpTestRenderFilter1").setDisabled(false);
             getCheckFilter("CacheHttpTestRenderFilter2").setDisabled(false);
@@ -173,6 +177,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             ((CacheFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(cacheFilterDisabled);
             ((AggregateFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(aggregateFilterDisabled);
             ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).setDisabled(aggregateCacheFilterDisabled);
+            ((AreaResourceCacheKeyPartGenerator) SpringContextSingleton.getBean("areaResourceCacheKeyPartGenerator")).setDisabled(areaResourceCacheKeyPartGeneratorDisabled);
 
             //enable test filters
             getCheckFilter("CacheHttpTestRenderFilter1").setDisabled(true);
@@ -248,7 +253,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     @Test
     @SuppressWarnings("unchecked")
     public void testRandomFlush() throws Exception {
-
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
         Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
         List<String> paths = new ArrayList<String>();

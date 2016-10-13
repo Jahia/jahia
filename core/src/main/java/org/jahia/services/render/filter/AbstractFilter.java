@@ -691,7 +691,7 @@ public abstract class AbstractFilter implements RenderFilter {
                 condition.add(new ConfigurationCondition(conf.trim()));
             }
             addCondition(0, condition);
-        } else {
+        } else if (StringUtils.isNotBlank(configurations)) {
             addCondition(0, new ConfigurationCondition(configurations));
         }
     }
@@ -723,7 +723,7 @@ public abstract class AbstractFilter implements RenderFilter {
                 condition.add(new ModeCondition(mode.trim()));
             }
             addCondition(0, condition);
-        } else {
+        } else if (StringUtils.isNotBlank(modes)) {
             addCondition(0, new ModeCondition(modes));
         }
     }
@@ -753,7 +753,7 @@ public abstract class AbstractFilter implements RenderFilter {
                 condition.add(new ModuleCondition(module.trim()));
             }
             addCondition(condition);
-        } else {
+        } else if (StringUtils.isNotBlank(modules)) {
             addCondition(new ModuleCondition(modules));
         }
     }
@@ -772,7 +772,7 @@ public abstract class AbstractFilter implements RenderFilter {
                 condition.add(new NodeTypeCondition(nodeType.trim()));
             }
             addCondition(condition);
-        } else {
+        } else if (StringUtils.isNotBlank(nodeTypes)) {
             addCondition(new NodeTypeCondition(nodeTypes));
         }
     }
@@ -791,7 +791,7 @@ public abstract class AbstractFilter implements RenderFilter {
                 condition.add(new TemplateCondition(template.trim()));
             }
             addCondition(condition);
-        } else {
+        } else if (StringUtils.isNotBlank(templates)) {
             addCondition(new TemplateCondition(templates));
         }
     }
@@ -810,7 +810,7 @@ public abstract class AbstractFilter implements RenderFilter {
                 condition.add(new TemplateTypeCondition(templateType.trim(),true));
             }
             addCondition(condition);
-        } else {
+        } else if (StringUtils.isNotBlank(templateTypes)) {
             addCondition(new TemplateTypeCondition(templateTypes,true));
         }
     }
@@ -829,7 +829,7 @@ public abstract class AbstractFilter implements RenderFilter {
                 condition.add(new SiteTemplateSetCondition(templateSet.trim()));
             }
             addCondition(condition);
-        } else {
+        } else if (StringUtils.isNotBlank(templateSets)) {
             addCondition(new SiteTemplateSetCondition(templateSets));
         }
     }
@@ -894,10 +894,12 @@ public abstract class AbstractFilter implements RenderFilter {
                 anyOf.add(new ConfigurationCondition(configuration.trim()));
             }
             condition = anyOf;
-        } else {
+        } else if (StringUtils.isNotBlank(configurations)) {
             condition = new ConfigurationCondition(configurations);
         }
-        addCondition(0, new NotCondition(condition));
+        if (condition != null) {
+            addCondition(0, new NotCondition(condition));
+        }
     }
 
     /**
@@ -926,10 +928,12 @@ public abstract class AbstractFilter implements RenderFilter {
                 anyOf.add(new ModeCondition(mode.trim()));
             }
             condition = anyOf;
-        } else {
+        } else if (StringUtils.isNotBlank(modes)) {
             condition = new ModeCondition(modes);
         }
-        addCondition(0, new NotCondition(condition));
+        if (condition != null) {
+            addCondition(0, new NotCondition(condition));
+        }
     }
 
     /**
@@ -957,10 +961,12 @@ public abstract class AbstractFilter implements RenderFilter {
                 anyOf.add(new ModuleCondition(module.trim()));
             }
             condition = anyOf;
-        } else {
+        } else if (StringUtils.isNotBlank(modules)) {
             condition = new ModuleCondition(modules);
         }
-        addCondition(new NotCondition(condition));
+        if (condition != null) {
+            addCondition(new NotCondition(condition));
+        }
     }
 
     /**
@@ -978,10 +984,12 @@ public abstract class AbstractFilter implements RenderFilter {
                 anyOf.add(new NodeTypeCondition(nodeType.trim()));
             }
             condition = anyOf;
-        } else {
+        } else if (StringUtils.isNotBlank(nodeTypes)) {
             condition = new NodeTypeCondition(nodeTypes);
         }
-        addCondition(new NotCondition(condition));
+        if (condition != null) {
+            addCondition(new NotCondition(condition));
+        }
     }
 
     /**
@@ -998,10 +1006,12 @@ public abstract class AbstractFilter implements RenderFilter {
                 anyOf.add(new TemplateCondition(template.trim()));
             }
             condition = anyOf;
-        } else {
+        } else if (StringUtils.isNotBlank(templates)) {
             condition = new TemplateCondition(templates);
         }
-        addCondition(new NotCondition(condition));
+        if (condition != null) {
+            addCondition(new NotCondition(condition));
+        }
     }
 
     /**
@@ -1019,10 +1029,12 @@ public abstract class AbstractFilter implements RenderFilter {
                 anyOf.add(new TemplateTypeCondition(templateType.trim(),true));
             }
             condition = anyOf;
-        } else {
+        } else if (StringUtils.isNotBlank(templateTypes)) {
             condition = new TemplateTypeCondition(templateTypes,true);
         }
-        addCondition(new NotCondition(condition));
+        if (condition != null) {
+            addCondition(new NotCondition(condition));
+        }
     }
 
     @Override

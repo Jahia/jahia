@@ -45,6 +45,7 @@ package org.jahia.test.services.render.filter.cache;
 
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
 import org.jahia.test.services.render.filter.cache.base.CacheFilterHttpTest;
 import org.junit.AfterClass;
@@ -64,6 +65,7 @@ public class OldCacheFilterHttpTest extends CacheFilterHttpTest {
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(true);
         ((AbstractFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(true);
         ((AbstractFilter) SpringContextSingleton.getBean("cacheFilter")).setDisabled(false);
+        ((AreaResourceCacheKeyPartGenerator) SpringContextSingleton.getBean("areaResourceCacheKeyPartGenerator")).setDisabled(true);
     }
 
     @BeforeClass

@@ -139,6 +139,7 @@ public class Resource {
 
     public void setTemplate(String template) {
         this.template = template;
+        this.resolvedTemplate = template;
     }
 
     public String getContextConfiguration() {
@@ -147,13 +148,19 @@ public class Resource {
 
     public String getResolvedTemplate() {
         if (StringUtils.isEmpty(resolvedTemplate)) {
-            resolvedTemplate = getTemplate();
-            try {
-                if (node.isNodeType("jmix:renderable") && node.hasProperty("j:view")) {
-                    resolvedTemplate = node.getProperty("j:view").getString();
-                } 
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+            if (!StringUtils.isEmpty(template)) {
+                resolvedTemplate = template;
+            } else {
+                try {
+                    if (node.isNodeType("jmix:renderable") && node.hasProperty("j:view")) {
+                        resolvedTemplate = node.getProperty("j:view").getString();
+                    } else {
+                        resolvedTemplate = "default";
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                    resolvedTemplate = "default";
+                }
             }
         }
         return resolvedTemplate;

@@ -63,8 +63,6 @@ public class AbstractJCRTag extends AbstractJahiaTag {
 
     private static final long serialVersionUID = 3559634552167343791L;
 
-    private JCRSessionWrapper session;
-
     protected String getWorkspace() throws RepositoryException {
         String workspace = null;
         Resource resource = getCurrentResource();
@@ -90,18 +88,14 @@ public class AbstractJCRTag extends AbstractJahiaTag {
     } 
     
     protected JCRSessionWrapper getJCRSession() throws RepositoryException {
-        if (session == null) {
-            RenderContext ctx = getRenderContext();
-            session = ctx != null ? JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), getLocale(),
-                    ctx.getFallbackLocale()) : JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), getLocale());
-        }
-
+        RenderContext ctx = getRenderContext();
+        JCRSessionWrapper session = ctx != null ? JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), getLocale(),
+                ctx.getFallbackLocale()) : JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace(), getLocale());
         return session;
     }
 
     @Override
     protected void resetState() {
-        session = null;
         super.resetState();
     }
 

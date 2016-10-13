@@ -70,6 +70,7 @@ public class Resource {
     private JCRNodeWrapper node;
     private String templateType;
     private String template;
+    private String resolvedTemplate;
     private String contextConfiguration;
     private Stack<String> wrappers;
 
@@ -145,14 +146,12 @@ public class Resource {
     }
 
     public String getResolvedTemplate() {
-        String resolvedTemplate = template;
         if (StringUtils.isEmpty(resolvedTemplate)) {
+            resolvedTemplate = getTemplate();
             try {
                 if (node.isNodeType("jmix:renderable") && node.hasProperty("j:view")) {
                     resolvedTemplate = node.getProperty("j:view").getString();
-                } else {
-                    resolvedTemplate = "default";
-                }
+                } 
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -284,7 +283,7 @@ public class Resource {
     public int hashCode() {
         int result = node != null ? node.hashCode() : 0;
         result = 31 * result + (templateType != null ? templateType.hashCode() : 0);
-        result = 31 * result + (getTemplate() != null ? getTemplate().hashCode() : 0);
+        result = 31 * result + (getResolvedTemplate() != null ? getResolvedTemplate().hashCode() : 0);
         result = 31 * result + (wrappers != null ? wrappers.hashCode() : 0);
         result = 31 * result + (options != null ? options.hashCode() : 0);
         result = 31 * result + (resourceNodeType != null ? resourceNodeType.hashCode() : 0);

@@ -117,8 +117,18 @@ public class CacheFilterTest extends JahiaTestCase {
             node.setProperty("jcr:title", "English test page");
             node.setProperty("j:templateName", "simple");            
             node.addNode("testType2", "jnt:mainContent");
+
+            JCRNodeWrapper notCacheable1 = node.addNode("testNotCacheable1", "jnt:text");
+            notCacheable1.addMixin("jmix:cache");
+            notCacheable1.setProperty("j:expiration", 0L);
+            notCacheable1.setProperty("text", "test not cacheable 1");
+
+            JCRNodeWrapper notCacheable2 = node.addNode("testNotCacheable2", "jnt:text");
+            notCacheable2.addMixin("jmix:cache");
+            notCacheable2.setProperty("j:expiration", 0L);
+            notCacheable2.setProperty("text", "test not cacheable 2");
             session.save();
-            
+
             JCRPublicationService.getInstance().publishByMainId(shared.getIdentifier(), Constants.EDIT_WORKSPACE,
                     Constants.LIVE_WORKSPACE, new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
                     true, Collections.<String> emptyList());

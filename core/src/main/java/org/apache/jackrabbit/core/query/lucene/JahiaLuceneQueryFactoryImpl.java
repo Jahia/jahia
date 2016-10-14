@@ -222,10 +222,10 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
 
                             if (canRead
                                     && (!Constants.LIVE_WORKSPACE.equals(session
-                                    .getWorkspace().getName())
-                                    || ((infos.getPublished() == null || "true"
-                                    .equals(infos.getPublished())) &&
-                                    (infos.getCheckInvalidLanguages()==null || !infos.getCheckInvalidLanguages().contains(getLocale().toString()))))) {
+                                            .getWorkspace().getName())
+                                            || ((infos.getPublished() == null || "true"
+                                                .equals(infos.getPublished())) &&
+                                                (infos.getCheckInvalidLanguages() == null || getLocale() == null || !infos.getCheckInvalidLanguages().contains(getLocale().toString()))))) {
                                 if (filter == Predicate.TRUE) { // <-- Added by jahia
                                     if ((hasFacets & FacetHandler.ONLY_FACET_COLUMNS) == 0) {
                                         Row row = null;

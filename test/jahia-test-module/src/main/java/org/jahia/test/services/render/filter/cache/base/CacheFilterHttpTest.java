@@ -98,6 +98,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     public static final Logger logger = LoggerFactory.getLogger(CacheFilterTest.class);
     public static final String TESTSITE_NAME = "cachetest";
     public static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    public static final String LONG_PAGE_TITLE = "<h1>long</h1>";
+    public static final String LONG_CREATED_ELEMENT_TEXT = "Very long to appear";
 
     private static boolean cacheFilterDisabled;
     private static boolean aggregateFilterDisabled;

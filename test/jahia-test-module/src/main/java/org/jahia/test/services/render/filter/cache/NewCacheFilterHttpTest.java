@@ -120,22 +120,22 @@ public class NewCacheFilterHttpTest extends CacheFilterHttpTest {
             String content1 = getContent(url, "root", "root1234", "testModuleWait4");
 
             // Long module is left blank
-            assertFalse(t2.getResult().contains("Very long to appear"));
-            assertTrue(t2.getResult().contains("<h1>long</h1>"));
+            assertFalse(t2.getResult().contains(LONG_CREATED_ELEMENT_TEXT));
+            assertTrue("Page title " + LONG_PAGE_TITLE + " not found in result: " + t2.getResult(), t2.getResult().contains(LONG_PAGE_TITLE));
             assertTrue("Second thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait2").getTime() >= 1000);
 
             // Entry is cached without the long module
-            assertFalse(content.contains("Very long to appear"));
-            assertTrue(content.contains("<h1>long</h1>"));
+            assertFalse(content.contains(LONG_CREATED_ELEMENT_TEXT));
+            assertTrue("Page title " + LONG_PAGE_TITLE + " not found in result: " + content, content.contains(LONG_PAGE_TITLE));
             assertNull(getCheckFilter("CacheHttpTestRenderFilter2").getData("testModuleWait3"));
 
-            assertTrue(t1.getResult().contains("Very long to appear"));
-            assertTrue(t1.getResult().contains("<h1>long</h1>"));
+            assertTrue(t1.getResult().contains(LONG_CREATED_ELEMENT_TEXT));
+            assertTrue("Page title " + LONG_PAGE_TITLE + " not found in result: " + t1.getResult(), t1.getResult().contains(LONG_PAGE_TITLE));
             assertTrue("First thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFilter1").getData("testModuleWait1").getTime() >= 15000);
 
             // Entry is now cached with the long module
-            assertTrue(content1.contains("Very long to appear"));
-            assertTrue(content1.contains("<h1>long</h1>"));
+            assertTrue(content1.contains(LONG_CREATED_ELEMENT_TEXT));
+            assertTrue("Page title " + LONG_PAGE_TITLE + " not found in result: " + content1, content1.contains(LONG_PAGE_TITLE));
             assertNull(getCheckFilter("CacheHttpTestRenderFilter2").getData("testModuleWait4"));
         } finally {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);

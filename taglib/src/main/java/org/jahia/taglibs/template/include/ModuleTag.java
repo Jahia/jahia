@@ -56,6 +56,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.AggregateFilter;
 import org.jahia.services.render.filter.TemplateAttributesFilter;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
@@ -103,6 +104,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected Map<String, String> parameters = new HashMap<String, String>();
     protected boolean checkConstraints = true;
     protected boolean showAreaButton = true;
+    protected boolean skipAggregation = false;
 
     public String getPath() {
         return path;
@@ -170,6 +172,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     public void setContextSite(JCRSiteNode contextSite) {
         this.contextSite = contextSite;
+    }
+
+    public void setSkipAggregation(boolean skipAggregation) {
+        this.skipAggregation = skipAggregation;
     }
 
     @Override
@@ -292,17 +298,21 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             }
             path = null;
             node = null;
+            contextSite = null;
+            nodeName = null;
             view = null;
-            editable = true;
             templateType = null;
+            editable = true;
             nodeTypes = null;
             listLimit = -1;
             constraints = null;
             var = null;
             builder = null;
-            contextSite = null;
-
             parameters.clear();
+            checkConstraints = true;
+            showAreaButton = true;
+            skipAggregation = false;
+
 
         }
         return EVAL_PAGE;
@@ -549,10 +559,16 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     protected void render(RenderContext renderContext, Resource resource) throws IOException, RenderException {
+
+        Boolean oldSkipAggregate = (Boolean) renderContext.getRequest().getAttribute(AggregateFilter.SKIP_AGGREGATION);
         try {
             JCRSiteNode previousSite = renderContext.getSite();
             if (contextSite != null) {
                 renderContext.setSite(contextSite);
+            }
+
+            if (skipAggregation) {
+                renderContext.getRequest().setAttribute(AggregateFilter.SKIP_AGGREGATION, skipAggregation);
             }
 
             builder.append(RenderService.getInstance().render(resource, renderContext));
@@ -573,6 +589,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             } else {
                 throw e;
             }
+        } finally {
+            renderContext.getRequest().setAttribute(AggregateFilter.SKIP_AGGREGATION, oldSkipAggregate);
         }
 
     }

@@ -231,6 +231,7 @@
         <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:}"/>
         <property name="mavenArchetypeVersion" value="${jahia.mavenArchetypeVersion:2.5-SNAPSHOT}"/>
         <property name="mavenMinRequiredVersion" value="3.0"/>
+        <property name="mavenWarnIfVersionIsOlderThan" value="3.1"/>
         <property name="mavenExecutable" value="${mvnPath:mvn}"/>
         <property name="mavenReleasePlugin" value="${mavenReleasePlugin:org.apache.maven.plugins:maven-release-plugin:2.5.2}"/>
         <property name="moduleStartLevel" value="#{settingsBean.moduleStartLevel}"/>

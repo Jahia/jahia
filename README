@@ -41,7 +41,7 @@ to bring more so it helps if people play fair :)
 
  Requirements:
  - JDK 1.7 or later
- - Maven 3.x
+ - Maven 3.3.x or later
  - Subversion client (for Windows at http://www.collab.net/downloads/subversion/
    for Mac OS X from http://www.finkproject.org/ or Xcode tools, under
    Linux install a subversion client from your package repository). Basically,
@@ -59,7 +59,7 @@ to bring more so it helps if people play fair :)
 
        For more information, please check the template developer guide.
 
-    3. Download and Install Maven 3.x (http://maven.apache.org), and set an
+    3. Download and Install Maven 3.3.x or later (http://maven.apache.org), and set an
        M2_HOME environment variable pointing at the installation
        directory. Put M2_HOME/bin folder in path. Also increase the
        memory for Maven by setting the following environment variable:
@@ -136,7 +136,7 @@ to bring more so it helps if people play fair :)
 
   IDEA:
 
-    1. IDEA has direct support for Maven 2, so you can simply open the project
+    1. IDEA has direct support for Maven, so you can simply open the project
        using the IDE.
 
        Here are the steps to create the new project:
@@ -154,7 +154,7 @@ to bring more so it helps if people play fair :)
        - Click finish
 
        If you have trouble with the above procedure, you can also generate
-       the IDEA project structure using the Maven 2 IDEA plugin this way:
+       the IDEA project structure using the Maven IDEA plugin this way:
 
          mvn idea
 
@@ -165,7 +165,7 @@ to bring more so it helps if people play fair :)
   Eclipse:
 
     1. Add a new 'M2_REPO' classpath variable in Eclipse, pointing to your
-       Maven 2 repository folder (either using Maven or manually):
+       Maven repository folder (either using Maven or manually):
 
         a) Using Maven: execute:
               mvn -Declipse.workspace=<path-to-eclipse-workspace> eclipse:add-maven-repo
@@ -175,7 +175,7 @@ to bring more so it helps if people play fair :)
              Window / Preferences -> Java -> Build Path -> Classpath Variables.
            Click on 'New...'
            and enter M2_REPO as a name of the variable and full path to your
-           Maven 2 repository as path value
+           Maven repository as path value
 
     2. In the Jahia root folder execute the following command:
           mvn eclipse:eclipse
@@ -209,33 +209,6 @@ your machine and setup the correct authorization on the remote machine.
       <privateKey>${user.home}/.ssh/id_rsa</privateKey> <!-- not needed if using pageant -->
     </server>
   </servers>
-
- Deploying new JARs to maven.jahia.org
-------------------------------------------------------------------------------
-
- Requirements:
- - on Windows: putty SSH applications (puttygen.exe)
- - on Linux/Mac OS X/UNIX: OpenSSH for JAR deployment to maven.jahia.org
-
- First check if the JAR is not available by googling for it (ex using the
- command:
-   maven2 YOURJAR
- as a search criteria). It is better to use a public resource, which will
- probably include transitive dependencies.
-
- You should always remember to send your new JARs to the maven.jahia.org
- repository. Here is the procedure on how to do it.
-
-    1. Generate an OpenSSH public/private DSA key pair (on Windows this can be
-       done with puttygen and export to OpenSSH format)
-
-    2. Send the public key to the Jahia IT admin and ask for it to be
-       installed on the maven.jahia.org server
-
-    3. Use the mvndeploy.bat file on Windows to deploy your JAR, or use the
-       equivalent command line. Also, if you have a POM for your JAR that
-       includes dependencies this is a better than letter Maven generate one
-       for you.
 
  Developing and running unit tests
 ------------------------------------------------------------------------------

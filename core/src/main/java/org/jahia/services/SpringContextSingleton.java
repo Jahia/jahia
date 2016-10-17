@@ -137,6 +137,11 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
                 }
             });
 
+            if (SettingsBean.getInstance().isDevelopmentMode()) {
+                logger.warn("Detected call to SpringContextSingleton.getBeanInModulesContext(...) for bean '{}' during module startup." +
+                        "Since 7.2.0.0 modules spring contexts are started independently, and beans may not be available." +
+                        "We recommend to use OSGI services instead of spring beans to communicate between modules.", beanId);
+            }
             logger.info("Bean '{}' not found yet, will wait for its availability max {} seconds...", beanId, waitTimeout);
 
             try {

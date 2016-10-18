@@ -120,7 +120,7 @@ public class TemplateAttributesFilter extends AbstractFilter {
 
         // get areaResourcePath if defined.
         String areaResourcePath = (String) request.getAttribute(AreaResourceCacheKeyPartGenerator.SAVED_AREA_PATH);
-        if (areaResourcePath != null) {
+        if (areaResourcePath != null && !context.isContributionMode()) {
             chain.pushAttribute(request, AREA_RESOURCE, resource.getNode().getSession().getNode(areaResourcePath));
         }
         return null;

@@ -200,6 +200,11 @@ public class JahiaTemplatesPackage {
     private boolean editModeBlocked;
 
     /**
+     * List of callbacks to execute when spring context is set
+     */
+    private final List<ContextInitializedCallback> contextInitializedCallbacks = new ArrayList<>();
+
+    /**
      * Initializes an instance of this class.
      * 
      * @param bundle
@@ -729,6 +734,15 @@ public class JahiaTemplatesPackage {
         this.context = context;
         // reset services state
         serviceInitialized = false;
+
+        // executes callbacks if needed
+        if(this.context != null && !contextInitializedCallbacks.isEmpty()) {
+            for (ContextInitializedCallback contextInitializedCallback : contextInitializedCallbacks) {
+                contextInitializedCallback.execute(context);
+            }
+            // clear callbacks
+            contextInitializedCallbacks.clear();
+        }
     }
 
     /**
@@ -1149,6 +1163,35 @@ public class JahiaTemplatesPackage {
 
     public void setEditModeBlocked(boolean editModeBlocked) {
         this.editModeBlocked = editModeBlocked;
+    }
+
+    /**
+     * Provide a callback that will be execute when the Spring context is ready for this bundle
+     * if the context is already set, the callback is executed directly
+     * if no context available, the callback is stored and will be execute when a context is set for the current JahiaTemplatePackage
+     * the callback is removed when executed
+     *
+     * @param contextInitializedCallback the callback
+     */
+    public void doExecuteAfterContextInitialized(ContextInitializedCallback contextInitializedCallback) {
+        if (context != null) {
+            // context already available, execute now
+            contextInitializedCallback.execute(context);
+        } else {
+            contextInitializedCallbacks.add(contextInitializedCallback);
+        }
+    }
+
+    /**
+     * Callback object to do operations just after the initialization of the spring context
+     */
+    public interface ContextInitializedCallback {
+        /**
+         * Do something after spring context is initialized
+         *
+         * @param context the spring context
+         */
+        void execute(AbstractApplicationContext context);
     }
 
     /**

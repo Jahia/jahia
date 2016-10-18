@@ -688,10 +688,23 @@ public class Activator implements BundleActivator, EventHandler {
         templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
 
         // scan for resource and call observers
-        for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
-            List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
+        boolean hasSpringFile = hasSpringFile(bundle);
+        for (final Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
+            final List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
             if (!foundURLs.isEmpty()) {
-                scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+                // rules may use Global objects from his own spring beans, so we delay the rules registration until the spring context is initialized
+                // to insure that potential global objects are available before rules executions
+                if(DRL_SCANNER.equals(scannerAndObserver.getKey()) && hasSpringFile) {
+                    logger.info("--- Rules registration for bundle {} have been delayed until his spring context is initialized --");
+                    jahiaTemplatesPackage.doExecuteAfterContextInitialized(new JahiaTemplatesPackage.ContextInitializedCallback() {
+                        @Override
+                        public void execute(AbstractApplicationContext context) {
+                            scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+                        }
+                    });
+                } else {
+                    scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+                }
             }
         }
 
@@ -730,7 +743,7 @@ public class Activator implements BundleActivator, EventHandler {
         logger.info("--- Finished starting DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
         setModuleState(bundle, ModuleState.State.STARTED, scriptEngineException != null ? scriptEngineException : null);
 
-        if (hasSpringFile(bundle)) {
+        if (hasSpringFile) {
             try {
                 final AbstractApplicationContext contextToStartForModule = BundleUtils.getContextToStartForModule(bundle);
                 if (contextToStartForModule != null) {

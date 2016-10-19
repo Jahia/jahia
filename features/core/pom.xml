@@ -147,6 +147,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jahia.bundles</groupId>
+            <artifactId>org.jahia.bundles.spring.bridge</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.jahia.configuration</groupId>
             <artifactId>osgi-tools</artifactId>
             <version>${jahia.plugin.version}</version>

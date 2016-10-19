@@ -626,7 +626,11 @@ public class Activator implements BundleActivator, EventHandler {
     }
 
     private synchronized void unresolve(Bundle bundle) {
-        setModuleState(bundle, ModuleState.State.UNRESOLVED, null);
+        setModuleState(bundle, ModuleState.State.INSTALLED, null);
+        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupById(bundle.getSymbolicName());
+        if (jahiaTemplatesPackage != null) {
+            jahiaTemplatesPackage.setClassLoader(null);
+        }
     }
 
     private synchronized void starting(Bundle bundle) {
@@ -845,7 +849,6 @@ public class Activator implements BundleActivator, EventHandler {
             if (jahiaTemplatesPackage.getContext() != null) {
                 jahiaTemplatesPackage.setContext(null);
             }
-            jahiaTemplatesPackage.setClassLoader(null);
 
             // scan for resource and call observers
             for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
@@ -911,7 +914,7 @@ public class Activator implements BundleActivator, EventHandler {
             return;
         }
 
-        setModuleState(bundle, ModuleState.State.STOPPED, null);
+        setModuleState(bundle, ModuleState.State.RESOLVED, null);
     }
 
     private void registerHttpResources(final Bundle bundle) {

@@ -969,7 +969,7 @@ public class JahiaTemplatesPackage {
      */
     public ClassLoader getClassLoader() {
         if (classLoader == null && bundle != null && state != null && state.getState() != null
-                && state.getState() != ModuleState.State.STOPPING && state.getState() != ModuleState.State.STOPPED ) {
+                && state.getState() != ModuleState.State.INSTALLED) {
             classLoader = BundleUtils.createBundleClassLoader(bundle);
         }
         return classLoader;

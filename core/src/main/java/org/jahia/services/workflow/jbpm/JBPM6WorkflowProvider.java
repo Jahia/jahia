@@ -120,7 +120,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     private KieContainer kieContainer;
     private TransactionManager transactionManager;
     private ThreadLocal<Boolean> loop = new ThreadLocal<Boolean>();
-
+    private volatile boolean isInitialized = false;
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
@@ -439,7 +439,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
             peopleAssignmentPipeline.setEnvironment(pipelineEnvironment);
 
             kieSession.addEventListener(listener);
-
+            isInitialized = true;
             logger.info("Rebuilding KIE base took {} ms", System.currentTimeMillis() - timer);
         }
     }
@@ -474,6 +474,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
         t.setKey(key);
         CommandBasedStatefulKnowledgeSession s = (CommandBasedStatefulKnowledgeSession) runtimeEngine.getKieSession();
         return s.execute(t);
+    }
+
+    public boolean isInitialized() {
+        return isInitialized;
     }
 
     @Override

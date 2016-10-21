@@ -207,6 +207,9 @@ public class Logout implements Controller {
                 if (url.startsWith("/edit/")) {
                     url = "/render/" + StringUtils.substringAfter(url,"/edit/");
                     urls.add(url);
+                } else if (url.startsWith("/editframe/default/")) {
+                    url = "/render/live/" + StringUtils.substringAfter(url,"/editframe/default/");
+                    urls.add(url);
                 } else if (url.startsWith("/contribute/")) {
                     url = "/render/" + StringUtils.substringAfter(url,"/contribute/");
                     urls.add(url);

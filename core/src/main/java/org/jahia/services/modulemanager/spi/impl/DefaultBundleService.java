@@ -133,4 +133,10 @@ public class DefaultBundleService implements BundleService {
             throw new ModuleManagementException(e);
         }
     }
+
+    @Override
+    public void refresh(BundleInfo bundleInfo, String target) throws ModuleManagementException {
+        Bundle bundle = getBundleEnsureExists(bundleInfo);
+        refreshBundle(bundle);
+    }
 }

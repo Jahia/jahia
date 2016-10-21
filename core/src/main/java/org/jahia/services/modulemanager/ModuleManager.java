@@ -127,4 +127,14 @@ public interface ModuleManager {
      * @throws ModuleManagementException In case of problems
      */
     OperationResult uninstall(String bundleKey, String target) throws ModuleManagementException;
+
+    /**
+     * Refresh the specified bundle on the target group of cluster nodes.
+     *
+     * @param bundleKey Bundle key to refresh (see class JavaDoc for the supported key format)
+     * @param target The group of cluster nodes targeted by the refresh operation (see class JavaDoc for the supported values)
+     * @return The result of the refresh operation
+     * @throws ModuleManagementException In case of problems
+     */
+    OperationResult refresh(String bundleKey, String target) throws ModuleManagementException;
 }

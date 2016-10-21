@@ -86,7 +86,12 @@ public class BundleServiceDelegate implements BundleService {
     public void uninstall(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
         lookupService().uninstall(bundleInfo, target);
     }
-    
+
+    @Override
+    public void refresh(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
+        lookupService().refresh(bundleInfo, target);
+    }
+
     private BundleService lookupClusteredService() {
 
         long startTime = System.currentTimeMillis();

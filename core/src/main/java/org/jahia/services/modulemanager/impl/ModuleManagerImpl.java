@@ -311,4 +311,22 @@ public class ModuleManagerImpl implements ModuleManager {
             }
         });
     }
+
+    @Override
+    public OperationResult refresh(String bundleKey, String target) {
+
+        return performOperation(bundleKey, target, new BundleOperation() {
+
+            @Override
+            public String getName() {
+                return "Refresh";
+            }
+
+            @Override
+            public void perform(BundleInfo info, String target) throws ModuleManagementException {
+                bundleService.refresh(info, target);
+            }
+        });
+    }
+
 }

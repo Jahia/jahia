@@ -65,6 +65,7 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRPortletNode;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.InsertionSortedMap;
@@ -434,7 +435,13 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
             return false;
         }
         boolean ret = false;
+
         try {
+            registerNamespace(getWebAppPrefix(app.getName()), getWebAppNamespaceURI(app.getName()));
+            for (EntryPointDefinition entryPointDefinition : app.getEntryPointDefinitions()) {
+                registerNamespace(getEntryPointPrefix(app.getName(), entryPointDefinition.getName()), getEntryPointNamespaceURI(app.getName(), entryPointDefinition.getName()));
+            }
+
             ret = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     final JCRNodeWrapper parentNode = session.getNode("/portletdefinitions");
@@ -451,8 +458,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
 
                     // we must now create the corresponding permissions for web application roles as well as portlet
                     // modes, and then assign them to default roles, possibly using some kind of configuration.
-
-                    JCRContentUtils.registerNamespace(session, getWebAppPrefix(app.getName()), getWebAppNamespaceURI(app.getName()));
 
                     String webappPath = WEBAPPS_PERMISSION_PATH + app.getName();
 
@@ -491,8 +496,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
                     // also be done.
 
                     for (EntryPointDefinition entryPointDefinition : app.getEntryPointDefinitions()) {
-                        JCRContentUtils.registerNamespace(session, getEntryPointPrefix(app.getName(), entryPointDefinition.getName()), getEntryPointNamespaceURI(app.getName(), entryPointDefinition.getName()));
-
                         String portletsPath = webappPath + "/" + getWebAppQualifiedNodeName(app.getName(), "portlets");
                         // let's add the default portlet permissions
 
@@ -1081,21 +1084,29 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
         if (namespaces == null || namespaces.isEmpty()) {
             return;
         }
+
+        // first we register the namespaces.
+        for (Map.Entry<String, String> ns : namespaces.entrySet()) {
+            registerNamespace(ns.getKey(), ns.getValue());
+        }
         // we must now register the namespace for the portlet, as well as refresh the privileges, to make sure
         // we load all the privileges attached to portlets.
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                // first we register the namespaces.
-
-                for (Map.Entry<String, String> ns : namespaces.entrySet()) {
-                    JCRContentUtils.registerNamespace(session, ns.getKey(), ns.getValue());
-                }
-
                 // now let's reload the privileges
-
                 JahiaPrivilegeRegistry.init(session);
                 return null;
             }
         });
+    }
+
+    private void registerNamespace(String key, String value) throws RepositoryException {
+        try {
+            JCRSessionFactory.getInstance().getNamespaceRegistry().getURI(key);
+        } catch (RepositoryException e) {
+            JCRSessionFactory.getInstance().getNamespaceRegistry().registerNamespace(key, value);
+            NodeTypeRegistry.getInstance().getNamespaces().put(key, value);
+            JCRSessionFactory.getInstance().getProvider("/").registerNamespaces();
+        }
     }
 }

@@ -60,6 +60,7 @@ import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
 import org.apache.felix.utils.version.VersionRange;
 import org.apache.felix.utils.version.VersionTable;
+import org.jahia.services.modulemanager.ModuleManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
@@ -202,11 +203,22 @@ public final class BundleLifecycleUtils {
         return FrameworkService.getBundleContext().getBundles();
     }
 
-    private static int getBundleStartLevel(Bundle bundle) {
+    /**
+     * Returns the start level of the provided bundle.
+     * 
+     * @param bundle the bundle to get start level for
+     * @return the start level of the provided bundle
+     */
+    public static int getBundleStartLevel(Bundle bundle) {
         return bundle.adapt(BundleStartLevel.class).getStartLevel();
     }
 
-    private static int getFrameworkStartLevel() {
+    /**
+     * Returns the start level of the OSGi framework.
+     * 
+     * @return the start level of the OSGi framework
+     */
+    public static int getFrameworkStartLevel() {
         return getSystemBundle().adapt(FrameworkStartLevel.class).getStartLevel();
     }
 
@@ -347,26 +359,6 @@ public final class BundleLifecycleUtils {
     }
 
     /**
-     * Tries to start all the bundles which somehow got stopped mainly due to a missing dependencies. Inspired by the DirectoryWatcher from
-     * Felix FileInstall.
-     */
-    public static void startBundlesPendingDependencies() {
-        int frameworkStartLevel = getFrameworkStartLevel();
-        List<Bundle> bundlesToStart = new ArrayList<Bundle>();
-        Bundle[] allBundles = getAllBundles();
-        for (Bundle bundle : allBundles) {
-            if (bundle != null) {
-                if (bundle.getState() != Bundle.STARTING && bundle.getState() != Bundle.ACTIVE
-                        && bundle.adapt(BundleStartLevel.class).isPersistentlyStarted()
-                        && frameworkStartLevel >= getBundleStartLevel(bundle)) {
-                    bundlesToStart.add(bundle);
-                }
-            }
-        }
-        startBundles(bundlesToStart);
-    }
-
-    /**
      * Starts provided bundle.
      *
      * @param bundlesToStart a collection of bundles to be started
@@ -394,5 +386,35 @@ public final class BundleLifecycleUtils {
                 }
             }
         }
+    }
+
+    /**
+     * Tries to start all the bundles which somehow got stopped mainly due to a missing dependencies. Inspired by the DirectoryWatcher from
+     * Felix FileInstall.
+     */
+    public static void startBundlesPendingDependencies() {
+        int frameworkStartLevel = getFrameworkStartLevel();
+        List<Bundle> bundlesToStart = new ArrayList<Bundle>();
+        Bundle[] allBundles = getAllBundles();
+        for (Bundle bundle : allBundles) {
+            if (bundle != null) {
+                if (bundle.getState() != Bundle.STARTING && bundle.getState() != Bundle.ACTIVE
+                        && bundle.adapt(BundleStartLevel.class).isPersistentlyStarted()
+                        && frameworkStartLevel >= getBundleStartLevel(bundle)) {
+                    bundlesToStart.add(bundle);
+                }
+            }
+        }
+        startBundles(bundlesToStart);
+    }
+
+    /**
+     * Start the specified module bundles in the order which tries to consider the dependencies between them.
+     * 
+     * @param moduleBundles the bundles to be started
+     * @param useModuleManagerApi should we use {@link ModuleManager} or call OSGi API directly?
+     */
+    public static void startModules(List<Bundle> moduleBundles, boolean useModuleManagerApi) {
+        BundleStarter.startModules(moduleBundles, useModuleManagerApi);
     }
 }

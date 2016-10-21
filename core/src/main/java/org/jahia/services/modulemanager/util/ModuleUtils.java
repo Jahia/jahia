@@ -78,6 +78,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -202,6 +203,15 @@ public class ModuleUtils {
     private static BundlePersister getBundlePersister() {
         return (BundlePersister) SpringContextSingleton
                 .getBean("org.jahia.services.modulemanager.persistence.BundlePersister");
+    }
+
+    /**
+     * Retrieves an instance of the module manager.
+     * 
+     * @return an instance of the module manager
+     */
+    public static ModuleManager getModuleManager() {
+        return (ModuleManager) SpringContextSingleton.getBean("ModuleManager");
     }
 
     private static Set<String> getModulesWithNoDefaultDependency() {

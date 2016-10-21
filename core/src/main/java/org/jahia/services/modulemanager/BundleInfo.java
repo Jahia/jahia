@@ -68,9 +68,24 @@ public class BundleInfo implements Serializable {
     private String version;
 
     /**
+     * Creates the {@link BundleInfo} instance using provided bundle.
+     *
+     * @param bundle the bundle to compose info for
+     * @return the {@link BundleInfo} instance using provided bundle
+     */
+    public static BundleInfo fromBundle(Bundle bundle) {
+        if (bundle == null) {
+            throw new IllegalArgumentException("Bundle cannot be null");
+        }
+        return new BundleInfo(BundleUtils.getModuleGroupId(bundle), bundle.getSymbolicName(),
+                bundle.getVersion().toString());
+    }
+
+    /**
      * Creates the {@link BundleInfo} instance using provided bundle key.
      *
      * @param key The bundle key
+     * @return the {@link BundleInfo} instance using provided bundle key
      */
     public static BundleInfo fromKey(String key) {
 
@@ -94,13 +109,14 @@ public class BundleInfo implements Serializable {
      *
      * @param moduleId The ID of the module
      * @param moduleVersion The module version
+     * @return the {@link BundleInfo} instance using provided module ID and version
      */
     public static BundleInfo fromModuleInfo(String moduleId, String moduleVersion) {
         if (moduleId == null || moduleVersion == null) {
             throw new IllegalArgumentException("Illegal module info (id/version): " + moduleId + '/' + moduleVersion);
         }
         Bundle bundle = BundleUtils.getBundle(moduleId, moduleVersion);
-        return bundle != null ? new BundleInfo(BundleUtils.getModuleGroupId(bundle), bundle.getSymbolicName(), bundle.getVersion().toString()) : null;
+        return bundle != null ? fromBundle(bundle) : null;
     }
 
     /**

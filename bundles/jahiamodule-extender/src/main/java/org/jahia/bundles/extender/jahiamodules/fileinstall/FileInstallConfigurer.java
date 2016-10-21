@@ -41,7 +41,7 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.bundles.extender.jahiamodules;
+package org.jahia.bundles.extender.jahiamodules.fileinstall;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,11 +50,15 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.felix.fileinstall.CustomHandler;
 import org.codehaus.plexus.util.StringUtils;
+import org.jahia.bin.Jahia;
 import org.jahia.services.SpringContextSingleton;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.util.tracker.ServiceTracker;
@@ -65,7 +69,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility class for registering/unregistering the FileInstall configuration for DX modules.
  */
-class FileInstallConfigurer {
+public class FileInstallConfigurer {
 
     /**
      * Service tracker customizer for the configuration administration service.
@@ -103,6 +107,8 @@ class FileInstallConfigurer {
 
     static Logger logger = LoggerFactory.getLogger(FileInstallConfigurer.class);
 
+    private ServiceRegistration<CustomHandler> customHandlerRegistration;
+    
     private ServiceTracker<ConfigurationAdmin, ConfigurationAdmin> serviceTracker;
 
     private Configuration findExisting(ConfigurationAdmin configurationAdmin, String dirPath) {
@@ -125,8 +131,17 @@ class FileInstallConfigurer {
         return null;
     }
 
+    /**
+     * Returns the configuration for this file install service.
+     * 
+     * @return configuration properties
+     */
+    private Properties getConfig() {
+        return (Properties) SpringContextSingleton.getBean("felixFileInstallConfig");
+    }
+
     private void register(ConfigurationAdmin configurationAdmin) {
-        Properties felixProperties = ((Properties) SpringContextSingleton.getBean("felixFileInstallConfig"));
+        Properties felixProperties = getConfig();
         String watchedDir = felixProperties.getProperty("felix.fileinstall.dir");
         Configuration cfg = findExisting(configurationAdmin, watchedDir);
         if (cfg != null) {
@@ -155,12 +170,33 @@ class FileInstallConfigurer {
     }
 
     /**
+     * Registers the custom handler for the FileInstall artifacts.
+     *
+     * @param context the OSGi bundle context object
+     */
+    private void registerCustomHandler(BundleContext context) {
+        Properties cfg = getConfig();
+        if (!cfg.containsKey(CustomHandler.PROP_ID)) {
+            // no need to register handler
+            return;
+        }
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put(Constants.SERVICE_PID, "org.jahia.bundles.fileinstall.handler");
+        props.put(Constants.SERVICE_DESCRIPTION, "DX handler for FileInstall artifacts");
+        props.put(Constants.SERVICE_VENDOR, Jahia.VENDOR_NAME);
+        props.put("type", "dx-modules");
+        customHandlerRegistration = context.registerService(CustomHandler.class, new ModuleFileInstallHandler(cfg),
+                props);
+    }
+
+    /**
      * Performs the registration of the FileInstall configuration for DX modules.
      * 
      * @param bundleContext
      *            the OSGi bundle context
      */
     public void start(BundleContext bundleContext) {
+        registerCustomHandler(bundleContext);
         serviceTracker = new ServiceTracker<ConfigurationAdmin, ConfigurationAdmin>(bundleContext,
                 ConfigurationAdmin.class, new ConfigAdminServiceCustomizer(bundleContext));
         serviceTracker.open();
@@ -173,11 +209,14 @@ class FileInstallConfigurer {
         if (serviceTracker != null) {
             serviceTracker.close();
         }
+        
+        if (customHandlerRegistration != null) {
+            customHandlerRegistration.unregister();
+        }
     }
 
     private void unregister(ConfigurationAdmin configurationAdmin) {
-        Properties felixProperties = ((Properties) SpringContextSingleton.getBean("felixFileInstallConfig"));
-        String watchedDir = felixProperties.getProperty("felix.fileinstall.dir");
+        String watchedDir = getConfig().getProperty("felix.fileinstall.dir");
         Configuration cfg = findExisting(configurationAdmin, watchedDir);
         if (cfg != null) {
             try {

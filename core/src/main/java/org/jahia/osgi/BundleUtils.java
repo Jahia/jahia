@@ -145,6 +145,16 @@ public final class BundleUtils {
     }
 
     /**
+     * Finds bundle by its location.
+     * 
+     * @param location the location of the bundle to be found
+     * @return bundle for the specified location or <code>null</code> if there is no matching bundle installed
+     */
+    public static Bundle getBundle(String location) {
+        return FrameworkService.getBundleContext().getBundle(location);
+    }
+
+    /**
      * Find the bundle that is represented by the specified module and version.
      *
      * @param moduleId the module Id

@@ -18,6 +18,7 @@
                 <prop key="felix.fileinstall.noInitialDelay">true</prop>
                 <prop key="felix.fileinstall.enableConfigSave">false</prop>
                 <prop key="felix.fileinstall.bundleLocationMapFile">#{settingsBean.jahiaVarDiskPath}/bundles-deployed/module-bundle-location.map</prop>
+                <prop key="felix.fileinstall.customHandler">(&amp;(objectClass=org.apache.felix.fileinstall.CustomHandler)(type=dx-modules))</prop>
             </props>
         </property>
     </bean>

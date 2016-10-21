@@ -66,6 +66,10 @@ import org.codehaus.plexus.util.dag.TopologicalSorter;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -133,17 +137,71 @@ class BundleStarter {
         }
     }
 
+    private static void startBundles(Map<Bundle, JahiaTemplatesPackage> toBeStarted, boolean useModuleManagerApi) {
+        logger.info("Will start {} bundle(s)", toBeStarted.size());
+        Collection<Bundle> sortedBundles = getSortedModules(toBeStarted);
+
+        try {
+            for (Bundle bundle : sortedBundles) {
+                try {
+                    logger.info("Triggering start for bundle {}/{}", bundle.getSymbolicName(), bundle.getVersion());
+                    if (useModuleManagerApi) {
+                        ModuleUtils.getModuleManager().start(BundleInfo.fromBundle(bundle).getKey(), null);
+                    } else {
+                        bundle.start();
+                    }
+                } catch (Exception e) {
+                    BundleException be = null;
+                    if (e instanceof BundleException) {
+                        be = (BundleException) e;
+                    } else if (e instanceof ModuleManagementException && e.getCause() instanceof BundleException) {
+                        be = (BundleException) e.getCause();
+                    }
+                    if (be != null && BundleException.RESOLVE_ERROR == be.getType()) {
+                        // log warning for the resolution (dependencies) error
+                        logger.warn(be.getMessage());
+                    } else {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+        } finally {
+            logger.info("Finished starting {} bundle(s)", toBeStarted.size());
+        }
+    }
+
+    /**
+     * Start the specified module bundles in the order which tries to consider the dependencies between them.
+     * 
+     * @param moduleBundles the bundles to be started
+     * @param useModuleManagerApi should we use {@link ModuleManager} or call OSGi API directly?
+     */
+    static void startModules(List<Bundle> moduleBundles, boolean useModuleManagerApi) {
+        Map<Bundle, JahiaTemplatesPackage> toBeStarted = new HashMap<>();
+        for (Bundle bundle : moduleBundles) {
+            JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
+            if (pkg != null) {
+                toBeStarted.put(bundle, pkg);
+            } else {
+                logger.warn("Unable to retrieve module package for bundle {}/{}. Skip starting it.",
+                        bundle.getSymbolicName(), bundle.getVersion());
+            }
+        }
+
+        startBundles(toBeStarted, useModuleManagerApi);
+    }
+
     private BundleContext bundleContext;
 
     private File deployedBundlesDir;
-
+    
     private boolean firstStartup;
-
+    
     BundleStarter() {
         deployedBundlesDir = new File(System.getProperty("org.osgi.framework.storage"));
         firstStartup = !new File(deployedBundlesDir, "bundle0").exists();
     }
-    
+
     /**
      * Notifies the service that the FileInstall watcher has been started and processed the found modules.
      */
@@ -158,7 +216,7 @@ class BundleStarter {
         }
         startMigrateBundlesIfNeeded();
     }
-    
+
     private BundleContext getBundleContext() {
         if (bundleContext == null) {
             bundleContext = FrameworkService.getBundleContext();
@@ -186,41 +244,15 @@ class BundleStarter {
     }
 
     private void startAllModules() {
-        Map<Bundle, JahiaTemplatesPackage> toBeStarted = new HashMap<>();
+        List<Bundle> toBeStarted = new LinkedList<>();
         for (Bundle bundle : getBundleContext().getBundles()) {
             if (bundle.getState() != Bundle.ACTIVE && bundle.getState() != Bundle.UNINSTALLED
                     && !BundleUtils.isFragment(bundle) && BundleUtils.isJahiaModuleBundle(bundle)) {
-                JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
-                if (pkg != null) {
-                    toBeStarted.put(bundle, pkg);
-                }
+                toBeStarted.add(bundle);
             }
         }
 
-        startBundles(toBeStarted);
-    }
-
-    private void startBundles(Map<Bundle, JahiaTemplatesPackage> toBeStarted) {
-        logger.info("Will start {} bundle(s)", toBeStarted.size());
-        Collection<Bundle> sortedBundles = getSortedModules(toBeStarted);
-
-        try {
-            for (Bundle bundle : sortedBundles) {
-                try {
-                    logger.info("Triggering start for bundle {}/{}", bundle.getSymbolicName(), bundle.getVersion());
-                    bundle.start();
-                } catch (BundleException e) {
-                    if (BundleException.RESOLVE_ERROR == e.getType()) {
-                        // log warning for the resolution (dependencies) error
-                        logger.warn(e.getMessage());
-                    } else {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            }
-        } finally {
-            logger.info("Finished starting {} bundle(s)", toBeStarted.size());
-        }
+        startModules(toBeStarted, false);
     }
 
     void startInitialBundlesIfNeeded() {
@@ -282,7 +314,7 @@ class BundleStarter {
         logger.info("Starting migrated bundles");
         
         try {
-            Map<Bundle, JahiaTemplatesPackage> toBeStarted = new HashMap<>();
+            List<Bundle> toBeStarted = new LinkedList<>();
             List<String> lines = FileUtils.readLines(marker);
             for (String line : lines) {
                 String[] lineParts = line.split(",");
@@ -294,13 +326,7 @@ class BundleStarter {
                     if (bundle.getState() != Bundle.ACTIVE && bundle.getState() != Bundle.UNINSTALLED
                             && !BundleUtils.isFragment(bundle)
                             && !bundle.adapt(BundleStartLevel.class).isPersistentlyStarted()) {
-                        JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
-                        if (pkg != null) {
-                            toBeStarted.put(bundle, pkg);
-                        } else {
-                            logger.warn("Unable to retrieve module package for bundle {}/{}. Skip starting it.",
-                                    bundleSymbolicName, bundleVersion);
-                        }
+                        toBeStarted.add(bundle);
                     } else {
                         logger.info("No need to start bundle {}/{}. Skipping it.", bundleSymbolicName, bundleVersion);
                     }
@@ -309,7 +335,7 @@ class BundleStarter {
                 }
             }
             if (!toBeStarted.isEmpty()) {
-                startBundles(toBeStarted);
+                startModules(toBeStarted, false);
             }
             logger.info("Finished starting migrated bundles");
             FileUtils.deleteQuietly(marker);

@@ -48,6 +48,7 @@ import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.bundles.extender.jahiamodules.fileinstall.FileInstallConfigurer;
 import org.jahia.bundles.extender.jahiamodules.transform.DxModuleURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleDependencyURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleUrlTransformer;
@@ -57,7 +58,6 @@ import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.ExtensionObserverRegistry;
-import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
@@ -83,9 +83,6 @@ import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.url.URLConstants;
 import org.osgi.service.url.URLStreamHandlerService;
@@ -110,7 +107,7 @@ import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEP
 /**
  * Activator for DX Modules extender.
  */
-public class Activator implements BundleActivator, EventHandler {
+public class Activator implements BundleActivator {
 
     private static final Logger logger = LoggerFactory.getLogger(Activator.class);
 
@@ -145,7 +142,6 @@ public class Activator implements BundleActivator, EventHandler {
     private Map<String, List<Bundle>> toBeResolved;
     private Map<Bundle, ModuleState> moduleStates;
     private FileInstallConfigurer fileInstallConfigurer;
-    private ServiceRegistration<?> fileInstallEventHandlerRegistration;
 
     public Activator() {
         instance = this;
@@ -238,8 +234,6 @@ public class Activator implements BundleActivator, EventHandler {
                 }
             }
         });
-
-        registerFileInstallEventHandler(context);
 
         fileInstallConfigurer = new FileInstallConfigurer();
         fileInstallConfigurer.start(context);
@@ -1016,42 +1010,10 @@ public class Activator implements BundleActivator, EventHandler {
                 new ModuleUrlTransformer(), null));
     }
 
-    /**
-     * Registers this activator as the {@link EventHandler} to be able to get notified about the startup of the file installer watcher for
-     * modules.
-     *
-     * @param context
-     *            the current bundle context
-     */
-    private void registerFileInstallEventHandler(BundleContext context) {
-        Dictionary<String, Object> props = new Hashtable<>();
-        props.put(EventConstants.EVENT_TOPIC, new String[] { "org/apache/felix/fileinstall" });
-        props.put(EventConstants.EVENT_FILTER, "(type=watcherStarted)");
-        fileInstallEventHandlerRegistration = context.registerService(EventHandler.class.getName(), this, props);
-    }
-
-    @Override
-    public void handleEvent(Event event) {
-        unregisterFileInstallEventHandler();
-
-        // notify the framework that the file install watcher has started and processed found modules
-        FrameworkService.notifyFileInstallStarted();
-    }
-
     private static boolean needsDefaultModuleDependency(final JahiaTemplatesPackage pkg) {
         return !pkg.getDepends().contains(JahiaTemplatesPackage.ID_DEFAULT)
                 && !pkg.getDepends().contains(JahiaTemplatesPackage.NAME_DEFAULT)
                 && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
                 .contains(pkg.getId());
-    }
-
-    private void unregisterFileInstallEventHandler() {
-        if (fileInstallEventHandlerRegistration != null) {
-            try {
-                fileInstallEventHandlerRegistration.unregister();
-            } catch (Exception e) {
-                logger.warn("Unable to unregister EventHandler for FileInstall events", e);
-            }
-        }
     }
 }

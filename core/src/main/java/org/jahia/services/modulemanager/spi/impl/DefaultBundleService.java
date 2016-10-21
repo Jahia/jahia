@@ -89,14 +89,10 @@ public class DefaultBundleService implements BundleService {
             if (start) {
                 bundle.start();
             }
-            postInstall(bundle, start);
+            BundleLifecycleUtils.startBundlesPendingDependencies();
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
         }
-    }
-
-    protected void postInstall(Bundle bundle, boolean startTriggered) {
-        BundleLifecycleUtils.startBundlesPendingDependencies();
     }
 
     protected void refreshUninstalledBundle(Bundle bundle) {

@@ -51,8 +51,6 @@ import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleNotFoundException;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.settings.SettingsBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Delegate class that is dispatching the calls to an appropriate service implementation of the {@link BundleService}.
@@ -62,7 +60,6 @@ import org.slf4j.LoggerFactory;
 public class BundleServiceDelegate implements BundleService {
 
     private static final String CLUSTERED_SERVICE_FILTER = "(" + Constants.BUNDLE_SERVICE_PROPERTY_CLUSTERED + "=true)";
-    private static final Logger logger = LoggerFactory.getLogger(BundleServiceDelegate.class);
 
     private BundleService defaultBundleService;
     private SettingsBean settingsBean;
@@ -92,25 +89,10 @@ public class BundleServiceDelegate implements BundleService {
         lookupService().refresh(bundleInfo, target);
     }
 
-    private BundleService lookupClusteredService() {
-
-        long startTime = System.currentTimeMillis();
-        logger.debug("Looking up suitable BundleService instance using filter " + CLUSTERED_SERVICE_FILTER + "...");
-
-        BundleService service = BundleUtils.getOsgiService(BundleService.class, CLUSTERED_SERVICE_FILTER);
-
-        if (service == null) {
-            throw new ModuleManagementException("Unable to find suitable cluster-aware BundleService instance");
-        }
-
-        logger.debug("Found suitable BundleService instance of type {} in {} ms", service.getClass().getName(),
-                System.currentTimeMillis() - startTime);
-
-        return service;
-    }
-
     private BundleService lookupService() {
-        return (settingsBean.isClusterActivated() ? lookupClusteredService() : defaultBundleService);
+        BundleService service = settingsBean.isClusterActivated()
+                ? BundleUtils.getOsgiService(BundleService.class, CLUSTERED_SERVICE_FILTER) : null;
+        return service != null ? service : defaultBundleService;
     }
 
     public void setDefaultBundleService(BundleService defaultBundleService) {

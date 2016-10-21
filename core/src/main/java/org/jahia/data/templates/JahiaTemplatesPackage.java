@@ -61,6 +61,8 @@ import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -1206,5 +1208,37 @@ public class JahiaTemplatesPackage {
         }
 
         return bundleKey;
+    }
+
+    public Set<JahiaTemplatesPackage> getModuleDependenciesWithVersion() {
+        Set<JahiaTemplatesPackage> deps = new HashSet<>();
+        if (bundle != null && bundle.getState() >= Bundle.RESOLVED) {
+            BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
+
+            List<BundleWire> requiredWires = bundleWiring.getRequiredWires(null);
+            for (BundleWire wire : requiredWires) {
+                Bundle bundle = wire.getProvider().getBundle();
+                if (BundleUtils.isJahiaBundle(bundle)) {
+                    deps.add(BundleUtils.getModule(bundle));
+                }
+            }
+        }
+        return deps;
+    }
+
+    public Set<JahiaTemplatesPackage> getDependentModulesWithVersion() {
+        Set<JahiaTemplatesPackage> deps = new HashSet<>();
+        if (bundle != null && bundle.getState() >= Bundle.RESOLVED) {
+            BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
+
+            List<BundleWire> providedWires = bundleWiring.getProvidedWires(null);
+            for (BundleWire wire : providedWires) {
+                Bundle bundle = wire.getRequirer().getBundle();
+                if (BundleUtils.isJahiaBundle(bundle)) {
+                    deps.add(BundleUtils.getModule(bundle));
+                }
+            }
+        }
+        return deps;
     }
 }

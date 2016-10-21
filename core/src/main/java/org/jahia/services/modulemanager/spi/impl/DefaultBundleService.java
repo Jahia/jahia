@@ -56,6 +56,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;
 
+import java.util.Collections;
+
 /**
  * The default implementation of the {@link BundleService} which is using direct bundle operations (BundleContext.installBundle(),
  * bundle.start()/stop()/uninstall()). The implementation is used in a standalone DX instance or in case DX clustering is not activated (
@@ -97,7 +99,7 @@ public class DefaultBundleService implements BundleService {
         BundleLifecycleUtils.startBundlesPendingDependencies();
     }
 
-    protected void refreshBundle(Bundle bundle) {
+    protected void refreshUninstalledBundle(Bundle bundle) {
         if (Bundle.UNINSTALLED == bundle.getState()) {
              BundleLifecycleUtils.refreshBundle(bundle);
         }
@@ -128,7 +130,7 @@ public class DefaultBundleService implements BundleService {
         try {
             Bundle bundle = getBundleEnsureExists(bundleInfo);
             bundle.uninstall();
-            refreshBundle(bundle);
+            refreshUninstalledBundle(bundle);
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
         }
@@ -137,6 +139,6 @@ public class DefaultBundleService implements BundleService {
     @Override
     public void refresh(BundleInfo bundleInfo, String target) throws ModuleManagementException {
         Bundle bundle = getBundleEnsureExists(bundleInfo);
-        refreshBundle(bundle);
+        BundleLifecycleUtils.refreshBundles(Collections.singleton(bundle), false, false);
     }
 }

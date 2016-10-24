@@ -85,6 +85,7 @@ public class ModuleDeploymentTest {
             TestHelper.createSite(TESTSITE_NAME);
         } catch (Exception e) {
             logger.error("Cannot create or publish site", e);
+            fail();
         }
     }
 

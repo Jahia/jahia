@@ -94,6 +94,7 @@ public class IndexOptionsTest {
             session.save();
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
     
@@ -131,8 +132,6 @@ public class IndexOptionsTest {
                 assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));                
             }
 
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
         } finally {
             session.save();
         }
@@ -174,8 +173,6 @@ public class IndexOptionsTest {
                 assertTrue(getResultSize(queryResult.getNodes()) > 0);
             }
 
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
         } finally {
             session.save();
         }
@@ -291,8 +288,6 @@ public class IndexOptionsTest {
                 }
             }
 
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
         } finally {
             session.save();
         }
@@ -321,8 +316,6 @@ public class IndexOptionsTest {
                         "225162ba-69ac-4128-a141-fd95bd8c792e")));
             }
 
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
         } finally {
             session.save();
         }

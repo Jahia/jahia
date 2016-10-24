@@ -126,6 +126,7 @@ public class CacheFilterTest extends JahiaTestCase {
             node = session.getNode("/sites/"+site.getSiteKey()+"/home/testContent");
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
+            fail();
         }
     }
 

@@ -88,6 +88,7 @@ public class JahiaTemplateManagerServiceTest {
             assertNotNull(site);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail("Cannot create or publish site");
         }
 
         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();

@@ -152,6 +152,7 @@ public class AutoSplittingTest {
                                 TestHelper.createSite(TESTSITE_NAME);
                             } catch (Exception e) {
                                 logger.error("Cannot create or publish site", e);
+                                fail("Cannot create or publish site");
                             }
 
                             session.save();
@@ -168,6 +169,7 @@ public class AutoSplittingTest {
             initContent(session);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 

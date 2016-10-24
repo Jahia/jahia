@@ -99,6 +99,7 @@ public class FindPrincipalTest extends JahiaTestCase {
                         TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.WEB_TEMPLATES);
                     } catch (Exception e) {
                         logger.error("Cannot create or publish site", e);
+                        fail("Cannot create or publish site");
                     }
                     session.save();
                     return null;
@@ -107,6 +108,7 @@ public class FindPrincipalTest extends JahiaTestCase {
 
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 

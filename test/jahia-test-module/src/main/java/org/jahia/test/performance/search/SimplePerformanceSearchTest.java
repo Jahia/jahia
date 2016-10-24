@@ -66,6 +66,9 @@ import org.slf4j.Logger;
 import org.springframework.util.StopWatch;
 
 import javax.jcr.RepositoryException;
+
+import static org.junit.Assert.fail;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -91,6 +94,7 @@ public class SimplePerformanceSearchTest extends JahiaTestCase {
                                 "ACME.zip");
                     } catch (Exception e) {
                         logger.error("Cannot create or publish site", e);
+                        fail("Cannot create or publish site");
                     }
                     session.save();
                     return null;
@@ -98,6 +102,7 @@ public class SimplePerformanceSearchTest extends JahiaTestCase {
             });
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 

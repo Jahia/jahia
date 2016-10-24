@@ -160,6 +160,7 @@ public class AtmosphereTest extends JahiaTestCase {
 
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 

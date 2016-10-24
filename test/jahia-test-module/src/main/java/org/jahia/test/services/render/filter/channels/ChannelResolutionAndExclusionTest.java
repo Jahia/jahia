@@ -68,6 +68,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -98,6 +99,7 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
                     true, null);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            Assert.fail();
         }
     }
 
@@ -112,7 +114,7 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
     }
 
     @Test
-    public void testGenericChannelResolution() throws Exception {
+    public void testGenericChannelResolution() throws Exception, IOException {
         HttpClient client = new HttpClient();
         GetMethod nodeGet = new GetMethod(
         		getBaseServerURL() + Jahia.getContextPath() + "/cms/render/live/en" +
@@ -123,15 +125,13 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertEquals("Response code " + responseCode, 200, responseCode);
             response = nodeGet.getResponseBodyAsString();
             assertTrue("This text should be displayed on generic channel", response.contains("This banner shouldn&#39;t appear on an iPhone."));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             nodeGet.releaseConnection();
         }
     }
 
     @Test
-    public void testSupportedChannelResolution() throws Exception {
+    public void testSupportedChannelResolution() throws Exception, IOException {
         HttpClient client = new HttpClient();
         client.getParams().setParameter(HttpMethodParams.USER_AGENT,
                 "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
@@ -144,15 +144,13 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertEquals("Response code " + responseCode, 200, responseCode);
             response = nodeGet.getResponseBodyAsString();
             assertFalse("This text shouldn't be displayed on iPhone channel", response.contains("This banner shouldn&#39;t appear on an iPhone."));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             nodeGet.releaseConnection();
         }
     }
 
     @Test
-    public void testUnsupportedChannelResolution() throws Exception {
+    public void testUnsupportedChannelResolution() throws Exception, IOException {
         HttpClient client = new HttpClient();
         client.getParams().setParameter(HttpMethodParams.USER_AGENT,
                 "Mozilla/5.0 (SymbianOS/9.4; Series60/5.0 NokiaN97-1/12.0.024; Profile/MIDP-2.1 Configuration/CLDC-1.1; en-us) AppleWebKit/525 (KHTML, like Gecko) BrowserNG/7.1.12344");
@@ -165,15 +163,13 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertEquals("Response code " + responseCode, 200, responseCode);
             response = nodeGet.getResponseBodyAsString();
             assertTrue("Non supported channel should fall back on generic", response.contains("This banner shouldn&#39;t appear on an iPhone."));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             nodeGet.releaseConnection();
         }
     }
 
     @Test
-    public void testNonExcludedChannel() throws Exception {
+    public void testNonExcludedChannel() throws Exception, IOException {
         HttpClient client = new HttpClient();
         client.getParams().setParameter(HttpMethodParams.USER_AGENT,
                 "Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
@@ -186,15 +182,13 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertEquals("Response code " + responseCode, 200, responseCode);
             response = nodeGet.getResponseBodyAsString();
             assertTrue("This text should be displayed when channel is not iPad", response.contains("This text shouldn&#39;t appear on an iPad."));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             nodeGet.releaseConnection();
         }
     }
 
     @Test
-    public void testExcludedChannel() throws Exception {
+    public void testExcludedChannel() throws Exception, IOException {
         HttpClient client = new HttpClient();
         client.getParams().setParameter(HttpMethodParams.USER_AGENT,
                 "Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3");
@@ -207,8 +201,6 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertEquals("Response code " + responseCode, 200, responseCode);
             response = nodeGet.getResponseBodyAsString();
             assertFalse("This text should be hidden when channel is iPad", response.contains("This text shouldn&#39;t appear on an iPad."));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             nodeGet.releaseConnection();
         }

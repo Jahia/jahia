@@ -596,33 +596,30 @@ public class ImportExportTest {
                     session.save();
                 } catch (Exception e) {
                     logger.error("Cannot create or publish site", e);
+                    fail("Cannot create or publish site");
                 }
                 return null;
             }
         });
     }
 
-    private static void initContent(JCRSessionWrapper session, JahiaSite site) {
-        try {
-            JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+    private static void initContent(JCRSessionWrapper session, JahiaSite site) throws RepositoryException {
+        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
 
-            String defaultLanguage = site.getDefaultLanguage();
+        String defaultLanguage = site.getDefaultLanguage();
 
-            Locale englishLocale = Locale.ENGLISH;
+        Locale englishLocale = Locale.ENGLISH;
 
-            JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,
-                    englishLocale, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
-            JCRNodeWrapper englishEditSiteRootNode = englishEditSession.getNode("/" + SITECONTENT_ROOT_NODE);
-            JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode.getNode("home");
+        JCRSessionWrapper englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, englishLocale,
+                LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
+        JCRNodeWrapper englishEditSiteRootNode = englishEditSession.getNode("/" + SITECONTENT_ROOT_NODE);
+        JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode.getNode("home");
 
-            TestHelper.createSubPages(englishEditSiteHomeNode, 1, 3, "Page title");
-            englishEditSession.save();
+        TestHelper.createSubPages(englishEditSiteHomeNode, 1, 3, "Page title");
+        englishEditSession.save();
 
-            fillPagesWithLists(englishEditSiteHomeNode);
-            englishEditSession.save();
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
-        }
+        fillPagesWithLists(englishEditSiteHomeNode);
+        englishEditSession.save();
     }
 
     private static void addLists(JCRNodeWrapper node) throws LockException, ConstraintViolationException, NoSuchNodeTypeException,
@@ -1024,6 +1021,7 @@ public class ImportExportTest {
                     session.save();
                 } catch (Exception e) {
                     logger.error("Cannot create or publish site", e);
+                    fail("Cannot create or publish site");
                 }
                 return null;
             }
@@ -1064,7 +1062,7 @@ public class ImportExportTest {
                                     }
                                 }
                             } catch (IOException e) {
-                                logger.error(e.getMessage(), e);
+                                fail(e.getMessage());
                             } finally {
                                 if (os != null) {
                                     try {
@@ -1110,7 +1108,7 @@ public class ImportExportTest {
                                 noCloseZis.reallyClose();
                             }
                         } catch (IOException e) {
-                            logger.error(e.getMessage(), e);
+                            fail(e.getMessage());
                         } finally {
                             if (siteZIPFile != null) {
                                 siteZIPFile.delete();

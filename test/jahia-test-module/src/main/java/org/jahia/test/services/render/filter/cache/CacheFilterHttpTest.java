@@ -133,6 +133,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
+            fail();
         }
     }
 
@@ -361,23 +362,19 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/references");
         getContent(url, "root", "root1234", null);
 
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+        JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/main/simple-text");
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
-            JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/main/simple-text");
-            try {
-                n.setProperty("text", "text content updated");
-                session.save();
-                String newvalue = getContent(url, "root", "root1234", "testReferencesFlush1");
-                Matcher m = Pattern.compile("text content updated").matcher(newvalue);
-                assertTrue("Value has not been updated", m.find());
-                assertTrue("References have not been flushed", m.find());
-                assertTrue("References have not been flushed", m.find());
-            } finally {
-                n.setProperty("text", "text content");
-                session.save();
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            n.setProperty("text", "text content updated");
+            session.save();
+            String newvalue = getContent(url, "root", "root1234", "testReferencesFlush1");
+            Matcher m = Pattern.compile("text content updated").matcher(newvalue);
+            assertTrue("Value has not been updated", m.find());
+            assertTrue("References have not been flushed", m.find());
+            assertTrue("References have not been flushed", m.find());
+        } finally {
+            n.setProperty("text", "text content");
+            session.save();
         }
     }
 

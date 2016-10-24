@@ -110,6 +110,7 @@ public class FindTest extends JahiaTestCase {
                         site = TestHelper.createSite(TESTSITE_NAME);
                     } catch (Exception e) {
                         logger.error("Cannot create or publish site", e);
+                        fail("Cannot create or publish site");
                     }
 
                     session.save();
@@ -143,6 +144,7 @@ public class FindTest extends JahiaTestCase {
             setFindServletDisabled("false");
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 

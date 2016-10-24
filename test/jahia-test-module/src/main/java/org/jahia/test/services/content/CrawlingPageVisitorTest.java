@@ -95,9 +95,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -187,6 +185,7 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
                             session.save();
                         } catch (Exception e) {
                             logger.error("Cannot create or publish site", e);
+                            fail("Cannot create or publish site");
                         }
                         return null;
                     }
@@ -194,6 +193,7 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
             }
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 
@@ -249,81 +249,74 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
                 get.releaseConnection();
             }
         } catch (Exception e) {
-            assertNotNull("Precompile servlet request threw exception: " + e.getLocalizedMessage() , null);
+            fail("Precompile servlet request threw exception: " + e.getLocalizedMessage());
         }
     }
 
     @Test
-    public void testFetchDefaultSiteLive() throws IOException {
+    public void testFetchDefaultSiteLive() throws IOException, RepositoryException {
         crawlUrls(getBaseUrls(Constants.LIVE_WORKSPACE, ACME_SITECONTENT_ROOT_NODE));
         assertEquals("There were errors during the crawling", "", appender.getErrorLogs());        
     }
 
-    private List<String> getBaseUrls(String workspace, String sitePath) {
+    private List<String> getBaseUrls(String workspace, String sitePath) throws RepositoryException {
         List<String> urls = new ArrayList<String>();
-        try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace,
-                    LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
-            // generate seedlist
-            RenderContext renderCtx = new RenderContext(getRequest(), getResponse(), getUser());
-                        
-            JCRNodeWrapper homeNode = null;
-            try {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
+
+        // generate seedlist
+        RenderContext renderCtx = new RenderContext(getRequest(), getResponse(), getUser());
+
+        JCRNodeWrapper homeNode = null;
+        try {
+            homeNode = session.getRootNode().getNode(sitePath + "/home");
+        } catch (PathNotFoundException e) {
+            if (ACME_SITECONTENT_ROOT_NODE.equals(sitePath)) {
+                JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
+                sitePath = defaultSite != null ? "sites/" + defaultSite.getSiteKey() : null;
                 homeNode = session.getRootNode().getNode(sitePath + "/home");
-            } catch (PathNotFoundException e) {
-                if (ACME_SITECONTENT_ROOT_NODE.equals(sitePath)) {
-                    JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
-                    sitePath = defaultSite != null ? "sites/" + defaultSite.getSiteKey() : null;
-                    homeNode = session.getRootNode().getNode(sitePath + "/home");                    
-                }
             }
-            
-            Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
-            renderCtx.setMainResource(resource);
-            renderCtx.setSite(homeNode.getResolveSite());
-            URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
-            urls.add(urlgenerator.getServer() + urlgenerator.getContext()
-                    + (Constants.LIVE_WORKSPACE.equals(workspace) ? urlgenerator.getLive() : urlgenerator.getEdit()));
-        } catch (Exception e) {
-            logger.error("Exception during test", e);
         }
+
+        Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
+        renderCtx.setMainResource(resource);
+        renderCtx.setSite(homeNode.getResolveSite());
+        URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
+        urls.add(urlgenerator.getServer() + urlgenerator.getContext()
+                + (Constants.LIVE_WORKSPACE.equals(workspace) ? urlgenerator.getLive() : urlgenerator.getEdit()));
+
         return urls;
     }
 
-    private void crawlUrls(List<String> urls) {
-        try {
-            CrawlDBTestUtil.generateSeedList(fs, urlPath, urls);
+    private void crawlUrls(List<String> urls) throws IOException {
 
-            // inject
-            Injector injector = new Injector(conf);
-            injector.inject(crawldbPath, urlPath);
+        CrawlDBTestUtil.generateSeedList(fs, urlPath, urls);
 
-            // generate
-            Generator g = new Generator(conf);
-            // fetch
-            conf.setBoolean("fetcher.parse", true);
-            Fetcher fetcher = new Fetcher(conf);
-            CrawlDb crawlDbTool = new CrawlDb(conf);
+        // inject
+        Injector injector = new Injector(conf);
+        injector.inject(crawldbPath, urlPath);
 
-            int depth = 5;
-            int threads = 4;
-            for (int i = 0; i < depth; i++) { // generate new segment
-                Path[] generatedSegments = g.generate(crawldbPath, segmentsPath, 1, Long.MAX_VALUE, Long.MAX_VALUE, false,
-                        false);
+        // generate
+        Generator g = new Generator(conf);
+        // fetch
+        conf.setBoolean("fetcher.parse", true);
+        Fetcher fetcher = new Fetcher(conf);
+        CrawlDb crawlDbTool = new CrawlDb(conf);
 
-                if (generatedSegments == null) {
-                    logger.info("Stopping at depth=" + i + " - no more URLs to fetch.");
-                    break;
-                }
-                for (Path generatedSegment : generatedSegments) {
-                    fetcher.fetch(generatedSegment, threads);
-                    crawlDbTool.update(crawldbPath,
-                            new Path[] { generatedSegment }, true, true);
-                }
+        int depth = 5;
+        int threads = 4;
+        for (int i = 0; i < depth; i++) { // generate new segment
+            Path[] generatedSegments = g.generate(crawldbPath, segmentsPath, 1, Long.MAX_VALUE, Long.MAX_VALUE, false, false);
+
+            if (generatedSegments == null) {
+                logger.info("Stopping at depth=" + i + " - no more URLs to fetch.");
+                break;
             }
-        } catch (IOException e) {
-            logger.error("Exception while crawling", e);
+            for (Path generatedSegment : generatedSegments) {
+                fetcher.fetch(generatedSegment, threads);
+                crawlDbTool.update(crawldbPath, new Path[] { generatedSegment }, true, true);
+            }
         }
     }
 

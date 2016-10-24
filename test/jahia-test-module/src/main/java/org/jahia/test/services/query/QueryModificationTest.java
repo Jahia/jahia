@@ -87,6 +87,7 @@ public class QueryModificationTest {
                         TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.WEB_BLUE_TEMPLATES);
                     } catch (Exception e) {
                         logger.error("Cannot create or publish site", e);
+                        fail("Cannot create or publish site");
                     }
                     session.save();
                     return null;
@@ -95,6 +96,7 @@ public class QueryModificationTest {
 
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 
@@ -141,8 +143,6 @@ public class QueryModificationTest {
                 assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISCHILDNODE(news, ['" + SITECONTENT_ROOT_NODE + "/home/page8/news']) AND (NOT (news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en')) ORDER BY news.[jcr:created] DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
             }
 
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
         } finally {
             session.save();
         }
@@ -173,8 +173,6 @@ public class QueryModificationTest {
                 assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISDESCENDANTNODE(news, ['" + SITECONTENT_ROOT_NODE + "']) AND (LENGTH(news.[j:nodename]) > CAST('100' AS LONG) OR news.date > '+2001-01-01T01:02:03.000Z') AND (NOT (news.[jcr:language] IS NOT NULL OR news.[jcr:language] = 'en'))", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
             }
 
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
         } finally {
             session.save();
         }
@@ -221,8 +219,6 @@ public class QueryModificationTest {
 //                q = queryManager.createQuery(query, Query.JCR_SQL2);
 //                assertEquals("SELECT node.* FROM [jmix:keywords] AS node WHERE CONTAINS(node.*, 'ACME') AND (NOT node.[jcr:language] IS NOT NULL OR node.[jcr:language] = 'en')", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                                
             }
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
         } finally {
             session.save();
         }
@@ -245,8 +241,6 @@ public class QueryModificationTest {
                 assertEquals("SELECT news.* FROM [jnt:news] AS news WHERE (NOT news.[j:isExternalProviderRoot] IS NOT NULL) AND ISCHILDNODE(news, ['" + SITECONTENT_ROOT_NODE + "/home/page8/news']) AND news.[jcr:language] = 'fr' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
             }
 
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
         } finally {
             session.save();
         }
@@ -269,8 +263,6 @@ public class QueryModificationTest {
                 assertEquals("SELECT news.*, categories.* FROM [jnt:news] AS news INNER JOIN [jnt:category] AS categories ON news.[j:defaultCategory] = categories.[jcr:uuid] WHERE ISCHILDNODE(news, [" + SITECONTENT_ROOT_NODE + "]) AND LOCALNAME(categories) = 'test' AND news.[jcr:language] = 'en' ORDER BY news.[jcr:title]", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());
             }
 
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
         } finally {
             session.save();
         }
@@ -293,8 +285,6 @@ public class QueryModificationTest {
                 assertEquals("SELECT press.* FROM [jnt:press] AS press LEFT OUTER JOIN [nt:file] AS file ON press.pdfVersion = file.[jcr:uuid] INNER JOIN [nt:resource] AS filecontent ON ISCHILDNODE(filecontent, file) WHERE (CONTAINS(filecontent.*, 'ACME') OR CONTAINS(press.*, 'ACME')) AND press.[jcr:language] = 'en' ORDER BY press.date DESC", ((QueryWrapper)q).getQueries().values().iterator().next().getStatement());                
             }
 
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
         } finally {
             session.save();
         }

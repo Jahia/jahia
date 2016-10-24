@@ -534,6 +534,9 @@
                         <goals>
                             <goal>list-jars-with-no-tlds</goal>
                         </goals>
+                        <configuration>
+                            <dest>${project.build.directory}/jahia/WEB-INF/etc/config/jar-scanner.conf</dest>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>gwt-dictionary</id>

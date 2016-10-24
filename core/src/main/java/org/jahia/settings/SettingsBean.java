@@ -110,6 +110,18 @@ import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProper
 
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
 
+    public interface ClusterSettingsHandler {
+
+        void handleClusterSettings(SettingsBean settings);
+    }
+
+    public static class ClusterSettingsHandlerDummy implements ClusterSettingsHandler {
+
+        @Override
+        public void handleClusterSettings(SettingsBean settings) {
+        }
+    }
+
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
     private static final Logger logger = LoggerFactory.getLogger(SettingsBean.class);
 
@@ -170,6 +182,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private int queryApproxCountLimit;
     private boolean readOnlyMode;
     private DataSource dataSource;
+    private ClusterSettingsHandler clusterSettingsHandler;
     private String internetExplorerCompatibility;
     private boolean clusterActivated;
     private boolean isMavenExecutableSet;
@@ -478,18 +491,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             if (System.getProperty("cluster.node.serverId") == null) {
                 setSystemProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
             }
-            if(clusterActivated) {
-                initBindAddress();
-                // Expose binding port: use also cluster.tcp.ehcache.jahia.port for backward compatibility with Jahia 6.6
-                String bindPort = getString("cluster.tcp.bindPort", getString("cluster.tcp.ehcache.jahia.port", null));
-                if (StringUtils.isNotEmpty(bindPort)) {
-                    setSystemProperty("cluster.tcp.bindPort", bindPort);
-                }
-
-                setSystemProperty("cluster.configFile.jahia", getString("cluster.configFile.jahia", "tcp.xml"));
-                if (System.getProperty("cluster.hazelcast.bindPort") == null) {
-                    setSystemProperty("cluster.hazelcast.bindPort", getString("cluster.hazelcast.bindPort", "7860"));
-                }
+            if (clusterActivated) {
+                clusterSettingsHandler.handleClusterSettings(this);
             }
 
             initJcrSystemProperties();
@@ -881,7 +884,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
     }
 
-    private String getString(String propertyName, String defaultValue) {
+    public String getString(String propertyName, String defaultValue) {
         String result = defaultValue;
         String curProperty = getPropertyValue(propertyName);
         if (curProperty != null) {
@@ -1399,6 +1402,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    public void setClusterSettingsHandler(ClusterSettingsHandler clusterSettingsHandler) {
+        this.clusterSettingsHandler = clusterSettingsHandler;
     }
 
     public String getInternetExplorerCompatibility() {

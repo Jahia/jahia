@@ -1039,3 +1039,5 @@ extends = jnt:content
   - j:version (string) nofulltext
   - j:displayName (string) nofulltext
   - j:checksum (string) nofulltext
+  - j:transformationRequired (boolean)
+  

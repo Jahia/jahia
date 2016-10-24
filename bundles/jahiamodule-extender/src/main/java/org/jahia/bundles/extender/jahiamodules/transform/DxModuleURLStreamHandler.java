@@ -50,6 +50,7 @@ import java.net.URLConnection;
 
 import org.jahia.services.modulemanager.Constants;
 import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.osgi.service.url.AbstractURLStreamHandlerService;
 import org.slf4j.Logger;
@@ -77,7 +78,8 @@ public class DxModuleURLStreamHandler extends AbstractURLStreamHandlerService {
             public InputStream getInputStream() throws IOException {
                 String bundleKey = url.getFile();
                 try {
-                    return ModuleUtils.addModuleDependencies(ModuleUtils.loadPersistentBundleStream(bundleKey));
+                    PersistentBundle bundle = ModuleUtils.loadPersistentBundle(bundleKey);
+                    return bundle.isTransformationRequired() ? ModuleUtils.addModuleDependencies(bundle.getResource().getInputStream()) : bundle.getResource().getInputStream();
                 } catch (ModuleManagementException e) {
                     logger.warn("Couldn't resolve the {}: protocol path for: {}", Constants.URL_PROTOCOL_DX, bundleKey);
                     throw new IOException(e);

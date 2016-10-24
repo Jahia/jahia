@@ -43,8 +43,6 @@
  */
 package org.jahia.services.modulemanager.persistence;
 
-import java.io.InputStream;
-
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.springframework.core.io.Resource;
 
@@ -73,16 +71,6 @@ public interface BundlePersister {
      *         found for the provided key
      */
     PersistentBundle find(String bundleKey);
-
-    /**
-     * Returns the input stream for the persisted bundle considering the requested key.
-     *
-     * @param bundleKey The key of the bundle to be looked up
-     * @return The input stream for the persisted bundle considering the requested key or <code>null</code> if the corresponding bundle
-     *         cannot be found for the provided key
-     * @throws ModuleManagementException In case of unexpected error during the download process
-     */
-    InputStream getInputStream(String bundleKey) throws ModuleManagementException;
 
     /**
      * Persists the specified bundle resource either creating a new info in the storage or updating the existing entry with the supplied

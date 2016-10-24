@@ -66,7 +66,6 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
-import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.render.scripting.bundle.BundleScriptEngineManager;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
@@ -95,7 +94,6 @@ import org.springframework.core.io.Resource;
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -266,7 +264,7 @@ public class Activator implements BundleActivator {
                             logger.info("Found bundle {} which needs to be processed by a module extender. Location {}",
                                     BundleUtils.getDisplayName(bundle), bundleLocation);
                             if (state == Bundle.ACTIVE) {
-                                bundle.stop();
+                                bundle.stop(Bundle.STOP_TRANSIENT);
                                 toStart.add(bundle);
                             } else if (state == Bundle.INSTALLED) {
                                 final JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
@@ -281,9 +279,11 @@ public class Activator implements BundleActivator {
                             try {
                                 if (!bundleLocation.startsWith(URL_PROTOCOL_DX)) {
                                     // transform the module
-                                    bundle.update(transform(bundle));
-                                    // then persist
-                                    ModuleUtils.persist(bundle);
+                                    String newLocation = transform(bundle);
+                                    // overwrite bundle location
+                                    ModuleUtils.updateBundleLocation(bundle, newLocation);
+                                    // perform bundle update from the new location
+                                    bundle.update();
                                 } else if (state > Bundle.INSTALLED) {
                                     bundle.update();
                                 }
@@ -307,21 +307,19 @@ public class Activator implements BundleActivator {
     }
 
     /**
-     * Returns the transformed input stream of its content, including module
-     * dependency transformation and bundle location update.
+     * Persists the bundle content in DX and returns the new location URL which handles the transformed bundle content.
      *
      * @param bundle the source bundle
-     * @return the transformed input stream of its content
+     * @return the location of the transformed bundle
      */
-    private static InputStream transform(Bundle bundle) throws ModuleManagementException {
+    private static String transform(Bundle bundle) throws ModuleManagementException {
         try {
-            Resource bundleResource = ModuleUtils.loadBundleResource(bundle);
-            PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(bundleResource);
-            if (bundleInfo == null) {
-                throw new ModuleManagementException("Invalid resource for bundle: " + bundleResource);
-            }
-
-            return ModuleUtils.addBundleUpdateLocation(ModuleUtils.addModuleDependencies(bundleResource.getInputStream()), bundleInfo.getLocation());
+            PersistentBundle persistentBundle = ModuleUtils.persist(bundle);
+            String newLocation = persistentBundle.getLocation();
+            logger.info(
+                    "Transformed bundle {} with location {} to be handled by the DX protocol handler under new location {}",
+                    new String[] { getDisplayName(bundle), bundle.getLocation(), newLocation });
+            return newLocation;
         } catch (Exception e) {
             if (e instanceof ModuleManagementException) {
                 // re-throw
@@ -799,7 +797,7 @@ public class Activator implements BundleActivator {
         return false;
     }
 
-    private String getDisplayName(Bundle bundle) {
+    private static String getDisplayName(Bundle bundle) {
         return BundleUtils.getDisplayName(bundle);
     }
 

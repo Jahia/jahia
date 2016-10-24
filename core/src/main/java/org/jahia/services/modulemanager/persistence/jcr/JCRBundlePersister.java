@@ -64,9 +64,9 @@ import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
-import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
 /**
@@ -175,34 +175,12 @@ public class JCRBundlePersister implements BundlePersister {
             if (lastModified != null) {
                 info.setLastModified(lastModified.getTime());
             }
+            info.setTransformationRequired(node.hasProperty("j:transformationRequired")
+                    && node.getProperty("j:transformationRequired").getBoolean());
+            
+            info.setResource(new InputStreamResource(node.getFileContent().downloadFile()));
         }
         return info;
-    }
-
-    @Override
-    public InputStream getInputStream(final String bundleKey) throws ModuleManagementException {
-
-        try {
-
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<InputStream>() {
-
-                @Override
-                public InputStream doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRNodeWrapper node = findTargetNode(bundleKey, session);
-                    if (node == null && SettingsBean.getInstance().isClusterActivated()) {
-                        // When running in a cluster, Cellar inter-node communication may be faster than JCR replication,
-                        // so this method may be invoked before the bundle node is created in the local repository.
-                        // In this case, session refresh effectively forces JCR cluster synchronization and lets us succeed
-                        // fetching the node on second attempt.
-                        session.refresh(true);
-                        node = findTargetNode(bundleKey, session);
-                    }
-                    return node != null ? node.getFileContent().downloadFile() : null;
-                }
-            });
-        } catch (RepositoryException e) {
-            throw new ModuleManagementException("Unable to find bundle " + bundleKey, e);
-        }
     }
 
     @Override
@@ -258,6 +236,7 @@ public class JCRBundlePersister implements BundlePersister {
         bundleNode.setProperty("j:version", bundleInfo.getVersion());
         bundleNode.setProperty("j:checksum", bundleInfo.getChecksum());
         bundleNode.setProperty("j:displayName", bundleInfo.getDisplayName());
+        bundleNode.setProperty("j:transformationRequired", bundleInfo.isTransformationRequired());
         try (InputStream is = new BufferedInputStream(bundleInfo.getResource().getInputStream())) {
             bundleNode.getFileContent().uploadFile(is, "application/java-archive");
         }

@@ -50,6 +50,7 @@ import org.drools.core.util.StringUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.Constants;
 import org.jahia.services.modulemanager.InvalidModuleException;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
@@ -63,6 +64,7 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 /**
  * The main entry point service for the module management service, providing functionality for module deployment, undeployment, start and
@@ -167,11 +169,15 @@ public class ModuleManagerImpl implements ModuleManager {
         PersistentBundle bundleInfo = null;
         Exception error = null;
         try {
-            bundleInfo = PersistentBundleInfoBuilder.build(bundleResource);
+            boolean requiresHandling = !((bundleResource instanceof UrlResource)
+                    && bundleResource.getURL().getProtocol().equals(Constants.URL_PROTOCOL_DX));
+            bundleInfo = PersistentBundleInfoBuilder.build(bundleResource, requiresHandling, requiresHandling);
             if (bundleInfo == null) {
                 throw new InvalidModuleException();
             }
-            persister.store(bundleInfo);
+            if (requiresHandling) {
+                persister.store(bundleInfo);
+            }
             result = install(bundleInfo, target, start);
         } catch (ModuleManagementException e) {
             error = e;

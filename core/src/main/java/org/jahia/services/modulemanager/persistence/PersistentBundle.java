@@ -63,6 +63,7 @@ public class PersistentBundle extends BundleInfo {
     private String displayName;
     private long lastModified;
     private Resource resource;
+    private boolean transformationRequired;
 
     /**
      * Initializes an instance of this class.
@@ -126,6 +127,18 @@ public class PersistentBundle extends BundleInfo {
     }
 
     /**
+     * Returns <code>true</code> if for this persistent bundle a transformation is required to add module dependencies capability manifest
+     * headers on the fly.
+     * 
+     * @return <code>true</code> if for this persistent bundle a transformation is required to add module dependencies capability manifest
+     *         headers on the fly; <code>false</code> if no on-the-fly transformation is required (the capability headers are already
+     *         present)
+     */
+    public boolean isTransformationRequired() {
+        return transformationRequired;
+    }
+
+    /**
      * Sets the checksum of the bundle file.
      *
      * @param checksum The checksum of the bundle file
@@ -159,6 +172,16 @@ public class PersistentBundle extends BundleInfo {
      */
     public void setResource(Resource jarFile) {
         this.resource = jarFile;
+    }
+
+    /**
+     * Sets the flag for the transformation.
+     * 
+     * @param transformationRequired does the persistent bundle requires on-the-fly transformation
+     * @see #isTransformationRequired()
+     */
+    public void setTransformationRequired(boolean transformationRequired) {
+        this.transformationRequired = transformationRequired;
     }
 
     @Override

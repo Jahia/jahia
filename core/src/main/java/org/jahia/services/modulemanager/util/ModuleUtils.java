@@ -57,6 +57,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -83,7 +84,6 @@ import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -96,33 +96,7 @@ import org.springframework.core.io.UrlResource;
  */
 public class ModuleUtils {
     
-    private interface ManifestModifier {
-        void modify(Manifest mf);
-    }
-
     private static final Logger logger = LoggerFactory.getLogger(ModuleUtils.class);
-
-    /**
-     * Performs the transformation of the MANIFEST.MF file in the supplied stream to change/add the attribute value
-     * {@link Constants.BUNDLE_UPDATELOCATION}.
-     *
-     * @param sourceStream the source stream for the bundle, which manifest has to be adjusted; the stream is closed after returning from
-     *            this method
-     * @param bundleUpdateLocation the bundle update location URL
-     * @return the transformed stream for the bundle with adjusted manifest
-     * @throws IOException in case of I/O errors
-     */
-    public static InputStream addBundleUpdateLocation(InputStream sourceStream, final String bundleUpdateLocation)
-            throws IOException {
-        return modifyManifest(sourceStream, new ManifestModifier() {
-            @Override
-            public void modify(Manifest mf) {
-                // adjust the manifest headers
-                Attributes attrs = mf.getMainAttributes();
-                attrs.putValue(Constants.BUNDLE_UPDATELOCATION, bundleUpdateLocation);
-            }
-        });
-    }
 
     /**
      * Modifies the manifest attributes for Provide-Capability and Require-Capability (if needed) based on the module dependencies.
@@ -150,12 +124,30 @@ public class ModuleUtils {
      * @throws IOException in case of I/O errors
      */
     public static InputStream addModuleDependencies(InputStream sourceStream) throws IOException {
-        return modifyManifest(sourceStream, new ManifestModifier() {
-            @Override
-            public void modify(Manifest mf) {
-                addCapabilities(mf.getMainAttributes());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        try (ZipInputStream zis = new ZipInputStream(sourceStream); ZipOutputStream zos = new ZipOutputStream(out);) {
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                zos.putNextEntry(new ZipEntry(zipEntry.getName()));
+                if (JarFile.MANIFEST_NAME.equals(zipEntry.getName())) {
+                    // we read the manifest from the source stream
+                    Manifest mf = new Manifest();
+                    mf.read(zis);
+
+                    addCapabilities(mf.getMainAttributes());
+
+                    // write the manifest entry into the target output stream
+                    mf.write(zos);
+                } else {
+                    IOUtils.copy(zis, zos);
+                }
+                zis.closeEntry();
+                zipEntry = zis.getNextEntry();
             }
-        });
+        }
+
+        return new ByteArrayInputStream(out.toByteArray());
     }
 
     /**
@@ -259,27 +251,6 @@ public class ModuleUtils {
     }
 
     /**
-     * Performs the persistence of the supplied bundle and returns the information about it.
-     *
-     * @param bundle the source bundle
-     * @return information about persisted bundle
-     * @throws ModuleManagementException in case of an error during persistence of the bundle
-     */
-    public static PersistentBundle persist(Bundle bundle) throws ModuleManagementException {
-        try {
-            return persist(loadBundleResource(bundle));
-        } catch (Exception e) {
-            if (e instanceof ModuleManagementException) {
-                // re-throw
-                throw (ModuleManagementException) e;
-            }
-            String msg = "Unable to persist bundle " + bundle + ". Cause: " + e.getMessage();
-            logger.error(msg, e);
-            throw new ModuleManagementException(msg, e);
-        }
-    }
-
-    /**
      * Load the bundle .jar resource.
      *
      * @param bundle the bundle to be loaded
@@ -328,59 +299,24 @@ public class ModuleUtils {
     }
 
     /**
-     * Returns the input stream for the specified persistent bundle.
-     * 
-     * @param bundleKey the key of the bundle to look up
-     * @return the input stream for the specified persistent bundle
-     * @throws ModuleManagementException in case of a lookup error
+     * Performs the persistence of the supplied bundle and returns the information about it.
+     *
+     * @param bundle the source bundle
+     * @return information about persisted bundle
+     * @throws ModuleManagementException in case of an error during persistence of the bundle
      */
-    public static InputStream loadPersistentBundleStream(String bundleKey) throws ModuleManagementException {
+    public static PersistentBundle persist(Bundle bundle) throws ModuleManagementException {
         try {
-            return getBundlePersister().getInputStream(bundleKey);
+            return persist(loadBundleResource(bundle));
         } catch (Exception e) {
             if (e instanceof ModuleManagementException) {
                 // re-throw
-                throw e;
+                throw (ModuleManagementException) e;
             }
-            throw new ModuleManagementException("Unable to load persistent bundle for key " + bundleKey + ". Cause: " + e.getMessage(), e);
+            String msg = "Unable to persist bundle " + bundle + ". Cause: " + e.getMessage();
+            logger.error(msg, e);
+            throw new ModuleManagementException(msg, e);
         }
-    }
-
-    /**
-     * Performs the transformation of the MANIFEST.MF file in the supplied stream to change/add attribute values.
-     *
-     * @param sourceStream the source stream for the bundle, which manifest has to be adjusted; the stream is closed after returning from
-     *            this method
-     * @param modifier the callback which is responsible for the modification of MANIFEST.MF file
-     * @return the transformed stream for the bundle with adjusted manifest
-     * @throws IOException in case of I/O errors
-     */
-    private static InputStream modifyManifest(InputStream sourceStream, ManifestModifier modifier) throws IOException {
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        try (ZipInputStream zis = new ZipInputStream(sourceStream); ZipOutputStream zos = new ZipOutputStream(out);) {
-            ZipEntry zipEntry = zis.getNextEntry();
-            while (zipEntry != null) {
-                zos.putNextEntry(new ZipEntry(zipEntry.getName()));
-                if (JarFile.MANIFEST_NAME.equals(zipEntry.getName())) {
-                    // we read the manifest from the source stream
-                    Manifest mf = new Manifest();
-                    mf.read(zis);
-
-                    modifier.modify(mf);
-
-                    // write the manifest entry into the target output stream
-                    mf.write(zos);
-                } else {
-                    IOUtils.copy(zis, zos);
-                }
-                zis.closeEntry();
-                zipEntry = zis.getNextEntry();
-            }
-        }
-
-        return new ByteArrayInputStream(out.toByteArray());
     }
     
     /**
@@ -457,8 +393,37 @@ public class ModuleUtils {
      * @return <code>true</code> if the artifact manifest requires adjustments in the capability headers w.r.t. module dependencies;
      *         <code>false</code> if it already contains that info
      */
-    private static boolean requiresTransformation(Attributes atts) {
+    public static boolean requiresTransformation(Attributes atts) {
         return !StringUtils.contains(atts.getValue(ATTR_NAME_PROVIDE_CAPABILITY), OSGI_CAPABILITY_MODULE_DEPENDENCIES)
                 && !atts.containsKey(ATTR_NAME_FRAGMENT_HOST);
     }
+
+    /**
+     * Performs the update of the bundle original location.
+     * 
+     * @param bundle the bundle to update location for
+     * @param updatedLocation the new value of the location
+     */
+    public static void updateBundleLocation(Bundle bundle, String updatedLocation) {
+        // We access Felix's Bundle.getArchive() here.
+        // As we do not have a compile time dependency to Felix, we use reflection.
+        try {
+            Method m = bundle.getClass().getDeclaredMethod("getArchive");
+            m.setAccessible(true);
+            Object archive = m.invoke(bundle);
+            Field locationField = archive.getClass().getDeclaredField("m_originalLocation");
+            locationField.setAccessible(true);
+            locationField.set(archive, updatedLocation);
+            // calling setLastModified() method on the BundleArchive finally writes the updated bundle info into bundle.info file,
+            // also updating location value
+            archive.getClass().getDeclaredMethod("setLastModified", long.class).invoke(archive,
+                    System.currentTimeMillis());
+        } catch (NoSuchMethodException | NoSuchFieldException | SecurityException | IllegalAccessException
+                | InvocationTargetException | IllegalArgumentException e) {
+            logger.error("Unable update the location for bundle " + bundle + ". Cause: " + e.getMessage(), e);
+            throw new RuntimeException("Unable update the location for bundle " + bundle + ". Cause: " + e.getMessage(),
+                    e);
+        }
+    }
+
 }

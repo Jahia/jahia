@@ -68,6 +68,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -98,6 +99,7 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
                     true, null);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            Assert.fail();
         }
     }
 
@@ -123,8 +125,6 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertEquals("Response code " + responseCode, 200, responseCode);
             response = nodeGet.getResponseBodyAsString();
             assertTrue("This text should be displayed on generic channel", response.contains("This banner shouldn&#39;t appear on an iPhone."));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             nodeGet.releaseConnection();
         }
@@ -144,8 +144,6 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertEquals("Response code " + responseCode, 200, responseCode);
             response = nodeGet.getResponseBodyAsString();
             assertFalse("This text shouldn't be displayed on iPhone channel", response.contains("This banner shouldn&#39;t appear on an iPhone."));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             nodeGet.releaseConnection();
         }
@@ -165,8 +163,6 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertEquals("Response code " + responseCode, 200, responseCode);
             response = nodeGet.getResponseBodyAsString();
             assertTrue("Non supported channel should fall back on generic", response.contains("This banner shouldn&#39;t appear on an iPhone."));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             nodeGet.releaseConnection();
         }
@@ -186,8 +182,6 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertEquals("Response code " + responseCode, 200, responseCode);
             response = nodeGet.getResponseBodyAsString();
             assertTrue("This text should be displayed when channel is not iPad", response.contains("This text shouldn&#39;t appear on an iPad."));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             nodeGet.releaseConnection();
         }
@@ -207,8 +201,6 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertEquals("Response code " + responseCode, 200, responseCode);
             response = nodeGet.getResponseBodyAsString();
             assertFalse("This text should be hidden when channel is iPad", response.contains("This text shouldn&#39;t appear on an iPad."));
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             nodeGet.releaseConnection();
         }

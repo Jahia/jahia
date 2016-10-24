@@ -132,7 +132,7 @@ public class RenderTest extends JahiaTestCase {
     }
 
     @Test
-    public void testVersionRender() throws RepositoryException, ParseException {
+    public void testVersionRender() throws RepositoryException, ParseException, IOException {
         JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
         JCRVersionService jcrVersionService = ServicesRegistry.getInstance().getJCRVersionService();
         JCRSessionWrapper editSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE,

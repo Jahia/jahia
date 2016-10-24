@@ -61,6 +61,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
@@ -122,7 +124,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
 
     private JCRSessionWrapper session;
 
-    private boolean isPresent(String relativeUrl) {
+    private boolean isPresent(String relativeUrl) throws IOException {
         return getAsText(relativeUrl).contains(INVISIBLE_TEXT);
     }
 
@@ -159,7 +161,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
 
     @Test
     public void testVisibilityRenderMatchesAllConditions() throws RepositoryException,
-            ParseException {
+            ParseException, IOException {
 
         invisible.addMixin("jmix:conditionalVisibility");
         JCRNodeWrapper condVis = invisible.addNode("j:conditionalVisibility",
@@ -211,7 +213,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
 
     @Test
     public void testVisibilityRenderMatchesAllEmptyConditions() throws RepositoryException,
-            ParseException {
+            ParseException, IOException {
         invisible.addMixin("jmix:conditionalVisibility");
         JCRNodeWrapper condVis = invisible.addNode("j:conditionalVisibility",
                 "jnt:conditionalVisibility");
@@ -246,7 +248,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
 
     @Test
     public void testVisibilityRenderMatchesOneCondition() throws RepositoryException,
-            ParseException {
+            ParseException, IOException {
         // Test GWT display template
         String gwtDisplayTemplate = VisibilityService.getInstance().getConditions()
                 .get("jnt:startEndDateCondition").getGWTDisplayTemplate(Locale.ENGLISH);

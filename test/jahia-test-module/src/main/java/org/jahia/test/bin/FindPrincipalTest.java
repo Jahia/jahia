@@ -96,9 +96,10 @@ public class FindPrincipalTest extends JahiaTestCase {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.WEB_TEMPLATES);
-                    } catch (Exception e) {
-                        logger.error("Cannot create or publish site", e);
+                         TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.WEB_TEMPLATES);
+                    } catch (Exception ex) {
+                        logger.warn("Exception during site creation", ex);
+                        fail("Exception during site creation");
                     }
                     session.save();
                     return null;
@@ -107,6 +108,7 @@ public class FindPrincipalTest extends JahiaTestCase {
 
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 

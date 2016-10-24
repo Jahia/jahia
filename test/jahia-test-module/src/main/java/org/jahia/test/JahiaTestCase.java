@@ -133,15 +133,13 @@ public class JahiaTestCase {
 
     private HttpClient client;
 
-    protected String getAsText(String relativeUrl) {
+    protected String getAsText(String relativeUrl) throws IOException {
         String body = StringUtils.EMPTY;
         GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath() + relativeUrl);
         try {
             int responseCode = getHttpClient().executeMethod(getMethod);
             assertEquals("Response code is not OK: " + responseCode, 200, responseCode);
             body = getMethod.getResponseBodyAsString();
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
             getMethod.releaseConnection();
         }
@@ -168,34 +166,22 @@ public class JahiaTestCase {
         return client;
     }
 
-    protected void login(String username, String password) {
-        int statusCode = 0;
-        try {
-            statusCode = post(getBaseServerURL() + Jahia.getContextPath() + "/cms/login",
-            new String[] {"username", username},
-            new String[] {"password", password},
-            new String[] {"restMode", "true"}).statusCode;
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
+    protected void login(String username, String password) throws IOException {
+        int statusCode = post(getBaseServerURL() + Jahia.getContextPath() + "/cms/login", new String[] { "username", username },
+                new String[] { "password", password }, new String[] { "restMode", "true" }).statusCode;
 
         assertEquals("Login failed for user", HttpStatus.SC_OK, statusCode);
     }
 
-    protected void loginRoot() {
+    protected void loginRoot() throws IOException {
         login("root", "root1234");
     }
 
-    protected void logout() {
-        try {
-            PostResult post = post(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout",
-                    new String[] {"redirectActive", "false"});
+    protected void logout() throws IOException {
+        PostResult post = post(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout", new String[] { "redirectActive", "false" });
 
-            if (post.statusCode != HttpStatus.SC_OK) {
-                System.err.println("Method failed: " + post.statusLine);
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+        if (post.statusCode != HttpStatus.SC_OK) {
+            System.err.println("Method failed: " + post.statusLine);
         }
     }
 

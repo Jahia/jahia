@@ -71,6 +71,7 @@ public class ValidationTest {
             TestHelper.createSite(TEST_SITE_NAME);
         } catch (Exception e) {
             logger.error("Error setting up ValidationTest environment", e);
+            Assert.fail();
         }
     }
 

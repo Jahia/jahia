@@ -67,6 +67,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -142,6 +143,7 @@ public class CacheFilterTest extends JahiaTestCase {
             aggregateCacheFilterDisabled = ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).isDisabled();
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
+            Assert.fail();
         }
     }
 

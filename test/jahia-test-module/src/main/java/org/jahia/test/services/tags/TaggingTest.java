@@ -82,6 +82,7 @@ public class TaggingTest {
             });
         } catch (Exception e) {
             logger.error("Error setting up TaggingTest environment", e);
+            fail();
         }
     }
     

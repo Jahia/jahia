@@ -160,6 +160,7 @@ public class AtmosphereTest extends JahiaTestCase {
 
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 
@@ -185,6 +186,7 @@ public class AtmosphereTest extends JahiaTestCase {
             jcrService.publishByMainId(testHomeEdit.getIdentifier());
         } catch (RepositoryException e) {
             fail("Cannot setup test" + e.getMessage());
+            fail();
         }
     }
 

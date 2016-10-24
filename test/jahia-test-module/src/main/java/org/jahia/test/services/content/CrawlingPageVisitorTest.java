@@ -180,13 +180,14 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
                             TestHelper.createSite(ACMESITE_NAME, "localhost", TestHelper.BOOTSTRAP_ACME_SPACE_TEMPLATES,
-                                    SettingsBean.getInstance().getJahiaVarDiskPath()
-                                            + "/prepackagedSites/acmespaceelektra.zip", "ACME-SPACE.zip");
-                            jcrService.publishByMainId(session.getRootNode().getNode(ACME_SITECONTENT_ROOT_NODE + "/home")
-                                    .getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
+                                    SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/acmespaceelektra.zip",
+                                    "ACME-SPACE.zip");
+                            jcrService.publishByMainId(session.getRootNode().getNode(ACME_SITECONTENT_ROOT_NODE + "/home").getIdentifier(),
+                                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
                             session.save();
-                        } catch (Exception e) {
-                            logger.error("Cannot create or publish site", e);
+                        } catch (Exception ex) {
+                            logger.warn("Exception during site creation", ex);
+                            fail("Exception during site creation");
                         }
                         return null;
                     }
@@ -194,6 +195,7 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
             }
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 
@@ -227,67 +229,59 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
 
     @Test
     public void testPrecompileJsps() throws IOException {
+        HttpClient client = new HttpClient();
+
+        client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("jahia", "password"));
+
+        String url = getPrecompileServletURL() + "?compile_type=all&jsp_precompile=true";
+
+        logger.info("Starting the precompileServlet with the following url: " + url);
+
+        GetMethod get = new GetMethod(url);
         try {
-            HttpClient client = new HttpClient();
+            get.setDoAuthentication(true);
 
-            client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("jahia", "password"));
-            
-            String url = getPrecompileServletURL() + "?compile_type=all&jsp_precompile=true";
+            int statusCode = client.executeMethod(get);
 
-            logger.info("Starting the precompileServlet with the following url: " + url);
-            
-            GetMethod get = new GetMethod(url);
-            try {
-                get.setDoAuthentication(true);
-
-                int statusCode = client.executeMethod(get);
-
-                assertEquals("Precompile servlet failed", HttpStatus.SC_OK, statusCode);
-                assertThat("Precompilation found buggy JSPs", get.getResponseBodyAsString(), containsString("No problems found!"));
-                assertEquals("There were exceptions during the precompile process", "", appender.getErrorLogs());
-            } finally {
-                get.releaseConnection();
-            }
-        } catch (Exception e) {
-            assertNotNull("Precompile servlet request threw exception: " + e.getLocalizedMessage() , null);
+            assertEquals("Precompile servlet failed", HttpStatus.SC_OK, statusCode);
+            assertThat("Precompilation found buggy JSPs", get.getResponseBodyAsString(), containsString("No problems found!"));
+            assertEquals("There were exceptions during the precompile process", "", appender.getErrorLogs());
+        } finally {
+            get.releaseConnection();
         }
     }
 
     @Test
-    public void testFetchDefaultSiteLive() throws IOException {
+    public void testFetchDefaultSiteLive() throws RepositoryException, IOException {
         crawlUrls(getBaseUrls(Constants.LIVE_WORKSPACE, ACME_SITECONTENT_ROOT_NODE));
         assertEquals("There were errors during the crawling", "", appender.getErrorLogs());        
     }
 
-    private List<String> getBaseUrls(String workspace, String sitePath) {
+    private List<String> getBaseUrls(String workspace, String sitePath) throws RepositoryException {
         List<String> urls = new ArrayList<String>();
-        try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace,
-                    LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace,
+                LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
 
-            // generate seedlist
-            RenderContext renderCtx = new RenderContext(getRequest(), getResponse(), getUser());
-                        
-            JCRNodeWrapper homeNode = null;
-            try {
+        // generate seedlist
+        RenderContext renderCtx = new RenderContext(getRequest(), getResponse(), getUser());
+
+        JCRNodeWrapper homeNode = null;
+        try {
+            homeNode = session.getRootNode().getNode(sitePath + "/home");
+        } catch (PathNotFoundException e) {
+            if (ACME_SITECONTENT_ROOT_NODE.equals(sitePath)) {
+                JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
+                sitePath = defaultSite != null ? "sites/" + defaultSite.getSiteKey() : null;
                 homeNode = session.getRootNode().getNode(sitePath + "/home");
-            } catch (PathNotFoundException e) {
-                if (ACME_SITECONTENT_ROOT_NODE.equals(sitePath)) {
-                    JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
-                    sitePath = defaultSite != null ? "sites/" + defaultSite.getSiteKey() : null;
-                    homeNode = session.getRootNode().getNode(sitePath + "/home");                    
-                }
             }
-            
-            Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
-            renderCtx.setMainResource(resource);
-            renderCtx.setSite(homeNode.getResolveSite());
-            URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
-            urls.add(urlgenerator.getServer() + urlgenerator.getContext()
-                    + (Constants.LIVE_WORKSPACE.equals(workspace) ? urlgenerator.getLive() : urlgenerator.getEdit()));
-        } catch (Exception e) {
-            logger.error("Exception during test", e);
         }
+
+        Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
+        renderCtx.setMainResource(resource);
+        renderCtx.setSite(homeNode.getResolveSite());
+        URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
+        urls.add(urlgenerator.getServer() + urlgenerator.getContext()
+                + (Constants.LIVE_WORKSPACE.equals(workspace) ? urlgenerator.getLive() : urlgenerator.getEdit()));
         return urls;
     }
 

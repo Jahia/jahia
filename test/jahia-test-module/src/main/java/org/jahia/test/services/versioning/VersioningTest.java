@@ -114,6 +114,7 @@ public class VersioningTest extends JahiaTestCase {
             assertNotNull(site);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
 
         loginRoot();

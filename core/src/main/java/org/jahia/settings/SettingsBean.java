@@ -756,7 +756,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         if (!cfgDir.isDirectory()) {
             return;
         }
-        List<File> cfgs = new LinkedList<File>();
+        Set<File> cfgs = new LinkedHashSet<>();
         File main = new File(cfgDir, "jar-scanner.conf");
         if (main.isFile()) {
             cfgs.add(main);

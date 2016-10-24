@@ -163,16 +163,9 @@ public class PermissionsUtils {
      */
     public static void triggerPermissionsReload() {
         JahiaContentManagementService.App.getInstance().getAvailablePermissions(new BaseAsyncCallback<List<String>>() {
-            @Override
             public void onSuccess(List<String> permissions) {
                 loadPermissions(permissions);
             }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                // ignore failures - mainly: do not bring login error
-            }
-            
         });
     }
 }

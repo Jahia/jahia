@@ -619,7 +619,7 @@ public class Activator implements BundleActivator {
 
     private synchronized void unresolve(Bundle bundle) {
         setModuleState(bundle, ModuleState.State.INSTALLED, null);
-        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupById(bundle.getSymbolicName());
+        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
         if (jahiaTemplatesPackage != null) {
             jahiaTemplatesPackage.setClassLoader(null);
         }

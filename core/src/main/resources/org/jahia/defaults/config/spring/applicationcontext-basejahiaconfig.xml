@@ -20,21 +20,21 @@
             <value>file:${jahia.config}</value>
           </list>
       </property>
-    <property name="localOverride" value="true"/>
-    <property name="properties" ref="jahiaSystemProperties"/>
+      <property name="localOverride" value="true"/>
+      <property name="properties" ref="jahiaSystemProperties"/>
   </bean>
 
   <bean id="jahiaSystemProperties" class="org.jahia.settings.SystemPropertiesFactoryBean">
-    <property name="prefix" value="jahiaConfig." />
+      <property name="prefix" value="jahiaConfig." />
   </bean>
 
   <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="properties">
-        <ref bean="jahiaProperties"/>
-    </property>
+      <property name="properties">
+          <ref bean="jahiaProperties"/>
+      </property>
   </bean>
 
-  <bean id="pathResolver" class="org.jahia.utils.WebAppPathResolver" />
+  <bean id="pathResolver" class="org.jahia.utils.WebAppPathResolver"/>
 
   <bean id="settingsBean" class="org.jahia.settings.SettingsBean" init-method="load">
       <constructor-arg index="0">
@@ -53,7 +53,7 @@
           </list>
       </constructor-arg>
       <property name="dataSource" ref="dataSource"/>
-      <property name="clusterSettingsHandler" ref="clusterSettingsHandler"/>
+      <property name="clusterSettingsInitializer" ref="clusterSettingsInitializer"/>
   </bean>
 
     <bean id="JCRContentUtils" class="org.jahia.services.content.JCRContentUtils">
@@ -158,7 +158,6 @@
             <map>
                 <entry key="unknown" value="file"/>
                 <entry key="dir" value="dir"/>
-
                 <entry key="aiff" value="sound"/>
                 <entry key="asf" value="video"/>
                 <entry key="asx" value="video"/>
@@ -244,7 +243,6 @@
         </property>
     </bean>
 
-
     <bean id="org.jahia.bin.errors.handler" class="org.jahia.bin.errors.DefaultErrorHandler"/>
 
     <bean id="MaintenanceFilter" class="org.jahia.bin.filters.MaintenanceFilter">
@@ -271,22 +269,20 @@
         <property name="loggingTriggerValue" value="${jcrSessionLoadAverage.loggingTriggerValue:10.0}"/>
     </bean>
 
-
     <bean id="jahiaContextListenersConfiguration" class="org.springframework.beans.factory.config.MapFactoryBean">
-    <property name="sourceMap">
-      <map>
-        <entry key="interceptHttpSessionListenerEvents" value="${interceptHttpSessionListenerEvents:true}"/>
-        <entry key="interceptHttpSessionActivationEvents" value="${interceptHttpSessionActivationEvents:false}"/>
-        <entry key="interceptHttpSessionAttributeListenerEvents" value="${interceptHttpSessionAttributeListenerEvents:false}"/>
-        <entry key="interceptHttpSessionBindingListenerEvents" value="${interceptHttpSessionBindingListenerEvents:false}"/>
-        <entry key="interceptServletRequestListenerEvents" value="${interceptServletRequestListenerEvents:false}"/>
-        <entry key="interceptServletRequestAttributeListenerEvents" value="${interceptServletRequestAttributeListenerEvents:false}"/>
-        <entry key="interceptServletContextAttributeListenerEvents" value="${interceptServletContextAttributeListenerEvents:false}"/>
-        <entry key="interceptServletContextListenerEvents" value="${interceptServletContextListenerEvents:false}"/>
-      </map>
-    </property>
-  </bean>
-
+        <property name="sourceMap">
+            <map>
+                <entry key="interceptHttpSessionListenerEvents" value="${interceptHttpSessionListenerEvents:true}"/>
+                <entry key="interceptHttpSessionActivationEvents" value="${interceptHttpSessionActivationEvents:false}"/>
+                <entry key="interceptHttpSessionAttributeListenerEvents" value="${interceptHttpSessionAttributeListenerEvents:false}"/>
+                <entry key="interceptHttpSessionBindingListenerEvents" value="${interceptHttpSessionBindingListenerEvents:false}"/>
+                <entry key="interceptServletRequestListenerEvents" value="${interceptServletRequestListenerEvents:false}"/>
+                <entry key="interceptServletRequestAttributeListenerEvents" value="${interceptServletRequestAttributeListenerEvents:false}"/>
+                <entry key="interceptServletContextAttributeListenerEvents" value="${interceptServletContextAttributeListenerEvents:false}"/>
+                <entry key="interceptServletContextListenerEvents" value="${interceptServletContextListenerEvents:false}"/>
+            </map>
+        </property>
+    </bean>
 
     <bean id="BaseXMLParserFactory" class="org.jahia.utils.xml.BaseXMLParserFactory" abstract="true">
         <property name="namespaceAware" value="true"/>
@@ -306,6 +302,6 @@
 
     <bean id="JahiaDocumentBuilderFactory" class="org.jahia.utils.xml.JahiaDocumentBuilderFactory" parent="BaseXMLParserFactory"/>
 
-    <bean id="clusterSettingsHandler" class="org.jahia.settings.SettingsBean$ClusterSettingsHandlerDummy"/>
+    <bean id="clusterSettingsInitializer" class="org.jahia.settings.SettingsBean$ClusterSettingsInitializerDummy"/>
 
 </beans>

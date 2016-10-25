@@ -985,6 +985,10 @@ public class JahiaTemplatesPackage {
      */
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
+
+        // classloader updated, reset chainedClassloader
+        // (will be reconstruct on next call to getChainedClassLoader())
+        this.chainedClassLoader = null;
     }
 
     /**

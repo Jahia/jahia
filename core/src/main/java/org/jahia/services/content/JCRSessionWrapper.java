@@ -380,9 +380,11 @@ public class JCRSessionWrapper implements Session {
         JCRNodeWrapper referencedNode = ((JCRNodeWrapper) parent.getProperty(Constants.NODE).getNode());
         Node realReferencedNode = referencedNode.getRealNode();
         String fullPath = parent.getPath() + DEREF_SEPARATOR + refPath;
-//        if (parent.getPath().startsWith(referencedNode.getPath()+ "/")) {
-//            throw new PathNotFoundException(fullPath);
-//        }
+        // check if one of the parent is the same as the referenced Node
+
+        if (checkCyclicReference(parent.getPath(), referencedNode.getPath())) {
+            throw new PathNotFoundException(String.format("cyclic reference %s in path %s", referencedNode.getPath(), fullPath));
+        }
         String refRootName = StringUtils.substringBefore(refPath, "/");
         if (!realReferencedNode.getName().equals(refRootName)) {
             throw new PathNotFoundException(fullPath);
@@ -397,6 +399,26 @@ public class JCRSessionWrapper implements Session {
         }
         sessionCacheByPath.put(fullPath, wrapper);
         return wrapper;
+    }
+
+    private boolean checkCyclicReference(String path, String reference) {
+        try {
+            while (StringUtils.contains(path, DEREF_SEPARATOR) || StringUtils.startsWith(path, reference + "/") || StringUtils.equals(path, reference)) {
+                if (StringUtils.contains(path, DEREF_SEPARATOR)) {
+                    path = StringUtils.substringBeforeLast(path, DEREF_SEPARATOR);
+                    JCRNodeWrapper referencedNode = (JCRNodeWrapper) getNode(path).getProperty(Constants.NODE).getNode();
+                    if (StringUtils.equals(referencedNode.getPath(), reference)) {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.debug("unable to check cyclic reference between node {} and its reference {}", new String[]{path, reference}, e);
+            // do nothing
+        }
+        return false;
     }
 
     public JCRNodeWrapper getNode(String path) throws PathNotFoundException, RepositoryException {

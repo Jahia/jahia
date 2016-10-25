@@ -45,15 +45,15 @@ package org.jahia.services.templates;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.StringReader;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.ProcessHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 
@@ -62,10 +62,13 @@ import com.google.common.collect.ImmutableList;
  */
 public abstract class SourceControlManagement {
 
+    private static final Logger logger = LoggerFactory.getLogger(SourceControlManagement.class);
+
     /**
      * Represents the result of an external command execution.
      */
     protected static class ExecutionResult {
+
         protected String err;
         protected int exitValue;
         protected String out;
@@ -95,19 +98,16 @@ public abstract class SourceControlManagement {
     }
 
     protected String executable;
-
     protected File rootFolder;
-
     private volatile Map<String, Status> statusMap;
-    
+
     protected SourceControlManagement(String executable) {
-        super();
         this.executable = executable;
     }
 
     /**
      * Adds the specified file to be included into the next commit.
-     * 
+     *
      * @param file
      *            a file to be considered as modified
      * @throws IOException
@@ -119,7 +119,7 @@ public abstract class SourceControlManagement {
 
     /**
      * Adds the specified files to be included into the next commit.
-     * 
+     *
      * @param files
      *            the list of files to be considered as modified
      * @throws IOException
@@ -128,7 +128,9 @@ public abstract class SourceControlManagement {
     public abstract void add(List<File> files) throws IOException;
 
     protected void checkExecutionResult(ExecutionResult result) throws IOException {
+
         if (result.exitValue != 0 || result.out.contains("conflicts")) {
+
             String message = result.err;
             if (StringUtils.isBlank(message)) {
                 message = result.out;
@@ -158,7 +160,7 @@ public abstract class SourceControlManagement {
 
     /**
      * Performs a commit into the SCM.
-     * 
+     *
      * @param message
      *            the commit message
      * @throws IOException
@@ -169,20 +171,44 @@ public abstract class SourceControlManagement {
     protected abstract Map<String, Status> createStatusMap() throws IOException;
 
     protected ExecutionResult executeCommand(String command, String[] arguments) throws IOException {
+
+        String argumentsString = StringUtils.trimToEmpty(StringUtils.join(arguments, " "));
+        String commandString = command + " " + argumentsString;
+        logger.info("Executing SCM command: '{}'...", commandString);
+
+        int res;
+        StringBuilder resultOut = new StringBuilder();
+        StringBuilder resultErr = new StringBuilder();
         try {
-            StringBuilder resultOut = new StringBuilder();
-            StringBuilder resultErr = new StringBuilder();
-            int res = ProcessHelper.execute(command, arguments, null, rootFolder, resultOut, resultErr, false);
-            return new ExecutionResult(res, resultOut.toString(), resultErr.toString());
+            res = ProcessHelper.execute(command, arguments, null, rootFolder, resultOut, resultErr, false);
         } catch (Exception e) {
             throw new IOException(
-                    "Failed to execute command " + command + (arguments != null ? (" " + Arrays.toString(arguments)) : ""), e);
+                    "Failed to execute command '" + commandString + "'", e);
         }
+        ExecutionResult result = new ExecutionResult(res, resultOut.toString(), resultErr.toString());
+
+        if (logger.isInfoEnabled()) {
+            StringBuilder logMessage = new StringBuilder("\n");
+            logMessage.append("Executed SCM command: '").append(commandString).append("'\n");
+            if (rootFolder != null) {
+                logMessage.append("In the directory: '").append(rootFolder).append("'\n");
+            }
+            logMessage.append("Exit code: ").append(result.exitValue).append("\n");
+            if (StringUtils.isNotBlank(result.out)) {
+                logMessage.append("Command output:\n").append(result.out.trim()).append("\n");
+            }
+            if (StringUtils.isNotBlank(result.err)) {
+                logMessage.append("Command errors:\n").append(result.err.trim()).append("\n");
+            }
+            logger.info(logMessage.toString());
+        }
+
+        return result;
     }
 
     /**
      * Returns the root folder of the module.
-     * 
+     *
      * @return the root folder of the module
      */
     public File getRootFolder() {
@@ -191,7 +217,7 @@ public abstract class SourceControlManagement {
 
     /**
      * Returns the SCM status of the specified resource.
-     * 
+     *
      * @param path
      *            the resource to check the SCM status for
      * @return the SCM status of the specified resource
@@ -233,7 +259,7 @@ public abstract class SourceControlManagement {
 
     /**
      * Returns an SCM URI.
-     * 
+     *
      * @return an SCM URI
      * @throws IOException
      *             in case of an SCM related error
@@ -255,7 +281,7 @@ public abstract class SourceControlManagement {
 
     /**
      * Mark SCM conflict as resolved for the specified resource.
-     * 
+     *
      * @param file
      *            the resource to make as resolved
      * @throws IOException
@@ -265,7 +291,7 @@ public abstract class SourceControlManagement {
 
     /**
      * Moves the specified resource to a new location.
-     * 
+     *
      * @param src
      *            the source
      * @param dst
@@ -277,7 +303,7 @@ public abstract class SourceControlManagement {
 
     /**
      * Deletes the specified item from the working copy or repository.
-     * 
+     *
      * @param file
      *            the resource to be removed
      * @throws IOException
@@ -287,7 +313,7 @@ public abstract class SourceControlManagement {
 
     /**
      * Performs SCM update.
-     * 
+     *
      * @return the output of the SCM update command if available
      * @throws IOException
      *             in case of SCM errors

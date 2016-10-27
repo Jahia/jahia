@@ -691,7 +691,7 @@ public class Activator implements BundleActivator {
                 // rules may use Global objects from his own spring beans, so we delay the rules registration until the spring context is initialized
                 // to insure that potential global objects are available before rules executions
                 if(DRL_SCANNER.equals(scannerAndObserver.getKey()) && hasSpringFile) {
-                    logger.info("--- Rules registration for bundle {} have been delayed until his spring context is initialized --", getDisplayName(bundle));
+                    logger.info("--- Rules registration for bundle {} has been delayed until its Spring context is initialized --", getDisplayName(bundle));
                     jahiaTemplatesPackage.doExecuteAfterContextInitialized(new JahiaTemplatesPackage.ContextInitializedCallback() {
                         @Override
                         public void execute(AbstractApplicationContext context) {

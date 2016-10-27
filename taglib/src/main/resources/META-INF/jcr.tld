@@ -478,15 +478,21 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>the properties on which we sort</description>
+            <description>the properties on which we filter (json format)</description>
             <name>properties</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>the list node itself</description>
+            <description>the node types on which we filter</description>
+            <name>types</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>the list node itself (mandatory in case of properties filter)</description>
             <name>node</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>org.jahia.services.content.JCRNodeWrapper</type>
         </attribute>

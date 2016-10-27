@@ -140,25 +140,27 @@ public class JCRFilterTag extends AbstractJCRTag {
 
                 Collection<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
                 for (JCRNodeWrapper re : list) {
-                    final JCRPropertyWrapper property = re.getProperty(name);
-                    if (property != null) {
-                        if (EQ.equals(op)) {
+                    if(re.hasProperty(name)) {
+                        final JCRPropertyWrapper property = re.getProperty(name);
+                        if (property != null) {
+                            if (EQ.equals(op)) {
 
-                            // backward compatibility
-                            if (isLowerCaseDate) {
-                                if (dateFormat != null && dateFormat.format(property.getDate().getTime()).equals(valueAsString)) {
-                                    res.add(re);
-                                }
-                            } else if (property.isMultiple()) {
-                                final JCRValueWrapper[] values = property.getValues();
-                                for (Value wrappedValue : values) {
-                                    if (wrappedValue.equals(value)) {
+                                // backward compatibility
+                                if (isLowerCaseDate) {
+                                    if (dateFormat != null && dateFormat.format(property.getDate().getTime()).equals(valueAsString)) {
                                         res.add(re);
                                     }
-                                }
+                                } else if (property.isMultiple()) {
+                                    final JCRValueWrapper[] values = property.getValues();
+                                    for (Value wrappedValue : values) {
+                                        if (wrappedValue.equals(value)) {
+                                            res.add(re);
+                                        }
+                                    }
 
-                            } else if (property.getValue().equals(value)) {
-                                res.add(re);
+                                } else if (property.getValue().equals(value)) {
+                                    res.add(re);
+                                }
                             }
                         }
                     }

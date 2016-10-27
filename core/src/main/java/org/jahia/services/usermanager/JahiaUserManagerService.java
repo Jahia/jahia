@@ -218,7 +218,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         JCRUserNode userNode = null;
         try {
             userNode = lookupUser(name, site, checkSiteAndGlobalUsers, Constants.LIVE_WORKSPACE);
-            if(userNode == null) {
+            if (userNode == null) {
                 userNode = lookupUser(name, site, checkSiteAndGlobalUsers, Constants.EDIT_WORKSPACE);
             }
         } catch (RepositoryException e) {
@@ -488,7 +488,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 StringBuilder query = new StringBuilder();
 
                 // Add provider to query
-                if(providerKeys != null) {
+                if (providerKeys != null) {
                     List<JCRStoreProvider> providers = getProviders(siteKey, providerKeys, session);
                     if (!providers.isEmpty()) {
                         query.append("(");

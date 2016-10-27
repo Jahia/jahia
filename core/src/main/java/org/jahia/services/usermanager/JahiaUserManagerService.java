@@ -573,7 +573,6 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 }
                 String s = (siteKey == null) ? "/users/" : "/sites/" + siteKey + "/users/";
                 query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u where isdescendantnode(u,'" + JCRContentUtils.sqlEncode(s) + "')");
-                query.append(" ORDER BY u.[j:nodename]");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query.toString());
                 }

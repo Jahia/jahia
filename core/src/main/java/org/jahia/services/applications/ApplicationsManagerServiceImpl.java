@@ -65,7 +65,6 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRPortletNode;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.InsertionSortedMap;
@@ -80,7 +79,6 @@ import javax.portlet.WindowState;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -437,9 +435,10 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
         boolean ret = false;
 
         try {
-            registerNamespace(getWebAppPrefix(app.getName()), getWebAppNamespaceURI(app.getName()));
+            JCRContentUtils.registerNamespace(null, getWebAppPrefix(app.getName()), getWebAppNamespaceURI(app.getName()));
             for (EntryPointDefinition entryPointDefinition : app.getEntryPointDefinitions()) {
-                registerNamespace(getEntryPointPrefix(app.getName(), entryPointDefinition.getName()), getEntryPointNamespaceURI(app.getName(), entryPointDefinition.getName()));
+                JCRContentUtils.registerNamespace(null,getEntryPointPrefix(app.getName(), entryPointDefinition.getName()), getEntryPointNamespaceURI(app.getName(),
+                        entryPointDefinition.getName()));
             }
 
             ret = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
@@ -1087,7 +1086,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
 
         // first we register the namespaces.
         for (Map.Entry<String, String> ns : namespaces.entrySet()) {
-            registerNamespace(ns.getKey(), ns.getValue());
+            JCRContentUtils.registerNamespace(null,ns.getKey(), ns.getValue());
         }
         // we must now register the namespace for the portlet, as well as refresh the privileges, to make sure
         // we load all the privileges attached to portlets.
@@ -1098,15 +1097,5 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
                 return null;
             }
         });
-    }
-
-    private void registerNamespace(String key, String value) throws RepositoryException {
-        try {
-            JCRSessionFactory.getInstance().getNamespaceRegistry().getURI(key);
-        } catch (RepositoryException e) {
-            JCRSessionFactory.getInstance().getNamespaceRegistry().registerNamespace(key, value);
-            NodeTypeRegistry.getInstance().getNamespaces().put(key, value);
-            JCRSessionFactory.getInstance().getProvider("/").registerNamespaces();
-        }
     }
 }

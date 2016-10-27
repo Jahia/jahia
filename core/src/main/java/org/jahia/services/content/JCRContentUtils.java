@@ -43,7 +43,6 @@
  */
 package org.jahia.services.content;
 
-import com.google.common.collect.ImmutableSet;
 import com.ibm.icu.text.Normalizer;
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.io.IOUtils;
@@ -1374,13 +1373,14 @@ public final class JCRContentUtils implements ServletContextAware {
      * @throws RepositoryException
      */
     public static void registerNamespace(Session session, String prefix, String uri) throws RepositoryException {
-        NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
-        Set<String> prefixes = ImmutableSet.copyOf(namespaceRegistry.getPrefixes());
-        if (!prefixes.contains(prefix)) {
-            namespaceRegistry.registerNamespace(prefix, uri);
-            session.setNamespacePrefix(prefix, uri);
+        try {
+            JCRSessionFactory.getInstance().getNamespaceRegistry().getURI(prefix);
+        } catch (RepositoryException e) {
+            NodeTypeRegistry.getInstance().getNamespaces().put(prefix, uri);
+            for (JCRStoreProvider provider : JCRSessionFactory.getInstance().getProviders().values()) {
+                provider.registerNamespaces();
+            }
         }
-
     }
 
     public static String replaceColon(String name) {

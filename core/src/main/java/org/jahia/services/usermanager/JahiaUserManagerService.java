@@ -84,7 +84,7 @@ import java.util.regex.Pattern;
  */
 public class JahiaUserManagerService extends JahiaService implements JahiaAfterInitializationService, ServletContextAware {
 
-    private static Logger logger = LoggerFactory.getLogger(JahiaUserManagerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(JahiaUserManagerService.class);
     private static final String ROOT_PWD_RESET_FILE = "root.pwd";
     private static final String ROOT_PWD_RESET_FILE_PATH = "/WEB-INF/etc/config/" + ROOT_PWD_RESET_FILE;
 
@@ -109,13 +109,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
 
     private JahiaUserSplittingRule userSplittingRule;
     private ServletContext servletContext;
-
     private String rootUserName;
-
     private Map<String, JahiaUserManagerProvider> legacyUserProviders = new HashMap<String, JahiaUserManagerProvider>();
-
     private UserCacheHelper cacheHelper;
-
     private PasswordService passwordService;
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
@@ -142,14 +138,11 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
 
     @Override
     public void start() throws JahiaInitializationException {
-        // do nothing
     }
 
     @Override
     public void stop() throws JahiaException {
-        // do nothing
     }
-
 
     /**
      * Load all the user data and attributes. On success a reference on the user
@@ -484,10 +477,14 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     public Set<JCRUserNode> searchUsers(final Properties searchCriterias, String siteKey, final String[] providerKeys, boolean excludeProtected, JCRSessionWrapper session) {
+
         try {
+
             int limit = 0;
             Set<JCRUserNode> users = new HashSet<JCRUserNode>();
+
             if (session.getWorkspace().getQueryManager() != null) {
+
                 StringBuilder query = new StringBuilder();
 
                 // Add provider to query
@@ -565,6 +562,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                         }
                     }
                 }
+
                 if (query.length() > 0) {
                     query.insert(0, " and ");
                 }
@@ -573,7 +571,6 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 }
                 String s = (siteKey == null) ? "/users/" : "/sites/" + siteKey + "/users/";
                 query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u where isdescendantnode(u,'" + JCRContentUtils.sqlEncode(s) + "')");
-                query.append(" ORDER BY u.[j:nodename]");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query.toString());
                 }
@@ -641,7 +638,6 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         if (ArrayUtils.isEmpty(providerKeys)) {
             return Collections.emptyList();
         }
-
         List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
         for (JCRStoreProvider provider : getProviderList(siteKey, session)) {
             if (ArrayUtils.contains(providerKeys, provider.getKey())) {
@@ -666,7 +662,6 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         List<JCRStoreProvider> providers = getProviders(siteKey, new String[]{providerKey}, session);
         return providers.size() == 1 ? providers.get(0) : null;
     }
-
 
     /**
      * This is the method that creates a new user in the system, with all the
@@ -749,7 +744,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param session
      */
     public boolean deleteUser(final String userPath, JCRSessionWrapper session) {
+
         try {
+
             Node node;
             try {
                 node = session.getNode(userPath);
@@ -817,7 +814,6 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         if (StringUtils.isEmpty(password)) {
             return null;
         }
-
         return EncryptionUtils.sha1DigestLegacy(password);
     }
 
@@ -828,6 +824,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return <code>true</code> if the specified user name matches the validation pattern
      */
     public boolean isUsernameSyntaxCorrect(String name) {
+
         if (name == null || name.length() == 0) {
             return false;
         }
@@ -852,11 +849,15 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     private void checkRootUserPwd() {
+
         try {
+
             final String pwd = getNewRootUserPwd();
             if (StringUtils.isNotEmpty(pwd)) {
                 logger.info("Resetting root user password");
+
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
                     @Override
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         lookupRootUser(session).setPassword(pwd);
@@ -872,6 +873,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     private String getNewRootUserPwd() throws MalformedURLException, IOException {
+
         String pwd = null;
         File pwdFile = null;
 

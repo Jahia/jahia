@@ -45,5 +45,17 @@ package org.jahia.services.templates;
 
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
 
+/**
+ * Should be implemented by handlers that would like to be "notified" about Spring bean creation/destruction in contexts of other DX
+ * modules.
+ * 
+ * Since DX 7.2 Spring contexts are started independently (asynchronously), so beans could be registered before the
+ * JahiaModulesBeanPostProcessor causing unintended side effects.
+ *
+ * We recommend to use a more OSGI compliant way to perform intermodule beans communication (service trackers, osgi:list, etc.)
+ * 
+ * @deprecated since DX 7.2.0.0
+ */
+@Deprecated
 public interface JahiaModulesBeanPostProcessor extends DestructionAwareBeanPostProcessor {
 }

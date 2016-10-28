@@ -214,7 +214,7 @@ public final class CacheHelper {
     }
 
     private static void flushOutputCachesCluster() {
-        CacheManager ehcacheManager = getJahiaCacheManager();
+        CacheManager ehcacheManager = getBigCacheManager();
         Cache cache = ehcacheManager.getCache("HTMLCacheEventSync");
         if (cache == null) {
             ehcacheManager.addCache("HTMLCacheEventSync");

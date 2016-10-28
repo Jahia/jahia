@@ -65,6 +65,7 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRPortletNode;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.InsertionSortedMap;
@@ -79,6 +80,7 @@ import javax.portlet.WindowState;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -435,10 +437,9 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
         boolean ret = false;
 
         try {
-            JCRContentUtils.registerNamespace(null, getWebAppPrefix(app.getName()), getWebAppNamespaceURI(app.getName()));
+            registerNamespace(getWebAppPrefix(app.getName()), getWebAppNamespaceURI(app.getName()));
             for (EntryPointDefinition entryPointDefinition : app.getEntryPointDefinitions()) {
-                JCRContentUtils.registerNamespace(null,getEntryPointPrefix(app.getName(), entryPointDefinition.getName()), getEntryPointNamespaceURI(app.getName(),
-                        entryPointDefinition.getName()));
+                registerNamespace(getEntryPointPrefix(app.getName(), entryPointDefinition.getName()), getEntryPointNamespaceURI(app.getName(), entryPointDefinition.getName()));
             }
 
             ret = jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Boolean>() {
@@ -525,7 +526,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
                     }
 
                     session.save();
-                    
+
                     JahiaPrivilegeRegistry.init(session);
 
                     return true;
@@ -886,7 +887,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
                 "portlet"
         ));
     }
-    
+
     /**
      * Put in application cache
      *
@@ -1048,10 +1049,10 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
             applicationName = applicationName.substring(1);
         }
         final String appName = applicationName;
-        
+
         Map<String, String> namespaces = new LinkedHashMap<String, String>();
         namespaces.put(getWebAppPrefix(appName), getWebAppNamespaceURI(appName));
-        
+
         List<? extends PortletDefinition> portlets = portletApplication.getPortlets();
         for (PortletDefinition portlet : portlets) {
             namespaces.put(getEntryPointPrefix(appName, portlet.getPortletName()), getEntryPointNamespaceURI(appName, portlet.getPortletName()));
@@ -1060,12 +1061,12 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
         registerNamespacesAndLoadPrivileges(namespaces);
     }
 
-    
+
     private void loadApplicationPrivileges(List<ApplicationBean> apps) throws RepositoryException {
         if (apps == null || apps.isEmpty()) {
             return;
         }
-        
+
         Map<String, String> namespaces = new LinkedHashMap<String, String>();
 
         for (ApplicationBean app : apps) {
@@ -1086,7 +1087,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
 
         // first we register the namespaces.
         for (Map.Entry<String, String> ns : namespaces.entrySet()) {
-            JCRContentUtils.registerNamespace(null,ns.getKey(), ns.getValue());
+            registerNamespace(ns.getKey(), ns.getValue());
         }
         // we must now register the namespace for the portlet, as well as refresh the privileges, to make sure
         // we load all the privileges attached to portlets.
@@ -1097,5 +1098,15 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
                 return null;
             }
         });
+    }
+
+    private void registerNamespace(String key, String value) throws RepositoryException {
+        try {
+            JCRSessionFactory.getInstance().getNamespaceRegistry().getURI(key);
+        } catch (RepositoryException e) {
+            JCRSessionFactory.getInstance().getNamespaceRegistry().registerNamespace(key, value);
+            NodeTypeRegistry.getInstance().getNamespaces().put(key, value);
+            JCRSessionFactory.getInstance().getProvider("/").registerNamespaces();
+        }
     }
 }

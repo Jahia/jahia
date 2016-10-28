@@ -74,7 +74,9 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
     private static final Logger log = LoggerFactory.getLogger(BundleDelegatingClassLoader.class);
 
     private final ClassLoader bridge;
+
     private final Bundle backingBundle;
+
 
     /**
      * Factory method for creating a class loader over the given bundle.
@@ -97,10 +99,8 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
      * @return class loader adapter over the given bundle and class loader
      */
     public static BundleDelegatingClassLoader createBundleClassLoaderFor(final Bundle bundle, final ClassLoader bridge) {
-
         return AccessController.doPrivileged(new PrivilegedAction<BundleDelegatingClassLoader>() {
 
-            @Override
             public BundleDelegatingClassLoader run() {
                 return new BundleDelegatingClassLoader(bundle, bridge);
             }
@@ -121,12 +121,9 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
         this.bridge = bridgeLoader;
     }
 
-    @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         try {
-            synchronized (backingBundle) {
-                return backingBundle.loadClass(name);
-            }
+            return this.backingBundle.loadClass(name);
         } catch (ClassNotFoundException cnfe) {
             throw new ClassNotFoundException(name + " not found from bundle [" + backingBundle.getSymbolicName() + "]",
                     cnfe);
@@ -142,33 +139,32 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
         }
     }
 
-    @Override
     protected URL findResource(String name) {
-        log.trace("Looking for resource {}", name);
-        URL url;
-        synchronized (backingBundle) {
-            url = backingBundle.getResource(name);
-        }
-        if (url != null) {
-            log.trace("Found resource {} at {}", name, url);
-        }
+        boolean trace = log.isTraceEnabled();
+
+        if (trace)
+            log.trace("Looking for resource " + name);
+        URL url = this.backingBundle.getResource(name);
+
+        if (trace && url != null)
+            log.trace("Found resource " + name + " at " + url);
         return url;
     }
 
-    @Override
     protected Enumeration<URL> findResources(String name) throws IOException {
-        log.trace("Looking for resources {}", name);
-        Enumeration<URL> enm;
-        synchronized (backingBundle) {
-            enm = backingBundle.getResources(name);
-        }
-        if (enm != null && enm.hasMoreElements()) {
-            log.trace("Found resource {} at {}", name, backingBundle.getLocation());
-        }
+        boolean trace = log.isTraceEnabled();
+
+        if (trace)
+            log.trace("Looking for resources " + name);
+
+        Enumeration<URL> enm = this.backingBundle.getResources(name);
+
+        if (trace && enm != null && enm.hasMoreElements())
+            log.trace("Found resource " + name + " at " + this.backingBundle.getLocation());
+
         return enm;
     }
 
-    @Override
     public URL getResource(String name) {
         URL resource = findResource(name);
         if (bridge != null && resource == null) {
@@ -179,15 +175,12 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
 
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
-
         final Enumeration<URL> enm = findResources(name);
         final Enumeration<URL> bridgeEnm = bridge != null ? bridge.getResources(name) : null;
         if (enm == null && bridgeEnm == null) {
             return null;
         }
-
         return new Enumeration<URL>() {
-
             @Override
             public boolean hasMoreElements() {
                 return (enm != null && enm.hasMoreElements()) || (bridgeEnm != null && bridgeEnm.hasMoreElements());
@@ -206,7 +199,6 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
         };
     }
 
-    @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         Class<?> clazz = null;
         try {
@@ -229,7 +221,6 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
         return clazz;
     }
 
-    @Override
     public String toString() {
         return "BundleDelegatingClassLoader for [" + backingBundle + "]";
     }
@@ -241,8 +232,8 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
      *
      * @return the backing bundle
      */
-    @Override
     public Bundle getBundle() {
         return backingBundle;
     }
+
 }

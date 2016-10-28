@@ -45,6 +45,7 @@ package org.jahia.taglibs.jcr.node;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 import org.json.JSONException;
@@ -188,8 +189,16 @@ public class JCRFilterTag extends AbstractJCRTag {
                 res = new ArrayList<>();
                 List<String> filteredTypes = Arrays.asList(types.split("\\s*,\\s*"));
                 for (JCRNodeWrapper re : list) {
-                    if(JCRContentUtils.isNodeType(re, filteredTypes)) {
+                    if(re.isNodeType("jmix:skipConstraintCheck")) {
                         res.add(re);
+                        continue;
+                    }
+                    if (JCRContentUtils.isNodeType(re, filteredTypes)) {
+                        res.add(re);
+                    } else if(re.isNodeType("jnt:contentReference") && re.hasProperty(Constants.NODE)) {
+                        if (JCRContentUtils.isNodeType((JCRNodeWrapper) re.getProperty(Constants.NODE).getNode(), filteredTypes)) {
+                            res.add(re);
+                        }
                     }
                 }
             }

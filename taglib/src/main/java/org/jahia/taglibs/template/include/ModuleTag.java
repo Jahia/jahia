@@ -638,7 +638,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         parameters.put(name, value);
     }
 
+    @Deprecated
     public void setCheckConstraints(boolean checkConstraints) {
+        // constraint are now resolved by JCRFilterTag when called by list jsp
         this.checkConstraints = checkConstraints;
     }
 }

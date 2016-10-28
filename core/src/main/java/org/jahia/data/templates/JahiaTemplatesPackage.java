@@ -263,7 +263,6 @@ public class JahiaTemplatesPackage {
         return m_Name;
     }
 
-
     /**
      * Set the name.
      *
@@ -273,7 +272,6 @@ public class JahiaTemplatesPackage {
 
         m_Name = name;
     }
-
 
     /**
      * Return the module Id.
@@ -359,7 +357,6 @@ public class JahiaTemplatesPackage {
         return m_Provider;
     }
 
-
     /**
      * Set the Provider.
      *
@@ -370,7 +367,6 @@ public class JahiaTemplatesPackage {
         m_Provider = provider;
     }
 
-
     /**
      * Return the thumbnail file name.
      *
@@ -380,7 +376,6 @@ public class JahiaTemplatesPackage {
 
         return m_Thumbnail;
     }
-
 
     /**
      * Set the thumbnail file name.
@@ -398,7 +393,6 @@ public class JahiaTemplatesPackage {
     public String getFilePath() {
         return this.m_FilePath;
     }
-
 
     /**
      * Set the file path.
@@ -455,7 +449,6 @@ public class JahiaTemplatesPackage {
     public String getRootFolderPath() {
         return rootFolderPath;
     }
-
 
     /**
      * Returns the description of this module is available.
@@ -546,11 +539,12 @@ public class JahiaTemplatesPackage {
      * Resets the resource bundle lookup hierarchy.
      */
     public void clearHierarchy() {
-            getResourceBundleHierarchy().clear();
-        }
+        getResourceBundleHierarchy().clear();
+    }
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) {
             return true;
         }
@@ -595,7 +589,6 @@ public class JahiaTemplatesPackage {
     public void setRulesDescriptorFile(String rulesDescriptorFiles) {
         this.rulesDescriptorFiles.add(rulesDescriptorFiles);
     }
-
 
     /**
      * Returns a read-only list of modules which this module depends on.

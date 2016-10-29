@@ -412,38 +412,43 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         moduleBuildHelper.deployToMaven(groupId, artifactId, releaseInfo, generatedWar);
     }
 
-    public List<File> regenerateImportFile(String moduleId, File sources, JCRSessionWrapper session) throws RepositoryException {
+    public List<File> regenerateImportFile(final String moduleId, final File sources, JCRSessionWrapper session) throws RepositoryException {
         logger.info("Re-generating initial import file for module {} in source folder {}", moduleId, sources);
         long startTime = System.currentTimeMillis();
-        List<File> modifiedFiles = new ArrayList<>();
+        final List<File> modifiedFiles = new ArrayList<>();
 
         if (session.getLocale() != null) {
             logger.error("Cannot generated export with i18n session");
             return modifiedFiles;
         }
 
-        SourceControlManagement scm = null;
-        try {
-            scm = getTemplatePackageById(moduleId).getSourceControl();
-        } catch (Exception e) {
-            logger.error("Cannot get SCM", e);
-        }
-
-        JahiaTemplatesPackage aPackage = getTemplatePackageById(moduleId);
-
-        try {
-            moduleBuildHelper.regenerateImportFile(session, modifiedFiles, sources, moduleId, aPackage.getIdWithVersion());
-
-            if (scm != null) {
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(session.getUser(), null, null, new JCRCallback<Object>() {
+            @Override
+            public Object doInJCR(JCRSessionWrapper localSession) throws RepositoryException {
+                JahiaTemplatesPackage aPackage = getTemplatePackageById(moduleId);
+                SourceControlManagement scm = null;
                 try {
-                    scm.add(modifiedFiles);
+                    scm = getTemplatePackageById(moduleId).getSourceControl();
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    logger.error("Cannot get SCM", e);
                 }
+                try {
+                    moduleBuildHelper.regenerateImportFile(localSession, modifiedFiles, sources, moduleId, aPackage.getIdWithVersion());
+
+                    if (scm != null) {
+                        try {
+                            scm.add(modifiedFiles);
+                        } catch (Exception e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                } catch (RepositoryException | SAXException | TransformerException | IOException e1) {
+                    logger.error(e1.getMessage(), e1);
+                }
+                return null;
             }
-        } catch (RepositoryException | SAXException | TransformerException | IOException e1) {
-            logger.error(e1.getMessage(), e1);
-        }
+        });
+
 
         logger.info("Initial import for module {} re-generated in {}", moduleId, DateUtils.formatDurationWords(System.currentTimeMillis() - startTime));
 

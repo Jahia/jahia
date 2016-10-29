@@ -993,7 +993,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return objectNode.getName();
             }
         } catch (RepositoryException e) {
-            logger.error("Repository error", e);
+            logger.error("Repository error unable to read node {}", localPath, e);
         }
         return null;
     }

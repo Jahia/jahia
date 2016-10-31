@@ -403,9 +403,10 @@ public class JCRSessionWrapper implements Session {
 
     private boolean checkCyclicReference(String path, String reference) {
         try {
-            while (StringUtils.contains(path, DEREF_SEPARATOR) || StringUtils.startsWith(path, reference + "/") || StringUtils.equals(path, reference)) {
-                if (StringUtils.contains(path, DEREF_SEPARATOR)) {
-                    path = StringUtils.substringBeforeLast(path, DEREF_SEPARATOR);
+            int lastIndexOfDeref = StringUtils.lastIndexOf(path, DEREF_SEPARATOR);
+            while (lastIndexOfDeref != -1 || StringUtils.startsWith(path, reference + "/") || StringUtils.equals(path, reference)) {
+                if (lastIndexOfDeref != -1) {
+                    path = StringUtils.substring(path, 0, lastIndexOfDeref);
                     JCRNodeWrapper referencedNode = (JCRNodeWrapper) getNode(path).getProperty(Constants.NODE).getNode();
                     if (StringUtils.equals(referencedNode.getPath(), reference)) {
                         return true;

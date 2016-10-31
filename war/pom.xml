@@ -330,6 +330,12 @@
             <version>${felix.http.version}</version>
         </dependency>
 
+        <dependency>
+            <!-- Karaf dependency -->
+            <groupId>org.apache.karaf.diagnostic</groupId>
+            <artifactId>org.apache.karaf.diagnostic.boot</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -355,7 +361,7 @@
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/jahia/WEB-INF</outputDirectory>
-                                    <includes>apache-karaf-${karaf.version}/data/**,apache-karaf-${karaf.version}/deploy,apache-karaf-${karaf.version}/etc/**,apache-karaf-${karaf.version}/lib/**,apache-karaf-${karaf.version}/system/**</includes>
+                                    <includes>apache-karaf-${karaf.version}/data/**,apache-karaf-${karaf.version}/deploy,apache-karaf-${karaf.version}/etc/**,apache-karaf-${karaf.version}/system/**</includes>
                                     <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/config.properties,**/README, **/org.eclipse.osgi-*.jar, **/org.apache.karaf.wrapper.core-*.jar, **/org/apache/felix/org.apache.felix.fileinstall/**</excludes>
                                 </artifactItem>
                             </artifactItems>

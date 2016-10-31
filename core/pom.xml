@@ -317,11 +317,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>com.phloc</groupId>
-            <artifactId>phloc-css</artifactId>
-            <version>3.6.0</version>
-        </dependency>
 
         <!--Hibernate dependencies-->
         <dependency>
@@ -1529,6 +1524,11 @@
             <artifactId>guava</artifactId>
             <version>15.0</version>
             <classifier>cdi1.0</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
         <dependency>

@@ -238,6 +238,7 @@ public class RulesNotificationService {
         final Bindings bindings = new SimpleBindings();
         bindings.put("currentUser", user);
         bindings.put("contextPath", Jahia.getContextPath());
+        bindings.put("currentLocale", locale);
         final Object object = drools.getMatch().getTuple().getHandle().getObject();
         JCRNodeWrapper node = null;
         if (object instanceof AbstractNodeFact) {

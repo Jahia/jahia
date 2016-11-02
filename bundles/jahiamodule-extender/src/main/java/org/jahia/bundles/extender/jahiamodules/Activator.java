@@ -82,6 +82,7 @@ import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
+import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.url.URLConstants;
 import org.osgi.service.url.URLStreamHandlerService;
@@ -277,14 +278,24 @@ public class Activator implements BundleActivator {
                                 }
                             }
                             try {
+                                boolean needUpdate = state > Bundle.INSTALLED;
                                 if (!bundleLocation.startsWith(URL_PROTOCOL_DX)) {
                                     // transform the module
                                     String newLocation = transform(bundle);
                                     // overwrite bundle location
                                     ModuleUtils.updateBundleLocation(bundle, newLocation);
                                     // perform bundle update from the new location
-                                    bundle.update();
-                                } else if (state > Bundle.INSTALLED) {
+                                    needUpdate = true;
+                                }
+
+                                // update start level
+                                BundleStartLevel bundleStartLevel = bundle.adapt(BundleStartLevel.class);
+                                if(bundleStartLevel.getStartLevel() != SettingsBean.getInstance().getModuleStartLevel()){
+                                    bundleStartLevel.setStartLevel(SettingsBean.getInstance().getModuleStartLevel());
+                                    needUpdate = true;
+                                }
+
+                                if (needUpdate) {
                                     bundle.update();
                                 }
                             } catch (BundleException | ModuleManagementException e) {

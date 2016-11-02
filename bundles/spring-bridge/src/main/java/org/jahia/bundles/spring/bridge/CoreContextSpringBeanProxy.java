@@ -49,6 +49,7 @@ import org.springframework.beans.factory.FactoryBean;
  * Simple factory that give the reference to the target bean.
  * Only useful as a workaround for osgi:service limitation, which require a local bean definition.
  */
+@SuppressWarnings("rawtypes")
 public class CoreContextSpringBeanProxy implements FactoryBean {
 
     private Object target;

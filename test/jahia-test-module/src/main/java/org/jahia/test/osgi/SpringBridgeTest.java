@@ -44,9 +44,8 @@
 package org.jahia.test.osgi;
 
 import org.jahia.osgi.BundleUtils;
-import org.jahia.services.query.QueryService;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.tags.TagHandler;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.junit.Test;
 
 /**
@@ -54,20 +53,13 @@ import org.junit.Test;
  */
 public class SpringBridgeTest {
 
-    @Test
-    public void testSpringBeansAsOsgiServices() throws Exception {
-
-        JahiaSitesService sitesService = getOsgiService(JahiaSitesService.class);
-        sitesService.getSitesNames();
-
-        QueryService queryService = getOsgiService(QueryService.class);
-        queryService.getValueFactory();
-
-        TagHandler tagHandler = getOsgiService(TagHandler.class);
-        tagHandler.execute("");
-    }
-
     private <T> T getOsgiService(Class<T> serviceClass) {
         return BundleUtils.getOsgiService(serviceClass, null);
+    }
+
+    @Test
+    public void testSpringBeansAsOsgiServices() throws Exception {
+        getOsgiService(JahiaSitesService.class).getSitesNames();
+        getOsgiService(JahiaGroupManagerService.class).getGroupList();
     }
 }

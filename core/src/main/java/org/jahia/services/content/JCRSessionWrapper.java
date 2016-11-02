@@ -414,6 +414,7 @@ public class JCRSessionWrapper implements Session {
                 } else {
                     return true;
                 }
+                lastIndexOfDeref = StringUtils.lastIndexOf(path, DEREF_SEPARATOR);
             }
         } catch (RepositoryException e) {
             logger.debug("unable to check cyclic reference between node {} and its reference {}", new String[]{path, reference}, e);

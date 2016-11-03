@@ -901,6 +901,7 @@ extends = jnt:content
  - cache.requestParameters (string)
  - cache.mainResource (boolean)
  - cache.perUser (boolean)
+ - skip.aggregation (boolean)
  - visible (string,choicelist) nofulltext < 'false','true','studioOnly'
  - requirePermissions (string)
  - cache.expiration (long)

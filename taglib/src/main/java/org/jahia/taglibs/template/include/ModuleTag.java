@@ -44,7 +44,6 @@
 package org.jahia.taglibs.template.include;
 
 import com.google.common.collect.Ordering;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.api.Constants;
@@ -73,7 +72,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.*;
@@ -574,6 +572,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             }
             if (skipAggregation) {
                 request.setAttribute(AggregateFilter.SKIP_AGGREGATION, skipAggregation);
+                resource.getRegexpDependencies().add(resource.getNodePath() + "/.*");
             }
             builder.append(RenderService.getInstance().render(resource, renderContext));
             renderContext.setSite(previousSite);

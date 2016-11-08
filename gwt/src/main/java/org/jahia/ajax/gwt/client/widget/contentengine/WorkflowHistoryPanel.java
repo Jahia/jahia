@@ -187,12 +187,15 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent ce) {
                                     EnginePanel container = new EnginePanel();
-                                    // remove workflow tab before displaying it
+                                    // Keep previsous selection to restore it once the engine will be processed.
+                                    List<GWTJahiaNode> selectedNodes = new ArrayList<GWTJahiaNode>();
+                                    selectedNodes.addAll(linker.getSelectionContext().getSelectedNodes());
+                                    // set the current selection to the current workflow parent node. It is needed to build the engine
                                     final GWTJahiaNode nodewrapper = (GWTJahiaNode) parent.get("nodeWrapper");
                                     linker.getSelectionContext().setSelectedNodes(Arrays.asList(nodewrapper));
                                     linker.getSelectionContext().refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
                                     new WorkflowActionDialog(parent.getRunningWorkflow(), task, linker,
-                                            parent.getRunningWorkflow().getCustomWorkflowInfo(), container);
+                                            parent.getRunningWorkflow().getCustomWorkflowInfo(), container, selectedNodes);
                                     container.showEngine();
                                     container.addListener(Events.Close, new Listener<BaseEvent>() {
                                         public void handleEvent(BaseEvent be) {

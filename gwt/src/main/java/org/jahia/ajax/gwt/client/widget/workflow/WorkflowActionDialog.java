@@ -105,7 +105,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
                                 final Linker linker, CustomWorkflow custom, EngineContainer container) {
-        this(linker, container, title, null, wfDefinition.getFormResourceName(), null);
+        this(linker, container, title, null, wfDefinition.getFormResourceName(), null, null);
         this.nodePath = nodePath;
         this.wfDefinition = wfDefinition;
         initStartWorkflowDialog(wfDefinition);
@@ -115,8 +115,9 @@ public class WorkflowActionDialog extends LayoutContainer {
     }
 
     public WorkflowActionDialog(final GWTJahiaWorkflow workflow, final GWTJahiaWorkflowTask task, final Linker linker,
-                                CustomWorkflow custom, EngineContainer container) {
-        this(linker, container, (workflow.getVariables().get("jcr_title") != null && workflow.getVariables().get("jcr_title").getValues().size() == 1) ? workflow.getVariables().get("jcr_title").getValues().get(0).getString() : null, null, (String) task.get("formResourceName"),workflow);
+                                CustomWorkflow custom, EngineContainer container, List<GWTJahiaNode> selectedNodes) {
+        this(linker, container, (workflow.getVariables().get("jcr_title") != null && workflow.getVariables().get("jcr_title").getValues().size() == 1) ?
+                workflow.getVariables().get("jcr_title").getValues().get(0).getString() : null, null, (String) task.get("formResourceName"),workflow, selectedNodes);
         initExecuteActionDialog(task);
         if (custom != null) {
             custom.initExecuteActionDialog(workflow, this);
@@ -125,7 +126,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
                                 final Linker linker, CustomWorkflow custom, final EngineContainer container, String language) {
-        this(linker, container, title, language, wfDefinition.getFormResourceName(), null);
+        this(linker, container, title, language, wfDefinition.getFormResourceName(), null, null);
         this.nodePath = nodePath;
         this.wfDefinition = wfDefinition;
         this.customWorkflow = custom;
@@ -136,7 +137,8 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     }
 
-    private WorkflowActionDialog(Linker linker, EngineContainer container, String title, String language, String wfDefinitionNodeType, final GWTJahiaWorkflow workflow) {
+    private WorkflowActionDialog(Linker linker, EngineContainer container, String title, String language, String wfDefinitionNodeType, final GWTJahiaWorkflow
+            workflow, List<GWTJahiaNode> selectedNodes) {
         super();
         this.workflow = workflow;
         contentManagement = JahiaContentManagementService.App.getInstance();
@@ -154,7 +156,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
         this.container = container;
 
-        initTabs(wfDefinitionNodeType,workflow!=null?workflow.getVariables(): new HashMap<String, GWTJahiaNodeProperty>(), language);
+        initTabs(wfDefinitionNodeType,workflow!=null?workflow.getVariables(): new HashMap<String, GWTJahiaNodeProperty>(), language, selectedNodes);
 
         container.setEngine(this, this.title, buttonsBar, JahiaGWTParameters.getLanguage(language), this.linker);
         addCancelButton(container);
@@ -197,7 +199,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     }
 
-    private void initTabs(final String formResourceName, Map<String, GWTJahiaNodeProperty> variables, String language) {
+    private void initTabs(final String formResourceName, Map<String, GWTJahiaNodeProperty> variables, String language, List<GWTJahiaNode> selectedNodes) {
         if (title != null) {
             if (language != null) {
                 variables.put("jcr:title", new GWTJahiaNodeProperty("jcr:title",
@@ -207,13 +209,13 @@ public class WorkflowActionDialog extends LayoutContainer {
                         new GWTJahiaNodePropertyValue(title, GWTJahiaNodePropertyType.STRING)));
             }
         }
-        TabItem action = initActionTab(formResourceName, variables);
+        TabItem action = initActionTab(formResourceName, variables, selectedNodes);
         tabPanel.add(action);
         TabItem comments = initCommentTab();
         tabPanel.add(comments);
     }
 
-    private TabItem initActionTab(final String formResourceName, final Map<String, GWTJahiaNodeProperty> variables) {
+    private TabItem initActionTab(final String formResourceName, final Map<String, GWTJahiaNodeProperty> variables, final List<GWTJahiaNode> selectedNodes) {
         actionTab = new TabItem(Messages.get("label.action", "Action"));
         actionTab.setLayout(new BorderLayout());
         if (formResourceName != null && !"".equals(formResourceName)) {
@@ -234,9 +236,11 @@ public class WorkflowActionDialog extends LayoutContainer {
                     propertiesEditor.setBodyBorder(false);
                     actionTab.add(propertiesEditor, new BorderLayoutData(Style.LayoutRegion.CENTER));
                     actionTab.layout();
-                    // clean up linker selection
-                    linker.getSelectionContext().setSelectedNodes(new ArrayList<GWTJahiaNode>());
-                    linker.getSelectionContext().refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
+                    // restore linker selection (currently set by WorkflowHistoryPanel)
+                    if (selectedNodes != null) {
+                        linker.getSelectionContext().setSelectedNodes(selectedNodes);
+                        linker.getSelectionContext().refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
+                    }
                 }
             });
         }

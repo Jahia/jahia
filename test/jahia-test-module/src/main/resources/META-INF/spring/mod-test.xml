@@ -414,6 +414,7 @@
         <property name="urlMap">
             <map>
                 <entry key="/test" value-ref="testController"/>
+                <entry key="/test.html" value-ref="testController"/>
                 <entry key="/test/**" value-ref="testController"/>
                 <entry key="/createsite" value-ref="testCreateSiteController"/>
             </map>

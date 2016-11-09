@@ -94,6 +94,7 @@ public class TestServlet extends BaseTestController {
     protected void handleGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 
             String pathInfo = StringUtils.substringAfter(httpServletRequest.getPathInfo(), "/test");
+            boolean isHtmlOutput = ".html".equals(pathInfo);
             String xmlTest = httpServletRequest.getParameter("xmlTest");
             if (pathInfo.contains("selenium") || !StringUtils.isEmpty(xmlTest)) {
                 JahiaTemplatesPackage seleniumModule = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("selenium");
@@ -162,10 +163,10 @@ public class TestServlet extends BaseTestController {
                 myTestNG.setConfigFailurePolicy("continue");
                 myTestNG.setPreserveOrder(true);
                 myTestNG.run();
-            } else if (StringUtils.isNotEmpty(pathInfo) && !pathInfo.contains("*") && !pathInfo.trim().equals("/")) {
+            } else if (StringUtils.isNotEmpty(pathInfo) && !pathInfo.contains("*") && !pathInfo.trim().equals("/") && !isHtmlOutput) {
                 runTest(httpServletRequest, httpServletResponse, pathInfo);
             } else {
-                Pattern testNamePattern = StringUtils.isNotEmpty(pathInfo) && !pathInfo.trim().equals("/") ? Pattern
+                Pattern testNamePattern = !isHtmlOutput && StringUtils.isNotEmpty(pathInfo) && !pathInfo.trim().equals("/") ? Pattern
                         .compile(pathInfo.length() > 1 && pathInfo.startsWith("/") ? pathInfo
                                 .substring(1) : pathInfo) : null;
                 Set<String> testCases = getAllTestCases(Boolean.valueOf(httpServletRequest.getParameter("skipCoreTests")));
@@ -180,10 +181,46 @@ public class TestServlet extends BaseTestController {
                         }
                     }
 
-                for (String c : tests) {
-                    pw.println(c);
+                if (isHtmlOutput) {
+                    outputHtml(tests, httpServletRequest, httpServletResponse);
+                } else {
+                    for (String c : tests) {
+                        pw.println(c);
+                    }
                 }
             }
+    }
+
+    private void outputHtml(List<String> tests, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/html; charset=utf-8");
+        PrintWriter pw = response.getWriter();
+        pw.println("<!doctype html>");
+        pw.println("");
+        pw.println("<html lang=\"en\">");
+        pw.println("<head>");
+        pw.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>");
+        pw.print("<link rel=\"stylesheet\" href=\"");
+        pw.print(request.getContextPath());
+        pw.println("/modules/tools/css/tools.css\" type=\"text/css\" />");
+        pw.println("<title>DX Tests</title>");
+        pw.println("</head>");
+        pw.println("<body>");
+        pw.println("<h1>");
+        pw.println(tests.size());
+        pw.println(" tests found");
+        pw.println("</h1>");
+        pw.println("<ul>");
+        for (String test : tests) {
+            pw.print("<li><a href=\"");
+            pw.print(request.getContextPath());
+            pw.print("/cms/test/");
+            pw.print(test);
+            pw.print("\">");
+            pw.print(test);
+            pw.println("</a></li>");
+        }
+        pw.println("</ul>");
+        pw.println("</body>");
     }
 
     private void runTest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, String pathInfo) {

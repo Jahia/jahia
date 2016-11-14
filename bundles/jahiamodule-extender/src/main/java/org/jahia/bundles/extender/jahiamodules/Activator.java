@@ -83,6 +83,7 @@ import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
 import org.osgi.framework.startlevel.BundleStartLevel;
+import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.url.URLConstants;
 import org.osgi.service.url.URLStreamHandlerService;
@@ -761,6 +762,7 @@ public class Activator implements BundleActivator {
             }
         }
 
+        // force other bundle to move to Installed state, but first check for dependency closure
         SortedMap<ModuleVersion, JahiaTemplatesPackage> allModuleVersions = templatePackageRegistry
                 .getAllModuleVersions().get(bundle.getSymbolicName());
         if (allModuleVersions.size() > 1) {
@@ -768,8 +770,25 @@ public class Activator implements BundleActivator {
                 Bundle otherBundle = pkg.getBundle();
                 if (otherBundle != null && otherBundle.getBundleId() != bundle.getBundleId()
                         && otherBundle.getState() == Bundle.RESOLVED) {
-                    // force other bundle to move to Installed state
-                    BundleLifecycleUtils.getFrameworkWiring().refreshBundles(Collections.singleton(otherBundle));
+
+                    // Sometime bundle can depends on other version of the same bundle,
+                    // doing a refresh in this case will cause an infinite loop of start/stop operations
+
+                    FrameworkWiring frameworkWiring = BundleLifecycleUtils.getFrameworkWiring();
+                    Collection<Bundle> dependencies = frameworkWiring.getDependencyClosure(Collections.singleton(otherBundle));
+
+                    boolean doRefresh = true;
+                    for (Bundle dependency : dependencies) {
+                        if (dependency.getSymbolicName().equals(bundle.getSymbolicName()) &&
+                                dependency.getVersion().equals(bundle.getVersion())) {
+                            doRefresh = false;
+                            break;
+                        }
+                    }
+
+                    if (doRefresh) {
+                        frameworkWiring.refreshBundles(Collections.singleton(otherBundle));
+                    }
                 }
             }
         }

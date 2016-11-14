@@ -747,12 +747,12 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>1.13</version>
+            <version>1.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>1.13</version>
+            <version>1.14</version>
             <exclusions>
                 <exclusion>
                     <!--
@@ -782,7 +782,7 @@
                 <exclusion>
                     <!-- Matlab -->
                     <artifactId>jmatio</artifactId>
-                    <groupId>net.sourceforge.jmatio</groupId>
+                    <groupId>org.tallison</groupId>
                 </exclusion>
                 <exclusion>
                     <!-- MS Access -->
@@ -885,61 +885,8 @@
                     <groupId>org.apache.commons</groupId>
                 </exclusion>
                 <!-- end of excluded dependencies for various formats -->
-
-                <!-- We exclude PDFBox to override its version and use newer one -->
-                <exclusion>
-                    <artifactId>pdfbox</artifactId>
-                    <groupId>org.apache.pdfbox</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>pdfbox-tools</artifactId>
-                    <groupId>org.apache.pdfbox</groupId>
-                </exclusion>
-                <!-- We exclude POI to override its version and use newer one -->
-                <exclusion>
-                    <artifactId>poi</artifactId>
-                    <groupId>org.apache.poi</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>poi-scratchpad</artifactId>
-                    <groupId>org.apache.poi</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>poi-ooxml</artifactId>
-                    <groupId>org.apache.poi</groupId>
-                </exclusion>
             </exclusions>
         </dependency>
-
-        <!-- PDFBox dependency we override form Tika -->
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox-tools</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-        <!-- End of PDFBox dependency we override form Tika -->
-        <!-- POI dependency we override form Tika -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.15</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-scratchpad</artifactId>
-            <version>3.15</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.15</version>
-        </dependency>
-        <!-- End of POI dependency we override form Tika -->
 
         <dependency>
             <groupId>net.sf.ehcache</groupId>

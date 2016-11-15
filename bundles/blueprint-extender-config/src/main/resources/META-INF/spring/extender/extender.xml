@@ -9,9 +9,8 @@
 
     <bean id="jahiaOsgiBeanFactoryPostProcessor" class="org.jahia.bundles.blueprint.extender.config.JahiaOsgiBeanFactoryPostProcessor"/>
 
-    <!-- Force synchronous application context creation/shutdown by the Gemini extender, otherwise it is unable to deal smoothly with
-         multiple start/stop operations performed on a bundle quickly. -->
-    <bean id="taskExecutor" class="org.jahia.bundles.blueprint.extender.config.SynchronousExecutor"/>
-    <bean id="shutdownTaskExecutor" class="org.jahia.bundles.blueprint.extender.config.SynchronousExecutor"/>
+    <!--<bean id="taskExecutor" class="org.jahia.bundles.blueprint.extender.config.SynchronousExecutor"/>-->
+
+    <!--<bean id="shutdownTaskExecutor" class="org.jahia.bundles.blueprint.extender.config.SynchronousExecutor"/>-->
 
 </blueprint>

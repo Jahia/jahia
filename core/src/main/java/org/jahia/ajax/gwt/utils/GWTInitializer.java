@@ -205,7 +205,7 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.USE_WEBSOCKETS, "true");
         }
 
-        String customCkeditorConfig = getCustomCKEditorConfig(renderContext);
+        String customCkeditorConfig = getCustomCKEditorConfig(request, renderContext);
         if (customCkeditorConfig != null) {
             params.put("ckeCfg", customCkeditorConfig);
         }

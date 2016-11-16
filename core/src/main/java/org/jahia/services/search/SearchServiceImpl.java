@@ -185,7 +185,7 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
      *
      * @return an instance of the search provider for handling query requests
      */
-    protected SearchProvider getCurrentProvider() {
+    public SearchProvider getCurrentProvider() {
         return selectedSearchProvider != null ? selectedSearchProvider : defaultSearchProvider;
     }
 

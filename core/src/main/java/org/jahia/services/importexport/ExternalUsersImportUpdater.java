@@ -49,6 +49,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.commons.Version;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.utils.xml.JahiaDocumentBuilderFactory;
+import org.jahia.utils.zip.DirectoryZipInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -74,6 +75,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ExternalUsersImportUpdater extends ImportFileUpdater {
@@ -93,15 +95,13 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
     public File updateImport(File importFile, String fileName, String fileType)  {
         Map<String, String> pathMapping = new HashMap<String, String>();
         File newImportFile = null;
-        FileInputStream in = null;
-        NoCloseZipInputStream zin = null;
+        ZipInputStream zin = null;
         OutputStream out = null;
         ZipOutputStream zout = null;
         boolean updated = false;
         try {
             newImportFile = File.createTempFile("import", ".zip");
-            in = new FileInputStream(importFile);
-            zin = new NoCloseZipInputStream(new BufferedInputStream(in));
+            zin = importFile.isDirectory() ? new DirectoryZipInputStream(importFile) : new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(importFile)));
             out = new FileOutputStream(newImportFile);
             zout = new ZipOutputStream(out);
 
@@ -126,10 +126,10 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
             }
 
             zin.closeEntry();
-            zin.reallyClose();
-            in.close();
-            in = new FileInputStream(importFile);
-            zin = new NoCloseZipInputStream(new BufferedInputStream(in));
+            if (zin instanceof NoCloseZipInputStream) {
+                ((NoCloseZipInputStream) zin).reallyClose();
+            }
+            zin = importFile.isDirectory() ? new DirectoryZipInputStream(importFile) : new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(importFile)));
             while (true) {
                 ZipEntry zipentry = zin.getNextEntry();
                 if (zipentry == null) break;
@@ -173,10 +173,9 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
                 }
                 if (zin != null) {
                     zin.closeEntry();
-                    zin.reallyClose();
-                }
-                if (in != null) {
-                    in.close();
+                    if (zin instanceof NoCloseZipInputStream) {
+                        ((NoCloseZipInputStream) zin).reallyClose();
+                    }
                 }
             } catch (IOException e) {
                 logger.debug("Stream already closed", e);

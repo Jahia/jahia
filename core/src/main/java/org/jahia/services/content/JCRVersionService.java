@@ -92,6 +92,9 @@ public class JCRVersionService extends JahiaService {
     
     private Set<String> mixinsToRemoveOnDestination = new HashSet<String>(
             Arrays.asList(new String[] { "jmix:referencesInField" }));
+    
+    private Set<String> nodetypesToSkipWhenSynchronizing = new HashSet<String>(
+            Arrays.asList(new String[] { "jnt:referenceInField" }));    
 
     @Override
     public void start() throws JahiaInitializationException {
@@ -377,8 +380,11 @@ public class JCRVersionService extends JahiaService {
                     JCRNodeWrapper node = destinationNodes.remove(child.getIdentifier());
                     synchronizeNode(child, node, session, allSubTree);
                 } else if (child.getRealNode().getParent().isNodeType(Constants.NT_FROZENNODE)) {
-                    JCRNodeWrapper node = destinationNode.addNode(child.getName(), child.getPrimaryNodeType().getName());
-                    synchronizeNode(child, node, session, allSubTree);
+                    String primaryNodeType = child.getPrimaryNodeType().getName();
+                    if (!nodetypesToSkipWhenSynchronizing.contains(primaryNodeType)) {
+                        JCRNodeWrapper node = destinationNode.addNode(child.getName(), primaryNodeType);
+                        synchronizeNode(child, node, session, allSubTree);
+                    }
                 } else {
                     VersionHistory history;
                     try {

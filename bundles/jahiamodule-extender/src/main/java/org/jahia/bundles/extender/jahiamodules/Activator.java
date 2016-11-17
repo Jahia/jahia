@@ -263,8 +263,10 @@ public class Activator implements BundleActivator {
                         // Parse bundle if activator has not seen them before
                         try {
                             String bundleLocation = bundle.getLocation();
-                            logger.info("Found bundle {} which needs to be processed by a module extender. Location {}",
-                                    BundleUtils.getDisplayName(bundle), bundleLocation);
+                            String bundleDisplayName = BundleUtils.getDisplayName(bundle);
+                            logger.info(
+                                    "Found bundle {} which needs to be processed by a module extender. Location {}. State: {}",
+                                    new Object[] { bundleDisplayName, bundleLocation, bundle.getState() });
                             if (state == Bundle.ACTIVE) {
                                 bundle.stop(Bundle.STOP_TRANSIENT);
                                 toStart.add(bundle);
@@ -287,13 +289,16 @@ public class Activator implements BundleActivator {
                                     ModuleUtils.updateBundleLocation(bundle, newLocation);
                                     // perform bundle update from the new location
                                     needUpdate = true;
-                                }
-
-                                // update start level
-                                BundleStartLevel bundleStartLevel = bundle.adapt(BundleStartLevel.class);
-                                if(bundleStartLevel.getStartLevel() != SettingsBean.getInstance().getModuleStartLevel()){
-                                    bundleStartLevel.setStartLevel(SettingsBean.getInstance().getModuleStartLevel());
-                                    needUpdate = true;
+                                    
+                                    // we check the start level for a module and adjust it
+                                    BundleStartLevel bundleStartLevel = bundle.adapt(BundleStartLevel.class);
+                                    int moduleStartLevel = SettingsBean.getInstance().getModuleStartLevel();
+                                    if(bundleStartLevel.getStartLevel() != moduleStartLevel) {
+                                        // update start level
+                                        logger.info("Setting start level for bundle {} to {}", bundleDisplayName,
+                                                moduleStartLevel);
+                                        bundleStartLevel.setStartLevel(moduleStartLevel);
+                                    }
                                 }
 
                                 if (needUpdate) {

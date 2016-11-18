@@ -569,6 +569,8 @@
 
 [jmix:editorialContent] mixin
 
+[jmix:siteContent] mixin
+
 //---------------------------------------------------------
 // Definition organization (left panel)
 //---------------------------------------------------------

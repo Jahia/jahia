@@ -569,6 +569,8 @@
 
 [jmix:editorialContent] mixin
 
+[jmix:siteContent] mixin
+
 //---------------------------------------------------------
 // Definition organization (left panel)
 //---------------------------------------------------------
@@ -1040,4 +1042,3 @@ extends = jnt:content
   - j:displayName (string) nofulltext
   - j:checksum (string) nofulltext
   - j:transformationRequired (boolean)
-  

@@ -977,6 +977,7 @@
                 <value>jmix:navMenuItem</value>
                 <value>jnt:contentFolder</value>
                 <value>jnt:contentList</value>
+                <value>jmix:siteContent</value>
             </list>
         </property>
         <property name="toolbars">

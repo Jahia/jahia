@@ -52,10 +52,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
-import org.apache.log4j.spi.LoggingEvent;
 import org.apache.nutch.crawl.CrawlDb;
 import org.apache.nutch.crawl.Generator;
 import org.apache.nutch.crawl.Injector;
@@ -63,6 +61,7 @@ import org.apache.nutch.fetcher.Fetcher;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleResource;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
@@ -79,8 +78,11 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Log4jEventCollectorWrapper;
+import org.jahia.utils.Log4jEventCollectorWrapper.LoggingEventWrapper;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -95,43 +97,40 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 /**
  * Basic fetcher test 1. generate seedlist 2. inject 3. generate 4. fetch
- * 
+ *
  * @author nutch-dev <nutch-dev at lucene.apache.org> and Benjamin Papez
  */
 
 public class CrawlingPageVisitorTest extends JahiaTestCase {
-    private static Logger logger = Logger.getLogger(CrawlingPageVisitorTest.class);
 
-    private final static Path testdir = new Path(System.getProperty("java.io.tmpdir")
-            + (!(System.getProperty("java.io.tmpdir").endsWith("/") || System.getProperty("java.io.tmpdir").endsWith(
-                    "\\")) ? System.getProperty("file.separator") : "") + "test/fetch-test");
+    private static final Logger logger = Logger.getLogger(CrawlingPageVisitorTest.class);
 
-    private final static String ACMESITE_NAME = "CrawlACMETest";
+    private static final Path TEST_DIR;
+    static {
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        if (!tmpDir.endsWith("/") && !tmpDir.endsWith("\\")) {
+            tmpDir = tmpDir + System.getProperty("file.separator");
+        }
+        TEST_DIR = new Path(tmpDir + "test/fetch-test");
+    }
 
-    private final static String ACME_SITECONTENT_ROOT_NODE = "sites/" + ACMESITE_NAME;
-
-    private static String DEFAULT_LANGUAGE = "en";
+    private static final String ACMESITE_NAME = "CrawlACMETest";
+    private static final String ACME_SITECONTENT_ROOT_NODE = "sites/" + ACMESITE_NAME;
+    private static final String DEFAULT_LANGUAGE = "en";
 
     private static Configuration conf;
-
-    private static FileSystem fs;
-
+    private static FileSystem fileSystem;
     private static Path crawldbPath;
-
     private static Path segmentsPath;
-
     private static Path urlPath;
 
-    private LogToJUnitOutputAppender appender = null;
+    private Log4jEventCollectorWrapper logEventCollector;
 
     private static void extract(JahiaTemplatesPackage p, org.springframework.core.io.Resource r, File f) throws Exception {
         if ((r instanceof BundleResource && r.contentLength() == 0) || (!(r instanceof BundleResource) && r.getFile().isDirectory())) {
@@ -147,105 +146,89 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
                 IOUtils.copy(r.getInputStream(), output);
             } finally {
                 IOUtils.closeQuietly(output);
-            }            
+            }
         }
     }
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        try {
-            // This is added to allow this parallel crawling for different jahia versions (see crawl-tests.xml) 
-            System.setProperty("crawl.jahia.version", Jahia.VERSION);
-            
-            conf = CrawlDBTestUtil.createConfiguration();
-            conf.setClassLoader(CrawlingPageVisitorTest.class.getClassLoader());
 
-            File f = File.createTempFile("plugins","");
-            f.delete();
-            final JahiaTemplatesPackage templatePackageById = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("jahia-test-module");
-            extract(templatePackageById, templatePackageById.getResource("/plugins"), f);
+        // This is added to allow this parallel crawling for different jahia versions (see crawl-tests.xml)
+        System.setProperty("crawl.jahia.version", Jahia.VERSION);
 
-            conf.setStrings("plugin.folders", f.getPath());
-            Thread.currentThread().setContextClassLoader(CrawlingPageVisitorTest.class.getClassLoader());
-            fs = FileSystem.get(conf);
-            fs.delete(testdir, true);
-            urlPath = new Path(testdir, "urls");
-            crawldbPath = new Path(testdir, "crawldb");
-            segmentsPath = new Path(testdir, "segments");
+        conf = CrawlDBTestUtil.createConfiguration();
+        conf.setClassLoader(CrawlingPageVisitorTest.class.getClassLoader());
 
-            final JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(ACMESITE_NAME);
-            if (defaultSite == null) {
-                final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        try {
-                            TestHelper.createSite(ACMESITE_NAME, "localhost", TestHelper.BOOTSTRAP_ACME_SPACE_TEMPLATES,
-                                    SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/acmespaceelektra.zip",
-                                    "ACME-SPACE.zip");
-                            jcrService.publishByMainId(session.getRootNode().getNode(ACME_SITECONTENT_ROOT_NODE + "/home").getIdentifier(),
-                                    Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
-                            session.save();
-                        } catch (Exception ex) {
-                            logger.warn("Exception during site creation", ex);
-                            fail("Exception during site creation");
-                        }
-                        return null;
+        File f = File.createTempFile("plugins","");
+        f.delete();
+        final JahiaTemplatesPackage templatePackageById = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById("jahia-test-module");
+        extract(templatePackageById, templatePackageById.getResource("/plugins"), f);
+
+        conf.setStrings("plugin.folders", f.getPath());
+        Thread.currentThread().setContextClassLoader(CrawlingPageVisitorTest.class.getClassLoader());
+        fileSystem = FileSystem.get(conf);
+        fileSystem.delete(TEST_DIR, true);
+        urlPath = new Path(TEST_DIR, "urls");
+        crawldbPath = new Path(TEST_DIR, "crawldb");
+        segmentsPath = new Path(TEST_DIR, "segments");
+
+        final JahiaSite defaultSite = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(ACMESITE_NAME);
+        if (defaultSite == null) {
+
+            final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
+
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        TestHelper.createSite(ACMESITE_NAME, "localhost", TestHelper.BOOTSTRAP_ACME_SPACE_TEMPLATES,
+                                SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/acmespaceelektra.zip",
+                                "ACME-SPACE.zip");
+                        jcrService.publishByMainId(session.getRootNode().getNode(ACME_SITECONTENT_ROOT_NODE + "/home").getIdentifier(),
+                                Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
+                        session.save();
+                    } catch (Exception ex) {
+                        throw new JahiaRuntimeException(ex);
                     }
-                });
-            }
-        } catch (Exception ex) {
-            logger.warn("Exception during test setUp", ex);
-            fail();
+                    return null;
+                }
+            });
         }
     }
 
     @Before
     public void setUp() {
-        appender = new LogToJUnitOutputAppender();
-        Logger rootLogger = Logger.getRootLogger();
-        // when we want to add it back...
-        rootLogger.addAppender(appender);
-
+        logEventCollector = new Log4jEventCollectorWrapper(Priority.ERROR_INT);
     }
 
     @After
     public void tearDown() {
-        Logger rootLogger = Logger.getRootLogger();
-        rootLogger.removeAppender(appender);
+        logEventCollector.close();
     }
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-        try {
-            TestHelper.deleteSite(ACMESITE_NAME);
-        } catch (Exception ex) {
-            logger.warn("Exception during test tearDown", ex);
-        }
+        TestHelper.deleteSite(ACMESITE_NAME);
     }
 
     private String getPrecompileServletURL() {
         return getBaseServerURL()+ Jahia.getContextPath() + "/modules/tools/precompileServlet";
-    }    
+    }
 
     @Test
     public void testPrecompileJsps() throws IOException {
         HttpClient client = new HttpClient();
-
         client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("jahia", "password"));
-
         String url = getPrecompileServletURL() + "?compile_type=all&jsp_precompile=true";
-
         logger.info("Starting the precompileServlet with the following url: " + url);
-
         GetMethod get = new GetMethod(url);
         try {
             get.setDoAuthentication(true);
-
             int statusCode = client.executeMethod(get);
-
-            assertEquals("Precompile servlet failed", HttpStatus.SC_OK, statusCode);
-            assertThat("Precompilation found buggy JSPs", get.getResponseBodyAsString(), containsString("No problems found!"));
-            assertEquals("There were exceptions during the precompile process", "", appender.getErrorLogs());
+            Assert.assertEquals("Precompile servlet failed", HttpStatus.SC_OK, statusCode);
+            Assert.assertThat("Precompilation found buggy JSPs", get.getResponseBodyAsString(), containsString("No problems found!"));
+            Assert.assertEquals("There were errors during the precompile process", "", toText(logEventCollector.getCollectedEvents()));
         } finally {
             get.releaseConnection();
         }
@@ -254,10 +237,11 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
     @Test
     public void testFetchDefaultSiteLive() throws RepositoryException, IOException {
         crawlUrls(getBaseUrls(Constants.LIVE_WORKSPACE, ACME_SITECONTENT_ROOT_NODE));
-        assertEquals("There were errors during the crawling", "", appender.getErrorLogs());        
+        Assert.assertEquals("There were errors during the crawling", "", toText(logEventCollector.getCollectedEvents()));
     }
 
     private List<String> getBaseUrls(String workspace, String sitePath) throws RepositoryException {
+
         List<String> urls = new ArrayList<String>();
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE));
@@ -282,84 +266,54 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
         URLGenerator urlgenerator = new URLGenerator(renderCtx, resource);
         urls.add(urlgenerator.getServer() + urlgenerator.getContext()
                 + (Constants.LIVE_WORKSPACE.equals(workspace) ? urlgenerator.getLive() : urlgenerator.getEdit()));
+
         return urls;
     }
 
-    private void crawlUrls(List<String> urls) {
-        try {
-            CrawlDBTestUtil.generateSeedList(fs, urlPath, urls);
+    private void crawlUrls(List<String> urls) throws IOException {
 
-            // inject
-            Injector injector = new Injector(conf);
-            injector.inject(crawldbPath, urlPath);
+        CrawlDBTestUtil.generateSeedList(fileSystem, urlPath, urls);
 
-            // generate
-            Generator g = new Generator(conf);
-            // fetch
-            conf.setBoolean("fetcher.parse", true);
-            Fetcher fetcher = new Fetcher(conf);
-            CrawlDb crawlDbTool = new CrawlDb(conf);
+        // inject
+        Injector injector = new Injector(conf);
+        injector.inject(crawldbPath, urlPath);
 
-            int depth = 5;
-            int threads = 4;
-            for (int i = 0; i < depth; i++) { // generate new segment
-                Path[] generatedSegments = g.generate(crawldbPath, segmentsPath, 1, Long.MAX_VALUE, Long.MAX_VALUE, false,
-                        false);
+        // generate
+        Generator g = new Generator(conf);
+        // fetch
+        conf.setBoolean("fetcher.parse", true);
+        Fetcher fetcher = new Fetcher(conf);
+        CrawlDb crawlDbTool = new CrawlDb(conf);
 
-                if (generatedSegments == null) {
-                    logger.info("Stopping at depth=" + i + " - no more URLs to fetch.");
-                    break;
-                }
-                for (Path generatedSegment : generatedSegments) {
-                    fetcher.fetch(generatedSegment, threads);
-                    crawlDbTool.update(crawldbPath,
-                            new Path[] { generatedSegment }, true, true);
-                }
+        int depth = 5;
+        int threads = 4;
+        for (int i = 0; i < depth; i++) { // generate new segment
+            Path[] generatedSegments = g.generate(crawldbPath, segmentsPath, 1, Long.MAX_VALUE, Long.MAX_VALUE, false, false);
+            if (generatedSegments == null) {
+                logger.info("Stopping at depth=" + i + " - no more URLs to fetch.");
+                break;
             }
-        } catch (IOException e) {
-            logger.error("Exception while crawling", e);
+            for (Path generatedSegment : generatedSegments) {
+                fetcher.fetch(generatedSegment, threads);
+                crawlDbTool.update(crawldbPath,
+                        new Path[] { generatedSegment }, true, true);
+            }
         }
     }
 
-    class LogToJUnitOutputAppender extends AppenderSkeleton {
-        StringBuffer errorLogs = new StringBuffer();
-        DateFormat timestampFormatter = SimpleDateFormat.getDateTimeInstance();
-        private String newLine = System.getProperty("line.separator") != null ? System.getProperty("line.separator") : "\n";
-        long lastTimeStamp = 0L;
-
-        public LogToJUnitOutputAppender() {
-        }
-
-        @Override
-        protected void append(LoggingEvent event) {
-            if (event.getLevel().toInt() >= Priority.ERROR_INT) {
-                StringBuilder errorLog = new StringBuilder();
-                if (event.getTimeStamp() - lastTimeStamp > 2000) {
-                    errorLog.append(newLine);                    
+    private static String toText(List<LoggingEventWrapper> logEvents) {
+        DateFormat timestampFormat = SimpleDateFormat.getDateTimeInstance();
+        StringBuilder errors = new StringBuilder();
+        for (LoggingEventWrapper logEvent : logEvents) {
+            errors.append(timestampFormat.format(new Date(logEvent.getTimestamp()))).append(" ").append(logEvent.getMessage()).append("\n");
+            String[] throwableInfo = logEvent.getThrowableInfo();
+            if (throwableInfo != null) {
+                for (String throwableInfoItem : throwableInfo) {
+                    errors.append(throwableInfoItem).append("\n");
                 }
-                errorLog.append(timestampFormatter.format(new Date(event.getTimeStamp()))).append(" ")
-                        .append(event.getRenderedMessage()).append(newLine);
-                String[] throwableStringRep = event.getThrowableStrRep();
-                if (throwableStringRep != null) {
-                    for (String stacktraceLine : throwableStringRep) {
-                        errorLog.append(stacktraceLine).append(newLine);
-                    }
-                    errorLog.append(newLine);                    
-                } 
-                errorLogs.append(errorLog.toString());
-                lastTimeStamp = event.getTimeStamp();
+                errors.append("\n");
             }
         }
-
-        public void close() {
-        }
-
-        public boolean requiresLayout() {
-            return false;
-        }
-        
-        public String getErrorLogs() {
-            return errorLogs.toString();
-        }
+        return errors.toString();
     }
 }

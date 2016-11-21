@@ -43,36 +43,21 @@
  */
 package org.jahia.osgi;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-
 import org.apache.felix.utils.manifest.Clause;
 import org.apache.felix.utils.manifest.Parser;
 import org.apache.felix.utils.version.VersionRange;
 import org.apache.felix.utils.version.VersionTable;
 import org.jahia.services.modulemanager.ModuleManager;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
-import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
-import org.osgi.framework.Version;
+import org.osgi.framework.*;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Convenient utilities for OSGi bundle lifecycle and framework wiring.
@@ -168,35 +153,53 @@ public final class BundleLifecycleUtils {
      *         collected fragments
      */
     private static Set<Bundle> findFragmentsForBundles(Collection<Bundle> bundles) {
-        Set<Bundle> fragments = new HashSet<Bundle>();
+        Set<Bundle> fragments = new HashSet<>();
         Bundle[] allBundles = getAllBundles();
         for (Bundle b : allBundles) {
             if (b.getState() != Bundle.UNINSTALLED) {
-                String hostHeader = b.getHeaders().get(Constants.FRAGMENT_HOST);
-                if (hostHeader != null) {
-                    Clause[] clauses = Parser.parseHeader(hostHeader);
-                    if (clauses != null && clauses.length > 0) {
-                        Clause path = clauses[0];
-                        for (Bundle hostBundle : bundles) {
-                            if (hostBundle.getSymbolicName() != null
-                                    && hostBundle.getSymbolicName().equals(path.getName())) {
-                                String ver = path.getAttribute(Constants.BUNDLE_VERSION_ATTRIBUTE);
-                                if (ver != null) {
-                                    VersionRange v = VersionRange.parseVersionRange(ver);
-                                    if (v.contains(VersionTable
-                                            .getVersion(hostBundle.getHeaders().get(Constants.BUNDLE_VERSION)))) {
-                                        fragments.add(hostBundle);
-                                    }
-                                } else {
-                                    fragments.add(hostBundle);
-                                }
+                        fragments.addAll(findBundlesForClause(b, bundles));
+                    }
+                }
+        return fragments;
+    }
+
+    /**
+     * Collect a set of hosts bundles for a fragment
+     * @param fragment is the fragment to collect hosts bundles for
+     * @return a set of all bundles that match fragment's hosts
+     */
+    public static Set<Bundle> getHostsFragment(Bundle fragment) {
+        HashSet<Bundle> hosts = new HashSet<>();
+        List<Bundle> bundles = Arrays.asList(FrameworkService.getBundleContext().getBundles());
+        hosts.addAll(findBundlesForClause(fragment, bundles));
+        return hosts;
+    }
+
+    private static List<Bundle> findBundlesForClause(Bundle fragment, Collection<Bundle> bundles) {
+        List<Bundle> foundBundles = new ArrayList<>();
+        String hostHeader = fragment.getHeaders().get(Constants.FRAGMENT_HOST);
+        if (hostHeader != null) {
+            Clause[] clauses = Parser.parseHeader(hostHeader);
+            if (clauses != null && clauses.length > 0) {
+                Clause path = clauses[0];
+                for (Bundle bundle : bundles) {
+                    if (bundle.getSymbolicName() != null
+                            && bundle.getSymbolicName().equals(path.getName())) {
+                        String ver = path.getAttribute(Constants.BUNDLE_VERSION_ATTRIBUTE);
+                        if (ver != null) {
+                            VersionRange v = VersionRange.parseVersionRange(ver);
+                            if (v.contains(VersionTable
+                                    .getVersion(bundle.getHeaders().get(Constants.BUNDLE_VERSION)))) {
+                                foundBundles.add(bundle);
                             }
+                        } else {
+                            foundBundles.add(bundle);
                         }
                     }
                 }
             }
         }
-        return fragments;
+        return foundBundles;
     }
 
     private static Bundle[] getAllBundles() {

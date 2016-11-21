@@ -71,11 +71,7 @@ import org.jahia.services.render.scripting.bundle.BundleScriptEngineManager;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.jahia.services.render.scripting.bundle.ScriptBundleObserver;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.templates.JCRModuleListener;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.templates.ModuleVersion;
-import org.jahia.services.templates.TemplatePackageDeployer;
-import org.jahia.services.templates.TemplatePackageRegistry;
+import org.jahia.services.templates.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
@@ -356,15 +352,24 @@ public class Activator implements BundleActivator {
             public void bundleChanged(final BundleEvent bundleEvent) {
 
                 Bundle bundle = bundleEvent.getBundle();
+
+                int bundleEventType = bundleEvent.getType();
+                if (BundleUtils.isFragment(bundle) && (bundleEventType == BundleEvent.INSTALLED || bundleEventType == BundleEvent.UNINSTALLED)) {
+                    Set<Bundle> bundlesToRefresh = BundleLifecycleUtils.getHostsFragment(bundle);
+                    BundleLifecycleUtils.refreshBundles(bundlesToRefresh, false, false);
+                    return;
+                }
+
+
                 if (bundle == null || !BundleUtils.isJahiaModuleBundle(bundle)) {
                     return;
                 }
 
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEvent.getType()), getDisplayName(bundleEvent.getBundle()));
+                    logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEventType), getDisplayName(bundleEvent.getBundle()));
                 }
                 try {
-                    switch (bundleEvent.getType()) {
+                    switch (bundleEventType) {
                         case BundleEvent.INSTALLED:
                             install(bundle);
                             break;

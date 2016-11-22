@@ -82,6 +82,7 @@ public class SelectorType {
     public static final String SELECTORNAME_COLOR = "Color";
     public static final String SELECTORNAME_CATEGORY = "Category";
     public static final String SELECTORNAME_CHOICELIST = "Choicelist";
+    public static final String SELECTORNAME_CRON = "Cron";
     public static final String SELECTORNAME_TAG = "Tag";
 
     public static final Map<Integer, Integer> defaultSelectors = new HashMap<Integer, Integer>();
@@ -100,6 +101,7 @@ public class SelectorType {
         nameToValue.put(SELECTORNAME_COLOR, COLOR);
         nameToValue.put(SELECTORNAME_CATEGORY, CATEGORY);
         nameToValue.put(SELECTORNAME_CHOICELIST, CHOICELIST);
+        nameToValue.put(SELECTORNAME_CRON, CRON);
         nameToValue.put(SELECTORNAME_TAG, TAG);
 
         valueToName.put(SMALLTEXT, SELECTORNAME_SMALLTEXT);
@@ -113,6 +115,7 @@ public class SelectorType {
         valueToName.put(COLOR, SELECTORNAME_COLOR);
         valueToName.put(CATEGORY, SELECTORNAME_CATEGORY);
         valueToName.put(CHOICELIST, SELECTORNAME_CHOICELIST);
+        valueToName.put(CRON, SELECTORNAME_CRON);
         valueToName.put(TAG, SELECTORNAME_TAG);
 
         defaultSelectors.put(PropertyType.STRING, SMALLTEXT);

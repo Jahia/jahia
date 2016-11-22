@@ -950,7 +950,7 @@ extends = jnt:content
  - j:selectorType (STRING,choicelist) nofulltext
    < 'Text','RichText','DateTimePicker','DatePicker',
      'TextArea','Picker','FileUpload','Checkbox',
-     'Color','Category','Choicelist'
+     'Color','Category','Choicelist','Cron','Tag'
  - j:selectorOptions (STRING) multiple nofulltext
  - j:multiple (BOOLEAN)
  - j:defaultValues (STRING) multiple

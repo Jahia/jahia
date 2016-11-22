@@ -354,14 +354,17 @@ public class Activator implements BundleActivator {
                 Bundle bundle = bundleEvent.getBundle();
 
                 int bundleEventType = bundleEvent.getType();
-                if (BundleUtils.isFragment(bundle) && (bundleEventType == BundleEvent.INSTALLED || bundleEventType == BundleEvent.UNINSTALLED)) {
-                    Set<Bundle> bundlesToRefresh = BundleLifecycleUtils.getHostsFragment(bundle);
-                    BundleLifecycleUtils.refreshBundles(bundlesToRefresh, false, false);
+                if (bundle == null) {
                     return;
                 }
 
+                // refresh host bundle in case of fragment operation
+                if (BundleUtils.isFragment(bundle) && (bundleEventType == BundleEvent.INSTALLED || bundleEventType == BundleEvent.UNINSTALLED)) {
+                    BundleLifecycleUtils.refreshBundles(BundleLifecycleUtils.getHostsFragment(bundle), false, false);
+                    return;
+                }
 
-                if (bundle == null || !BundleUtils.isJahiaModuleBundle(bundle)) {
+                if (!BundleUtils.isJahiaModuleBundle(bundle)) {
                     return;
                 }
 

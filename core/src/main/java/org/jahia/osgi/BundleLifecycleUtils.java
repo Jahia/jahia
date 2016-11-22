@@ -154,12 +154,11 @@ public final class BundleLifecycleUtils {
      */
     private static Set<Bundle> findFragmentsForBundles(Collection<Bundle> bundles) {
         Set<Bundle> fragments = new HashSet<>();
-        Bundle[] allBundles = getAllBundles();
-        for (Bundle b : allBundles) {
+        for (Bundle b : getAllBundles()) {
             if (b.getState() != Bundle.UNINSTALLED) {
-                        fragments.addAll(findBundlesForClause(b, bundles));
-                    }
-                }
+                fragments.addAll(findBundlesForClause(b, bundles));
+            }
+        }
         return fragments;
     }
 
@@ -170,8 +169,7 @@ public final class BundleLifecycleUtils {
      */
     public static Set<Bundle> getHostsFragment(Bundle fragment) {
         HashSet<Bundle> hosts = new HashSet<>();
-        List<Bundle> bundles = Arrays.asList(FrameworkService.getBundleContext().getBundles());
-        hosts.addAll(findBundlesForClause(fragment, bundles));
+        hosts.addAll(findBundlesForClause(fragment, Arrays.asList(getAllBundles())));
         return hosts;
     }
 

@@ -252,9 +252,17 @@ public class ReferencesHelper {
             if (logger.isDebugEnabled()) {
                 logger.debug("New references : " + value);
             }
-            JCRNodeWrapper ref = n.addNode("j:referenceInField_" + Text.escapeIllegalJcrChars(pName) + "_" + id, "jnt:referenceInField");
-            ref.setProperty("j:fieldName", pName);
-            ref.setProperty("j:reference", value);
+            try {
+                JCRNodeWrapper ref = n.addNode("j:referenceInField_" + Text.escapeIllegalJcrChars(pName) + "_" + id, "jnt:referenceInField");
+                ref.setProperty("j:fieldName", pName);
+                ref.setProperty("j:reference", value);
+            } catch (ItemExistsException ex) {
+                logger.warn("ReferenceKeeper in error for node : " + n.getPath() + " . The wrong entry in the " +
+                        "ReferekenceKeeper will be cleaned\n" + ex.getMessage());
+            } catch (RepositoryException ex) {
+                logger.warn("ReferenceKeeper in error for node : " + n.getPath() + " . The wrong entry in the " +
+                        "ReferekenceKeeper will be cleaned\n" + ex.getMessage());
+            }
         } else if (pName.startsWith("@")) {
             JCRNodeWrapper ref = n.addNode(pName.substring(1), "jnt:contentReference");
             updateProperty(session, ref, Constants.NODE, value, false);

@@ -810,6 +810,7 @@
                 <value>jnt:contentFolder</value>
                 <value>jmix:editorialContent</value>
                 <value>jnt:contentList</value>
+                <value>jmix:siteContent</value>
             </list>
         </property>
 

@@ -762,9 +762,9 @@ public class Activator implements BundleActivator {
         }
 
         logger.info("--- Finished starting DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
-        setModuleState(bundle, ModuleState.State.STARTED, scriptEngineException != null ? scriptEngineException : null);
 
         if (hasSpringFile) {
+            setModuleState(bundle, ModuleState.State.SPRING_STARTING, scriptEngineException != null ? scriptEngineException : null);
             try {
                 final AbstractApplicationContext contextToStartForModule = BundleUtils.getContextToStartForModule(bundle);
                 if (contextToStartForModule != null) {
@@ -773,6 +773,8 @@ public class Activator implements BundleActivator {
             } catch (Exception e) {
                 logger.error("Unable to create application context for [" + bundle.getSymbolicName() + "]", e);
             }
+        } else {
+            setModuleState(bundle, ModuleState.State.STARTED, scriptEngineException != null ? scriptEngineException : null);
         }
 
         // force other bundle to move to Installed state, but first check for dependency closure

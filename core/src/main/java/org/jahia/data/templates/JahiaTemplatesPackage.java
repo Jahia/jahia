@@ -738,6 +738,10 @@ public class JahiaTemplatesPackage {
         // reset services state
         serviceInitialized = false;
 
+        if (this.context != null && state.getState().equals(ModuleState.State.SPRING_STARTING)) {
+            state.setState(ModuleState.State.STARTED);
+        }
+
         // executes callbacks if needed
         if(this.context != null && !contextInitializedCallbacks.isEmpty()) {
             for (ContextInitializedCallback contextInitializedCallback : contextInitializedCallbacks) {

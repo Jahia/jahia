@@ -53,6 +53,7 @@ import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.Constants;
 import org.jahia.services.modulemanager.InvalidModuleException;
+import org.jahia.services.modulemanager.InvalidModuleKeyException;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.ModuleNotFoundException;
@@ -99,35 +100,31 @@ public class ModuleManagerImpl implements ModuleManager {
         return new BundleInfo(persistentBundle.getGroupId(), persistentBundle.getSymbolicName(), persistentBundle.getVersion());
     }
 
-    private BundleInfo findTargetBundle(String bundleKey, String symbolicName, String version, boolean considerUninstalled) {
-
+    private BundleInfo findTargetBundle(String bundleKey, String symbolicName, String version) {
+        BundleInfo targetInfo = null;
         List<Bundle> matches = new ArrayList<>();
         Bundle[] allBundles = FrameworkService.getBundleContext().getBundles();
-        for (Bundle bundle : allBundles) {
-            if (!symbolicName.equals(bundle.getSymbolicName())) {
-                continue;
+        for (Bundle b : allBundles) {
+            if (symbolicName.equals(b.getSymbolicName())
+                    && (version == null || version.equals(b.getVersion().toString()))
+                    && b.getState() != Bundle.UNINSTALLED) {
+                matches.add(b);
             }
-            if (version != null && !version.equals(bundle.getVersion().toString())) {
-                continue;
-            }
-            if (bundle.getState() == Bundle.UNINSTALLED && !considerUninstalled) {
-                continue;
-            }
-            matches.add(bundle);
         }
 
-        if (matches.isEmpty()) {
-            return null;
-        } else if (matches.size() > 1) {
-            logger.warn("Found multiple bundles matching the key {}. Unable to uniquely identify target bundle", bundleKey);
-            return null;
-        } else {
+        if (matches.size() > 1) {
+            logger.warn("Found multiple bundles matching the key {}. Unable to uniquely identify target bundle",
+                    bundleKey);
+        } else if (!matches.isEmpty()) {
             Bundle target = matches.get(0);
-            return new BundleInfo(BundleUtils.getModuleGroupId(target), target.getSymbolicName(), target.getVersion().toString());
+            targetInfo = new BundleInfo(BundleUtils.getModuleGroupId(target), target.getSymbolicName(),
+                    target.getVersion().toString());
         }
+
+        return targetInfo;
     }
 
-    private BundleInfo getBundleInfo(String bundleKey, boolean considerExistingUninstalled) {
+    private BundleInfo getBundleInfo(String bundleKey) {
 
         BundleInfo info = null;
 
@@ -140,12 +137,8 @@ public class ModuleManagerImpl implements ModuleManager {
             }
         }
 
-        return findTargetBundle(
-            bundleKey,
-            info != null ? info.getSymbolicName() : bundleKey,
-            info != null ? info.getVersion() : null,
-            considerExistingUninstalled
-        );
+        return findTargetBundle(bundleKey, info != null ? info.getSymbolicName() : bundleKey,
+                info != null ? info.getVersion() : null);
     }
 
     /**
@@ -232,7 +225,7 @@ public class ModuleManagerImpl implements ModuleManager {
         BundleInfo info = null;
         Exception error = null;
         try {
-            info = getBundleInfo(bundleKey, false);
+            info = getBundleInfo(bundleKey);
             if (info == null) {
                 throw new ModuleNotFoundException(bundleKey);
             }
@@ -347,13 +340,15 @@ public class ModuleManagerImpl implements ModuleManager {
 
     @Override
     public BundleState getLocalState(String bundleKey) throws ModuleManagementException {
-        BundleInfo bundleInfo = getBundleInfo(bundleKey, true);
-        if (bundleInfo == null) {
-            throw new ModuleNotFoundException(bundleKey);
+        BundleInfo info;
+        try {
+            info = BundleInfo.fromKey(bundleKey);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidModuleKeyException(bundleKey);
         }
-        Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
+        Bundle bundle = BundleUtils.getBundleBySymbolicName(info.getSymbolicName(), info.getVersion());
         if (bundle == null) {
-            throw new ModuleNotFoundException(bundleInfo.getKey());
+            throw new ModuleNotFoundException(info.getKey());
         }
         return BundleState.fromInt(bundle.getState());
     }

@@ -43,6 +43,7 @@
  */
 package org.jahia.services.modulemanager;
 
+import org.jahia.osgi.BundleState;
 import org.springframework.core.io.Resource;
 
 /**
@@ -137,4 +138,12 @@ public interface ModuleManager {
      * @throws ModuleManagementException In case of problems
      */
     OperationResult refresh(String bundleKey, String target) throws ModuleManagementException;
+
+    /**
+     * Get current local state of a bundle.
+     *
+     * @param bundleKey Bundle key (see class JavaDoc for the supported key format)
+     * @return Current local state of the bundle
+     */
+    BundleState getLocalState(String bundleKey) throws ModuleManagementException;
 }

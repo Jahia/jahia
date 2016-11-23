@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.util.StringUtils;
+import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
@@ -73,11 +74,12 @@ import org.springframework.core.io.UrlResource;
  * @author Sergiy Shyrkov
  */
 public class ModuleManagerImpl implements ModuleManager {
+
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
 
     private BundleService bundleService;
     private BundlePersister persister;
-    
+
     /**
      * Operation callback which implementation performs the actual operation.
      *
@@ -97,31 +99,35 @@ public class ModuleManagerImpl implements ModuleManager {
         return new BundleInfo(persistentBundle.getGroupId(), persistentBundle.getSymbolicName(), persistentBundle.getVersion());
     }
 
-    private BundleInfo findTargetBundle(String bundleKey, String symbolicName, String version) {
-        BundleInfo targetInfo = null;
+    private BundleInfo findTargetBundle(String bundleKey, String symbolicName, String version, boolean considerUninstalled) {
+
         List<Bundle> matches = new ArrayList<>();
         Bundle[] allBundles = FrameworkService.getBundleContext().getBundles();
-        for (Bundle b : allBundles) {
-            if (symbolicName.equals(b.getSymbolicName())
-                    && (version == null || version.equals(b.getVersion().toString()))
-                    && b.getState() != Bundle.UNINSTALLED) {
-                matches.add(b);
+        for (Bundle bundle : allBundles) {
+            if (!symbolicName.equals(bundle.getSymbolicName())) {
+                continue;
             }
+            if (version != null && !version.equals(bundle.getVersion().toString())) {
+                continue;
+            }
+            if (bundle.getState() == Bundle.UNINSTALLED && !considerUninstalled) {
+                continue;
+            }
+            matches.add(bundle);
         }
 
-        if (matches.size() > 1) {
-            logger.warn("Found multiple bundles matching the key {}. Unable to uniquely identify target bundle",
-                    bundleKey);
-        } else if (!matches.isEmpty()) {
+        if (matches.isEmpty()) {
+            return null;
+        } else if (matches.size() > 1) {
+            logger.warn("Found multiple bundles matching the key {}. Unable to uniquely identify target bundle", bundleKey);
+            return null;
+        } else {
             Bundle target = matches.get(0);
-            targetInfo = new BundleInfo(BundleUtils.getModuleGroupId(target), target.getSymbolicName(),
-                    target.getVersion().toString());
+            return new BundleInfo(BundleUtils.getModuleGroupId(target), target.getSymbolicName(), target.getVersion().toString());
         }
-
-        return targetInfo;
     }
 
-    private BundleInfo getBundleInfo(String bundleKey) {
+    private BundleInfo getBundleInfo(String bundleKey, boolean considerExistingUninstalled) {
 
         BundleInfo info = null;
 
@@ -134,8 +140,12 @@ public class ModuleManagerImpl implements ModuleManager {
             }
         }
 
-        return findTargetBundle(bundleKey, info != null ? info.getSymbolicName() : bundleKey,
-                info != null ? info.getVersion() : null);
+        return findTargetBundle(
+            bundleKey,
+            info != null ? info.getSymbolicName() : bundleKey,
+            info != null ? info.getVersion() : null,
+            considerExistingUninstalled
+        );
     }
 
     /**
@@ -222,7 +232,7 @@ public class ModuleManagerImpl implements ModuleManager {
         BundleInfo info = null;
         Exception error = null;
         try {
-            info = getBundleInfo(bundleKey);
+            info = getBundleInfo(bundleKey, false);
             if (info == null) {
                 throw new ModuleNotFoundException(bundleKey);
             }
@@ -335,4 +345,16 @@ public class ModuleManagerImpl implements ModuleManager {
         });
     }
 
+    @Override
+    public BundleState getLocalState(String bundleKey) throws ModuleManagementException {
+        BundleInfo bundleInfo = getBundleInfo(bundleKey, true);
+        if (bundleInfo == null) {
+            throw new ModuleNotFoundException(bundleKey);
+        }
+        Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
+        if (bundle == null) {
+            throw new ModuleNotFoundException(bundleInfo.getKey());
+        }
+        return BundleState.fromInt(bundle.getState());
+    }
 }

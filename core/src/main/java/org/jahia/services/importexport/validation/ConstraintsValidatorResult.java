@@ -46,7 +46,10 @@ package org.jahia.services.importexport.validation;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Constraints validator result object
@@ -56,19 +59,19 @@ public class ConstraintsValidatorResult implements ValidationResult, Serializabl
 
     Map<String, Set<String>> missingMandatoryProperties = new TreeMap<String, Set<String>>();
     Map<String, Set<String>> missingMandatoryI18NProperties = new TreeMap<String, Set<String>>();
-    Map<String, String> missingConstraint = new HashMap<>();
+    Map<String, String> otherConstraintViolations = new HashMap<>();
 
     public ConstraintsValidatorResult(Map<String, Set<String>> missingMandatoryProperties, Map<String, Set<String>> missingMandatoryI18NProperties, Map<String,
             String> missingConstraint) {
         this.missingMandatoryProperties = missingMandatoryProperties;
         this.missingMandatoryI18NProperties = missingMandatoryI18NProperties;
-        this.missingConstraint = missingConstraint;
+        this.otherConstraintViolations = missingConstraint;
     }
 
     public ConstraintsValidatorResult(ConstraintsValidatorResult result1, ConstraintsValidatorResult result2) {
         missingMandatoryProperties.putAll(result1.missingMandatoryProperties);
         missingMandatoryI18NProperties.putAll(result1.missingMandatoryI18NProperties);
-        missingConstraint.putAll(result1.missingConstraint);
+        otherConstraintViolations.putAll(result1.otherConstraintViolations);
         for (Map.Entry<String, Set<String>> result2MissingPropertiesEntry : result2.missingMandatoryProperties.entrySet()) {
             if (missingMandatoryProperties.containsKey(result2MissingPropertiesEntry.getKey())) {
                 missingMandatoryProperties.get(result2MissingPropertiesEntry.getKey()).addAll(result2MissingPropertiesEntry.getValue());
@@ -83,8 +86,8 @@ public class ConstraintsValidatorResult implements ValidationResult, Serializabl
                 missingMandatoryI18NProperties.put(result2MissingI18NPropertiesEntry.getKey(), result2MissingI18NPropertiesEntry.getValue());
             }
         }
-        for (Map.Entry<String, String> missingConstraintEntry : result2.missingConstraint.entrySet()) {
-            missingConstraint.put(missingConstraintEntry.getKey(), missingConstraintEntry.getValue());
+        for (Map.Entry<String, String> otherConstraintViolationEntry : result2.otherConstraintViolations.entrySet()) {
+            otherConstraintViolations.put(otherConstraintViolationEntry.getKey(), otherConstraintViolationEntry.getValue());
         }
     }
 
@@ -96,17 +99,17 @@ public class ConstraintsValidatorResult implements ValidationResult, Serializabl
         return missingMandatoryI18NProperties;
     }
 
-    public Map<String, String> getMissingConstraint() {
-        return missingConstraint;
+    public Map<String, String> getOtherConstraintViolations() {
+        return otherConstraintViolations;
     }
 
     public int getLength() {
-        return missingConstraint.size() + missingMandatoryI18NProperties.size() + missingMandatoryProperties.size();
+        return otherConstraintViolations.size() + missingMandatoryI18NProperties.size() + missingMandatoryProperties.size();
     }
 
     @Override
     public boolean isSuccessful() {
-        return missingMandatoryProperties.isEmpty() && missingMandatoryI18NProperties.isEmpty() && missingConstraint.isEmpty();
+        return missingMandatoryProperties.isEmpty() && missingMandatoryI18NProperties.isEmpty() && otherConstraintViolations.isEmpty();
     }
 
     @Override
@@ -130,33 +133,10 @@ public class ConstraintsValidatorResult implements ValidationResult, Serializabl
         if (!isSuccessful()) {
             out.append(", missingMandatoryProperties=").append(missingMandatoryProperties);
             out.append(", missingMandatoryI18NProperties=").append(missingMandatoryI18NProperties);
-            out.append(", missingConstrain=").append(missingConstraint);
+            out.append(", otherConstraintViolations=").append(otherConstraintViolations);
         }
         out.append("]");
 
         return out.toString();
     }
-
-    public String getMessageKey() {
-        return "failure.import.mandatoryProperties";
-    }
-
-    public List<Object> getMessageParams() {
-        Set<String> s = new TreeSet<String>();
-        int total = 0;
-        for (Set<String> set : missingMandatoryProperties.values()) {
-            total += set.size();
-        }
-        for (Set<String> set : missingMandatoryI18NProperties.values()) {
-            total += set.size();
-        }
-        total += missingConstraint.size();
-
-        s.addAll(missingMandatoryProperties.keySet());
-        s.addAll(missingMandatoryI18NProperties.keySet());
-        s.addAll(missingConstraint.keySet());
-        String res = s.size() > 10 ? StringUtils.join(s.toArray(new String[s.size()]), ",", 0, 10) + " ..." : StringUtils.join(s, ",");
-        return Arrays.asList((Object) total, res);
-    }
-
 }

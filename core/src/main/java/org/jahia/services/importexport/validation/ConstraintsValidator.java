@@ -68,12 +68,12 @@ public class ConstraintsValidator implements ImportValidator {
 
     private Map<String, Set<String>> missingMandatoryProperties = new TreeMap<String, Set<String>>();
     private Map<String, Set<String>> missingMandatoryI18NProperties = new TreeMap<String, Set<String>>();
-    private Map<String, String> missingConstraint = new HashMap<>();
+    private Map<String, String> otherConstraintViolations = new HashMap<>();
     private String parentType;
 
     @Override
     public ValidationResult getResult() {
-        return new ConstraintsValidatorResult(missingMandatoryProperties, missingMandatoryI18NProperties, missingConstraint);
+        return new ConstraintsValidatorResult(missingMandatoryProperties, missingMandatoryI18NProperties, otherConstraintViolations);
     }
 
     @Override
@@ -102,6 +102,7 @@ public class ConstraintsValidator implements ImportValidator {
             ExtendedNodeType extendedParentType = NodeTypeRegistry.getInstance().getNodeType(parentType);
             ExtendedPropertyDefinition[] extendedPropertyDefinitions = extendedNodeType.getPropertyDefinitions();
             if (Constants.JAHIANT_TRANSLATION.equals(extendedNodeType.getName())) {
+                extendedPropertyDefinitions = extendedParentType.getPropertyDefinitions();
                 // let's retrieve the missing I18N properties from the parent, and remove them if we find at least
                 // a property value that matches
                 String parentPath = StringUtils.substringBeforeLast(currentPath, "/");
@@ -126,8 +127,11 @@ public class ConstraintsValidator implements ImportValidator {
                 }
             }
             for (ExtendedPropertyDefinition extendedPropertyDefinition : extendedPropertyDefinitions) {
-                String value = atts.getValue(extendedPropertyDefinition.getName());
-                if (extendedPropertyDefinition.isMandatory() &&
+                String propertyName = extendedPropertyDefinition.getName();
+                String value = atts.getValue(propertyName);
+                 // Check mandatory constraint
+                if (!Constants.JAHIANT_TRANSLATION.equals(extendedNodeType.getName()) &&
+                        extendedPropertyDefinition.isMandatory() &&
                         !extendedPropertyDefinition.isAutoCreated() &&
                         !extendedPropertyDefinition.isProtected() &&
                         !extendedPropertyDefinition.hasDynamicDefaultValues()) {
@@ -136,25 +140,27 @@ public class ConstraintsValidator implements ImportValidator {
                         if (missingProperties == null) {
                             missingProperties = new TreeSet<String>();
                         }
-                        missingProperties.add(extendedPropertyDefinition.getName());
+                        missingProperties.add(propertyName);
                         missingMandatoryI18NProperties.put(currentPath, missingProperties);
                     } else {
                         if (value == null) {
-                            if (Constants.JCR_DATA.equals(extendedPropertyDefinition.getName())) {
+                            if (Constants.JCR_DATA.equals(propertyName)) {
                                 // @todo for jcr:data property we need to check if a file exists in the import, not yet implemented
                             } else {
                                 Set<String> constraintsViolatedOnPath = missingMandatoryProperties.get(currentPath);
                                 if (constraintsViolatedOnPath == null) {
                                     constraintsViolatedOnPath = new TreeSet<String>();
                                 }
-                                constraintsViolatedOnPath.add("Property [" + extendedPropertyDefinition.getName() + "] is mandatory but has no value");
+                                constraintsViolatedOnPath.add(propertyName);
                                 missingMandatoryProperties.put(currentPath, constraintsViolatedOnPath);
                             }
                         }
                     }
-                } else if (value != null) {
+                }
+                // Check other contraint
+                if (value != null) {
                     // process the value constraints for all property type but references
-                    String propertyPath = currentPath + "/" + extendedPropertyDefinition.getName();
+                    String propertyPath = currentPath + "/" + propertyName;
                     boolean hasConstraints = extendedPropertyDefinition.getValueConstraints() != null && extendedPropertyDefinition.getValueConstraints().length > 0;
                     boolean isNotReference = extendedPropertyDefinition.getRequiredType() != PropertyType.WEAKREFERENCE && extendedPropertyDefinition
                             .getRequiredType() != PropertyType.REFERENCE;
@@ -162,12 +168,12 @@ public class ConstraintsValidator implements ImportValidator {
                         // for i18n nodes we check on the parent node but for the mixins, they are directly on the i18n node
                         ExtendedNodeType typeToCheck = mixin ? extendedNodeType : extendedParentType;
                         // in all cases we check first on the primary nodetype that can miss the property, then on the mixin that can set it, in this case the
-                        // entry is removed from missingConstraint
+                        // entry is removed from otherConstraintViolations
                         if (!extendedPropertyDefinition.isMultiple()) {
-                            if (!typeToCheck.canSetProperty(extendedPropertyDefinition.getName(), JCRValueFactoryImpl.getInstance().createValue(value))) {
-                                missingConstraint.put(propertyPath, extendedPropertyDefinition.getName() + CONSTRAINT_SEPARATOR + value);
-                            } else {
-                                missingConstraint.remove(propertyPath);
+                            if (!typeToCheck.canSetProperty(propertyName, JCRValueFactoryImpl.getInstance().createValue(value))) {
+                                otherConstraintViolations.put(propertyPath, propertyName + CONSTRAINT_SEPARATOR + value);
+                            } else if (otherConstraintViolations.containsKey(propertyPath)) {
+                                otherConstraintViolations.remove(propertyPath);
                             }
                         } else {
                             String[] valuesAsString = "".equals(value) ? new String[0] : Patterns.SPACE.split(value);
@@ -176,27 +182,17 @@ public class ConstraintsValidator implements ImportValidator {
                             for (String s : valuesAsString) {
                                 values[i++] = JCRValueFactoryImpl.getInstance().createValue(JCRMultipleValueUtils.decode(s));
                             }
-                            if (!typeToCheck.canSetProperty(extendedPropertyDefinition.getName(), values)) {
-                                missingConstraint.put(propertyPath, extendedPropertyDefinition.getName() + CONSTRAINT_SEPARATOR + Arrays.toString(valuesAsString));
-                            } else {
-                                missingConstraint.remove(propertyPath);
+                            if (!typeToCheck.canSetProperty(propertyName, values)) {
+                                otherConstraintViolations.put(propertyPath, propertyName + CONSTRAINT_SEPARATOR + Arrays.toString(valuesAsString));
+                            } else if (otherConstraintViolations.containsKey(propertyPath)) {
+                                otherConstraintViolations.remove(propertyPath);
                             }
                         }
-
                     }
                 }
             }
         } catch (NoSuchNodeTypeException e) {
-            Set<String> constraintsViolatedOnPath = missingMandatoryProperties.get(currentPath);
-            if (constraintsViolatedOnPath == null) {
-                constraintsViolatedOnPath = new TreeSet<String>();
-            }
-            if (!mixin) {
-                constraintsViolatedOnPath.add("Couldn't find node type definition " + type);
-            } else {
-                constraintsViolatedOnPath.add("Couldn't find mixin type definition " + type);
-            }
-            missingMandatoryProperties.put(type, constraintsViolatedOnPath);
+            // MissingNodetypesValidator will return an error in this case
         }
     }
 }

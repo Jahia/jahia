@@ -79,6 +79,7 @@ when we flush this entry we will flush the whole cache
         <property name="cacheProvider" ref="ehCacheProvider"/>
         <property name="template" ref="jcrTemplate"/>
         <property name="useGroupsSignature" value="${org.jahia.aclCacheKeyPartGenerator.useGroupsSignature:true}"/>
+        <property name="groupsSignatureAclPathsToQuery" value="${org.jahia.aclCacheKeyPartGenerator.groupsSignatureAclPathsToQuery:/j:acl,/sites,/modules,/mounts}"/>
         <property name="usePerUser" value="${org.jahia.aclCacheKeyPartGenerator.usePerUser:false}"/>
     </bean>
 

@@ -60,6 +60,7 @@ import org.jahia.commons.Version;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.security.license.LicenseCheckException;
 import org.jahia.services.content.JCRContentUtils;
@@ -146,6 +147,9 @@ public class ModuleBuildHelper implements InitializingBean {
 
                 // start the bundle to make sure its template is available to be displayed
                 bundle.start();
+
+                // refresh wirings
+                BundleLifecycleUtils.refreshBundle(bundle);
             } finally {
                 IOUtils.closeQuietly(is);
             }

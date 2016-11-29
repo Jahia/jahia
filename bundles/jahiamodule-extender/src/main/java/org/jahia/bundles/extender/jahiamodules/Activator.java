@@ -753,18 +753,18 @@ public class Activator implements BundleActivator {
         }
 
         // check for script engine factories
-        Exception scriptEngineException = null;
+        String errorMessage = null;
         try {
             scriptEngineManager.addScriptEngineFactoriesIfNeeded(bundle);
         } catch (Exception e) {
             logger.error("Unable to add script engine factories", e);
-            scriptEngineException = e;
+            errorMessage = e.getMessage();
         }
 
         logger.info("--- Finished starting DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
 
-        if (hasSpringFile) {
-            setModuleState(bundle, ModuleState.State.SPRING_STARTING, scriptEngineException != null ? scriptEngineException : null);
+       if (hasSpringFile) {
+            setModuleState(bundle, ModuleState.State.SPRING_STARTING, errorMessage);
             try {
                 final AbstractApplicationContext contextToStartForModule = BundleUtils.getContextToStartForModule(bundle);
                 if (contextToStartForModule != null) {
@@ -774,7 +774,7 @@ public class Activator implements BundleActivator {
                 logger.error("Unable to create application context for [" + bundle.getSymbolicName() + "]", e);
             }
         } else {
-            setModuleState(bundle, ModuleState.State.STARTED, scriptEngineException != null ? scriptEngineException : null);
+            setModuleState(bundle, ModuleState.State.STARTED, errorMessage);
         }
 
         // force other bundle to move to Installed state, but first check for dependency closure

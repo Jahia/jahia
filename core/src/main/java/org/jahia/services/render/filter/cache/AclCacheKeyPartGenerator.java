@@ -63,6 +63,9 @@ import org.springframework.beans.factory.InitializingBean;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -118,6 +121,8 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     private boolean usePerUser = false;
     private boolean useGroupsSignature = false;
+    
+    private Set<String> groupsSignatureAclPathsToQuery;
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
@@ -360,12 +365,11 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
      * @throws RepositoryException
      */
     private String getGroupsSignature(JahiaUser principal) throws RepositoryException {
-        SortedSet<String> principals = new TreeSet<>();
-
         if (principal.isRoot()) {
             return "u:" + principal.getName();
         }
 
+        SortedSet<String> principals = new TreeSet<>();
         Set<String> all = getAllPrincipalsWithAcl();
         addPrincipalIfAcl(principals, all, "u:" + principal.getName());
 
@@ -404,10 +408,12 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     }
 
     private PrincipalAcl getPrincipalAcl(final String principallKey, final String siteKey) throws RepositoryException {
-
-        return getCacheEntryOrGenerate(siteKey != null ? principallKey + ":" + siteKey : principallKey, new CacheEntryNotFoundCallback<PrincipalAcl>() {
+        String cacheKey = siteKey != null ? principallKey + ":" + siteKey : principallKey;
+        Element element = cache.get(cacheKey);
+        if (element == null) {
+            element = generateCacheEntry(cacheKey, new CacheEntryNotFoundCallback() {
             @Override
-            public PrincipalAcl generateCacheEntry() throws RepositoryException {
+            public Object generateCacheEntry() throws RepositoryException {
                 return  template.doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<PrincipalAcl>() {
 
                     @Override
@@ -450,70 +456,111 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     }
                 });
             }
-        });
+          });
+          }
+        
+        return (PrincipalAcl) element.getObjectValue();
     }
 
+    @SuppressWarnings("unchecked")
     public Set<String> getAllPrincipalsWithAcl() throws RepositoryException {
-
-        return getCacheEntryOrGenerate(CACHE_ALL_PRINCIPALS_ENTRY_KEY, new CacheEntryNotFoundCallback<Set<String>>() {
+      Element element = cache.get(CACHE_ALL_PRINCIPALS_ENTRY_KEY);
+      if (element == null) {
+          // generate it
+          element = generateCacheEntry(CACHE_ALL_PRINCIPALS_ENTRY_KEY, new CacheEntryNotFoundCallback() {
             @Override
-            public Set<String> generateCacheEntry() throws RepositoryException {
+            public Object generateCacheEntry() throws RepositoryException {
                 return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Set<String>>() {
                     @Override
                     public Set<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        long startTime = System.currentTimeMillis();
                         Set<String> results = new HashSet<>();
+                        String queryStatement = getAllPrincipalsWithAclQuery();
                         QueryWrapper query = session.getWorkspace().getQueryManager().createQuery(
-                                "SELECT [j:principal] FROM [jnt:ace]", Query.JCR_SQL2);
-                        JCRNodeIteratorWrapper r = query.execute().getNodes();
-                        while (r.hasNext()) {
-                            JCRNodeWrapper node = (JCRNodeWrapper) r.next();
-                            if (node.hasProperty("j:principal") && !node.getPath().startsWith("/users/") && !node.getPath().startsWith(node.getResolveSite().getPath()+"/users")) {
-                                results.add(node.getProperty("j:principal").getString());
+                        queryStatement, Query.JCR_SQL2);
+                        RowIterator ri = query.execute().getRows();
+                        while (ri.hasNext()) {
+                            Row row = ri.nextRow();
+                            Value v = row.getValue("j:principal");
+                            String principal = v !=  null ? v.getString() : null;
+                            if (StringUtils.isEmpty(principal)) {
+                                continue;
                             }
+                            String path = row.getValue("jcr:path").getString();
+                            if (path.startsWith("/users/") || path.startsWith("/sites/") && path.contains("/users/") && path.startsWith(session.getNode(path).getResolveSite().getPath() + "/users/")) {
+                                continue;
+                            }
+                            results.add(principal);
+                        }
+                        if (logger.isDebugEnabled()) {
+                            logger.debug(
+                                    "getAllPrincipalsWithAcl query ({}) brought {} nodes back; collected {} principals; finished in {} ms",
+                                    new Object[] { queryStatement, ri.getSize(), results.size(), System.currentTimeMillis() - startTime });
                         }
                         return results;
                     }
                 });
             }
-        });
+          });
+      }
+      
+      return (Set<String>) element.getObjectValue();
     }
 
-    @SuppressWarnings("unchecked")
-    private <X> X getCacheEntryOrGenerate(final String cacheKey, CacheEntryNotFoundCallback<X> callback) throws RepositoryException {
-        Element element = cache.get(cacheKey);
-        if (element == null) {
-            Semaphore semaphore = processings.get(cacheKey);
-            if (semaphore == null) {
-                semaphore = new Semaphore(1);
-                processings.putIfAbsent(cacheKey, semaphore);
-            }
-            try {
-                semaphore.acquire();
-
-                element = cache.get(cacheKey);
-                if (element != null) {
-                    return (X) element.getObjectValue();
-                }
-
-                logger.debug("Getting ACL for {}", cacheKey);
-                long l = System.currentTimeMillis();
-
-                element = new Element(cacheKey, callback.generateCacheEntry());
-                element.setEternal(true);
-                cache.put(element);
-                logger.debug("Getting ACL for {} took {} ms", cacheKey, System.currentTimeMillis() - l);
-            } catch (InterruptedException e) {
-                logger.debug(e.getMessage(), e);
-                Thread.currentThread().interrupt();
-            } finally {
-                semaphore.release();
-            }
+    private String getAllPrincipalsWithAclQuery() {
+        final String queryBase = "SELECT [jcr:path],[j:principal] FROM [jnt:ace]";
+        if (groupsSignatureAclPathsToQuery == null) {
+            return queryBase;
         }
-        return (X) element.getObjectValue();
+        StringBuilder q = new StringBuilder(128);
+        q.append(queryBase).append(" WHERE ");
+        boolean first = true;
+        for (String path : groupsSignatureAclPathsToQuery) {
+            if (!first) {
+                q.append(" OR");
+            } else {
+                first = false;
+            }
+
+            q.append(" ISDESCENDANTNODE('").append(JCRContentUtils.sqlEncode(path)).append("')");
+        }
+
+        return q.toString();
     }
 
-    private interface CacheEntryNotFoundCallback<T> {
-        T generateCacheEntry() throws RepositoryException;
+    private Element generateCacheEntry(final String cacheKey, CacheEntryNotFoundCallback callback) throws RepositoryException {
+        Element element = null;
+        Semaphore semaphore = processings.get(cacheKey);
+        if (semaphore == null) {
+            semaphore = new Semaphore(1);
+            processings.putIfAbsent(cacheKey, semaphore);
+        }
+        try {
+            semaphore.acquire();
+
+            element = cache.get(cacheKey);
+            if (element != null) {
+                return element;
+            }
+
+            logger.debug("Getting ACL for {}", cacheKey);
+            long l = System.currentTimeMillis();
+
+            element = new Element(cacheKey, callback.generateCacheEntry());
+            element.setEternal(true);
+            cache.put(element);
+            logger.debug("Getting ACL for {} took {} ms", cacheKey, System.currentTimeMillis() - l);
+        } catch (InterruptedException e) {
+            logger.debug(e.getMessage(), e);
+            Thread.currentThread().interrupt();
+        } finally {
+            semaphore.release();
+        }
+        return element;
+    }
+
+    private interface CacheEntryNotFoundCallback {
+        Object generateCacheEntry() throws RepositoryException;
     }
 
     public void flushUsersGroupsKey() {
@@ -533,6 +580,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             cache.remove(key, !propagateToOtherClusterNodes);
             Element element = cache.get(CACHE_ALL_PRINCIPALS_ENTRY_KEY);
             if (element != null) {
+                @SuppressWarnings("unchecked")
                 Set<String> allPrincipalsWithAcl = (Set<String>) element.getObjectValue();
                 if (key.lastIndexOf(':') == 1 && !allPrincipalsWithAcl.contains(key)) {
                     // The principal is not present in the list, flush the list
@@ -555,6 +603,13 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     private String decodeSpecificChars(String toDecode) {
         return StringUtils.replaceEach(toDecode, SUBSTITUTION_STR, SPECIFIC_STR);
+    }
+
+    public void setGroupsSignatureAclPathsToQuery(String paths) {
+        groupsSignatureAclPathsToQuery = null;
+        if (StringUtils.isNotBlank(paths)) {
+            groupsSignatureAclPathsToQuery = new LinkedHashSet<>(Arrays.asList(StringUtils.split(paths, ", ")));
+        }
     }
 
 }

@@ -43,7 +43,6 @@
  */
 package org.jahia.services.importexport.validation;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRMultipleValueUtils;
 import org.jahia.services.content.JCRValueFactoryImpl;
@@ -66,10 +65,13 @@ public class ConstraintsValidator implements ImportValidator {
 
     public final static String CONSTRAINT_SEPARATOR = "@@";
 
+    private final static String COMMA_SPLIT_REGEX = "\\s*,\\s*";
+
     private Map<String, Set<String>> missingMandatoryProperties = new TreeMap<String, Set<String>>();
     private Map<String, Set<String>> missingMandatoryI18NProperties = new TreeMap<String, Set<String>>();
     private Map<String, String> otherConstraintViolations = new HashMap<>();
     private String parentType;
+    private Set<String> parentMixins;
 
     @Override
     public ValidationResult getResult() {
@@ -79,86 +81,61 @@ public class ConstraintsValidator implements ImportValidator {
     @Override
     public void validate(String decodedLocalName, String decodedQName, String currentPath, Attributes atts) {
         String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
-        // hold the primary type when processing translation nodes
-        if (!Constants.JAHIANT_TRANSLATION.equals(pt)) {
+
+        if (parentType == null) {
             parentType = pt;
         }
-        if (pt != null) {
-            checkTypeConstraints(pt, currentPath, false, atts);
-        }
+
         String m = atts.getValue(Constants.JCR_MIXINTYPES);
+        Set<String> mixins = new HashSet<>();
         if (m != null) {
-            StringTokenizer st = new StringTokenizer(m, " ,");
-            while (st.hasMoreTokens()) {
-                String mixin = st.nextToken();
-                checkTypeConstraints(mixin, currentPath, true, atts);
-            }
+            mixins.addAll(Arrays.asList(m.split(COMMA_SPLIT_REGEX)));
+        }
+
+        // hold the primary type and mixins when processing translation nodes
+        boolean isI18n = Constants.JAHIANT_TRANSLATION.equals(pt);
+        if (isI18n) {
+            mixins.addAll(parentMixins);
+        } else {
+            parentType = pt;
+            parentMixins = mixins;
+        }
+
+        checkTypeConstraints(parentType, currentPath, atts, isI18n);
+
+        for (String mixin : mixins) {
+            checkTypeConstraints(mixin, currentPath, atts, isI18n);
         }
     }
 
-    private void checkTypeConstraints(String type, String currentPath, boolean mixin, Attributes atts) {
+    private void checkTypeConstraints(String type, String currentPath, Attributes atts, boolean i18nEntry) {
         try {
-            ExtendedNodeType extendedNodeType = NodeTypeRegistry.getInstance().getNodeType(type);
-            ExtendedNodeType extendedParentType = NodeTypeRegistry.getInstance().getNodeType(parentType);
-            ExtendedPropertyDefinition[] extendedPropertyDefinitions = extendedNodeType.getPropertyDefinitions();
-            if (Constants.JAHIANT_TRANSLATION.equals(extendedNodeType.getName())) {
-                extendedPropertyDefinitions = extendedParentType.getPropertyDefinitions();
-                // let's retrieve the missing I18N properties from the parent, and remove them if we find at least
-                // a property value that matches
-                String parentPath = StringUtils.substringBeforeLast(currentPath, "/");
-                Set<String> parentMissingMandatoryI18NProperties = missingMandatoryI18NProperties.get(parentPath);
-                if (parentMissingMandatoryI18NProperties != null && parentMissingMandatoryI18NProperties.size() > 0) {
-                    boolean valuesFound = false;
-                    for (int i = 0; i < atts.getLength(); i++) {
-                        String attValue = atts.getValue(i);
-                        String attName = atts.getQName(i);
-                        if (attValue != null && parentMissingMandatoryI18NProperties.contains(attName)) {
-                            parentMissingMandatoryI18NProperties.remove(attName);
-                            valuesFound = true;
-                        }
-                    }
-                    if (valuesFound) {
-                        if (parentMissingMandatoryI18NProperties.size() == 0) {
-                            missingMandatoryI18NProperties.remove(parentPath);
-                        } else {
-                            missingMandatoryI18NProperties.put(parentPath, parentMissingMandatoryI18NProperties);
-                        }
-                    }
-                }
-            }
+            ExtendedNodeType typeToCheck = NodeTypeRegistry.getInstance().getNodeType(type);
+            ExtendedPropertyDefinition[] extendedPropertyDefinitions = typeToCheck.getPropertyDefinitions();
             for (ExtendedPropertyDefinition extendedPropertyDefinition : extendedPropertyDefinitions) {
                 String propertyName = extendedPropertyDefinition.getName();
                 String value = atts.getValue(propertyName);
-                 // Check mandatory constraint
-                if (!Constants.JAHIANT_TRANSLATION.equals(extendedNodeType.getName()) &&
-                        extendedPropertyDefinition.isMandatory() &&
-                        !extendedPropertyDefinition.isAutoCreated() &&
-                        !extendedPropertyDefinition.isProtected() &&
-                        !extendedPropertyDefinition.hasDynamicDefaultValues()) {
-                    if (extendedPropertyDefinition.isInternationalized()) {
-                        Set<String> missingProperties = missingMandatoryI18NProperties.get(currentPath);
+
+                // Check if the property is mandatory
+                boolean isMandatory = extendedPropertyDefinition.isMandatory() && !extendedPropertyDefinition.isAutoCreated() &&
+                        !extendedPropertyDefinition.isProtected() && !extendedPropertyDefinition.hasDynamicDefaultValues();
+
+                // check if the property def and the kind of entry (i18n or not) match
+                boolean doCheck = extendedPropertyDefinition.isInternationalized() == i18nEntry;
+
+                // check mandatory
+                if (isMandatory && doCheck && !Constants.JCR_DATA.equals(propertyName)) {
+                    if (value == null) {
+                        Set<String> missingProperties = missingMandatoryProperties.get(currentPath);
                         if (missingProperties == null) {
-                            missingProperties = new TreeSet<String>();
+                            missingProperties = new TreeSet<>();
+                            missingMandatoryProperties.put(currentPath, missingProperties);
                         }
                         missingProperties.add(propertyName);
-                        missingMandatoryI18NProperties.put(currentPath, missingProperties);
-                    } else {
-                        if (value == null) {
-                            if (Constants.JCR_DATA.equals(propertyName)) {
-                                // @todo for jcr:data property we need to check if a file exists in the import, not yet implemented
-                            } else {
-                                Set<String> constraintsViolatedOnPath = missingMandatoryProperties.get(currentPath);
-                                if (constraintsViolatedOnPath == null) {
-                                    constraintsViolatedOnPath = new TreeSet<String>();
-                                }
-                                constraintsViolatedOnPath.add(propertyName);
-                                missingMandatoryProperties.put(currentPath, constraintsViolatedOnPath);
-                            }
-                        }
                     }
                 }
                 // Check other contraint
-                if (value != null) {
+                if (value != null && doCheck) {
                     // process the value constraints for all property type but references
                     String propertyPath = currentPath + "/" + propertyName;
                     boolean hasConstraints = extendedPropertyDefinition.getValueConstraints() != null && extendedPropertyDefinition.getValueConstraints().length > 0;
@@ -166,14 +143,11 @@ public class ConstraintsValidator implements ImportValidator {
                             .getRequiredType() != PropertyType.REFERENCE;
                     if (hasConstraints && isNotReference) {
                         // for i18n nodes we check on the parent node but for the mixins, they are directly on the i18n node
-                        ExtendedNodeType typeToCheck = mixin ? extendedNodeType : extendedParentType;
                         // in all cases we check first on the primary nodetype that can miss the property, then on the mixin that can set it, in this case the
                         // entry is removed from otherConstraintViolations
                         if (!extendedPropertyDefinition.isMultiple()) {
                             if (!typeToCheck.canSetProperty(propertyName, JCRValueFactoryImpl.getInstance().createValue(value))) {
                                 otherConstraintViolations.put(propertyPath, propertyName + CONSTRAINT_SEPARATOR + value);
-                            } else if (otherConstraintViolations.containsKey(propertyPath)) {
-                                otherConstraintViolations.remove(propertyPath);
                             }
                         } else {
                             String[] valuesAsString = "".equals(value) ? new String[0] : Patterns.SPACE.split(value);
@@ -184,8 +158,6 @@ public class ConstraintsValidator implements ImportValidator {
                             }
                             if (!typeToCheck.canSetProperty(propertyName, values)) {
                                 otherConstraintViolations.put(propertyPath, propertyName + CONSTRAINT_SEPARATOR + Arrays.toString(valuesAsString));
-                            } else if (otherConstraintViolations.containsKey(propertyPath)) {
-                                otherConstraintViolations.remove(propertyPath);
                             }
                         }
                     }

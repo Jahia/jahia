@@ -93,6 +93,8 @@ import java.util.*;
  */
 public class MainModule extends Module {
 
+    private static final String[] RESERVED_REQUESTPARAMETERS = new String[] {"channel", "variant"};
+    
     private static MainModule module;
 
     private EditLinker editLinker;
@@ -262,7 +264,11 @@ public class MainModule extends Module {
             location = location.replaceFirst(start + "frame/", config.getDefaultUrlMapping() + "frame/");
         }
 
-        location = URL.decode(location);
+        StringBuilder url = new StringBuilder(64); 
+        url.append(URL.decode(location));
+        appendQueryString(url);
+        location = url.toString();
+        
         goToUrl(location, true, true, true);
 
 //        scrollContainer.sinkEvents();
@@ -412,7 +418,8 @@ public class MainModule extends Module {
                     forceJavascriptRefresh = n.getNodeTypes().contains("jnt:javascriptFile");
                 }
             }
-            final String url = getUrl(path, template, activeChannel != null ? activeChannel.getValue() : null, activeChannelVariant);
+            // we preserve the available query string during refresh of main area
+            final String url = getUrl(path, template, activeChannel != null ? activeChannel.getValue() : null, activeChannelVariant, true);
             goToUrl(url, data.containsKey("forceImageRefresh"), forceCssRefresh, forceJavascriptRefresh);
         }
     }
@@ -504,6 +511,10 @@ public class MainModule extends Module {
     }
 
     public String getUrl(String path, String template, String channel, String variant) {
+        return getUrl(path, template, channel, variant, false);
+    }
+
+    public String getUrl(String path, String template, String channel, String variant, boolean preserveQueryString) {
         if (template != null && "default".equals(template)) {
             template = null;
         }
@@ -523,9 +534,74 @@ public class MainModule extends Module {
                 url.append("&variant=").append(variant);
             }
         }
+        
+        if (preserveQueryString) {
+            appendQueryString(url);
+        }
+        
         return url.toString();
     }
 
+    /**
+     * Appends the current URL query string (if present) to the specified one.
+     */
+    private static void appendQueryString(StringBuilder url) {
+        List<String[]> paramsToPreserve = getQueryStringParametersToPreserve(RESERVED_REQUESTPARAMETERS);
+        
+        if (paramsToPreserve == null || paramsToPreserve.isEmpty()) {
+            // no query string available
+            return;
+        }
+
+        url.append(url.indexOf("?") == -1 ? '?' : '&');
+        boolean first = true;
+        for (String[] p : paramsToPreserve) {
+            if (!first) {
+                url.append('&');
+            } else {
+                first = false;
+            }
+            url.append(p[0]).append('=').append(URL.encodeQueryString(p[1]));
+        }
+    }
+    
+    private static List<String[]> getQueryStringParametersToPreserve(String... reservedParameters) {
+        String queryString = Window.Location.getQueryString();
+        if (queryString == null || queryString.length() == 0 || queryString.equals("?")) {
+            // no query string available
+            return null;
+        }
+
+        // we need to rebuild the query string to avoid duplicate entries
+        Map<String, List<String>> params = Window.Location.getParameterMap();
+        if (params.isEmpty()) {
+            // no parameters to append
+            return null;
+        }
+
+        if (reservedParameters != null && reservedParameters.length > 0) {
+            // filter out reserved parameters
+            params = new HashMap<String, List<String>>(params);
+            for (String reserved : reservedParameters) {
+                params.remove(reserved);
+            }
+        }
+
+        if (params.isEmpty()) {
+            // all are filtered out: no parameters left to append
+            return null;
+        }
+
+        List<String[]> toAppend = new ArrayList<String[]>();
+        for (Map.Entry<String, List<String>> p : params.entrySet()) {
+            for (String v : p.getValue()) {
+                toAppend.add(new String[] { p.getKey(), v });
+            }
+        }
+
+        return toAppend;
+    }
+    
     /**
      * Computes the base URL for the main module frame.
      *

@@ -171,6 +171,7 @@
         <pax.web.api.version>3.0.7-jahia1-SNAPSHOT</pax.web.api.version>
         <pax.web.jsp.version>3.0.7-jahia5-SNAPSHOT</pax.web.jsp.version>
         <karaf.version>4.0.7</karaf.version>
+        <karaf.jaas.config.version>${karaf.version}-jahia1</karaf.jaas.config.version>
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.6</jahia.commons.version>

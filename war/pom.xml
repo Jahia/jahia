@@ -362,13 +362,13 @@
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/jahia/WEB-INF</outputDirectory>
                                     <includes>apache-karaf-${karaf.version}/data/**,apache-karaf-${karaf.version}/deploy,apache-karaf-${karaf.version}/etc/**,apache-karaf-${karaf.version}/system/**</includes>
-                                    <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/config.properties,**/README, **/org.eclipse.osgi-*.jar, **/org.apache.karaf.wrapper.core-*.jar, **/org/apache/felix/org.apache.felix.fileinstall/**</excludes>
+                                    <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/config.properties,**/README, **/org.eclipse.osgi-*.jar, **/org.apache.karaf.wrapper.core-*.jar, **/org/apache/felix/org.apache.felix.fileinstall/**, **/${karaf.version}/org.apache.karaf.jaas.config-${karaf.version}.jar</excludes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-pax-logging-bridge-appender</id>
+                        <id>copy-bundles-to-karaf-system</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>copy</goal>
@@ -380,6 +380,12 @@
                                     <artifactId>org.jahia.bundles.pax.logging.bridging.appender</artifactId>
                                     <version>${project.version}</version>
                                     <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/jahia/bundles/org.jahia.bundles.pax.logging.bridging.appender/${project.version}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.karaf.jaas</groupId>
+                                    <artifactId>org.apache.karaf.jaas.config</artifactId>
+                                    <version>${karaf.jaas.config.version}</version>
+                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/apache/karaf/jaas/org.apache.karaf.jaas.config/${karaf.jaas.config.version}</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -410,6 +416,21 @@
                                 <move todir="${project.build.directory}/karaf/deploy">
                                     <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/deploy" />
                                 </move>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>adjust-karaf-jaas-config-version</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <replace file="${project.build.directory}/jahia/WEB-INF/karaf/system/org/apache/karaf/features/standard/${karaf.version}/standard-${karaf.version}-features.xml" failOnNoReplacements="true">
+                                    <replacetoken>org.apache.karaf.jaas.config/${karaf.version}</replacetoken>
+                                    <replacevalue>org.apache.karaf.jaas.config/${karaf.jaas.config.version}</replacevalue>
+                                </replace>
                             </target>
                         </configuration>
                     </execution>

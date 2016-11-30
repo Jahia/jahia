@@ -659,7 +659,7 @@ public class AclEditor {
 
         public void addUsersGroups(List<GWTJahiaNode> users) {
             for (GWTJahiaNode user : users) {
-                PrincipalModelData entry = new PrincipalModelData(user.getPath(), user.isNodeType("jnt:user") ? 'u' : 'g', user.getName(), user.getDisplayName(), false);
+                PrincipalModelData entry = new PrincipalModelData(user.getPath(), user.isNodeType("jnt:user") ? 'u' : 'g', user.getEscapedName(), user.getDisplayName(), false);
 
                 if (!store.contains(entry)) {
                     store.add(entry);

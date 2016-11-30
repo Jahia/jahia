@@ -700,10 +700,12 @@ class NodeHelper {
 
     private void populateNames(GWTJahiaNode n, JCRNodeWrapper node, Locale uiLocale) {
         n.setName(JCRContentUtils.unescapeLocalNodeName(node.getName()));
+        n.setEscapedName(node.getName());
         try {
             if (node.getPath().equals("/")) {
                 n.setDisplayName("root");
                 n.setName("root");
+                n.setEscapedName("root");
             } else if (node instanceof JCRUserNode) {
                 n.setDisplayName(((JCRUserNode) node).getDisplayableName(uiLocale));
             } else if (node instanceof JCRGroupNode) {

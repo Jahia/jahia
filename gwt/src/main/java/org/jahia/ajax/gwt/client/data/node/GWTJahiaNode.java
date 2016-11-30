@@ -67,6 +67,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String TAGS = "tags";
     public static final String SITE_LANGUAGES = "siteLanguages";
     public static final String NAME = "name";
+    public static final String ESCAPED_NAME = "escapedName";
     public static final String PATH = "path";
     public static final String ICON = "icon";
     public static final String LOCKED = "locked";
@@ -256,6 +257,15 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public String getName() {
         return get(NAME);
+    }
+    
+    public void setEscapedName(String escapedName) {
+        set(ESCAPED_NAME, escapedName);
+    }    
+    
+    public String getEscapedName() {
+        String escapedName = get(ESCAPED_NAME);
+        return escapedName != null ? escapedName : (String)get(NAME);
     }
 
     public void setUUID(String uuid) {

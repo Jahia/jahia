@@ -43,6 +43,7 @@
  */
 package org.jahia.services.importexport.validation;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRMultipleValueUtils;
 import org.jahia.services.content.JCRValueFactoryImpl;
@@ -70,8 +71,10 @@ public class ConstraintsValidator implements ImportValidator {
     private Map<String, Set<String>> missingMandatoryProperties = new TreeMap<String, Set<String>>();
     private Map<String, Set<String>> missingMandatoryI18NProperties = new TreeMap<String, Set<String>>();
     private Map<String, String> otherConstraintViolations = new HashMap<>();
-    private String parentType;
-    private Set<String> parentMixins;
+    private Map<String, String> parentType = new HashMap<>(); // Map<path, nodetype>
+    private Map<String, Set<String>> parentMixins = new HashMap<>(); // Map<path, mixins>
+
+    private String previousPath;
 
     @Override
     public ValidationResult getResult() {
@@ -80,11 +83,19 @@ public class ConstraintsValidator implements ImportValidator {
 
     @Override
     public void validate(String decodedLocalName, String decodedQName, String currentPath, Attributes atts) {
-        String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
 
-        if (parentType == null) {
-            parentType = pt;
+        // Clean up maps of processed path
+        if (!StringUtils.startsWith(currentPath + "/", previousPath + "/")) {
+            while (!StringUtils.startsWith(currentPath + "/", previousPath + "/") && !StringUtils.isEmpty(previousPath)) {
+                parentType.remove(previousPath);
+                parentMixins.remove(previousPath);
+                previousPath = StringUtils.substringBeforeLast(previousPath, "/");
+            }
         }
+
+        previousPath = currentPath;
+
+        String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
 
         String m = atts.getValue(Constants.JCR_MIXINTYPES);
         Set<String> mixins = new HashSet<>();
@@ -95,13 +106,17 @@ public class ConstraintsValidator implements ImportValidator {
         // hold the primary type and mixins when processing translation nodes
         boolean isI18n = Constants.JAHIANT_TRANSLATION.equals(pt);
         if (isI18n) {
-            mixins.addAll(parentMixins);
+            currentPath = StringUtils.substringBeforeLast(currentPath, "/");
+            if (parentMixins.get(currentPath) != null) {
+                mixins.addAll(parentMixins.get(currentPath));
+            }
+            pt = parentType.get(currentPath);
         } else {
-            parentType = pt;
-            parentMixins = mixins;
+            parentType.put(currentPath, pt);
+            parentMixins.put(currentPath, mixins);
         }
 
-        checkTypeConstraints(parentType, currentPath, atts, isI18n);
+        checkTypeConstraints( pt, currentPath, atts, isI18n);
 
         for (String mixin : mixins) {
             checkTypeConstraints(mixin, currentPath, atts, isI18n);
@@ -123,7 +138,6 @@ public class ConstraintsValidator implements ImportValidator {
                 // check if the property def and the kind of entry (i18n or not) match
                 boolean doCheck = extendedPropertyDefinition.isInternationalized() == i18nEntry;
 
-                // check mandatory
                 if (isMandatory && doCheck && !Constants.JCR_DATA.equals(propertyName)) {
                     if (value == null) {
                         Set<String> missingProperties = missingMandatoryProperties.get(currentPath);

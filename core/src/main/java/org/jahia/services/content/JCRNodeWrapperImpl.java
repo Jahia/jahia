@@ -487,9 +487,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (!isCheckedOut() && isNodeType(Constants.MIX_VERSIONABLE)) {
             getSession().checkout(this);
         }
-        if (principalKey.contains("/")) {
-            throw new IllegalArgumentException(principalKey);
-        }
 
         List<String> gr = new ArrayList<String>();
         List<String> den = new ArrayList<String>();

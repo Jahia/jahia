@@ -88,8 +88,36 @@ import org.springframework.context.ApplicationListener;
 public class ContentManagerAccessCheckFilter implements Filter,
         ApplicationListener<TemplatePackageRedeployedEvent> {
 
+    private static final String SITE_TEMPLATE_PACKAGE_ID = "org.jahia.contentManager.site.templatePackageId";
+
     private static final Logger logger = LoggerFactory
             .getLogger(ContentManagerAccessCheckFilter.class);
+    
+    /**
+     * Returns the template package of the current site, based on the information provided when the Content Manager window was called. If no
+     * site information was provided, the template package of the default site it returned. If there is no default site, <code>null</code>
+     * is returned.
+     * 
+     * @param request
+     *            current HTTP request object
+     * @return the template package of the current site, based on the information provided when the Content Manager window was called. If no
+     *         site information was provided, the template package of the default site it returned. If there is no default site,
+     *         <code>null</code> is returned
+     */
+    public static JahiaTemplatesPackage getCurrentSiteTemplatePackage(HttpServletRequest request) {
+        JahiaTemplatesPackage pkg = null;
+        String pkgId = (String) request.getAttribute(SITE_TEMPLATE_PACKAGE_ID);
+        if (pkgId != null) {
+            pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(pkgId);
+        } else {
+            JCRSiteNode site = getSite(request);
+            if (site != null) {
+                pkg = site.getTemplatePackage();
+            }
+        }
+
+        return pkg;
+    }
 
     private String defaultContentManager = "repositoryexplorer";
 
@@ -167,6 +195,11 @@ public class ContentManagerAccessCheckFilter implements Filter,
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
+            JahiaTemplatesPackage tmplPack = ((JCRSiteNode) site).getTemplatePackage();
+            if (tmplPack != null) {
+                // remember the ID of the template package for the current site
+                request.setAttribute(SITE_TEMPLATE_PACKAGE_ID, tmplPack.getId());
+            }
         }
 
         if (requireAuthenticatedUser) {
@@ -205,7 +238,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
         return mapping;
     }
 
-    protected JCRSiteNode getSite(HttpServletRequest request) {
+    protected static JCRSiteNode getSite(HttpServletRequest request) {
         String siteId = request.getParameter("site");
 
         try {

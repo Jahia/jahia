@@ -3394,13 +3394,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             // Node is completely unpublished
                             return false;
                         } else {
-                            if (hasI18N(jcrSessionWrapper.getLocale(), true)) {
-                                // Translation exists and is published
-                                if (JCRContentUtils.isLanguageInvalid(objectNode, jcrSessionWrapper.getLocale().toString())) {
-                                    return false;
-                                }
-                            } else if (hasI18N(jcrSessionWrapper.getLocale(), true, false)) {
-                                // Translation has not been found because it has been unpublished
+                            // if (language is invalid OR (the node does'nt have an i18n subnode published AND the node have an i18n subnode))
+                            if (JCRContentUtils.isLanguageInvalid(objectNode, jcrSessionWrapper.getLocale().toString()) ||
+                                    (!hasI18N(jcrSessionWrapper.getLocale(), true) && hasI18N(jcrSessionWrapper.getLocale(), true, false))) {
                                 return false;
                             }
                         }

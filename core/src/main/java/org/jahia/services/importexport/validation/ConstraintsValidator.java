@@ -95,28 +95,28 @@ public class ConstraintsValidator implements ImportValidator {
 
         previousPath = currentPath;
 
-        String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
+        String primaryType = atts.getValue(Constants.JCR_PRIMARYTYPE);
 
-        String m = atts.getValue(Constants.JCR_MIXINTYPES);
+        String mixinTypes = atts.getValue(Constants.JCR_MIXINTYPES);
         Set<String> mixins = new HashSet<>();
-        if (m != null) {
-            mixins.addAll(Arrays.asList(m.split(COMMA_SPLIT_REGEX)));
+        if (mixinTypes != null) {
+            mixins.addAll(Arrays.asList(mixinTypes.split(COMMA_SPLIT_REGEX)));
         }
 
         // hold the primary type and mixins when processing translation nodes
-        boolean isI18n = Constants.JAHIANT_TRANSLATION.equals(pt);
+        boolean isI18n = Constants.JAHIANT_TRANSLATION.equals(primaryType);
         if (isI18n) {
             currentPath = StringUtils.substringBeforeLast(currentPath, "/");
             if (parentMixins.get(currentPath) != null) {
                 mixins.addAll(parentMixins.get(currentPath));
             }
-            pt = parentType.get(currentPath);
+            primaryType = parentType.get(currentPath);
         } else {
-            parentType.put(currentPath, pt);
+            parentType.put(currentPath, primaryType);
             parentMixins.put(currentPath, mixins);
         }
 
-        checkTypeConstraints( pt, currentPath, atts, isI18n);
+        checkTypeConstraints(primaryType, currentPath, atts, isI18n);
 
         for (String mixin : mixins) {
             checkTypeConstraints(mixin, currentPath, atts, isI18n);

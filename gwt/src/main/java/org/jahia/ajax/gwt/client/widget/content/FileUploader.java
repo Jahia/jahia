@@ -321,10 +321,15 @@ public class FileUploader extends Window {
                                 final String newName = (String) exist[2].getValue();
                                 uploadeds.add(new String[] { location.getPath(), tmpName, Integer.toString(operation), newName });
                             }
+                            com.google.gwt.user.client.Window.alert("Before uploadedFile");
                             JahiaContentManagementService.App.getInstance().uploadedFile(uploadeds, new BaseAsyncCallback() {
                                 public void onSuccess(Object result) {
                                     endUpload(unzip, linker);
                                 }
+                                public void onApplicationFailure(Throwable caught) {
+                                    com.google.gwt.user.client.Window.alert("Error: " + caught);
+                                    unmask();
+                                };
                             });
                         }
                     });

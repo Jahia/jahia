@@ -204,7 +204,7 @@
         <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/jahia-parent</connection>
         <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/jahia-parent</developerConnection>
         <url>https://devtools.jahia.com/svn/jahia/trunk/jahia-parent</url>
-      <tag>HEAD</tag>
+      <tag>JAHIA_7_2_0_0_RC</tag>
   </scm>
     <developers>
         <developer>

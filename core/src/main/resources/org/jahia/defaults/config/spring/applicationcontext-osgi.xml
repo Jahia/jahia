@@ -50,6 +50,7 @@
                 <prop key="felix.webconsole.manager.root">/console</prop>
                 
                 <prop key="hazelcast.osgi.jsr223.disabled">true</prop>
+                <prop key="hazelcast.slow.operation.detector.stacktrace.logging.enabled">true</prop>
 
             </props>
         </property>

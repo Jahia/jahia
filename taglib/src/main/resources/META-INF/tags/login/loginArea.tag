@@ -16,7 +16,7 @@
         <input type="hidden" name="site" value="${renderContext != null ? renderContext.site.name : urlResolver.siteKey}"/>
         <c:choose>
             <c:when test="${not empty attributes.redirectTo}">
-                <input type="hidden" name="redirect" value="${attributes.redirectTo}"/>
+                <input type="hidden" name="redirect" value="${fn:escapeXml(attributes.redirectTo)}"/>
             </c:when>
             <c:when test="${not empty requestScope['javax.servlet.error.request_uri']}">
                 <c:choose>
@@ -35,13 +35,13 @@
                 <c:url var="redirect" value="${redirectUrl}" context="/">
                     <c:forEach items="${paramValues}" var="paramValueEntry">
                         <c:forEach items="${paramValueEntry.value}" var="paramValue">
-                            <c:if test="${paramValueEntry.key != 'password'}">
+                            <c:if test="${paramValueEntry.key != 'username' && paramValueEntry.key != 'password' && paramValueEntry.key != 'redirect'}">
                                 <c:param name="${paramValueEntry.key}" value="${paramValue}"/>
                             </c:if>    
                         </c:forEach>
                     </c:forEach>
                 </c:url>
-                <input type="hidden" name="redirect" value="${redirect}"/>
+                <input type="hidden" name="redirect" value="${fn:escapeXml(redirect)}"/>
             </c:when>
             <c:when test="${not empty renderContext && not empty renderContext.mainResource}">
                 <c:choose>
@@ -55,14 +55,14 @@
                 <c:url var="redirect" value="${url.base}${renderContext.mainResource.node.path}${urlEnd}">
                     <c:forEach items="${paramValues}" var="paramValueEntry">
                         <c:forEach items="${paramValueEntry.value}" var="paramValue">
-                            <c:if test="${paramValueEntry.key != 'password'}">
+                            <c:if test="${paramValueEntry.key != 'username' && paramValueEntry.key != 'password' && paramValueEntry.key != 'redirect'}">
                                 <c:param name="${paramValueEntry.key}" value="${paramValue}"/>
                             </c:if>   
                         </c:forEach>
                     </c:forEach>
                 </c:url>
-                <input type="hidden" name="redirect" value="${redirect}"/>
-                <input type="hidden" name="failureRedirect" value="${redirect}"/>
+                <input type="hidden" name="redirect" value="${fn:escapeXml(redirect)}"/>
+                <input type="hidden" name="failureRedirect" value="${fn:escapeXml(redirect)}"/>
             </c:when>
         </c:choose>
         <jsp:doBody/>

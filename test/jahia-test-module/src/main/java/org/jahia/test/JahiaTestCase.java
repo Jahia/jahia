@@ -76,6 +76,8 @@ import org.slf4j.LoggerFactory;
  */
 public class JahiaTestCase {
 
+    public static final String ROOT_PASSWORD = "root1234";
+
     protected class PostResult {
         public int statusCode;
         public String statusLine;
@@ -134,11 +136,15 @@ public class JahiaTestCase {
     private HttpClient client;
 
     protected String getAsText(String relativeUrl) {
+        return getAsText(relativeUrl, 200);
+    }
+
+    protected String getAsText(String relativeUrl, int expectedResponseCode) {
         String body = StringUtils.EMPTY;
         GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath() + relativeUrl);
         try {
             int responseCode = getHttpClient().executeMethod(getMethod);
-            assertEquals("Response code is not OK: " + responseCode, 200, responseCode);
+            assertEquals("Response code is not OK: " + responseCode, expectedResponseCode, responseCode);
             body = getMethod.getResponseBodyAsString();
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -183,7 +189,7 @@ public class JahiaTestCase {
     }
 
     protected void loginRoot() {
-        login("root", "root1234");
+        login("root", ROOT_PASSWORD);
     }
 
     protected void logout() {

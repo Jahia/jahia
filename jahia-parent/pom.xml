@@ -197,12 +197,6 @@
         <custom.modules.bundle.removeheaders>${jahia.modules.bundle.removeheaders}</custom.modules.bundle.removeheaders>
     </properties>
 
-    <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/jahia-parent</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/jahia-parent</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/jahia-parent</url>
-      <tag>HEAD</tag>
-  </scm>
     <developers>
         <developer>
             <name>Alexander Karmanov</name>

@@ -60,11 +60,6 @@
     <packaging>bundle</packaging>
     <description>This is the custom module (jahia-perf-test-module) for running on a Digital Experience Manager server.</description>
 
-    <scm>
-        <connection>scm:dummy:uri</connection>
-        <developerConnection>scm:dummy:uri</developerConnection>
-    </scm>
-
     <properties>
         <jahia-depends>default,jahia-test-module</jahia-depends>
     </properties>

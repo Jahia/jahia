@@ -56,12 +56,6 @@
     <packaging>jar</packaging>
     <description>This is the Jahia Core Test Framework for running unit/integration tests of the core Digital Experience Manager module.</description>
 
-    <scm>
-        <connection>scm:dummy:uri</connection>
-        <developerConnection>scm:dummy:uri</developerConnection>
-      <tag>JAHIA_7_2_0_0</tag>
-  </scm>
-
     <repositories>
         <repository>
             <id>jahia-public</id>

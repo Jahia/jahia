@@ -101,7 +101,7 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
                             authContext.getSessionFactory().setCurrentUser(jcrUserNode.getJahiaUser());
                             return;
                         } else {
-                            logger.debug("User found but incorrect password : " + user);
+                            logger.debug("User found but password verification failed for user : " + user);
                         }
                     } else {
                         logger.debug("User not found : "+user);                        

@@ -139,7 +139,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
                             httpServletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);
                         }
                     } else {
-                        logger.warn("Login failed: user " + theUser.getName() + " provided bad password.");
+                        logger.warn("Login failed: password verification failed for user " + theUser.getName());
                         httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
                     }
                 } else {

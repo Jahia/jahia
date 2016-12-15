@@ -141,30 +141,11 @@
 	<build>
 		<plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>${buildnumber.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <doCheck>false</doCheck>
-                    <doUpdate>false</doUpdate>
-                    <useLastCommittedRevision>true</useLastCommittedRevision>
-                    <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-                    <revisionOnScmFailure>00000</revisionOnScmFailure>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>jahia-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>calculate-gitbuildnumber</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>gitbuildnumber</goal>

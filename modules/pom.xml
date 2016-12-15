@@ -291,6 +291,10 @@
                             <goal>check-dependencies</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>calculate-gitbuildnumber</id>
+                        <phase/>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

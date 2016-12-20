@@ -101,6 +101,8 @@ public class LangPropertiesEditor extends LayoutContainer {
     private LangPropertiesEditor translationSource;
     private Map<String, Boolean> workInProgressByLocale = new HashMap<String, Boolean>();
     private CallBack callback;
+    // flag used when translationSource is used and is not fully loaded when we try to read data from it.
+    private boolean needRefresh = false;
 
     public LangPropertiesEditor(GWTJahiaNode node, List<String> dataType, boolean editable,
                                 GWTJahiaLanguage displayedLanguage, CallBack callback) {
@@ -211,6 +213,7 @@ public class LangPropertiesEditor extends LayoutContainer {
                 }
                 if (translationEnabled && translationSource != null) {
                     langPropertiesEditor.setTranslationSource(translationSource);
+                    langPropertiesEditor.setTranslationTarget(this);
                 }
                 langPropertiesEditor.renderNewFormPanel();
                 setPropertiesEditorByLang(langPropertiesEditor, locale);
@@ -327,6 +330,15 @@ public class LangPropertiesEditor extends LayoutContainer {
      */
     private void onLanguageSelectionChanged(String locale) {
         updateNodeInfo(locale);
+    }
+
+    /**
+     * refresh data for current displayed language
+     */
+    public void refresh() {
+        setNeedRefresh(false);
+        setPropertiesEditorByLang(null, getDisplayedLocale().getLanguage());
+        updateNodeInfo(getDisplayedLocale().getLanguage());
     }
 
     /**
@@ -451,6 +463,14 @@ public class LangPropertiesEditor extends LayoutContainer {
 
     public void setWorkInProgress(boolean wip) {
         workInProgressByLocale.put(displayedLocale.getLanguage(), wip);
+    }
+
+    public boolean isNeedRefresh() {
+        return needRefresh;
+    }
+
+    public void setNeedRefresh(boolean needRefresh) {
+        this.needRefresh = needRefresh;
     }
 
     public interface CallBack {

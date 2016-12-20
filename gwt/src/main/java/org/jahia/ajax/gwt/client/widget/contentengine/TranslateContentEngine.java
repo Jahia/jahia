@@ -128,7 +128,16 @@ public class TranslateContentEngine extends Window {
         LayoutContainer panel = new LayoutContainer();
         panel.setLayout(new BorderLayout());
 
-        sourceLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), false, srcLanguage, null);
+        sourceLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), false, srcLanguage, null, new LangPropertiesEditor.CallBack() {
+            @Override
+            public void execute() {
+                if (targetLangPropertiesEditor != null && targetLangPropertiesEditor.isNeedRefresh()) {
+                    // target lang properties editor is waiting for the source lang properties editor to be fully loaded
+                    // it's now the case, so refresh it.
+                    targetLangPropertiesEditor.refresh();
+                }
+            }
+        });
         targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true, destLanguage, sourceLangPropertiesEditor, new LangPropertiesEditor.CallBack() {
             @Override
             public void execute() {

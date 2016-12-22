@@ -311,10 +311,10 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         if (keyPart == null) {
             return null;
         }
-        return keyPart.replace("&", AMPERSAND_ESCAPE).replace(KEY_PART_DELIMITER, KEY_PART_DELIMITER_ESCAPE);
+        return StringUtils.replace(StringUtils.replace(keyPart, "&", AMPERSAND_ESCAPE), KEY_PART_DELIMITER, KEY_PART_DELIMITER_ESCAPE);
     }
 
     private static String decodeKeyPart(String keyPart) {
-        return keyPart.replace(KEY_PART_DELIMITER_ESCAPE, KEY_PART_DELIMITER).replace(AMPERSAND_ESCAPE, "&");
+        return StringUtils.replace(StringUtils.replace(keyPart, KEY_PART_DELIMITER_ESCAPE, KEY_PART_DELIMITER), AMPERSAND_ESCAPE, "&");
     }
 }

@@ -43,11 +43,10 @@
  */
 package org.jahia.taglibs.jcr.node;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRValueFactoryImpl;
-import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.api.Constants;
+import org.jahia.services.content.*;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,9 +58,7 @@ import javax.jcr.Value;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * User: toto Date: Mar 25, 2010 Time: 8:35:48 PM
@@ -75,6 +72,7 @@ public class JCRFilterTag extends AbstractJCRTag {
     private String var;
     private int scope = PageContext.PAGE_SCOPE;
     private String properties;
+    private String types;
     private JCRNodeWrapper node;
 
     public void setList(Object o) {
@@ -102,6 +100,10 @@ public class JCRFilterTag extends AbstractJCRTag {
         this.properties = properties;
     }
 
+    public void setTypes(String types) {
+        this.types = types;
+    }
+
     public void setNode(JCRNodeWrapper node) {
         this.node = node;
     }
@@ -109,67 +111,99 @@ public class JCRFilterTag extends AbstractJCRTag {
     @Override
     public int doEndTag() throws JspException {
         try {
-            final JSONObject jsonObject = new JSONObject(properties);
-            final String uuid = (String) jsonObject.get("uuid");
-            if (uuid.equals(node.getIdentifier())) {
-                final String name = (String) jsonObject.get("name");
-                final String valueAsString = (String) jsonObject.get("value");
+            Collection<JCRNodeWrapper> res = null;
 
-                String op = getValueOrDefaultIfMissingOrEmpty(jsonObject, "op", EQ);
+            // filter based on properties
+            if (StringUtils.isNotEmpty(properties) && node != null) {
+                final JSONObject jsonObject = new JSONObject(properties);
+                final String uuid = (String) jsonObject.get("uuid");
+                if (uuid.equals(node.getIdentifier())) {
+                    res = new ArrayList<>();
 
-                // check for negation operator
-                boolean isNegated = false;
-                if (op.startsWith("!")) {
-                    isNegated = true; // we want the negated usual outcome
-                    op = op.substring(1); // remove negation operator
-                }
+                    final String name = (String) jsonObject.get("name");
+                    final String valueAsString = (String) jsonObject.get("value");
 
-                // if we don't have a type, assume "String"
-                String type = getValueOrDefaultIfMissingOrEmpty(jsonObject, "type", "String");
+                    String op = getValueOrDefaultIfMissingOrEmpty(jsonObject, "op", EQ);
 
-                // optional format
-                SimpleDateFormat dateFormat = null;
-                String format = getValueOrDefaultIfMissingOrEmpty(jsonObject, "format", null);
-                if (format != null) {
-                    dateFormat = new SimpleDateFormat(format);
-                }
+                    // check for negation operator
+                    boolean isNegated = false;
+                    if (op.startsWith("!")) {
+                        isNegated = true; // we want the negated usual outcome
+                        op = op.substring(1); // remove negation operator
+                    }
 
-                // backward compatibility with previously documented "date" type where appropriate JCR type should be "Date"
-                final boolean isLowerCaseDate = "date".equals(type);
-                Value value = isLowerCaseDate ? null : JCRValueFactoryImpl.getInstance().createValue(valueAsString, PropertyType.valueFromName(type));
+                    // if we don't have a type, assume "String"
+                    String type = getValueOrDefaultIfMissingOrEmpty(jsonObject, "type", "String");
 
-                Collection<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
-                for (JCRNodeWrapper re : list) {
-                    final JCRPropertyWrapper property = re.getProperty(name);
-                    if (property != null) {
-                        if (EQ.equals(op)) {
+                    // optional format
+                    SimpleDateFormat dateFormat = null;
+                    String format = getValueOrDefaultIfMissingOrEmpty(jsonObject, "format", null);
+                    if (format != null) {
+                        dateFormat = new SimpleDateFormat(format);
+                    }
 
-                            // backward compatibility
-                            if (isLowerCaseDate) {
-                                if (dateFormat != null && dateFormat.format(property.getDate().getTime()).equals(valueAsString)) {
-                                    res.add(re);
-                                }
-                            } else if (property.isMultiple()) {
-                                final JCRValueWrapper[] values = property.getValues();
-                                for (Value wrappedValue : values) {
-                                    if (wrappedValue.equals(value)) {
+                    // backward compatibility with previously documented "date" type where appropriate JCR type should be "Date"
+                    final boolean isLowerCaseDate = "date".equals(type);
+                    Value value = isLowerCaseDate ? null : JCRValueFactoryImpl.getInstance().createValue(valueAsString, PropertyType.valueFromName(type));
+
+                    for (JCRNodeWrapper re : list) {
+                        if (re.hasProperty(name)) {
+                            final JCRPropertyWrapper property = re.getProperty(name);
+                            if (property != null) {
+                                if (EQ.equals(op)) {
+
+                                    // backward compatibility
+                                    if (isLowerCaseDate) {
+                                        if (dateFormat != null && dateFormat.format(property.getDate().getTime()).equals(valueAsString)) {
+                                            res.add(re);
+                                        }
+                                    } else if (property.isMultiple()) {
+                                        final JCRValueWrapper[] values = property.getValues();
+                                        for (Value wrappedValue : values) {
+                                            if (wrappedValue.equals(value)) {
+                                                res.add(re);
+                                            }
+                                        }
+
+                                    } else if (property.getValue().equals(value)) {
                                         res.add(re);
                                     }
                                 }
-
-                            } else if (property.getValue().equals(value)) {
-                                res.add(re);
                             }
                         }
                     }
-                }
 
-                // if we had negated the operation, remove all matching elements from the original list
-                if (isNegated) {
-                    list.removeAll(res);
-                    res = list;
+                    // if we had negated the operation, remove all matching elements from the original list
+                    if (isNegated) {
+                        list.removeAll(res);
+                        res = list;
+                    }
                 }
+            }
 
+            // filter based on node types
+            if (StringUtils.isNotEmpty(types)) {
+                if (res != null) {
+                    list = new ArrayList<>(res);
+                }
+                res = new ArrayList<>();
+                List<String> filteredTypes = Arrays.asList(types.split("\\s*,\\s*"));
+                for (JCRNodeWrapper re : list) {
+                    if(re.isNodeType("jmix:skipConstraintCheck")) {
+                        res.add(re);
+                        continue;
+                    }
+                    if (JCRContentUtils.isNodeType(re, filteredTypes)) {
+                        res.add(re);
+                    } else if(re.isNodeType("jnt:contentReference") && re.hasProperty(Constants.NODE)) {
+                        if (JCRContentUtils.isNodeType((JCRNodeWrapper) re.getProperty(Constants.NODE).getNode(), filteredTypes)) {
+                            res.add(re);
+                        }
+                    }
+                }
+            }
+
+            if(res != null) {
                 pageContext.setAttribute(var, res, scope);
             } else {
                 pageContext.setAttribute(var, list, scope);
@@ -189,6 +223,7 @@ public class JCRFilterTag extends AbstractJCRTag {
         list = null;
         node = null;
         properties = null;
+        types = null;
         scope = PageContext.PAGE_SCOPE;
         var = null;
         super.resetState();

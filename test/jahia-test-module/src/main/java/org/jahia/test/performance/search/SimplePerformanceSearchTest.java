@@ -60,12 +60,16 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.springframework.util.StopWatch;
 
 import javax.jcr.RepositoryException;
+
+import static org.junit.Assert.fail;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -87,47 +91,44 @@ public class SimplePerformanceSearchTest extends JahiaTestCase {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         TestHelper.createSite(FIRST_TESTSITE_NAME, "localhost", TestHelper.WEB_TEMPLATES,
-                                SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/webtemplates.zip",
-                                "ACME.zip");
-                    } catch (Exception e) {
-                        logger.error("Cannot create or publish site", e);
+                                SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/webtemplates.zip", "ACME.zip");
+                        session.save();
+                    } catch (Exception ex) {
+                        logger.warn("Exception during site creation", ex);
+                        fail("Exception during site creation");
                     }
-                    session.save();
                     return null;
                 }
             });
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            Assert.fail();
         }
     }
 
     @Test
     public void testSimpleFulltextSearchOnSingleSite() throws Exception {
         SearchService searchService = ServicesRegistry.getInstance().getSearchService();
-        try {
-            RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(null, Locale.ENGLISH);
-            JCRNodeWrapper homeNode = session.getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
-            Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
-            context.setMainResource(resource);
-            context.setSite(homeNode.getResolveSite());
-            new URLGenerator(context, resource);
+        RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(null, Locale.ENGLISH);
+        JCRNodeWrapper homeNode = session.getNode(FIRST_SITECONTENT_ROOT_NODE + "/home");
+        Resource resource = new Resource(homeNode, "html", null, Resource.CONFIGURATION_PAGE);
+        context.setMainResource(resource);
+        context.setSite(homeNode.getResolveSite());
+        new URLGenerator(context, resource);
 
-            SearchCriteria criteria = createSearchCriteria();
-            StopWatch stopWatch = new StopWatch("search");
-            stopWatch.start("Starting 1000 searchs");
-            for (int j = 0; j < 1000; j++) {
-                List<Hit<?>> hits = searchService.search(criteria, context).getResults();
-                int i = 0;
-                for (Hit<?> hit : hits) {
-                    logger.info("[" + j + "][" + (++i) + "]: " + hit.getLink());
-                }
+        SearchCriteria criteria = createSearchCriteria();
+        StopWatch stopWatch = new StopWatch("search");
+        stopWatch.start("Starting 1000 searchs");
+        for (int j = 0; j < 1000; j++) {
+            List<Hit<?>> hits = searchService.search(criteria, context).getResults();
+            int i = 0;
+            for (Hit<?> hit : hits) {
+                logger.info("[" + j + "][" + (++i) + "]: " + hit.getLink());
             }
-            stopWatch.stop();
-            logger.info(stopWatch.prettyPrint());
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
         }
+        stopWatch.stop();
+        logger.info(stopWatch.prettyPrint());
     }
 
     private SearchCriteria createSearchCriteria() {

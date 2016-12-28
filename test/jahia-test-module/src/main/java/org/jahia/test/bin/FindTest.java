@@ -108,11 +108,11 @@ public class FindTest extends JahiaTestCase {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         site = TestHelper.createSite(TESTSITE_NAME);
-                    } catch (Exception e) {
-                        logger.error("Cannot create or publish site", e);
+                        session.save();
+                    } catch (Exception ex) {
+                        logger.warn("Exception during site creation", ex);
+                        fail("Exception during site creation");
                     }
-
-                    session.save();
                     return null;
                 }
             });
@@ -143,6 +143,7 @@ public class FindTest extends JahiaTestCase {
             setFindServletDisabled("false");
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 
@@ -156,8 +157,9 @@ public class FindTest extends JahiaTestCase {
             session.save();
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
+        } finally {
+            setFindServletDisabled(isFindDisabled);
         }
-        setFindServletDisabled(isFindDisabled);
     }
 
     

@@ -45,7 +45,6 @@ package org.jahia.utils.security;
 
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
@@ -850,7 +849,7 @@ public class AccessManagerUtils {
     }
 
     private static long getClusterRevision() {
-        return ((JahiaRepositoryImpl) ((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).getContext().getClusterNode().getRevision();
+        return SpringJackrabbitRepository.getInstance().getClusterRevision();
     }
 
     private static  <K,V> Cache<K, V> initCache(String name) {

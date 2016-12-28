@@ -62,6 +62,7 @@ import java.util.jar.Manifest;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -76,10 +77,6 @@ public final class PersistentBundleInfoBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistentBundleInfoBuilder.class);
 
-    private PersistentBundleInfoBuilder() {
-        super();
-    }
-
     /**
      * Parses the supplied resource and builds the information for the bundle.
      *
@@ -88,6 +85,19 @@ public final class PersistentBundleInfoBuilder {
      * @throws IOException In case of resource read errors
      */
     public static PersistentBundle build(Resource resource) throws IOException {
+        return build(resource, true, true);
+    }
+
+    /**
+     * Parses the supplied resource and builds the information for the bundle.
+     *
+     * @param resource The bundle resource
+     * @param calculateChecksum should we calculate the resource checksum?
+     * @param checkTransformationRequired should we check if the module dependency capability headers has to be added
+     * @return The information about the supplied bundle
+     * @throws IOException In case of resource read errors
+     */
+    public static PersistentBundle build(Resource resource, boolean calculateChecksum, boolean checkTransformationRequired) throws IOException {
 
         // populate data from manifest
         String groupId = null;
@@ -113,7 +123,12 @@ public final class PersistentBundleInfoBuilder {
 
         PersistentBundle bundleInfo = new PersistentBundle(groupId, symbolicName, version);
         bundleInfo.setDisplayName(displayName);
-        bundleInfo.setChecksum(calculateDigest(resource));
+        if (calculateChecksum) {
+            bundleInfo.setChecksum(calculateDigest(resource));
+        }
+        if (checkTransformationRequired) {
+            bundleInfo.setTransformationRequired(isTransformationRequired(resource));
+        }
         bundleInfo.setResource(resource);
         return bundleInfo;
     }
@@ -129,11 +144,21 @@ public final class PersistentBundleInfoBuilder {
         }
     }
 
+    private static boolean isTransformationRequired(Resource resource) throws IOException {
+        try (JarInputStream is = new JarInputStream(new BufferedInputStream(resource.getInputStream()), false)) {
+            return ModuleUtils.requiresTransformation(is.getManifest().getMainAttributes());
+        }
+    }
+
     private static DigestInputStream toDigestInputStream(InputStream is) {
         try {
             return new DigestInputStream(is, MessageDigest.getInstance("MD5"));
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private PersistentBundleInfoBuilder() {
+        super();
     }
 }

@@ -146,6 +146,9 @@ public class CacheFilter extends AbstractFilter {
             } else {
                 // store this fragment as a known non cacheable fragment
                 cacheProvider.addNonCacheableFragment(key);
+
+                // get permit to generate fragment (based on maximum allowed number of fragment generation in parallel)
+                generatorQueue.getFragmentGenerationPermit(finalKey, renderContext.getRequest());
                 return null;
             }
         }
@@ -183,16 +186,15 @@ public class CacheFilter extends AbstractFilter {
         if (moduleMap.get(FRAGMENT_SERVED_FROM_CACHE) == null) {
 
             Properties fragmentProperties = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);
+            String finalKey = (String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY);
 
-            if(isCacheable(renderContext, key, resource, fragmentProperties)) {
+            if (isCacheable(renderContext, key, resource, fragmentProperties)) {
                 // because fragment is not served from the cache, but the all render chain, we check that the key is still
                 // the same after prepare() and execute() of all the render filters after the cache.
                 String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, fragmentProperties);
                 if (!generatedKey.equals(key)) {
-                    logger.warn("Key generation does not give the same result after execution , was" + key + " , now is " + generatedKey);
+                    logger.warn("Key generation does not give the same result after execution: was '{}', now is '{}'", key, generatedKey);
                 }
-
-                String finalKey = (String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY);
 
                 if (!isAnError) {
                     // Add self path as dependency for this fragment (for cache flush - will not impact the key)
@@ -217,6 +219,8 @@ public class CacheFilter extends AbstractFilter {
                 // content is in cache and available, release latch for other threads waiting for this fragment
                 generatorQueue.releaseLatch(finalKey);
             } else {
+                // release fragment generation permit
+                generatorQueue.releaseFragmentGenerationPermit(finalKey);
                 cacheProvider.addNonCacheableFragment(key);
             }
         }

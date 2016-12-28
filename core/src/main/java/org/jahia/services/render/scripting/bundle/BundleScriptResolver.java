@@ -61,6 +61,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDependenciesEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.jahia.utils.ScriptEngineUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -214,8 +215,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             // first check that we don't already have a script factory assigned to that extension
             final ScriptFactory scriptFactory = scriptFactoryMap.get(extension);
             if (scriptFactory != null) {
-                // todo: do something different here?
-                throw new IllegalArgumentException("Extension " + extension + " is already associated with ScriptEngineFactory " + scriptEngineFactory);
+                ScriptEngineFactory alreadyRegistered = BundleScriptEngineManager.getInstance().getFactoryForExtension(extension);
+                throw new IllegalArgumentException("Extension " + extension + " is already associated with ScriptEngineFactory " + alreadyRegistered);
             }
 
             scriptFactoryMap.put(extension, bundleScriptFactory);
@@ -318,61 +319,23 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @return {@code true} if the specified bundle should be scanned for views with the specified extension, {@code
      * false} otherwise
      */
-    static boolean shouldNotBeScannedForViews(Bundle bundle, String viewExtension) {
+    static boolean shouldBeScannedForViews(Bundle bundle, String viewExtension) {
         if (isIgnoredBundle(bundle)) {
-            return true;
+            return false;
         } else if (isPreRegisteredExtension(viewExtension)) {
             // if the extension is one of the pre-registered ones (via Spring configuration), we should scan the bundle
-            return false;
+            return true;
         } else {
             final ScriptEngineFactory scriptFactory = BundleScriptEngineManager.getInstance().getFactoryForExtension(viewExtension);
             if (scriptFactory == null) {
                 // we don't have a ScriptEngineFactory associated with this extension so no need to scan
-                return true;
+                return false;
             } else {
                 // check headers for view markers
                 final Dictionary<String, String> headers = bundle.getHeaders();
-                final String hasViews = headers.get("Jahia-Module-Has-Views");
-                if ("no".equalsIgnoreCase(StringUtils.trim(hasViews))) {
-                    // if the bundle indicated that it doesn't provide views, no need to scan
-                    return true;
-                } else {
-                    // check if the bundle provided a list of of comma-separated scripting language names for the views it provides
-                    final String commaSeparatedScriptNames = headers.get("Jahia-Module-Scripting-Views");
-                    final String[] split = StringUtils.split(commaSeparatedScriptNames, ',');
-                    if (split != null) {
-                        List<String> result = new ArrayList<>(split.length);
-                        for (String name : split) {
-                            result.add(name.trim().toLowerCase());
-                        }
-
-                        // the bundle should only be scanned if it defined the header and the header contains the name or language of the factory associated with the extension
-                        return !doesFactorySupport(scriptFactory, result);
-                    } else {
-                        return true;
-                    }
-                }
-
+                return ScriptEngineUtils.canFactoryProcessViews(scriptFactory, headers);
             }
         }
-    }
-
-    private static boolean doesFactorySupport(ScriptEngineFactory scriptFactory, List<String> scriptNames) {
-        final boolean nameOrLanguage = scriptNames.contains(scriptFactory.getEngineName().toLowerCase()) ||
-                scriptNames.contains(scriptFactory.getLanguageName().toLowerCase());
-        if (!nameOrLanguage) {
-            // check extensions
-            final List<String> extensions = scriptFactory.getExtensions();
-            for (String scriptName : scriptNames) {
-                if (extensions.contains(scriptName)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        return true;
     }
 
     private static boolean isIgnoredBundle(Bundle bundle) {
@@ -392,7 +355,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     private void addBundleScripts(Bundle bundle, String extension) {
         // only add views if we need to
-        if (!shouldNotBeScannedForViews(bundle, extension)) {
+        if (shouldBeScannedForViews(bundle, extension)) {
             final String extensionPattern = getExtensionPattern(extension);
             final Enumeration<URL> entries = bundle.findEntries("/", extensionPattern, true);
             if (entries != null) {
@@ -410,7 +373,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     }
 
     private void removeBundleScripts(Bundle bundle, String extension) {
-        if (!shouldNotBeScannedForViews(bundle, extension)) {
+        if (shouldBeScannedForViews(bundle, extension)) {
             final String extensionPattern = getExtensionPattern(extension);
             final Enumeration<URL> entries = bundle.findEntries("/", extensionPattern, true);
             if (entries != null) {

@@ -100,6 +100,7 @@ public class ServiceLoggingTest {
                     .getBean("org.jahia.services.tags.TaggingService");
         } catch (Exception e) {
             logger.error("Error setting up ServiceLoggingTest environment", e);
+            fail();
         }
     }
 

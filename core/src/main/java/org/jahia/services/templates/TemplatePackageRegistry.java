@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -512,11 +512,7 @@ public class TemplatePackageRegistry {
 
         // handle dependencies
         computeDependencies(templatePackage);
-
-        // handle resource bundles
-//        for (JahiaTemplatesPackage sourcePack : registry.values()) {
-//        computeResourceBundleHierarchy(templatePackage);
-//        }
+        computeResourceBundleHierarchy(templatePackage);
 
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
@@ -603,7 +599,7 @@ public class TemplatePackageRegistry {
     public List<JahiaTemplatesPackage> getDependantModules(JahiaTemplatesPackage module, boolean includeNonStarted) {
         List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>();
         final Collection<JahiaTemplatesPackage> modulesToExamine;
-        if(includeNonStarted) {
+        if (includeNonStarted) {
             modulesToExamine = new HashSet<JahiaTemplatesPackage>(packagesById.values());
 
             // get non-started modules
@@ -1075,8 +1071,7 @@ public class TemplatePackageRegistry {
                     final SearchProvider provider = (SearchProvider) bean;
                     if (provider.isEnabled()) {
                         searchService.registerSearchProvider(provider);
-                    }
-                    else {
+                    } else {
                         logger.warn("Provider {} is not enabled, possibly due to licensing issues and was thus not registered.", provider.getName());
                     }
                 } catch (Exception e) {
@@ -1163,5 +1158,18 @@ public class TemplatePackageRegistry {
         public void setPasswordService(PasswordService passwordService) {
             this.passwordService = passwordService;
         }
+
+        public void osgiBind(Object bean) throws BeansException {
+            if (bean != null) {
+                postProcessAfterInitialization(bean, "osgi service " + bean.getClass().getName());
+            }
+        }
+
+        public void osgiUnbind(Object bean) throws BeansException {
+            if (bean != null) {
+                postProcessBeforeDestruction(bean, "osgi service " + bean.getClass().getName());
+            }
+        }
+
     }
 }

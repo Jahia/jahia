@@ -289,31 +289,28 @@ public class Service extends JahiaService {
             }
 
             List<Map<Object, Object>> importsInfos = new ArrayList<Map<Object, Object>>();
-            Map<String, File> importsInfosSorted = new TreeMap<String, File>();
-            File users = null;
-            File serverPermissions = null;
+            Map<Object, Object> users = null;
+            Map<Object, Object> serverPermissions = null;
             for (Iterator<File> iterator = importList.iterator(); iterator.hasNext(); ) {
                 File i = iterator.next();
                 String fileName = imports.get(i);
                 Map<Object, Object> value = prepareSiteImport(i, imports.get(i));
                 if (value != null) {
-                    importsInfos.add(value);
-                    if ("users.xml".equals(fileName)) {
-                        users = i;
+                    if ("users.xml".equals(fileName) || "users.zip".equals(fileName)) {
+                        users = value;
                     } else if ("serverPermissions.xml".equals(fileName)) {
-                        serverPermissions = i;
+                        serverPermissions = value;
                     } else {
-                        importsInfosSorted.put(fileName, i);
+                        importsInfos.add(value);
                     }
                 }
             }
 
-            List<File> sorted = new LinkedList<File>(importsInfosSorted.values());
             if (serverPermissions != null) {
-                sorted.add(0, serverPermissions);
+                importsInfos.add(0, serverPermissions);
             }
             if (users != null) {
-                sorted.add(0, users);
+                importsInfos.add(0, users);
             }
             return importsInfos;
         } catch (IOException e) {

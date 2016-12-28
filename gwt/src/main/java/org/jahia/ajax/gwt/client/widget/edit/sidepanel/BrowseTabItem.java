@@ -192,6 +192,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
         return data.containsKey("event")
                 && ("unmount".equals(data.get("event"))
                 || "fileUploaded".equals(data.get("event"))
+                || "publicationSuccess".equals(data.get("event"))
                 || "browseTreeGridDrop".equals(data.get("event")));
     }
 

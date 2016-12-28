@@ -90,6 +90,11 @@ public class ModuleGeneratorQueue implements InitializingBean {
         return generatingModules;
     }
 
+    /**
+     * Available processings is a Semaphore that allow multiple threads to generate fragments in parallel
+     * the number of parallel processings is configurable using "maxModulesToGenerateInParallel" property
+     * @return the Semaphore
+     */
     public Semaphore getAvailableProcessings() {
         // Double-checked locking only works with volatile for Java 5+
         // result variable is used to avoid accessing the volatile field multiple times to increase performance per Effective Java 2nd Ed.
@@ -116,13 +121,9 @@ public class ModuleGeneratorQueue implements InitializingBean {
         CountDownLatch latch;
         boolean mustWait = true;
 
-        if (generatingModules.get(key) == null && generatingKeySemaphore.get() == null) {
-            if (!getAvailableProcessings().tryAcquire(moduleGenerationWaitTime, TimeUnit.MILLISECONDS)) {
-                manageThreadDump();
-                throw new Exception("Module generation takes too long due to maximum parallel processing reached (" + maxModulesToGenerateInParallel + ") - " + key + " - " + request.getRequestURI());
-            } else {
-                generatingKeySemaphore.set(key);
-            }
+        if (generatingModules.get(key) == null) {
+            // get permit to generate fragment (based on maximum allowed number of fragment generation in parallel)
+            getFragmentGenerationPermit(key, request);
         }
         synchronized (generatingModules) {
             latch = generatingModules.get(key);
@@ -133,11 +134,9 @@ public class ModuleGeneratorQueue implements InitializingBean {
             }
         }
         if (mustWait) {
-            if (generatingKeySemaphore.get() != null) {
-                // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait
-                getAvailableProcessings().release();
-                generatingKeySemaphore.set(null);
-            }
+            // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait
+            revokeFragmentGenerationPermit();
+
             try {
                 if (!latch.await(getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
                     manageThreadDump();
@@ -150,6 +149,44 @@ public class ModuleGeneratorQueue implements InitializingBean {
             }
         }
         return latch;
+    }
+
+    /**
+     * Number of threads generating fragments in parallel is limited, this function is used to get the permission to generate a fragment
+     * based on the property "maxModulesToGenerateInParallel". The permit is stored in the current thread and must be released
+     * when the fragment generation is complete by the current thread using the function "releaseFragmentGenerationPermit(String finalKey)"
+     * @param finalKey the final key of the fragment
+     * @param request the current request
+     */
+    protected void getFragmentGenerationPermit(String finalKey, HttpServletRequest request) throws Exception {
+        if (generatingKeySemaphore.get() == null) {
+            if (!getAvailableProcessings().tryAcquire(moduleGenerationWaitTime, TimeUnit.MILLISECONDS)) {
+                manageThreadDump();
+                throw new Exception("Module generation takes too long due to maximum parallel processing reached (" + maxModulesToGenerateInParallel + ") - " + finalKey + " - " + request.getRequestURI());
+            } else {
+                generatingKeySemaphore.set(finalKey);
+            }
+        }
+    }
+
+    /**
+     * Release a permit previously set for the current thread, this function is used when the current thread just finish
+     * a fragment generation. A permit slot is released allowing an other thread to take it to generate a fragment.
+     * @param finalKey the final key of the fragment
+     */
+    protected void releaseFragmentGenerationPermit(String finalKey) {
+        if (finalKey.equals(generatingKeySemaphore.get())) {
+            getAvailableProcessings().release();
+            generatingKeySemaphore.set(null);
+        }
+    }
+
+    private void revokeFragmentGenerationPermit() {
+        if (generatingKeySemaphore.get() != null) {
+            // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait
+            getAvailableProcessings().release();
+            generatingKeySemaphore.set(null);
+        }
     }
 
     private void manageThreadDump() {
@@ -180,6 +217,9 @@ public class ModuleGeneratorQueue implements InitializingBean {
      * This mechanism is used by the CacheFilter to allow first thread to generate a fragment, and other threads wait for it to finished
      * So then can get the generated fragment directly from the cache. By doing that we avoid to generate multiple time the same fragment
      *
+     * This function also handle the maximum allowed fragment generation in parallel internally (based on maxModulesToGenerateInParallel property)
+     * No need to call the functions to manage the permit of fragment generation additionally to "getLatch" function.
+     *
      * @param renderContext current RenderContext
      * @param finalKey fragment key
      * @return false for first thread or return true for others thread when first thread have released the latch
@@ -206,12 +246,13 @@ public class ModuleGeneratorQueue implements InitializingBean {
     /**
      * Release latch, this will signal that the current thread have finish its work
      * All the other waiting threads will be free to get/read the resource generated by the first thread
+     *
+     * This function also handle the maximum allowed fragment generation in parallel internally (based on maxModulesToGenerateInParallel property)
+     * The permit is automatically released, no need to do additional call to release the permit.
      */
     protected void releaseLatch(String finalKey) {
-        if (finalKey.equals(generatingKeySemaphore.get())) {
-            getAvailableProcessings().release();
-            generatingKeySemaphore.set(null);
-        }
+        // release fragment generation permit
+        releaseFragmentGenerationPermit(finalKey);
 
         Set<CountDownLatch> latches = processingLatches.get();
         CountDownLatch latch = generatingModules.get(finalKey);

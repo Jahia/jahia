@@ -569,6 +569,8 @@
 
 [jmix:editorialContent] mixin
 
+[jmix:siteContent] mixin
+
 //---------------------------------------------------------
 // Definition organization (left panel)
 //---------------------------------------------------------
@@ -901,7 +903,7 @@ extends = jnt:content
  - cache.requestParameters (string)
  - cache.mainResource (boolean)
  - cache.perUser (boolean)
- - cache.latch (boolean)
+ - skip.aggregation (boolean)
  - visible (string,choicelist) nofulltext < 'false','true','studioOnly'
  - requirePermissions (string)
  - cache.expiration (long)
@@ -948,7 +950,7 @@ extends = jnt:content
  - j:selectorType (STRING,choicelist) nofulltext
    < 'Text','RichText','DateTimePicker','DatePicker',
      'TextArea','Picker','FileUpload','Checkbox',
-     'Color','Category','Choicelist'
+     'Color','Category','Choicelist','Cron','Tag'
  - j:selectorOptions (STRING) multiple nofulltext
  - j:multiple (BOOLEAN)
  - j:defaultValues (STRING) multiple
@@ -1039,3 +1041,4 @@ extends = jnt:content
   - j:version (string) nofulltext
   - j:displayName (string) nofulltext
   - j:checksum (string) nofulltext
+  - j:transformationRequired (boolean)

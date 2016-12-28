@@ -61,6 +61,7 @@ public class ModuleNotFoundException extends ModuleManagementInvalidArgumentExce
      */
     public ModuleNotFoundException(String bundleKey) {
         super("Unable to find a module bundle corresponding to the key: " + bundleKey);
+        this.bundleKey = bundleKey;
     }
 
     /**

@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia</groupId>
         <artifactId>jahia-parent</artifactId>
-        <version>7.2.0.0-backlog_5637-SNAPSHOT</version>
+        <version>7.3.0.0-backlog_5637-SNAPSHOT</version>
         <relativePath>jahia-parent/pom.xml</relativePath>
     </parent>
     
@@ -141,30 +141,11 @@
 	<build>
 		<plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>${buildnumber.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <doCheck>false</doCheck>
-                    <doUpdate>false</doUpdate>
-                    <useLastCommittedRevision>true</useLastCommittedRevision>
-                    <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-                    <revisionOnScmFailure>00000</revisionOnScmFailure>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>jahia-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>calculate-gitbuildnumber</id>
                         <phase>validate</phase>
                         <goals>
                             <goal>gitbuildnumber</goal>

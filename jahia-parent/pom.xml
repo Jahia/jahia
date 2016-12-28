@@ -50,7 +50,7 @@
     <artifactId>jahia-parent</artifactId>
     <name>Jahia Common Project Parent</name>
     <groupId>org.jahia</groupId>
-    <version>7.2.0.0-backlog_5637-SNAPSHOT</version>
+    <version>7.3.0.0-backlog_5637-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
     <!--
@@ -78,11 +78,11 @@
         <!-- general encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        
+
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.2.13.RELEASE</spring.version>
         <springwebflow-version>2.4.1.RELEASE</springwebflow-version>
-        <jackrabbit.version>2.4.5-jahia11</jackrabbit.version>
+        <jackrabbit.version>2.4.5-jahia12</jackrabbit.version>
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
@@ -101,21 +101,21 @@
         <testng.version>6.9.10</testng.version>
         <mockito.version>1.10.19</mockito.version>
         <jmockit.version>1.26</jmockit.version>
-        <assertj.version>3.5.2</assertj.version>		
+        <assertj.version>3.5.2</assertj.version>
         <hamcrest.version>1.3</hamcrest.version>
         <awaitility.version>2.0.0</awaitility.version>
         <xmlunit.version>1.6</xmlunit.version>
         <izpack.version>4.3.5-jahia10</izpack.version>
         <launch4j.version>3.4</launch4j.version>
         <log4j.version>1.2.17</log4j.version>
-        <jahia.tomcat.version>8.0.36</jahia.tomcat.version>
+        <jahia.tomcat.version>8.0.39</jahia.tomcat.version>
 
         <driver.derby.version>10.12.1.1</driver.derby.version>
         <driver.mssql.version>4.2.6420.100</driver.mssql.version>
-        <driver.mysql.version>5.1.39</driver.mysql.version>
+        <driver.mysql.version>5.1.40</driver.mysql.version>
         <driver.oracle.version>12.1.0.2</driver.oracle.version>
-        <driver.postgresql.version>9.4.1208.jre7</driver.postgresql.version>
-        
+        <driver.postgresql.version>9.4.1211.jre7</driver.postgresql.version>
+
         <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>
         <hibernateDialect.mssql>org.hibernate.dialect.SQLServer2008Dialect</hibernateDialect.mssql>
         <hibernateDialect.mysql>org.hibernate.dialect.MySQL5InnoDBDialect</hibernateDialect.mysql>
@@ -128,8 +128,8 @@
         <jahia.manifest.vendor.url>http://www.jahia.com</jahia.manifest.vendor.url>
         <jahia.manifest.vendor.email>info@jahia.com</jahia.manifest.vendor.email>
         <jahia.svn.base.url>https://devtools.jahia.com/svn/jahia/trunk</jahia.svn.base.url>
-		<jahia.license.header>header.txt</jahia.license.header>
-		<jahia.license.style>style.xml</jahia.license.style>
+        <jahia.license.header>header.txt</jahia.license.header>
+        <jahia.license.style>style.xml</jahia.license.style>
         <jahia.sign.storepass>password</jahia.sign.storepass>
         <jahia.sign.keystore>${user.home}/.codesign/jahia-code-signing-certificate.p12</jahia.sign.keystore>
 
@@ -142,21 +142,21 @@
         <compiler.plugin.version>3.2</compiler.plugin.version>
         <buildnumber.plugin.version>1.0</buildnumber.plugin.version>
         <source.plugin.version>2.4</source.plugin.version>
-        <release.plugin.version>2.5.1-jahia1</release.plugin.version>
+        <release.plugin.version>2.5.3-jahia1</release.plugin.version>
         <project.info.reports.plugin.version>2.7</project.info.reports.plugin.version>
         <jxr.plugin.version>2.3</jxr.plugin.version>
         <antrun.plugin.version>1.7</antrun.plugin.version>
-        <surefire.plugin.version>2.18.1</surefire.plugin.version>
-        <failsafe.plugin.version>2.18.1</failsafe.plugin.version>
+        <surefire.plugin.version>2.19.1</surefire.plugin.version>
+        <failsafe.plugin.version>2.19.1</failsafe.plugin.version>
         <eclipse.plugin.version>2.9</eclipse.plugin.version>
         <nexus.maven.plugin.version>1.5.1</nexus.maven.plugin.version>
         <dependency.plugin.version>2.8</dependency.plugin.version>
 
         <!-- OSGi versions -->
         <felix.http.version>2.2.1</felix.http.version>
-        <felix.webconsole.version>4.2.16-jahia1-SNAPSHOT</felix.webconsole.version>
+        <felix.webconsole.version>4.2.16-jahia1</felix.webconsole.version>
         <felix.configadmin.version>1.8.8</felix.configadmin.version>
-        <felix.fileinstall.version>3.5.4-jahia2-SNAPSHOT</felix.fileinstall.version>
+        <felix.fileinstall.version>3.5.6-jahia1</felix.fileinstall.version>
         <felix.utils.version>1.8.0</felix.utils.version>
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <gogo.runtime.version>0.16.2</gogo.runtime.version>
@@ -168,17 +168,18 @@
         <osgi.compendium.version>5.0.0</osgi.compendium.version>
         <pax.logging.version>1.8.5</pax.logging.version>
         <pax.swissbox.version>1.5.0</pax.swissbox.version>
-        <pax.web.api.version>3.0.7</pax.web.api.version>
-        <pax.web.jsp.version>3.0.7-jahia4</pax.web.jsp.version>
-        <karaf.version>4.0.5</karaf.version>
+        <pax.web.api.version>3.0.7-jahia1</pax.web.api.version>
+        <pax.web.jsp.version>3.0.7-jahia5</pax.web.jsp.version>
+        <karaf.version>4.0.7</karaf.version>
+        <karaf.jaas.config.version>${karaf.version}-jahia1</karaf.jaas.config.version>
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.6</jahia.commons.version>
-        <jahia.plugin.version>5.0-SNAPSHOT</jahia.plugin.version>
-		<jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
-		<jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
+        <jahia.plugin.version>5.0</jahia.plugin.version>
+        <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
+        <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>
-		<jahia.installers.version>${jahia.plugin.version}</jahia.installers.version>
+        <jahia.installers.version>${jahia.plugin.version}</jahia.installers.version>
 
         <!-- Releases properties -->
         <jahia.nexus.staging.repository.id>64277f72646358</jahia.nexus.staging.repository.id>
@@ -199,12 +200,6 @@
         <custom.modules.bundle.removeheaders>${jahia.modules.bundle.removeheaders}</custom.modules.bundle.removeheaders>
     </properties>
 
-    <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/jahia-parent</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/jahia-parent</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk/jahia-parent</url>
-      <tag>HEAD</tag>
-  </scm>
     <developers>
         <developer>
             <name>Alexander Karmanov</name>
@@ -384,7 +379,7 @@
             <name>Xavier Lawrence</name>
         </contributor>
     </contributors>
-    
+
     <issueManagement>
         <system>Jira</system>
         <url>https://jira.jahia.org/</url>
@@ -644,10 +639,10 @@
         <profile>
             <id>no-source-folders</id>
             <activation>
-            	<property>
-            		<name>env.JAHIA_DISABLE_SOURCE_FOLDERS</name>
-            		<value>true</value>
-            	</property>
+                <property>
+                    <name>env.JAHIA_DISABLE_SOURCE_FOLDERS</name>
+                    <value>true</value>
+                </property>
             </activation>
             <properties>
                 <jahia.modules.bundle.removeheaders>
@@ -667,18 +662,6 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>${surefire.plugin.version}</version>
-                        <dependencies>
-                          <dependency>
-                            <groupId>org.apache.maven.surefire</groupId>
-                            <artifactId>surefire-testng</artifactId>
-                            <version>${surefire.plugin.version}</version>
-                          </dependency>
-                          <dependency>
-                            <groupId>org.jmockit</groupId>
-                            <artifactId>jmockit</artifactId>
-                            <version>${jmockit.version}</version>
-                          </dependency>                            
-                        </dependencies>                        
                         <configuration>
                             <argLine>-Xmx2048m -XX:MaxPermSize=320m</argLine>
                             <skipTests>false</skipTests>
@@ -687,7 +670,7 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>        
+        </profile>
         <profile>
             <id>integration-tests</id>
             <build>
@@ -696,18 +679,6 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <version>${failsafe.plugin.version}</version>
-                        <dependencies>
-                          <dependency>
-                            <groupId>org.apache.maven.surefire</groupId>
-                            <artifactId>surefire-testng</artifactId>
-                            <version>${surefire.plugin.version}</version>
-                          </dependency>
-                          <dependency>
-                            <groupId>org.jmockit</groupId>
-                            <artifactId>jmockit</artifactId>
-                            <version>${jmockit.version}</version>
-                          </dependency>                            
-                        </dependencies>                        
                         <configuration>
                             <argLine>-Xmx2048m -XX:MaxPermSize=320m</argLine>
                             <skipTests>false</skipTests>
@@ -729,12 +700,12 @@
                                     <goal>verify</goal>
                                 </goals>
                             </execution>
-                        </executions>                        
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
-        </profile>        
-        
+        </profile>
+
     </profiles>
 
     <distributionManagement>
@@ -766,7 +737,7 @@
                 <version>2.1</version>
                 <scope>provided</scope>
             </dependency>
-            
+
             <!-- Apache Karaf -->
             <dependency>
                 <groupId>org.apache.karaf</groupId>
@@ -920,10 +891,10 @@
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>2.8</version>
                 </plugin>
-				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.6</version>
-				</plugin>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
                 <plugin>
                     <groupId>de.juplo</groupId>
                     <artifactId>hibernate4-maven-plugin</artifactId>
@@ -1003,7 +974,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>[3.0.3,)</version>
+                                    <version>[3.3.0,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>[1.7,)</version>
@@ -1057,7 +1028,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> 
+            </plugin>
         </plugins>
     </build>
     <reporting>

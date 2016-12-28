@@ -55,10 +55,12 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
+import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.ItemExistsException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
@@ -171,21 +173,19 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
             StringBuilder additionalParameters = new StringBuilder();
             boolean enableArea = !showAreaButton;
-            JCRNodeWrapper createdNode = null;
+            JCRNodeWrapper areaNode = null;
             if (enableArea) {
                 try {
-                    createdNode = session.getNode(StringUtils.substringBeforeLast(areaPath, "/")).addNode(StringUtils.substringAfterLast(areaPath, "/"), areaType);
-                    session.save();
+                    areaNode = getOrCreateAreaNode(areaPath, session);
                     List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                     if (contributeTypes != null) {
                         nodeTypes = StringUtils.join(contributeTypes, " ");
                     }
-                    additionalParameters.append(" areaAutoEnabled=\"true\"");
                 } catch (RepositoryException e) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("unable to auto create area due to the following error", e);
                     } else {
-                        logger.warn(String.format("Unable to automaticaly enable an area, cannot create node %s of type %s", areaPath, areaType));
+                        logger.warn(String.format("Unable to automaticaly enable an area, cannot create node %s of type %s, because of %s", areaPath, areaType, e.getMessage()));
                     }
                 }
             } else {
@@ -216,11 +216,11 @@ public class AreaTag extends ModuleTag implements ParamParent {
             }
             
             printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters.toString());
-            if (enableArea && createdNode != null) {
+            if (enableArea && areaNode != null) {
                 try {
-                    render(renderContext, new Resource(createdNode, resource.getTemplateType(), resource.getTemplate(), Resource.CONFIGURATION_WRAPPEDCONTENT));
+                    render(renderContext, new Resource(areaNode, resource.getTemplateType(), resource.getTemplate(), Resource.CONFIGURATION_WRAPPEDCONTENT));
                 } catch (RenderException e) {
-                    logger.error("error while rendering auto created node {}", createdNode.getPath(), e);
+                    logger.error("error while rendering auto created node {}", areaNode.getPath(), e);
                 }
             }
             if (getBodyContent() != null) {
@@ -228,6 +228,24 @@ public class AreaTag extends ModuleTag implements ParamParent {
             }
             printModuleEnd();
         }
+    }
+
+    private JCRNodeWrapper getOrCreateAreaNode(String areaPath, JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper areaParentNode = session.getNode(StringUtils.substringBeforeLast(areaPath, "/"));
+        String areaName = StringUtils.substringAfterLast(areaPath, "/");
+        JCRNodeWrapper areaNode = null;
+        try {
+            areaNode = areaParentNode.getNode(areaName);
+        } catch (PathNotFoundException e) {
+            try {
+                areaNode = areaParentNode.addNode(areaName, areaType);
+                session.save();
+            } catch (ItemExistsException e1) {
+                // possible race condition when page is accessed concurrently in edit mode 
+                areaNode = areaParentNode.getNode(areaName);
+            }
+        }
+        return areaNode;
     }
 
     protected String getConfiguration() {
@@ -351,6 +369,9 @@ public class AreaTag extends ModuleTag implements ParamParent {
                                 } else {
                                     found = true;
                                     pageContext.setAttribute("org.jahia.emptyArea",Boolean.FALSE, PageContext.PAGE_SCOPE);
+                                    // if the processed resource is an area, set area path to this node, else set it to the generated node.
+                                    renderContext.getRequest().setAttribute(AreaResourceCacheKeyPartGenerator.AREA_PATH,
+                                            currentResource.getNode().isNodeType("jnt:area") ? currentResource.getNodePath() : this.node.getPath());
                                     break;
                                 }
                             }
@@ -425,6 +446,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             conflictsWith = null;
             areaType = "jnt:contentList";
             pageContext.getRequest().setAttribute("inArea", o);
+            pageContext.getRequest().removeAttribute(AreaResourceCacheKeyPartGenerator.AREA_PATH);
         }
     }
 

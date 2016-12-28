@@ -809,6 +809,7 @@
                 <value>jnt:contentFolder</value>
                 <value>jmix:editorialContent</value>
                 <value>jnt:contentList</value>
+                <value>jmix:siteContent</value>
             </list>
         </property>
 
@@ -977,6 +978,7 @@
                 <value>jmix:navMenuItem</value>
                 <value>jnt:contentFolder</value>
                 <value>jnt:contentList</value>
+                <value>jmix:siteContent</value>
             </list>
         </property>
         <property name="toolbars">

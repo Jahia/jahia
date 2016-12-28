@@ -56,6 +56,8 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.AggregateFilter;
+import org.jahia.services.render.filter.TemplateAttributesFilter;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -66,6 +68,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -102,6 +105,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected Map<String, String> parameters = new HashMap<String, String>();
     protected boolean checkConstraints = true;
     protected boolean showAreaButton = true;
+    protected boolean skipAggregation = false;
 
     public String getPath() {
         return path;
@@ -171,9 +175,15 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         this.contextSite = contextSite;
     }
 
+    public void setSkipAggregation(boolean skipAggregation) {
+        this.skipAggregation = skipAggregation;
+    }
+
     @Override
     public int doEndTag() throws JspException {
+
         try {
+
             RenderContext renderContext =
                     (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
             builder = new StringBuilder();
@@ -189,6 +199,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             }
 
             if (node != null) {
+
                 try {
                     constraints = ConstraintsHelper.getConstraints(node);
                 } catch (RepositoryException e) {
@@ -214,8 +225,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         throw new JspException(e);
                     }
                 }
-                boolean isVisible = true;
 
+                boolean isVisible = true;
                 try {
                     isVisible = renderContext.getEditModeConfig() == null || renderContext.isVisible(node);
                 } catch (RepositoryException e) {
@@ -223,12 +234,15 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 }
 
                 try {
+
                     boolean canEdit = canEdit(renderContext) && contributeAccess(renderContext,
                             resource.getNode()) && !isExcluded(renderContext, resource);
 
                     boolean nodeEditable = checkNodeEditable(renderContext, node);
-                    pageContext.getRequest().setAttribute("editableModule", canEdit && nodeEditable);
+                    resource.getModuleParams().put("editableModule", canEdit && nodeEditable);
+
                     if (canEdit) {
+
                         String type = getModuleType(renderContext);
                         List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
                         String oldNodeTypes = nodeTypes;
@@ -291,18 +305,20 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             }
             path = null;
             node = null;
+            contextSite = null;
+            nodeName = null;
             view = null;
-            editable = true;
             templateType = null;
+            editable = true;
             nodeTypes = null;
             listLimit = -1;
             constraints = null;
             var = null;
             builder = null;
-            contextSite = null;
-
             parameters.clear();
-
+            checkConstraints = true;
+            showAreaButton = true;
+            skipAggregation = false;
         }
         return EVAL_PAGE;
     }
@@ -312,13 +328,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         if (filter == null) {
             return false;
         }
-
         try {
             return filter.prepare(renderContext, resource, null) != null;
         } catch (Exception e) {
             logger.error("Cannot evaluate exclude filter", e);
         }
-
         return false;
     }
 
@@ -338,6 +352,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     protected List<String> contributeTypes(RenderContext renderContext, JCRNodeWrapper node) {
+
         if (!"contributemode".equals(renderContext.getEditModeConfigName())) {
             return null;
         }
@@ -389,6 +404,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     private boolean contributeAccess(RenderContext renderContext, JCRNodeWrapper node) {
+
         if (!"contributemode".equals(renderContext.getEditModeConfigName())) {
             return true;
         }
@@ -397,7 +413,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         if (areaListResource != null) {
             contributeNode = (JCRNodeWrapper) areaListResource;
         } else {
-            contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("areaResource");
+            contributeNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute(TemplateAttributesFilter.AREA_RESOURCE);
         }
 
         try {
@@ -436,10 +452,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
      */
     private Boolean isNodeEditableInContributeMode(JCRNodeWrapper node) throws RepositoryException {
         final boolean hasProperty = node.hasProperty(Constants.JAHIA_EDITABLE_IN_CONTRIBUTION);
-        if(hasProperty) {
+        if (hasProperty) {
             return node.getProperty(Constants.JAHIA_EDITABLE_IN_CONTRIBUTION).getBoolean();
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -548,16 +563,19 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     protected void render(RenderContext renderContext, Resource resource) throws IOException, RenderException {
+        HttpServletRequest request = renderContext.getRequest();
+        Boolean oldSkipAggregation = (Boolean) request.getAttribute(AggregateFilter.SKIP_AGGREGATION);
         try {
             JCRSiteNode previousSite = renderContext.getSite();
             if (contextSite != null) {
                 renderContext.setSite(contextSite);
             }
-
+            if (skipAggregation) {
+                request.setAttribute(AggregateFilter.SKIP_AGGREGATION, skipAggregation);
+                resource.getRegexpDependencies().add(resource.getNodePath() + "/.*");
+            }
             builder.append(RenderService.getInstance().render(resource, renderContext));
-
             renderContext.setSite(previousSite);
-
             printAndClean();
         } catch (TemplateNotFoundException io) {
             builder.append(io);
@@ -572,13 +590,13 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             } else {
                 throw e;
             }
+        } finally {
+            request.setAttribute(AggregateFilter.SKIP_AGGREGATION, oldSkipAggregation);
         }
-
     }
 
     protected String getModuleType(RenderContext renderContext) throws RepositoryException {
         String type = "existingNode";
-
         if (node.isNodeType("jmix:listContent")) {
             type = "list";
         } else if (renderContext.getEditModeConfig().isForceHeaders()) {
@@ -589,6 +607,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected void missingResource(RenderContext renderContext, Resource currentResource)
             throws RepositoryException, IOException {
+
         String currentPath = currentResource.getNode().getPath();
         if (path.startsWith(currentPath + "/") && path.substring(currentPath.length() + 1).indexOf('/') == -1) {
             currentResource.getMissingResources().add(path.substring(currentPath.length() + 1));
@@ -600,7 +619,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             // we have a named path that is missing, let's see if we can figure out it's node type.
             constraints = ConstraintsHelper.getConstraints(currentResource.getNode(), path);
         }
-
 
         if (canEdit(renderContext) && checkNodeEditable(renderContext, currentResource.getNode()) && contributeAccess(renderContext, currentResource.getNode())) {
             if (currentResource.getNode().hasPermission("jcr:addChildNodes")) {
@@ -614,11 +632,14 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         }
     }
 
+    @Override
     public void addParameter(String name, String value) {
         parameters.put(name, value);
     }
 
+    @Deprecated
     public void setCheckConstraints(boolean checkConstraints) {
+        // constraint are now resolved by JCRFilterTag when called by list jsp
         this.checkConstraints = checkConstraints;
     }
 }

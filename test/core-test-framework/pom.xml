@@ -48,8 +48,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jahia.test</groupId>
-        <artifactId>jahia-test-parent</artifactId>        
-        <version>7.2.0.0-backlog_5637-SNAPSHOT</version>
+        <artifactId>jahia-test-parent</artifactId>
+        <version>7.3.0.0-backlog_5637-SNAPSHOT</version>
     </parent>
     <artifactId>core-test-framework</artifactId>
     <name>Jahia Core Test Framework</name>

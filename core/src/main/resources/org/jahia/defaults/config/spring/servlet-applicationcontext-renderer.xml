@@ -200,6 +200,7 @@
                 <entry key="/resolve/**">
                     <bean class="org.jahia.bin.TemplateResolverServlet">
                         <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
+                        <property name="urlService" ref="UrlRewriteService"/>
                     </bean>
                 </entry>
             </map>

@@ -47,9 +47,7 @@ import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import com.yahoo.platform.yui.org.mozilla.javascript.ErrorReporter;
 import com.yahoo.platform.yui.org.mozilla.javascript.EvaluatorException;
-
 import net.htmlparser.jericho.*;
-
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.collections.Transformer;
@@ -82,7 +80,6 @@ import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import javax.script.*;
-
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -237,50 +234,52 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
         String out = previousOut;
         Source source = new Source(previousOut);
-        Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget = new LinkedHashMap<String, Map<String, Map<String, Map<String, String>>>>();
+        Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget = new LinkedHashMap<>();
 
-        List<StartTag> esiResourceTags = source.getAllStartTags("jahia:resource");
-        Set<String> keys = new HashSet<String>();
-        for (StartTag esiResourceTag : esiResourceTags) {
+        List<Element> esiResourceElements = source.getAllElements("jahia:resource");
+        Set<String> keys = new HashSet<>();
+        for (Element esiResourceElement : esiResourceElements) {
+            StartTag esiResourceStartTag = esiResourceElement.getStartTag();
             Map<String, Map<String, Map<String, String>>> assets;
-            String targetTag = esiResourceTag.getAttributeValue(TARGET_TAG);
+            String targetTag = esiResourceStartTag.getAttributeValue(TARGET_TAG);
             if (targetTag == null) {
                 targetTag = "HEAD";
             } else {
                 targetTag = targetTag.toUpperCase();
             }
-
             if (!assetsByTarget.containsKey(targetTag)) {
-                assets = LazySortedMap.decorate(TransformedSortedMap.decorate(new TreeMap<String, Map<String, Map<String, String>>>(ASSET_COMPARATOR),
-                        LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new AssetsMapFactory());
-                assetsByTarget.put(targetTag,assets);
+                assets = LazySortedMap
+                        .decorate(TransformedSortedMap.decorate(new TreeMap<String, Map<String, Map<String, String>>>(ASSET_COMPARATOR),
+                                LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new AssetsMapFactory());
+                assetsByTarget.put(targetTag, assets);
             } else {
                 assets = assetsByTarget.get(targetTag);
             }
 
-            String type = esiResourceTag.getAttributeValue("type");
-            String path = esiResourceTag.getAttributeValue("path");
-            path = URLDecoder.decode(path, "UTF-8");
-            Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
-            String key = esiResourceTag.getAttributeValue("key");
+            String type = esiResourceStartTag.getAttributeValue("type");
+            String path = StringUtils.equals(type, "inline")
+                    ? StringUtils.substring(out, esiResourceStartTag.getEnd(), esiResourceElement.getEndTag().getBegin())
+                    : URLDecoder.decode(esiResourceStartTag.getAttributeValue("path"), "UTF-8");
+            Boolean insert = Boolean.parseBoolean(esiResourceStartTag.getAttributeValue("insert"));
+            String key = esiResourceStartTag.getAttributeValue("key");
 
             // get options
-            Map<String, String> optionsMap = getOptionMaps(esiResourceTag);
+            Map<String, String> optionsMap = getOptionMaps(esiResourceStartTag);
 
             Map<String, Map<String, String>> stringMap = assets.get(type);
             if (stringMap == null) {
-                Map<String, Map<String, String>> assetMap = new LinkedHashMap<String, Map<String, String>>();
+                Map<String, Map<String, String>> assetMap = new LinkedHashMap<>();
                 stringMap = assets.put(type, assetMap);
             }
 
             if (insert) {
-                Map<String, Map<String, String>> my = new LinkedHashMap<String, Map<String, String>>();
+                Map<String, Map<String, String>> my = new LinkedHashMap<>();
                 my.put(path, optionsMap);
                 my.putAll(stringMap);
                 stringMap = my;
             } else {
                 if ("".equals(key) || !keys.contains(key)) {
-                    Map<String, Map<String, String>> my = new LinkedHashMap<String, Map<String, String>>();
+                    Map<String, Map<String, String>> my = new LinkedHashMap<>();
                     my.put(path, optionsMap);
                     stringMap.putAll(my);
                     keys.add(key);
@@ -373,10 +372,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
         // Clean all jahia:resource tags
         source = new Source(out);
-        esiResourceTags = (new Source(out)).getAllStartTags("jahia:resource");
         outputDocument = new OutputDocument(source);
-        for (StartTag segment : esiResourceTags) {
-            outputDocument.replace(segment,"");
+        for (Element el : source.getAllElements("jahia:resource")) {
+            outputDocument.replace(el, "");
         }
         String s = outputDocument.toString();
         s = removeTempTags(s);
@@ -890,6 +888,24 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     public void afterPropertiesSet() throws Exception {
         jahiaContext = Jahia.getContextPath() + "/";
         generatedResourcesFolder = new File(SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath());
+        performPurgeIfNeeded();
+    }
+
+    private void performPurgeIfNeeded() {
+        if (!generatedResourcesFolder.isDirectory()) {
+            return;
+        }
+        File marker = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "[generated-resources].dodelete");
+        if (marker.exists()) {
+            logger.info("Cleaning existing generated resources folder {}", generatedResourcesFolder);
+            try {
+                FileUtils.cleanDirectory(generatedResourcesFolder);
+                FileUtils.deleteQuietly(marker);
+            } catch (IOException e) {
+                logger.warn("Unable to purge content of the generated resources folder: " + generatedResourcesFolder,
+                        e);
+            }
+        }
     }
 
     @Override

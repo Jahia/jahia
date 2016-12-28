@@ -120,7 +120,9 @@ public class AggregateFilterTest extends JahiaTestCase {
         // test filters
         List<RenderFilter> filters = new LinkedList<>();
         filters.add(new BaseAttributesFilter());
-        filters.add((RenderFilter) SpringContextSingleton.getInstance().getContext().getBean("org.jahia.services.render.filter.AggregateFilter"));
+        AggregateFilter aggregateFilter = (AggregateFilter) SpringContextSingleton.getInstance().getContext().getBean("org.jahia.services.render.filter.AggregateFilter");
+        aggregateFilter.setDisabled(false);
+        filters.add(aggregateFilter);
         filters.add(outFilter);
 
         // overide RenderService filters

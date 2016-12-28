@@ -48,15 +48,16 @@ import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.bundles.extender.jahiamodules.fileinstall.FileInstallConfigurer;
 import org.jahia.bundles.extender.jahiamodules.transform.DxModuleURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleDependencyURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleUrlTransformer;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
+import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.ExtensionObserverRegistry;
-import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
@@ -65,25 +66,20 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
-import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.render.scripting.bundle.BundleScriptEngineManager;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.jahia.services.render.scripting.bundle.ScriptBundleObserver;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.templates.JCRModuleListener;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.templates.TemplatePackageDeployer;
-import org.jahia.services.templates.TemplatePackageRegistry;
+import org.jahia.services.templates.*;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
+import org.osgi.framework.startlevel.BundleStartLevel;
+import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.url.URLConstants;
 import org.osgi.service.url.URLStreamHandlerService;
@@ -96,7 +92,6 @@ import org.springframework.core.io.Resource;
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -108,7 +103,7 @@ import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEP
 /**
  * Activator for DX Modules extender.
  */
-public class Activator implements BundleActivator, EventHandler {
+public class Activator implements BundleActivator {
 
     private static final Logger logger = LoggerFactory.getLogger(Activator.class);
 
@@ -143,8 +138,6 @@ public class Activator implements BundleActivator, EventHandler {
     private Map<String, List<Bundle>> toBeResolved;
     private Map<Bundle, ModuleState> moduleStates;
     private FileInstallConfigurer fileInstallConfigurer;
-
-    private ServiceRegistration<?> fileInstallEventHandlerRegistration;
 
     public Activator() {
         instance = this;
@@ -238,8 +231,6 @@ public class Activator implements BundleActivator, EventHandler {
             }
         });
 
-        registerFileInstallEventHandler(context);
-
         fileInstallConfigurer = new FileInstallConfigurer();
         fileInstallConfigurer.start(context);
 
@@ -268,10 +259,12 @@ public class Activator implements BundleActivator, EventHandler {
                         // Parse bundle if activator has not seen them before
                         try {
                             String bundleLocation = bundle.getLocation();
-                            logger.info("Found bundle {} which needs to be processed by a module extender. Location {}",
-                                    BundleUtils.getDisplayName(bundle), bundleLocation);
+                            String bundleDisplayName = BundleUtils.getDisplayName(bundle);
+                            logger.info(
+                                    "Found bundle {} which needs to be processed by a module extender. Location {}. State: {}",
+                                    new Object[] { bundleDisplayName, bundleLocation, bundle.getState() });
                             if (state == Bundle.ACTIVE) {
-                                bundle.stop();
+                                bundle.stop(Bundle.STOP_TRANSIENT);
                                 toStart.add(bundle);
                             } else if (state == Bundle.INSTALLED) {
                                 final JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
@@ -284,12 +277,27 @@ public class Activator implements BundleActivator, EventHandler {
                                 }
                             }
                             try {
+                                boolean needUpdate = state > Bundle.INSTALLED;
                                 if (!bundleLocation.startsWith(URL_PROTOCOL_DX)) {
                                     // transform the module
-                                    bundle.update(transform(bundle));
-                                    // then persist
-                                    ModuleUtils.persist(bundle);
-                                } else if (state > Bundle.INSTALLED) {
+                                    String newLocation = transform(bundle);
+                                    // overwrite bundle location
+                                    ModuleUtils.updateBundleLocation(bundle, newLocation);
+                                    // perform bundle update from the new location
+                                    needUpdate = true;
+                                    
+                                    // we check the start level for a module and adjust it
+                                    BundleStartLevel bundleStartLevel = bundle.adapt(BundleStartLevel.class);
+                                    int moduleStartLevel = SettingsBean.getInstance().getModuleStartLevel();
+                                    if(bundleStartLevel.getStartLevel() != moduleStartLevel) {
+                                        // update start level
+                                        logger.info("Setting start level for bundle {} to {}", bundleDisplayName,
+                                                moduleStartLevel);
+                                        bundleStartLevel.setStartLevel(moduleStartLevel);
+                                    }
+                                }
+
+                                if (needUpdate) {
                                     bundle.update();
                                 }
                             } catch (BundleException | ModuleManagementException e) {
@@ -312,21 +320,19 @@ public class Activator implements BundleActivator, EventHandler {
     }
 
     /**
-     * Returns the transformed input stream of its content, including module
-     * dependency transformation and bundle location update.
+     * Persists the bundle content in DX and returns the new location URL which handles the transformed bundle content.
      *
      * @param bundle the source bundle
-     * @return the transformed input stream of its content
+     * @return the location of the transformed bundle
      */
-    private static InputStream transform(Bundle bundle) throws ModuleManagementException {
+    private static String transform(Bundle bundle) throws ModuleManagementException {
         try {
-            Resource bundleResource = ModuleUtils.loadBundleResource(bundle);
-            PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(bundleResource);
-            if (bundleInfo == null) {
-                throw new ModuleManagementException("Invalid resource for bundle: " + bundleResource);
-            }
-
-            return ModuleUtils.addBundleUpdateLocation(ModuleUtils.addModuleDependencies(bundleResource.getInputStream()), bundleInfo.getLocation());
+            PersistentBundle persistentBundle = ModuleUtils.persist(bundle);
+            String newLocation = persistentBundle.getLocation();
+            logger.info(
+                    "Transformed bundle {} with location {} to be handled by the DX protocol handler under new location {}",
+                    new String[] { getDisplayName(bundle), bundle.getLocation(), newLocation });
+            return newLocation;
         } catch (Exception e) {
             if (e instanceof ModuleManagementException) {
                 // re-throw
@@ -346,15 +352,27 @@ public class Activator implements BundleActivator, EventHandler {
             public void bundleChanged(final BundleEvent bundleEvent) {
 
                 Bundle bundle = bundleEvent.getBundle();
-                if (bundle == null || !BundleUtils.isJahiaModuleBundle(bundle)) {
+
+                int bundleEventType = bundleEvent.getType();
+                if (bundle == null) {
+                    return;
+                }
+
+                // refresh host bundle in case of fragment operation
+                if (BundleUtils.isFragment(bundle) && (bundleEventType == BundleEvent.INSTALLED || bundleEventType == BundleEvent.UNINSTALLED)) {
+                    BundleLifecycleUtils.refreshBundles(BundleLifecycleUtils.getHostsFragment(bundle), false, false);
+                    return;
+                }
+
+                if (!BundleUtils.isJahiaModuleBundle(bundle)) {
                     return;
                 }
 
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEvent.getType()), getDisplayName(bundleEvent.getBundle()));
+                    logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEventType), getDisplayName(bundleEvent.getBundle()));
                 }
                 try {
-                    switch (bundleEvent.getType()) {
+                    switch (bundleEventType) {
                         case BundleEvent.INSTALLED:
                             install(bundle);
                             break;
@@ -518,7 +536,7 @@ public class Activator implements BundleActivator, EventHandler {
 
         pkg.setState(getModuleState(bundle));
 
-        //Check required version
+        // Check required version
         if (!checkRequiredVersion(bundle)) {
             return;
         }
@@ -582,10 +600,10 @@ public class Activator implements BundleActivator, EventHandler {
         }
 
         resolveDependantBundles(pkg.getId());
-        
+
         if (Bundle.ACTIVE == bundle.getState()) {
             // we've got an event for already started bundles
-            // sometimes FileInstall sends the STARTED event before RESOLVED, so we have to handle this case 
+            // sometimes FileInstall sends the STARTED event before RESOLVED, so we have to handle this case
             logger.info("Got RESOLVED event for an already started bundle {} v{}. Proccesing started bundle.",
                     pkg.getId(), pkg.getVersion());
             start(bundle);
@@ -625,7 +643,11 @@ public class Activator implements BundleActivator, EventHandler {
     }
 
     private synchronized void unresolve(Bundle bundle) {
-        setModuleState(bundle, ModuleState.State.UNRESOLVED, null);
+        setModuleState(bundle, ModuleState.State.INSTALLED, null);
+        JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
+        if (jahiaTemplatesPackage != null) {
+            jahiaTemplatesPackage.setClassLoader(null);
+        }
     }
 
     private synchronized void starting(Bundle bundle) {
@@ -687,10 +709,23 @@ public class Activator implements BundleActivator, EventHandler {
         templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
 
         // scan for resource and call observers
-        for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
-            List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
+        boolean hasSpringFile = hasSpringFile(bundle);
+        for (final Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
+            final List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
             if (!foundURLs.isEmpty()) {
-                scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+                // rules may use Global objects from his own spring beans, so we delay the rules registration until the spring context is initialized
+                // to insure that potential global objects are available before rules executions
+                if(DRL_SCANNER.equals(scannerAndObserver.getKey()) && hasSpringFile) {
+                    logger.info("--- Rules registration for bundle {} has been delayed until its Spring context is initialized --", getDisplayName(bundle));
+                    jahiaTemplatesPackage.doExecuteAfterContextInitialized(new JahiaTemplatesPackage.ContextInitializedCallback() {
+                        @Override
+                        public void execute(AbstractApplicationContext context) {
+                            scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+                        }
+                    });
+                } else {
+                    scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+                }
             }
         }
 
@@ -718,12 +753,18 @@ public class Activator implements BundleActivator, EventHandler {
         }
 
         // check for script engine factories
-        scriptEngineManager.addScriptEngineFactoriesIfNeeded(bundle);
+        String errorMessage = null;
+        try {
+            scriptEngineManager.addScriptEngineFactoriesIfNeeded(bundle);
+        } catch (Exception e) {
+            logger.error("Unable to add script engine factories", e);
+            errorMessage = e.getMessage();
+        }
 
         logger.info("--- Finished starting DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
-        setModuleState(bundle, ModuleState.State.STARTED, null);
 
-        if (hasSpringFile(bundle)) {
+       if (hasSpringFile) {
+            setModuleState(bundle, ModuleState.State.SPRING_STARTING, errorMessage);
             try {
                 final AbstractApplicationContext contextToStartForModule = BundleUtils.getContextToStartForModule(bundle);
                 if (contextToStartForModule != null) {
@@ -731,6 +772,39 @@ public class Activator implements BundleActivator, EventHandler {
                 }
             } catch (Exception e) {
                 logger.error("Unable to create application context for [" + bundle.getSymbolicName() + "]", e);
+            }
+        } else {
+            setModuleState(bundle, ModuleState.State.STARTED, errorMessage);
+        }
+
+        // force other bundle to move to Installed state, but first check for dependency closure
+        SortedMap<ModuleVersion, JahiaTemplatesPackage> allModuleVersions = templatePackageRegistry
+                .getAllModuleVersions().get(bundle.getSymbolicName());
+        if (allModuleVersions.size() > 1) {
+            for (JahiaTemplatesPackage pkg : allModuleVersions.values()) {
+                Bundle otherBundle = pkg.getBundle();
+                if (otherBundle != null && otherBundle.getBundleId() != bundle.getBundleId()
+                        && otherBundle.getState() == Bundle.RESOLVED) {
+
+                    // Sometime bundle can depends on other version of the same bundle,
+                    // doing a refresh in this case will cause an infinite loop of start/stop operations
+
+                    FrameworkWiring frameworkWiring = BundleLifecycleUtils.getFrameworkWiring();
+                    Collection<Bundle> dependencies = frameworkWiring.getDependencyClosure(Collections.singleton(otherBundle));
+
+                    boolean doRefresh = true;
+                    for (Bundle dependency : dependencies) {
+                        if (dependency.getSymbolicName().equals(bundle.getSymbolicName()) &&
+                                dependency.getVersion().equals(bundle.getVersion())) {
+                            doRefresh = false;
+                            break;
+                        }
+                    }
+
+                    if (doRefresh) {
+                        frameworkWiring.refreshBundles(Collections.singleton(otherBundle));
+                    }
+                }
             }
         }
     }
@@ -768,7 +842,7 @@ public class Activator implements BundleActivator, EventHandler {
         return false;
     }
 
-    private String getDisplayName(Bundle bundle) {
+    private static String getDisplayName(Bundle bundle) {
         return BundleUtils.getDisplayName(bundle);
     }
 
@@ -790,12 +864,10 @@ public class Activator implements BundleActivator, EventHandler {
         }
 
         if (JahiaContextLoaderListener.isRunning()) {
-            final String pkgId = jahiaTemplatesPackage.getId();
-            final String pkgName = jahiaTemplatesPackage.getName();
 
             templatePackageRegistry.unregister(jahiaTemplatesPackage);
-
             boolean cachesNeedFlushing = true;
+
             if (jahiaTemplatesPackage.getInitialImports().isEmpty()) {
                 // check for initial imports
                 Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
@@ -807,13 +879,13 @@ public class Activator implements BundleActivator, EventHandler {
                     }
                 }
             }
+
             jahiaTemplatesPackage.setActiveVersion(false);
             templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
 
             if (jahiaTemplatesPackage.getContext() != null) {
                 jahiaTemplatesPackage.setContext(null);
             }
-            jahiaTemplatesPackage.setClassLoader(null);
 
             // scan for resource and call observers
             for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
@@ -824,18 +896,15 @@ public class Activator implements BundleActivator, EventHandler {
                 }
             }
 
-            if (cachesNeedFlushing) {
-                flushOutputCachesForModule(bundle, pkgId, pkgName);
-            }
-
             // deal with script engine factories
             scriptEngineManager.removeScriptEngineFactoriesIfNeeded(bundle);
 
             if (cachesNeedFlushing) {
-                flushOutputCachesForModule(bundle, pkgId, pkgName);
+                flushOutputCachesForModule(jahiaTemplatesPackage);
             }
 
             ServiceTracker<HttpService, HttpService> tracker = bundleHttpServiceTrackers.remove(bundle);
+
             if (tracker != null) {
                 tracker.close();
             }
@@ -845,7 +914,7 @@ public class Activator implements BundleActivator, EventHandler {
         logger.info("--- Finished stopping DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
     }
 
-    private void flushOutputCachesForModule(Bundle bundle, final String pkgId, final String pkgName) {
+    private void flushOutputCachesForModule(final JahiaTemplatesPackage pkg) {
 
         try {
 
@@ -854,10 +923,10 @@ public class Activator implements BundleActivator, EventHandler {
                 @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<JCRSiteNode> sitesNodeList = JahiaSitesService.getInstance().getSitesNodeList(session);
-                    Set<String> pathsToFlush = new HashSet<String>();
+                    Set<String> pathsToFlush = new HashSet<>();
                     for (JCRSiteNode site : sitesNodeList) {
                         Set<String> installedModules = site.getInstalledModulesWithAllDependencies();
-                        if (installedModules.contains(pkgId) || installedModules.contains(pkgName)) {
+                        if (installedModules.contains(pkg.getId()) || installedModules.contains(pkg.getName())) {
                             pathsToFlush.add(site.getPath());
                         }
                     }
@@ -882,7 +951,7 @@ public class Activator implements BundleActivator, EventHandler {
             return;
         }
 
-        setModuleState(bundle, ModuleState.State.STOPPED, null);
+        setModuleState(bundle, ModuleState.State.RESOLVED, null);
     }
 
     private void registerHttpResources(final Bundle bundle) {
@@ -984,42 +1053,10 @@ public class Activator implements BundleActivator, EventHandler {
                 new ModuleUrlTransformer(), null));
     }
 
-    /**
-     * Registers this activator as the {@link EventHandler} to be able to get notified about the startup of the file installer watcher for
-     * modules.
-     *
-     * @param context
-     *            the current bundle context
-     */
-    private void registerFileInstallEventHandler(BundleContext context) {
-        Dictionary<String, Object> props = new Hashtable<>();
-        props.put(EventConstants.EVENT_TOPIC, new String[] { "org/apache/felix/fileinstall" });
-        props.put(EventConstants.EVENT_FILTER, "(type=watcherStarted)");
-        fileInstallEventHandlerRegistration = context.registerService(EventHandler.class.getName(), this, props);
-    }
-
-    @Override
-    public void handleEvent(Event event) {
-        unregisterFileInstallEventHandler();
-        
-        // notify the framework that the file install watcher has started and processed found modules
-        FrameworkService.notifyFileInstallStarted();
-    }
-
     private static boolean needsDefaultModuleDependency(final JahiaTemplatesPackage pkg) {
         return !pkg.getDepends().contains(JahiaTemplatesPackage.ID_DEFAULT)
                 && !pkg.getDepends().contains(JahiaTemplatesPackage.NAME_DEFAULT)
                 && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
                 .contains(pkg.getId());
-    }
-
-    private void unregisterFileInstallEventHandler() {
-        if (fileInstallEventHandlerRegistration != null) {
-            try {
-                fileInstallEventHandlerRegistration.unregister();
-            } catch (Exception e) {
-                logger.warn("Unable to unregister EventHandler for FileInstall events", e);
-            }
-        }
     }
 }

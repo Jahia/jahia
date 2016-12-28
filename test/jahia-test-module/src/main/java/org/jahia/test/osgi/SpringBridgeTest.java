@@ -43,36 +43,23 @@
  */
 package org.jahia.test.osgi;
 
-import org.jahia.osgi.FrameworkService;
-import org.jahia.services.query.QueryService;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.tags.TagHandler;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.junit.Test;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 /**
  * Tests Spring beans exposed as an OSGi services via retrieving them from OSGi and invoking their methods.
  */
 public class SpringBridgeTest {
 
-    @Test
-    public void testSpringBeansAsOsgiServices() throws Exception {
-
-        JahiaSitesService sitesService = getOsgiService(JahiaSitesService.class);
-        sitesService.getSitesNames();
-
-        QueryService queryService = getOsgiService(QueryService.class);
-        queryService.getValueFactory();
-
-        TagHandler tagHandler = getOsgiService(TagHandler.class);
-        tagHandler.execute("");
+    private <T> T getOsgiService(Class<T> serviceClass) {
+        return BundleUtils.getOsgiService(serviceClass, null);
     }
 
-    private <T> T getOsgiService(Class<T> serviceClass) {
-        BundleContext bundleContext = FrameworkService.getBundleContext();
-        ServiceReference<T> serviceReference = bundleContext.getServiceReference(serviceClass);
-        T service = bundleContext.getService(serviceReference);
-        return service;
+    @Test
+    public void testSpringBeansAsOsgiServices() throws Exception {
+        getOsgiService(JahiaSitesService.class).getSitesNames();
+        getOsgiService(JahiaGroupManagerService.class).getGroupList();
     }
 }

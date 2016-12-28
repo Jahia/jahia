@@ -203,8 +203,12 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 logger.error("Constraint violation exception", e);
                 throw new SAXException("Cannot save batch", e);
             } catch (ConstraintViolationException e) {
-                // save on the next node when next node is needed (like content node for files)
-                batchCount = maxBatch -1;
+                if (e.getMessage().contains("mandatory child node") && pathes.size() > 1 && e.getMessage().startsWith(pathes.peek())) {
+                    // save on the next node when next node is needed (like content node for files)
+                    batchCount = maxBatch - 1;
+                } else {
+                    throw new SAXException("Cannot save batch", e);
+                }
             } catch (RepositoryException e) {
                 throw new SAXException("Cannot save batch", e);
             }

@@ -103,6 +103,7 @@ public class PropertiesEditor extends FormPanel {
     private String locale = "";
     private GWTBitSet permissions;
     private LangPropertiesEditor translationSource;
+    private LangPropertiesEditor translationTarget;
     private NodeHolder engine;
 
     public void setPermissions(GWTBitSet permissions) {
@@ -691,6 +692,10 @@ public class PropertiesEditor extends FormPanel {
         this.translationSource = translationSource;
     }
 
+    public void setTranslationTarget(LangPropertiesEditor translationTarget) {
+        this.translationTarget = translationTarget;
+    }
+
     public class PropertyAdapterField extends AdapterField {
         private Field field;
         private boolean dirty = false;
@@ -751,53 +756,59 @@ public class PropertiesEditor extends FormPanel {
                         && definition.isInternationalized() && !definition.isHidden() && !definition.isProtected()
                         && !((GWTJahiaPropertyDefinition) definition).isConstrained()) {
                     PropertiesEditor sourcePropertiesEditor = translationSource.getPropertiesEditorByLang(translationSource.getDisplayedLocale().getLanguage());
-                    GWTJahiaNodeProperty sourceProperty = null;
-                    for (GWTJahiaNodeProperty prop : sourcePropertiesEditor.getProperties(true, false, false)) {
-                        if (definition.getName().equals(prop.getName())) {
-                            sourceProperty = prop;
-                            break;
-                        }
-                    }
-                    if (sourceProperty != null) {
-                        Button suggestButton = new Button(Messages.get("label.translate.suggest", "Suggest translation"));
-                        final GWTJahiaNodeProperty finalSourceProperty = sourceProperty;
-                        suggestButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                            @Override
-                            public void componentSelected(ButtonEvent ce) {
-                                MessageBox.confirm(
-                                        Messages.get("label.translate.suggest", "Suggest translation"),
-                                        Messages.get("label.translate.suggest.confirm", "Do you want to replace the content by an automatic translation of it?"),
-                                        new Listener<MessageBoxEvent>() {
-                                            public void handleEvent(MessageBoxEvent be) {
-                                                if(Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
-                                                    String srcLanguage = translationSource.getDisplayedLocale().getLanguage();
-                                                    int i = srcLanguage.indexOf("_");
-                                                    if (i > -1) {
-                                                        srcLanguage = srcLanguage.substring(0, i);
-                                                    }
-                                                    String destLanguage = locale;
-                                                    i = destLanguage.indexOf("_");
-                                                    if (i > -1) {
-                                                        destLanguage = destLanguage.substring(0, i);
-                                                    }
-                                                    JahiaContentManagementService.App.getInstance().translate(finalSourceProperty, definition, srcLanguage, destLanguage, JahiaGWTParameters.getSiteUUID(), new BaseAsyncCallback<GWTJahiaNodeProperty>() {
-                                                        public void onApplicationFailure(Throwable throwable) {
-                                                            com.google.gwt.user.client.Window.alert(Messages.get("failure.property.translation", "Property translation failed") + "\n\n"
-                                                                    + throwable.getMessage());
-                                                            Log.error("Failed to translate property", throwable);
-                                                        }
-
-                                                        public void onSuccess(GWTJahiaNodeProperty newProp) {
-                                                            Field f = getFieldsMap().get(definition.getName()).getField();
-                                                            FormFieldCreator.copyValue(newProp, f);
-                                                        }
-                                                    });
-                                                }
-                                            }}
-                                );
+                    if (sourcePropertiesEditor != null) {
+                        GWTJahiaNodeProperty sourceProperty = null;
+                        for (GWTJahiaNodeProperty prop : sourcePropertiesEditor.getProperties(true, false, false)) {
+                            if (definition.getName().equals(prop.getName())) {
+                                sourceProperty = prop;
+                                break;
                             }
-                        });
-                        panel.add(suggestButton);
+                        }
+                        if (sourceProperty != null) {
+                            Button suggestButton = new Button(Messages.get("label.translate.suggest", "Suggest translation"));
+                            final GWTJahiaNodeProperty finalSourceProperty = sourceProperty;
+                            suggestButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                @Override
+                                public void componentSelected(ButtonEvent ce) {
+                                    MessageBox.confirm(
+                                            Messages.get("label.translate.suggest", "Suggest translation"),
+                                            Messages.get("label.translate.suggest.confirm", "Do you want to replace the content by an automatic translation of it?"),
+                                            new Listener<MessageBoxEvent>() {
+                                                public void handleEvent(MessageBoxEvent be) {
+                                                    if(Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
+                                                        String srcLanguage = translationSource.getDisplayedLocale().getLanguage();
+                                                        int i = srcLanguage.indexOf("_");
+                                                        if (i > -1) {
+                                                            srcLanguage = srcLanguage.substring(0, i);
+                                                        }
+                                                        String destLanguage = locale;
+                                                        i = destLanguage.indexOf("_");
+                                                        if (i > -1) {
+                                                            destLanguage = destLanguage.substring(0, i);
+                                                        }
+                                                        JahiaContentManagementService.App.getInstance().translate(finalSourceProperty, definition, srcLanguage, destLanguage, JahiaGWTParameters.getSiteUUID(), new BaseAsyncCallback<GWTJahiaNodeProperty>() {
+                                                            public void onApplicationFailure(Throwable throwable) {
+                                                                com.google.gwt.user.client.Window.alert(Messages.get("failure.property.translation", "Property translation failed") + "\n\n"
+                                                                        + throwable.getMessage());
+                                                                Log.error("Failed to translate property", throwable);
+                                                            }
+
+                                                            public void onSuccess(GWTJahiaNodeProperty newProp) {
+                                                                Field f = getFieldsMap().get(definition.getName()).getField();
+                                                                FormFieldCreator.copyValue(newProp, f);
+                                                            }
+                                                        });
+                                                    }
+                                                }}
+                                    );
+                                }
+                            });
+                            panel.add(suggestButton);
+                        }
+                    } else {
+                        // TranslationSource is not yet fully loaded, set refresh flag to true,
+                        // will be refreshed by the translationSource when fully loaded
+                        translationTarget.setNeedRefresh(true);
                     }
                 }
             }

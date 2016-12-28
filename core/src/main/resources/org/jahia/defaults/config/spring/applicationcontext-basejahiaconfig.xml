@@ -4,56 +4,57 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-  <bean name="jahiaProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-  	<property name="ignoreResourceNotFound" value="true"/>
-  	<property name="locations">
-  		<list>
-            <value>classpath*:org/jahia/defaults/config/properties/jahia*.properties</value>
-  			<value>/WEB-INF/etc/config/jahia.properties</value>
-            <value>/WEB-INF/etc/config/jahia.advanced.properties</value>
-            <value>/WEB-INF/etc/config/jahia.node.properties</value>
-  			<value>/WEB-INF/etc/config/jahia.custom.properties</value>
-  			<value>classpath*:org/jahia/config/jahia*.properties</value>
-            <value>classpath*:jahia/jahia.properties</value>
-            <value>classpath*:jahia/jahia.node.properties</value>
-            <value>classpath*:jahia/jahia*.properties</value>
-            <value>file:${jahia.config}</value>
-  		</list>
-  	</property>
-    <property name="localOverride" value="true"/>
-    <property name="properties" ref="jahiaSystemProperties"/>
-  </bean>
+    <bean name="jahiaProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath*:org/jahia/defaults/config/properties/jahia*.properties</value>
+                <value>/WEB-INF/etc/config/jahia.properties</value>
+                <value>/WEB-INF/etc/config/jahia.advanced.properties</value>
+                <value>/WEB-INF/etc/config/jahia.node.properties</value>
+                <value>/WEB-INF/etc/config/jahia.custom.properties</value>
+                <value>classpath*:org/jahia/config/jahia*.properties</value>
+                <value>classpath*:jahia/jahia.properties</value>
+                <value>classpath*:jahia/jahia.node.properties</value>
+                <value>classpath*:jahia/jahia*.properties</value>
+                <value>file:${jahia.config}</value>
+            </list>
+        </property>
+        <property name="localOverride" value="true"/>
+        <property name="properties" ref="jahiaSystemProperties"/>
+    </bean>
 
-  <bean id="jahiaSystemProperties" class="org.jahia.settings.SystemPropertiesFactoryBean">
-    <property name="prefix" value="jahiaConfig." />
-  </bean>
+    <bean id="jahiaSystemProperties" class="org.jahia.settings.SystemPropertiesFactoryBean">
+        <property name="prefix" value="jahiaConfig." />
+    </bean>
 
-  <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="properties">
-    	<ref bean="jahiaProperties"/>
-    </property>
-  </bean>
+    <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties">
+            <ref bean="jahiaProperties"/>
+        </property>
+    </bean>
 
-  <bean id="pathResolver" class="org.jahia.utils.WebAppPathResolver" />
+    <bean id="pathResolver" class="org.jahia.utils.WebAppPathResolver"/>
 
-  <bean id="settingsBean" class="org.jahia.settings.SettingsBean" init-method="load">
-      <constructor-arg index="0">
-          <ref bean="pathResolver" />
-      </constructor-arg>
-      <constructor-arg index="1" type="java.util.Properties">
-          <ref bean="jahiaProperties"/>
-      </constructor-arg>
-      <constructor-arg index="2" type="java.util.List">
-          <list>
-              <!-- we will take the first found license file -->
-              <value>file:/${jahia.license}</value>
-              <value>classpath*:jahia/license*.xml</value>
-              <value>classpath*:org/jahia/config/license*.xml</value>
-              <value>WEB-INF/etc/config/license*.xml</value>
-          </list>
-      </constructor-arg>
-      <property name="dataSource" ref="dataSource"/>
-  </bean>
+    <bean id="settingsBean" class="org.jahia.settings.SettingsBean" init-method="load">
+        <constructor-arg index="0">
+            <ref bean="pathResolver" />
+        </constructor-arg>
+        <constructor-arg index="1" type="java.util.Properties">
+            <ref bean="jahiaProperties"/>
+        </constructor-arg>
+        <constructor-arg index="2" type="java.util.List">
+            <list>
+                <!-- we will take the first found license file -->
+                <value>file:/${jahia.license}</value>
+                <value>classpath*:jahia/license*.xml</value>
+                <value>classpath*:org/jahia/config/license*.xml</value>
+                <value>WEB-INF/etc/config/license*.xml</value>
+            </list>
+        </constructor-arg>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="clusterSettingsInitializer" ref="clusterSettingsInitializer"/>
+    </bean>
 
     <bean id="JCRContentUtils" class="org.jahia.services.content.JCRContentUtils">
         <constructor-arg index="0">
@@ -129,7 +130,7 @@
                 <entry key="/portlets" value="jnt:portletFolder"/>
             </map>
         </constructor-arg>
-        
+
         <property name="nameGenerationHelper">
             <bean id="defaultNameGenerationHelper" class="org.jahia.services.content.DefaultNameGenerationHelperImpl">
                 <property name="randomizedNames">
@@ -141,14 +142,14 @@
                 </property>
             </bean>
         </property>
-        
+
         <property name="unsupportedMarkForDeletionNodeTypes">
             <set>
                 <value>jmix:autoPublish</value>
                 <value>jnt:remotePublication</value>
             </set>
         </property>
-        
+
         <property name="handleFallbackLocaleForPath" value="${jahia.jcr.handleFallbackLocaleForPath:/sites/.+/templates/.+}"/>
     </bean>
 
@@ -157,7 +158,6 @@
             <map>
                 <entry key="unknown" value="file"/>
                 <entry key="dir" value="dir"/>
-            
                 <entry key="aiff" value="sound"/>
                 <entry key="asf" value="video"/>
                 <entry key="asx" value="video"/>
@@ -230,33 +230,32 @@
                 <entry key="zip" value="zip"/>
                 <entry key="kml" value="gearth"/>
                 <entry key="kmz" value="gearth"/>
-				<entry key="swf" value="swf"/>
-				<entry key="odg" value="odg"/>
-				<entry key="odp" value="odp"/>
-				<entry key="ods" value="ods"/>
-				<entry key="odt" value="odt"/>
-				<entry key="sxc" value="sxc"/>
-				<entry key="sxi" value="sxi"/>
-				<entry key="sxw" value="sxw"/>
-				<entry key="tsv" value="tsv"/>
+                <entry key="swf" value="swf"/>
+                <entry key="odg" value="odg"/>
+                <entry key="odp" value="odp"/>
+                <entry key="ods" value="ods"/>
+                <entry key="odt" value="odt"/>
+                <entry key="sxc" value="sxc"/>
+                <entry key="sxi" value="sxi"/>
+                <entry key="sxw" value="sxw"/>
+                <entry key="tsv" value="tsv"/>
             </map>
         </property>
     </bean>
 
-
     <bean id="org.jahia.bin.errors.handler" class="org.jahia.bin.errors.DefaultErrorHandler"/>
 
-	<bean id="MaintenanceFilter" class="org.jahia.bin.filters.MaintenanceFilter">
-		<property name="allowedResources">
-			<set>
-				<value>^/css/.*</value>
-				<value>^/engines/images/.*</value>
-				<value>^/icons/.*</value>
-				<value>^/tools/.*</value>
-				<value>^/modules/tools/.*</value>
-			</set>
-		</property>
-	</bean>
+    <bean id="MaintenanceFilter" class="org.jahia.bin.filters.MaintenanceFilter">
+        <property name="allowedResources">
+            <set>
+                <value>^/css/.*</value>
+                <value>^/engines/images/.*</value>
+                <value>^/icons/.*</value>
+                <value>^/tools/.*</value>
+                <value>^/modules/tools/.*</value>
+            </set>
+        </property>
+    </bean>
 
     <bean id="CompositeFilter" class="org.jahia.bin.filters.CompositeFilter"/>
 
@@ -270,23 +269,21 @@
         <property name="loggingTriggerValue" value="${jcrSessionLoadAverage.loggingTriggerValue:10.0}"/>
     </bean>
 
-
     <bean id="jahiaContextListenersConfiguration" class="org.springframework.beans.factory.config.MapFactoryBean">
-    <property name="sourceMap">
-      <map>
-        <entry key="interceptHttpSessionListenerEvents" value="${interceptHttpSessionListenerEvents:true}"/>
-        <entry key="interceptHttpSessionActivationEvents" value="${interceptHttpSessionActivationEvents:false}"/>
-        <entry key="interceptHttpSessionAttributeListenerEvents" value="${interceptHttpSessionAttributeListenerEvents:false}"/>
-        <entry key="interceptHttpSessionBindingListenerEvents" value="${interceptHttpSessionBindingListenerEvents:false}"/>
-        <entry key="interceptServletRequestListenerEvents" value="${interceptServletRequestListenerEvents:false}"/>
-        <entry key="interceptServletRequestAttributeListenerEvents" value="${interceptServletRequestAttributeListenerEvents:false}"/>
-        <entry key="interceptServletContextAttributeListenerEvents" value="${interceptServletContextAttributeListenerEvents:false}"/>
-        <entry key="interceptServletContextListenerEvents" value="${interceptServletContextListenerEvents:false}"/>
-      </map>
-    </property>
-  </bean>
+        <property name="sourceMap">
+            <map>
+                <entry key="interceptHttpSessionListenerEvents" value="${interceptHttpSessionListenerEvents:true}"/>
+                <entry key="interceptHttpSessionActivationEvents" value="${interceptHttpSessionActivationEvents:false}"/>
+                <entry key="interceptHttpSessionAttributeListenerEvents" value="${interceptHttpSessionAttributeListenerEvents:false}"/>
+                <entry key="interceptHttpSessionBindingListenerEvents" value="${interceptHttpSessionBindingListenerEvents:false}"/>
+                <entry key="interceptServletRequestListenerEvents" value="${interceptServletRequestListenerEvents:false}"/>
+                <entry key="interceptServletRequestAttributeListenerEvents" value="${interceptServletRequestAttributeListenerEvents:false}"/>
+                <entry key="interceptServletContextAttributeListenerEvents" value="${interceptServletContextAttributeListenerEvents:false}"/>
+                <entry key="interceptServletContextListenerEvents" value="${interceptServletContextListenerEvents:false}"/>
+            </map>
+        </property>
+    </bean>
 
-    
     <bean id="BaseXMLParserFactory" class="org.jahia.utils.xml.BaseXMLParserFactory" abstract="true">
         <property name="namespaceAware" value="true"/>
         <property name="validating" value="false"/>
@@ -300,8 +297,11 @@
             </map>
         </property>
     </bean>
-    
+
     <bean id="JahiaSAXParserFactory" class="org.jahia.utils.xml.JahiaSAXParserFactory" parent="BaseXMLParserFactory"/>
 
     <bean id="JahiaDocumentBuilderFactory" class="org.jahia.utils.xml.JahiaDocumentBuilderFactory" parent="BaseXMLParserFactory"/>
+
+    <bean id="clusterSettingsInitializer" class="org.jahia.settings.SettingsBean$ClusterSettingsInitializerDummy"/>
+
 </beans>

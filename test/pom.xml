@@ -48,7 +48,11 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
+<<<<<<< HEAD
         <version>7.2.0.0-backlog_5637-SNAPSHOT</version>
+=======
+        <version>7.3.0.0-SNAPSHOT</version>
+>>>>>>> master
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jahia.test</groupId>
@@ -72,11 +76,10 @@
     </repositories>
 
     <modules>
-        <!--
-		<module>dummy-modules</module>
-		-->
 		<module>core-test-framework</module>
         <module>module-test-framework</module>
+        
+		<module>dummy-modules</module>        
         <module>jahia-test-module</module>
     </modules>
 </project>

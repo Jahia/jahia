@@ -49,7 +49,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.*;
-import org.apache.jackrabbit.value.StringValue;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -797,7 +796,7 @@ public class ContentDefinitionHelper {
                 }
                 defaultValues.put(entry.getKey(), propertyDefaultValues);
             }
-            results.put(locale.getLanguage(), defaultValues);
+            results.put(locale.toString(), defaultValues);
         }
         return results;
     }

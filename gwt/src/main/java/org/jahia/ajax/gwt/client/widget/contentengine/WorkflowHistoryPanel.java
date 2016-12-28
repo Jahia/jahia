@@ -56,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
@@ -77,12 +78,14 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.poller.Poller;
 import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -171,7 +174,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         ColumnConfig column = new ColumnConfig("displayName", Messages.get("label.name", "Name"), 160);
         column.setRenderer(new WidgetTreeGridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
             @Override
-            public Widget getWidget(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
+            public Widget getWidget(final GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
                                     int rowIndex, int colIndex,
                                     ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
                                     Grid<GWTJahiaWorkflowHistoryItem> grid) {
@@ -184,9 +187,15 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 public void componentSelected(ButtonEvent ce) {
                                     EnginePanel container = new EnginePanel();
-
+                                    // Keep previsous selection to restore it once the engine will be processed.
+                                    List<GWTJahiaNode> selectedNodes = new ArrayList<GWTJahiaNode>();
+                                    selectedNodes.addAll(linker.getSelectionContext().getSelectedNodes());
+                                    // set the current selection to the current workflow parent node. It is needed to build the engine
+                                    final GWTJahiaNode nodewrapper = (GWTJahiaNode) parent.get("nodeWrapper");
+                                    linker.getSelectionContext().setSelectedNodes(Arrays.asList(nodewrapper));
+                                    linker.getSelectionContext().refresh(LinkerSelectionContext.SELECTED_NODE_ONLY);
                                     new WorkflowActionDialog(parent.getRunningWorkflow(), task, linker,
-                                            parent.getRunningWorkflow().getCustomWorkflowInfo(), container);
+                                            parent.getRunningWorkflow().getCustomWorkflowInfo(), container, selectedNodes);
                                     container.showEngine();
                                     container.addListener(Events.Close, new Listener<BaseEvent>() {
                                         public void handleEvent(BaseEvent be) {
@@ -254,14 +263,15 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                     final GWTJahiaNode nodewrapper = (GWTJahiaNode) historyItem.getProperties().get("nodeWrapper");
                     if (nodewrapper != null && historyItem.getProcessId().equals(model.getProcessId()) &&
                             historyItem instanceof GWTJahiaWorkflowHistoryProcess) {
-                        Button button = new Button(Messages.get("label.preview"));
-                        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                        ButtonBar buttonBar = new ButtonBar();
+                        Button previewButton = new Button(Messages.get("label.preview"));
+                        previewButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                             @Override
                             public void componentSelected(ButtonEvent ce) {
                                 String path = nodewrapper.getPath();
                                 String locale = JahiaGWTParameters.getLanguage();
                                 JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
-                                        "default", locale, new BaseAsyncCallback<String>() {
+                                        "default", locale, false, new BaseAsyncCallback<String>() {
                                             public void onSuccess(String url) {
                                                 Window window = new Window();
                                                 window.setMaximizable(true);
@@ -274,7 +284,30 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                         });
                             }
                         });
-                        return button;
+                        buttonBar.add(previewButton);
+                        
+                        Button inContextButton = new Button(Messages.get("label.preview.context"));
+                        inContextButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            @Override
+                            public void componentSelected(ButtonEvent ce) {
+                                String path = nodewrapper.getPath();
+                                String locale = JahiaGWTParameters.getLanguage();
+                                JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
+                                        "default", locale, true, new BaseAsyncCallback<String>() {
+                                            public void onSuccess(String url) {
+                                                Window window = new Window();
+                                                window.setMaximizable(true);
+                                                window.setSize(1000, 750);
+                                                window.setUrl(url);
+                                                window.setPosition(engine.getPosition(true).x + 50, engine.getPosition(true).y + 50);
+                                                window.show();
+                                            }
+
+                                        });
+                            }
+                        });
+                        buttonBar.add(inContextButton);
+                        return buttonBar;
                     }
                 }
                 return new Label("");

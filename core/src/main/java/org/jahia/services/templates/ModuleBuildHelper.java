@@ -60,6 +60,7 @@ import org.jahia.commons.Version;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.security.license.LicenseCheckException;
 import org.jahia.services.content.JCRContentUtils;
@@ -114,12 +115,24 @@ public class ModuleBuildHelper implements InitializingBean {
     private String mavenArchetypeVersion;
     private String mavenMinRequiredVersion;
     private String mavenReleasePlugin;
+    private String mavenWarnIfVersionIsOlderThan;
     private ModuleManager moduleManager;
     private int moduleStartLevel;
     private SourceControlHelper scmHelper;
     private SettingsBean settingsBean;
     private TemplatePackageRegistry templatePackageRegistry;
     private ToolbarWarningsService toolbarWarningsService;
+
+    private static void warnOldMavenVersion(String mvnVersionString) {
+        logger.warn("");
+        logger.warn("************************* DEPRECATION *************************");
+        logger.warn("*                                                             *");
+        logger.warn("* The version of Maven ({}), you are using, is deprecated. *", mvnVersionString);
+        logger.warn("* Please, switch to a more recent one (e.g. 3.3.x).           *");
+        logger.warn("*                                                             *");
+        logger.warn("***************************************************************");
+        logger.warn("");
+    }
 
     public JahiaTemplatesPackage compileAndDeploy(final String moduleId, File sources, JCRSessionWrapper session)
             throws RepositoryException, IOException, BundleException {
@@ -134,6 +147,9 @@ public class ModuleBuildHelper implements InitializingBean {
 
                 // start the bundle to make sure its template is available to be displayed
                 bundle.start();
+
+                // refresh wirings
+                BundleLifecycleUtils.refreshBundle(bundle);
             } finally {
                 IOUtils.closeQuietly(is);
             }
@@ -478,7 +494,8 @@ public class ModuleBuildHelper implements InitializingBean {
                     logger.error("Cannot set maven executable to " + mavenExecutable + ", please check your configuration");
                     return;
                 }
-                String[] mvnVersion = StringUtils.split(StringUtils.substringBetween(resultOut.toString(), "Apache Maven ", "\n"), ".");
+                String mvnVersionString = StringUtils.substringBefore(StringUtils.substringBetween(resultOut.toString(), "Apache Maven ", "\n"), " ");
+                String[] mvnVersion = StringUtils.split(mvnVersionString, ".");
                 String[] requiredVersion = StringUtils.split(mavenMinRequiredVersion, ".");
                 boolean isValid = true;
                 for (int i = 0; i < mvnVersion.length; i++) {
@@ -491,6 +508,9 @@ public class ModuleBuildHelper implements InitializingBean {
                 if (isValid) {
                     this.mavenExecutable = mavenExecutable;
                     settingsBean.setMavenExecutableSet(true);
+                    if (new Version(mvnVersionString).compareTo(new Version(mavenWarnIfVersionIsOlderThan)) < 0) {
+                        warnOldMavenVersion(mvnVersionString);
+                    }
                 } else {
                     toolbarWarningsService.addMessage("warning.maven.wrong.version");
                     logger.error("Detected Maven Version: " + StringUtils.join(mvnVersion, ".") + " do not match the minimum required version " + mavenMinRequiredVersion);
@@ -1032,5 +1052,9 @@ public class ModuleBuildHelper implements InitializingBean {
 
     public void setModuleManager(ModuleManager moduleManager) {
         this.moduleManager = moduleManager;
+    }
+
+    public void setMavenWarnIfVersionIsOlderThan(String mavenWarnIfVersionIsOlderThan) {
+        this.mavenWarnIfVersionIsOlderThan = mavenWarnIfVersionIsOlderThan;
     }
 }

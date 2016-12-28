@@ -128,8 +128,19 @@ public class TemplateScriptFilter extends AbstractFilter {
                 stopWatchStack.push(stopWatch);
                 stopWatch.start();
 
-            } 
+            }
+            boolean skipAggregation = false;
+            if(!AggregateFilter.skipAggregation(request) && Boolean.valueOf(script.getView().getProperties().getProperty("skip.aggregation"))) {
+                skipAggregation = true;
+                request.setAttribute(AggregateFilter.SKIP_AGGREGATION, true);
+                resource.getRegexpDependencies().add(resource.getNodePath() + "/.*");
+            }
+
             outputString = script.execute(resource, renderContext);
+
+            if(skipAggregation) {
+                request.removeAttribute(AggregateFilter.SKIP_AGGREGATION);
+            }
 
             if (logger.isDebugEnabled()) {
                 if(renderContext.getRequest().getAttribute("previousTemplate")!=null) {

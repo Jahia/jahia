@@ -43,6 +43,7 @@
  */
 package org.jahia.services.render.filter;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionFactory;
@@ -53,12 +54,14 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.cache.CacheKeyGenerator;
 import org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
 import java.util.Map;
@@ -121,10 +124,17 @@ public class AggregateFilter extends AbstractFilter {
     // Stack of final fragment keys, used to avoid fragment recursion and infinite loop
     public static final String FRAGMENT_KEYS_STACK = "aggregateFilter.keysStack";
 
+    // if this parameter is set to true in the request attributes, the aggregation is skipped
+    public static final String SKIP_AGGREGATION = "aggregateFilter.skip";
+
     private CacheKeyGenerator keyGenerator;
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+
+        if (skipAggregation(renderContext.getRequest())) {
+            return null;
+        }
 
         HttpServletRequest request = renderContext.getRequest();
 
@@ -189,7 +199,11 @@ public class AggregateFilter extends AbstractFilter {
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
-        HttpServletRequest request = renderContext.getRequest();
+        if (skipAggregation(renderContext.getRequest())) {
+            return previousOut;
+        }
+
+        HttpServletRequest request =  renderContext.getRequest();
 
         // no keys stack, no aggregation
         if (request.getAttribute(FRAGMENT_KEYS_STACK) == null) {
@@ -216,6 +230,10 @@ public class AggregateFilter extends AbstractFilter {
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain) {
+
+        if (skipAggregation(renderContext.getRequest())) {
+            return;
+        }
 
         HttpServletRequest request = renderContext.getRequest();
 
@@ -245,7 +263,7 @@ public class AggregateFilter extends AbstractFilter {
      * @param content The fragment
      * @param renderContext The render context
      */
-    protected String aggregateContent(String content, RenderContext renderContext) {
+    protected String aggregateContent(String content, RenderContext renderContext) throws RenderException {
         int esiTagStartIndex = content.indexOf(ESI_TAG_START);
         if (esiTagStartIndex == -1) {
             return content;
@@ -254,17 +272,12 @@ public class AggregateFilter extends AbstractFilter {
             while (esiTagStartIndex != -1) {
                 int esiTagEndIndex = sb.indexOf(ESI_TAG_END, esiTagStartIndex);
                 if (esiTagEndIndex != -1) {
-                    String key = sb.substring(esiTagStartIndex + ESI_TAG_START.length(), esiTagEndIndex);
-                    try {
-                        String replacement = generateContent(renderContext, key);
-                        if (replacement == null) {
-                            replacement = "";
-                        }
-                        sb.replace(esiTagStartIndex, esiTagEndIndex + ESI_TAG_END_LENGTH, replacement);
-                        esiTagStartIndex = sb.indexOf(ESI_TAG_START, esiTagStartIndex + replacement.length());
-                    } catch (RenderException e) {
-                        throw new RuntimeException(e.getMessage(), e);
+                    String replacement = generateContent(renderContext, sb.substring(esiTagStartIndex + ESI_TAG_START.length(), esiTagEndIndex));
+                    if (replacement == null) {
+                        replacement = "";
                     }
+                    sb.replace(esiTagStartIndex, esiTagEndIndex + ESI_TAG_END_LENGTH, replacement);
+                    esiTagStartIndex = sb.indexOf(ESI_TAG_START, esiTagStartIndex + replacement.length());
                 } else {
                     // no closed esi end tag found
                     return sb.toString();
@@ -301,8 +314,11 @@ public class AggregateFilter extends AbstractFilter {
             try {
                 // Dispatch to the render service to generate the content
                 content = RenderService.getInstance().render(resource, renderContext);
-                if (StringUtils.isBlank(content) && renderContext.getRedirect() == null) {
-                    logger.error("Empty generated content for key " + key);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("fragment generated for resource {}", resource);
+                    if (SettingsBean.getInstance().isDevelopmentMode()) {
+                        logger.debug(content);
+                    }
                 }
             } finally {
                 keyGenerator.restoreContextAfterContentGeneration(keyAttrs, resource, renderContext, original);
@@ -319,4 +335,14 @@ public class AggregateFilter extends AbstractFilter {
     public void setKeyGenerator(CacheKeyGenerator keyGenerator) {
         this.keyGenerator = keyGenerator;
     }
+
+    /**
+     * Utility method to check if the aggregation is skipped.
+     * @param request is the current request
+     * @return
+     */
+    public static boolean skipAggregation(ServletRequest request) {
+        return BooleanUtils.isTrue((Boolean)request.getAttribute(SKIP_AGGREGATION));
+    }
+
 }

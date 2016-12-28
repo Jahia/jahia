@@ -61,14 +61,29 @@ public class MatchInfo {
         this.lang = lang;
     }
 
+    /**
+     * Retrieves the identifier associated with the identified search result, usually the target node JCR identifier.
+     *
+     * @return the identifier associated with the identified search result
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Retrieves the JCR workspace associated with this match.
+     *
+     * @return the JCR workspace associated with this match
+     */
     public String getWorkspace() {
         return workspace;
     }
 
+    /**
+     * Retrieves the language code associated with this match.
+     *
+     * @return the language code associated with this match
+     */
     public String getLang() {
         return lang;
     }

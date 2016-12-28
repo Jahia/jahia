@@ -110,7 +110,7 @@ public class JBPMModuleProcessLoader implements InitializingBean, DisposableBean
                 logger.info("... done");
             }
             logger.info("...workflow processes deployed.");
-            if (JahiaContextLoaderListener.isContextInitialized()) {
+            if (jbpm6WorkflowProvider.isInitialized()) {
                 jbpm6WorkflowProvider.recompilePackages();
             }
         }

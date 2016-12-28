@@ -67,6 +67,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -117,8 +118,18 @@ public class CacheFilterTest extends JahiaTestCase {
             node.setProperty("jcr:title", "English test page");
             node.setProperty("j:templateName", "simple");            
             node.addNode("testType2", "jnt:mainContent");
+
+            JCRNodeWrapper notCacheable1 = node.addNode("testNotCacheable1", "jnt:text");
+            notCacheable1.addMixin("jmix:cache");
+            notCacheable1.setProperty("j:expiration", 0L);
+            notCacheable1.setProperty("text", "test not cacheable 1");
+
+            JCRNodeWrapper notCacheable2 = node.addNode("testNotCacheable2", "jnt:text");
+            notCacheable2.addMixin("jmix:cache");
+            notCacheable2.setProperty("j:expiration", 0L);
+            notCacheable2.setProperty("text", "test not cacheable 2");
             session.save();
-            
+
             JCRPublicationService.getInstance().publishByMainId(shared.getIdentifier(), Constants.EDIT_WORKSPACE,
                     Constants.LIVE_WORKSPACE, new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
                     true, Collections.<String> emptyList());
@@ -132,6 +143,7 @@ public class CacheFilterTest extends JahiaTestCase {
             aggregateCacheFilterDisabled = ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).isDisabled();
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
+            Assert.fail();
         }
     }
 

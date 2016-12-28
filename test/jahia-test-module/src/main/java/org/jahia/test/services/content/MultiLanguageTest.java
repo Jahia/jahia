@@ -63,6 +63,7 @@ import com.google.common.collect.Sets;
 
 import javax.jcr.PathNotFoundException;
 
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -78,7 +79,7 @@ public class MultiLanguageTest extends JahiaTestCase {
     private final static String TESTSITE_NAME = "jcrMultiLanguageTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
-    private boolean isTextPresentInResponse(String relativeUrl, String text) {
+    private boolean isTextPresentInResponse(String relativeUrl, String text) throws IOException {
         return getAsText(relativeUrl).contains(text);
     }
     

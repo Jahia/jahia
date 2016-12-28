@@ -48,15 +48,11 @@ package org.jahia.data.templates;
  */
 public class ModuleState {
     public enum State {
-        INSTALLED, ERROR_WITH_DEFINITIONS, RESOLVED, STARTED, STARTING, STOPPED, STOPPING, UNINSTALLED, UNRESOLVED, UPDATED, WAITING_TO_BE_IMPORTED, SPRING_NOT_STARTED, INCOMPATIBLE_VERSION;
+        INSTALLED, ERROR_WITH_DEFINITIONS, RESOLVED, STARTED, STARTING, STOPPING, UPDATED, WAITING_TO_BE_IMPORTED, SPRING_STARTING, SPRING_NOT_STARTED, INCOMPATIBLE_VERSION;
 
         @Override
         public String toString() {
             switch (this) {
-                case UNINSTALLED:
-                    return "Uninstalled";
-                case UNRESOLVED:
-                    return "Unresolved";
                 case RESOLVED:
                     return "Resolved";
                 case ERROR_WITH_DEFINITIONS:
@@ -65,14 +61,14 @@ public class ModuleState {
                     return "Installed";
                 case UPDATED:
                     return "Updated";
-                case STOPPED:
-                    return "Stopped";
                 case STOPPING:
                     return "Stopping";
                 case STARTING:
                     return "Starting";
                 case STARTED:
                     return "Started";
+                case SPRING_STARTING:
+                    return "Spring starting";
                 case SPRING_NOT_STARTED:
                     return "Spring not started";
                 case WAITING_TO_BE_IMPORTED:

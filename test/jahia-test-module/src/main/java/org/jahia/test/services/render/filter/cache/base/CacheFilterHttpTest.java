@@ -60,7 +60,9 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.filter.AggregateFilter;
+import org.jahia.services.render.filter.AreaResourceFilter;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
+import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
 import org.jahia.services.render.filter.cache.CacheFilter;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
@@ -96,17 +98,20 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     public static final Logger logger = LoggerFactory.getLogger(CacheFilterTest.class);
     public static final String TESTSITE_NAME = "cachetest";
     public static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    public static final String LONG_PAGE_TITLE = "<h1>long</h1>";
+    public static final String LONG_CREATED_ELEMENT_TEXT = "Very long to appear";
 
     private static boolean cacheFilterDisabled;
     private static boolean aggregateFilterDisabled;
     private static boolean aggregateCacheFilterDisabled;
+    private static boolean areaResourceCacheKeyPartGeneratorDisabled;    
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
 
         try {
 
-            JahiaSite site = TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web-blue");
+            JahiaSite site = TestHelper.createSite(TESTSITE_NAME, "localhost", TestHelper.BOOTSTRAP_ACME_SPACE_TEMPLATES);
             assertNotNull(site);
             JCRStoreService jcrService = ServicesRegistry.getInstance().getJCRStoreService();
             JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
@@ -145,12 +150,14 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             cacheFilterDisabled = ((CacheFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).isDisabled();
             aggregateFilterDisabled = ((AggregateFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).isDisabled();
             aggregateCacheFilterDisabled = ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).isDisabled();
-
+            areaResourceCacheKeyPartGeneratorDisabled = ((AreaResourceCacheKeyPartGenerator) SpringContextSingleton.getBean("areaResourceCacheKeyPartGenerator")).isDisabled();
+            
             //enable test filters
             getCheckFilter("CacheHttpTestRenderFilter1").setDisabled(false);
             getCheckFilter("CacheHttpTestRenderFilter2").setDisabled(false);
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
+            fail();
         }
     }
 
@@ -173,6 +180,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             ((CacheFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.cache.CacheFilter")).setDisabled(cacheFilterDisabled);
             ((AggregateFilter) SpringContextSingleton.getBean("org.jahia.services.render.filter.AggregateFilter")).setDisabled(aggregateFilterDisabled);
             ((AggregateCacheFilter) SpringContextSingleton.getBean("cacheFilter")).setDisabled(aggregateCacheFilterDisabled);
+            ((AreaResourceCacheKeyPartGenerator) SpringContextSingleton.getBean("areaResourceCacheKeyPartGenerator")).setDisabled(areaResourceCacheKeyPartGeneratorDisabled);
 
             //enable test filters
             getCheckFilter("CacheHttpTestRenderFilter1").setDisabled(true);
@@ -187,6 +195,10 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     @Before
     public void setUp() {
+        clearAll();
+    }
+
+    private void clearAll() {
         ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
         Ehcache cache = cacheProvider.getCache();
         Ehcache depCache = cacheProvider.getDependenciesCache();
@@ -213,7 +225,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     @Test
     public void testACLs() throws Exception {
         testACLs(SITECONTENT_ROOT_NODE + "/home/acl1");
-        testACLs(SITECONTENT_ROOT_NODE + "/home/acl2");
     }
 
     @Test
@@ -222,35 +233,30 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/references");
         getContent(url, "root", "root1234", null);
 
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+        JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/main/simple-text");
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
-            JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/maincontent/simple-text");
-            try {
-                n.setProperty("text", "text content updated");
-                session.save();
-                String newvalue = getContent(url, "root", "root1234", "testReferencesFlush1");
-                Matcher m = Pattern.compile("text content updated").matcher(newvalue);
-                assertTrue("Value has not been updated", m.find());
-                assertTrue("References have not been flushed", m.find());
-                assertTrue("References have not been flushed", m.find());
-            } finally {
-                n.setProperty("text", "text content");
-                session.save();
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            n.setProperty("text", "text content updated");
+            session.save();
+            String newvalue = getContent(url, "root", "root1234", "testReferencesFlush1");
+            Matcher m = Pattern.compile("text content updated").matcher(newvalue);
+            assertTrue("Value has not been updated", m.find());
+            assertTrue("References have not been flushed", m.find());
+            assertTrue("References have not been flushed", m.find());
+        } finally {
+            n.setProperty("text", "text content");
+            session.save();
         }
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testRandomFlush() throws Exception {
-
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
         Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
         List<String> paths = new ArrayList<String>();
         NodeIterator nodes = q.execute().getNodes();
-        Set<String> skipped = new HashSet<>(Arrays.asList("long", "error", "user-per-content-test"));
+        Set<String> skipped = new HashSet<>(Arrays.asList("long", "error", "user-per-content-test", "simple-page-A", "simple-page-B", "simple-page-C", "simple-page-AC", "simple-page-BC", "simple-page-AB", "simple-page-root", "simple-page-users"));
         while (nodes.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
             if (!skipped.contains(next.getName())) {
@@ -351,62 +357,88 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         }
     }
 
-    public void testACLs(String path) throws Exception {
+    static void permute(List<String> arr, int k, List<List<String>> res) {
+        for (int i = k; i < arr.size(); i++) {
+            Collections.swap(arr, i, k);
+            permute(arr, k + 1, res);
+            Collections.swap(arr, k, i);
+        }
+        if (k == arr.size() - 1) {
+            res.add(new ArrayList<String>(arr));
+        }
+    }
 
-        String guest = getContent(getUrl(path), null, null, null);
-        String root = getContent(getUrl(path), "root", "root1234", null);
-        String userAB = getContent(getUrl(path), "userAB", "password", null);
-        String userBC = getContent(getUrl(path), "userBC", "password", null);
-        String userAC = getContent(getUrl(path), "userAC", "password", null);
+    private void testACLs(String path) throws Exception {
+        List<String> users = Arrays.asList(null, "root", "userAB", "userAC");
 
-        checkAcl(guest, new boolean[]{false, false, false, false, false, false, false, false});
-        checkAcl(root, new boolean[]{true, true, true, true, true, true, true, true});
-        checkAcl(userAB, new boolean[]{false, true, true, false, false, true, true, false});
-        checkAcl(userBC, new boolean[]{false, true, false, true, false, false, true, true});
-        checkAcl(userAC, new boolean[]{false, true, false, false, true, true, false, true});
+        List<List<String>> allPerms = new ArrayList<>();
+        permute(users, 0, allPerms);
+
+        Map<String, String> results = new HashMap<>();
+
+        for (List<String> allPerm : allPerms) {
+            results.clear();
+            clearAll();
+
+            for (String user : allPerm) {
+                results.put(user, getContent(getUrl(path), user, getPassword(user), null));
+            }
+
+            try {
+                checkAcl(allPerm + ", guest : ", results.get(null), new boolean[]{false, false, false, false, false, false, false, false});
+                checkAcl(allPerm + ", root : ", results.get("root"), new boolean[]{true, true, true, true, true, true, true, true});
+                checkAcl(allPerm + ", userAB : ", results.get("userAB"), new boolean[]{false, true, true, false, false, true, true, false});
+                checkAcl(allPerm + ", userAC : ", results.get("userAC"), new boolean[]{false, true, false, false, true, true, false, true});
+            } catch (AssertionError e) {
+                logger.error(e.getMessage(), e);
+                throw e;
+            }
+        }
+
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
-        JCRNodeWrapper n = session.getNode(path + "/maincontent/simple-text-A");
-
+        JCRNodeWrapper n = session.getNode(path + "/main/simple-text-A");
+        JCRNodeWrapper n2 = session.getNode(path + "/simple-page-A");
         try {
-
             n.revokeRolesForPrincipal("g:groupA");
             n.grantRoles("g:groupB", new HashSet<String>(Arrays.asList("reader")));
+            n2.revokeRolesForPrincipal("g:groupA");
+            n2.grantRoles("g:groupB", new HashSet<String>(Arrays.asList("reader")));
             session.save();
 
-            String guest2 = getContent(getUrl(path), null, null, "testACLs1");
-            String root2 = getContent(getUrl(path), "root", "root1234", "testACLs2");
-            String userAB2 = getContent(getUrl(path), "userAB", "password", "testACLs3");
-            String userBC2 = getContent(getUrl(path), "userBC", "password", "testACLs4");
-            String userAC2 = getContent(getUrl(path), "userAC", "password", "testACLs5");
+            Map<String, String> results2 = new HashMap<>();
 
-            checkAcl(guest2, new boolean[]{false, false, false, false, false, false, false, false});
-            checkAcl(root2, new boolean[]{true, true, true, true, true, true, true, true});
-            checkAcl(userAB2, new boolean[]{false, true, true, false, false, true, true, false});
-            checkAcl(userBC2, new boolean[]{false, true, false, true, false, true, true, true});
-            checkAcl(userAC2, new boolean[]{false, true, false, false, true, false, false, true});
+            for (String user : users) {
+                results2.put(user, getContent(getUrl(path), user, getPassword(user), null));
+            }
+            checkAcl(users + ", guest : ", results2.get(null), new boolean[]{false, false, false, false, false, false, false, false});
+            checkAcl(users + ", root : ", results2.get("root"), new boolean[]{true, true, true, true, true, true, true, true});
+            checkAcl(users + ", userAB : ", results2.get("userAB"), new boolean[]{false, true, true, false, false, true, true, false});
+            checkAcl(users + ", userAC : ", results2.get("userAC"), new boolean[]{false, true, false, false, true, false, false, true});
         } finally {
             n.revokeRolesForPrincipal("g:groupB");
             n.grantRoles("g:groupA", new HashSet<String>(Arrays.asList("reader")));
+            n2.revokeRolesForPrincipal("g:groupB");
+            n2.grantRoles("g:groupA", new HashSet<String>(Arrays.asList("reader")));
             session.save();
         }
 
-        assertEquals("Content served is not the same", guest, getContent(getUrl(path), null, null, "testACLs6"));
-        assertEquals("Content served is not the same", root, getContent(getUrl(path), "root", "root1234", "testACLs7"));
-        assertEquals("Content served is not the same", userAB, getContent(getUrl(path), "userAB", "password", "testACLs8"));
-        assertEquals("Content served is not the same", userBC, getContent(getUrl(path), "userBC", "password", "testACLs9"));
-        assertEquals("Content served is not the same", userAC, getContent(getUrl(path), "userAC", "password", "testACLs10"));
+        for (String user : users) {
+            assertEquals("Content served is not the same for " + user, results.get(user), getContent(getUrl(path), user, getPassword(user), null));
+        }
     }
 
-    public void checkAcl(String content, boolean[] b) {
-        assertEquals(b[0], content.contains("visible for root"));
-        assertEquals(b[1], content.contains("visible for users only"));
-        assertEquals(b[2], content.contains("visible for userAB"));
-        assertEquals(b[3], content.contains("visible for userBC"));
-        assertEquals(b[4], content.contains("visible for userAC"));
-        assertEquals(b[5], content.contains("visible for groupA"));
-        assertEquals(b[6], content.contains("visible for groupB"));
-        assertEquals(b[7], content.contains("visible for groupC"));
+    private String getPassword(String user) {
+        return user == null ? null : (user.equals("root") ? "root1234" : "password");
+    }
+
+    private String[] texts = {"visible for root", "visible for users only", "visible for userAB", "visible for userBC", "visible for userAC", "visible for groupA", "visible for groupB", "visible for groupC"};
+
+    private void checkAcl(String message, String content, boolean[] b) {
+        for (int i = 0; i < texts.length; i++) {
+
+            assertEquals(message + " , " + texts[i], b[i], content.contains(texts[i]));
+        }
     }
 
     public static CacheFilterCheckFilter getCheckFilter(String id) {

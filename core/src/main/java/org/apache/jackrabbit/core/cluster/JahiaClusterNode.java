@@ -89,7 +89,6 @@ public class JahiaClusterNode extends ClusterNode {
      */
     private volatile int status = NONE;
 
-
     /**
      * Starts this cluster node.
      *
@@ -146,7 +145,6 @@ public class JahiaClusterNode extends ClusterNode {
         return new WorkspaceUpdateChannel(workspace);
     }
 
-
     /**
      * Workspace update channel.
      */
@@ -170,9 +168,7 @@ public class JahiaClusterNode extends ClusterNode {
                 log.info("not started: update create ignored.");
                 return;
             }
-
             super.updateCreated(update);
-
             try {
                 storeNodeIds(update);
                 lockNodes(update);
@@ -280,7 +276,7 @@ public class JahiaClusterNode extends ClusterNode {
     public void process(ChangeLogRecord record) {
         super.process(new ChangeLogRecord(new ExternalChangeLog(record.getChanges()), record.getEvents(), null, record.getWorkspace(), record.getTimestamp(), record.getUserData()));
     }
-    
+
     @Override
     public void process(NamespaceRecord record) {
         NodeTypeRegistry.getInstance().getNamespaces().put( record.getNewPrefix() , record.getUri());
@@ -310,22 +306,27 @@ public class JahiaClusterNode extends ClusterNode {
 
     public void reallySetRevision(long revision) {
         // Should be called by NodeLevelLockableJournal when syncing
-        log.debug("Set revision : " + revision);
+        log.debug("Set revision: {}", revision);
         super.setRevision(revision);
     }
 
-
     public static class ExternalChangeLog extends ChangeLog {
+
         public ExternalChangeLog(ChangeLog changes) {
-            for (ItemState state : changes.addedStates()) {
-                added(state);
-            }
+
+            // It is essential to keep this order of deleted/modified/added items processing, since
+            // "deleted"/"modified"/"added" method invocations modify each other's internal lists of
+            // deleted/modified/added items.
             for (ItemState state : changes.deletedStates()) {
                 deleted(state);
             }
             for (ItemState state : changes.modifiedStates()) {
                 modified(state);
             }
+            for (ItemState state : changes.addedStates()) {
+                added(state);
+            }
+
             for (NodeReferences ref : changes.modifiedRefs()) {
                 modified(ref);
             }

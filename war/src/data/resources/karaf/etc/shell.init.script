@@ -29,4 +29,6 @@ help = { *:help $args | more } ;
 man = { help $args } ;
 log:list = { log:get ALL } ;
 service:get = { $.context getService ($.context getServiceReference $args) };
-cla = { cluster:bundle-list default };
+
+lb = { bundle:list -t 0 $args } ;
+clb = { cluster:bundle-list $args default };

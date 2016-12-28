@@ -119,7 +119,6 @@ public class ModuleHelper {
         linkedContentInfoType = new HashMap<String, String>();
 
         mainPath = null;
-        boolean areaEnabled = false;
         String mainTemplate = null;
 
         Set<String> allNodetypes = new HashSet<String>();
@@ -130,7 +129,6 @@ public class ModuleHelper {
                 String type = DOM.getElementAttribute(divElement, "type");
                 String path = DOM.getElementAttribute(divElement, "path");
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
-                areaEnabled = areaEnabled || "true".equals(DOM.getElementAttribute(divElement, "areaAutoEnabled"));
                 Module module = null;
                 if (type.equals("main")) {
                 } else if (type.equals("area") || type.equals("absoluteArea")) {
@@ -176,12 +174,6 @@ public class ModuleHelper {
                 linkedContentInfo.get(linkedNode).add(node);
                 linkedContentInfoType.put(node, type);
             }
-        }
-
-        if (areaEnabled) {
-            InfoConfig ic = new InfoConfig(Messages.get("created.area.title", "Area(s) created"), Messages.get("created.area.desc", "One or more areas have been enabled, the publication status of the page has changed"));
-            ic.display = AREA_CREATED_NOTIFICATION_DELAY_MS;
-            Info.display(ic);
         }
 
         ArrayList<String> list = new ArrayList<String>();

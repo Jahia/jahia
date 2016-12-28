@@ -459,9 +459,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (!isCheckedOut() && isNodeType(Constants.MIX_VERSIONABLE)) {
             getSession().checkout(this);
         }
-        if (principalKey.contains("/")) {
-            throw new IllegalArgumentException(principalKey);
-        }
 
         List<String> gr = new ArrayList<String>();
         List<String> den = new ArrayList<String>();
@@ -993,7 +990,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return objectNode.getName();
             }
         } catch (RepositoryException e) {
-            logger.error("Repository error", e);
+            logger.error("Repository error unable to read node {}", localPath, e);
         }
         return null;
     }
@@ -2309,10 +2306,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (objectNode.hasProperty("j:lockTypes")) {
             Property property = objectNode.getProperty("j:lockTypes");
             Value[] oldValues = property.getValues();
-            Value[] newValues = new Value[oldValues.length + 1];
-            System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
-            newValues[oldValues.length] = getSession().getValueFactory().createValue(l);
-            property.setValue(newValues);
+            boolean addValue = true;
+            for (Value oldValue : oldValues) {
+                if(l.equals(oldValue.getString())) {
+                    addValue = false;
+                    break;
+                }
+            }
+            //Avoid having twice the same lock
+            if(addValue) {
+                Value[] newValues = new Value[oldValues.length + 1];
+                System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
+                newValues[oldValues.length] = getSession().getValueFactory().createValue(l);
+                property.setValue(newValues);
+            }
         } else {
             objectNode.setProperty("j:lockTypes", new String[]{l});
         }
@@ -3387,13 +3394,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             // Node is completely unpublished
                             return false;
                         } else {
-                            if (hasI18N(jcrSessionWrapper.getLocale(), true)) {
-                                // Translation exists and is published
-                                if (JCRContentUtils.isLanguageInvalid(objectNode, jcrSessionWrapper.getLocale().toString())) {
-                                    return false;
-                                }
-                            } else if (hasI18N(jcrSessionWrapper.getLocale(), true, false)) {
-                                // Translation has not been found because it has been unpublished
+                            // if (language is invalid OR (the node does'nt have an i18n subnode published AND the node have an i18n subnode))
+                            if (JCRContentUtils.isLanguageInvalid(objectNode, jcrSessionWrapper.getLocale().toString()) ||
+                                    (!hasI18N(jcrSessionWrapper.getLocale(), true) && hasI18N(jcrSessionWrapper.getLocale(), true, false))) {
                                 return false;
                             }
                         }

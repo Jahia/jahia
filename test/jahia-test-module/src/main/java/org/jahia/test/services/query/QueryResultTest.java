@@ -336,28 +336,21 @@ public class QueryResultTest {
         checkResultSize(res, 13);
     }
 
-    private int checkHierarchy(QueryResultWrapper res, int check, final String... pathes) {
+    private int checkHierarchy(QueryResultWrapper res, int check, final String... pathes) throws RepositoryException {
         int size = 0;
-        try {
-            NodeIterator ni = res.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper node = (JCRNodeWrapper) ni.next();
-                for (String path : pathes) {
-                    if (check == NOT_CHILD_CHECK) {
-                        assertFalse(
-                                "There is a child node in the result, which should not be there: "
-                                        + node.getParent().getPath(), node.getParent().getPath()
-                                        .equals(path));
-                    } else if (check == NOT_DESCENDANT_CHECK) {
-                        assertFalse(
-                                "There is a descendant node in the result, which should not be there: "
-                                        + node.getPath(), node.getPath().startsWith(path));
-                    }
+        NodeIterator ni = res.getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper node = (JCRNodeWrapper) ni.next();
+            for (String path : pathes) {
+                if (check == NOT_CHILD_CHECK) {
+                    assertFalse("There is a child node in the result, which should not be there: " + node.getParent().getPath(),
+                            node.getParent().getPath().equals(path));
+                } else if (check == NOT_DESCENDANT_CHECK) {
+                    assertFalse("There is a descendant node in the result, which should not be there: " + node.getPath(),
+                            node.getPath().startsWith(path));
                 }
-                size++;
             }
-        } catch (RepositoryException e) {
-            logger.error("Error while checking query result hierarchy", e);
+            size++;
         }
         return size;
     }

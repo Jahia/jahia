@@ -45,7 +45,6 @@ package org.jahia.services.render.scripting.bundle;
 
 import javax.script.ScriptEngineFactory;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,12 +53,10 @@ import java.util.Map;
 class BundleScriptingContext {
     private final ClassLoader classLoader;
     private final Map<String, Integer> extensionPriorities;
-    private final List<ScriptEngineFactory> engineFactories;
 
-    BundleScriptingContext(List<ScriptEngineFactory> engineFactories, ClassLoader classLoader, Map<String, Integer> extensionsPrioritiesMap) {
+    BundleScriptingContext(ClassLoader classLoader, Map<String, Integer> extensionsPrioritiesMap) {
         this.classLoader = classLoader;
         this.extensionPriorities = extensionsPrioritiesMap;
-        this.engineFactories = engineFactories;
     }
 
     ClassLoader getClassLoader() {
@@ -77,10 +74,6 @@ class BundleScriptingContext {
 
     boolean specifiesExtensionPriorities() {
         return extensionPriorities != null && !extensionPriorities.isEmpty();
-    }
-
-    List<ScriptEngineFactory> getEngineFactories() {
-        return engineFactories;
     }
 
     Map<String, Integer> getExtensionPriorities() {

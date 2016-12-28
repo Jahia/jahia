@@ -43,7 +43,7 @@
  */
 package org.jahia.services.modulemanager.persistence.jcr;
 
-import static org.jahia.services.modulemanager.persistence.PersistedBundleInfoBuilderTest.getResource;
+import static org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilderTest.getResource;
 import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper.PATH_BUNDLES;
 import static org.jahia.services.modulemanager.persistence.jcr.BundleInfoJcrHelper.PATH_ROOT;
 import static org.junit.Assert.assertEquals;

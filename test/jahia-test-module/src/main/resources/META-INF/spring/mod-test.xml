@@ -5,7 +5,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean class="org.jahia.test.bin.TestBean">
-
         <property name="coreTests" value="true"/>
         <property name="priority" value="40"/>
 
@@ -25,6 +24,8 @@
                 <value>org.jahia.test.bin.FindPrincipalTest</value>
                 <value>org.jahia.test.bin.FindTest</value>
                 <value>org.jahia.test.bin.RenderTest</value>
+                <value>org.jahia.test.osgi.SpringBridgeTest</value>
+                <value>org.jahia.test.osgi.SpringContextSingletonTest</value>
                 <value>org.jahia.test.services.acl.AclTest</value>
                 <!--<value>org.jahia.test.services.acl.AclExtendedNodesPerformanceTest</value>-->
                 <!--<value>org.jahia.test.services.applications.ApplicationsManagerServiceTest</value>-->
@@ -55,6 +56,7 @@
                 <value>org.jahia.test.services.query.QueryModificationTest</value>
                 <value>org.jahia.test.services.query.QueryResultTest</value>
                 <value>org.jahia.test.services.render.JSessionIDTest</value>
+                <value>org.jahia.test.services.render.LoginPageHttpTest</value>
                 <value>org.jahia.test.services.render.filter.ConditionalFilterTest</value>
                 <value>org.jahia.test.services.render.filter.EmailObfuscatorFilterTest</value>
                 <value>org.jahia.test.services.render.filter.URLFilterTest</value>
@@ -395,8 +397,8 @@
                 <value>testCreateMultipleTags(org.jahia.test.services.logging.ServiceLoggingTest)</value>
                 <value>testUniqueValue(org.jahia.test.services.i18n.ResourceBundleTest)</value>
             </list>
-
         </property>
+
     </bean>
 
     <bean class="org.jahia.services.content.decorator.validation.JCRNodeValidatorDefinition">
@@ -408,13 +410,12 @@
     </bean>
 
     <bean name="testController" class="org.jahia.test.bin.TestServlet"/>
-
     <bean name="testCreateSiteController" class="org.jahia.test.bin.TestCreateSiteServlet"/>
-
     <bean name="jahiaTestMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
                 <entry key="/test" value-ref="testController"/>
+                <entry key="/test.html" value-ref="testController"/>
                 <entry key="/test/**" value-ref="testController"/>
                 <entry key="/createsite" value-ref="testCreateSiteController"/>
             </map>
@@ -431,55 +432,6 @@
     <bean id="CacheHttpTestRenderFilter2" class="org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter">
         <property name="priority" value="16.6"/>
         <property name="disabled" value="true"/>
-    </bean>
-
-    <!-- Expose some core beans as an OSGi services -->
-    <bean class="org.jahia.osgi.spring.SpringBridge">
-        <property name="beanExpositions">
-            <list>
-
-                <!-- As bean's class -->
-                <bean class="org.jahia.osgi.spring.SpringBridge$BeanExposition">
-                    <property name="selector">
-                        <bean class="org.jahia.osgi.spring.BeanSelectorByBeanID">
-                            <constructor-arg value="JahiaSitesService"/>
-                        </bean>
-                    </property>
-                    <property name="exposer">
-                        <bean class="org.jahia.osgi.spring.BeanExposerAsOwnClass"/>
-                    </property>
-                </bean>
-
-                <!-- As bean's superclass -->
-                <bean class="org.jahia.osgi.spring.SpringBridge$BeanExposition">
-                    <property name="selector">
-                        <bean class="org.jahia.osgi.spring.BeanSelectorByBeanID">
-                            <constructor-arg value="QueryService"/>
-                        </bean>
-                    </property>
-                    <property name="exposer">
-                        <bean class="org.jahia.osgi.spring.BeanExposerAsOwnClass">
-                            <constructor-arg value="org.jahia.services.query.QueryService"/>
-                        </bean>
-                    </property>
-                </bean>
-
-                <!-- As an implemented interface -->
-                <bean class="org.jahia.osgi.spring.SpringBridge$BeanExposition">
-                    <property name="selector">
-                        <bean class="org.jahia.osgi.spring.BeanSelectorByBeanID">
-                            <constructor-arg value="org.jahia.services.tags.TagHandler"/>
-                        </bean>
-                    </property>
-                    <property name="exposer">
-                        <bean class="org.jahia.osgi.spring.BeanExposerAsOwnClass">
-                            <constructor-arg value="org.jahia.services.tags.TagHandler"/>
-                        </bean>
-                    </property>
-                </bean>
-
-            </list>
-        </property>
     </bean>
 
 </beans>

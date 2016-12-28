@@ -208,41 +208,17 @@ public class NewCacheFilterTest extends CacheFilterTest{
 
     @Test
     public void testMaxConcurrent() throws Exception{
-        long previousModuleGenerationWaitTime = moduleGeneratorQueue.getModuleGenerationWaitTime();
-        int previousModuleGenerateInParallel = moduleGeneratorQueue.getMaxModulesToGenerateInParallel();
+        // test max concurrent with cacheable nodes
+        testMaxConcurrent("/sites/"+TESTSITE_NAME+"/home/testContent", "/sites/"+TESTSITE_NAME+"/home");
 
-        try {
-            // set generation wait to 1000 ms
-            moduleGeneratorQueue.setModuleGenerationWaitTime(1000);
-            // set number of fragment generate in parallel to 1 for the test
-            moduleGeneratorQueue.setMaxModulesToGenerateInParallel(1);
+        //test max concurrent with non cacheable nodes
+        testMaxConcurrent("/sites/"+TESTSITE_NAME+"/home/testContent/testNotCacheable1", "/sites/"+TESTSITE_NAME+"/home/testContent/testNotCacheable2");
 
-            JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+        //test max concurrent with a non cacheable node and a cacheable node
+        testMaxConcurrent("/sites/"+TESTSITE_NAME+"/home/testContent", "/sites/"+TESTSITE_NAME+"/home/testContent/testNotCacheable1");
 
-            // r1 will generate the fragment in 3000+ ms
-            CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_PAGE, 3000, false);
-            // t2 will try to generate an other fragment in parallel, but should do an error
-            // because r1 is not quite fast and is already generating a fragment
-            CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home", Resource.CONFIGURATION_PAGE, null, false);
-
-
-            r1.start();
-            Thread.sleep(500);
-            r2.start();
-
-            r2.join();
-            r1.join();
-
-            assertNull(r1.error);
-            assertNotNull(r1.result);
-            assertNull(r2.result);
-            assertTrue(r2.error != null && r2.error.getMessage().contains("Module generation takes too long due to maximum parallel processing reached (1)"));
-            assertTrue("Long thread don't spent the correct time to generate the fragment: " + r1.timer, r1.timer >= 3000);
-            assertTrue("Waiting thread don't spent the correct time waiting before throw error:" + r2.timer, r2.timer >= 1000);
-        } finally {
-            moduleGeneratorQueue.setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
-            moduleGeneratorQueue.setMaxModulesToGenerateInParallel(previousModuleGenerateInParallel);
-        }
+        //test max concurrent with a cacheable node and a non cacheable node
+        testMaxConcurrent("/sites/"+TESTSITE_NAME+"/home/testContent/testNotCacheable1", "/sites/"+TESTSITE_NAME+"/home/testContent");
     }
 
     @Test
@@ -276,6 +252,44 @@ public class NewCacheFilterTest extends CacheFilterTest{
         }
         assertNull(result);
         assertTrue(exception != null && exception.getMessage().contains("Error filter triggered in render chain"));
+    }
+
+    private void testMaxConcurrent(String nodePath1, String nodePath2) throws Exception{
+        long previousModuleGenerationWaitTime = moduleGeneratorQueue.getModuleGenerationWaitTime();
+        int previousModuleGenerateInParallel = moduleGeneratorQueue.getMaxModulesToGenerateInParallel();
+
+        try {
+            // set generation wait to 1000 ms
+            moduleGeneratorQueue.setModuleGenerationWaitTime(1000);
+            // set number of fragment generate in parallel to 1 for the test
+            moduleGeneratorQueue.setMaxModulesToGenerateInParallel(1);
+
+            JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+
+            // r1 will generate the fragment in 3000+ ms
+            CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, nodePath1, Resource.CONFIGURATION_PAGE, 3000, false);
+            // t2 will try to generate an other fragment in parallel, but should do an error
+            // because r1 is not quite fast and is already generating a fragment
+            CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, nodePath2, Resource.CONFIGURATION_PAGE, null, false);
+
+
+            r1.start();
+            Thread.sleep(500);
+            r2.start();
+
+            r2.join();
+            r1.join();
+
+            assertNull(r1.error);
+            assertNotNull(r1.result);
+            assertNull(r2.result);
+            assertTrue(r2.error != null && r2.error.getMessage().contains("Module generation takes too long due to maximum parallel processing reached (1)"));
+            assertTrue("Long thread don't spent the correct time to generate the fragment: " + r1.timer, r1.timer >= 3000);
+            assertTrue("Waiting thread don't spent the correct time waiting before throw error:" + r2.timer, r2.timer >= 1000);
+        } finally {
+            moduleGeneratorQueue.setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+            moduleGeneratorQueue.setMaxModulesToGenerateInParallel(previousModuleGenerateInParallel);
+        }
     }
 
     public CacheFilterRenderResult cacheFilterRender() throws Exception {

@@ -52,6 +52,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.i18n.ResourceBundles;
 
@@ -74,6 +75,7 @@ import java.util.Map;
 public class TemplateAttributesFilter extends AbstractFilter {
 
     public static final String FORCED_LOCALE_ATTRIBUTE = "org.jahia.utils.i18n.forceLocale";
+    public static final String AREA_RESOURCE = "areaResource";
 
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         final JCRSiteNode site = context.getSite();
@@ -115,6 +117,12 @@ public class TemplateAttributesFilter extends AbstractFilter {
                 Config.FMT_LOCALIZATION_CONTEXT + ".request",
                 new LocalizationContext(ResourceBundles.get(templatePackage.getResourceBundleName(), script.getView()
                         .getModule(), locale),locale));
+
+        // get areaResourcePath if defined.
+        String areaResourcePath = (String) request.getAttribute(AreaResourceCacheKeyPartGenerator.SAVED_AREA_PATH);
+        if (areaResourcePath != null && !context.isContributionMode()) {
+            chain.pushAttribute(request, AREA_RESOURCE, resource.getNode().getSession().getNode(areaResourcePath));
+        }
         return null;
     }
 

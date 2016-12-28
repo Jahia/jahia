@@ -71,11 +71,13 @@
  */
 package org.jahia.bin;
 
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.LinkGenerator;
 import org.jahia.services.search.MatchInfo;
+import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -94,9 +96,10 @@ import java.util.Locale;
  */
 public class TemplateResolverServlet extends JahiaController {
     private JCRSessionFactory sessionFactory;
+    private UrlRewriteService urlService;
 
     @Override
-    public ModelAndView handleRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public ModelAndView handleRequest(final HttpServletRequest req, final HttpServletResponse resp) throws Exception {
         final JahiaUser currentUser = sessionFactory.getCurrentUser();
         final RenderContext context = new RenderContext(req, resp, currentUser);
         final String pathInfo = req.getPathInfo();
@@ -112,20 +115,30 @@ public class TemplateResolverServlet extends JahiaController {
             final MatchInfo info = LinkGenerator.decomposeLink(pathInfo);
 
             // retrieve the path of the displayable node associated with the node identified by the match info
-            final String redirect = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(
-                    currentUser, info.getWorkspace(), Locale.forLanguageTag(info.getLang()), new JCRCallback<String>() {
+            final String workspace = info.getWorkspace();
+            final String lang = info.getLang();
+            final Locale locale = Locale.forLanguageTag(lang);
+            String redirect = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(
+                    currentUser, workspace, locale, new JCRCallback<String>() {
                         @Override
                         public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             final JCRNodeWrapper node = session.getNodeByIdentifier(info.getId());
                             final JCRNodeWrapper displayableNode = JCRContentUtils.findDisplayableNode(node, context);
-                            return displayableNode != null ? displayableNode.getPath() : null;
+                            if (displayableNode != null) {
+                                return req.getContextPath() + Render.getRenderServletPath() + '/' + workspace +
+                                        '/' + lang + displayableNode.getPath() + ".html";
+                            }
+                            return null;
                         }
                     });
 
             // if we have found a displayable node, redirect to it
             if (redirect != null) {
-                resp.sendRedirect(req.getContextPath() + Render.getRenderServletPath() + '/' + info.getWorkspace() +
-                        '/' + info.getLang() + redirect + ".html");
+                // check if we have a vanity URL for this node
+                if (Constants.LIVE_WORKSPACE.equals(workspace)) {
+                    redirect = urlService.rewriteOutbound(redirect, req, resp);
+                }
+                resp.sendRedirect(redirect);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
@@ -136,7 +149,21 @@ public class TemplateResolverServlet extends JahiaController {
         return null;
     }
 
+    /**
+     * Injects the entry point to the JCR repository to resolve JCR nodes.
+     *
+     * @param jcrSessionFactory the JCR repository to resolve JCR nodes
+     */
     public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
         this.sessionFactory = jcrSessionFactory;
+    }
+
+    /**
+     * Injects the {@link UrlRewriteService} to rewrite URLs if needed (for example, to deal with vanity URLs).
+     *
+     * @param urlService the {@link UrlRewriteService}
+     */
+    public void setUrlService(UrlRewriteService urlService) {
+        this.urlService = urlService;
     }
 }

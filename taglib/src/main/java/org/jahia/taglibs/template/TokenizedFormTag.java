@@ -49,9 +49,8 @@ import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringUtils;
 import org.apache.noggit.JSONUtil;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
+import org.jahia.services.render.filter.AggregateFilter;
 import org.slf4j.Logger;
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -59,7 +58,10 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * User: toto
@@ -74,12 +76,18 @@ public class TokenizedFormTag extends BodyTagSupport {
 
     private boolean disableXSSFiltering = false;
     private boolean allowsMultipleSubmits = false;
+    private boolean skipAggregation = false;
 
     @Override
     public int doStartTag() throws JspException {
         String id = java.util.UUID.randomUUID().toString();
-
         pageContext.setAttribute("currentFormId", id,PageContext.REQUEST_SCOPE);
+
+        // Skip the aggregation in the body of the tag
+        if(!AggregateFilter.skipAggregation(pageContext.getRequest())) {
+            skipAggregation = true;
+            pageContext.getRequest().setAttribute(AggregateFilter.SKIP_AGGREGATION, true);
+        }
 
         return EVAL_BODY_BUFFERED;
     }
@@ -149,6 +157,12 @@ public class TokenizedFormTag extends BodyTagSupport {
 
         pageContext.removeAttribute("hasCaptcha",PageContext.REQUEST_SCOPE);
         pageContext.removeAttribute("currentFormId",PageContext.REQUEST_SCOPE);
+
+        // Restore the aggregation for the following fragments
+        if (skipAggregation) {
+            pageContext.getRequest().removeAttribute(AggregateFilter.SKIP_AGGREGATION);
+            skipAggregation = false;
+        }
         return super.doEndTag();
     }
 
@@ -160,6 +174,18 @@ public class TokenizedFormTag extends BodyTagSupport {
     @Override
     public int doAfterBody() throws JspException {
         return super.doAfterBody();
+    }
+    
+    @Override
+    public void release() {
+        resetState();
+        super.release();
+    }
+
+    protected void resetState() {
+        disableXSSFiltering = false;
+        allowsMultipleSubmits = false;
+        skipAggregation = false;
     }
 
     public void setDisableXSSFiltering(boolean disableXSSFiltering) {

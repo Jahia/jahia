@@ -51,6 +51,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +87,16 @@ final class BundleInfoJcrHelper {
         String path = getJcrPath(BundleInfo.fromKey(bundleKey));
         if (session.nodeExists(path)) {
             target = session.getNode(path);
+        }
+        if (target == null && SettingsBean.getInstance().isClusterActivated()) {
+            // When running in a cluster, Cellar inter-node communication may be faster than JCR replication,
+            // so this method may be invoked before the bundle node is created in the local repository.
+            // In this case, session refresh effectively forces JCR cluster synchronization and lets us succeed
+            // fetching the node on second attempt.
+            session.refresh(true);
+            target = session.nodeExists(path) ? session.getNode(path) : null;
+        }
+        if (target != null) {
             logger.debug("Bundle node for key {} found at {}");
         }
 

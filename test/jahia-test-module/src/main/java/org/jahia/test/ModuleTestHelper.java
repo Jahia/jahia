@@ -115,6 +115,7 @@ public class ModuleTestHelper {
         settings.addActiveProfile("jahia");
 
         final MavenConfigurationImpl configuration = new MavenConfigurationImpl(new PropertiesPropertyResolver(new Properties()), ServiceConstants.PID);
+        settings.setLocalRepository(configuration.getSettings().getLocalRepository());
         configuration.setSettings(settings);
         resolver = new AetherBasedResolver(configuration);
     }

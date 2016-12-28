@@ -119,7 +119,7 @@ public class SwitchModeActionItem extends BaseActionItem {
             String path = node.getPath();
             String locale = JahiaGWTParameters.getLanguage();
             JahiaContentManagementService.App.getInstance()
-                    .getNodeURL(servlet, path, null, null, workspace, locale, new BaseAsyncCallback<String>() {
+                    .getNodeURL(servlet, path, null, null, workspace, locale, false, new BaseAsyncCallback<String>() {
                         public void onSuccess(String url) {
                             String url1 = url + ((urlParams != null) ? "?" + urlParams : "");
                             if (openWindow) {

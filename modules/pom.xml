@@ -48,7 +48,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>7.2.0.0-backlog_5637-SNAPSHOT</version>
+        <version>7.3.0.0-backlog_5637-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jahia.modules</groupId>
@@ -83,13 +83,13 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>7.2.0.0-backlog_5637-SNAPSHOT</version>
+            <version>7.3.0.0-backlog_5637-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>7.2.0.0-backlog_5637-SNAPSHOT</version>
+            <version>7.3.0.0-backlog_5637-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -172,6 +172,29 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${enforcer.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.0.3,)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[1.7,)</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
                 <executions>
@@ -267,6 +290,10 @@
                         <goals>
                             <goal>check-dependencies</goal>
                         </goals>
+                    </execution>
+                    <execution>
+                        <id>calculate-gitbuildnumber</id>
+                        <phase/>
                     </execution>
                 </executions>
             </plugin>

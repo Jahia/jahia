@@ -61,6 +61,8 @@ import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -78,12 +80,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Khue ng
  */
 public class JahiaTemplatesPackage {
-    
+
     /**
      * The ID of the default module.
      */
     public static final String ID_DEFAULT = "default";
-    
+
     /**
      * The name of the default module.
      */
@@ -104,12 +106,13 @@ public class JahiaTemplatesPackage {
     }
 
     private Bundle bundle = null;
-    
+
     private String bundleKey;
 
     private ModuleState state;
 
     private ClassLoader classLoader;
+
     private ClassLoader chainedClassLoader;
 
     /**
@@ -123,24 +126,29 @@ public class JahiaTemplatesPackage {
     private String m_Name;
 
     private ModuleVersion version;
+
     /**
      * Name of the dependent package
      */
     private List<String> depends = new LinkedList<String>();
+
     /**
      * The module id (= artifactId)
      */
     private String id;
 
     private String groupId;
+
     /**
      * The initial import file
      */
     private List<String> initialImports = new LinkedList<String>();
+
     /**
      * The Package Provider Name
      */
     private String m_Provider;
+
     /**
      * The Package thumbnail image file Name entry
      */
@@ -166,6 +174,7 @@ public class JahiaTemplatesPackage {
      * Contains names of the resource bundles for template sets starting from this one, then the direct parent and so on.
      */
     private List<String> resourceBundleHierarchy = new LinkedList<String>();
+
     private List<String> rulesDescriptorFiles = new LinkedList<String>();
 
     private Map<String,URL> resourcesCache = new ConcurrentHashMap<String, URL>();
@@ -191,8 +200,9 @@ public class JahiaTemplatesPackage {
     private boolean isActiveVersion = false;
 
     private boolean isLastVersion = false;
-    
+
     private boolean serviceInitialized;
+
     private boolean sourcesDownloadable;
 
     private String forgeUrl;
@@ -200,8 +210,13 @@ public class JahiaTemplatesPackage {
     private boolean editModeBlocked;
 
     /**
+     * List of callbacks to execute when spring context is set
+     */
+    private final List<ContextInitializedCallback> contextInitializedCallbacks = new ArrayList<>();
+
+    /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param bundle
      *            the backing OSGi bundle for this module
      */
@@ -212,7 +227,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns the backing OSGi bundle for this module.
-     * 
+     *
      * @return the backing OSGi bundle for this module
      */
     public Bundle getBundle() {
@@ -221,7 +236,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Retrieves the module state information.
-     * 
+     *
      * @return the module state information
      */
     public ModuleState getState() {
@@ -230,7 +245,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the module state information.
-     * 
+     *
      * @param state
      *            the module state information
      */
@@ -248,7 +263,6 @@ public class JahiaTemplatesPackage {
         return m_Name;
     }
 
-
     /**
      * Set the name.
      *
@@ -258,7 +272,6 @@ public class JahiaTemplatesPackage {
 
         m_Name = name;
     }
-
 
     /**
      * Return the module Id.
@@ -344,7 +357,6 @@ public class JahiaTemplatesPackage {
         return m_Provider;
     }
 
-
     /**
      * Set the Provider.
      *
@@ -355,7 +367,6 @@ public class JahiaTemplatesPackage {
         m_Provider = provider;
     }
 
-
     /**
      * Return the thumbnail file name.
      *
@@ -365,7 +376,6 @@ public class JahiaTemplatesPackage {
 
         return m_Thumbnail;
     }
-
 
     /**
      * Set the thumbnail file name.
@@ -384,7 +394,6 @@ public class JahiaTemplatesPackage {
         return this.m_FilePath;
     }
 
-
     /**
      * Set the file path.
      */
@@ -394,7 +403,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns <code>true</code> if this package is the default template set.
-     * 
+     *
      * @return <code>true</code> if this package is the default template set
      */
     public boolean isDefault() {
@@ -441,10 +450,9 @@ public class JahiaTemplatesPackage {
         return rootFolderPath;
     }
 
-
     /**
      * Returns the description of this module is available.
-     * 
+     *
      * @return the description of this module is available
      */
     public String getDescription() {
@@ -453,7 +461,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the description for this module.
-     * 
+     *
      * @param description
      *            the description text
      */
@@ -463,7 +471,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns the name (path) of the resource bundle for this module.
-     * 
+     *
      * @return the name (path) of the resource bundle for this module
      */
     public String getResourceBundleName() {
@@ -472,7 +480,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the resource bundle name (path) for this module.
-     * 
+     *
      * @param resourceBundleName
      *            the resource bundle name (path) for this module
      */
@@ -482,7 +490,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns a list of content node definition files (CND) available in the module.
-     * 
+     *
      * @return a list of content node definition files (CND) available in the module
      */
     public List<String> getDefinitionsFiles() {
@@ -501,7 +509,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns a list of rule files available in the module.
-     * 
+     *
      * @return a list of rule files available in the module
      */
     public List<String> getRulesFiles() {
@@ -510,7 +518,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets a list of rule files available in the module.
-     * 
+     *
      * @param rulesFile
      *            a list of rule files available in the module
      */
@@ -520,7 +528,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns a list with the resource bundle lookup chain for this module.
-     * 
+     *
      * @return a list with the resource bundle lookup chain for this module
      */
     public List<String> getResourceBundleHierarchy() {
@@ -531,11 +539,12 @@ public class JahiaTemplatesPackage {
      * Resets the resource bundle lookup hierarchy.
      */
     public void clearHierarchy() {
-            getResourceBundleHierarchy().clear();
-        }
+        getResourceBundleHierarchy().clear();
+    }
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) {
             return true;
         }
@@ -564,7 +573,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns a list with the rule DSL files for this module.
-     * 
+     *
      * @return a list with the rule DSL files for this module
      */
     public List<String> getRulesDescriptorFiles() {
@@ -573,7 +582,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the list with the rule DSL files for this module.
-     * 
+     *
      * @param rulesDescriptorFiles
      *            a list with the rule DSL files for this module
      */
@@ -581,10 +590,9 @@ public class JahiaTemplatesPackage {
         this.rulesDescriptorFiles.add(rulesDescriptorFiles);
     }
 
-
     /**
      * Returns a read-only list of modules which this module depends on.
-     * 
+     *
      * @return a read-only list of modules which this module depends on
      */
     public List<JahiaTemplatesPackage> getDependencies() {
@@ -593,7 +601,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Add the provided module into the list of dependencies for this one.
-     * 
+     *
      * @param dep
      *            a module to add as a dependency for this module
      */
@@ -632,7 +640,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns the version information for this module.
-     * 
+     *
      * @return the version information for this module
      */
     public ModuleVersion getVersion() {
@@ -641,7 +649,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the version information for this module.
-     * 
+     *
      * @param version
      *            the version information for this module
      */
@@ -668,7 +676,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns the type of this module.
-     * 
+     *
      * @return the type of this module
      */
     public String getModuleType() {
@@ -677,7 +685,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the type of this module.
-     * 
+     *
      * @param moduleType
      *            the type of this module
      */
@@ -688,7 +696,7 @@ public class JahiaTemplatesPackage {
     /**
      * Sets the value for the <code>autoDeployOnSite</code> directive which defines on which sites this module should be automatically
      * installed.
-     * 
+     *
      * @param autoDeployOnSite
      *            the value for the <code>autoDeployOnSite</code> directive which defines on which sites this module should be automatically
      *            installed
@@ -700,7 +708,7 @@ public class JahiaTemplatesPackage {
     /**
      * Returns the value for the <code>autoDeployOnSite</code> directive which defines on which sites this module should be automatically
      * installed.
-     * 
+     *
      * @return the value for the <code>autoDeployOnSite</code> directive which defines on which sites this module should be automatically
      *         installed
      */
@@ -711,7 +719,7 @@ public class JahiaTemplatesPackage {
     /**
      * Returns the Spring application context instance for this module. <code>null</code> in case this module has no application context
      * provided.
-     * 
+     *
      * @return the Spring application context instance for this module. <code>null</code> in case this module has no application context
      *         provided
      */
@@ -721,7 +729,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the application context instance for this module.
-     * 
+     *
      * @param context
      *            the application context instance for this module
      */
@@ -729,11 +737,24 @@ public class JahiaTemplatesPackage {
         this.context = context;
         // reset services state
         serviceInitialized = false;
+
+        if (this.context != null && state.getState().equals(ModuleState.State.SPRING_STARTING)) {
+            state.setState(ModuleState.State.STARTED);
+        }
+
+        // executes callbacks if needed
+        if(this.context != null && !contextInitializedCallbacks.isEmpty()) {
+            for (ContextInitializedCallback contextInitializedCallback : contextInitializedCallbacks) {
+                contextInitializedCallback.execute(context);
+            }
+            // clear callbacks
+            contextInitializedCallbacks.clear();
+        }
     }
 
     /**
      * Checks if this is the version of the module which is currently active.
-     * 
+     *
      * @return <code>true</code> if this version of the module is currently active.
      */
     public boolean isActiveVersion() {
@@ -742,7 +763,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the active state of this module version.
-     * 
+     *
      * @param activeVersion
      *            the active state of this module version
      */
@@ -752,7 +773,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Checks if this is the latest available version of this module.
-     * 
+     *
      * @return <code>true</code> if this is the latest version of this module
      */
     public boolean isLastVersion() {
@@ -761,7 +782,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the flag for the latest available module version.
-     * 
+     *
      * @param lastVersion
      *            the flag for the latest available module version
      */
@@ -771,7 +792,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns an SCM URI for this module if the source control is available for it.
-     * 
+     *
      * @return an SCM URI for this module if the source control is available for it
      */
     public String getScmURI() {
@@ -780,7 +801,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the SCM URI for this module if the source control is available for it.
-     * 
+     *
      * @param scmURI the SCM URI for this module if the source control is available for it
      */
     public void setScmURI(String scmURI) {
@@ -810,7 +831,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns the file descriptor, representing the folder with the sources for this module if available.
-     * 
+     *
      * @return the file descriptor, representing the folder with the sources for this module if available
      */
     public File getSourcesFolder() {
@@ -819,7 +840,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the file descriptor, representing the folder with the sources for this module if available.
-     * 
+     *
      * @param sourcesFolder
      *            the file descriptor, representing the folder with the sources for this module if available
      */
@@ -829,7 +850,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns an instance of the {@link SourceControlManagement} for this module.
-     * 
+     *
      * @return an instance of the {@link SourceControlManagement} for this module
      */
     public SourceControlManagement getSourceControl() {
@@ -838,7 +859,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets an instance of the source control management for this module.
-     * 
+     *
      * @param sourceControl
      *            an instance of the source control management for this module
      * @throws IOException
@@ -853,7 +874,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns a resource from the module's bundle for the specified path.
-     * 
+     *
      * @param relativePath
      *            a path of the bundle resource
      * @return a resource from the module's bundle for the specified path
@@ -879,10 +900,10 @@ public class JahiaTemplatesPackage {
         }
         return null;
     }
-    
+
     /**
      * Checks if the specified resource is present in the module's bundle.
-     * 
+     *
      * @param relativePath
      *            a path of the bundle resource
      * @return <code>true</code> if the specified resource is present in the module's bundle; <code>false</code> otherwise
@@ -911,7 +932,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns resources from the module's bundle and its attached fragments for the specified path.
-     * 
+     *
      * @param relativePath
      *            a path of the bundle resource
      * @return resources from the module's bundle and its attached fragments for the specified path
@@ -950,12 +971,12 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns the module bundle's class loader instance.
-     * 
+     *
      * @return the module bundle's class loader instance
      */
     public ClassLoader getClassLoader() {
         if (classLoader == null && bundle != null && state != null && state.getState() != null
-                && state.getState() != ModuleState.State.STOPPING && state.getState() != ModuleState.State.STOPPED ) {
+                && state.getState() != ModuleState.State.INSTALLED) {
             classLoader = BundleUtils.createBundleClassLoader(bundle);
         }
         return classLoader;
@@ -963,25 +984,32 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the class loader instance for this module
-     * 
+     *
      * @param classLoader
      *            a class loader instance for this module
      */
     public void setClassLoader(ClassLoader classLoader) {
+
         this.classLoader = classLoader;
+
+        // classloader updated, reset chainedClassloader
+        // (will be reconstructed on next call to getChainedClassLoader())
+        this.chainedClassLoader = null;
     }
 
     /**
-     * Returns a class loader which is a chain of class loaders, starting from the Web application one, than this modules class loader and
-     * at the end the list of class loaders of modules, this module depends on.
-     * 
-     * @return a class loader which is a chain of class loaders, starting from the Web application one, than this modules class loader and
-     *         at the end the list of class loaders of modules, this module depends on
+     * Returns a class loader which is a chain of class loaders, starting from the Web application one, then this modules class loader and
+     * at the end the list of class loaders of modules this module depends on.
+     *
+     * @return a class loader which is a chain of class loaders, starting from the Web application one, then this modules class loader and
+     *         at the end the list of class loaders of modules this module depends on
      */
     public ClassLoader getChainedClassLoader() {
+
         if (chainedClassLoader != null) {
             return chainedClassLoader;
         }
+
         final List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
         classLoaders.add(Jahia.class.getClassLoader());
         final ClassLoader classLoader = getClassLoader();
@@ -993,7 +1021,10 @@ public class JahiaTemplatesPackage {
                 classLoaders.add(dependentPack.getClassLoader());
             }
         }
+
         chainedClassLoader = new ClassLoader() {
+
+            @Override
             public URL getResource(String name) {
                 URL url = null;
                 for (ClassLoader loader : classLoaders) {
@@ -1060,24 +1091,28 @@ public class JahiaTemplatesPackage {
             }
 
             @Override
-            protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-                for (ClassLoader loader : classLoaders) {
+            protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+                for (ClassLoader classLoader : classLoaders) {
                     try {
-                        return loader.loadClass(name);
-                    }
-                    catch (ClassNotFoundException e) {
+                        Class<?> clazz = classLoader.loadClass(name);
+                        if (resolve) {
+                            resolveClass(clazz);
+                        }
+                        return clazz;
+                    } catch (ClassNotFoundException e) {
                         // keep moving through the classloaders
                     }
                 }
                 throw new ClassNotFoundException(name);
             }
         };
+
         return chainedClassLoader;
     }
-    
+
     /**
      * Sets the root path for the module folder.
-     * 
+     *
      * @param rootFolderPath
      *            the root path for the module folder
      */
@@ -1087,7 +1122,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns <code>true</code> if the Spring beans, implementing {@link JahiaAfterInitializationService}, were already initialized.
-     * 
+     *
      * @return the serviceInitialized
      */
     public boolean isServiceInitialized() {
@@ -1097,7 +1132,7 @@ public class JahiaTemplatesPackage {
     /**
      * Set this to <code>true</code> to indicate that the Spring beans, implementing {@link JahiaAfterInitializationService}, were already
      * initialized.
-     * 
+     *
      * @param serviceInitialized
      *            the state of the service initialization
      */
@@ -1107,7 +1142,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the flag for downloadable sources.
-     * 
+     *
      * @param sourcesDownloadable
      *            value of the flag for downloadable sources
      */
@@ -1117,7 +1152,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Checks if the sources for this module can be downloaded.
-     * 
+     *
      * @return <code>true</code> if the sources for this module can be downloaded; <code>false</code> otherwise
      */
     public boolean isSourcesDownloadable() {
@@ -1126,7 +1161,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Returns the URL of the corresponding Jahia Private App Store.
-     * 
+     *
      * @return the URL of the corresponding Jahia Private App Store
      */
     public String getForgeUrl() {
@@ -1135,7 +1170,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the URL of the corresponding Jahia Private App Store.
-     * 
+     *
      * @param forgeUrl
      *            the URL of the corresponding Jahia Private App Store
      */
@@ -1152,8 +1187,37 @@ public class JahiaTemplatesPackage {
     }
 
     /**
+     * Provide a callback that will be execute when the Spring context is ready for this bundle
+     * if the context is already set, the callback is executed directly
+     * if no context available, the callback is stored and will be execute when a context is set for the current JahiaTemplatePackage
+     * the callback is removed when executed
+     *
+     * @param contextInitializedCallback the callback
+     */
+    public void doExecuteAfterContextInitialized(ContextInitializedCallback contextInitializedCallback) {
+        if (context != null) {
+            // context already available, execute now
+            contextInitializedCallback.execute(context);
+        } else {
+            contextInitializedCallbacks.add(contextInitializedCallback);
+        }
+    }
+
+    /**
+     * Callback object to do operations just after the initialization of the spring context
+     */
+    public interface ContextInitializedCallback {
+        /**
+         * Do something after spring context is initialized
+         *
+         * @param context the spring context
+         */
+        void execute(AbstractApplicationContext context);
+    }
+
+    /**
      * Returns unique bundle key which corresponds to this module, including group ID, bundle symbolic name and version.
-     * 
+     *
      * @return unique bundle key which corresponds to this module, including group ID, bundle symbolic name and version
      * @see BundleInfo
      */
@@ -1163,5 +1227,37 @@ public class JahiaTemplatesPackage {
         }
 
         return bundleKey;
+    }
+
+    public Set<JahiaTemplatesPackage> getModuleDependenciesWithVersion() {
+        Set<JahiaTemplatesPackage> deps = new HashSet<>();
+        if (bundle != null && bundle.getState() >= Bundle.RESOLVED) {
+            BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
+
+            List<BundleWire> requiredWires = bundleWiring.getRequiredWires(null);
+            for (BundleWire wire : requiredWires) {
+                Bundle bundle = wire.getProvider().getBundle();
+                if (BundleUtils.isJahiaBundle(bundle)) {
+                    deps.add(BundleUtils.getModule(bundle));
+                }
+            }
+        }
+        return deps;
+    }
+
+    public Set<JahiaTemplatesPackage> getDependentModulesWithVersion() {
+        Set<JahiaTemplatesPackage> deps = new HashSet<>();
+        if (bundle != null && bundle.getState() >= Bundle.RESOLVED) {
+            BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
+
+            List<BundleWire> providedWires = bundleWiring.getProvidedWires(null);
+            for (BundleWire wire : providedWires) {
+                Bundle bundle = wire.getRequirer().getBundle();
+                if (BundleUtils.isJahiaBundle(bundle)) {
+                    deps.add(BundleUtils.getModule(bundle));
+                }
+            }
+        }
+        return deps;
     }
 }

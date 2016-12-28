@@ -49,6 +49,7 @@ import org.apache.commons.lang.WordUtils;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.api.Constants;
 import org.jahia.bin.Render;
+import org.jahia.bin.filters.ContentManagerAccessCheckFilter;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -206,7 +207,7 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.USE_WEBSOCKETS, "true");
         }
 
-        String customCkeditorConfig = getCustomCKEditorConfig(renderContext);
+        String customCkeditorConfig = getCustomCKEditorConfig(request, renderContext);
         if (customCkeditorConfig != null) {
             params.put("ckeCfg", customCkeditorConfig);
         }
@@ -228,18 +229,15 @@ public class GWTInitializer {
     public static String getCustomCKEditorConfig(HttpServletRequest request, RenderContext ctx) {
         String cfgPath = null;
 
-        if (ctx != null && getConfig().isDetectCustomCKEditorConfig()) {
-            JCRSiteNode site = ctx.getSite();
-            if (site != null) {
-                JahiaTemplatesPackage pkg = site.getTemplatePackage();
-                if (pkg != null) {
-                    Bundle bundle = pkg.getBundle();
-                    if (bundle != null && bundle.getEntry("/javascript/ckeditor_config.js") != null) {
-                        cfgPath = ctx.getRequest().getContextPath() + pkg.getRootFolderPath()
-                                + "/javascript/ckeditor_config.js";
-                    }
-
+        if (getConfig().isDetectCustomCKEditorConfig()) {
+            JahiaTemplatesPackage pkg = getCurrentSiteTemplatePackage(request, ctx);
+            if (pkg != null) {
+                Bundle bundle = pkg.getBundle();
+                if (bundle != null && bundle.getEntry("/javascript/ckeditor_config.js") != null) {
+                    cfgPath = (ctx != null ? ctx.getRequest() : request).getContextPath() + pkg.getRootFolderPath()
+                            + "/javascript/ckeditor_config.js";
                 }
+
             }
         }
         if (null == cfgPath) {
@@ -255,6 +253,20 @@ public class GWTInitializer {
         }
 
         return cfgPath;
+    }
+
+    private static JahiaTemplatesPackage getCurrentSiteTemplatePackage(HttpServletRequest request, RenderContext ctx) {
+        JahiaTemplatesPackage pkg = null;
+        if (ctx != null) {
+            JCRSiteNode site = ctx.getSite();
+            if (site != null) {
+                pkg = site.getTemplatePackage();
+            }
+        } else if (request != null) {
+            pkg = ContentManagerAccessCheckFilter.getCurrentSiteTemplatePackage(request);
+        }
+
+        return pkg;
     }
 
     private static void addCss(StringBuilder buf, HttpServletRequest request, boolean frame) {

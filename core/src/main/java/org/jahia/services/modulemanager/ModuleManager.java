@@ -43,6 +43,7 @@
  */
 package org.jahia.services.modulemanager;
 
+import org.jahia.osgi.BundleState;
 import org.springframework.core.io.Resource;
 
 /**
@@ -64,10 +65,17 @@ import org.springframework.core.io.Resource;
  * Note, please, the version here is the <code>Bundle-Version</code>. In case of SNAPSHOT versions it can differ in the format from the
  * module version.
  * <p>
- * In some cases, when the bundle can be unambiguously identified by the symbolic name and version, the group ID could me omitted, i.e.:
+ * In cases, when the bundle can be unambiguously identified either by the symbolic name and version or by the symbolic name alone, the
+ * group ID or the group ID and version correspondingly could me omitted, i.e.:
  * <p>
  * <code>
  * <pre>article/2.0.2</pre>
+ * </code>
+ * <p>
+ * or
+ * <p>
+ * <code>
+ * <pre>article</pre>
  * </code>
  * <p>
  * The value of the <code>target</code> group of cluster nodes could be specified as <code>null</code>, meaning the default group is
@@ -127,4 +135,22 @@ public interface ModuleManager {
      * @throws ModuleManagementException In case of problems
      */
     OperationResult uninstall(String bundleKey, String target) throws ModuleManagementException;
+
+    /**
+     * Refresh the specified bundle on the target group of cluster nodes.
+     *
+     * @param bundleKey Bundle key to refresh (see class JavaDoc for the supported key format)
+     * @param target The group of cluster nodes targeted by the refresh operation (see class JavaDoc for the supported values)
+     * @return The result of the refresh operation
+     * @throws ModuleManagementException In case of problems
+     */
+    OperationResult refresh(String bundleKey, String target) throws ModuleManagementException;
+
+    /**
+     * Get current local state of a bundle.
+     *
+     * @param bundleKey Bundle key (see class JavaDoc for the supported key format; note that bundle version is required unlike with other operations)
+     * @return Current local state of the bundle
+     */
+    BundleState getLocalState(String bundleKey) throws ModuleManagementException;
 }

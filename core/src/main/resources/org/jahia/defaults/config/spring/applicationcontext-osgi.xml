@@ -17,6 +17,8 @@
                 <prop key="felix.fileinstall.bundles.uninstall.remove">${jahia.modules.fileinstall.bundles.uninstall.remove:true}</prop>
                 <prop key="felix.fileinstall.noInitialDelay">true</prop>
                 <prop key="felix.fileinstall.enableConfigSave">false</prop>
+                <prop key="felix.fileinstall.bundleLocationMapFile">#{settingsBean.jahiaVarDiskPath}/bundles-deployed/module-bundle-location.map</prop>
+                <prop key="felix.fileinstall.customHandler">(&amp;(objectClass=org.apache.felix.fileinstall.CustomHandler)(type=dx-modules))</prop>
             </props>
         </property>
     </bean>
@@ -46,6 +48,9 @@
                 <prop key="log4j.ignoreTCL">true</prop>
 
                 <prop key="felix.webconsole.manager.root">/console</prop>
+                
+                <prop key="hazelcast.osgi.jsr223.disabled">true</prop>
+                <prop key="hazelcast.slow.operation.detector.stacktrace.logging.enabled">true</prop>
 
             </props>
         </property>
@@ -68,14 +73,6 @@
             <list>
                 <ref bean="combinedOsgiProperties"/>
                 <ref bean="jahiaSystemProperties"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean class="org.jahia.osgi.spring.SpringBridge">
-        <property name="beanExpositions">
-            <list>
-                <!-- Configure a list of org.jahia.osgi.spring.SpringBridge$BeanExposition instances to expose selected beans as an OSGi services -->
             </list>
         </property>
     </bean>

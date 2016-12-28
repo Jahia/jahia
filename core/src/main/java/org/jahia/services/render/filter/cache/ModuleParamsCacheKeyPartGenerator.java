@@ -55,6 +55,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeSet;
 
 /**
  * Cache key part generator that serializes JSON module parameters, if present.
@@ -74,7 +75,7 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
     @Override
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         Map<String, Serializable> params = resource.getModuleParams();
-        return params.size() == 0 ? StringUtils.EMPTY : encodeString(new JSONObject(params).toString());
+        return params.size() == 0 ? StringUtils.EMPTY : encodeString(new OrderedJsonObject(params).toString());
     }
 
     @Override
@@ -94,7 +95,7 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
     public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
         if (StringUtils.isNotEmpty(value)) {
             try {
-                JSONObject map = new JSONObject(decodeString(value));
+                OrderedJsonObject map = new OrderedJsonObject(decodeString(value));
                 Iterator<?> keys = map.keys();
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
@@ -109,5 +110,25 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
 
     @Override
     public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
+    }
+
+    private static class OrderedJsonObject extends JSONObject {
+
+        public OrderedJsonObject(Map<?, ?> map) {
+            super(map);
+        }
+
+        public OrderedJsonObject(String source) throws JSONException {
+            super(source);
+        }
+
+        @Override
+        public Iterator<?> keys() {
+            TreeSet<Object> keys = new TreeSet<>();
+            for (Iterator<?> it = super.keys(); it.hasNext(); ) {
+                keys.add(it.next());
+            }
+            return keys.iterator();
+        }
     }
 }

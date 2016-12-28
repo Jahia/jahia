@@ -393,7 +393,7 @@ public final class JCRContentUtils implements ServletContextAware {
         } catch (RepositoryException e) {
             return name;
         }
-        
+
         int i = 1;
 
         String basename = name;
@@ -1465,13 +1465,59 @@ public final class JCRContentUtils implements ServletContextAware {
      * JCR contains clauses, including enclosing quotes.
      */
     public static String stringToJCRSearchExp(String str) {
-      String normalizedSearchExpr = normalizeStringExpression(str);
-       
-        if (normalizedSearchExpr.length() == 0) {
+        // escape single double quotes and \ except if preceded by a \
+
+        if (str == null) {
+            throw new IllegalArgumentException("Must pass a valid String");
+        }
+
+        str = str.trim();
+        final int length = str.length();
+
+        // quickly return
+        if (length == 0) {
             return "''";
         }
-        
-        return stringToQueryLiteral(normalizedSearchExpr);
+
+        // if we don't have a double quote, just return the given string as a query literal
+        int nextDoubleQuote = str.indexOf('"');
+        if (nextDoubleQuote < 0) {
+            return stringToQueryLiteral(str);
+        }
+
+        StringBuilder stringBuilder = new StringBuilder(length + 10);
+
+        // copy string up to first double quote
+        stringBuilder.append(str.substring(0, nextDoubleQuote));
+
+        char previousChar = 0;
+        boolean hasStartingDoubleQuote = false;
+        for (int i = nextDoubleQuote; i < length; i++) {
+            char c = str.charAt(i);
+            if (c == '"') {
+                // only check if we have another double quote later in which case we should not escape if we haven't seen one already
+                if (!hasStartingDoubleQuote) {
+                    nextDoubleQuote = str.indexOf('"', i + 1);
+                    if (nextDoubleQuote < 0) {
+                        // only escape if we don't have a preceding \ and we don't have a starting double quote
+                        if (previousChar != '\\') {
+                            stringBuilder.append('\\');
+                        }
+                        // and finish the string since we don't have anything left to escape
+                        stringBuilder.append(str.substring(i, length));
+                        break;
+                    }
+                    hasStartingDoubleQuote = true;
+                } else {
+                    hasStartingDoubleQuote = false;
+                }
+            }
+
+
+            stringBuilder.append(c);
+            previousChar = c;
+        }
+        return stringToQueryLiteral(stringBuilder.toString());
     }
 
     /**
@@ -1728,64 +1774,6 @@ public final class JCRContentUtils implements ServletContextAware {
      */
     public static String getMimeType(String fileName, String fallbackMimeType) {
         return StringUtils.defaultIfEmpty(getMimeType(fileName), fallbackMimeType);
-    }
-    
-    /**
-     * Escape single double quotes and \ except if preceded by a \ <br />
-     * @param v the string value
-     * @return the normalized expression
-     */
-    public static String normalizeStringExpression(String v){
-      // This method is a part of code from {@link #stringToJCRSearchExp(String)} for share to to avoid duplicate it
-      if (v == null) {
-          throw new IllegalArgumentException("Must pass a valid String");
-      }
-
-      v = v.trim();
-      final int length = v.length();
-
-      // quickly return
-      if (length == 0) {
-          return v;
-      }
-
-      // if we don't have a double quote, just return the given string as a query literal
-      int nextDoubleQuote = v.indexOf('"');
-      if (nextDoubleQuote < 0) {
-          return v;
-      }
-
-      StringBuilder stringBuilder = new StringBuilder(length + 10);
-
-      // copy string up to first double quote
-      stringBuilder.append(v.substring(0, nextDoubleQuote));
-
-      char previousChar = 0;
-      boolean hasStartingDoubleQuote = false;
-      for (int i = nextDoubleQuote; i < length; i++) {
-          char c = v.charAt(i);
-          if (c == '"') {
-              // only check if we have another double quote later in which case we should not escape if we haven't seen one already
-              if (!hasStartingDoubleQuote) {
-                  nextDoubleQuote = v.indexOf('"', i + 1);
-                  if (nextDoubleQuote < 0) {
-                      // only escape if we don't have a preceding \ and we don't have a starting double quote
-                      if (previousChar != '\\') {
-                          stringBuilder.append('\\');
-                      }
-                      // and finish the string since we don't have anything left to escape
-                      stringBuilder.append(v.substring(i, length));
-                      break;
-                  }
-                  hasStartingDoubleQuote = true;
-              } else {
-                  hasStartingDoubleQuote = false;
-              }
-          }
-          stringBuilder.append(c);
-          previousChar = c;
-      }
-      return stringBuilder.toString();
     }
 
     public void setServletContext(ServletContext servletContext) {

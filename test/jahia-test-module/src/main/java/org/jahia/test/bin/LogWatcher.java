@@ -76,36 +76,36 @@ public class LogWatcher extends JahiaController {
     public ModelAndView handleRequest(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         try {
-        if (request.getMethod().equalsIgnoreCase("GET")) {
-            String operation = request.getParameter("op");
-            String appenderKey = request.getParameter("key");
-            if (StringUtils.isEmpty(appenderKey)) {
-                appenderKey = DEFAULT_APPENDER_KEY;
+            if (request.getMethod().equalsIgnoreCase("GET")) {
+                String operation = request.getParameter("op");
+                String appenderKey = request.getParameter("key");
+                if (StringUtils.isEmpty(appenderKey)) {
+                    appenderKey = DEFAULT_APPENDER_KEY;
+                }
+                LogExceptionExtractor logAppender = errorLogAppenders.remove(appenderKey);
+                Logger rootLogger = Logger.getRootLogger();
+                if (logAppender != null) {
+                    rootLogger.removeAppender(logAppender);
+                    logger.info("Error logging (key=" + appenderKey + ") stopped");
+                }
+
+                if ("start".equals(operation)) {
+                    logAppender = new LogExceptionExtractor();
+                    logAppender.setName(appenderKey);
+                    errorLogAppenders.put(appenderKey, logAppender);
+                    logger.info("Error logging (key=" + appenderKey + ") started");
+                    response.getWriter().println("OK");
+
+                    rootLogger.addAppender(logAppender);
+                } else if (logAppender != null) {
+                    response.getWriter().println(logAppender.getErrorLogs());
+                }
+
+            } else if (request.getMethod().equals("OPTIONS")) {
+                response.setHeader("Allow", "GET, OPTIONS");
+            } else {
+                response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             }
-            LogExceptionExtractor logAppender = errorLogAppenders.remove(appenderKey);
-            Logger rootLogger = Logger.getRootLogger();
-            if (logAppender != null) {
-                rootLogger.removeAppender(logAppender);
-                logger.info("Error logging (key=" + appenderKey + ") stopped");
-            }
-            
-            if ("start".equals(operation)) {
-                logAppender = new LogExceptionExtractor();
-                logAppender.setName(appenderKey);
-                errorLogAppenders.put(appenderKey, logAppender);
-                logger.info("Error logging (key=" + appenderKey + ") started");
-                response.getWriter().println("OK");
-                
-                rootLogger.addAppender(logAppender);
-            } else if (logAppender != null) {
-                response.getWriter().println(logAppender.getErrorLogs());
-            }
-            
-        } else if (request.getMethod().equals("OPTIONS")) {
-            response.setHeader("Allow", "GET, OPTIONS");
-        } else {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-        }
         } catch (Exception e) {
             DefaultErrorHandler.getInstance().handle(e, request, response);
         }

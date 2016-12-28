@@ -88,23 +88,16 @@ public class SimpleSearchTest extends JahiaTestCase {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         try {
-//            final JCRPublicationService jcrService = ServicesRegistry
-//                    .getInstance().getJCRPublicationService();
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        TestHelper.createSite(FIRST_TESTSITE_NAME, "localhost",
-                                TestHelper.WEB_TEMPLATES, SettingsBean.getInstance()
-                                        .getJahiaVarDiskPath()
-                                        + "/prepackagedSites/acme.zip", "ACME.zip");
-//                        jcrService.publishByMainId(
-//                                session.getNode(FIRST_SITECONTENT_ROOT_NODE + "/home")
-//                                        .getIdentifier(), Constants.EDIT_WORKSPACE,
-//                                Constants.LIVE_WORKSPACE, null, true, null);
-                    } catch (Exception e) {
-                        logger.error("Cannot create or publish site", e);
+                        TestHelper.createSite(FIRST_TESTSITE_NAME, "localhost", TestHelper.WEB_TEMPLATES,
+                                SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/acme.zip", "ACME.zip");
+                        session.save();
+                    } catch (Exception ex) {
+                        logger.warn("Exception during site creation", ex);
+                        fail("Exception during site creation");
                     }
-                    session.save();
                     return null;
                 }
             });
@@ -114,23 +107,19 @@ public class SimpleSearchTest extends JahiaTestCase {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
-                        TestHelper.createSite(SECOND_TESTSITE_NAME, "127.0.0.1",
-                                TestHelper.WEB_TEMPLATES, SettingsBean.getInstance()
-                                        .getJahiaVarDiskPath()
-                                        + "/prepackagedSites/acme.zip", "ACME.zip");
-//                        jcrService.publishByMainId(
-//                                session.getNode(SECOND_SITECONTENT_ROOT_NODE + "/home")
-//                                        .getIdentifier(), Constants.EDIT_WORKSPACE,
-//                                Constants.LIVE_WORKSPACE, null, true, null);
-                    } catch (Exception e) {
-                        logger.error("Cannot create or publish site", e);
+                        TestHelper.createSite(SECOND_TESTSITE_NAME, "127.0.0.1", TestHelper.WEB_TEMPLATES,
+                                SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/acme.zip", "ACME.zip");
+                        session.save();
+                    } catch (Exception ex) {
+                        logger.warn("Exception during site creation", ex);
+                        fail("Exception during site creation");
                     }
-                    session.save();
                     return null;
                 }
             });
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 
@@ -157,62 +146,50 @@ public class SimpleSearchTest extends JahiaTestCase {
     public void testSimpleFulltextSearchOnSingleSite() throws Exception {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
-        try {
-            RenderContext context = getContext();
+        RenderContext context = getContext();
 
-            SearchCriteria criteria = new SearchCriteria();
+        SearchCriteria criteria = new SearchCriteria();
 
-            CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
-            oneSite.setValue(FIRST_TESTSITE_NAME);
+        CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
+        oneSite.setValue(FIRST_TESTSITE_NAME);
 
-            CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
-            englishLang.setValue("en");
+        CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
+        englishLang.setValue("en");
 
-            criteria.setSites(oneSite);
-            criteria.setLanguages(englishLang);
-            criteria.getTerms().get(0).setTerm("ACME");
-            criteria.getTerms().get(0).getFields().setSiteContent(true);
+        criteria.setSites(oneSite);
+        criteria.setLanguages(englishLang);
+        criteria.getTerms().get(0).setTerm("ACME");
+        criteria.getTerms().get(0).getFields().setSiteContent(true);
 
-            List<Hit<?>> hits = searchService.search(criteria, context)
-                    .getResults();
-            int i = 0;
-            for (Hit<?> hit : hits) {
-                logger.info("[" + (++i) + "]: " + hit.getLink());
-            }
-            assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    19, hits.size());
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
+        List<Hit<?>> hits = searchService.search(criteria, context).getResults();
+        int i = 0;
+        for (Hit<?> hit : hits) {
+            logger.info("[" + (++i) + "]: " + hit.getLink());
         }
+        assertEquals("Unexpected number of search results for: " + criteria.toString(), 19, hits.size());
     }
 
     @Test
     public void testSimpleFulltextSearchOnSingleSiteInFrench() throws Exception {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
-        try {
-            RenderContext context = getContext(FIRST_SITECONTENT_ROOT_NODE, Locale.FRENCH);
+        RenderContext context = getContext(FIRST_SITECONTENT_ROOT_NODE, Locale.FRENCH);
 
-            SearchCriteria criteria = new SearchCriteria();
+        SearchCriteria criteria = new SearchCriteria();
 
-            CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
-            oneSite.setValue(FIRST_TESTSITE_NAME);
+        CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
+        oneSite.setValue(FIRST_TESTSITE_NAME);
 
-            CommaSeparatedMultipleValue frenchLang = new CommaSeparatedMultipleValue();
-            frenchLang.setValue("fr");
+        CommaSeparatedMultipleValue frenchLang = new CommaSeparatedMultipleValue();
+        frenchLang.setValue("fr");
 
-            criteria.setSites(oneSite);
-            criteria.setLanguages(frenchLang);
-            criteria.getTerms().get(0).setTerm("ACME");
-            criteria.getTerms().get(0).getFields().setSiteContent(true);
+        criteria.setSites(oneSite);
+        criteria.setLanguages(frenchLang);
+        criteria.getTerms().get(0).setTerm("ACME");
+        criteria.getTerms().get(0).getFields().setSiteContent(true);
 
-            List<Hit<?>> hits = searchService.search(criteria, context)
-                    .getResults();
-            assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    15, hits.size());
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
-        }
+        List<Hit<?>> hits = searchService.search(criteria, context).getResults();
+        assertEquals("Unexpected number of search results for: " + criteria.toString(), 15, hits.size());
     }
 
     @Test
@@ -220,123 +197,100 @@ public class SimpleSearchTest extends JahiaTestCase {
             throws Exception {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
-        try {
-            RenderContext context = getContext();
-        	
-            SearchCriteria criteria = new SearchCriteria();
+        RenderContext context = getContext();
 
-            CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
-            oneSite.setValue(FIRST_TESTSITE_NAME);
+        SearchCriteria criteria = new SearchCriteria();
 
-            CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
-            englishLang.setValue("en");
+        CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
+        oneSite.setValue(FIRST_TESTSITE_NAME);
 
-            criteria.setSites(oneSite);
-            criteria.setLanguages(englishLang);
-            criteria.getTerms().get(0).setTerm("ACME");
-            criteria.getTerms().get(0).getFields().setFileContent(true);
-            criteria.getTerms().get(0).getFields().setTitle(true);
-            criteria.getTerms().get(0).getFields().setDescription(true);
-            criteria.getTerms().get(0).getFields().setFilename(true);
-            criteria.getTerms().get(0).getFields().setKeywords(true);
+        CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
+        englishLang.setValue("en");
 
-            List<Hit<?>> hits = searchService.search(criteria, context)
-                    .getResults();
-            assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    13, hits.size());
+        criteria.setSites(oneSite);
+        criteria.setLanguages(englishLang);
+        criteria.getTerms().get(0).setTerm("ACME");
+        criteria.getTerms().get(0).getFields().setFileContent(true);
+        criteria.getTerms().get(0).getFields().setTitle(true);
+        criteria.getTerms().get(0).getFields().setDescription(true);
+        criteria.getTerms().get(0).getFields().setFilename(true);
+        criteria.getTerms().get(0).getFields().setKeywords(true);
 
-            criteria.setFileType("pdf");
-            hits = searchService.search(criteria, context).getResults();
-            assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    10, hits.size());
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
-        }
+        List<Hit<?>> hits = searchService.search(criteria, context).getResults();
+        assertEquals("Unexpected number of search results for: " + criteria.toString(), 13, hits.size());
+
+        criteria.setFileType("pdf");
+        hits = searchService.search(criteria, context).getResults();
+        assertEquals("Unexpected number of search results for: " + criteria.toString(), 10, hits.size());
     }
 
     @Test
     public void testFulltextMatchTypeSearchOnSingleSite() throws Exception {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
-        try {
-       	    RenderContext context = getContext();
+        RenderContext context = getContext();
 
-            SearchCriteria criteria = new SearchCriteria();
+        SearchCriteria criteria = new SearchCriteria();
 
-            CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
-            oneSite.setValue(FIRST_TESTSITE_NAME);
+        CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
+        oneSite.setValue(FIRST_TESTSITE_NAME);
 
-            CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
-            englishLang.setValue("en");
+        CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
+        englishLang.setValue("en");
 
-            criteria.setSites(oneSite);
-            criteria.setLanguages(englishLang);
-            criteria.getTerms().get(0).setTerm("civil Polytech");
-            criteria.getTerms().get(0).setMatch(MatchType.ALL_WORDS);
-            criteria.getTerms().get(0).getFields().setSiteContent(true);
+        criteria.setSites(oneSite);
+        criteria.setLanguages(englishLang);
+        criteria.getTerms().get(0).setTerm("civil Polytech");
+        criteria.getTerms().get(0).setMatch(MatchType.ALL_WORDS);
+        criteria.getTerms().get(0).getFields().setSiteContent(true);
 
-            List<Hit<?>> hits = searchService.search(criteria, context)
-                    .getResults();
-            assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    1, hits.size());
+        List<Hit<?>> hits = searchService.search(criteria, context).getResults();
+        assertEquals("Unexpected number of search results for: " + criteria.toString(), 1, hits.size());
 
-            criteria.getTerms().get(0).setTerm("civil Polytech");
-            criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
-            hits = searchService.search(criteria, context).getResults();
-            assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    3, hits.size());
+        criteria.getTerms().get(0).setTerm("civil Polytech");
+        criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
+        hits = searchService.search(criteria, context).getResults();
+        assertEquals("Unexpected number of search results for: " + criteria.toString(), 3, hits.size());
 
-            criteria.getTerms().get(0).setTerm("civil engineering");
-            criteria.getTerms().get(0).setMatch(MatchType.EXACT_PHRASE);
-            hits = searchService.search(criteria, context).getResults();
-            assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    3, hits.size());
+        criteria.getTerms().get(0).setTerm("civil engineering");
+        criteria.getTerms().get(0).setMatch(MatchType.EXACT_PHRASE);
+        hits = searchService.search(criteria, context).getResults();
+        assertEquals("Unexpected number of search results for: " + criteria.toString(), 3, hits.size());
 
-            criteria.getTerms().get(0).setTerm("civil -engineering");
-            criteria.getTerms().get(0).setMatch(MatchType.AS_IS);
-            hits = searchService.search(criteria, context).getResults();
-            assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    0, hits.size());
+        criteria.getTerms().get(0).setTerm("civil -engineering");
+        criteria.getTerms().get(0).setMatch(MatchType.AS_IS);
+        hits = searchService.search(criteria, context).getResults();
+        assertEquals("Unexpected number of search results for: " + criteria.toString(), 0, hits.size());
 
-            criteria.getTerms().get(0).setTerm("civil");
-            criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
-            criteria.getTerms().get(1).setTerm("engineering");
-            criteria.getTerms().get(1).setMatch(MatchType.WITHOUT_WORDS);
-            hits = searchService.search(criteria, context).getResults();
-            assertEquals("Unexpected number of search results for: " + criteria.toString(),
-                    0, hits.size());
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
-        }
+        criteria.getTerms().get(0).setTerm("civil");
+        criteria.getTerms().get(0).setMatch(MatchType.ANY_WORD);
+        criteria.getTerms().get(1).setTerm("engineering");
+        criteria.getTerms().get(1).setMatch(MatchType.WITHOUT_WORDS);
+        hits = searchService.search(criteria, context).getResults();
+        assertEquals("Unexpected number of search results for: " + criteria.toString(), 0, hits.size());
     }
 
     @Test
     public void testSimpleFulltextSearchOnTwoSites() throws Exception {
         SearchService searchService = ServicesRegistry.getInstance()
                 .getSearchService();
-        try {
-            RenderContext context = getContext(SECOND_SITECONTENT_ROOT_NODE, Locale.ENGLISH);
+        RenderContext context = getContext(SECOND_SITECONTENT_ROOT_NODE, Locale.ENGLISH);
 
-            SearchCriteria criteria = new SearchCriteria();
+        SearchCriteria criteria = new SearchCriteria();
 
-            CommaSeparatedMultipleValue twoSites = new CommaSeparatedMultipleValue();
-            twoSites.setValue(FIRST_TESTSITE_NAME + "," + SECOND_TESTSITE_NAME);
+        CommaSeparatedMultipleValue twoSites = new CommaSeparatedMultipleValue();
+        twoSites.setValue(FIRST_TESTSITE_NAME + "," + SECOND_TESTSITE_NAME);
 
-            CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
-            englishLang.setValue("en");
+        CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
+        englishLang.setValue("en");
 
-            criteria.setSites(twoSites);
-            criteria.setLanguages(englishLang);
-            criteria.getTerms().get(0).setTerm("ACME");
-            criteria.getTerms().get(0).getFields().setSiteContent(true);
+        criteria.setSites(twoSites);
+        criteria.setLanguages(englishLang);
+        criteria.getTerms().get(0).setTerm("ACME");
+        criteria.getTerms().get(0).getFields().setSiteContent(true);
 
-            List<Hit<?>> hits = searchService.search(criteria, context)
-                    .getResults();
-            assertEquals("Unexpected number of search results for: "
-                            + criteria.toString(), 19 * 2, hits.size());
-        } catch (Exception ex) {
-            logger.warn("Exception during test", ex);
-        }
+        List<Hit<?>> hits = searchService.search(criteria, context).getResults();
+        assertEquals("Unexpected number of search results for: " + criteria.toString(), 19 * 2, hits.size());
     }
 
     @AfterClass

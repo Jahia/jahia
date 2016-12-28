@@ -151,7 +151,7 @@ public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
         try {
             return StringUtils.isNotEmpty(userPassword) && PasswordService.getInstance().matches(userPassword, getProperty(J_PASSWORD).getString());
         } catch (RepositoryException e) {
-            logger.debug("Password verification failed for user " + getName(), e);
+            logger.warn("Unable to read j:password property for user: " + getName());
             return false;
         }
     }

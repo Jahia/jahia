@@ -82,7 +82,8 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static org.jahia.services.content.JCRContentUtils.*;
+import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
+import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
 
 /**
  * This is the default search provider used by Jahia and used the index created by Jahia's main
@@ -591,12 +592,13 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     private void addDateAndAuthorConstraints(SearchCriteria params,
                                              StringBuilder constraints, boolean xpath) {
 
-        if(StringUtils.isNotBlank(params.getCreatedBy())) {
-          addConstraint(constraints, AND, getLikeExpression(Constants.JCR_CREATEDBY, normalizeStringExpression(params.getCreatedBy().trim()), xpath));
+        if (params.getCreatedBy() != null && params.getCreatedBy().length() > 0) {
+            addConstraint(constraints, AND, getContainsExpr(Constants.JCR_CREATEDBY, stringToJCRSearchExp(params.getCreatedBy().trim()), xpath));
         }
-        
-        if(StringUtils.isNotBlank(params.getLastModifiedBy())) {
-          addConstraint(constraints, AND, getLikeExpression(Constants.JCR_LASTMODIFIEDBY, normalizeStringExpression(params.getLastModifiedBy().trim()), xpath));
+
+        if (params.getLastModifiedBy() != null
+                && params.getLastModifiedBy().length() > 0) {
+            addConstraint(constraints, AND, getContainsExpr(Constants.JCR_LASTMODIFIEDBY, stringToJCRSearchExp(params.getLastModifiedBy().trim()), xpath));
         }
 
         if (!params.getCreated().isEmpty()
@@ -1153,16 +1155,6 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
 
     private String cleanMultipleWhiteSpaces(String term) {
         return MULTIPLE_SPACES_PATTERN.matcher(term).replaceAll(" ");
-    }
-    
-    private String getLikeExpression(String paramName, String searchExpr, boolean isXpath){
-      String exprLowerValue = "'%" + searchExpr.toLowerCase() + "%'";
-      
-      if(isXpath){
-        return "jcr:like(fn:lower-case(" + getPropertyName(paramName, isXpath) + ")," + exprLowerValue + ")";
-      } else {
-        return "lower(" + getPropertyName(paramName, isXpath) + ") like " + exprLowerValue;
-      }
     }
 
     /* (non-Javadoc)

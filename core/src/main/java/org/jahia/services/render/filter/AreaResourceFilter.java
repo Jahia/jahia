@@ -72,9 +72,9 @@ public class AreaResourceFilter extends AbstractFilter {
             chain.pushAttribute(request, "areaListResource", resource.getNode());
         } else if (node.isNodeType(Constants.JAHIAMIX_LIST)) {
             if (request.getAttribute("areaListResource") == null) {
-                chain.pushAttribute(request, "areaResource", resource.getNode());
+                chain.pushAttribute(request, TemplateAttributesFilter.AREA_RESOURCE, resource.getNode());
             } else {
-                chain.pushAttribute(request, "areaResource", request.getAttribute("areaListResource"));
+                chain.pushAttribute(request, TemplateAttributesFilter.AREA_RESOURCE, request.getAttribute("areaListResource"));
             }
             chain.pushAttribute(request, "areaListResource", null);
         }

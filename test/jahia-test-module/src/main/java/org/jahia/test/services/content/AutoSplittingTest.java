@@ -150,11 +150,11 @@ public class AutoSplittingTest {
                                 throws RepositoryException {
                             try {
                                 TestHelper.createSite(TESTSITE_NAME);
-                            } catch (Exception e) {
-                                logger.error("Cannot create or publish site", e);
+                                session.save();
+                            } catch (Exception ex) {
+                                logger.warn("Exception during site creation", ex);
+                                fail("Exception during site creation");
                             }
-
-                            session.save();
                             return null;
                         }
                     });
@@ -168,6 +168,7 @@ public class AutoSplittingTest {
             initContent(session);
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
+            fail();
         }
     }
 

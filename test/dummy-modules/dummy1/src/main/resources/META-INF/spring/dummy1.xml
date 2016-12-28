@@ -7,6 +7,7 @@
         <property name="name" value="my-post-action"/>
     </bean>
 
-
-
+    <bean id="dummyModuleBean" class="org.jahia.bin.DefaultPostAction" >
+        <property name="name" value="my-second-post-action"/>
+    </bean>
 </beans>

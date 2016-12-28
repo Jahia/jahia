@@ -70,7 +70,7 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
     public void refresh() throws BeansException, IllegalStateException {
         if (BundleUtils.isJahiaModuleBundle(getBundle())) {
             final ModuleState state = BundleUtils.getModule(getBundle()).getState();
-            if (state != null && state.getState() != null && state.getState() == ModuleState.State.STARTED) {
+            if (state != null && state.getState() != null && state.getState() == ModuleState.State.SPRING_STARTING) {
                 // Module is already started by activator, start context now
                 BundleUtils.setContextToStartForModule(getBundle(), null);
                 try {

@@ -49,6 +49,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.View;
+import org.jahia.services.render.filter.AggregateFilter;
 import org.jahia.services.render.scripting.RequestDispatcherScript;
 import org.jahia.utils.StringResponseWrapper;
 import org.slf4j.Logger;
@@ -154,6 +155,13 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
         if (s != null ) {
             request.getSession().removeAttribute("webflowResponse"+identifierNoDashes);
             return s;
+        }
+
+        // skip aggregation for potentials fragments under the webflow
+        boolean aggregationSkippedForWebflow = false;
+        if(!AggregateFilter.skipAggregation(context.getRequest())) {
+            aggregationSkippedForWebflow = true;
+            context.getRequest().setAttribute(AggregateFilter.SKIP_AGGREGATION, true);
         }
 
         flowPath = MODULE_PREFIX_PATTERN.matcher(view.getPath()).replaceFirst("");
@@ -267,6 +275,9 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
             request.setAttribute("currentModule", oldModule);
         }
         try {
+            if (aggregationSkippedForWebflow) {
+                request.removeAttribute(AggregateFilter.SKIP_AGGREGATION);
+            }
             return responseWrapper.getString();
         } catch (IOException e) {
             throw new RenderException(e);

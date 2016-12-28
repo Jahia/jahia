@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:osgi="http://www.eclipse.org/gemini/blueprint/schema/blueprint"
+       xmlns:aop="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.eclipse.org/gemini/blueprint/schema/blueprint http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd">
+
+    <osgi:service interface="org.jahia.services.usermanager.JahiaUserManagerService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="The user manager is responsible to manage all the users in the DX environment"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="JahiaUserManagerService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.usermanager.JahiaGroupManagerService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="The group manager is responsible to manage all the groups in the DX environment"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="JahiaGroupManagerService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.sites.JahiaSitesService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX Multi Sites Management Service"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="JahiaSitesService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.scheduler.SchedulerService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX background task scheduling and management service"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="SchedulerService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.content.JCRStoreService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="This is a DX service, which manages the delegation of JCR store related deployment and export functions to the right JCRStoreProvider"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="JCRStoreService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.content.JCRSessionFactory">
+        <osgi:service-properties>
+            <entry key="Service Description" value="The entry point into the content repositories provided by the JCRStoreProvider list"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="jcrSessionFactory"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.content.JCRTemplate">
+        <osgi:service-properties>
+            <entry key="Service Description" value="Helper server to simplify and unify JCR data access"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="jcrTemplate"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.content.nodetypes.NodeTypeRegistry">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX implementation of the NodeTypeManager"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="nodeTypeRegistry"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.content.JCRPublicationService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="This is a DX service, which offers functionality to publish, unpublish or get publication info of JCR nodes"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="jcrPublicationService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.importexport.ImportExportService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX import/export service to manipulate different types of content"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="ImportExportService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.templates.JahiaTemplateManagerService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="Template and template set deployment and management service"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="JahiaTemplateManagerService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.templates.TemplatePackageRegistry">
+        <osgi:service-properties>
+            <entry key="Service Description" value="Template packages registry service"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.search.SearchService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX search service"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="SearchService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.deamons.filewatcher.JahiaFileWatcherService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX file watcher service"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="JahiaFileWatcherService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.seo.jcr.VanityUrlService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="Service to manage vanity urls in DX"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.image.JahiaImageService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="This service provides access to various image manipulation operations such as image resizing, cropping and rotating"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="imageService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.visibility.VisibilityService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="Service implementation for evaluating visibility conditions on a content item"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="visibilityService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.modulemanager.ModuleManager">
+        <osgi:service-properties>
+            <entry key="Service Description" value="Entry point interface for the module management service, providing functionality for module deployment, undeployment, start and stop operations, which are performed in a seamless way on a standalone installation as well as across the platform cluster"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="ModuleManager"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.mail.MailService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX mail service implementation"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="MailService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.workflow.WorkflowService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX service for managing content workflow"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="workflowService"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.jahia.services.render.RenderService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX node rendering service"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="RenderService"/>
+        </bean>
+    </osgi:service>
+
+
+    <osgi:list id="RenderFilterList" interface="org.jahia.services.render.filter.RenderFilter" availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="ErrorHandlerList" interface="org.jahia.bin.errors.ErrorHandler" availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="ActionList" interface="org.jahia.bin.Action" availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="ModuleChoiceListInitializerList"
+               interface="org.jahia.services.content.nodetypes.initializers.ModuleChoiceListInitializer"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="ModuleChoiceListRendererList"
+               interface="org.jahia.services.content.nodetypes.renderer.ModuleChoiceListRenderer"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="ModuleGlobalObjectList" interface="org.jahia.services.content.rules.ModuleGlobalObject"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="StaticAssetMappingList" interface="org.jahia.services.render.StaticAssetMapping"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="DefaultEventListenerList" interface="org.jahia.services.content.DefaultEventListener"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="BackgroundActionList" interface="org.jahia.services.content.rules.BackgroundAction"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="WorklowTypeRegistrationList" interface="org.jahia.services.workflow.WorklowTypeRegistration"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="VisibilityConditionRuleList" interface="org.jahia.services.visibility.VisibilityConditionRule"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="JCRNodeDecoratorDefinitionList"
+               interface="org.jahia.services.content.decorator.JCRNodeDecoratorDefinition" availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="JCRNodeValidatorDefinitionList"
+               interface="org.jahia.services.content.decorator.validation.JCRNodeValidatorDefinition"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="CacheKeyPartGeneratorList" interface="org.jahia.services.render.filter.cache.CacheKeyPartGenerator"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="HandlerMappingList" interface="org.springframework.web.servlet.HandlerMapping"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="ProviderFactoryList" interface="org.jahia.services.content.ProviderFactory" availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="AbstractServletFilterList" interface="org.jahia.bin.filters.AbstractServletFilter"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="SearchProviderList" interface="org.jahia.services.search.SearchProvider" availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="ModuleGWTResourcesList" interface="org.jahia.ajax.gwt.helper.ModuleGWTResources"
+               availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+    <osgi:list id="PasswordDigesterList" interface="org.jahia.services.pwd.PasswordDigester" availability="optional">
+        <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
+                       unbind-method="osgiUnbind"/>
+    </osgi:list>
+
+</beans>

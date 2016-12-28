@@ -76,6 +76,7 @@ public class Resource {
     private JCRNodeWrapper node;
     private String templateType;
     private String template;
+    private String resolvedTemplate;
     private String contextConfiguration;
     private Stack<String> wrappers = new Stack<String>();;
     private Script script;
@@ -150,7 +151,12 @@ public class Resource {
 
                     logger.warn("Performance warning: node loaded from JCR before the cache filter for resource: " +
                             nodePath + ", render filter implementations have to be review, " +
-                            "to avoid reading the node from the resource before the cache");
+                            "to avoid reading the node from the resource before the cache. " +
+                            "You can enable debug log level to look at the current thread stack, " +
+                            "this could help to identify the calling method");
+                    if(logger.isDebugEnabled()) {
+                        Thread.dumpStack();
+                    }
                 }
 
                 node = sessionWrapper.getNode(nodePath);
@@ -217,6 +223,7 @@ public class Resource {
 
     public void setTemplate(String template) {
         this.template = template;
+        this.resolvedTemplate = template;
     }
 
     public String getContextConfiguration() {
@@ -224,16 +231,20 @@ public class Resource {
     }
 
     public String getResolvedTemplate() {
-        String resolvedTemplate = template;
         if (StringUtils.isEmpty(resolvedTemplate)) {
-            try {
-                if (getNode().isNodeType("jmix:renderable") && getNode().hasProperty("j:view")) {
-                    resolvedTemplate = getNode().getProperty("j:view").getString();
-                } else {
+            if (!StringUtils.isEmpty(template)) {
+                resolvedTemplate = template;
+            } else {
+                try {
+                    if (node.isNodeType("jmix:renderable") && node.hasProperty("j:view")) {
+                        resolvedTemplate = node.getProperty("j:view").getString();
+                    } else {
+                        resolvedTemplate = "default";
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
                     resolvedTemplate = "default";
                 }
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
             }
         }
         return resolvedTemplate;
@@ -406,7 +417,7 @@ public class Resource {
         int result = isNodeLoaded() ? node.hashCode() : 0;
         result = 31 * result + (nodePath != null ? nodePath.hashCode() : 0);
         result = 31 * result + (templateType != null ? templateType.hashCode() : 0);
-        result = 31 * result + (getTemplate() != null ? getTemplate().hashCode() : 0);
+        result = 31 * result + (getResolvedTemplate() != null ? getResolvedTemplate().hashCode() : 0);
         result = 31 * result + (wrappers != null ? wrappers.hashCode() : 0);
         result = 31 * result + (options != null ? options.hashCode() : 0);
         result = 31 * result + (resourceNodeType != null ? resourceNodeType.hashCode() : 0);

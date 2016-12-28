@@ -110,4 +110,17 @@ public interface BundleService {
      */
     void uninstall(BundleInfo bundleInfo, String target)
             throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
+
+    /**
+     * Performs the refresh operation with the provided bundle on the target group of cluster nodes.
+     *
+     * @param bundleInfo The bundle to perform operation for
+     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
+     *            values)
+     * @throws ModuleManagementException in case of operation failure
+     * @throws ModuleNotFoundException in case the corresponding bundle cannot be found
+     * @throws InvalidTargetException in case target is not a valid target for module operation
+     */
+    void refresh(BundleInfo bundleInfo, String target)
+            throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
 }

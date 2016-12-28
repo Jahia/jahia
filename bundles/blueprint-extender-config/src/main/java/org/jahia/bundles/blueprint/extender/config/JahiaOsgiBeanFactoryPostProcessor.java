@@ -62,10 +62,10 @@ import java.util.Map;
 
 /**
  * Post processor that registers the {@link JahiaModuleAwareProcessor} for beans, that would like to be aware of the current module.
- * 
+ *
  * Also exposes Spring beans which are in the <code>Export-Package</code> manifest header as OSGi services and "imports" external services
  * as Spring beans in the module Spring context if they are mentioned in the <code>Import-Package</code> manifest header.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostProcessor {
@@ -75,6 +75,7 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
     @Override
     public void postProcessBeanFactory(BundleContext bundleContext, ConfigurableListableBeanFactory beanFactory)
             throws BeansException, InvalidSyntaxException, BundleException {
+
         if (!BundleUtils.isJahiaModuleBundle(bundleContext.getBundle())) {
             return;
         }
@@ -83,10 +84,30 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
 
         logger.info("Start post-processing of the Spring bean factory for bundle {}", bundleName);
 
-        // register bean post-processor for JahiaModuleAware implementors
-        beanFactory
-                .addBeanPostProcessor(new JahiaModuleAwareProcessor(BundleUtils.getModule(bundleContext.getBundle())));
+        registerCoreBeanPostProcessors(bundleContext, beanFactory);
 
+        registerModulesBeanPostProcessors(beanFactory);
+
+        logger.info("Finished post-processing of the Spring bean factory for bundle {} in {} ms", bundleName,
+                System.currentTimeMillis() - timer);
+    }
+
+    private void registerCoreBeanPostProcessors(BundleContext bundleContext, ConfigurableListableBeanFactory beanFactory) {
+
+        // Register bean post-processor for JahiaModuleAware implementors
+        beanFactory.addBeanPostProcessor(new JahiaModuleAwareProcessor(BundleUtils.getModule(bundleContext.getBundle())));
+    }
+
+    /**
+     * This function is kept to maintain compatibility with JahiaModulesBeanPostProcessor instances defined in modules,
+     * but this mechanism is buggy because modules' spring contexts are started independently since 7.2, so beans could
+     * be registered before the JahiaModulesBeanPostProcessor causing unintended side effects.
+     *
+     * We recommend to use a more OSGI compliant way to perform intermodule beans communication (service trackers, osgi:list, etc.)
+     *
+     * @param beanFactory current bean factory
+     */
+    private void registerModulesBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
         for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
             if (aPackage.getContext() != null && aPackage.getContext().isActive()) {
                 Map<String, JahiaModulesBeanPostProcessor> postProcessors = aPackage.getContext().getBeansOfType(JahiaModulesBeanPostProcessor.class);
@@ -95,9 +116,5 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
                 }
             }
         }
-
-        logger.info("Finished post-processing of the Spring bean factory for bundle {} in {} ms", bundleName,
-                System.currentTimeMillis() - timer);
     }
-
 }

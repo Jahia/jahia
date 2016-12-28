@@ -48,7 +48,7 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>7.2.0.0-backlog_5637-SNAPSHOT</version>
+        <version>7.3.0.0-backlog_5637-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-impl</artifactId>
@@ -60,12 +60,12 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-api</artifactId>
-            <version>7.2.0.0-backlog_5637-SNAPSHOT</version>
+            <version>7.3.0.0-backlog_5637-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>7.2.0.0-backlog_5637-SNAPSHOT</version>
+            <version>7.3.0.0-backlog_5637-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jahia.configuration</groupId>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>org.jahia.test</groupId>
             <artifactId>core-test-framework</artifactId>
-            <version>7.2.0.0-backlog_5637-SNAPSHOT</version>
+            <version>7.3.0.0-backlog_5637-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -316,11 +316,6 @@
                     <groupId>xml-apis</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.phloc</groupId>
-            <artifactId>phloc-css</artifactId>
-            <version>3.6.0</version>
         </dependency>
 
         <!--Hibernate dependencies-->
@@ -752,12 +747,12 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>1.13</version>
+            <version>1.14</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>1.13</version>
+            <version>1.14</version>
             <exclusions>
                 <exclusion>
                     <!--
@@ -782,6 +777,114 @@
                     <groupId>org.apache.cxf</groupId>
                     <artifactId>cxf-rt-rs-client</artifactId>
                 </exclusion>
+                
+                <!-- We exclude support for the following formats, which we do not parse -->
+                <exclusion>
+                    <!-- Matlab -->
+                    <artifactId>jmatio</artifactId>
+                    <groupId>org.tallison</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- MS Access -->
+                    <artifactId>jackcess</artifactId>
+                    <groupId>com.healthmarketscience.jackcess</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- MS Access -->
+                    <artifactId>jackcess-encrypt</artifactId>
+                    <groupId>com.healthmarketscience.jackcess</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Compressed files -->
+                    <artifactId>xz</artifactId>
+                    <groupId>org.tukaani</groupId>
+                </exclusion>
+                <exclusion>
+                    <!--  MP4 video -->
+                    <artifactId>isoparser</artifactId>
+                    <groupId>com.googlecode.mp4parser</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- RSS -->
+                    <artifactId>rome</artifactId>
+                    <groupId>com.rometools</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Source code (C++, Java, Groovy) -->
+                    <artifactId>jhighlight</artifactId>
+                    <groupId>org.codelibs</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Outlook PST mail files -->
+                    <artifactId>java-libpst</artifactId>
+                    <groupId>com.pff</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- RAR archives -->
+                    <artifactId>junrar</artifactId>
+                    <groupId>com.github.junrar</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Natural language processing stuff -->
+                    <artifactId>opennlp-tools</artifactId>
+                    <groupId>org.apache.opennlp</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- JSON -->
+                    <artifactId>json-simple</artifactId>
+                    <groupId>com.googlecode.json-simple</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- JSON -->
+                    <artifactId>gson</artifactId>
+                    <groupId>com.google.code.gson</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Network Common Data Form: scientific data -->
+                    <artifactId>netcdf4</artifactId>
+                    <groupId>edu.ucar</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Meteorology data -->
+                    <artifactId>grib</artifactId>
+                    <groupId>edu.ucar</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Unidata's Common Data Model -->
+                    <artifactId>cdm</artifactId>
+                    <groupId>edu.ucar</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Unidata's  httpservices -->
+                    <artifactId>httpservices</artifactId>
+                    <groupId>edu.ucar</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Spatial Information System -->
+                    <artifactId>sis-utility</artifactId>
+                    <groupId>org.apache.sis.core</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Spatial Information System -->
+                    <artifactId>sis-netcdf</artifactId>
+                    <groupId>org.apache.sis.storage</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Spatial Information System -->
+                    <artifactId>sis-metadata</artifactId>
+                    <groupId>org.apache.sis.core</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- Geospatial data -->
+                    <artifactId>geoapi</artifactId>
+                    <groupId>org.opengis</groupId>
+                </exclusion>
+                <exclusion>
+                    <!-- CSV files -->
+                    <artifactId>commons-csv</artifactId>
+                    <groupId>org.apache.commons</groupId>
+                </exclusion>
+                <!-- end of excluded dependencies for various formats -->
             </exclusions>
         </dependency>
 
@@ -925,6 +1028,14 @@
                 <exclusion>
                     <groupId>org.apache.cxf</groupId>
                     <artifactId>cxf-rt-transports-http</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jdom</artifactId>
+                    <groupId>jdom</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>stax-api</artifactId>
+                    <groupId>javax.xml.stream</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -1104,6 +1215,10 @@
                 <exclusion>
                     <groupId>org.jboss.weld.se</groupId>
                     <artifactId>weld-se-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>poi-ooxml</artifactId>
+                    <groupId>org.apache.poi</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -1314,8 +1429,8 @@
         <dependency>
             <groupId>com.yahoo.platform.yui</groupId>
             <artifactId>yuicompressor</artifactId>
-            <version>2.4.7</version>
-            <classifier>standalone</classifier>
+            <version>2.4.9-20161014</version>
+           <classifier>standalone</classifier>
         </dependency>
 
         <dependency>
@@ -1356,6 +1471,11 @@
             <artifactId>guava</artifactId>
             <version>15.0</version>
             <classifier>cdi1.0</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
         <dependency>

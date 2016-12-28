@@ -47,10 +47,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.util.StringUtils;
+import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.Constants;
 import org.jahia.services.modulemanager.InvalidModuleException;
+import org.jahia.services.modulemanager.InvalidModuleKeyException;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.ModuleNotFoundException;
@@ -63,6 +66,7 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 /**
  * The main entry point service for the module management service, providing functionality for module deployment, undeployment, start and
@@ -71,11 +75,12 @@ import org.springframework.core.io.Resource;
  * @author Sergiy Shyrkov
  */
 public class ModuleManagerImpl implements ModuleManager {
+
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
 
     private BundleService bundleService;
     private BundlePersister persister;
-    
+
     /**
      * Operation callback which implementation performs the actual operation.
      *
@@ -167,11 +172,15 @@ public class ModuleManagerImpl implements ModuleManager {
         PersistentBundle bundleInfo = null;
         Exception error = null;
         try {
-            bundleInfo = PersistentBundleInfoBuilder.build(bundleResource);
+            boolean requiresHandling = !((bundleResource instanceof UrlResource)
+                    && bundleResource.getURL().getProtocol().equals(Constants.URL_PROTOCOL_DX));
+            bundleInfo = PersistentBundleInfoBuilder.build(bundleResource, requiresHandling, requiresHandling);
             if (bundleInfo == null) {
                 throw new InvalidModuleException();
             }
-            persister.store(bundleInfo);
+            if (requiresHandling) {
+                persister.store(bundleInfo);
+            }
             result = install(bundleInfo, target, start);
         } catch (ModuleManagementException e) {
             error = e;
@@ -310,5 +319,37 @@ public class ModuleManagerImpl implements ModuleManager {
                 bundleService.uninstall(info, target);
             }
         });
+    }
+
+    @Override
+    public OperationResult refresh(String bundleKey, String target) {
+
+        return performOperation(bundleKey, target, new BundleOperation() {
+
+            @Override
+            public String getName() {
+                return "Refresh";
+            }
+
+            @Override
+            public void perform(BundleInfo info, String target) throws ModuleManagementException {
+                bundleService.refresh(info, target);
+            }
+        });
+    }
+
+    @Override
+    public BundleState getLocalState(String bundleKey) throws ModuleManagementException {
+        BundleInfo info;
+        try {
+            info = BundleInfo.fromKey(bundleKey);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidModuleKeyException(bundleKey);
+        }
+        Bundle bundle = BundleUtils.getBundleBySymbolicName(info.getSymbolicName(), info.getVersion());
+        if (bundle == null) {
+            throw new ModuleNotFoundException(info.getKey());
+        }
+        return BundleState.fromInt(bundle.getState());
     }
 }

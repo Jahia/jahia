@@ -390,7 +390,7 @@
         <property name="batchSize" value="${jahia.publication.batchSize:100}"/>
     </bean>
 
-    <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository"
+    <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" factory-method="getInstance"
           init-method="start" destroy-method="stop" depends-on="JahiaTemplateManagerService,dataSource">
         <property name="configFile" value="WEB-INF/etc/repository/jackrabbit/repository.xml"/>
         <property name="servletContextAttributeName"

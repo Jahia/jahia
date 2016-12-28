@@ -46,6 +46,8 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -288,18 +290,19 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             fillProperties(map, view.getProperties());
             boolean isStudio = site != null && site.getPath().startsWith("/modules");
             if (isViewVisible(view.getKey(), param, map, isStudio)) {
-                String displayName = Messages.get(view.getModule(), declaringPropertyDefinition.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(view.getKey()), locale, view.getKey());
+                JahiaTemplatesPackage pkg = view.getModule() != null ? view.getModule() : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(JahiaTemplatesPackage.ID_DEFAULT);
+                String displayName = Messages.get(pkg, declaringPropertyDefinition.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(view.getKey()),
+                        locale, view.getKey());
                 ChoiceListValue c =  new ChoiceListValue(displayName, map, new ValueImpl(view.getKey(), PropertyType.STRING, false));
                 try {
-
-                    final Resource imagePath = view.getModule().getResource(File.separator + "img" + File.separator + c.getValue().getString() + ".png");
+                    final Resource imagePath = pkg.getResource(File.separator + "img" + File.separator + c.getValue().getString() + ".png");
 
                     if (imagePath != null && imagePath.exists()) {
                         String s = Jahia.getContextPath();
                         if (s.equals("/")) {
                             s = "";
                         }
-                        c.addProperty("image", s + (view.getModule().getRootFolderPath().startsWith("/")?"":"/")+view.getModule().getRootFolderPath() + "/img/" + c.getValue().getString() + ".png");
+                        c.addProperty("image", s + (pkg.getRootFolderPath().startsWith("/")?"":"/")+ pkg.getRootFolderPath() + "/img/" + c.getValue().getString() + ".png");
                     }
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);

@@ -1256,11 +1256,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             // add current workspace version
             final GWTJahiaNodeVersion liveVersion = new GWTJahiaNodeVersion("live", node);
             result.add(0, liveVersion);
-            liveVersion.setUrl(navigation.getNodeURL(null, nodeWrapper, null, null, "live", getLocale()));
+            liveVersion.setUrl(navigation.getNodeURL(null, nodeWrapper, null, null, "live", getLocale(), false));
 
             final GWTJahiaNodeVersion defaultVersion = new GWTJahiaNodeVersion("default", node);
             result.add(0, defaultVersion);
-            defaultVersion.setUrl(navigation.getNodeURL(null, nodeWrapper, null, null, "default", getLocale()));
+            defaultVersion.setUrl(navigation.getNodeURL(null, nodeWrapper, null, null, "default", getLocale(), false));
 
             // get sublist: Todo Find a better way
             int size = result.size();
@@ -1309,14 +1309,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public String getNodeURL(String servlet, String path, Date versionDate, String versionLabel, String workspace,
-                             String locale) throws GWTJahiaServiceException {
+                             String locale, boolean findDisplayable) throws GWTJahiaServiceException {
         final JCRSessionWrapper session = retrieveCurrentSession(workspace != null ? workspace : getWorkspace(),
                 locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale(), false);
         try {
             JCRNodeWrapper node = session.getNode(path);
 
             String nodeURL = this.navigation.getNodeURL(servlet, node, versionDate, versionLabel, session.getWorkspace().getName(),
-                    session.getLocale());
+                    session.getLocale(), findDisplayable);
 
             if ("live".equals(workspace) && !SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled()) {
                 nodeURL = Url.appendServerNameIfNeeded(node, nodeURL, getRequest());
@@ -2397,7 +2397,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 return url;
             } else {
                 return getResponse().encodeURL(this.navigation.getNodeURL(servlet, nodeByIdentifier, versionDate, versionLabel, session.getWorkspace().getName(),
-                        session.getLocale()));
+                        session.getLocale(), false));
             }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e);

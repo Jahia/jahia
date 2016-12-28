@@ -76,6 +76,8 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Jahia rules-based event listener.
@@ -107,10 +109,10 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public RulesListener() {
         instances.add(this);
-        dslFiles = new LinkedList<Resource>();
-        globalObjects = new LinkedHashMap<String, Object>();
+        dslFiles = new CopyOnWriteArrayList<Resource>();
+        globalObjects = new ConcurrentHashMap<String, Object>();
         inRules = new ThreadLocal<Boolean>();
-        modulePackageNameMap = new LinkedHashMap<String, String>();
+        modulePackageNameMap = new ConcurrentHashMap<String, String>();
     }
 
     public static RulesListener getInstance(String workspace) {

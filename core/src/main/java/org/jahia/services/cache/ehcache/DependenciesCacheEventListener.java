@@ -70,7 +70,7 @@ public class DependenciesCacheEventListener extends CacheEventListenerAdapter {
         if (logger.isDebugEnabled()) {
             logger.debug("EHCache has evicted: " + element.getObjectKey() + " from cache " + cache.getName());
         }
-        removeDependentElements(cache, element);
+        removeDependentElements(cache, element, false);
     }
 
     @Override
@@ -81,15 +81,16 @@ public class DependenciesCacheEventListener extends CacheEventListenerAdapter {
         if (logger.isDebugEnabled()) {
             logger.debug("EHCache has expired: " + element.getObjectKey() + " from cache " + cache.getName());
         }
-        removeDependentElements(cache, element);
+        removeDependentElements(cache, element, true);
     }
 
-    private void removeDependentElements(Ehcache cache, Element element) {
+    private void removeDependentElements(Ehcache cache, Element element, boolean expired) {
         // Element is not present in the cache anymore
         ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
         Cache htmlCache = cacheProvider.getCache();
+        Cache dependenciesCache = cacheProvider.getDependenciesCache();
         String cacheName = cache.getName();
-        if(cacheName.equals(cacheProvider.getDependenciesCache().getName()) || cacheName.equals(cacheProvider.getRegexpDependenciesCache().getName())) {
+        if(cacheName.equals(dependenciesCache.getName()) || cacheName.equals(cacheProvider.getRegexpDependenciesCache().getName())) {
             // This is a dependency path that has been evicted
             @SuppressWarnings("unchecked")
             Set<String> deps = (Set<String>) element.getObjectValue();
@@ -98,7 +99,10 @@ public class DependenciesCacheEventListener extends CacheEventListenerAdapter {
             }
             if (deps.contains(DependenciesCacheEvictionPolicy.ALL)) {
                 // do not propagate
+                logger.warn("Due to the " + (expired ? "expiration" : "eviction") + " of a big entry in cache: '" + cacheName +
+                        "', we are flushing the whole html cache and dependencies cache for key: " + element.getObjectKey());
                 htmlCache.removeAll(true);
+                dependenciesCache.removeAll(true);
             } else {
                 invalidateDependencies(deps, htmlCache);
             }

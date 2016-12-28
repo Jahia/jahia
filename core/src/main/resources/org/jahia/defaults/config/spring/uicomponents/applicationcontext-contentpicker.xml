@@ -535,6 +535,7 @@
                 <value>jnt:contentFolder</value>
                 <value>jnt:contentList</value>
                 <value>nt:folder</value>
+                <value>jmix:siteContent</value>
             </list>
         </property>
 
@@ -546,6 +547,7 @@
                 <value>jnt:contentList</value>
                 <value>jnt:contentFolder</value>
                 <value>nt:folder</value>
+                <value>jmix:siteContent</value>
             </list>
         </property>
         <!-- table columns-->

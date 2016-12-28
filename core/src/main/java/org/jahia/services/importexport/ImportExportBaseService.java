@@ -155,6 +155,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private List<AttributeProcessor> attributeProcessors;
     private TemplatePackageRegistry templatePackageRegistry;
 
+    private static final HashSet<String> siteExportNodeTypesToIgnore = Sets.newHashSet("jnt:templatesFolder", "jnt:externalUser", "jnt:workflowTask");
+    private static final HashSet<String> defaultExportNodeTypesToIgnore = Sets.newHashSet(Constants.JAHIANT_VIRTUALSITE, "jnt:workflowTask");
+
     private ImportExportBaseService() {
     }
 
@@ -328,15 +331,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
         if (params.containsKey(INCLUDE_USERS)) {
-            result+= estimateSubnodesNumber(session.getNode("/users"));
+            result+= estimateSubnodesNumber(session.getNode("/users"), defaultExportNodeTypesToIgnore);
         }
 
         if (params.containsKey(INCLUDE_ROLES)) {
-            result+= estimateSubnodesNumber(session.getNode("/roles"));
+            result+= estimateSubnodesNumber(session.getNode("/roles"), defaultExportNodeTypesToIgnore);
         }
 
         if (params.containsKey(INCLUDE_MOUNTS)) {
-            result+= estimateSubnodesNumber(session.getNode("/mounts"));
+            result+= estimateSubnodesNumber(session.getNode("/mounts"), defaultExportNodeTypesToIgnore);
         }
 
         if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
@@ -358,7 +361,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         int result = 1;
         final Iterator<JCRNodeWrapper> iterator = jahiaSite.getNodes().iterator();
         while (iterator.hasNext()) {
-            result+=estimateSubnodesNumber(iterator.next());
+            result+=estimateSubnodesNumber(iterator.next(), siteExportNodeTypesToIgnore);
         }
         return result;
     }
@@ -369,17 +372,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      * @return
      * @throws RepositoryException
      */
-    private int estimateSubnodesNumber(JCRNodeWrapper node) throws RepositoryException {
+    private int estimateSubnodesNumber(JCRNodeWrapper node, Set<String> nodeTypesToIgnore) throws RepositoryException {
         int result = 0;
-        Set<String> typesToIgnore = new HashSet<String>();
-        typesToIgnore.add(Constants.JAHIANT_VIRTUALSITE);
-        typesToIgnore.add("jnt:workflowTask");
-        if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+        if (!nodeTypesToIgnore.contains(node.getPrimaryNodeTypeName())) {
             result++;
             NodeIterator nodeChildIterator = node.getNodes();
             while (nodeChildIterator.hasNext()) {
                 JCRNodeWrapper childNode = (JCRNodeWrapper) nodeChildIterator.next();
-                result+= estimateSubnodesNumber(childNode);
+                result+= estimateSubnodesNumber(childNode, nodeTypesToIgnore);
             }
         }
         return  result;
@@ -424,10 +424,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
 
-        Set<String> tti = new HashSet<String>();
-        tti.add(Constants.JAHIANT_VIRTUALSITE);
-        tti.add("jnt:workflowTask");
-
         if (params.containsKey(INCLUDE_USERS)) {
             // export users
             ZipOutputStream zzout;
@@ -440,7 +436,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
             try {
                 logger.info("Exporting Users Started");
-                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/users")), zzout, tti, externalReferences, params, exportContext);
+                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/users")), zzout, defaultExportNodeTypesToIgnore, externalReferences, params, exportContext);
                 logger.info("Exporting Users Ended");
             } catch (IOException e) {
                 logger.warn("Cannot export due to some IO exception :"+e.getMessage());
@@ -462,7 +458,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
             try {
                 logger.info("Exporting Roles Started");
-                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/roles")), zzout, tti, externalReferences, params, exportContext);
+                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/roles")), zzout, defaultExportNodeTypesToIgnore, externalReferences, params, exportContext);
                 logger.info("Exporting Roles Ended");
             } catch (Exception e) {
                 logger.error("Cannot export roles", e);
@@ -478,7 +474,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                 try {
                     logger.info("Exporting Mount points Started");
-                    exportNodesWithBinaries(session.getRootNode(), Collections.singleton(mounts), zzout, tti,
+                    exportNodesWithBinaries(session.getRootNode(), Collections.singleton(mounts), zzout, defaultExportNodeTypesToIgnore,
                             externalReferences, params, exportContext);
                     logger.info("Exporting Mount points Ended");
                 } catch (Exception e) {
@@ -491,7 +487,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Set<JCRNodeWrapper> refs = new HashSet<JCRNodeWrapper>();
         for (String reference : externalReferences) {
             JCRNodeWrapper node = session.getNodeByUUID(reference);
-            if (!tti.contains(node.getPrimaryNodeTypeName())) {
+            if (!defaultExportNodeTypesToIgnore.contains(node.getPrimaryNodeTypeName())) {
                 refs.add(node);
             }
         }
@@ -500,7 +496,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             ZipOutputStream zzout = getZipOutputStream(zout, serverDirectory + "/references.zip");
             try {
                 logger.info("Exporting References Started");
-                exportNodesWithBinaries(session.getRootNode(), refs, zzout, tti, externalReferences, params, exportContext);
+                exportNodesWithBinaries(session.getRootNode(), refs, zzout, defaultExportNodeTypesToIgnore, externalReferences, params, exportContext);
                 logger.info("Exporting References Ended");
             } catch (Exception e) {
                 logger.error("Cannot export References", e);
@@ -554,11 +550,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         JCRNodeWrapper node = session.getNode("/sites/" +
                 site.getSiteKey());
         Set<JCRNodeWrapper> nodes = Collections.singleton(node);
-        final HashSet<String> tti = new HashSet<String>();
-        tti.add("jnt:templatesFolder");
-        tti.add("jnt:externalUser");
-        tti.add("jnt:workflowTask");
-        exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti,
+        exportNodesWithBinaries(session.getRootNode(), nodes, zout, siteExportNodeTypesToIgnore,
                 externalReferences, params,exportContext);
         zout.finish();
     }

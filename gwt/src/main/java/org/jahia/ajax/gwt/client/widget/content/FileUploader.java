@@ -96,12 +96,12 @@ public class FileUploader extends Window {
     private int fieldCount = 0;
     private FormPanel form;
     private List<UploadPanel> uploads = new LinkedList<UploadPanel>();
-    
+
     private class UploadPanel extends HorizontalPanel {
 
         private Button remove;
         private FileUpload upload;
-        
+
         public UploadPanel() {
             super();
             final UploadPanel panel = this;
@@ -121,9 +121,9 @@ public class FileUploader extends Window {
             if (uploads.size() == 0) {
                 remove.setVisible(false);
             }
-            
+
             add(remove);
-            
+
             upload = new FileUpload();
             upload.addChangeHandler(new ChangeHandler() {
                 private boolean done;
@@ -144,16 +144,16 @@ public class FileUploader extends Window {
             DOM.setElementAttribute(upload.getElement(), "size", "53");
             upload.setName("uploadedFile" + fieldCount++);
             upload.addStyleName("fm-bottom-margin");
-            
+
             add(upload);
-            
+
             uploads.add(this);
         }
 
         public FileUpload getUpload() {
             return upload;
         }
-        
+
         public void checkVisibility() {
             remove.setVisible(uploads.size() > 1);
         }
@@ -281,7 +281,7 @@ public class FileUploader extends Window {
                 bar.reset();
                 String selectFileAfterDataUpdate = null;
                 String result = formEvent.getResultHtml();
-           
+
                 removeAll();
                 String[] results = result.split("\n");
 
@@ -321,15 +321,10 @@ public class FileUploader extends Window {
                                 final String newName = (String) exist[2].getValue();
                                 uploadeds.add(new String[] { location.getPath(), tmpName, Integer.toString(operation), newName });
                             }
-                            com.google.gwt.user.client.Window.alert("Before uploadedFile");
                             JahiaContentManagementService.App.getInstance().uploadedFile(uploadeds, new BaseAsyncCallback() {
                                 public void onSuccess(Object result) {
                                     endUpload(unzip, linker);
                                 }
-                                public void onApplicationFailure(Throwable caught) {
-                                    com.google.gwt.user.client.Window.alert("Error: " + caught);
-                                    unmask();
-                                };
                             });
                         }
                     });

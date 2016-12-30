@@ -63,7 +63,7 @@ import java.util.Date;
  * @author : $Author$ Last Modified : $Date$
  */
 public class JCRValueWrapperImpl implements JCRValueWrapper {
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRValueWrapperImpl.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRValueWrapperImpl.class);
     private Value value;
     private final ExtendedPropertyDefinition definition;
     private final JCRSessionWrapper session;
@@ -73,23 +73,21 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
         this.definition = definition;
         this.session = session;
     }
-
-    /**
-     * @return a CategoryBean if value match a valid category
-     * @throws ValueFormatException if category not found or object not a category
-     * @throws RepositoryException  for all other errors
-     */
+    
+    @Override
     public CategoryBean getCategory() throws ValueFormatException, RepositoryException {
         try {
             // As we are storing path inside the jcr and taht actually we cannot search by path on the
             // category service we need to get the last value to have the "real" key of the category
             Category category = null;
             if (getType() == PropertyType.STRING) {
-                category = Category.getCategory(getString().substring(getString().lastIndexOf("/") + 1));
+                category = Category.getCategory(getString().substring(getString().lastIndexOf('/') + 1));
             } else if (getType() == PropertyType.REFERENCE) {
                 category = Category.getCategoryByUUID(getString());
             }
-            if (category == null) throw new ValueFormatException(getString() + " is not a valid Jahia Category");
+            if (category == null) {
+                throw new ValueFormatException(getString() + " is not a valid Jahia Category");
+            }
             return new CategoryBean(category);
         } catch (JahiaException e) {
             logger.error("Category not found");
@@ -97,47 +95,58 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
 
         throw new ItemNotFoundException("category " + getString() + " not found");
     }
-
-    public PropertyDefinition getDefinition() throws RepositoryException {
+    
+    @Override
+    public PropertyDefinition getDefinition() {
         return definition;
     }
-
+    
+    @Override
     public Date getTime() throws ValueFormatException, RepositoryException {
         return getDate().getTime();
     }
-
+    
+    @Override
     public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
         return value.getString();
     }
 
+    @Override
     public InputStream getStream() throws IllegalStateException, RepositoryException {
         return value.getStream();
     }
 
+    @Override
     public long getLong() throws ValueFormatException, IllegalStateException, RepositoryException {
         return value.getLong();
     }
 
+    @Override
     public double getDouble() throws ValueFormatException, IllegalStateException, RepositoryException {
         return value.getDouble();
     }
 
+    @Override
     public Calendar getDate() throws ValueFormatException, IllegalStateException, RepositoryException {
         return value.getDate();
     }
 
+    @Override
     public boolean getBoolean() throws ValueFormatException, IllegalStateException, RepositoryException {
         return value.getBoolean();
     }
 
+    @Override
     public Binary getBinary() throws RepositoryException {
         return value.getBinary();
     }
 
+    @Override
     public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
         return value.getDecimal();
     }
 
+    @Override
     public JCRNodeWrapper getNode() throws ValueFormatException, IllegalStateException, RepositoryException {
         if (definition.getRequiredType() == PropertyType.REFERENCE || definition.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
             try {
@@ -151,7 +160,7 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
             } catch (ItemNotFoundException e) {
                 String path = value.getString();
                 try {
-                    return (session.getNode(path));
+                    return session.getNode(path);
                 } catch (PathNotFoundException e1) {
                     return null;
                 }
@@ -162,6 +171,7 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
         }
     }
 
+    @Override
     public int getType() {
         return value.getType();
     }

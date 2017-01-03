@@ -60,7 +60,7 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
     private GroupNodeMembersIterator cacheIterator;
 
     public GroupNodeMembers(JCRGroupNode group) throws RepositoryException {
-        cache = new ArrayList<JCRNodeWrapper>();
+        cache = new ArrayList<>();
         cacheIterator = new GroupNodeMembersIterator(group.getNode("j:members"));
     }
 
@@ -96,12 +96,14 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
     }
 
     class CachedGroupNodeMembersIterator implements ListIterator<JCRNodeWrapper> {
+
         int cursor = 0;
 
         CachedGroupNodeMembersIterator(int cursor) {
             this.cursor = cursor;
         }
 
+        @Override
         public boolean hasNext() {
             try {
                 get(cursor);
@@ -111,6 +113,7 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
             }
         }
 
+        @Override
         public JCRNodeWrapper next() {
             try {
                 int i = cursor;
@@ -122,14 +125,17 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
             }
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public boolean hasPrevious() {
             return cursor != 0;
         }
 
+        @Override
         public JCRNodeWrapper previous() {
             try {
                 int i = cursor - 1;
@@ -141,18 +147,22 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
             }
         }
 
+        @Override
         public int nextIndex() {
             return cursor;
         }
 
+        @Override
         public int previousIndex() {
             return cursor-1;
         }
 
+        @Override
         public void set(JCRNodeWrapper e) {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void add(JCRNodeWrapper e) {
             throw new UnsupportedOperationException();
         }
@@ -161,11 +171,11 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
 
     class GroupNodeMembersIterator implements Iterator<JCRNodeWrapper> {
 
-        Stack<JCRNodeIteratorWrapper> its;
+        Deque<JCRNodeIteratorWrapper> its;
         JCRNodeWrapper next = null;
 
         GroupNodeMembersIterator(JCRNodeWrapper membersNode) throws RepositoryException {
-            this.its = new Stack<JCRNodeIteratorWrapper>();
+            this.its = new ArrayDeque<>();
             its.push(membersNode.getNodes());
         }
 
@@ -193,18 +203,12 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
                     if (its.isEmpty()) {
                         return null;
                     } else if (its.peek().hasNext()) {
-                        JCRNodeWrapper node = (JCRNodeWrapper) its.peek().next();
-                        if (node.isNodeType("jnt:members")) {
-                            its.push(node.getNodes());
-                        } else if (node.isNodeType("jnt:member")) {
-                            try {
-                                return (next = node.getProperty("j:member").getValue().getNode());
-                            } catch (PathNotFoundException e) {
-                                // member node has no j:member property, skipping it
-                            }
-                        }
+                        next = getNextMemberNodeOrDrillDown();
                     } else if (!its.isEmpty()) {
                         its.pop();
+                    }
+                    if (next != null) {
+                        return next;
                     }
                 }
             } catch (RepositoryException e) {
@@ -212,10 +216,24 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
             }
         }
 
+        private JCRNodeWrapper getNextMemberNodeOrDrillDown() throws RepositoryException {
+            JCRNodeWrapper node = (JCRNodeWrapper) its.peek().next();
+            JCRNodeWrapper memberNode = null;
+            if (node.isNodeType("jnt:members")) {
+                its.push(node.getNodes());
+            } else if (node.isNodeType("jnt:member")) {
+                try {
+                    memberNode = node.getProperty("j:member").getValue().getNode();
+                } catch (PathNotFoundException e) {
+                    // member node has no j:member property, skipping it
+                }
+            }
+            return memberNode;
+        }
+
         @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
     }
-
 }

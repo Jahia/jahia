@@ -70,7 +70,7 @@ import java.util.*;
  * @author rincevent
  */
 public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
-    private transient static Logger logger = LoggerFactory.getLogger(JCRUserNode.class);
+
     public static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     public static final String PROVIDER_NAME = "jcr";
     public static final String J_DISPLAYABLE_NAME = "j:displayableName";
@@ -79,6 +79,8 @@ public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
     private static final String J_PUBLIC_PROPERTIES = "j:publicProperties";
     public final List<String> publicProperties = Arrays.asList(J_EXTERNAL, J_EXTERNAL_SOURCE, J_PUBLIC_PROPERTIES);
+
+    private static final  Logger logger = LoggerFactory.getLogger(JCRUserNode.class);
 
     public JCRUserNode(JCRNodeWrapper node) {
         super(node);
@@ -181,7 +183,6 @@ public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
 
     public long getLastPasswordChangeTimestamp() {
         List<PasswordHistoryEntry> pwdHistory = getPasswordHistory();
-
         return pwdHistory.size() > 0 ? pwdHistory.get(0).getModificationDate().getTime() : 0;
     }
 
@@ -224,8 +225,12 @@ public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
                 } catch (RepositoryException e) {
                     logger.error("", e);
                 }
-                if (l == null) l = SettingsBean.getInstance().getDefaultLocale();
-                if (l == null) l = Locale.ENGLISH;
+                if (l == null) {
+                    l = SettingsBean.getInstance().getDefaultLocale();
+                }
+                if (l == null) {
+                    l = Locale.ENGLISH;
+                }
             }
             return Messages.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(SettingsBean.getInstance().getGuestUserResourceModuleName()),
                     SettingsBean.getInstance().getGuestUserResourceKey(), l, userName);

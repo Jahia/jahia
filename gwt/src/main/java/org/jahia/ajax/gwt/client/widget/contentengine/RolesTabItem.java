@@ -96,10 +96,11 @@ public class RolesTabItem extends EditEngineTabItem {
             }
 
             rolesEditor = new AclEditor(engine.getAcl(), node.getSiteKey(), roles, roleGroups, rolesEditors);
+            rolesEditor.setReadOnly(!PermissionsUtils.isPermitted("jcr:modifyAccessControl", node) || node.isLocked());
+
             rolesEditor.setCanBreakInheritance(canBreakInheritance);
             rolesEditor.setAutoAddRole(autoAddRole);
 
-            rolesEditor.setReadOnly(!PermissionsUtils.isPermitted("jcr:modifyAccessControl", node) || node.isLocked());
 
             tab.setLayout(new FitLayout());
             rolesEditor.addNewAclPanel(tab);

@@ -56,7 +56,6 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
-import org.springframework.context.ApplicationEvent;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -66,17 +65,18 @@ import java.util.*;
  * @author Thomas Draier
  */
 public class LoginEngineAuthValveImpl extends BaseAuthValve {
+
     public static final String ACCOUNT_LOCKED = "account_locked";
     public static final String BAD_PASSWORD = "bad_password";
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(LoginEngineAuthValveImpl.class);
     public static final String LOGIN_TAG_PARAMETER = "doLogin";
     public static final String OK = "ok";
     public static final String UNKNOWN_USER = "unknown_user";
     public static final String USE_COOKIE = "useCookie";
     public static final String VALVE_RESULT = "login_valve_result";
 
-    private CookieAuthConfig cookieAuthConfig;
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(LoginEngineAuthValveImpl.class);
 
+    private CookieAuthConfig cookieAuthConfig;
     private boolean fireLoginEvent = false;
     private String preserveSessionAttributes = null;
     private JahiaUserManagerService userManagerService;
@@ -87,7 +87,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 
     public class LoginEvent extends BaseLoginEvent {
         private static final long serialVersionUID = -7356560804745397662L;
-        
+
         public LoginEvent(Object source, JahiaUser jahiaUser, AuthValveContext authValveContext) {
             super(source, jahiaUser, authValveContext);
         }
@@ -109,12 +109,14 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 //        }
     }
 
+    @Override
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
+
         if (!isEnabled()) {
             valveContext.invokeNext(context);
             return;
         }
-        
+
         final AuthValveContext authContext = (AuthValveContext) context;
         final HttpServletRequest httpServletRequest = authContext.getRequest();
 
@@ -129,31 +131,29 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 
             if ((username != null) && (password != null)) {
                 // Check if the user has site access ( even though it is not a user of this site )
-                theUser = userManagerService.lookupUser(username,site);
+                theUser = userManagerService.lookupUser(username, site);
                 if (theUser != null) {
                     if (theUser.verifyPassword(password)) {
                         if (!theUser.isAccountLocked()) {
                             ok = true;
                         } else {
-                            logger.warn("Login failed: account for user " + theUser.getName() + " is locked.");
+                            logger.warn("Login failed: account for user {} is locked.", theUser.getName());
                             httpServletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);
                         }
                     } else {
-                        logger.warn("Login failed: password verification failed for user " + theUser.getName());
+                        logger.warn("Login failed: password verification failed for user {}", theUser.getName());
                         httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
                     }
                 } else {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Login failed. Unknown username " + username + ".");
-                    }
+                    logger.debug("Login failed. Unknown username {}", username);
                     httpServletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
                 }
             }
         }
+
         if (ok) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("User " + theUser + " logged in.");
-            }
+
+            logger.debug("User {} logged in.", theUser);
 
             // if there are any attributes to conserve between session, let's copy them into a map first
             Map<String, Object> savedSessionAttributes = preserveSessionAttributes(httpServletRequest);
@@ -183,6 +183,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             }
 
             enforcePasswordPolicy(theUser);
+
             // The following was deactivated for performance reasons. We should instead look at doing this with Camel
             // or some other asynchronous way.
             //theUser.setProperty(Constants.JCR_LASTLOGINDATE,
@@ -198,7 +199,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
     }
 
     private Map<String, Object> preserveSessionAttributes(HttpServletRequest httpServletRequest) {
-        Map<String,Object> savedSessionAttributes = new HashMap<String,Object>();
+        Map<String, Object> savedSessionAttributes = new HashMap<String, Object>();
         if ((preserveSessionAttributes != null) &&
             (httpServletRequest.getSession(false) != null) &&
                 (preserveSessionAttributes.length() > 0)) {
@@ -217,7 +218,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
     private void restoreSessionAttributes(HttpServletRequest httpServletRequest, Map<String, Object> savedSessionAttributes) {
         if (savedSessionAttributes.size() > 0) {
             HttpSession session = httpServletRequest.getSession();
-            for (Map.Entry<String,Object> savedSessionAttribute : savedSessionAttributes.entrySet()) {
+            for (Map.Entry<String, Object> savedSessionAttribute : savedSessionAttributes.entrySet()) {
                 session.setAttribute(savedSessionAttribute.getKey(), savedSessionAttribute.getValue());
             }
         }
@@ -241,5 +242,4 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
         this.userManagerService = userManagerService;
     }
-
 }

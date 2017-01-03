@@ -59,19 +59,18 @@ import javax.servlet.http.HttpServletRequest;
  * @author toto
  */
 public class HttpBasicAuthValveImpl extends BaseAuthValve {
-    private static final transient Logger logger = LoggerFactory
-            .getLogger(HttpBasicAuthValveImpl.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpBasicAuthValveImpl.class);
     private JahiaUserManagerService userManagerService;
 
-    public HttpBasicAuthValveImpl() {
-    }
-
+    @Override
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
+
         if (!isEnabled()) {
             valveContext.invokeNext(context);
             return;
         }
-        
+
         AuthValveContext authContext = (AuthValveContext) context;
         HttpServletRequest request = authContext.getRequest();
         String auth = request.getHeader("Authorization");
@@ -87,7 +86,6 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
                 String user = cred.substring(0,colonInd);
                 if (user != null && !user.contains(JahiaBasicCredentialsProvider.IMPERSONATOR)) {
                     String pass = cred.substring(colonInd+1);
-    
                     JCRUserNode jcrUserNode = userManagerService.lookupUser(user);
                     if (jcrUserNode != null) {
                         if (jcrUserNode.verifyPassword(pass)) {
@@ -104,7 +102,7 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
                             logger.debug("User found but password verification failed for user : " + user);
                         }
                     } else {
-                        logger.debug("User not found : "+user);                        
+                        logger.debug("User not found : "+user);
                     }
                 }
             } catch (Exception e) {

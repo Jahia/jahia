@@ -94,7 +94,7 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
         }
         return cache.size();
     }
-    
+
     class CachedGroupNodeMembersIterator implements ListIterator<JCRNodeWrapper> {
         int cursor = 0;
 
@@ -112,7 +112,7 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
             }
         }
 
-        @Override        
+        @Override
         public JCRNodeWrapper next() {
             try {
                 int i = cursor;
@@ -160,7 +160,7 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
         public void set(JCRNodeWrapper e) {
             throw new UnsupportedOperationException();
         }
-        
+
         @Override
         public void add(JCRNodeWrapper e) {
             throw new UnsupportedOperationException();
@@ -227,9 +227,9 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
                     // member node has no j:member property, skipping it
                 }
             }
-          return memberNode;
+            return memberNode;
         }
-        
+
         @Override
         public void remove() {
             throw new UnsupportedOperationException();

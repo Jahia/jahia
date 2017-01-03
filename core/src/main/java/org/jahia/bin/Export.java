@@ -245,7 +245,7 @@ public class Export extends JahiaController implements ServletContextAware {
                 exportedNode.setPath("/");
                 response.addCookie(exportedNode);
                 //No export log for the node export
-                importExportService.exportNode(node, exportRoot, outputStream, params, null);
+                importExportService.exportNode(node, exportRoot, outputStream, params);
 
             } else if ("zip".equals(exportFormat)) {
 

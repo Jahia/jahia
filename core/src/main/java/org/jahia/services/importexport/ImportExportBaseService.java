@@ -98,6 +98,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
+import javax.jcr.query.Query;
 import javax.xml.parsers.SAXParser;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -316,82 +317,93 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     /**
-     * Estimate the number of nodes under a list of sites
-     * @param params export parameters
-     * @param sites list of site nodes
-     * @return
+     * Estimate the number of nodes under a list of nodes
+     * @param sortedNodes the nodes to be exported
+     * @param session the session used to export
+     * @param nodeTypesToIgnore the node types to ignore in the export
+     * @return the estimation of nodes to export
      * @throws RepositoryException
      */
-    private int estimateNodesSites(Map<String, Object> params, List<JCRSiteNode> sites) throws RepositoryException {
+    private long estimateNodesToExport(Set<JCRNodeWrapper> sortedNodes, JCRSessionWrapper session,
+                                       Set<String> nodeTypesToIgnore) throws RepositoryException {
 
-        int result = 0;
-        JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
-        for (JCRSiteNode jahiaSite : sites) {
-                result += estimateNodesSite(jahiaSite);
-        }
+        long result = 0;
+        List<String> extraPathsToExport = new ArrayList<>(3);
 
-        if (params.containsKey(INCLUDE_USERS)) {
-            result+= estimateSubnodesNumber(session.getNode("/users"), defaultExportNodeTypesToIgnore);
-        }
-
-        if (params.containsKey(INCLUDE_ROLES)) {
-            result+= estimateSubnodesNumber(session.getNode("/roles"), defaultExportNodeTypesToIgnore);
-        }
-
-        if (params.containsKey(INCLUDE_MOUNTS)) {
-            result+= estimateSubnodesNumber(session.getNode("/mounts"), defaultExportNodeTypesToIgnore);
-        }
-
-        if (params.containsKey(INCLUDE_LIVE_EXPORT)) {
-            // as this is an estimation not a calculation of the real number of nodes we multiply the number
-            // of nodes by two as if every node in default workspace has another node in live workspace
-            result = result * 2;
-        }
-
-        return result;
-    }
-
-    /**
-     * Estimate the number of nodes under a site node
-     * @param jahiaSite jahia Site
-     * @return
-     * @throws RepositoryException
-     */
-    private int estimateNodesSite(JCRSiteNode jahiaSite) throws RepositoryException {
-        int result = 1;
-        final Iterator<JCRNodeWrapper> iterator = jahiaSite.getNodes().iterator();
-        while (iterator.hasNext()) {
-            result+=estimateSubnodesNumber(iterator.next(), siteExportNodeTypesToIgnore);
-        }
-        return result;
-    }
-
-    /**
-     * Estimates subnodes number
-     * @param node
-     * @return
-     * @throws RepositoryException
-     */
-    private int estimateSubnodesNumber(JCRNodeWrapper node, Set<String> nodeTypesToIgnore) throws RepositoryException {
-        int result = 0;
-        if (!nodeTypesToIgnore.contains(node.getPrimaryNodeTypeName())) {
-            result++;
-            NodeIterator nodeChildIterator = node.getNodes();
-            while (nodeChildIterator.hasNext()) {
-                JCRNodeWrapper childNode = (JCRNodeWrapper) nodeChildIterator.next();
-                result+= estimateSubnodesNumber(childNode, nodeTypesToIgnore);
+        for (JCRNodeWrapper nodesToExport : sortedNodes) {
+            // site node are a bit special (languages nodes have to be exported)
+            if (nodesToExport instanceof JCRSiteNode) {
+                Set<String> languages = ((JCRSiteNode) nodesToExport).getLanguages();
+                List<String> sitePaths = Collections.singletonList(nodesToExport.getPath());
+                result += estimateSubnodesNumber(sitePaths, session, nodeTypesToIgnore, null);
+                if(languages != null && languages.size() > 0) {
+                    for (String language : languages) {
+                        result += estimateSubnodesNumber(sitePaths, session, nodeTypesToIgnore, language);
+                    }
+                }
+            } else {
+                extraPathsToExport.add(nodesToExport.getPath());
             }
         }
-        return  result;
+
+        result += estimateSubnodesNumber(extraPathsToExport, session, nodeTypesToIgnore, null);
+        return result;
+    }
+
+    /**
+     * Estimates subnodes number to be exported, estimation use a count query using given parameters.
+     * @param paths list of paths in query
+     * @param session session used to execute the query
+     * @param nodeTypesToIgnore Set of nodetypes to filter in query
+     * @param locale language to be used when jnt:translation nodes have to be retrieved
+     * @return the final estimation
+     * @throws RepositoryException
+     */
+    private long estimateSubnodesNumber(List<String> paths, JCRSessionWrapper session, Set<String> nodeTypesToIgnore, String locale) throws RepositoryException {
+        if(paths == null || paths.size() == 0) {
+            return 0;
+        }
+
+        // create the query count, if a locale is specified the query is adapted to retrieved only jnt:translation nodes
+        QueryManagerWrapper queryManagerWrapper = session.getWorkspace().getQueryManager();
+        StringBuilder statement = new StringBuilder("SELECT count AS [rep:count(skipChecks=1)] FROM [")
+                .append(locale != null ? "jnt:translation" : "nt:base")
+                .append("] WHERE (");
+
+        for (int i = 0; i < paths.size(); i++) {
+            String path = paths.get(i);
+            if (i > 0) {
+                statement.append(" OR ");
+            }
+            statement.append("isdescendantnode(['").append(path).append("'])");
+        }
+        statement.append(")");
+
+        if (locale == null && nodeTypesToIgnore != null && nodeTypesToIgnore.size() > 0) {
+            statement.append("AND NOT (");
+            Iterator nodeTypesToIgnoreIterator = nodeTypesToIgnore.iterator();
+            while (nodeTypesToIgnoreIterator.hasNext()) {
+                statement.append("[jcr:primaryType] = '").append(nodeTypesToIgnoreIterator.next()).append("'");
+                if (nodeTypesToIgnoreIterator.hasNext()) {
+                    statement.append(" OR ");
+                }
+            }
+            statement.append(")");
+        }
+
+        if (locale != null) {
+            statement.append(" AND [jcr:language] = '").append(locale).append("'");
+        }
+
+        return queryManagerWrapper.createQuery(statement.toString(), Query.JCR_SQL2).execute().getRows().nextRow().getValue("count").getLong();
     }
 
     @Override
     public void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites)
             throws RepositoryException, IOException, SAXException, TransformerException {
+
         logger.info("Sites " + sites + " export started");
         long startSitesExportTime = System.currentTimeMillis();
-        ExportContext exportContext = new ExportContext(estimateNodesSites(params, sites), 0, 0, null);
-        logger.debug("Number of nodes to export : " + exportContext.getNodesToExport());
         String serverDirectory = (String) params.get(SERVER_DIRECTORY);
         ZipOutputStream zout = getZipOutputStream(outputStream, serverDirectory);
         ZipEntry anEntry = new ZipEntry(EXPORT_PROPERTIES);
@@ -412,14 +424,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
                 zout.putNextEntry(anEntry);
 
-                exportSite(jahiaSite, zout, externalReferences, params, null,exportContext);
+                exportSite(jahiaSite, zout, externalReferences, params, null);
             } else {
-                exportSite(jahiaSite, zout, externalReferences, params, serverDirectory + "/" + jahiaSite.getSiteKey
-                        (),exportContext);
+                exportSite(jahiaSite, zout, externalReferences, params, serverDirectory + "/" + jahiaSite.getSiteKey());
             }
-            long endSiteExportTime = System.currentTimeMillis();
-            logger.info("Exporting site internal nodes " + jahiaSite.getName() +" content ended in " +
-                    (endSiteExportTime-startSiteExportTime)/1000 + " seconds");
+            logger.info("Exporting site internal nodes " + jahiaSite.getName() + " ended in " +
+                    (System.currentTimeMillis()-startSiteExportTime)/1000 + " seconds");
         }
 
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
@@ -436,7 +446,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
             try {
                 logger.info("Exporting Users Started");
-                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/users")), zzout, defaultExportNodeTypesToIgnore, externalReferences, params, exportContext);
+                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/users")), zzout,
+                        defaultExportNodeTypesToIgnore, externalReferences, params, true);
                 logger.info("Exporting Users Ended");
             } catch (IOException e) {
                 logger.warn("Cannot export due to some IO exception :"+e.getMessage());
@@ -458,7 +469,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
             try {
                 logger.info("Exporting Roles Started");
-                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/roles")), zzout, defaultExportNodeTypesToIgnore, externalReferences, params, exportContext);
+                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/roles")), zzout,
+                        defaultExportNodeTypesToIgnore, externalReferences, params, true);
                 logger.info("Exporting Roles Ended");
             } catch (Exception e) {
                 logger.error("Cannot export roles", e);
@@ -475,7 +487,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 try {
                     logger.info("Exporting Mount points Started");
                     exportNodesWithBinaries(session.getRootNode(), Collections.singleton(mounts), zzout, defaultExportNodeTypesToIgnore,
-                            externalReferences, params, exportContext);
+                            externalReferences, params, true);
                     logger.info("Exporting Mount points Ended");
                 } catch (Exception e) {
                     logger.error("Cannot export mount points", e);
@@ -496,7 +508,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             ZipOutputStream zzout = getZipOutputStream(zout, serverDirectory + "/references.zip");
             try {
                 logger.info("Exporting References Started");
-                exportNodesWithBinaries(session.getRootNode(), refs, zzout, defaultExportNodeTypesToIgnore, externalReferences, params, exportContext);
+                exportNodesWithBinaries(session.getRootNode(), refs, zzout, defaultExportNodeTypesToIgnore, externalReferences, params, true);
                 logger.info("Exporting References Ended");
             } catch (Exception e) {
                 logger.error("Cannot export References", e);
@@ -505,8 +517,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
         zout.finish();
 
-        long endSitesExportTime = System.currentTimeMillis();
-        logger.info("Sites " + sites + " export ended in " +  (endSitesExportTime - startSitesExportTime)
+        logger.info("Total Sites " + sites + " export ended in " +  (System.currentTimeMillis() - startSitesExportTime)
                 /1000 + " seconds");
     }
 
@@ -539,7 +550,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return zout;
     }
 
-    private void exportSite(final JCRSiteNode site, OutputStream out, Set<String> externalReferences, Map<String, Object> params, String serverDirectory, ExportContext exportContext)
+    private void exportSite(final JCRSiteNode site, OutputStream out, Set<String> externalReferences, Map<String, Object> params, String serverDirectory)
             throws RepositoryException, SAXException, IOException, TransformerException {
 
         ZipOutputStream zout = getZipOutputStream(out, serverDirectory);
@@ -551,22 +562,26 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 site.getSiteKey());
         Set<JCRNodeWrapper> nodes = Collections.singleton(node);
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, siteExportNodeTypesToIgnore,
-                externalReferences, params,exportContext);
+                externalReferences, params, true);
         zout.finish();
     }
 
     @Override
-    public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException {
+    public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params)
+            throws RepositoryException, SAXException, IOException, TransformerException {
+
         ZipOutputStream zout = getZipOutputStream(out, (String) params.get(SERVER_DIRECTORY));
         Set<JCRNodeWrapper> nodes = new HashSet<JCRNodeWrapper>();
         nodes.add(node);
         exportNodesWithBinaries(exportRoot == null ? node : exportRoot, nodes, zout, new HashSet<String>(), null,
-                params, null);
+                params, false);
         zout.finish();
     }
 
     @Override
-    public void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params, ExportContext exportContext) throws RepositoryException, SAXException, IOException, TransformerException {
+    public void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params)
+            throws RepositoryException, SAXException, IOException, TransformerException {
+
         TreeSet<JCRNodeWrapper> nodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
 
             @Override
@@ -575,10 +590,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         });
         nodes.add(node);
-        exportNodes(exportRoot == null ? node : exportRoot, nodes, out, new HashSet<String>(), null, params, exportContext);
+        exportNodes(exportRoot == null ? node : exportRoot, nodes, out, new HashSet<String>(), null, params, false);
     }
 
-    private void exportNodesWithBinaries(JCRNodeWrapper rootNode, Set<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params, ExportContext exportContext)
+    private void exportNodesWithBinaries(JCRNodeWrapper rootNode, Set<JCRNodeWrapper> nodes, ZipOutputStream zout,
+                                         Set<String> typesToIgnore, Set<String> externalReferences,
+                                         Map<String, Object> params, boolean logProgress)
             throws SAXException, IOException, RepositoryException, TransformerException {
 
         TreeSet<JCRNodeWrapper> liveSortedNodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
@@ -606,10 +623,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 if (!liveSortedNodes.isEmpty()) {
                     zout.putNextEntry(new ZipEntry(LIVE_REPOSITORY_XML));
-
-                    exportNodes(liveRootNode, liveSortedNodes, zout, typesToIgnore, externalReferences, params, exportContext);
+                    logger.info("Exporting live workspace for nodes {} ...", nodes);
+                    exportNodes(liveRootNode, liveSortedNodes, zout, typesToIgnore, externalReferences, params, logProgress);
                     zout.closeEntry();
                     exportNodesBinary(liveRootNode, liveSortedNodes, zout, typesToIgnore, "/live-content");
+                    logger.info("Live workspace exported for nodes {}", nodes);
                 }
             }
         }
@@ -629,14 +647,26 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
         zout.putNextEntry(new ZipEntry(REPOSITORY_XML));
-        exportNodes(rootNode, sortedNodes, zout, typesToIgnore, externalReferences, params, exportContext);
+        logger.info("Exporting default workspace for nodes {} ...", nodes);
+        exportNodes(rootNode, sortedNodes, zout, typesToIgnore, externalReferences, params, logProgress);
         zout.closeEntry();
         exportNodesBinary(rootNode, sortedNodes, zout, typesToIgnore, "/content");
+        logger.info("Default workspace exported for nodes {}", nodes);
     }
 
     private void exportNodes(JCRNodeWrapper rootNode, TreeSet<JCRNodeWrapper> sortedNodes, OutputStream outputStream,
-                             Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params, ExportContext exportContext)
+                             Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params, boolean logProgress)
             throws IOException, RepositoryException, SAXException, TransformerException {
+
+        long startSitesExportTime = System.currentTimeMillis();
+        ExportContext exportContext = null;
+        if (logProgress) {
+            // estimate the number of nodes to exports and logs this information
+            long estimatedNodes = estimateNodesToExport(sortedNodes, rootNode.getSession(), typesToIgnore);
+            logger.info("Approximate number of nodes to export: {}, estimated in: {} seconds", estimatedNodes, (System.currentTimeMillis() - startSitesExportTime)/1000);
+            exportContext = new ExportContext(estimatedNodes);
+        }
+
         final String xsl = (String) params.get(XSL_PATH);
         final boolean skipBinary = !Boolean.FALSE.equals(params.get(SKIP_BINARY));
         final boolean noRecurse = Boolean.TRUE.equals(params.get(NO_RECURSE));
@@ -675,6 +705,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             sortedNodes.addAll(exporter.getNodesList());
         }
 
+        if (exportContext != null) {
+            // Nodes are now exported in the .xml, so we log the time difference for this export
+            logger.info("Exported " + exportContext.getExportIndex() + " nodes in " +  (System.currentTimeMillis() - startSitesExportTime)
+                    /1000 + " seconds");
+        }
+
         dw.flush();
         if (xsl != null) {
             DeferredFileOutputStream stream = (DeferredFileOutputStream) tmpOut;
@@ -685,7 +721,17 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 inputStream = new ByteArrayInputStream(stream.getData());
             }
             Transformer transformer = getTransformer(xsl);
-            transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
+
+            long startXmlCleanup = System.currentTimeMillis();
+            if (logProgress) {
+                // since the xml transformation can be heavy in process depending on the .xml size
+                // we logs some basics data
+                logger.info("Starting cleanup transformation ...");
+                transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
+                logger.info("Cleanup transformation finished in {} seconds", (System.currentTimeMillis() - startXmlCleanup) /1000);
+            } else {
+                transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
+            }
         }
     }
 
@@ -699,15 +745,27 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return templates.newTransformer();
     }
 
-    private void exportNodesBinary(JCRNodeWrapper root, SortedSet<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore, String basepath) throws IOException, RepositoryException {
+    private void exportNodesBinary(JCRNodeWrapper root, SortedSet<JCRNodeWrapper> nodes,
+                                   ZipOutputStream zout, Set<String> typesToIgnore, String basepath)
+            throws IOException, RepositoryException {
+
+        // binary export can be time consuming, log some basic information
+        long startExportingNodesBinary = System.currentTimeMillis();
+        logger.info("Exporting binary nodes ...");
+
         byte[] buffer = new byte[4096];
         for (Iterator<JCRNodeWrapper> iterator = nodes.iterator(); iterator.hasNext(); ) {
             JCRNodeWrapper file = iterator.next();
             exportNodeBinary(root, file, zout, typesToIgnore, buffer, basepath, new HashSet<String>());
         }
+
+        logger.info("Binary nodes exported in {} seconds", (System.currentTimeMillis() - startExportingNodesBinary) /1000);
     }
 
-    private void exportNodeBinary(JCRNodeWrapper root, JCRNodeWrapper node, ZipOutputStream zout, Set<String> typesToIgnore, byte[] buffer, String basepath, Set<String> exportedFiles) throws IOException, RepositoryException {
+    private void exportNodeBinary(JCRNodeWrapper root, JCRNodeWrapper node, ZipOutputStream zout,
+                                  Set<String> typesToIgnore, byte[] buffer, String basepath, Set<String> exportedFiles)
+            throws IOException, RepositoryException {
+
         int bytesIn;
         if (!typesToIgnore.contains(node.getPrimaryNodeTypeName()) && node.getProvider().canExportNode(node)) {
             NodeIterator ni = node.getNodes();
@@ -2136,12 +2194,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             ExportContext exportContext = (ExportContext) arg;
             DocumentViewExporter documentViewExporter = (DocumentViewExporter) o;
             exportContext.setExportIndex(exportContext.getExportIndex() + 1);
-            logger.debug("Exporting  : " + exportContext.getActualPath());
+            logger.debug("Index: " + exportContext.getExportIndex() + ", Exporting  : " + exportContext.getActualPath());
 
             // this will show the percentage of export done by 10% increment will start by 10 and end by 90
             if (exportContext.getExportIndex() * 10 / exportContext.getNodesToExport() > exportContext.getStep() &&
-                    exportContext.getStep() <
-                            9) {
+                    exportContext.getStep() < 9) {
                 exportContext.setStep(exportContext.getExportIndex() * 10 / exportContext.getNodesToExport());
                 logger.info("Export " + exportContext.getStep() * 10 + "%");
                 documentViewExporter.setExportContext(exportContext);

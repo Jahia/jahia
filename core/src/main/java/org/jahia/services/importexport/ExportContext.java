@@ -49,22 +49,22 @@ package org.jahia.services.importexport;
  */
 public class ExportContext {
 
-    private int nodesToExport;
+    private long nodesToExport;
     private int exportIndex;
-    private int step;
+    private long step;
     private String actualPath;
 
-    public ExportContext(int nodesToExport, int exportIndex, int step, String actualPath) {
+    public ExportContext(long nodesToExport) {
         this.nodesToExport = nodesToExport;
-        this.exportIndex = exportIndex;
-        this.step = step;
+        this.exportIndex = 0;
+        this.step = 0;
     }
 
-    public int getNodesToExport() {
+    public long getNodesToExport() {
         return nodesToExport;
     }
 
-    public void setNodesToExport(int nodesToExport) {
+    public void setNodesToExport(long nodesToExport) {
         this.nodesToExport = nodesToExport;
     }
 
@@ -76,11 +76,11 @@ public class ExportContext {
         this.exportIndex = exportIndex;
     }
 
-    public int getStep() {
+    public long getStep() {
         return step;
     }
 
-    public void setStep(int step) {
+    public void setStep(long step) {
         this.step = step;
     }
 

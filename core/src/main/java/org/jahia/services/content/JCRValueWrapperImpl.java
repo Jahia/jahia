@@ -63,7 +63,9 @@ import java.util.Date;
  * @author : $Author$ Last Modified : $Date$
  */
 public class JCRValueWrapperImpl implements JCRValueWrapper {
+
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRValueWrapperImpl.class);
+
     private Value value;
     private final ExtendedPropertyDefinition definition;
     private final JCRSessionWrapper session;
@@ -73,7 +75,7 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
         this.definition = definition;
         this.session = session;
     }
-    
+
     @Override
     public CategoryBean getCategory() throws ValueFormatException, RepositoryException {
         try {
@@ -92,20 +94,19 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
         } catch (JahiaException e) {
             logger.error("Category not found");
         }
-
         throw new ItemNotFoundException("category " + getString() + " not found");
     }
-    
+
     @Override
     public PropertyDefinition getDefinition() {
         return definition;
     }
-    
+
     @Override
     public Date getTime() throws ValueFormatException, RepositoryException {
         return getDate().getTime();
     }
-    
+
     @Override
     public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
         return value.getString();
@@ -185,8 +186,9 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
     public boolean equals(Object obj) {
         if (obj != null && this.getClass() == obj.getClass()) {
             return value.equals(((JCRValueWrapperImpl) obj).value);
+        } else {
+            // allow equality test on subclasses of Value and invert equality test since value is usually a JCR-proper class which doesn't allow equality checks on subclasses
+            return (obj != null && obj instanceof Value && obj.equals(value));
         }
-        // allow equality test on subclasses of Value and invert equality test since value is usually a JCR-proper class which doesn't allow equality checks on subclasses
-        else return obj != null && obj instanceof Value && obj.equals(value);
     }
 }

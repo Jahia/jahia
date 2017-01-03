@@ -58,27 +58,28 @@ import java.util.Date;
  * @since 6.1
  */
 public interface JCRValueWrapper extends Value {
+
     /**
-     * Returns a <code>CategoryBean</code> instance referred by this value. 
-     * 
-     * If the value does not match a valid category either <code>ValueFormatException</code> or <code>ItemNotFoundException</code> is thrown. 
+     * Returns a <code>CategoryBean</code> instance referred by this value.
+     *
+     * If the value does not match a valid category either <code>ValueFormatException</code> or <code>ItemNotFoundException</code> is thrown.
      *
      * @return A <code>CategoryBean</code> referred by the value of this
      *         property.
      * @throws ValueFormatException  if conversion to a <code>CategoryBean</code> is
      *                               not possible.
      * @throws RepositoryException   if another error occurs.
-     */   
+     */
     CategoryBean getCategory() throws ValueFormatException, RepositoryException;
-    
+
     /**
-     * Returns the property definition for this value. 
+     * Returns the property definition for this value.
      *
      * @return The <code>PropertyDefinition</code> for the current value.
      * @throws RepositoryException   if another error occurs.
-     */       
+     */
     PropertyDefinition getDefinition();
-    
+
     /**
      * Returns a <code>Date</code> representation of the <code>Calendar</code>'s time of this value.
      * <p>
@@ -89,16 +90,16 @@ public interface JCRValueWrapper extends Value {
      * @throws ValueFormatException if conversion to a <code>Date</code> is
      *                              not possible.
      * @throws RepositoryException  if another error occurs.
-     */    
+     */
     Date getTime() throws ValueFormatException, RepositoryException;
-    
+
     /**
-     * Returns a <code>JCRNodeWrapper</code> instance referred by this value. The property has to be one of the following 
-     * types <li><code>PropertyType.STRING</code></li> <li><code>PropertyType.REFERENCE</code></li> 
-     * <li><code>PropertyType.WEAKREFERENCE</code></li> 
-     * 
-     * For other types a ValueFormatException is thrown. If the reference in the value cannot be resolved to an existing node, 
-     * the method returns null. 
+     * Returns a <code>JCRNodeWrapper</code> instance referred by this value. The property has to be one of the following
+     * types <li><code>PropertyType.STRING</code></li> <li><code>PropertyType.REFERENCE</code></li>
+     * <li><code>PropertyType.WEAKREFERENCE</code></li>
+     *
+     * For other types a ValueFormatException is thrown. If the reference in the value cannot be resolved to an existing node,
+     * the method returns null.
      *
      * @return A <code>JCRNodeWrapper</code> referred by the value of this
      *         property.
@@ -109,6 +110,6 @@ public interface JCRValueWrapper extends Value {
      *                               <code>Value</code> instance must be acquired in order to successfully
      *                               call this method.
      * @throws RepositoryException   if another error occurs.
-     */    
+     */
     JCRNodeWrapper getNode() throws ValueFormatException, IllegalStateException, RepositoryException;
 }

@@ -428,8 +428,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             } else {
                 exportSite(jahiaSite, zout, externalReferences, params, serverDirectory + "/" + jahiaSite.getSiteKey());
             }
-            logger.info("Exporting site internal nodes " + jahiaSite.getName() + " ended in " +
-                    (System.currentTimeMillis()-startSiteExportTime)/1000 + " seconds");
+            logger.info("Exporting site internal nodes {} ended in {} seconds", jahiaSite.getName(), getDuration(startSiteExportTime));
         }
 
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
@@ -517,8 +516,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
         zout.finish();
 
-        logger.info("Total Sites " + sites + " export ended in " +  (System.currentTimeMillis() - startSitesExportTime)
-                /1000 + " seconds");
+        logger.info("Total Sites {} export ended in {} seconds", sites, getDuration(startSitesExportTime));
     }
 
     private ZipOutputStream getZipOutputStream(OutputStream outputStream, String serverDirectory) {
@@ -663,7 +661,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         if (logProgress) {
             // estimate the number of nodes to exports and logs this information
             long estimatedNodes = estimateNodesToExport(sortedNodes, rootNode.getSession(), typesToIgnore);
-            logger.info("Approximate number of nodes to export: {}, estimated in: {} seconds", estimatedNodes, (System.currentTimeMillis() - startSitesExportTime)/1000);
+            logger.info("Approximate number of nodes to export: {}, estimated in: {} seconds", estimatedNodes,
+                    getDuration(startSitesExportTime));
             exportContext = new ExportContext(estimatedNodes);
         }
 
@@ -707,8 +706,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         if (exportContext != null) {
             // Nodes are now exported in the .xml, so we log the time difference for this export
-            logger.info("Exported " + exportContext.getExportIndex() + " nodes in " +  (System.currentTimeMillis() - startSitesExportTime)
-                    /1000 + " seconds");
+            logger.info("Exported {} nodes in {} seconds", exportContext.getExportIndex(), getDuration(startSitesExportTime));
         }
 
         dw.flush();
@@ -728,7 +726,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 // we logs some basics data
                 logger.info("Starting cleanup transformation ...");
                 transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
-                logger.info("Cleanup transformation finished in {} seconds", (System.currentTimeMillis() - startXmlCleanup) /1000);
+                logger.info("Cleanup transformation finished in {} seconds", getDuration(startXmlCleanup));
             } else {
                 transformer.transform(new StreamSource(inputStream), new StreamResult(outputStream));
             }
@@ -759,7 +757,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             exportNodeBinary(root, file, zout, typesToIgnore, buffer, basepath, new HashSet<String>());
         }
 
-        logger.info("Binary nodes exported in {} seconds", (System.currentTimeMillis() - startExportingNodesBinary) /1000);
+        logger.info("Binary nodes exported in {} seconds", getDuration(startExportingNodesBinary));
     }
 
     private void exportNodeBinary(JCRNodeWrapper root, JCRNodeWrapper node, ZipOutputStream zout,
@@ -2186,6 +2184,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void setTemplatePackageRegistry(TemplatePackageRegistry templatePackageRegistry) {
         this.templatePackageRegistry = templatePackageRegistry;
+    }
+
+    private String getDuration(long start) {
+        return DateUtils.formatDurationWords(System.currentTimeMillis() - start);
     }
 
     @Override

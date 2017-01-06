@@ -677,7 +677,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         stringList = parameters.get(REDIRECT_TO);
         String stayOnPage =
                 !CollectionUtils.isEmpty(stringList) && !StringUtils.isBlank(stringList.get(0)) ? StringUtils.substringBeforeLast(stringList.get(0),";") :
-                        "";
+                        null;
+
+        if (!Login.isAuthorizedRedirect(req, stayOnPage, true)) {
+            logger.warn("Unauthorized attempt redirect to {}", stayOnPage);
+            stayOnPage = null;
+        }
 
         if (!StringUtils.isEmpty(stayOnPage)) {
             renderedURL = stayOnPage + (!StringUtils.isEmpty(outputFormat) ? "." + outputFormat : "");

@@ -106,11 +106,11 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.util.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -328,7 +328,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                        Set<String> nodeTypesToIgnore) throws RepositoryException {
 
         long result = 0;
-        List<String> extraPathsToExport = new ArrayList<>(3);
+        List<String> extraPathsToExport = new ArrayList<>();
 
         for (JCRNodeWrapper nodesToExport : sortedNodes) {
             // site node are a bit special (languages nodes have to be exported)
@@ -2199,9 +2199,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             logger.debug("Index: " + exportContext.getExportIndex() + ", Exporting  : " + exportContext.getActualPath());
 
             // this will show the percentage of export done by 10% increment will start by 10 and end by 90
-            if (exportContext.getExportIndex() * 10 / exportContext.getNodesToExport() > exportContext.getStep() &&
+            long currentStep = exportContext.getExportIndex() * 10 / exportContext.getNodesToExport();
+            if (currentStep > exportContext.getStep() &&
                     exportContext.getStep() < 9) {
-                exportContext.setStep(exportContext.getExportIndex() * 10 / exportContext.getNodesToExport());
+                exportContext.setStep(currentStep);
                 logger.info("Export " + exportContext.getStep() * 10 + "%");
                 documentViewExporter.setExportContext(exportContext);
             }

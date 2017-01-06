@@ -410,7 +410,7 @@ class NodeHelper {
                 n.set(GWTJahiaNode.RESOURCE_BUNDLE, b);
             }
         }
-        populateReference(n, node);
+        populateReference(n, node, fields, uiLocale);
 
         populateOrdering(n, node);
 
@@ -808,14 +808,14 @@ class NodeHelper {
         }
     }
 
-    private void populateReference(GWTJahiaNode n, JCRNodeWrapper node) {
+    private void populateReference(GWTJahiaNode n, JCRNodeWrapper node, List<String> fields, Locale uiLocale) {
         // references
         try {
             if (node.isNodeType("jmix:nodeReference") && node.hasProperty(Constants.NODE)) {
                 JCRNodeWrapper referencedNode = (JCRNodeWrapper) node.getProperty(Constants.NODE)
                         .getNode();
                 n.setReferencedNode(n.getUUID().equals(referencedNode.getIdentifier()) ? n
-                        : getGWTJahiaNode(referencedNode));
+                        : getGWTJahiaNode(referencedNode, fields, uiLocale));
             }
         } catch (ItemNotFoundException e) {
             logger.debug(e.getMessage(), e);

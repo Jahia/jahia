@@ -788,6 +788,9 @@ class NodeHelper {
     }
 
     private void populatePublicationInfo(GWTJahiaNode n, JCRNodeWrapper node) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("populate publication info for {}", node.getPath());
+        }
         try {
             if (node.getSession().getLocale() != null) {
                 n.setAggregatedPublicationInfos(publication
@@ -806,6 +809,9 @@ class NodeHelper {
     }
 
     private void populateQuickPublicationInfo(GWTJahiaNode n, JCRNodeWrapper node) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("populate quick publication info for {}", node.getPath());
+        }
         try {
             if (node.getSession().getLocale() != null) {
                 n.setQuickPublicationInfo(publication.getAggregatedPublicationInfosByLanguage(node,
@@ -822,6 +828,9 @@ class NodeHelper {
     }
 
     private void populatePublicationInfos(GWTJahiaNode n, JCRNodeWrapper node) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("populate publication infos for {}", node.getPath());
+        }
         try {
             JCRSiteNode siteNode = node.getResolveSite();
             if (siteNode != null) {

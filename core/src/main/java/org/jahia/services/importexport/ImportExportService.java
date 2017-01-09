@@ -65,14 +65,13 @@ import java.util.Set;
 
 /**
  * Jahia import/export service to manipulate different types of content.
- * 
+ *
  * @author toto
  */
 public interface ImportExportService {
+
     String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-
     String JAHIA_URI="http://www.jahia.org/";
-
     String FROM = "from";
     String TO = "to";
     String INCLUDE_TEMPLATES = "templates";
@@ -90,18 +89,15 @@ public interface ImportExportService {
     String VIEW_ACL = "acl";
     String VIEW_WORKFLOW = "wf";
     String VIEW_PID = "pid";
-
     String XSL_PATH = "xsl_path";
     String NO_RECURSE = "noRecurse";
     String SKIP_BINARY = "skipBinary";
-
     String SYSTEM_VIEW = "systemView";
-
     String SERVER_DIRECTORY = "serverDirectory";
 
     /**
      * Performs the full repository export into the provided output stream using the specified parameters.
-     * 
+     *
      * @param out
      *            the output stream to write exported content into
      * @param params
@@ -133,12 +129,13 @@ public interface ImportExportService {
     void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites)
             throws RepositoryException, IOException, SAXException, TransformerException;
 
+
     /**
      * Export JCR node as xml
      *
      * @param node node to export
      * @param exportRoot
-     *@param out outputstream
+     * @param out outputstream
      * @param params   @throws JahiaException
      * @throws RepositoryException
      * @throws SAXException
@@ -151,7 +148,7 @@ public interface ImportExportService {
      *
      * @param node node to export
      * @param exportRoot
-     *@param out outputstream
+     * @param out outputstream
      * @param params   @throws JahiaException
      * @throws RepositoryException
      * @throws SAXException
@@ -243,7 +240,7 @@ public interface ImportExportService {
 
     /**
      * Import the size from the specified file node.
-     * 
+     *
      * @param nodeWrapper
      *            the file node to read content of the imported site from
      * @throws RepositoryException
@@ -257,7 +254,7 @@ public interface ImportExportService {
 
     /**
      * Import the size from the specified resource.
-     * 
+     *
      * @param resource
      *            the resource to read content of the imported site from
      * @throws RepositoryException
@@ -271,7 +268,7 @@ public interface ImportExportService {
 
     /**
      * Import the size from the specified resource using the provided JCR session.
-     * 
+     *
      * @param resource
      *            the resource to read content of the imported site from
      * @param session
@@ -315,7 +312,7 @@ public interface ImportExportService {
 
     /**
      * Performs the import of categories from the provided import stream into the specified root category.
-     * 
+     *
      * @param rootCategory
      *            the root category to use
      * @param is
@@ -326,7 +323,7 @@ public interface ImportExportService {
     /**
      * Performs a batch import of users from the provided file
      * @param file a file to read user data from
-     * @return a list of tuples &lt;username, password, homePage&gt; for the imported users 
+     * @return a list of tuples &lt;username, password, homePage&gt; for the imported users
      * @throws IOException in case of a reading/parsing error
      */
     List<String[]> importUsers(File file) throws IOException, RepositoryException;

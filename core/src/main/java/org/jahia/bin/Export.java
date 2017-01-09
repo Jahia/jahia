@@ -86,12 +86,10 @@ import org.springframework.web.servlet.ModelAndView;
  *        Created : 2 avr. 2010
  */
 public class Export extends JahiaController implements ServletContextAware {
-    private static Logger logger = LoggerFactory.getLogger(Export.class);
 
+    private static final Logger logger = LoggerFactory.getLogger(Export.class);
     public static final String CLEANUP = "cleanup";
-
     private static final String CONTROLLER_MAPPING = "/export";
-
     private static final Pattern URI_PATTERN = Pattern.compile(CONTROLLER_MAPPING + "/("
             + Constants.LIVE_WORKSPACE + "|" + Constants.EDIT_WORKSPACE + ")/(.*)\\.(xml|zip)");
 
@@ -101,9 +99,7 @@ public class Export extends JahiaController implements ServletContextAware {
     }
 
     private String cleanupXsl;
-
     private ImportExportService importExportService;
-
     private String templatesCleanupXsl;
 
     /**
@@ -117,8 +113,11 @@ public class Export extends JahiaController implements ServletContextAware {
      * @return a ModelAndView to render, or <code>null</code> if handled directly
      * @throws Exception in case of errors
      */
+    @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         try {
+
             checkUserLoggedIn();
 
             Matcher m = StringUtils.isNotEmpty(request.getPathInfo()) ? URI_PATTERN.matcher(request.getPathInfo()) : null;
@@ -149,6 +148,7 @@ public class Export extends JahiaController implements ServletContextAware {
             }
 
             if ("all".equals(exportFormat)) {
+
                 if (!session.getUser().isRoot()) {
                     throw JahiaUserManagerService.isGuest(session.getUser()) ? new JahiaUnauthorizedException(
                             "Only root user can perform export of all content") : new JahiaForbiddenAccessException(
@@ -169,7 +169,9 @@ public class Export extends JahiaController implements ServletContextAware {
                 OutputStream outputStream = response.getOutputStream();
                 importExportService.exportAll(outputStream, params);
                 outputStream.close();
+
             } else if ("site".equals(exportFormat)) {
+
                 if (!session.getUser().isRoot()) {
                     throw JahiaUserManagerService.isGuest(session.getUser()) ? new JahiaUnauthorizedException(
                             "Only root user can perform export of a site") : new JahiaForbiddenAccessException(
@@ -224,7 +226,9 @@ public class Export extends JahiaController implements ServletContextAware {
                     importExportService.exportSites(outputStream, params, sites);
                     outputStream.close();
                 }
+
             } else if ("xml".equals(exportFormat)) {
+
                 JCRNodeWrapper node = session.getNode(nodePath);
                 response.setContentType("text/xml");
                 //make sure this file is not cached by the client (or a proxy middleman)
@@ -240,8 +244,11 @@ public class Export extends JahiaController implements ServletContextAware {
                 exportedNode.setMaxAge(60);
                 exportedNode.setPath("/");
                 response.addCookie(exportedNode);
+                //No export log for the node export
                 importExportService.exportNode(node, exportRoot, outputStream, params);
+
             } else if ("zip".equals(exportFormat)) {
+
                 JCRNodeWrapper node = session.getNode(nodePath);
                 response.setContentType("application/zip");
                 //make sure this file is not cached by the client (or a proxy middleman)
@@ -280,7 +287,6 @@ public class Export extends JahiaController implements ServletContextAware {
 
     private Map<String, Object> getParams(HttpServletRequest request) {
         Map<String, Object> params = new HashMap<String, Object>(6);
-
         params.put(ImportExportService.VIEW_CONTENT, !"false".equals(request.getParameter("viewContent")));
         params.put(ImportExportService.VIEW_VERSION, "true".equals(request.getParameter("viewVersion")));
         params.put(ImportExportService.VIEW_ACL, !"false".equals(request.getParameter("viewAcl")));
@@ -290,6 +296,7 @@ public class Export extends JahiaController implements ServletContextAware {
         return params;
     }
 
+    @Override
     public void setServletContext(ServletContext servletContext) {
         cleanupXsl = servletContext.getRealPath("/WEB-INF/etc/repository/export/" + "cleanup.xsl");
         templatesCleanupXsl = servletContext.getRealPath("/WEB-INF/etc/repository/export/"

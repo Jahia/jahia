@@ -293,7 +293,7 @@
                     </execution>
                     <execution>
                         <id>calculate-gitbuildnumber</id>
-                        <phase/>
+                        <phase />
                     </execution>
                 </executions>
             </plugin>

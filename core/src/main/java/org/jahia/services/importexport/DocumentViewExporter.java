@@ -57,6 +57,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -73,8 +74,8 @@ import java.util.regex.Pattern;
  * Time: 3:02:35 PM
  *
  */
-public class DocumentViewExporter {
-    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewExporter.class);
+public class DocumentViewExporter extends Observable {
+    protected static final Logger logger = LoggerFactory.getLogger(DocumentViewExporter.class);
 
     private static final String CDATA = "CDATA";
     private static final String NS_URI = "http://www.w3.org/2000/xmlns/";
@@ -96,13 +97,13 @@ public class DocumentViewExporter {
     private Stack<String> stack;
 
     private List<String> propertiestoIgnore = Arrays.asList("jcr:predecessors", "j:nodename", "jcr:versionHistory", "jcr:baseVersion", "jcr:isCheckedOut", "jcr:uuid", "jcr:mergeFailed");
+    private ExportContext exportContext;
 
     public DocumentViewExporter(JCRSessionWrapper session, ContentHandler ch, boolean skipBinary, boolean noRecurse) {
         this.session = session;
         this.ch = ch;
         this.noRecurse = noRecurse;
         this.skipBinary = skipBinary;
-
         this.stack = new Stack<String>();
 
         prefixes = new HashMap<String, String>();
@@ -176,7 +177,6 @@ public class DocumentViewExporter {
 
     private void exportNode(JCRNodeWrapper node) throws SAXException, RepositoryException {
         if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
-
             String path = "";
             Node current = node;
             while (!current.getPath().equals("/")) {
@@ -237,6 +237,7 @@ public class DocumentViewExporter {
                     String encodedName = ISO9075.encode(node.getName());
                     startElement(encodedName, atts);
                     endElement(encodedName);
+                    notifyListObservers(node.getPath());
                     return;
                 } else {
                     exportedShareable.put(node.getIdentifier(), node.getPath());
@@ -336,6 +337,19 @@ public class DocumentViewExporter {
                     }
                 }
             }
+            notifyListObservers(node.getPath());
+        }
+    }
+
+    /**
+     * Notify the list of observers about a node path being exported
+     * @param path the node path
+     */
+    private void notifyListObservers(String path) {
+        if(exportContext!= null) {
+            setChanged();
+            exportContext.setActualPath(path);
+            notifyObservers(exportContext);
         }
     }
 
@@ -438,5 +452,13 @@ public class DocumentViewExporter {
 
     public List<JCRNodeWrapper> getNodesList() {
         return nodesList;
+    }
+
+    public void setExportContext(ExportContext exportContext) {
+        this.exportContext = exportContext;
+    }
+
+    public ExportContext getExportContext() {
+        return exportContext;
     }
 }

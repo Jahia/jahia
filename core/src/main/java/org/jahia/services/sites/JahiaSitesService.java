@@ -564,42 +564,65 @@ public class JahiaSitesService extends JahiaService {
     }
 
     /**
-     * remove a site
+     * remove a site, if the remived site is the default one:
+     * - the first other site found will become the default
+     * - if no other site found, no default site anymore
      *
-     * @param site the JahiaSite bean
+     * @param siteToRemove the JahiaSite bean to be removed
      */
-    public synchronized void removeSite(final JahiaSite site) throws JahiaException {
-        String siteKey = null;
-        String serverName = null;
+    public synchronized void removeSite(final JahiaSite siteToRemove) throws JahiaException {
+
+        final String siteKeyToRemove = siteToRemove.getSiteKey();
+        String serverName = siteToRemove.getServerName();
+
         try {
-            siteKey = site.getSiteKey();
-            serverName = site.getServerName();
-            final String key = siteKey; 
+            // if site to remove is default, elect a new default site
+            final boolean isDefault = siteToRemove.isDefault();
+            String newDefaultSiteKey = null;
+            if(isDefault) {
+                List<JCRSiteNode> siteList = getSitesNodeList();
+                for (JCRSiteNode site : siteList) {
+                    if(!site.getSiteKey().equals(SYSTEM_SITE_KEY) && !site.getSiteKey().equals(siteToRemove.getSiteKey())) {
+                        newDefaultSiteKey = site.getSiteKey();
+                        break;
+                    }
+                }
+            }
+
+            // key used in callbacks
+            final String newDefaultSiteKeyFinal = newDefaultSiteKey;
+
             JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {
+
+                @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper sites = session.getNode(SITES_JCR_PATH);
                     if (!sites.isCheckedOut()) {
                         session.checkout(sites);
                     }
-                    JCRNodeWrapper site1 = sites.getNode(key);
-                    if (sites.hasProperty("j:defaultSite")) {
-                        final JCRPropertyWrapper defaultSite = sites.getProperty("j:defaultSite");
-                        if (defaultSite.getValue().getString().equals(site1.getIdentifier())) {
-                            defaultSite.remove();
+                    if (isDefault) {
+                        // set new default site
+                        if (newDefaultSiteKeyFinal != null) {
+                            setDefaultSite((JCRSiteNode) sites.getNode(newDefaultSiteKeyFinal), session);
+                        } else {
+                            setDefaultSite(null, session);
                         }
+
                     }
-                    site1.remove();
+                    sites.getNode(siteKeyToRemove).remove();
                     session.save();
                     return true;
                 }
             };
+
             // First delete all groups
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+
                 @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    for (String groupPath : groupService.getGroupList(key)) {
-                        if (StringUtils.startsWith(groupPath, site.getJCRLocalPath() + "/groups/")
-                                && !StringUtils.startsWith(groupPath, site.getJCRLocalPath() + "/groups/providers/")) {
+                    for (String groupPath : groupService.getGroupList(siteKeyToRemove)) {
+                        if (StringUtils.startsWith(groupPath, siteToRemove.getJCRLocalPath() + "/groups/")
+                                && !StringUtils.startsWith(groupPath, siteToRemove.getJCRLocalPath() + "/groups/providers/")) {
                             groupService.deleteGroup(groupPath, session);
                         }
                     }
@@ -607,13 +630,14 @@ public class JahiaSitesService extends JahiaService {
                     return true;
                 }
             });
+
             // Now let's delete the live workspace site.
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, deleteCallback);
             JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCallback);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } finally {
-            invalidateCache(siteKey, serverName);
+            invalidateCache(siteKeyToRemove, serverName);
         }
     }
 

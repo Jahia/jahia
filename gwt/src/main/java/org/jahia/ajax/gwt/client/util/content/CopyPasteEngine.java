@@ -169,6 +169,12 @@ public class CopyPasteEngine {
         $wnd.getJahiaClipboard = function () {
             return  that.@org.jahia.ajax.gwt.client.util.content.CopyPasteEngine::getCopiedNodesAsJs()();
         }
+        $wnd.getJahiaClipboardIsCut = function () {
+            return  that.@org.jahia.ajax.gwt.client.util.content.CopyPasteEngine::isCut()();
+        }
+        $wnd.getJahiaClipboardClear = function () {
+            that.@org.jahia.ajax.gwt.client.util.content.CopyPasteEngine::onPastedPath()();
+        }
     }-*/;
 
     private JsArray<JavaScriptObject> getCopiedNodesAsJs() {
@@ -210,6 +216,7 @@ public class CopyPasteEngine {
         ClipboardActionItem.removeCopied(copiedNodes);
         copiedNodes.clear();
         cut = false ;
+        updatePlaceholders();
         sendCopyEvent(getCopiedNodesAsJs(), "copy");
     }
 

@@ -43,6 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.util.content;
 
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayUtils;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -81,7 +84,9 @@ public class CopyPasteEngine {
         return m_instance ;
     }
 
-    protected CopyPasteEngine() {}
+    protected CopyPasteEngine() {
+        exportStaticMethod();
+    }
 
     public void paste(final GWTJahiaNode m, final Linker linker, List<String> childNodeTypesToSkip) {
         if (!getCopiedNodes().isEmpty()) {
@@ -159,12 +164,37 @@ public class CopyPasteEngine {
         return copiedNodes;
     }
 
+    public native void exportStaticMethod() /*-{
+        var that = this;
+        $wnd.getJahiaClipboard = function () {
+            return  that.@org.jahia.ajax.gwt.client.util.content.CopyPasteEngine::getCopiedNodesAsJs()();
+        }
+    }-*/;
+
+    private JsArray<JavaScriptObject> getCopiedNodesAsJs() {
+        List<JavaScriptObject> l = new ArrayList<JavaScriptObject>();
+        for (GWTJahiaNode gwtJahiaNode : copiedNodes) {
+            l.add(convertGwtNode(gwtJahiaNode.getName(), gwtJahiaNode.getPath(), gwtJahiaNode.getUUID(),
+                    (gwtJahiaNode.getNodeTypes() != null && gwtJahiaNode.getNodeTypes().size() > 0) ? gwtJahiaNode.getNodeTypes().get(0) : null));
+        }
+        return JsArrayUtils.readOnlyJsArray(l.toArray(new JavaScriptObject[l.size()]));
+    }
+
+    private native JavaScriptObject convertGwtNode(String name, String path, String uuid, String nodeType) /*-{
+        return { 'name': name, 'path': path, 'uuid': uuid, 'nodetype': nodeType};
+    }-*/;
+
+    private native void sendCopyEvent(JsArray<JavaScriptObject> copiedPaths, String type)  /*-{
+        $wnd.dispatchEvent(new CustomEvent('jahia-copy', { 'detail': { 'nodes' : copiedPaths , 'type': type }}));
+    }-*/;
+
     public void setCopiedNodes(List<GWTJahiaNode> copiedPaths) {
         cut = false ;
         this.copiedNodes.clear();
         this.copiedNodes.addAll(copiedPaths);
         ClipboardActionItem.setCopied(copiedPaths);
         updatePlaceholders();
+        sendCopyEvent(getCopiedNodesAsJs(), "copy");
     }
 
     public void setCutPaths(List<GWTJahiaNode> cutPaths) {
@@ -173,12 +203,14 @@ public class CopyPasteEngine {
         cut = true ;
         ClipboardActionItem.setCopied(cutPaths);
         updatePlaceholders();
+        sendCopyEvent(getCopiedNodesAsJs(), "cut");
     }
 
     public void onPastedPath() {
         ClipboardActionItem.removeCopied(copiedNodes);
         copiedNodes.clear();
         cut = false ;
+        sendCopyEvent(getCopiedNodesAsJs(), "copy");
     }
 
     public boolean isCut() {

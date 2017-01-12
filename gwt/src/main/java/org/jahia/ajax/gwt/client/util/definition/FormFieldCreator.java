@@ -520,18 +520,38 @@ public class FormFieldCreator {
                     case GWTJahiaNodePropertyType.BINARY:
                         break;
                     case GWTJahiaNodePropertyType.BOOLEAN:
+                        if (propDefinition.isMultiple()) {
+                            // multiple not supported for boolean field
+                            return;
+                        }
                         field.setValue(values.get(0).getBoolean());
                         break;
                     case GWTJahiaNodePropertyType.LONG:
+                        if (propDefinition.isMultiple()) {
+                            // multiple not supported for long field
+                            return;
+                        }
                         field.setValue(values.get(0).getLong());
                         break;
                     case GWTJahiaNodePropertyType.DOUBLE:
+                        if (propDefinition.isMultiple()) {
+                            // multiple not supported for double field
+                            return;
+                        }
                         field.setValue(values.get(0).getDouble());
                         break;
                     case GWTJahiaNodePropertyType.DECIMAL:
+                        if (propDefinition.isMultiple()) {
+                            // multiple not supported for decimal field
+                            return;
+                        }
                         field.setValue(values.get(0).getDecimal());
                         break;
                     case GWTJahiaNodePropertyType.DATE:
+                        if (propDefinition.isMultiple()) {
+                            // multiple not supported for date field
+                            return;
+                        }
                         Date d = values.get(0).getDate();
                         Log.debug("date: " + d);
                         field.setValue(d);

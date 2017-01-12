@@ -43,6 +43,7 @@
  */
 package org.jahia.taglibs.uicomponents.i18n;
 
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
@@ -132,17 +133,17 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
     /**
      * Return true if the current node is published in the specified languageCode
      *
-     * @param jData
      * @param languageCode
      * @return
      */
     private boolean isCurrentLangAllowed(RenderContext renderContext, String languageCode) {
-        if (renderContext.isLiveMode()) {
+        if (renderContext.isPreviewMode() || renderContext.isLiveMode()) {
             JCRNodeWrapper node = renderContext.getMainResource().getNode();
             if (node != null) {
                 try {
                     final Node localizedNode = node.getI18N(LanguageCodeConverters.languageCodeToLocale(languageCode));
-                    return localizedNode.getProperty("jcr:language").getString().equals(languageCode) && localizedNode.hasProperty("j:published") && localizedNode.getProperty("j:published").getBoolean();
+                    return localizedNode.getProperty("jcr:language").getString().equals(languageCode) && localizedNode.hasProperty("j:published") && localizedNode.getProperty("j:published").getBoolean()
+                            && !JCRContentUtils.isLanguageInvalid(node, languageCode);
                 } catch (javax.jcr.RepositoryException e) {
                     logger.debug("lang[" + languageCode + "] not published");
                     return false;

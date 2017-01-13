@@ -170,11 +170,11 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
 
     class GroupNodeMembersIterator implements Iterator<JCRNodeWrapper> {
 
-        Deque<JCRNodeIteratorWrapper> its;
+        Stack<JCRNodeIteratorWrapper> its;
         JCRNodeWrapper next = null;
 
         GroupNodeMembersIterator(JCRNodeWrapper membersNode) throws RepositoryException {
-            this.its = new ArrayDeque<>();
+            this.its = new Stack<>();
             its.push(membersNode.getNodes());
         }
 

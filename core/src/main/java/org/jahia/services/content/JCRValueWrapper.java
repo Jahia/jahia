@@ -77,7 +77,7 @@ public interface JCRValueWrapper extends Value {
      * @return The <code>PropertyDefinition</code> for the current value.
      * @throws RepositoryException   if another error occurs.
      */       
-    PropertyDefinition getDefinition();
+    PropertyDefinition getDefinition() throws RepositoryException;
     
     /**
      * Returns a <code>Date</code> representation of the <code>Calendar</code>'s time of this value.

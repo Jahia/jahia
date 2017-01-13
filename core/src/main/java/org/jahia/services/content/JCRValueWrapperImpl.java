@@ -98,7 +98,7 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
     }
 
     @Override
-    public PropertyDefinition getDefinition() {
+    public PropertyDefinition getDefinition() throws RepositoryException {
         return definition;
     }
 

@@ -163,6 +163,13 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
+            <description>The name of the page scope variable the SearchResponse object will be exposed under.</description>
+            <name>searchResponseVar</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>     
+        <attribute>
         	<description>Are empty search allowed</description>
             <name>allowEmptySearchTerm</name>
             <required>false</required>

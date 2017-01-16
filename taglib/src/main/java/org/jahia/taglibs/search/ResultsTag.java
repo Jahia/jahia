@@ -43,6 +43,7 @@
  */
 package org.jahia.taglibs.search;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.Hit;
@@ -72,7 +73,9 @@ public class ResultsTag extends AbstractJahiaTag {
     private List<Hit<?>> hits;
 
     private String searchCriteriaBeanName;
-
+    
+    private String searchResponseVar;
+    
     private String searchCriteriaVar;
 
     private String termVar;
@@ -115,18 +118,21 @@ public class ResultsTag extends AbstractJahiaTag {
         criteria.setLimit(limit);
         criteria.setOffset(offset);
 
-        if (allowEmptySearchTerm || !criteria.isEmpty()) {
-            searchResponse = ServicesRegistry.getInstance().getSearchService().search(criteria, renderContext);
-            hits = searchResponse.getResults();
-        } else {
+        if (!allowEmptySearchTerm && criteria.isEmpty()) {
             // if we don't have criteria and no searches, no need to go further since we don't have any hits, no need to further process
-            // and run into an NPE with a null SearchResponse after...
+            // and run into an NPE with a null SearchResponse after...            
             return -1;
         }
-
-        int count = hits.size();
-
+        
+        searchResponse = ServicesRegistry.getInstance().getSearchService().search(criteria, renderContext);
+        hits = searchResponse.getResults();
         pageContext.setAttribute(getVar(), hits);
+        
+        if (StringUtils.isNotBlank(getSearchResponseVar())) {
+            pageContext.setAttribute(getSearchResponseVar(), searchResponse);
+        }
+        
+        int count = hits.size();
         if (searchResponse!= null && searchResponse.hasMore()) {
             pageContext.setAttribute(getCountVar(), Integer.MAX_VALUE);
         } else {
@@ -269,5 +275,13 @@ public class ResultsTag extends AbstractJahiaTag {
 
     public void setAllowEmptySearchTerm(boolean allowEmptySearchTerm) {
         this.allowEmptySearchTerm = allowEmptySearchTerm;
+    }
+    
+    protected String getSearchResponseVar() {
+        return searchResponseVar;
+    }
+
+    public void setSearchResponseVar(String searchResponseVar) {
+        this.searchResponseVar = searchResponseVar;
     }
 }

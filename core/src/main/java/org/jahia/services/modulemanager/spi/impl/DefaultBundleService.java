@@ -84,11 +84,7 @@ public class DefaultBundleService implements BundleService {
                 bundle = bundleContext.installBundle(uri);
                 bundle.adapt(BundleStartLevel.class).setStartLevel(SettingsBean.getInstance().getModuleStartLevel());
             } else {
-                bundle.update();
-                if(bundle.getState() == Bundle.ACTIVE) {
-                    // refresh wirings
-                    BundleLifecycleUtils.refreshBundle(bundle);
-                }
+                BundleLifecycleUtils.updateModule(bundle);
             }
             if (start) {
                 bundle.start();

@@ -52,6 +52,8 @@ import org.osgi.framework.*;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.BundleWire;
+import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -417,5 +419,40 @@ public final class BundleLifecycleUtils {
      */
     public static void startModules(List<Bundle> moduleBundles, boolean useModuleManagerApi) {
         BundleStarter.startModules(moduleBundles, useModuleManagerApi);
+    }
+
+    /**
+     * Will update the bundle, calling stop/start on it.
+     * Sometime a refresh is necessary in case the bundle was providing wires to other bundles,
+     * the refresh will actualize the wires to the updated bundle revision.
+     *
+     * @param bundleToUpdate the bundle to update
+     */
+    public static void updateModule(Bundle bundleToUpdate) throws BundleException {
+        // if the bundle is Active and provide wires to other bundle(s) we need to refresh this wires after the update
+        if (bundleToUpdate.getState() == Bundle.ACTIVE) {
+            BundleWiring bundleWiring = bundleToUpdate.adapt(BundleWiring.class);
+            List<BundleWire> bundleWires = bundleWiring.getProvidedWires(null);
+
+            if (bundleWires != null && bundleWires.size() > 0) {
+                // stop manually the bundle
+                bundleToUpdate.stop();
+
+                // do the update
+                bundleToUpdate.update();
+
+                // refresh the wirings
+                refreshBundle(bundleToUpdate);
+
+                // start manually
+                bundleToUpdate.start();
+            } else {
+                // no wires, just update the bundle directly
+                bundleToUpdate.update();
+            }
+        } else {
+            // not active, just update the bundle directly
+            bundleToUpdate.update();
+        }
     }
 }

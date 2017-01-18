@@ -25,6 +25,20 @@ The following example creates an index aggregate on jnt:file that includes the c
         <property isRegexp="true">.*:.*</property>
     </index-rule>
 
+    <!--
+    You can exclued content from indexation for a nodetype and a path by using the exclude tag. This will exclude only the matching type, it will not check
+    the inherited types.
+    attributes :
+     - nodetype (mandatory) : nodetype to exclude from index
+     - path : path of content to be exclude from indexation
+     - isRegexp : if true, false by default, the path is a read as a regular expression.
+
+    examples :
+    <exclude nodetype="jnt:file" path="/sites/ACMESPACE/files/nonIndexedFiles"/>
+    <exclude nodetype="jnt:file" path="^/sites/ACMESPACE/files/nonIndexedFilesRegex/.*" isRegexp="true"/>
+
+    -->
+
    <i18ncopy>
         <exclude-property>j:locktoken</exclude-property>
         <exclude-property>j:lockTypes</exclude-property>

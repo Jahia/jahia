@@ -43,26 +43,30 @@
  */
 package org.jahia.services.query;
 
-import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.test.utils.TestHelper;
 import org.jahia.test.framework.AbstractJUnitTest;
+import org.jahia.test.utils.TestHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
 
-import javax.jcr.*;
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.*;
-
-import java.io.InputStream;
-import java.util.*;
 
 /**
  * Unit test for checking different index options
@@ -74,6 +78,8 @@ public class IndexOptionsIT extends AbstractJUnitTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(IndexOptionsIT.class);
     private final static String TESTSITE_NAME = "jcrIndexOptionsTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+
+    private static final int QUERY = 0, TYPE = 1, RESULT = 2;
 
     @Override
     public void beforeClassSetup() throws Exception {
@@ -106,7 +112,7 @@ public class IndexOptionsIT extends AbstractJUnitTest {
     public void tearDown() {
         
     }
-    
+
     @Test
     public void testNonIndexedFields() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
@@ -118,23 +124,41 @@ public class IndexOptionsIT extends AbstractJUnitTest {
                     .getQueryManager();
 
             if (queryManager != null) {
-                String query = "select indexFields.* from [test:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, 'nonindexed')";
-                Query q = queryManager.createQuery(query, Query.JCR_SQL2);
-                QueryResult queryResult = q.execute();
-                
-                assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));
+                Set<QueryToTest> queries = new HashSet<>();
+                queries.add(new QueryToTest("select indexFields.* from [test:fieldsWithIndexOptions] as indexFields where contains(indexFields.*, " +
+                        "'nonindexed')", Query.JCR_SQL2, 0));
+                queries.add(new QueryToTest("//element(*, test:fieldsWithIndexOptions)[jcr:like(@nonIndexedSmallText, 'n%')]", Query.XPATH, 0));
+                queries.add(new QueryToTest("select * from [test:excludeFromIndexContent]", Query.JCR_SQL2, 0));
+                queries.add(new QueryToTest("//element(*, test:excludeFromIndexContent)", Query.XPATH, 0));
+                queries.add(new QueryToTest("select * from [test:excludeFromIndexContentWithPath]", Query.JCR_SQL2, 0));
+                queries.add(new QueryToTest("//element(*, test:excludeFromIndexContentWithPath)", Query.XPATH, 0));
+                queries.add(new QueryToTest("select * from [test:excludeFromIndexContentWithRegexp]", Query.JCR_SQL2, 0));
+                queries.add(new QueryToTest("//element(*, test:excludeFromIndexContentWithRegexp)", Query.XPATH, 0));
 
-                query = "//element(*, test:fieldsWithIndexOptions)[jcr:like(@nonIndexedSmallText, 'n%')]";
-                q = queryManager.createQuery(query, Query.XPATH);
-                queryResult = q.execute();
-
-                assertEquals("Query did not return correct number of results", 0, getResultSize(queryResult.getNodes()));                
+                for (QueryToTest queryToTest : queries) {
+                    String query = queryToTest.query;
+                    Query q = queryManager.createQuery(query, queryToTest.type);
+                    QueryResult queryResult = q.execute();
+                    assertEquals(String.format("Query %s did not return correct number of results", query), queryToTest.result, getResultSize(queryResult.getNodes
+                            ()));
+                }
             }
 
         } catch (Exception ex) {
             logger.warn("Exception during test", ex);
         } finally {
             session.save();
+        }
+    }
+
+    private  class QueryToTest {
+        private String query, type;
+        private int result;
+
+        QueryToTest(String query, String type, int result) {
+            this.query = query;
+            this.type = type;
+            this.result = result;
         }
     }
     

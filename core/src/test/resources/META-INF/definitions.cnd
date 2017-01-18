@@ -199,4 +199,11 @@
  - body (string, richtext) i18n
  - date (date)
  - pdfVersion (weakreference, picker[type='file']) i18n
+
+[test:excludeFromIndexContent] > jnt:content, jmix:droppableContent
+
+[test:excludeFromIndexContentWithPath] > jnt:content, jmix:droppableContent
+
+[test:excludeFromIndexContentWithRegexp] > jnt:content, jmix:droppableContent
+
  

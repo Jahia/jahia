@@ -125,6 +125,8 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
 
     private Set<Name> hierarchicalNodetypes = Collections.emptySet();
 
+    private Set<ExcluedType> excludesTypesByPath = Collections.emptySet();
+
     private final Analyzer keywordAnalyzer = new KeywordAnalyzer();
 
     public JahiaIndexingConfigurationImpl() {
@@ -133,6 +135,10 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
 
     public Set<Name> getExcludesFromI18NCopy() {
         return excludesFromI18NCopy;
+    }
+
+    public Set<ExcluedType> getExcludesTypesByPath() {
+        return excludesTypesByPath;
     }
 
     public Set<Name> getHierarchicalNodetypes() {
@@ -197,6 +203,17 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                 includedInSpellchecking = initPropertyCollectionFrom(configNode, "include-property", null);
             } else if (nodeName.equals("analyzer-registry")) {
                 processAnalyzerRegistryConfiguration(configNode);
+            } else if (nodeName.equals("exclude") && configNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) configNode;
+                String nodeType = element.getAttribute("nodetype");
+                if (StringUtils.isNotEmpty(nodeType)) {
+                    if (excludesTypesByPath.isEmpty()) {
+                        excludesTypesByPath = new HashSet<>();
+                    }
+                    String path = element.getAttribute("path");
+                    Boolean isRegexp = Boolean.valueOf(element.getAttribute("isRegexp"));
+                    excludesTypesByPath.add(new ExcluedType(resolver.getQName(nodeType), path, isRegexp));
+                }
             }
         }
     }
@@ -403,5 +420,35 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
 
     public LanguageCustomizingAnalyzerRegistry getAnalyzerRegistry() {
         return analyzerRegistry;
+    }
+
+    /**
+     * inner object to handle exlued types in index configuration
+     */
+    class ExcluedType {
+        private Name type;
+        private String path;
+        private boolean regexp;
+
+        ExcluedType(Name type, String path, boolean regexp) {
+            this.type = type;
+            this.path = path;
+            this.regexp = regexp;
+        }
+
+        boolean matchNode(Name nodeTypeToCheck) throws RepositoryException {
+            return type.equals(nodeTypeToCheck);
+        }
+
+        boolean matchPath(String pathToCheck) {
+            if (path == null) {
+                return true;
+            }
+            if (regexp) {
+                return pathToCheck.matches(path);
+            } else {
+                return StringUtils.startsWith(pathToCheck, path);
+            }
+        }
     }
 }

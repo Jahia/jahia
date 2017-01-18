@@ -44,7 +44,6 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import com.google.common.collect.Sets;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSearchManager;
@@ -88,7 +87,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.qom.QueryObjectModel;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -556,6 +554,20 @@ public class JahiaSearchIndex extends SearchIndex {
     @Override
     protected Document createDocument(final NodeState node, NamespaceMappings nsMappings,
                                       IndexFormatVersion indexFormatVersion) throws RepositoryException {
+        // Exclude content from DX Index if necessary
+        if (getIndexingConfig() instanceof  JahiaIndexingConfigurationImpl) {
+            Set<JahiaIndexingConfigurationImpl.ExcluedType> excluedNodeTypesByPath = ((JahiaIndexingConfigurationImpl) getIndexingConfig()).getExcludesTypesByPath();
+            for (JahiaIndexingConfigurationImpl.ExcluedType excluedType : excluedNodeTypesByPath) {
+                if (excluedType.matchNode(node.getNodeTypeName())) {
+                    String localPath = StringUtils.remove(getNamespaceMappings().translatePath(getContext().getHierarchyManager().getPath(node.getId()).getNormalizedPath()), "0:");
+                    if (excluedType.matchPath(localPath)) {
+                        // do not index the content
+                        return null;
+                    }
+                }
+            }
+        }
+
         JahiaNodeIndexer indexer = JahiaNodeIndexer.createNodeIndexer(node, getContext().getItemStateManager(),
                 nsMappings, getContext().getExecutor(), getParser(), getContext());
         indexer.setSupportHighlighting(getSupportHighlighting());

@@ -39,10 +39,6 @@ The following example creates an index aggregate on jnt:file that includes the c
     <exclude ndetype"jnt:file" path="^/sites/mySites/files/nonIndexedFiles/.*" isRegexp="true"/>
     -->
 
-    <exclude nodetype="test:excludeFromIndexContent"/>
-    <exclude nodetype="test:excludeFromIndexContentWithPath" path="/sites"/>
-    <exclude nodetype="test:excludeFromIndexContentWithRegexp" path="^/si.*" isRegexp="true"/>
-
     <i18ncopy>
         <exclude-property>j:locktoken</exclude-property>
         <exclude-property>j:lockTypes</exclude-property>

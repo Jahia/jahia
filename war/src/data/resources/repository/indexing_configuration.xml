@@ -3,7 +3,6 @@
 <configuration xmlns:j="http://www.jahia.org/jahia/1.0"
                xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jnt='http://www.jahia.org/jahia/nt/1.0'
                xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
-               xmlns:test="http://www.apache.org/jackrabbit/test"
 >
 
     <!-- see http://wiki.apache.org/jackrabbit/IndexingConfiguration for details -->
@@ -39,10 +38,6 @@ The following example creates an index aggregate on jnt:file that includes the c
     <exclude ndetype"jnt:file" path="/sites/mySites/files/nonIndexedFiles"/>
     <exclude ndetype"jnt:file" path="^/sites/mySites/files/nonIndexedFiles/.*" isRegexp="true"/>
     -->
-
-    <exclude nodetype="test:excludeFromIndexContent"/>
-    <exclude nodetype="test:excludeFromIndexContentWithPath" path="/sites"/>
-    <exclude nodetype="test:excludeFromIndexContentWithRegexp" path="^/si.*" isRegexp="true"/>
 
     <i18ncopy>
         <exclude-property>j:locktoken</exclude-property>

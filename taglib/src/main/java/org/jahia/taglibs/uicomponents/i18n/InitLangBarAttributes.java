@@ -137,7 +137,7 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
      * @return
      */
     private boolean isCurrentLangAllowed(RenderContext renderContext, String languageCode) {
-        if (renderContext.isPreviewMode() || renderContext.isLiveMode()) {
+        if (renderContext.isLiveMode()) {
             JCRNodeWrapper node = renderContext.getMainResource().getNode();
             if (node != null) {
                 try {
@@ -155,7 +155,6 @@ public class InitLangBarAttributes extends AbstractJahiaTag {
                 return false;
             }
         }
-        // not in live or preview mode
         return true;
     }
 

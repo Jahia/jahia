@@ -72,8 +72,8 @@
 [consequence][]Remove this property=insert (new DeletedPropertyFact(property, drools));
 [consequence][]Restore ACL inheritance on the {node}=service.setAclInheritanceBreak({node},false);
 [consequence][]Revoke all permissions on the {node}=service.revokeAllPermissions({node});
-[consequence][]Set not existing property {property} of the {node} with the current time=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", new java.util.Date(), drools, false,false));
-[consequence][]Set not existing property {property} of the {node} with the name of the current user=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", user.getName(), drools, false,false));
+[consequence][]Set not existing property {property} of the {node} with the current time=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", new java.util.Date(), drools, false));
+[consequence][]Set not existing property {property} of the {node} with the name of the current user=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", user.getName(), drools, false));
 [consequence][]Set the property {property} of the {node} with the current time=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", new java.util.Date(), drools));
 [consequence][]Set the property {property} of the {node} with the height of the image= imageService.setHeight({node}, "{property}", drools);
 [consequence][]Set the property {property} of the {node} with the name of the current user=if ({node} != null) insert (new ChangedPropertyFact({node}, "{property}", user.getName(), drools));

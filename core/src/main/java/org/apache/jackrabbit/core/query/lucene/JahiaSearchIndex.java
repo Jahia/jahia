@@ -556,11 +556,11 @@ public class JahiaSearchIndex extends SearchIndex {
                                       IndexFormatVersion indexFormatVersion) throws RepositoryException {
         // Exclude content from DX Index if necessary
         if (getIndexingConfig() instanceof  JahiaIndexingConfigurationImpl) {
-            Set<JahiaIndexingConfigurationImpl.ExcluedType> excluedNodeTypesByPath = ((JahiaIndexingConfigurationImpl) getIndexingConfig()).getExcludesTypesByPath();
-            for (JahiaIndexingConfigurationImpl.ExcluedType excluedType : excluedNodeTypesByPath) {
-                if (excluedType.matchNode(node.getNodeTypeName())) {
+            Set<JahiaIndexingConfigurationImpl.ExcludedType> excludedNodeTypesByPath = ((JahiaIndexingConfigurationImpl) getIndexingConfig()).getExcludesTypesByPath();
+            for (JahiaIndexingConfigurationImpl.ExcludedType excludedType : excludedNodeTypesByPath) {
+                if (excludedType.matchNode(node.getNodeTypeName())) {
                     String localPath = StringUtils.remove(getNamespaceMappings().translatePath(getContext().getHierarchyManager().getPath(node.getId()).getNormalizedPath()), "0:");
-                    if (excluedType.matchPath(localPath)) {
+                    if (excludedType.matchPath(localPath)) {
                         // do not index the content
                         return null;
                     }

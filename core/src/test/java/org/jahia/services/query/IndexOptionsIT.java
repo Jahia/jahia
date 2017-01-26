@@ -79,8 +79,6 @@ public class IndexOptionsIT extends AbstractJUnitTest {
     private final static String TESTSITE_NAME = "jcrIndexOptionsTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
-    private static final int QUERY = 0, TYPE = 1, RESULT = 2;
-
     @Override
     public void beforeClassSetup() throws Exception {
         super.beforeClassSetup();

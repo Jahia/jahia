@@ -125,7 +125,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
 
     private Set<Name> hierarchicalNodetypes = Collections.emptySet();
 
-    private Set<ExcluedType> excludesTypesByPath = Collections.emptySet();
+    private Set<ExcludedType> excludesTypesByPath = Collections.emptySet();
 
     private final Analyzer keywordAnalyzer = new KeywordAnalyzer();
 
@@ -137,7 +137,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
         return excludesFromI18NCopy;
     }
 
-    public Set<ExcluedType> getExcludesTypesByPath() {
+    public Set<ExcludedType> getExcludesTypesByPath() {
         return excludesTypesByPath;
     }
 
@@ -212,7 +212,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                     }
                     String path = element.getAttribute("path");
                     Boolean isRegexp = Boolean.valueOf(element.getAttribute("isRegexp"));
-                    excludesTypesByPath.add(new ExcluedType(resolver.getQName(nodeType), path, isRegexp));
+                    excludesTypesByPath.add(new ExcludedType(resolver.getQName(nodeType), path, isRegexp));
                 }
             }
         }
@@ -425,12 +425,12 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
     /**
      * inner object to handle exlued types in index configuration
      */
-    class ExcluedType {
+    class ExcludedType {
         private Name type;
         private String path;
         private boolean regexp;
 
-        ExcluedType(Name type, String path, boolean regexp) {
+        ExcludedType(Name type, String path, boolean regexp) {
             this.type = type;
             this.path = path;
             this.regexp = regexp;

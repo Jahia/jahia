@@ -45,27 +45,51 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.TriggerField;
 
 /**
- * Text field with multiple values
- * @param <T>
+ * Number field with multiple values
+ *
+ * Created by kevan inspired by {@link MultipleTextField}
  */
-public class MultipleTextField<T> extends AbstractMultipleField<T> {
+public class MultipleNumberField<T extends Number> extends AbstractMultipleField<T> {
 
-    public MultipleTextField() {
+    private boolean allowDecimals = true;
+    private Class<?> type = null;
+
+    public MultipleNumberField() {
         super();
     }
 
     @Override
     Field getNewField() {
-        return new ItemField();
+        ItemField field = new ItemField();
+        field.setAllowDecimals(allowDecimals);
+        if(type != null) {
+            field.setPropertyEditorType(type);
+        }
+        return field;
+    }
+
+    public boolean isAllowDecimals() {
+        return allowDecimals;
+    }
+
+    public void setAllowDecimals(boolean allowDecimals) {
+        this.allowDecimals = allowDecimals;
+    }
+
+    public Class<?> getType() {
+        return type;
+    }
+
+    public void setType(Class<?> type) {
+        this.type = type;
     }
 
     /**
      * Field for one value
      */
-    private class ItemField extends TriggerField<T> {
+    private class ItemField extends NumberTriggerField {
 
         ItemField() {
             setEditable(true);
@@ -76,7 +100,7 @@ public class MultipleTextField<T> extends AbstractMultipleField<T> {
         protected void onTriggerClick(ComponentEvent ce) {
             fields.remove(this);
             this.removeAllListeners();
-            MultipleTextField.this.fireEvent(Events.Change, ce);
+            MultipleNumberField.this.fireEvent(Events.Change, ce);
             removeFromParent();
         }
 
@@ -86,4 +110,5 @@ public class MultipleTextField<T> extends AbstractMultipleField<T> {
             setHideTrigger(readOnly);
         }
     }
+
 }

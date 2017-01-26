@@ -67,10 +67,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactory;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig;
-import org.jahia.ajax.gwt.client.widget.content.ColorPickerField;
-import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
-import org.jahia.ajax.gwt.client.widget.content.CronField;
-import org.jahia.ajax.gwt.client.widget.content.MultipleTextField;
+import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.form.*;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
@@ -113,18 +110,43 @@ public class FormFieldCreator {
             String emptyText = "";
             switch (definition.getSelector()) {
                 case GWTJahiaNodeSelectorType.SMALLTEXT:
-                    if (!definition.isProtected() && ((GWTJahiaPropertyDefinition) definition).isMultiple()) {
-                        field = new MultipleTextField<String>();
+                    boolean isMutliple = ((GWTJahiaPropertyDefinition) definition).isMultiple();
+                    if (!definition.isProtected() && isMutliple) {
+                        switch (propDefinition.getRequiredType()) {
+                            case GWTJahiaNodePropertyType.LONG:
+                                field = new MultipleNumberField<Long>();
+                                ((MultipleNumberField) field).setAllowDecimals(false);
+                                ((MultipleNumberField) field).setType(Long.class);
+                                break;
+                            case GWTJahiaNodePropertyType.DOUBLE:
+                                field = new MultipleNumberField<Double>();
+                                break;
+                            default:
+                                field = new MultipleTextField<String>();
+                                break;
+                        }
                     } else {
                         switch (propDefinition.getRequiredType()) {
                             case GWTJahiaNodePropertyType.LONG:
-                                field = new NumberField();
-                                ((NumberField) field).setAllowDecimals(false);
-                                ((NumberField) field).setPropertyEditorType(Long.class);
+                                if (definition.isProtected() && isMutliple) {
+                                    // protected field are displayed but not editable,
+                                    // we need a textField to display all Long values comma separated
+                                    field = new TextField<String>();
+                                } else {
+                                    field = new NumberField();
+                                    ((NumberField) field).setAllowDecimals(false);
+                                    ((NumberField) field).setPropertyEditorType(Long.class);
+                                }
                                 break;
                             case GWTJahiaNodePropertyType.DOUBLE:
-                                field = new NumberField();
-                                ((NumberField) field).setAllowDecimals(true);
+                                if (definition.isProtected() && isMutliple) {
+                                    // protected field are displayed but not editable,
+                                    // we need a textField to display all Double values comma separated
+                                    field = new TextField<String>();
+                                } else {
+                                    field = new NumberField();
+                                    ((NumberField) field).setAllowDecimals(true);
+                                }
                                 break;
                             case GWTJahiaNodePropertyType.DECIMAL:
                                 field = new NumberField();
@@ -528,17 +550,37 @@ public class FormFieldCreator {
                         break;
                     case GWTJahiaNodePropertyType.LONG:
                         if (propDefinition.isMultiple()) {
-                            // multiple not supported for long field
-                            return;
+                            if (!propDefinition.isProtected()) {
+                                List<Long> v = new ArrayList<Long>();
+                                for (GWTJahiaNodePropertyValue value : values) {
+                                    v.add(value.getLong());
+                                }
+                                field.setValue(v);
+                            } else {
+                                if (values.size() > 0) {
+                                    field.setValue(join(values));
+                                }
+                            }
+                        } else {
+                            field.setValue(values.get(0).getLong());
                         }
-                        field.setValue(values.get(0).getLong());
                         break;
                     case GWTJahiaNodePropertyType.DOUBLE:
                         if (propDefinition.isMultiple()) {
-                            // multiple not supported for double field
-                            return;
+                            if (!propDefinition.isProtected()) {
+                                List<Double> v = new ArrayList<Double>();
+                                for (GWTJahiaNodePropertyValue value : values) {
+                                    v.add(value.getDouble());
+                                }
+                                field.setValue(v);
+                            } else {
+                                if (values.size() > 0) {
+                                    field.setValue(join(values));
+                                }
+                            }
+                        } else {
+                            field.setValue(values.get(0).getDouble());
                         }
-                        field.setValue(values.get(0).getDouble());
                         break;
                     case GWTJahiaNodePropertyType.DECIMAL:
                         if (propDefinition.isMultiple()) {
@@ -549,7 +591,7 @@ public class FormFieldCreator {
                         break;
                     case GWTJahiaNodePropertyType.DATE:
                         if (propDefinition.isMultiple()) {
-                            // multiple not supported for date field
+                            // multiple boolean prop are not supported
                             return;
                         }
                         Date d = values.get(0).getDate();

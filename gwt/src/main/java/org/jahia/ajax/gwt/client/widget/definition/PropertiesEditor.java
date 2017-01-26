@@ -67,6 +67,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
+import org.jahia.ajax.gwt.client.widget.content.MultipleNumberField;
 import org.jahia.ajax.gwt.client.widget.content.MultipleTextField;
 import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 import org.jahia.ajax.gwt.client.widget.form.tag.TagField;
@@ -608,7 +609,7 @@ public class PropertiesEditor extends FormPanel {
                             new GWTJahiaNodePropertyValue(node, propDef.getRequiredType());
                     values.add(propertyValue);
                 }
-            } else if (fld instanceof MultipleTextField || fld instanceof TagField) {
+            } else if (fld instanceof MultipleTextField || fld instanceof MultipleNumberField || fld instanceof TagField) {
                 List l = (List) fld.getValue();
                 for (Object s : l) {
                     values.add(getPropertyValue(s, propDef.getRequiredType()));

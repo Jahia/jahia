@@ -208,7 +208,7 @@ public final class BundleLifecycleUtils {
 
     /**
      * Returns the start level of the provided bundle.
-     * 
+     *
      * @param bundle the bundle to get start level for
      * @return the start level of the provided bundle
      */
@@ -218,7 +218,7 @@ public final class BundleLifecycleUtils {
 
     /**
      * Returns the start level of the OSGi framework.
-     * 
+     *
      * @return the start level of the OSGi framework
      */
     public static int getFrameworkStartLevel() {
@@ -413,7 +413,7 @@ public final class BundleLifecycleUtils {
 
     /**
      * Start the specified module bundles in the order which tries to consider the dependencies between them.
-     * 
+     *
      * @param moduleBundles the bundles to be started
      * @param useModuleManagerApi should we use {@link ModuleManager} or call OSGi API directly?
      */
@@ -423,36 +423,40 @@ public final class BundleLifecycleUtils {
 
     /**
      * Will update the bundle, calling stop/start on it.
-     * Sometime a refresh is necessary in case the bundle was providing wires to other bundles,
-     * the refresh will actualize the wires to the updated bundle revision.
+     * Sometimes a refresh is necessary in case the bundle is providing wires to other bundles.
+     * The refresh will actualize the wires to the updated bundle revision.
      *
-     * @param bundleToUpdate the bundle to update
+     * @param bundle the bundle to update
      */
-    public static void updateModule(Bundle bundleToUpdate) throws BundleException {
-        // if the bundle is Active and provide wires to other bundle(s) we need to refresh this wires after the update
-        if (bundleToUpdate.getState() == Bundle.ACTIVE) {
-            BundleWiring bundleWiring = bundleToUpdate.adapt(BundleWiring.class);
+    public static void updateBundle(Bundle bundle) throws BundleException {
+
+        if (bundle.getState() == Bundle.ACTIVE) {
+
+            // if the bundle is Active and provides wires to other bundle(s) we need to refresh these wires after the update
+
+            BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
             List<BundleWire> bundleWires = bundleWiring.getProvidedWires(null);
 
             if (bundleWires != null && bundleWires.size() > 0) {
+
                 // stop manually the bundle
-                bundleToUpdate.stop();
+                bundle.stop();
 
                 // do the update
-                bundleToUpdate.update();
+                bundle.update();
 
                 // refresh the wirings
-                refreshBundle(bundleToUpdate);
+                refreshBundle(bundle);
 
                 // start manually
-                bundleToUpdate.start();
+                bundle.start();
             } else {
                 // no wires, just update the bundle directly
-                bundleToUpdate.update();
+                bundle.update();
             }
         } else {
             // not active, just update the bundle directly
-            bundleToUpdate.update();
+            bundle.update();
         }
     }
 }

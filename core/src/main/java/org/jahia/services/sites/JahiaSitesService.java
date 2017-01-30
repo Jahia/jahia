@@ -576,10 +576,10 @@ public class JahiaSitesService extends JahiaService {
         String serverName = siteToRemove.getServerName();
 
         try {
-            // if site to remove is default, elect a new default site
-            final boolean isDefault = siteToRemove.isDefault();
+
+            // If site to remove is default, elect a new default site
             String newDefaultSiteKey = null;
-            if(isDefault) {
+            if (siteToRemove.isDefault()) {
                 List<JCRSiteNode> siteList = getSitesNodeList();
                 for (JCRSiteNode site : siteList) {
                     if(!site.getSiteKey().equals(SYSTEM_SITE_KEY) && !site.getSiteKey().equals(siteToRemove.getSiteKey())) {
@@ -589,7 +589,6 @@ public class JahiaSitesService extends JahiaService {
                 }
             }
 
-            // key used in callbacks
             final String newDefaultSiteKeyFinal = newDefaultSiteKey;
 
             JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {
@@ -600,14 +599,10 @@ public class JahiaSitesService extends JahiaService {
                     if (!sites.isCheckedOut()) {
                         session.checkout(sites);
                     }
-                    if (isDefault) {
-                        // set new default site
-                        if (newDefaultSiteKeyFinal != null) {
-                            setDefaultSite((JCRSiteNode) sites.getNode(newDefaultSiteKeyFinal), session);
-                        } else {
-                            setDefaultSite(null, session);
-                        }
-
+                    if (newDefaultSiteKeyFinal != null) {
+                        setDefaultSite((JCRSiteNode) sites.getNode(newDefaultSiteKeyFinal), session);
+                    } else {
+                        setDefaultSite(null, session);
                     }
                     sites.getNode(siteKeyToRemove).remove();
                     session.save();

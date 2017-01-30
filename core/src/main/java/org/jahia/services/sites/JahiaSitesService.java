@@ -83,19 +83,17 @@ import java.util.*;
  */
 public class JahiaSitesService extends JahiaService {
 
-    // authorized chars
-    private static final String AUTHORIZED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-";
-
-    private static final String[] TRANSLATOR_NODES_PATTERN = new String[] {"translator-*"};
-
     public static final String SYSTEM_SITE_KEY = "systemsite";
     public static final String SITES_JCR_PATH = "/sites";
 
+    private static final String AUTHORIZED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-";
+    private static final String[] TRANSLATOR_NODES_PATTERN = new String[] {"translator-*"};
     private static final Logger logger = LoggerFactory.getLogger(JahiaSitesService.class);
 
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
     protected EhCacheProvider ehCacheProvider;
+
     private SelfPopulatingCache siteKeyByServerNameCache;
     private SelfPopulatingCache siteDefaultLanguageBySiteKey;
     private SelfPopulatingCache sitesListCache;
@@ -140,7 +138,6 @@ public class JahiaSitesService extends JahiaService {
     }
 
     private SelfPopulatingCache getSitesListCache() {
-
         if (sitesListCache == null) {
             sitesListCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.sitesService.sitesListCache", new CacheEntryFactory() {
 
@@ -350,9 +347,11 @@ public class JahiaSitesService extends JahiaService {
         boolean importingSystemSite = false;
         final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         JCRSiteNode site = null;
+
         try {
 
             if (!siteExists(siteKey, session)) {
+
                 final JahiaTemplatesPackage templateSet = templateService.getAnyDeployedTemplatePackage(selectTmplSet);
                 final String templatePackage = templateSet.getId();
 
@@ -424,7 +423,9 @@ public class JahiaSitesService extends JahiaService {
             if (!site.isDefault() && !site.getSiteKey().equals(SYSTEM_SITE_KEY) && getNbSites() == 2) {
                 setDefaultSite(site, session);
             }
+
             if (!importingSystemSite) {
+
                 JahiaGroupManagerService jgms = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
                 siteNode.setMixLanguagesActive(false);
@@ -459,6 +460,7 @@ public class JahiaSitesService extends JahiaService {
                 siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, Collections.singleton("site-administrator"));
                 session.save();
             }
+
             Resource initialZip = null;
             if ("fileImport".equals(firstImport)) {
                 initialZip = fileImport;
@@ -555,7 +557,6 @@ public class JahiaSitesService extends JahiaService {
         List<JahiaTemplatesPackage> modules = moduleIdsToTemplatesPackage(modulesToDeploy != null ? Arrays.asList(modulesToDeploy) : Collections.<String>emptyList(), templateService);
         modules.add(templateService.getAnyDeployedTemplatePackage(JahiaTemplatesPackage.ID_DEFAULT));
         modules.add(templateSet);
-
         try {
             logger.info("Deploying modules {} to {}", modules.toString(), target);
             templateService.installModules(modules, target, session);
@@ -574,7 +575,6 @@ public class JahiaSitesService extends JahiaService {
                     packages.add(packageByFileName);
                 }
             }
-
             return packages;
         } else {
             return Collections.emptyList();
@@ -582,7 +582,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     /**
-     * remove a site, if the remived site is the default one:
+     * Remove a site; if the removed site is the default one:
      * - the first other site found will become the default
      * - if no other site found, no default site anymore
      *
@@ -607,8 +607,25 @@ public class JahiaSitesService extends JahiaService {
                 }
             }
 
-            final String newDefaultSiteKeyFinal = newDefaultSiteKey;
+            // First delete all groups
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
 
+                @Override
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    for (String groupPath : groupService.getGroupList(siteKeyToRemove)) {
+                        if (StringUtils.startsWith(groupPath, siteToRemove.getJCRLocalPath() + "/groups/")
+                                && !StringUtils.startsWith(groupPath, siteToRemove.getJCRLocalPath() + "/groups/providers/")) {
+                            groupService.deleteGroup(groupPath, session);
+                        }
+                    }
+                    session.save();
+                    return true;
+                }
+            });
+
+            // Now let's delete the site.
+
+            final String newDefaultSiteKeyFinal = newDefaultSiteKey;
             JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {
 
                 @Override
@@ -628,23 +645,6 @@ public class JahiaSitesService extends JahiaService {
                 }
             };
 
-            // First delete all groups
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-
-                @Override
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    for (String groupPath : groupService.getGroupList(siteKeyToRemove)) {
-                        if (StringUtils.startsWith(groupPath, siteToRemove.getJCRLocalPath() + "/groups/")
-                                && !StringUtils.startsWith(groupPath, siteToRemove.getJCRLocalPath() + "/groups/providers/")) {
-                            groupService.deleteGroup(groupPath, session);
-                        }
-                    }
-                    session.save();
-                    return true;
-                }
-            });
-
-            // Now let's delete the live workspace site.
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, deleteCallback);
             JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCallback);
         } catch (RepositoryException e) {

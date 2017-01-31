@@ -229,7 +229,7 @@
         <property name="toolbarWarningsService" ref="toolbarNotificationService"/>
         <property name="ignoreSnapshots" value="${jahia.mavenReleasePlugin.ignoreSnapshots:}"/>
         <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:}"/>
-        <property name="mavenArchetypeVersion" value="${jahia.mavenArchetypeVersion:2.5-SNAPSHOT}"/>
+        <property name="mavenArchetypeVersion" value="${jahia.mavenArchetypeVersion:2.5}"/>
         <property name="mavenMinRequiredVersion" value="3.0"/>
         <property name="mavenWarnIfVersionIsOlderThan" value="3.1"/>
         <property name="mavenExecutable" value="${mvnPath:mvn}"/>

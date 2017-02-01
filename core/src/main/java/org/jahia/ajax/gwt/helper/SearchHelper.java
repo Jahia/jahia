@@ -47,6 +47,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
+import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -343,7 +344,7 @@ public class SearchHelper {
      */
     public Query createQuery(String searchString, JCRSessionWrapper session) throws RepositoryException {
         SearchCriteria criteria = new SearchCriteria();
-        criteria.getTerms().get(0).setTerm(searchString);
+        criteria.getTerms().get(0).setTerm(QueryParser.escape(searchString));
         return jcrSearchProvider.buildQuery(criteria, session);
     }
 
@@ -402,7 +403,7 @@ public class SearchHelper {
 //
         // query string
         if (gwtQuery.getQuery() != null && gwtQuery.getQuery().length() > 0) {
-            criteria.getTerms().get(0).setTerm(gwtQuery.getQuery());
+            criteria.getTerms().get(0).setTerm(QueryParser.escape(gwtQuery.getQuery()));
             SearchFields fields = criteria.getTerms().get(0).getFields();
             fields.setSiteContent(gwtQuery.isInContents());
             fields.setFilename(gwtQuery.isInName());

@@ -591,7 +591,7 @@ public class FormFieldCreator {
                         break;
                     case GWTJahiaNodePropertyType.DATE:
                         if (propDefinition.isMultiple()) {
-                            // multiple boolean prop are not supported
+                            // multiple not supported for date field
                             return;
                         }
                         Date d = values.get(0).getDate();

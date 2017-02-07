@@ -96,6 +96,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_DX;
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES;
@@ -623,7 +624,7 @@ public class Activator implements BundleActivator {
     private void addToBeResolved(Bundle bundle, String missingDependency) {
         List<Bundle> bundlesWaitingForDepend = toBeResolved.get(missingDependency);
         if (bundlesWaitingForDepend == null) {
-            bundlesWaitingForDepend = new ArrayList<Bundle>();
+            bundlesWaitingForDepend = new CopyOnWriteArrayList<Bundle>();
             toBeResolved.put(missingDependency, bundlesWaitingForDepend);
         }
         bundlesWaitingForDepend.add(bundle);

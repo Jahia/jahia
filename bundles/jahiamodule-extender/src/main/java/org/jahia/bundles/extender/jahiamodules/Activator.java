@@ -84,6 +84,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Activator for Jahia Modules extender
@@ -352,7 +353,7 @@ public class Activator implements BundleActivator {
     private void addToBeStarted(Bundle bundle, String missingDependency) {
         List<Bundle> toBeStartedForName = toBeStarted.get(missingDependency);
         if (toBeStartedForName == null) {
-            toBeStartedForName = new ArrayList<Bundle>();
+            toBeStartedForName = new CopyOnWriteArrayList<Bundle>();
             toBeStarted.put(missingDependency, toBeStartedForName);
         }
         toBeStartedForName.add(bundle);
@@ -535,7 +536,7 @@ public class Activator implements BundleActivator {
     private void addToBeParsed(Bundle bundle, String missingDependency) {
         List<Bundle> bundlesWaitingForDepend = toBeParsed.get(missingDependency);
         if (bundlesWaitingForDepend == null) {
-            bundlesWaitingForDepend = new ArrayList<Bundle>();
+            bundlesWaitingForDepend = new CopyOnWriteArrayList<Bundle>();
             toBeParsed.put(missingDependency, bundlesWaitingForDepend);
         }
         bundlesWaitingForDepend.add(bundle);

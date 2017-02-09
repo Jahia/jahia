@@ -108,9 +108,9 @@ public class FormFieldCreator {
         if (!definition.isNode()) {
             GWTJahiaPropertyDefinition propDefinition = (GWTJahiaPropertyDefinition) definition;
             String emptyText = "";
+            boolean isMutliple = ((GWTJahiaPropertyDefinition) definition).isMultiple();
             switch (definition.getSelector()) {
                 case GWTJahiaNodeSelectorType.SMALLTEXT:
-                    boolean isMutliple = ((GWTJahiaPropertyDefinition) definition).isMultiple();
                     if (!definition.isProtected() && isMutliple) {
                         switch (propDefinition.getRequiredType()) {
                             case GWTJahiaNodePropertyType.LONG:
@@ -184,6 +184,11 @@ public class FormFieldCreator {
                     field.setHeight(300);
                     break;
                 case GWTJahiaNodeSelectorType.DATETIMEPICKER:
+                    if (isMutliple) {
+                        // multiple datetimepicker are not supported, do not display the field
+                        return null;
+                    }
+
                     field = new CalendarField();
                     if (propDefinition.getSelectorOptions().get("format") != null) {
                         ((CalendarField) field).getPropertyEditor()
@@ -194,6 +199,11 @@ public class FormFieldCreator {
                     }
                     break;
                 case GWTJahiaNodeSelectorType.DATEPICKER:
+                    if (isMutliple) {
+                        // multiple datepicker are not supported, do not display the field
+                        return null;
+                    }
+
                     field = new DateField();
                     if (propDefinition.getSelectorOptions().get("format") != null) {
                         ((DateField) field).getPropertyEditor()
@@ -204,6 +214,11 @@ public class FormFieldCreator {
                     ((DateField) field).setHideTrigger(propDefinition.isProtected());
                     break;
                 case GWTJahiaNodeSelectorType.CHECKBOX:
+                    if (isMutliple) {
+                        // multiple checkbox are not supported, do not display the field
+                        return null;
+                    }
+
                     field = new CheckBox();
                     // hack to align check box to rigth
                     ((CheckBox) field).setBoxLabel(definition.getLabel());

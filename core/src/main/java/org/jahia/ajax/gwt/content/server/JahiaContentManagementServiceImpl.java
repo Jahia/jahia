@@ -2368,17 +2368,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         gwtProps.add(new GWTJahiaNodeProperty("node", props.get("node")));
         gwtProps.add(new GWTJahiaNodeProperty("schedule", props.get("schedule")));
 
-        final JCRSessionWrapper session = retrieveCurrentSession();
-        try {
-            // create parent node if not already present
-            if (!session.nodeExists("/remotePublications")) {
-                session.getRootNode().addNode("remotePublications", "jnt:remotePublications");
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments(
-                    "label.gwt.error.node.creation.failed.cause", getUILocale(), getLocalizedMessage(e)));
-        }
         createNode("/remotePublications", JCRContentUtils.generateNodeName(nodeName),
                 "jnt:remotePublication", null, null, gwtProps,
                 new HashMap<String, List<GWTJahiaNodeProperty>>(), null, null, true);

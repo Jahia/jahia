@@ -76,6 +76,8 @@ import static org.junit.Assert.*;
 public class WorkflowServiceTest {
     private final static String TESTSITE_NAME = "jBPMWorkflowServiceTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME + "/home";
+    private static final String WORKFLOW_TYPE_1_STEP_PUBLICATION = "1-step-publication";
+    private static final String WORKFLOW_TYPE_2_STEP_PUBLICATION = "2-step-publication";
     private static JahiaSite site;
     private static JahiaUser johndoe;
     private static JahiaUser johnsmoe;
@@ -172,7 +174,7 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition currentWorkflow : workflowList) {
-            if ("1-step-publication-remotepublish".equals(currentWorkflow.getName())) {
+            if (WORKFLOW_TYPE_1_STEP_PUBLICATION.equals(currentWorkflow.getName())) {
                 workflow = currentWorkflow;
                 break;
             }
@@ -217,12 +219,12 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
-            if ("2-step-publication-remotepublish".equals(workflowDefinition.getName())) {
+            if (WORKFLOW_TYPE_2_STEP_PUBLICATION.equals(workflowDefinition.getName())) {
                 workflow = workflowDefinition;
                 break;
             }
         }
-        assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
+        assertNotNull("Unable to find workflow process of type: " + WORKFLOW_TYPE_2_STEP_PUBLICATION, workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
@@ -332,12 +334,12 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
-            if ("2-step-publication-remotepublish".equals(workflowDefinition.getName())) {
+            if (WORKFLOW_TYPE_2_STEP_PUBLICATION.equals(workflowDefinition.getName())) {
                 workflow = workflowDefinition;
                 break;
             }
         }
-        assertNotNull("Unable to find workflow process '2 Step Publication Process'", workflow);
+        assertNotNull("Unable to find workflow process of type: " + WORKFLOW_TYPE_2_STEP_PUBLICATION, workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
@@ -390,12 +392,12 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
-            if ("1-step-publication-remotepublish".equals(workflowDefinition.getName())) {
+            if (WORKFLOW_TYPE_1_STEP_PUBLICATION.equals(workflowDefinition.getName())) {
                 workflow = workflowDefinition;
                 break;
             }
         }
-        assertNotNull("Unable to find workflow process '1 Step Publication Process'", workflow);
+        assertNotNull("Unable to find workflow process of type: " + WORKFLOW_TYPE_1_STEP_PUBLICATION, workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
@@ -432,12 +434,12 @@ public class WorkflowServiceTest {
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
-            if ("1-step-publication-remotepublish".equals(workflowDefinition.getName())) {
+            if (WORKFLOW_TYPE_1_STEP_PUBLICATION.equals(workflowDefinition.getName())) {
                 workflow = workflowDefinition;
                 break;
             }
         }
-        assertNotNull("Unable to find workflow process '1 Step Publication Process'", workflow);
+        assertNotNull("Unable to find workflow process of type: " + WORKFLOW_TYPE_1_STEP_PUBLICATION, workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));

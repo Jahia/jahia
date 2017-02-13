@@ -7,7 +7,10 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.importexport.DocumentViewImportHandler;
+import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.test.framework.AbstractJUnitTest;
+import org.jahia.utils.StringOutputStream;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,9 +19,13 @@ import org.slf4j.Logger;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.version.Version;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -72,9 +79,6 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(NodeTypesChangesIT.class);
     JCRNodeWrapper testNode;
     List<Result> results = new ArrayList<>();
-    final boolean[] expectedResults = {true,true,false,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,
-            true,false,true,true,true,true,true,false,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,true,true,true,true,
-            true,true,false,false,false,false,true,true,true,true,true,true,false,false,false,false};
 
     @Before
     public void setUp() throws Exception {
@@ -92,7 +96,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
     @Test
     public void doNodetypesModifications() throws Exception {
 
-        
+
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession("default", Locale.ENGLISH, null);
         String versionName;
         versionName = init(session);
@@ -124,15 +128,18 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         checkOperation(session, testNode.getNode("test").getPath(), "add mandatory contraint to a property", versionName);
 
         //validate results, un comment the generation of the results if the test change.
-        //String s = "";
+        String s = "";
+        Boolean[] expectedResults = getExpectedResults();
         for (int i = 0; i < results.size(); i++) {
             Result result = results.get(i);
-            logger.info("compare {} {}: {} with {}", new String[]{result.modification, result.operation, Boolean.toString(result.result),
-                    Boolean.toString(expectedResults[i])});
-            // s += results.get(i).result + ",";
-            Assert.assertEquals(result.result, expectedResults[i]);
+            //logger.info("compare {} {}: {} with {}", new String[]{result.modification, result.operation, Boolean.toString(result.result),
+            //        Boolean.toString(expectedResults[i])});
+            s += results.get(i).result + ", //" + result.modification + " - " + result.operation + "\n";
+            String actual = result.modification + " - " + result.operation + " " + result.result;
+            String expected = result.modification + " - " + result.operation + " " + expectedResults[i];
+            Assert.assertEquals(expected, actual);
         }
-        //logger.info(s);
+        logger.info(s);
 
         // show table
         String mod = null;
@@ -181,7 +188,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         v = session.getWorkspace().getVersionManager().checkin(n.getPath());
         String versionName = v.getName();
         session.getWorkspace().getVersionManager().checkout(n.getPath());
-        
+
         // restore origin value
         n.setProperty("test", "test");
         session.save();
@@ -328,6 +335,16 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
             }
         });
 
+        //export
+        final OutputStream exportOutputStream = new StringOutputStream();
+        doOperation("export node", modification, nodePath, new CallBack() {
+            @Override
+            public void execute() throws Exception {
+                HashMap<String, Object> params = new HashMap<>();
+                ImportExportBaseService.getInstance().exportNode(session.getNode(nodePath), session.getNode("/"), exportOutputStream, params);
+            }
+        });
+
         // copy node
         doOperation("copy node", modification, nodePath, new CallBack() {
             @Override
@@ -393,7 +410,7 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
             }
         });
 
-         // remove node
+        // remove node
         doOperation("remove node", modification, nodePath, new CallBack() {
             @Override
             public void execute() throws Exception {
@@ -402,6 +419,22 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
                 session.save();
             }
         });
+
+        // import node
+        doOperation("import node", modification, nodePath, new CallBack() {
+            @Override
+            public void execute() throws Exception {
+                ByteArrayInputStream stream = new ByteArrayInputStream(exportOutputStream.toString().getBytes(StandardCharsets.UTF_8));
+                session.getNode("/").addNode("nodeTypesImported", "nt:unstructured");
+                session.save();
+                ImportExportBaseService.getInstance().importXML("/nodeTypesImported", stream, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
+                // read the node property
+                JCRNodeWrapper nread = session.getNode("/nodeTypesImported/nodeTypeChanges/test");
+                String s = nread.getProperty("test").getValue().getString();
+                results.add(new Result("read imported property value", modification, "new value".equals(s)));
+            }
+        });
+
     }
 
     private void doOperation(String operation, String modification, String nodePath, CallBack callBack) {
@@ -435,5 +468,92 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
     private interface CallBack {
         void execute() throws Exception;
 
+    }
+
+    private Boolean[] getExpectedResults() {
+        return new Boolean[]{
+                true, //remove property from nodetype - read node
+                true, //remove property from nodetype - export node
+                true, //remove property from nodetype - copy node
+                false, //remove property from nodetype - read properties
+                false, //remove property from nodetype - edit property
+                false, //remove property from nodetype - remove property
+                false, //remove property from nodetype - restore version
+                true, //remove property from nodetype - remove node
+                false, //remove property from nodetype - import node
+                true, //remove nodetype from definition - read node
+                true, //remove nodetype from definition - export node
+                true, //remove nodetype from definition - copy node
+                true, //remove nodetype from definition - read property value
+                true, //remove nodetype from definition - read multiple property value
+                true, //remove nodetype from definition - read i18n property value
+                true, //remove nodetype from definition - read properties
+                true, //remove nodetype from definition - edit property
+                true, //remove nodetype from definition - remove property
+                true, //remove nodetype from definition - read restored property value
+                true, //remove nodetype from definition - restore version
+                true, //remove nodetype from definition - remove node
+                false, //remove nodetype from definition - read imported property value
+                true, //remove nodetype from definition - import node
+                true, //switch a property from non-i18n to i18n - read node
+                true, //switch a property from non-i18n to i18n - export node
+                true, //switch a property from non-i18n to i18n - copy node
+                false, //switch a property from non-i18n to i18n - read properties
+                true, //switch a property from non-i18n to i18n - edit property
+                true, //switch a property from non-i18n to i18n - remove property
+                false, //switch a property from non-i18n to i18n - restore version
+                true, //switch a property from non-i18n to i18n - remove node
+                false, //switch a property from non-i18n to i18n - read imported property value
+                true, //switch a property from non-i18n to i18n - import node
+                true, //switch a property from i18n to non-i18n - read node
+                true, //switch a property from i18n to non-i18n - export node
+                true, //switch a property from i18n to non-i18n - copy node
+                true, //switch a property from i18n to non-i18n - read property value
+                true, //switch a property from i18n to non-i18n - read multiple property value
+                false, //switch a property from i18n to non-i18n - read properties
+                true, //switch a property from i18n to non-i18n - edit property
+                true, //switch a property from i18n to non-i18n - remove property
+                true, //switch a property from i18n to non-i18n - read restored property value
+                true, //switch a property from i18n to non-i18n - restore version
+                true, //switch a property from i18n to non-i18n - remove node
+                false, //switch a property from i18n to non-i18n - read imported property value
+                true, //switch a property from i18n to non-i18n - import node
+                true, //switch a property from single to multipe - read node
+                true, //switch a property from single to multipe - export node
+                true, //switch a property from single to multipe - copy node
+                true, //switch a property from single to multipe - read property value
+                true, //switch a property from single to multipe - read multiple property value
+                true, //switch a property from single to multipe - read i18n property value
+                true, //switch a property from single to multipe - read properties
+                false, //switch a property from single to multipe - edit property
+                false, //switch a property from single to multipe - remove property
+                false, //switch a property from single to multipe - restore version
+                false, //switch a property from single to multipe - remove node
+                false, //switch a property from single to multipe - import node
+                true, //switch a property from multipe to single - read node
+                true, //switch a property from multipe to single - export node
+                true, //switch a property from multipe to single - copy node
+                true, //switch a property from multipe to single - read property value
+                true, //switch a property from multipe to single - read multiple property value
+                true, //switch a property from multipe to single - read i18n property value
+                true, //switch a property from multipe to single - read properties
+                false, //switch a property from multipe to single - edit property
+                false, //switch a property from multipe to single - remove property
+                false, //switch a property from multipe to single - restore version
+                false, //switch a property from multipe to single - remove node
+                false, //switch a property from multipe to single - import node
+                true, //add mandatory contraint to a property - read node
+                true, //add mandatory contraint to a property - export node
+                true, //add mandatory contraint to a property - copy node
+                true, //add mandatory contraint to a property - read property value
+                true, //add mandatory contraint to a property - read multiple property value
+                true, //add mandatory contraint to a property - read i18n property value
+                true, //add mandatory contraint to a property - read properties
+                false, //add mandatory contraint to a property - edit property
+                false, //add mandatory contraint to a property - remove property
+                false, //add mandatory contraint to a property - restore version
+                false, //add mandatory contraint to a property - remove node
+                false, //add mandatory contraint to a property - import node
+        };
     }
 }

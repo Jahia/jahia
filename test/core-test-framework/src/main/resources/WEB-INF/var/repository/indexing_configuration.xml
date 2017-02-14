@@ -36,8 +36,8 @@ The following example creates an index aggregate on jnt:file that includes the c
      - isRegexp : if true, false by default, the path is a read as a regular expression.
 
     examples :
-    <exclude ndetype"jnt:file" path="/sites/mySites/files/nonIndexedFiles"/>
-    <exclude ndetype"jnt:file" path="^/sites/mySites/files/nonIndexedFiles/.*" isRegexp="true"/>
+    <exclude nodetype"jnt:file" path="/sites/mySites/files/nonIndexedFiles"/>
+    <exclude nodetype"jnt:file" path="^/sites/mySites/files/nonIndexedFiles/.*" isRegexp="true"/>
     -->
 
     <exclude nodetype="test:excludeFromIndexContent"/>

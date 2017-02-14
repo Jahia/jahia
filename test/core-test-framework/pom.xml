@@ -176,11 +176,7 @@
                                         <include name="WEB-INF/etc/repository/rules/**" />
                                     </fileset>
                                 </copy>
-                                <copy todir="${project.build.directory}/classes/WEB-INF/var">
-                                    <fileset dir="${project.basedir}/../../war/src/data/resources">
-                                        <include name="repository/**" />
-                                    </fileset>
-                                </copy>
+                                <copy todir="${project.build.directory}/classes/WEB-INF/var/repository" file="${project.basedir}/../../war/src/data/resources/repository/indexing_configuration_version.xml"/>
                                 <copy todir="${project.build.directory}/classes/WEB-INF/var/patches">
                                     <fileset dir="${project.basedir}/../../war/src/data/resources/db">
                                         <include name="derby_embedded.script" />

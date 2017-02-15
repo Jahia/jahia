@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia.test</groupId>
         <artifactId>jahia-test-parent</artifactId>
-        <version>7.3.0.0-SNAPSHOT</version>
+        <version>7.3.0.0-backlog_6885-SNAPSHOT</version>
     </parent>
     <artifactId>core-test-framework</artifactId>
     <name>Jahia Core Test Framework</name>
@@ -176,7 +176,7 @@
                                         <include name="WEB-INF/etc/repository/rules/**" />
                                     </fileset>
                                 </copy>
-                                <copy todir="${project.build.directory}/classes/WEB-INF/var/repository" file="${project.basedir}/../../war/src/data/resources/repository/indexing_configuration_version.xml"/>
+                                <copy todir="${project.build.directory}/classes/WEB-INF/var/repository" file="${project.basedir}/../../war/src/data/resources/repository/indexing_configuration_version.xml" />
                                 <copy todir="${project.build.directory}/classes/WEB-INF/var/patches">
                                     <fileset dir="${project.basedir}/../../war/src/data/resources/db">
                                         <include name="derby_embedded.script" />

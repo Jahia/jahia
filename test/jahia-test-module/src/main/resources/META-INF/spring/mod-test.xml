@@ -71,6 +71,7 @@
                 <value>org.jahia.test.services.seo.urlrewrite.UrlRewriteTest</value>
                 <value>org.jahia.test.services.tags.TaggingTest</value>
                 <value>org.jahia.test.services.templates.JahiaTemplateManagerServiceTest</value>
+                <value>org.jahia.test.services.templates.ModuleBuildTest</value>
                 <value>org.jahia.test.services.templates.ModuleDeploymentTest</value>
                 <value>org.jahia.test.services.usermanager.JahiaGroupManagerServiceTest</value>
                 <value>org.jahia.test.services.usermanager.LocalUserTest</value>

@@ -850,4 +850,68 @@ public class JahiaSearchIndex extends SearchIndex {
             log.warn("Unable to close index", e);
         }
     }
+
+    /**
+     * Re-indexes the full JCR sub-tree, starting from the specified node.
+     * 
+     * @param startNodeId the UUID of the node to start re-indexing with
+     * @throws RepositoryException if an error occurs while indexing a node.
+     * @throws NoSuchItemStateException in case of JCR errors
+     * @throws IllegalArgumentException in case of JCR errors
+     * @throws ItemStateException in case of JCR errors
+     * @throws IOException if an error occurs while updating the index
+     */
+    public void reindexTree(String startNodeId) throws RepositoryException, NoSuchItemStateException,
+            IllegalArgumentException, ItemStateException, IOException {
+        long startTime = System.currentTimeMillis();
+        log.info("Requested re-indexing of the JCR tree for node {}", startNodeId);
+        ItemStateManager stateManager = getContext().getItemStateManager();
+        List<NodeState> nodes = new LinkedList<>();
+        collectChildren((NodeState) stateManager.getItemState(NodeId.valueOf(startNodeId)), stateManager, nodes);
+
+        int totalCount = nodes.size();
+        log.info("Collected {} node IDs to be re-indexed", totalCount);
+
+        List<NodeId> removed = new LinkedList<>();
+        for (NodeState n : nodes) {
+            removed.add(n.getNodeId());
+        }
+
+        if (totalCount > batchSize) {
+            // will process in batches
+            log.info("Will process re-indexig of nodes in batches of {} nodes", batchSize);
+            int listStart = 0;
+            int listEnd = Math.min(totalCount, batchSize);
+            while (listStart < totalCount) {
+                if (listStart > 0) {
+                    Thread.yield();
+                }
+                super.updateNodes(removed.subList(listStart, listEnd).iterator(),
+                        nodes.subList(listStart, listEnd).iterator());
+
+                if (listEnd % (10 * batchSize) == 0) {
+                    log.info("Re-indexed {} nodes out of {}", listEnd, totalCount);
+                }
+
+                listStart += batchSize;
+                listEnd = Math.min(totalCount, listEnd + batchSize);
+            }
+        } else {
+            super.updateNodes(removed.iterator(), nodes.iterator());
+        }
+
+        log.info("Done re-indexed JCR sub-tree for node {} in {} ms", startNodeId,
+                System.currentTimeMillis() - startTime);
+    }
+
+    private static void collectChildren(NodeState startNode, ItemStateManager stateManager, List<NodeState> nodes) {
+        nodes.add(startNode);
+        for (ChildNodeEntry child : startNode.getChildNodeEntries()) {
+            try {
+                collectChildren((NodeState) stateManager.getItemState(child.getId()), stateManager, nodes);
+            } catch (ItemStateException e) {
+                log.warn("Unable to obtain state for the node " + child.getId() + ". Cause: " + e.getMessage(), e);
+            }
+        }
+    }
 }

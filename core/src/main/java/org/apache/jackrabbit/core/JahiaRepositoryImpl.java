@@ -51,6 +51,8 @@ import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
 import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex.ReindexJob;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
+import org.apache.jackrabbit.core.state.ItemStateException;
+import org.apache.jackrabbit.core.state.NoSuchItemStateException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.quartz.JobDataMap;
@@ -62,6 +64,8 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.RepositoryException;
 import javax.security.auth.Subject;
+
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -224,5 +228,22 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
     @Override
     protected NodeId getSystemExcludedNodeId() {
         return JahiaSearchIndex.SKIP_VERSION_INDEX ? RepositoryImpl.VERSION_STORAGE_NODE_ID : null;
+    }
+
+    /**
+     * Re-indexes the full JCR sub-tree in the specified workspace, starting from the provided node.
+     * 
+     * @param startNodeId the UUID of the node to start re-indexing with
+     * @param workspaceName target workspace
+     * @throws RepositoryException if an error occurs while indexing a node.
+     * @throws NoSuchItemStateException in case of JCR errors
+     * @throws IllegalArgumentException in case of JCR errors
+     * @throws ItemStateException in case of JCR errors
+     * @throws IOException if an error occurs while updating the index
+     */
+    public void reindexTree(String startNodeId, String workspaceName) throws RepositoryException,
+            NoSuchItemStateException, IllegalArgumentException, ItemStateException, IOException {
+        ((JahiaSearchIndex) getWorkspaceInfo(workspaceName).getSearchManager().getQueryHandler())
+                .reindexTree(startNodeId);
     }
 }

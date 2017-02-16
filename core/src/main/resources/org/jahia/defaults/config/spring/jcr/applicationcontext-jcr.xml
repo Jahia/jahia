@@ -85,6 +85,24 @@
         <property name="moduleCacheProvider" ref="ModuleCacheProvider"/>
     </bean>
 
+    <bean id="BaseRulesListener" class="org.jahia.services.content.rules.RulesListener" init-method="start" abstract="true">
+        <property name="globalObjects">
+            <map>
+                <entry key="service"
+                    value-ref="org.jahia.services.content.rules.Service" />
+                <entry key="imageService"
+                    value-ref="org.jahia.services.content.rules.ImageService" />
+                <entry key="extractionService"
+                    value-ref="org.jahia.services.content.rules.ExtractionService" />
+                <entry key="notificationService"
+                    value-ref="org.jahia.services.content.rules.RulesNotificationService" />
+                <entry key="sitePubSubService"
+                    value-ref="org.jahia.services.atmosphere.rules.SitePublisherSubscriberRuleService" />
+            </map>
+        </property>
+        <property name="disabledRules" value="${jahia.rules.disabledConfig:}" />
+    </bean>
+
     <bean id="JCRStoreService" class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate"
           factory-method="getInstance" lazy-init="true" depends-on="springContextSingleton,nodeTypeRegistry">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
@@ -158,7 +176,7 @@
                             <property name="publicationService" ref="jcrPublicationService"/>
                         </bean>
                         <bean class="org.apache.jackrabbit.core.security.PrivilegesListener"/>
-                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
+                        <bean class="org.jahia.services.content.rules.RulesListener" parent="BaseRulesListener">
                             <property name="ruleFiles">
                                 <set>
                                     <value>/repository/rules/repository-rules.drl</value>
@@ -166,17 +184,6 @@
                                 </set>
                             </property>
 
-                            <property name="globalObjects">
-                                <map>
-                                    <entry key="service" value-ref="org.jahia.services.content.rules.Service"/>
-                                    <entry key="imageService"
-                                           value-ref="org.jahia.services.content.rules.ImageService"/>
-                                    <entry key="extractionService"
-                                           value-ref="org.jahia.services.content.rules.ExtractionService"/>
-                                    <entry key="notificationService"
-                                           value-ref="org.jahia.services.content.rules.RulesNotificationService"/>
-                                </map>
-                            </property>
                             <property name="filesAccepted">
                                 <list value-type="java.lang.String">
                                     <value type="java.lang.String">rules.drl</value>
@@ -231,18 +238,8 @@
                         <bean class="org.jahia.services.content.LastModifiedListener">
                             <property name="publicationService" ref="jcrPublicationService"/>
                         </bean>
-                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
+                        <bean class="org.jahia.services.content.rules.RulesListener" parent="BaseRulesListener">
                             <property name="ruleFiles" value="/repository/rules/repository-live-rules.drl"/>
-                            <property name="globalObjects">
-                                <map>
-                                    <entry key="service" value-ref="org.jahia.services.content.rules.Service"/>
-                                    <entry key="imageService"
-                                           value-ref="org.jahia.services.content.rules.ImageService"/>
-                                    <entry key="extractionService"
-                                           value-ref="org.jahia.services.content.rules.ExtractionService"/>
-                                    <entry key="sitePubSubService" value-ref="org.jahia.services.atmosphere.rules.SitePublisherSubscriberRuleService"/>
-                                </map>
-                            </property>
                             <property name="filesAccepted">
                                 <list value-type="java.lang.String">
                                     <value type="java.lang.String">rules.drl</value>
@@ -255,23 +252,11 @@
                                 </set>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
+                        <bean class="org.jahia.services.content.rules.RulesListener" parent="BaseRulesListener">
                             <property name="ruleFiles">
                                 <set/>
                             </property>
 
-                            <property name="globalObjects">
-                                <map>
-                                    <entry key="service" value-ref="org.jahia.services.content.rules.Service"/>
-                                    <entry key="imageService"
-                                           value-ref="org.jahia.services.content.rules.ImageService"/>
-                                    <entry key="extractionService"
-                                           value-ref="org.jahia.services.content.rules.ExtractionService"/>
-                                    <entry key="notificationService"
-                                           value-ref="org.jahia.services.content.rules.RulesNotificationService"/>
-                                    <entry key="sitePubSubService" value-ref="org.jahia.services.atmosphere.rules.SitePublisherSubscriberRuleService"/>
-                                </map>
-                            </property>
                             <property name="filesAccepted">
                                 <list value-type="java.lang.String">
                                     <value type="java.lang.String">live-rules.drl</value>

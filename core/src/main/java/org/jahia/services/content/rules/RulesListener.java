@@ -53,9 +53,11 @@ import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatelessSession;
+import org.drools.core.base.EnabledBoolean;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.rule.Package;
+import org.drools.core.rule.Rule;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleDelegatingClassLoader;
@@ -106,6 +108,11 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     private Map<String,String> modulePackageNameMap;
 
     private CompositeClassLoader ruleBaseClassLoader;
+
+    /**
+     * A map of rules, which should be disabled.
+     */
+    private Map</* workspace */String, Map</* package name */String, /* set of rule names */Set<String>>> disabledRules;
 
     public RulesListener() {
         instances.add(this);
@@ -222,6 +229,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     if (ruleBase.getPackage(pkg.getName()) != null) {
                         ruleBase.removePackage(pkg.getName());
                     }
+                    applyDisabledRulesConfiguration(pkg);
                     ruleBase.addPackage(pkg);
                     if(aPackage!=null) {
                         modulePackageNameMap.put(aPackage.getName(),pkg.getName());
@@ -280,6 +288,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     if (ruleBase.getPackage(pkg.getName()) != null) {
                         ruleBase.removePackage(pkg.getName());
                     }
+                    applyDisabledRulesConfiguration(pkg);
                     ruleBase.addPackage(pkg);
                     if(aPackage!=null) {
                         modulePackageNameMap.put(aPackage.getName(),pkg.getName());
@@ -757,5 +766,112 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public Map<String, String> getModulePackageNameMap() {
         return modulePackageNameMap;
+    }
+
+
+    /**
+     * Sets the configuration for rules to be disabled. The string format is as follows:
+     * 
+     * <pre>
+     * ["&lt;workspace&gt;".]"&lt;package-name-1&gt;"."&lt;rule-name-2&gt;",["&lt;workspace&gt;".]"&lt;package-name-2&gt;"."&lt;rule-name-3&gt;"...
+     * </pre>
+     * 
+     * The workspace part is optional. For example the following configuration:
+     * 
+     * <pre>
+     * "org.jahia.modules.rules"."Image update","live"."org.jahia.modules.dm.thumbnails"."Automatically generate thumbnail for the document"
+     * </pre>
+     * 
+     * will disable rule <code>Image update</code> (from package <code>org.jahia.modules.rules</code>) in rules for all workspaces (live and
+     * default) and the rule <code>Automatically generate thumbnail for the document</code> (package
+     * <code>org.jahia.modules.dm.thumbnails</code>) will be disabled in rules for live workspace only.
+     * 
+     * @param rulesToDisable the configuration for rules to be disabled
+     */
+    public void setDisabledRules(String rulesToDisable) {
+        if (StringUtils.isEmpty(rulesToDisable)) {
+            this.disabledRules = null;
+            return;
+        }
+        // trim spaces between the rules and split them
+        String input = StringUtils.replace(StringUtils.replace(rulesToDisable, "\", \"", "\",\""), "\" ,\"", "\",\"");
+        // get rid of first and last double quotes
+        input = StringUtils.substringBeforeLast(StringUtils.substringAfter(input, "\""), "\"");
+        String[] disabledRulesConfig = StringUtils.splitByWholeSeparator(input, "\",\"");
+        if (disabledRulesConfig != null) {
+            disabledRules = new HashMap<>();
+            for (String ruleCfg : disabledRulesConfig) {
+                // split configuration of a rule into tokens
+                String[] cfg = StringUtils.splitByWholeSeparator(ruleCfg, "\".\"");
+                // check if we've got a workspace part specified; if not use "null" as a workspace key
+                String workspace = cfg.length == 3 ? cfg[0] : null;
+                String pkg = cfg[workspace != null ? 1 : 0];
+                String rule = cfg[workspace != null ? 2 : 1];
+
+                Map<String, Set<String>> rulesForWorkspace = disabledRules.get(workspace);
+                if (rulesForWorkspace == null) {
+                    rulesForWorkspace = new HashMap<>();
+                    disabledRules.put(workspace, rulesForWorkspace);
+                }
+
+                Set<String> rulesForPackage = rulesForWorkspace.get(pkg);
+                if (rulesForPackage == null) {
+                    rulesForPackage = new HashSet<>();
+                    rulesForWorkspace.put(pkg, rulesForPackage);
+                }
+
+                rulesForPackage.add(rule);
+            }
+        }
+
+        if (disabledRules != null && disabledRules.isEmpty()) {
+            this.disabledRules = null;
+        } else {
+            logger.info("The following rules are configured to be disabled: {}", disabledRules);
+        }
+    }
+
+    /**
+     * Checks if the specified rule is disabled by configuration.
+     * 
+     * @param packageName the name of the rule package
+     * @param ruleName the rule name
+     * @return <code>true</code> if the specified rule is disabled by configuration; <code>false</code> otherwise
+     */
+    private boolean isRuleDisabled(String packageName, String ruleName) {
+        if (disabledRules == null) {
+            return false;
+        }
+        // check rules for specific workspace
+        Map<String, Set<String>> rulesForWorkspace = disabledRules.get(getWorkspace());
+        if (rulesForWorkspace != null && rulesForWorkspace.containsKey(packageName) && rulesForWorkspace.get(packageName).contains(ruleName)) {
+            return true;
+        }
+        // check rules without workspace
+        rulesForWorkspace = disabledRules.get(null);
+        if (rulesForWorkspace != null && rulesForWorkspace.containsKey(packageName) && rulesForWorkspace.get(packageName).contains(ruleName)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * If there are rules configured, which needs to be disabled, apply this configuration to the provided rule package.
+     * 
+     * @param pkg the rule package to apply configuration to
+     */
+    private void applyDisabledRulesConfiguration(Package pkg) {
+        if (disabledRules == null) {
+            // no configuration to be applied
+            return;
+        }
+
+        for (Rule r : pkg.getRules()) {
+            if (isRuleDisabled(pkg.getName(), r.getName())) {
+                r.setEnabled(EnabledBoolean.ENABLED_FALSE);
+                logger.info("Rule \"{}\" from package \"{}\" in workspace \"{}\" has been disabled by configuration",
+                        new String[] { r.getName(), pkg.getName(), getWorkspace() });
+            }
+        }
     }
 }

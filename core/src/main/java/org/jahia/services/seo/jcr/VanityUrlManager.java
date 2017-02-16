@@ -118,6 +118,7 @@ public class VanityUrlManager {
                                 + "//element(*, " + JAHIANT_VANITYURL + ")[@"
                                 + PROPERTY_URL + " = "
                                 + JCRContentUtils.stringToQueryLiteral(url)
+                                + ("live".equals(session.getWorkspace()) ? " and @j:published = 'true'" : "")
                                 + "]", Query.XPATH).execute();
         List<VanityUrl> existingUrls = new ArrayList<VanityUrl>();
         for (NodeIterator it = result.getNodes(); it.hasNext();) {

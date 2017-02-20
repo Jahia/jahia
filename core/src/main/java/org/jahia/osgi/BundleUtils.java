@@ -59,6 +59,7 @@ import org.springframework.core.ConstantException;
 import org.springframework.core.Constants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -389,7 +390,6 @@ public final class BundleUtils {
      * @throws IllegalArgumentException in case the filter expression is syntactically invalid
      */
     public static <S> S getOsgiService(Class<S> serviceClass, String filter) {
-
         S serviceInstance = null;
         BundleContext bundleContext = FrameworkService.getBundleContext();
         Collection<ServiceReference<S>> serviceReferences;
@@ -416,6 +416,42 @@ public final class BundleUtils {
         return serviceInstance;
     }
 
+    /**
+     * Looks up an OSGi service for the specified class name and filter. If multiple services are found matching the criteria, returns the best
+     * one, based on the service ranking. If no matching service has been found, returns <code>null</code>.
+     *
+     * @param serviceClassName the class name of the service to be looked up
+     * @param filter the filter expression or <code>null</code> for all services of the specified type
+     * @return an OSGi service instance matching the specified criteria or <code>null</code> if no match was found
+     * @throws IllegalArgumentException in case the filter expression is syntactically invalid
+     */
+    public static Object getOsgiService(String serviceClassName, String filter) {
+        Object serviceInstance = null;
+        BundleContext bundleContext = FrameworkService.getBundleContext();
+        Collection<ServiceReference<?>> serviceReferences;
+        try {
+            ServiceReference<?>[] refs = bundleContext.getServiceReferences(serviceClassName, filter);
+            serviceReferences = refs != null && refs.length > 0 ? Arrays.asList(refs) : null;
+        } catch (InvalidSyntaxException e) {
+            throw new JahiaRuntimeException(e);
+        }
+        if (serviceReferences != null && !serviceReferences.isEmpty()) {
+            ServiceReference<?> bestServiceReferefnce;
+            if (serviceReferences.size() > 1) {
+                List<ServiceReference<?>> matchingServices = new ArrayList<>(serviceReferences);
+                // sort references by ranking (ascending)
+                Collections.sort(matchingServices);
+                // get the service with the highest ranking
+                bestServiceReferefnce = matchingServices.get(matchingServices.size() - 1);
+            } else {
+                bestServiceReferefnce = serviceReferences.iterator().next();
+            }
+            // obtain the service
+            serviceInstance = bundleContext.getService(bestServiceReferefnce);
+        }
+
+        return serviceInstance;
+    }
 
     /**
      * Checks if the provided bundle is a fragment bundle.

@@ -1,33 +1,3 @@
-package org.jahia.services.content.nodetypes;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.assertj.core.util.Files;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.importexport.DocumentViewImportHandler;
-import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.test.framework.AbstractJUnitTest;
-import org.jahia.utils.StringOutputStream;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.version.Version;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * ==========================================================================================
@@ -72,101 +42,668 @@ import java.util.Locale;
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
+package org.jahia.services.content.nodetypes;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.util.Files;
+import org.jahia.services.content.JCRNodeIteratorWrapper;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.importexport.DocumentViewImportHandler;
+import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.test.framework.AbstractJUnitTest;
+import org.jahia.utils.StringOutputStream;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+
+import com.google.common.collect.ImmutableMap;
+
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.version.Version;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+/**
+ * These tests are related to the story https://jira.jahia.org/browse/BACKLOG-6892
+ * it creates a nodetype, content from this type then do modification on the nodetype and check if the node is still accessible.
+ */
 public class NodeTypesChangesIT extends AbstractJUnitTest {
 
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(NodeTypesChangesIT.class);
-    JCRNodeWrapper testNode;
-    List<Result> results = new ArrayList<>();
+    String testNodeIdentifier;
+    private static List<Result> overallResults = new ArrayList<>();
+    
+    public enum Operation {
+        GET_NODE, GET_CHILD_NODES, EXPORT_NODE, COPY_NODE, CHECK_COPIED_CHILD_NODES, READ_PROPERTIES, READ_STABLE_PROPERTY_VALUE,
+        READ_STRING_PROPERTY_VALUE, READ_MULTIPLE_PROPERTY_VALUE, READ_I18N_PROPERTY_VALUE, READ_DECIMAL_PROPERTY_VALUE,
+        READ_INTEGER_PROPERTY_VALUE, READ_REFERENCE_PROPERTY_VALUE, READ_CHILD_PROPERTIES, EDIT_PROPERTY, EDIT_CHANGED_PROPERTY,
+        REMOVE_PROPERTY, REMOVE_CHANGED_PROPERTY, ADD_CHILD_NODE, RESTORE_VERSION, READ_RESTORED_PROPERTY_VALUE, READ_CHANGED_RESTORED_PROPERTY_VALUE,
+        READ_RESTORE_CHILD_NODES, REMOVE_NODE, REMOVE_CHILD_NODE, IMPORT_NODE, READ_IMPORTED_PROPERTY_VALUE,
+        READ_CHANGED_IMPORTED_PROPERTY_VALUE, READ_IMPORTED_CHILD_NODES, CHECK_MIXIN
+    }
 
     @Before
     public void setUp() throws Exception {
-
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession("default", Locale.ENGLISH, null);
-        testNode = session.getNode("/").addNode("nodeTypeChanges", "nt:unstructured");
+        JCRNodeWrapper testNode = session.getNode("/").addNode("nodeTypeChanges", "nt:unstructured");
+        testNode.addMixin("mix:referenceable");
+        testNodeIdentifier = testNode.getIdentifier();
+    }
+
+
+    /**
+     * Test removing a nodetype definition
+     */
+    @Test
+    public void shouldAllowAllOperationsAfterRemovingNodetype() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        removeNodeType();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, true).put(Operation.EDIT_PROPERTY, true).put(Operation.REMOVE_PROPERTY, true)
+                .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
+                .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("remove nodetype from definition", null), expectedResults);  
+    }
+    
+    /**
+     * Test hiding a previous mandatory property
+     */
+    @Test
+    public void shouldAllowAllOperationsAfterHidingPreviousMandatoryProperty() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        hidePreviousMandatoryProperty();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, true).put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true)
+                .put(Operation.REMOVE_PROPERTY, true).put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.REMOVE_NODE, true).put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true)
+                .put(Operation.READ_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("hide previous mandatory property", "test_mandatory"), expectedResults);  
+    }
+    
+    /**
+     * Test removing properties from a nodetype definition
+     */
+    @Test
+    public void shouldFailOperationsOnlyOnRemovedProperties() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        removeProperties();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, false).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, false)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, false).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, false).put(Operation.REMOVE_PROPERTY, true)
+                .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false)
+                .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();
+
+        checkOperations(versionInfo, new ModificationInfo("remove property from nodetype", "test"), expectedResults);
+    }
+    
+
+    /**
+     * Test switching a property definition from non-i18n to i18n
+     */
+    @Test
+    public void shouldFailReadOperationsOnPropertySwitchedToi18n() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        switchToi18n();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, false).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true).put(Operation.REMOVE_PROPERTY, true)
+                .put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false)
+                .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();
+
+        checkOperations(versionInfo, new ModificationInfo("switch a property from non-i18n to i18n", "test"), expectedResults);  
     }
 
     /**
-     * This test is related to the story https://jira.jahia.org/browse/BACKLOG-6892
-     * it creates a nodetype, content from this type then do modification on the nodetype and check if the node is still accessible.
-     * If any change is done to the test (add modification or operation), please update the expectedResults to reflect the changes.
-     * @throws Exception
+     * Test switching a property definition from i18n to non-i18n
      */
     @Test
-    public void doNodetypesModifications() throws Exception {
-
-
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession("default", Locale.ENGLISH, null);
-        String versionName;
-        versionName = init(session);
-        removeProperties();
-        checkOperation(session, testNode.getNode("test").getPath(), "remove property from nodetype", versionName);
-
-        versionName = init(session);
-        removeNodeType();
-        checkOperation(session, testNode.getNode("test").getPath(), "remove nodetype from definition", versionName);
-
-        versionName = init(session);
-        switchToi18n();
-        checkOperation(session, testNode.getNode("test").getPath(), "switch a property from non-i18n to i18n", versionName);
-
-        versionName = init(session);
+    public void shouldFailReadOperationsOnPropertySwitchedFromi18n() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
         switchFromI18n();
-        checkOperation(session, testNode.getNode("test").getPath(), "switch a property from i18n to non-i18n", versionName);
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, false).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true).put(Operation.REMOVE_PROPERTY, true)
+                .put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false)
+                .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
 
-        versionName = init(session);
-        switchToMultipe();
-        checkOperation(session, testNode.getNode("test").getPath(), "switch a property from single to multipe", versionName);
-
-        versionName = init(session);
-        switchFromMultiple();
-        checkOperation(session, testNode.getNode("test").getPath(), "switch a property from multipe to single", versionName);
-
-        versionName = init(session);
-        addMandatoryConstraint();
-        checkOperation(session, testNode.getNode("test").getPath(), "add mandatory contraint to a property", versionName);
-
-        //validate results, un comment the generation of the results if the test change.
-        String s = "";
-        Boolean[] expectedResults = getExpectedResults();
-        for (int i = 0; i < results.size(); i++) {
-            Result result = results.get(i);
-            //logger.info("compare {} {}: {} with {}", new String[]{result.modification, result.operation, Boolean.toString(result.result),
-            //        Boolean.toString(expectedResults[i])});
-            s += results.get(i).result + ", //" + result.modification + " - " + result.operation + "\n";
-            String actual = result.modification + " - " + result.operation + " " + result.result;
-            String expected = result.modification + " - " + result.operation + " " + expectedResults[i];
-            Assert.assertEquals(expected, actual);
-        }
-        logger.info(s);
-
-        // show table
-        String mod = null;
-        for (Result r : results) {
-            if (mod == null || !mod.equals(r.modification)) {
-                // display title
-                logger.info("\n=== {} ===", r.modification);
-
-            }
-            String detail = StringUtils.isEmpty(r.detail) ? "" : "(" + StringUtils.substringAfterLast(r.detail, ".") + ")";
-            logger.info("{}: {} {}", new String[]{r.operation, Boolean.toString(r.result), detail});
-            mod = r.modification;
-        }
-
-
+        checkOperations(versionInfo, new ModificationInfo("switch a property from i18n to non-i18n", "test_i18n"), expectedResults);
     }
 
-    private String init(JCRSessionWrapper session) throws IOException, ParseException, RepositoryException {
-        // create definition file
+    /**
+     * Test switching a property definition from single to multiple values
+     */
+    @Test
+    public void shouldFailWriteOperationsOnPropertySwitchedToMultiple() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        switchToMultiple();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, false).put(Operation.REMOVE_PROPERTY, true)
+                .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
 
+        checkOperations(versionInfo, new ModificationInfo("switch a property from single to multiple", "test"), expectedResults);
+    }       
+    
+    /**
+     * Test switching a property definition from multiple to single values
+     */
+    @Test
+    public void shouldFailWriteOperationsOnPropertySwitchedFromMultiple() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        switchFromMultiple();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, false).put(Operation.REMOVE_PROPERTY, true)
+                .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+
+        checkOperations(versionInfo, new ModificationInfo("switch a property from multiple to single", "test_multiple"), expectedResults);
+    }
+    
+    /**
+     * Test switching a property definition from type long to string
+     */    
+    @Test
+    public void shouldFailWriteAndRestoredReadOperationsOnPropertySwitchedToString() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        switchToString();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, false).put(Operation.REMOVE_PROPERTY, true)
+                .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+
+        checkOperations(versionInfo, new ModificationInfo("switch a property from long to string", "integer"), expectedResults);
+    }
+    
+    /**
+     * Test switching a property definition from type string to long
+     */
+    @Test
+    public void shouldFailWriteAndRestoredReadOperationsOnPropertySwitchedFromString() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        switchFromString();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, false).put(Operation.REMOVE_PROPERTY, true)
+                .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+
+        checkOperations(versionInfo, new ModificationInfo("switch a property from string to long", "integerAsString"), expectedResults);
+    }
+    
+    /**
+     * Test switching a property definition from type double to decimal
+     */
+    @Test
+    public void shouldFailWriteAndRestoredReadOperationsOnPropertySwitchedDoubleToDecimal() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        switchDoubleToDecimal();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, false).put(Operation.REMOVE_PROPERTY, true)
+                .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+
+        checkOperations(versionInfo, new ModificationInfo("switch a property from double to decimal", "decimalNumber"), expectedResults);
+    }     
+
+    /**
+     * Test switching a property definition from type long to decimal
+     */
+    @Test
+    public void shouldFailWriteAndRestoredReadOperationsOnPropertySwitchedLongToDecimal() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        switchLongToDecimal();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, false).put(Operation.REMOVE_PROPERTY, true)
+                .put(Operation.REMOVE_CHANGED_PROPERTY, false).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).build();        
+
+        checkOperations(versionInfo, new ModificationInfo("switch a property from long to decimal", "integer"), expectedResults);
+    }     
+    
+    /**
+     * Test adding a new property definition with mandatory constraint
+     */
+    @Test
+    public void shouldFailImportAndWriteOperationsIfValueForNewMandatoryPropertyIsMissing() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        addPropertyWithMandatoryConstraint();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.EDIT_PROPERTY, false).put(Operation.REMOVE_PROPERTY, false).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, false)
+                .build();
+        
+        checkOperations(versionInfo, new ModificationInfo("add new property definition with mandatory constraint", null), expectedResults);
+    }    
+    
+    /**
+     * Test changing a range constraint
+     */    
+    @Test
+    public void shouldFailImportAndRestoredReadOperationsIfConstraintIsNoLongerValid() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        addRangeConstraintToNumericProperty();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true).put(Operation.REMOVE_PROPERTY, true)
+                .put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false)
+                .put(Operation.REMOVE_NODE, true).put(Operation.IMPORT_NODE, false).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("add range constraint to existing property definition", "integer"), expectedResults);
+    }        
+    
+    /**
+     * Test moving definitions to a new supertype
+     */    
+    @Test
+    public void shouldAllowAllOperationsAfterMovingDefinitionsToSupertype() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        moveDefinitionsToSupertype();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, true).put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true)
+                .put(Operation.REMOVE_PROPERTY, true).put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.RESTORE_VERSION, true)
+                .put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.REMOVE_NODE, true).put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true)
+                .put(Operation.READ_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("move definitions to supertype", "test"), expectedResults);  
+    }
+    
+    /**
+     * Test changing the allowed child node type
+     */
+    @Test
+    public void shouldFailChildNodeWriteOperationsAfterChangingToUnrelatedAllowedNodeType() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        changeToUnrelatedAllowedChildNodeType();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, false).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, true).put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true)
+                .put(Operation.REMOVE_PROPERTY, true).put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.ADD_CHILD_NODE, true)
+                .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
+                .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, false).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("change allowed child node type", "test:bigText", null, null), expectedResults);  
+    }
+    
+    /**
+     * Test adding a new yet unrelated allowed child node type
+     */
+    @Test
+    public void shouldFailChildNodeWriteOperationsAfterAddingUnrelatedAllowedNodeType() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        addUnrelatedAllowedChildNodeType();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, false).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, true).put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true)
+                .put(Operation.REMOVE_PROPERTY, true).put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.ADD_CHILD_NODE, true)
+                .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
+                .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, false).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("add allowed child node type", "test:bigText", null, null), expectedResults);  
+    }    
+    
+    /**
+     * Test removing an allowed child node type
+     */
+    @Test
+    public void shouldAllowAllOperationsAfterRemovingAllowedNodeType() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        removeAllowedChildNodeType();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, true).put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true)
+                .put(Operation.REMOVE_PROPERTY, true).put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.ADD_CHILD_NODE, true)
+                .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
+                .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("remove allowed child node type", "test:text", null, null), expectedResults);  
+    }       
+    
+    /**
+     * Test changing the allowed child node type using the previous one as supertype of the new one
+     */
+    @Test
+    public void shouldFailChildNodeWriteOperationsAfterChangingToAllowedNodeTypeUsingPreviousAsSupertype() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        changeAllowedChildNodeTypeUsingPreviousAsSupertype();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, false).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, true).put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true)
+                .put(Operation.REMOVE_PROPERTY, true).put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.ADD_CHILD_NODE, true)
+                .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
+                .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, false).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("change allowed child node type using previous as supertype", "test:bigText", null, null), expectedResults);  
+    }
+    
+    /**
+     * Test changing the allowed child node type to the supertype of the previous allowed node type
+     */
+    @Test
+    public void shouldAllowAllOperationsAfterChangingToAllowedNodeTypeUsingSupertype() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        changeAllowedChildNodeTypeUsingSupertype();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, true).put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true)
+                .put(Operation.REMOVE_PROPERTY, true).put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.ADD_CHILD_NODE, true)
+                .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
+                .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("change allowed child node type using supertype", "test:superText", null, null), expectedResults);  
+    }
+    
+    /**
+     * Test changing a node type definition to orderable
+     */
+    @Test
+    public void shouldAllowAllOperationsAfterMakingAllowedNodeTypeOrderable() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        makeChildNodeTypeOrderable();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, true).put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true)
+                .put(Operation.REMOVE_PROPERTY, true).put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.ADD_CHILD_NODE, true)
+                .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
+                .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, true).put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("make allowed child node type orderable", "test:ultimativeText", null, null), expectedResults);  
+    }
+
+    /**
+     * Test changing the allowed reference nodetype
+     */
+    @Test
+    public void shouldFailRestoreReferenceOperationsAfterChangingReferenceType() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        changeReferenceType();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, true).put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true)
+                .put(Operation.REMOVE_PROPERTY, true).put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.ADD_CHILD_NODE, true)
+                .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.REMOVE_NODE, true)
+                .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("change allowed reference type", "reference"), expectedResults);  
+    }    
+    
+    /**
+     * Test adding a new mixin to a nodetype with existing nodes
+     */
+    @Test
+    public void shouldAllowAllOperationsAfterAddingNewMixin() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        addMixinToNodetype();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, true).put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true)
+                .put(Operation.REMOVE_PROPERTY, true).put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.ADD_CHILD_NODE, true)
+                .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, false).put(Operation.REMOVE_NODE, true)
+                .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, false).put(Operation.READ_IMPORTED_CHILD_NODES, true).put(Operation.CHECK_MIXIN, true).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("add new mixin to existing nodetype", "test:ultimativeText", "test:mixin"), expectedResults);  
+    }       
+    
+    /**
+     * Test adding a new mixin with a default valued property to a nodetype with existing nodes
+     */
+    @Test
+    public void shouldFailMixinPropertyReadOperationAfterAddingNewMixinWithDefaultValuedProperty() throws Exception {
+        //given
+        VersionInfo versionInfo = init();
+        //when
+        addMixinWithDefaultValuedPropertyToNodetype();
+        //then
+        Map<Operation, Boolean> expectedResults = ImmutableMap.<Operation, Boolean> builder().put(Operation.GET_NODE, true)
+                .put(Operation.GET_CHILD_NODES, true).put(Operation.EXPORT_NODE, true).put(Operation.COPY_NODE, true)
+                .put(Operation.CHECK_COPIED_CHILD_NODES, true).put(Operation.READ_STABLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_STRING_PROPERTY_VALUE, true).put(Operation.READ_MULTIPLE_PROPERTY_VALUE, true)
+                .put(Operation.READ_I18N_PROPERTY_VALUE, true).put(Operation.READ_DECIMAL_PROPERTY_VALUE, true)
+                .put(Operation.READ_INTEGER_PROPERTY_VALUE, true).put(Operation.READ_REFERENCE_PROPERTY_VALUE, true)
+                .put(Operation.READ_CHILD_PROPERTIES, false).put(Operation.EDIT_PROPERTY, true).put(Operation.EDIT_CHANGED_PROPERTY, true)
+                .put(Operation.REMOVE_PROPERTY, true).put(Operation.REMOVE_CHANGED_PROPERTY, true).put(Operation.ADD_CHILD_NODE, true)
+                .put(Operation.RESTORE_VERSION, true).put(Operation.READ_RESTORED_PROPERTY_VALUE, true).put(Operation.REMOVE_NODE, true)
+                .put(Operation.REMOVE_CHILD_NODE, true).put(Operation.IMPORT_NODE, true).put(Operation.READ_IMPORTED_PROPERTY_VALUE, true)
+                .put(Operation.READ_IMPORTED_CHILD_NODES, true).build();
+        
+        checkOperations(versionInfo, new ModificationInfo("add new mixin with default valued property to existing nodetype", "test:ultimativeText", "autocreatedProperty", "test"), expectedResults);  
+    }      
+    
+    private VersionInfo init() throws IOException, ParseException, RepositoryException {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession("default", Locale.ENGLISH, null);        
+        // create definition file
         File file = Files.newTemporaryFile();
         String definition = "<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +        
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +                
                 "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +                
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
-                " - test_i18n (string) i18n\n";
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - integerAsString (string)\n" +                
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)";
+        
         // namespace
         FileUtils.writeStringToFile(file, definition);
 
@@ -175,145 +712,499 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         JCRStoreService.getInstance().deployDefinitions("testModule", null, -1);
 
         // create node from nodetype
-        JCRNodeWrapper n = testNode.addNode("test", "test:test");
-        n.setProperty("test", "test");
-        n.setProperty("test_multiple",new String[]{"test", "test", "test"});
-        n.setProperty("test_i18n", "test");
+        JCRNodeWrapper testNode = session.getNodeByIdentifier(testNodeIdentifier);
+        JCRNodeWrapper node = testNode.addNode("test", "test:test");
+        node.setProperty("test", "test");
+        node.setProperty("test_multiple",new String[]{"test", "test", "test"});
+        node.setProperty("test_i18n", "test");
+        node.setProperty("test_mandatory", "test");        
+        node.setProperty("stable", "test");        
+        node.setProperty("decimalNumber", (double)2.5);
+        node.setProperty("integer", 10);
+        node.setProperty("integerAsString", "10");        
+        node.setProperty("reference", testNode);        
         session.save();
+        
+        JCRNodeWrapper subNode = node.addNode("text1", "test:ultimativeText");
+        subNode.setProperty("text", "text1");
+        session.save();
+        subNode = node.addNode("text2", "test:ultimativeText");
+        subNode.setProperty("text", "text2");
+        session.save();
+        subNode = node.addNode("text3", "test:ultimativeText");
+        subNode.setProperty("text", "text3");
+        session.save();        
+        
         // create a version
-        Version v = session.getWorkspace().getVersionManager().checkin(n.getPath());
-        session.getWorkspace().getVersionManager().checkout(n.getPath());
-        n.setProperty("test", "new value");
+        Version v = session.getWorkspace().getVersionManager().checkin(node.getPath());
+        session.getWorkspace().getVersionManager().checkout(node.getPath());
+        node.setProperty("test", "new value");
+        node.setProperty("test_multiple",new String[]{"new value", "new value", "new value"});
+        node.setProperty("test_i18n", "new value");
+        node.setProperty("test_mandatory", "new value");
+        node.setProperty("stable", "new value");       
+        node.setProperty("decimalNumber", (double)12.5);
+        node.setProperty("integer", 20);        
+        node.setProperty("integerAsString", "20");
+        node.setProperty("reference", subNode);        
         session.save();
-        v = session.getWorkspace().getVersionManager().checkin(n.getPath());
+        v = session.getWorkspace().getVersionManager().checkin(node.getPath());
         String versionName = v.getName();
-        session.getWorkspace().getVersionManager().checkout(n.getPath());
+        session.getWorkspace().getVersionManager().checkout(node.getPath());
 
         // restore origin value
-        n.setProperty("test", "test");
+        node.setProperty("test", "test");
+        node.setProperty("test_multiple",new String[]{"test", "test", "test"});
+        node.setProperty("test_i18n", "test");
+        node.setProperty("stable", "test");        
+        node.setProperty("test_mandatory", "test");
+        node.setProperty("decimalNumber", (double)2.5);
+        node.setProperty("integer", 10);        
+        node.setProperty("integerAsString", "10");
+        node.setProperty("reference", testNode);
         session.save();
 
         // cleanup
         FileUtils.deleteQuietly(file);
-        return versionName;
+        return new VersionInfo(node.getPath(), versionName);
     }
 
 
     private void removeProperties() throws IOException, ParseException, RepositoryException {
-        File file = Files.newTemporaryFile();
-        String definition = "<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
-                "[test:test] > nt:base, mix:versionable\n";
-        FileUtils.writeStringToFile(file, definition);
-
-        // register nodetype
-        NodeTypeRegistry.getInstance().addDefinitionsFile(file, "testModule");
-        JCRStoreService.getInstance().deployDefinitions("testModule", null, -1);
-
-        // cleanup
-        FileUtils.deleteQuietly(file);
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" + 
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +   
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
     }
 
     private void removeNodeType() throws IOException, ParseException, RepositoryException {
-        File file = Files.newTemporaryFile();
-        String definition = "<test = 'http://www.apache.org/jackrabbit/test'>\n" +
-                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n";
-        FileUtils.writeStringToFile(file, definition);
-
-        // register nodetype
-        NodeTypeRegistry.getInstance().addDefinitionsFile(file, "testModule");
-        JCRStoreService.getInstance().deployDefinitions("testModule", null, -1);
-        JCRStoreService.getInstance().reloadNodeTypeRegistry();
-
-        // cleanup
-        FileUtils.deleteQuietly(file);
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n");
+    }
+    
+    private void hidePreviousMandatoryProperty() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +       
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +              
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +        
+                " - test_mandatory (string) hidden" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
     }
 
     private void switchToi18n() throws IOException, ParseException, RepositoryException {
-        File file = Files.newTemporaryFile();
-        String definition = "<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +       
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
                 "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
                 " - test (string) i18n\n" +
                 " - test_multiple (string) multiple\n" +
-                " - test_i18n (string) i18n\n";
-        // namespace
-        FileUtils.writeStringToFile(file, definition);
-
-        // register nodetype
-        NodeTypeRegistry.getInstance().addDefinitionsFile(file, "testModule");
-        JCRStoreService.getInstance().deployDefinitions("testModule", null, -1);
-
-        // cleanup
-        FileUtils.deleteQuietly(file);
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
     }
 
-    private void switchToMultipe() throws IOException, ParseException, RepositoryException {
-        File file = Files.newTemporaryFile();
-        String definition = "<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+    private void switchToMultiple() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +       
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
                 "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
                 " - test (string) multiple\n" +
                 " - test_multiple (string) multiple\n" +
-                " - test_i18n (string) i18n\n";
-        // namespace
-        FileUtils.writeStringToFile(file, definition);
-
-        // register nodetype
-        NodeTypeRegistry.getInstance().addDefinitionsFile(file, "testModule");
-        JCRStoreService.getInstance().deployDefinitions("testModule", null, -1);
-
-        // cleanup
-        FileUtils.deleteQuietly(file);
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +              
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
     }
-
-    private void switchFromMultiple() throws IOException, ParseException, RepositoryException {
-        File file = Files.newTemporaryFile();
-        String definition = "<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+    
+    private void switchToString() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
                 "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
                 "[test:test] > nt:base, mix:versionable\n" +
-                " - test (string) multiple\n" +
-                " - test_multiple (string)\n" +
-                " - test_i18n (string) i18n\n";
-        // namespace
-        FileUtils.writeStringToFile(file, definition);
-
-        // register nodetype
-        NodeTypeRegistry.getInstance().addDefinitionsFile(file, "testModule");
-        JCRStoreService.getInstance().deployDefinitions("testModule", null, -1);
-
-        // cleanup
-        FileUtils.deleteQuietly(file);
-    }
-
-    private void switchFromI18n() throws IOException, ParseException, RepositoryException {
-        File file = Files.newTemporaryFile();
-        String definition = "<test = 'http://www.apache.org/jackrabbit/test'>\n" +
-                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
-                "[test:test] > nt:base, mix:versionable\n" +
-                " - test (string)\n" +
-                " - test_multiple (string) multiple\n" +
-                " - test_i18n (string)\n";
-        // namespace
-        FileUtils.writeStringToFile(file, definition);
-
-        // register nodetype
-        NodeTypeRegistry.getInstance().addDefinitionsFile(file, "testModule");
-        JCRStoreService.getInstance().deployDefinitions("testModule", null, -1);
-
-        // cleanup
-        FileUtils.deleteQuietly(file);
-    }
-
-    private void addMandatoryConstraint() throws IOException, ParseException, RepositoryException {
-        File file = Files.newTemporaryFile();
-        String definition = "<test = 'http://www.apache.org/jackrabbit/test'>\n" +
-                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
-                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
                 " - test (string)\n" +
                 " - test_multiple (string) multiple\n" +
                 " - test_i18n (string) i18n\n" +
-                " - test1 (string) mandatory\n";
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (string)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
+    }
+    
+    private void switchDoubleToDecimal() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (decimal)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
+    }
+    
+    private void switchLongToDecimal() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (decimal)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
+    }    
+    
+    private void switchFromString() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - integerAsString (long)\n" +                
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
+    }
+
+    private void switchFromMultiple() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string)\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
+    }
+
+    private void switchFromI18n() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string)\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
+    }
+
+    private void addPropertyWithMandatoryConstraint() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string) mandatory\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - newTestMandatory (string) mandatory\n" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
+    }
+    
+    private void addRangeConstraintToNumericProperty() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long) < '[100,500]'\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
+    }
+
+    private void moveDefinitionsToSupertype() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:supertype] > nt:base, mix:versionable\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)" +
+                "[test:test] > test:supertype\n" +
+                " - stable (string)\n");
+    }
+    
+    private void changeToUnrelatedAllowedChildNodeType() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:bigText] > test:superText\n" +
+                " - text (string, richtext) i18n\n" +                
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:bigText)");
+    }
+    
+    private void addUnrelatedAllowedChildNodeType() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:bigText] > test:ultimativeText\n" +
+                " - text (string, richtext) i18n\n" +                
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText,test:bigText)");
+    }    
+    
+    private void removeAllowedChildNodeType() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text)");
+    }       
+    
+    private void changeAllowedChildNodeTypeUsingPreviousAsSupertype() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:bigText] > test:ultimativeText\n" +
+                " - text (string, richtext) i18n\n" +                
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:bigText,test:ultimativeText)");
+    }    
+    
+    private void changeAllowedChildNodeTypeUsingSupertype() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:bigText] > test:text\n" +
+                " - text (string, richtext) i18n\n" +                
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:superText)");
+    }        
+    
+    private void makeChildNodeTypeOrderable() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text orderable\n" +                
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (reference) < nt:unstructured\n" +
+                " + * (test:text,test:ultimativeText)");
+    }       
+    
+    private void changeReferenceType() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (weakreference) < test:ultimativeText\n" +
+                " + * (test:text,test:ultimativeText)");
+    }        
+    
+    private void addMixinToNodetype() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:mixin] mixin\n" +           
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured, test:mixin\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (weakreference) < test:ultimativeText\n" +
+                " + * (test:text,test:ultimativeText)");
+    }      
+    
+    private void addMixinWithDefaultValuedPropertyToNodetype() throws IOException, ParseException, RepositoryException {
+        changeDefinition("<test = 'http://www.apache.org/jackrabbit/test'>\n" +
+                "<nt = 'http://www.jcp.org/jcr/nt/1.0'>\n" +
+                "[test:mixin] mixin\n" +           
+                " - autocreatedProperty (string) = 'test'\n" +                
+                "[test:superText] > nt:base, mix:versionable\n" +
+                " - text (string) primary i18n\n" +
+                "[test:text] > test:superText\n" +
+                "[test:ultimativeText] > test:text, nt:unstructured, test:mixin\n" +           
+                "[test:test] > nt:base, mix:versionable\n" +
+                " - stable (string)\n" +
+                " - test (string)\n" +
+                " - test_multiple (string) multiple\n" +
+                " - test_i18n (string) i18n\n" +
+                " - test_mandatory (string) mandatory" +                
+                " - decimalNumber (double)\n" +
+                " - integer (long)\n" +
+                " - reference (weakreference) < test:ultimativeText\n" +
+                " + * (test:text,test:ultimativeText)");
+    }      
+    
+    private void changeDefinition(String definition) throws IOException, ParseException, RepositoryException {
+        File file = Files.newTemporaryFile();
+
         // namespace
         FileUtils.writeStringToFile(file, definition);
 
@@ -325,140 +1216,448 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
         FileUtils.deleteQuietly(file);
     }
 
-    private void checkOperation(final JCRSessionWrapper session, final  String nodePath, final String modification, final String versionName) {
-        String operation;
-        // read node
-        doOperation("read node", modification, nodePath, new CallBack() {
+    private void checkOperations(final VersionInfo versionInfo, final ModificationInfo modificationInfo, Map<Operation, Boolean> expectedResults) {
+        final String unchangedProperty = "stable";
+        final String nodePath = versionInfo.getTestNodePath();
+        final String versionName = versionInfo.getVersionName();
+        
+        List<Result> resultsForModification = new ArrayList<>();
+        // get node
+        resultsForModification.addAll(doOperation(Operation.GET_NODE, modificationInfo, nodePath, new CallBack() {
             @Override
-            public void execute() throws Exception {
-                JCRNodeWrapper nread = session.getNode(nodePath);
+            public List<Result> execute(final JCRSessionWrapper session) throws Exception {
+                session.getNode(nodePath);
+                return Collections.emptyList();
             }
-        });
-
+        }));
+        
+        if (modificationInfo.getChildNodeType() != null) {
+            // get child nodes
+            resultsForModification.addAll(doOperation(Operation.GET_CHILD_NODES, modificationInfo, nodePath, new CallBack() {
+                @Override
+                public List<Result> execute(final JCRSessionWrapper session) throws Exception {
+                    JCRNodeIteratorWrapper it = session.getNode(nodePath).getNodes();
+                    int i = 0;
+                    while (it.hasNext()) {
+                        it.nextNode();
+                        i++;
+                    }
+                    if (i < 3) {
+                        throw new ItemNotFoundException("Child node is missing");
+                    }
+                    return Collections.emptyList();
+                }
+            }));
+        }
+        
         //export
         final OutputStream exportOutputStream = new StringOutputStream();
-        doOperation("export node", modification, nodePath, new CallBack() {
+        final List<Result> exportNodeResults = doOperation(Operation.EXPORT_NODE, modificationInfo, nodePath, new CallBack() {
             @Override
-            public void execute() throws Exception {
+            public List<Result> execute(final JCRSessionWrapper session) throws Exception {
                 HashMap<String, Object> params = new HashMap<>();
                 ImportExportBaseService.getInstance().exportNode(session.getNode(nodePath), session.getNode("/"), exportOutputStream, params);
+                return Collections.emptyList();                
             }
         });
+        resultsForModification.addAll(exportNodeResults);
 
         // copy node
-        doOperation("copy node", modification, nodePath, new CallBack() {
+        resultsForModification.addAll(doOperation(Operation.COPY_NODE, modificationInfo, nodePath, new CallBack() {
             @Override
-            public void execute() throws Exception {
+            public List<Result> execute(final JCRSessionWrapper session) throws Exception {
+                List<Result> results = new ArrayList<>();
                 JCRNodeWrapper nread = session.getNode(nodePath);
-                nread.copy(testNode, "test-copy", false);
+                if (!nread.copy(session.getNodeByIdentifier(testNodeIdentifier), "test-copy", false)) {
+                    throw new RepositoryException("copy was not successful");
+                } else if (modificationInfo.getChildNodeType() != null) {
+                    results.add(new Result(Operation.COPY_NODE, modificationInfo, true));
+                    try {
+                        JCRNodeIteratorWrapper it = session.getNodeByIdentifier(testNodeIdentifier).getNode("test-copy").getNodes();
+                        int i = 0;
+                        while (it.hasNext()) {
+                            it.nextNode();
+                            i++;
+                        }
+                        if (i < 3) {
+                            results.add(
+                                    new Result(Operation.CHECK_COPIED_CHILD_NODES, modificationInfo, false, "Copied child nodes are missing"));
+                        } else {
+                            results.add(new Result(Operation.CHECK_COPIED_CHILD_NODES, modificationInfo, true));
+                        }
+                    } catch (RepositoryException ex) {
+                        results.add(new Result(Operation.CHECK_COPIED_CHILD_NODES, modificationInfo, false, ex.toString()));
+                        logger.info("unable to perform " + Operation.CHECK_COPIED_CHILD_NODES + " after " +  modificationInfo.getModificationDescription(), ex);
+                    }
+                }
+                return results;
             }
-        });
+        }));
 
         // read property
-        doOperation("read properties", modification, nodePath, new CallBack() {
+        resultsForModification.addAll(doOperation(Operation.READ_PROPERTIES, modificationInfo, nodePath, new CallBack() {
             @Override
-            public void execute() throws Exception {
+            public List<Result> execute(final JCRSessionWrapper session) throws Exception {
+                List<Result> results = new ArrayList<>();
                 JCRNodeWrapper nread = session.getNode(nodePath);
-                String s = nread.getProperty("test").getValue().getString();
+                try {
+                    String s = nread.getProperty(unchangedProperty).getValue().getString();
 
-                results.add(new Result("read property value", modification, "test".equals(s)));
-                boolean b = true;
-
-                for (Value v  : nread.getProperty("test_multiple").getValues()) {
-                    b &= "test".equals(v.getString());
+                    results.add(new Result(Operation.READ_STABLE_PROPERTY_VALUE, modificationInfo, "test".equals(s)));
+                } catch (RepositoryException ex) {
+                    results.add(new Result(Operation.READ_STABLE_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
+                    logger.info("unable to perform " + Operation.READ_STABLE_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex); 
                 }
+                try {
+                    String s = nread.getProperty("test").getValue().getString();
 
-                results.add(new Result("read multiple property value", modification, b));
-                s = nread.getProperty("test_i18n").getValue().getString();
-                results.add(new Result("read i18n property value", modification, "test".equals(s)));
+                    results.add(new Result(Operation.READ_STRING_PROPERTY_VALUE, modificationInfo, "test".equals(s)));
+                } catch (RepositoryException ex) {
+                    results.add(new Result(Operation.READ_STRING_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
+                    logger.info("unable to perform " + Operation.READ_STRING_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
+                }
+                try {
+                    boolean isMultiple = nread.getProperty("test_multiple").getDefinition().isMultiple();
+                    boolean b = true;
+                    if (isMultiple) {
+                        for (Value v : nread.getProperty("test_multiple").getValues()) {
+                            b &= "test".equals(v.getString());
+                        }
+                    } else {
+                        String s = nread.getProperty("test").getValue().getString();
+                        b = s.equals("test");
+                    }
+                    results.add(new Result(Operation.READ_MULTIPLE_PROPERTY_VALUE, modificationInfo, b));
+                } catch (RepositoryException ex) {
+                    results.add(new Result(Operation.READ_MULTIPLE_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
+                    logger.info("unable to perform " + Operation.READ_MULTIPLE_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
+                }
+                try {
+                    String s = nread.getProperty("test_i18n").getValue().getString();
+                    results.add(new Result(Operation.READ_I18N_PROPERTY_VALUE, modificationInfo, "test".equals(s)));
+                } catch (RepositoryException ex) {
+                    results.add(new Result(Operation.READ_I18N_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
+                    logger.info("unable to perform " + Operation.READ_I18N_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
+                }
+                try {
+                    String s = nread.getProperty("decimalNumber").getValue().getString();
+
+                    results.add(new Result(Operation.READ_DECIMAL_PROPERTY_VALUE, modificationInfo, "2.5".equals(s)));
+                } catch (RepositoryException ex) {
+                    results.add(new Result(Operation.READ_DECIMAL_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
+                    logger.info("unable to perform " + Operation.READ_DECIMAL_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
+                }
+                try {
+                    String s = nread.getProperty("integer").getValue().getString();
+                    results.add(new Result(Operation.READ_INTEGER_PROPERTY_VALUE, modificationInfo, "10".equals(s)));
+                } catch (RepositoryException ex) {
+                    results.add(new Result(Operation.READ_INTEGER_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
+                    logger.info("unable to perform " + Operation.READ_INTEGER_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
+                }
+                try {
+                    Node node = nread.getProperty("reference").getValue().getNode();
+                    results.add(new Result(Operation.READ_REFERENCE_PROPERTY_VALUE, modificationInfo, testNodeIdentifier.equals(node.getIdentifier())));
+                } catch (RepositoryException ex) {
+                    results.add(new Result(Operation.READ_REFERENCE_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
+                    logger.info("unable to perform " + Operation.READ_REFERENCE_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
+                }                
+                if (modificationInfo.getChildNodeType() != null) {
+                    try {
+                        JCRNodeIteratorWrapper it = nread.getNodes();
+                        String childNodeProperty = StringUtils.isNotBlank(modificationInfo.getChildNodeProperty()) ? modificationInfo.getChildNodeProperty() : "text";
+                        int i = 0;
+                        boolean expectedTextFound = true;
+                        while (it.hasNext()) {
+                            Node childNode = it.nextNode();
+                            i++;
+                            String expectedValue = StringUtils.isNotBlank(modificationInfo.getChildNodePropertyValue()) ? modificationInfo.getChildNodePropertyValue() : childNode.getName();
+                            expectedTextFound = expectedTextFound && expectedValue.equals(childNode.getProperty(childNodeProperty).getValue().getString());
+                        }
+                        if (i == 3 && expectedTextFound) {
+                            results.add(new Result(Operation.READ_CHILD_PROPERTIES, modificationInfo, true));
+                        } else {
+                            results.add(new Result(Operation.READ_CHILD_PROPERTIES, modificationInfo, false, "Expected text not found in childnodes"));
+                        }
+                    } catch (RepositoryException ex) {
+                        results.add(new Result(Operation.READ_CHILD_PROPERTIES, modificationInfo, false, ex.toString()));
+                        logger.info("unable to perform " + Operation.READ_CHILD_PROPERTIES + " after " +  modificationInfo.getModificationDescription(), ex);
+                    }    
+                }
+                return results;
             }
-        });
+        }));
 
         // edit property
-        doOperation("edit property", modification, nodePath, new CallBack() {
+        resultsForModification.addAll(doOperation(Operation.EDIT_PROPERTY, modificationInfo, nodePath, new CallBack() {
             @Override
-            public void execute() throws Exception {
+            public List<Result> execute(final JCRSessionWrapper session) throws Exception {
+                List<Result> results = new ArrayList<>();
+                try {
+                    editProperty(session, unchangedProperty);
+                    results.add(new Result(Operation.EDIT_PROPERTY, modificationInfo, true));
+                } catch (RepositoryException ex) {
+                    results.add(new Result(Operation.EDIT_PROPERTY, modificationInfo, false, ex.toString()));
+                    session.refresh(false);
+                    logger.info("unable to perform " + Operation.EDIT_PROPERTY + " after " +  modificationInfo.getModificationDescription(), ex);
+                }
+                if (StringUtils.isNotEmpty(modificationInfo.getChangedProperty())) {
+                    try {
+                        editProperty(session, modificationInfo.getChangedProperty());
+                        results.add(new Result(Operation.EDIT_CHANGED_PROPERTY, modificationInfo, true));
+                    } catch (RepositoryException ex) {
+                        results.add(new Result(Operation.EDIT_CHANGED_PROPERTY, modificationInfo, false, ex.toString()));
+                        session.refresh(false);
+                        logger.info("unable to perform " + Operation.EDIT_CHANGED_PROPERTY + " after " +  modificationInfo.getModificationDescription(), ex);                        
+                    }
+                }
+                return results;
+            }
+            private void editProperty(final JCRSessionWrapper session, final String propertyToTest) throws Exception {
                 JCRNodeWrapper nread = session.getNode(nodePath);
-                nread.setProperty("test", "new text");
-                session.save();
-                // restore previous value
-                nread.setProperty("test", "test");
+                boolean isMultiple = nread.hasProperty(propertyToTest) ? nread.getProperty(propertyToTest).getDefinition().isMultiple()
+                        : false;
+                if (isMultiple) {
+                    nread.setProperty(propertyToTest, new String[] {"100"});
+                } else if ("reference".equals(propertyToTest)) {
+                    nread.setProperty(propertyToTest, nread.getNodes().iterator().next());                    
+                } else  {
+                    nread.setProperty(propertyToTest, "100");
+                }
                 session.save();
             }
-        });
+        }));
 
         // remove property
-        doOperation("remove property", modification, nodePath, new CallBack() {
+        resultsForModification.addAll(doOperation(Operation.REMOVE_PROPERTY, modificationInfo, nodePath, new CallBack() {
             @Override
-            public void execute() throws Exception {
+            public List<Result> execute(final JCRSessionWrapper session) throws Exception {
+                List<Result> results = new ArrayList<>();
+            
                 JCRNodeWrapper nread = session.getNode(nodePath);
-                nread.getProperty("test").remove();
-                session.save();
+                try {
+                    nread.getProperty(unchangedProperty).remove();
+                    session.save();
+                    results.add(new Result(Operation.REMOVE_PROPERTY, modificationInfo, true));                    
+                } catch (RepositoryException ex) {
+                    results.add(new Result(Operation.REMOVE_PROPERTY, modificationInfo, false, ex.toString()));
+                    session.refresh(false);
+                    logger.info("unable to perform " + Operation.REMOVE_PROPERTY + " after " +  modificationInfo.getModificationDescription(), ex);
+                }
+                if (StringUtils.isNotEmpty(modificationInfo.getChangedProperty())) {
+                    try {
+                        nread.getProperty(modificationInfo.getChangedProperty()).remove();
+                        session.save();
+                        results.add(new Result(Operation.REMOVE_CHANGED_PROPERTY, modificationInfo, true));
+                    } catch (RepositoryException ex) {
+                        results.add(new Result(Operation.REMOVE_CHANGED_PROPERTY, modificationInfo, false, ex.toString()));
+                        session.refresh(false);
+                        logger.info("unable to perform " + Operation.REMOVE_CHANGED_PROPERTY + " after " +  modificationInfo.getModificationDescription(), ex);
+                    }
+                }
+                return results;
             }
-        });
+        }));
 
+        if (StringUtils.isNotBlank(modificationInfo.getChildNodeType())) {
+            //add child node
+            resultsForModification.addAll(doOperation(Operation.ADD_CHILD_NODE, modificationInfo, nodePath, new CallBack() {
+                @Override
+                public List<Result> execute(final JCRSessionWrapper session) throws Exception {
+                    JCRNodeWrapper nread = session.getNode(nodePath);
+                    JCRNodeWrapper addedNode = nread.addNode("addedChildNode", modificationInfo.getChildNodeType());
+                    addedNode.setProperty("text", "added text");
+                    session.save();
+                    return Collections.emptyList();
+                }
+            })); 
+            
+            if (expectedResults.containsKey(Operation.CHECK_MIXIN)) {
+                resultsForModification.addAll(doOperation(Operation.CHECK_MIXIN, modificationInfo, nodePath, new CallBack() {
+                    @Override
+                    public List<Result> execute(final JCRSessionWrapper session) throws Exception {
+                        List<Result> results = new ArrayList<>();
+                        JCRNodeWrapper nread = session.getNode(nodePath);
+                        JCRNodeIteratorWrapper it = nread.getNodes();
+                        boolean expectedMixinFound = true;
+                        while (it.hasNext()) {
+                            Node childNode = it.nextNode();
+                            expectedMixinFound = expectedMixinFound && childNode.isNodeType(modificationInfo.getChildNodeMixin());
+                        }                        
+                        results.add(new Result(Operation.CHECK_MIXIN, modificationInfo, expectedMixinFound));
+                        return Collections.emptyList();
+                    }
+                }));                 
+            }
+        }
+        
         //restore version
-        doOperation("restore version", modification, nodePath, new CallBack() {
+        resultsForModification.addAll(doOperation(Operation.RESTORE_VERSION, modificationInfo, nodePath, new CallBack() {
             @Override
-            public void execute() throws Exception {
-                session.save();
+            public List<Result> execute(final JCRSessionWrapper session) throws Exception {
+                List<Result> results = new ArrayList<>();                
                 session.getWorkspace().getVersionManager().checkout(nodePath);
-                session.getWorkspace().getVersionManager().restore(nodePath,versionName,true);
+                session.getWorkspace().getVersionManager().restore(nodePath, versionName, true);
+                session.save();
+                results.add(new Result(Operation.RESTORE_VERSION, modificationInfo, true));
                 JCRNodeWrapper nread = session.getNode(nodePath);
-                String s = nread.getProperty("test").getValue().getString();
-                results.add(new Result("read restored property value", modification, "new value".equals(s)));
+                try {
+                    JCRPropertyWrapper property = nread.getProperty(unchangedProperty);
+                    String s = property.getDefinition().isMultiple() ? property.getValues()[0].getString()
+                            : property.getValue().getString();
+                    results.add(new Result(Operation.READ_RESTORED_PROPERTY_VALUE, modificationInfo, "new value".equals(s)));
+                } catch (RepositoryException ex) {
+                    results.add(new Result(Operation.READ_RESTORED_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
+                    session.refresh(false);
+                    logger.info("unable to perform " + Operation.READ_RESTORED_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
+                }
+                if (StringUtils.isNotEmpty(modificationInfo.getChangedProperty())) {
+                    try {
+                        JCRPropertyWrapper property = nread.getProperty(modificationInfo.getChangedProperty());
+                        if ("reference".equals(modificationInfo.getChangedProperty())) {
+                            results.add(new Result(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, modificationInfo, testNodeIdentifier.equals(property.getNode().getIdentifier())));                            
+                        } else {
+                            String s = property.getDefinition().isMultiple() ? property.getValues()[0].getString()
+                                    : property.getValue().getString();
+                            results.add(new Result(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, modificationInfo, "new value".equals(s)));
+                        }
+                    } catch (RepositoryException ex) {
+                        results.add(new Result(Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
+                        session.refresh(false);
+                        logger.info("unable to perform " + Operation.READ_CHANGED_RESTORED_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
+                    }
+                }
+                return results;
             }
-        });
+        }));
 
+        if (modificationInfo.getChildNodeType() != null) {
+            // remove child node
+            resultsForModification.addAll(doOperation(Operation.REMOVE_CHILD_NODE, modificationInfo, nodePath, new CallBack() {
+                @Override
+                public List<Result> execute(final JCRSessionWrapper session) throws Exception {
+                    session.getWorkspace().getVersionManager().checkout(nodePath);
+                    JCRNodeWrapper nread = session.getNode(nodePath).getNodes().iterator().next();
+                    nread.remove();
+                    session.save();
+                    return Collections.emptyList();
+                }
+            }));
+        }        
+        
         // remove node
-        doOperation("remove node", modification, nodePath, new CallBack() {
+        resultsForModification.addAll(doOperation(Operation.REMOVE_NODE, modificationInfo, nodePath, new CallBack() {
             @Override
-            public void execute() throws Exception {
+            public List<Result> execute(final JCRSessionWrapper session) throws Exception {
                 JCRNodeWrapper nread = session.getNode(nodePath);
                 nread.remove();
                 session.save();
+                return Collections.emptyList();
             }
-        });
-
+        }));
+        
         // import node
-        doOperation("import node", modification, nodePath, new CallBack() {
-            @Override
-            public void execute() throws Exception {
-                ByteArrayInputStream stream = new ByteArrayInputStream(exportOutputStream.toString().getBytes(StandardCharsets.UTF_8));
-                session.getNode("/").addNode("nodeTypesImported", "nt:unstructured");
-                session.save();
-                ImportExportBaseService.getInstance().importXML("/nodeTypesImported", stream, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
-                // read the node property
-                JCRNodeWrapper nread = session.getNode("/nodeTypesImported/nodeTypeChanges/test");
-                String s = nread.getProperty("test").getValue().getString();
-                results.add(new Result("read imported property value", modification, "new value".equals(s)));
-            }
-        });
+        if (exportNodeResults.get(0).result) {
+            resultsForModification.addAll(doOperation(Operation.IMPORT_NODE, modificationInfo, nodePath, new CallBack() {
+                @Override
+                public List<Result> execute(final JCRSessionWrapper session) throws Exception {
+                    List<Result> results = new ArrayList<>();
+                    ByteArrayInputStream stream = new ByteArrayInputStream(exportOutputStream.toString().getBytes(StandardCharsets.UTF_8));
+                    JCRNodeWrapper importFolder = session.getNode("/").addNode("nodeTypesImported", "nt:unstructured");
+                    session.save();
+                    ImportExportBaseService.getInstance().importXML(importFolder.getPath(), stream,
+                            DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
+                    JCRNodeWrapper nread = importFolder.getNode("nodeTypeChanges/test");                    
+                    results.add(new Result(Operation.IMPORT_NODE, modificationInfo, true));
+                    try {
+                        String s = nread.getProperty(unchangedProperty).getValue().getString();
+                        results.add(new Result(Operation.READ_IMPORTED_PROPERTY_VALUE, modificationInfo, "test".equals(s)));
+                    } catch (RepositoryException ex) {
+                        results.add(new Result(Operation.READ_IMPORTED_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
+                        session.refresh(false);
+                        logger.info("unable to perform " + Operation.READ_IMPORTED_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
+                    }
+                    if (StringUtils.isNotEmpty(modificationInfo.getChangedProperty())) {
+                        try {
+                            if ("reference".equals(modificationInfo.getChangedProperty())) {
+                                results.add(new Result(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, modificationInfo,
+                                        testNodeIdentifier.equals(nread.getProperty(modificationInfo.getChangedProperty()).getNode().getIdentifier())));
+                            } else {
+                                String s = nread.getProperty(modificationInfo.getChangedProperty()).getValue().getString();
+                                results.add(new Result(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, modificationInfo, "test".equals(s)));
+                            }
+                        } catch (RepositoryException ex) {
+                            results.add(new Result(Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE, modificationInfo, false, ex.toString()));
+                            session.refresh(false);
+                            logger.info("unable to perform " + Operation.READ_CHANGED_IMPORTED_PROPERTY_VALUE + " after " +  modificationInfo.getModificationDescription(), ex);
+                        }
+                    }
+                    if (modificationInfo.getChildNodeType() != null) {
+                        try {
+                            JCRNodeIteratorWrapper it = nread.getNodes();
+                            int i = 0;
+                            while (it.hasNext()) {
+                                it.nextNode();
+                                i++;
+                            }
+                            if (i == 3) {
+                                results.add(new Result(Operation.READ_IMPORTED_CHILD_NODES, modificationInfo, true));
+                            } else {
+                                results.add(new Result(Operation.READ_IMPORTED_CHILD_NODES, modificationInfo, false,
+                                        "Unexpected number of imported child nodes: " + i));
+                            }
+                        } catch (RepositoryException ex) {
+                            results.add(new Result(Operation.READ_IMPORTED_CHILD_NODES, modificationInfo, false, ex.toString()));
+                            session.refresh(false);
+                            logger.info("unable to perform " + Operation.READ_IMPORTED_CHILD_NODES + " after " + modificationInfo.getModificationDescription(), ex);
+                        }
+                    }
+                    return results;
+                }
+            }));
+        }
 
+        overallResults.addAll(resultsForModification);
+        SoftAssertions softly = new SoftAssertions();
+        for (Result result : resultsForModification) {
+            softly.assertThat(result.result).describedAs(result.modificationInfo.getModificationDescription() + " - " + result.operation)
+                    .isEqualTo(expectedResults.get(result.operation));
+        }
+        softly.assertAll();
     }
 
-    private void doOperation(String operation, String modification, String nodePath, CallBack callBack) {
+    private List<Result> doOperation(Operation operation, ModificationInfo modificationInfo, String nodePath, CallBack callBack) {
+        List<Result> results = new ArrayList<>();
         try {
-            callBack.execute();
-            results.add(new Result(operation, modification, true));
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession("default", Locale.ENGLISH, null);
+            List<Result> operationResults = callBack.execute(session);
+            if (CollectionUtils.isEmpty(operationResults)) {
+                results.add(new Result(operation, modificationInfo, true));
+            } else {
+                results.addAll(operationResults);
+            }
         } catch (Exception e) {
-            results.add(new Result(operation, modification, false, e.getClass().getName()));
-            logger.info("unable to perform {} after {}", operation, modification);
+            results.add(new Result(operation, modificationInfo, false, e.toString()));
+            logger.info("unable to perform " + operation + " after " +  modificationInfo.getModificationDescription(), e);
+        } finally {
+            JCRSessionFactory.getInstance().closeAllSessions();
         }
+        return results;
     }
 
     private class Result {
-        String modification, operation, detail;
+        Operation operation;
+        ModificationInfo modificationInfo;
+        String detail;
         boolean result;
 
-        public Result(String operation, String modification, boolean result) {
-            this.modification = modification;
+        public Result(Operation operation, ModificationInfo modificationInfo, boolean result) {
+            this.modificationInfo = modificationInfo;
             this.operation = operation;
             this.result = result;
         }
 
-        public Result(String operation, String modification, boolean result, String detail) {
-            this.modification = modification;
+        public Result(Operation operation, ModificationInfo modificationInfo, boolean result, String detail) {
+            this.modificationInfo = modificationInfo;
             this.operation = operation;
             this.result = result;
             this.detail = detail;
@@ -466,94 +1665,93 @@ public class NodeTypesChangesIT extends AbstractJUnitTest {
     }
 
     private interface CallBack {
-        void execute() throws Exception;
-
+        List<Result> execute(JCRSessionWrapper session) throws Exception;
     }
+   
+    @AfterClass
+    public static void showTable() throws Exception {
+        String mod = null;
+        for (Result r : overallResults) {
+            if (mod == null || !mod.equals(r.modificationInfo.getModificationDescription())) {
+                // display title
+                logger.info("\n=== {} ===", r.modificationInfo.getModificationDescription());
 
-    private Boolean[] getExpectedResults() {
-        return new Boolean[]{
-                true, //remove property from nodetype - read node
-                true, //remove property from nodetype - export node
-                true, //remove property from nodetype - copy node
-                false, //remove property from nodetype - read properties
-                false, //remove property from nodetype - edit property
-                false, //remove property from nodetype - remove property
-                false, //remove property from nodetype - restore version
-                true, //remove property from nodetype - remove node
-                false, //remove property from nodetype - import node
-                true, //remove nodetype from definition - read node
-                true, //remove nodetype from definition - export node
-                true, //remove nodetype from definition - copy node
-                true, //remove nodetype from definition - read property value
-                true, //remove nodetype from definition - read multiple property value
-                true, //remove nodetype from definition - read i18n property value
-                true, //remove nodetype from definition - read properties
-                true, //remove nodetype from definition - edit property
-                true, //remove nodetype from definition - remove property
-                true, //remove nodetype from definition - read restored property value
-                true, //remove nodetype from definition - restore version
-                true, //remove nodetype from definition - remove node
-                false, //remove nodetype from definition - read imported property value
-                true, //remove nodetype from definition - import node
-                true, //switch a property from non-i18n to i18n - read node
-                true, //switch a property from non-i18n to i18n - export node
-                true, //switch a property from non-i18n to i18n - copy node
-                false, //switch a property from non-i18n to i18n - read properties
-                true, //switch a property from non-i18n to i18n - edit property
-                true, //switch a property from non-i18n to i18n - remove property
-                false, //switch a property from non-i18n to i18n - restore version
-                true, //switch a property from non-i18n to i18n - remove node
-                false, //switch a property from non-i18n to i18n - read imported property value
-                true, //switch a property from non-i18n to i18n - import node
-                true, //switch a property from i18n to non-i18n - read node
-                true, //switch a property from i18n to non-i18n - export node
-                true, //switch a property from i18n to non-i18n - copy node
-                true, //switch a property from i18n to non-i18n - read property value
-                true, //switch a property from i18n to non-i18n - read multiple property value
-                false, //switch a property from i18n to non-i18n - read properties
-                true, //switch a property from i18n to non-i18n - edit property
-                true, //switch a property from i18n to non-i18n - remove property
-                true, //switch a property from i18n to non-i18n - read restored property value
-                true, //switch a property from i18n to non-i18n - restore version
-                true, //switch a property from i18n to non-i18n - remove node
-                false, //switch a property from i18n to non-i18n - read imported property value
-                true, //switch a property from i18n to non-i18n - import node
-                true, //switch a property from single to multipe - read node
-                true, //switch a property from single to multipe - export node
-                true, //switch a property from single to multipe - copy node
-                true, //switch a property from single to multipe - read property value
-                true, //switch a property from single to multipe - read multiple property value
-                true, //switch a property from single to multipe - read i18n property value
-                true, //switch a property from single to multipe - read properties
-                false, //switch a property from single to multipe - edit property
-                false, //switch a property from single to multipe - remove property
-                false, //switch a property from single to multipe - restore version
-                false, //switch a property from single to multipe - remove node
-                false, //switch a property from single to multipe - import node
-                true, //switch a property from multipe to single - read node
-                true, //switch a property from multipe to single - export node
-                true, //switch a property from multipe to single - copy node
-                true, //switch a property from multipe to single - read property value
-                true, //switch a property from multipe to single - read multiple property value
-                true, //switch a property from multipe to single - read i18n property value
-                true, //switch a property from multipe to single - read properties
-                false, //switch a property from multipe to single - edit property
-                false, //switch a property from multipe to single - remove property
-                false, //switch a property from multipe to single - restore version
-                false, //switch a property from multipe to single - remove node
-                false, //switch a property from multipe to single - import node
-                true, //add mandatory contraint to a property - read node
-                true, //add mandatory contraint to a property - export node
-                true, //add mandatory contraint to a property - copy node
-                true, //add mandatory contraint to a property - read property value
-                true, //add mandatory contraint to a property - read multiple property value
-                true, //add mandatory contraint to a property - read i18n property value
-                true, //add mandatory contraint to a property - read properties
-                false, //add mandatory contraint to a property - edit property
-                false, //add mandatory contraint to a property - remove property
-                false, //add mandatory contraint to a property - restore version
-                false, //add mandatory contraint to a property - remove node
-                false, //add mandatory contraint to a property - import node
-        };
+            }
+            String detail = StringUtils.isEmpty(r.detail) ? "" : "(" + r.detail + ")";
+            logger.info("{}: {} {}", new String[]{r.operation.toString(), Boolean.toString(r.result), detail});
+            mod = r.modificationInfo.getModificationDescription();
+        }
+    }
+    
+    private static class VersionInfo {
+
+        private String testNodePath;
+        private String versionName;
+
+        public VersionInfo(String testNodePath, String versionName) {
+            this.testNodePath = testNodePath;
+            this.versionName = versionName;
+        }
+
+        public String getTestNodePath() {
+            return testNodePath;
+        }
+
+        public String getVersionName() {
+            return versionName;
+        }
+    }
+    
+    private static class ModificationInfo {
+
+        private String modificationDescription;
+        private String changedProperty;
+
+        private String childNodeType;
+        private String childNodeMixin;        
+        private String childNodeProperty;        
+        private String childNodePropertyValue;        
+
+        public ModificationInfo(String modificationDescription, String changedProperty) {
+            this.modificationDescription = modificationDescription;
+            this.changedProperty = changedProperty;
+        }
+
+        public ModificationInfo(String modificationDescription, String childNodeType, String childNodeMixin) {
+            this.modificationDescription = modificationDescription;
+            this.childNodeType = childNodeType;
+            this.childNodeMixin = childNodeMixin;            
+        }         
+        
+        public ModificationInfo(String modificationDescription, String childNodeType, String childNodeProperty, String childNodePropertyValue) {
+            this.modificationDescription = modificationDescription;
+            this.childNodeType = childNodeType;
+            this.childNodeProperty = childNodeProperty;            
+            this.childNodePropertyValue = childNodePropertyValue;            
+        }        
+        
+        public String getModificationDescription() {
+            return modificationDescription;
+        }
+
+        public String getChangedProperty() {
+            return changedProperty;
+        }
+        
+        public String getChildNodeType() {
+            return childNodeType;
+        }
+        
+        public String getChildNodeMixin() {
+            return childNodeMixin;
+        }        
+        
+        public String getChildNodeProperty() {
+            return childNodeProperty;
+        }
+        
+        public String getChildNodePropertyValue() {
+            return childNodePropertyValue;
+        }         
     }
 }

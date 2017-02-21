@@ -2,8 +2,7 @@
 <!DOCTYPE configuration SYSTEM "http://jackrabbit.apache.org/dtd/indexing-configuration-1.2.dtd">
 <configuration xmlns:j="http://www.jahia.org/jahia/1.0"
                xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jnt='http://www.jahia.org/jahia/nt/1.0'
-               xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
->
+               xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
 
     <!-- see http://wiki.apache.org/jackrabbit/IndexingConfiguration for details -->
 
@@ -35,8 +34,10 @@ The following example creates an index aggregate on jnt:file that includes the c
      - isRegexp : if true, false by default, the path is a read as a regular expression.
 
     examples :
-    <exclude ndetype"jnt:file" path="/sites/mySites/files/nonIndexedFiles"/>
-    <exclude ndetype"jnt:file" path="^/sites/mySites/files/nonIndexedFiles/.*" isRegexp="true"/>
+    <exclude nodetype="jnt:page"/>
+    <exclude nodetype="jnt:file" path="/sites/ACMESPACE/files/nonIndexedFiles"/>
+    <exclude nodetype="jnt:file" path="^/sites/ACMESPACE/files/nonIndexedFilesRegex/.*" isRegexp="true"/>
+
     -->
 
     <i18ncopy>

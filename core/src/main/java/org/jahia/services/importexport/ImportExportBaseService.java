@@ -1982,7 +1982,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         Collections.reverse(liveUuids);
                         for (String uuid : liveUuids) {
                             // Uuids have been imported in live but not in default : need to be removed
-                            session.getNodeByIdentifier(uuid).remove();
+                            try {
+                                JCRNodeWrapper nodeToRemove = session.getNodeByIdentifier(uuid);
+                                nodeToRemove.remove();
+                            } catch (ItemNotFoundException | InvalidItemStateException ex) {
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("Node to remove is already removed", ex);
+                                }
+                            }
                         }
                     }
                     logger.debug("Saving JCR session for " + REPOSITORY_XML);

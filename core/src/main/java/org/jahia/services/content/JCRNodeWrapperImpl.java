@@ -1085,6 +1085,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         checkLock();
         try {
             objectNode.removeMixin(s);
+            if (!NodeTypeRegistry.getInstance().getNodeType(s).getChildNodeDefinitionsAsMap().isEmpty()) {
+                getSession().flushCaches();
+            }            
         } finally {
             applicablePropertyDefinition.clear();
             hasPropertyCache.clear();

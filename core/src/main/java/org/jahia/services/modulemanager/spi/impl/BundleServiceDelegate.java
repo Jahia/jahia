@@ -43,6 +43,10 @@
  */
 package org.jahia.services.modulemanager.spi.impl;
 
+import java.util.Collection;
+import java.util.Map;
+
+import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.Constants;
@@ -87,6 +91,26 @@ public class BundleServiceDelegate implements BundleService {
     @Override
     public void refresh(BundleInfo bundleInfo, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
         lookupService().refresh(bundleInfo, target);
+    }
+
+    @Override
+    public Map<String, BundleInformation> getInfo(BundleInfo bundleInfo, String target) throws ModuleManagementException, InvalidTargetException {
+        return lookupService().getInfo(bundleInfo, target);
+    }
+
+    @Override
+    public Map<String, Map<String, BundleInformation>> getInfos(Collection<BundleInfo> bundleInfos, String target) throws ModuleManagementException, InvalidTargetException {
+        return lookupService().getInfos(bundleInfos, target);
+    }
+
+    @Override
+    public BundleState getLocalState(BundleInfo bundleInfo)	throws ModuleManagementException, ModuleNotFoundException {
+        return lookupService().getLocalState(bundleInfo);
+    }
+
+    @Override
+    public BundleInformation getLocalInfo(BundleInfo bundleInfo) throws ModuleManagementException, ModuleNotFoundException {
+        return lookupService().getLocalInfo(bundleInfo);
     }
 
     private BundleService lookupService() {

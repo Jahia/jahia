@@ -43,7 +43,11 @@
  */
 package org.jahia.services.modulemanager;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.jahia.osgi.BundleState;
+import org.jahia.services.modulemanager.spi.BundleService;
 import org.springframework.core.io.Resource;
 
 /**
@@ -77,9 +81,6 @@ import org.springframework.core.io.Resource;
  * <code>
  * <pre>article</pre>
  * </code>
- * <p>
- * The value of the <code>target</code> group of cluster nodes could be specified as <code>null</code>, meaning the default group is
- * concerned, which includes all cluster nodes.
  *
  * @author Sergiy Shyrkov
  */
@@ -99,7 +100,7 @@ public interface ModuleManager {
      * Install the specified bundle on the target group of cluster nodes, optionally starting it right after.
      *
      * @param bundleResource The resource, representing a bundle to install
-     * @param target The group of cluster nodes targeted by the install operation (see class JavaDoc for the supported values)
+     * @param target The group of cluster nodes targeted by the install operation (see BundleService class JavaDoc)
      * @param start Whether the installed bundle should be started right away
      * @return The result of the install operation
      * @throws ModuleManagementException In case of problems
@@ -110,7 +111,7 @@ public interface ModuleManager {
      * Start the specified bundle on the target group of cluster nodes.
      *
      * @param bundleKey Bundle key to start (see class JavaDoc for the supported key format)
-     * @param target The group of cluster nodes targeted by the start operation (see class JavaDoc for the supported values)
+     * @param target The group of cluster nodes targeted by the start operation (see BundleService class JavaDoc)
      * @return The result of the start operation
      * @throws ModuleManagementException In case of problems
      */
@@ -120,7 +121,7 @@ public interface ModuleManager {
      * Stop the specified bundle on the target group of cluster nodes.
      *
      * @param bundleKey Bundle key to stop (see class JavaDoc for the supported key format)
-     * @param target The group of cluster nodes targeted by the stop operation (see class JavaDoc for the supported values)
+     * @param target The group of cluster nodes targeted by the stop operation (see BundleService class JavaDoc)
      * @return The result of the stop operation
      * @throws ModuleManagementException In case of problems
      */
@@ -130,7 +131,7 @@ public interface ModuleManager {
      * Uninstall the specified bundle on the target group of cluster nodes.
      *
      * @param bundleKey Bundle key to uninstall (see class JavaDoc for the supported key format)
-     * @param target The group of cluster nodes targeted by the uninstall operation (see class JavaDoc for the supported values)
+     * @param target The group of cluster nodes targeted by the uninstall operation (see BundleService class JavaDoc)
      * @return The result of the uninstall operation
      * @throws ModuleManagementException In case of problems
      */
@@ -140,17 +141,43 @@ public interface ModuleManager {
      * Refresh the specified bundle on the target group of cluster nodes.
      *
      * @param bundleKey Bundle key to refresh (see class JavaDoc for the supported key format)
-     * @param target The group of cluster nodes targeted by the refresh operation (see class JavaDoc for the supported values)
+     * @param target The group of cluster nodes targeted by the refresh operation (see BundleService class JavaDoc)
      * @return The result of the refresh operation
      * @throws ModuleManagementException In case of problems
      */
     OperationResult refresh(String bundleKey, String target) throws ModuleManagementException;
 
     /**
+     * Get info about a bundle.
+     *
+     * @param bundleKey Bundle key (see class JavaDoc for the supported key format; note that bundle version is required)
+     * @param target The group of cluster nodes to get info from (see BundleService class JavaDoc)
+     * @return A map of bundle info by cluster node name; each map value is either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
+     */
+    Map<String, BundleService.BundleInformation> getInfo(String bundleKey, String target) throws ModuleManagementException;
+
+    /**
+     * Get info about multiple bundles.
+     *
+     * @param bundleKeys Bundle keys (see class JavaDoc for the supported key format; note that bundle version is required)
+     * @param target The group of cluster nodes to get info from (see BundleService class JavaDoc)
+     * @return A map of bundle info by bundle key by cluster node name; each map value is either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
+     */
+    Map<String, Map<String, BundleService.BundleInformation>> getInfos(Collection<String> bundleKeys, String target) throws ModuleManagementException;
+
+    /**
      * Get current local state of a bundle.
      *
-     * @param bundleKey Bundle key (see class JavaDoc for the supported key format; note that bundle version is required unlike with other operations)
-     * @return Current local state of the bundle
+     * @param bundleKey Bundle key (see class JavaDoc for the supported key format; note that bundle version is required)
+     * @return Current local OSGi state of the bundle
      */
     BundleState getLocalState(String bundleKey) throws ModuleManagementException;
+
+    /**
+     * Get local info about a bundle.
+     *
+     * @param bundleKey Bundle key (see class JavaDoc for the supported key format; note that bundle version is required)
+     * @return Local info about the bundle; represented by either a BundleService.ModuleInfo instance in case the bundle is a DX module, or a BundleService.BundleInfo instance otherwise
+     */
+    BundleService.BundleInformation getLocalInfo(String bundleKey) throws ModuleManagementException;
 }

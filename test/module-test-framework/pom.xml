@@ -78,20 +78,20 @@
             </snapshots>
         </repository>
     </repositories>
-    
+
     <dependencies>
-    
+
         <dependency>
             <groupId>org.jahia.test</groupId>
             <artifactId>core-test-framework</artifactId>
             <version>7.3.0.0-backlog_6885-SNAPSHOT</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.portals</groupId>
             <artifactId>portlet-api_2.0_spec</artifactId>
             <version>1.0</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.apache.portals.pluto</groupId>
             <artifactId>pluto-container-api</artifactId>
@@ -101,7 +101,7 @@
             <groupId>org.apache.portals.pluto</groupId>
             <artifactId>pluto-container-driver-api</artifactId>
             <version>${pluto.version}</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>

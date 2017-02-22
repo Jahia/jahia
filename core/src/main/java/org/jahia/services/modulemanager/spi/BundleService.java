@@ -43,14 +43,21 @@
  */
 package org.jahia.services.modulemanager.spi;
 
+import java.util.Collection;
+import java.util.Map;
+
+import org.jahia.data.templates.ModuleState;
+import org.jahia.osgi.BundleState;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.InvalidTargetException;
 import org.jahia.services.modulemanager.ModuleManagementException;
-import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.ModuleNotFoundException;
 
 /**
  * Service for bundle related operations.
+ * <p>
+ * The value of the <code>target</code> group of cluster nodes could be specified as <code>null</code>, meaning the default group is
+ * concerned, which includes all cluster nodes.
  *
  * @author Sergiy Shyrkov
  */
@@ -63,8 +70,7 @@ public interface BundleService {
      * In case the same version of the bundle is already installed, update it with the snapshot referenced by the uri.
      *
      * @param uri The bundle location
-     * @param target The group of cluster nodes targeted by the install operation (see JavaDoc of {@link ModuleManager} class for the
-     *            supported values)
+     * @param target The group of cluster nodes targeted by the install operation (see JavaDoc of the class)
      * @param start Whether the installed bundle should be started right away
      * @return The result of the install operation
      * @throws ModuleManagementException in case of operation failure
@@ -76,8 +82,7 @@ public interface BundleService {
      * Performs the start operation with the provided bundle on the target group of cluster nodes.
      *
      * @param bundleInfo The bundle to perform operation for
-     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
-     *            values)
+     * @param target The group of cluster nodes targeted by the start operation (see JavaDoc of the class)
      * @throws ModuleManagementException in case of operation failure
      * @throws ModuleNotFoundException in case the corresponding bundle cannot be found
      * @throws InvalidTargetException in case target is not a valid target for module operation
@@ -89,8 +94,7 @@ public interface BundleService {
      * Performs the stop operation with the provided bundle on the target group of cluster nodes.
      *
      * @param bundleInfo The bundle to perform operation for
-     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
-     *            values)
+     * @param target The group of cluster nodes targeted by the stop operation (see JavaDoc of the class)
      * @throws ModuleManagementException in case of operation failure
      * @throws ModuleNotFoundException in case the corresponding bundle cannot be found
      * @throws InvalidTargetException in case target is not a valid target for module operation
@@ -102,8 +106,7 @@ public interface BundleService {
      * Performs the uninstall operation with the provided bundle on the target group of cluster nodes.
      *
      * @param bundleInfo The bundle to perform operation for
-     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
-     *            values)
+     * @param target The group of cluster nodes targeted by the uninstall operation (see JavaDoc of the class)
      * @throws ModuleManagementException in case of operation failure
      * @throws ModuleNotFoundException in case the corresponding bundle cannot be found
      * @throws InvalidTargetException in case target is not a valid target for module operation
@@ -115,12 +118,71 @@ public interface BundleService {
      * Performs the refresh operation with the provided bundle on the target group of cluster nodes.
      *
      * @param bundleInfo The bundle to perform operation for
-     * @param target The group of cluster nodes targeted by this operation (see JavaDoc of {@link ModuleManager} class for the supported
-     *            values)
+     * @param target The group of cluster nodes targeted by the refresh operation (see JavaDoc of the class)
      * @throws ModuleManagementException in case of operation failure
      * @throws ModuleNotFoundException in case the corresponding bundle cannot be found
      * @throws InvalidTargetException in case target is not a valid target for module operation
      */
     void refresh(BundleInfo bundleInfo, String target)
             throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
+
+    /**
+     * Get info about a bundle.
+     *
+     * @param bundleInfo The bundle to retrieve info about
+     * @param target The group of cluster nodes to get info from (see JavaDoc of the class)
+     * @return A map of bundle info by cluster node name; each map value is either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
+     * @throws InvalidTargetException in case the target is not a valid one
+     */
+    Map<String, BundleInformation> getInfo(BundleInfo bundleInfo, String target) throws ModuleManagementException, InvalidTargetException;
+
+    /**
+     * Get info about multiple bundles.
+     *
+     * @param bundleInfo The bundle to retrieve info about
+     * @param target The group of cluster nodes to get info from (see JavaDoc of the class)
+     * @return A map of bundle info by bundle key by cluster node name; each map value is either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
+     * @throws InvalidTargetException in case the target is not a valid one
+     */
+    Map<String, Map<String, BundleInformation>> getInfos(Collection<BundleInfo> bundleInfos, String target) throws ModuleManagementException, InvalidTargetException;
+
+    /**
+     * Get current local state of a bundle.
+     *
+     * @param bundleInfo The bundle to retrieve status
+     * @return Current local OSGi state of the bundle
+     */
+    BundleState getLocalState(BundleInfo bundleInfo) throws ModuleManagementException, ModuleNotFoundException;
+
+    /**
+     * Get local info about a bundle.
+     *
+     * @param bundleInfo The bundle to retrieve info about
+     * @return Local info about the bundle; represented by either a LocalModuleInfo instance in case the bundle is a DX module, or a LocalBundleInfo instance otherwise
+     */
+    BundleService.BundleInformation getLocalInfo(BundleInfo bundleInfo) throws ModuleManagementException, ModuleNotFoundException;
+
+    /**
+     * Info about a bundle.
+     */
+    public interface BundleInformation {
+
+        /**
+         * @return State of the bundle in OSGi terms
+         * @throws ModuleManagementException in case there was an exception retrieving bundle information that has been suppressed to let the invoker handle it later
+         */
+        public BundleState getOsgiState() throws ModuleManagementException;
+    }
+
+    /**
+     * Info about a bundle which is a DX module.
+     */
+    public interface ModuleInformation extends BundleInformation {
+
+        /**
+         * @return State of the module in DX terms
+         * @throws ModuleManagementException in case there was an exception retrieving bundle information that has been suppressed to let the invoker handle it later
+         */
+        public ModuleState.State getModuleState() throws ModuleManagementException;
+    }
 }

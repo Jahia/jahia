@@ -47,6 +47,7 @@ import com.google.common.collect.Sets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSearchManager;
+import org.apache.jackrabbit.core.NamespaceRegistryImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
@@ -95,7 +96,7 @@ import java.util.*;
  * Implements a {@link org.apache.jackrabbit.core.query.QueryHandler} using Lucene and handling Jahia specific definitions.
  */
 public class JahiaSearchIndex extends SearchIndex {
-    
+
     /**
      * Background job that performs re-indexing of the repository content for the specified workspaces.
      */
@@ -124,7 +125,7 @@ public class JahiaSearchIndex extends SearchIndex {
     private static final Logger log = LoggerFactory.getLogger(JahiaSearchIndex.class);
 
     private static final Name JNT_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "acl");
-    
+
     private static final Name JNT_ACE = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "ace");
 
     public static final String SKIP_VERSION_INDEX_SYSTEM_PROPERTY = "jahia.jackrabbit.searchIndex.skipVersionIndex";
@@ -145,7 +146,7 @@ public class JahiaSearchIndex extends SearchIndex {
     private Set<Name> ignoredTypes;
 
     private String ignoredTypesString;
-    
+
     private volatile boolean switching = false;
 
     private int defaultWaitTime = 500;
@@ -359,7 +360,7 @@ public class JahiaSearchIndex extends SearchIndex {
                 newIndex.addDelayedUpdated(remove, add);
             }
         }
-        
+
         if (isVersionIndex()) {
             super.updateNodes(remove, add);
             return;
@@ -393,7 +394,7 @@ public class JahiaSearchIndex extends SearchIndex {
         }
 
         boolean debugEnabled = log.isDebugEnabled();
-        
+
         if (isAddAclUuidInIndex() && hasAclOrAce) {
             final ItemStateManager itemStateManager = getContext().getItemStateManager();
             for (final NodeState node : new ArrayList<NodeState>(addList)) {
@@ -417,10 +418,10 @@ public class JahiaSearchIndex extends SearchIndex {
                         addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
                         if (!topIdsRecursedForAcl.contains(nodeParent.getNodeId()) && !aclChangedList.contains(nodeParent.getNodeId())) {
                             long startTime = debugEnabled ? System.currentTimeMillis() : 0;
-                            
+
                             recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
                             topIdsRecursedForAcl.add(node.getParentId());
-                            
+
                             if (debugEnabled) {
                                 log.debug("ACL updated {}. Recursed down the JCR tree to update the index in {} ms.",
                                         event != null ? event.getPath() : nodeParent.getId(),
@@ -436,10 +437,10 @@ public class JahiaSearchIndex extends SearchIndex {
                             addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
                             if (!topIdsRecursedForAcl.contains(nodeParent.getNodeId()) && !aclChangedList.contains(nodeParent.getNodeId())) {
                                 long startTime = debugEnabled ? System.currentTimeMillis() : 0;
-                                
+
                                 recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
                                 topIdsRecursedForAcl.add(node.getParentId());
-                                
+
                                 if (debugEnabled) {
                                     log.debug(
                                             "ACE entry updated: {}. Recursed down the JCR tree to update the index in {} ms.",
@@ -556,15 +557,36 @@ public class JahiaSearchIndex extends SearchIndex {
                                       IndexFormatVersion indexFormatVersion) throws RepositoryException {
         // Exclude content from DX Index if necessary
         if (getIndexingConfig() instanceof  JahiaIndexingConfigurationImpl) {
-            Set<JahiaIndexingConfigurationImpl.ExcludedType> excludedNodeTypesByPath = ((JahiaIndexingConfigurationImpl) getIndexingConfig()).getExcludesTypesByPath();
-            for (JahiaIndexingConfigurationImpl.ExcludedType excludedType : excludedNodeTypesByPath) {
-                if (excludedType.matchNode(node.getNodeTypeName())) {
-                    String localPath = StringUtils.remove(getNamespaceMappings().translatePath(getContext().getHierarchyManager().getPath(node.getId()).getNormalizedPath()), "0:");
-                    if (excludedType.matchPath(localPath)) {
-                        // do not index the content
-                        return null;
+            NodeState nodeToProcess;
+            try {
+                NamespaceRegistryImpl namespaceRegistry = getContext().getNamespaceRegistry();
+                // manage translation nodes
+                String nodeTypeName = JahiaNodeIndexer.getTypeNameAsString(node.getNodeTypeName(), namespaceRegistry);
+                if (Constants.JAHIANT_TRANSLATION.equals(nodeTypeName)) {
+                    nodeToProcess = (NodeState) getContext().getItemStateManager().getItemState(node.getParentId());
+                } else {
+                    nodeToProcess = node;
+                }
+
+                Set<JahiaIndexingConfigurationImpl.ExcludedType> excludedNodeTypesByPath = ((JahiaIndexingConfigurationImpl) getIndexingConfig()).getExcludesTypesByPath();
+                for (JahiaIndexingConfigurationImpl.ExcludedType excludedType : excludedNodeTypesByPath) {
+                    Set<Name> nodeTypeNamesToCheck = new HashSet<>();
+                    nodeTypeNamesToCheck.add(nodeToProcess.getNodeTypeName());
+                    nodeTypeNamesToCheck.addAll(nodeToProcess.getMixinTypeNames());
+                    for (Name nodeTypeNameToCheck : nodeTypeNamesToCheck) {
+                        if (excludedType.matchNode(nodeTypeName)) {
+                            String localPath = StringUtils.remove(getNamespaceMappings().translatePath(getContext().getHierarchyManager().getPath(nodeToProcess.getId()).getNormalizedPath()), "0:");
+                            if (excludedType.matchPath(localPath)) {
+                                // do not index the content
+                                return null;
+                            }
+                        }
                     }
                 }
+            } catch (ItemStateException e) {
+                // item cannot be found, we do not index it.
+                log.warn("unable to get parent item of {}", getContext().getHierarchyManager().getPath(node.getId()).getNormalizedPath());
+                return null;
             }
         }
 
@@ -755,7 +777,7 @@ public class JahiaSearchIndex extends SearchIndex {
         }
 
         newIndex = new JahiaSecondaryIndex(this);
-        
+
         return true;
     }
 
@@ -808,7 +830,7 @@ public class JahiaSearchIndex extends SearchIndex {
                 // rename the index back
                 log.info("Restored original index");
                 dest.renameTo(new File(getPath()));
-                
+
                 throw new IOException("Unable to rename the newly created index folder " + newIndex.getPath());
             }
 

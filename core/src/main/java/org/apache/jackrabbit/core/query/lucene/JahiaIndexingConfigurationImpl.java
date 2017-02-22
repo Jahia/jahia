@@ -59,6 +59,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.util.Version;
 import org.jahia.api.Constants;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LuceneUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -212,7 +213,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
                     }
                     String path = element.getAttribute("path");
                     Boolean isRegexp = Boolean.valueOf(element.getAttribute("isRegexp"));
-                    excludesTypesByPath.add(new ExcludedType(resolver.getQName(nodeType), path, isRegexp));
+                    excludesTypesByPath.add(new ExcludedType(nodeType, path, isRegexp));
                 }
             }
         }
@@ -426,18 +427,18 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
      * inner object to handle exlued types in index configuration
      */
     class ExcludedType {
-        private Name type;
+        private String type;
         private String path;
         private boolean regexp;
 
-        ExcludedType(Name type, String path, boolean regexp) {
+        ExcludedType(String type, String path, boolean regexp) {
             this.type = type;
             this.path = path;
             this.regexp = regexp;
         }
 
-        boolean matchNode(Name nodeTypeToCheck) throws RepositoryException {
-            return type.equals(nodeTypeToCheck);
+        boolean matchNode(String nodeTypeToCheck) throws RepositoryException {
+            return NodeTypeRegistry.getInstance().getNodeType(nodeTypeToCheck).isNodeType(type);
         }
 
         boolean matchPath(String pathToCheck) {

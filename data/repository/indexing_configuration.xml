@@ -26,8 +26,7 @@ The following example creates an index aggregate on jnt:file that includes the c
     </index-rule>
 
     <!--
-    You can exclued content from indexation for a nodetype and a path by using the exclude tag. This will exclude only the matching type, it will not check
-    the inherited types.
+    You can exclued content from indexation for a nodetype and a path by using the exclude tag.
     attributes :
      - nodetype (mandatory) : nodetype to exclude from index
      - path : path of content to be exclude from indexation

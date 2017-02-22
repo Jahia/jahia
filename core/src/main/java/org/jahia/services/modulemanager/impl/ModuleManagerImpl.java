@@ -44,7 +44,10 @@
 package org.jahia.services.modulemanager.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.util.StringUtils;
 import org.jahia.osgi.BundleState;
@@ -124,7 +127,7 @@ public class ModuleManagerImpl implements ModuleManager {
         return targetInfo;
     }
 
-    private BundleInfo getBundleInfo(String bundleKey) {
+    private BundleInfo getBundleInfoGuessIfNeeded(String bundleKey) {
 
         BundleInfo info = null;
 
@@ -139,6 +142,14 @@ public class ModuleManagerImpl implements ModuleManager {
 
         return findTargetBundle(bundleKey, info != null ? info.getSymbolicName() : bundleKey,
                 info != null ? info.getVersion() : null);
+    }
+
+    private static BundleInfo getBundleInfo(String bundleKey) {
+        try {
+            return BundleInfo.fromKey(bundleKey);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidModuleKeyException(bundleKey);
+        }
     }
 
     /**
@@ -225,7 +236,7 @@ public class ModuleManagerImpl implements ModuleManager {
         BundleInfo info = null;
         Exception error = null;
         try {
-            info = getBundleInfo(bundleKey);
+            info = getBundleInfoGuessIfNeeded(bundleKey);
             if (info == null) {
                 throw new ModuleNotFoundException(bundleKey);
             }
@@ -339,17 +350,30 @@ public class ModuleManagerImpl implements ModuleManager {
     }
 
     @Override
+    public Map<String, BundleService.BundleInformation> getInfo(String bundleKey, String target) throws ModuleManagementException {
+        BundleInfo bundleInfo = getBundleInfo(bundleKey);
+        return bundleService.getInfo(bundleInfo, target);
+    }
+
+    @Override
+    public Map<String, Map<String, BundleService.BundleInformation>> getInfos(Collection<String> bundleKeys, String target) throws ModuleManagementException {
+        LinkedHashSet<BundleInfo> bundleInfos = new LinkedHashSet<BundleInfo>(bundleKeys.size());
+        for (String bundleKey : bundleKeys) {
+            BundleInfo bundleInfo = getBundleInfo(bundleKey);
+            bundleInfos.add(bundleInfo);
+        }
+        return bundleService.getInfos(bundleInfos, target);
+    }
+
+    @Override
     public BundleState getLocalState(String bundleKey) throws ModuleManagementException {
-        BundleInfo info;
-        try {
-            info = BundleInfo.fromKey(bundleKey);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidModuleKeyException(bundleKey);
-        }
-        Bundle bundle = BundleUtils.getBundleBySymbolicName(info.getSymbolicName(), info.getVersion());
-        if (bundle == null) {
-            throw new ModuleNotFoundException(info.getKey());
-        }
-        return BundleState.fromInt(bundle.getState());
+        BundleInfo bundleInfo = getBundleInfo(bundleKey);
+        return bundleService.getLocalState(bundleInfo);
+    }
+
+    @Override
+    public BundleService.BundleInformation getLocalInfo(String bundleKey) throws ModuleManagementException {
+        BundleInfo bundleInfo = getBundleInfo(bundleKey);
+        return bundleService.getLocalInfo(bundleInfo);
     }
 }

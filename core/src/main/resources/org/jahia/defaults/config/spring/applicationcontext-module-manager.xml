@@ -8,14 +8,16 @@
         <property name="bundleService" ref="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate"/>
         <property name="persister" ref="org.jahia.services.modulemanager.persistence.BundlePersister"/>
     </bean>
-    
+
     <bean id="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate" class="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate">
         <property name="settingsBean" ref="settingsBean"/>
         <property name="defaultBundleService" ref="org.jahia.services.modulemanager.spi.impl.DefaultBundleService"/>
     </bean>
-    
-    <bean id="org.jahia.services.modulemanager.spi.impl.DefaultBundleService" class="org.jahia.services.modulemanager.spi.impl.DefaultBundleService"/>
-    
+
+    <bean id="org.jahia.services.modulemanager.spi.impl.DefaultBundleService" class="org.jahia.services.modulemanager.spi.impl.DefaultBundleService">
+        <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
+    </bean>
+
     <bean id="org.jahia.services.modulemanager.persistence.BundlePersister" class="org.jahia.services.modulemanager.persistence.jcr.JCRBundlePersister"/>
 
 </beans>

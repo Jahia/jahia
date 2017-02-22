@@ -43,36 +43,59 @@
  */
 package org.jahia.services.modulemanager.spi.impl;
 
+import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleLifecycleUtils;
+import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.BundleInfo;
+import org.jahia.services.modulemanager.InvalidTargetException;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleNotFoundException;
 import org.jahia.services.modulemanager.spi.BundleService;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 
 /**
  * The default implementation of the {@link BundleService} which is using direct bundle operations (BundleContext.installBundle(),
  * bundle.start()/stop()/uninstall()). The implementation is used in a standalone DX instance or in case DX clustering is not activated (
  * <code>cluster.activated=false</code>).
+ * <p>
+ * getInfo/getInfos methods of this implementation return a map containing a single entry whose key is an empty string, and value is local
+ * information about the bundle/bundles. These methods do not support the target parameter, because it only makes sense in a cluster;
+ * InvalidTargetException will be thrown in case there is a non-null value passed.
  *
  * @author Sergiy Shyrkov
  */
 public class DefaultBundleService implements BundleService {
 
-    private Bundle getBundleEnsureExists(BundleInfo bundleInfo) throws ModuleNotFoundException {
+    private JahiaTemplateManagerService templateManagerService;
+
+    private static Bundle getBundleEnsureExists(BundleInfo bundleInfo) throws ModuleNotFoundException {
         Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
         if (bundle == null) {
             throw new ModuleNotFoundException(bundleInfo.getKey());
         }
         return bundle;
+    }
+
+    /**
+     * Injects an instance of the template manager service.
+     *
+     * @param templateManagerService an instance of the template manager service
+     */
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+        this.templateManagerService = templateManagerService;
     }
 
     @Override
@@ -136,5 +159,68 @@ public class DefaultBundleService implements BundleService {
     public void refresh(BundleInfo bundleInfo, String target) throws ModuleManagementException {
         Bundle bundle = getBundleEnsureExists(bundleInfo);
         BundleLifecycleUtils.refreshBundles(Collections.singleton(bundle), false, false);
+    }
+
+    @Override
+    public Map<String, BundleInformation> getInfo(BundleInfo bundleInfo, String target) throws ModuleManagementException, InvalidTargetException {
+        if (target != null) {
+            throw new InvalidTargetException(target);
+        }
+        BundleInformation info = getLocalInfo(bundleInfo);
+        return Collections.singletonMap("", info);
+    }
+
+    @Override
+    public Map<String, Map<String, BundleInformation>> getInfos(Collection<BundleInfo> bundleInfos, String target) throws ModuleManagementException, InvalidTargetException {
+
+        if (target != null) {
+            throw new InvalidTargetException(target);
+        }
+
+        Map<String, BundleInformation> result = new LinkedHashMap<String, BundleInformation>();
+        for (BundleInfo bundleInfo : new LinkedHashSet<BundleInfo>(bundleInfos)) {
+            BundleInformation info = getLocalInfo(bundleInfo);
+            result.put(bundleInfo.getKey(), info);
+        }
+        return Collections.singletonMap("", result);
+    }
+
+    @Override
+    public BundleState getLocalState(BundleInfo bundleInfo) throws ModuleNotFoundException {
+        Bundle bundle = getBundleEnsureExists(bundleInfo);
+        return BundleState.fromInt(bundle.getState());
+    }
+
+    @Override
+    public BundleInformation getLocalInfo(BundleInfo bundleInfo) throws ModuleNotFoundException {
+
+        Bundle bundle = getBundleEnsureExists(bundleInfo);
+        final BundleState osgiState = BundleState.fromInt(bundle.getState());
+
+        if (!BundleUtils.isJahiaModuleBundle(bundle)) {
+
+            return new BundleService.BundleInformation() {
+
+                @Override
+                public BundleState getOsgiState() {
+                    return osgiState;
+                }
+            };
+        }
+
+        final ModuleState moduleState = templateManagerService.getModuleStates().get(bundle);
+
+        return new BundleService.ModuleInformation() {
+
+            @Override
+            public BundleState getOsgiState() {
+                return osgiState;
+            }
+
+            @Override
+            public ModuleState.State getModuleState() {
+                return (moduleState == null ? null : moduleState.getState());
+            }
+        };
     }
 }

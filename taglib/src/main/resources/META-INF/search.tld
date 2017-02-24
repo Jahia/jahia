@@ -341,7 +341,8 @@
         <path>/META-INF/tags/search/suggestedSearchUrl.tag</path>
         <!--
             Import-Package:
-                org.jahia.taglibs.search
+                org.jahia.taglibs.search,
+                org.jahia.services.search
         -->
     </tag-file>
     <tag-file>

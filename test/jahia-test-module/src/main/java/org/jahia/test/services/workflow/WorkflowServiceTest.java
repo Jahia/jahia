@@ -74,6 +74,7 @@ import static org.junit.Assert.*;
  *        Created : 2 févr. 2010
  */
 public class WorkflowServiceTest {
+
     private final static String TESTSITE_NAME = "jBPMWorkflowServiceTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME + "/home";
     private static final String WORKFLOW_TYPE_1_STEP_PUBLICATION = "1-step-publication";
@@ -135,8 +136,8 @@ public class WorkflowServiceTest {
     private void triggerScheduledJobsAndWait() throws Exception {
         ServicesRegistry.getInstance().getSchedulerService().triggerEndOfRequest();
         Thread.sleep(MILLIS);
-    }    
-    
+    }
+
     @Test
     public void testGetPossibleWorkflow() throws Exception {
         final Collection<WorkflowDefinition> workflowList = WorkflowService.getInstance().getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
@@ -179,7 +180,7 @@ public class WorkflowServiceTest {
                 break;
             }
         }
-        assertNotNull("Workflow should not be null", workflow);
+        assertNotNull("Unable to find workflow process of type: " + WORKFLOW_TYPE_1_STEP_PUBLICATION, workflow);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
@@ -296,6 +297,7 @@ public class WorkflowServiceTest {
     }
 
     private static void initUsersGroup() throws RepositoryException {
+
         JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         johndoe = userManagerService.lookupUser("johndoe") != null ? userManagerService.lookupUser("johndoe").getJahiaUser() : null;
@@ -307,14 +309,12 @@ public class WorkflowServiceTest {
         if (johndoe == null) {
             properties.setProperty("j:firstName", "John");
             properties.setProperty("j:lastName", "Doe");
-//            properties.setProperty("j:email", "johndoe@localhost.com");
             johndoe = userManagerService.createUser("johndoe", "johndoe", properties, session).getJahiaUser();
         }
         if (johnsmoe == null) {
             properties = new Properties();
             properties.setProperty("j:firstName", "John");
             properties.setProperty("j:lastName", "Smoe");
-//            properties.setProperty("j:email", "johnsmoe@localhost.com");
             johnsmoe = userManagerService.createUser("johnsmoe", "johnsmoe", properties, session).getJahiaUser();
         }
         JCRGroupNode group = groupManagerService.createGroup(site.getSiteKey(), "taskUsersGroup", new Properties(), true, session);
@@ -327,6 +327,7 @@ public class WorkflowServiceTest {
 
     @Test
     public void test2StepPublicationAccept() throws Exception {
+
         final HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());

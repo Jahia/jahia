@@ -74,7 +74,6 @@ import static org.junit.Assert.*;
  *        Created : 2 févr. 2010
  */
 public class WorkflowServiceTest {
-
     private final static String TESTSITE_NAME = "jBPMWorkflowServiceTest";
     private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME + "/home";
     private static final String WORKFLOW_TYPE_1_STEP_PUBLICATION = "1-step-publication";
@@ -140,8 +139,8 @@ public class WorkflowServiceTest {
 
     @Test
     public void testGetPossibleWorkflow() throws Exception {
-        final Collection<WorkflowDefinition> workflowList = WorkflowService.getInstance().getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
-        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
+        // that call also asserts that possible workflows are present 
+        getPossibleWorkflows();
     }
 
     @Test
@@ -149,10 +148,7 @@ public class WorkflowServiceTest {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());
-        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
-        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        final WorkflowDefinition workflow = service.getPossibleWorkflowForType(stageNode, true, "publish", Locale.ENGLISH);
-        assertNotNull("Worflow should not be null", workflow);
+        final WorkflowDefinition workflow = getPossibleWorkflowEnsureExists(null);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
@@ -171,16 +167,7 @@ public class WorkflowServiceTest {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());
-        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
-        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        WorkflowDefinition workflow = null;
-        for (WorkflowDefinition currentWorkflow : workflowList) {
-            if (WORKFLOW_TYPE_1_STEP_PUBLICATION.equals(currentWorkflow.getName())) {
-                workflow = currentWorkflow;
-                break;
-            }
-        }
-        assertNotNull("Unable to find workflow process of type: " + WORKFLOW_TYPE_1_STEP_PUBLICATION, workflow);
+        WorkflowDefinition workflow = getPossibleWorkflowEnsureExists(WORKFLOW_TYPE_1_STEP_PUBLICATION);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
@@ -216,16 +203,7 @@ public class WorkflowServiceTest {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());
-        final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", null, Locale.ENGLISH);
-        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        WorkflowDefinition workflow = null;
-        for (WorkflowDefinition workflowDefinition : workflowList) {
-            if (WORKFLOW_TYPE_2_STEP_PUBLICATION.equals(workflowDefinition.getName())) {
-                workflow = workflowDefinition;
-                break;
-            }
-        }
-        assertNotNull("Unable to find workflow process of type: " + WORKFLOW_TYPE_2_STEP_PUBLICATION, workflow);
+        WorkflowDefinition workflow = getPublishWorkflowEnsureExists(WORKFLOW_TYPE_2_STEP_PUBLICATION);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
@@ -297,7 +275,6 @@ public class WorkflowServiceTest {
     }
 
     private static void initUsersGroup() throws RepositoryException {
-
         JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         johndoe = userManagerService.lookupUser("johndoe") != null ? userManagerService.lookupUser("johndoe").getJahiaUser() : null;
@@ -327,20 +304,10 @@ public class WorkflowServiceTest {
 
     @Test
     public void test2StepPublicationAccept() throws Exception {
-
         final HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());
-        final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", null, Locale.ENGLISH);
-        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        WorkflowDefinition workflow = null;
-        for (WorkflowDefinition workflowDefinition : workflowList) {
-            if (WORKFLOW_TYPE_2_STEP_PUBLICATION.equals(workflowDefinition.getName())) {
-                workflow = workflowDefinition;
-                break;
-            }
-        }
-        assertNotNull("Unable to find workflow process of type: " + WORKFLOW_TYPE_2_STEP_PUBLICATION, workflow);
+        WorkflowDefinition workflow = getPublishWorkflowEnsureExists(WORKFLOW_TYPE_2_STEP_PUBLICATION);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
@@ -389,16 +356,7 @@ public class WorkflowServiceTest {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());
-        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
-        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        WorkflowDefinition workflow = null;
-        for (WorkflowDefinition workflowDefinition : workflowList) {
-            if (WORKFLOW_TYPE_1_STEP_PUBLICATION.equals(workflowDefinition.getName())) {
-                workflow = workflowDefinition;
-                break;
-            }
-        }
-        assertNotNull("Unable to find workflow process of type: " + WORKFLOW_TYPE_1_STEP_PUBLICATION, workflow);
+        WorkflowDefinition workflow = getPossibleWorkflowEnsureExists(WORKFLOW_TYPE_1_STEP_PUBLICATION);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
@@ -431,16 +389,7 @@ public class WorkflowServiceTest {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());
-        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
-        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
-        WorkflowDefinition workflow = null;
-        for (WorkflowDefinition workflowDefinition : workflowList) {
-            if (WORKFLOW_TYPE_1_STEP_PUBLICATION.equals(workflowDefinition.getName())) {
-                workflow = workflowDefinition;
-                break;
-            }
-        }
-        assertNotNull("Unable to find workflow process of type: " + WORKFLOW_TYPE_1_STEP_PUBLICATION, workflow);
+        WorkflowDefinition workflow = getPossibleWorkflowEnsureExists(WORKFLOW_TYPE_1_STEP_PUBLICATION);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));
@@ -484,5 +433,45 @@ public class WorkflowServiceTest {
         List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(historyItem.getProcessId(), historyItem
                 .getProvider(), null);
         assertEquals("The workflow process should have two history task records", 2, tasks.size());
+    }
+
+    protected Collection<WorkflowDefinition> getPossibleWorkflows() throws RepositoryException {
+        final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
+        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
+        return workflowList;
+    }
+
+    protected WorkflowDefinition getPublishWorkflowEnsureExists(String type) throws RepositoryException {
+        final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", null, Locale.ENGLISH);
+        assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
+        WorkflowDefinition workflow = null;
+        for (WorkflowDefinition workflowDefinition : workflowList) {
+            if (type.equals(workflowDefinition.getName())) {
+                workflow = workflowDefinition;
+                break;
+            }
+        }
+
+        assertNotNull("Unable to find workflow process of type: " + type, workflow);
+
+        return workflow;
+    }
+    
+    protected WorkflowDefinition getPossibleWorkflowEnsureExists(String type) throws RepositoryException {
+        final Collection<WorkflowDefinition> workflowList = getPossibleWorkflows();
+        if (type == null) {
+            return workflowList.iterator().next();
+        }
+        WorkflowDefinition workflow = null;
+        for (WorkflowDefinition workflowDefinition : workflowList) {
+            if (type.equals(workflowDefinition.getName())) {
+                workflow = workflowDefinition;
+                break;
+            }
+        }
+
+        assertNotNull("Unable to find workflow process of type: " + type, workflow);
+
+        return workflow;
     }
 }

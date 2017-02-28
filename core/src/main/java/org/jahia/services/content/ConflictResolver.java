@@ -63,8 +63,7 @@ public class ConflictResolver {
             Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION,
             Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS,
             Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE, "j:locktoken", "j:lockTypes", "jcr:lockOwner",
-            "jcr:lockIsDeep", "j:deletedChildren", "j:processId");
-    private static final String MIXIN_REMOTYELY_PUBLISHED = "jmix:remotelyPublished";
+            "jcr:lockIsDeep", "j:deletedChildren", "j:processId", "lastReplay");
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ConflictResolver.class);
 
     private JCRNodeWrapper sourceNode;
@@ -107,7 +106,7 @@ public class ConflictResolver {
     private List<Diff> compare(JCRNodeWrapper sourceNode, JCRNodeWrapper targetNode, String basePath) throws RepositoryException {
         List<Diff> diffs = new ArrayList<Diff>();
 
-        boolean inludeSubNodes = !targetNode.isNodeType(MIXIN_REMOTYELY_PUBLISHED);
+        boolean inludeSubNodes = !targetNode.isNodeType("jmix:remotelyPublished");
 
         if (inludeSubNodes) {
             final ListOrderedMap targetUuids = getChildEntries(targetNode, targetNode.getSession());
@@ -180,12 +179,6 @@ public class ConflictResolver {
         PropertyIterator pi1 = targetNode.getProperties();
         while (pi1.hasNext()) {
             JCRPropertyWrapper prop1 = (JCRPropertyWrapper) pi1.next();
-
-            // Avoid touching any remote publication tracking properties which are written directly into the LIVE workspace
-            // of the remote publication target instance bypassing the DEFAULT one.
-            if (MIXIN_REMOTYELY_PUBLISHED.equals(prop1.getDefinition().getDeclaringNodeType().getName())) {
-                continue;
-            }
 
             String propName = prop1.getName();
             if (ignore.contains(propName)) {

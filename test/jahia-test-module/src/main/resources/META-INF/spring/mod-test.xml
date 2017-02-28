@@ -65,6 +65,7 @@
                 <value>org.jahia.test.services.render.filter.channels.ChannelResolutionAndExclusionTest</value>
                 <value>org.jahia.test.services.search.SimpleSearchTest</value>
                 <value>org.jahia.test.services.seo.urlrewrite.UrlRewriteTest</value>
+                <value>org.jahia.test.services.sites.JahiaSitesServiceTest</value>
                 <value>org.jahia.test.services.tags.TaggingTest</value>
                 <value>org.jahia.test.services.templates.JahiaTemplateManagerServiceTest</value>
                 <value>org.jahia.test.services.templates.ModuleBuildTest</value>

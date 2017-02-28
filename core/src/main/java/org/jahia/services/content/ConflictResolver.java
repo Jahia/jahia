@@ -75,10 +75,10 @@ public class ConflictResolver {
         "jcr:lockOwner",
         "jcr:lockIsDeep",
         "j:deletedChildren",
-        "j:processId"
+        "j:processId",
+        "lastReplay"
     );
 
-    private static final String MIXIN_REMOTYELY_PUBLISHED = "jmix:remotelyPublished";
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ConflictResolver.class);
 
     private JCRNodeWrapper sourceNode;
@@ -119,7 +119,7 @@ public class ConflictResolver {
 
         List<Diff> diffs = new ArrayList<Diff>();
 
-        boolean remotelyPublished = targetNode.isNodeType(MIXIN_REMOTYELY_PUBLISHED);
+        boolean remotelyPublished = targetNode.isNodeType("jmix:remotelyPublished");
 
         if (!remotelyPublished) {
 
@@ -194,12 +194,6 @@ public class ConflictResolver {
         while (targetProperties.hasNext()) {
 
             JCRPropertyWrapper targetProperty = (JCRPropertyWrapper) targetProperties.next();
-
-            // Avoid touching any remote publication tracking properties which are written directly into the LIVE workspace
-            // of the remote publication target instance bypassing the DEFAULT one.
-            if (MIXIN_REMOTYELY_PUBLISHED.equals(targetProperty.getDefinition().getDeclaringNodeType().getName())) {
-                continue;
-            }
 
             String propertyName = targetProperty.getName();
             if (IGNORED_PROPRTIES.contains(propertyName)) {

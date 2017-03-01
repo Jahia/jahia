@@ -47,7 +47,6 @@ import com.google.common.collect.Sets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSearchManager;
-import org.apache.jackrabbit.core.NamespaceRegistryImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
@@ -555,41 +554,10 @@ public class JahiaSearchIndex extends SearchIndex {
     @Override
     protected Document createDocument(final NodeState node, NamespaceMappings nsMappings,
                                       IndexFormatVersion indexFormatVersion) throws RepositoryException {
-        // Exclude content from DX Index if necessary
-        if (getIndexingConfig() instanceof  JahiaIndexingConfigurationImpl) {
-            NodeState nodeToProcess;
-            try {
-                NamespaceRegistryImpl namespaceRegistry = getContext().getNamespaceRegistry();
-                // manage translation nodes
-                String nodeTypeName = JahiaNodeIndexer.getTypeNameAsString(node.getNodeTypeName(), namespaceRegistry);
-                if (Constants.JAHIANT_TRANSLATION.equals(nodeTypeName)) {
-                    nodeToProcess = (NodeState) getContext().getItemStateManager().getItemState(node.getParentId());
-                } else {
-                    nodeToProcess = node;
-                }
-
-                Set<JahiaIndexingConfigurationImpl.ExcludedType> excludedNodeTypesByPath = ((JahiaIndexingConfigurationImpl) getIndexingConfig()).getExcludesTypesByPath();
-                for (JahiaIndexingConfigurationImpl.ExcludedType excludedType : excludedNodeTypesByPath) {
-                    Set<Name> nodeTypeNamesToCheck = new HashSet<>();
-                    nodeTypeNamesToCheck.add(nodeToProcess.getNodeTypeName());
-                    nodeTypeNamesToCheck.addAll(nodeToProcess.getMixinTypeNames());
-                    for (Name nodeTypeNameToCheck : nodeTypeNamesToCheck) {
-                        if (excludedType.matchNode(nodeTypeName)) {
-                            String localPath = StringUtils.remove(getNamespaceMappings().translatePath(getContext().getHierarchyManager().getPath(nodeToProcess.getId()).getNormalizedPath()), "0:");
-                            if (excludedType.matchPath(localPath)) {
-                                // do not index the content
-                                return null;
-                            }
-                        }
-                    }
-                }
-            } catch (ItemStateException e) {
-                // item cannot be found, we do not index it.
-                log.warn("unable to get parent item of {}", getContext().getHierarchyManager().getPath(node.getId()).getNormalizedPath());
-                return null;
-            }
+        if (getIndexingConfig() instanceof JahiaIndexingConfigurationImpl
+                && !((JahiaIndexingConfigurationImpl) getIndexingConfig()).getExcludesTypesByPath().isEmpty() && isNodeExcluded(node)) {
+            return null;
         }
-
         JahiaNodeIndexer indexer = JahiaNodeIndexer.createNodeIndexer(node, getContext().getItemStateManager(),
                 nsMappings, getContext().getExecutor(), getParser(), getContext());
         indexer.setSupportHighlighting(getSupportHighlighting());
@@ -602,6 +570,34 @@ public class JahiaSearchIndex extends SearchIndex {
         Document doc = indexer.createDoc();
         mergeAggregatedNodeIndexes(node, doc, indexFormatVersion);
         return doc;
+    }
+    
+    protected boolean isNodeExcluded(final NodeState node) throws RepositoryException {
+        try {
+            // manage translation nodes
+            String nodeTypeName = JahiaNodeIndexer.getTypeNameAsString(node.getNodeTypeName(), getContext().getNamespaceRegistry());
+            NodeState nodeToProcess = Constants.JAHIANT_TRANSLATION.equals(nodeTypeName)
+                    ? (NodeState) getContext().getItemStateManager().getItemState(node.getParentId()) : node;
+            String localPath = null;
+            for (JahiaIndexingConfigurationImpl.ExcludedType excludedType : ((JahiaIndexingConfigurationImpl) getIndexingConfig())
+                    .getExcludesTypesByPath()) {
+                if (!excludedType.matchesNodeType(nodeToProcess)) {
+                    continue;
+                }
+                if (localPath == null) {
+                    localPath = StringUtils.remove(getNamespaceMappings()
+                            .translatePath(getContext().getHierarchyManager().getPath(nodeToProcess.getId()).getNormalizedPath()), "0:");
+                }
+                if (excludedType.matchPath(localPath)) {
+                    // do not index the content
+                    return true;
+                }
+            }
+        } catch (ItemStateException e) {
+            log.debug("While indexing translation node unable to get its parent item", e);
+            return true;
+        }
+        return false;
     }
 
     /**

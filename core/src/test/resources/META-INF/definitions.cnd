@@ -189,21 +189,18 @@
  - image (weakreference, picker[type='image'])
  - date (date) = now()
  
- [jmix:sitemap] mixin
+[jmix:sitemap] mixin
  extends = jnt:content, jnt:page
  itemtype = options
  - changefreq (string,choicelist[resourceBundle]) = 'monthly' autocreated nofulltext < 'always','hourly','daily','monthly','yearly','never'
  - priority (string,choicelist) = '0.5' autocreated nofulltext < '0.0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1.0'
  
- [jnt:press] > jnt:content, mix:title, jmix:editorialContent, jmix:structuredContent
+[jnt:press] > jnt:content, mix:title, jmix:editorialContent, jmix:structuredContent
  - body (string, richtext) i18n
  - date (date)
  - pdfVersion (weakreference, picker[type='file']) i18n
 
 [test:excludeFromIndexContent] > jnt:content, jmix:droppableContent
 
-[test:excludeFromIndexContentWithPath] > jnt:content, jmix:droppableContent
-
-[test:excludeFromIndexContentWithRegexp] > jnt:content, jmix:droppableContent
-
+[test:excludeFromIndexContentMixin] mixin
  

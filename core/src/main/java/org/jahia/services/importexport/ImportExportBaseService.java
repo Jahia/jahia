@@ -1838,9 +1838,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 JCRNodeWrapper nodeToRemove = session.getNodeByIdentifier(uuid);
                                 nodeToRemove.remove();
                             } catch (ItemNotFoundException | InvalidItemStateException ex) {
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug("Node to remove is already removed", ex);
-                                }
+                                logger.debug("Node to remove has already been removed", ex);
                             }
                         }
                     }

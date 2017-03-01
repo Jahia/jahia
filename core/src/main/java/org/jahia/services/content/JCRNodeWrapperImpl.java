@@ -113,7 +113,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
     public static final Pattern EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN = Pattern.compile(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
-    
+
     private static final ExtendedNodeType[] EMPTY_EXTENDED_NODE_TYPE_ARRAY = new ExtendedNodeType[0];
 
     private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
@@ -1054,12 +1054,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void removeMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+
         checkLock();
+
         try {
+
             objectNode.removeMixin(s);
+
+            // Removing a mixin also causes removal of any child nodes defined by the mixin.
+            // In case the mixin defines any child nodes, flush the cache to ensure it does not contain any nodes
+            // that has been just removed along with the mixin.
             if (!NodeTypeRegistry.getInstance().getNodeType(s).getChildNodeDefinitionsAsMap().isEmpty()) {
                 getSession().flushCaches();
-            }            
+            }
+
         } finally {
             applicablePropertyDefinition.clear();
             hasPropertyCache.clear();

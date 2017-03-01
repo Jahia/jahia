@@ -173,6 +173,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Node getRealNode() {
         return objectNode;
     }
@@ -180,6 +181,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRNodeWrapper getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         if (parentAlreadyResolved) {
             return resolvedParentNode;
@@ -202,6 +204,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRUserNode getUser() {
         try {
             return (JCRUserNode) session.getUserNode();
@@ -214,6 +217,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<String, List<String[]>> getAclEntries() {
         try {
             Map<String, List<String[]>> results = new LinkedHashMap<String, List<String[]>>();
@@ -276,6 +280,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<String, Map<String, String>> getActualAclEntries() {
         Map<String, Map<String, String>> actualACLs = new HashMap<String, Map<String, String>>();
         Map<String, List<String[]>> allACLs = getAclEntries();
@@ -301,6 +306,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<String, List<JCRNodeWrapper>> getAvailableRoles() throws RepositoryException {
         Map<String, List<JCRNodeWrapper>> res = new HashMap<String, List<JCRNodeWrapper>>();
         NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
@@ -345,6 +351,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasPermission(String perm) {
         try {
             if (session.isSystem()) {
@@ -359,6 +366,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    @Override
     public AccessControlManager getAccessControlManager() throws RepositoryException {
         Session providerSession = session.getProviderSession(provider);
         // this is not a Jackrabbit implementation, we will use the new JCR 2.0 API instead.
@@ -371,6 +379,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return accessControlManager;
     }
 
+    @Override
     public Set<String> getPermissions() {
         Set<String> result = new HashSet<String>();
         try {
@@ -392,6 +401,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return result;
     }
 
+    @Override
     public BitSet getPermissionsAsBitSet() {
         BitSet b = null;
         try {
@@ -433,6 +443,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean grantRoles(String principalKey, Set<String> roles) throws RepositoryException {
         Map<String, String> m = new HashMap<String, String>();
         for (String role : roles) {
@@ -444,6 +455,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean denyRoles(String principalKey, Set<String> roles) throws RepositoryException {
         Map<String, String> m = new HashMap<String, String>();
         for (String role : roles) {
@@ -455,6 +467,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean changeRoles(String principalKey, Map<String, String> roles) throws RepositoryException {
         if (!isCheckedOut() && isNodeType(Constants.MIX_VERSIONABLE)) {
             getSession().checkout(this);
@@ -544,6 +557,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean revokeRolesForPrincipal(String principalKey) throws RepositoryException {
         Node acl = getOrCreateAcl();
 
@@ -562,6 +576,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean revokeAllRoles() throws RepositoryException {
         if (hasNode("j:acl")) {
             JCRNodeWrapper acl = getNode("j:acl");
@@ -586,6 +601,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean setAclInheritanceBreak(boolean breakAclInheritance) throws RepositoryException {
         try {
             boolean inheritAcl = !breakAclInheritance;
@@ -607,6 +623,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @return true if ACL inheritance is broken
      * @throws RepositoryException
      */
+    @Override
     public boolean getAclInheritanceBreak() throws RepositoryException {
         if (hasNode("j:acl")) {
             Node acl = getNode("j:acl");
@@ -636,6 +653,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRNodeWrapper createCollection(String name) throws RepositoryException {
         return addNode(name, Constants.JAHIANT_FOLDER);
     }
@@ -643,6 +661,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException {
         checkLock();
 
@@ -674,6 +693,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRNodeWrapper addNode(String name) throws RepositoryException {
         checkLock();
 
@@ -692,6 +712,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
         checkLock();
         Node n = objectNode.addNode(name, type);
@@ -700,6 +721,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return newNode;
     }
 
+    @Override
     public JCRNodeWrapper addNode(String name, String type, String identifier, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws ItemExistsException, PathNotFoundException, NoSuchNodeTypeException, LockException, VersionException, ConstraintViolationException, RepositoryException {
         checkLock();
 
@@ -741,6 +763,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPlaceholderNode getPlaceholder() throws RepositoryException {
         return new JCRPlaceholderNode(this);
     }
@@ -750,6 +773,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      *
      * @deprecated As of JCR 2.0, {@link #getIdentifier()} should be used instead.
      */
+    @Override
     public String getUUID() throws UnsupportedRepositoryOperationException, RepositoryException {
         return objectNode.getUUID();
     }
@@ -757,6 +781,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getAbsoluteUrl(ServletRequest request) {
         return provider.getAbsoluteContextPath(request) + getUrl();
     }
@@ -764,6 +789,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getUrl() {
         try {
             if (isNodeType(Constants.NT_FILE)) {
@@ -784,6 +810,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getAbsoluteWebdavUrl(final HttpServletRequest request) {
         return provider.getAbsoluteContextPath(request) + getWebdavUrl();
     }
@@ -791,6 +818,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getWebdavUrl() {
         return Jahia.getContextPath() + provider.getWebdavPath() + "/" + session.getWorkspace().getName() + localPathInProvider;
     }
@@ -798,6 +826,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getThumbnails() {
         List<String> names = new ArrayList<String>();
         try {
@@ -819,6 +848,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getThumbnailUrl(String name) {
         String url = getUrl();
         return url + (url.indexOf('?') != -1 ? "&" : "?") + "t=" + name;
@@ -827,6 +857,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map<String, String> getThumbnailUrls() {
         List<String> list = getThumbnails();
         Map<String, String> map = new HashMap<String, String>(list.size());
@@ -839,6 +870,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
         if (objectNode.hasNode(s)) {
             // we have that node in our default JR repository
@@ -883,6 +915,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRNodeIteratorWrapper getNodes() throws RepositoryException {
         return getNodes(null, null);
     }
@@ -890,6 +923,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRNodeIteratorWrapper getNodes(String namePattern) throws RepositoryException {
         return getNodes(namePattern, null);
     }
@@ -897,6 +931,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRNodeIteratorWrapper getNodes(String[] nameGlobs) throws RepositoryException {
         return getNodes(null, nameGlobs);
     }
@@ -950,6 +985,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return new ChildNodesIterator(ni, mounts, list, this, session, provider);
     }
 
+    @Override
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
         Map<String, String> res = new HashMap<String, String>();
         PropertyIterator pi = getProperties();
@@ -981,6 +1017,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         try {
             if ((localPathInProvider.equals("/") || localPathInProvider.equals(provider.getRelativeRoot())) && provider.getMountPoint().length() > 1) {
@@ -998,6 +1035,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public ExtendedNodeType getPrimaryNodeType() throws RepositoryException {
         try {
             return NodeTypeRegistry.getInstance().getNodeType(objectNode.getPrimaryNodeType().getName());
@@ -1009,6 +1047,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPrimaryNodeTypeName() throws RepositoryException {
         String name = objectNode.getPrimaryNodeType().getName();
         if (NodeTypeRegistry.getInstance().hasNodeType(name)) {
@@ -1021,6 +1060,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException {
         List<NodeType> l = null;
         NodeType[] mixinNodeTypes = objectNode.getMixinNodeTypes();
@@ -1040,6 +1080,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         checkLock();
         try {
@@ -1053,18 +1094,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public void removeMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
+    @Override
+    public void removeMixin(String mixinName) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
 
         checkLock();
 
         try {
 
-            objectNode.removeMixin(s);
+            objectNode.removeMixin(mixinName);
 
             // Removing a mixin also causes removal of any child nodes defined by the mixin.
             // In case the mixin defines any child nodes, flush the cache to ensure it does not contain any nodes
             // that has been just removed along with the mixin.
-            if (!NodeTypeRegistry.getInstance().getNodeType(s).getChildNodeDefinitionsAsMap().isEmpty()) {
+            if (!NodeTypeRegistry.getInstance().getNodeType(mixinName).getChildNodeDefinitionsAsMap().isEmpty()) {
                 getSession().flushCaches();
             }
 
@@ -1077,6 +1119,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean canAddMixin(String s) throws NoSuchNodeTypeException, RepositoryException {
         try {
             checkLock();
@@ -1090,6 +1133,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public ExtendedNodeDefinition getDefinition() throws RepositoryException {
         NodeDefinition definition = objectNode.getDefinition();
         if (definition == null) {
@@ -1127,6 +1171,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getNodeTypes() throws RepositoryException {
         List<String> results = new ArrayList<String>();
         if (NodeTypeRegistry.getInstance().hasNodeType(objectNode.getPrimaryNodeType().getName())) {
@@ -1147,6 +1192,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isNodeType(String type) throws RepositoryException {
         return "nt:base".equals(type) || objectNode.isNodeType(type);
     }
@@ -1154,6 +1200,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isCollection() {
         return true;
 //        try {
@@ -1166,6 +1213,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isFile() {
         try {
             return isNodeType(Constants.NT_FILE);
@@ -1178,6 +1226,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isPortlet() {
         try {
             return isNodeType(Constants.JAHIANT_PORTLET);
@@ -1190,6 +1239,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Date getLastModifiedAsDate() {
         try {
             return objectNode.getProperty(Constants.JCR_LASTMODIFIED).getDate().getTime();
@@ -1201,6 +1251,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Date getContentLastModifiedAsDate() {
         try {
             Node content = objectNode.getNode(Constants.JCR_CONTENT);
@@ -1214,6 +1265,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Date getLastPublishedAsDate() {
         try {
             return objectNode.getProperty(Constants.LASTPUBLISHED).getDate().getTime();
@@ -1225,6 +1277,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Date getContentLastPublishedAsDate() {
         try {
             Node content = objectNode.getNode(Constants.JCR_CONTENT);
@@ -1238,6 +1291,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Date getCreationDateAsDate() {
         try {
             return objectNode.getProperty(Constants.JCR_CREATED).getDate().getTime();
@@ -1249,6 +1303,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getCreationUser() {
         try {
             return objectNode.getProperty(Constants.JCR_CREATEDBY).getString();
@@ -1260,6 +1315,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getModificationUser() {
         try {
             return objectNode.getProperty(Constants.JCR_LASTMODIFIEDBY).getString();
@@ -1271,6 +1327,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPublicationUser() {
         try {
             return objectNode.getProperty(Constants.LASTPUBLISHEDBY).getString();
@@ -1282,6 +1339,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLanguage() {
         String language = null;
         try {
@@ -1301,6 +1359,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return language;
     }
 
+    @Override
     public List<Locale> getExistingLocales() throws RepositoryException {
         List<Locale> r = new ArrayList<Locale>();
         NodeIterator ni = getI18Ns();
@@ -1317,14 +1376,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * @param locale
      * @return
      */
+    @Override
     public Node getI18N(Locale locale) throws RepositoryException {
         return getI18N(locale, true);
     }
 
+    @Override
     public boolean hasI18N(Locale locale) throws RepositoryException {
         return hasI18N(locale, true);
     }
 
+    @Override
     public boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException {
         return hasI18N(locale,fallback, true);
     }
@@ -1358,6 +1420,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return TRANSLATION_PREFIX + locale;
     }
 
+    @Override
     public Node getI18N(Locale locale, boolean fallback) throws RepositoryException {
         //getSession().getLocale()
         if (i18NobjectNodes == null) {
@@ -1394,6 +1457,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return objectNode.getNodes("j:translation*");
     }
 
+    @Override
     public Node getOrCreateI18N(final Locale locale) throws RepositoryException {
         try {
             return getI18N(locale, false);
@@ -1405,6 +1469,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    @Override
     public Node getOrCreateI18N(Locale locale, Calendar created, String createdBy, Calendar lastModified, String lastModifiedBy) throws RepositoryException {
         JahiaSessionImpl jrSession = (JahiaSessionImpl) objectNode.getSession();
 
@@ -1434,6 +1499,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper getProperty(String name) throws javax.jcr.PathNotFoundException, javax.jcr.RepositoryException {
         ExtendedPropertyDefinition epd = getApplicablePropertyDefinition(name);
         if (epd != null) {
@@ -1513,6 +1579,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public PropertyIterator getProperties() throws RepositoryException {
         final Locale locale = getSession().getLocale();
         if (locale != null) {
@@ -1524,6 +1591,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public PropertyIterator getProperties(String s) throws RepositoryException {
         final Locale locale = getSession().getLocale();
         if (locale != null) {
@@ -1536,6 +1604,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getPropertyAsString(String name) {
         try {
             Property property = getProperty(name);
@@ -1567,6 +1636,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value v = null;
         if (value != null) {
@@ -1588,6 +1658,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         hasPropertyCache.remove(name);
 
@@ -1630,6 +1701,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         hasPropertyCache.remove(name);
 
@@ -1663,6 +1735,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         hasPropertyCache.remove(name);
         final Locale locale = getSession().getLocale();
@@ -1717,6 +1790,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String namespace, String name, String value) throws RepositoryException {
         String pref = objectNode.getSession().getNamespacePrefix(namespace);
         String key = pref + ":" + name;
@@ -1726,6 +1800,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, Value[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         final Locale locale = getSession().getLocale();
         hasPropertyCache.remove(name);
@@ -1762,6 +1837,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, String[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value[] v = null;
         if (values != null) {
@@ -1780,6 +1856,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, String[] values, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value[] v = null;
         if (values != null) {
@@ -1798,6 +1875,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, String value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value v = null;
         if (value != null) {
@@ -1809,6 +1887,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value v = null;
         if (value != null) {
@@ -1820,6 +1899,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, boolean value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value v = getSession().getValueFactory().createValue(value);
         return setProperty(name, v);
@@ -1828,6 +1908,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, double value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value v = getSession().getValueFactory().createValue(value);
         return setProperty(name, v);
@@ -1836,6 +1917,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, long value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value v = getSession().getValueFactory().createValue(value);
         return setProperty(name, v);
@@ -1844,6 +1926,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, Calendar value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value v = null;
         if (value != null) {
@@ -1855,6 +1938,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, Node value) throws ValueFormatException, VersionException, LockException, RepositoryException {
         Value v = null;
         if (value != null) {
@@ -1872,6 +1956,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value v = null;
         if (value != null) {
@@ -1883,6 +1968,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRPropertyWrapper setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value v = null;
         if (value != null) {
@@ -1895,6 +1981,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasProperty(String propertyName) throws RepositoryException {
         if (hasPropertyCache.containsKey(propertyName)) {
             return hasPropertyCache.get(propertyName);
@@ -1931,6 +2018,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasProperties() throws RepositoryException {
         boolean result = objectNode.hasProperties();
         if (result) return true;
@@ -1946,6 +2034,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<JCRItemWrapper> getAncestors() throws RepositoryException {
         List<JCRItemWrapper> ancestors = new ArrayList<JCRItemWrapper>();
         for (int i = 0; i < getDepth(); i++) {
@@ -1961,6 +2050,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean rename(String newName) throws RepositoryException {
         checkLock();
 
@@ -2010,6 +2100,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean copy(String dest) throws RepositoryException {
         return copy(dest, getName());
     }
@@ -2017,6 +2108,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean copy(String dest, String name) throws RepositoryException {
         JCRNodeWrapper node = (JCRNodeWrapper) session.getItem(dest);
         boolean sameProvider = (provider.getKey().equals(node.getProvider().getKey()));
@@ -2032,6 +2124,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes) throws RepositoryException {
         Map<String, List<String>> references = new HashMap<String, List<String>>();
         boolean copy = copy(dest, name, allowsExternalSharedNodes, references, null, 0, new MutableInt(0));
@@ -2042,6 +2135,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references) throws RepositoryException {
         return copy(dest, name, allowsExternalSharedNodes, references, null, 0, new MutableInt(0));
     }
@@ -2049,6 +2143,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, List<String> ignoreNodeTypes, int maxBatch) throws RepositoryException {
         Map<String, List<String>> references = new HashMap<String, List<String>>();
         boolean copy = copy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, new MutableInt(0));
@@ -2059,6 +2154,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean copy(JCRNodeWrapper dest, String name, boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes, int maxBatch, MutableInt batchCount) throws RepositoryException {
         return internalCopy(dest, name, allowsExternalSharedNodes, references, ignoreNodeTypes, maxBatch, batchCount, true);
     }
@@ -2154,6 +2250,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return true;
     }
 
+    @Override
     public void copyProperties(JCRNodeWrapper destinationNode, Map<String, List<String>> references) throws RepositoryException {
         PropertyIterator props = getProperties();
 
@@ -2195,6 +2292,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         getSession().unregisterNewNode(this);
         if (!this.hasNodes()) {
@@ -2208,6 +2306,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Lock lock(boolean isDeep, boolean isSessionScoped) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
         return objectNode.lock(isDeep, isSessionScoped);
     }
@@ -2217,6 +2316,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      *
      * @param type
      */
+    @Override
     public boolean lockAndStoreToken(String type) throws RepositoryException {
         String l = getSession().isSystem() ? " system " : getSession().getUserID();
 
@@ -2228,6 +2328,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      *
      * @param type
      */
+    @Override
     public boolean lockAndStoreToken(String type, String userID) throws RepositoryException {
         if (!isNodeType("jmix:lockable")) {
             return false;
@@ -2340,6 +2441,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isLocked() {
         try {
             return objectNode.isLocked();
@@ -2351,6 +2453,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isLockable() {
         try {
             return objectNode.isNodeType(Constants.MIX_LOCKABLE);
@@ -2359,6 +2462,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    @Override
     public List<Locale> getLockedLocales() throws RepositoryException {
         List<Locale> r = new ArrayList<Locale>();
         NodeIterator ni = objectNode.getNodes(TRANSLATION_NODES_PATTERN);
@@ -2394,26 +2498,32 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public javax.jcr.lock.Lock getLock() {
         try {
             final javax.jcr.lock.Lock lock = objectNode.getLock();
             return new javax.jcr.lock.Lock() {
+                @Override
                 public String getLockOwner() {
                     return lock.getLockOwner();
                 }
 
+                @Override
                 public boolean isDeep() {
                     return lock.isDeep();
                 }
 
+                @Override
                 public long getSecondsRemaining() throws RepositoryException {
                     return lock.getSecondsRemaining();
                 }
 
+                @Override
                 public boolean isLockOwningSession() {
                     return lock.isLockOwningSession();
                 }
 
+                @Override
                 public Node getNode() {
                     try {
                         return getProvider().getNodeWrapper(lock.getNode(), getSession());
@@ -2423,18 +2533,22 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     }
                 }
 
+                @Override
                 public String getLockToken() {
                     return lock.getLockToken();
                 }
 
+                @Override
                 public boolean isLive() throws RepositoryException {
                     return lock.isLive();
                 }
 
+                @Override
                 public boolean isSessionScoped() {
                     return lock.isSessionScoped();
                 }
 
+                @Override
                 public void refresh() throws LockException, RepositoryException {
                     lock.isSessionScoped();
                 }
@@ -2447,10 +2561,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void unlock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
         objectNode.unlock();
     }
 
+    @Override
     public void unlock(String type)
             throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException,
             InvalidItemStateException, RepositoryException {
@@ -2461,6 +2577,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    @Override
     public void unlock(String type, String userID)
             throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException,
             InvalidItemStateException, RepositoryException {
@@ -2516,6 +2633,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    @Override
     public void clearAllLocks() throws RepositoryException {
         if (!isNodeType(Constants.JAHIANT_TRANSLATION)) {
             NodeIterator ni = objectNode.getNodes(TRANSLATION_NODES_PATTERN);
@@ -2547,6 +2665,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    @Override
     public void checkLock() throws RepositoryException {
         if (!session.isSystem() && isLocked()) {
             List<String> owners = getLockOwners(objectNode);
@@ -2598,6 +2717,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean holdsLock() throws RepositoryException {
         return objectNode.holdsLock();
     }
@@ -2605,6 +2725,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getLockOwner() throws RepositoryException {
         if (getLock() == null) {
             return null;
@@ -2631,6 +2752,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    @Override
     public Map<String, List<String>> getLockInfos() throws RepositoryException {
         Map<String, List<String>> locks = new HashMap<String, List<String>>();
         List<String> lockInfos = getLockInfos(objectNode);
@@ -2682,6 +2804,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void versionFile() {
         try {
             objectNode.addMixin(Constants.MIX_VERSIONABLE);
@@ -2693,6 +2816,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isVersioned() {
         try {
             return getProvider().isVersioningAvailable() && objectNode.isNodeType(Constants.MIX_VERSIONABLE);
@@ -2705,9 +2829,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void checkpoint() {
         try {
             JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_CHECKPOINT, new JCRCallback<Object>() {
+                @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     session.getWorkspace().getVersionManager().checkpoint(localPathInProvider);
                     return null;
@@ -2721,6 +2847,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<String> getVersions() {
         List<String> results = new ArrayList<String>();
         try {
@@ -2743,6 +2870,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<Version> getVersionsAsVersion() {
         List<Version> results = new ArrayList<Version>();
         try {
@@ -2757,6 +2885,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 results.add(version);
             }
             Collections.sort(results, new Comparator<Version>() {
+                @Override
                 public int compare(Version o1, Version o2) {
                     try {
                         return o1.getCreated().compareTo(o2.getCreated());
@@ -2774,6 +2903,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<VersionInfo> getVersionInfos() throws RepositoryException {
         return ServicesRegistry.getInstance().getJCRVersionService().getVersionInfos(session, this);
     }
@@ -2781,6 +2911,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<VersionInfo> getLinearVersionInfos() throws RepositoryException {
         return ServicesRegistry.getInstance().getJCRVersionService().getLinearVersionInfos(session, this);
     }
@@ -2788,6 +2919,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRStoreProvider getJCRProvider() {
         return provider;
     }
@@ -2795,6 +2927,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRStoreProvider getProvider() {
         return provider;
     }
@@ -2802,6 +2935,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void orderBefore(String s, String s1) throws UnsupportedRepositoryOperationException, VersionException, ConstraintViolationException, ItemNotFoundException, LockException, RepositoryException {
         checkLock();
         objectNode.orderBefore(s, s1);
@@ -2810,6 +2944,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRItemWrapper getPrimaryItem() throws ItemNotFoundException, RepositoryException {
         return provider.getItemWrapper(objectNode.getPrimaryItem(), session);
     }
@@ -2817,6 +2952,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getIndex() throws RepositoryException {
         return objectNode.getIndex();
     }
@@ -2824,6 +2960,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public PropertyIterator getReferences() throws RepositoryException {
         return new PropertyIteratorImpl(objectNode.getReferences(), getSession(), getProvider());
     }
@@ -2831,6 +2968,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasNode(String s) throws RepositoryException {
         if (!objectNode.hasNode(s)) {
             // no local node found -> check mounted providers
@@ -2876,6 +3014,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasNodes() throws RepositoryException {
         if (provider.getService() != null) {
             Map<String, JCRStoreProvider> allMountPoints = provider.getSessionFactory().getMountPoints();
@@ -2922,6 +3061,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRVersion checkin() throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
         return (JCRVersion) session.getWorkspace().getVersionManager().checkin(getPath());
     }
@@ -2929,6 +3069,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void checkout() throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
         session.checkout(this);
     }
@@ -2936,6 +3077,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void doneMerge(Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
         VersionManager versionManager = session.getWorkspace().getVersionManager();
         versionManager.doneMerge(localPathInProvider, ((JCRVersion) version).getRealNode());
@@ -2944,6 +3086,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void cancelMerge(Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
         VersionManager versionManager = session.getWorkspace().getVersionManager();
         versionManager.cancelMerge(localPathInProvider, ((JCRVersion) version).getRealNode());
@@ -2952,8 +3095,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void update(final String srcWorkspace) throws NoSuchWorkspaceException, AccessDeniedException, LockException, InvalidItemStateException, RepositoryException {
         JCRObservationManager.doWorkspaceWriteCall(getSession(), JCRObservationManager.NODE_UPDATE, new JCRCallback<Object>() {
+            @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 objectNode.update(srcWorkspace);
                 return null;
@@ -2964,6 +3109,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRNodeIteratorWrapper merge(String s, boolean b) throws NoSuchWorkspaceException, AccessDeniedException, MergeException, LockException, InvalidItemStateException, RepositoryException {
         throw new UnsupportedOperationException();
     }
@@ -2971,6 +3117,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getCorrespondingNodePath(String s) throws ItemNotFoundException, NoSuchWorkspaceException, AccessDeniedException, RepositoryException {
         String nodePath = objectNode.getCorrespondingNodePath(s);
         if (provider.getMountPoint().equals("/")) {
@@ -2983,6 +3130,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isCheckedOut() throws RepositoryException {
         VersionManager versionManager = session.getProviderSession(provider).getWorkspace().getVersionManager();
         boolean co = versionManager.isCheckedOut(localPathInProvider);
@@ -3002,6 +3150,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void restore(String s, boolean b) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
         getRealNode().restore(s, b);
     }
@@ -3009,6 +3158,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void restore(Version version, boolean b) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, RepositoryException {
         getRealNode().restore(version instanceof JCRVersion ? ((JCRVersion) version).getRealNode() : version, b);
     }
@@ -3016,6 +3166,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void restore(Version version, String s, boolean b) throws PathNotFoundException, ItemExistsException, VersionException, ConstraintViolationException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
         getRealNode().restore(version instanceof JCRVersion ? ((JCRVersion) version).getRealNode() : version, s, b);
     }
@@ -3023,6 +3174,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void restoreByLabel(String s, boolean b) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
         getRealNode().restoreByLabel(s, b);
     }
@@ -3030,6 +3182,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public VersionHistory getVersionHistory() throws UnsupportedRepositoryOperationException, RepositoryException {
         return (VersionHistory) getProvider().getNodeWrapper((Node) getRealNode().getVersionHistory(), (JCRSessionWrapper) getSession());
     }
@@ -3037,6 +3190,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public Version getBaseVersion() throws UnsupportedRepositoryOperationException, RepositoryException {
         return (Version) getProvider().getNodeWrapper((Node) getRealNode().getBaseVersion(), (JCRSessionWrapper) getSession());
     }
@@ -3044,6 +3198,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRFileContent getFileContent() {
         if (fileContent == null) {
             fileContent = new JCRFileContent(this, objectNode);
@@ -3053,6 +3208,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName)  throws RepositoryException {
         return getApplicablePropertyDefinition(propertyName,0,false);
     }
@@ -3060,6 +3216,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName, int requiredPropertyType, boolean isMultiple)
             throws RepositoryException {
         ExtendedPropertyDefinition result = null;
@@ -3103,6 +3260,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return result;
     }
 
+    @Override
     public List<ExtendedPropertyDefinition> getReferenceProperties() throws RepositoryException {
 
         List<ExtendedPropertyDefinition> defs = new ArrayList<ExtendedPropertyDefinition>();
@@ -3135,6 +3293,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return defs;
     }
 
+    @Override
     public ExtendedNodeDefinition getApplicableChildNodeDefinition(String childName, String nodeType)
             throws ConstraintViolationException, RepositoryException {
         ExtendedNodeType requiredType = NodeTypeRegistry.getInstance().getNodeType(nodeType);
@@ -3174,6 +3333,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             boolean fetched = false;
             Iterator<ExtendedNodeType> mix = null;
 
+            @Override
             public boolean hasNext() {
                 if (!fetched) {
                     try {
@@ -3211,6 +3371,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return isNodeType;
             }
 
+            @Override
             public ExtendedNodeType next() {
                 if (!fetched) {
                     hasNext();
@@ -3222,6 +3383,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 throw new NoSuchElementException();
             }
 
+            @Override
             public void remove() {
                 throw new UnsupportedOperationException();
             }
@@ -3231,6 +3393,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
@@ -3243,6 +3406,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public int hashCode() {
         return (getPath() != null ? getPath().hashCode() : 0);
     }
@@ -3250,6 +3414,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public PropertyIterator getProperties(String[] strings) throws RepositoryException {
         final Locale locale = getSession().getLocale();
         if (locale != null) {
@@ -3261,6 +3426,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getIdentifier() throws RepositoryException {
         return objectNode.getIdentifier();
     }
@@ -3268,6 +3434,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public PropertyIterator getReferences(String name) throws RepositoryException {
         return new PropertyIteratorImpl(objectNode.getReferences(name), getSession(), getProvider());
     }
@@ -3275,6 +3442,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public PropertyIterator getWeakReferences() throws RepositoryException {
         return getWeakReferences(null);
     }
@@ -3284,6 +3452,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      *
      * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
+    @Override
     public PropertyIterator getWeakReferences(String name) throws RepositoryException {
         // shortcut if node isn't referenceable
         if (!isNodeType(Constants.MIX_REFERENCEABLE)) {
@@ -3298,6 +3467,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      *
      * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
+    @Override
     public void setPrimaryType(String nodeTypeName) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
@@ -3305,6 +3475,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public JCRNodeIteratorWrapper getSharedSet() throws RepositoryException {
         List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
 
@@ -3321,6 +3492,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeSharedSet() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         objectNode.removeSharedSet();
     }
@@ -3328,6 +3500,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removeShare() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         objectNode.removeShare();
     }
@@ -3337,6 +3510,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      *
      * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
+    @Override
     public void followLifecycleTransition(String transition) throws UnsupportedRepositoryOperationException, InvalidLifecycleTransitionException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
@@ -3344,10 +3518,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getAllowedLifecycleTransistions() throws UnsupportedRepositoryOperationException, RepositoryException {
         return new String[0];
     }
 
+    @Override
     public JCRNodeWrapper clone(JCRNodeWrapper sharedNode, String name) throws ItemExistsException, VersionException,
             ConstraintViolationException, LockException,
             RepositoryException {
@@ -3393,6 +3569,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         throw new UnsupportedRepositoryOperationException();
     }
 
+    @Override
     public boolean checkValidity() {
         try {
             if (getPath().startsWith("/sites")) {
@@ -3428,6 +3605,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return true;
     }
 
+    @Override
     public boolean checkLanguageValidity(Set<String> languages) {
         final JCRSessionWrapper jcrSessionWrapper = getSession();
         try {
@@ -3484,10 +3662,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return true;
     }
 
+    @Override
     public boolean hasTranslations() throws RepositoryException {
         return objectNode.getNodes(TRANSLATION_NODES_PATTERN).hasNext();
     }
 
+    @Override
     public boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale)
             throws RepositoryException {
         Node i18n = null;
@@ -3505,6 +3685,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
 
+    @Override
     public JCRSiteNode getResolveSite() throws RepositoryException {
         if (site != null) {
             return site;
@@ -3539,6 +3720,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 //        return ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
     }
 
+    @Override
     public String getDisplayableName() {
         try {
             if (isNodeType(Constants.JAHIAMIX_RB_TITLE)) {
@@ -3580,6 +3762,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    @Override
     public String getUnescapedName() {
         String name = getName();
         return name != null ? JCRContentUtils.unescapeLocalNodeName(name) : null;
@@ -3637,6 +3820,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         hasPropertyCache.clear();
     }
 
+    @Override
     public boolean canMarkForDeletion() throws RepositoryException {
         JCRStoreProvider provider = getProvider();
         if (!provider.isLockingAvailable() || !provider.isUpdateMixinAvailable()) {
@@ -3652,10 +3836,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return true;
     }
 
+    @Override
     public boolean isMarkedForDeletion() throws RepositoryException {
         return objectNode.isNodeType(JAHIAMIX_MARKED_FOR_DELETION);
     }
 
+    @Override
     public void markForDeletion(String comment) throws RepositoryException {
         long timer = System.currentTimeMillis();
         if (!canMarkForDeletion()) {
@@ -3726,6 +3912,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    @Override
     public void unmarkForDeletion() throws RepositoryException {
         long timer = System.currentTimeMillis();
         if (!canMarkForDeletion()) {

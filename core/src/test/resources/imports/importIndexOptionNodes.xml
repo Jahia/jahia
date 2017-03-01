@@ -33,6 +33,11 @@
                                    nonIndexedSmallText="Golden feeling" scoreboostedDate="2009-11-18T10:44:00.000+01:00" simpleSmallText="Alphaville"
                                    untokenizedDate="2009-11-11T10:44:00.000+01:00" untokenizedLong="2"/>
     <test_excludeFromIndexContent jcr:primaryType="test:excludeFromIndexContent" />
-    <test_excludeFromIndexContentWithPath jcr:primaryType="test:excludeFromIndexContentWithPath" />
-    <test_excludeFromIndexContentWithRegexp jcr:primaryType="test:excludeFromIndexContentWithRegexp" />
+    <test_notExcludeFromIndexContent jcr:primaryType="test:emptyContent" jcr:mixinTypes="test:excludeFromIndexContentMixin"/>
+    <excludedPath jcr:primaryType="jnt:contentList">
+        <test_excludeFromIndexContentWithPath jcr:primaryType="test:emptyContent" jcr:mixinTypes="test:excludeFromIndexContentMixin"/>
+    </excludedPath>
+    <excludedRegexpPath jcr:primaryType="jnt:contentList">
+        <test_excludeFromIndexContentWithRegexp jcr:primaryType="test:emptyContent" jcr:mixinTypes="test:excludeFromIndexContentMixin" />
+    </excludedRegexpPath>
 </col2>

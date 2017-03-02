@@ -148,7 +148,8 @@ public class WorkflowServiceTest {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());
-        final WorkflowDefinition workflow = getPossibleWorkflowEnsureExists(null);
+        getPossibleWorkflowEnsureExists(null);
+        final WorkflowDefinition workflow = getPossibleWorkflowEnsureExists("publish");
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));

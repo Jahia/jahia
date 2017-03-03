@@ -149,7 +149,7 @@ public class WorkflowServiceTest {
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());
         getPossibleWorkflowEnsureExists(null);
-        final WorkflowDefinition workflow = getPossibleWorkflowEnsureExists("publish");
+        final WorkflowDefinition workflow = getPossibleWorkflowEnsureExists(WORKFLOW_TYPE_1_STEP_PUBLICATION);
         map.put("publicationInfos", publicationService.getPublicationInfos(
                 Arrays.asList(stageNode.getIdentifier()),
                 Sets.newHashSet(Locale.ENGLISH.toString()), true, true, false, "default", "live"));

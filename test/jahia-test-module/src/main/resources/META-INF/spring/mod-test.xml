@@ -76,6 +76,7 @@
                 <value>org.jahia.test.services.validation.ValidationTest</value>
                 <value>org.jahia.test.services.versioning.VersioningTest</value>
                 <value>org.jahia.test.services.visibility.VisibilityServiceTest</value>
+                <value>org.jahia.test.services.workflow.WorkflowPermissionsTest</value>
                 <value>org.jahia.test.services.workflow.WorkflowServiceTest</value>
                 <value>org.jahia.test.services.modules.ModulesAdministrationTest</value>
             </list>

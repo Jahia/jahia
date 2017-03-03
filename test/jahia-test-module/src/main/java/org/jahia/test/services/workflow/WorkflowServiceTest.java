@@ -64,7 +64,6 @@ import org.slf4j.Logger;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
-import static org.jahia.test.TestHelper.triggerScheduledJobsAndWait;
 import static org.junit.Assert.*;
 
 /**
@@ -82,6 +81,7 @@ public class WorkflowServiceTest {
     private static JahiaSite site;
     private static JahiaUser johndoe;
     private static JahiaUser johnsmoe;
+    private static final long MILLIS = 5000l;
     private HashMap<String, Object> emptyMap;
     private static final String PROVIDER = "jBPM";
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowServiceTest.class);
@@ -130,6 +130,11 @@ public class WorkflowServiceTest {
         JCRSessionFactory.getInstance().closeAllSessions();
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         stageNode = session.getNode(SITECONTENT_ROOT_NODE + "/child-" + nodeCounter);
+    }
+
+    private void triggerScheduledJobsAndWait() throws Exception {
+        ServicesRegistry.getInstance().getSchedulerService().triggerEndOfRequest();
+        Thread.sleep(MILLIS);
     }
 
     @Test
@@ -470,5 +475,4 @@ public class WorkflowServiceTest {
 
         return workflow;
     }
-
 }

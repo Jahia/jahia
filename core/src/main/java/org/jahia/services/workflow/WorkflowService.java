@@ -71,7 +71,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
 import javax.jcr.*;
@@ -629,11 +628,20 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
     public String startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
                                Map<String, Object> args, List<String> comments) throws RepositoryException {
+        boolean debugEnabled = logger.isDebugEnabled();
+        long startTime = debugEnabled ? System.currentTimeMillis() : 0;
+        
+        // retrieve the permission, required to start the workflow
+        String startPermission = getPermissionForStart(workflowRegistrationByDefinition.get(processKey));
+        
         WorkflowProvider providerImpl = lookupProvider(provider);
         List<String> checkedNodeIds = new ArrayList<String>();
         for (String nodeId : nodeIds) {
             try {
-                checkedNodeIds.add(session.getNodeByIdentifier(nodeId).getIdentifier());
+                JCRNodeWrapper n = session.getNodeByIdentifier(nodeId);
+                if (startPermission == null || n.hasPermission(startPermission)) {
+                    checkedNodeIds.add(nodeId);
+                }
             } catch (ItemNotFoundException e) {
                 // Item does not exist
             }
@@ -661,10 +669,17 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
             addCommentsToVariables(newArgs, comments, session.getUser().getUserKey());
         }
         final String processId = providerImpl.startProcess(processKey, newArgs);
-        if (logger.isDebugEnabled()) {
-            logger.debug("A workflow " + processKey + " from " + provider + " has been started on nodes: " + checkedNodeIds +
-                    " from workspace " + newArgs.get("workspace") + " in locale " + newArgs.get("locale") + " with id " +
-                    processId);
+        if (debugEnabled) {
+            // if trace is enabled we log also the UUIDs of all nodes
+            logger.debug(
+                    "A workflow {} from {} has been started on {}{} nodes{}"
+                            + " from workspace {} in locale {} with id {}{} in {} ms",
+                    new Object[] { processKey, provider, checkedNodeIds.size(),
+                            nodeIds.size() > checkedNodeIds.size() ? " (originally " + nodeIds.size() + ")" : "",
+                            logger.isTraceEnabled() ? ": " + checkedNodeIds : "", newArgs.get("workspace"),
+                            newArgs.get("locale"), processId,
+                            startPermission != null ? " checking for permission " + startPermission : "",
+                            System.currentTimeMillis() - startTime });
         }
 
         return processId;
@@ -942,18 +957,8 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
         for (WorkflowRule rule : rules) {
             final WorklowTypeRegistration worklowTypeRegistration = workflowRegistrationByDefinition.get(rule.getWorkflowDefinitionKey());
             if (type == null || worklowTypeRegistration.getType().equals(type)) {
-                Map<String, String> perms = worklowTypeRegistration.getPermissions();
-                if (perms != null && checkPermission) {
-                    String permName = perms.get("start");
-                    if (permName.contains("/")) {
-                        permName = StringUtils.substringAfterLast(permName, "/");
-                    }
-                    if (permName != null) {
-                        if (objectNode.hasPermission(permName)) {
-                            results.add(rule);
-                        }
-                    }
-                } else {
+                String permName = checkPermission ? getPermissionForStart(worklowTypeRegistration) : null;
+                if (permName == null || objectNode.hasPermission(permName)) {
                     results.add(rule);
                 }
             }
@@ -1133,5 +1138,27 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
     public WorkflowObservationManager getObservationManager() {
         return observationManager;
+    }
+
+    /**
+     * Returns the permission name, required to start the workflow of the specified type.
+     * 
+     * @param worklowTypeRegistration
+     *            the workflow type registration object
+     * @return the permission name, required to start the workflow of the specified type
+     */
+    private String getPermissionForStart(WorklowTypeRegistration worklowTypeRegistration) {
+        String startPermission = null;
+        if (worklowTypeRegistration != null && worklowTypeRegistration.getPermissions() != null) {
+            startPermission = worklowTypeRegistration.getPermissions().get(START_ROLE);
+            if (startPermission != null) {
+                int pos = startPermission.lastIndexOf('/');
+                if (pos != -1 && pos < startPermission.length() - 1) {
+                    startPermission = startPermission.substring(pos);
+                }
+            }
+        }
+
+        return startPermission;
     }
 }

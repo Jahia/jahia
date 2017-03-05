@@ -82,7 +82,7 @@
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.2.13.RELEASE</spring.version>
         <springwebflow-version>2.4.1.RELEASE</springwebflow-version>
-        <jackrabbit.version>2.4.5-jahia13-SNAPSHOT</jackrabbit.version>
+        <jackrabbit.version>2.4.5-jahia13</jackrabbit.version>
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>

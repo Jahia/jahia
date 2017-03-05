@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses />.
+        along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -442,6 +442,7 @@
                             <excludes>
                                 <exclude>src/main/java/name/fraser/**</exclude>
                                 <exclude>src/main/java/org/apache/catalina/**</exclude>
+								<exclude>src/main/java/org/springframework/core/serializer/**</exclude>
                             </excludes>
                             <useDefaultExcludes>true</useDefaultExcludes>
                             <mapping>

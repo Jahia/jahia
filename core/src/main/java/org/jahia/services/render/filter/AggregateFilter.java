@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -96,7 +96,7 @@ import java.util.Stack;
  *      fragment A. So we pass it to the new render chain using moduleParams so we don't have to calculate it again.
  *      This how we can identify a new render chain coming from aggregation and we are not in case (2)
  *
- * Created by jkevan on 12/04/2016.
+ * Created by jkevan on 12/04/2017.
  */
 public class AggregateFilter extends AbstractFilter {
 

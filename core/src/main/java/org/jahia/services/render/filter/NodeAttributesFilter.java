@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * Before cache refactoring this operations was done in the BaseAttributesFilter, but we move this here to avoid
  * reading the node before the cache filter
  *
- * Created by jkevan on 27/04/2016.
+ * Created by jkevan on 27/04/2017.
  */
 public class NodeAttributesFilter extends AbstractFilter {
 

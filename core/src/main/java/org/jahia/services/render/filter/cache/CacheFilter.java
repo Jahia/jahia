@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -68,7 +68,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache render filter, in charge of providing the html for a given fragment (from the cache or by generating it)
  * Then cache the result if necessary
  *
- * Created by jkevan on 12/04/2016.
+ * Created by jkevan on 12/04/2017.
  */
 public class CacheFilter extends AbstractFilter {
 

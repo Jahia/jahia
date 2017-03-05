@@ -8,7 +8,7 @@ import org.jahia.services.render.Resource;
  * Sometimes we store data in the key, and we want to re-inject this data before sub-fragment generation, and clean this re-injected
  * data after the fragment generation. This interface is used for that.
  *
- * Created by jkevan on 08/04/2016.
+ * Created by jkevan on 08/04/2017.
  */
 public interface RenderContextTuner {
 

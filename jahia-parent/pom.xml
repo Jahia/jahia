@@ -445,7 +445,7 @@
                             <excludes>
                                 <exclude>src/main/java/name/fraser/**</exclude>
                                 <exclude>src/main/java/org/apache/catalina/**</exclude>
-								<exclude>src/main/java/org/springframework/core/serializer/**</exclude>
+                                <exclude>src/main/java/org/springframework/core/serializer/**</exclude>
                             </excludes>
                             <useDefaultExcludes>true</useDefaultExcludes>
                             <mapping>

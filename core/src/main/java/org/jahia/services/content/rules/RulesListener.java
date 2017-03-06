@@ -773,7 +773,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
      * Sets the configuration for rules to be disabled. The string format is as follows:
      * 
      * <pre>
-     * ["&lt;workspace&gt;".]"&lt;package-name-1&gt;"."&lt;rule-name-2&gt;",["&lt;workspace&gt;".]"&lt;package-name-2&gt;"."&lt;rule-name-3&gt;"...
+     * ["&lt;workspace&gt;".]"&lt;package-name-1&gt;"."&lt;rule-name-1&gt;",["&lt;workspace&gt;".]"&lt;package-name-2&gt;"."&lt;rule-name-2&gt;"...
      * </pre>
      * 
      * The workspace part is optional. For example the following configuration:
@@ -789,46 +789,44 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
      * @param rulesToDisable the configuration for rules to be disabled
      */
     public void setDisabledRules(String rulesToDisable) {
-        if (StringUtils.isEmpty(rulesToDisable)) {
+        if (StringUtils.isBlank(rulesToDisable)) {
             this.disabledRules = null;
             return;
         }
-        // trim spaces between the rules and split them
-        String input = StringUtils.replace(StringUtils.replace(rulesToDisable, "\", \"", "\",\""), "\" ,\"", "\",\"");
         // get rid of first and last double quotes
-        input = StringUtils.substringBeforeLast(StringUtils.substringAfter(input, "\""), "\"");
-        String[] disabledRulesConfig = StringUtils.splitByWholeSeparator(input, "\",\"");
-        if (disabledRulesConfig != null) {
-            disabledRules = new HashMap<>();
-            for (String ruleCfg : disabledRulesConfig) {
-                // split configuration of a rule into tokens
-                String[] cfg = StringUtils.splitByWholeSeparator(ruleCfg, "\".\"");
-                // check if we've got a workspace part specified; if not use "null" as a workspace key
-                String workspace = cfg.length == 3 ? cfg[0] : null;
-                String pkg = cfg[workspace != null ? 1 : 0];
-                String rule = cfg[workspace != null ? 2 : 1];
-
-                Map<String, Set<String>> rulesForWorkspace = disabledRules.get(workspace);
-                if (rulesForWorkspace == null) {
-                    rulesForWorkspace = new HashMap<>();
-                    disabledRules.put(workspace, rulesForWorkspace);
-                }
-
-                Set<String> rulesForPackage = rulesForWorkspace.get(pkg);
-                if (rulesForPackage == null) {
-                    rulesForPackage = new HashSet<>();
-                    rulesForWorkspace.put(pkg, rulesForPackage);
-                }
-
-                rulesForPackage.add(rule);
-            }
-        }
-
-        if (disabledRules != null && disabledRules.isEmpty()) {
+        // split between rules considering possible multiple whitespaces between them
+        String[] disabledRulesConfig = StringUtils.strip(rulesToDisable, "\"").split("\"\\s*\\,\\s*\"");
+        if (disabledRulesConfig == null) {
             this.disabledRules = null;
-        } else {
-            logger.info("The following rules are configured to be disabled: {}", disabledRules);
+            return;
         }
+        
+        Map<String, Map<String, Set<String>>> disabledRulesFromConfig = new HashMap<>();
+
+        for (String ruleCfg : disabledRulesConfig) {
+            // split configuration of a rule into tokens
+            String[] cfg = StringUtils.splitByWholeSeparator(ruleCfg, "\".\"");
+            // check if we've got a workspace part specified; if not use "null" as a workspace key
+            String workspace = cfg.length == 3 ? cfg[0] : null;
+            String pkg = cfg[workspace != null ? 1 : 0];
+            String rule = cfg[workspace != null ? 2 : 1];
+
+            Map<String, Set<String>> rulesForWorkspace = disabledRulesFromConfig.get(workspace);
+            if (rulesForWorkspace == null) {
+                rulesForWorkspace = new HashMap<>();
+                disabledRulesFromConfig.put(workspace, rulesForWorkspace);
+            }
+
+            Set<String> rulesForPackage = rulesForWorkspace.get(pkg);
+            if (rulesForPackage == null) {
+                rulesForPackage = new HashSet<>();
+                rulesForWorkspace.put(pkg, rulesForPackage);
+            }
+
+            rulesForPackage.add(rule);
+        }
+        disabledRules = disabledRulesFromConfig;
+        logger.info("The following rules are configured to be disabled: {}", disabledRules);
     }
 
     /**

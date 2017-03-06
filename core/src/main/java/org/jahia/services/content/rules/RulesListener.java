@@ -874,4 +874,13 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
             }
         }
     }
+
+    /**
+     * Returns the rule base, used by this listener.
+     * 
+     * @return the rule base, used by this listener
+     */
+    public RuleBase getRuleBase() {
+        return ruleBase;
+    }
 }

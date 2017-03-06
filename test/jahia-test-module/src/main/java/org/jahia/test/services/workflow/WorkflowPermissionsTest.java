@@ -183,7 +183,7 @@ public class WorkflowPermissionsTest {
 
         // deny permissions
         textNodeNoStartPermission.denyRoles("u:" + editor.getName(), ImmutableSet.of("editor"));
-        textNodeNoPublishPermission.grantRoles("u:" + reviewer.getName(), ImmutableSet.of("reviewer"));
+        textNodeNoPublishPermission.denyRoles("u:" + reviewer.getName(), ImmutableSet.of("reviewer"));
 
         session.save();
     }

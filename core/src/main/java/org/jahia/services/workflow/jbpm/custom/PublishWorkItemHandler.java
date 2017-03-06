@@ -108,7 +108,7 @@ public class PublishWorkItemHandler extends AbstractWorkItemHandler implements W
         jobDataMap.put(PublicationJob.SOURCE, workspace);
         jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
         jobDataMap.put(PublicationJob.LOCK, "publication-process-" + workItem.getProcessInstanceId());
-        jobDataMap.put(PublicationJob.CHECK_PERMISSIONS, false);
+        jobDataMap.put(PublicationJob.CHECK_PERMISSIONS, true);
 
         try {
             ServicesRegistry.getInstance().getSchedulerService().scheduleJobAtEndOfRequest(jobDetail);

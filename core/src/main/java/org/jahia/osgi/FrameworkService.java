@@ -44,9 +44,18 @@
 package org.jahia.osgi;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -54,6 +63,7 @@ import java.util.TreeMap;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.lang.reflect.MethodUtils;
+import org.apache.felix.cm.file.ConfigurationHandler;
 import org.apache.karaf.main.Main;
 import org.apache.karaf.util.config.PropertiesLoader;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -84,9 +94,9 @@ public class FrameworkService implements FrameworkListener {
         private Holder() {
         }
     }
-    
+
     public static final String EVENT_TOPIC_LIFECYCLE = "org/jahia/dx/lifecycle";
-    
+
     public static final String EVENT_TYPE_OSGI_STARTED = "osgiContainerStarted";
 
     private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
@@ -136,7 +146,7 @@ public class FrameworkService implements FrameworkListener {
         if (instance.frameworkStartLevelChanged && instance.fileInstallStarted) {
             // send synchronous event about startup
             sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_OSGI_STARTED), false);
-            
+
             // both pre-requisites for stratup are fulfilled
             // notify any threads waiting
             instance.notifyAll();
@@ -147,7 +157,7 @@ public class FrameworkService implements FrameworkListener {
     /**
      * Initiate synchronous or asynchronous delivery of an OSGi event using {@link EventAdmin} service. If synchronous delivery is
      * requested, this method does not return to the caller until delivery of the event is completed.
-     * 
+     *
      * @param topic the topic of the event
      * @param properties the event's properties (may be {@code null}). A property whose key is not of type {@code String} will be ignored.
      * @param asynchronous if <code>true</code> an event is delivered asynchronously; in case of <code>false</code> this method does not
@@ -294,6 +304,13 @@ public class FrameworkService implements FrameworkListener {
     }
 
     public void start() {
+
+        try {
+            updateFilePathsIfNeeded();
+        } catch (Exception e) {
+            logger.error("Error updating file paths", e);
+        }
+
         startTime = System.currentTimeMillis();
         logger.info("Starting OSGi platform service");
         startKaraf();
@@ -333,5 +350,218 @@ public class FrameworkService implements FrameworkListener {
             }
         }
         logger.info("OSGi framework stopped");
+    }
+
+    private void updateFilePathsIfNeeded() throws IOException {
+
+        File varDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath());
+
+        File instancePropertiesFile = newFile(varDir, "karaf", "instances", "instance.properties");
+        if (!instancePropertiesFile.exists()) {
+            logger.debug("The first start of the instance, so no file path updates needed.");
+            return;
+        }
+
+        Properties properties = new Properties();
+        try (FileInputStream instancePropertiesIn = new FileInputStream(instancePropertiesFile)) {
+            properties.load(instancePropertiesIn);
+        }
+
+        File oldKarafDir = new File(properties.getProperty("item.0.loc"));
+        File oldVarDir = oldKarafDir.getParentFile();
+
+        if (varDir.equals(oldVarDir)) {
+            logger.debug("The var dir hasn't been changed since last start, so no file path updates needed.");
+            return;
+        }
+
+        logger.debug("The var dir changed from '{0}' to '{1}', so updating file paths correspondingly", oldVarDir, varDir);
+        updateFilePaths(oldVarDir, varDir);
+    }
+
+    private void updateFilePaths(File oldVarDir, File varDir) throws IOException {
+
+        FileHandler propertiesFileHandler = new FileHandler() {
+
+            @Override
+            public Map<String, String> readProperties(File propertiesFile) throws IOException {
+                Properties props = new Properties();
+                try (FileInputStream propertiesFileIn = new FileInputStream(propertiesFile)) {
+                    props.load(propertiesFileIn);
+                }
+                HashMap<String, String> properties = new HashMap<>(props.size());
+                for (String propertyName : props.stringPropertyNames()) {
+                    String propertyValue = props.getProperty(propertyName);
+                    properties.put(propertyName, propertyValue);
+                }
+                return properties;
+            }
+
+            @Override
+            public void writeProperties(File propertiesFile, Map<String, String> properties) throws IOException {
+                Properties props = new Properties();
+                for (Map.Entry<String, String> entry : properties.entrySet()) {
+                    String propertyName = entry.getKey();
+                    String propertyValue = entry.getValue();
+                    props.put(propertyName, propertyValue);
+                }
+                try (FileOutputStream propertiesFileOut = new FileOutputStream(propertiesFile)) {
+                    props.store(propertiesFileOut, null);
+                }
+            }
+
+            @Override
+            public File fromString(String filePath) {
+                File file = new File(filePath);
+                if (file.isAbsolute()) {
+                    return file;
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public String toString(File file) {
+                return file.getAbsolutePath();
+            }
+        };
+
+        updateFilePathsInFile(newFile(varDir, "karaf", "instances", "instance.properties"), oldVarDir, varDir, propertiesFileHandler);
+
+        File moduleBundleLocationMapFile = newFile(varDir, "bundles-deployed", "module-bundle-location.map");
+        if (moduleBundleLocationMapFile.exists()) {
+            updateFilePathsInFile(moduleBundleLocationMapFile, oldVarDir, varDir, propertiesFileHandler);
+        }
+
+        File bundlesDeployed = newFile(varDir, "bundles-deployed");
+
+        if (bundlesDeployed.exists()) {
+
+            updateFilePathsInConfigFiles(bundlesDeployed, oldVarDir, varDir, new FileHandler() {
+
+                @Override
+                public Map<String, String> readProperties(File configFile) throws IOException {
+                    Dictionary<?, ?> props;
+                    try (FileInputStream configFileIn = new FileInputStream(configFile)) {
+                        props = ConfigurationHandler.read(configFileIn);
+                    }
+                    HashMap<String, String> properties = new HashMap<>(props.size());
+                    for (Enumeration<?> propertyNames = props.keys(); propertyNames.hasMoreElements(); ) {
+                        String propertyName = (String) propertyNames.nextElement();
+                        String propertyValue = (String) props.get(propertyName);
+                        properties.put(propertyName, propertyValue);
+                    }
+                    return properties;
+                }
+
+                @Override
+                public void writeProperties(File configFile, Map<String, String> properties) throws IOException {
+                    Hashtable<Object, Object> props = new Hashtable<>(properties.size());
+                    for (Map.Entry<String, String> entry : properties.entrySet()) {
+                        String propertyName = entry.getKey();
+                        String propertyValue = entry.getValue();
+                        props.put(propertyName, propertyValue);
+                    }
+                    try (FileOutputStream configFileOut = new FileOutputStream(configFile)) {
+                        ConfigurationHandler.write(configFileOut, props);
+                    }
+                }
+
+                @Override
+                public File fromString(String fileUri) {
+                    URI uri;
+                    try {
+                        uri = new URI(fileUri);
+                    } catch (URISyntaxException e) {
+                        return null;
+                    }
+                    try {
+                        return new File(uri);
+                    } catch (IllegalArgumentException e) {
+                        return null;
+                    }
+                }
+
+                @Override
+                public String toString(File file) {
+                    URI uri;
+                    try {
+                        uri = new URI("file", "/" + file.getAbsolutePath(), null);
+                    } catch (URISyntaxException e) {
+                        throw new JahiaRuntimeException(e);
+                    }
+                    return uri.toASCIIString();
+                }
+            });
+        }
+    }
+
+    private void updateFilePathsInConfigFiles(File baseDir, File oldVarDir, File newVarDir, FileHandler configFileHandler) throws IOException {
+        for (File file : baseDir.listFiles()) {
+            if (file.isDirectory()) {
+                updateFilePathsInConfigFiles(file, oldVarDir, newVarDir, configFileHandler);
+            } else if (file.getName().endsWith(".config")) {
+                updateFilePathsInFile(file, oldVarDir, newVarDir, configFileHandler);
+            }
+        }
+    }
+
+    private void updateFilePathsInFile(File file, File oldVarDir, File newVarDir, FileHandler fileHandler) throws IOException {
+
+        Map<String, String> properties = fileHandler.readProperties(file);
+
+        boolean changed = false;
+
+        for (Map.Entry<String, String> entry : properties.entrySet()) {
+
+            String propertyName = entry.getKey();
+            String propertyValue = entry.getValue();
+
+            File fileReference = fileHandler.fromString(propertyValue);
+            if (fileReference == null) {
+                continue;
+            }
+
+            LinkedList<String> relativePath = new LinkedList<>();
+            File fileReferenceAncestor;
+            for (fileReferenceAncestor = fileReference; true; fileReferenceAncestor = fileReferenceAncestor.getParentFile()) {
+                if (fileReferenceAncestor == null) {
+                    break;
+                }
+                if (fileReferenceAncestor.equals(oldVarDir)) {
+                    break;
+                }
+                relativePath.add(fileReferenceAncestor.getName());
+            }
+            if (fileReferenceAncestor == null) {
+                continue;
+            }
+
+            Collections.reverse(relativePath);
+            fileReference = newFile(newVarDir, relativePath.toArray(new String[relativePath.size()]));
+            properties.put(propertyName, fileHandler.toString(fileReference));
+            changed = true;
+        }
+        if (!changed) {
+            return;
+        }
+
+        fileHandler.writeProperties(file, properties);
+    }
+
+    private interface FileHandler {
+
+        Map<String, String> readProperties(File file) throws IOException;
+        void writeProperties(File file, Map<String, String> properties) throws IOException;
+        File fromString(String fileValue);
+        String toString(File file);
+    }
+
+    private static File newFile(File base, String... path) {
+        File dir = base;
+        for (String name : path) {
+            dir = new File(dir, name);
+        }
+        return dir;
     }
 }

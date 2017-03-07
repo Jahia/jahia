@@ -62,11 +62,11 @@ import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.felix.cm.file.ConfigurationHandler;
 import org.apache.karaf.main.Main;
 import org.apache.karaf.util.config.PropertiesLoader;
-import org.codehaus.plexus.util.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
@@ -510,7 +510,7 @@ public class FrameworkService implements FrameworkListener {
 
             if (fileReferenceType == FileReferenceType.URI) {
                 String filePath = fileReference.getAbsolutePath();
-                filePath = StringUtils.replace(filePath, '\\', '/');
+                filePath = StringUtils.replace(filePath, "\\", "/");
                 try {
                     uri = new URI("file", "/" + filePath, null);
                 } catch (URISyntaxException e) {

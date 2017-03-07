@@ -1493,7 +1493,6 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
             <version>${felix.configadmin.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>

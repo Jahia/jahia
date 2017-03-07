@@ -66,6 +66,7 @@ import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.felix.cm.file.ConfigurationHandler;
 import org.apache.karaf.main.Main;
 import org.apache.karaf.util.config.PropertiesLoader;
+import org.codehaus.plexus.util.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
@@ -306,8 +307,8 @@ public class FrameworkService implements FrameworkListener {
     public void start() {
 
         try {
-            updateFilePathsIfNeeded();
-        } catch (Exception e) {
+            updateFileReferencesIfNeeded();
+        } catch (Throwable e) {
             logger.error("Error updating file paths", e);
         }
 
@@ -352,7 +353,7 @@ public class FrameworkService implements FrameworkListener {
         logger.info("OSGi framework stopped");
     }
 
-    private void updateFilePathsIfNeeded() throws IOException {
+    private void updateFileReferencesIfNeeded() throws IOException {
 
         File varDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath());
 
@@ -376,149 +377,116 @@ public class FrameworkService implements FrameworkListener {
         }
 
         logger.debug("The var dir changed from '{0}' to '{1}', so updating file paths correspondingly", oldVarDir, varDir);
-        updateFilePaths(oldVarDir, varDir);
+        updateFileReferences(oldVarDir, varDir);
     }
 
-    private void updateFilePaths(File oldVarDir, File varDir) throws IOException {
+    private void updateFileReferences(File oldVarDir, File varDir) throws IOException {
 
         FileHandler propertiesFileHandler = new FileHandler() {
 
             @Override
-            public Map<String, String> readProperties(File propertiesFile) throws IOException {
-                Properties props = new Properties();
+            public Map<Object, Object> readProperties(File propertiesFile) throws IOException {
+                Properties properties = new Properties();
                 try (FileInputStream propertiesFileIn = new FileInputStream(propertiesFile)) {
-                    props.load(propertiesFileIn);
-                }
-                HashMap<String, String> properties = new HashMap<>(props.size());
-                for (String propertyName : props.stringPropertyNames()) {
-                    String propertyValue = props.getProperty(propertyName);
-                    properties.put(propertyName, propertyValue);
+                    properties.load(propertiesFileIn);
                 }
                 return properties;
             }
 
             @Override
-            public void writeProperties(File propertiesFile, Map<String, String> properties) throws IOException {
+            public void writeProperties(File propertiesFile, Map<Object, Object> properties) throws IOException {
                 Properties props = new Properties();
-                for (Map.Entry<String, String> entry : properties.entrySet()) {
-                    String propertyName = entry.getKey();
-                    String propertyValue = entry.getValue();
-                    props.put(propertyName, propertyValue);
-                }
+                props.putAll(properties);
                 try (FileOutputStream propertiesFileOut = new FileOutputStream(propertiesFile)) {
                     props.store(propertiesFileOut, null);
                 }
             }
-
-            @Override
-            public File fromString(String filePath) {
-                File file = new File(filePath);
-                if (file.isAbsolute()) {
-                    return file;
-                } else {
-                    return null;
-                }
-            }
-
-            @Override
-            public String toString(File file) {
-                return file.getAbsolutePath();
-            }
         };
 
-        updateFilePathsInFile(newFile(varDir, "karaf", "instances", "instance.properties"), oldVarDir, varDir, propertiesFileHandler);
+        updateFileReferencesInFile(newFile(varDir, "karaf", "instances", "instance.properties"), oldVarDir, varDir, propertiesFileHandler);
 
         File moduleBundleLocationMapFile = newFile(varDir, "bundles-deployed", "module-bundle-location.map");
         if (moduleBundleLocationMapFile.exists()) {
-            updateFilePathsInFile(moduleBundleLocationMapFile, oldVarDir, varDir, propertiesFileHandler);
+            updateFileReferencesInFile(moduleBundleLocationMapFile, oldVarDir, varDir, propertiesFileHandler);
         }
 
         File bundlesDeployed = newFile(varDir, "bundles-deployed");
 
         if (bundlesDeployed.exists()) {
 
-            updateFilePathsInConfigFiles(bundlesDeployed, oldVarDir, varDir, new FileHandler() {
+            updateFileReferencesInConfigFiles(bundlesDeployed, oldVarDir, varDir, new FileHandler() {
 
                 @Override
-                public Map<String, String> readProperties(File configFile) throws IOException {
+                public Map<Object, Object> readProperties(File configFile) throws IOException {
                     Dictionary<?, ?> props;
                     try (FileInputStream configFileIn = new FileInputStream(configFile)) {
                         props = ConfigurationHandler.read(configFileIn);
                     }
-                    HashMap<String, String> properties = new HashMap<>(props.size());
-                    for (Enumeration<?> propertyNames = props.keys(); propertyNames.hasMoreElements(); ) {
-                        String propertyName = (String) propertyNames.nextElement();
-                        String propertyValue = (String) props.get(propertyName);
-                        properties.put(propertyName, propertyValue);
+                    HashMap<Object, Object> properties = new HashMap<>(props.size());
+                    for (Enumeration<?> propertyKeys = props.keys(); propertyKeys.hasMoreElements(); ) {
+                        Object propertyKey = propertyKeys.nextElement();
+                        Object propertyValue = props.get(propertyKey);
+                        properties.put(propertyKey, propertyValue);
                     }
                     return properties;
                 }
 
                 @Override
-                public void writeProperties(File configFile, Map<String, String> properties) throws IOException {
+                public void writeProperties(File configFile, Map<Object, Object> properties) throws IOException {
                     Hashtable<Object, Object> props = new Hashtable<>(properties.size());
-                    for (Map.Entry<String, String> entry : properties.entrySet()) {
-                        String propertyName = entry.getKey();
-                        String propertyValue = entry.getValue();
-                        props.put(propertyName, propertyValue);
-                    }
+                    props.putAll(properties);
                     try (FileOutputStream configFileOut = new FileOutputStream(configFile)) {
                         ConfigurationHandler.write(configFileOut, props);
                     }
-                }
-
-                @Override
-                public File fromString(String fileUri) {
-                    URI uri;
-                    try {
-                        uri = new URI(fileUri);
-                    } catch (URISyntaxException e) {
-                        return null;
-                    }
-                    try {
-                        return new File(uri);
-                    } catch (IllegalArgumentException e) {
-                        return null;
-                    }
-                }
-
-                @Override
-                public String toString(File file) {
-                    URI uri;
-                    try {
-                        uri = new URI("file", "/" + file.getAbsolutePath(), null);
-                    } catch (URISyntaxException e) {
-                        throw new JahiaRuntimeException(e);
-                    }
-                    return uri.toASCIIString();
                 }
             });
         }
     }
 
-    private void updateFilePathsInConfigFiles(File baseDir, File oldVarDir, File newVarDir, FileHandler configFileHandler) throws IOException {
+    private void updateFileReferencesInConfigFiles(File baseDir, File oldVarDir, File newVarDir, FileHandler configFileHandler) throws IOException {
         for (File file : baseDir.listFiles()) {
             if (file.isDirectory()) {
-                updateFilePathsInConfigFiles(file, oldVarDir, newVarDir, configFileHandler);
+                updateFileReferencesInConfigFiles(file, oldVarDir, newVarDir, configFileHandler);
             } else if (file.getName().endsWith(".config")) {
-                updateFilePathsInFile(file, oldVarDir, newVarDir, configFileHandler);
+                updateFileReferencesInFile(file, oldVarDir, newVarDir, configFileHandler);
             }
         }
     }
 
-    private void updateFilePathsInFile(File file, File oldVarDir, File newVarDir, FileHandler fileHandler) throws IOException {
+    private void updateFileReferencesInFile(File file, File oldVarDir, File newVarDir, FileHandler fileHandler) throws IOException {
 
-        Map<String, String> properties = fileHandler.readProperties(file);
+        Map<Object, Object> properties = fileHandler.readProperties(file);
 
         boolean changed = false;
 
-        for (Map.Entry<String, String> entry : properties.entrySet()) {
+        for (Map.Entry<?, ?> entry : properties.entrySet()) {
 
-            String propertyName = entry.getKey();
-            String propertyValue = entry.getValue();
+            Object propertyKey = entry.getKey();
+            Object propertyValue = entry.getValue();
+            if (!(propertyValue instanceof String)) {
+                continue;
+            }
+            String fileReferenceString = (String) propertyValue;
 
-            File fileReference = fileHandler.fromString(propertyValue);
-            if (fileReference == null) {
+            FileReferenceType fileReferenceType;
+            File fileReference = null;
+            URI uri;
+            try {
+                uri = new URI(fileReferenceString);
+                fileReference = new File(uri);
+                fileReferenceType = FileReferenceType.URI;
+            } catch (URISyntaxException | IllegalArgumentException e) {
+                fileReferenceType = null;
+            }
+
+            if (fileReferenceType == null) {
+                fileReference = new File(fileReferenceString);
+                if (fileReference.isAbsolute()) {
+                    fileReferenceType = FileReferenceType.FS_PATH;
+                }
+            }
+
+            if (fileReferenceType == null) {
                 continue;
             }
 
@@ -539,7 +507,22 @@ public class FrameworkService implements FrameworkListener {
 
             Collections.reverse(relativePath);
             fileReference = newFile(newVarDir, relativePath.toArray(new String[relativePath.size()]));
-            properties.put(propertyName, fileHandler.toString(fileReference));
+
+            if (fileReferenceType == FileReferenceType.URI) {
+                String filePath = fileReference.getAbsolutePath();
+                filePath = StringUtils.replace(filePath, '\\', '/');
+                try {
+                    uri = new URI("file", "/" + filePath, null);
+                } catch (URISyntaxException e) {
+                    throw new JahiaRuntimeException(e);
+                }
+                fileReferenceString = uri.toASCIIString();
+            } else if (fileReferenceType == FileReferenceType.FS_PATH) {
+                fileReferenceString = fileReference.getAbsolutePath();
+            } else {
+                throw new UnsupportedOperationException("Unsupported file reference type: " + fileReferenceType);
+            }
+            properties.put(propertyKey, fileReferenceString);
             changed = true;
         }
         if (!changed) {
@@ -551,10 +534,14 @@ public class FrameworkService implements FrameworkListener {
 
     private interface FileHandler {
 
-        Map<String, String> readProperties(File file) throws IOException;
-        void writeProperties(File file, Map<String, String> properties) throws IOException;
-        File fromString(String fileValue);
-        String toString(File file);
+        Map<Object, Object> readProperties(File file) throws IOException;
+        void writeProperties(File file, Map<Object, Object> properties) throws IOException;
+    }
+
+    private static enum FileReferenceType {
+
+        URI,
+        FS_PATH;
     }
 
     private static File newFile(File base, String... path) {

@@ -62,6 +62,7 @@ import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.felix.cm.file.ConfigurationHandler;
@@ -308,7 +309,7 @@ public class FrameworkService implements FrameworkListener {
 
         try {
             updateFileReferencesIfNeeded();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             logger.error("Error updating file paths", e);
         }
 
@@ -357,7 +358,7 @@ public class FrameworkService implements FrameworkListener {
 
         File varDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath());
 
-        File instancePropertiesFile = newFile(varDir, "karaf", "instances", "instance.properties");
+        File instancePropertiesFile = FileUtils.getFile(varDir, "karaf", "instances", "instance.properties");
         if (!instancePropertiesFile.exists()) {
             logger.debug("The first start of the instance, so no file path updates needed.");
             return;
@@ -403,14 +404,14 @@ public class FrameworkService implements FrameworkListener {
             }
         };
 
-        updateFileReferencesInFile(newFile(varDir, "karaf", "instances", "instance.properties"), oldVarDir, varDir, propertiesFileHandler);
+        updateFileReferencesInFile(FileUtils.getFile(varDir, "karaf", "instances", "instance.properties"), oldVarDir, varDir, propertiesFileHandler);
 
-        File moduleBundleLocationMapFile = newFile(varDir, "bundles-deployed", "module-bundle-location.map");
+        File moduleBundleLocationMapFile = FileUtils.getFile(varDir, "bundles-deployed", "module-bundle-location.map");
         if (moduleBundleLocationMapFile.exists()) {
             updateFileReferencesInFile(moduleBundleLocationMapFile, oldVarDir, varDir, propertiesFileHandler);
         }
 
-        File bundlesDeployed = newFile(varDir, "bundles-deployed");
+        File bundlesDeployed = FileUtils.getFile(varDir, "bundles-deployed");
 
         if (bundlesDeployed.exists()) {
 
@@ -506,7 +507,7 @@ public class FrameworkService implements FrameworkListener {
             }
 
             Collections.reverse(relativePath);
-            fileReference = newFile(newVarDir, relativePath.toArray(new String[relativePath.size()]));
+            fileReference = FileUtils.getFile(newVarDir, relativePath.toArray(new String[relativePath.size()]));
 
             if (fileReferenceType == FileReferenceType.URI) {
                 String filePath = fileReference.getAbsolutePath();
@@ -539,16 +540,7 @@ public class FrameworkService implements FrameworkListener {
     }
 
     private static enum FileReferenceType {
-
         URI,
         FS_PATH;
-    }
-
-    private static File newFile(File base, String... path) {
-        File dir = base;
-        for (String name : path) {
-            dir = new File(dir, name);
-        }
-        return dir;
     }
 }

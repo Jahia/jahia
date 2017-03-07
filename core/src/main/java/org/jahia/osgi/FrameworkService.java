@@ -50,12 +50,15 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -102,6 +105,12 @@ public class FrameworkService implements FrameworkListener {
     public static final String EVENT_TYPE_OSGI_STARTED = "osgiContainerStarted";
 
     private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
+
+    private static final FileReferenceUpdater[] FILE_REFERENCE_UPDATERS = {
+        new FileReferenceUpdaterUri(),
+        new FileReferenceUpdaterFsPath(),
+        new FileReferenceUpdaterRootedWindowsFsPath()
+    };
 
     /**
      * Returns bundle context.
@@ -455,82 +464,25 @@ public class FrameworkService implements FrameworkListener {
     }
 
     private void updateFileReferencesInFile(File file, File oldVarDir, File newVarDir, FileHandler fileHandler) throws IOException {
-
+        Path oldVarPath = Paths.get(oldVarDir.getAbsolutePath());
+        Path newVarPath = Paths.get(newVarDir.getAbsolutePath());
         Map<Object, Object> properties = fileHandler.readProperties(file);
-
         boolean changed = false;
-
-        for (Map.Entry<?, ?> entry : properties.entrySet()) {
-
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             Object propertyKey = entry.getKey();
             Object propertyValue = entry.getValue();
-            if (!(propertyValue instanceof String)) {
-                continue;
-            }
-            String fileReferenceString = (String) propertyValue;
-
-            FileReferenceType fileReferenceType;
-            File fileReference = null;
-            URI uri;
-            try {
-                uri = new URI(fileReferenceString);
-                fileReference = new File(uri);
-                fileReferenceType = FileReferenceType.URI;
-            } catch (URISyntaxException | IllegalArgumentException e) {
-                fileReferenceType = null;
-            }
-
-            if (fileReferenceType == null) {
-                fileReference = new File(fileReferenceString);
-                if (fileReference.isAbsolute()) {
-                    fileReferenceType = FileReferenceType.FS_PATH;
-                }
-            }
-
-            if (fileReferenceType == null) {
-                continue;
-            }
-
-            LinkedList<String> relativePath = new LinkedList<>();
-            File fileReferenceAncestor;
-            for (fileReferenceAncestor = fileReference; true; fileReferenceAncestor = fileReferenceAncestor.getParentFile()) {
-                if (fileReferenceAncestor == null) {
+            for (FileReferenceUpdater updater : FILE_REFERENCE_UPDATERS) {
+                Object newPropertyValue = updater.update(propertyKey, propertyValue, oldVarPath, newVarPath);
+                if (newPropertyValue != null) {
+                    properties.put(propertyKey, newPropertyValue);
+                    changed = true;
                     break;
                 }
-                if (fileReferenceAncestor.equals(oldVarDir)) {
-                    break;
-                }
-                relativePath.add(fileReferenceAncestor.getName());
             }
-            if (fileReferenceAncestor == null) {
-                continue;
-            }
-
-            Collections.reverse(relativePath);
-            fileReference = FileUtils.getFile(newVarDir, relativePath.toArray(new String[relativePath.size()]));
-
-            if (fileReferenceType == FileReferenceType.URI) {
-                String filePath = fileReference.getAbsolutePath();
-                filePath = StringUtils.replace(filePath, "\\", "/");
-                try {
-                    uri = new URI("file", "/" + filePath, null);
-                } catch (URISyntaxException e) {
-                    throw new JahiaRuntimeException(e);
-                }
-                fileReferenceString = uri.toASCIIString();
-            } else if (fileReferenceType == FileReferenceType.FS_PATH) {
-                fileReferenceString = fileReference.getAbsolutePath();
-            } else {
-                throw new UnsupportedOperationException("Unsupported file reference type: " + fileReferenceType);
-            }
-            properties.put(propertyKey, fileReferenceString);
-            changed = true;
         }
-        if (!changed) {
-            return;
+        if (changed) {
+            fileHandler.writeProperties(file, properties);
         }
-
-        fileHandler.writeProperties(file, properties);
     }
 
     private interface FileHandler {
@@ -539,8 +491,106 @@ public class FrameworkService implements FrameworkListener {
         void writeProperties(File file, Map<Object, Object> properties) throws IOException;
     }
 
-    private static enum FileReferenceType {
-        URI,
-        FS_PATH;
+    private interface FileReferenceUpdater {
+
+        Object update(Object propertyKey, Object propertyValue, Path oldVarPath, Path newVarPath);
+    }
+
+    private static abstract class FileReferenceUpdaterSimpleBase implements FileReferenceUpdater {
+
+        @Override
+        public Object update(Object propertyKey, Object propertyValue, Path oldVarPath, Path newVarPath) {
+
+            if (!(propertyValue instanceof String)) {
+                return null;
+            }
+
+            Path fileReference = toPath((String) propertyValue);
+            if (fileReference == null) {
+                return null;
+            }
+
+            Path relativePath;
+            try {
+                relativePath = oldVarPath.relativize(fileReference);
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+            fileReference = newVarPath.resolve(relativePath);
+
+            return toString(fileReference);
+        }
+
+        protected abstract Path toPath(String fileReferenceString);
+        protected abstract String toString(Path fileReference);
+    }
+
+    private static class FileReferenceUpdaterUri extends FileReferenceUpdaterSimpleBase {
+
+        @Override
+        protected Path toPath(String fileReferenceString) {
+            URI uri;
+            try {
+                uri = new URI(fileReferenceString);
+            } catch (URISyntaxException e) {
+                return null;
+            }
+            try {
+                return Paths.get(uri);
+            } catch (IllegalArgumentException | FileSystemNotFoundException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected String toString(Path fileReference) {
+            String fileReferenceString = fileReference.toString();
+            fileReferenceString = StringUtils.replace(fileReferenceString, "\\", "/");
+            URI uri;
+            try {
+                uri = new URI("file", "/" + fileReferenceString, null);
+            } catch (URISyntaxException e) {
+                throw new JahiaRuntimeException(e);
+            }
+            return uri.toASCIIString();
+        }
+    }
+
+    private static class FileReferenceUpdaterFsPath extends FileReferenceUpdaterSimpleBase {
+
+        @Override
+        protected Path toPath(String fileReferenceString) {
+            Path path;
+            try {
+                path = Paths.get(fileReferenceString);
+            } catch (InvalidPathException e) {
+                return null;
+            }
+            if (!path.isAbsolute()) {
+                return null;
+            }
+            return path;
+        }
+
+        @Override
+        protected String toString(Path fileReference) {
+            return fileReference.toString();
+        }
+    }
+
+    private static class FileReferenceUpdaterRootedWindowsFsPath extends FileReferenceUpdaterFsPath {
+
+        @Override
+        protected Path toPath(String fileReferenceString) {
+            if (!fileReferenceString.startsWith("/")) {
+                return null;
+            }
+            return super.toPath(fileReferenceString.substring(1));
+        }
+
+        @Override
+        protected String toString(Path fileReference) {
+            return ("/" + super.toString(fileReference));
+        }
     }
 }

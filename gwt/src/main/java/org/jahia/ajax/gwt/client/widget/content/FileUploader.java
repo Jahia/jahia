@@ -388,9 +388,10 @@ public class FileUploader extends Window {
         choose.setTriggerAction(TriggerAction.ALL);
         choose.setForceSelection(true);
         // 0 = rename
-        choose.add(Messages.get("label.rename", "Rename"));
-        // 1= rename-to
-        choose.add(Messages.get("label.rename", "Rename") + " auto");
+        final String labelRename = Messages.get("label.rename", "Rename");
+        choose.add(labelRename);
+        // 1= auto-rename
+        choose.add(labelRename + " auto");
         // 2 = overwrite
         // choose.add(Messages.get("confirm.overwrite.label", "Overwrite"));
         // 4 = add new version
@@ -407,7 +408,7 @@ public class FileUploader extends Window {
 
         choose.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
             public void handleEvent(SelectionChangedEvent event) {
-                if (choose.getValue().getValue().equals(Messages.get("label.rename", "Rename"))) {
+                if (choose.getValue().getValue().equals(labelRename)) {
                     textField.setValue(name);
                     textField.enable();
                     textField.addListener(Events.Change, textListener);

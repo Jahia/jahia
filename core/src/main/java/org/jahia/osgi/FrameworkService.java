@@ -515,6 +515,15 @@ public class FrameworkService implements FrameworkListener {
         return FileUtils.getFile(karafInstancesPath, "instance.properties");
     }
 
+    private static Path canonizeIfPossible(Path path) {
+        try {
+            return path.toRealPath(LinkOption.NOFOLLOW_LINKS);
+        } catch (IOException e) {
+            // This path does not exist in reality.
+            return path;
+        }
+    }
+
     private interface FileHandler {
 
         Map<Object, Object> readProperties(File file) throws IOException;
@@ -585,7 +594,15 @@ public class FrameworkService implements FrameworkListener {
 
         @Override
         protected String toString(Path fileReference) {
-            return fileReference.toUri().toASCIIString();
+            String fileReferenceString = canonizeIfPossible(fileReference).toString();
+            fileReferenceString = StringUtils.replace(fileReferenceString, "\\", "/");
+            URI uri;
+            try {
+                uri = new URI("file", "/" + fileReferenceString, null);
+            } catch (URISyntaxException e) {
+                throw new JahiaRuntimeException(e);
+            }
+            return uri.toASCIIString();
         }
     }
 
@@ -615,14 +632,7 @@ public class FrameworkService implements FrameworkListener {
 
         @Override
         protected String toString(Path fileReference) {
-            try {
-                // Try to canonize the path in order to eliminate components like . or .. if any.
-                fileReference = fileReference.toRealPath(LinkOption.NOFOLLOW_LINKS);
-            } catch (IOException e) {
-                // The referenced file does not exist in reality.
-                // Nevertheless, we will handle the reference using the absolute path.
-            }
-            return fileReference.toString();
+            return canonizeIfPossible(fileReference).toString();
         }
     }
 

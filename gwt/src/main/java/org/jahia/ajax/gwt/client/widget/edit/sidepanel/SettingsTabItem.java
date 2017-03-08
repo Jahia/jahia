@@ -44,7 +44,10 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.data.TreeLoader;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -287,6 +290,7 @@ public class SettingsTabItem extends SidePanelTabItem {
 
     @Override
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        super.handleNewMainNodeLoaded(node);
         if (this.mainNode == null || !this.mainNode.getSiteKey().equals(node.getSiteKey())) {
             this.mainNode = node;
             doRefresh();

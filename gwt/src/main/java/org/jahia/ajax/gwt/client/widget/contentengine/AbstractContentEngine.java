@@ -355,6 +355,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                     public void onSuccess(GWTChoiceListInitializer result) {
                         choiceListInitializersValues.put(propertyId, result);
                         if (result.getDisplayValues() != null) {
+                            String nameForDualFields = "from-" + propertyName;
                             for (TabItem tab : tabs.getItems()) {
                                 EditEngineTabItem item = tab.getData("item");
                                 if (item instanceof PropertiesTabItem) {
@@ -365,7 +366,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                             if (field instanceof PropertiesEditor.PropertyAdapterField) {
                                                 field = ((PropertiesEditor.PropertyAdapterField) field).getField();
                                             }
-                                            if (propertyName.equals(field.getName())) {
+                                            if (propertyName.equals(field.getName()) || (field instanceof DualListField<?> && nameForDualFields.equals(field.getName()))) {
                                                 if (field instanceof DualListField<?>) {
                                                     DualListField<GWTJahiaValueDisplayBean> dualListField = (DualListField<GWTJahiaValueDisplayBean>) field;
                                                     ListStore<GWTJahiaValueDisplayBean> store = dualListField.getToField().getStore();

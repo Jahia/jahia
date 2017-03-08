@@ -52,6 +52,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.InvalidPathException;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -106,10 +107,15 @@ public class FrameworkService implements FrameworkListener {
 
     private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
 
+    private static final FileReferenceUpdater FILE_REFERENCE_UPDATER_FSPATH = new FileReferenceUpdaterFsPath();
+
+    // NOTE: Order of updaters matters.
+    // Especially, it is critical that the FileReferenceUpdaterFsPath is configured before the FileReferenceUpdaterRootedWindowsFsPath.
     private static final FileReferenceUpdater[] FILE_REFERENCE_UPDATERS = {
         new FileReferenceUpdaterUri(),
-        new FileReferenceUpdaterFsPath(),
-        new FileReferenceUpdaterRootedWindowsFsPath()
+        FILE_REFERENCE_UPDATER_FSPATH,
+        new FileReferenceUpdaterRootedWindowsFsPath(),
+        new FileReferenceUpdaterMavenRepositories(FILE_REFERENCE_UPDATER_FSPATH, ".mvn.defaultRepositories", ".mvn.repositories")
     };
 
     /**
@@ -317,9 +323,11 @@ public class FrameworkService implements FrameworkListener {
     public void start() {
 
         try {
+            // Try to figure out if the installation folder has been moved/renamed, and update file references in configuration/auxiliary files correspondingly if so.
             updateFileReferencesIfNeeded();
         } catch (Exception e) {
-            logger.error("Error updating file paths", e);
+            // In case the attempt fails for some reason, still give the application a chance to start.
+            logger.error("Error updating file references", e);
         }
 
         startTime = System.currentTimeMillis();
@@ -367,26 +375,26 @@ public class FrameworkService implements FrameworkListener {
 
         File varDir = new File(SettingsBean.getInstance().getJahiaVarDiskPath());
 
-        File instancePropertiesFile = FileUtils.getFile(varDir, "karaf", "instances", "instance.properties");
+        File instancePropertiesFile = getKarafInstancePropertiesFile();
         if (!instancePropertiesFile.exists()) {
-            logger.debug("The first start of the instance, so no file path updates needed.");
+            logger.info("'{}' file not found. Assuming the instance is starting for the first time, so no file reference updates needed.", instancePropertiesFile);
             return;
         }
 
-        Properties properties = new Properties();
+        Properties instanceProperties = new Properties();
         try (FileInputStream instancePropertiesIn = new FileInputStream(instancePropertiesFile)) {
-            properties.load(instancePropertiesIn);
+            instanceProperties.load(instancePropertiesIn);
         }
 
-        File oldKarafDir = new File(properties.getProperty("item.0.loc"));
+        File oldKarafDir = new File(instanceProperties.getProperty("item.0.loc"));
         File oldVarDir = oldKarafDir.getParentFile();
 
         if (varDir.equals(oldVarDir)) {
-            logger.debug("The var dir hasn't been changed since last start, so no file path updates needed.");
+            logger.info("The var dir hasn't been changed since last start, so no file path updates needed.");
             return;
         }
 
-        logger.debug("The var dir changed from '{0}' to '{1}', so updating file paths correspondingly", oldVarDir, varDir);
+        logger.info("The var dir changed from '{}' to '{}', so updating file references correspondingly", oldVarDir, varDir);
         updateFileReferences(oldVarDir, varDir);
     }
 
@@ -413,18 +421,20 @@ public class FrameworkService implements FrameworkListener {
             }
         };
 
-        updateFileReferencesInFile(FileUtils.getFile(varDir, "karaf", "instances", "instance.properties"), oldVarDir, varDir, propertiesFileHandler);
+        updateFileReferencesInFile(getKarafInstancePropertiesFile(), oldVarDir, varDir, propertiesFileHandler);
 
-        File moduleBundleLocationMapFile = FileUtils.getFile(varDir, "bundles-deployed", "module-bundle-location.map");
+        String moduleBundleLocationMapPath = getFileInstallConfig().getProperty("felix.fileinstall.bundleLocationMapFile");
+        File moduleBundleLocationMapFile = new File(moduleBundleLocationMapPath);
         if (moduleBundleLocationMapFile.exists()) {
             updateFileReferencesInFile(moduleBundleLocationMapFile, oldVarDir, varDir, propertiesFileHandler);
         }
 
-        File bundlesDeployed = FileUtils.getFile(varDir, "bundles-deployed");
+        String frameworkStoragePath = getOsgiConfig().getProperty("org.osgi.framework.storage");
+        File frameworkStorageDir = new File(frameworkStoragePath);
 
-        if (bundlesDeployed.exists()) {
+        if (frameworkStorageDir.isDirectory()) {
 
-            updateFileReferencesInConfigFiles(bundlesDeployed, oldVarDir, varDir, new FileHandler() {
+            updateFileReferencesInConfigFiles(frameworkStorageDir, oldVarDir, varDir, new FileHandler() {
 
                 @Override
                 public Map<Object, Object> readProperties(File configFile) throws IOException {
@@ -464,25 +474,45 @@ public class FrameworkService implements FrameworkListener {
     }
 
     private void updateFileReferencesInFile(File file, File oldVarDir, File newVarDir, FileHandler fileHandler) throws IOException {
+
         Path oldVarPath = Paths.get(oldVarDir.getAbsolutePath());
         Path newVarPath = Paths.get(newVarDir.getAbsolutePath());
         Map<Object, Object> properties = fileHandler.readProperties(file);
         boolean changed = false;
+
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+
             Object propertyKey = entry.getKey();
             Object propertyValue = entry.getValue();
+
+            // Chain of responsibility.
             for (FileReferenceUpdater updater : FILE_REFERENCE_UPDATERS) {
-                Object newPropertyValue = updater.update(propertyKey, propertyValue, oldVarPath, newVarPath);
+                Object newPropertyValue = updater.updateIfFamiliar(propertyKey, propertyValue, oldVarPath, newVarPath);
                 if (newPropertyValue != null) {
                     properties.put(propertyKey, newPropertyValue);
                     changed = true;
+                    logger.debug("Changed '{}' property value from '{}' to '{}' in '{}'", new Object[] {propertyKey, propertyValue, newPropertyValue, file});
                     break;
                 }
             }
         }
         if (changed) {
             fileHandler.writeProperties(file, properties);
+            logger.debug("Saved changes to '{}'", file);
         }
+    }
+
+    private static Properties getOsgiConfig() {
+        return (Properties) SpringContextSingleton.getBean("combinedOsgiProperties");
+    }
+
+    private static Properties getFileInstallConfig() {
+        return (Properties) SpringContextSingleton.getBean("felixFileInstallConfig");
+    }
+
+    private static File getKarafInstancePropertiesFile() {
+        String karafInstancesPath = getOsgiConfig().getProperty("karaf.instances");
+        return FileUtils.getFile(karafInstancesPath, "instance.properties");
     }
 
     private interface FileHandler {
@@ -493,23 +523,26 @@ public class FrameworkService implements FrameworkListener {
 
     private interface FileReferenceUpdater {
 
-        Object update(Object propertyKey, Object propertyValue, Path oldVarPath, Path newVarPath);
+        Object updateIfFamiliar(Object propertyKey, Object propertyValue, Path oldVarPath, Path newVarPath);
     }
 
     private static abstract class FileReferenceUpdaterSimpleBase implements FileReferenceUpdater {
 
         @Override
-        public Object update(Object propertyKey, Object propertyValue, Path oldVarPath, Path newVarPath) {
+        public Object updateIfFamiliar(Object propertyKey, Object propertyValue, Path oldVarPath, Path newVarPath) {
 
             if (!(propertyValue instanceof String)) {
+                // File reference may only be a String property.
                 return null;
             }
 
             Path fileReference = toPath((String) propertyValue);
             if (fileReference == null) {
+                // Not a file reference format the updater is able to handle (maybe not a file reference at all).
                 return null;
             }
 
+            // Update the file reference.
             Path relativePath;
             try {
                 relativePath = oldVarPath.relativize(fileReference);
@@ -525,6 +558,12 @@ public class FrameworkService implements FrameworkListener {
         protected abstract String toString(Path fileReference);
     }
 
+    /*
+     * Handles values like
+     * file:/C:/Program%20Files/apache-tomcat-8.0.30/digital-factory-data/karaf/etc/jmx.acl.java.lang.Memory.cfg
+     * or
+     * file:/home/jahia/install/QA-9314/digital-factory-data/karaf/etc/jmx.acl.java.lang.Memory.cfg
+     */
     private static class FileReferenceUpdaterUri extends FileReferenceUpdaterSimpleBase {
 
         @Override
@@ -533,29 +572,29 @@ public class FrameworkService implements FrameworkListener {
             try {
                 uri = new URI(fileReferenceString);
             } catch (URISyntaxException e) {
+                // Not a file URI the updater is able to handle.
                 return null;
             }
             try {
                 return Paths.get(uri);
             } catch (IllegalArgumentException | FileSystemNotFoundException e) {
+                // Not a file URI the updater is able to handle.
                 return null;
             }
         }
 
         @Override
         protected String toString(Path fileReference) {
-            String fileReferenceString = fileReference.toString();
-            fileReferenceString = StringUtils.replace(fileReferenceString, "\\", "/");
-            URI uri;
-            try {
-                uri = new URI("file", "/" + fileReferenceString, null);
-            } catch (URISyntaxException e) {
-                throw new JahiaRuntimeException(e);
-            }
-            return uri.toASCIIString();
+            return fileReference.toUri().toASCIIString();
         }
     }
 
+    /*
+     * Handles values like
+     * C:\\Program Files\\apache-tomcat-8.0.30\\digital-factory-data\\karaf/deploy
+     * or
+     * /home/jahia/install/QA-9314/digital-factory-data/karaf/deploy
+     */
     private static class FileReferenceUpdaterFsPath extends FileReferenceUpdaterSimpleBase {
 
         @Override
@@ -564,9 +603,11 @@ public class FrameworkService implements FrameworkListener {
             try {
                 path = Paths.get(fileReferenceString);
             } catch (InvalidPathException e) {
+                // Not a file path the updater is able to handle.
                 return null;
             }
             if (!path.isAbsolute()) {
+                // We only update absolute paths.
                 return null;
             }
             return path;
@@ -574,10 +615,21 @@ public class FrameworkService implements FrameworkListener {
 
         @Override
         protected String toString(Path fileReference) {
+            try {
+                // Try to canonize the path in order to eliminate components like . or .. if any.
+                fileReference = fileReference.toRealPath(LinkOption.NOFOLLOW_LINKS);
+            } catch (IOException e) {
+                // The referenced file does not exist in reality.
+                // Nevertheless, we will handle the reference using the absolute path.
+            }
             return fileReference.toString();
         }
     }
 
+    /*
+     * Handles specific values where Windows file path is prefixed with slash like
+     * /C:/Program Files/apache-tomcat-8.0.30/digital-factory-data/modules/advanced-visibility-7.1.1.jar
+     */
     private static class FileReferenceUpdaterRootedWindowsFsPath extends FileReferenceUpdaterFsPath {
 
         @Override
@@ -591,6 +643,68 @@ public class FrameworkService implements FrameworkListener {
         @Override
         protected String toString(Path fileReference) {
             return ("/" + super.toString(fileReference));
+        }
+    }
+
+    /*
+     * Handles Karaf specific values that represent a comma separated Maven repository list like
+     * file:C:\\Program Files\\apache-tomcat-8.0.30\\webapps\\ROOT\\WEB-INF\\karaf/system@id\=system.repository@snapshots, file:C:\\Program Files\\apache-tomcat-8.0.30\\digital-factory-data\\karaf\\data/kar@id\=kar.repository@multi@snapshots
+     */
+    private static class FileReferenceUpdaterMavenRepositories implements FileReferenceUpdater {
+
+        private FileReferenceUpdater fileReferenceUpdaterFsPath;
+        private String[] propertyKeyEndings;
+
+        public FileReferenceUpdaterMavenRepositories(FileReferenceUpdater fileReferenceUpdaterFsPath, String... propertyKeyEndings) {
+            this.propertyKeyEndings = propertyKeyEndings;
+            this.fileReferenceUpdaterFsPath = fileReferenceUpdaterFsPath;
+        }
+
+        @Override
+        public Object updateIfFamiliar(Object propertyKey, Object propertyValue, Path oldVarPath, Path newVarPath) {
+
+            if (!(propertyKey instanceof String && propertyValue instanceof String)) {
+                // File reference may only be a part of a String property.
+                return null;
+            }
+            if (!StringUtils.endsWithAny((String) propertyKey, propertyKeyEndings)) {
+                // Not a property this updater is familiar with.
+                return null;
+            }
+
+            String[] values = StringUtils.split((String) propertyValue, ',');
+            String[] newValues = new String[values.length];
+            boolean changed = false;
+            for (int i = 0; i < values.length; i++) {
+                String value = values[i].trim();
+                if (!StringUtils.startsWithIgnoreCase(value, "file:")) {
+                    // Not a file reference.
+                    newValues[i] = value;
+                    continue;
+                }
+                int atIndex = value.indexOf('@');
+                if (atIndex < 0) {
+                    // Not a format this updater is familiar with.
+                    newValues[i] = value;
+                    continue;
+                }
+                String path = value.substring("file:".length(), atIndex);
+                String rest = value.substring(atIndex);
+                Object newPath = fileReferenceUpdaterFsPath.updateIfFamiliar(null, path, oldVarPath, newVarPath);
+                if (newPath == null) {
+                    // Not a file path this updater is able to handle.
+                    newValues[i] = value;
+                    continue;
+                }
+                newValues[i] = "file:" + newPath + rest;
+                changed = true;
+            }
+
+            if (changed) {
+                return StringUtils.join(newValues, ',');
+            } else {
+                return null;
+            }
         }
     }
 }

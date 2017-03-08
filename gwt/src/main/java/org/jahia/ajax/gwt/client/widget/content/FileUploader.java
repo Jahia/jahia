@@ -368,7 +368,7 @@ public class FileUploader extends Window {
         hide();
     }
 
-    private void addExistingToForm(List<Field[]> exists, String key, String tmp, final String name, final Button submitButton) {
+    private void addExistingToForm(final List<Field[]> exists, String key, String tmp, final String name, final Button submitButton) {
         unmask();
         final TextField<String> textField = new TextField<String>();
         textField.setFieldLabel("rename");
@@ -399,10 +399,19 @@ public class FileUploader extends Window {
         choose.setHideLabel(true);
         choose.setValue(choose.getStore().getAt(uploadOption.getValue()));
 
+        @SuppressWarnings("rawtypes")
         final Listener textListener = new Listener<ComponentEvent>() {
+            @SuppressWarnings("unchecked")
             @Override
             public void handleEvent(ComponentEvent be) {
-                submitButton.setEnabled(!textField.getValue().trim().equals(name.trim()));
+                boolean canEnableSubmit = true;
+                for (Field[] fld : exists) {
+                    if (((SimpleComboBox<String>)fld[1]).getValue().getValue().equals(labelRename) && !fld[2].isDirty()) {
+                        canEnableSubmit = false;
+                        break;
+                    }
+                }
+                submitButton.setEnabled(canEnableSubmit);
             }
         };
 

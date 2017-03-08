@@ -387,10 +387,13 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         if (objectNode.isNodeType("jnt:translation")) {
             objectNode = (NodeImpl) objectNode.getParent();
         }
-        JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession("live");
-        if (checkVisibility && currentUserSession.itemExists(objectNode.getPath()) &&
-                !VisibilityService.getInstance().matchesConditions(currentUserSession.getNode(objectNode.getPath()))) {
-            throw new ItemNotFoundException(node.getNodeId().toString());
+        
+        if (checkVisibility) {
+            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession("live");
+            if (currentUserSession.itemExists(objectNode.getPath())
+                    && !VisibilityService.getInstance().matchesConditions(currentUserSession.getNode(objectNode.getPath()))) {
+                throw new ItemNotFoundException(node.getNodeId().toString());
+            }
         }
         return objectNode;
     }

@@ -44,6 +44,7 @@
 package org.jahia.services.sites;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,7 +53,10 @@ import java.util.Set;
  * Holds constants for site's settings.
  */
 public final class SitesSettings {
-
+    public static final String SERVER_NAME = "j:serverName";
+    
+    public static final String DEFAULT_SITE = "j:defaultSite";
+    
     /**
      * These checks settings are used for BigText fields
      */
@@ -62,7 +66,8 @@ public final class SitesSettings {
 
     public static final String WCAG_COMPLIANCE_CHECKING_ENABLED = "j:wcagCompliance";
     
-    public static final Set<String> HTML_SETTINGS = new HashSet<String>(Arrays.asList(HTML_MARKUP_FILTERING_ENABLED, HTML_MARKUP_FILTERING_TAGS, WCAG_COMPLIANCE_CHECKING_ENABLED)); 
+    public static final Set<String> HTML_SETTINGS = Collections.unmodifiableSet(
+            new HashSet<>(Arrays.asList(HTML_MARKUP_FILTERING_ENABLED, HTML_MARKUP_FILTERING_TAGS, WCAG_COMPLIANCE_CHECKING_ENABLED))); 
 
     /**
      * Language settings
@@ -77,6 +82,17 @@ public final class SitesSettings {
     
     public static final String DEFAULT_LANGUAGE = "j:defaultLanguage";
 
-    public static final String LANGUAGES = "j:languages"; 
-
+    public static final String LANGUAGES = "j:languages";
+    
+    public static final String ALLOWS_UNLISTED_LANGUAGES = "j:allowsUnlistedLanguages";
+    
+    /**
+     * Module/template settings
+     */
+    public static final String INSTALLED_MODULES = "j:installedModules";
+    
+    public static final String TEMPLATES_SET = "j:templatesSet";
+    
+    private SitesSettings() {
+    }
 }

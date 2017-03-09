@@ -77,7 +77,7 @@
             <artifactId>jahia-commons</artifactId>
             <version>${jahia.commons.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jahia.test</groupId>
             <artifactId>core-test-framework</artifactId>
@@ -777,7 +777,7 @@
                     <groupId>org.apache.cxf</groupId>
                     <artifactId>cxf-rt-rs-client</artifactId>
                 </exclusion>
-                
+
                 <!-- We exclude support for the following formats, which we do not parse -->
                 <exclusion>
                     <!-- Matlab -->
@@ -1488,6 +1488,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.configadmin</artifactId>
+            <version>${felix.configadmin.version}</version>
+        </dependency>
     </dependencies>
     <build>
 
@@ -1520,7 +1526,7 @@
                             <goal>test-jar</goal>
                         </goals>
                     </execution>
-                </executions>                
+                </executions>
             </plugin>
 
             <plugin>
@@ -1608,7 +1614,7 @@
             </plugin>
         </plugins>
     </reporting>
-    
+
     <profiles>
         <profile>
             <id>unit-tests</id>
@@ -1626,5 +1632,5 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>    
+    </profiles>
 </project>

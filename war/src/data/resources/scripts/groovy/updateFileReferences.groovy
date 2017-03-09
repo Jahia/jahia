@@ -20,6 +20,18 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
 
+FileReferenceUpdater FILE_REFERENCE_UPDATER_FSPATH = new FileReferenceUpdaterFsPath();
+
+// Chain of responsibility.
+// NOTE: The order of updaters matters.
+// Especially, it is critical that the FileReferenceUpdaterFsPath is configured before the FileReferenceUpdaterRootedWindowsFsPath.
+FILE_REFERENCE_UPDATERS = [
+    new FileReferenceUpdaterUri(),
+    FILE_REFERENCE_UPDATER_FSPATH,
+    new FileReferenceUpdaterRootedWindowsFsPath(),
+    new FileReferenceUpdaterMavenRepositories(FILE_REFERENCE_UPDATER_FSPATH, ".mvn.defaultRepositories", ".mvn.repositories")
+] as FileReferenceUpdater[];
+
 updateFileReferencesIfNeeded();
 
 private void updateFileReferencesIfNeeded() throws IOException {
@@ -140,29 +152,13 @@ private void updateFileReferencesInConfigFiles(File baseDir, File oldVarDir, Fil
 }
 
 private void updateFileReferencesInFile(File file, File oldVarDir, File newVarDir, FileHandler fileHandler) throws IOException {
-
-    final FileReferenceUpdater FILE_REFERENCE_UPDATER_FSPATH = new FileReferenceUpdaterFsPath();
-
-    // NOTE: The order of updaters matters.
-    // Especially, it is critical that the FileReferenceUpdaterFsPath is configured before the FileReferenceUpdaterRootedWindowsFsPath.
-    final FileReferenceUpdater[] FILE_REFERENCE_UPDATERS = [
-        new FileReferenceUpdaterUri(),
-        FILE_REFERENCE_UPDATER_FSPATH,
-        new FileReferenceUpdaterRootedWindowsFsPath(),
-        new FileReferenceUpdaterMavenRepositories(FILE_REFERENCE_UPDATER_FSPATH, ".mvn.defaultRepositories", ".mvn.repositories")
-    ];
-
     Path oldVarPath = Paths.get(oldVarDir.getAbsolutePath());
     Path newVarPath = Paths.get(newVarDir.getAbsolutePath());
     Map<Object, Object> properties = fileHandler.readProperties(file);
     boolean changed = false;
-
     for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-
         Object propertyKey = entry.getKey();
         Object propertyValue = entry.getValue();
-
-        // Chain of responsibility.
         for (FileReferenceUpdater updater : FILE_REFERENCE_UPDATERS) {
             Object newPropertyValue = updater.updateIfFamiliar(propertyKey, propertyValue, oldVarPath, newVarPath);
             if (newPropertyValue != null) {
@@ -271,6 +267,7 @@ class FileReferenceUpdaterUri extends FileReferenceUpdaterSimpleBase {
 
     @Override
     protected String toString(Path fileReference) {
+        // Build the URI string manually, because fileReference.toUri().toASCIIString() generates format slightly different from what we see in .config files.
         String fileReferenceString = canonizeIfPossible(fileReference).toString();
         fileReferenceString = StringUtils.replace(fileReferenceString, "\\", "/");
         URI uri;
@@ -362,7 +359,9 @@ class FileReferenceUpdaterMavenRepositories implements FileReferenceUpdater {
         String[] values = StringUtils.split((String) propertyValue, ',');
         String[] newValues = new String[values.length];
         boolean changed = false;
+
         for (int i = 0; i < values.length; i++) {
+
             String value = values[i].trim();
             if (!StringUtils.startsWithIgnoreCase(value, "file:")) {
                 // Not a file reference.
@@ -375,14 +374,18 @@ class FileReferenceUpdaterMavenRepositories implements FileReferenceUpdater {
                 newValues[i] = value;
                 continue;
             }
+
+            // This is not a URI format that can be understood by the java.net.URI class, even though it looks quite similarly.
+            // Therefore, we extract its meaningful part manually and consider it a regular file path.
+            // And then we compose the new value using the updated file path manually again.
             String path = value.substring("file:".length(), atIndex);
-            String rest = value.substring(atIndex);
             Object newPath = fileReferenceUpdaterFsPath.updateIfFamiliar(null, path, oldVarPath, newVarPath);
             if (newPath == null) {
                 // Not a file path this updater is able to handle.
                 newValues[i] = value;
                 continue;
             }
+            String rest = value.substring(atIndex);
             newValues[i] = "file:" + newPath + rest;
             changed = true;
         }

@@ -373,16 +373,17 @@ public class FrameworkService implements FrameworkListener {
         ScriptContext scriptContext = new SimpleScriptContext();
         Bindings bindings = new SimpleBindings();
         bindings.put("logger", logger);
-
-        try (
-            FileInputStream scriptInputStream = new FileInputStream(scriptPath);
-            InputStreamReader scriptReader = new InputStreamReader(scriptInputStream);
-            StringWriter out = new StringWriter();
-        ) {
-            scriptContext.setWriter(out);
-            scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-            scriptEngine.eval(scriptReader, scriptContext);
-        } catch (IOException | ScriptException e) {
+        scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+        try (FileInputStream scriptInputStream = new FileInputStream(scriptPath)) {
+            try (InputStreamReader scriptReader = new InputStreamReader(scriptInputStream)) {
+                try (StringWriter out = new StringWriter()) {
+                    scriptContext.setWriter(out);
+                    scriptEngine.eval(scriptReader, scriptContext);
+                } catch (ScriptException e) {
+                    throw new JahiaRuntimeException(e);
+                }
+            }
+        } catch (IOException e) {
             throw new JahiaRuntimeException(e);
         }
    }

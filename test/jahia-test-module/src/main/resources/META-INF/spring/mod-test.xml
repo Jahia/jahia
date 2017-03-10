@@ -47,6 +47,7 @@
                 <value>org.jahia.test.services.logout.LogoutTest</value>
                 <value>org.jahia.test.services.notification.CamelNotificationServiceTest</value>
                 <value>org.jahia.test.services.notification.HtmlExternalizationServiceTest</value>
+                <value>org.jahia.test.services.notification.HttpClientServiceTest</value>
                 <value>org.jahia.test.services.providers.ModulesProviderTest</value>
                 <value>org.jahia.test.services.publication.PublicationTest</value>
                 <value>org.jahia.test.services.query.FacetedQueryTest</value>

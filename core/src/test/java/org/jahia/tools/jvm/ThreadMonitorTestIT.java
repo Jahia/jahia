@@ -46,6 +46,7 @@ package org.jahia.tools.jvm;
 import org.apache.commons.io.FileUtils;
 import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.settings.SettingsBean;
+import org.jahia.test.framework.AbstractJUnitTest;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -62,9 +63,9 @@ import java.util.Set;
 /**
  * Unit test for ThreadMonitor class
  */
-public class ThreadMonitorTest {
+public class ThreadMonitorTestIT extends AbstractJUnitTest {
 
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ThreadMonitorTest.class);
+    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(ThreadMonitorTestIT.class);
 
     private final long THREAD_COUNT = 500L;
     private final long LOOP_COUNT = 10L;

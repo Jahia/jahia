@@ -84,7 +84,7 @@ public class RepositoryTab extends ContentPanel {
     private TreeGrid<GWTJahiaNode> m_tree;
     private GWTJahiaNodeTreeFactory factory;
     private GWTManagerConfiguration config;
-    
+
     /**
      * Constructor
      *
@@ -92,8 +92,10 @@ public class RepositoryTab extends ContentPanel {
      * @param repo      the repository type (see constants)
      * @param config    the configuration to use
      */
-    public RepositoryTab(ContentRepositoryTabs container, GWTRepository repo, final List<String> selectedPaths, final GWTManagerConfiguration config) {
+    public RepositoryTab(final ContentRepositoryTabs container, GWTRepository repo, final List<String> selectedPaths, final GWTManagerConfiguration config) {
         super(new FitLayout());
+        // Collapse tab by default
+        collapse();
         setBorders(false);
         setBodyBorder(false);
         getHeader().setBorders(false);
@@ -123,7 +125,7 @@ public class RepositoryTab extends ContentPanel {
         factory.setShowOnlyNodesWithTemplates(config.isShowOnlyNodesWithTemplates());
         loader = factory.getLoader();
         store = factory.getStore();
-        
+
         store.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
             public int compare(Object o1, Object o2) {
                 GWTJahiaNode s1 = (GWTJahiaNode) o1;
@@ -144,15 +146,15 @@ public class RepositoryTab extends ContentPanel {
         if (columns.getAutoExpand() != null) {
             m_tree.setAutoExpandColumn(columns.getAutoExpand());
         }
-
 //        m_tree.setDisplayProperty("displayName");
         m_tree.setBorders(false);
         m_tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent selectionChangedEvent) {
-                getLinker().onTreeItemSelected();
                 if (selectionChangedEvent.getSelection() != null && selectionChangedEvent.getSelection().size() > 0) {
-                    setExpanded(true);
+                    container.expandTab(RepositoryTab.this);
                 }
+                // fire selected item events once the tab expanded
+                getLinker().onTreeItemSelected();
             }
         });
 
@@ -166,7 +168,7 @@ public class RepositoryTab extends ContentPanel {
             }
         }));
         add(m_tree);
-        
+
         this.config = config;
     }
 
@@ -185,7 +187,6 @@ public class RepositoryTab extends ContentPanel {
     public void init() {
         factory.setDisplayHiddenTypes(getLinker() != null && getLinker().isDisplayHiddenTypes());
         loader.load();
-
         if (getLinker().getDndListener() != null) {
             TreeGridDragSource source = new TreeGridDragSource(m_tree) {
                 @Override

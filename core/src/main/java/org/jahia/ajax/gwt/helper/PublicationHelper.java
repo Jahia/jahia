@@ -43,6 +43,8 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -571,11 +573,16 @@ public class PublicationHelper {
 			post.addParameter("testOnly", "true");
 			post.addRequestHeader("accept", "application/json");
 			HttpState state = new HttpState();
-			state.setCredentials(
-			        new AuthScope(url.getHost(), url.getPort()),
+            state.setCredentials(
+                    new AuthScope(url.getHost(), url.getPort()),
 			        new UsernamePasswordCredentials(props.get("remoteUser"), props
 			                .get("remotePassword")));
-			if (httpClientService.getHttpClient().executeMethod(null, post, state) != 200) {
+			HttpClient httpClient = httpClientService.getHttpClient(theUrl);
+			Credentials proxyCredentials = httpClient.getState().getProxyCredentials(AuthScope.ANY);
+			if (proxyCredentials != null) {
+			    state.setProxyCredentials(AuthScope.ANY, proxyCredentials);
+			}
+            if (httpClient.executeMethod(null, post, state) != 200) {
 				logger.warn("Connection to URL: {} failed with status {}", url,
 				        post.getStatusLine());
 				throw new GWTJahiaServiceException(

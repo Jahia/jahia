@@ -44,14 +44,17 @@
 package org.jahia.services.notification;
 
 import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.StringResponseWrapper;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.RequestDispatcher;
@@ -61,8 +64,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.commons.httpclient.HttpStatus.SC_OK;
@@ -76,15 +78,48 @@ import static org.apache.commons.httpclient.HttpStatus.SC_OK;
  */
 public class HttpClientService implements ServletContextAware {
 
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(HttpClientService.class);
-    private static final String HTTP_PROXY_HOST = "http.proxyHost";
-    private static final String HTTPS_PROXY_HOST = "https.proxyHost";
-    private static final String HTTP_PROXY_PORT = "http.proxyPort";
-    private static final String HTTPS_PROXY_PORT = "https.proxyPort";
-    private static final String HTTP_PROXY_USER = "http.proxyUser";
-    private static final String HTTPS_PROXY_USER = "https.proxyUser";
-    private static final String HTTP_PROXY_PASSWORD = "http.proxyPassword";
-    private static final String HTTPS_PROXY_PASSWORD = "https.proxyPassword";
+    private static final String DEFAULT_KEY = "DEFAULT";
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpClientService.class);
+
+    private static HttpClient cloneHttpClient(HttpClient source) {
+        HttpClient cloned = new HttpClient(source.getParams(), source.getHttpConnectionManager());
+        String sourceProxyHost = source.getHostConfiguration().getProxyHost();
+        if (sourceProxyHost != null) {
+            cloned.getHostConfiguration().setProxy(sourceProxyHost, source.getHostConfiguration().getProxyPort());
+        }
+        Credentials proxyCredentials = source.getState().getProxyCredentials(AuthScope.ANY);
+        if (proxyCredentials != null) {
+            HttpState state = new HttpState();
+            state.setProxyCredentials(AuthScope.ANY, proxyCredentials);
+            cloned.setState(state);
+        }
+
+        return cloned;
+
+    }
+
+    private static String initHttpClient(HttpClient client, String protocol) {
+        String host = System.getProperty(protocol + ".proxyHost");
+        int port = Integer.getInteger(protocol + ".proxyPort", -1).intValue();
+        port = port != -1 ? port : Protocol.getProtocol(protocol).getDefaultPort();
+
+        client.getHostConfiguration().setProxy(host, port);
+
+        String key = host + ':' + port;
+
+        Credentials credentials = null;
+        String user = System.getProperty(protocol + ".proxyUser");
+        if (StringUtils.isNotEmpty(user)) {
+            credentials = new UsernamePasswordCredentials(user, System.getProperty(protocol + ".proxyPassword"));
+            client.getState().setProxyCredentials(AuthScope.ANY, credentials);
+        }
+
+        logger.info("Initialized HttpClient for {} protocol using proxy {} {} credentials",
+                new String[] { protocol.toUpperCase(), key, credentials != null ? "with" : "without" });
+
+        return key;
+    }
 
     /**
      * Returns <tt>true</tt> if our current URL is absolute, <tt>false</tt>
@@ -96,8 +131,8 @@ public class HttpClientService implements ServletContextAware {
         return ImportSupport.isAbsoluteUrl(url);
     }
 
-    private HttpClient httpClient;
-
+    private Map<String, HttpClient> httpClients = new HashMap<>(4);
+            
     private ServletContext servletContext;
 
     /**
@@ -136,7 +171,7 @@ public class HttpClientService implements ServletContextAware {
             }
         }
         try {
-            httpClient.executeMethod(httpMethod);
+            getHttpClient(url).executeMethod(httpMethod);
             StatusLine statusLine = httpMethod.getStatusLine();
 
             if (statusLine != null && statusLine.getStatusCode() == SC_OK) {
@@ -209,7 +244,7 @@ public class HttpClientService implements ServletContextAware {
         }
 
         try {
-            httpClient.executeMethod(null, httpMethod, state);
+            getHttpClient(url).executeMethod(null, httpMethod, state);
             StatusLine statusLine = httpMethod.getStatusLine();
 
             if (statusLine != null && statusLine.getStatusCode() == SC_OK) {
@@ -299,9 +334,37 @@ public class HttpClientService implements ServletContextAware {
 
     /**
      * @return the httpClient
+     * @deprecated since 7.1.2.3 Please, use {@link #getHttpClient(String)} instead which properly handles proxy server settings, if any
      */
+    @Deprecated
     public HttpClient getHttpClient() {
-        return httpClient;
+        return getHttpClient(null);
+    }
+
+    /**
+     * Detects the instance of the {@link HttpClient} that is the most appropriate to handle the specified URL, considering proxy settings,
+     * if any.
+     * 
+     * @param url
+     *            the target URL to be used for the HTTP client request
+     * @return an instance of the {@link HttpClient} that is the most appropriate to handle the specified URL, considering proxy settings,
+     *         if any
+     */
+    public HttpClient getHttpClient(String url) {
+        String key = null;
+        if (httpClients.size() > 1) {
+            if (null == url) {
+                key = httpClients.containsKey(DEFAULT_KEY) ? DEFAULT_KEY : null;
+            } else {
+                try {
+                    key = ProxyAddressSelector.getProxyForUrl(url);
+                    logger.debug("Using proxy address {} for URL {}", key, url);
+                } catch (Exception e) {
+                    logger.warn(e.getMessage(), e);
+                }
+            }
+        }
+        return httpClients.get(key);
     }
 
     /**
@@ -380,40 +443,29 @@ public class HttpClientService implements ServletContextAware {
      * @param httpClient an instance of the {@link HttpClient}
      */
     public void setHttpClient(HttpClient httpClient) {
-        this.httpClient = httpClient;
+        // bypass proxy client
+        httpClients.put(null, httpClient);
 
-        // proxy configuration if any
-        // priority is given to https proxy if provided
-        final String httpsProxyHost = System.getProperty(HTTPS_PROXY_HOST);
-        boolean isHttps = false;
-        final String proxyHost;
-        if (StringUtils.isNotBlank(httpsProxyHost)) {
-            proxyHost = httpsProxyHost;
-            isHttps = true;
+        HttpClient defaultClient = null;
+        // HTTPS proxy client
+        if (StringUtils.isNotEmpty(System.getProperty("https.proxyHost"))) {
+            HttpClient httpsProxyClient = cloneHttpClient(httpClient);
+            String key = initHttpClient(httpsProxyClient, "https");
+            httpClients.put(key, httpsProxyClient);
+            defaultClient = httpsProxyClient;
         }
-        else {
-            proxyHost = System.getProperty(HTTP_PROXY_HOST);
-        }
-
-        // if we have a host, find the port and authentication
-        if (StringUtils.isNotBlank(proxyHost)) {
-            final String proxyPort = isHttps ? System.getProperty(HTTPS_PROXY_PORT) : System.getProperty(HTTP_PROXY_PORT);
-            final int port = StringUtils.isEmpty(proxyPort) ? (isHttps ? 443 : 80) : Integer.parseInt(proxyPort);
-
-            // did we specify authentication for the proxy?
-            final String proxyUser = isHttps ? System.getProperty(HTTPS_PROXY_USER) : System.getProperty(HTTP_PROXY_USER);
-            if(StringUtils.isNotBlank(proxyUser)) {
-                final String proxyPassword = isHttps ? System.getProperty(HTTPS_PROXY_PASSWORD) : System.getProperty(HTTP_PROXY_PASSWORD);
-                Authenticator.setDefault(new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
-                    }
-                });
+        
+        // HTTP proxy client
+        if (StringUtils.isNotEmpty(System.getProperty("http.proxyHost"))) {
+            HttpClient httpProxyClient = cloneHttpClient(httpClient);
+            httpClients.put(initHttpClient(httpProxyClient, "http"), httpProxyClient);
+            if (defaultClient == null) {
+                defaultClient = httpProxyClient;
             }
-
-            final HostConfiguration currentConfiguration = httpClient.getHostConfiguration();
-            currentConfiguration.setProxy(proxyHost, port);
+        }
+        
+        if (defaultClient != null) {
+            httpClients.put(DEFAULT_KEY, cloneHttpClient(defaultClient));
         }
     }
 
@@ -424,10 +476,10 @@ public class HttpClientService implements ServletContextAware {
     public void shutdown() {
         logger.info("Shutting down HttpClient...");
         try {
-            if (httpClient.getHttpConnectionManager() instanceof MultiThreadedHttpConnectionManager) {
-                ((MultiThreadedHttpConnectionManager) httpClient.getHttpConnectionManager()).shutdown();
-            } else if (httpClient.getHttpConnectionManager() instanceof SimpleHttpConnectionManager) {
-                ((SimpleHttpConnectionManager) httpClient.getHttpConnectionManager()).shutdown();
+            for (Map.Entry<String, HttpClient> client : httpClients.entrySet()) {
+                if (!DEFAULT_KEY.equals(client.getKey())) {
+                    shutdown(client.getValue());
+                }
             }
             MultiThreadedHttpConnectionManager.shutdownAll();
         } catch (Exception e) {
@@ -435,4 +487,17 @@ public class HttpClientService implements ServletContextAware {
         }
         logger.info("...done");
     }
+
+    private void shutdown(HttpClient client) {
+        try {
+            if (client.getHttpConnectionManager() instanceof MultiThreadedHttpConnectionManager) {
+                ((MultiThreadedHttpConnectionManager) client.getHttpConnectionManager()).shutdown();
+            } else if (client.getHttpConnectionManager() instanceof SimpleHttpConnectionManager) {
+                ((SimpleHttpConnectionManager) client.getHttpConnectionManager()).shutdown();
+            }
+        } catch (Exception e) {
+            logger.warn("Error shutting down HttpClient. Cause: " + e.getMessage(), e);
+        }
+    }
+
 }

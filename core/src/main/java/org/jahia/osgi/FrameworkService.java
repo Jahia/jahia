@@ -82,6 +82,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.PropertyPlaceholderHelper;
 
+import com.google.common.base.Charsets;
+
 /**
  * OSGi framework service. This class is responsible for setting up and starting the embedded Karaf OSGi runtime.
  *
@@ -374,17 +376,13 @@ public class FrameworkService implements FrameworkListener {
         Bindings bindings = new SimpleBindings();
         bindings.put("logger", logger);
         scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-        try (FileInputStream scriptInputStream = new FileInputStream(scriptPath)) {
-            try (InputStreamReader scriptReader = new InputStreamReader(scriptInputStream)) {
-                try (StringWriter out = new StringWriter()) {
-                    scriptContext.setWriter(out);
-                    scriptEngine.eval(scriptReader, scriptContext);
-                } catch (ScriptException e) {
-                    throw new JahiaRuntimeException(e);
-                }
-            }
-        } catch (IOException e) {
+        try (FileInputStream scriptInputStream = new FileInputStream(scriptPath);
+                InputStreamReader scriptReader = new InputStreamReader(scriptInputStream, Charsets.UTF_8);
+                StringWriter out = new StringWriter()) {
+            scriptContext.setWriter(out);
+            scriptEngine.eval(scriptReader, scriptContext);
+        } catch (ScriptException | IOException e) {
             throw new JahiaRuntimeException(e);
         }
-   }
+    }
 }

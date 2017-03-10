@@ -95,6 +95,7 @@ public class ContentRepositoryTabs extends LeftComponent {
     private ContentPanel savedSearchPanel;
     private ListView<GWTJahiaNode> queryList;
     private GWTManagerConfiguration config;
+    private boolean tabExpanded;
 
     /**
      * Constructor (UI)
@@ -113,7 +114,10 @@ public class ContentRepositoryTabs extends LeftComponent {
         for (GWTRepository repo : config.getRepositories()) {
             repositories.add(new RepositoryTab(this, repo, selectedPaths, config));
         }
-
+        // expand the first tab if no path is selected.
+        if (selectedPaths == null) {
+            expandTab(repositories.get(0));
+        }
         ////////////////////////////
         // SEARCH PANEL ACCORDION //
         ////////////////////////////
@@ -190,7 +194,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         for (final RepositoryTab tab : repositories) {
             browseComponent.add(tab);
             if (tab.getRepository().getKey().equals(config.getSelectedAccordion())) {
-                tab.setExpanded(true);
+                expandTab(tab);
             }
             tab.addListener(Events.Expand, accordionListener);
             tab.getHeader().addListener(Events.OnClick, new Listener<BaseEvent>() {
@@ -305,6 +309,17 @@ public class ContentRepositoryTabs extends LeftComponent {
             }
         }
         return null;
+    }
+
+    /**
+     * Expand the selected tab if no tab already expanded
+     * @param tab
+     */
+    public void expandTab(RepositoryTab tab) {
+        if (!tabExpanded) {
+            tab.expand();
+            tabExpanded = true;
+        }
     }
 
     public Component getComponent() {

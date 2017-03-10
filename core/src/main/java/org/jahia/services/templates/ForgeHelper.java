@@ -88,7 +88,7 @@ class ForgeHelper {
 
         String moduleUrl = null;
         final String url = releaseInfo.getForgeUrl();
-        HttpClient client = httpClientService.getHttpClient();
+        HttpClient client = httpClientService.getHttpClient(url);
         // Get token from Private App Store home page
         GetMethod getMethod = new GetMethod(url + "/home.html");
         getMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));

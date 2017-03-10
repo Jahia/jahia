@@ -1,3 +1,7 @@
+// This script's intention is to detect possible application installation directory relocation,
+// and update absolute file paths in configuration/auxiliary files correspondingly if so,
+// at the early startup phase.
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;

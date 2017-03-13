@@ -111,12 +111,29 @@ public class ContentRepositoryTabs extends LeftComponent {
         browseTabITem = new TabItem(Messages.get("browse.label", "Browse"));
         searchTabITem = new TabItem(Messages.get("label.search", "Search"));
 
+        ChangeAccordionListener<ComponentEvent> accordionListener = new ChangeAccordionListener<ComponentEvent>();
+        // init main panel and add accordions
+        browseComponent = new LayoutContainer(new AccordionLayout());
+        browseComponent.setScrollMode(Style.Scroll.NONE);
+        browseComponent.setBorders(true);
         for (GWTRepository repo : config.getRepositories()) {
-            repositories.add(new RepositoryTab(this, repo, selectedPaths, config));
-        }
-        // expand the first tab if no path is selected.
-        if (selectedPaths == null) {
-            expandTab(repositories.get(0));
+            final RepositoryTab tab = new RepositoryTab(this, repo, selectedPaths, config);
+            repositories.add(tab);
+            browseComponent.add(tab);
+            // if no configured tab to open, open tab first tab
+            if ((config.getSelectedAccordion() != null && tab.getRepository().getKey().equals(config.getSelectedAccordion())) ||
+                    (config.getSelectedAccordion() == null && repositories.size() == 1)) {
+                tab.expand();
+            }
+            tab.addListener(Events.Expand, accordionListener);
+            tab.getHeader().addListener(Events.OnClick, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    if (!tab.isExpanded()) {
+                        tab.refresh(null);
+                    }
+                }
+            });
         }
         ////////////////////////////
         // SEARCH PANEL ACCORDION //
@@ -186,26 +203,6 @@ public class ContentRepositoryTabs extends LeftComponent {
             }
         }));
 
-        // init main panel and add accordions
-        ChangeAccordionListener<ComponentEvent> accordionListener = new ChangeAccordionListener<ComponentEvent>();
-        browseComponent = new LayoutContainer(new AccordionLayout());
-        browseComponent.setScrollMode(Style.Scroll.NONE);
-        browseComponent.setBorders(true);
-        for (final RepositoryTab tab : repositories) {
-            browseComponent.add(tab);
-            if (tab.getRepository().getKey().equals(config.getSelectedAccordion())) {
-                expandTab(tab);
-            }
-            tab.addListener(Events.Expand, accordionListener);
-            tab.getHeader().addListener(Events.OnClick, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    if (!tab.isExpanded()) {
-                        tab.refresh(null);
-                    }
-                }
-            });
-        }
         browseComponent.add(savedSearchPanel);
         browseTabITem.setLayout(new FitLayout());
         browseTabITem.add(browseComponent);

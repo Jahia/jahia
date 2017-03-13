@@ -36,8 +36,6 @@
 
     create index IDX_esqmn5micj3ljsjadbbmyjgfc on jbpm_i18ntext (deadline_documentation_id);
 
-    create index IDX_epvmc6tmrn1wq6nu8peaywt1k on jbpm_notificat_email_headers (email_headers);
-
     create index IDX_kf8fd1lw8m7jxkyekbsex81c8 on jbpm_notificat_email_headers (notification);
 
     create index IDX_lsx8dgmw3ilrncmkruoqimm28 on jbpm_notification (escalation_notifications_id);

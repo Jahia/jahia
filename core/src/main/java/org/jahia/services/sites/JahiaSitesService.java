@@ -887,8 +887,12 @@ public class JahiaSitesService extends JahiaService {
                 JahiaSite jahiaSite = getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY, session);
                 // update the system site only if it does not yet contain at least one of the site languages
                 Set<String> jahiaSiteLanguages = new HashSet<String>(jahiaSite.getLanguages());
-                if (!jahiaSiteLanguages.containsAll(site.getLanguages())) {
-                    jahiaSiteLanguages.addAll(site.getLanguages());
+
+                Set<String> siteLanguages = new HashSet<>(site.getLanguages());
+                siteLanguages.addAll(site.getInactiveLanguages());
+
+                if (!jahiaSiteLanguages.containsAll(siteLanguages)) {
+                    jahiaSiteLanguages.addAll(siteLanguages);
                     jahiaSite.setLanguages(jahiaSiteLanguages);
                     return true;
                 }

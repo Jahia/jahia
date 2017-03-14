@@ -452,7 +452,7 @@ public class HttpClientService implements ServletContextAware {
      * @param httpClient an instance of the {@link HttpClient}
      */
     public void setHttpClient(HttpClient httpClient) {
-        // bypass proxy or client
+        // bypass proxy client
         httpClients.put(null, httpClient);
 
         // HTTPS proxy client

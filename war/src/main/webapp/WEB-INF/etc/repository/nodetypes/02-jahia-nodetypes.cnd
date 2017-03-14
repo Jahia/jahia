@@ -433,6 +433,7 @@
  - j:invertCondition (boolean)
 
 [jnt:pageTemplate] > jnt:template
+ - j:templateThumbnail (weakreference,picker[type='image']) < jmix:image
 
 [jnt:contentTemplate] > jnt:template
  - j:applyOn (string, choicelist[subnodetypes = 'nt:base']) nofulltext multiple

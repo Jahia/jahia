@@ -46,6 +46,7 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRFileNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -191,6 +192,11 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 if (StringUtils.equals(templateNode.getName(), defaultTemplate)) {
                     v.addProperty("defaultProperty", true);
                 }
+
+                if(templateNode.isNodeType("jnt:pageTemplate") && templateNode.hasProperty("j:templateThumbnail")) {
+                    v.addProperty("image", ((JCRFileNode) templateNode.getProperty("j:templateThumbnail").getNode()).getUrl());
+                }
+
                 vs.add(v);
             }
         }

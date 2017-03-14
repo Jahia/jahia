@@ -48,6 +48,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,6 +78,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.sites.SitesSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -99,19 +101,21 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
 
     private boolean addDependencyValue(JCRNodeWrapper originalNode, JCRNodeWrapper destinationNode, String propertyName)
             throws RepositoryException {
-        // Version v = templatePackageRegistry.lookupById(originalNode.getName()).getLastVersion();
-        String newStringValue = originalNode.getName();
+        String valueToBeAdded = originalNode.getName();
+        String newStringValue = valueToBeAdded;
         if (destinationNode.hasProperty(propertyName)) {
             JCRPropertyWrapper installedModules = destinationNode.getProperty(propertyName);
             Value[] values = installedModules.getValues();
+            List<String> stringValues = new LinkedList<>();
             for (Value value : values) {
-                if (value.getString().equals(originalNode.getName())) {
+                String strVal = value.getString();
+                stringValues.add(strVal);
+                if (strVal.equals(valueToBeAdded)) {
                     return true;
                 }
             }
-
-            destinationNode.getSession().checkout(destinationNode);
-            installedModules.addValue(originalNode.getName());
+            stringValues.add(valueToBeAdded);
+            destinationNode.setProperty(propertyName, stringValues.toArray(new String[] {}));
         } else {
             destinationNode.setProperty(propertyName, new String[] { newStringValue });
         }
@@ -142,8 +146,8 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             if (autoInstalled.contains(next.getName())) {
                 continue;
             }
-            if (next.hasProperty("j:installedModules")) {
-                Value[] v = next.getProperty("j:installedModules").getValues();
+            if (next.hasProperty(SitesSettings.INSTALLED_MODULES)) {
+                Value[] v = next.getProperty(SitesSettings.INSTALLED_MODULES).getValues();
                 for (Value value : v) {
                     if (value.getString().equals(module.getId())) {
                         sites.add(next);
@@ -235,7 +239,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
 
                 ReferencesHelper.resolveCrossReferences(session, references);
 
-                addDependencyValue(moduleNode.getParent(), siteNode, "j:installedModules");
+                addDependencyValue(moduleNode.getParent(), siteNode, SitesSettings.INSTALLED_MODULES);
                 logger.info("Done installing " + module.getName() + " on " + sitePath);
             } catch (PathNotFoundException e) {
                 logger.warn("Cannot find module for path {}. Skipping deployment to site {}.", module, sitePath);
@@ -487,16 +491,21 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             String module) throws RepositoryException {
         logger.info("Uninstalling " + module + " on " + sitePath);
         try {
-            JCRPropertyWrapper installedModules = siteNode.getProperty("j:installedModules");
+            JCRPropertyWrapper installedModules = siteNode.getProperty(SitesSettings.INSTALLED_MODULES);
+            List<String> stringValues = new LinkedList<>();
             Value toBeRemoved = null;
             Value[] values = installedModules.getValues();
             for (Value value : values) {
-                if (value.getString().equals(module)) {
+                String strValue = value.getString();
+                if (strValue.equals(module)) {
                     toBeRemoved = value;
-                    break;
+                } else {
+                    stringValues.add(strValue);
                 }
             }
-            installedModules.removeValue(toBeRemoved);
+            if (toBeRemoved != null) {
+                siteNode.setProperty(SitesSettings.INSTALLED_MODULES, stringValues.toArray(new String[] {}));
+            }
             logger.info("Done uninstalling " + module + " on " + sitePath);
         } catch (PathNotFoundException e) {
             logger.warn("Cannot find module for path {}. Skipping deployment to site {}.", module, sitePath);

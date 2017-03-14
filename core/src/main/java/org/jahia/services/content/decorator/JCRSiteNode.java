@@ -49,6 +49,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.templates.TemplatePackageRegistry;
@@ -59,6 +60,11 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
+
 import java.util.*;
 
 import static org.jahia.services.sites.SitesSettings.*;
@@ -75,6 +81,30 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     
     private static final String CANNOT_GET_SITE_PROPERTY = "Cannot get site property "; 
     private static final String CANNOT_SET_SITE_PROPERTY = "Cannot set site property ";
+
+    private static List<String> toUnmodifiableList(String[] values) {
+        if (values == null || values.length == 0) {
+            return Collections.emptyList();
+        }
+        List<String> list = new LinkedList<>();
+        for (String v : values) {
+            list.add(v);
+        }
+
+        return Collections.unmodifiableList(list);
+    }
+
+    private static Set<String> toUnmodifiableSet(String[] values) {
+        if (values == null || values.length == 0) {
+            return Collections.emptySet();
+        }
+        Set<String> set = new HashSet<>();
+        for (String v : values) {
+            set.add(v);
+        }
+
+        return Collections.unmodifiableSet(set);
+    }
 
     private Set<String> activeLiveLanguages;
     
@@ -743,5 +773,56 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public String getJCRLocalPath() {
         return getPath();
+    }
+
+    @Override
+    public JCRPropertyWrapper setProperty(String s, String value) throws ValueFormatException, VersionException,
+            LockException, ConstraintViolationException, RepositoryException {
+        if (SitesSettings.DEFAULT_LANGUAGE.equals(s)) {
+            defaultLanguage = value;
+        } else if (SitesSettings.TEMPLATES_SET.equals(s)) {
+            templateFolder = null;
+        } else if (SitesSettings.SERVER_NAME.equals(s)) {
+            serverName = value;
+        }
+
+        return super.setProperty(s, value);
+    }
+
+    @Override
+    public JCRPropertyWrapper setProperty(String s, boolean value) throws ValueFormatException, VersionException,
+            LockException, ConstraintViolationException, RepositoryException {
+        if (SitesSettings.MIX_LANGUAGES_ACTIVE.equals(s)) {
+            mixLanguagesActive = value;
+        } else if (SitesSettings.ALLOWS_UNLISTED_LANGUAGES.equals(s)) {
+            allowsUnlistedLanguages = value;
+        }
+        
+        return super.setProperty(s, value);
+    }
+    
+    @Override
+    public JCRPropertyWrapper setProperty(String s, String[] values) throws ValueFormatException, VersionException,
+            LockException, ConstraintViolationException, RepositoryException {
+        if (SitesSettings.INACTIVE_LANGUAGES.equals(s)) {
+            inactiveLanguages = toUnmodifiableSet(values);
+        } else if (SitesSettings.INACTIVE_LIVE_LANGUAGES.equals(s)) {
+            inactiveLiveLanguages = toUnmodifiableSet(values);
+            inactiveLanguagesAsLocales = getLanguagesAsLocales(inactiveLiveLanguages);
+            activeLiveLanguages = null;
+            activeLiveLanguagesAsLocales = null;
+        } else if (SitesSettings.LANGUAGES.equals(s)) {
+            languages = toUnmodifiableSet(values);
+            this.languagesAsLocales = getLanguagesAsLocales(languages);
+            activeLiveLanguages = null;
+            activeLiveLanguagesAsLocales = null;
+        } else if (SitesSettings.MANDATORY_LANGUAGES.equals(s)) {
+            mandatoryLanguages = toUnmodifiableSet(values);
+        } else if (SitesSettings.INSTALLED_MODULES.equals(s)) {
+            installedModules = toUnmodifiableList(values);
+            installedModulesWithDependencies = null;
+        }
+
+        return super.setProperty(s, values);
     }
 }

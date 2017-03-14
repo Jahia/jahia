@@ -156,26 +156,31 @@ private void updateFileReferencesInConfigFiles(File baseDir, File oldVarDir, Fil
 }
 
 private void updateFileReferencesInFile(File file, File oldVarDir, File newVarDir, FileHandler fileHandler) throws IOException {
-    Path oldVarPath = Paths.get(oldVarDir.getAbsolutePath());
-    Path newVarPath = Paths.get(newVarDir.getAbsolutePath());
-    Map<Object, Object> properties = fileHandler.readProperties(file);
-    boolean changed = false;
-    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-        Object propertyKey = entry.getKey();
-        Object propertyValue = entry.getValue();
-        for (FileReferenceUpdater updater : FILE_REFERENCE_UPDATERS) {
-            Object newPropertyValue = updater.updateIfFamiliar(propertyKey, propertyValue, oldVarPath, newVarPath);
-            if (newPropertyValue != null) {
-                properties.put(propertyKey, newPropertyValue);
-                changed = true;
-                logger.debug("Changed '{}' property value from '{}' to '{}' in '{}'", [propertyKey, propertyValue, newPropertyValue, file] as Object[]);
-                break;
+    try {
+        Path oldVarPath = Paths.get(oldVarDir.getAbsolutePath());
+        Path newVarPath = Paths.get(newVarDir.getAbsolutePath());
+        Map<Object, Object> properties = fileHandler.readProperties(file);
+        boolean changed = false;
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            Object propertyKey = entry.getKey();
+            Object propertyValue = entry.getValue();
+            for (FileReferenceUpdater updater : FILE_REFERENCE_UPDATERS) {
+                Object newPropertyValue = updater.updateIfFamiliar(propertyKey, propertyValue, oldVarPath, newVarPath);
+                if (newPropertyValue != null) {
+                    properties.put(propertyKey, newPropertyValue);
+                    changed = true;
+                    logger.debug("Changed '{}' property value from '{}' to '{}' in '{}'", [propertyKey, propertyValue, newPropertyValue, file] as Object[]);
+                    break;
+                }
             }
         }
-    }
-    if (changed) {
-        fileHandler.writeProperties(file, properties);
-        logger.debug("Saved changes to '{}'", file);
+        if (changed) {
+            fileHandler.writeProperties(file, properties);
+            logger.debug("Saved changes to '{}'", file);
+        }
+    } catch (Exception e) {
+        // In case updating current file fails for some reason, still give other ones a chance to get updated.
+        logger.error("Error updating file references in " + file, e);
     }
 }
 
@@ -274,9 +279,13 @@ class FileReferenceUpdaterUri extends FileReferenceUpdaterSimpleBase {
         // Build the URI string manually, because fileReference.toUri().toASCIIString() generates format slightly different from what we see in .config files.
         String fileReferenceString = canonizeIfPossible(fileReference).toString();
         fileReferenceString = StringUtils.replace(fileReferenceString, "\\", "/");
+        if (!fileReferenceString.startsWith("/")) {
+            // On Windows.
+            fileReferenceString = "/" + fileReferenceString;
+        }
         URI uri;
         try {
-            uri = new URI("file", "/" + fileReferenceString, null);
+            uri = new URI("file", fileReferenceString, null);
         } catch (URISyntaxException e) {
             throw new JahiaRuntimeException(e);
         }

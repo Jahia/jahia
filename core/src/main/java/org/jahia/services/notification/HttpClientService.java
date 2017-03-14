@@ -78,8 +78,6 @@ import static org.apache.commons.httpclient.HttpStatus.SC_OK;
  */
 public class HttpClientService implements ServletContextAware {
 
-    private static final String DEFAULT_KEY = "DEFAULT";
-
     private static final Logger logger = LoggerFactory.getLogger(HttpClientService.class);
 
     private static HttpClient cloneHttpClient(HttpClient source) {
@@ -131,7 +129,9 @@ public class HttpClientService implements ServletContextAware {
         return ImportSupport.isAbsoluteUrl(url);
     }
 
-    private Map<String, HttpClient> httpClients = new HashMap<>(4);
+    private HttpClient fallbackHttpClient;
+    
+    private Map<String, HttpClient> httpClients = new HashMap<>(3);
             
     private ServletContext servletContext;
 
@@ -351,20 +351,29 @@ public class HttpClientService implements ServletContextAware {
      *         if any
      */
     public HttpClient getHttpClient(String url) {
-        String key = null;
-        if (httpClients.size() > 1) {
-            if (null == url) {
-                key = httpClients.containsKey(DEFAULT_KEY) ? DEFAULT_KEY : null;
-            } else {
+        HttpClient selectedClient = null;
+        if (url == null) {
+            // we have no information about the target URL
+            selectedClient = fallbackHttpClient;
+        } else {
+            // the target URL is provided
+            // do we have a choice between multiple clients?
+            if (httpClients.size() > 1) {
                 try {
-                    key = ProxyAddressSelector.getProxyForUrl(url);
+                    String key = ProxyAddressSelector.getProxyForUrl(url);
                     logger.debug("Using proxy address {} for URL {}", key, url);
+                    selectedClient = httpClients.get(key);
                 } catch (Exception e) {
                     logger.warn(e.getMessage(), e);
                 }
             }
         }
-        return httpClients.get(key);
+
+        if (selectedClient == null) {
+            selectedClient = httpClients.get(null);
+        }
+
+        return selectedClient;
     }
 
     /**
@@ -443,29 +452,24 @@ public class HttpClientService implements ServletContextAware {
      * @param httpClient an instance of the {@link HttpClient}
      */
     public void setHttpClient(HttpClient httpClient) {
-        // bypass proxy client
+        // bypass proxy or client
         httpClients.put(null, httpClient);
 
-        HttpClient defaultClient = null;
         // HTTPS proxy client
         if (StringUtils.isNotEmpty(System.getProperty("https.proxyHost"))) {
             HttpClient httpsProxyClient = cloneHttpClient(httpClient);
             String key = initHttpClient(httpsProxyClient, "https");
             httpClients.put(key, httpsProxyClient);
-            defaultClient = httpsProxyClient;
+            fallbackHttpClient = httpsProxyClient;
         }
         
         // HTTP proxy client
         if (StringUtils.isNotEmpty(System.getProperty("http.proxyHost"))) {
             HttpClient httpProxyClient = cloneHttpClient(httpClient);
             httpClients.put(initHttpClient(httpProxyClient, "http"), httpProxyClient);
-            if (defaultClient == null) {
-                defaultClient = httpProxyClient;
+            if (fallbackHttpClient == null) {
+                fallbackHttpClient = httpProxyClient;
             }
-        }
-        
-        if (defaultClient != null) {
-            httpClients.put(DEFAULT_KEY, cloneHttpClient(defaultClient));
         }
     }
 
@@ -477,9 +481,7 @@ public class HttpClientService implements ServletContextAware {
         logger.info("Shutting down HttpClient...");
         try {
             for (Map.Entry<String, HttpClient> client : httpClients.entrySet()) {
-                if (!DEFAULT_KEY.equals(client.getKey())) {
-                    shutdown(client.getValue());
-                }
+                shutdown(client.getValue());
             }
             MultiThreadedHttpConnectionManager.shutdownAll();
         } catch (Exception e) {

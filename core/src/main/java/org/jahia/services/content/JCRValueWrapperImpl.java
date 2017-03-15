@@ -191,4 +191,13 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
             return (obj != null && obj instanceof Value && obj.equals(value));
         }
     }
+
+    @Override
+    public String toString() {
+        try {
+            return value.getString();
+        } catch (RepositoryException e) {
+            return super.toString();
+        }
+    }
 }

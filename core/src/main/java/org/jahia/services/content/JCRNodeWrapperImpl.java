@@ -1102,11 +1102,22 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
 
             objectNode.removeMixin(mixinName);
+            ExtendedNodeType mixin = NodeTypeRegistry.getInstance().getNodeType(mixinName);
+
+            for (ExtendedPropertyDefinition propertyDefinition : mixin.getDeclaredPropertyDefinitions()) {
+                if (!propertyDefinition.isInternationalized()) {
+                    continue;
+                }
+                for (NodeIterator translationNodes = objectNode.getNodes(TRANSLATION_NODES_PATTERN); translationNodes.hasNext(); ) {
+                    Node translationNode = (Node) translationNodes.next();
+                    translationNode.setProperty(propertyDefinition.getName(), (Value) null);
+                }
+            }
 
             // Removing a mixin also causes removal of any child nodes defined by the mixin.
             // In case the mixin defines any child nodes, flush the cache to ensure it does not contain any nodes
             // that has been just removed along with the mixin.
-            if (!NodeTypeRegistry.getInstance().getNodeType(mixinName).getChildNodeDefinitionsAsMap().isEmpty()) {
+            if (!mixin.getChildNodeDefinitionsAsMap().isEmpty()) {
                 getSession().flushCaches();
             }
 

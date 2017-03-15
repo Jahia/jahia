@@ -80,6 +80,7 @@
                 <portletsSelector jcr:primaryType="jnt:permission"/>
                 <searchSelector jcr:primaryType="jnt:permission"/>
                 <sitemapSelector jcr:primaryType="jnt:permission"/>
+                <siteSettingsSelector jcr:primaryType="jnt:permission"/>
             </editSelector>
 
             <engineTabs jcr:primaryType="jnt:permission">

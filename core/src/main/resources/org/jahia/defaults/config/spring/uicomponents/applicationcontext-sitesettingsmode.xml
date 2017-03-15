@@ -91,7 +91,7 @@
                             <property name="settingPath" value="$site"/>
                         </bean>
                     </property>
-                    <property name="requiredPermission" value="siteAdministrationAccess"/>
+                    <property name="requiredPermission" value="siteSettingsSelector"/>
                 </bean>
             </list>
         </property>

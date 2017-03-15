@@ -722,38 +722,26 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
                     String columnName = ((Column) node).getColumnName();
                     if (StringUtils.startsWith(columnName, "rep:facet(")
                             && !StringUtils.contains(columnName, "locale=")) {
-                        ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(
-                                selector.getNodeTypeName());
-                        ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(
-                                nodeType, selector, propertyName) : null;
-                        if (propDef != null && propDef.isInternationalized()) {
-                            if (getModificationInfo().getMode() == TraversingMode.CHECK_FOR_MODIFICATION_MODE) {
-                                getModificationInfo().setModificationNecessary(true);
-                            } else {
-                                String facetOptions = columnName.substring("rep:facet("
-                                        .length());
-                                if (languageCodes == null) {
-                                    languageCodes = getNewLanguagesPerSelector().get(
-                                            selector.getSelectorName());
+                        if (getModificationInfo().getMode() == TraversingMode.CHECK_FOR_MODIFICATION_MODE) {
+                            getModificationInfo().setModificationNecessary(true);
+                        } else {
+                            String facetOptions = columnName.substring("rep:facet(".length());
+                            if (languageCodes == null) {
+                                languageCodes = getNewLanguagesPerSelector().get(selector.getSelectorName());
+                            }
+                            String languageCode = null;
+                            for (String currentLanguageCode : languageCodes) {
+                                if (!NO_LOCALE.equals(currentLanguageCode)) {
+                                    languageCode = currentLanguageCode;
+                                    break;
                                 }
-                                String languageCode = null;
-                                for (String currentLanguageCode : languageCodes) {
-                                    if (!NO_LOCALE.equals(currentLanguageCode)) {
-                                        languageCode = currentLanguageCode;
-                                        break;
-                                    }
 
-                                }
-                                if (!StringUtils.isEmpty(languageCode)) {
-                                    columnName = "rep:facet(locale=" + languageCode
-                                            + (facetOptions.trim().length() > 1 ? "&" : "")
-                                            + facetOptions;
-                                    QueryObjectModelFactory qomFactory = getModificationInfo()
-                                            .getQueryObjectModelFactory();
-                                    node = (AbstractQOMNode) qomFactory.column(
-                                            selector.getSelectorName(), propertyName,
-                                            columnName);
-                                }
+                            }
+                            if (!StringUtils.isEmpty(languageCode)) {
+                                columnName = "rep:facet(locale=" + languageCode + (facetOptions.trim().length() > 1 ? "&" : "")
+                                        + facetOptions;
+                                QueryObjectModelFactory qomFactory = getModificationInfo().getQueryObjectModelFactory();
+                                node = (AbstractQOMNode) qomFactory.column(selector.getSelectorName(), propertyName, columnName);
                             }
                         }
                     }

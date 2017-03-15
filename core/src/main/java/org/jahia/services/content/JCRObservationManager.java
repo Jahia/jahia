@@ -496,7 +496,7 @@ public class JCRObservationManager implements ObservationManager {
         }
     }
 
-    static class EventWrapper implements Event {
+    public static class EventWrapper implements Event {
         private Event event;
         private List<String> nodeTypes;
         private String identifier;

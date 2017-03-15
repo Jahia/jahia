@@ -189,4 +189,13 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
         // allow equality test on subclasses of Value and invert equality test since value is usually a JCR-proper class which doesn't allow equality checks on subclasses
         else return obj != null && obj instanceof Value && obj.equals(value);
     }
+
+    @Override
+    public String toString() {
+        try {
+            return value.getString();
+        } catch (RepositoryException e) {
+            return super.toString();
+        }
+    }
 }

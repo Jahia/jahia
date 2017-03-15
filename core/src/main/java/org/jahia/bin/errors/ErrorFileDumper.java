@@ -207,7 +207,7 @@ public class ErrorFileDumper {
     }
 
     public static void start() {
-        if (isShutdown()) {
+        if (isShutdown() && SettingsBean.getInstance().isDumpErrorsToFiles()) {
             executorService = Executors.newSingleThreadExecutor(new LowPriorityThreadFactory());
             System.out.println("Started error file dumper executor service");
         }

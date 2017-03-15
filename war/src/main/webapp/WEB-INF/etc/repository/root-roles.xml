@@ -37,7 +37,7 @@
                 j:roleGroup="edit-role"
                 jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissionNames="components editModeAccess editModeActions editSelector managers templates view-full-wysiwyg-editor viewCategoriesTab viewContentTab viewContributeModeTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewVisibilityTab"
+                                j:permissionNames="components editModeAccess editModeActions editSelector siteSettingsSelector managers templates view-full-wysiwyg-editor viewCategoriesTab viewContentTab viewContributeModeTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewVisibilityTab"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <editor-in-chief j:hidden="false"
                              j:permissionNames="publish workflow-tasks"

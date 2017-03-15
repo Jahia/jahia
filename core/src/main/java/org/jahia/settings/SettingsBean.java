@@ -1120,6 +1120,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return dumpErrorsToFiles;
     }
 
+    public void setDumpErrorsToFiles(boolean dumpErrorsToFiles) {
+        this.dumpErrorsToFiles = dumpErrorsToFiles;
+    }
+
     public int getFileDumpMaxRegroupingOfPreviousException() {
         return fileDumpMaxRegroupingOfPreviousException;
     }

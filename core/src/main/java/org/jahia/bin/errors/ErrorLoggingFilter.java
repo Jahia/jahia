@@ -222,9 +222,7 @@ public class ErrorLoggingFilter implements Filter {
 
         logException(request, response);
 
-        if (SettingsBean.getInstance().isDumpErrorsToFiles()) {
-            dumpToFile(request);
-        }
+        dumpToFile(request);
 
         if (isMailServiceEnabled() && isEmailAlertRequired(request, response)) {
             emailAlert(request, response);

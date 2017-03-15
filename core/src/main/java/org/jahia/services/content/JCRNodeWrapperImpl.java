@@ -1090,6 +1090,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             objectNode.removeMixin(s);
             ExtendedNodeType mixin = NodeTypeRegistry.getInstance().getNodeType(s);
 
+            // Remove properties defined by the mixin, from translation nodes, if any.
             for (ExtendedPropertyDefinition propertyDefinition : mixin.getDeclaredPropertyDefinitions()) {
                 if (!propertyDefinition.isInternationalized()) {
                     continue;

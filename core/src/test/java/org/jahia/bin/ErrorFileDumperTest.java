@@ -87,7 +87,9 @@ public class ErrorFileDumperTest {
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
         FileUtils.deleteDirectory(todaysDirectory);
-        RequestLoadAverage.getInstance().stop();
+        if (RequestLoadAverage.getInstance() != null) {
+            RequestLoadAverage.getInstance().stop();
+        }
     }
 
     @After
@@ -215,13 +217,13 @@ public class ErrorFileDumperTest {
 
     @Test
     public void testDumpErrorsToFilesSetting() throws InterruptedException {
-        SettingsBean.getInstance().setDumpErrorsToFiles(false);
         logger.info("Starting testDumpErrorsToFilesSetting test...");
 
         StopWatch stopWatch = new StopWatch("testDumpErrorsToFilesSetting");
         stopWatch.start(Thread.currentThread().getName() + " generating error dumps");
 
         ErrorFileDumper.start();
+        ErrorFileDumper.setFileDumpActivated(false);
 
         generateExceptions();
 

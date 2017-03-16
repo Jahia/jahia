@@ -730,12 +730,14 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
                                 languageCodes = getNewLanguagesPerSelector().get(selector.getSelectorName());
                             }
                             String languageCode = null;
-                            for (String currentLanguageCode : languageCodes) {
-                                if (!NO_LOCALE.equals(currentLanguageCode)) {
-                                    languageCode = currentLanguageCode;
-                                    break;
-                                }
+                            if (languageCodes != null) {
+                                for (String currentLanguageCode : languageCodes) {
+                                    if (!NO_LOCALE.equals(currentLanguageCode)) {
+                                        languageCode = currentLanguageCode;
+                                        break;
+                                    }
 
+                                }
                             }
                             if (!StringUtils.isEmpty(languageCode)) {
                                 columnName = "rep:facet(locale=" + languageCode + (facetOptions.trim().length() > 1 ? "&" : "")

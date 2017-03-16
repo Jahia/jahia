@@ -44,10 +44,12 @@
 package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.*;
+
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
@@ -110,6 +112,7 @@ import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
+
 import java.net.MalformedURLException;
 import java.text.Collator;
 import java.text.ParseException;
@@ -2008,7 +2011,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             result.setInitializersValues(contentDefinition.getAllChoiceListInitializersValues(allTypes,
                     NodeTypeRegistry.getInstance().getNodeType("nt:base"), nodeWrapper, nodeWrapper.getParent(),
                     getUILocale()));
-            result.setDefaultValues(contentDefinition.getAllDefaultValues(allTypes, sessionWrapper.getRootNode().getResolveSite().getLanguagesAsLocales()));
+            result.setDefaultValues(new HashMap<String, Map<String, List<GWTJahiaNodePropertyValue>>>());
             return result;
         } catch (PathNotFoundException e) {
             // the node no longer exists

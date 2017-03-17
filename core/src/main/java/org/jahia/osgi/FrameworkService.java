@@ -101,6 +101,8 @@ public class FrameworkService implements FrameworkListener {
 
     public static final String EVENT_TOPIC_LIFECYCLE = "org/jahia/dx/lifecycle";
 
+    public static final String EVENT_TYPE_CLUSTERING_FEATURE_INSTALLED = "clusteringFeatureInstalled";
+
     public static final String EVENT_TYPE_OSGI_STARTED = "osgiContainerStarted";
 
     private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);

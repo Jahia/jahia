@@ -45,6 +45,7 @@ package org.jahia.services.content;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
@@ -84,6 +85,7 @@ import javax.jcr.security.Privilege;
 import javax.jcr.version.*;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
@@ -1060,16 +1062,65 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
 
             objectNode.removeMixin(s);
-            ExtendedNodeType mixin = NodeTypeRegistry.getInstance().getNodeType(s);
 
-            // Remove properties defined by the mixin, from translation nodes, if any.
-            for (ExtendedPropertyDefinition propertyDefinition : mixin.getDeclaredPropertyDefinitions()) {
+            NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
+            ExtendedNodeType mixin = nodeTypeRegistry.getNodeType(s);
+
+            // Remove i18n properties defined by the mixin, from translation nodes, if any.
+
+            HashSet<Boolean> unnamedTranslationPropertyCardinalitiesToRemove = new HashSet<>();
+
+            for (ExtendedPropertyDefinition propertyDefinition : mixin.getPropertyDefinitions()) {
+
                 if (!propertyDefinition.isInternationalized()) {
                     continue;
                 }
+
+                ExtendedPropertyDefinition anotherPropertyDefinition = getApplicablePropertyDefinition(propertyDefinition.getName(), propertyDefinition.getRequiredType(), propertyDefinition.isMultiple());
+
+                // If the mixin we've just removed defines an unnamed property, and there is no other type of this node defining the same i18n unnamed property,
+                // we will have to remove any properties which had been matching that unnamed property definition, from translation nodes.
+                if (propertyDefinition.getName().equals("*")) {
+                    if (anotherPropertyDefinition == null || !anotherPropertyDefinition.isInternationalized()) {
+                        unnamedTranslationPropertyCardinalitiesToRemove.add(propertyDefinition.isMultiple());
+                    }
+                    continue;
+                }
+
+                // Preserve the property in case it is also matches a definition supplied by another type of this node, besides the mixin we've just removed.
+                if (anotherPropertyDefinition != null && anotherPropertyDefinition.isInternationalized()) {
+                    continue;
+                }
+
+                // Remove the property from translation nodes.
                 for (NodeIterator translationNodes = objectNode.getNodes(TRANSLATION_NODES_PATTERN); translationNodes.hasNext(); ) {
                     Node translationNode = (Node) translationNodes.next();
                     translationNode.setProperty(propertyDefinition.getName(), (Value) null);
+                }
+            }
+
+            // Remove any properties that had been matching an i18n unnamed property definition of the mixin we've just removed, from translation nodes.
+            if (!unnamedTranslationPropertyCardinalitiesToRemove.isEmpty()) {
+                for (NodeIterator translationNodes = objectNode.getNodes(TRANSLATION_NODES_PATTERN); translationNodes.hasNext(); ) {
+                    Node translationNode = (Node) translationNodes.next();
+                    for (PropertyIterator translationProperties = translationNode.getProperties(); translationProperties.hasNext(); ) {
+                        Property translationProperty = (Property) translationProperties.next();
+                        if (!translationProperty.getDefinition().getName().equals("*")) {
+                            // The property matches translation node's own named property definition - must be preserved.
+                            continue;
+                        }
+                        if (getApplicablePropertyDefinition(translationProperty.getName(), translationProperty.getType(), translationProperty.isMultiple()) != null) {
+                            // The property matches a definition supplied by an existing type of this node rather than by the mixin we've just removed,
+                            // so the property must be preserved.
+                            continue;
+                        }
+                        for (boolean undefinedTranslationPropertyCardinalityToRemove : unnamedTranslationPropertyCardinalitiesToRemove) {
+                            if (translationProperty.isMultiple() != undefinedTranslationPropertyCardinalityToRemove) {
+                                continue;
+                            }
+                            translationProperty.remove();
+                        }
+                    }
                 }
             }
 

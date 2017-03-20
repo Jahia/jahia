@@ -361,12 +361,14 @@ public class FrameworkService implements FrameworkListener {
     }
 
     private void updateFileReferencesIfNeeded() {
-
-        String scriptPath = SettingsBean.getInstance().getJahiaVarDiskPath() + "/scripts/groovy/updateFileReferences.groovy";
+        File script = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/scripts/groovy/updateFileReferences.groovy");
+        if (!script.isFile()) {
+            return;
+        }
 
         ScriptEngine scriptEngine;
         try {
-            scriptEngine = ScriptEngineUtils.getInstance().scriptEngine(FilenameUtils.getExtension(scriptPath));
+            scriptEngine = ScriptEngineUtils.getInstance().scriptEngine(FilenameUtils.getExtension(script.getName()));
         } catch (ScriptException e) {
             throw new JahiaRuntimeException(e);
         }
@@ -376,9 +378,10 @@ public class FrameworkService implements FrameworkListener {
 
         ScriptContext scriptContext = new SimpleScriptContext();
         Bindings bindings = new SimpleBindings();
+        bindings.put("log", logger);
         bindings.put("logger", logger);
         scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
-        try (FileInputStream scriptInputStream = new FileInputStream(scriptPath);
+        try (FileInputStream scriptInputStream = new FileInputStream(script);
                 InputStreamReader scriptReader = new InputStreamReader(scriptInputStream, Charsets.UTF_8);
                 StringWriter out = new StringWriter()) {
             scriptContext.setWriter(out);

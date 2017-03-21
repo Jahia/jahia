@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -247,7 +248,7 @@
     </bean>
 
     <bean id="templatePermissionCheckFilter" class="org.jahia.services.render.filter.TemplatePermissionCheckFilter">
-        <property name="priority" value="28"/>
+        <property name="priority" value="21"/>
         <property name="description" value="Handles permissions set on the template"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>

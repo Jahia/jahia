@@ -373,18 +373,6 @@ public class JCRPublicationService extends JahiaService {
                     jcrNodeWrapper.setProperty(Constants.PUBLISHED, Boolean.TRUE);
                     jcrNodeWrapper.setProperty(Constants.LASTPUBLISHED, calendar);
                     jcrNodeWrapper.setProperty(Constants.LASTPUBLISHEDBY, userID);
-
-                    if(!jcrNodeWrapper.hasProperty(Constants.PUBLISHED) || !jcrNodeWrapper.getProperty(Constants.PUBLISHED).getBoolean()) {
-                        sourceSession.checkout(jcrNodeWrapper);
-
-                        try {
-                            JCRNodeWrapper destNode = destinationSession
-                                    .getNode(jcrNodeWrapper.getCorrespondingNodePath(destinationWorkspace));
-                            destinationSession.checkout(destNode);
-                            destNode.setProperty(Constants.PUBLISHED, Boolean.TRUE);
-                        } catch (ItemNotFoundException e) {
-                        }
-                    }
                 }
             }
             if (sourceSession.hasPendingChanges()) {
@@ -473,6 +461,17 @@ public class JCRPublicationService extends JahiaService {
             for (JCRNodeWrapper nodeWrapper : toCheckpoint) {
                 checkpoint(destinationSession, nodeWrapper, destinationVersionManager);
             }
+        } catch (RepositoryException e) {
+            for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
+                final boolean hasLastPublishedMixin = jcrNodeWrapper.isNodeType(Constants.JAHIAMIX_LASTPUBLISHED);
+                if(hasLastPublishedMixin) {
+                    jcrNodeWrapper.setProperty(Constants.PUBLISHED, Boolean.FALSE);
+                }
+            }
+            if (sourceSession.hasPendingChanges()) {
+                sourceSession.save();
+            }
+            throw e;
         } finally {
             JCRObservationManager.setEventListenersAvailableDuringPublishOnly(null);
         }

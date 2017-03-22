@@ -362,6 +362,7 @@ public class JCRPublicationService extends JahiaService {
         }
 
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
+        Map<String,Value> previousValue = new HashMap<>();
         if (updateMetadata && destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
                 if (logger.isDebugEnabled()) {
@@ -370,6 +371,9 @@ public class JCRPublicationService extends JahiaService {
 
                 final boolean hasLastPublishedMixin = jcrNodeWrapper.isNodeType(Constants.JAHIAMIX_LASTPUBLISHED);
                 if(hasLastPublishedMixin) {
+                    previousValue.put(jcrNodeWrapper.getPath() + "/"+Constants.PUBLISHED, jcrNodeWrapper.hasProperty(Constants.PUBLISHED) ? jcrNodeWrapper.getProperty(Constants.PUBLISHED).getValue() : null);
+                    previousValue.put(jcrNodeWrapper.getPath() + "/"+Constants.LASTPUBLISHED,  jcrNodeWrapper.hasProperty(Constants.LASTPUBLISHED) ? jcrNodeWrapper.getProperty(Constants.LASTPUBLISHED).getValue(): null);
+                    previousValue.put(jcrNodeWrapper.getPath() + "/"+Constants.LASTPUBLISHEDBY,  jcrNodeWrapper.hasProperty(Constants.LASTPUBLISHEDBY) ? jcrNodeWrapper.getProperty(Constants.LASTPUBLISHEDBY).getValue(): null);
                     jcrNodeWrapper.setProperty(Constants.PUBLISHED, Boolean.TRUE);
                     jcrNodeWrapper.setProperty(Constants.LASTPUBLISHED, calendar);
                     jcrNodeWrapper.setProperty(Constants.LASTPUBLISHEDBY, userID);
@@ -462,11 +466,9 @@ public class JCRPublicationService extends JahiaService {
                 checkpoint(destinationSession, nodeWrapper, destinationVersionManager);
             }
         } catch (RepositoryException e) {
-            for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
-                final boolean hasLastPublishedMixin = jcrNodeWrapper.isNodeType(Constants.JAHIAMIX_LASTPUBLISHED);
-                if(hasLastPublishedMixin) {
-                    jcrNodeWrapper.setProperty(Constants.PUBLISHED, Boolean.FALSE);
-                }
+            // Restore previous status
+            for (Map.Entry<String, Value> entry : previousValue.entrySet()) {
+                ((JCRPropertyWrapper) sourceSession.getItem(entry.getKey())).setValue(entry.getValue());
             }
             if (sourceSession.hasPendingChanges()) {
                 sourceSession.save();

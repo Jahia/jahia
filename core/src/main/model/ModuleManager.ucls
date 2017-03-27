@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<class-diagram version="1.1.10" icons="true" automaticImage="PNG" always-add-relationships="false" 
+<class-diagram version="1.1.14" icons="true" automaticImage="PNG" always-add-relationships="false" 
   generalizations="true" realizations="true" associations="true" dependencies="false" nesting-relationships="true" 
   router="FAN">  
   <interface id="1" language="java" name="org.jahia.services.modulemanager.ModuleManager" project="jahia-impl" 
@@ -149,12 +149,12 @@
     </display>  
   </class>  
   <realization id="15">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="4"/>  
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="7"/>  
   </realization>  
   <realization id="16">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="7"/>  
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="1"/>  
   </realization>  
   <association id="17">    
     <end type="SOURCE" refId="3" navigable="false">      
@@ -169,25 +169,25 @@
     <display labels="true" multiplicity="true"/>  
   </association>  
   <realization id="20">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="1"/>  
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="4"/>  
   </realization>  
-  <association id="21">    
+  <realization id="21">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="7"/>  
+  </realization>  
+  <association id="22">    
     <end type="SOURCE" refId="9" navigable="false">      
-      <attribute id="22" name="defaultBundleService">        
+      <attribute id="23" name="defaultBundleService">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="23" minimum="0" maximum="1">        
+      <multiplicity id="24" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="24">    
-    <end type="SOURCE" refId="8"/>    
-    <end type="TARGET" refId="7"/>  
-  </realization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="false" static="true"/>    

@@ -182,7 +182,7 @@ public final class BundleUtils {
      * @return the bundle display name containing module name (ID) and the version
      */
     public static String getDisplayName(Bundle bundle) {
-        return getModuleId(bundle) + " v" + getModuleVersion(bundle);
+        return getModuleId(bundle) + " v" + getModuleVersion(bundle) + " [" + bundle.getBundleId() + "]";
     }
 
     /**

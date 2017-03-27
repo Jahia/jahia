@@ -7,6 +7,7 @@
     <bean id="ModuleManager" class="org.jahia.services.modulemanager.impl.ModuleManagerImpl">
         <property name="bundleService" ref="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate"/>
         <property name="persister" ref="org.jahia.services.modulemanager.persistence.BundlePersister"/>
+        <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
     </bean>
 
     <bean id="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate" class="org.jahia.services.modulemanager.spi.impl.BundleServiceDelegate">

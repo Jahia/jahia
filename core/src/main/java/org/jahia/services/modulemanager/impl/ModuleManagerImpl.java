@@ -45,11 +45,17 @@ package org.jahia.services.modulemanager.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.core.util.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.templates.ModuleState;
+import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
@@ -65,7 +71,9 @@ import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.spi.BundleService;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -83,6 +91,73 @@ public class ModuleManagerImpl implements ModuleManager {
 
     private BundleService bundleService;
     private BundlePersister persister;
+    
+    private JahiaTemplateManagerService templateManagerService;
+
+    /**
+     * Goes over all bundles and collects non-active module bundles, which are in resolved state and where an active version is also
+     * present.
+     */
+    private static List<Bundle> getNonActiveBundlesToRefresh() {
+        List<Bundle> toBeRefreshed = new LinkedList<>();
+        FrameworkWiring frameworkWiring = BundleLifecycleUtils.getFrameworkWiring();
+
+        // collect active and resolved module bundles by symbolic name
+        Map<String, List<Bundle>> bundlesBySymbolicName = new HashMap<>();
+        for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
+            int state = bundle.getState();
+            if ((state == Bundle.ACTIVE || state == Bundle.RESOLVED) && BundleUtils.isJahiaModuleBundle(bundle)) {
+                String symbolicName = bundle.getSymbolicName();
+                List<Bundle> bundlesForSymbolicName = bundlesBySymbolicName.get(symbolicName);
+                if (bundlesForSymbolicName == null) {
+                    bundlesForSymbolicName = new LinkedList<>();
+                    bundlesBySymbolicName.put(symbolicName, bundlesForSymbolicName);
+                }
+                if (state == Bundle.ACTIVE) {
+                    // add as the first entry
+                    bundlesForSymbolicName.add(0, bundle);
+                } else {
+                    // append
+                    bundlesForSymbolicName.add(bundle);
+                }
+            }
+        }
+
+        // iterate over collected bundles to find those in state Resolved (where also an Active version exists) which we will refresh
+        for (Map.Entry<String, List<Bundle>> entry : bundlesBySymbolicName.entrySet()) {
+            List<Bundle> bundlesForSymbolicName = entry.getValue();
+            // we should have more than one version of the module
+            if (bundlesForSymbolicName.size() > 1) {
+                Bundle firstBundle = bundlesForSymbolicName.get(0);
+                // we should have an Active version of the module
+                if (firstBundle.getState() == Bundle.ACTIVE) {
+                    for (Bundle b : bundlesForSymbolicName) {
+                        // consider now the Resolved versions only as candidates for the refresh
+                        if (b.getState() == Bundle.RESOLVED) {
+                            Collection<Bundle> dependencies = frameworkWiring
+                                    .getDependencyClosure(Collections.singleton(b));
+
+                            boolean doRefresh = true;
+                            for (Bundle dependency : dependencies) {
+                                if (dependency.getSymbolicName().equals(firstBundle.getSymbolicName())
+                                        && dependency.getVersion().equals(firstBundle.getVersion())) {
+                                    // the active bundle depends on this one -> won't refresh it
+                                    doRefresh = false;
+                                    break;
+                                }
+                            }
+
+                            if (doRefresh) {
+                                toBeRefreshed.add(b);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return toBeRefreshed;
+    }
 
     /**
      * Operation callback which implementation performs the actual operation.
@@ -293,7 +368,11 @@ public class ModuleManagerImpl implements ModuleManager {
 
             @Override
             public void perform(BundleInfo info, String target) throws ModuleManagementException {
+                stopPreviousVersions(info, target);
+
                 bundleService.start(info, target);
+
+                refreshNonActiveBundles(target);
             }
         });
     }
@@ -313,6 +392,38 @@ public class ModuleManagerImpl implements ModuleManager {
                 bundleService.stop(info, target);
             }
         });
+    }
+
+    private void stopPreviousVersions(BundleInfo info, String target) {
+        JahiaTemplatesPackage activePackage = templateManagerService.getTemplatePackageRegistry()
+                .lookupById(info.getSymbolicName());
+        Bundle activeBundle = activePackage != null ? activePackage.getBundle() : null;
+        if (activeBundle != null && activeBundle.getState() == Bundle.ACTIVE) {
+            BundleInfo otherInfo = BundleInfo.fromBundle(activeBundle);
+            stopExistingVersion(info, otherInfo, target);
+        }
+
+        for (Map.Entry<Bundle, ModuleState> entry : templateManagerService.getModuleStates().entrySet()) {
+            Bundle bundle = entry.getKey();
+            if (bundle != activeBundle && bundle.getState() == Bundle.ACTIVE
+                    && bundle.getSymbolicName().equals(info.getSymbolicName())
+                    && !bundle.getVersion().toString().equals(info.getVersion())) {
+                BundleInfo otherInfo = BundleInfo.fromBundle(bundle);
+                stopExistingVersion(info, otherInfo, target);
+            }
+        }
+    }
+
+    private void stopExistingVersion(BundleInfo info, BundleInfo otherInfo, String target) {
+        String key = info.getKey();
+        String otherKey = otherInfo.getKey();
+        try {
+            logger.info("Stopping existing version of the module {} before starting {}...", otherKey, key);
+            bundleService.stop(otherInfo, target);
+            logger.info("...done stopping existing version of the module {} before starting {}", otherKey, key);
+        } catch (Exception e) {
+            logger.warn("Unable to stop existing version of the module " + otherKey + " before starting " + key, e);
+        }
     }
 
     @Override
@@ -349,6 +460,26 @@ public class ModuleManagerImpl implements ModuleManager {
         });
     }
 
+    private void refreshNonActiveBundles(String target) {
+        List<Bundle> toBeRefreshed = getNonActiveBundlesToRefresh();
+        if (!toBeRefreshed.isEmpty()) {
+            logger.info("Collected {} non-active bundle(s) to be refreshed", toBeRefreshed.size());
+            for (Bundle b : toBeRefreshed) {
+                BundleInfo info = BundleInfo.fromBundle(b);
+                String key = info.getKey();
+                logger.info("Refreshing bundle {}...", key);
+                try {
+                    bundleService.refresh(info, target);
+                    logger.info("...done refreshing bundle {}", key);
+                } catch (Exception e) {
+                    logger.warn("Error refreshing bundle " + key, e);
+                }
+            }
+
+            logger.info("...done refreshing of {} non-active bundle(s)", toBeRefreshed.size());
+        }
+    }
+
     @Override
     public Map<String, BundleService.BundleInformation> getInfo(String bundleKey, String target) throws ModuleManagementException {
         BundleInfo bundleInfo = getBundleInfo(bundleKey);
@@ -375,5 +506,9 @@ public class ModuleManagerImpl implements ModuleManager {
     public BundleService.BundleInformation getLocalInfo(String bundleKey) throws ModuleManagementException {
         BundleInfo bundleInfo = getBundleInfo(bundleKey);
         return bundleService.getLocalInfo(bundleInfo);
+    }
+
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+        this.templateManagerService = templateManagerService;
     }
 }

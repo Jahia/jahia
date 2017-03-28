@@ -147,7 +147,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
 
         boolean invert = node.hasProperty("j:invertCondition") && node.getProperty("j:invertCondition").getBoolean();
 
-        if (renderContext.isEditMode()) {
+        if (!renderContext.isEditMode()) {
             if (node.hasProperty("j:requiredMode")) {
                 String req = node.getProperty("j:requiredMode").getString();
                 if (!renderContext.getMode().equals(req) && !invert) {

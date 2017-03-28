@@ -46,11 +46,11 @@ package org.jahia.services.modulemanager.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import org.drools.core.util.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -72,6 +72,7 @@ import org.jahia.services.modulemanager.persistence.PersistentBundle;
 import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.ModuleVersion;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
@@ -93,71 +94,6 @@ public class ModuleManagerImpl implements ModuleManager {
     private BundlePersister persister;
     
     private JahiaTemplateManagerService templateManagerService;
-
-    /**
-     * Goes over all bundles and collects non-active module bundles, which are in resolved state and where an active version is also
-     * present.
-     */
-    private static List<Bundle> getNonActiveBundlesToRefresh() {
-        List<Bundle> toBeRefreshed = new LinkedList<>();
-        FrameworkWiring frameworkWiring = BundleLifecycleUtils.getFrameworkWiring();
-
-        // collect active and resolved module bundles by symbolic name
-        Map<String, List<Bundle>> bundlesBySymbolicName = new HashMap<>();
-        for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
-            int state = bundle.getState();
-            if ((state == Bundle.ACTIVE || state == Bundle.RESOLVED) && BundleUtils.isJahiaModuleBundle(bundle)) {
-                String symbolicName = bundle.getSymbolicName();
-                List<Bundle> bundlesForSymbolicName = bundlesBySymbolicName.get(symbolicName);
-                if (bundlesForSymbolicName == null) {
-                    bundlesForSymbolicName = new LinkedList<>();
-                    bundlesBySymbolicName.put(symbolicName, bundlesForSymbolicName);
-                }
-                if (state == Bundle.ACTIVE) {
-                    // add as the first entry
-                    bundlesForSymbolicName.add(0, bundle);
-                } else {
-                    // append
-                    bundlesForSymbolicName.add(bundle);
-                }
-            }
-        }
-
-        // iterate over collected bundles to find those in state Resolved (where also an Active version exists) which we will refresh
-        for (Map.Entry<String, List<Bundle>> entry : bundlesBySymbolicName.entrySet()) {
-            List<Bundle> bundlesForSymbolicName = entry.getValue();
-            // we should have more than one version of the module
-            if (bundlesForSymbolicName.size() > 1) {
-                Bundle firstBundle = bundlesForSymbolicName.get(0);
-                // we should have an Active version of the module
-                if (firstBundle.getState() == Bundle.ACTIVE) {
-                    for (Bundle b : bundlesForSymbolicName) {
-                        // consider now the Resolved versions only as candidates for the refresh
-                        if (b.getState() == Bundle.RESOLVED) {
-                            Collection<Bundle> dependencies = frameworkWiring
-                                    .getDependencyClosure(Collections.singleton(b));
-
-                            boolean doRefresh = true;
-                            for (Bundle dependency : dependencies) {
-                                if (dependency.getSymbolicName().equals(firstBundle.getSymbolicName())
-                                        && dependency.getVersion().equals(firstBundle.getVersion())) {
-                                    // the active bundle depends on this one -> won't refresh it
-                                    doRefresh = false;
-                                    break;
-                                }
-                            }
-
-                            if (doRefresh) {
-                                toBeRefreshed.add(b);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return toBeRefreshed;
-    }
 
     /**
      * Operation callback which implementation performs the actual operation.
@@ -372,7 +308,7 @@ public class ModuleManagerImpl implements ModuleManager {
 
                 bundleService.start(info, target);
 
-                refreshNonActiveBundles(target);
+                refreshNonActiveBundles(info, target);
             }
         });
     }
@@ -460,23 +396,20 @@ public class ModuleManagerImpl implements ModuleManager {
         });
     }
 
-    private void refreshNonActiveBundles(String target) {
-        List<Bundle> toBeRefreshed = getNonActiveBundlesToRefresh();
+    private void refreshNonActiveBundles(BundleInfo info, String target) {
+        List<Bundle> toBeRefreshed = getNonActiveBundlesToRefresh(info);
         if (!toBeRefreshed.isEmpty()) {
-            logger.info("Collected {} non-active bundle(s) to be refreshed", toBeRefreshed.size());
             for (Bundle b : toBeRefreshed) {
-                BundleInfo info = BundleInfo.fromBundle(b);
-                String key = info.getKey();
-                logger.info("Refreshing bundle {}...", key);
+                BundleInfo otherInfo = BundleInfo.fromBundle(b);
+                String key = otherInfo.getKey();
+                logger.info("Refreshing bundle {} as its other version {} is currently active...", key, info.getKey());
                 try {
-                    bundleService.refresh(info, target);
+                    bundleService.refresh(otherInfo, target);
                     logger.info("...done refreshing bundle {}", key);
                 } catch (Exception e) {
                     logger.warn("Error refreshing bundle " + key, e);
                 }
             }
-
-            logger.info("...done refreshing of {} non-active bundle(s)", toBeRefreshed.size());
         }
     }
 
@@ -506,6 +439,52 @@ public class ModuleManagerImpl implements ModuleManager {
     public BundleService.BundleInformation getLocalInfo(String bundleKey) throws ModuleManagementException {
         BundleInfo bundleInfo = getBundleInfo(bundleKey);
         return bundleService.getLocalInfo(bundleInfo);
+    }
+
+    /**
+     * Collects the Resolved bundles for the specified symbolic name that have to be refreshed.
+     */
+    private List<Bundle> getNonActiveBundlesToRefresh(BundleInfo info) {
+        List<Bundle> toBeRefreshed = null;
+
+        // collect active and resolved module bundles
+        SortedMap<ModuleVersion, JahiaTemplatesPackage> allModuleVersions = templateManagerService
+                .getTemplatePackageRegistry().getAllModuleVersions().get(info.getSymbolicName());
+
+        if (allModuleVersions.size() > 1) {
+            FrameworkWiring frameworkWiring = BundleLifecycleUtils.getFrameworkWiring();
+
+            for (JahiaTemplatesPackage pkg : allModuleVersions.values()) {
+                Bundle otherBundle = pkg.getBundle();
+                if (otherBundle != null && otherBundle.getState() == Bundle.RESOLVED
+                        && !otherBundle.getVersion().toString().equals(info.getVersion())) {
+
+                    // Sometimes a bundle can depends on other version of the same bundle,
+                    // doing a refresh in this case will cause an infinite loop of start/stop operations
+                    Collection<Bundle> dependencies = frameworkWiring
+                            .getDependencyClosure(Collections.singleton(otherBundle));
+
+                    boolean doRefresh = true;
+                    for (Bundle dependency : dependencies) {
+                        if (dependency.getSymbolicName().equals(info.getSymbolicName())
+                                && dependency.getVersion().toString().equals(info.getVersion())) {
+                            // the active bundle depends on this one -> won't refresh it
+                            doRefresh = false;
+                            break;
+                        }
+                    }
+
+                    if (doRefresh) {
+                        if (toBeRefreshed == null) {
+                            toBeRefreshed = new LinkedList<>();
+                        }
+                        toBeRefreshed.add(otherBundle);
+                    }
+                }
+            }
+        }
+
+        return toBeRefreshed != null ? toBeRefreshed : Collections.<Bundle>emptyList();
     }
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {

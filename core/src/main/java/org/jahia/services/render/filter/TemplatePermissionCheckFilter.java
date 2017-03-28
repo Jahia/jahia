@@ -67,7 +67,7 @@ import java.util.regex.Pattern;
 
 /**
  * Performs accessibility check for the content: permissions, required mode etc.
- *  
+ *
  * @author Thomas Draier
  */
 public class TemplatePermissionCheckFilter extends AbstractFilter {
@@ -111,7 +111,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         JCRNodeWrapper node = resource.getNode();
         if (script != null) {
             String requirePermissions = script.getView().getProperties().getProperty("requirePermissions");
-            if(requirePermissions==null) {
+            if (requirePermissions == null) {
                 requirePermissions = script.getView().getDefaultProperties().getProperty("requirePermissions");
             }
             if (requirePermissions != null) {
@@ -132,7 +132,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
 
         String nodePath = node.getPath();
         // lookup for required permission on parents for nodes under templates
-        if ( TEMPLATE_PATH_MATCHER.matcher(nodePath).matches()) {
+        if (TEMPLATE_PATH_MATCHER.matcher(nodePath).matches()) {
             // Settings nodes are only available for logged users
             if (SETTINGS_PATH_MATCHER.matcher(nodePath).matches() && !renderContext.isLoggedIn()) {
                 return "";

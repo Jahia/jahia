@@ -174,8 +174,15 @@ public class ModuleManagerImpl implements ModuleManager {
      */
     private OperationResult install(PersistentBundle info, final String target, boolean start)
             throws ModuleManagementException {
+        if (start) {
+            stopPreviousVersions(info, target);
+        }
+
         bundleService.install(info.getLocation(), target, start);
 
+        if (start) {
+            refreshNonActiveBundles(info, target);
+        }
         return OperationResult.success(toBundleInfo(info));
     }
 

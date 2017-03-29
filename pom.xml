@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses/>.
+        along with this program. If not, see <http://www.gnu.org/licenses />.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -64,7 +64,7 @@
         <connection>scm:git:git@github.com:Jahia/dxm-private.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/dxm-private.git</developerConnection>
         <url>https://github.com/Jahia/dxm-private</url>
-        <tag>JAHIA-7-1-X-X-BRANCH</tag>
+        <tag>JAHIA_7_1_2_3_RC</tag>
     </scm>
 
     <repositories>

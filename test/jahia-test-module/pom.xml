@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses/>.
+        along with this program. If not, see <http://www.gnu.org/licenses />.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -61,7 +61,7 @@
         <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module
         </developerConnection>
         <url>https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module</url>
-      <tag>HEAD</tag>
+      <tag>JAHIA_7_2_0_2_RC</tag>
   </scm>
 
     <repositories>

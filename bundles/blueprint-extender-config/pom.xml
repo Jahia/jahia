@@ -27,7 +27,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses />.
+        along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -101,7 +101,7 @@
             <version>${gemini.blueprint.version}</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.utils</artifactId>

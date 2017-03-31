@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses />.
+        along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -44,13 +44,13 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>jahia-modules</artifactId>
-        <groupId>org.jahia.modules</groupId>        
+        <groupId>org.jahia.modules</groupId>
         <version>7.3.0.0-SNAPSHOT</version>
-		<relativePath>../../../modules/pom.xml</relativePath>
+        <relativePath>../../../modules/pom.xml</relativePath>
     </parent>
     <artifactId>springbean-dummy</artifactId>
     <name>DX Test SpringBean Dummy Module</name>
@@ -62,7 +62,7 @@
         <url>https://devtools.jahia.com/svn/jahia/trunk/test/dummy-modules/springbean-dummy</url>
       <tag>HEAD</tag>
   </scm>
-    
+
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -77,7 +77,7 @@
             </snapshots>
         </repository>
     </repositories>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -87,7 +87,7 @@
                 <configuration>
                     <instructions>
                         <Jahia-Module-Type>system</Jahia-Module-Type>
-                        <Jahia-Depends>default</Jahia-Depends> 
+                        <Jahia-Depends>default</Jahia-Depends>
                     </instructions>
                 </configuration>
             </plugin>

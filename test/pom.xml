@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses />.
+        along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -72,10 +72,10 @@
     </repositories>
 
     <modules>
-		<module>core-test-framework</module>
+        <module>core-test-framework</module>
         <module>module-test-framework</module>
-        
-		<module>dummy-modules</module>        
+
+        <module>dummy-modules</module>
         <module>jahia-test-module</module>
     </modules>
 </project>

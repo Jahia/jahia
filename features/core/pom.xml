@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses />.
+        along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -73,7 +73,7 @@
             <artifactId>pax-web-api</artifactId>
             <version>${pax.web.api.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-jsp</artifactId>
@@ -85,7 +85,7 @@
             <artifactId>org.apache.felix.fileinstall</artifactId>
             <version>${felix.fileinstall.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.webconsole</artifactId>
@@ -97,7 +97,7 @@
             <artifactId>org.jahia.bundles.blueprint.extender.config</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
@@ -115,7 +115,7 @@
             <artifactId>org.jahia.bundles.http.bridge</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.webconsole.config</artifactId>
@@ -139,7 +139,7 @@
             <artifactId>jahia-taglib</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.jspapiusage.repackaging</artifactId>

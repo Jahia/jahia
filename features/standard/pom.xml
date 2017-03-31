@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses />.
+        along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -48,7 +48,7 @@
     <parent>
         <groupId>org.jahia.features</groupId>
         <artifactId>jahia-features</artifactId>
-        <version>7.2.0.3-SNAPSHOT</version>
+        <version>7.3.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dx-standard</artifactId>
@@ -59,21 +59,21 @@
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-gemini-blueprint</artifactId>
-            <version>7.2.0.3-SNAPSHOT</version>
+            <version>7.3.0.0-SNAPSHOT</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-jax-rs</artifactId>
-            <version>7.2.0.3-SNAPSHOT</version>
+            <version>7.3.0.0-SNAPSHOT</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
         <dependency>
             <groupId>org.jahia.features</groupId>
             <artifactId>dx-core</artifactId>
-            <version>7.2.0.3-SNAPSHOT</version>
+            <version>7.3.0.0-SNAPSHOT</version>
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>

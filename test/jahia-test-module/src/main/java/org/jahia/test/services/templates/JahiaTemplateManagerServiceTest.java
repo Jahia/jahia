@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -144,9 +144,9 @@ public class JahiaTemplateManagerServiceTest {
         }
         assertNotNull(articlePackage);
         String modulePath = "/modules/" + articlePackage.getIdWithVersion();
-        templateManagerService.installModule(articlePackage.getId(), SITE_CONTENT_ROOT_NODE, "root");
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         JCRSessionWrapper session = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        templateManagerService.installModule(articlePackage, SITE_CONTENT_ROOT_NODE, session);
         JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITE_CONTENT_ROOT_NODE);
         assertTrue(siteNode.getInstalledModules().contains(moduleToBeDeployed));
         JCRNodeWrapper node = session.getNode(modulePath);

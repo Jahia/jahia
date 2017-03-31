@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -60,19 +60,22 @@ import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * Performs accessibility check for the content: permissions, required mode etc.
- *  
+ *
  * @author Thomas Draier
  */
 public class TemplatePermissionCheckFilter extends AbstractFilter {
 
     private JahiaUserManagerService userManagerService;
+
+    private static final Pattern TEMPLATE_PATH_MATCHER = Pattern.compile("^\\/modules\\/[^/]*\\/[^/]*\\/templates\\/.*");
+    private static final Pattern SETTINGS_PATH_MATCHER = Pattern.compile("^\\/modules\\/[^/]*\\/[^/]*\\/templates\\/[^/]*-settings-base\\/.*");
 
     class RequiredModeException extends AccessDeniedException {
 
@@ -108,7 +111,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         JCRNodeWrapper node = resource.getNode();
         if (script != null) {
             String requirePermissions = script.getView().getProperties().getProperty("requirePermissions");
-            if(requirePermissions==null) {
+            if (requirePermissions == null) {
                 requirePermissions = script.getView().getDefaultProperties().getProperty("requirePermissions");
             }
             if (requirePermissions != null) {
@@ -125,6 +128,21 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             }
         } else {
             throw new TemplateNotFoundException("Unable to resolve script: "+resource.getResolvedTemplate());
+        }
+
+        String nodePath = node.getPath();
+        // lookup for required permission on parents for nodes under templates
+        if (TEMPLATE_PATH_MATCHER.matcher(nodePath).matches()) {
+            // Settings nodes are only available for logged users
+            if (SETTINGS_PATH_MATCHER.matcher(nodePath).matches() && !renderContext.isLoggedIn()) {
+                return "";
+            }
+            // get the fist parent node that has a jmix:requiredPermission
+            node = node.isNodeType("jmix:requiredPermissions") ? node : JCRContentUtils.getParentOfType(node, "jmix:requiredPermissions");
+            // if no templates has been found, no permissions is set
+            if (node == null) {
+                return null;
+            }
         }
 
         boolean invert = node.hasProperty("j:invertCondition") && node.getProperty("j:invertCondition").getBoolean();

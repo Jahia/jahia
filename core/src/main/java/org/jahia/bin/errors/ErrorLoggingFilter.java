@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -99,6 +99,9 @@ public class ErrorLoggingFilter implements Filter {
 
 
     protected static void dumpToFile(HttpServletRequest request) {
+        if (ErrorFileDumper.isShutdown()) {
+            return;
+        }
         try {
             Throwable t = getException(request);
             int code = (Integer) request.getAttribute("javax.servlet.error.status_code");
@@ -107,9 +110,7 @@ public class ErrorLoggingFilter implements Filter {
                 logger.debug("Status code below 500, will not dump error to file");
                 return;
             }
-            if (!ErrorFileDumper.isShutdown()) {
-                ErrorFileDumper.dumpToFile(t, request);
-            }
+            ErrorFileDumper.dumpToFile(t, request);
         } catch (Exception throwable) {
             logger.warn("Error creating error file", throwable);
         }
@@ -222,9 +223,7 @@ public class ErrorLoggingFilter implements Filter {
 
         logException(request, response);
 
-        if (SettingsBean.getInstance().isDumpErrorsToFiles()) {
-            dumpToFile(request);
-        }
+        dumpToFile(request);
 
         if (isMailServiceEnabled() && isEmailAlertRequired(request, response)) {
             emailAlert(request, response);
@@ -237,9 +236,7 @@ public class ErrorLoggingFilter implements Filter {
      */
     @Override
     public void init(FilterConfig cfg) throws ServletException {
-        if (ErrorFileDumper.isShutdown()) {
-            ErrorFileDumper.start();
-        }
+        // do nothing
     }
 
     protected static boolean isEmailAlertRequired(HttpServletRequest request, HttpServletResponse response) {

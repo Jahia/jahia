@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -43,28 +43,7 @@
  */
 package org.jahia.bundles.extender.jahiamodules.fileinstall;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TreeSet;
-
-import org.apache.felix.fileinstall.Artifact;
-import org.apache.felix.fileinstall.ArtifactInstaller;
-import org.apache.felix.fileinstall.ArtifactTransformer;
-import org.apache.felix.fileinstall.ArtifactUrlTransformer;
-import org.apache.felix.fileinstall.CustomHandler;
+import org.apache.felix.fileinstall.*;
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
@@ -76,6 +55,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.UrlResource;
+
+import java.io.*;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Handler class for DX modules which processes artifacts from the FileInstall service.
@@ -301,6 +284,11 @@ public class ModuleFileInstallHandler implements CustomHandler {
                 logger.info("File {} for bundle {} has been removed from file system", artifact.getPath(),
                         artifact.getBundleId());
             }
+        }
+        // The file can be deleted at shutdown of the JVM on Windows, check if the file still exists after removal
+        if (artifact.getPath().exists()) {
+            logger.warn("File {} still exists on file system, it will be removed at JVM shutdown", artifact.getPath());
+            artifact.getPath().deleteOnExit();
         }
 
     }

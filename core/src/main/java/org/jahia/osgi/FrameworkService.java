@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -44,6 +44,10 @@
 package org.jahia.osgi;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,8 +55,15 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+import javax.script.SimpleBindings;
+import javax.script.SimpleScriptContext;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 import org.apache.karaf.main.Main;
 import org.apache.karaf.util.config.PropertiesLoader;
@@ -60,6 +71,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.ScriptEngineUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
@@ -69,6 +81,8 @@ import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.PropertyPlaceholderHelper;
+
+import com.google.common.base.Charsets;
 
 /**
  * OSGi framework service. This class is responsible for setting up and starting the embedded Karaf OSGi runtime.
@@ -84,9 +98,11 @@ public class FrameworkService implements FrameworkListener {
         private Holder() {
         }
     }
-    
+
     public static final String EVENT_TOPIC_LIFECYCLE = "org/jahia/dx/lifecycle";
-    
+
+    public static final String EVENT_TYPE_CLUSTERING_FEATURE_INSTALLED = "clusteringFeatureInstalled";
+
     public static final String EVENT_TYPE_OSGI_STARTED = "osgiContainerStarted";
 
     private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
@@ -136,7 +152,7 @@ public class FrameworkService implements FrameworkListener {
         if (instance.frameworkStartLevelChanged && instance.fileInstallStarted) {
             // send synchronous event about startup
             sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_OSGI_STARTED), false);
-            
+
             // both pre-requisites for stratup are fulfilled
             // notify any threads waiting
             instance.notifyAll();
@@ -147,7 +163,7 @@ public class FrameworkService implements FrameworkListener {
     /**
      * Initiate synchronous or asynchronous delivery of an OSGi event using {@link EventAdmin} service. If synchronous delivery is
      * requested, this method does not return to the caller until delivery of the event is completed.
-     * 
+     *
      * @param topic the topic of the event
      * @param properties the event's properties (may be {@code null}). A property whose key is not of type {@code String} will be ignored.
      * @param asynchronous if <code>true</code> an event is delivered asynchronously; in case of <code>false</code> this method does not
@@ -294,6 +310,15 @@ public class FrameworkService implements FrameworkListener {
     }
 
     public void start() {
+
+        try {
+            // Try to figure out if the installation folder has been moved/renamed, and update file references in configuration/auxiliary files correspondingly if so.
+            updateFileReferencesIfNeeded();
+        } catch (Exception e) {
+            // In case the attempt fails for some reason, still give the application a chance to start.
+            logger.error("Error updating file references", e);
+        }
+
         startTime = System.currentTimeMillis();
         logger.info("Starting OSGi platform service");
         startKaraf();
@@ -333,5 +358,36 @@ public class FrameworkService implements FrameworkListener {
             }
         }
         logger.info("OSGi framework stopped");
+    }
+
+    private void updateFileReferencesIfNeeded() {
+        File script = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/scripts/groovy/updateFileReferences.groovy");
+        if (!script.isFile()) {
+            return;
+        }
+
+        ScriptEngine scriptEngine;
+        try {
+            scriptEngine = ScriptEngineUtils.getInstance().scriptEngine(FilenameUtils.getExtension(script.getName()));
+        } catch (ScriptException e) {
+            throw new JahiaRuntimeException(e);
+        }
+        if (scriptEngine == null) {
+            throw new IllegalStateException("No script engine available");
+        }
+
+        ScriptContext scriptContext = new SimpleScriptContext();
+        Bindings bindings = new SimpleBindings();
+        bindings.put("log", logger);
+        bindings.put("logger", logger);
+        scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+        try (FileInputStream scriptInputStream = new FileInputStream(script);
+                InputStreamReader scriptReader = new InputStreamReader(scriptInputStream, Charsets.UTF_8);
+                StringWriter out = new StringWriter()) {
+            scriptContext.setWriter(out);
+            scriptEngine.eval(scriptReader, scriptContext);
+        } catch (ScriptException | IOException e) {
+            throw new JahiaRuntimeException(e);
+        }
     }
 }

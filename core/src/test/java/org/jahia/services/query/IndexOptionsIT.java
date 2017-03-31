@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -128,10 +128,8 @@ public class IndexOptionsIT extends AbstractJUnitTest {
                 queries.add(new QueryToTest("//element(*, test:fieldsWithIndexOptions)[jcr:like(@nonIndexedSmallText, 'n%')]", Query.XPATH, 0));
                 queries.add(new QueryToTest("select * from [test:excludeFromIndexContent]", Query.JCR_SQL2, 0));
                 queries.add(new QueryToTest("//element(*, test:excludeFromIndexContent)", Query.XPATH, 0));
-                queries.add(new QueryToTest("select * from [test:excludeFromIndexContentWithPath]", Query.JCR_SQL2, 0));
-                queries.add(new QueryToTest("//element(*, test:excludeFromIndexContentWithPath)", Query.XPATH, 0));
-                queries.add(new QueryToTest("select * from [test:excludeFromIndexContentWithRegexp]", Query.JCR_SQL2, 0));
-                queries.add(new QueryToTest("//element(*, test:excludeFromIndexContentWithRegexp)", Query.XPATH, 0));
+                queries.add(new QueryToTest("select * from [test:excludeFromIndexContentMixin]", Query.JCR_SQL2, 1));
+                queries.add(new QueryToTest("//element(*, test:excludeFromIndexContentMixin)", Query.XPATH, 1));
 
                 for (QueryToTest queryToTest : queries) {
                     String query = queryToTest.query;

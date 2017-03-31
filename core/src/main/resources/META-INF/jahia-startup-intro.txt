@@ -29,7 +29,7 @@
                    d a t e      :    @BUILD_DATE@ 
 
 
-   Copyright 2002-2016 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved
+   Copyright 2002-2017 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved
 
 
  *******************************************************************************

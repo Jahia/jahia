@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -73,6 +73,7 @@ import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
 import org.apache.jackrabbit.core.stats.StatManager;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
@@ -398,6 +399,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             permanentMoveForVanityURL = getBoolean("permanentMoveForVanityURL", true);
 
             dumpErrorsToFiles = getBoolean("dumpErrorsToFiles", true);
+            ErrorFileDumper.setFileDumpActivated(dumpErrorsToFiles);
             fileDumpMaxRegroupingOfPreviousException = getInt("fileDumpMaxRegroupingOfPreviousException", 500);
             useJstackForThreadDumps = getBoolean("useJstackForThreadDumps", false);
 
@@ -1118,6 +1120,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public boolean isDumpErrorsToFiles() {
         return dumpErrorsToFiles;
+    }
+
+    public void setDumpErrorsToFiles(boolean dumpErrorsToFiles) {
+        this.dumpErrorsToFiles = dumpErrorsToFiles;
     }
 
     public int getFileDumpMaxRegroupingOfPreviousException() {

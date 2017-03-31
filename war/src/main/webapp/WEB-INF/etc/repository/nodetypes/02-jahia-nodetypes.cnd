@@ -357,7 +357,7 @@
  - j:organization (string)
  - j:function (string)
  - j:about (string,richtext)
- - j:email (string) < '^$|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}'
+ - j:email (string) < '^$|[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}'
  - j:skypeID (string)
  - j:twitterID (string)
  - j:facebookID (string)
@@ -433,6 +433,7 @@
  - j:invertCondition (boolean)
 
 [jnt:pageTemplate] > jnt:template
+ - j:templateThumbnail (weakreference,picker[type='image']) < jmix:image
 
 [jnt:contentTemplate] > jnt:template
  - j:applyOn (string, choicelist[subnodetypes = 'nt:base']) nofulltext multiple

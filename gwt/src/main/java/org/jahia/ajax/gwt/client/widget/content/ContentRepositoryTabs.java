@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -95,6 +95,7 @@ public class ContentRepositoryTabs extends LeftComponent {
     private ContentPanel savedSearchPanel;
     private ListView<GWTJahiaNode> queryList;
     private GWTManagerConfiguration config;
+    private boolean tabExpanded;
 
     /**
      * Constructor (UI)
@@ -110,10 +111,30 @@ public class ContentRepositoryTabs extends LeftComponent {
         browseTabITem = new TabItem(Messages.get("browse.label", "Browse"));
         searchTabITem = new TabItem(Messages.get("label.search", "Search"));
 
+        ChangeAccordionListener<ComponentEvent> accordionListener = new ChangeAccordionListener<ComponentEvent>();
+        // init main panel and add accordions
+        browseComponent = new LayoutContainer(new AccordionLayout());
+        browseComponent.setScrollMode(Style.Scroll.NONE);
+        browseComponent.setBorders(true);
         for (GWTRepository repo : config.getRepositories()) {
-            repositories.add(new RepositoryTab(this, repo, selectedPaths, config));
+            final RepositoryTab tab = new RepositoryTab(this, repo, selectedPaths, config);
+            repositories.add(tab);
+            browseComponent.add(tab);
+            // if no configured tab to open, open tab first tab
+            if ((config.getSelectedAccordion() != null && tab.getRepository().getKey().equals(config.getSelectedAccordion())) ||
+                    (config.getSelectedAccordion() == null && repositories.size() == 1)) {
+                tab.expand();
+            }
+            tab.addListener(Events.Expand, accordionListener);
+            tab.getHeader().addListener(Events.OnClick, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    if (!tab.isExpanded()) {
+                        tab.refresh(null);
+                    }
+                }
+            });
         }
-
         ////////////////////////////
         // SEARCH PANEL ACCORDION //
         ////////////////////////////
@@ -182,26 +203,6 @@ public class ContentRepositoryTabs extends LeftComponent {
             }
         }));
 
-        // init main panel and add accordions
-        ChangeAccordionListener<ComponentEvent> accordionListener = new ChangeAccordionListener<ComponentEvent>();
-        browseComponent = new LayoutContainer(new AccordionLayout());
-        browseComponent.setScrollMode(Style.Scroll.NONE);
-        browseComponent.setBorders(true);
-        for (final RepositoryTab tab : repositories) {
-            browseComponent.add(tab);
-            if (tab.getRepository().getKey().equals(config.getSelectedAccordion())) {
-                tab.setExpanded(true);
-            }
-            tab.addListener(Events.Expand, accordionListener);
-            tab.getHeader().addListener(Events.OnClick, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    if (!tab.isExpanded()) {
-                        tab.refresh(null);
-                    }
-                }
-            });
-        }
         browseComponent.add(savedSearchPanel);
         browseTabITem.setLayout(new FitLayout());
         browseTabITem.add(browseComponent);
@@ -305,6 +306,17 @@ public class ContentRepositoryTabs extends LeftComponent {
             }
         }
         return null;
+    }
+
+    /**
+     * Expand the selected tab if no tab already expanded
+     * @param tab
+     */
+    public void expandTab(RepositoryTab tab) {
+        if (!tabExpanded) {
+            tab.expand();
+            tabExpanded = true;
+        }
     }
 
     public Component getComponent() {

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -62,9 +62,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Test unit for error file dumper sub system.
@@ -83,12 +81,15 @@ public class ErrorFileDumperTest {
         Date now = new Date();
         todaysDirectory = new File(SettingsBean.getErrorDir(), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
         logger.info("Error directory is " + todaysDirectory.getAbsolutePath());
+        new SettingsBean(null, new Properties(), Collections.<String>emptyList());
     }
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
         FileUtils.deleteDirectory(todaysDirectory);
-        RequestLoadAverage.getInstance().stop();
+        if (RequestLoadAverage.getInstance() != null) {
+            RequestLoadAverage.getInstance().stop();
+        }
     }
 
     @After
@@ -212,6 +213,30 @@ public class ErrorFileDumperTest {
 
         Assert.assertTrue("Error dump directory does not exist !", todaysDirectory.exists());
         Assert.assertTrue("Error dump directory should have error files in it !", todaysDirectory.listFiles().length > 0);
+    }
+
+    @Test
+    public void testDumpErrorsToFilesSetting() throws InterruptedException {
+        logger.info("Starting testDumpErrorsToFilesSetting test...");
+
+        StopWatch stopWatch = new StopWatch("testDumpErrorsToFilesSetting");
+        stopWatch.start(Thread.currentThread().getName() + " generating error dumps");
+
+        ErrorFileDumper.start();
+        ErrorFileDumper.setFileDumpActivated(false);
+
+        generateExceptions();
+
+        stopWatch.stop();
+        long totalTime = stopWatch.getTotalTimeMillis();
+        double averageTime = ((double) totalTime) / ((double) LOOP_COUNT);
+        logger.info("Milliseconds per exception = " + averageTime);
+        logger.info(stopWatch.prettyPrint());
+
+        ErrorFileDumper.shutdown(10000L);
+
+        SettingsBean.getInstance().setDumpErrorsToFiles(true);
+        Assert.assertFalse("Error dump directory should not exist !", todaysDirectory.exists());
     }
 
     @Test

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -51,6 +51,7 @@ package org.jahia.services.sites;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
@@ -83,12 +84,15 @@ import java.util.*;
  */
 public class JahiaSitesService extends JahiaService {
 
+    // authorized chars
+    private static final String AUTHORIZED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-";
+    private static final String DEFAULT_SITE_PROPERTY = "j:defaultSite";
+    private static Logger logger = LoggerFactory.getLogger(JahiaSitesService.class);
+
+    private static final String[] TRANSLATOR_NODES_PATTERN = new String[] {"translator-*"};
+
     public static final String SYSTEM_SITE_KEY = "systemsite";
     public static final String SITES_JCR_PATH = "/sites";
-
-    private static final String AUTHORIZED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-";
-    private static final String[] TRANSLATOR_NODES_PATTERN = new String[] {"translator-*"};
-    private static final Logger logger = LoggerFactory.getLogger(JahiaSitesService.class);
 
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
@@ -177,12 +181,35 @@ public class JahiaSitesService extends JahiaService {
         return list;
     }
 
-    @Override
+    /**
+     * Returns first found site node under <code>/sites</code> considering the list of sites to be skipped.
+     * 
+     * @param session
+     *            current JCR session
+     * @return first found node under <code>/sites</code> considering the list of sites to be skipped
+     * @param skippedSites
+     *            an array of site keys for sites to be skipped
+     * @throws RepositoryException
+     *             in case of an error
+     */
+    public JCRSiteNode getFirstSiteFound(JCRSessionWrapper session, String... skippedSites) throws RepositoryException {
+        NodeIterator ni = session.getNode(SITES_JCR_PATH).getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper siteNode = (JCRNodeWrapper) ni.next();
+            if (siteNode.isNodeType(Constants.JAHIANT_VIRTUALSITE) && !ArrayUtils.contains(skippedSites, siteNode.getName())) {
+                return (JCRSiteNode) siteNode;
+            }
+        }
+        return null;
+    }
+
     public void start() throws JahiaInitializationException {
+        // do nothing
     }
 
     @Override
     public void stop() {
+        // do nothing
     }
 
     /**
@@ -594,19 +621,6 @@ public class JahiaSitesService extends JahiaService {
         String serverName = siteToRemove.getServerName();
 
         try {
-
-            // If site to remove is default, elect a new default site
-            String newDefaultSiteKey = null;
-            if (siteToRemove.isDefault()) {
-                List<JCRSiteNode> siteList = getSitesNodeList();
-                for (JCRSiteNode site : siteList) {
-                    if(!site.getSiteKey().equals(SYSTEM_SITE_KEY) && !site.getSiteKey().equals(siteToRemove.getSiteKey())) {
-                        newDefaultSiteKey = site.getSiteKey();
-                        break;
-                    }
-                }
-            }
-
             // First delete all groups
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
 
@@ -624,8 +638,6 @@ public class JahiaSitesService extends JahiaService {
             });
 
             // Now let's delete the site.
-
-            final String newDefaultSiteKeyFinal = newDefaultSiteKey;
             JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {
 
                 @Override
@@ -634,12 +646,16 @@ public class JahiaSitesService extends JahiaService {
                     if (!sites.isCheckedOut()) {
                         session.checkout(sites);
                     }
-                    if (newDefaultSiteKeyFinal != null) {
-                        setDefaultSite((JCRSiteNode) sites.getNode(newDefaultSiteKeyFinal), session);
-                    } else {
-                        setDefaultSite(null, session);
+                    JCRNodeWrapper siteNode = sites.getNode(siteKeyToRemove);
+                    // check if we need to update the default site
+                    if (Constants.EDIT_WORKSPACE.equals(session.getWorkspace().getName()) && StringUtils
+                            .equals(sites.getPropertyAsString(DEFAULT_SITE_PROPERTY), siteNode.getIdentifier())) {
+                        // our site is the default one: we search for a next candidate for the default site
+                        // if there is no one found the "j:defaultSite" is removed from the /sites node
+                        sites.setProperty(DEFAULT_SITE_PROPERTY,
+                                getFirstSiteFound(session, SYSTEM_SITE_KEY, siteKeyToRemove));
                     }
-                    sites.getNode(siteKeyToRemove).remove();
+                    siteNode.remove();
                     session.save();
                     return true;
                 }
@@ -718,9 +734,9 @@ public class JahiaSitesService extends JahiaService {
 
     public JahiaSite getDefaultSite(JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper node = session.getNode(SITES_JCR_PATH);
-        if (node.hasProperty("j:defaultSite")) {
+        if (node.hasProperty(DEFAULT_SITE_PROPERTY)) {
             try {
-                return (JCRSiteNode) node.getProperty("j:defaultSite").getNode();
+                return (JCRSiteNode) node.getProperty(DEFAULT_SITE_PROPERTY).getNode();
             } catch (RepositoryException e) {
                 List<JCRSiteNode> sitesNodeList = getSitesNodeList(session);
                 for (JCRSiteNode jcrSiteNode : sitesNodeList) {
@@ -758,9 +774,9 @@ public class JahiaSitesService extends JahiaService {
         }
         if (site != null) {
             JCRNodeWrapper s = node.getNode(site.getSiteKey());
-            node.setProperty("j:defaultSite", s);
-        } else if (node.hasProperty("j:defaultSite")) {
-            node.getProperty("j:defaultSite").remove();
+            node.setProperty(DEFAULT_SITE_PROPERTY, s);
+        } else if (node.hasProperty(DEFAULT_SITE_PROPERTY)) {
+            node.getProperty(DEFAULT_SITE_PROPERTY).remove();
         }
     }
 
@@ -873,8 +889,12 @@ public class JahiaSitesService extends JahiaService {
                 JahiaSite jahiaSite = getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY, session);
                 // update the system site only if it does not yet contain at least one of the site languages
                 Set<String> jahiaSiteLanguages = new HashSet<String>(jahiaSite.getLanguages());
-                if (!jahiaSiteLanguages.containsAll(site.getLanguages())) {
-                    jahiaSiteLanguages.addAll(site.getLanguages());
+
+                Set<String> siteLanguages = new HashSet<>(site.getLanguages());
+                siteLanguages.addAll(site.getInactiveLanguages());
+
+                if (!jahiaSiteLanguages.containsAll(siteLanguages)) {
+                    jahiaSiteLanguages.addAll(siteLanguages);
                     jahiaSite.setLanguages(jahiaSiteLanguages);
                     return true;
                 }

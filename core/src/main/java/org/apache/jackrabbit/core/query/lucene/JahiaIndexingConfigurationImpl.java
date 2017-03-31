@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -51,6 +51,7 @@ import org.apache.jackrabbit.core.state.ItemStateException;
 import org.apache.jackrabbit.core.state.ItemStateManager;
 import org.apache.jackrabbit.core.state.NodeState;
 import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.NameFactory;
 import org.apache.jackrabbit.spi.commons.conversion.NameResolver;
 import org.apache.jackrabbit.spi.commons.conversion.ParsingNameResolver;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
@@ -59,7 +60,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.util.Version;
 import org.jahia.api.Constants;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.LuceneUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,9 +67,11 @@ import org.w3c.dom.*;
 import org.w3c.dom.CharacterData;
 
 import javax.jcr.NamespaceException;
+import javax.jcr.NamespaceRegistry;
 import javax.jcr.RepositoryException;
 import java.lang.reflect.Constructor;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Jahia specific {@link IndexingConfiguration} implementation.
@@ -205,16 +207,7 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
             } else if (nodeName.equals("analyzer-registry")) {
                 processAnalyzerRegistryConfiguration(configNode);
             } else if (nodeName.equals("exclude") && configNode.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element) configNode;
-                String nodeType = element.getAttribute("nodetype");
-                if (StringUtils.isNotEmpty(nodeType)) {
-                    if (excludesTypesByPath.isEmpty()) {
-                        excludesTypesByPath = new HashSet<>();
-                    }
-                    String path = element.getAttribute("path");
-                    Boolean isRegexp = Boolean.valueOf(element.getAttribute("isRegexp"));
-                    excludesTypesByPath.add(new ExcludedType(nodeType, path, isRegexp));
-                }
+                processExcludeConfiguration((Element) configNode, context.getNamespaceRegistry());
             }
         }
     }
@@ -333,6 +326,33 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
             return null;
         }
     }
+    
+    private void processExcludeConfiguration(Element element, NamespaceRegistry namespaceRegistry) throws RepositoryException {
+        String nodeType = element.getAttribute("nodetype");
+        if (StringUtils.isNotEmpty(nodeType)) {
+            if (excludesTypesByPath.isEmpty()) {
+                excludesTypesByPath = new HashSet<>();
+            }
+            String path = element.getAttribute("path");
+            Boolean isRegexp = Boolean.valueOf(element.getAttribute("isRegexp"));
+            NameFactory nf = NameFactoryImpl.getInstance();
+            Name nodeTypeName = null;
+            try {
+                if (!nodeType.startsWith("{")) {
+                    nodeTypeName = nf.create(namespaceRegistry.getURI(StringUtils.substringBefore(nodeType, ":")),
+                            StringUtils.substringAfter(nodeType, ":"));
+                } else {
+                    nodeTypeName = nf.create(nodeType);
+                }
+            } catch (NamespaceException e) {
+                logger.error("Cannot parse namespace for " + nodeType, e);
+            } catch (IllegalArgumentException iae) {
+                logger.error("Illegal node type name: " + nodeType, iae);
+            }
+            excludesTypesByPath.add(new ExcludedType(nodeTypeName, path, isRegexp));
+        }
+    }
+
 
     private Set initPropertyCollectionFrom(Node configNode, String childNameToAdd, NameResolver resolver) {
         final NodeList childNodes = configNode.getChildNodes();
@@ -424,29 +444,39 @@ public class JahiaIndexingConfigurationImpl extends IndexingConfigurationImpl {
     }
 
     /**
-     * inner object to handle exlued types in index configuration
+     * inner object to handle excluded types in index configuration
      */
     class ExcludedType {
-        private String type;
+        private Name typeName;
         private String path;
-        private boolean regexp;
+        private Pattern regexpPathPattern;
 
-        ExcludedType(String type, String path, boolean regexp) {
-            this.type = type;
+        ExcludedType(Name typeName, String path, boolean regexp) {
+            this.typeName = typeName;
             this.path = path;
-            this.regexp = regexp;
+            if (regexp) {
+                regexpPathPattern = Pattern.compile(path);
+            }
         }
-
-        boolean matchNode(String nodeTypeToCheck) throws RepositoryException {
-            return NodeTypeRegistry.getInstance().getNodeType(nodeTypeToCheck).isNodeType(type);
+        
+        boolean matchesNodeType(NodeState nodeState) throws RepositoryException {
+            Name primary = nodeState.getNodeTypeName();
+            if (primary.equals(typeName)) {
+                return true;
+            }
+            Set<Name> mixins = nodeState.getMixinTypeNames();
+            if (mixins.contains(typeName)) {
+                return true;
+            }
+            return false;
         }
 
         boolean matchPath(String pathToCheck) {
             if (path == null) {
                 return true;
             }
-            if (regexp) {
-                return pathToCheck.matches(path);
+            if (regexpPathPattern != null) {
+                return regexpPathPattern.matcher(pathToCheck).matches();
             } else {
                 return StringUtils.startsWith(pathToCheck, path);
             }

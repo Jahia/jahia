@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -94,7 +94,6 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
 import javax.jcr.version.VersionException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1123,7 +1122,7 @@ public class ContentManagerHelper {
                     newName = findAvailableName(parent, newName);
                 }
                 if (parent.hasNode(newName)) {
-                    throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.file.exists", uiLocale));
+                    throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.file.exists", uiLocale, newName));
                 }
                 UploadedPendingFile item = fileStorage.getRequired(httpSessionID, tmpName);
                 try {

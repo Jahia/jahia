@@ -1,11 +1,11 @@
-/*
+/**
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -387,10 +387,13 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         if (objectNode.isNodeType("jnt:translation")) {
             objectNode = (NodeImpl) objectNode.getParent();
         }
-        JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession("live");
-        if (checkVisibility && currentUserSession.itemExists(objectNode.getPath()) &&
-                !VisibilityService.getInstance().matchesConditions(currentUserSession.getNode(objectNode.getPath()))) {
-            throw new ItemNotFoundException(node.getNodeId().toString());
+        
+        if (checkVisibility) {
+            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession("live");
+            if (currentUserSession.itemExists(objectNode.getPath())
+                    && !VisibilityService.getInstance().matchesConditions(currentUserSession.getNode(objectNode.getPath()))) {
+                throw new ItemNotFoundException(node.getNodeId().toString());
+            }
         }
         return objectNode;
     }

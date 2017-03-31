@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -43,13 +43,13 @@
  */
 package org.jahia.services.content.decorator;
 
-import org.apache.commons.collections.list.UnmodifiableList;
-import org.apache.commons.collections.set.UnmodifiableSet;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.templates.TemplatePackageRegistry;
@@ -60,6 +60,11 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
+
 import java.util.*;
 
 import static org.jahia.services.sites.SitesSettings.*;
@@ -73,10 +78,43 @@ import static org.jahia.services.sites.SitesSettings.*;
  */
 public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     private static final Logger logger = LoggerFactory.getLogger(JCRSiteNode.class);
+    
+    private static final String CANNOT_GET_SITE_PROPERTY = "Cannot get site property "; 
+    private static final String CANNOT_SET_SITE_PROPERTY = "Cannot set site property ";
 
+    private static List<String> toUnmodifiableList(String[] values) {
+        if (values == null || values.length == 0) {
+            return Collections.emptyList();
+        }
+        List<String> list = new LinkedList<>();
+        for (String v : values) {
+            list.add(v);
+        }
+
+        return Collections.unmodifiableList(list);
+    }
+
+    private static Set<String> toUnmodifiableSet(String[] values) {
+        if (values == null || values.length == 0) {
+            return Collections.emptySet();
+        }
+        Set<String> set = new HashSet<>();
+        for (String v : values) {
+            set.add(v);
+        }
+
+        return Collections.unmodifiableSet(set);
+    }
+
+    private Set<String> activeLiveLanguages;
+    
+    private List<Locale> activeLiveLanguagesAsLocales;    
+    
     private Set<String> inactiveLiveLanguages;
 
     private Set<String> inactiveLanguages;
+    
+    private List<Locale> inactiveLanguagesAsLocales;
 
     private String defaultLanguage;
     
@@ -97,6 +135,10 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     private String serverName;
 
     private JahiaTemplatesPackage templatePackage;
+    
+    private List<String> installedModules;
+    
+    private Set<String> installedModulesWithDependencies;
 
     public JCRSiteNode(JCRNodeWrapper node) {
         super(node);
@@ -105,36 +147,23 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     /**
      * @return list of inactive live languages
      */
+    @Override
     public Set<String> getInactiveLiveLanguages() {
-        return getInactiveLanguages(inactiveLiveLanguages, SitesSettings.INACTIVE_LIVE_LANGUAGES);
+        if (inactiveLiveLanguages == null) {
+            inactiveLiveLanguages = getLanguagesInProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES);
+        }
+        return inactiveLiveLanguages;
     }
 
     /**
      * @return list of inactive languages
      */
+    @Override
     public Set<String> getInactiveLanguages() {
-        return getInactiveLanguages(inactiveLanguages,SitesSettings.INACTIVE_LANGUAGES);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Set<String> getInactiveLanguages(Set<String> languages,String propertyName) {
-        if (languages == null) {
-            Set<String> langs = new HashSet<String>();
-            try {
-                if (hasProperty(propertyName)) {
-                    Value[] values = getProperty(propertyName).getValues();
-                    for (Value value : values) {
-                        langs.add(value.getString());
-                    }
-                }
-                languages = UnmodifiableSet.decorate(langs);
-            } catch (RepositoryException e) {
-                logger.error("Cannot get site property",e);
-                return null;
-            }
+        if (inactiveLanguages == null) {
+            inactiveLanguages = getLanguagesInProperty(SitesSettings.INACTIVE_LANGUAGES);
         }
-
-        return languages;
+        return inactiveLanguages;
     }
 
     /**
@@ -159,9 +188,12 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      * @return a set of active site languages
      */
     public Set<String> getActiveLiveLanguages() {
-        Set<String> langs = new HashSet<String>(getLanguages()) ;
-        langs.removeAll(getInactiveLiveLanguages());
-        return langs;
+        if (activeLiveLanguages == null) {
+            Set<String> langs = new HashSet<>(getLanguages());
+            langs.removeAll(getInactiveLiveLanguages());
+            activeLiveLanguages = langs;
+        }
+        return activeLiveLanguages;
     }
 
     /**
@@ -170,7 +202,10 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      * @return a List of Locale elements
      */
     public List<Locale> getActiveLiveLanguagesAsLocales() {
-        return getLanguagesAsLocales(getActiveLiveLanguages());
+        if (activeLiveLanguagesAsLocales == null) {
+            activeLiveLanguagesAsLocales = getLanguagesAsLocales(getActiveLiveLanguages());
+        }
+        return activeLiveLanguagesAsLocales;
     }
 
     /**
@@ -179,22 +214,24 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      * @return a List of Locale elements
      */
     public List<Locale> getInactiveLanguagesAsLocales() {
-        return getLanguagesAsLocales(getInactiveLiveLanguages());
+        if (inactiveLanguagesAsLocales == null) {
+            inactiveLanguagesAsLocales = getLanguagesAsLocales(getInactiveLiveLanguages());
+        }
+        return inactiveLanguagesAsLocales;
     }
 
-    @SuppressWarnings("unchecked")
     private List<Locale> getLanguagesAsLocales(Set<String> languages) {
-        List<Locale> localeList = new ArrayList<Locale>();
+        List<Locale> localeList = new ArrayList<>();
         if (languages != null) {
             for (String language : languages) {
                 Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(language);
                 localeList.add(tempLocale);
             }
-
         }
-        return UnmodifiableList.decorate(localeList);
+        return Collections.unmodifiableList(localeList);
     }
 
+    @Override
     public String getDefaultLanguage() {
         if (defaultLanguage == null) {
             try {
@@ -202,7 +239,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                     defaultLanguage = getProperty(SitesSettings.DEFAULT_LANGUAGE).getString();
                 }
             } catch (RepositoryException e) {
-                logger.error("Cannot get site property",e);
+                logger.error(CANNOT_GET_SITE_PROPERTY + SitesSettings.DEFAULT_LANGUAGE, e);
             }
         }
         return defaultLanguage;
@@ -218,7 +255,8 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
             while (ni.hasNext()) {
                 JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
                 if (next.hasProperty("j:isHomePage") && next.getProperty("j:isHomePage").getBoolean()) {
-                    return (home = next);
+                    home = next;
+                    return home;
                 }
             }
             if (hasNode("home")) {
@@ -234,27 +272,15 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                 return getProperty(HTML_MARKUP_FILTERING_TAGS).getString();
             }
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property " + HTML_MARKUP_FILTERING_TAGS, e);
+            logger.error(CANNOT_GET_SITE_PROPERTY + HTML_MARKUP_FILTERING_TAGS, e);
         }
         return null;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public Set<String> getLanguages() {
         if (languages == null) {
-            Set<String> langs = new HashSet<String>() ;
-            try {
-                if (hasProperty(SitesSettings.LANGUAGES)) {
-                    Value[] values = getProperty(SitesSettings.LANGUAGES).getValues();
-                    for (Value value : values) {
-                        langs.add(value.getString());
-                    }
-                }
-                languages = UnmodifiableSet.decorate(langs);
-            } catch (RepositoryException e) {
-                logger.error("Cannot get site property",e);
-                return null;
-            }
+            languages = getLanguagesInProperty(SitesSettings.LANGUAGES);
         }
         return languages;
     }
@@ -263,138 +289,157 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      *
      * @return an List of Locale elements.
      */
+    @Override
     public List<Locale> getLanguagesAsLocales() {
         if (languagesAsLocales == null) {
-            Set<String> languages = getLanguages();
-    
-            List<Locale> localeList = new ArrayList<Locale>();
-            if (languages != null) {
-                for (String language : languages) {
-                    Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(language);
-                    localeList.add(tempLocale);
-                }
-    
-            }
-            languagesAsLocales = localeList;
+            languagesAsLocales = getLanguagesAsLocales(getLanguages());
         }
-
         return languagesAsLocales;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public Set<String> getMandatoryLanguages() {
         if (mandatoryLanguages == null) {
-            Set<String> langs = new HashSet<String>() ;
-            try {
-                if (hasProperty(SitesSettings.MANDATORY_LANGUAGES)) {
-                    Value[] values = getProperty(SitesSettings.MANDATORY_LANGUAGES).getValues();
-                    for (Value value : values) {
-                        langs.add(value.getString());
-                    }
-                }
-                mandatoryLanguages = UnmodifiableSet.decorate(langs);
-            } catch (RepositoryException e) {
-                logger.error("Cannot get site property",e);
-                return null;
-            }
+            mandatoryLanguages = getLanguagesInProperty(SitesSettings.MANDATORY_LANGUAGES);
         }
         return mandatoryLanguages;
     }
 
+    private Set<String> getLanguagesInProperty(String property) {
+        Set<String> langs = new HashSet<>();
+        try {
+            if (hasProperty(property)) {
+                Value[] values = getProperty(property).getValues();
+                for (Value value : values) {
+                    langs.add(value.getString());
+                }
+            }
+            langs = Collections.unmodifiableSet(langs);
+        } catch (RepositoryException e) {
+            logger.error(CANNOT_GET_SITE_PROPERTY + property, e);
+        }
+        return langs;
+    }
+
+    @Override
     public JCRSiteNode getResolveSite() throws RepositoryException {
         return this;
     }
 
+    @Override
     public String getServerName() {
         if (serverName == null) {
             try {
-                if (hasProperty("j:serverName")) {
-                    serverName = getProperty("j:serverName").getString();
+                if (hasProperty(SitesSettings.SERVER_NAME)) {
+                    serverName = getProperty(SitesSettings.SERVER_NAME).getString();
                 }
             } catch (RepositoryException e) {
-                logger.error("Cannot get site property",e);
+                logger.error(CANNOT_GET_SITE_PROPERTY + SitesSettings.SERVER_NAME, e);
                 return null;
             }
         }
-        
+
         return serverName;
     }
 
+    @Override
     public String getSiteKey() {
         return getName();
     }
 
+    @Override
     public String getTemplateFolder() {
         if (templateFolder == null) {
+            String retrievedTemplateFolder = null;
             if (getPath().startsWith("/modules")) {
-                templateFolder = getName();
+                retrievedTemplateFolder = getName();
             } else {
                 try {
-                    if (hasProperty("j:templatesSet")) {
-                        templateFolder = getProperty("j:templatesSet").getValue().getString();
-                    } else if (hasProperty("j:installedModules")) {
-                        for (Value value : getProperty("j:installedModules").getValues()) {
-                            JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(value.getString());
-                            if (templatePackage != null) {
-                                if (StringUtils.equals(templatePackage.getModuleType(), "templatesSet")) {
-                                    templateFolder = value.getString();
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    retrievedTemplateFolder = getTemplateFolderForSite();
                 } catch (RepositoryException e) {
-                    logger.error("Cannot get site property",e);
+                    logger.error(CANNOT_GET_SITE_PROPERTY, e);
+                }
+            }
+            templateFolder = StringUtils.substringBefore(retrievedTemplateFolder, ":");
+        }
+        return templateFolder;
+    }
+    
+    private String getTemplateFolderForSite() throws RepositoryException {
+        String retrievedTemplateFolder = null;
+        if (hasProperty(SitesSettings.TEMPLATES_SET)) {
+            retrievedTemplateFolder = getProperty(SitesSettings.TEMPLATES_SET).getString();
+        } else if (hasProperty(SitesSettings.INSTALLED_MODULES)) {
+            for (Value value : getProperty(SitesSettings.INSTALLED_MODULES).getValues()) {
+                JahiaTemplatesPackage modulesTemplatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                        .getTemplatePackage(value.getString());
+                if (modulesTemplatePackage != null
+                        && StringUtils.equals(modulesTemplatePackage.getModuleType(), "templatesSet")) {
+                    retrievedTemplateFolder = value.getString();
+                    break;
                 }
             }
         }
-        return StringUtils.substringBefore(templateFolder,":");
+        return retrievedTemplateFolder;
     }
 
+    @Override
     public List<String> getInstalledModules() {
-        List<String> modules = new ArrayList<String>();
-        try {
+        if (installedModules == null) {
+            List<String> modules;
             if (getPath().startsWith("/modules")) {
+                modules = new ArrayList<>();
                 modules.add(getName());
-            } else if (hasProperty("j:installedModules")) {
-                Value[] v = getProperty("j:installedModules").getValues();
+            } else {
+                modules = getInstalledModulesFromProperty();
+            }
+            installedModules = modules;
+        }
+        return installedModules;
+    }
+
+    private List<String> getInstalledModulesFromProperty() {
+        List<String> modules = new ArrayList<>();
+        try {
+            if (hasProperty(SitesSettings.INSTALLED_MODULES)) {
+                Value[] v = getProperty(SitesSettings.INSTALLED_MODULES).getValues();
                 for (int i = 0; i < v.length; i++) {
                     Value value = v[i];
-                    modules.add(StringUtils.substringBefore(value.getString(),":"));
+                    modules.add(StringUtils.substringBefore(value.getString(), ":"));
                 }
             }
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property", e);
+            logger.error(CANNOT_GET_SITE_PROPERTY + SitesSettings.INSTALLED_MODULES, e);
         }
         return modules;
     }
-
+    
     /**
      * Returns a set of all installed modules for this site, their direct and transitive dependencies (the whole dependency tree).
      * 
      * @return a set of all installed modules for this site, their direct and transitive dependencies (the whole dependency tree)
      */
     public Set<String> getInstalledModulesWithAllDependencies() {
-        Set<String> modules = new LinkedHashSet<String>(getInstalledModules());
-        List<String> keys = new ArrayList<String>(modules);
-        TemplatePackageRegistry reg = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                .getTemplatePackageRegistry();
-        for (int i = 0; i < keys.size(); i++) {
-            String key = keys.get(i);
-            JahiaTemplatesPackage aPackage = reg.lookupById(key);
-            if (aPackage != null) {
+        if (installedModulesWithDependencies == null) {
+            Set<String> modules = new LinkedHashSet<>(getInstalledModules());
+            List<String> keys = new ArrayList<>(modules);
+            TemplatePackageRegistry reg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry();
+            for (int i = 0; i < keys.size(); i++) {
+                String key = keys.get(i);
+                JahiaTemplatesPackage aPackage = reg.lookupById(key);
+                if (aPackage == null) {
+                    logger.debug("Couldn't find module '{}' which is a direct or transitive dependency of the site '{}'", key, getName());
+                    continue;
+                }
                 for (JahiaTemplatesPackage depend : aPackage.getDependencies()) {
-                    if (!modules.contains(depend.getId())) {
-                        modules.add(depend.getId());
+                    if (modules.add(depend.getId())) {
                         keys.add(depend.getId());
                     }
                 }
-            } else if (logger.isDebugEnabled()) {
-                logger.debug("Couldn't find module '" + key
-                        + "' which is a direct or transitive dependency of the site '" + getName() + "'");
             }
+            installedModulesWithDependencies = modules;
         }
-        return modules;
+        return installedModulesWithDependencies;
     }
 
     /**
@@ -402,28 +447,21 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      * @return
      */
     public List<String> getAllInstalledModules() {
-        List<String> modules = new ArrayList<String>();
+        List<String> modules = getInstalledModulesFromProperty();
         try {
-            if (hasProperty("j:installedModules")) {
-                Value[] v = getProperty("j:installedModules").getValues();
-                for (int i = 0; i < v.length; i++) {
-                    Value value = v[i];
-                    modules.add(StringUtils.substringBefore(value.getString(),":"));
-                }
-            }
-            if (hasProperty("j:templatesSet")) {
-                final JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(
-                        getProperty("j:templatesSet").getString());
-                if (templatePackage != null) {
-                    for (JahiaTemplatesPackage dependency : templatePackage.getDependencies()) {
-                    if(!modules.contains(dependency.getId())) {
-                        modules.add(dependency.getId());
+            if (hasProperty(SitesSettings.TEMPLATES_SET)) {
+                final JahiaTemplatesPackage templatesSetPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                        .getTemplatePackageById(getProperty(SitesSettings.TEMPLATES_SET).getString());
+                if (templatesSetPackage != null) {
+                    for (JahiaTemplatesPackage dependency : templatesSetPackage.getDependencies()) {
+                        if (!modules.contains(dependency.getId())) {
+                            modules.add(dependency.getId());
+                        }
                     }
                 }
             }
-            }
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property", e);
+            logger.error(CANNOT_GET_SITE_PROPERTY + SitesSettings.TEMPLATES_SET, e);
         }
         return modules;
     }
@@ -433,6 +471,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      *
      * @return the corresponding template set name of this virtual site
      */
+    @Override
     public String getTemplatePackageName() {
         JahiaTemplatesPackage pkg = getTemplatePackage();
         return pkg != null ? pkg.getName() : null;
@@ -452,11 +491,12 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
         return templatePackage;
     }
 
+    @Override
     public String getTitle() {
         try {
-            return getProperty("j:title").getString();
+            return getProperty(Constants.TITLE).getString();
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
+            logger.error(CANNOT_GET_SITE_PROPERTY + Constants.TITLE, e);
             return null;
         }
     }
@@ -467,11 +507,12 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                 return getProperty(HTML_MARKUP_FILTERING_ENABLED).getBoolean();
             }
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property " + HTML_MARKUP_FILTERING_ENABLED, e);
+            logger.error(CANNOT_GET_SITE_PROPERTY + HTML_MARKUP_FILTERING_ENABLED, e);
         }
         return false;
     }
 
+    @Override
     public boolean isMixLanguagesActive() {
         if (mixLanguagesActive == null) {
             mixLanguagesActive = false;
@@ -480,22 +521,22 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                     mixLanguagesActive = getProperty(SitesSettings.MIX_LANGUAGES_ACTIVE).getBoolean();
                 }
             } catch (RepositoryException e) {
-                logger.error("Cannot get site property",e);
+                logger.error(CANNOT_GET_SITE_PROPERTY + SitesSettings.MIX_LANGUAGES_ACTIVE, e);
             }
         }
         return mixLanguagesActive;
     }
 
-
+    @Override
     public boolean isAllowsUnlistedLanguages() {
         if (allowsUnlistedLanguages == null) {
             allowsUnlistedLanguages = false;
             try {
-                if (hasProperty("j:allowsUnlistedLanguages")) {
-                    allowsUnlistedLanguages = getProperty("j:allowsUnlistedLanguages").getBoolean();
+                if (hasProperty(SitesSettings.ALLOWS_UNLISTED_LANGUAGES)) {
+                    allowsUnlistedLanguages = getProperty(SitesSettings.ALLOWS_UNLISTED_LANGUAGES).getBoolean();
                 }
             } catch (RepositoryException e) {
-                logger.error("Cannot get site property",e);
+                logger.error(CANNOT_GET_SITE_PROPERTY + SitesSettings.ALLOWS_UNLISTED_LANGUAGES, e);
             }
         }
         return allowsUnlistedLanguages;
@@ -507,19 +548,24 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                 return getProperty(WCAG_COMPLIANCE_CHECKING_ENABLED).getBoolean();
             }
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property " + WCAG_COMPLIANCE_CHECKING_ENABLED, e);
+            logger.error(CANNOT_GET_SITE_PROPERTY + WCAG_COMPLIANCE_CHECKING_ENABLED, e);
         }
         return false;
     }
-
+    
+    @Override
     public void setDefaultLanguage(String defaultLanguage) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
+            ensureSiteInDefaultWorkspace();
             setProperty(SitesSettings.DEFAULT_LANGUAGE, defaultLanguage);
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
+            logger.error("Cannot set default language", e);
+        }
+    }
+    
+    private void ensureSiteInDefaultWorkspace() throws RepositoryException {
+        if ("live".equals(getSession().getWorkspace().getName())) {
+            throw new UnsupportedOperationException("Get site in default workspace");
         }
     }
 
@@ -530,12 +576,11 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      * @throws JahiaException when an error occured while storing the modified
      *                        site language settings values.
      */
+    @Override
     public void setLanguages(Set<String> languages) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
-            List<Value> l = new ArrayList<Value>();
+            ensureSiteInDefaultWorkspace();
+            List<Value> l = new ArrayList<>();
             for (String s : languages) {
                 if (LanguageCodeConverters.LANGUAGE_PATTERN.matcher(s).matches()) {
                     l.add(getSession().getValueFactory().createValue(s));
@@ -547,23 +592,22 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
             this.inactiveLanguages = null;
             this.inactiveLiveLanguages = null;
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
+            logger.error("Cannot set languages", e);
         }
     }
 
+    @Override
     public void setMandatoryLanguages(Set<String> mandatoryLanguages) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
-            List<Value> l = new ArrayList<Value>();
+            ensureSiteInDefaultWorkspace();
+            List<Value> l = new ArrayList<>();
             for (String s : mandatoryLanguages) {
                 l.add(getSession().getValueFactory().createValue(s));
             }
 
             setProperty(SitesSettings.MANDATORY_LANGUAGES, l.toArray(new Value[l.size()]));
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
+            logger.error("Cannot set mandatory languages", e);
         }
     }
 
@@ -572,27 +616,24 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      *
      * @param mixLanguagesActive
      */
+    @Override
     public void setMixLanguagesActive(boolean mixLanguagesActive) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
+            ensureSiteInDefaultWorkspace();
             setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE,mixLanguagesActive);
             this.mixLanguagesActive = mixLanguagesActive;
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
+            logger.error("Cannot set " + SitesSettings.MIX_LANGUAGES_ACTIVE, e);
         }
     }
 
     public void setAllowsUnlistedLanguages(Boolean allowsUnlistedLanguages) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
-            setProperty("j:allowsUnlistedLanguages",allowsUnlistedLanguages);
+            ensureSiteInDefaultWorkspace();
+            setProperty(SitesSettings.ALLOWS_UNLISTED_LANGUAGES,allowsUnlistedLanguages);
             this.allowsUnlistedLanguages = allowsUnlistedLanguages;
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
+            logger.error(CANNOT_SET_SITE_PROPERTY + SitesSettings.ALLOWS_UNLISTED_LANGUAGES, e);
         }
     }
 
@@ -602,11 +643,11 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public String getDescription() {
         try {
-            if (hasProperty("j:description")) {
-                return getProperty("j:description").getString();
+            if (hasProperty(Constants.DESCRIPTION)) {
+                return getProperty(Constants.DESCRIPTION).getString();
             }
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
+            logger.error(CANNOT_GET_SITE_PROPERTY + Constants.DESCRIPTION, e);
         }
         return null;
     }
@@ -619,7 +660,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public boolean isDefault() {
         try {
-            return getParent().getProperty("j:defaultSite").getString().equals(getIdentifier());
+            return getParent().getProperty(SitesSettings.DEFAULT_SITE).getString().equals(getIdentifier());
         } catch (RepositoryException e) {
             logger.debug(e.getMessage(), e);
         }
@@ -634,10 +675,8 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setDescription(String description) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
-            setProperty("j:description",description);
+            ensureSiteInDefaultWorkspace();
+            setProperty(Constants.DESCRIPTION,description);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -651,17 +690,15 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setInactiveLanguages(Set<String> inactiveLanguages) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
-            List<Value> l = new ArrayList<Value>();
+            ensureSiteInDefaultWorkspace();
+            List<Value> l = new ArrayList<>();
             for (String s : inactiveLanguages) {
                 l.add(getSession().getValueFactory().createValue(s));
             }
 
             setProperty(SitesSettings.INACTIVE_LANGUAGES, l.toArray(new Value[l.size()]));
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
+            logger.error(CANNOT_SET_SITE_PROPERTY + SitesSettings.INACTIVE_LANGUAGES, e);
         }
     }
 
@@ -673,44 +710,38 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setInactiveLiveLanguages(Set<String> inactiveLiveLanguages) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
-            List<Value> l = new ArrayList<Value>();
+            ensureSiteInDefaultWorkspace();
+            List<Value> l = new ArrayList<>();
             for (String s : inactiveLiveLanguages) {
                 l.add(getSession().getValueFactory().createValue(s));
             }
 
             setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, l.toArray(new Value[l.size()]));
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
+            logger.error(CANNOT_SET_SITE_PROPERTY + SitesSettings.INACTIVE_LIVE_LANGUAGES, e);
         }
     }
 
     @Override
     public void setInstalledModules(List<String> installedModules) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
-            List<Value> l = new ArrayList<Value>();
+            ensureSiteInDefaultWorkspace();
+            List<Value> l = new ArrayList<>();
             for (String s : installedModules) {
                 l.add(getSession().getValueFactory().createValue(s));
             }
 
-            setProperty("j:installedModules", l.toArray(new Value[l.size()]));
+            setProperty(SitesSettings.INSTALLED_MODULES, l.toArray(new Value[l.size()]));
         } catch (RepositoryException e) {
-            logger.error("Cannot get site property",e);
+            logger.error(CANNOT_SET_SITE_PROPERTY + SitesSettings.INSTALLED_MODULES, e);
         }
     }
 
     @Override
     public void setAllowsUnlistedLanguages(boolean allowsUnlistedLanguages) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
-            setProperty("j:allowsUnlistedLanguages",allowsUnlistedLanguages);
+            ensureSiteInDefaultWorkspace();
+            setProperty(SitesSettings.ALLOWS_UNLISTED_LANGUAGES,allowsUnlistedLanguages);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -722,10 +753,8 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setServerName(String name) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
-            setProperty("j:serverName", name);
+            ensureSiteInDefaultWorkspace();
+            setProperty(SitesSettings.SERVER_NAME, name);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -734,10 +763,8 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public void setTitle(String value) {
         try {
-            if (getSession().getWorkspace().getName().equals("live")) {
-                throw new UnsupportedOperationException("Get site in default workspace");
-            }
-            setProperty("j:title", value);
+            ensureSiteInDefaultWorkspace();
+            setProperty(Constants.TITLE, value);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -746,5 +773,56 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     @Override
     public String getJCRLocalPath() {
         return getPath();
+    }
+
+    @Override
+    public JCRPropertyWrapper setProperty(String s, String value) throws ValueFormatException, VersionException,
+            LockException, ConstraintViolationException, RepositoryException {
+        if (SitesSettings.DEFAULT_LANGUAGE.equals(s)) {
+            defaultLanguage = value;
+        } else if (SitesSettings.TEMPLATES_SET.equals(s)) {
+            templateFolder = null;
+        } else if (SitesSettings.SERVER_NAME.equals(s)) {
+            serverName = value;
+        }
+
+        return super.setProperty(s, value);
+    }
+
+    @Override
+    public JCRPropertyWrapper setProperty(String s, boolean value) throws ValueFormatException, VersionException,
+            LockException, ConstraintViolationException, RepositoryException {
+        if (SitesSettings.MIX_LANGUAGES_ACTIVE.equals(s)) {
+            mixLanguagesActive = value;
+        } else if (SitesSettings.ALLOWS_UNLISTED_LANGUAGES.equals(s)) {
+            allowsUnlistedLanguages = value;
+        }
+        
+        return super.setProperty(s, value);
+    }
+    
+    @Override
+    public JCRPropertyWrapper setProperty(String s, String[] values) throws ValueFormatException, VersionException,
+            LockException, ConstraintViolationException, RepositoryException {
+        if (SitesSettings.INACTIVE_LANGUAGES.equals(s)) {
+            inactiveLanguages = toUnmodifiableSet(values);
+        } else if (SitesSettings.INACTIVE_LIVE_LANGUAGES.equals(s)) {
+            inactiveLiveLanguages = toUnmodifiableSet(values);
+            inactiveLanguagesAsLocales = getLanguagesAsLocales(inactiveLiveLanguages);
+            activeLiveLanguages = null;
+            activeLiveLanguagesAsLocales = null;
+        } else if (SitesSettings.LANGUAGES.equals(s)) {
+            languages = toUnmodifiableSet(values);
+            this.languagesAsLocales = getLanguagesAsLocales(languages);
+            activeLiveLanguages = null;
+            activeLiveLanguagesAsLocales = null;
+        } else if (SitesSettings.MANDATORY_LANGUAGES.equals(s)) {
+            mandatoryLanguages = toUnmodifiableSet(values);
+        } else if (SitesSettings.INSTALLED_MODULES.equals(s)) {
+            installedModules = toUnmodifiableList(values);
+            installedModulesWithDependencies = null;
+        }
+
+        return super.setProperty(s, values);
     }
 }

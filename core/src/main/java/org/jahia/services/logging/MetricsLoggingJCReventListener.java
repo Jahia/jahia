@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -47,17 +47,19 @@ import org.slf4j.Logger;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.JCREventIterator;
 import org.jahia.services.content.JCRObservationManager;
+import org.jahia.services.content.JCRObservationManager.EventWrapper;
 import org.json.JSONObject;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * JCR listener that logs repository events to the metrics logging service.
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
  *        Created : 24 nov. 2009
  */
@@ -99,8 +101,8 @@ public class MetricsLoggingJCReventListener extends DefaultEventListener {
                 Event event = events.nextEvent();
                 switch (event.getType()) {
                     case Event.NODE_ADDED:
-                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "nodeCreated",
-                                new JSONObject(event.getInfo()).toString());
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), getNodeType(event), "nodeCreated",
+                                getInfoAsJson(event));
                         break;
                     case Event.NODE_MOVED:
                         /* From the JCR 2.0 Spec :
@@ -118,25 +120,25 @@ public class MetricsLoggingJCReventListener extends DefaultEventListener {
                            has keys srcChildRelPath and destChildRelPath with values corresponding to the parameters
                            passed to the orderBefore method, as specified in the Javadoc.
                         */
-                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "nodeMoved",
-                                new JSONObject(event.getInfo()).toString());
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), getNodeType(event), "nodeMoved",
+                                getInfoAsJson(event));
                         break;
                     case Event.NODE_REMOVED:
-                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "nodeDeleted",
-                                new JSONObject(event.getInfo()).toString());
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), getNodeType(event), "nodeDeleted",
+                                getInfoAsJson(event));
                         break;
                     case Event.PROPERTY_ADDED:
-                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "propertyAdded",
-                                new JSONObject(event.getInfo()).toString());
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), getNodeType(event), "propertyAdded",
+                                getInfoAsJson(event));
                         break;
                     case Event.PROPERTY_CHANGED:
                         // @todo we might want to add the new value if available, so that we can track updates more finely ?
-                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "propertyChanged",
-                                new JSONObject(event.getInfo()).toString());
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), getNodeType(event), "propertyChanged",
+                                getInfoAsJson(event));
                         break;
                     case Event.PROPERTY_REMOVED:
-                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), "", "propertyRemoved",
-                                new JSONObject(event.getInfo()).toString());
+                        loggingService.logContentEvent(event.getUserID(), "", "", event.getIdentifier(), event.getPath(), getNodeType(event), "propertyRemoved",
+                                getInfoAsJson(event));
                         break;
                 }
             } catch (RepositoryException e) {
@@ -145,4 +147,22 @@ public class MetricsLoggingJCReventListener extends DefaultEventListener {
 
         }
     }
+
+    private String getInfoAsJson(Event event) throws RepositoryException {
+        @SuppressWarnings("rawtypes")
+        Map info = event.getInfo();
+        return info != null && info.size() > 0 ? new JSONObject(info).toString() : "{}";
+    }
+
+    private String getNodeType(Event event) {
+        String nodeType = null;
+        if (event instanceof EventWrapper) {
+            List<String> nodeTypes = ((EventWrapper) event).getNodeTypes();
+            if (nodeTypes != null && nodeTypes.size() > 0) {
+                nodeType = nodeTypes.get(0);
+            }
+        }
+        return nodeType != null ? nodeType : "";
+    }
+
 }

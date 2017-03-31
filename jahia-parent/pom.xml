@@ -7,7 +7,7 @@
 
                                     http://www.jahia.com
 
-        Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+        Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
 
         THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
         1/GPL OR 2/JSEL
@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses />.
+        along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -74,7 +74,7 @@
         <maven>3.0</maven>
     </prerequisites>
     <properties>
-        <year>2016</year>
+        <year>2017</year>
         <!-- general encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -82,7 +82,7 @@
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.2.13.RELEASE</spring.version>
         <springwebflow-version>2.4.1.RELEASE</springwebflow-version>
-        <jackrabbit.version>2.4.5-jahia13-SNAPSHOT</jackrabbit.version>
+        <jackrabbit.version>2.4.5-jahia13</jackrabbit.version>
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
@@ -445,6 +445,7 @@
                             <excludes>
                                 <exclude>src/main/java/name/fraser/**</exclude>
                                 <exclude>src/main/java/org/apache/catalina/**</exclude>
+                                <exclude>src/main/java/org/springframework/core/serializer/**</exclude>
                             </excludes>
                             <useDefaultExcludes>true</useDefaultExcludes>
                             <mapping>
@@ -560,7 +561,7 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.7.7.201606060606</version>
+                        <version>0.7.9</version>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>
@@ -877,6 +878,13 @@
                     <artifactId>maven-bundle-plugin</artifactId>
                     <groupId>org.apache.felix</groupId>
                     <version>2.5.3</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>biz.aQute.bnd</groupId>
+                            <artifactId>bndlib</artifactId>
+                            <version>2.3.0-jahia</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

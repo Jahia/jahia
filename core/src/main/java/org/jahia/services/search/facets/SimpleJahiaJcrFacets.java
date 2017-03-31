@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -83,10 +83,13 @@ import org.apache.solr.search.QueryParsing;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.util.DateMathParser;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService;
+import org.jahia.services.content.nodetypes.renderer.NodeReferenceChoiceListRenderer;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +98,7 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.io.IOException;
+import java.text.Collator;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -443,68 +447,90 @@ public class SimpleJahiaJcrFacets {
     private NamedList<Object> ensureSortingAndNameResolution(String fieldSort,
             NamedList<Object> values, ExtendedPropertyDefinition fieldPropertyType,
             String facetValueRenderer, Locale locale, String fieldName) {
-        ChoiceListRenderer renderer = !StringUtils.isEmpty(facetValueRenderer) ? ChoiceListRendererService
-                .getInstance().getRenderers().get(facetValueRenderer)
-                : null;
-                if (FieldNames.PROPERTIES.equals(fieldName)) {
-                    NamedList<Object> resolvedValues = new NamedList<Object>();
-                    for (Map.Entry<String, Object> facetValue : values) {
-                        String facetValueKey = facetValue.getKey(); 
-                        facetValueKey = propertyFieldPrefix.matcher(facetValueKey).replaceFirst("$1") + "##q->##" + facetValue.getKey();
-                        resolvedValues.add(facetValueKey, facetValue.getValue());
-                    }
-                    values = resolvedValues;
-                }
-                if (fieldPropertyType.getRequiredType() == PropertyType.NAME) {
-                    NamedList<Object> resolvedValues = new NamedList<Object>();
-                    for (Map.Entry<String, Object> facetValue : values) {
-                        String facetValueKey = facetValue.getKey();                
-                        Matcher matcher = nameFieldPrefix.matcher(facetValueKey);
-                        if (matcher.matches()) {
-                            String nsPrefix = matcher.group(1);
-                            try {
-                                nsPrefix = session.getNamespacePrefix(nsMappings.getURI(nsPrefix));
-                            } catch (RepositoryException e) {
-                                // use the unconverted prefix
-                            }
-                            StringBuilder facetValueBuilder = new StringBuilder();
-                            facetValueBuilder.append(nsPrefix);
-                            if (facetValueBuilder.length() > 0) {
-                                facetValueBuilder.append(":");
-                            }
-                            facetValueBuilder.append("$2");
-                            facetValueKey = matcher.replaceFirst(facetValueBuilder.toString());
-                            if (!FieldNames.PROPERTIES.equals(fieldName)) {
-                                facetValueKey = facetValueKey + "##q->##" + facetValue.getKey(); 
-                            }
-                        }
-                        resolvedValues.add(facetValueKey, facetValue.getValue());
-                    }
-                    values = resolvedValues;
-                }                
-        if (values.size() > 1
-                && (fieldSort != null && (fieldSort.equals("false") || fieldSort.equals("index")))
-                && renderer != null) {
-            try {
-                SortedMap<String, Integer> sortedLabels = new TreeMap<String, Integer>();
-                int i = 0;
+        NamedList<Object> resolvedValues = values;
+        if (FieldNames.PROPERTIES.equals(fieldName)) {
+            resolvedValues = resolveFieldNamesWhenUsingPropertiesField(resolvedValues);
+        }
+        if (fieldPropertyType.getRequiredType() == PropertyType.NAME) {
+            resolvedValues = resolvePropertiesWithNameValues(resolvedValues, fieldName);
+        }
 
-                for (Map.Entry<String, Object> facetValue : values) {
-                    sortedLabels.put(renderer.getStringRendering(locale,
-                            fieldPropertyType, facetValue.getKey()), i++);
-                }
-                NamedList<Object> sortedValues = new NamedList<Object>();
-                for (Integer index : sortedLabels.values()) {
-                    sortedValues.add(values.getName(index), values.getVal(index));
-                }
-                values = sortedValues;
-            } catch (RepositoryException e) {
-                logger.warn("Repository exception while sorting label rendered facet values, fallback to default sorting", e);
-            } catch (UnsupportedOperationException e) {
-                logger.warn("Unsupported operation exception while sorting label rendered facet values, fallback to default sorting", e);                
+        if (resolvedValues.size() > 1 && ("false".equals(fieldSort) || "index".equals(fieldSort))) {
+            ChoiceListRenderer renderer = !StringUtils.isEmpty(facetValueRenderer) ? ChoiceListRendererService
+                    .getInstance().getRenderers().get(facetValueRenderer)
+                    : null;
+            if (renderer != null) {
+                resolvedValues = sortValuesAfterChoiceListRenderer(resolvedValues, renderer, fieldPropertyType, locale);
             }
         }
-        return values;
+        return resolvedValues;
+    }
+    
+    private NamedList<Object> resolveFieldNamesWhenUsingPropertiesField(NamedList<Object> values) {
+        NamedList<Object> resolvedValues = new NamedList<>();
+        for (Map.Entry<String, Object> facetValueEntry : values) {
+            String facetValueKey = facetValueEntry.getKey();
+            facetValueKey = propertyFieldPrefix.matcher(facetValueKey).replaceFirst("$1") + "##q->##" + facetValueEntry.getKey();
+            resolvedValues.add(facetValueKey, facetValueEntry.getValue());
+        }
+        return resolvedValues;    
+    }
+    
+    private NamedList<Object> resolvePropertiesWithNameValues(NamedList<Object> values, String fieldName) {
+        NamedList<Object> resolvedValues = new NamedList<>();
+        for (Map.Entry<String, Object> facetValueEntry : values) {
+            String facetValueKey = facetValueEntry.getKey();
+            Matcher matcher = nameFieldPrefix.matcher(facetValueKey);
+            if (matcher.matches()) {
+                String nsPrefix = matcher.group(1);
+                try {
+                    nsPrefix = session.getNamespacePrefix(nsMappings.getURI(nsPrefix));
+                } catch (RepositoryException e) {
+                    // use the unconverted prefix
+                }
+                StringBuilder facetValueBuilder = new StringBuilder();
+                facetValueBuilder.append(nsPrefix);
+                if (facetValueBuilder.length() > 0) {
+                    facetValueBuilder.append(":");
+                }
+                facetValueBuilder.append("$2");
+                facetValueKey = matcher.replaceFirst(facetValueBuilder.toString());
+                if (!FieldNames.PROPERTIES.equals(fieldName)) {
+                    facetValueKey = facetValueKey + "##q->##" + facetValueEntry.getKey();
+                }
+            }
+            resolvedValues.add(facetValueKey, facetValueEntry.getValue());
+        }
+        return resolvedValues;
+    }
+    
+    private NamedList<Object> sortValuesAfterChoiceListRenderer(NamedList<Object> values, ChoiceListRenderer renderer, ExtendedPropertyDefinition fieldPropertyType, Locale locale) {
+        try {
+            //use case-insensitive and locale aware collator
+            Collator collator = Collator.getInstance(locale);
+            collator.setStrength(Collator.TERTIARY);
+            Map<String, Integer> sortedLabels = new TreeMap<>(collator);
+            int i = 0;
+            boolean resolveReference = renderer instanceof NodeReferenceChoiceListRenderer ? true : false;
+            JCRSessionWrapper currentUserSession = resolveReference ? JCRSessionFactory.getInstance().getCurrentUserSession(session.getWorkspace().getName(), locale) : null;
+            
+            for (Map.Entry<String, Object> facetValueEntry : values) {
+                String facetValueKey = facetValueEntry.getKey();
+                sortedLabels.put(
+                        renderer.getStringRendering(locale, fieldPropertyType, resolveReference
+                                ? currentUserSession.getNode(StringUtils.substring(facetValueKey, facetValueKey.indexOf('/'))) : facetValueKey),
+                        i++);
+            }
+            
+            NamedList<Object> sortedValues = new NamedList<>();
+            for (Integer index : sortedLabels.values()) {
+                sortedValues.add(values.getName(index), values.getVal(index));
+            }
+            return sortedValues;
+        } catch (RepositoryException | UnsupportedOperationException e) {
+            logger.warn("Exception while sorting label rendered facet values, fallback to default sorting", e);
+            return values;
+        }
     }
     
     private NamedList<Object> getListedTermCounts(String field, ExtendedPropertyDefinition epd, String fieldNameInIndex, String locale, String termList) throws IOException {

@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -64,6 +64,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
 import org.apache.xerces.impl.dv.util.Base64;
 import org.jahia.data.templates.ModuleReleaseInfo;
+import org.jahia.services.notification.HttpClientService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -77,6 +78,8 @@ import org.slf4j.LoggerFactory;
 class ForgeHelper {
 
     private static Logger logger = LoggerFactory.getLogger(ForgeHelper.class);
+    
+    private HttpClientService httpClientService;
 
     /**
      * Manage Private App Store
@@ -85,7 +88,7 @@ class ForgeHelper {
 
         String moduleUrl = null;
         final String url = releaseInfo.getForgeUrl();
-        HttpClient client = new HttpClient();
+        HttpClient client = httpClientService.getHttpClient(url);
         // Get token from Private App Store home page
         GetMethod getMethod = new GetMethod(url + "/home.html");
         getMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
@@ -180,6 +183,16 @@ class ForgeHelper {
         url.append(packaging == null || packaging.equals("bundle") ? "jar" : packaging);
 
         return url.toString();
+    }
+
+    /**
+     * Injects an instance of the {@link HttpClientService}.
+     * 
+     * @param httpClientService
+     *            an instance of the service
+     */
+    public void setHttpClientService(HttpClientService httpClientService) {
+        this.httpClientService = httpClientService;
     }
 
 }

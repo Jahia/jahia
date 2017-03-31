@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -722,21 +722,15 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
                     String columnName = ((Column) node).getColumnName();
                     if (StringUtils.startsWith(columnName, "rep:facet(")
                             && !StringUtils.contains(columnName, "locale=")) {
-                        ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(
-                                selector.getNodeTypeName());
-                        ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(
-                                nodeType, selector, propertyName) : null;
-                        if (propDef != null && propDef.isInternationalized()) {
-                            if (getModificationInfo().getMode() == TraversingMode.CHECK_FOR_MODIFICATION_MODE) {
-                                getModificationInfo().setModificationNecessary(true);
-                            } else {
-                                String facetOptions = columnName.substring("rep:facet("
-                                        .length());
-                                if (languageCodes == null) {
-                                    languageCodes = getNewLanguagesPerSelector().get(
-                                            selector.getSelectorName());
-                                }
-                                String languageCode = null;
+                        if (getModificationInfo().getMode() == TraversingMode.CHECK_FOR_MODIFICATION_MODE) {
+                            getModificationInfo().setModificationNecessary(true);
+                        } else {
+                            String facetOptions = columnName.substring("rep:facet(".length());
+                            if (languageCodes == null) {
+                                languageCodes = getNewLanguagesPerSelector().get(selector.getSelectorName());
+                            }
+                            String languageCode = null;
+                            if (languageCodes != null) {
                                 for (String currentLanguageCode : languageCodes) {
                                     if (!NO_LOCALE.equals(currentLanguageCode)) {
                                         languageCode = currentLanguageCode;
@@ -744,16 +738,12 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
                                     }
 
                                 }
-                                if (!StringUtils.isEmpty(languageCode)) {
-                                    columnName = "rep:facet(locale=" + languageCode
-                                            + (facetOptions.trim().length() > 1 ? "&" : "")
-                                            + facetOptions;
-                                    QueryObjectModelFactory qomFactory = getModificationInfo()
-                                            .getQueryObjectModelFactory();
-                                    node = (AbstractQOMNode) qomFactory.column(
-                                            selector.getSelectorName(), propertyName,
-                                            columnName);
-                                }
+                            }
+                            if (!StringUtils.isEmpty(languageCode)) {
+                                columnName = "rep:facet(locale=" + languageCode + (facetOptions.trim().length() > 1 ? "&" : "")
+                                        + facetOptions;
+                                QueryObjectModelFactory qomFactory = getModificationInfo().getQueryObjectModelFactory();
+                                node = (AbstractQOMNode) qomFactory.column(selector.getSelectorName(), propertyName, columnName);
                             }
                         }
                     }

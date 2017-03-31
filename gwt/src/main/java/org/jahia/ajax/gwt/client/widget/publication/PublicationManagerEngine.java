@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -58,6 +58,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.google.gwt.user.client.ui.Image;
+
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -68,7 +69,6 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
 import java.util.*;
 
@@ -81,7 +81,7 @@ import java.util.*;
 public class PublicationManagerEngine extends Window {
     private final Linker linker;
     private TreeLoader<GWTJahiaNode> loader;
-    private TreeGrid<GWTJahiaNode> m_tree;
+    private TreeGrid<GWTJahiaNode> tree;
 
     private List<GWTJahiaLanguage> languages;
     private Map<String, LayoutContainer> checkboxMap;
@@ -146,53 +146,48 @@ public class PublicationManagerEngine extends Window {
 
         ColumnModel cm = new ColumnModel(columns);
 //        cm.addHeaderGroup(0, 1, new HeaderGroupConfig("Publication Info", 1, columns.size() - 1));
-        m_tree = factory.getTreeGrid(cm);
+        tree = factory.getTreeGrid(cm);
 
         for (ColumnConfig column : columns) {
             if (column instanceof CheckColumnConfig) {
-                m_tree.addPlugin((ComponentPlugin) column);
+                tree.addPlugin((ComponentPlugin) column);
             }
         }
-        m_tree.setHideHeaders(false);
-        m_tree.setIconProvider(ContentModelIconProvider.getInstance());
-        m_tree.setAutoExpand(false);
-        m_tree.setAutoExpandMax(1000);
-        m_tree.setAutoExpandMin(150);
-        m_tree.setAutoExpandColumn("displayName");
-        m_tree.setBorders(true);
+        tree.setHideHeaders(false);
+        tree.setIconProvider(ContentModelIconProvider.getInstance());
+        tree.setAutoExpand(false);
+        tree.setAutoExpandMax(1000);
+        tree.setAutoExpandMin(150);
+        tree.setAutoExpandColumn("displayName");
+        tree.setBorders(true);
 
         setScrollMode(Style.Scroll.AUTO);
-        add(m_tree);
+        add(tree);
         ButtonBar buttonBar = new ButtonBar();
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
         Button button = new Button(Messages.get("label.publish", "Publish"));
         buttonBar.add(button);
         setBottomComponent(buttonBar);
 
-        m_tree.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        tree.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
 
         loader.addLoadListener(new LoadListener() {
+
+            @Override
             public void loaderLoad(LoadEvent le) {
-                m_tree.unmask();
+                tree.unmask();
             }
         });
         loader.load();
 
-        button.addSelectionListener(new StartWorkflowButtonSelectionListener(this));
+        button.addSelectionListener(new StartWorkflowButtonSelectionListener());
     }
 
     private class StartWorkflowButtonSelectionListener extends SelectionListener<ButtonEvent> {
-        private final Window dialog;
-        private List<WorkflowActionDialog> dialogList;
-
-        public StartWorkflowButtonSelectionListener(Window window) {
-            dialog = window;
-            dialogList = new LinkedList<WorkflowActionDialog>();
-        }
 
         @Override
-        public void componentSelected(ButtonEvent ce) {
-            final ListStore<GWTJahiaNode> store = m_tree.getStore();
+        public void componentSelected(ButtonEvent buttonEvent) {
+            final ListStore<GWTJahiaNode> store = tree.getStore();
             List<GWTJahiaNode> nodes = store.getModels();
 
             List<GWTJahiaPublicationInfo> all = new ArrayList<GWTJahiaPublicationInfo>();
@@ -215,6 +210,11 @@ public class PublicationManagerEngine extends Window {
                 }
             }
 
+            if (all.isEmpty()) {
+                MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToPublish", "Nothing to publish"), null);
+                return;
+            }
+
             PublicationWorkflow.create(all, linker, false);
             hide();
         }
@@ -231,6 +231,8 @@ public class PublicationManagerEngine extends Window {
         public PublicationCheckColumnConfig(String id, String name, int width) {
             super(id, name, width);
             setRenderer(new GridCellRenderer<ModelData>() {
+
+                @Override
                 public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
                                      ListStore<ModelData> listStore, Grid<ModelData> grid) {
                     return renderHTML(model,property, config, rowIndex, colIndex, listStore);
@@ -281,11 +283,6 @@ public class PublicationManagerEngine extends Window {
             }
         }
 
-        private int getState(GWTJahiaNode node) {
-            return node.getAggregatedPublicationInfos() != null ? node.getAggregatedPublicationInfos().get(
-                    getDataIndex()).getStatus() : 0;
-        }
-
         private String getCheckState(GWTJahiaNode model, GWTJahiaPublicationInfo info) {
             Record record = grid.getStore().getRecord(model);
             boolean checked = false;
@@ -303,10 +300,9 @@ public class PublicationManagerEngine extends Window {
             if (info.get("checkboxEnabled") != null) {
                 return info.<Boolean>get("checkboxEnabled").booleanValue();
             }
-
-            boolean b = info.isPublishable() && (info.getWorkflowDefinition() != null || info.isAllowedToPublishWithoutWorkflow());
-            info.set("checkboxEnable", b);
-            return b;
+            boolean enabled = info.isPublishable() && (info.getWorkflowDefinition() != null || info.isAllowedToPublishWithoutWorkflow());
+            info.set("checkboxEnabled", enabled);
+            return enabled;
         }
 
         /**
@@ -317,9 +313,9 @@ public class PublicationManagerEngine extends Window {
         @Override
         protected void onMouseDown(GridEvent<ModelData> ge) {
             String cls = ge.getTarget().getClassName();
-            if (cls != null && 
-            		cls.indexOf("x-grid3-cc-" + getId() + "-" + getDataIndex() + " ") != -1 &&
-            		cls.indexOf("disabled") == -1) {
+            if (cls != null &&
+                    cls.indexOf("x-grid3-cc-" + getId() + "-" + getDataIndex() + " ") != -1 &&
+                    cls.indexOf("disabled") == -1) {
                 ge.stopEvent();
                 int index = grid.getView().findRowIndex(ge.getTarget());
                 ModelData m = grid.getStore().getAt(index);
@@ -338,10 +334,13 @@ public class PublicationManagerEngine extends Window {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void init(Component component) {
-            this.grid = (Grid) component;
-            grid.addListener(Events.CellClick, new Listener<GridEvent>() {
-                public void handleEvent(GridEvent e) {
+            this.grid = (Grid<ModelData>) component;
+            grid.addListener(Events.CellClick, new Listener<GridEvent<ModelData>>() {
+
+                @Override
+                public void handleEvent(GridEvent<ModelData> e) {
                     onMouseDown(e);
                 }
             });

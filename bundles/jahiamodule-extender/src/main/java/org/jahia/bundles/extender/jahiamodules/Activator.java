@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -79,7 +79,6 @@ import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
 import org.osgi.framework.startlevel.BundleStartLevel;
-import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.url.URLConstants;
 import org.osgi.service.url.URLStreamHandlerService;
@@ -660,7 +659,7 @@ public class Activator implements BundleActivator {
 
         setModuleState(bundle, ModuleState.State.STARTING, null);
         JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupById(bundle.getSymbolicName());
-        if (jahiaTemplatesPackage != null) {
+        if (jahiaTemplatesPackage != null && jahiaTemplatesPackage.getBundle() != null && jahiaTemplatesPackage.getBundle().getState() == Bundle.ACTIVE) {
             try {
                 logger.info("Stopping module {} before activating {}...", getDisplayName(jahiaTemplatesPackage.getBundle()), getDisplayName(bundle));
                 jahiaTemplatesPackage.getBundle().stop();
@@ -669,14 +668,15 @@ public class Activator implements BundleActivator {
             }
         }
         for (Map.Entry<Bundle, ModuleState> entry : moduleStates.entrySet()) {
-            if (entry.getKey().getSymbolicName().equals(bundle.getSymbolicName()) && entry.getKey() != bundle) {
+            Bundle otherBundle = entry.getKey();
+            if (otherBundle != bundle && otherBundle.getState() == Bundle.ACTIVE && otherBundle.getSymbolicName().equals(bundle.getSymbolicName())) {
                 try {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Stopping module {} before starting {}", getDisplayName(entry.getKey()), getDisplayName(bundle));
+                        logger.debug("Stopping module {} before starting {}", getDisplayName(otherBundle), getDisplayName(bundle));
                     }
-                    entry.getKey().stop();
+                    otherBundle.stop();
                 } catch (BundleException e) {
-                    logger.info("--- Cannot stop module " + getDisplayName(entry.getKey()) + " while starting " + getDisplayName(bundle), e);
+                    logger.info("--- Cannot stop module " + getDisplayName(otherBundle) + " while starting " + getDisplayName(bundle), e);
                 }
             }
         }
@@ -776,37 +776,6 @@ public class Activator implements BundleActivator {
             }
         } else {
             setModuleState(bundle, ModuleState.State.STARTED, errorMessage);
-        }
-
-        // force other bundle to move to Installed state, but first check for dependency closure
-        SortedMap<ModuleVersion, JahiaTemplatesPackage> allModuleVersions = templatePackageRegistry
-                .getAllModuleVersions().get(bundle.getSymbolicName());
-        if (allModuleVersions.size() > 1) {
-            for (JahiaTemplatesPackage pkg : allModuleVersions.values()) {
-                Bundle otherBundle = pkg.getBundle();
-                if (otherBundle != null && otherBundle.getBundleId() != bundle.getBundleId()
-                        && otherBundle.getState() == Bundle.RESOLVED) {
-
-                    // Sometime bundle can depends on other version of the same bundle,
-                    // doing a refresh in this case will cause an infinite loop of start/stop operations
-
-                    FrameworkWiring frameworkWiring = BundleLifecycleUtils.getFrameworkWiring();
-                    Collection<Bundle> dependencies = frameworkWiring.getDependencyClosure(Collections.singleton(otherBundle));
-
-                    boolean doRefresh = true;
-                    for (Bundle dependency : dependencies) {
-                        if (dependency.getSymbolicName().equals(bundle.getSymbolicName()) &&
-                                dependency.getVersion().equals(bundle.getVersion())) {
-                            doRefresh = false;
-                            break;
-                        }
-                    }
-
-                    if (doRefresh) {
-                        frameworkWiring.refreshBundles(Collections.singleton(otherBundle));
-                    }
-                }
-            }
         }
     }
 

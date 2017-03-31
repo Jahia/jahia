@@ -1,3 +1,5 @@
+<%@tag import="org.jahia.services.content.nodetypes.renderer.NodeReferenceChoiceListRenderer"%>
+<%@tag import="org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer"%>
 <%@ tag body-content="empty" description="Renders the label of a facet value." %>
 <%@ tag import="java.text.SimpleDateFormat"%>
 <%@ tag import="java.util.Date"%>
@@ -117,7 +119,13 @@
   <c:if test="${not empty fieldNodeType}">
       <c:set var="fieldPropertyType" value="${fieldNodeType.propertyDefinitionsAsMap[currentFacetName]}"/>
   </c:if>
-  <c:set var="mappedLabel" value='<%=ChoiceListRendererService.getInstance().getRenderers().get((String)jspContext.findAttribute("fieldRenderer")).getStringRendering((RenderContext) jspContext.findAttribute("renderContext"), (ExtendedPropertyDefinition) jspContext.findAttribute("fieldPropertyType"), jspContext.findAttribute("facetValueName"))%>'/>
+  <%
+      ChoiceListRenderer renderer = ChoiceListRendererService.getInstance().getRenderers().get((String)jspContext.findAttribute("fieldRenderer"));
+      String mappedLabel = renderer.getStringRendering((RenderContext) jspContext.findAttribute("renderContext"),
+              (ExtendedPropertyDefinition) jspContext.findAttribute("fieldPropertyType"),
+              renderer instanceof NodeReferenceChoiceListRenderer ? jspContext.findAttribute("refNode") : jspContext.findAttribute("facetValueName"));
+  %>
+  <c:set var="mappedLabel" value='<%=mappedLabel%>'/>
 </c:if>
 
 <c:set var="facetValueFormat" value="${facetValueFormats[currentFacetName]}"/>

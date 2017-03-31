@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -50,10 +50,12 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -298,5 +300,47 @@ public class TestHelper {
         return stringBuilder;
     }
 
+    /**
+     * Trigger the execution of background jobs, scheduled at the end of request and wait for the completion of their execution.
+     */
+    public static void triggerScheduledJobsAndWait() {
+        long stepMillis = 100L;
+        long maxWaitMillis = 60000L;
+        SchedulerService schedulerService = ServicesRegistry.getInstance().getSchedulerService();
+        schedulerService.triggerEndOfRequest();
+        sleep(stepMillis);
+        try {
+            long count = 0;
+            while (schedulerService.getRAMScheduler().getTriggerNames(SchedulerService.INSTANT_TRIGGER_GROUP).length > 0
+                    || schedulerService.getScheduler()
+                            .getTriggerNames(SchedulerService.INSTANT_TRIGGER_GROUP).length > 0) {
+                if (count == 0) {
+                    logger.info("Start waiting for background job completion...");
+                }
+                count++;
+                if (stepMillis * count > maxWaitMillis) {
+                    logger.warn("Reached timeout of {} ms waitig for job completion. Stop waiting for them.");
+                    break;
+                }
+                sleep(stepMillis);
+            }
+            logger.info("...stopped waiting for background job completion.");
+        } catch (SchedulerException e) {
+            logger.error(e.getMessage(), e);
+            sleep(5000);
+        }
+    }
 
+    /**
+     * Sleep for the specified amount of milliseconds.
+     * 
+     * @param millis the time to sleep in milliseconds
+     */
+    public static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
 }

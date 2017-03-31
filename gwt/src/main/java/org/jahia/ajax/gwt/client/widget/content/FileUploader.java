@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -301,7 +301,7 @@ public class FileUploader extends Window {
                         final String tmp = URL.decode(s.substring(i2 + 1, i3));
                         final String name = URL.decode(s.substring(i3 + 1));
 
-                        addExistingToForm(exists, key, tmp, name);
+                        addExistingToForm(exists, key, tmp, name, submit);
                     }
                 }
                 if (!exists.isEmpty()) {
@@ -324,6 +324,17 @@ public class FileUploader extends Window {
                             JahiaContentManagementService.App.getInstance().uploadedFile(uploadeds, new BaseAsyncCallback() {
                                 public void onSuccess(Object result) {
                                     endUpload(unzip, linker);
+                                }
+
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    super.onFailure(caught);
+                                    MessageBox.alert(Messages.get("label.error", "error"), caught.getLocalizedMessage(), null);
+                                    Map<String, Object> data = new HashMap<String, Object>();
+                                    data.put(Linker.REFRESH_ALL, true);
+                                    linker.refresh(data);
+                                    unmask();
+                                    hide();
                                 }
                             });
                         }
@@ -357,13 +368,14 @@ public class FileUploader extends Window {
         hide();
     }
 
-    private void addExistingToForm(List<Field[]> exists, String key, String tmp, final String name) {
+    private void addExistingToForm(final List<Field[]> exists, String key, String tmp, final String name, final Button submitButton) {
         unmask();
         final TextField<String> textField = new TextField<String>();
         textField.setFieldLabel("rename");
         textField.setName(key + "_name");
         textField.setValue(name);
         textField.setEnabled(uploadOption==UploadOption.RENAME);
+        textField.sinkEvents(Events.Change.getEventCode() | Events.OnKeyUp.getEventCode());
 
         final HiddenField<String> hiddenField = new HiddenField<String>();
         hiddenField.setName(key + "_tmp");
@@ -376,23 +388,47 @@ public class FileUploader extends Window {
         choose.setTriggerAction(TriggerAction.ALL);
         choose.setForceSelection(true);
         // 0 = rename
-        choose.add(Messages.get("label.rename", "Rename"));
-        // 1= rename-to
-        choose.add(Messages.get("label.rename", "Rename") + " auto");
+        final String labelRename = Messages.get("label.rename", "Rename");
+        choose.add(labelRename);
+        // 1= auto-rename
+        choose.add(labelRename + " auto");
         // 2 = overwrite
         // choose.add(Messages.get("confirm.overwrite.label", "Overwrite"));
         // 4 = add new version
         choose.add(Messages.get("confirm.addNewVersion.label","Add a new version"));
         choose.setHideLabel(true);
         choose.setValue(choose.getStore().getAt(uploadOption.getValue()));
+
+        @SuppressWarnings("rawtypes")
+        final Listener textListener = new Listener<ComponentEvent>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void handleEvent(ComponentEvent be) {
+                boolean canEnableSubmit = true;
+                for (Field[] fld : exists) {
+                    if (((SimpleComboBox<String>)fld[1]).getValue().getValue().equals(labelRename) && !fld[2].isDirty()) {
+                        canEnableSubmit = false;
+                        break;
+                    }
+                }
+                submitButton.setEnabled(canEnableSubmit);
+            }
+        };
+
         choose.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
             public void handleEvent(SelectionChangedEvent event) {
-                if (choose.getValue().getValue().equals(Messages.get("label.rename", "Rename"))) {
+                if (choose.getValue().getValue().equals(labelRename)) {
                     textField.setValue(name);
                     textField.enable();
+                    textField.addListener(Events.Change, textListener);
+                    textField.addListener(Events.OnKeyUp, textListener);
+                    submitButton.disable();
                 } else {
                     textField.setValue(name);
                     textField.disable();
+                    textField.removeListener(Events.Change, textListener);
+                    textField.removeListener(Events.OnKeyUp, textListener);
+                    submitButton.enable();
                 }
             }
         });

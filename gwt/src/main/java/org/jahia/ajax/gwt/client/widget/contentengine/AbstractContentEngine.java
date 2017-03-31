@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -355,6 +355,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                     public void onSuccess(GWTChoiceListInitializer result) {
                         choiceListInitializersValues.put(propertyId, result);
                         if (result.getDisplayValues() != null) {
+                            String nameForDualFields = "from-" + propertyName;
                             for (TabItem tab : tabs.getItems()) {
                                 EditEngineTabItem item = tab.getData("item");
                                 if (item instanceof PropertiesTabItem) {
@@ -365,7 +366,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                             if (field instanceof PropertiesEditor.PropertyAdapterField) {
                                                 field = ((PropertiesEditor.PropertyAdapterField) field).getField();
                                             }
-                                            if (propertyName.equals(field.getName())) {
+                                            if (propertyName.equals(field.getName()) || (field instanceof DualListField<?> && nameForDualFields.equals(field.getName()))) {
                                                 if (field instanceof DualListField<?>) {
                                                     DualListField<GWTJahiaValueDisplayBean> dualListField = (DualListField<GWTJahiaValueDisplayBean>) field;
                                                     ListStore<GWTJahiaValueDisplayBean> store = dualListField.getToField().getStore();

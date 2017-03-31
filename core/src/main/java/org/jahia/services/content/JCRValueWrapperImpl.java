@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -189,6 +189,15 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
         } else {
             // allow equality test on subclasses of Value and invert equality test since value is usually a JCR-proper class which doesn't allow equality checks on subclasses
             return (obj != null && obj instanceof Value && obj.equals(value));
+        }
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return value.getString();
+        } catch (RepositoryException e) {
+            return super.toString();
         }
     }
 }

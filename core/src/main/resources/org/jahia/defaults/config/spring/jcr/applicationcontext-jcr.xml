@@ -208,6 +208,7 @@
                             <property name="nodeTypesList">
                                 <list/>
                             </property>
+                            <property name="availableDuringPublish" value="true"/>
                         </bean>
                         <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener">
                         </bean>

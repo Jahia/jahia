@@ -168,7 +168,9 @@
         <property name="sourceControlHelper" ref="SourceControlHelper"/>
         <property name="moduleBuildHelper" ref="ModuleBuildHelper"/>
         <property name="forgeHelper">
-            <bean class="org.jahia.services.templates.ForgeHelper"/>
+            <bean class="org.jahia.services.templates.ForgeHelper">
+                <property name="httpClientService" ref="HttpClientService"/>
+            </bean>
         </property>
         <property name="nonManageableModules">
             <list>

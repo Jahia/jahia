@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -118,6 +118,7 @@ public class VanityUrlManager {
                                 + "//element(*, " + JAHIANT_VANITYURL + ")[@"
                                 + PROPERTY_URL + " = "
                                 + JCRContentUtils.stringToQueryLiteral(url)
+                                + ("live".equals(session.getWorkspace()) ? " and @j:published = 'true'" : "")
                                 + "]", Query.XPATH).execute();
         List<VanityUrl> existingUrls = new ArrayList<VanityUrl>();
         for (NodeIterator it = result.getNodes(); it.hasNext();) {

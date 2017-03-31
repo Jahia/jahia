@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -61,33 +61,25 @@ public class ExceptionAppender extends AppenderSkeleton {
 
     private boolean alreadyDumping = false;
 
-    public ExceptionAppender() {
-        if (ErrorFileDumper.isShutdown()) {
-            ErrorFileDumper.start();
-        }
-    }
-
     @Override
     protected void append(LoggingEvent event) {
         // first let's prevent re-entry
-        if (alreadyDumping) return;
+        if (alreadyDumping || event.getThrowableInformation() == null || ErrorFileDumper.isShutdown()) {
+            return;
+        }
 
-        if (event.getThrowableInformation() != null) {
-            try {
-                alreadyDumping = true;
-                if (!ErrorFileDumper.isShutdown()) {
-                    ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
-                }
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            } finally {
-                alreadyDumping = false;
-            }
+        try {
+            alreadyDumping = true;
+            ErrorFileDumper.dumpToFile(event.getThrowableInformation().getThrowable(), null);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            alreadyDumping = false;
         }
     }
 
     public void close() {
-        ErrorFileDumper.shutdown();
+        // do nothing
     }
 
     public boolean requiresLayout() {

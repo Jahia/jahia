@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -250,6 +250,8 @@ public class Constants {
     public static final String TAGS = "j:tags";
     public static final String KEYWORDS = "j:keywords";
     public static final String DEFAULT_CATEGORY = "j:defaultCategory";
+    public static final String DESCRIPTION = "j:description";
+    public static final String TITLE = "j:title";
 
     public static final String SPLIT_CONFIG = "j:splitConfig";
     public static final String SPLIT_NODETYPE = "j:splitNodeType";

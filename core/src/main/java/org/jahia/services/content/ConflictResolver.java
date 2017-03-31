@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2017 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -49,6 +49,7 @@ import org.jahia.api.Constants;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
+
 import java.util.*;
 
 /**
@@ -58,19 +59,31 @@ import java.util.*;
  */
 public class ConflictResolver {
 
+    private static final List<String> IGNORED_PROPRTIES = Arrays.asList(
+        Constants.JCR_UUID,
+        Constants.JCR_PRIMARYTYPE,
+        Constants.JCR_CREATED,
+        Constants.JCR_CREATEDBY,
+        Constants.JCR_BASEVERSION,
+        Constants.JCR_ISCHECKEDOUT,
+        Constants.JCR_VERSIONHISTORY,
+        Constants.JCR_PREDECESSORS,
+        Constants.JCR_ACTIVITY,
+        Constants.CHECKIN_DATE,
+        "j:locktoken",
+        "j:lockTypes",
+        "jcr:lockOwner",
+        "jcr:lockIsDeep",
+        "j:deletedChildren",
+        "j:processId",
+        "lastReplay"
+    );
 
-    private static List<String> ignore = Arrays.asList(Constants.JCR_UUID, Constants.JCR_PRIMARYTYPE,
-            Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION,
-            Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS,
-            Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE, "j:locktoken", "j:lockTypes", "jcr:lockOwner",
-            "jcr:lockIsDeep", "j:deletedChildren", "j:processId");
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ConflictResolver.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ConflictResolver.class);
 
     private JCRNodeWrapper sourceNode;
     private JCRNodeWrapper targetNode;
-
     private Set<JCRNodeWrapper> toCheckpoint;
-
     private List<Diff> differences;
     private List<Diff> unresolvedDifferences;
 
@@ -89,7 +102,6 @@ public class ConflictResolver {
 
     public void applyDifferences() throws RepositoryException {
         computeDifferences();
-
         unresolvedDifferences = new ArrayList<Diff>();
         for (Diff diff : differences) {
             if (!diff.apply()) {
@@ -104,16 +116,18 @@ public class ConflictResolver {
     }
 
     private List<Diff> compare(JCRNodeWrapper sourceNode, JCRNodeWrapper targetNode, String basePath) throws RepositoryException {
+
         List<Diff> diffs = new ArrayList<Diff>();
 
-        boolean inludeSubNodes = !targetNode.isNodeType("jmix:remotelyPublished");
+        boolean remotelyPublished = targetNode.isNodeType("jmix:remotelyPublished");
 
-        if (inludeSubNodes) {
+        if (!remotelyPublished) {
+
             final ListOrderedMap targetUuids = getChildEntries(targetNode, targetNode.getSession());
             final ListOrderedMap sourceUuids = getChildEntries(sourceNode, sourceNode.getSession());
 
             if (!targetUuids.values().equals(sourceUuids.values())) {
-                for (Iterator iterator = sourceUuids.keySet().iterator(); iterator.hasNext(); ) {
+                for (Iterator<?> iterator = sourceUuids.keySet().iterator(); iterator.hasNext(); ) {
                     String key = (String) iterator.next();
                     if (targetUuids.containsKey(key) && !targetUuids.get(key).equals(sourceUuids.get(key))) {
                         diffs.add(new ChildRenamedDiff(key, addPath(basePath, (String) targetUuids.get(key)), addPath(basePath, (String) sourceUuids.get(key))));
@@ -123,18 +137,19 @@ public class ConflictResolver {
 
             // Child nodes
             if (!targetUuids.keyList().equals(sourceUuids.keyList())) {
-                List<String> added = new ArrayList<String>(sourceUuids.keySet());
-                added.removeAll(targetUuids.keySet());
-                List<String> removed = new ArrayList<String>(targetUuids.keySet());
-                removed.removeAll(sourceUuids.keySet());
+
+                @SuppressWarnings("unchecked") List<String> addedUuids = new ArrayList<String>(sourceUuids.keySet());
+                addedUuids.removeAll(targetUuids.keySet());
+                @SuppressWarnings("unchecked") List<String> removedUuids = new ArrayList<String>(targetUuids.keySet());
+                removedUuids.removeAll(sourceUuids.keySet());
 
                 // Ordering
                 if (targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
                     Map<String, String> newOrdering = getOrdering(sourceUuids, Collections.<String>emptyList());
-                    List<String> oldUuidsList = new ArrayList<String>(targetUuids.keySet());
-                    oldUuidsList.removeAll(removed);
-                    List<String> newUuidsList = new ArrayList<String>(sourceUuids.keySet());
-                    newUuidsList.removeAll(added);
+                    @SuppressWarnings("unchecked") List<String> oldUuidsList = new ArrayList<String>(targetUuids.keySet());
+                    oldUuidsList.removeAll(removedUuids);
+                    @SuppressWarnings("unchecked") List<String> newUuidsList = new ArrayList<String>(sourceUuids.keySet());
+                    newUuidsList.removeAll(addedUuids);
                     if (!oldUuidsList.equals(newUuidsList)) {
                         for (int i = 1; i < oldUuidsList.size(); i++) {
                             String x = oldUuidsList.get(i);
@@ -145,11 +160,9 @@ public class ConflictResolver {
                             }
                             if (j != i) {
                                 String orderBeforeUuid = (j + 1 == oldUuidsList.size()) ? null : oldUuidsList.get(j + 1);
-
                                 diffs.add(new ChildNodeReorderedDiff(x, orderBeforeUuid,
                                         addPath(basePath, (String) sourceUuids.get(x)), (String) sourceUuids.get(orderBeforeUuid), newOrdering));
                                 logger.debug("reorder " + sourceUuids.get(x) + " before " + sourceUuids.get(orderBeforeUuid));
-
                                 oldUuidsList.set(j, x);
                             }
                         }
@@ -157,103 +170,110 @@ public class ConflictResolver {
                 }
 
                 // Removed nodes
-                for (String s : removed) {
+                for (String removedUuid : removedUuids) {
                     try {
-                        this.sourceNode.getSession().getNodeByUUID(s);
-                        // Item has been moved
+                        this.sourceNode.getSession().getNodeByUUID(removedUuid);
                     } catch (ItemNotFoundException e) {
-                        diffs.add(new ChildRemovedDiff(s, addPath(basePath, (String) targetUuids.get(s)), s));
+                        // Item has been moved
+                        diffs.add(new ChildRemovedDiff(removedUuid, addPath(basePath, (String) targetUuids.get(removedUuid)), removedUuid));
                     }
                 }
 
                 // Added nodes
-                for (String uuid : added) {
-                    diffs.add(new ChildAddedDiff(uuid, addPath(basePath,
-                            (String) sourceUuids.get(uuid)), uuid.equals(sourceUuids
+                for (String addedUuid : addedUuids) {
+                    diffs.add(new ChildAddedDiff(addedUuid, addPath(basePath,
+                            (String) sourceUuids.get(addedUuid)), addedUuid.equals(sourceUuids
                             .lastKey()) ? null : (String) sourceUuids.get(sourceUuids
-                            .get(sourceUuids.indexOf(uuid) + 1))));
+                            .get(sourceUuids.indexOf(addedUuid) + 1))));
                 }
             }
         }
 
-        PropertyIterator pi1 = targetNode.getProperties();
-        while (pi1.hasNext()) {
-            JCRPropertyWrapper prop1 = (JCRPropertyWrapper) pi1.next();
+        PropertyIterator targetProperties = targetNode.getProperties();
 
-            String propName = prop1.getName();
-            if (ignore.contains(propName)) {
+        while (targetProperties.hasNext()) {
+
+            JCRPropertyWrapper targetProperty = (JCRPropertyWrapper) targetProperties.next();
+
+            String propertyName = targetProperty.getName();
+            if (IGNORED_PROPRTIES.contains(propertyName)) {
                 continue;
             }
-            if (!sourceNode.hasProperty(propName)) {
-                if (prop1.isMultiple()) {
-                    Value[] values = prop1.getRealValues();
+
+            if (!sourceNode.hasProperty(propertyName)) {
+                if (targetProperty.isMultiple()) {
+                    Value[] values = targetProperty.getRealValues();
                     for (Value value : values) {
-                        diffs.add(new PropertyRemovedDiff(addPath(basePath, propName), value));
+                        diffs.add(new PropertyRemovedDiff(addPath(basePath, propertyName), value));
                     }
                 } else {
                     diffs.add(new PropertyChangedDiff(
-                            addPath(basePath, propName), null));
+                            addPath(basePath, propertyName), null));
                 }
             } else {
-                JCRPropertyWrapper prop2 = sourceNode.getProperty(propName);
 
-                if (prop1.isMultiple() != prop2.isMultiple()) {
+                JCRPropertyWrapper sourceProperty = sourceNode.getProperty(propertyName);
+
+                if (targetProperty.isMultiple() != sourceProperty.isMultiple()) {
                     throw new RepositoryException();
+                }
+
+                if (targetProperty.isMultiple()) {
+
+                    List<? extends Value> targetValues = Arrays.asList(targetProperty.getRealValues());
+                    List<? extends Value> sourceValues = Arrays.asList(sourceProperty.getRealValues());
+
+                    Map<String, Value> addedValues = new HashMap<String, Value>();
+                    for (Value value : sourceValues) {
+                        addedValues.put(value.getString(), value);
+                    }
+                    for (Value value : targetValues) {
+                        addedValues.remove(value.getString());
+                    }
+                    for (Value value : addedValues.values()) {
+                        diffs.add(new PropertyAddedDiff(
+                                addPath(basePath, propertyName), value));
+                    }
+
+                    Map<String, Value> removedValues = new HashMap<String, Value>();
+                    for (Value value : targetValues) {
+                        removedValues.put(value.getString(), value);
+                    }
+                    for (Value value : sourceValues) {
+                        removedValues.remove(value.getString());
+                    }
+                    for (Value value : removedValues.values()) {
+                        diffs.add(new PropertyRemovedDiff(
+                                addPath(basePath, propertyName), value));
+                    }
                 } else {
-                    if (prop1.isMultiple()) {
-                        List<? extends Value> vs1 = Arrays.asList(prop1.getRealValues());
-                        List<? extends Value> vs2 = Arrays.asList(prop2.getRealValues());
-
-                        Map<String, Value> added = new HashMap<String, Value>();
-                        for (Value value : vs2) {
-                            added.put(value.getString(), value);
-                        }
-                        for (Value value : vs1) {
-                            added.remove(value.getString());
-                        }
-                        for (Value value : added.values()) {
-                            diffs.add(new PropertyAddedDiff(
-                                    addPath(basePath, propName), value));
-                        }
-
-                        Map<String, Value> removed = new HashMap<String, Value>();
-                        for (Value value : vs1) {
-                            removed.put(value.getString(), value);
-                        }
-                        for (Value value : vs2) {
-                            removed.remove(value.getString());
-                        }
-                        for (Value value : removed.values()) {
-                            diffs.add(new PropertyRemovedDiff(
-                                    addPath(basePath, propName), value));
-                        }
-                    } else {
-                        if (!equalsValue(prop1.getRealValue(), prop2.getRealValue())) {
-                            diffs.add(new PropertyChangedDiff(
-                                    addPath(basePath, propName), prop2.getRealValue()));
-                        }
+                    if (!equalsValue(targetProperty.getRealValue(), sourceProperty.getRealValue())) {
+                        diffs.add(new PropertyChangedDiff(
+                                addPath(basePath, propertyName), sourceProperty.getRealValue()));
                     }
                 }
             }
         }
-        PropertyIterator pi2 = sourceNode.getProperties();
 
-        while (pi2.hasNext()) {
-            JCRPropertyWrapper prop2 = (JCRPropertyWrapper) pi2.next();
+        PropertyIterator sourceProperties = sourceNode.getProperties();
 
-            String propName = prop2.getName();
+        while (sourceProperties.hasNext()) {
 
-            if (ignore.contains(propName)) {
+            JCRPropertyWrapper sourceProperty = (JCRPropertyWrapper) sourceProperties.next();
+
+            String propertyName = sourceProperty.getName();
+
+            if (IGNORED_PROPRTIES.contains(propertyName)) {
                 continue;
             }
-            if (!targetNode.hasProperty(propName)) {
-                if (prop2.isMultiple()) {
-                    Value[] values = prop2.getRealValues();
+            if (!targetNode.hasProperty(propertyName)) {
+                if (sourceProperty.isMultiple()) {
+                    Value[] values = sourceProperty.getRealValues();
                     for (Value value : values) {
-                        diffs.add(new PropertyAddedDiff(addPath(basePath, prop2.getName()), value));
+                        diffs.add(new PropertyAddedDiff(addPath(basePath, sourceProperty.getName()), value));
                     }
                 } else {
-                    diffs.add(new PropertyChangedDiff(addPath(basePath, prop2.getName()), prop2.getRealValue()));
+                    diffs.add(new PropertyChangedDiff(addPath(basePath, sourceProperty.getName()), sourceProperty.getRealValue()));
                 }
             }
 
@@ -273,12 +293,12 @@ public class ConflictResolver {
             }
         }
 
-        if (inludeSubNodes) {
-            NodeIterator ni = targetNode.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper sub = (JCRNodeWrapper) ni.next();
-                if (sourceNode.hasNode(sub.getName()) && !sub.isVersioned() && !sourceNode.getNode(sub.getName()).isVersioned() && JCRPublicationService.supportsPublication(sub.getSession(), sub)) {
-                    diffs.addAll(compare(sourceNode.getNode(sub.getName()), sub, addPath(basePath, sub.getName())));
+        if (!remotelyPublished) {
+            NodeIterator targetSubNodes = targetNode.getNodes();
+            while (targetSubNodes.hasNext()) {
+                JCRNodeWrapper targetSubNode = (JCRNodeWrapper) targetSubNodes.next();
+                if (sourceNode.hasNode(targetSubNode.getName()) && !targetSubNode.isVersioned() && !sourceNode.getNode(targetSubNode.getName()).isVersioned() && JCRPublicationService.supportsPublication(targetSubNode.getSession(), targetSubNode)) {
+                    diffs.addAll(compare(sourceNode.getNode(targetSubNode.getName()), targetSubNode, addPath(basePath, targetSubNode.getName())));
                 }
             }
         }
@@ -288,7 +308,7 @@ public class ConflictResolver {
 
     private Map<String, String> getOrdering(ListOrderedMap uuids1, List<String> removed) {
         Map<String, String> previousMap = new LinkedHashMap<String, String>();
-        ListIterator it = uuids1.keyList().listIterator(uuids1.size());
+        ListIterator<?> it = uuids1.keyList().listIterator(uuids1.size());
         String previous = "";
         while (it.hasPrevious()) {
             String uuid = (String) it.previous();
@@ -351,14 +371,15 @@ public class ConflictResolver {
         } else {
             return path;
         }
-
     }
 
     interface Diff {
+
         boolean apply() throws RepositoryException;
     }
 
     class ChildRenamedDiff implements Diff {
+
         private String uuid;
         private String oldName;
         private String newName;
@@ -369,6 +390,7 @@ public class ConflictResolver {
             this.newName = newName;
         }
 
+        @Override
         public boolean apply() throws RepositoryException {
             return !(targetNode.hasNode(oldName) && !targetNode.getNode(oldName).isVersioned()) ||
                     targetNode.getNode(oldName).rename(newName);
@@ -376,14 +398,25 @@ public class ConflictResolver {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             ChildRenamedDiff that = (ChildRenamedDiff) o;
 
-            if (!newName.equals(that.newName)) return false;
-            if (!oldName.equals(that.oldName)) return false;
-            if (!uuid.equals(that.uuid)) return false;
+            if (!newName.equals(that.newName)) {
+                return false;
+            }
+            if (!oldName.equals(that.oldName)) {
+                return false;
+            }
+            if (!uuid.equals(that.uuid)) {
+                return false;
+            }
 
             return true;
         }
@@ -407,6 +440,7 @@ public class ConflictResolver {
     }
 
     class ChildAddedDiff implements Diff {
+
         private String uuid;
         private String newName;
         private String nextSibling;
@@ -417,7 +451,9 @@ public class ConflictResolver {
             this.nextSibling = nextSibling;
         }
 
+        @Override
         public boolean apply() throws RepositoryException {
+
             if (sourceNode.getNode(newName).isVersioned() || targetNode.hasNode(newName)) {
                 if (targetNode.hasNode(newName) && (nextSibling == null || targetNode.hasNode(nextSibling)) && targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
                     if (!newName.contains("/") && (nextSibling == null || !nextSibling.contains("/"))) {
@@ -440,14 +476,25 @@ public class ConflictResolver {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || this.getClass() != o.getClass()) return false;
+
+            if (this == o) {
+                return true;
+            }
+            if (o == null || this.getClass() != o.getClass()) {
+                return false;
+            }
 
             ChildAddedDiff that = (ChildAddedDiff) o;
 
-            if (newName != null ? !newName.equals(that.newName) : that.newName != null) return false;
-            if (nextSibling != null ? !nextSibling.equals(that.nextSibling) : that.nextSibling != null) return false;
-            if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
+            if (newName != null ? !newName.equals(that.newName) : that.newName != null) {
+                return false;
+            }
+            if (nextSibling != null ? !nextSibling.equals(that.nextSibling) : that.nextSibling != null) {
+                return false;
+            }
+            if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) {
+                return false;
+            }
 
             return true;
         }
@@ -471,6 +518,7 @@ public class ConflictResolver {
     }
 
     class ChildRemovedDiff implements Diff {
+
         private String uuid;
         private String oldName;
         private String identifier;
@@ -481,6 +529,7 @@ public class ConflictResolver {
             this.identifier = identifier;
         }
 
+        @Override
         public boolean apply() throws RepositoryException {
             if (targetNode.hasNode(oldName)) {
                 final JCRNodeWrapper node = targetNode.getNode(oldName);
@@ -494,13 +543,22 @@ public class ConflictResolver {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             ChildRemovedDiff that = (ChildRemovedDiff) o;
 
-            if (!oldName.equals(that.oldName)) return false;
-            if (!uuid.equals(that.uuid)) return false;
+            if (!oldName.equals(that.oldName)) {
+                return false;
+            }
+            if (!uuid.equals(that.uuid)) {
+                return false;
+            }
 
             return true;
         }
@@ -522,6 +580,7 @@ public class ConflictResolver {
     }
 
     class ChildNodeReorderedDiff implements Diff {
+
         private String name;
         private String orderBeforeName;
         private String uuid;
@@ -536,6 +595,7 @@ public class ConflictResolver {
             this.ordering = ordering;
         }
 
+        @Override
         public boolean apply() throws RepositoryException {
             if (targetNode.hasNode(name)) {
                 JCRNodeWrapper realTargetNode = targetNode;
@@ -572,14 +632,22 @@ public class ConflictResolver {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             ChildNodeReorderedDiff that = (ChildNodeReorderedDiff) o;
 
-            if (orderBeforeUuid != null ? !orderBeforeUuid.equals(that.orderBeforeUuid) : that.orderBeforeUuid != null)
+            if (orderBeforeUuid != null ? !orderBeforeUuid.equals(that.orderBeforeUuid) : that.orderBeforeUuid != null) {
                 return false;
-            if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
+            }
+            if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) {
+                return false;
+            }
 
             return true;
         }
@@ -604,6 +672,7 @@ public class ConflictResolver {
     }
 
     class PropertyAddedDiff implements Diff {
+
         private String propertyPath;
         private Value newValue;
 
@@ -612,7 +681,9 @@ public class ConflictResolver {
             this.newValue = newValue;
         }
 
+        @Override
         public boolean apply() throws RepositoryException {
+
             JCRNodeWrapper targetNode = getParentTarget(ConflictResolver.this.targetNode, propertyPath);
             String propertyName = getTargetName(propertyPath);
 
@@ -633,12 +704,19 @@ public class ConflictResolver {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             PropertyAddedDiff that = (PropertyAddedDiff) o;
 
-            if (!equalsValue(newValue, that.newValue)) return false;
+            if (!equalsValue(newValue, that.newValue)) {
+                return false;
+            }
 
             return true;
         }
@@ -660,6 +738,7 @@ public class ConflictResolver {
     }
 
     class PropertyRemovedDiff implements Diff {
+
         private String propertyPath;
         private Value oldValue;
 
@@ -668,8 +747,11 @@ public class ConflictResolver {
             this.oldValue = oldValue;
         }
 
+        @Override
         public boolean apply() throws RepositoryException {
+
             try {
+
                 JCRNodeWrapper targetNode = getParentTarget(ConflictResolver.this.targetNode, propertyPath);
                 String propertyName = getTargetName(propertyPath);
 
@@ -701,12 +783,19 @@ public class ConflictResolver {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             PropertyRemovedDiff that = (PropertyRemovedDiff) o;
 
-            if (!equalsValue(oldValue, that.oldValue)) return false;
+            if (!equalsValue(oldValue, that.oldValue)) {
+                return false;
+            }
 
             return true;
         }
@@ -728,6 +817,7 @@ public class ConflictResolver {
     }
 
     class PropertyChangedDiff implements Diff {
+
         private String propertyPath;
         private Value newValue;
 
@@ -736,7 +826,9 @@ public class ConflictResolver {
             this.newValue = newValue;
         }
 
+        @Override
         public boolean apply() throws RepositoryException {
+
             JCRNodeWrapper targetNode = getParentTarget(ConflictResolver.this.targetNode, propertyPath);
             String propertyName = getTargetName(propertyPath);
 
@@ -756,14 +848,23 @@ public class ConflictResolver {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             PropertyChangedDiff that = (PropertyChangedDiff) o;
 
-            if (newValue != null ? !newValue.equals(that.newValue) : that.newValue != null) return false;
-            if (propertyPath != null ? !propertyPath.equals(that.propertyPath) : that.propertyPath != null)
+            if (newValue != null ? !newValue.equals(that.newValue) : that.newValue != null) {
                 return false;
+            }
+            if (propertyPath != null ? !propertyPath.equals(that.propertyPath) : that.propertyPath != null) {
+                return false;
+
+            }
 
             return true;
         }
@@ -783,6 +884,4 @@ public class ConflictResolver {
                     '}';
         }
     }
-
-
 }

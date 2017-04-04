@@ -85,6 +85,7 @@ public class AutoSplittingTest {
 
     private static final String STRING_SPLIT_CONFIG = "constant,test;substring,location,3-6;firstChars,jcr:title,4;property,eventsType";
     private static final String DATE_SPLIT_CONFIG = "date,startDate,yyyy;date,startDate,MM;date,startDate,dd";
+    private static final String NODENAME_SPLIT_CONFIG = "firstChars,j:nodename,1";
 
     private static final SimpleDateFormat yearFormatter = new SimpleDateFormat(
             "yyyy");
@@ -296,6 +297,22 @@ public class AutoSplittingTest {
                     + dayFormatter.format(eventsBean.getDate()) + "/"
                     + eventsBean.getEventsType() + i++));
         }
+
+        String basePath = SITECONTENT_ROOT_NODE + "/contents/nodenameSplit";
+        assertTrue("Folders not correctly split for j:nodename split config",
+                session.nodeExists(basePath + "/a/andromeda"));
+        assertTrue("Folders not correctly split for j:nodename split config",
+                session.nodeExists(basePath + "/b/barbarella"));
+        assertTrue("Folders not correctly split for j:nodename split config",
+                session.nodeExists(basePath + "/c/crazy-jane"));
+        assertTrue("Folders not correctly split for j:nodename split config",
+                session.nodeExists(basePath + "/d/dumb-bunny"));
+        assertTrue("Folders not correctly split for j:nodename split config",
+                session.nodeExists(basePath + "/e/elektra"));
+        assertTrue("Folders not correctly split for j:nodename split config",
+                session.nodeExists(basePath + "/f/firestar"));
+        assertTrue("Folders not correctly split for j:nodename split config", 
+                session.nodeExists(basePath + "/g/gaia"));
     }
 
     @Test
@@ -321,6 +338,8 @@ public class AutoSplittingTest {
         
         createEvent(dateSplitNode, newEventType,
                 newEventLocation, newEventDate, EVENTS.length);
+
+        createText(session.getNode(SITECONTENT_ROOT_NODE + "/contents/nodenameSplit"), "indigo");
         
         session.save();
         
@@ -334,6 +353,9 @@ public class AutoSplittingTest {
                 + "/" + monthFormatter.format(newEventDate) + "/"
                 + dayFormatter.format(newEventDate) + "/"
                 + newEventType + EVENTS.length));        
+
+        assertTrue("Folders not correctly split for j:nodename split config",
+                session.nodeExists(SITECONTENT_ROOT_NODE + "/contents/nodenameSplit/i/indigo"));
     }
 
     private static void initContent(JCRSessionWrapper session)
@@ -365,6 +387,18 @@ public class AutoSplittingTest {
         dateSplitNode.setProperty(Constants.SPLIT_CONFIG, DATE_SPLIT_CONFIG);
         dateSplitNode.setProperty(Constants.SPLIT_NODETYPE, AUTO_SPLIT_NODETYPE);
 
+        JCRNodeWrapper nodenameSplitNode = createList(contentNode, "nodenameSplit");
+        createText(nodenameSplitNode, "andromeda");
+        createText(nodenameSplitNode, "barbarella");
+        createText(nodenameSplitNode, "crazy-jane");
+        createText(nodenameSplitNode, "dumb-bunny");
+        createText(nodenameSplitNode, "elektra");
+        createText(nodenameSplitNode, "firestar");
+        createText(nodenameSplitNode, "gaia");
+        nodenameSplitNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
+        nodenameSplitNode.setProperty(Constants.SPLIT_CONFIG, NODENAME_SPLIT_CONFIG);
+        nodenameSplitNode.setProperty(Constants.SPLIT_NODETYPE, AUTO_SPLIT_NODETYPE);
+
         session.save();
     }
 
@@ -385,5 +419,10 @@ public class AutoSplittingTest {
         event.setProperty("eventsType", eventType);
         event.setProperty("location", location);
         event.setProperty("startDate", DateUtils.toCalendar(date));
+    }
+
+    private static void createText(JCRNodeWrapper node, final String name) throws RepositoryException {
+        final JCRNodeWrapper txt = node.addNode(name, "jnt:text");
+        txt.setProperty("text", name);
     }
 }

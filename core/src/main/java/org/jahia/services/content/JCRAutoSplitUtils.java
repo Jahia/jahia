@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -132,30 +132,15 @@ public final class JCRAutoSplitUtils {
                     if (type.equals("constant")) {
                         key = propertyName;
                     } else if (type.equals("property")) {
-                        if (propertyName.equals("j:nodename")) {
-                            key = node.getName();
-                            key = StringUtils.substringAfter(key, ":");
-                        } else if (node.hasProperty(propertyName)) {
-                            key = node.getProperty(propertyName).getString();
-                        }
+                        key = getKey(node, propertyName);
                     } else if (type.equals("firstChars")) {
-                        if (propertyName.equals("j:nodename")) {
-                            key = node.getName();
-                            key = StringUtils.substringAfter(key, ":");
-                        } else if (node.hasProperty(propertyName)) {
-                            key = node.getProperty(propertyName).getString();
-                        }
+                        key = getKey(node, propertyName);
                         final int index = Integer.parseInt(folderConfig[2]);
                         if (key != null && key.length() > index) {
                             key = key.substring(0, index);
                         }
                     } else if (type.equals("substring")) {
-                        if (propertyName.equals("j:nodename")) {
-                            key = node.getName();
-                            key = StringUtils.substringAfter(key, ":");
-                        } else if (node.hasProperty(propertyName)) {
-                            key = node.getProperty(propertyName).getString();
-                        }
+                        key = getKey(node, propertyName);
                         String[] indexes = Patterns.DASH.split(folderConfig[2]);
                         final int startIndex = Integer.parseInt(indexes[0]);
                         final int endIndex = Integer.parseInt(indexes[1]);
@@ -314,30 +299,15 @@ public final class JCRAutoSplitUtils {
                 if (type.equals("constant")) {
                     key = propertyName;
                 } else if (type.equals("property")) {
-                    if (propertyName.equals("j:nodename")) {
-                        key = nodeName;
-                        key = StringUtils.substringAfter(key, ":");
-                    } else if (PropertyUtils.getSimpleProperty(valueBean, propertyName) != null) {
-                        key = PropertyUtils.getSimpleProperty(valueBean, propertyName).toString();
-                    }
+                    key = getKey(valueBean, nodeName, propertyName);
                 } else if (type.equals("firstChars")) {
-                    if (propertyName.equals("j:nodename")) {
-                        key = nodeName;
-                        key = StringUtils.substringAfter(key, ":");
-                    } else if (PropertyUtils.getSimpleProperty(valueBean, propertyName) != null) {
-                        key = PropertyUtils.getSimpleProperty(valueBean, propertyName).toString();
-                    }
+                    key = getKey(valueBean, nodeName, propertyName);
                     final int index = Integer.parseInt(folderConfig[2]);
                     if (key != null && key.length() > index) {
                         key = key.substring(0, index);
                     }
                 } else if (type.equals("substring")) {
-                    if (propertyName.equals("j:nodename")) {
-                        key = nodeName;
-                        key = StringUtils.substringAfter(key, ":");
-                    } else if (PropertyUtils.getSimpleProperty(valueBean, propertyName) != null) {
-                        key = PropertyUtils.getSimpleProperty(valueBean, propertyName).toString();
-                    }
+                    key = getKey(valueBean, nodeName, propertyName);
                     String[] indexes = Patterns.DASH.split(folderConfig[2]);
                     final int startIndex = Integer.parseInt(indexes[0]);
                     final int endIndex = Integer.parseInt(indexes[1]);
@@ -369,5 +339,32 @@ public final class JCRAutoSplitUtils {
         logger.debug("Node added at " + newNode.getPath());
         return newNode;
     }
+
+    private static String getKey(JCRNodeWrapper node, String propertyName) throws RepositoryException {
+        if (propertyName.equals("j:nodename")) {
+            return getNodeNameKey(node.getName());
+        } else if (node.hasProperty(propertyName)) {
+            return node.getProperty(propertyName).getString();
+        }
+        return null;
+    }
+
+    private static String getKey(Object valueBean, String nodename, String propertyName) throws Exception {
+        if (propertyName.equals("j:nodename")) {
+            return getNodeNameKey(nodename);
+        } else if (PropertyUtils.getSimpleProperty(valueBean, propertyName) != null) {
+            return PropertyUtils.getSimpleProperty(valueBean, propertyName).toString();
+        }
+        return null;
+    }
+
+    private static String getNodeNameKey(String nodeName) {
+        if (nodeName.indexOf(':') > 0) {
+            return StringUtils.substringAfter(nodeName, ":");
+        } else {
+            return nodeName;
+        }
+    }
+
 
 }

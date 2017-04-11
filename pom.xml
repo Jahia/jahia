@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia</groupId>
         <artifactId>jahia-parent</artifactId>
-        <version>7.3.0.0-SNAPSHOT</version>
+        <version>7.2.1.0-SNAPSHOT</version>
         <relativePath>jahia-parent/pom.xml</relativePath>
     </parent>
 

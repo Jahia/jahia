@@ -126,6 +126,8 @@ public class MainModule extends Module {
     private String activeChannelVariant;
     private static boolean globalSelectionDisabled = false;
 
+    protected Point framePosition = new Point(0,0);
+
     public MainModule(final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
         super("main", path, nodeTypes, new BorderLayout());
         setScrollMode(Style.Scroll.NONE);
@@ -268,7 +270,9 @@ public class MainModule extends Module {
         url.append(URL.decode(location));
         appendQueryString(url);
         location = url.toString();
-        
+
+        resetFramePosition();
+
         goToUrl(location, true, true, true);
 
 //        scrollContainer.sinkEvents();
@@ -409,6 +413,7 @@ public class MainModule extends Module {
      */
     public void refresh(Map<String, Object> data) {
         if (data != null && (data.containsKey(Linker.REFRESH_ALL) || data.containsKey(Linker.REFRESH_MAIN) || needRefresh(data))) {
+            saveCurrentFramePosition();
             boolean forceCssRefresh = false;
             boolean forceJavascriptRefresh = false;
             if (data.containsKey("node")) {
@@ -756,6 +761,7 @@ public class MainModule extends Module {
     }
 
     public static void staticGoToUrl(String path) {
+        module.resetFramePosition();
         module.goToUrl(path, false, false, false);
     }
 
@@ -764,11 +770,13 @@ public class MainModule extends Module {
         if (!config.equals(m.getConfig().getName())) {
             m.getEditLinker().switchConfig(m.configs.get(config), location + "##", true, true, null);
         } else {
+            module.resetFramePosition();
             m.goToUrl(location + "##", false, false, false);
         }
     }
 
     public void goTo(String path, String template, String channel, String variant) {
+        resetFramePosition();
         goToUrl(getUrl(path, template, channel, variant), false, false, false);
     }
 
@@ -1215,6 +1223,17 @@ public class MainModule extends Module {
         }
     }
 
+    // reset the frame position to its initial value
+    public void resetFramePosition() {
+        framePosition = new Point(0,0);
+    }
+
+    // save the current position of the frame
+    public void saveCurrentFramePosition() {
+        framePosition.x = IFrameElement.as(frame.getElement()).getContentDocument().getScrollLeft();
+        framePosition.y = IFrameElement.as(frame.getElement()).getContentDocument().getScrollTop();
+    }
+
     private class EditFrame extends Frame {
         private String url = null;
         private boolean forceImageRefresh = false;
@@ -1254,7 +1273,7 @@ public class MainModule extends Module {
                                     setUrl(getBaseUrl() + config.getDefaultLocation());
                                 } else {
                                     frameErrorRedirect = false;
-                                    onGWTFrameReady(iframe);
+                                        onGWTFrameReady(iframe, framePosition.x, framePosition.y);
                                 }
                             }
                         });
@@ -1321,13 +1340,14 @@ public class MainModule extends Module {
             return iFrameElement.contentWindow.location.href;
         }-*/;
 
-        public final native String onGWTFrameReady(IFrameElement iFrameElement) /*-{
+        public final native String onGWTFrameReady(IFrameElement iFrameElement, int left, int top) /*-{
             if (iFrameElement.contentWindow.onGWTFrameLoaded != null) {
                 var onFrameLoaded = iFrameElement.contentWindow.onGWTFrameLoaded;
                 for (var i = 0; i < onFrameLoaded.length; i++) {
                     onFrameLoaded[i]()
                 }
-                iFrameElement.contentWindow.onGWTFrameLoaded = []
+                iFrameElement.contentWindow.onGWTFrameLoaded = [];
+                iFrameElement.contentWindow.scrollTo(left, top);
             }
         }-*/;
 

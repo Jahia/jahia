@@ -43,6 +43,7 @@
  */
 package org.jahia.test.osgi;
 
+import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
@@ -332,7 +333,7 @@ public class SpringContextSingletonTest {
             public JahiaTemplatesPackage doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JahiaTemplatesPackage module = null;
                 try {
-                    File moduleFile = ModuleTestHelper.getModuleFromMaven("org.jahia.modules", moduleName);
+                    File moduleFile = ModuleTestHelper.getModuleFromMaven("org.jahia.modules", moduleName, Constants.JAHIA_PROJECT_VERSION);
                     module = managerService.deployModule(moduleFile, session);
                     logger.info("Module " + moduleName + " deployed");
                 } catch (IOException e) {

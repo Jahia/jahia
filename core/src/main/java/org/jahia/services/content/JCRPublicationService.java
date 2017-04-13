@@ -365,15 +365,16 @@ public class JCRPublicationService extends JahiaService {
         Map<String,Value> previousValue = new HashMap<>();
         if (updateMetadata && destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
+                String nodePath = jcrNodeWrapper.getPath();
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Publishing node {}", jcrNodeWrapper.getPath());
+                    logger.debug("Publishing node {}", nodePath);
                 }
 
                 final boolean hasLastPublishedMixin = jcrNodeWrapper.isNodeType(Constants.JAHIAMIX_LASTPUBLISHED);
-                if(hasLastPublishedMixin) {
-                    previousValue.put(jcrNodeWrapper.getPath() + "/"+Constants.PUBLISHED, jcrNodeWrapper.hasProperty(Constants.PUBLISHED) ? jcrNodeWrapper.getProperty(Constants.PUBLISHED).getValue() : null);
-                    previousValue.put(jcrNodeWrapper.getPath() + "/"+Constants.LASTPUBLISHED,  jcrNodeWrapper.hasProperty(Constants.LASTPUBLISHED) ? jcrNodeWrapper.getProperty(Constants.LASTPUBLISHED).getValue(): null);
-                    previousValue.put(jcrNodeWrapper.getPath() + "/"+Constants.LASTPUBLISHEDBY,  jcrNodeWrapper.hasProperty(Constants.LASTPUBLISHEDBY) ? jcrNodeWrapper.getProperty(Constants.LASTPUBLISHEDBY).getValue(): null);
+                if (hasLastPublishedMixin) {
+                    previousValue.put(nodePath + "/" + Constants.PUBLISHED, jcrNodeWrapper.hasProperty(Constants.PUBLISHED) ? jcrNodeWrapper.getProperty(Constants.PUBLISHED).getValue() : null);
+                    previousValue.put(nodePath + "/" + Constants.LASTPUBLISHED,  jcrNodeWrapper.hasProperty(Constants.LASTPUBLISHED) ? jcrNodeWrapper.getProperty(Constants.LASTPUBLISHED).getValue() : null);
+                    previousValue.put(nodePath + "/" + Constants.LASTPUBLISHEDBY,  jcrNodeWrapper.hasProperty(Constants.LASTPUBLISHEDBY) ? jcrNodeWrapper.getProperty(Constants.LASTPUBLISHEDBY).getValue() : null);
                     jcrNodeWrapper.setProperty(Constants.PUBLISHED, Boolean.TRUE);
                     jcrNodeWrapper.setProperty(Constants.LASTPUBLISHED, calendar);
                     jcrNodeWrapper.setProperty(Constants.LASTPUBLISHEDBY, userID);
@@ -468,7 +469,11 @@ public class JCRPublicationService extends JahiaService {
         } catch (RepositoryException e) {
             // Restore previous status
             for (Map.Entry<String, Value> entry : previousValue.entrySet()) {
-                ((JCRPropertyWrapper) sourceSession.getItem(entry.getKey())).setValue(entry.getValue());
+                try {
+                    ((JCRPropertyWrapper) sourceSession.getItem(entry.getKey())).setValue(entry.getValue());
+                } catch (PathNotFoundException ex) {
+                    // node is removed during publication
+                }
             }
             if (sourceSession.hasPendingChanges()) {
                 sourceSession.save();

@@ -362,29 +362,22 @@ public class JCRPublicationService extends JahiaService {
         }
 
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
+        Map<String,Value> previousValue = new HashMap<>();
         if (updateMetadata && destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
+                String nodePath = jcrNodeWrapper.getPath();
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Publishing node {}", jcrNodeWrapper.getPath());
+                    logger.debug("Publishing node {}", nodePath);
                 }
 
                 final boolean hasLastPublishedMixin = jcrNodeWrapper.isNodeType(Constants.JAHIAMIX_LASTPUBLISHED);
-                if(hasLastPublishedMixin) {
+                if (hasLastPublishedMixin) {
+                    previousValue.put(nodePath + "/" + Constants.PUBLISHED, jcrNodeWrapper.hasProperty(Constants.PUBLISHED) ? jcrNodeWrapper.getProperty(Constants.PUBLISHED).getValue() : null);
+                    previousValue.put(nodePath + "/" + Constants.LASTPUBLISHED,  jcrNodeWrapper.hasProperty(Constants.LASTPUBLISHED) ? jcrNodeWrapper.getProperty(Constants.LASTPUBLISHED).getValue() : null);
+                    previousValue.put(nodePath + "/" + Constants.LASTPUBLISHEDBY,  jcrNodeWrapper.hasProperty(Constants.LASTPUBLISHEDBY) ? jcrNodeWrapper.getProperty(Constants.LASTPUBLISHEDBY).getValue() : null);
                     jcrNodeWrapper.setProperty(Constants.PUBLISHED, Boolean.TRUE);
                     jcrNodeWrapper.setProperty(Constants.LASTPUBLISHED, calendar);
                     jcrNodeWrapper.setProperty(Constants.LASTPUBLISHEDBY, userID);
-
-                    if(!jcrNodeWrapper.hasProperty(Constants.PUBLISHED) || !jcrNodeWrapper.getProperty(Constants.PUBLISHED).getBoolean()) {
-                        sourceSession.checkout(jcrNodeWrapper);
-
-                        try {
-                            JCRNodeWrapper destNode = destinationSession
-                                    .getNode(jcrNodeWrapper.getCorrespondingNodePath(destinationWorkspace));
-                            destinationSession.checkout(destNode);
-                            destNode.setProperty(Constants.PUBLISHED, Boolean.TRUE);
-                        } catch (ItemNotFoundException e) {
-                        }
-                    }
                 }
             }
             if (sourceSession.hasPendingChanges()) {
@@ -473,6 +466,19 @@ public class JCRPublicationService extends JahiaService {
             for (JCRNodeWrapper nodeWrapper : toCheckpoint) {
                 checkpoint(destinationSession, nodeWrapper, destinationVersionManager);
             }
+        } catch (RepositoryException e) {
+            // Restore previous status
+            for (Map.Entry<String, Value> entry : previousValue.entrySet()) {
+                try {
+                    ((JCRPropertyWrapper) sourceSession.getItem(entry.getKey())).setValue(entry.getValue());
+                } catch (PathNotFoundException ex) {
+                    // node is removed during publication
+                }
+            }
+            if (sourceSession.hasPendingChanges()) {
+                sourceSession.save();
+            }
+            throw e;
         } finally {
             JCRObservationManager.setEventListenersAvailableDuringPublishOnly(null);
         }

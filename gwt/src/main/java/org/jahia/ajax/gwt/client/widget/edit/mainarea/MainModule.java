@@ -1274,6 +1274,8 @@ public class MainModule extends Module {
                                 } else {
                                     frameErrorRedirect = false;
                                         onGWTFrameReady(iframe, framePosition.x, framePosition.y);
+                                        // once pgae rendered, reset the frame position
+                                        resetFramePosition();
                                 }
                             }
                         });

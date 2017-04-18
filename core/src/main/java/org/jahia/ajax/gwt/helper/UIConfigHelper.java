@@ -619,7 +619,11 @@ public class UIConfigHelper {
                     }
                     if (resolvedSite != null) {
                         JCRSiteNode siteNode = (JCRSiteNode) session.getNode(((JCRSiteNode)resolvedSite).getPath());
-                        defaultLocation = defaultLocation.replace("$defaultSiteHome", siteNode.getHome().getPath());
+                        if (siteNode.getHome() != null) {
+                            defaultLocation = defaultLocation.replace("$defaultSiteHome", siteNode.getHome().getPath());
+                        } else {
+                            defaultLocation = null;
+                        }
                     } else {
                         defaultLocation = null;
                     }

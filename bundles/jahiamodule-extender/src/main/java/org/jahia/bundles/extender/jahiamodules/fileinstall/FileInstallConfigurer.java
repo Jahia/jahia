@@ -43,28 +43,24 @@
  */
 package org.jahia.bundles.extender.jahiamodules.fileinstall;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.felix.fileinstall.CustomHandler;
 import org.codehaus.plexus.util.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.services.SpringContextSingleton;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.*;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Utility class for registering/unregistering the FileInstall configuration for DX modules.
@@ -86,16 +82,16 @@ public class FileInstallConfigurer {
         @Override
         public ConfigurationAdmin addingService(ServiceReference<ConfigurationAdmin> reference) {
             ConfigurationAdmin configurationAdmin = bundleContext.getService(reference);
-            unregister(configurationAdmin);
-            register(configurationAdmin);
+            boolean forceRegistration = unregister(configurationAdmin);
+            register(configurationAdmin, forceRegistration);
             return configurationAdmin;
         }
 
         @Override
         public void modifiedService(ServiceReference<ConfigurationAdmin> reference,
                 ConfigurationAdmin configurationAdmin) {
-            unregister(configurationAdmin);
-            register(configurationAdmin);
+            boolean forceRegistration = unregister(configurationAdmin);
+            register(configurationAdmin, forceRegistration);
         }
 
         @Override
@@ -108,7 +104,7 @@ public class FileInstallConfigurer {
     static Logger logger = LoggerFactory.getLogger(FileInstallConfigurer.class);
 
     private ServiceRegistration<CustomHandler> customHandlerRegistration;
-    
+
     private ServiceTracker<ConfigurationAdmin, ConfigurationAdmin> serviceTracker;
 
     private Configuration findExisting(ConfigurationAdmin configurationAdmin, String dirPath) {
@@ -118,9 +114,11 @@ public class FileInstallConfigurer {
             if (existingCfgs != null) {
                 String refDirPath = new File(dirPath).getCanonicalPath();
                 for (Configuration cfg : existingCfgs) {
-                    String dir = (String) cfg.getProperties().get("felix.fileinstall.dir");
-                    if (StringUtils.isNotEmpty(dir) && new File(dir).getCanonicalPath().equals(refDirPath)) {
-                        return cfg;
+                    if (cfg.getBundleLocation() != null) {
+                        String dir = (String) cfg.getProperties().get("felix.fileinstall.dir");
+                        if (StringUtils.isNotEmpty(dir) && new File(dir).getCanonicalPath().equals(refDirPath)) {
+                            return cfg;
+                        }
                     }
                 }
             }
@@ -133,18 +131,18 @@ public class FileInstallConfigurer {
 
     /**
      * Returns the configuration for this file install service.
-     * 
+     *
      * @return configuration properties
      */
     private Properties getConfig() {
         return (Properties) SpringContextSingleton.getBean("felixFileInstallConfig");
     }
 
-    private void register(ConfigurationAdmin configurationAdmin) {
+    private void register(ConfigurationAdmin configurationAdmin, boolean forceRegistration) {
         Properties felixProperties = getConfig();
         String watchedDir = felixProperties.getProperty("felix.fileinstall.dir");
         Configuration cfg = findExisting(configurationAdmin, watchedDir);
-        if (cfg != null) {
+        if (cfg != null && !forceRegistration) {
             logger.info("FileInstall configuration for directory {} already exists. No need to create it: {}",
                     watchedDir, cfg);
             return;
@@ -191,7 +189,7 @@ public class FileInstallConfigurer {
 
     /**
      * Performs the registration of the FileInstall configuration for DX modules.
-     * 
+     *
      * @param bundleContext
      *            the OSGi bundle context
      */
@@ -209,22 +207,24 @@ public class FileInstallConfigurer {
         if (serviceTracker != null) {
             serviceTracker.close();
         }
-        
+
         if (customHandlerRegistration != null) {
             customHandlerRegistration.unregister();
         }
     }
 
-    private void unregister(ConfigurationAdmin configurationAdmin) {
+    private boolean unregister(ConfigurationAdmin configurationAdmin) {
         String watchedDir = getConfig().getProperty("felix.fileinstall.dir");
         Configuration cfg = findExisting(configurationAdmin, watchedDir);
         if (cfg != null) {
             try {
                 cfg.delete();
                 logger.info("Unregistered FileInstall configuration for directory {}: {}", watchedDir, cfg);
+                return true;
             } catch (IOException e) {
                 logger.error("Unable to remove FileInstall configuration", e);
             }
         }
+        return false;
     }
 }

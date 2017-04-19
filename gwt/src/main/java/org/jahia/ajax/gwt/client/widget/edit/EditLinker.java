@@ -86,7 +86,6 @@ public class EditLinker implements Linker {
     private SidePanel sidePanel;
     private ModuleSelectionListener selectionListener;
     private Widget mainAreaComponent;
-    private int mainAreaVScrollPosition;
     private String locale;
     private GWTJahiaChannel activeChannel;
     private String activeChannelVariant = null;
@@ -443,7 +442,7 @@ public class EditLinker implements Linker {
         ContentPanel m;
         if (mainAreaComponent == null) {
             m = (ContentPanel) mainModule.getParent();
-            mainAreaVScrollPosition = mainModule.getContainer().getVScrollPosition();
+            mainModule.saveCurrentFramePosition();
             mainModule.setStyleAttribute("display","none");
         } else {
             m = (ContentPanel) mainAreaComponent.getParent();
@@ -465,7 +464,7 @@ public class EditLinker implements Linker {
             mainAreaComponent = null;
             mainModule.setStyleAttribute("display","block");
             m.layout();
-        mainModule.getContainer().setVScrollPosition(mainAreaVScrollPosition);
+        mainModule.moveToSavePosition();
         }
     }
 

@@ -164,9 +164,8 @@ public class PublicationHelper {
                 gwtInfo.setIsAllowedToPublishWithoutWorkflow(node.hasPermission("publish"));
                 gwtInfo.setIsNonRootMarkedForDeletion(gwtInfo.getStatus() == GWTJahiaPublicationInfo.MARKED_FOR_DELETION && !node.isNodeType("jmix:markedForDeletionRoot"));
 
-                // Disabled temporarily in scope of QABACKLOG-1141.
-//                WorkflowRule workflowRule = workflowService.getWorkflowRuleForAction(node, true, "publish");
-//                populateWorkflowInfo(gwtInfo, workflowRule, language);
+                WorkflowRule workflowRule = workflowService.getWorkflowRuleForAction(node, true, "publish");
+                populateWorkflowInfo(gwtInfo, workflowRule, language);
 
                 if (gwtInfo.getStatus() == GWTJahiaPublicationInfo.PUBLISHED) {
                     // the item status is published: check if the tree status or references are modified or unpublished

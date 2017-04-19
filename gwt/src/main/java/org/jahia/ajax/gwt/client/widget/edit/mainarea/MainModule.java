@@ -44,6 +44,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -94,7 +95,7 @@ import java.util.*;
 public class MainModule extends Module {
 
     private static final String[] RESERVED_REQUESTPARAMETERS = new String[] {"channel", "variant"};
-    
+
     private static MainModule module;
 
     private EditLinker editLinker;
@@ -266,7 +267,7 @@ public class MainModule extends Module {
             location = location.replaceFirst(start + "frame/", config.getDefaultUrlMapping() + "frame/");
         }
 
-        StringBuilder url = new StringBuilder(64); 
+        StringBuilder url = new StringBuilder(64);
         url.append(URL.decode(location));
         appendQueryString(url);
         location = url.toString();
@@ -539,11 +540,11 @@ public class MainModule extends Module {
                 url.append("&variant=").append(variant);
             }
         }
-        
+
         if (preserveQueryString) {
             appendQueryString(url);
         }
-        
+
         return url.toString();
     }
 
@@ -552,7 +553,7 @@ public class MainModule extends Module {
      */
     private static void appendQueryString(StringBuilder url) {
         List<String[]> paramsToPreserve = getQueryStringParametersToPreserve(RESERVED_REQUESTPARAMETERS);
-        
+
         if (paramsToPreserve == null || paramsToPreserve.isEmpty()) {
             // no query string available
             return;
@@ -569,7 +570,7 @@ public class MainModule extends Module {
             url.append(p[0]).append('=').append(URL.encodeQueryString(p[1]));
         }
     }
-    
+
     private static List<String[]> getQueryStringParametersToPreserve(String... reservedParameters) {
         String queryString = Window.Location.getQueryString();
         if (queryString == null || queryString.length() == 0 || queryString.equals("?")) {
@@ -606,7 +607,7 @@ public class MainModule extends Module {
 
         return toAppend;
     }
-    
+
     /**
      * Computes the base URL for the main module frame.
      *
@@ -865,7 +866,7 @@ public class MainModule extends Module {
         final List<String> types = node.getNodeTypes();
         final List<String> inheritedTypes = node.getInheritedNodeTypes();
         editLinker.setInSettingsPage(!types.contains("jnt:page") && !types.contains("jnt:template") && !types.contains("jnt:content") &&
-                        !inheritedTypes.contains("jnt:page") && !inheritedTypes.contains("jnt:template") && !inheritedTypes.contains("jnt:content"));
+                !inheritedTypes.contains("jnt:page") && !inheritedTypes.contains("jnt:template") && !inheritedTypes.contains("jnt:content"));
 
         setDocumentTitle(Messages.get("label." + config.getName().substring(0, config.getName().length() - 4), config.getName()) + " - " + node.getDisplayName());
 
@@ -1229,9 +1230,15 @@ public class MainModule extends Module {
     }
 
     // save the current position of the frame
-    public void saveCurrentFramePosition() {
-        framePosition.x = IFrameElement.as(frame.getElement()).getContentDocument().getScrollLeft();
-        framePosition.y = IFrameElement.as(frame.getElement()).getContentDocument().getScrollTop();
+    public Point saveCurrentFramePosition() {
+        if (!GXT.isIE10) {
+            framePosition.x = IFrameElement.as(frame.getElement()).getContentDocument().getScrollLeft();
+            framePosition.y = IFrameElement.as(frame.getElement()).getContentDocument().getScrollTop();
+        } else {
+            framePosition.x=getIE10FrameLeft();
+            framePosition.y=getIE10FrameTop();
+        }
+        return framePosition;
     }
 
     private class EditFrame extends Frame {
@@ -1273,9 +1280,10 @@ public class MainModule extends Module {
                                     setUrl(getBaseUrl() + config.getDefaultLocation());
                                 } else {
                                     frameErrorRedirect = false;
-                                        onGWTFrameReady(iframe, framePosition.x, framePosition.y);
-                                        // once pgae rendered, reset the frame position
-                                        resetFramePosition();
+                                    onGWTFrameReady(iframe);
+                                    moveToSavePosition();
+                                    // once pgae rendered, reset the frame position
+                                    resetFramePosition();
                                 }
                             }
                         });
@@ -1342,14 +1350,13 @@ public class MainModule extends Module {
             return iFrameElement.contentWindow.location.href;
         }-*/;
 
-        public final native String onGWTFrameReady(IFrameElement iFrameElement, int left, int top) /*-{
+        public final native String onGWTFrameReady(IFrameElement iFrameElement) /*-{
             if (iFrameElement.contentWindow.onGWTFrameLoaded != null) {
                 var onFrameLoaded = iFrameElement.contentWindow.onGWTFrameLoaded;
                 for (var i = 0; i < onFrameLoaded.length; i++) {
                     onFrameLoaded[i]()
                 }
                 iFrameElement.contentWindow.onGWTFrameLoaded = [];
-                iFrameElement.contentWindow.scrollTo(left, top);
             }
         }-*/;
 
@@ -1369,13 +1376,16 @@ public class MainModule extends Module {
     }
 
 
-
     public final int getIE10FrameTop() {
         return getIE10FrameTop(IFrameElement.as(frame.getElement()));
     }
 
     public final int getIE10FrameLeft(){
         return getIE10FrameLeft(IFrameElement.as(frame.getElement()));
+    }
+
+    public final void moveToSavePosition() {
+        scrollTo(IFrameElement.as(frame.getElement()), framePosition.x, framePosition.y);
     }
 
     public final native int getIE10FrameTop(IFrameElement iFrameElement) /*-{
@@ -1388,6 +1398,10 @@ public class MainModule extends Module {
         if (iFrameElement.contentWindow.document.documentElement != null) {
             return iFrameElement.contentWindow.document.documentElement.scrollLeft;
         }
+    }-*/;
+
+    public final native int scrollTo(IFrameElement iFrameElement, int x, int y) /*-{
+        iFrameElement.contentWindow.scrollTo(x, y);
     }-*/;
 
 }

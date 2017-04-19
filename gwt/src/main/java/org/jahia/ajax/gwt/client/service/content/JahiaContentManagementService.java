@@ -117,6 +117,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTJahiaNode createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException;
 
+    GWTJahiaNode createPageFromPageModel(String sourcePath, String destinationPath, String name, String nodeType, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException;
+
     GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException;
 
     GWTJahiaNode createRSSPortletInstance(String path, String name, String url) throws GWTJahiaServiceException;

@@ -113,6 +113,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void createNodeAndMoveBefore(String path, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, AsyncCallback<GWTJahiaNode> asyncCallback);
 
+    void createPageFromPageModel(String sourcePath, String destinationPath, String name, String nodeType, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, AsyncCallback<GWTJahiaNode> asyncCallback);
+
     void createPortletInstance(String path, GWTJahiaNewPortletInstance wiz, AsyncCallback<GWTJahiaNode> async);
 
     void createRSSPortletInstance(String path, String name, String url, AsyncCallback<GWTJahiaNode> async);

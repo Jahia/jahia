@@ -413,6 +413,15 @@
  - j:templateNode (weakreference,choicelist[templatesNode]) hidden < jnt:template
  - j:templateName (string,choicelist[templatesNode]) mandatory nofulltext
 
+[jmix:canBeUseAsTemplateModel] mixin
+extends = jnt:page
+itemtype = content
+ - j:pageTemplateTitle (string) i18n mandatory
+ - j:copySubPages (boolean)
+
+[jmix:createdFromPageModel] > jmix:templateMixin mixin
+extends = jnt:page
+
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable, jmix:hasIcon, mix:title
  - j:hiddenTemplate (boolean)
  - j:moduleTemplate (string) hidden nofulltext

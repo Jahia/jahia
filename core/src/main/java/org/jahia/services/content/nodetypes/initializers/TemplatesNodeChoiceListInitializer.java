@@ -44,19 +44,22 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.decorator.JCRFileNode;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.api.Constants;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.render.RenderService;
-import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRFileNode;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.render.RenderService;
+import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
 
 import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import java.util.*;
 
 /**
@@ -83,6 +86,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                                                      List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         List<ChoiceListValue> vs = new ArrayList<ChoiceListValue>();
+        List<ChoiceListValue> tmpVs = new ArrayList<ChoiceListValue>();
         try {
             JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
             ExtendedNodeType nodetype;
@@ -92,7 +96,6 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             } else {
                 nodetype = node.getPrimaryNodeType();
             }
-
 
             JCRNodeWrapper site = node.getResolveSite();
 
@@ -118,15 +121,39 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             for (String installedModule : installedModules) {
                 JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(installedModule);
                 if (aPackage != null) {
-                    addTemplates(vs, "/modules/" + installedModule + "/" + aPackage.getVersion(), session, node, nodetype, templateType, defaultTemplate, epd, locale, context);
+                    addTemplates(tmpVs, "/modules/" + installedModule + "/" + aPackage.getVersion(), session, node, nodetype, templateType, defaultTemplate, epd, locale, context);
                 }
             }
 
+            // test on create / edit engine, display page models only in create engine
+            // contextNode is null in create engine
+            if (context.get("contextNode") == null) {
+                // Add page Models
+                Query queryPageModels = session.getWorkspace().getQueryManager().createQuery("select * from [jmix:canBeUseAsTemplateModel] as tpl where isdescendantnode(tpl,['" + site.getPath() + "'])", Query.JCR_SQL2);
+                QueryResult qrPageModels = queryPageModels.execute();
+                NodeIterator niPageModels = qrPageModels.getNodes();
+
+                if (niPageModels.getSize() > 0) {
+                    vs.add(new ChoiceListValue(Messages.getInternal("org.jahia.services.content.nodetypes.initializers.templates.title", locale), ""));
+                    Collections.sort(tmpVs);
+                    vs.addAll(tmpVs);
+                    vs.add(new ChoiceListValue(Messages.getInternal("org.jahia.services.content.nodetypes.initializers.pageModels.title", locale), ""));
+                    tmpVs.clear();
+                }
+                while (niPageModels.hasNext()) {
+                    Node n = niPageModels.nextNode();
+                    ChoiceListValue templateModelValue = new ChoiceListValue(" " + n.getProperty("j:pageTemplateTitle").getString(), n.getPath());
+                    templateModelValue.addProperty("addMixin", "jmix:createdFromPageModel");
+                    tmpVs.add(templateModelValue);
+
+                }
+            }
+            Collections.sort(tmpVs);
+            vs.addAll(tmpVs);
         } catch (RepositoryException e) {
             logger.error("Cannot get template", e);
         }
 
-        Collections.sort(vs);
         return vs;
     }
 

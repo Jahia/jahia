@@ -379,7 +379,7 @@ public class ContentManagerHelper {
                 currentUserSession.getLocale());
     }
 
-    public List<GWTJahiaNode> copy(final List<String> pathsToCopy, final String destinationPath, final String newName, final boolean moveOnTop,
+    public List<GWTJahiaNode>   copy(final List<String> pathsToCopy, final String destinationPath, final String newName, final boolean moveOnTop,
                                    final boolean cut, final boolean reference,final List<String> childNodeTypesToSkip, boolean allLanguages,
                                    JCRSessionWrapper currentUserSession, final Locale uiLocale) throws GWTJahiaServiceException {
         final List<String> missedPaths = new ArrayList<String>();

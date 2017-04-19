@@ -44,12 +44,10 @@
 package org.jahia.ajax.gwt.content.server;
 
 import com.extjs.gxt.ui.client.data.*;
-
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
@@ -112,7 +110,6 @@ import javax.jcr.security.Privilege;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
-
 import java.net.MalformedURLException;
 import java.text.Collator;
 import java.text.ParseException;
@@ -769,46 +766,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             node.setPath(nodeWrapper.getPath());
 
 //        setLock(Arrays.asList(node.getPath()), false);
-            Iterator<String> langCode = langCodeProperties.keySet().iterator();
-
-            try {
-                List<JCRSessionWrapper> sessions = new ArrayList<>();
-                JCRSessionWrapper session = retrieveCurrentSession(null);
-                sessions.add(session);
-
-                // save shared properties
-                properties.saveProperties(Arrays.asList(node), sharedProperties, removedTypes, session, getUILocale(), getSession().getId());
-                if (!removedTypes.isEmpty()) {
-                    for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {
-                        removedTypes.remove(mixin.getName());
-                    }
-                }
-                // save properties per lang
-                while (langCode.hasNext()) {
-                    String currentLangCode = langCode.next();
-                    List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
-                    session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode));
-                    sessions.add(session);
-                    properties.saveProperties(Arrays.asList(node), props, removedTypes, session, getUILocale(), getSession().getId());
-                }
-                for (JCRSessionWrapper sessionWrapper : sessions) {
-                    sessionWrapper.validate();
-                }
-            } catch (javax.jcr.nodetype.ConstraintViolationException e) {
-                if (e instanceof CompositeConstraintViolationException) {
-                    properties.convertException((CompositeConstraintViolationException) e);
-                }
-                if (e instanceof NodeConstraintViolationException) {
-                    properties.convertException((NodeConstraintViolationException) e);
-                }
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
-            } catch (LockException e) {
-                logger.debug(e.getMessage(), e);
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
-            }
+            saveProperties(node, langCodeProperties, sharedProperties, removedTypes);
 
             if (node.get(GWTJahiaNode.INCLUDE_CHILDREN) != null) {
                 List<String> removedChildrenPaths = node.getRemovedChildrenPaths();
@@ -913,6 +871,49 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         closeEditEngine(node.getPath());
         return result;
+    }
+
+    private void saveProperties(GWTJahiaNode node, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException {
+        Iterator<String> langCode = langCodeProperties.keySet().iterator();
+
+        try {
+            List<JCRSessionWrapper> sessions = new ArrayList<>();
+            JCRSessionWrapper session = retrieveCurrentSession(null);
+            sessions.add(session);
+
+            // save shared properties
+            properties.saveProperties(Arrays.asList(node), sharedProperties, removedTypes, session, getUILocale(), getSession().getId());
+            if (!removedTypes.isEmpty()) {
+                for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {
+                    removedTypes.remove(mixin.getName());
+                }
+            }
+            // save properties per lang
+            while (langCode.hasNext()) {
+                String currentLangCode = langCode.next();
+                List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
+                session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode));
+                sessions.add(session);
+                properties.saveProperties(Arrays.asList(node), props, removedTypes, session, getUILocale(), getSession().getId());
+            }
+            for (JCRSessionWrapper sessionWrapper : sessions) {
+                sessionWrapper.validate();
+            }
+        } catch (javax.jcr.nodetype.ConstraintViolationException e) {
+            if (e instanceof CompositeConstraintViolationException) {
+                properties.convertException((CompositeConstraintViolationException) e);
+            }
+            if (e instanceof NodeConstraintViolationException) {
+                properties.convertException((NodeConstraintViolationException) e);
+            }
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
+        } catch (LockException e) {
+            logger.debug(e.getMessage(), e);
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
+        }
     }
 
 
@@ -1080,6 +1081,41 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     @Override
     public GWTJahiaNode createFolder(String parentPath, String name) throws GWTJahiaServiceException {
         return contentManager.createFolder(parentPath, name, retrieveCurrentSession(), getUILocale(), getSession().getId());
+    }
+
+    /**
+     * Create new page from page model
+     * @param sourcePath path of the page model
+     * @param destinationPath path of the page to be created
+     * @param name name of the new page
+     * @param nodeType type of the new page
+     * @param properties defined properties
+     * @param langCodeProperties defined i18n propreties
+     * @return the create page as a GWT object
+     * @throws GWTJahiaServiceException
+     */
+    public GWTJahiaNode createPageFromPageModel(String sourcePath, String destinationPath, String name, String nodeType, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException {
+        // copy node
+        try {
+            JCRSessionWrapper currentSession = retrieveCurrentSession(null);
+            List<String> childNodeTypesToSkip = currentSession.getNode(sourcePath).hasProperty("j:copySubPages") && currentSession.getNode(sourcePath).getProperty("j:copySubPages").getBoolean() ? null : Collections.singletonList("jnt:page");
+            GWTJahiaNode result = contentManager
+                    .copy(Collections.singletonList(sourcePath), destinationPath, name, false, false, false, childNodeTypesToSkip, true, retrieveCurrentSession(getLocale()), getUILocale()).get(0);
+            Set<String> removedTypes = new HashSet<>();
+            removedTypes.add("jmix:vanityUrlMapped");
+            removedTypes.add("jmix:canBeUseAsTemplateModel");
+            removedTypes.add("jmix:accessControlled");
+            // remove mixins from targeted Node
+            for (String type : removedTypes) {
+                result.getNodeTypes().remove(type);
+            }
+
+            saveProperties(result, langCodeProperties, properties, removedTypes);
+            currentSession.save();
+            return result;
+        } catch (RepositoryException e) {
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.node.creation.failed.cause", getUILocale(), getLocalizedMessage(e)));
+        }
     }
 
     @Override

@@ -180,11 +180,22 @@ public class CreateButtonItem extends SaveButtonItem {
         };
 
         engine.removeUneditedLanguages();
-
-        if (engine.isCreateInParentAndMoveBefore()) {
-            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(engine.getTargetNode().getPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, callback);
+        String destinationPath = engine.getTargetNode().getPath();
+        String nodeType = engine.getType().getName();
+        if (mixin.contains("jmix:createdFromPageModel")) {
+            String sourcePath = null;
+            for (GWTJahiaNodeProperty p : engine.getChangedProperties()) {
+                if (p.getName().equals("j:templateName")) {
+                    sourcePath = p.getValues().get(0).getString();
+                    engine.getChangedProperties().remove(p);
+                    break;
+                }
+            }
+            JahiaContentManagementService.App.getInstance().createPageFromPageModel(sourcePath, destinationPath, nodeName, nodeType, props, langCodeProperties, callback);
+        } else if (engine.isCreateInParentAndMoveBefore()) {
+            JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(destinationPath, nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         } else {
-            JahiaContentManagementService.App.getInstance().createNode(engine.getParentPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, children, null, forceCreation, callback);
+            JahiaContentManagementService.App.getInstance().createNode(destinationPath, nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, children, null, forceCreation, callback);
         }
     }
 

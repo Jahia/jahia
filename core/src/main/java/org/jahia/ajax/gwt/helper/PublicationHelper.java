@@ -89,7 +89,7 @@ public class PublicationHelper {
     private JCRPublicationService publicationService;
     private WorkflowHelper workflowHelper;
     private WorkflowService workflowService;
-    private HttpClientService httpClientService;
+	private HttpClientService httpClientService;
 
     public void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;
@@ -163,9 +163,6 @@ public class PublicationHelper {
 
                 gwtInfo.setIsAllowedToPublishWithoutWorkflow(node.hasPermission("publish"));
                 gwtInfo.setIsNonRootMarkedForDeletion(gwtInfo.getStatus() == GWTJahiaPublicationInfo.MARKED_FOR_DELETION && !node.isNodeType("jmix:markedForDeletionRoot"));
-
-                WorkflowRule workflowRule = workflowService.getWorkflowRuleForAction(node, true, "publish");
-                populateWorkflowInfo(gwtInfo, workflowRule, language);
 
                 if (gwtInfo.getStatus() == GWTJahiaPublicationInfo.PUBLISHED) {
                     // the item status is published: check if the tree status or references are modified or unpublished
@@ -381,7 +378,13 @@ public class PublicationHelper {
 
         all.put(node.getUuid(), gwtInfo);
 
-        populateWorkflowInfo(gwtInfo, lastRule, language);
+
+        if (lastRule != null) {
+            gwtInfo.setWorkflowGroup(language + lastRule.getDefinitionPath());
+            gwtInfo.setWorkflowDefinition(lastRule.getProviderKey()+":"+lastRule.getWorkflowDefinitionKey());
+        } else {
+            gwtInfo.setWorkflowGroup(language + " no-workflow");
+        }
 
         String translationNodeName = node.getChildren().size() > 0 ? "/j:translation_" + language : null;
         for (PublicationInfoNode sub : node.getChildren()) {
@@ -558,67 +561,59 @@ public class PublicationHelper {
         }
     }
 
-    public void validateConnection(Map<String, String> props, JCRSessionWrapper jcrSession, Locale uiLocale)
-            throws GWTJahiaServiceException {
-        PostMethod post = null;
-        URL url = null;
-        try {
-            String languageCode = jcrSession.getNodeByIdentifier(props.get("node")).getResolveSite().getDefaultLanguage();
-            String theUrl = props.get("remoteUrl") + Render.getRenderServletPath() + "/live/" + languageCode + props.get("remotePath") + ".preparereplay.do";
-            url = new URL(theUrl);
-            post = new PostMethod(theUrl);
-            post.addParameter("testOnly", "true");
-            post.addRequestHeader("accept", "application/json");
-            HttpState state = new HttpState();
+	public void validateConnection(Map<String, String> props, JCRSessionWrapper jcrSession, Locale uiLocale)
+	        throws GWTJahiaServiceException {
+		PostMethod post = null;
+		URL url = null;
+		try {
+			String languageCode = jcrSession.getNodeByIdentifier(props.get("node")).getResolveSite().getDefaultLanguage();
+			String theUrl = props.get("remoteUrl") + Render.getRenderServletPath() + "/live/" + languageCode + props.get("remotePath") + ".preparereplay.do";
+			url = new URL(theUrl);
+			post = new PostMethod(theUrl);
+			post.addParameter("testOnly", "true");
+			post.addRequestHeader("accept", "application/json");
+			HttpState state = new HttpState();
             state.setCredentials(
                     new AuthScope(url.getHost(), url.getPort()),
-                    new UsernamePasswordCredentials(props.get("remoteUser"), props
-                            .get("remotePassword")));
-            HttpClient httpClient = httpClientService.getHttpClient(theUrl);
-            Credentials proxyCredentials = httpClient.getState().getProxyCredentials(AuthScope.ANY);
-            if (proxyCredentials != null) {
-                state.setProxyCredentials(AuthScope.ANY, proxyCredentials);
-            }
+			        new UsernamePasswordCredentials(props.get("remoteUser"), props
+			                .get("remotePassword")));
+			HttpClient httpClient = httpClientService.getHttpClient(theUrl);
+			Credentials proxyCredentials = httpClient.getState().getProxyCredentials(AuthScope.ANY);
+			if (proxyCredentials != null) {
+			    state.setProxyCredentials(AuthScope.ANY, proxyCredentials);
+			}
             if (httpClient.executeMethod(null, post, state) != 200) {
-                logger.warn("Connection to URL: {} failed with status {}", url,
-                        post.getStatusLine());
-                throw new GWTJahiaServiceException(
-                        Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.status",uiLocale, post.getStatusLine()));
-            }
-        } catch (RepositoryException e) {
-            logger.error("Unable to get source node with identifier: " + props.get("node")
-                    + ". Cause: " + e.getMessage(), e);
-            throw new GWTJahiaServiceException(
-                    Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error", uiLocale, e.getMessage()));
-        } catch (HttpException e) {
-            logger.error(
-                    "Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(),
-                    e);
-            throw new GWTJahiaServiceException(
-                    Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error",uiLocale, e.getMessage()));
-        } catch (IOException e) {
-            logger.error(
-                    "Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(),
-                    e);
-            throw new GWTJahiaServiceException(
-                    Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error",uiLocale, e.getMessage()));
-        } finally {
-            if (post != null) {
-                post.releaseConnection();
-            }
-        }
-    }
+				logger.warn("Connection to URL: {} failed with status {}", url,
+				        post.getStatusLine());
+				throw new GWTJahiaServiceException(
+				        Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.status",uiLocale, post.getStatusLine()));
+			}
+		} catch (RepositoryException e) {
+			logger.error("Unable to get source node with identifier: " + props.get("node")
+			        + ". Cause: " + e.getMessage(), e);
+			throw new GWTJahiaServiceException(
+			        Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error", uiLocale, e.getMessage()));
+		} catch (HttpException e) {
+			logger.error(
+			        "Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(),
+			        e);
+			throw new GWTJahiaServiceException(
+			        Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error",uiLocale, e.getMessage()));
+		} catch (IOException e) {
+			logger.error(
+			        "Unable to get the content of the URL: " + url + ". Cause: " + e.getMessage(),
+			        e);
+			throw new GWTJahiaServiceException(
+			        Messages.getInternalWithArguments("label.gwt.error.connection.failed.with.the.an.error",uiLocale, e.getMessage()));
+		} finally {
+			if (post != null) {
+				post.releaseConnection();
+			}
+		}
+	}
 
-    public void setHttpClientService(HttpClientService httpClientService) {
-        this.httpClientService = httpClientService;
-    }
+	public void setHttpClientService(HttpClientService httpClientService) {
+		this.httpClientService = httpClientService;
+	}
 
-    private static void populateWorkflowInfo(GWTJahiaPublicationInfo gwtInfo, WorkflowRule workflowRule, String language) {
-        if (workflowRule != null) {
-            gwtInfo.setWorkflowGroup(language + workflowRule.getDefinitionPath());
-            gwtInfo.setWorkflowDefinition(workflowRule.getProviderKey() + ":" + workflowRule.getWorkflowDefinitionKey());
-        } else {
-            gwtInfo.setWorkflowGroup(language + " no-workflow");
-        }
-    }
 }

@@ -114,11 +114,9 @@ public class FileInstallConfigurer {
             if (existingCfgs != null) {
                 String refDirPath = new File(dirPath).getCanonicalPath();
                 for (Configuration cfg : existingCfgs) {
-                    if (cfg.getBundleLocation() != null) {
-                        String dir = (String) cfg.getProperties().get("felix.fileinstall.dir");
-                        if (StringUtils.isNotEmpty(dir) && new File(dir).getCanonicalPath().equals(refDirPath)) {
-                            return cfg;
-                        }
+                    String dir = (String) cfg.getProperties().get("felix.fileinstall.dir");
+                    if (StringUtils.isNotEmpty(dir) && new File(dir).getCanonicalPath().equals(refDirPath)) {
+                        return cfg;
                     }
                 }
             }
@@ -146,6 +144,9 @@ public class FileInstallConfigurer {
             logger.info("FileInstall configuration for directory {} already exists. No need to create it: {}",
                     watchedDir, cfg);
             return;
+        }
+        if (cfg != null) {
+            logger.warn("Force registration of configuration {} for directory {} that already exists", cfg, watchedDir);
         }
         try {
             cfg = configurationAdmin.createFactoryConfiguration("org.apache.felix.fileinstall");
@@ -218,8 +219,8 @@ public class FileInstallConfigurer {
         Configuration cfg = findExisting(configurationAdmin, watchedDir);
         if (cfg != null) {
             try {
-                cfg.delete();
                 logger.info("Unregistered FileInstall configuration for directory {}: {}", watchedDir, cfg);
+                cfg.delete();
                 return true;
             } catch (IOException e) {
                 logger.error("Unable to remove FileInstall configuration", e);

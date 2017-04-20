@@ -133,16 +133,24 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 QueryResult qrPageModels = queryPageModels.execute();
                 NodeIterator niPageModels = qrPageModels.getNodes();
 
-                if (niPageModels.getSize() > 0) {
+                // filter out parent nodes
+                List<Node> templateNodes = new ArrayList<>();
+                while (niPageModels.hasNext()) {
+                    Node n = niPageModels.nextNode();
+                    if(!node.getPath().startsWith(n.getPath())) {
+                        templateNodes.add(n);
+                    }
+                }
+
+                if (templateNodes.size() > 0) {
                     vs.add(new ChoiceListValue(Messages.getInternal("org.jahia.services.content.nodetypes.initializers.templates.title", locale), ""));
                     Collections.sort(tmpVs);
                     vs.addAll(tmpVs);
                     vs.add(new ChoiceListValue(Messages.getInternal("org.jahia.services.content.nodetypes.initializers.pageModels.title", locale), ""));
                     tmpVs.clear();
 
-                    while (niPageModels.hasNext()) {
-                        Node n = niPageModels.nextNode();
-                        ChoiceListValue templateModelValue = new ChoiceListValue(" " + n.getProperty("j:pageTemplateTitle").getString(), n.getPath());
+                    for (Node templateNode : templateNodes) {
+                        ChoiceListValue templateModelValue = new ChoiceListValue(" " + templateNode.getProperty("j:pageTemplateTitle").getString(), templateNode.getPath());
                         templateModelValue.addProperty("addMixin", "jmix:createdFromPageModel");
                         tmpVs.add(templateModelValue);
                     }

@@ -52,7 +52,7 @@
     <parent>
         <artifactId>dummy-modules</artifactId>
         <groupId>org.jahia.test</groupId>
-        <version>7.1.2.4-SNAPSHOT</version>
+        <version>7.1.2.5-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.test</groupId>
     <artifactId>dummy3</artifactId>

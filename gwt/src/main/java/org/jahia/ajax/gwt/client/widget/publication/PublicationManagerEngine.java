@@ -58,7 +58,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.google.gwt.user.client.ui.Image;
-
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
@@ -216,11 +215,6 @@ public class PublicationManagerEngine extends Window {
                 }
             }
 
-            if (all.isEmpty()) {
-                MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToPublish", "Nothing to publish"), null);
-                return;
-            }
-
             PublicationWorkflow.create(all, linker, false);
             hide();
         }
@@ -309,9 +303,10 @@ public class PublicationManagerEngine extends Window {
             if (info.get("checkboxEnabled") != null) {
                 return info.<Boolean>get("checkboxEnabled").booleanValue();
             }
-            boolean enabled = info.isPublishable() && (info.getWorkflowDefinition() != null || info.isAllowedToPublishWithoutWorkflow());
-            info.set("checkboxEnabled", enabled);
-            return enabled;
+
+            boolean b = info.isPublishable() && (info.getWorkflowDefinition() != null || info.isAllowedToPublishWithoutWorkflow());
+            info.set("checkboxEnable", b);
+            return b;
         }
 
         /**
@@ -322,9 +317,9 @@ public class PublicationManagerEngine extends Window {
         @Override
         protected void onMouseDown(GridEvent<ModelData> ge) {
             String cls = ge.getTarget().getClassName();
-            if (cls != null &&
-                    cls.indexOf("x-grid3-cc-" + getId() + "-" + getDataIndex() + " ") != -1 &&
-                    cls.indexOf("disabled") == -1) {
+            if (cls != null && 
+            		cls.indexOf("x-grid3-cc-" + getId() + "-" + getDataIndex() + " ") != -1 &&
+            		cls.indexOf("disabled") == -1) {
                 ge.stopEvent();
                 int index = grid.getView().findRowIndex(ge.getTarget());
                 ModelData m = grid.getStore().getAt(index);

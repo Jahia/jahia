@@ -69,6 +69,7 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.node.GWTJahiaNodeTreeFactory;
+import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
 import java.util.*;
 
@@ -81,7 +82,7 @@ import java.util.*;
 public class PublicationManagerEngine extends Window {
     private final Linker linker;
     private TreeLoader<GWTJahiaNode> loader;
-    private TreeGrid<GWTJahiaNode> tree;
+    private TreeGrid<GWTJahiaNode> m_tree;
 
     private List<GWTJahiaLanguage> languages;
     private Map<String, LayoutContainer> checkboxMap;
@@ -146,48 +147,53 @@ public class PublicationManagerEngine extends Window {
 
         ColumnModel cm = new ColumnModel(columns);
 //        cm.addHeaderGroup(0, 1, new HeaderGroupConfig("Publication Info", 1, columns.size() - 1));
-        tree = factory.getTreeGrid(cm);
+        m_tree = factory.getTreeGrid(cm);
 
         for (ColumnConfig column : columns) {
             if (column instanceof CheckColumnConfig) {
-                tree.addPlugin((ComponentPlugin) column);
+                m_tree.addPlugin((ComponentPlugin) column);
             }
         }
-        tree.setHideHeaders(false);
-        tree.setIconProvider(ContentModelIconProvider.getInstance());
-        tree.setAutoExpand(false);
-        tree.setAutoExpandMax(1000);
-        tree.setAutoExpandMin(150);
-        tree.setAutoExpandColumn("displayName");
-        tree.setBorders(true);
+        m_tree.setHideHeaders(false);
+        m_tree.setIconProvider(ContentModelIconProvider.getInstance());
+        m_tree.setAutoExpand(false);
+        m_tree.setAutoExpandMax(1000);
+        m_tree.setAutoExpandMin(150);
+        m_tree.setAutoExpandColumn("displayName");
+        m_tree.setBorders(true);
 
         setScrollMode(Style.Scroll.AUTO);
-        add(tree);
+        add(m_tree);
         ButtonBar buttonBar = new ButtonBar();
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
         Button button = new Button(Messages.get("label.publish", "Publish"));
         buttonBar.add(button);
         setBottomComponent(buttonBar);
 
-        tree.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        m_tree.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
 
         loader.addLoadListener(new LoadListener() {
-
-            @Override
             public void loaderLoad(LoadEvent le) {
-                tree.unmask();
+                m_tree.unmask();
             }
         });
         loader.load();
 
-        button.addSelectionListener(new StartWorkflowButtonSelectionListener());
+        button.addSelectionListener(new StartWorkflowButtonSelectionListener(this));
     }
 
     private class StartWorkflowButtonSelectionListener extends SelectionListener<ButtonEvent> {
+        private final Window dialog;
+        private List<WorkflowActionDialog> dialogList;
+
+        public StartWorkflowButtonSelectionListener(Window window) {
+            dialog = window;
+            dialogList = new LinkedList<WorkflowActionDialog>();
+        }
 
         @Override
-        public void componentSelected(ButtonEvent buttonEvent) {
-            final ListStore<GWTJahiaNode> store = tree.getStore();
+        public void componentSelected(ButtonEvent ce) {
+            final ListStore<GWTJahiaNode> store = m_tree.getStore();
             List<GWTJahiaNode> nodes = store.getModels();
 
             List<GWTJahiaPublicationInfo> all = new ArrayList<GWTJahiaPublicationInfo>();
@@ -231,8 +237,6 @@ public class PublicationManagerEngine extends Window {
         public PublicationCheckColumnConfig(String id, String name, int width) {
             super(id, name, width);
             setRenderer(new GridCellRenderer<ModelData>() {
-
-                @Override
                 public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex,
                                      ListStore<ModelData> listStore, Grid<ModelData> grid) {
                     return renderHTML(model,property, config, rowIndex, colIndex, listStore);
@@ -281,6 +285,11 @@ public class PublicationManagerEngine extends Window {
             } else {
                 return "";
             }
+        }
+
+        private int getState(GWTJahiaNode node) {
+            return node.getAggregatedPublicationInfos() != null ? node.getAggregatedPublicationInfos().get(
+                    getDataIndex()).getStatus() : 0;
         }
 
         private String getCheckState(GWTJahiaNode model, GWTJahiaPublicationInfo info) {
@@ -334,13 +343,10 @@ public class PublicationManagerEngine extends Window {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public void init(Component component) {
-            this.grid = (Grid<ModelData>) component;
-            grid.addListener(Events.CellClick, new Listener<GridEvent<ModelData>>() {
-
-                @Override
-                public void handleEvent(GridEvent<ModelData> e) {
+            this.grid = (Grid) component;
+            grid.addListener(Events.CellClick, new Listener<GridEvent>() {
+                public void handleEvent(GridEvent e) {
                     onMouseDown(e);
                 }
             });

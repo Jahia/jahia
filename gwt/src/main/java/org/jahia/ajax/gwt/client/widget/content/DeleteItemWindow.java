@@ -218,22 +218,15 @@ public class DeleteItemWindow extends Window {
 		add(formPanel);
 	}
 
-	private boolean isPageDeleted(LinkerSelectionContext lh) {
-		if (lh.getMultipleSelection().get(0).getNodeTypes().contains("jnt:page")) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	private String getConfirmationMessage(LinkerSelectionContext lh, int nbSelectedNodes) {
 		String message = "";
 		if (nbSelectedNodes > 1) {
 			message = Messages.getWithArgs("message.remove.multiple.confirm", "Do you really want to remove the {0} selected resources?", new String[] { String.valueOf(nbSelectedNodes) });
 		} else {
-			if (isPageDeleted(lh)) {
+			if (lh.getMultipleSelection().get(0).getNodeTypes().contains("jmix:canBeUseAsTemplateModel")) {
+				message = Messages.getWithArgs("message.remove.single.pagemodel.confirm", "Do you really want to remove the selected PAGE model {0}?", new String[] { lh.getSingleSelection().getName() });
+			} else if (lh.getMultipleSelection().get(0).getNodeTypes().contains("jnt:page")) {
 				message = Messages.getWithArgs("message.remove.single.page.confirm", "Do you really want to remove the selected PAGE {0}?", new String[] { lh.getSingleSelection().getName() });
-				// icon = "ext-mb-delete-page";
 			} else {
 				message = Messages.getWithArgs("message.remove.single.confirm", "Do you really want to remove the selected resource {0}?", new String[] { lh.getSingleSelection().getName() });
 			}

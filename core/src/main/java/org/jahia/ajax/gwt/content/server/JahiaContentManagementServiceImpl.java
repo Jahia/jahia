@@ -1102,13 +1102,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             GWTJahiaNode result = contentManager
                     .copy(Collections.singletonList(sourcePath), destinationPath, name, false, false, false, childNodeTypesToSkip, true, retrieveCurrentSession(getLocale()), getUILocale()).get(0);
             Set<String> removedTypes = new HashSet<>();
-            removedTypes.add("jmix:vanityUrlMapped");
-            removedTypes.add("jmix:canBeUseAsTemplateModel");
-            removedTypes.add("jmix:accessControlled");
+
             // remove mixins from targeted Node
-            for (String type : removedTypes) {
-                result.getNodeTypes().remove(type);
-            }
+            result.getNodeTypes().removeAll(Arrays.asList("jmix:vanityUrlMapped", "jmix:canBeUseAsTemplateModel", "jmix:accessControlled"));
 
             saveProperties(result, langCodeProperties, properties, removedTypes);
             currentSession.save();

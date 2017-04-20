@@ -139,13 +139,13 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                     vs.addAll(tmpVs);
                     vs.add(new ChoiceListValue(Messages.getInternal("org.jahia.services.content.nodetypes.initializers.pageModels.title", locale), ""));
                     tmpVs.clear();
-                }
-                while (niPageModels.hasNext()) {
-                    Node n = niPageModels.nextNode();
-                    ChoiceListValue templateModelValue = new ChoiceListValue(" " + n.getProperty("j:pageTemplateTitle").getString(), n.getPath());
-                    templateModelValue.addProperty("addMixin", "jmix:createdFromPageModel");
-                    tmpVs.add(templateModelValue);
 
+                    while (niPageModels.hasNext()) {
+                        Node n = niPageModels.nextNode();
+                        ChoiceListValue templateModelValue = new ChoiceListValue(" " + n.getProperty("j:pageTemplateTitle").getString(), n.getPath());
+                        templateModelValue.addProperty("addMixin", "jmix:createdFromPageModel");
+                        tmpVs.add(templateModelValue);
+                    }
                 }
             }
             Collections.sort(tmpVs);

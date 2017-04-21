@@ -166,10 +166,10 @@ public class JSessionIDTest extends JahiaTestCase {
 
             String url = m.group(1);
             if (!removeJsessionId) {
-                logger.info("Unencoded URL: ", getBaseServerURL() + Jahia.getContextPath() + "/start");
-                logger.info("Encoded redirect URL: ",
+                logger.info("Unencoded URL: " + getBaseServerURL() + Jahia.getContextPath() + "/start");
+                logger.info("Encoded redirect URL: " +
                         getResponse().encodeRedirectURL(getBaseServerURL() + Jahia.getContextPath() + "/start"));
-                logger.info("Encoded URL: ", getResponse().encodeURL(getBaseServerURL() + Jahia.getContextPath() + "/start"));
+                logger.info("Encoded URL: " + getResponse().encodeURL(getBaseServerURL() + Jahia.getContextPath() + "/start"));
             }
             
             assertEquals("jsession ID is not "

@@ -49,16 +49,20 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
+import org.jahia.test.services.query.IndexOptionsTest;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 
@@ -66,6 +70,7 @@ import static org.junit.Assert.*;
  * This test case verify that the jsessionid parameter is correctly removed from the URL
  */
 public class JSessionIDTest extends JahiaTestCase {
+    private static Logger logger = LoggerFactory.getLogger(JSessionIDTest.class);
     private HttpClient httpClient;
     private String jsessionid;
 
@@ -84,6 +89,7 @@ public class JSessionIDTest extends JahiaTestCase {
     @Before
     public void setUp() {
         httpClient = new HttpClient();
+        httpClient.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
         jsessionid = "jsessionid";
     }
 
@@ -159,7 +165,13 @@ public class JSessionIDTest extends JahiaTestCase {
             assertTrue(m.find());
 
             String url = m.group(1);
-
+            if (!removeJsessionId) {
+                logger.info("Unencoded URL: ", getBaseServerURL() + Jahia.getContextPath() + "/start");
+                logger.info("Encoded redirect URL: ",
+                        getResponse().encodeRedirectURL(getBaseServerURL() + Jahia.getContextPath() + "/start"));
+                logger.info("Encoded URL: ", getResponse().encodeURL(getBaseServerURL() + Jahia.getContextPath() + "/start"));
+            }
+            
             assertEquals("jsession ID is not "
                     + (removeJsessionId ? "removed" : "present")
                     + " in administration login url:" + url, removeJsessionId,

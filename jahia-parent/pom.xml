@@ -87,6 +87,7 @@
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
         <drools.version>${jbpm.version}</drools.version>
+        <drools.compiler.version>${jbpm.version}-jahia1</drools.compiler.version>
         <hibernate.version>4.2.7.SP1</hibernate.version>
         <hibernate.core.version>4.2.7.SP1-jahia1</hibernate.core.version>
         <hibernate.validator.version>5.0.1.Final</hibernate.validator.version>
@@ -108,7 +109,7 @@
         <izpack.version>4.3.5-jahia10</izpack.version>
         <launch4j.version>3.4</launch4j.version>
         <log4j.version>1.2.17</log4j.version>
-        <jahia.tomcat.version>8.0.39</jahia.tomcat.version>
+        <jahia.tomcat.version>8.0.43</jahia.tomcat.version>
 
         <driver.derby.version>10.12.1.1</driver.derby.version>
         <driver.mssql.version>4.2.6420.100</driver.mssql.version>

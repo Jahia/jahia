@@ -135,7 +135,7 @@ public class UIConfigHelper {
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.during.loading.toolbars",uiLocale, e.getMessage()));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.during.loading.toolbars", uiLocale, e.getMessage()));
         }
     }
 
@@ -199,7 +199,7 @@ public class UIConfigHelper {
             return gwtJahiaStateInfo;
         } catch (Exception e) {
             logger.error("Error when triing to load Jahia state info due to", e);
-            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.when.trying.to.load.jahia.state",uiLocale));
+            throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.when.trying.to.load.jahia.state", uiLocale));
         }
     }
 
@@ -394,7 +394,7 @@ public class UIConfigHelper {
                 return gwtConfig;
             } else {
                 logger.error("Config. " + name + " not found.");
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.config.not.found",uiLocale, name));
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.config.not.found", uiLocale, name));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -627,8 +627,8 @@ public class UIConfigHelper {
                     } else {
                         defaultLocation = null;
                     }
-                } else if(defaultLocation.contains("$user")) {
-                    defaultLocation = defaultLocation.replace("$user",jahiaUser.getLocalPath());
+                } else if (defaultLocation.contains("$user")) {
+                    defaultLocation = defaultLocation.replace("$user", jahiaUser.getLocalPath());
                 }
                 gwtConfig.setDefaultLocation(defaultLocation);
                 JCRNodeWrapper contextNode = null;
@@ -687,7 +687,7 @@ public class UIConfigHelper {
                 // when switching from edit to preview or live or any mode that has the same default location.
                 // An exception has been added for system site that is used for dashboard or administration.
                 for (EditConfiguration configuration : SpringContextSingleton.getInstance().getContext().getBeansOfType(EditConfiguration.class).values()) {
-                    if (StringUtils.equals(configuration.getSitesLocation(),(config.getSitesLocation())) && !StringUtils.equals(config.getSitesLocation(),"/sites/systemsite")) {
+                    if (StringUtils.equals(configuration.getSitesLocation(), config.getSitesLocation()) && !StringUtils.equals(config.getSitesLocation(), "/sites/systemsite")) {
                         configsList.add(configuration.getName());
                     }
                 }
@@ -703,7 +703,7 @@ public class UIConfigHelper {
                             sitesMap.put(aSite.getSiteUUID(), aSite);
                         }
                     }
-                    GWTJahiaNode systemSite = navigation.getGWTJahiaNode(session.getNode("/sites/systemsite"),GWTJahiaNode.DEFAULT_SITEMAP_FIELDS);
+                    GWTJahiaNode systemSite = navigation.getGWTJahiaNode(session.getNode("/sites/systemsite"), GWTJahiaNode.DEFAULT_SITEMAP_FIELDS);
                     if (!sitesMap.containsKey(systemSite.getUUID())) {
                         sitesMap.put(systemSite.getUUID(), systemSite);
                     }
@@ -718,7 +718,7 @@ public class UIConfigHelper {
                 gwtConfig.setSupportChannelsDisplay(config.isSupportChannelsDisplay());
                 return gwtConfig;
             } else {
-                throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.bean.editconfig.not.found.in.spring.config.file",uiLocale));
+                throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.bean.editconfig.not.found.in.spring.config.file", uiLocale));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

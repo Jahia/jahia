@@ -43,6 +43,7 @@
  */
 package org.jahia.osgi;
 
+import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -58,13 +59,8 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.ConstantException;
 import org.springframework.core.Constants;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -296,8 +292,26 @@ public final class BundleUtils {
         return bundle.getHeaders().get("Jahia-Module-Type") != null;
     }
 
+    /**
+     * Performs lookup of the specified class in classloaders of all modules, which are in state Resolved or Active.
+     * 
+     * @param className the fully qualified class name to look up
+     * @return the requested class
+     * @throws ClassNotFoundException in case the corresponding class cannot be found
+     */
     public static Class<?> loadModuleClass(String className) throws ClassNotFoundException {
+        return loadModuleClass(className, Bundle.RESOLVED);
+    }
 
+    /**
+     * Performs lookup of the specified class in classloaders of all modules, which are at least in the requested state.
+     * 
+     * @param className the fully qualified class name to look up
+     * @param requiredModuleStatus the minimal required state of the bundle to be considered for class lookup
+     * @return the requested class
+     * @throws ClassNotFoundException in case the corresponding class cannot be found
+     */
+    public static Class<?> loadModuleClass(String className, int requiredModuleStatus) throws ClassNotFoundException {
         Class<?> clazz = null;
         String[] moduleKey = moduleForClass.get(className); // [moduleId, moduleVersion]
         if (moduleKey != null) {
@@ -305,7 +319,7 @@ public final class BundleUtils {
             Map<String, JahiaTemplatesPackage> versions = modules.get(moduleKey[0]);
             if (versions != null) {
                 JahiaTemplatesPackage pkg = versions.get(moduleKey[1]);
-                if (pkg != null) {
+                if (pkg != null && pkg.getBundle().getState() >= requiredModuleStatus) {
                     cl = pkg.getClassLoader();
                 }
             }
@@ -318,12 +332,15 @@ public final class BundleUtils {
 
         for (Map<String, JahiaTemplatesPackage> moduleVersions : modules.values()) {
             for (JahiaTemplatesPackage pkg : moduleVersions.values()) {
-                if (pkg.getClassLoader() != null) {
+                ClassLoader pkgClassLoader = pkg.getClassLoader();
+                if (pkgClassLoader != null) {
                     try {
-                        clazz = pkg.getClassLoader().loadClass(className);
-                        moduleForClass
-                                .put(className, new String[]{pkg.getId(), pkg.getVersion().toString()});
-                        return clazz;
+                        clazz = pkgClassLoader.loadClass(className);
+                        Bundle bundle = getSourceBundleForClass(clazz);
+                        if (bundle != null && bundle.equals(pkg.getBundle()) && bundle.getState() >= requiredModuleStatus) {
+                            moduleForClass.put(className, new String[] { pkg.getId(), pkg.getVersion().toString() });
+                            return clazz;
+                        }
                     } catch (ClassNotFoundException e) {
                         // continue searching class in other modules
                     }
@@ -332,6 +349,20 @@ public final class BundleUtils {
         }
 
         throw new ClassNotFoundException("Unable to find class '" + className + "' in the class loaders of modules");
+    }
+
+    private static Bundle getSourceBundleForClass(Class<?> clazz) {
+        Bundle bundle = null;
+        try {
+            bundle = (Bundle) MethodUtils.invokeExactMethod(clazz.getClassLoader(), "getBundle", null, null);
+        } catch (IllegalAccessException e) {
+            logger.error(e.getMessage(), e);
+        } catch (InvocationTargetException e) {
+            logger.error(e.getMessage(), e);
+        } catch (NoSuchMethodException e) {
+            // not a bundle class loader
+        }
+        return bundle;
     }
 
     /**

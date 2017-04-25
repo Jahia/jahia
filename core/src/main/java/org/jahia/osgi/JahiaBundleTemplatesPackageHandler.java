@@ -134,8 +134,6 @@ class JahiaBundleTemplatesPackageHandler {
         pkg.setProvider(StringUtils.defaultString(getHeader(bundle, "Implementation-Vendor"),
                 "Jahia Solutions Group SA"));
 
-        pkg.setClassLoader(BundleUtils.createBundleClassLoader(bundle));
-
         pkg.setForgeUrl(getHeader(bundle, "Jahia-Private-App-Store"));
 
         pkg.setGroupId(getHeader(bundle, "Jahia-GroupId"));
@@ -169,7 +167,6 @@ class JahiaBundleTemplatesPackageHandler {
     }
 
     private static boolean hasResourceBundle(Bundle bundle, String resourceBundleName) {
-        boolean found = false;
         // check if there is a resource bundle file in the resources folder
         Enumeration<String> paths = bundle.getEntryPaths("/resources/");
         while (paths != null && paths.hasMoreElements()) {

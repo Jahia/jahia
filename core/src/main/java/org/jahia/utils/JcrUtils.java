@@ -33,7 +33,7 @@ public class JcrUtils {
         try {
             if (parent.hasNode(name)) {
                 JCRNodeWrapper node = parent.getNode(name);
-                if (!node.isNodeType(type)) {
+                if (!node.getPrimaryNodeTypeName().equals(type)) {
                     throw new IllegalStateException(String.format("Unexpected type of node %s: %s", node.getPath(), node.getPrimaryNodeTypeName()));
                 }
                 return node;

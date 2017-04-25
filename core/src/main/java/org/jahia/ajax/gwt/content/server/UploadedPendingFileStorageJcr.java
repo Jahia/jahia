@@ -57,6 +57,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.SessionNamedDataStorageSupport;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.*;
+import org.jahia.utils.JcrUtils;
 
 /**
  * File storage that keeps files in JCR.
@@ -81,8 +82,8 @@ public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSuppor
 
                 @Override
                 public Void doInJCR(JCRSessionWrapper jcrSession) throws RepositoryException {
-                    JCRNodeWrapper pendingFiles = getFolderCreateIfNeeded(jcrSession.getRootNode(), jcrFolderName);
-                    JCRNodeWrapper sessionPendingFiles = getFolderCreateIfNeeded(pendingFiles, finalSessionID);
+                    JCRNodeWrapper pendingFiles = JcrUtils.getNodeCreateIfNeeded(jcrSession.getRootNode(), jcrFolderName, Constants.JAHIANT_TEMP_FOLDER);
+                    JCRNodeWrapper sessionPendingFiles = JcrUtils.getNodeCreateIfNeeded(pendingFiles, finalSessionID, Constants.JAHIANT_TEMP_FOLDER);
                     if (sessionPendingFiles.hasNode(finalName)) {
                         sessionPendingFiles.getNode(finalName).remove();
                     }
@@ -171,21 +172,6 @@ public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSuppor
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
         }
-    }
-
-    private JCRNodeWrapper getFolderCreateIfNeeded(JCRNodeWrapper parent, String name) throws RepositoryException {
-
-        if (parent.hasNode(name)) {
-            return parent.getNode(name);
-        }
-        parent.addNode(name, Constants.JAHIANT_TEMP_FOLDER);
-        parent.getSession().save();
-
-        // Even though we check target folder existence before adding a new one, there might be a concurrent thread doing the same
-        // simultaneously, so we both may succeed adding a new folder in case multiple equally named child nodes are allowed by the
-        // parent node (this is the actual case with the root node). So, to make sure any threads always use the same folder, just
-        // pick the one with index equal to 1 (this is what getNode() does in case there are multiple equally named items exist).
-        return parent.getNode(name);
     }
 
     private static String getPathString(String... pathElements) {

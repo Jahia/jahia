@@ -189,7 +189,8 @@ public class CreateButtonItem extends SaveButtonItem {
                     break;
                 }
             }
-            JahiaContentManagementService.App.getInstance().createPageFromPageModel(sourcePath, engine.getTargetNode().getPath(), nodeName, engine.getType().getName(), props, langCodeProperties, callback);
+            JahiaContentManagementService.App.getInstance().createPageFromPageModel(sourcePath, engine.getTargetNode().getPath(), nodeName, engine.getType()
+                    .getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         } else if (engine.isCreateInParentAndMoveBefore()) {
             JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(engine.getTargetNode().getPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         } else {

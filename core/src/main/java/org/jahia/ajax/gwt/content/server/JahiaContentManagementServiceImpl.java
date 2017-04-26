@@ -1094,20 +1094,28 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @return the create page as a GWT object
      * @throws GWTJahiaServiceException
      */
-    public GWTJahiaNode createPageFromPageModel(String sourcePath, String destinationPath, String name, String nodeType, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException {
+    public GWTJahiaNode createPageFromPageModel(String sourcePath, String destinationPath, String name, String nodeType, List<String> mixin, GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> properties, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties) throws GWTJahiaServiceException {
         // copy node
         try {
             JCRSessionWrapper currentSession = retrieveCurrentSession(null);
             List<String> childNodeTypesToSkip = currentSession.getNode(sourcePath).hasProperty("j:copySubPages") && currentSession.getNode(sourcePath).getProperty("j:copySubPages").getBoolean() ? null : Collections.singletonList("jnt:page");
             GWTJahiaNode result = contentManager
                     .copy(Collections.singletonList(sourcePath), destinationPath, name, false, false, false, childNodeTypesToSkip, true, retrieveCurrentSession(getLocale()), getUILocale()).get(0);
-            Set<String> removedTypes = new HashSet<>();
+
+            JCRNodeWrapper copiedNode = currentSession.getNode(result.getPath());
 
             // remove mixins from targeted Node
-            result.getNodeTypes().removeAll(Arrays.asList("jmix:vanityUrlMapped", "jmix:canBeUseAsTemplateModel", "jmix:accessControlled"));
+            for (String mixinToRemove : (Arrays.asList("jmix:vanityUrlMapped", "jmix:canBeUseAsTemplateModel", "jmix:accessControlled"))) {
+                if (copiedNode.isNodeType(mixinToRemove)) {
+                    copiedNode.removeMixin(mixinToRemove);
+                }
+                result.getNodeTypes().remove(mixinToRemove);
+            }
 
-            saveProperties(result, langCodeProperties, properties, removedTypes);
-            currentSession.save();
+            // add mixins from the engine
+            result.getNodeTypes().addAll(mixin);
+
+            saveNode(result, acl, langCodeProperties, properties, Collections.<String>emptySet());
             return result;
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.node.creation.failed.cause", getUILocale(), getLocalizedMessage(e)));

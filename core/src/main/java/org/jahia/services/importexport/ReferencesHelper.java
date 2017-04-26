@@ -257,8 +257,8 @@ public class ReferencesHelper {
                 ref.setProperty("j:fieldName", pName);
                 ref.setProperty("j:reference", value);
             } catch (ItemExistsException ex) {
-                logger.error("ReferenceKeeper in error for property '" + pName + "' of the node : " + n.getPath() +
-                        " . The wrong entry in the" +
+                logger.error("ReferenceKeeper in error for property '" + pName + "' and value '" + value + "' of the " +
+                        "node : " + n.getPath() + " . The wrong entry in the" +
                         "ReferekenceKeeper will be cleaned\n" + ex.getMessage(), ex);
             }
         } else if (pName.startsWith("@")) {

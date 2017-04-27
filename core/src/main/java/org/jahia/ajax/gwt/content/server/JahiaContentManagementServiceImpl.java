@@ -1105,13 +1105,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRNodeWrapper copiedNode = currentSession.getNode(result.getPath());
 
             // remove mixins from targeted Node
-            for (String mixinToRemove : (Arrays.asList("jmix:vanityUrlMapped", "jmix:canBeUseAsTemplateModel", "jmix:accessControlled"))) {
+            for (String mixinToRemove : (Arrays.asList("jmix:vanityUrlMapped", "jmix:canBeUseAsTemplateModel"))) {
                 if (copiedNode.isNodeType(mixinToRemove)) {
                     copiedNode.removeMixin(mixinToRemove);
                 }
                 result.getNodeTypes().remove(mixinToRemove);
             }
-
+            copiedNode.revokeAllRoles();
             // add mixins from the engine
             result.getNodeTypes().addAll(mixin);
 

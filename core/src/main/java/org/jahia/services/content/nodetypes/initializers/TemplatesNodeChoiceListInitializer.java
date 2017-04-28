@@ -130,7 +130,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             if (context.get("contextNode") == null) {
                 // Add page Models
                 Query queryPageModels = session.getWorkspace().getQueryManager().createQuery("select * from [jmix:canBeUseAsTemplateModel] as tpl " +
-                        "where [jcr:mixinTypes] <> \"jmix:markedForDeletion\"  and isdescendantnode(tpl,['" + site.getPath() + "'])", Query.JCR_SQL2);
+                        "where isdescendantnode(tpl,['" + site.getPath() + "'])", Query.JCR_SQL2);
                 QueryResult qrPageModels = queryPageModels.execute();
                 NodeIterator niPageModels = qrPageModels.getNodes();
 
@@ -138,7 +138,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 List<Node> templateNodes = new ArrayList<>();
                 while (niPageModels.hasNext()) {
                     Node n = niPageModels.nextNode();
-                    if(!node.getPath().startsWith(n.getPath())) {
+                    if(!node.getPath().startsWith(n.getPath()) && !n.isNodeType("jmix:markedForDeletion")) {
                         templateNodes.add(n);
                     }
                 }

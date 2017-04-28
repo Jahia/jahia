@@ -180,8 +180,18 @@ public class CreateButtonItem extends SaveButtonItem {
         };
 
         engine.removeUneditedLanguages();
-
-        if (engine.isCreateInParentAndMoveBefore()) {
+        if (mixin.contains("jmix:createdFromPageModel")) {
+            String sourcePath = null;
+            for (GWTJahiaNodeProperty p : engine.getChangedProperties()) {
+                if (p.getName().equals("j:templateName")) {
+                    sourcePath = p.getValues().get(0).getString();
+                    engine.getChangedProperties().remove(p);
+                    break;
+                }
+            }
+            JahiaContentManagementService.App.getInstance().createPageFromPageModel(sourcePath, engine.getTargetNode().getPath(), nodeName, engine.getType()
+                    .getName(), mixin, newNodeACL, props, langCodeProperties, callback);
+        } else if (engine.isCreateInParentAndMoveBefore()) {
             JahiaContentManagementService.App.getInstance().createNodeAndMoveBefore(engine.getTargetNode().getPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, callback);
         } else {
             JahiaContentManagementService.App.getInstance().createNode(engine.getParentPath(), nodeName, engine.getType().getName(), mixin, newNodeACL, props, langCodeProperties, children, null, forceCreation, callback);

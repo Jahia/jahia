@@ -150,7 +150,13 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                     tmpVs.clear();
 
                     for (Node templateNode : templateNodes) {
-                        ChoiceListValue templateModelValue = new ChoiceListValue(" " + templateNode.getProperty("j:pageTemplateTitle").getString(), templateNode.getPath());
+                        String title;
+                        if (templateNode.hasProperty("j:pageTemplateTitle")) {
+                            title = templateNode.getProperty("j:pageTemplateTitle").getString();
+                        } else {
+                            title = templateNode.getName();
+                        }
+                        ChoiceListValue templateModelValue = new ChoiceListValue(" " + title, templateNode.getPath());
                         templateModelValue.addProperty("addMixin", "jmix:createdFromPageModel");
                         tmpVs.add(templateModelValue);
                     }

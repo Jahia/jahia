@@ -129,7 +129,8 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             // contextNode is null in create engine
             if (context.get("contextNode") == null) {
                 // Add page Models
-                Query queryPageModels = session.getWorkspace().getQueryManager().createQuery("select * from [jmix:canBeUseAsTemplateModel] as tpl where isdescendantnode(tpl,['" + site.getPath() + "'])", Query.JCR_SQL2);
+                Query queryPageModels = session.getWorkspace().getQueryManager().createQuery("select * from [jmix:canBeUseAsTemplateModel] as tpl " +
+                        "where [jcr:mixinTypes] <> \"jmix:markedForDeletion\"  and isdescendantnode(tpl,['" + site.getPath() + "'])", Query.JCR_SQL2);
                 QueryResult qrPageModels = queryPageModels.execute();
                 NodeIterator niPageModels = qrPageModels.getNodes();
 

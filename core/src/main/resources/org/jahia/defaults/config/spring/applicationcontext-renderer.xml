@@ -29,6 +29,7 @@
         </property>
         <property name="cacheProvider" ref="ehCacheProvider"/>
         <property name="channelService" ref="ChannelService"/>
+        <property name="renderTimeMonitor" ref="RenderTimeMonitor"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 
@@ -433,4 +434,8 @@
 
     <bean id="jahiaBundleFlowRegistry" class="org.jahia.services.render.webflow.BundleFlowRegistry"/>
 
+    <bean id="RenderTimeMonitor" class="org.jahia.services.render.monitoring.DefaultRenderTimeMonitor">
+        <property name="maxRequestRenderTime" value="${maxRequestRenderTime:60000}"></property>
+        <property name="skipOnModes" value="admin,studio"/>
+    </bean>
 </beans>

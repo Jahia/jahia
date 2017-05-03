@@ -52,6 +52,7 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
@@ -1251,11 +1252,26 @@ public class MainModule extends Module {
                             public void execute() {
                                 if (frameError != null && !frameErrorRedirect) {
                                     frameErrorRedirect = true;
+                                    if (frameError.equals("503")) {
+                                        handleError503();
+                                    }
                                     setUrl(getBaseUrl() + config.getDefaultLocation());
                                 } else {
                                     frameErrorRedirect = false;
                                     onGWTFrameReady(iframe);
                                 }
+                            }
+
+                            private void handleError503() {
+                                MessageBox.alert(
+                                        Messages.get("label.error.503.title", "503 - Service temporary unavailable"),
+                                        Messages.get("label.error.503.description",
+                                                "The server is temporarily unable to service your request"
+                                                        + " due to maintenance downtime or capacity problems.")
+                                                + "<br>"
+                                                + Messages.get("label.error.maintenance.description",
+                                                        "We are sorry for the inconvenience. Please check back later."),
+                                        null);
                             }
                         });
                     } else {

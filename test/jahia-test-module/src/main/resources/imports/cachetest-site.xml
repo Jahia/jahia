@@ -853,6 +853,27 @@
             </simple-text>
         </main>
     </long>
+    <long5 changefreq="monthly"
+          j:templateName="two-cols"
+          jcr:mixinTypes="jmix:sitemap"
+          jcr:primaryType="jnt:page"
+          priority="0.5">
+        <j:translation_en
+                jcr:language="en"
+                jcr:mixinTypes="mix:title"
+                jcr:primaryType="jnt:translation"
+                jcr:title="long"/>
+        <main jcr:primaryType="jnt:contentList">
+            <simple-text j:view="sleep5"
+                         jcr:mixinTypes="jmix:renderable"
+                         jcr:primaryType="jnt:text">
+                <j:translation_en
+                        jcr:language="en"
+                        jcr:primaryType="jnt:translation"
+                        text="long"/>
+            </simple-text>
+        </main>
+    </long5>
     <absolute-0 jcr:primaryType="jnt:contentList"
                 jcr:uuid="9557d4b5-e3ca-4918-89f7-2aaee4bfafc8">
         <simple-text jcr:primaryType="jnt:text">

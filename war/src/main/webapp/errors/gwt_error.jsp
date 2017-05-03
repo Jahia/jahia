@@ -12,7 +12,7 @@
     <meta name="robots" content="noindex, nofollow"/>
     <title><fmt:message key="label.error"/></title>
 </head>
-<body class="error-page" jahia-error-code="${pageContext.response.status}" onLoad="if (history.length > 1) { document.getElementById('backLink').style.display=''; }">
+<body class="error-page" jahia-error-code="${pageContext.response.status}">
 
 </body>
 </html>

@@ -62,6 +62,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.RenderTimeLimitExceededException;
 import org.jahia.exceptions.JahiaNotFoundException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
@@ -137,6 +138,8 @@ public class DefaultErrorHandler implements ErrorHandler {
                 code = SC_UNAUTHORIZED;
             } else if (e instanceof JahiaNotFoundException) {
                 code = SC_NOT_FOUND;
+            } else if (e instanceof RenderTimeLimitExceededException) {
+                code = SC_SERVICE_UNAVAILABLE;
             } else {
 //                throw (JahiaRuntimeException) e;
             }
@@ -162,8 +165,7 @@ public class DefaultErrorHandler implements ErrorHandler {
             }
 
             if (!response.isCommitted()) {
-                // set proper error code (and use the trick, because Tomcat will not use custom error page for 503 error)
-                response.sendError(code != SC_SERVICE_UNAVAILABLE ? code : SC_INTERNAL_SERVER_ERROR, e.getMessage());
+                response.sendError(code, e.getMessage());
             }
             return true;
         }

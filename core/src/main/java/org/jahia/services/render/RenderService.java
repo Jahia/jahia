@@ -104,6 +104,8 @@ public class RenderService {
 
     private ChannelService channelService;
 
+    private RenderTimeMonitor renderTimeMonitor;
+
     private JahiaUserManagerService userManagerService;
 
     public static class RenderServiceBeanPostProcessor implements BeanPostProcessor {
@@ -193,8 +195,16 @@ public class RenderService {
             return formattedMessage;
         }
 
+        if (renderTimeMonitor != null) {
+            renderTimeMonitor.track(context.getRequest());
+        }
+        
         String output = getRenderChainInstance().doFilter(context, resource);
 
+        if (renderTimeMonitor != null) {
+            renderTimeMonitor.monitor(resource, context);
+        }
+        
         return output;
     }
 
@@ -558,6 +568,10 @@ public class RenderService {
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
         this.userManagerService = userManagerService;
+    }
+
+    public void setRenderTimeMonitor(RenderTimeMonitor renderChainMonitor) {
+        this.renderTimeMonitor = renderChainMonitor;
     }
 
 }

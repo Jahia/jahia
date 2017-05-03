@@ -56,16 +56,17 @@ import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheEntry;
+import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.filter.AggregateFilter;
-import org.jahia.services.render.filter.AreaResourceFilter;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.render.filter.cache.AreaResourceCacheKeyPartGenerator;
 import org.jahia.services.render.filter.cache.CacheFilter;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
+import org.jahia.services.render.monitoring.DefaultRenderTimeMonitor;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -231,14 +232,14 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     public void testReferencesFlush() throws Exception {
 
         URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/references");
-        getContent(url, "root", "root1234", null);
+        getContent(url, "root", ROOT_PASSWORD, null);
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
         JCRNodeWrapper n = session.getNode(SITECONTENT_ROOT_NODE + "/home/references/main/simple-text");
         try {
             n.setProperty("text", "text content updated");
             session.save();
-            String newvalue = getContent(url, "root", "root1234", "testReferencesFlush1");
+            String newvalue = getContent(url, "root", ROOT_PASSWORD, "testReferencesFlush1");
             Matcher m = Pattern.compile("text content updated").matcher(newvalue);
             assertTrue("Value has not been updated", m.find());
             assertTrue("References have not been flushed", m.find());
@@ -338,11 +339,11 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(generationTime);
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(1);
 
-            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long"), "root", "root1234", "testMaxConcurrent1");
+            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long"), "root", ROOT_PASSWORD, "testMaxConcurrent1");
             t1.start();
             Thread.sleep(500);
 
-            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent2");
+            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", ROOT_PASSWORD, "testMaxConcurrent2");
             t2.start();
             t2.join();
             t1.join();
@@ -350,10 +351,44 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             assertEquals("Incorrect response code for first thread", 200, t1.resultCode);
             assertEquals("Incorrect response code for second thread", 500, t2.resultCode);
 
-            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent3").contains("<title>Home</title>"));
+            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", ROOT_PASSWORD, "testMaxConcurrent3").contains("<title>Home</title>"));
         } finally {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
+        }
+    }
+    
+    @Test
+    public void testMaxRequestRenderTime() throws Exception {
+        DefaultRenderTimeMonitor renderTimeMonitor = (DefaultRenderTimeMonitor) SpringContextSingleton.getBean("RenderTimeMonitor");
+        long previousMaxRequestRenderTime = renderTimeMonitor.getMaxRequestRenderTime();
+        try {
+            // disable render time monitoring
+            renderTimeMonitor.setMaxRequestRenderTime(-1);
+            long startTime = System.currentTimeMillis();
+            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), "root", ROOT_PASSWORD, "testMaxConcurrent3").contains("Very long to appear"));
+            assertTrue("Execution time was too short", (System.currentTimeMillis() - startTime) >= 5000);
+
+            // flush caches
+            CacheHelper.flushOutputCaches();
+            
+            // set max render time to 3 seconds
+            renderTimeMonitor.setMaxRequestRenderTime(3000);
+            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), "root", ROOT_PASSWORD, "testMaxConcurrent1");
+            t1.start();
+            Thread.sleep(500);
+
+            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), "root", ROOT_PASSWORD, "testMaxConcurrent2");
+            t2.start();
+            t2.join();
+            t1.join();
+
+            assertEquals("Incorrect response code for first thread", 503, t1.resultCode);
+            assertEquals("Incorrect response code for second thread", 503, t2.resultCode);
+
+            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/long5"), "root", ROOT_PASSWORD, "testMaxConcurrent3").contains("Very long to appear"));
+        } finally {
+            renderTimeMonitor.setMaxRequestRenderTime(previousMaxRequestRenderTime);
         }
     }
 
@@ -429,7 +464,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     private String getPassword(String user) {
-        return user == null ? null : (user.equals("root") ? "root1234" : "password");
+        return user == null ? null : (user.equals("root") ? ROOT_PASSWORD : "password");
     }
 
     private String[] texts = {"visible for root", "visible for users only", "visible for userAB", "visible for userBC", "visible for userAC", "visible for groupA", "visible for groupB", "visible for groupC"};

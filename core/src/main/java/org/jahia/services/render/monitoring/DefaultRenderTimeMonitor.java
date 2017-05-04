@@ -51,6 +51,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderTimeMonitor;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.ConditionalExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Sergiy Shyrkov
  */
-public class DefaultRenderTimeMonitor extends AbstractFilter implements RenderTimeMonitor {
+public class DefaultRenderTimeMonitor extends ConditionalExecution implements RenderTimeMonitor {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultRenderTimeMonitor.class);
 

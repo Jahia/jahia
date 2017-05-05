@@ -45,7 +45,6 @@ package org.jahia.services.render.filter;
 
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.jahia.exceptions.JahiaServiceUnavailableException;
-import org.jahia.exceptions.RenderTimeLimitExceededException;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.slf4j.Logger;
@@ -177,7 +176,7 @@ public class RenderChain {
                     }
                 }
             }
-        } catch (RenderTimeLimitExceededException | JahiaServiceUnavailableException e) {
+        } catch (JahiaServiceUnavailableException e) {
             throw e;
         } catch (Exception e) {
             out = null;

@@ -215,6 +215,11 @@ public class PublicationManagerEngine extends Window {
                 }
             }
 
+            if (all.isEmpty()) {
+                MessageBox.info(Messages.get("label.publish", "Publication"), Messages.get("label.publication.nothingToPublish", "Nothing to publish"), null);
+                return;
+            }
+
             PublicationWorkflow.create(all, linker, false);
             hide();
         }

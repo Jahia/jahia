@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
+import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
@@ -800,12 +801,24 @@ class NodeHelper {
             if (siteNode != null) {
                 JCRSessionWrapper session = node.getSession();
 
-                n.setAggregatedPublicationInfos(publication
+                Map<String, GWTJahiaPublicationInfo> aggregatedPublicationInfosByLanguage = publication
                         .getAggregatedPublicationInfosByLanguage(node, siteNode.getLanguages(),
-                                session, true, true));
-                n.setFullPublicationInfos(publication.getFullPublicationInfosByLanguage(
+                                session, true, true);
+                n.setAggregatedPublicationInfos(aggregatedPublicationInfosByLanguage);
+                Map<String, List<GWTJahiaPublicationInfo>> fullPublicationInfosByLanguage = publication.getFullPublicationInfosByLanguage(
                         Arrays.asList(node.getIdentifier()), siteNode.getLanguages(), session,
-                        false));
+                        false);
+                n.setFullPublicationInfos(fullPublicationInfosByLanguage);
+                // populate publication info
+                for (Map.Entry<String, List<GWTJahiaPublicationInfo>> entry : fullPublicationInfosByLanguage
+                        .entrySet()) {
+                    GWTJahiaPublicationInfo pubInfo = aggregatedPublicationInfosByLanguage.get(entry.getKey());
+                    if (pubInfo != null && !entry.getValue().isEmpty()) {
+                        GWTJahiaPublicationInfo fullPubInfo = entry.getValue().iterator().next();
+                        pubInfo.setWorkflowGroup(fullPubInfo.getWorkflowGroup());
+                        pubInfo.setWorkflowDefinition(fullPubInfo.getWorkflowDefinition());
+                    }
+                }
             }
         } catch (UnsupportedRepositoryOperationException e) {
             // do nothing

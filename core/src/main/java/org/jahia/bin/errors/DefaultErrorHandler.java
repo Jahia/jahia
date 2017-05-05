@@ -62,7 +62,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.RenderTimeLimitExceededException;
 import org.jahia.exceptions.JahiaNotFoundException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.exceptions.JahiaServiceUnavailableException;
@@ -139,7 +138,7 @@ public class DefaultErrorHandler implements ErrorHandler {
                 code = SC_UNAUTHORIZED;
             } else if (e instanceof JahiaNotFoundException) {
                 code = SC_NOT_FOUND;
-            } else if (e instanceof RenderTimeLimitExceededException || e instanceof JahiaServiceUnavailableException) {
+            } else if (e instanceof JahiaServiceUnavailableException) {
                 code = SC_SERVICE_UNAVAILABLE;
             } else {
 //                throw (JahiaRuntimeException) e;

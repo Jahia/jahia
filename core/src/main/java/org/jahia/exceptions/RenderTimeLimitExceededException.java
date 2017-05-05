@@ -48,7 +48,7 @@ package org.jahia.exceptions;
  * 
  * @author Sergiy Shyrkov
  */
-public class RenderTimeLimitExceededException extends JahiaRuntimeException {
+public class RenderTimeLimitExceededException extends JahiaServiceUnavailableException {
 
     private static final long serialVersionUID = -7206549350527368424L;
 

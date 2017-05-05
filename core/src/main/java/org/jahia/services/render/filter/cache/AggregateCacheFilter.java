@@ -49,6 +49,8 @@ import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.exceptions.JahiaServiceUnavailableException;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.ehcache.DependenciesCacheEvictionPolicy;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -95,6 +97,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final String CACHE_PER_USER = "cache.perUser";
     public static final String PER_USER = "j:perUser";
     public static final String CACHE_EXPIRATION = "cache.expiration";
+    public static final String TOP_FRAGMENT_CACHE_KEY = "aggregateCacheFilter.topFragmentCacheKey";
+    public static final String EMPTY_USERKEY = "";    
+    
     public static final String ALL = DependenciesCacheEvictionPolicy.ALL;
     public static final Set<String> ALL_SET = Collections.singleton(ALL);
 
@@ -209,17 +214,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             logger.debug("Cache filter for key with placeholders : {}", key);
         }
 
-        // If we force the generation, return null
-        if (Boolean.TRUE.equals(forceGeneration)) {
-            return null;
-        }
-
-        // First check if the key is in the list of non-cacheable keys. The cache can also be skipped by specifying the
-        // ec parameter with the uuid of the current node.
-        if (!isCacheable(renderContext, resource, key, properties)) {
-            return null;
-        }
-
         // Replace the placeholders to have the final key that is used in the cache.
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
@@ -229,11 +223,28 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             userKeysLinkedList = new LinkedList<>();
             userKeys.set(userKeysLinkedList);
         }
+        if (userKeysLinkedList.isEmpty()) {            
+            renderContext.getRequest().setAttribute(TOP_FRAGMENT_CACHE_KEY, finalKey);
+        }
         if (userKeysLinkedList.contains(finalKey)) {
+            userKeysLinkedList.add(0, EMPTY_USERKEY);
+            getFragmentGenerationPermit(finalKey, renderContext.getRequest());
             return null;
         }
         userKeysLinkedList.add(0, finalKey);
 
+        // If we force the generation, return null
+        if (Boolean.TRUE.equals(forceGeneration)) {
+            getFragmentGenerationPermit(finalKey, renderContext.getRequest());
+            return null;
+        }
+        
+        // Check if the key is in the list of non-cacheable keys. The cache can also be skipped by specifying the
+        // ec parameter with the uuid of the current node.
+        if (!isCacheable(renderContext, resource, key, properties)) {
+            getFragmentGenerationPermit(finalKey, renderContext.getRequest());
+            return null;
+        }
 
         Element element = null;
         final Cache cache = cacheProvider.getCache();
@@ -875,6 +886,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     protected String generateContent(RenderContext renderContext,
                                      String cacheKey, String areaIdentifier,
                                      Set<String> allPaths) throws RenderException {
+        getFragmentGenerationPermit(cacheKey, renderContext.getRequest());
         final CacheKeyGenerator cacheKeyGenerator = cacheProvider.getKeyGenerator();
         try {
             // Parse the key to get all separate key attributes like node path and template
@@ -1086,12 +1098,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
         LinkedList<String> userKeysLinkedList = userKeys.get();
-        if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
+        if (userKeysLinkedList != null && !userKeysLinkedList.isEmpty()) {
 
             String finalKey = userKeysLinkedList.remove(0);
-            if (finalKey.equals(acquiredSemaphore.get())) {
-                generatorQueue.getAvailableProcessings().release();
-                acquiredSemaphore.set(null);
+            if (userKeysLinkedList.isEmpty()) {
+                releaseFragmentGenerationPermit(finalKey);
             }
 
             Set<CountDownLatch> latches = processingLatches.get();
@@ -1106,22 +1117,53 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+    private void getFragmentGenerationPermit(String key, HttpServletRequest request) {
+        if (acquiredSemaphore.get() == null) {
+            try {
+                String topFragmentCacheKey = (String)request.getAttribute(TOP_FRAGMENT_CACHE_KEY);                
+                if (!generatorQueue.getAvailableProcessings().tryAcquire(generatorQueue.getModuleGenerationWaitTime(),
+                        TimeUnit.MILLISECONDS)) {
+                    manageThreadDump();
+                    StringBuilder errorMsgBuilder = new StringBuilder(512);
+                    errorMsgBuilder.append("Module generation takes too long due to maximum parallel processing reached (")
+                            .append(generatorQueue.getMaxModulesToGenerateInParallel()).append(") - ").append(topFragmentCacheKey).append(" - ");
+                    if (!topFragmentCacheKey.equals(key)) {
+                        errorMsgBuilder.append(key).append(" - ");
+                    }
+                    errorMsgBuilder.append(request.getRequestURI());
+                    throw new JahiaServiceUnavailableException(errorMsgBuilder.toString());
+                } else {
+                    acquiredSemaphore.set(topFragmentCacheKey);
+                }
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                throw new JahiaRuntimeException(ie);
+            }
+        }
+    }    
+    
+    private void releaseFragmentGenerationPermit(String finalKey) {
+        if (finalKey.equals(acquiredSemaphore.get())) {
+            generatorQueue.getAvailableProcessings().release();
+            acquiredSemaphore.set(null);
+        }
+    }
+
+    private void revokeFragmentGenerationPermit() {
+        if (acquiredSemaphore.get() != null) {
+            // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait
+            generatorQueue.getAvailableProcessings().release();
+            acquiredSemaphore.set(null);
+        }
+    }
+    
     protected CountDownLatch avoidParallelProcessingOfSameModule(String key, HttpServletRequest request,
-                                                                 Resource resource, Properties properties) throws Exception {
+                                                                 Resource resource, Properties properties) throws RepositoryException {
         CountDownLatch latch = null;
         boolean mustWait = true;
-
         Map<String, CountDownLatch> generatingModules = generatorQueue.getGeneratingModules();
-        if (generatingModules.get(key) == null && acquiredSemaphore.get() == null) {
-            if (!generatorQueue.getAvailableProcessings().tryAcquire(generatorQueue.getModuleGenerationWaitTime(),
-                    TimeUnit.MILLISECONDS)) {
-                manageThreadDump();
-                throw new Exception("Module generation takes too long due to maximum parallel processing reached (" +
-                        generatorQueue.getMaxModulesToGenerateInParallel() + ") - " + key + " - " +
-                        request.getRequestURI());
-            } else {
-                acquiredSemaphore.set(key);
-            }
+        if (generatingModules.get(key) == null) {
+            getFragmentGenerationPermit(key, request);
         }
         if (shouldUseLatch(resource, properties)) {
             synchronized (generatingModules) {
@@ -1136,24 +1178,20 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             mustWait = false;
         }
         if (mustWait) {
-            if (acquiredSemaphore.get() != null) {
-                // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait
-                generatorQueue.getAvailableProcessings().release();
-                acquiredSemaphore.set(null);
-            }
+            revokeFragmentGenerationPermit();
             try {
                 if (!latch.await(generatorQueue.getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
                     manageThreadDump();
-                    throw new Exception("Module generation takes too long due to module not generated fast enough (>" +
-                            generatorQueue.getModuleGenerationWaitTime() + " ms)- " + key + " - " +
-                            request.getRequestURI());
+                    StringBuilder errorMsgBuilder = new StringBuilder(512);
+                    errorMsgBuilder.append("Module generation takes too long due to module not generated fast enough (>")
+                            .append(generatorQueue.getModuleGenerationWaitTime()).append(" ms)- ").append(key).append(" - ")
+                            .append(request.getRequestURI());
+                    throw new JahiaServiceUnavailableException(errorMsgBuilder.toString());
                 }
                 latch = null;
             } catch (InterruptedException ie) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("The waiting thread has been interrupted :", ie);
-                }
-                throw new Exception(ie);
+                Thread.currentThread().interrupt();
+                throw new JahiaRuntimeException(ie);
             }
         }
         return latch;

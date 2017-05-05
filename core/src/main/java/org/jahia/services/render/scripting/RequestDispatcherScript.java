@@ -46,6 +46,7 @@ package org.jahia.services.render.scripting;
 import org.jahia.utils.StringResponseWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jahia.exceptions.JahiaServiceUnavailableException;
 import org.jahia.exceptions.RenderTimeLimitExceededException;
 import org.jahia.services.render.*;
 
@@ -133,6 +134,8 @@ public class RequestDispatcherScript implements Script {
                 throw (RenderException)e.getRootCause();
             } else if (e.getRootCause() instanceof RenderTimeLimitExceededException) {
                 throw (RenderTimeLimitExceededException) e.getRootCause();
+            } else if (e.getRootCause() instanceof JahiaServiceUnavailableException) {
+                throw (JahiaServiceUnavailableException) e.getRootCause();                
             }
             throw new RenderException(e.getRootCause() != null ? e.getRootCause() : e);
         } catch (IOException e) {

@@ -12,6 +12,7 @@
                 /modules/**/*.jsp = authcBasic, roles[toolManager]
                 
                 /**/*.raw = authcBasic, roles[toolManager]
+                /**/*.raw.ajax = authcBasic, roles[toolManager]
                 /cms/serverStats = authcBasic, roles[toolManager]
                 /cms/serverStats/** = authcBasic, roles[toolManager]
                 /cms/text-extract = authcBasic, roles[toolManager]

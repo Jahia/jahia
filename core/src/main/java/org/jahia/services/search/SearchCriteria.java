@@ -842,6 +842,10 @@ public class SearchCriteria implements Serializable {
             .decorate(new HashMap<String, Map<String, NodeProperty>>(),
                     new NodePropertyMapFactory());
 
+    /**
+     * @deprecated Not implemented
+     */
+    @Deprecated
     private String rawQuery;
 
     private CommaSeparatedMultipleValue sites = new CommaSeparatedMultipleValue();
@@ -945,6 +949,10 @@ public class SearchCriteria implements Serializable {
         return props;
     }
 
+    /**
+     * @deprecated Not implemented 
+     */
+    @Deprecated
     public String getRawQuery() {
         return rawQuery;
     }
@@ -973,8 +981,7 @@ public class SearchCriteria implements Serializable {
      *         specified; otherwise returns <code>false</code>
      */
     public boolean isEmpty() {
-        boolean empty = isValueEmpty(getRawQuery())
-                && isValueEmpty(getNodeType())
+        boolean empty = isValueEmpty(getNodeType())
                 && isValueEmpty(getFileType()) && isValueEmpty(getCreatedBy())
                 && getCreated().isEmpty() && isValueEmpty(getLastModifiedBy())
                 && getLastModified().isEmpty() && getPagePath().isEmpty()
@@ -1082,6 +1089,10 @@ public class SearchCriteria implements Serializable {
         this.properties = properties;
     }
 
+    /**
+     * @deprecated Not implemented 
+     */
+    @Deprecated
     public void setRawQuery(String rawQuery) {
         this.rawQuery = rawQuery;
     }
@@ -1119,7 +1130,7 @@ public class SearchCriteria implements Serializable {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, TO_STRING_STYLE).append("rawQuery", this.getRawQuery()).append("createdBy", this.getCreatedBy())
+        return new ToStringBuilder(this, TO_STRING_STYLE).append("createdBy", this.getCreatedBy())
                 .append("created", this.getCreated()).append("lastModifiedBy", this.getLastModifiedBy())
                 .append("lastModified", this.getLastModified()).append("pagePath", this.getPagePath())
                 .append("fileType", this.getFileType()).append("nodeType", this.getNodeType()).append("filePath", this.getFilePath())

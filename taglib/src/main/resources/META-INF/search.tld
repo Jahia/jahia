@@ -316,7 +316,7 @@
         <path>/META-INF/tags/search/pagePath.tag</path>
     </tag-file>
     <tag-file>
-        <description>Note, please, this tag is deprecated: not implemented</description>
+        <!-- Note, please, this tag is deprecated: not implemented -->
         <name>rawQuery</name>
         <path>/META-INF/tags/search/rawQuery.tag</path>
     </tag-file>

@@ -96,7 +96,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final String CACHE_PER_USER = "cache.perUser";
     public static final String PER_USER = "j:perUser";
     public static final String CACHE_EXPIRATION = "cache.expiration";
-    public static final String TOP_FRAGMENT_CACHE_KEY = "aggregateCacheFilter.topFragmentCacheKey";
+    public static final String HAS_PROCESSING_SEMAPHORE_PARAM = "aggregateCacheFilter.hasProcessingSemaphore";
     public static final String EMPTY_USERKEY = "";    
     
     public static final String ALL = DependenciesCacheEvictionPolicy.ALL;
@@ -138,7 +138,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     // @todo when migrating to JDK 1.6 we can replacing this with Collections.newSetFromMap(Map m) calls.
     protected static final Map<String, Boolean> notCacheableFragment = new ConcurrentHashMap<String, Boolean>(512);
     static protected ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
-    static protected ThreadLocal<String> acquiredSemaphore = new ThreadLocal<String>();
     static protected ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
     protected static long lastThreadDumpTime = 0L;
     protected Byte[] threadDumpCheckLock = new Byte[0];
@@ -221,9 +220,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (userKeysLinkedList == null) {
             userKeysLinkedList = new LinkedList<>();
             userKeys.set(userKeysLinkedList);
-        }
-        if (userKeysLinkedList.isEmpty()) {            
-            renderContext.getRequest().setAttribute(TOP_FRAGMENT_CACHE_KEY, finalKey);
         }
         if (userKeysLinkedList.contains(finalKey)) {
             userKeysLinkedList.add(0, EMPTY_USERKEY);
@@ -1101,7 +1097,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
             String finalKey = userKeysLinkedList.remove(0);
             if (userKeysLinkedList.isEmpty()) {
-                releaseFragmentGenerationPermit(finalKey);
+                releaseFragmentGenerationPermit(renderContext.getRequest());
             }
 
             Set<CountDownLatch> latches = processingLatches.get();
@@ -1117,22 +1113,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     private void getFragmentGenerationPermit(String key, HttpServletRequest request) {
-        if (acquiredSemaphore.get() == null) {
+        if (!Boolean.TRUE.equals(request.getAttribute(HAS_PROCESSING_SEMAPHORE_PARAM))) {
             try {
-                String topFragmentCacheKey = (String)request.getAttribute(TOP_FRAGMENT_CACHE_KEY);                
-                if (!generatorQueue.getAvailableProcessings().tryAcquire(generatorQueue.getModuleGenerationWaitTime(),
+                 if (!generatorQueue.getAvailableProcessings().tryAcquire(generatorQueue.getModuleGenerationWaitTime(),
                         TimeUnit.MILLISECONDS)) {
                     manageThreadDump();
                     StringBuilder errorMsgBuilder = new StringBuilder(512);
                     errorMsgBuilder.append("Module generation takes too long due to maximum parallel processing reached (")
-                            .append(generatorQueue.getMaxModulesToGenerateInParallel()).append(") - ").append(topFragmentCacheKey).append(" - ");
-                    if (!topFragmentCacheKey.equals(key)) {
-                        errorMsgBuilder.append(key).append(" - ");
-                    }
-                    errorMsgBuilder.append(request.getRequestURI());
+                            .append(generatorQueue.getMaxModulesToGenerateInParallel()).append(") - ").append(key).append(" - ")
+                            .append(request.getRequestURI());
                     throw new JahiaServiceUnavailableException(errorMsgBuilder.toString());
                 } else {
-                    acquiredSemaphore.set(topFragmentCacheKey);
+                    request.setAttribute(HAS_PROCESSING_SEMAPHORE_PARAM, Boolean.TRUE);
                 }
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
@@ -1141,18 +1133,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }    
     
-    private void releaseFragmentGenerationPermit(String finalKey) {
-        if (finalKey.equals(acquiredSemaphore.get())) {
-            generatorQueue.getAvailableProcessings().release();
-            acquiredSemaphore.set(null);
-        }
-    }
-
-    private void revokeFragmentGenerationPermit() {
-        if (acquiredSemaphore.get() != null) {
+    private void releaseFragmentGenerationPermit(HttpServletRequest request) {
+        if (Boolean.TRUE.equals(request.getAttribute(HAS_PROCESSING_SEMAPHORE_PARAM))) {
             // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait
             generatorQueue.getAvailableProcessings().release();
-            acquiredSemaphore.set(null);
+            request.removeAttribute(HAS_PROCESSING_SEMAPHORE_PARAM);
         }
     }
     
@@ -1177,7 +1162,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             mustWait = false;
         }
         if (mustWait) {
-            revokeFragmentGenerationPermit();
+            releaseFragmentGenerationPermit(request);
             try {
                 if (!latch.await(generatorQueue.getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
                     manageThreadDump();

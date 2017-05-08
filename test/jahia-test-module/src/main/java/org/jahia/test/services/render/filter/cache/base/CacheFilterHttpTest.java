@@ -349,7 +349,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             t1.join();
 
             assertEquals("Incorrect response code for first thread", 200, t1.resultCode);
-            assertEquals("Incorrect response code for second thread", 500, t2.resultCode);
+            assertEquals("Incorrect response code for second thread", 503, t2.resultCode);
 
             assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", ROOT_PASSWORD, "testMaxConcurrent3").contains("<title>Home</title>"));
         } finally {

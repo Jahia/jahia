@@ -409,7 +409,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
                 metadata.set(Metadata.CONTENT_ENCODING, InternalValueFactory.DEFAULT_ENCODING);
 
                 TextExtractionService textExtractor = (TextExtractionService) SpringContextSingleton.getBean("org.jahia.services.textextraction.TextExtractionService");
-                internalValue = textExtractor.parse(new ByteArrayInputStream(internalValue
+                internalValue = textExtractor.parse(new ByteArrayInputStream(("<!DOCTYPE html>"+internalValue)
                         .getBytes(InternalValueFactory.DEFAULT_ENCODING)), metadata);
             } catch (Exception e) {
                 internalValue = StringEscapeUtils.unescapeHtml(internalValue);

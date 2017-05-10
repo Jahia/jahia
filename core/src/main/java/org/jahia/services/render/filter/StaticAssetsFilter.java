@@ -43,6 +43,8 @@
  */
 package org.jahia.services.render.filter;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Sets;
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import com.yahoo.platform.yui.org.mozilla.javascript.ErrorReporter;
@@ -114,6 +116,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
     private Set<String> ieHeaderRecognitions = new HashSet<String>();
     private boolean forceLiveIEcompatiblity;
+    private Set<String> aggregateSupportedMedias = new HashSet<>();
 
     private static final Pattern CLEANUP_REGEXP = Pattern.compile("<!-- jahia:temp value=\".*?\" -->");
 
@@ -547,45 +550,105 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         List<Map.Entry<String, Map<String, String>>> entries = new ArrayList<Map.Entry<String, Map<String, String>>>(assets.entrySet());
         Map<String, Map<String, String>> newEntries = new LinkedHashMap<String, Map<String, String>>();
 
-        for (int i = 0; i < entries.size(); ) {
+        long maxLastModified = 0;
+        ResourcesToAggregate resourcesToAggregate = new ResourcesToAggregate(new LinkedHashMap<String, Resource>(), null);
 
-            long maxLastModified = 0;
-            LinkedHashMap<String, Resource> pathsToAggregate = new LinkedHashMap<String, Resource>();
-            for (; i < entries.size(); i++) {
-                Map.Entry<String, Map<String, String>> entry = entries.get(i);
-                String key = getKey(entry.getKey());
-                Resource resource = getResource(key);
-                if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(key) && resource != null) {
-                    long lastModified = resource.lastModified();
-                    pathsToAggregate.put(key + "_" + lastModified, resource);
-                    if (lastModified > maxLastModified) {
-                        maxLastModified = lastModified;
-                    }
-                } else {
-                    // In case current entry should not be aggregated for whatever reason, let's stop and aggregate a group of entries preceding it.
-                    break;
-                }
+        String previousMedia = null;
+        for (Map.Entry<String, Map<String, String>> entry : entries) {
+
+            String key = getKey(entry.getKey());
+            Resource resource = getResource(key);
+            String currentMedia = entry.getValue().get("media");
+
+            boolean sameMedia = StringUtils.equals(previousMedia, currentMedia);
+            boolean pathExcluded = excludesFromAggregateAndCompress.contains(key) || resource == null;
+            boolean onlyMediaOption = entry.getValue().size() == 1 && entry.getValue().containsKey("media");
+            boolean noOption = entry.getValue().isEmpty();
+
+            // in case: (same media or no HTML options) and path not excluded
+            if (((onlyMediaOption && sameMedia && previousMedia != null) || (noOption && sameMedia)) && !pathExcluded) {
+
+                // continue aggregation
+                maxLastModified = addResourceToAggregation(key, resource, resourcesToAggregate, maxLastModified, onlyMediaOption ? currentMedia : null);
+                continue;
             }
 
-            if (!pathsToAggregate.isEmpty()) {
-                String minifiedAggregatedPath = aggregate(pathsToAggregate, type, maxLastModified);
-                newEntries.put(Jahia.getContextPath() + minifiedAggregatedPath, new HashMap<String, String>());
+            // start by aggregate all the paths already gathered
+            aggregatePathsAndPopulateNewEntries(resourcesToAggregate, newEntries, type, maxLastModified);
+
+            // in case: (not the same media or no HTML options) and path not excluded
+            if (((!sameMedia && onlyMediaOption && StringUtils.isNotEmpty(currentMedia) && aggregateSupportedMedias.contains(currentMedia)) || (noOption && !sameMedia)) && !pathExcluded) {
+                // may be a new media, store it as new media
+                previousMedia = currentMedia;
+
+                // start a new aggregation with this current resource
+                maxLastModified = addResourceToAggregation(key, resource, resourcesToAggregate, maxLastModified, onlyMediaOption ? currentMedia : null);
+                continue;
             }
 
-            if (i < entries.size()) {
-                // In case current entry should not be aggregated for whatever reason, add it as a non-aggregated one.
-                Map.Entry<String, Map<String, String>> entry = entries.get(i);
-                Resource resource;
-                if (addLastModifiedDate && (resource = getResource(getKey(entry.getKey()))) != null) {
-                    newEntries.put(entry.getKey() + "?lastModified=" + resource.lastModified(), entry.getValue());
-                } else {
-                    newEntries.put(entry.getKey(), entry.getValue());
-                }
-                i++;
+            // reset media in that case
+            previousMedia = null;
+
+            // for some reason this resource can't be aggregated
+            if (addLastModifiedDate && (resource = getResource(getKey(entry.getKey()))) != null) {
+                newEntries.put(entry.getKey() + "?lastModified=" + resource.lastModified(), entry.getValue());
+            } else {
+                newEntries.put(entry.getKey(), entry.getValue());
             }
         }
 
+        // finally aggregate the remaining paths
+        aggregatePathsAndPopulateNewEntries(resourcesToAggregate, newEntries, type, maxLastModified);
+
         return newEntries;
+    }
+
+    private long addResourceToAggregation(String key, Resource resource, ResourcesToAggregate resourcesToAggregate, long maxLastModified, String media) throws IOException {
+        long lastModified = resource.lastModified();
+        resourcesToAggregate.getPathsToAggregate().put(key + "_" + lastModified, resource);
+        resourcesToAggregate.setMedia(media);
+        return  lastModified > maxLastModified ? lastModified : maxLastModified;
+    }
+
+    private void aggregatePathsAndPopulateNewEntries (ResourcesToAggregate resourcesToAggregate, Map<String, Map<String, String>> newEntries, String type, long maxLastModified) throws IOException {
+        if (!resourcesToAggregate.getPathsToAggregate().isEmpty()) {
+            String minifiedAggregatedPath = aggregate(resourcesToAggregate.getPathsToAggregate(), type, maxLastModified);
+
+            HashMap<String, String> options = new HashMap<String, String>();
+            if (StringUtils.isNotEmpty(resourcesToAggregate.getMedia())) {
+                options.put("media", resourcesToAggregate.getMedia());
+            }
+
+            newEntries.put(Jahia.getContextPath() + minifiedAggregatedPath, options);
+        }
+        resourcesToAggregate.getPathsToAggregate().clear();
+    }
+
+    private class ResourcesToAggregate {
+
+        public ResourcesToAggregate(LinkedHashMap<String, Resource> pathsToAggregate, String media) {
+            this.pathsToAggregate = pathsToAggregate;
+            this.media = media;
+        }
+
+        LinkedHashMap<String, Resource> pathsToAggregate;
+        String media;
+
+        public LinkedHashMap<String, Resource> getPathsToAggregate() {
+            return pathsToAggregate;
+        }
+
+        public void setPathsToAggregate(LinkedHashMap<String, Resource> pathsToAggregate) {
+            this.pathsToAggregate = pathsToAggregate;
+        }
+
+        public String getMedia() {
+            return media;
+        }
+
+        public void setMedia(String media) {
+            this.media = media;
+        }
     }
 
     private String aggregate(Map<String, Resource> pathsToAggregate, String type, long maxLastModified) throws IOException {
@@ -870,6 +933,16 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     public void setIeHeaderRecognitions(Set<String> ieHeaderRecognitions) {
         this.ieHeaderRecognitions = ieHeaderRecognitions;
+    }
+
+    public Set<String> getAggregateSupportedMedias() {
+        return aggregateSupportedMedias;
+    }
+
+    public void setAggregateSupportedMedias(String aggregateSupportedMedias) {
+        if (StringUtils.isNotEmpty(aggregateSupportedMedias)) {
+            this.aggregateSupportedMedias = Sets.newHashSet(Splitter.on(",").trimResults().omitEmptyStrings().split(aggregateSupportedMedias));
+        }
     }
 
     public void setCkeditorJavaScript(String ckeditorJavaScript) {

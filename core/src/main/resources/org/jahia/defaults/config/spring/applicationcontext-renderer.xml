@@ -119,6 +119,7 @@
             </set>
         </property>
         <property name="addLastModifiedDate" value="${addLastModifiedDateInAssets:false}"/>
+        <property name="aggregateSupportedMedias" value="${aggregateSupportedMedias:screen,handled,print,aural,speech,braille,embossed,projection,tty,tv,all}"/>
     </bean>
 
     <util:list id="excludesFromAggregateAndCompress">

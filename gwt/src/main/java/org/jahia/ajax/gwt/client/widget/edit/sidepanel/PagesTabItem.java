@@ -191,11 +191,10 @@ public class PagesTabItem extends SidePanelTabItem {
     public boolean needRefresh(Map<String, Object> data) {
         if (data.containsKey("node")) {
             GWTJahiaNode node = (GWTJahiaNode) data.get("node");
-            if (node.isPage() || node.getNodeTypes().contains("jnt:externalLink")
-                    || node.getNodeTypes().contains("jnt:nodeLink")
-                    || node.getNodeTypes().contains("jnt:template") || node.getInheritedNodeTypes().contains("jnt:template")
-                    || node.getInheritedNodeTypes().contains("jmix:visibleInPagesTree")) {
-                return true;
+            for (String type : folderTypes) {
+                if (node.getNodeTypes().contains(type) || node.getInheritedNodeTypes().contains(type)) {
+                    return true;
+                }
             }
         }
         if (data.containsKey("event")

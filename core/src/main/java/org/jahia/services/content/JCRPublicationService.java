@@ -1043,9 +1043,12 @@ public class JCRPublicationService extends JahiaService {
      * @param languages          Languages list to use for publication info, or null for all languages (only appplied if includesSubnodes is true)
      * @param includesReferences If true include info for referenced nodes
      * @param includesSubnodes   If true include info for subnodes
-     * @param sourceSession
-     * @param destinationSession
+     * @param sourceSession      source session (default workspace)
+     * @param destinationSession destination session (live workspace)
      * @param infosMap           a Set of uuids, which don't need to be checked or have already been checked
+     * @param infos              contains all publication infos
+     * @param checkLive          If true, verify also if the node is exists in live
+     * @param currentPublicationInfo processed publicationInfo
      * @return the <code>PublicationInfo</code> for the requested node(s)
      * @throws RepositoryException
      */

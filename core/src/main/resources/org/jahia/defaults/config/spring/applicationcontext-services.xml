@@ -232,7 +232,7 @@
         <property name="ignoreSnapshots" value="${jahia.mavenReleasePlugin.ignoreSnapshots:}"/>
         <property name="mavenArchetypePlugin" value="${jahia.mavenArchetypePlugin:org.apache.maven.plugins:maven-archetype-plugin:2.4}"/>
         <property name="mavenArchetypeCatalog" value="${jahia.mavenArchetypeCatalog:}"/>
-        <property name="mavenArchetypeVersion" value="${jahia.mavenArchetypeVersion:2.5}"/>
+        <property name="mavenArchetypeVersion" value="${jahia.mavenArchetypeVersion:2.6}"/>
         <property name="mavenMinRequiredVersion" value="3.0"/>
         <property name="mavenWarnIfVersionIsOlderThan" value="3.1"/>
         <property name="mavenExecutable" value="${mvnPath:mvn}"/>

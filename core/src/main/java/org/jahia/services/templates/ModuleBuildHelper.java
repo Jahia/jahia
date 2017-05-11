@@ -259,7 +259,9 @@ public class ModuleBuildHelper implements InitializingBean {
 
         List<String> archetypeParams = new ArrayList<String>();
         archetypeParams.add(mavenArchetypePlugin + ":generate");
-        archetypeParams.add("-DarchetypeCatalog=" + mavenArchetypeCatalog + ",local");
+        if (mavenArchetypeCatalog != null) {
+            archetypeParams.add("-DarchetypeCatalog=" + mavenArchetypeCatalog);
+        }
         archetypeParams.add("-DarchetypeGroupId=org.jahia.archetypes");
         archetypeParams.add("-DarchetypeArtifactId=jahia-" + moduleType + "-archetype");
         archetypeParams.add("-DarchetypeVersion=" + mavenArchetypeVersion);
@@ -531,14 +533,16 @@ public class ModuleBuildHelper implements InitializingBean {
 
         checkMavenExecutable();
 
-        if (mavenArchetypeCatalog == null || mavenArchetypeCatalog.length() == 0) {
-            mavenArchetypeCatalog = mavenArchetypeVersion != null && mavenArchetypeVersion.contains("-SNAPSHOT")
-                    ? "https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml"
-                    : "https://devtools.jahia.com/nexus/content/repositories/jahia-releases/archetype-catalog.xml";
+        if (mavenArchetypeCatalog != null && mavenArchetypeCatalog.length() == 0) {
+            mavenArchetypeCatalog = null;
         }
 
-        logger.info("Using version {} for the module archetypes from catalog {}", mavenArchetypeVersion,
-                mavenArchetypeCatalog);
+        if (mavenArchetypeCatalog != null) {
+            logger.info("Using version {} for the module archetypes from catalog {}", mavenArchetypeVersion,
+                    mavenArchetypeCatalog);
+        } else {
+            logger.info("Using version {} for the module archetypes", mavenArchetypeVersion);
+        }
 
         if (ignoreSnapshots == null || ignoreSnapshots.length() == 0) {
             ignoreSnapshotsFlag = Constants.JAHIA_PROJECT_VERSION.contains("-SNAPSHOT");

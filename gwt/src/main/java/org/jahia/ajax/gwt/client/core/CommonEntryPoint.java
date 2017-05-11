@@ -43,6 +43,7 @@
  */
 package org.jahia.ajax.gwt.client.core;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Timer;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -67,6 +68,10 @@ public class CommonEntryPoint implements EntryPoint {
     private static String loginUrl;
 
     public void onModuleLoad() {
+        /*
+         * Install an UncaughtExceptionHandler which will produce <code>FATAL</code> log messages
+         */
+        Log.setUncaughtExceptionHandler();
     }
 
     protected void checkSession() {

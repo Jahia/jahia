@@ -74,6 +74,7 @@ public class PublicationInfo implements Serializable {
 
 
     private PublicationInfoNode root;
+    private boolean hasLiveNode;
 
     public PublicationInfo() {
         super();
@@ -254,7 +255,15 @@ public class PublicationInfo implements Serializable {
         }.getAllPublishedLanguages(root);
         return result;
     }
-    
+
+    public boolean hasLiveNode() {
+        return hasLiveNode;
+    }
+
+    public void setHasLiveNode(boolean hasLiveNode) {
+        this.hasLiveNode = hasLiveNode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

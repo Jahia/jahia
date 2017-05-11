@@ -56,7 +56,10 @@
     <packaging>war</packaging>
 
     <properties>
-        <singleModuleName>org.jahia.ajax.gwt.module.edit.Edit</singleModuleName>
+        <singleModuleName>org.jahia.ajax.gwt.module.edit.Edit</singleModuleName>    
+        <editModuleName>org.jahia.ajax.gwt.module.edit.Edit</editModuleName>
+        <contentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.ContentManager</contentManagerModuleName>
+        <gwtJavascriptStyle>OBFUSCATED</gwtJavascriptStyle>
     </properties>
 
     <dependencies>
@@ -89,7 +92,7 @@
         <dependency>
             <groupId>com.google.code.gwt-log</groupId>
             <artifactId>gwt-log</artifactId>
-            <version>3.1.0</version>
+            <version>3.2.1</version>
         </dependency>
     </dependencies>
 
@@ -105,13 +108,14 @@
                         <persistentunitcache>false</persistentunitcache>
                         <localWorkers>5</localWorkers>
                         <noServer>true</noServer>
+                        <style>${gwtJavascriptStyle}</style>
                         <soyc>false</soyc>
                         <extraJvmArgs>-Xmx1280m -Xss2048k -Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory</extraJvmArgs>
                         <webappDirectory>${project.build.directory}/${project.build.finalName}/gwt</webappDirectory>
                         <skip>${jahia.gwt.skip}</skip>
                         <modules>
-                            <module>org.jahia.ajax.gwt.module.contentmanager.ContentManager</module>
-                            <module>org.jahia.ajax.gwt.module.edit.Edit</module>
+                            <module>${contentManagerModuleName}</module>
+                            <module>${editModuleName}</module>
                         </modules>
                         <!-- <style>DETAILED</style> -->
                     </configuration>
@@ -239,6 +243,14 @@
         </plugins>
     </reporting>
     <profiles>
+        <profile>
+            <id>gwt-development</id>
+            <properties>
+                <editModuleName>org.jahia.ajax.gwt.module.edit.DevEdit</editModuleName>
+                <contentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.DevContentManager</contentManagerModuleName>
+                <gwtJavascriptStyle>DETAILED</gwtJavascriptStyle>
+            </properties>
+        </profile>    
         <profile>
             <id>gwt-production</id>
             <build>

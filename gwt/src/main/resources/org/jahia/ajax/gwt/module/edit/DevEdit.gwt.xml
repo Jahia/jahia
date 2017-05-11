@@ -1,0 +1,5 @@
+<module rename-to="edit">
+    <inherits name="org.jahia.ajax.gwt.module.edit.Edit"/>
+    <inherits name="org.jahia.ajax.gwt.RemoteLogging"/>
+    <collapse-all-properties />
+</module>

@@ -250,6 +250,16 @@
                 <contentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.DevContentManager</contentManagerModuleName>
                 <gwtJavascriptStyle>DETAILED</gwtJavascriptStyle>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <classifier>gwt-dev</classifier>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>    
         <profile>
             <id>gwt-production</id>

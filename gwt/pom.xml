@@ -59,7 +59,7 @@
         <singleModuleName>org.jahia.ajax.gwt.module.edit.Edit</singleModuleName>    
         <editModuleName>org.jahia.ajax.gwt.module.edit.Edit</editModuleName>
         <contentManagerModuleName>org.jahia.ajax.gwt.module.contentmanager.ContentManager</contentManagerModuleName>
-        <gwtJavascriptStyle>OBFUSCATED</gwtJavascriptStyle>
+        <gwtJavascriptStyle>OBF</gwtJavascriptStyle>
     </properties>
 
     <dependencies>

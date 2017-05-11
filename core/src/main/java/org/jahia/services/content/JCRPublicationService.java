@@ -44,7 +44,6 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
@@ -74,57 +73,25 @@ import static org.jahia.api.Constants.*;
  */
 public class JCRPublicationService extends JahiaService {
 
+    private static class Holder {
+        static final JCRPublicationService INSTANCE = new JCRPublicationService();
+    }
+
     private static transient Logger logger = LoggerFactory.getLogger(JCRPublicationService.class);
+
     private int batchSize;
+
     private JCRSessionFactory sessionFactory;
     private MetricsLoggingService loggingService;
+
     private Set<String> propertiesToSkipForReferences = Collections.emptySet();
+
     private Set<String> referencedNodeTypesToSkip = Collections.emptySet();
+
     private boolean skipAllReferenceProperties;
-    
+
     private JCRPublicationService() {
         super();
-    }
-
-    /**
-     * Get the singleton instance of the JCRPublicationService
-     *
-     * @return the singleton instance of the JCRPublicationService
-     */
-    public static JCRPublicationService getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    public static boolean supportsPublication(JCRSessionWrapper sourceSession, JCRNodeWrapper node)
-            throws RepositoryException {
-        JCRStoreProvider provider = node.getProvider();
-        if (provider.isDefault()) {
-            return true;
-        }
-        Value workspaceManagement = sourceSession.getProviderSession(node.getProvider()).getRepository()
-                .getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
-        if (workspaceManagement == null) {
-            return false;
-        }
-        Value writeSupported = node.getSession().getProviderSession(node.getProvider()).getRepository()
-                .getDescriptorValue(Repository.WRITE_SUPPORTED);
-        if (writeSupported == null) {
-            return false;
-        }
-        return workspaceManagement.getBoolean() && writeSupported.getBoolean();
-    }
-
-    private static Set<String> tokenize(String input) {
-        Set<String> result;
-        String[] tokens = StringUtils.split(input, " ,");
-        if (tokens == null || tokens.length == 0) {
-            result = Collections.emptySet();
-        } else {
-            result = new LinkedHashSet<String>();
-            result.addAll(Arrays.asList(tokens));
-        }
-
-        return result;
     }
 
     /**
@@ -147,6 +114,15 @@ public class JCRPublicationService extends JahiaService {
 
     public void setLoggingService(MetricsLoggingService loggingService) {
         this.loggingService = loggingService;
+    }
+
+    /**
+     * Get the singleton instance of the JCRPublicationService
+     *
+     * @return the singleton instance of the JCRPublicationService
+     */
+    public static JCRPublicationService getInstance() {
+        return Holder.INSTANCE;
     }
 
     public boolean hasIndependantPublication(JCRNodeWrapper node) throws RepositoryException {
@@ -318,9 +294,9 @@ public class JCRPublicationService extends JahiaService {
             }
         }
     }
-    
+
     private void publish(final Set<String> uuidsToPublish, JCRSessionWrapper sourceSession,
-            JCRSessionWrapper destinationSession, boolean updateMetadata, final List<String> comments)
+                         JCRSessionWrapper destinationSession, boolean updateMetadata, final List<String> comments)
             throws RepositoryException {
         int totalCount = uuidsToPublish.size();
         if (batchSize < 0 || totalCount <= batchSize) {
@@ -361,7 +337,7 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private void doPublish(final Set<String> uuidsToPublish, JCRSessionWrapper sourceSession,
-                         JCRSessionWrapper destinationSession, boolean updateMetadata, final List<String> comments)
+                           JCRSessionWrapper destinationSession, boolean updateMetadata, final List<String> comments)
             throws RepositoryException {
         final Calendar calendar = new GregorianCalendar();
 //        uuids.add(publicationInfo.getRoot().getUuid());
@@ -725,6 +701,11 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
+    class CloneResult {
+        JCRNodeWrapper root;
+        Set<String> includedUuids;
+    }
+
     CloneResult doClone(JCRNodeWrapper sourceNode, JCRSessionWrapper sourceSession,
                         JCRSessionWrapper destinationSession, Set<JCRNodeWrapper> toCheckpoint) throws RepositoryException {
         CloneResult cloneResult = new CloneResult();
@@ -1047,7 +1028,7 @@ public class JCRPublicationService extends JahiaService {
         infos.add(tree);
         PublicationInfoNode root =
                 getPublicationInfo(stageNode, languages, includesReferences, includesSubnodes, allsubtree,
-                        sourceSession, destinationSession, new HashMap<String, PublicationInfoNode>(), infos, new MutableBoolean(true));
+                        sourceSession, destinationSession, new HashMap<String, PublicationInfoNode>(), infos);
         tree.setRoot(root);
         return infos;
     }
@@ -1065,8 +1046,6 @@ public class JCRPublicationService extends JahiaService {
      * @param sourceSession
      * @param destinationSession
      * @param infosMap           a Set of uuids, which don't need to be checked or have already been checked
-     * @param infos              contains all publication infos
-     * @param checkLiveNode   if true, verify also if the node is exists in live
      * @return the <code>PublicationInfo</code> for the requested node(s)
      * @throws RepositoryException
      */
@@ -1075,7 +1054,7 @@ public class JCRPublicationService extends JahiaService {
                                                    boolean allsubtree, final JCRSessionWrapper sourceSession,
                                                    final JCRSessionWrapper destinationSession,
                                                    Map<String, PublicationInfoNode> infosMap,
-                                                   List<PublicationInfo> infos, MutableBoolean checkLiveNode) throws RepositoryException {
+                                                   List<PublicationInfo> infos) throws RepositoryException {
 
         PublicationInfoNode info = null;
         final String uuid = node.getIdentifier();
@@ -1126,7 +1105,7 @@ public class JCRPublicationService extends JahiaService {
                 info.setWorkInProgress(true);
             }
 
-            info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet(), checkLiveNode));
+            info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet()));
             // If in conflict we still need to have the translation nodes has they are part of the node to make it valid
             // in case we manage to resolve the conflict on publication
             if (info.getStatus() == PublicationInfo.CONFLICT) {
@@ -1162,14 +1141,14 @@ public class JCRPublicationService extends JahiaService {
                 if (info.getStatus() == PublicationInfo.MARKED_FOR_DELETION || info.getStatus() == PublicationInfo.DELETED) {
                     PublicationInfoNode child =
                             getPublicationInfo(n, languages, includesReferences, true, true,
-                                    sourceSession, destinationSession, infosMap, infos, checkLiveNode);
+                                    sourceSession, destinationSession, infosMap, infos);
                     info.addChild(child);
                 } else if (languages != null && n.isNodeType("jnt:translation")) {
                     String translationLanguage = n.getProperty("jcr:language").getString();
                     if (languages.contains(translationLanguage)) {
                         PublicationInfoNode child =
                                 getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
-                                        sourceSession, destinationSession, infosMap, infos, checkLiveNode);
+                                        sourceSession, destinationSession, infosMap, infos);
                         info.addChild(child);
                         if(child.isWorkInProgress()) {
                             info.getChildren().clear();
@@ -1184,15 +1163,13 @@ public class JCRPublicationService extends JahiaService {
                     if (allsubtree && hasIndependantPublication) {
                         PublicationInfo newinfo = new PublicationInfo();
                         infos.add(newinfo);
-                        // check the live node when switching page while getting all publicaiton infos
-                        checkLiveNode.setValue(true);
                         newinfo.setRoot(getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree, sourceSession,
-                                destinationSession, infosMap, infos, checkLiveNode));
+                                destinationSession, infosMap, infos));
                     }
                     if (!hasIndependantPublication) {
                         if (n.isNodeType("jmix:lastPublished")) {
                             PublicationInfoNode child = getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
-                                    sourceSession, destinationSession, infosMap, infos, checkLiveNode);
+                                    sourceSession, destinationSession, infosMap, infos);
                             info.addChild(child);
                         } else if (includesReferences) {
                             getReferences(n, languages, includesReferences, includesSubnodes, sourceSession, destinationSession, infosMap,
@@ -1215,14 +1192,7 @@ public class JCRPublicationService extends JahiaService {
     /**
      * Get the publication status of a specific node, taking into account nodes being published at the same time (used for conflict detection)
      */
-    public int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> languages, Set<String> includedUuids) throws RepositoryException {/**
-     * Get the publication status of a specific node, taking into account nodes being published at the same time (used for conflict detection)
-     */
-        return getStatus(node, destinationSession, languages, includedUuids, new MutableBoolean(false));
-    }
-
-    public int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> languages, Set<String> includedUuids, MutableBoolean checkLiveNode)
-            throws RepositoryException {
+    public int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> languages, Set<String> includedUuids) throws RepositoryException {
         int status;
         if (!node.checkLanguageValidity(languages)) {
             status = PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE;
@@ -1247,7 +1217,7 @@ public class JCRPublicationService extends JahiaService {
                     hasProperty = ((ExtendedPropertyDefinition) property.getDefinition()).isInternationalized();
                 }
                 if (!hasProperty) {
-                    status = getStatus(node, destinationSession, checkLiveNode, PublicationInfo.PUBLISHED);
+                    status = PublicationInfo.PUBLISHED;
                 }
             }
         } else if (node.hasProperty("j:published") && !node.getProperty("j:published").getBoolean()) {
@@ -1257,7 +1227,7 @@ public class JCRPublicationService extends JahiaService {
                 status = PublicationInfo.CONFLICT;
             } else if (node.getLastModifiedAsDate() == null) {
                 // No modification date - node is published
-                status = getStatus(node, destinationSession, checkLiveNode, PublicationInfo.PUBLISHED);
+                status = PublicationInfo.PUBLISHED;
             } else {
                 if (node.isNodeType("jmix:markedForDeletion")) {
                     status = PublicationInfo.MARKED_FOR_DELETION;
@@ -1284,25 +1254,13 @@ public class JCRPublicationService extends JahiaService {
                             }
                             status = PublicationInfo.MODIFIED;
                         } else {
-                            status = getStatus(node, destinationSession, checkLiveNode, PublicationInfo.PUBLISHED);
+                            status = PublicationInfo.PUBLISHED;
                         }
                     }
                 }
             }
         }
         return status;
-    }
-
-    private int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, MutableBoolean checkLiveNode, int defaultStatus) throws RepositoryException {
-        if (checkLiveNode.booleanValue()) {
-            try {
-                node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
-            } catch (ItemNotFoundException e) {
-                return PublicationInfo.NOT_PUBLISHED;
-            }
-        }
-        checkLiveNode.setValue(false);
-        return defaultStatus;
     }
 
     private int checkConflict(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> includedUuids) throws RepositoryException {
@@ -1357,7 +1315,7 @@ public class JCRPublicationService extends JahiaService {
                                 logger.debug("Calculating publication status for the reference property {}", propName);
                             }
                             PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
-                                    includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, new MutableBoolean(false));
+                                    includesSubnodes, false, sourceSession, destinationSession, infosMap, infos);
                             info.addReference(new PublicationInfo(n));
                         }
                     } catch (ItemNotFoundException e) {
@@ -1384,7 +1342,7 @@ public class JCRPublicationService extends JahiaService {
                             logger.debug("Calculating publication status for the reference property {}", propName);
                         }
                         PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
-                                includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, new MutableBoolean(false));
+                                includesSubnodes, false, sourceSession, destinationSession, infosMap, infos);
                         info.addReference(new PublicationInfo(n));
                     }
                 } catch (ItemNotFoundException e) {
@@ -1400,6 +1358,25 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
         }
+    }
+
+    public static boolean supportsPublication(JCRSessionWrapper sourceSession, JCRNodeWrapper node)
+            throws RepositoryException {
+        JCRStoreProvider provider = node.getProvider();
+        if (provider.isDefault()) {
+            return true;
+        }
+        Value workspaceManagement = sourceSession.getProviderSession(node.getProvider()).getRepository()
+                .getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
+        if (workspaceManagement == null) {
+            return false;
+        }
+        Value writeSupported = node.getSession().getProviderSession(node.getProvider()).getRepository()
+                .getDescriptorValue(Repository.WRITE_SUPPORTED);
+        if (writeSupported == null) {
+            return false;
+        }
+        return workspaceManagement.getBoolean() && writeSupported.getBoolean();
     }
 
     private boolean skipReferencedNodeType(JCRNodeWrapper ref) throws RepositoryException {
@@ -1435,6 +1412,7 @@ public class JCRPublicationService extends JahiaService {
     public void stop() throws JahiaException {
         // nothing to do
     }
+
 
     public void print(VersionHistory vh) throws RepositoryException {
         Version root = vh.getRootVersion();
@@ -1474,17 +1452,21 @@ public class JCRPublicationService extends JahiaService {
         this.propertiesToSkipForReferences.addAll(tokenize(propertiesToSkipForReferences));
     }
 
+    private static Set<String> tokenize(String input) {
+        Set<String> result;
+        String[] tokens = StringUtils.split(input, " ,");
+        if (tokens == null || tokens.length == 0) {
+            result = Collections.emptySet();
+        } else {
+            result = new LinkedHashSet<String>();
+            result.addAll(Arrays.asList(tokens));
+        }
+
+        return result;
+    }
+
     public void setBatchSize(int batchSize) {
         this.batchSize = batchSize;
-    }
-
-    private static class Holder {
-        static final JCRPublicationService INSTANCE = new JCRPublicationService();
-    }
-
-    class CloneResult {
-        JCRNodeWrapper root;
-        Set<String> includedUuids;
     }
 
 }

@@ -1,0 +1,5 @@
+<module rename-to="manager">
+    <inherits name="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
+    <inherits name="org.jahia.ajax.gwt.RemoteLogging"/>
+    <collapse-all-properties />
+</module>

@@ -1028,7 +1028,7 @@ public class JCRPublicationService extends JahiaService {
         infos.add(tree);
         PublicationInfoNode root =
                 getPublicationInfo(stageNode, languages, includesReferences, includesSubnodes, allsubtree,
-                        sourceSession, destinationSession, new HashMap<String, PublicationInfoNode>(), infos);
+                        sourceSession, destinationSession, new HashMap<String, PublicationInfoNode>(), infos, true, tree);
         tree.setRoot(root);
         return infos;
     }
@@ -1054,7 +1054,8 @@ public class JCRPublicationService extends JahiaService {
                                                    boolean allsubtree, final JCRSessionWrapper sourceSession,
                                                    final JCRSessionWrapper destinationSession,
                                                    Map<String, PublicationInfoNode> infosMap,
-                                                   List<PublicationInfo> infos) throws RepositoryException {
+                                                   List<PublicationInfo> infos, boolean checkLive, PublicationInfo currentPublicationInfo) throws
+            RepositoryException {
 
         PublicationInfoNode info = null;
         final String uuid = node.getIdentifier();
@@ -1073,6 +1074,11 @@ public class JCRPublicationService extends JahiaService {
 
             if (node.isNodeType("jmix:nolive")) {
                 info.setStatus(PublicationInfo.PUBLISHED);
+                return info;
+            }
+
+            if (!currentPublicationInfo.hasLiveNode()) {
+                info.setStatus(PublicationInfo.NOT_PUBLISHED);
                 return info;
             }
 
@@ -1106,6 +1112,14 @@ public class JCRPublicationService extends JahiaService {
             }
 
             info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet()));
+            if (checkLive && info.getStatus() == PublicationInfo.PUBLISHED) {
+                try {
+                    node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+                } catch (ItemNotFoundException e) {
+                    currentPublicationInfo.setHasLiveNode(false);
+                    info.setStatus(PublicationInfo.NOT_PUBLISHED);
+                }
+            }
             // If in conflict we still need to have the translation nodes has they are part of the node to make it valid
             // in case we manage to resolve the conflict on publication
             if (info.getStatus() == PublicationInfo.CONFLICT) {
@@ -1130,7 +1144,7 @@ public class JCRPublicationService extends JahiaService {
         if (includesReferences || includesSubnodes) {
             if (includesReferences) {
                 getReferences(node, languages, includesReferences, includesSubnodes, sourceSession, destinationSession,
-                        infosMap, infos, info);
+                        infosMap, infos, info, currentPublicationInfo);
             }
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
@@ -1141,14 +1155,14 @@ public class JCRPublicationService extends JahiaService {
                 if (info.getStatus() == PublicationInfo.MARKED_FOR_DELETION || info.getStatus() == PublicationInfo.DELETED) {
                     PublicationInfoNode child =
                             getPublicationInfo(n, languages, includesReferences, true, true,
-                                    sourceSession, destinationSession, infosMap, infos);
+                                    sourceSession, destinationSession, infosMap, infos, false, currentPublicationInfo);
                     info.addChild(child);
                 } else if (languages != null && n.isNodeType("jnt:translation")) {
                     String translationLanguage = n.getProperty("jcr:language").getString();
                     if (languages.contains(translationLanguage)) {
                         PublicationInfoNode child =
                                 getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
-                                        sourceSession, destinationSession, infosMap, infos);
+                                        sourceSession, destinationSession, infosMap, infos, false, currentPublicationInfo);
                         info.addChild(child);
                         if(child.isWorkInProgress()) {
                             info.getChildren().clear();
@@ -1164,16 +1178,16 @@ public class JCRPublicationService extends JahiaService {
                         PublicationInfo newinfo = new PublicationInfo();
                         infos.add(newinfo);
                         newinfo.setRoot(getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree, sourceSession,
-                                destinationSession, infosMap, infos));
+                                destinationSession, infosMap, infos, true, newinfo));
                     }
                     if (!hasIndependantPublication) {
                         if (n.isNodeType("jmix:lastPublished")) {
                             PublicationInfoNode child = getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
-                                    sourceSession, destinationSession, infosMap, infos);
+                                    sourceSession, destinationSession, infosMap, infos, false, currentPublicationInfo);
                             info.addChild(child);
                         } else if (includesReferences) {
                             getReferences(n, languages, includesReferences, includesSubnodes, sourceSession, destinationSession, infosMap,
-                                    infos, info);
+                                    infos, info, currentPublicationInfo);
                         }
                     }
                 }
@@ -1293,7 +1307,7 @@ public class JCRPublicationService extends JahiaService {
     private void getReferences(JCRNodeWrapper node, Set<String> languages, boolean includesReferences,
                                boolean includesSubnodes, JCRSessionWrapper sourceSession,
                                JCRSessionWrapper destinationSession, Map<String, PublicationInfoNode> infosMap,
-                               List<PublicationInfo> infos, PublicationInfoNode info) throws RepositoryException {
+                               List<PublicationInfo> infos, PublicationInfoNode info, PublicationInfo currentPublicationInfo) throws RepositoryException {
         if (skipAllReferenceProperties) {
             return;
         }
@@ -1315,7 +1329,7 @@ public class JCRPublicationService extends JahiaService {
                                 logger.debug("Calculating publication status for the reference property {}", propName);
                             }
                             PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
-                                    includesSubnodes, false, sourceSession, destinationSession, infosMap, infos);
+                                    includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, false, currentPublicationInfo);
                             info.addReference(new PublicationInfo(n));
                         }
                     } catch (ItemNotFoundException e) {
@@ -1342,7 +1356,7 @@ public class JCRPublicationService extends JahiaService {
                             logger.debug("Calculating publication status for the reference property {}", propName);
                         }
                         PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
-                                includesSubnodes, false, sourceSession, destinationSession, infosMap, infos);
+                                includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, false, currentPublicationInfo);
                         info.addReference(new PublicationInfo(n));
                     }
                 } catch (ItemNotFoundException e) {

@@ -74,7 +74,7 @@ public class PublicationInfo implements Serializable {
 
 
     private PublicationInfoNode root;
-    private boolean hasLiveNode;
+    private boolean hasLiveNode = true;
 
     public PublicationInfo() {
         super();
@@ -256,10 +256,17 @@ public class PublicationInfo implements Serializable {
         return result;
     }
 
+    /**
+     * true by default, if false means no live node exists for the current publication info
+     */
     public boolean hasLiveNode() {
         return hasLiveNode;
     }
 
+    /**
+     * set hasLiveNode (default is true)
+     * @param hasLiveNode
+     */
     public void setHasLiveNode(boolean hasLiveNode) {
         this.hasLiveNode = hasLiveNode;
     }

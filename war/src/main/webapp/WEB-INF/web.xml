@@ -534,8 +534,12 @@
     
     <servlet-mapping>
         <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
-        <url-pattern>/edit/gwt-log</url-pattern>
-    </servlet-mapping>    
+        <url-pattern>/gwt/edit/gwt-log</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>gwt-log-remote-logger-servlet</servlet-name>
+        <url-pattern>/gwt/manager/gwt-log</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>RendererDispatcherServlet</servlet-name>

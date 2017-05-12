@@ -212,7 +212,11 @@ public class TemplatePackageDeployer {
     }
 
     public void clearModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {
-        String modulePath = "/modules/" + pkg.getId() + "/" + pkg.getVersion();
+        clearModuleNodes(pkg.getId(), pkg.getVersion(), session);
+    }
+
+    public void clearModuleNodes(String id, ModuleVersion version, JCRSessionWrapper session) throws RepositoryException {
+        String modulePath = "/modules/" + id + "/" + version;
         if (session.nodeExists(modulePath)) {
             JCRNodeWrapper moduleNode = session.getNode(modulePath);
             NodeIterator nodeIterator = moduleNode.getNodes();

@@ -52,6 +52,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import javax.xml.transform.TransformerException;
 
 import com.google.common.collect.ImmutableSet;
@@ -74,6 +75,7 @@ import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
@@ -104,7 +106,7 @@ import org.xml.sax.SAXException;
  *
  * @author Sergiy Shyrkov
  */
-public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent> {
+public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent>, JahiaAfterInitializationService {
 
     public static final String MODULE_TYPE_JAHIAPP = "jahiapp";
 
@@ -1005,6 +1007,54 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public boolean differentModuleWithSameIdExists(String symbolicName, String groupId) {
         SortedMap<ModuleVersion, JahiaTemplatesPackage> moduleVersions = templatePackageRegistry.getAllModuleVersions().get(symbolicName);
         return moduleVersions != null && !moduleVersions.isEmpty() && !moduleVersions.get(moduleVersions.firstKey()).getGroupId().equals(groupId);
+    }
+
+    @Override
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        clearModuleTemplateNodes();
+    }
+
+    private void clearModuleTemplateNodes() {
+        logger.info("Start checking Module template nodes");
+        long start = System.currentTimeMillis();
+        int count = 0;
+
+        try {
+            count = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
+                @Override
+                public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    int innerCount = 0;
+
+                    QueryResult qr = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:moduleVersion] as version where isdescendantnode(version,'/modules/')", Query.JCR_SQL2).execute();
+
+                    for (NodeIterator moduleVersions = qr.getNodes(); moduleVersions.hasNext();){
+                        JCRNodeWrapper moduleVersionNode = (JCRNodeWrapper) moduleVersions.next();
+
+                        // this module have templates node, check if it's still in the list of deployed module
+                        if (moduleVersionNode.hasNode("templates")) {
+
+                            String packageId = moduleVersionNode.getParent().getName();
+                            ModuleVersion moduleVersion = new ModuleVersion(moduleVersionNode.getName());
+
+                            SortedMap<ModuleVersion, JahiaTemplatesPackage> availableVersions = templatePackageRegistry.getAllModuleVersions().get(packageId);
+
+                            if (availableVersions == null || !availableVersions.containsKey(moduleVersion)) {
+                                // no module found for this version, clean module nodes
+                                templatePackageDeployer.clearModuleNodes(packageId, moduleVersion, session);
+                                logger.info("Module template node have been cleaned for module {} v{}", packageId, moduleVersion);
+                                innerCount++;
+                            }
+                        }
+                    }
+
+                    return innerCount;
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Error while cleaning module template nodes", e);
+        }
+
+        logger.info("Module template nodes cleanup finished for {} modules in {}", count, DateUtils.formatDurationWords(System.currentTimeMillis() - start));
     }
 
     /**

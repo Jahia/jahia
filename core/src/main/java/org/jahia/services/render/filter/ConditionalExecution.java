@@ -482,6 +482,7 @@ public abstract class ConditionalExecution {
         if (condition != null) {
             addCondition(new NotCondition(condition));
         }
+    }
 
     /**
      * Skip this filter if the render chain is processing a Webflow request.

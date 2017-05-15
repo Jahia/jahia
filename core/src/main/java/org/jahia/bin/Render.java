@@ -186,6 +186,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         RESERVED_PARAMETERS.add(ALLOWS_MULTIPLE_SUBMITS);
     }
 
+    private static final String PARAM_IS_WEBFLOW_REQUEST = Render.class.getName() + ".isWebflowRequest";
+
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(Render.class);
 
     private transient String workspace;
@@ -927,17 +929,23 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         return null;
     }
 
-    private boolean isWebflowRequest(HttpServletRequest req) {
+    public static boolean isWebflowRequest(HttpServletRequest req) {
         boolean webflowRequest = false;
-        if (req.getMethod().equals(METHOD_POST)) {
-            Enumeration<?> parameterNames = req.getParameterNames();
-            while (parameterNames.hasMoreElements()) {
-                String s = (String) parameterNames.nextElement();
-                if (s.startsWith("webflowexecution")) {
-                    webflowRequest = true;
-                    break;
+        Boolean flag = (Boolean) req.getAttribute(PARAM_IS_WEBFLOW_REQUEST);
+        if (flag == null) {
+            if (req.getMethod().equals(METHOD_POST)) {
+                Enumeration<?> parameterNames = req.getParameterNames();
+                while (parameterNames.hasMoreElements()) {
+                    String s = (String) parameterNames.nextElement();
+                    if (s.startsWith("webflowexecution")) {
+                        webflowRequest = true;
+                        break;
+                    }
                 }
             }
+            req.setAttribute(PARAM_IS_WEBFLOW_REQUEST, Boolean.valueOf(webflowRequest));
+        } else {
+            webflowRequest = flag.booleanValue();
         }
         return webflowRequest;
     }

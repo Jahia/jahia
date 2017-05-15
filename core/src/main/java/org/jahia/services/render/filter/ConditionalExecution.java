@@ -62,6 +62,7 @@ import org.jahia.services.render.filter.AbstractFilter.NotCondition;
 import org.jahia.services.render.filter.AbstractFilter.SiteTemplateSetCondition;
 import org.jahia.services.render.filter.AbstractFilter.TemplateCondition;
 import org.jahia.services.render.filter.AbstractFilter.TemplateTypeCondition;
+import org.jahia.services.render.filter.AbstractFilter.WebflowRequestCondition;
 import org.jahia.utils.Patterns;
 
 /**
@@ -463,5 +464,16 @@ public abstract class ConditionalExecution {
             condition = new TemplateTypeCondition(templateTypes, true);
         }
         addCondition(new NotCondition(condition));
+    }
+
+    /**
+     * Skip this filter if the render chain is processing a Webflow request.
+     *
+     * @param skipOnWebflowRequest true to apply this configuration
+     */
+    public void setSkipOnWebflowRequest(Boolean skipOnWebflowRequest) {
+        if (skipOnWebflowRequest) {
+            addCondition(new NotCondition(new WebflowRequestCondition()));
+        }
     }
 }

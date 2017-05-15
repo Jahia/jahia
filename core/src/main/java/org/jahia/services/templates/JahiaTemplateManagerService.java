@@ -1015,7 +1015,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     private void clearModuleTemplateNodes() {
-        logger.info("Start checking Module template nodes");
+        logger.info("Start checking module template nodes");
         long start = System.currentTimeMillis();
         int count = 0;
 
@@ -1040,9 +1040,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
                             if (availableVersions == null || !availableVersions.containsKey(moduleVersion)) {
                                 // no module found for this version, clean module nodes
-                                templatePackageDeployer.clearModuleNodes(packageId, moduleVersion, session);
-                                logger.info("Module template node have been cleaned for module {} v{}", packageId, moduleVersion);
-                                innerCount++;
+                                try {
+                                    templatePackageDeployer.clearModuleNodes(packageId, moduleVersion, session);
+                                    logger.info("Template nodes have been purged for module {} v{}", packageId, moduleVersion);
+                                    innerCount++;
+                                } catch (RepositoryException e) {
+                                    logger.error("Error while purging module template nodes for module " + packageId + " v" + moduleVersion, e);
+                                }
                             }
                         }
                     }
@@ -1054,7 +1058,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             logger.error("Error while cleaning module template nodes", e);
         }
 
-        logger.info("Module template nodes cleanup finished for {} modules in {}", count, DateUtils.formatDurationWords(System.currentTimeMillis() - start));
+        String timeTaken = DateUtils.formatDurationWords(System.currentTimeMillis() - start);
+        if (count > 0) {
+            logger.info("Module template nodes cleanup finished for {} module(s) in {}", count, timeTaken);
+        } else {
+            logger.info("Module template nodes check finished in {}. No cleanup needed.", timeTaken);
+        }
     }
 
     /**

@@ -79,7 +79,6 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.query.Query;
 import javax.jcr.security.AccessControlException;
 import javax.jcr.security.AccessControlManager;
@@ -1110,15 +1109,16 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         // Remove i18n properties defined by the mixin, from translation nodes, if any.
         for (NodeIterator translationNodes = objectNode.getNodes(TRANSLATION_NODES_PATTERN); translationNodes.hasNext(); ) {
 
-            Node translationNode = (Node) translationNodes.next();
+            Node translationNode = translationNodes.nextNode();
 
             for (PropertyIterator properties = translationNode.getProperties(); properties.hasNext(); ) {
 
-                Property property = (Property) properties.next();
+                Property property = properties.nextProperty();
 
                 if (!property.getDefinition().getName().equals("*")) {
                     // The property matches translation node's own named property definition rather than a property definition
                     // provided by the parent node - must be preserved.
+                    logger.debug("removeMixin - preserving property '{}'", property.getPath());
                     continue;
                 }
 
@@ -1129,9 +1129,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 if (propertyDefinition != null && propertyDefinition.isInternationalized()) {
                     // After removing the mixin, the parent node still has an i18n property definition that matches this property,
                     // so the property is defined by another (still existing) type of the node and must be preserved therefore.
+                    logger.debug("removeMixin - preserving property '{}'", property.getPath());
                     continue;
                 }
 
+                logger.debug("removeMixin - removing property '{}'", property.getPath());
                 property.remove();
             }
         }

@@ -453,5 +453,6 @@
     <bean id="RenderTimeMonitor" class="org.jahia.services.render.monitoring.DefaultRenderTimeMonitor">
         <property name="maxRequestRenderTime" value="${maxRequestRenderTime:60000}"></property>
         <property name="skipOnModes" value="admin,studio"/>
+        <property name="skipOnWebflowRequest" value="true"/>
     </bean>
 </beans>

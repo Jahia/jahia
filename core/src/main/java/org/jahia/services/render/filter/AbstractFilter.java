@@ -44,6 +44,7 @@
 package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Render;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
@@ -517,6 +518,24 @@ public abstract class AbstractFilter extends ConditionalExecution implements Ren
             return "siteTemplateSet == " + templateSet;
         }
     }
+
+    /**
+     * Checks that the current request is processing a Webflow action.
+     * 
+     * @author Sergiy Shyrkov
+     * @since 7.1.2.5 / 7.2.1.0
+     */
+    public static class WebflowRequestCondition implements ExecutionCondition {
+        @Override
+        public String toString() {
+            return "is Webflow request";
+        }
+
+        @Override
+        public boolean matches(RenderContext renderContext, Resource resource) {
+            return Render.isWebflowRequest(renderContext.getRequest());
+        }
+    } 
 
     /**
      * Initializes an instance of this class.

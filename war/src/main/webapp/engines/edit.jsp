@@ -22,6 +22,34 @@
     <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
     <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.Jcrop.min.js'/>"></script>
     <script type="text/javascript" src="<c:url value='/modules/assets/javascript/clippy/jquery.clippy.min.js'/>"></script>
+
+<!-- START:::QUICK FIX-->
+<!-- REM : Once Development has finished REMOVE unused Raleway Fonts ... -->
+<link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+<!-- CONTAINS CSS TO APPLY QUICK FIX -->
+<link rel="stylesheet" type="text/css" href="/engines/quick-fix/common.css"/>
+
+<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
+<script>
+    $(document).ready(function(){
+
+        /* ON CLICK ::: MANAGERS BUTTON */
+        $("body").on("click", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", function(){
+            $("body").attr("data-INDIGO-GWT-FORMATTER", "managers-modal");
+        });
+
+        /* ON CLOSE ::: MANAGERS MENU */
+        $("body").on("click", ".x-menu", function(){
+            $("body").attr("data-INDIGO-GWT-FORMATTER", "");
+            $("body > div.x-menu").hide();
+        })
+
+    });
+</script>
+<!-- ENDQUICK FIX-->
+
+
 </head>
 
 <body>

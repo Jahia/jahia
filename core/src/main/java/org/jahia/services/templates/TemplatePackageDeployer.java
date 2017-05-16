@@ -201,17 +201,67 @@ public class TemplatePackageDeployer {
     }
 
     private void resetModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {
-        clearModuleNodes(pkg, session);
+        clearModuleNodes(pkg);
         if (initModuleNode(session, pkg, true)) {
             resetModuleAttributes(session, pkg);
         }
         session.save();
     }
 
+    /**
+     *  clear all module nodes for given package
+     * @param pkg
+     * @throws RepositoryException
+     */
+    public void clearModuleNodes(final JahiaTemplatesPackage pkg) throws RepositoryException {
+        for (String workspace : Arrays.asList(Constants.LIVE_WORKSPACE, Constants.EDIT_WORKSPACE)) {
+            clearModuleNodes(workspace, pkg.getId(), pkg.getVersion());
+        }
+    }
+
+    /**
+     *  clear all module nodes for given package id and version
+     * @param id
+     * @param version
+     * @throws RepositoryException
+     */
+    public void clearModuleNodes(String id, ModuleVersion version) throws RepositoryException {
+        for (String workspace : Arrays.asList(Constants.LIVE_WORKSPACE, Constants.EDIT_WORKSPACE)) {
+            clearModuleNodes(workspace, id, version);
+        }
+    }
+
+    /**
+     * clear all module nodes for given package and session
+     * Deprecated: use clearModuleNodes(final JahiaTemplatesPackage pkg)
+     * @param pkg
+     * @param session
+     * @throws RepositoryException
+     */
+    @Deprecated
     public void clearModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {
         clearModuleNodes(pkg.getId(), pkg.getVersion(), session);
     }
 
+    private void clearModuleNodes(String workspace, final String id, final ModuleVersion version) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
+            @Override
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                clearModuleNodes(id, version, session);
+                return null;
+            }
+        });
+    }
+
+    /**
+     *  clear all module nodes for given package id, version and session
+     *  if you want to remove a module nodes, use clearModuleNodes(String id, ModuleVersion version) to be sure to remove
+     *  nodes in both workspaces.
+     * @param id
+     * @param version
+     * @param session
+     * @throws RepositoryException
+     */
     public void clearModuleNodes(String id, ModuleVersion version, JCRSessionWrapper session) throws RepositoryException {
         String modulePath = "/modules/" + id + "/" + version;
         if (session.nodeExists(modulePath)) {
@@ -226,6 +276,7 @@ public class TemplatePackageDeployer {
             session.save();
         }
     }
+
 
     private boolean initModuleNode(JCRSessionWrapper session, JahiaTemplatesPackage pack, boolean updateDeploymentDate)
             throws RepositoryException {

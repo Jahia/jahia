@@ -103,6 +103,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+
 /**
  * Template and template set deployment and management service.
  *
@@ -1027,7 +1028,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                             if (availableVersions == null || !availableVersions.containsKey(moduleVersion)) {
                                 // no module found for this version, clean module nodes
                                 try {
-                                    templatePackageDeployer.clearModuleNodes(packageId, moduleVersion, session);
+                                    templatePackageDeployer.clearModuleNodes(packageId, moduleVersion);
                                     logger.info("Template nodes have been purged for module {} v{}", packageId, moduleVersion);
                                     innerCount++;
                                 } catch (RepositoryException e) {

@@ -493,15 +493,7 @@ public class Activator implements BundleActivator {
         if (jahiaTemplatesPackage != null) {
 
             try {
-
-                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, null, null, new JCRCallback<Boolean>() {
-
-                    @Override
-                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        templatePackageDeployer.clearModuleNodes(jahiaTemplatesPackage, session);
-                        return null;
-                    }
-                });
+                templatePackageDeployer.clearModuleNodes(jahiaTemplatesPackage);
                 if (templatePackageRegistry.getAvailableVersionsForModule(jahiaTemplatesPackage.getId()).equals(Collections.singleton(jahiaTemplatesPackage.getVersion()))) {
                     if (SettingsBean.getInstance().isDevelopmentMode() && SettingsBean.getInstance().isProcessingServer()
                             && !templatesService.checkExistingContent(bundle.getSymbolicName())) {

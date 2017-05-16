@@ -4,7 +4,7 @@
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 
-[test:emptyNodeType] > nt:base 
+[test:emptyNodeType] > nt:base
 
 [test:mixinNodeType]
   mixin
@@ -19,7 +19,7 @@
 - test:mandatoryItem (string) mandatory
 - test:copyItem (string) copy
 - test:versionItem (string) version
-- test:initializeItem (string) initialize 
+- test:initializeItem (string) initialize
 - test:computeItem (string) compute
 - test:abortItem (string) abort
 - test:protectedItem (string) protected
@@ -27,7 +27,7 @@
 [test:propertyNodeType] > nt:base
 - test:emptyProperty (string)
 - test:binaryProperty (binary) < '[0,)'
-- test:booleanProperty (boolean) = true < true, false 
+- test:booleanProperty (boolean) = true < true, false
 - test:dateProperty (date) = '2005-01-01T00:00:00.000Z' < '[2005-01-01T00:00:00.000Z,2006-01-01T00:00:00.000Z)'
 - test:doubleProperty (double) = '1.5' nofulltext queryops '=,<>,>,>=,<,<=' < '[,0.0)', '(1.0,2.0)', '(3.0,]'
 - test:longProperty (long) = 25 nofulltext < '(-10,0]', '[1,2]', '[10,100)'
@@ -107,7 +107,7 @@
 [test:setProperty] > nt:base, mix:referenceable
 - * (undefined) copy
 - test:multiProperty (undefined) copy multiple
-+ * (nt:base) = test:setProperty copy 
++ * (nt:base) = test:setProperty copy
 
 [test:setPropertyAssumingType] > nt:base
 - test:singleProperty (undefined) copy
@@ -119,7 +119,7 @@
 + * (nt:base) = test:sameNameSibsFalseChildNodeDefinition compute
 
 [test:externalReference] > nt:base, jmix:droppableContent
-- test:simpleNode (reference)     
+- test:simpleNode (reference)
 - test:multipleI18NNode (reference) multiple i18n
 
 [test:externalWeakReference] > nt:base, jmix:droppableContent
@@ -151,7 +151,7 @@
  - propertyCurrentUser (string) = currentUser() autocreated
  - propertyResourceBundleShared (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.1') autocreated
  - propertyResourceBundleI18n (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.2') autocreated i18n
- 
+
 
 [test:dynamicValuesTestMixin] mixin
  - propertyTextMixin (string) = 'Text plain' autocreated
@@ -188,13 +188,13 @@
  - desc (string, richtext) internationalized
  - image (weakreference, picker[type='image'])
  - date (date) = now()
- 
+
 [jmix:sitemap] mixin
  extends = jnt:content, jnt:page
  itemtype = options
  - changefreq (string,choicelist[resourceBundle]) = 'monthly' autocreated nofulltext < 'always','hourly','daily','monthly','yearly','never'
  - priority (string,choicelist) = '0.5' autocreated nofulltext < '0.0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1.0'
- 
+
 [jnt:press] > jnt:content, mix:title, jmix:editorialContent, jmix:structuredContent
  - body (string, richtext) i18n
  - date (date)
@@ -203,4 +203,16 @@
 [test:excludeFromIndexContent] > jnt:content, jmix:droppableContent
 
 [test:excludeFromIndexContentMixin] mixin
- 
+
+[test:i18nMixin] mixin
+ - namedProperty (string) i18n
+ - * (undefined) i18n
+
+[test:i18nMixinSubtype] > test:i18nMixin mixin
+
+[test:i18nMixinSubtypeDuplicateProperties] > test:i18nMixin mixin
+ - namedProperty (string) i18n
+ - * (undefined) i18n
+
+[test:i18nMixinAmbiguousProperty] mixin
+ - jcr:language (string) i18n

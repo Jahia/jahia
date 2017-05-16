@@ -45,6 +45,7 @@ package org.jahia.services.content;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
@@ -84,6 +85,7 @@ import javax.jcr.security.Privilege;
 import javax.jcr.version.*;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
@@ -1057,6 +1059,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         checkLock();
 
+        NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
+        ExtendedNodeType mixin = nodeTypeRegistry.getNodeType(s);
+
         try {
 
             objectNode.removeMixin(s);
@@ -1064,13 +1069,45 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             // Removing a mixin also causes removal of any child nodes defined by the mixin.
             // In case the mixin defines any child nodes, flush the cache to ensure it does not contain any nodes
             // that has been just removed along with the mixin.
-            if (!NodeTypeRegistry.getInstance().getNodeType(s).getChildNodeDefinitionsAsMap().isEmpty()) {
+            if (!mixin.getChildNodeDefinitionsAsMap().isEmpty()) {
                 getSession().flushCaches();
             }
 
         } finally {
             applicablePropertyDefinition.clear();
             hasPropertyCache.clear();
+        }
+
+        // Remove i18n properties defined by the mixin, from translation nodes, if any.
+        for (NodeIterator translationNodes = objectNode.getNodes(TRANSLATION_NODES_PATTERN); translationNodes.hasNext(); ) {
+
+            Node translationNode = translationNodes.nextNode();
+
+            for (PropertyIterator properties = translationNode.getProperties(); properties.hasNext(); ) {
+
+                Property property = properties.nextProperty();
+
+                if (!property.getDefinition().getName().equals("*")) {
+                    // The property matches translation node's own named property definition rather than a property definition
+                    // provided by the parent node - must be preserved.
+                    logger.debug("removeMixin - preserving property '{}'", property.getPath());
+                    continue;
+                }
+
+                ExtendedPropertyDefinition propertyDefinition = getApplicablePropertyDefinition(property.getName(), property.getType(), false);
+                if (propertyDefinition == null) {
+                    propertyDefinition = getApplicablePropertyDefinition(property.getName(), property.getType(), true);
+                }
+                if (propertyDefinition != null && propertyDefinition.isInternationalized()) {
+                    // After removing the mixin, the parent node still has an i18n property definition that matches this property,
+                    // so the property is defined by another (still existing) type of the node and must be preserved therefore.
+                    logger.debug("removeMixin - preserving property '{}'", property.getPath());
+                    continue;
+                }
+
+                logger.debug("removeMixin - removing property '{}'", property.getPath());
+                property.remove();
+            }
         }
     }
 
@@ -1354,7 +1391,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return b;
     }
 
-    private String getTranslationNodeName(Locale locale) {
+    static String getTranslationNodeName(Locale locale) {
         return TRANSLATION_PREFIX + locale;
     }
 

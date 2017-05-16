@@ -1080,7 +1080,7 @@ public class JCRPublicationService extends JahiaService {
                 return info;
             }
 
-            if (!currentPublicationInfo.hasLiveNode()) {
+            if (currentPublicationInfo != null && !currentPublicationInfo.hasLiveNode()) {
                 info.setStatus(PublicationInfo.NOT_PUBLISHED);
                 return info;
             }
@@ -1119,7 +1119,9 @@ public class JCRPublicationService extends JahiaService {
                 try {
                     node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
                 } catch (ItemNotFoundException e) {
-                    currentPublicationInfo.setHasLiveNode(false);
+                    if (currentPublicationInfo != null) {
+                        currentPublicationInfo.setHasLiveNode(false);
+                    }
                     info.setStatus(PublicationInfo.NOT_PUBLISHED);
                 }
             }
@@ -1147,7 +1149,7 @@ public class JCRPublicationService extends JahiaService {
         if (includesReferences || includesSubnodes) {
             if (includesReferences) {
                 getReferences(node, languages, includesReferences, includesSubnodes, sourceSession, destinationSession,
-                        infosMap, infos, info, currentPublicationInfo);
+                        infosMap, infos, info);
             }
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
@@ -1190,7 +1192,7 @@ public class JCRPublicationService extends JahiaService {
                             info.addChild(child);
                         } else if (includesReferences) {
                             getReferences(n, languages, includesReferences, includesSubnodes, sourceSession, destinationSession, infosMap,
-                                    infos, info, currentPublicationInfo);
+                                    infos, info);
                         }
                     }
                 }
@@ -1310,7 +1312,7 @@ public class JCRPublicationService extends JahiaService {
     private void getReferences(JCRNodeWrapper node, Set<String> languages, boolean includesReferences,
                                boolean includesSubnodes, JCRSessionWrapper sourceSession,
                                JCRSessionWrapper destinationSession, Map<String, PublicationInfoNode> infosMap,
-                               List<PublicationInfo> infos, PublicationInfoNode info, PublicationInfo currentPublicationInfo) throws RepositoryException {
+                               List<PublicationInfo> infos, PublicationInfoNode info) throws RepositoryException {
         if (skipAllReferenceProperties) {
             return;
         }
@@ -1332,7 +1334,7 @@ public class JCRPublicationService extends JahiaService {
                                 logger.debug("Calculating publication status for the reference property {}", propName);
                             }
                             PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
-                                    includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, false, currentPublicationInfo);
+                                    includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, false, null);
                             info.addReference(new PublicationInfo(n));
                         }
                     } catch (ItemNotFoundException e) {
@@ -1359,7 +1361,7 @@ public class JCRPublicationService extends JahiaService {
                             logger.debug("Calculating publication status for the reference property {}", propName);
                         }
                         PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
-                                includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, false, currentPublicationInfo);
+                                includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, false, null);
                         info.addReference(new PublicationInfo(n));
                     }
                 } catch (ItemNotFoundException e) {

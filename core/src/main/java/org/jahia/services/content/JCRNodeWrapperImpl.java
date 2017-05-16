@@ -1419,7 +1419,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return b;
     }
 
-    private String getTranslationNodeName(Locale locale) {
+    static String getTranslationNodeName(Locale locale) {
         return TRANSLATION_PREFIX + locale;
     }
 

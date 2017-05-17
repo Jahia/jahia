@@ -417,7 +417,7 @@ public class RenderService {
             String query =
                     "select * from [" + type + "] as w where isdescendantnode(w, ['" + JCRContentUtils.sqlEncode(path) + "'])";
             if (templateName != null) {
-                query += " and name(w)='" + templateName + "'";
+                query += " and name(w)='" + JCRContentUtils.sqlEncode(templateName) + "'";
             }
             if (defaultOnly) {
                 query += " and [j:defaultTemplate]=true";

@@ -71,7 +71,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -412,7 +411,7 @@ public class RenderService {
             String query =
                     "select * from [" + type + "] as w where isdescendantnode(w, ['" + JCRContentUtils.sqlEncode(path) + "'])";
             if (templateName != null) {
-                query += " and name(w)='" + templateName + "'";
+                query += " and name(w)='" + JCRContentUtils.sqlEncode(templateName) + "'";
             }
             if (defaultOnly) {
                 query += " and [j:defaultTemplate]=true";

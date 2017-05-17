@@ -54,6 +54,7 @@
                 <value>org.jahia.test.services.query.FacetedQueryTest</value>
                 <value>org.jahia.test.services.query.IndexOptionsTest</value>
                 <value>org.jahia.test.services.query.NativeSortTest</value>
+                <value>org.jahia.test.services.query.QueryAclCheckTest</value>
                 <value>org.jahia.test.services.query.QueryModificationTest</value>
                 <value>org.jahia.test.services.query.QueryResultTest</value>
                 <value>org.jahia.test.services.render.JSessionIDTest</value>

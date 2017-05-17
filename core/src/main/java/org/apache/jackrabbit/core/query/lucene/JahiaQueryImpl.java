@@ -46,14 +46,21 @@ package org.apache.jackrabbit.core.query.lucene;
 import org.apache.jackrabbit.core.query.PropertyTypeRegistry;
 import org.apache.jackrabbit.core.query.lucene.constraint.Constraint;
 import org.apache.jackrabbit.core.session.SessionContext;
+import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.query.QueryNodeFactory;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.search.Query;
 import org.jahia.api.Constants;
 import org.jahia.utils.LuceneUtils;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.QueryResult;
 
 public class JahiaQueryImpl extends QueryImpl {
+    public static boolean checkAclUuidInIndex = Boolean
+            .valueOf(System.getProperty("jahia.jackrabbit.query.xpath.checkAclUuidInIndex", "true"));
+
     private Constraint constraint = null;
     private String statement = null;
 
@@ -89,4 +96,19 @@ public class JahiaQueryImpl extends QueryImpl {
         return super.getTextAnalyzer();
     }
 
+    @Override
+    protected QueryResult createQueryResult(long offset, long limit, Query query, Path[] orderProperties,
+            boolean[] ascSpecs, String[] orderFuncs) throws RepositoryException {
+        if (checkAclUuidInIndex && JahiaSearchIndex.isAclUuidInIndex(index)) {
+            // if ACLs are indexed, we use our own implementation of the query result to benefit from "fast" ACL checks
+            return new JahiaSingleColumnQueryResult(
+                    index, sessionContext, this, query,
+                    new SpellSuggestion(index.getSpellChecker(), root),
+                    getColumns(), orderProperties, ascSpecs, orderFuncs,
+                    orderProperties.length == 0 && getRespectDocumentOrder(),
+                    offset, limit);
+        } else {
+            return super.createQueryResult(offset, limit, query, orderProperties, ascSpecs, orderFuncs);
+        }
+    }
 }

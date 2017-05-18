@@ -487,14 +487,16 @@ public class AggregateFilterTest extends JahiaTestCase {
                     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                         if (method.getName().equals("setAttribute")) {
                             attributes.put((String) args[0], args[1]);
-                        } if (method.getName().equals("getAttribute")) {
+                        } else if (method.getName().equals("getAttribute")) {
                             return attributes.get(args[0]);
-                        } if (method.getName().equals("getParameterMap")) {
+                        } else if (method.getName().equals("getParameterMap")) {
                             return new HashMap<String, String[]>();
-                        } if (method.getName().equals("removeAttribute")) {
+                        } else if (method.getName().equals("removeAttribute")) {
                             attributes.remove(args[0]);
-                        } if (method.getName().equals("getSession")) {
+                        } else if (method.getName().equals("getSession")) {
                             return session;
+                        } else if (method.getName().equals("getMethod")) {
+                            return "GET";
                         }
                         return null;
                     }

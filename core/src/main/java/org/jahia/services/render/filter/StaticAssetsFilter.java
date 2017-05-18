@@ -564,36 +564,30 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             boolean pathExcluded = excludesFromAggregateAndCompress.contains(key) || resource == null;
             boolean onlyMediaOption = entry.getValue().size() == 1 && entry.getValue().containsKey("media");
             boolean noOption = entry.getValue().isEmpty();
+            boolean canAggregate = (onlyMediaOption || noOption) && !pathExcluded && (currentMedia == null || aggregateSupportedMedias.contains(currentMedia));
 
-            // in case: (same media or no HTML options) and path not excluded
-            if (((onlyMediaOption && sameMedia && previousMedia != null) || (noOption && sameMedia)) && !pathExcluded) {
+            if (canAggregate) {
+                // in case: aggregation is possible
+                if (!sameMedia) {
+                    // media has changed : aggregate previous resources and switch current media
+                    aggregatePathsAndPopulateNewEntries(resourcesToAggregate, newEntries, type, maxLastModified);
+
+                    // may be a new media, store it as new media
+                    previousMedia = currentMedia;
+                }
 
                 // continue aggregation
-                maxLastModified = addResourceToAggregation(key, resource, resourcesToAggregate, maxLastModified, onlyMediaOption ? currentMedia : null);
-                continue;
-            }
-
-            // start by aggregate all the paths already gathered
-            aggregatePathsAndPopulateNewEntries(resourcesToAggregate, newEntries, type, maxLastModified);
-
-            // in case: (not the same media or no HTML options) and path not excluded
-            if (((!sameMedia && onlyMediaOption && StringUtils.isNotEmpty(currentMedia) && aggregateSupportedMedias.contains(currentMedia)) || (noOption && !sameMedia)) && !pathExcluded) {
-                // may be a new media, store it as new media
-                previousMedia = currentMedia;
-
-                // start a new aggregation with this current resource
-                maxLastModified = addResourceToAggregation(key, resource, resourcesToAggregate, maxLastModified, onlyMediaOption ? currentMedia : null);
-                continue;
-            }
-
-            // reset media in that case
-            previousMedia = null;
-
-            // for some reason this resource can't be aggregated
-            if (addLastModifiedDate && (resource = getResource(getKey(entry.getKey()))) != null) {
-                newEntries.put(entry.getKey() + "?lastModified=" + resource.lastModified(), entry.getValue());
+                maxLastModified = addResourceToAggregation(key, resource, resourcesToAggregate, maxLastModified, currentMedia);
             } else {
-                newEntries.put(entry.getKey(), entry.getValue());
+                // aggregation is not possible. start by aggregate all the paths already gathered
+                aggregatePathsAndPopulateNewEntries(resourcesToAggregate, newEntries, type, maxLastModified);
+
+                // for some reason this resource can't be aggregated
+                if (addLastModifiedDate && (resource = getResource(getKey(entry.getKey()))) != null) {
+                    newEntries.put(entry.getKey() + "?lastModified=" + resource.lastModified(), entry.getValue());
+                } else {
+                    newEntries.put(entry.getKey(), entry.getValue());
+                }
             }
         }
 

@@ -44,6 +44,7 @@
 package org.jahia.services.search.facets;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.lucene.*;
 import org.apache.jackrabbit.core.query.lucene.hits.AbstractHitCollector;
 import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
@@ -519,7 +520,7 @@ public class SimpleJahiaJcrFacets {
                 String facetValueKey = facetValueEntry.getKey();
                 Object propertyValue = facetValueKey;
                 if (resolveReference) {
-                    if (UUID_PATTERN.matcher(facetValueKey).matches()) {
+                    if (facetValueKey.length() == NodeId.UUID_FORMATTED_LENGTH && UUID_PATTERN.matcher(facetValueKey).matches()) {
                         propertyValue = currentUserSession.getNodeByIdentifier(facetValueKey);
                     } else {
                         propertyValue = currentUserSession.getNode(StringUtils.substring(facetValueKey, facetValueKey.indexOf('/')));

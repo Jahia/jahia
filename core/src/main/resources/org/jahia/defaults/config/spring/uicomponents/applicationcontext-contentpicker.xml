@@ -468,6 +468,7 @@
             <list>
                 <value>jnt:page</value>
                 <value>jnt:virtualsite</value>
+                <value>jnt:navMenuText</value>
             </list>
         </property>
 

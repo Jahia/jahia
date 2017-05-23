@@ -1088,8 +1088,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             objectNode.addMixin(s);
         } finally {
-            applicablePropertyDefinition.clear();
-            hasPropertyCache.clear();
+            flushLocalCaches();
         }
     }
 

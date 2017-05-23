@@ -304,7 +304,13 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     left: 410px!important;
 }
 
+body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) {
+    width: calc(100% - 410px)!important;
+    left: 410px!important;
+}
+
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div {
+<<<<<<< HEAD
     width: 100%!important;
     height: calc(100% + 4px)!important;
 }
@@ -313,6 +319,16 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     xheight: 100%!important;
     width: 100%!important;
     box-shadow: 0 0px 7px 1px rgba(49,49,49,0.5);
+=======
+    width: 100%!important;
+    height: calc(100% + 4px)!important;
+}
+
+.x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe:nth-child(1) {
+    xheight: 100%!important;
+    width: 100%!important;
+    box-shadow: 0 0px 13px 2px rgba(49,49,49,0.8);
+>>>>>>> origin/feature-INDIGO-41
     margin-top: 10px!important;
     xheight: calc(100% - 0px)!important;
 }
@@ -613,7 +629,10 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs,
 	top:-50px;
 	/* padding-top: 46px; */
 	pointer-events: none;
+<<<<<<< HEAD
 	Xtransition:all 0.3s ease-in 0s;
+=======
+>>>>>>> origin/feature-INDIGO-41
 }
 
 body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs {
@@ -621,6 +640,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs {
 }
 
 
+<<<<<<< HEAD
 
 
 #JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2) {
@@ -640,6 +660,35 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs > div:nth-child(1) 
 
 body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs:hover > div:nth-child(1) > div:nth-child(2) {
 	opacity: 1;
+=======
+#JahiaGxtSidePanelTabs:hover::before,
+body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs::before {
+    content: "Hello";
+    text-indent: -50000px;
+    display: block;
+    width: 15px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: -15px;
+    z-index: 999999999999999999999999999999;
+    pointer-events: all;
+}
+
+#JahiaGxtSidePanelTabs:hover::before {
+    background: url(/engines/quick-fix/images/icon-expand-side-bar.png) no-repeat center center #28a7f0;
+    xbackground: url(/engines/quick-fix/images/icon-expand-side-bar.png) no-repeat center center rgba(49, 49, 49, 0.8);
+    border-left: 1px solid #0686cf;
+}
+
+body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs::before {
+    background: url(/engines/quick-fix/images/icon-collapse-side-bar.png) no-repeat center center;
+    opacity: 0.1;
+}
+
+body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs:hover::before {
+    opacity: 1;
+>>>>>>> origin/feature-INDIGO-41
 }
 
 
@@ -706,8 +755,11 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs .x-tab-strip.x-tab-
 
 #JahiaGxtSidePanelTabs .x-grid3 > div.x-grid3-viewport .x-grid3-scroller {
     height: 101%!important;
+<<<<<<< HEAD
     /* background: red; */
     width: 100%!important;
+=======
+>>>>>>> origin/feature-INDIGO-41
 }
 
 #JahiaGxtSidePanelTabs .x-grid3-header {
@@ -748,8 +800,12 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs .x-tab-strip.x-tab-
     xdisplay: none;
 }
 
+<<<<<<< HEAD
 #JahiaGxtSidePanelTabs .x-grid3-row-selected,
 #JahiaGxtSidePanelTabs .x-grid3-row-selected:hover {
+=======
+#JahiaGxtSidePanelTabs .x-grid3-row-selected {
+>>>>>>> origin/feature-INDIGO-41
     background: rgba(238,238,238,0.9)!important;
     /* background: red!important; */
     width: calc(100% - 17px)!important;
@@ -1467,7 +1523,11 @@ body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list {
 	/* border: 1px solid red; */
 	overflow: visible;
 	width: 576px;
+<<<<<<< HEAD
 	margin: 100px auto;
+=======
+	margin: 120px auto;
+>>>>>>> origin/feature-INDIGO-41
 }
 
 body[data-INDIGO-GWT-FORMATTER="managers-modal"] span.x-menu-item {
@@ -1477,6 +1537,34 @@ body[data-INDIGO-GWT-FORMATTER="managers-modal"] span.x-menu-item {
 	position: relative;
 	padding: 120px 0 0 0;
 	text-align: center;
+<<<<<<< HEAD
+}
+
+body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item {
+    margin: 10px;
+    float: left;
+    position: relative;
+}
+
+body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item.x-menu-item-active {
+    background: none;
+    border-radius: 100%;
+}
+
+body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item.x-menu-item-active::before {
+    background: rgba(238,238,238,0.1);
+    content: " ";
+    display: block;
+    width: 170px;
+    height: 170px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 100%;
+}
+
+body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(1) span.x-menu-item  {
+=======
 }
 
 body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item {
@@ -1508,30 +1596,55 @@ body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(1) 
 }
 
 body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(2) span.x-menu-item  {
+>>>>>>> origin/feature-INDIGO-41
 	background: url(/engines/quick-fix/images/dx_logo_inverted.png) no-repeat top 16px center;
 	background-size: 50%;
 }
 
+<<<<<<< HEAD
+body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(2) span.x-menu-item  {
+=======
 body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(3) span.x-menu-item  {
+>>>>>>> origin/feature-INDIGO-41
 	background: url(/engines/quick-fix/images/dx_logo_inverted.png) no-repeat top 16px center;
 	background-size: 50%;
 }
 
+<<<<<<< HEAD
+body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(3) span.x-menu-item  {
+=======
 body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(4) span.x-menu-item  {
+>>>>>>> origin/feature-INDIGO-41
 	background: url(/engines/quick-fix/images/dx_logo_inverted.png) no-repeat top 16px center;
 	background-size: 50%;
 }
 
+<<<<<<< HEAD
+body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(4) span.x-menu-item  {
+=======
 body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(5) span.x-menu-item  {
+>>>>>>> origin/feature-INDIGO-41
 	background: url(/engines/quick-fix/images/dx_logo_inverted.png) no-repeat top 16px center;
 	background-size: 50%;
 }
 
+<<<<<<< HEAD
+body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(5) span.x-menu-item  {
+=======
+body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(6) span.x-menu-item  {
+>>>>>>> origin/feature-INDIGO-41
+	background: url(/engines/quick-fix/images/dx_logo_inverted.png) no-repeat top 16px center;
+	background-size: 50%;
+}
+
+<<<<<<< HEAD
 body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(6) span.x-menu-item  {
 	background: url(/engines/quick-fix/images/dx_logo_inverted.png) no-repeat top 16px center;
 	background-size: 50%;
 }
 
+=======
+>>>>>>> origin/feature-INDIGO-41
 body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu-list-item:nth-child(7) span.x-menu-item  {
 	background: url(/engines/quick-fix/images/dx_logo_inverted.png) no-repeat top 16px center;
 	background-size: 50%;
@@ -2120,7 +2233,11 @@ span.x-menu-item img {
 	left: 0;
 	width: 100%!important;
 	z-index: 9999999;
+<<<<<<< HEAD
 	/* display: none; */
+=======
+	display: none;
+>>>>>>> origin/feature-INDIGO-41
 }
 
 body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1),
@@ -2211,6 +2328,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 #JahiaGxtSearchTab {
     height: 100%!important;
     width: 650px!important
+<<<<<<< HEAD
 }
 
 #JahiaGxtSidePanelTabs #JahiaGxtSearchTab .x-grid3-row {
@@ -2258,6 +2376,91 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 #JahiaGxtSearchTab .x-grid3-col-icon {
     /* background: blue; */
     padding: 5px 0px 5px 0;
+=======
+}
+
+#JahiaGxtSearchTab .x-grid3-row {
+    xbackground: pink;
+    margin-bottom: 2px;
+}
+
+#JahiaGxtSearchTab .x-grid3-col-displayName {
+    /* background: red; */
+    padding: 5px 10px 5px 0;
+    font-family: Raleway;
+    font-size: 13px;
+    font-weight: 300;
+    color: #5c6164;
+}
+
+#JahiaGxtSearchTab .x-grid3-col-icon {
+    /* background: blue; */
+    padding: 5px 0px 5px 10px;
+}
+
+#JahiaGxtSearchTab .x-grid3-col-icon img {
+    background: url(/engines/quick-fix/images/icon-page-small-dark-selected.png) no-repeat!important;
+    padding-left: 16px;
+    width: 16px;
+    height: 16px;
+    overflow:hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display:inline;
+}
+
+#JahiaGxtSearchTab .my-paging-display {
+    /* background: red; */
+    width: 296px;
+    text-align: left;
+    font-size: 17px;
+    color: rgba(238,238,238,0.7);
+    /* background: rgba(238,238,238,0.4); */
+    padding: 0;
+    /* text-transform: uppercase; */
+    font-weight: 300;
+    text-align: center;
+}
+
+#JahiaGxtSearchTab .x-form-item {
+    margin-bottom: 10px;
+}
+
+#JahiaGxtSearchTab > div {width: auto!important;}
+
+#JahiaGxtSearchTab > div {
+    background: transparent;
+    height: 100%!important;
+    /* background: pink; */
+}
+
+#JahiaGxtSearchTab > div > div {
+    width: calc(100% - 80px)!important;
+    /* background: blue; */
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(1) {
+    /* background: yellow; */
+    display: inline-block;
+    width: 274px!important;
+    padding-right: 20px;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) {
+    background: rgba(238,238,238,0.8);
+    display: inline-block;
+    width: 298px!important;
+    vertical-align: top;
+    top: -102px!important;
+    position: relative;
+    height: calc(100% + 20px);
+    /* padding: 20px; */
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) {
+    height: calc(100% - 28px)!important;
+    /* background: red; */
+>>>>>>> origin/feature-INDIGO-41
 }
 
 #JahiaGxtSearchTab .x-grid3-col-icon img {
@@ -2984,6 +3187,612 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     color: rgba(238,238,238,0.4);
 }
 
+<<<<<<< HEAD
+=======
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) {
+    height: calc(100% - 38px)!important;
+    /* background: pink!important; */
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div {
+    height: calc(100% - 40px)!important;
+    /* background: purple; */
+    /* padding-top: 49px; */
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div::before {
+    content: "Results";
+    font-size: 26px;
+    font-family: Raleway;
+    font-weight: 200;
+    margin: 20px 0 10px 14px;
+    display: block;
+    color: #5c6164
+}
+
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) {
+    height: 38px;
+    /* background: blue; */
+    xdisplay: none;
+    /* overflow: hidden; */
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div,
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > table {
+    border: none!important;
+    padding: 0;
+    height: 100%;
+    background: transparent;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) {
+    box-shadow: inset -1px 1px 3px 0px rgba(49,49,49,0.5);
+    background: #5c6164;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left{
+    background: transparent;
+    /* background: blue; */
+    display: block;
+    margin-top: 11px;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left > table {
+    float: none;
+    border: none!important;
+    /* border: 2px solid yellow!important; */
+    margin: 0 auto;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(1){
+    background: transparent;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(2){
+    background: transparent;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(3){
+    display: none;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(4){
+    background: transparent;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(4) > div {
+    font-size: 11px;
+    font-family: Raleway;
+    font-weight: 500;
+    color: rgba(238,238,238,0.7);
+    text-transform: uppercase;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(5){
+    background: transparent;
+    padding: 0 8px;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(5) > input {
+    font-size: 12px;
+    font-family: Raleway;
+    font-weight: 500;
+    background: rgba(49,49,49,0.7);
+    border: none;
+    padding: 1px 5px;
+    box-shadow: inset 1px 1px 3px 0px rgba(49,49,49,0.5);
+    color: rgba(238,238,238,0.7);
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(6){
+    background: transparent;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(6) > div {
+    font-size: 11px;
+    font-family: Raleway;
+    font-weight: 500;
+    color: rgba(238,238,238,0.7);
+    text-transform: uppercase;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(7){
+    display: none;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(8){
+    background: transparent;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(9){
+    background: transparent;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(10){
+    display: none;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-left td:nth-child(11){
+    background: transparent;
+}
+
+#XXXJahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-right{
+    /* background: aqua; */
+    position: fixed;
+    top: 0;
+    z-index: 999;
+    left: 354px;
+    width: 296px;
+}
+
+#JahiaGxtSearchTab > div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-toolbar-right{
+    /* background: aqua; */
+    xposition: fixed;
+    /* top: 0; */
+    /* z-index: 999; */
+    /* left: 354px; */
+    /* width: 296px; */
+    display: block;
+    position: absolute;
+    top: 10px;
+    display: none;
+}
+
+#JahiaGxtSearchTab form {
+    width: calc(100%)!important;
+    padding: 0!important;
+}
+
+#JahiaGxtSearchTab .x-form-element {
+    clear: both;
+    padding: 0!important;
+    width: 100%;
+}
+
+#JahiaGxtSearchTab .x-form-element > div {
+    width: 100%!important;
+}
+
+#JahiaGxtSearchTab .x-form-element input[type="text"] {
+    width: 100%!important;
+    border:none;
+    padding: 3px 10px;
+    color: #5c6164
+}
+
+#JahiaGxtSearchTab label {
+    width: 100%!important;
+    font-family: Raleway;
+    font-size: 14px;
+    color: rgba(238,238,238,1);
+    font-weight: 100;
+}
+
+
+#JahiaGxtSearchTab .x-form-element .x-form-twin-triggers,
+#JahiaGxtSearchTab .x-form-element .x-form-trigger {
+    right: 0;
+    top:0;
+    position: absolute;
+}
+
+#JahiaGxtSearchTab .x-form-element .x-form-trigger {
+    border: none;
+    top: 2px;
+    right: 2px;
+}
+
+#JahiaGxtSearchTab .x-form-element .x-form-trigger-arrow {
+    background: url(/engines/quick-fix/images/icon-toggle-expanded-small-normal.png) no-repeat center center;
+}
+
+#JahiaGxtSearchTab .x-form-element .x-form-clear-trigger {
+    background: url(/engines/quick-fix/images/icon-close-small-dark.png) no-repeat center center;
+}
+
+#JahiaGxtSearchTab .x-form-twin-triggers .x-form-trigger-arrow {
+    right: 2px;
+}
+
+#JahiaGxtSearchTab .x-form-twin-triggers .x-form-clear-trigger {
+    right: 20px;
+}
+
+#JahiaGxtSearchTab > div > div > div {
+    /* width: 100%!important; */
+    /* background: blue; */
+}
+
+#JahiaGxtSearchTab .x-panel-footer {
+    height: 40px;
+    overflow: visible;
+}
+
+#JahiaGxtSearchTab .x-panel-fbar {
+    height: 40px;
+}
+
+#JahiaGxtSearchTab .x-panel-footer .x-btn-mc {
+    xtext-indent: -50000px;
+    xheight: 20px;
+    position: absolute;
+    left: 0;
+    background: none;
+}
+
+#JahiaGxtSearchTab .x-panel-footer .x-btn-mc button {
+    color: rgba(238,238,238,0.8);
+    font-family: Raleway;
+    xtext-transform: none;
+    font-size: 11px;
+    font-weight: 300;
+    background: url(/engines/quick-fix/images/icon-magnifying-glass--small-white.png) no-repeat left 9px center #5c6164;
+    padding: 9px 10px 8px 31px!important;
+    height: auto!important;
+}
+
+#JahiaGxtSearchTab > div:nth-child(1)::before {
+	content: "Search";
+	position: relative;
+	top: 0!important;
+	font-size: 26px;
+	font-family: Raleway;
+	font-weight: 200;
+	display: block;
+	margin: 20px 0 50px;
+    color: rgba(238,238,238,1);
+	/* width: 140px; */
+}
+
+#JahiaGxtSearchTab .x-panel-btns {
+    padding: 0;
+}
+
+#XXXJahiaGxtSearchTab .x-grid-empty {
+    padding: 0;
+}
+
+#XXXJahiaGxtSearchTab .x-grid-empty::before {
+    content: "No Results ...";
+    color: rgba(238,238,238,1);
+    display: block;
+    z-index: 9999;
+    background: red;
+    height: 20px!important;
+    position: absolute;
+}
+
+#JahiaGxtCategoryBrowseTab > div:nth-child(1)::before {
+	content: "Taxonomy";
+	position: relative;
+	top: 0!important;
+	font-size: 26px;
+	font-family: Raleway;
+	font-weight: 200;
+	display: block;
+	margin: 20px 0 50px;
+    color: rgba(238,238,238,1);
+	/* width: 140px; */
+}
+
+#x-auto-56 {
+    display: block;
+}
+
+#x-auto-56 {
+    /*! width: 50%!important; */
+    height: 100%!important;
+    xbackground: red;
+    width: 360px!important;
+    padding-right: 20px;
+}
+
+#x-auto-56 > div {
+    /*! width: 50%!important; */
+    height: 100%!important;
+    /* background: red; */
+    padding-right: 10px;
+    width: calc(100% - 50px)!important;
+}
+
+#x-auto-56 > div > div:nth-child(1) {
+    position: relative!important;
+    height: auto!important;
+    margin-bottom: 20px!important;
+    width: 100%!important;
+}
+
+#x-auto-56 > div > div:nth-child(2) {
+    position: relative!important;
+    top: 0!important;
+}
+
+#x-auto-56 > div > div:nth-child(1) tr:nth-child(2) {
+    display: none
+}
+
+#x-auto-56 form label {
+    display: none
+}
+
+#x-auto-56 form .x-form-element {
+    padding:0!important
+}
+
+#x-auto-56 form .x-form-field-wrap {
+    width: 100%!important;
+}
+
+#x-auto-56 form .x-form-text {
+    width: calc(100% - 32px)!important;
+    padding: 8px 16px;
+    font-family: Raleway;
+    background: rgba(238,238,238,0.3);
+    border: none;
+    color: rgba(238,238,238,1);
+    font-size: 16px;
+    font-weight: 100;
+}
+
+#x-auto-56 .x-grid3-col-displayName {
+    font-family: Raleway;
+    font-weight: 300;
+    rgba(238,238,238,0.5):;
+    color: rgba(238,238,238,0.7);
+    /* width: 100px; */
+    /* overflow: hidden; */
+    /* display: block; */
+    /* background: red; */
+}
+
+#x-auto-56 .x-grid3-col-displayName::after {
+    content: ":";
+}
+
+#x-auto-56 .x-grid3-col-value {
+    font-family: Raleway;
+    font-weight: 300;
+    rgba(238,238,238,0.5):;
+    color: rgba(238,238,238,1);
+
+}
+
+#x-auto-56 img[src="/engines/images/devices/generic-small.png"] {
+    background: url(/engines/quick-fix/images/devices-generic-large.png) no-repeat!important;
+    padding-left: 150px;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline;
+    margin-bottom: 20px;
+    /* background: url(/engines/quick-fix/images/tabs-pages.png) no-repeat!important; */
+}
+
+#x-auto-56 img[src="/modules/channels/images/devices/iphone-small.png"] {
+    background: url(/engines/quick-fix/images/devices-iphone-small.png) no-repeat!important;
+    padding-left: 150px;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline;
+    margin-bottom: 20px;
+
+}
+
+#x-auto-56 img[src="/modules/channels/images/devices/samsunggalaxys4-small.png"] {
+    background: url(/engines/quick-fix/images/devices-galaxy-s4-small.png) no-repeat!important;
+    padding-left: 150px;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline;
+    margin-bottom: 20px;
+
+}
+
+#x-auto-56 img[src="/modules/channels/images/devices/samsunggalaxytab7-small.png"] {
+    background: url(/engines/quick-fix/images/devices-galaxy-tab-3-small.png) no-repeat!important;
+    padding-left: 150px;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline;
+    margin-bottom: 20px;
+
+}
+
+#x-auto-56 img[src="/modules/channels/images/devices/android-small.png"] {
+    background: url(/engines/quick-fix/images/devices-android-small.png) no-repeat!important;
+    padding-left: 150px;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline;
+    margin-bottom: 20px;
+
+}
+
+#x-auto-56 img[src="/modules/channels/images/devices/bbstorm-small.png"] {
+    background: url(/engines/quick-fix/images/devices-blackberry-storm-small.png) no-repeat!important;
+    padding-left: 150px;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline;
+    margin-bottom: 20px;
+
+}
+
+#x-auto-56 img[src="/modules/channels/images/devices/samsunggalaxynote3-small.png"] {
+    background: url(/engines/quick-fix/images/devices-galaxy-note-3-small.png) no-repeat!important;
+    padding-left: 150px;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline;
+    margin-bottom: 20px;
+
+}
+
+#x-auto-56 img[src="/modules/channels/images/devices/kindlefire-small.png"] {
+    background: url(/engines/quick-fix/images/devices-kindle-fire-small.png) no-repeat!important;
+    padding-left: 150px;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline;
+    margin-bottom: 20px;
+
+}
+
+#x-auto-56 img[src="/modules/channels/images/devices/ipad-small.png"] {
+    background: url(/engines/quick-fix/images/devices-apple-ipad-small.png) no-repeat!important;
+    padding-left: 150px;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline;
+    margin-bottom: 20px;
+
+}
+
+#x-auto-56 img[src="/modules/channels/images/devices/samsunggalaxytab10.1-small.png"] {
+    background: url(/engines/quick-fix/images/devices-galaxy-tab-3-small.png) no-repeat!important;
+    padding-left: 150px;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline;
+    margin-bottom: 20px;
+
+}
+
+
+
+#x-auto-56 form .x-form-trigger-arrow {
+    background: url(/engines/quick-fix/images/combo-arrow.png) no-repeat!important;
+    padding-left: 17px;
+    width: 17px;
+    height: 11px;
+    overflow: hidden;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline;
+    right: 10px;
+    top: 11px;
+    border: none;
+}
+
+
+#JahiaGxtContentBrowseTab,
+#JahiaGxtFileImagesBrowseTab {
+    width: 656px!important;
+}
+
+#JahiaGxtCreateContentTab {
+    width: 360px!important;
+}
+
+#JahiaGxtCreateContentTab,
+#JahiaGxtContentBrowseTab,
+#JahiaGxtFileImagesBrowseTab {
+    height: 100%!important;
+}
+
+#JahiaGxtCreateContentTab > div:nth-child(1),
+#JahiaGxtContentBrowseTab > div:nth-child(1),
+#JahiaGxtFileImagesBrowseTab > div:nth-child(1) {
+    height: 100%!important;
+    width: 100%!important;
+}
+
+#JahiaGxtCreateContentTab > div:nth-child(1) > div:nth-child(2) {
+    margin-top: 20px;
+    height: 100%!important;
+    top: 0!important;
+    margin-top: 0;
+}
+
+#JahiaGxtCreateContentTab > div:nth-child(1) > div:nth-child(1) {
+    position: absolute!important;
+    bottom: 6px;
+    top: auto!important;
+    /* background: #5c6164; */
+    padding: 10px 10px 20px 0;
+    z-index: 999999999;
+    width: calc(100% - 70px)!important;
+}
+
+#JahiaGxtContentBrowseTab > div:nth-child(1) > div:nth-child(2),
+#JahiaGxtFileImagesBrowseTab > div:nth-child(1) > div:nth-child(2) {
+    position: absolute!important;
+    bottom: 6px;
+    top: -100px!important;
+    background: rgba(238,238,238,0.8);
+    padding: 10px 10px 20px 0;
+    z-index: 9;
+    width: calc(100% - 365px)!important;
+    display: inline-block;
+    position: relative!important;
+    /* background: pink; */
+    height: 100%!important;
+    vertical-align: top;
+}
+
+#JahiaGxtFileImagesBrowseTab > div:nth-child(1) > div:nth-child(2) > div {
+    height: 100%!important;
+    width: 100%!important;
+    background: transparent;
+}
+
+#JahiaGxtContentBrowseTab > div:nth-child(1) > div:nth-child(1),
+#JahiaGxtFileImagesBrowseTab > div:nth-child(1) > div:nth-child(1) {
+    margin-top: 20px;
+    height: 100%!important;
+    top: 0!important;
+    margin-top: 0;
+    display: inline-block;
+    position: relative!important;
+    width: 295px!important;
+    vertical-align: top;
+}
+
+#JahiaGxtContentBrowseTab > div:nth-child(1) > div:nth-child(1) > div:nth-child(1),
+#JahiaGxtFileImagesBrowseTab > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) {
+    height: 100%!important;
+}
+
+
+#JahiaGxtCreateContentTab input[type="text"]{
+    background: rgba(238,238,238,0.2);
+    border: none;
+    padding: 3px 10px 3px 27px;
+    width: calc(100% - 46px)!important;
+    color: rgba(238,238,238,0.4);
+}
+
+>>>>>>> origin/feature-INDIGO-41
 #JahiaGxtCreateContentTab > div:nth-child(1) > div:nth-child(1):hover input[type="text"],
 #JahiaGxtCreateContentTab > div:nth-child(1) > div:nth-child(1) input[type="text"]:focus{
     background: rgba(238,238,238,0.9);
@@ -3025,11 +3834,14 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     overflow: hidden;
     display: inline;
     box-sizing: border-box;
+<<<<<<< HEAD
 }
 
 #JahiaGxtContentBrowseTab .x-grid3-row-selected img[src="/modules/assets/icons/jnt_virtualsite.png"],
 #JahiaGxtFileImagesBrowseTab .x-grid3-row-selected img[src="/modules/assets/icons/jnt_virtualsite.png"] {
     background: url(/engines/quick-fix/images/icon-folder-small-selected.png) no-repeat center center;
+=======
+>>>>>>> origin/feature-INDIGO-41
 }
 
 
@@ -3124,6 +3936,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 	/* width: 140px; */
 }
 
+<<<<<<< HEAD
 #x-auto-57,
 #x-auto-57 > div:nth-child(1),
 #x-auto-57 > div:nth-child(1) > div:nth-child(2),
@@ -3139,6 +3952,32 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 	height: calc(100% - 104px)!important;
 	overflow: hidden!important;
 	overflow-x: hidden!important;
+=======
+#x-auto-56 > div:nth-child(1)::before {
+	content: "Device Preview";
+	position: relative;
+	top: 0!important;
+	font-size: 26px;
+	font-family: Raleway;
+	font-weight: 200;
+	display: block;
+	margin: 20px 0 50px;
+    color: rgba(238,238,238,1);
+	/* width: 140px; */
+}
+
+#x-auto-57 > div:nth-child(1)::before {
+	content: "Site Settings";
+	position: relative;
+	top: 0!important;
+	font-size: 26px;
+	font-family: Raleway;
+	font-weight: 200;
+	display: block;
+	margin: 20px 0 50px;
+    color: rgba(238,238,238,1);
+	/* width: 140px; */
+>>>>>>> origin/feature-INDIGO-41
 }
 
 #x-auto-57 img.x-tree3-node-icon {
@@ -3354,11 +4193,14 @@ body {
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.wcag']:nth-child(1),
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.tags']:nth-child(1),
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.tags']:nth-child(1),
+<<<<<<< HEAD
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.marketing']:nth-child(1),
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.most-visited-pages']:nth-child(1),
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.optimization-dashboard']:nth-child(1),
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.personalization-dashboard']:nth-child(1),
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.htmlFiltering']:nth-child(1),
+=======
+>>>>>>> origin/feature-INDIGO-41
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.page-models']:nth-child(1),
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.linkChecker']:nth-child(1) {
     margin-top: -46px!important;
@@ -3367,6 +4209,7 @@ body {
 }
 
 
+<<<<<<< HEAD
 body[data-indigo-gwt-fullscreen="on"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.manage']:nth-child(1),
 body[data-indigo-gwt-fullscreen="on"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.vanity']:nth-child(1),
 body[data-indigo-gwt-fullscreen="on"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe[src*='.wcag']:nth-child(1),
@@ -3387,6 +4230,8 @@ body[data-indigo-gwt-fullscreen="on"] .x-viewport-editmode > div:nth-child(1) > 
 	width: calc(100% + 119px)!important;
 }
 
+=======
+>>>>>>> origin/feature-INDIGO-41
 .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) .x-abs-layout-container {
     xbackground: red;
     xwidth: auto!important;
@@ -3651,4 +4496,15 @@ body .x-window .x-window-bl {
 }
 
 #JahiaGxtRefreshSidePanelButton {
+<<<<<<< HEAD
     background: url(/engines/quick-fix/images/icon-publication-launcher.png) no-
+=======
+    background: url(/engines/quick-fix/images/icon-publication-launcher.png) no-repeat center center!important;
+}
+
+/* END OF FILE *
+ILE *
+ILE *
+F FILE *
+IL
+>>>>>>> origin/feature-INDIGO-41

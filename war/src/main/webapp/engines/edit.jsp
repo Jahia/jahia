@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" 
+<%@ page contentType="text/html;charset=UTF-8" language="java"
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -23,33 +23,40 @@
     <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.Jcrop.min.js'/>"></script>
     <script type="text/javascript" src="<c:url value='/modules/assets/javascript/clippy/jquery.clippy.min.js'/>"></script>
 
-<!-- START:::QUICK FIX-->
-<!-- REM : Once Development has finished REMOVE unused Raleway Fonts ... -->
-<link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	<!-- START:::QUICK FIX-->
+	<!-- REM : Once Development has finished REMOVE unused Raleway Fonts ... -->
+	<link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
-<!-- CONTAINS CSS TO APPLY QUICK FIX -->
-<link rel="stylesheet" type="text/css" href="/engines/quick-fix/common.css"/>
+	<!-- CONTAINS CSS TO APPLY QUICK FIX -->
+	<link rel="stylesheet" type="text/css" href="/engines/quick-fix/common.css"/>
 
-<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
-<script>
-    $(document).ready(function(){
+	<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
+	<script>
+		$(document).ready(function(){
 
-        /* ON CLICK ::: MANAGERS BUTTON */
-        $("body").on("click", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", function(){
-            $("body").attr("data-INDIGO-GWT-FORMATTER", "managers-modal");
-        });
+			/* ON CLICK ::: MANAGERS BUTTON */
+			$("body").on("click", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", function(){
+				$("body").attr("data-INDIGO-GWT-FORMATTER", "managers-modal");
+			});
 
-        /* ON CLOSE ::: MANAGERS MENU */
-        $("body").on("click", ".x-menu", function(){
-            $("body").attr("data-INDIGO-GWT-FORMATTER", "");
-            $("body > div.x-menu").hide();
-        })
+			/* ON CLOSE ::: MANAGERS MENU */
+			$("body").on("click", ".x-menu", function(){
+				$("body").attr("data-INDIGO-GWT-FORMATTER", "");
+				$("body > div.x-menu").hide();
+			})
 
-    });
-</script>
-<!-- ENDQUICK FIX-->
+			//data-INDIGO-GWT-FULLSCREEN="on"]
 
+			$("body").on("click", "#JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2)", function(e){
+				$("body").attr("data-INDIGO-GWT-FULLSCREEN", function(index, attr){
+					return (attr == "on") ? "" : "on";
+				})
 
+			});
+
+		});
+	</script>
+	<!-- END:::QUICK FIX -->
 </head>
 
 <body>

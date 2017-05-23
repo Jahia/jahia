@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" 
+<%@ page contentType="text/html;charset=UTF-8" language="java"
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -31,6 +31,39 @@
         <script type="text/javascript" src="<c:url value='/modules/assets/javascript/clippy/jquery.clippy.min.js'/>"></script>
         <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.jahia.js'/>"></script>
     </c:if>
+
+	<!-- START:::QUICK FIX-->
+	<!-- REM : Once Development has finished REMOVE unused Raleway Fonts ... -->
+	<link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+	<!-- CONTAINS CSS TO APPLY QUICK FIX -->
+	<link rel="stylesheet" type="text/css" href="/engines/quick-fix/manager.css"/>
+
+	<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
+	<script>
+		$(document).ready(function(){
+
+			$("body").on("click", "#JahiaGxtManagerBottomTabs .x-panel-footer", function(){
+				$("body").attr("data-INDIGO-INLINE-EDIT-ENGINE", function(index, attr){
+					return (attr == "on") ? "" : "on";
+				});
+			})
+
+
+			$("body").on("click", "#JahiaGxtManagerLeftTree .x-tab-panel-header", function(){
+				$("body").attr("data-INDIGO-SEARCH", "on");
+				$(this).find("li:nth-child(2) em").trigger("click");
+			})
+
+			$("body").on("click", "#JahiaGxtManagerLeftTree .x-panel > div.x-accordion-hd", function(){
+				$("body").attr("data-INDIGO-SEARCH", "");
+			})
+
+
+
+		});
+	</script>
+	<!-- END:::QUICK FIX -->
 </head>
 <body onload="window.focus()">
 <internal:contentManager conf="${fn:escapeXml(cfg)}" selectedPaths="${fn:escapeXml(param.selectedPaths)}" rootPath="${fn:escapeXml(param.rootPath)}"/>

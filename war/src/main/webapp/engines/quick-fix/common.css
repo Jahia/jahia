@@ -3651,4 +3651,5 @@ body .x-window .x-window-bl {
 }
 
 #JahiaGxtRefreshSidePanelButton {
-    background: url(/engines/quick-fix/images/icon-publication-launcher.png) no-
+    background: url(/engines/quick-fix/images/icon-publication-launcher.png) no-repeat center center;
+}

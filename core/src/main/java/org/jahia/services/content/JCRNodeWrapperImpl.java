@@ -1116,8 +1116,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
 
         } finally {
-            applicablePropertyDefinition.clear();
-            hasPropertyCache.clear();
+            flushLocalCaches();
         }
 
         // Remove i18n properties defined by the mixin, from translation nodes, if any.
@@ -3854,6 +3853,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public void flushLocalCaches() {
+        applicablePropertyDefinition.clear();
         hasPropertyCache.clear();
     }
 

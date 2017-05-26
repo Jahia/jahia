@@ -43,6 +43,9 @@
  */
 package org.jahia.taglibs.internal.gwt;
 
+import org.jahia.api.Constants;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
@@ -102,6 +105,16 @@ public class GWTInitTag extends AbstractJahiaTag {
                     StringUtils.isEmpty(locale) ? null : LanguageCodeConverters.languageCodeToLocale(locale),
                     StringUtils.isEmpty(uilocale) ? null : LanguageCodeConverters.languageCodeToLocale(uilocale))) ;
 
+            Boolean useNewTheme = Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("useNewTheme"));
+            JahiaUser jahiaUser = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
+
+            if (request.getParameter("useNewTheme") != null) {
+                useNewTheme =  Boolean.valueOf(request.getParameter("useNewTheme"));
+            } else if (jahiaUser != null && jahiaUser.getProperty("useNewTheme") != null) {
+                useNewTheme = Boolean.valueOf(jahiaUser.getProperty("useNewTheme"));
+            }
+
+            pageContext.setAttribute("useNewTheme", useNewTheme);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }

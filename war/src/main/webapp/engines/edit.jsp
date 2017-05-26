@@ -27,6 +27,12 @@
 	<!-- REM : Once Development has finished REMOVE unused Raleway Fonts ... -->
 	<link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i');
+    </style>
+
+
 	<!-- CONTAINS CSS TO APPLY QUICK FIX -->
 	<link rel="stylesheet" type="text/css" href="/engines/quick-fix/common.css"/>
 
@@ -35,7 +41,7 @@
 		$(document).ready(function(){
 
 			/* ON CLICK ::: MANAGERS BUTTON */
-			$("body").on("click", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", function(){
+			$("body").on("click", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7), .x-viewport-contributemode .x-toolbar-first .x-toolbar-cell:nth-child(11)", function(){
 				$("body").attr("data-INDIGO-GWT-FORMATTER", "managers-modal");
 			});
 

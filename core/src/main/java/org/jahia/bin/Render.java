@@ -880,9 +880,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         }
                     }
                 }
-            } else if (method.equals(METHOD_HEAD)) {
-                doHead(req, resp);
-
             } else if (method.equals(METHOD_POST)) {
                 doPost(req, resp, renderContext, urlResolver);
 

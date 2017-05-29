@@ -67,6 +67,7 @@ import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -525,9 +526,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         if (!StringUtils.isEmpty(nodeTypes)) {
             nodeTypes = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(nodeTypes))),' ');
             builder.append(" nodetypes=\"" + nodeTypes + "\"");
+            isReferencesAllowed(builder);
         } else if (!StringUtils.isEmpty(constraints)) {
             constraints = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(constraints))),' ');
             builder.append(" nodetypes=\"" + constraints + "\"");
+            isReferencesAllowed(builder);
         }
 
         if (listLimit > -1) {
@@ -548,6 +551,23 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         builder.append(">");
 
         printAndClean();
+    }
+
+    private void isReferencesAllowed(final StringBuilder builder) throws RepositoryException {
+        if (node == null) {
+            return;
+        }
+
+        boolean referencesAllowed;
+
+        try {
+            node.getApplicableChildNodeDefinition("*", "jnt:contentReference");
+            referencesAllowed = true;
+        } catch (ConstraintViolationException e) {
+            referencesAllowed = false;
+        }
+
+        builder.append(" allowReferences=\"").append(referencesAllowed).append("\"");
     }
 
     protected void printModuleEnd() throws IOException {

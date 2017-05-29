@@ -79,6 +79,7 @@ public class ChannelsTabItem extends SidePanelTabItem {
     public TabItem create(GWTSidePanelTab sidePanelTab) {
         super.create(sidePanelTab);
         tab.setScrollMode(Style.Scroll.AUTO);
+        tab.setId("JahiaGxtChannelsTab");
 
         VBoxLayout verticalEastLayout = new VBoxLayout();
         verticalEastLayout.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);

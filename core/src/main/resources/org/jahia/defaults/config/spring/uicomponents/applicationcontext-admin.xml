@@ -32,7 +32,7 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Admin.Menu.Mode">
                             <property name="titleKey" value="label.mode"/>
                             <property name="items">
                                 <list>
@@ -43,7 +43,7 @@
                         </bean>
                         <ref bean="editmode.managers.menu"/>
                         <ref bean="Toolbar.Item.Separator"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Admin.Menu.User">
                             <property name="icon" value="start"/>
                             <property name="titleKey" value="label.user.loggedAs"/>
                             <property name="items">

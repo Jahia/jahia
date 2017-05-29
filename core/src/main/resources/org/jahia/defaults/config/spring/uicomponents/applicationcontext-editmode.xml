@@ -37,7 +37,7 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Toolbar.Menu.Mode">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Mode">
 
                             <property name="titleKey" value="label.mode"/>
                             <property name="items">
@@ -50,7 +50,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Toolbar.Menu.View">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.View">
                             <property name="titleKey" value="label.view"/>
                             <!-- <property name="icon" value="preview"/> -->
                             <property name="items">
@@ -66,7 +66,7 @@
                             </property>
                         </bean>
                         <ref bean="Toolbar.Item.Separator"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Toolbar.Menu.Publication">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Publication">
                             <property name="titleKey" value="label.publication"/>
                             <!-- <property name="icon" value="publicationAction"/> -->
                             <property name="items">
@@ -84,7 +84,7 @@
                             </property>
                         </bean>
 
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Toolbar.Menu.Workflow">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Workflow">
 
                             <property name="titleKey" value="label.workflow"/>
                             <property name="items">
@@ -108,7 +108,7 @@
                             <property name="titleKey" value="label.numberoftasksforuser"/>
                         </bean>
                         <ref bean="editmode.managers.menu"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Toolbar.Menu.Cache">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Cache">
                             <property name="titleKey" value="label.cache"/>
                             <!-- <property name="icon" value="publicationAction"/>  -->
                             <property name="items">
@@ -127,7 +127,7 @@
 
                         <ref bean="Toolbar.Item.Separator"/>
                         
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Toolbar.Menu.User">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.User">
                             <property name="icon" value="start"/>
                             <property name="titleKey" value="label.user.loggedAs"/>
                             <property name="items">
@@ -166,7 +166,7 @@
                         <ref bean="Toolbar.Item.NodePath"/>
                         <ref bean="Toolbar.Item.PublicationStatusWithText"/>
                         <ref bean="Toolbar.Item.Separator"/>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Toolbar.Menu.Edit">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Edit">
                             <property name="titleKey" value="label.edit"/>
                             <property name="icon" value="editAction"/>
                             <property name="items">

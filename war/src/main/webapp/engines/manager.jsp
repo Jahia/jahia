@@ -38,8 +38,7 @@
 
     <c:if test="${useNewTheme}">
 	<!-- CONTAINS CSS TO APPLY QUICK FIX -->
-	<link rel="stylesheet" type="text/css" href="<c:url value='/engines/quick-fix/manager.css'/>"/>
-
+    <link rel="stylesheet" type="text/css" href="<c:url value='/engines/quick-fix/manager_${newThemeLocale}.css'/>"/>
 	<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
 	<script>
 		$(document).ready(function(){

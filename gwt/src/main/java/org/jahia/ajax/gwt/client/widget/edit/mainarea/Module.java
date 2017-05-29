@@ -72,6 +72,7 @@ public abstract class Module extends LayoutContainer {
     protected Module parentModule;
     protected MainModule mainModule;
     protected String nodeTypes;
+    protected boolean allowReferences = true;
     protected int listLimit = -1;
     protected String referenceTypes;
     protected boolean isDraggable = false;
@@ -98,6 +99,9 @@ public abstract class Module extends LayoutContainer {
         // attribute doesn't exist. See http://code.google.com/p/google-web-toolkit/issues/detail?id=1770
         if (divElement.hasAttribute("nodetypes")) {
             nodeTypes = divElement.getAttribute("nodetypes");
+        }
+        if (divElement.hasAttribute("allowReferences")) {
+            allowReferences = Boolean.valueOf(divElement.getAttribute("allowReferences"));
         }
         listLimit = !"".equals(DOM.getElementAttribute(divElement, "listlimit")) ? Integer.parseInt(DOM.getElementAttribute(divElement, "listlimit")): -1;
         if (divElement.hasAttribute("referenceTypes")) {
@@ -127,6 +131,9 @@ public abstract class Module extends LayoutContainer {
         // attribute doesn't exist. See http://code.google.com/p/google-web-toolkit/issues/detail?id=1770
         if (divElement.hasAttribute("nodetypes")) {
             nodeTypes = divElement.getAttribute("nodetypes");
+        }
+        if (divElement.hasAttribute("allowReferences")) {
+            allowReferences = Boolean.valueOf(divElement.getAttribute("allowReferences"));
         }
         listLimit = !"".equals(DOM.getElementAttribute(divElement, "listlimit")) ? Integer.parseInt(DOM.getElementAttribute(divElement, "listlimit")): -1;
         if (divElement.hasAttribute("referenceTypes")) {
@@ -258,6 +265,10 @@ public abstract class Module extends LayoutContainer {
 
     public String getNodeTypes() {
         return nodeTypes;
+    }
+
+    public boolean isAllowReferences() {
+        return allowReferences;
     }
 
     public int getListLimit() {

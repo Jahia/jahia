@@ -114,6 +114,7 @@ public class ActionToolbar extends ToolBar implements ToolbarGroup {
                 menuToolItem.setIcon(ToolbarIconProvider.getInstance().getIcon(gwtToolbarMenu.getIcon()));
             }
             menuToolItem.setMenu(menu);
+            menuToolItem.addStyleName(gwtToolbarMenu.getClassName());
             add(menuToolItem);
         } else {
             final ActionItem actionItem = gwtToolbarItem.getActionItem();

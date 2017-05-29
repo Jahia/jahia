@@ -462,7 +462,7 @@ public class UIConfigHelper {
 
         // creat items-group
         GWTJahiaToolbarMenu gwtToolbarMenu = new GWTJahiaToolbarMenu();
-        gwtToolbarMenu.setId(toolbarName + "_" + index);
+        gwtToolbarMenu.setId(menu.getId());
 
         gwtToolbarMenu.setIcon(menu.getIcon());
         if (menu.getTitleKey() != null) {

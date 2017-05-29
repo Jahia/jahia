@@ -154,6 +154,7 @@ public class ToolbarHeader extends Header {
             }
 
             Button menuToolItem = new Button(gwtToolbarMenu.getItemsGroupTitle());
+            menuToolItem.addStyleName(gwtToolbarMenu.getClassName());
             menuToolItem.setBorders(false);
             String minIconStyle = gwtToolbarMenu.getIcon();
             if (minIconStyle != null) {

@@ -151,7 +151,7 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
 
     @Override
     public Component createNewToolItem() {
-        Button b = new Button();
+        Button b = (Button) super.createNewToolItem();
         b.setEnabled(false);
         return b;
     }

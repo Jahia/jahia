@@ -515,8 +515,14 @@ public class JahiaSitesService extends JahiaService {
 
         // compute list of modules to uninstall
         List<String> modulesToUninstall = new LinkedList<String>(installedModules);
-        // first remove all modules that are in common with the new modules list
-        modulesToUninstall.removeAll(newModuleIds);
+
+        // first remove all modules that are in common with the new modules list and still exist
+        for (String newModuleId : newModuleIds) {
+            if (templateService.getAnyDeployedTemplatePackage(newModuleId) != null) {
+                modulesToUninstall.remove(newModuleId);
+            }
+        }
+
         // remove default and template set so that they don't get un-installed
         modulesToUninstall.remove("default");
         modulesToUninstall.remove(((JCRSiteNode) site).getTemplatePackage().getId());

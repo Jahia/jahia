@@ -57,6 +57,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Simple Tag that should be called in the header of the HTML page. It create a javascript object that
@@ -113,6 +114,14 @@ public class GWTInitTag extends AbstractJahiaTag {
             } else if (jahiaUser != null && jahiaUser.getProperty("useNewTheme") != null) {
                 useNewTheme = Boolean.valueOf(jahiaUser.getProperty("useNewTheme"));
             }
+
+            Locale uiLocale = getUILocale();
+            if (LanguageCodeConverters.getAvailableBundleLocales().contains(uiLocale)) {
+                pageContext.setAttribute("newThemeLocale", uiLocale);
+            } else {
+                pageContext.setAttribute("newThemeLocale", Locale.forLanguageTag("en"));
+            }
+
 
             pageContext.setAttribute("useNewTheme", useNewTheme);
         } catch (IOException e) {

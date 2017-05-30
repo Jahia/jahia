@@ -36,9 +36,15 @@
 	<!-- REM : Once Development has finished REMOVE unused Raleway Fonts ... -->
 	<link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
+<<<<<<< HEAD
     <c:if test="${useNewTheme}">
 	<!-- CONTAINS CSS TO APPLY QUICK FIX -->
     <link rel="stylesheet" type="text/css" href="<c:url value='/engines/quick-fix/manager_${newThemeLocale}.css'/>"/>
+=======
+	<!-- CONTAINS CSS TO APPLY QUICK FIX -->
+	<link rel="stylesheet" type="text/css" href="/engines/quick-fix/manager.css"/>
+
+>>>>>>> INDIGO-41: No Ticket
 	<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
 	<script>
 		$(document).ready(function(){
@@ -64,7 +70,10 @@
 		});
 	</script>
 	<!-- END:::QUICK FIX -->
+<<<<<<< HEAD
     </c:if>
+=======
+>>>>>>> INDIGO-41: No Ticket
 </head>
 <body onload="window.focus()">
 <internal:contentManager conf="${fn:escapeXml(cfg)}" selectedPaths="${fn:escapeXml(param.selectedPaths)}" rootPath="${fn:escapeXml(param.rootPath)}"/>

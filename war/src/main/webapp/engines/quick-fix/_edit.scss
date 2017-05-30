@@ -1,5 +1,7 @@
+@import "common";
+
 body {
-  background: #5c6164;
+  background: $color-background;
   padding: 0px;
   /* background: rgba(238,238,238,1); */
   /* background: rgba(49,49,49,1); */
@@ -209,7 +211,7 @@ body {
         background: url(/engines/quick-fix/images/combo-arrow.png) no-repeat right center;
         padding-right: 5px;
         text-align: left;*/
-        content: "Contribute Mode";
+        content: $text_contribute_mode;
         /*font-size: 24px;
         text-transform: none;
         font-weight: 100;
@@ -261,13 +263,13 @@ body {
     /* position: fixed; */
     /* left: 294px; */
     > table:nth-child(1)::after {
-      content: "Site";
+      content: $text_site;
     }
   }
   &:nth-child(3) {
     background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
-      content: "Upload";
+      content: $text_upload;
     }
   }
   &:nth-child(4) {
@@ -275,7 +277,7 @@ body {
     /* position: fixed; */
     right: 290px;
     > table:nth-child(1)::after {
-      content: "Edit";
+      content: $text_edit;
     }
   }
   &:nth-child(5) {
@@ -283,7 +285,7 @@ body {
     /* position: fixed; */
     /* left: 337px; */
     > table:nth-child(1)::after {
-      content: "Preview";
+      content: $text_preview;
     }
   }
   &:nth-child(6) {
@@ -321,19 +323,19 @@ body {
   &:nth-child(8) {
     background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
-      content: "Publish";
+      content: $text_publish;
     }
   }
   &:nth-child(9) {
     background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
-      content: "Workflow";
+      content: $text_workflow;
     }
   }
   &:nth-child(10) {
     background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
-      content: "Tasks";
+      content: $text_trash;
     }
   }
   &:nth-child(11) {
@@ -353,13 +355,13 @@ body {
   &:nth-child(12) {
     background: url(/engines/quick-fix/images/tabs-trash.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
-      content: "Trash";
+      content: $text_trash;
     }
   }
   &:nth-child(13) {
     background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
-      content: "Clipboard";
+      content: $text_clipboard;
     }
   }
   &:nth-child(14) {
@@ -493,7 +495,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode .x-toolbar-first .x-t
 }
 
 .x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(1) > table:nth-child(1)::after {
-  content: "Edit Mode";
+  content: $text_edit_mode;
   font-size: 20px;
   text-transform: none;
   font-weight: 200;
@@ -544,17 +546,17 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode .x-toolbar-first .x-t
     background: url(/engines/quick-fix/images/tabs-publish-white@X2.png) no-repeat top 3px center;
     background-size: 23px 23px;
     &::after {
-      content: "Publish";
+      content: $text_publish;
     }
   }
   .toolbar-menu-workflow {
     background: url(/engines/quick-fix/images/tabs-workflow.png) no-repeat top 3px center;
     &::after {
-      content: "Workflow";
+      content: $text_workflow;
     }
   }
   &:nth-child(6) > table:nth-child(1)::after {
-    content: "Tasks";
+    content: $text_tasks;
   }
   &:nth-child(7) {
     > table:nth-child(1)::after {
@@ -574,25 +576,25 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode .x-toolbar-first .x-t
     background: url(/engines/quick-fix/images/tabs-placeholder-white@X2.png) no-repeat top center;
     background-size: 23px;
     > table:nth-child(1)::after {
-      content: "Cache";
+      content: $text_cache;
     }
   }
   &:nth-child(9) {
     background: url(/engines/quick-fix/images/tabs-trash-white@X2.png) no-repeat top center;
     background-size: 23px 23px;
     > table:nth-child(1)::after {
-      content: "Trash";
+      content: $text_trash;
     }
   }
   &:nth-child(10) {
     background: url(/engines/quick-fix/images/tabs-placeholder-white@X2.png) no-repeat top center;
     background-size: 23px 23px;
     > table:nth-child(1)::after {
-      content: "Jobs";
+      content: $text_jobs;
     }
   }
   &:nth-child(11) > table:nth-child(1)::after {
-    content: "Clipboard";
+    content: $text_clipboard;
   }
   &:nth-child(13) {
     position: fixed;
@@ -1168,7 +1170,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs {
 }
 
 #JahiaGxtCreateContentTab .x-grid-empty::before {
-  content: "Sorry we couldnt find what you were looking for :(";
+  content: $text_not_found;
   font-size: 15px;
   color: rgba(238, 238, 238, 1);
   font-weight: 100;
@@ -1181,7 +1183,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs {
   /* display: block; */
   /* height: 50px; */
   &::before {
-    content: "Empty :(";
+    content: $text_empty;
     font-size: 21px;
     color: rgba(49, 49, 49, 1);
     font-weight: 100;
@@ -1343,7 +1345,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs .x-tab-strip-active
     background-size: 23px 23px;
   }
   &::after {
-    content: "Pages";
+    content: $text_pages;
     color: rgba(238, 238, 238, 0.6);
     text-align: center;
     width: 100%;
@@ -1391,7 +1393,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs #JahiaGxtSidePanelT
     background-size: 23px 23px;
   }
   &::after {
-    content: "Create";
+    content: $text_create;
     color: rgba(238, 238, 238, 0.6);
     text-align: center;
     width: 100%;
@@ -1439,7 +1441,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs #JahiaGxtSidePanelT
     background-size: 23px 23px;
   }
   &::after {
-    content: "Content";
+    content: $text_content;
     color: rgba(238, 238, 238, 0.6);
     text-align: center;
     width: 100%;
@@ -1535,7 +1537,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs #JahiaGxtSidePanelT
     background-size: 23px 23px;
   }
   &::after {
-    content: "Search";
+    content: $text_search;
     color: rgba(238, 238, 238, 0.6);
     text-align: center;
     width: 100%;
@@ -1583,7 +1585,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs #JahiaGxtSidePanelT
     background-size: 23px 23px;
   }
   &::after {
-    content: "Taxonomy";
+    content: $text_taxonomy;
     color: rgba(238, 238, 238, 0.6);
     text-align: center;
     width: 100%;
@@ -1689,7 +1691,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs ul.x-tab-strip li:n
     background-size: 23px 23px;
   }
   ul.x-tab-strip li:nth-child(8)::after {
-    content: "Settings";
+    content: $text_settings;
     color: rgba(238, 238, 238, 0.6);
     text-align: center;
     width: 100%;
@@ -1714,7 +1716,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs ul.x-tab-strip li:n
     color: #00a0e3;
   }
   ul.x-tab-strip li:nth-child(7)::after {
-    content: "Devices";
+    content: $text_devices;
     color: rgba(238, 238, 238, 0.6);
     text-align: center;
     width: 100%;
@@ -1987,7 +1989,7 @@ span.x-menu-item, div.x-combo-list-item {
 body[data-INDIGO-GWT-FORMATTER="managers-modal"] {
   .x-menu-list {
     &::before {
-      content: "Digital Experience Manager";
+      content: $text_dxm;
       display: block;
       text-align: center;
       font-size: 46px;
@@ -2500,7 +2502,7 @@ span.x-menu-item img {
       &::after {
         /* position: relative; */
         color: red;
-        content: "Work in progress";
+        content: $text_work_in_progress;
         display: block !important;
         left: 87px;
         position: relative;
@@ -2783,7 +2785,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
                 /* padding-top: 49px; */
                 width: 100% !important;
                 &::before {
-                  content: "Results";
+                  content: $text_results;
                   font-size: 18px;
                   font-family: Raleway;
                   font-weight: 200;
@@ -2795,7 +2797,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
               }
               .x-grid3-body > div:nth-child(1) {
                 &::before {
-                  content: "Results";
+                  content: $text_results;
                   font-size: 18px;
                   font-family: Raleway;
                   font-weight: 200;
@@ -2804,7 +2806,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
                   color: rgba(49, 49, 49, 0.7);
                 }
                 &.x-grid-empty::before {
-                  content: "No Results";
+                  content: $text_no_results;
                   font-family: Raleway;
                   color: rgba(238, 238, 238, 0.8);
                   font-size: 14px;
@@ -3035,7 +3037,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 #XXXJahiaGxtSearchTab .x-grid-empty {
   padding: 0;
   &::before {
-    content: "No Results ...";
+    content: $text_no_results;
     color: rgba(238, 238, 238, 1);
     display: block;
     z-index: 9999;
@@ -3046,7 +3048,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 }
 
 #JahiaGxtCategoryBrowseTab > div:nth-child(1)::before {
-  content: "Taxonomy";
+  content: $text_taxonomy;
   position: relative;
   top: 0 !important;
   font-size: 26px;
@@ -3411,7 +3413,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     background: url(/engines/quick-fix/images/icon-folder-small-selected.png) no-repeat center center;
   }
   > div:nth-child(1)::before {
-    content: "Files";
+    content: $text_files;
     position: relative;
     top: 0 !important;
     font-size: 26px;
@@ -3425,7 +3427,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 }
 
 #JahiaGxtSearchTab > div:nth-child(1)::before {
-  content: "Search";
+  content: $text_search;
   position: relative;
   top: 0 !important;
   font-size: 26px;
@@ -3438,7 +3440,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 }
 
 #JahiaGxtPagesTab > div:nth-child(1)::before {
-  content: "Pages";
+  content: $text_pages;
   position: relative;
   top: 0 !important;
   font-size: 26px;
@@ -3451,7 +3453,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 }
 
 #JahiaGxtCreateContentTab > div:nth-child(1) .x-grid3-body::before {
-  content: "Create Content";
+  content: $text_create_content;
   position: relative;
   top: 0 !important;
   font-size: 26px;
@@ -3464,7 +3466,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 }
 
 #JahiaGxtContentBrowseTab > div:nth-child(1)::before {
-  content: "My Content";
+  content: $text_my_content;
   position: relative;
   top: 0 !important;
   font-size: 26px;
@@ -3474,7 +3476,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
   margin: 20px 0 50px;
   color: rgba(238, 238, 238, 1);
   /* width: 140px; */
-  content: "My Content";
+  content: $text_my_content;
   position: relative;
   top: 0 !important;
   font-size: 26px;
@@ -3487,7 +3489,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 }
 
 #x-auto-56 > div:nth-child(1)::before {
-  content: "Device Preview";
+  content: $text_device_preview;
   position: relative;
   top: 0 !important;
   font-size: 26px;
@@ -3502,7 +3504,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 #x-auto-57 {
   > div:nth-child(1) {
     &::before {
-      content: "Site Settings";
+      content: $text_site_settings;
       position: relative;
       top: 0 !important;
       font-size: 26px;
@@ -3974,7 +3976,7 @@ body {
   }
   &::before {
     xopacity: 1 !important;
-    content: "Loading";
+    content: $text-loading;
     display: block;
     position: absolute;
     left: 0;

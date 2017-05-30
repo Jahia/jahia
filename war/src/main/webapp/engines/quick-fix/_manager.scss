@@ -1,3 +1,5 @@
+@import "common";
+
 /* COMMON */
 
 body {
@@ -6,7 +8,7 @@ body {
 }
 
 .x-modal {
-  background: #5c6164;
+  background: $color-background;
   opacity: 0.98;
   z-index: 99999 !important;
 }
@@ -292,7 +294,7 @@ html, body {
       /* background: red; */
     }
     &::before {
-      content: "File Manager";
+      content: $text_file_manager;
       font-size: 26px;
       font-family: Raleway;
       font-weight: 100;
@@ -587,7 +589,7 @@ body[data-INDIGO-SEARCH="on"] #JahiaGxtManagerMain > div:nth-child(1) > div:nth-
   /* position: absolute; */
   /* top: 50px; */
   &::before {
-    content: "Search";
+    content: $text_search;
     display: block;
     background: red;
     width: 60px;

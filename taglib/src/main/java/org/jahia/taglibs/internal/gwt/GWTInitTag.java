@@ -44,6 +44,9 @@
 package org.jahia.taglibs.internal.gwt;
 
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
@@ -52,6 +55,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
@@ -111,6 +115,17 @@ public class GWTInitTag extends AbstractJahiaTag {
 
             if (request.getParameter("useNewTheme") != null) {
                 useNewTheme =  Boolean.valueOf(request.getParameter("useNewTheme"));
+                Boolean userValue = Boolean.valueOf(jahiaUser.getProperty("useNewTheme"));
+                if (userValue != useNewTheme || jahiaUser.getProperty("useNewTheme") == null) {
+                    try {
+                        JCRSessionWrapper userSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+                        JCRUserNode user = (JCRUserNode) userSession.getNode(jahiaUser.getLocalPath());
+                        user.setProperty("useNewTheme", useNewTheme);
+                        userSession.save();
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
             } else if (jahiaUser != null && jahiaUser.getProperty("useNewTheme") != null) {
                 useNewTheme = Boolean.valueOf(jahiaUser.getProperty("useNewTheme"));
             }

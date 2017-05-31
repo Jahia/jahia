@@ -241,7 +241,10 @@ public class PublicationHelper {
                 }
                 return new ArrayList<GWTJahiaPublicationInfo>(res.values());
             } else {
-                List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, null, false, true, allSubTree, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
+                // when asking for publication infos, we use live workspace as source and destination, because in case of an unpublication there is nothing copied from default to live, or from live to default,
+                // in that case we are just removing live node, so the only workspace concerned is LIVE.
+                // by doing that we are able to unpublish a node that have been moved in Default workspace (because it have the same UUID between default and live)
+                List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, null, false, true, allSubTree, Constants.LIVE_WORKSPACE, Constants.LIVE_WORKSPACE);
                 LinkedHashMap<String, GWTJahiaPublicationInfo> res = new LinkedHashMap<String, GWTJahiaPublicationInfo>();
                 for (String language : languages) {
                     final List<GWTJahiaPublicationInfo> infoList = convert(infos, currentUserSession, language, "unpublish");

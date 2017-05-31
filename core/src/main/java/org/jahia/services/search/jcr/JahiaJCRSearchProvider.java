@@ -44,6 +44,7 @@
 package org.jahia.services.search.jcr;
 
 import com.google.common.collect.Sets;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -78,6 +79,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.query.*;
+
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -1162,10 +1164,12 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     /* (non-Javadoc)
         * @see org.jahia.services.search.SearchProvider#suggest(java.lang.String, java.lang.String, java.util.Locale)
         */
+    @Override
     public Suggestion suggest(String originalQuery, RenderContext context, int maxTerms) {
         return suggest(originalQuery, new String[] { context.getSite().getSiteKey() }, context, maxTerms);
     }
 
+    @Override
     public Suggestion suggest(SearchCriteria originalQuery, RenderContext context, int maxTermsToSuggest) {
         return suggest(originalQuery.getTerms().get(0).getTerm(), originalQuery.getSites().getValues(), context, maxTermsToSuggest);
     }
@@ -1262,6 +1266,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         this.typesToHideFromSearchResults = typesToHideFromSearchResults;
     }
 
+    @Override
     public String getName() {
         return name;
     }

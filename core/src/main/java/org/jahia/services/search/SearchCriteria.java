@@ -80,6 +80,7 @@ public class SearchCriteria implements Serializable {
 
         private static final long serialVersionUID = 2324041504396269857L;
 
+        @Override
         public void setValue(String value) {
             if (StringUtils.isNotEmpty(value)
                     && value.indexOf(MULTIPLE_VALUE_SEPARATOR) != -1) {
@@ -314,6 +315,7 @@ public class SearchCriteria implements Serializable {
             return constrained;
         }
 
+        @Override
         public boolean isEmpty() {
             boolean empty = false;
             if (Type.CATEGORY == type) {
@@ -498,6 +500,7 @@ public class SearchCriteria implements Serializable {
     protected static class NodePropertyMapFactory implements Factory, Serializable {
         private static final long serialVersionUID = 5271166314214230283L;
 
+        @Override
         public Object create() {
             return LazyMap.decorate(
                     new HashMap<String, NodeProperty>(),

@@ -32,29 +32,107 @@
     <!-- CONTAINS CSS TO APPLY QUICK FIX -->
     <link rel="stylesheet" type="text/css" href="<c:url value='/engines/quick-fix/edit_${newThemeLocale}.css'/>"/>
 
-	<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
 	<script>
+
+		var indigoQF = {
+			JahiaGxtSidePanelTabs: {
+				mouseOutTimer: null,
+				justBeenClosed: false
+			}
+		};
+
 		$(document).ready(function(){
 
-			/* ON CLICK ::: MANAGERS BUTTON */
-			$("body").on("click", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7), .x-viewport-contributemode .x-toolbar-first .x-toolbar-cell:nth-child(11)", function(){
+			$("body").on("click", ".editmode-managers-menu", function(){
+				// User has clicked on the Managers Menu Item. Open a specialy formatted menu by specifying body attribute data-INDIGO-GWT-FORMATTER as "managers-modal"
 				$("body").attr("data-INDIGO-GWT-FORMATTER", "managers-modal");
 			});
 
-			/* ON CLOSE ::: MANAGERS MENU */
-			$("body").on("click", ".x-menu", function(){
+			$("body").on("click", ".menu-editmode-managers-menu", function(){
+				// Close Manager Menu
 				$("body").attr("data-INDIGO-GWT-FORMATTER", "");
-				$("body > div.x-menu").hide();
+				$(".menu-editmode-managers-menu").hide();
 			})
 
-			//data-INDIGO-GWT-FULLSCREEN="on"]
-
 			$("body").on("click", "#JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2)", function(e){
+				// Pin-Toggle Side Panel
 				$("body").attr("data-INDIGO-GWT-FULLSCREEN", function(index, attr){
 					return (attr == "on") ? "" : "on";
 				})
 
 			});
+
+			$("body").on("mouseenter", "#JahiaGxtSidePanelTabs", function(){
+				// Mouseover Side Panel tabs, so open it.
+
+				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
+			});
+
+			$("body").on("mouseleave", "#JahiaGxtSidePanelTabs", function(e){
+				// Mouse leaves the Side Panel
+
+				if($("body > div.x-menu").length > 0){
+					// Use hasnt really left the Side Panel, they have just opened a context menu, so do not close the side panel.
+
+				} else {
+					// There is no context menu, so assume that the Side Panel has really been mouseout-ed - close it.
+
+					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
+
+					// Set flag and timer to remove after 100ms.
+					indigoQF.JahiaGxtSidePanelTabs.justBeenClosed = true;
+					indigoQF.JahiaGxtSidePanelTabs.mouseOutTimer = setTimeout(function(){
+						// Mouseou-ed more than 100ms ago, so forget about it.
+						indigoQF.JahiaGxtSidePanelTabs.justBeenClosed = false;
+					}, 100);
+				}
+
+			});
+
+			$("body").on("mouseenter", ".x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) table > tbody > tr > td > div > table > tbody > tr > td:nth-child(1) input[type='text']", function(){
+				// Mouseover Site Selector
+				// Problem: The Site Selector is displayed as if it is part of the side panel. Only Problem is that it is not a child of Side Panel, so
+				//			When the user hovers it the Side Panel is effectivly mouseout-ed.
+				// Fix:		Reopen the side panel as soon as the Site Selector is hovered.
+
+				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
+			})
+
+			$("body").on("mouseover", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab, #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", function(){
+				// Trigger click on Side Panel Tabs on hover
+				$(this).trigger("click");
+			});
+
+			$("body").on("mouseover", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", function(){
+				// Mouseover Hamburger
+				// Problem: When the Side Panel is open and you hover the hamburger the Side Panel closes.
+				// Fix: Once the user leaves the Side Panel there is a count down started (100ms). If the user hovers the Hamburger within those 100ms
+				//		we reopen it, almost as if it never closed.
+
+				if(indigoQF.JahiaGxtSidePanelTabs.justBeenClosed){
+					// Side Panel was open less than 100ms ago, so repopen it.
+					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
+
+				}
+			})
+
+			$("body").on("click", "#JahiaGxtSidePanelTabs .x-tree3-node-text", function(e){
+				// Open Context Menu when clicking "More" button.
+
+				var eV = new jQuery.Event("contextmenu");
+					eV.clientX = e.pageX;
+					eV.clientY = e.pageY;
+					$(this).trigger(eV);
+			})
+
+			$("body").on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", function(e){
+				// Open Context Menu when clicking "More" button.
+
+				var eV = new jQuery.Event("contextmenu");
+					eV.clientX = e.pageX;
+					eV.clientY = e.pageY;
+					$(this).trigger(eV);
+			})
 
 		});
 	</script>

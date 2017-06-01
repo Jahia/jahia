@@ -102,6 +102,7 @@ public class ActionToolbar extends ToolBar implements ToolbarGroup {
         if (gwtToolbarItem instanceof GWTJahiaToolbarMenu) {
             GWTJahiaToolbarMenu gwtToolbarMenu = (GWTJahiaToolbarMenu) gwtToolbarItem;
             ActionToolbarMenu menu = new ActionToolbarMenu(linker);
+            menu.addStyleName("menu-"+gwtToolbarMenu.getClassName());
             menu.setActionItems(actionItems);
 
             for (GWTJahiaToolbarItem subItem : gwtToolbarMenu.getGwtToolbarItems()) {
@@ -114,6 +115,7 @@ public class ActionToolbar extends ToolBar implements ToolbarGroup {
                 menuToolItem.setIcon(ToolbarIconProvider.getInstance().getIcon(gwtToolbarMenu.getIcon()));
             }
             menuToolItem.setMenu(menu);
+            menuToolItem.addStyleName(gwtToolbarMenu.getClassName());
             add(menuToolItem);
         } else {
             final ActionItem actionItem = gwtToolbarItem.getActionItem();

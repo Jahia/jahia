@@ -181,4 +181,8 @@ public class GWTJahiaToolbarItem implements Serializable {
     public void setHideWhenDisabled(boolean hideWhenDisabled) {
         this.hideWhenDisabled = hideWhenDisabled;
     }
+
+    public String getClassName() {
+        return getId().toLowerCase().replace('.','-');
+    }
 }

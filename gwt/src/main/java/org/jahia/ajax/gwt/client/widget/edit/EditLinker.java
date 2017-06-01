@@ -48,6 +48,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
@@ -179,7 +180,7 @@ public class EditLinker implements Linker {
         PermissionsUtils.loadPermissions(config.getPermissions());
 
         if (updateSidePanel) {
-            this.activeChannel = null;
+            setActiveChannel(null);
             this.activeChannelVariant = null;
         }
 
@@ -322,10 +323,14 @@ public class EditLinker implements Linker {
      */
     public void handleNewMainNodeLoaded() {
         syncSelectionContext(LinkerSelectionContext.BOTH);
-        toolbar.handleNewMainNodeLoaded(mainModule.getNode());
+        GWTJahiaNode node = mainModule.getNode();
+        toolbar.handleNewMainNodeLoaded(node);
         if (sidePanel != null) {
-            sidePanel.handleNewMainNodeLoaded(mainModule.getNode());
+            sidePanel.handleNewMainNodeLoaded(node);
         }
+        Document.get().getBody().setAttribute("data-nodedisplayname", node.getDisplayName());
+        Document.get().getBody().setAttribute("data-nodepath", node.getPath());
+        Document.get().getBody().setAttribute("data-sitesettings", Boolean.toString(node.equals(JahiaGWTParameters.getSiteNode())));
     }
 
     /**
@@ -494,6 +499,11 @@ public class EditLinker implements Linker {
      */
     public void setActiveChannel(GWTJahiaChannel activeChannel) {
         this.activeChannel = activeChannel;
+        if (activeChannel == null || activeChannel.getValue().equals("generic")) {
+            Document.get().getBody().removeAttribute("data-channel");
+        } else {
+            Document.get().getBody().setAttribute("data-channel", activeChannel.getValue());
+        }
     }
 
     /**

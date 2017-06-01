@@ -120,7 +120,7 @@ public class ClipboardActionItem extends BaseActionItem {
 
 
     @Override public Component createNewToolItem() {
-        Button b = new Button();
+        Button b = (Button) super.createNewToolItem();
         b.setEnabled(false);
         b.setText(Messages.get("label.clipboard","Clipboard"));
         return b;

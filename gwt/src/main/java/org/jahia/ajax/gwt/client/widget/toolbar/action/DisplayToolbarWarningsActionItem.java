@@ -71,7 +71,7 @@ public class DisplayToolbarWarningsActionItem extends BaseActionItem implements 
 
     @Override
     public Component createNewToolItem() {
-        Button b = new Button();
+        Button b = (Button) super.createNewToolItem();
         b.setText(Messages.get("label.notifications","Notifications"));
         b.setEnabled(false);
         return b;

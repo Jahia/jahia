@@ -43,17 +43,25 @@
  */
 package org.jahia.taglibs.internal.gwt;
 
+import org.jahia.api.Constants;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Simple Tag that should be called in the header of the HTML page. It create a javascript object that
@@ -102,6 +110,35 @@ public class GWTInitTag extends AbstractJahiaTag {
                     StringUtils.isEmpty(locale) ? null : LanguageCodeConverters.languageCodeToLocale(locale),
                     StringUtils.isEmpty(uilocale) ? null : LanguageCodeConverters.languageCodeToLocale(uilocale))) ;
 
+            Boolean useNewTheme = Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("useNewTheme"));
+            JahiaUser jahiaUser = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
+
+            if (request.getParameter("useNewTheme") != null) {
+                useNewTheme =  Boolean.valueOf(request.getParameter("useNewTheme"));
+                Boolean userValue = Boolean.valueOf(jahiaUser.getProperty("useNewTheme"));
+                if (userValue != useNewTheme || jahiaUser.getProperty("useNewTheme") == null) {
+                    try {
+                        JCRSessionWrapper userSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+                        JCRUserNode user = (JCRUserNode) userSession.getNode(jahiaUser.getLocalPath());
+                        user.setProperty("useNewTheme", useNewTheme);
+                        userSession.save();
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            } else if (jahiaUser != null && jahiaUser.getProperty("useNewTheme") != null) {
+                useNewTheme = Boolean.valueOf(jahiaUser.getProperty("useNewTheme"));
+            }
+
+            Locale uiLocale = getUILocale();
+            if (LanguageCodeConverters.getAvailableBundleLocales().contains(uiLocale)) {
+                pageContext.setAttribute("newThemeLocale", uiLocale);
+            } else {
+                pageContext.setAttribute("newThemeLocale", Locale.forLanguageTag("en"));
+            }
+
+
+            pageContext.setAttribute("useNewTheme", useNewTheme);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }

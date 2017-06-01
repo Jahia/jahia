@@ -43,7 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.core;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -136,6 +138,13 @@ public class JahiaGWTParameters {
         return jahiaParamDictionary.get(COPYRIGHT);
     }
 
+    static {
+        for (String s : jahiaParamDictionary.keySet()) {
+            String param = jahiaParamDictionary.get(s);
+            Document.get().getBody().setAttribute("data-"+s, param);
+        }
+    }
+
     public static Boolean isWebSockets() {
         try {
             return Boolean.parseBoolean(jahiaParamDictionary.get(USE_WEBSOCKETS));
@@ -180,6 +189,8 @@ public class JahiaGWTParameters {
         baseUrl = getBaseUrl();
         baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/')+1) + language;
         setNativeLanguage(newLanguage.getLanguage());
+        Document.get().getBody().setAttribute("data-lang", language);
+        Document.get().getBody().setAttribute("data-langdisplayname", languageDisplayName);
     }
 
     public static void changeServletMapping(String oldMapping, String newMapping) {
@@ -210,6 +221,7 @@ public class JahiaGWTParameters {
             urlUpdater.updateEntryPointUrl();
         }
         setNativeSiteUUID(newSiteUUID);
+        Document.get().getBody().setAttribute("data-siteUuid", newSiteUUID);
     }
 
     private static native void setNativeSiteUUID(String newSiteUUID) /*-{
@@ -233,6 +245,7 @@ public class JahiaGWTParameters {
     private static void setSiteKey(String newSiteKey) {
         siteKey = newSiteKey;
         setNativeSiteKey(newSiteKey);
+        Document.get().getBody().setAttribute("data-siteKey", newSiteKey);
     }
 
     private static native void setNativeSiteKey(String newSiteKey) /*-{
@@ -310,6 +323,7 @@ public class JahiaGWTParameters {
             urlUpdater.updateEntryPointUrl();
         }
         setNativeWorkspace(newWorkspace);
+        Document.get().getBody().setAttribute("data-workspace", newWorkspace);
     }
 
     private static native void setNativeWorkspace(String newWorkspace) /*-{

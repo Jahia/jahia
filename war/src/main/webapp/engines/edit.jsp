@@ -28,13 +28,9 @@
 	<link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
 
-    <style>
-        @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i');
-    </style>
-
-
-	<!-- CONTAINS CSS TO APPLY QUICK FIX -->
-	<link rel="stylesheet" type="text/css" href="/engines/quick-fix/common.css"/>
+	<c:if test="${useNewTheme}">
+    <!-- CONTAINS CSS TO APPLY QUICK FIX -->
+    <link rel="stylesheet" type="text/css" href="<c:url value='/engines/quick-fix/edit_${newThemeLocale}.css'/>"/>
 
 	<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
 	<script>
@@ -63,6 +59,7 @@
 		});
 	</script>
 	<!-- END:::QUICK FIX -->
+    </c:if>
 </head>
 
 <body>

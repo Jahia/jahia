@@ -43,16 +43,9 @@
 
 		$(document).ready(function(){
 
-			$("body").on("click", ".editmode-managers-menu", function(){
-				// User has clicked on the Managers Menu Item. Open a specialy formatted menu by specifying body attribute data-INDIGO-GWT-FORMATTER as "managers-modal"
-				$("body").attr("data-INDIGO-GWT-FORMATTER", "managers-modal");
-			});
-
 			$("body").on("click", ".menu-editmode-managers-menu", function(){
-				// Close Manager Menu
-				$("body").attr("data-INDIGO-GWT-FORMATTER", "");
-				$(".menu-editmode-managers-menu").hide();
-			})
+				$(this).fadeOut();
+			});
 
 			$("body").on("click", "#JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2)", function(e){
 				// Pin-Toggle Side Panel

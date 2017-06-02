@@ -183,6 +183,10 @@ body
     td.x-btn-mc {
       width: 25px!important;
     }
+
+    body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+      display:none;
+    }
   }
 
   .edit-menu-mode {
@@ -254,6 +258,12 @@ body
       }
 
       &:hover {}
+
+      body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+        background: url(/engines/quick-fix/images/hamburger-dark@X2.png) no-repeat center center;
+      background-size: 29px 12px;
+
+      }
     }
 
    .edit-menu-workflow {}
@@ -2161,14 +2171,8 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtChannels
   z-index: 99999999999 !important;
 }
 
-body[data-INDIGO-GWT-FORMATTER="managers-modal"] .x-menu {
-  position: absolute;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: rgba(53, 173, 241, 0.99);
-  /* padding: 150px; */
+.x-menu.menu-editmode-managers-menu {
+
 }
 
 .x-combo-list {
@@ -2257,7 +2261,32 @@ span.x-menu-item, div.x-combo-list-item {
 	position: absolute;
 } */
 
-body[data-INDIGO-GWT-FORMATTER="managers-modal"] {
+.menu-editmode-managers-menu {
+	position: absolute;
+	top: 0 !important;
+	left: 0 !important;
+	width: 100% !important;
+	height: 100% !important;
+	background: rgba(53, 173, 241, 0.99);
+
+	&::after {
+		content: "Close";
+		display: block;
+		position: fixed;
+		top: 20px;
+		left: 20px;
+		z-index: 99;
+		background: url(/engines/quick-fix/images/icon-close-white@X2.png) no-repeat center center / 20px 20px;
+		text-indent: -50000px;
+		width: 20px;
+		height: 20px;
+		z-index: 999;
+	}
+
+
+
+
+
   .x-menu-list {
     &::before {
       content: $text_dxm;
@@ -2275,6 +2304,7 @@ body[data-INDIGO-GWT-FORMATTER="managers-modal"] {
     overflow: visible;
     width: 576px;
     margin: 100px auto;
+	pointer-events: all;
   }
   span.x-menu-item {
     width: 170px;

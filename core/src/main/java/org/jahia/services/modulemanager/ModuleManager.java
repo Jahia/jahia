@@ -108,6 +108,17 @@ public interface ModuleManager {
     OperationResult install(Resource bundleResource, String target, boolean start) throws ModuleManagementException;
 
     /**
+     * Install specified bundles on the target group of cluster nodes, optionally starting them right after.
+     *
+     * @param bundleResources A collection of resources, representing bundles to install
+     * @param target The group of cluster nodes targeted by the install operation (see BundleService class JavaDoc)
+     * @param start Whether installed bundles should be started right away
+     * @return The result of the install operation
+     * @throws ModuleManagementException In case of problems
+     */
+    OperationResult install(Collection<Resource> bundleResources, String target, boolean start) throws ModuleManagementException;
+
+    /**
      * Start the specified bundle on the target group of cluster nodes.
      *
      * @param bundleKey Bundle key to start (see class JavaDoc for the supported key format)

@@ -60,6 +60,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -157,8 +158,16 @@ public class DefaultBundleService implements BundleService {
 
     @Override
     public void refresh(BundleInfo bundleInfo, String target) throws ModuleManagementException {
-        Bundle bundle = getBundleEnsureExists(bundleInfo);
-        BundleLifecycleUtils.refreshBundles(Collections.singleton(bundle), false, false);
+        refresh(Collections.singleton(bundleInfo), target);
+    }
+
+    @Override
+    public void refresh(Collection<BundleInfo> bundleInfos, String target) throws ModuleManagementException {
+        ArrayList<Bundle> bundles = new ArrayList<>(bundleInfos.size());
+        for (BundleInfo bundleInfo : bundleInfos) {
+            bundles.add(getBundleEnsureExists(bundleInfo));
+        }
+        BundleLifecycleUtils.refreshBundles(bundles, false, false);
     }
 
     @Override

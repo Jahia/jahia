@@ -50,7 +50,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 
 import org.drools.core.util.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -92,7 +91,7 @@ public class ModuleManagerImpl implements ModuleManager {
 
     private BundleService bundleService;
     private BundlePersister persister;
-    
+
     private JahiaTemplateManagerService templateManagerService;
 
     /**
@@ -163,27 +162,19 @@ public class ModuleManagerImpl implements ModuleManager {
         }
     }
 
-    /**
-     * Performs an installation of the bundle calling the bundle services.
-     *
-     * @param info the bundle info
-     * @param target group of target cluster nodes for bundle installation
-     * @param start <code>true</code>, if the bundle should be started right after installation
-     * @return the result of the operation
-     * @throws ModuleManagementException in case of bundle service errors
-     */
-    private OperationResult install(PersistentBundle info, final String target, boolean start)
-            throws ModuleManagementException {
-        if (start) {
-            stopPreviousVersions(info, target);
+    private OperationResult doInstall(Collection<PersistentBundle> infos, final String target, boolean start) throws ModuleManagementException {
+        ArrayList<BundleInfo> bundleInfos = new ArrayList<>(infos.size());
+        for (PersistentBundle info : infos) {
+            if (start) {
+                stopPreviousVersions(info, target);
+            }
+            bundleService.install(info.getLocation(), target, start);
+            bundleInfos.add(toBundleInfo(info));
         }
-
-        bundleService.install(info.getLocation(), target, start);
-
         if (start) {
-            refreshNonActiveBundles(info, target);
+            refreshOtherVersions(bundleInfos, target);
         }
-        return OperationResult.success(toBundleInfo(info));
+        return OperationResult.success(bundleInfos);
     }
 
     @Override
@@ -193,24 +184,29 @@ public class ModuleManagerImpl implements ModuleManager {
 
     @Override
     public OperationResult install(Resource bundleResource, String target, boolean start) throws ModuleManagementException {
+        return install(Collections.singleton(bundleResource), target, start);
+    }
 
+    @Override
+    public OperationResult install(Collection<Resource> bundleResources, String target, boolean start) throws ModuleManagementException {
         long startTime = System.currentTimeMillis();
-        logger.info("Performing installation for bundle {} on target {}", new Object[] {bundleResource, target});
-
+        logger.info("Performing installation of bundles {} on target {}", bundleResources, target);
         OperationResult result = null;
-        PersistentBundle bundleInfo = null;
         Exception error = null;
         try {
-            boolean requiresHandling = !((bundleResource instanceof UrlResource)
-                    && bundleResource.getURL().getProtocol().equals(Constants.URL_PROTOCOL_DX));
-            bundleInfo = PersistentBundleInfoBuilder.build(bundleResource, requiresHandling, requiresHandling);
-            if (bundleInfo == null) {
-                throw new InvalidModuleException();
+            ArrayList<PersistentBundle> bundleInfos = new ArrayList<>(bundleResources.size());
+            for (Resource bundleResource : bundleResources) {
+                boolean requiresPersisting = !((bundleResource instanceof UrlResource) && bundleResource.getURL().getProtocol().equals(Constants.URL_PROTOCOL_DX));
+                PersistentBundle bundleInfo = PersistentBundleInfoBuilder.build(bundleResource, requiresPersisting, requiresPersisting);
+                if (bundleInfo == null) {
+                    throw new InvalidModuleException();
+                }
+                if (requiresPersisting) {
+                    persister.store(bundleInfo);
+                }
+                bundleInfos.add(bundleInfo);
             }
-            if (requiresHandling) {
-                persister.store(bundleInfo);
-            }
-            result = install(bundleInfo, target, start);
+            result = doInstall(bundleInfos, target, start);
         } catch (ModuleManagementException e) {
             error = e;
             throw e;
@@ -218,17 +214,15 @@ public class ModuleManagerImpl implements ModuleManager {
             error = e;
             throw new ModuleManagementException(e);
         } finally {
-            Object info = bundleInfo != null ? toBundleInfo(bundleInfo) : bundleResource;
             long timeTaken = System.currentTimeMillis() - startTime;
             if (error == null) {
-                logger.info("Installation completed for bundle {} on target {} in {} ms. Operation result: {}",
-                        new Object[] { info, target, timeTaken, result });
+                logger.info("Installation completed for bundles {} on target {} in {} ms. Operation result: {}",
+                        new Object[] { bundleResources, target, timeTaken, result });
             } else {
-                logger.info("Installation failed for bundle {} on target {} (took {} ms). Operation error: {}",
-                        new Object[] { info, target, timeTaken, error });
+                logger.info("Installation failed for bundles {} on target {} (took {} ms). Operation error: {}",
+                        new Object[] { bundleResources, target, timeTaken, error });
             }
         }
-
         return result;
     }
 
@@ -315,7 +309,7 @@ public class ModuleManagerImpl implements ModuleManager {
 
                 bundleService.start(info, target);
 
-                refreshNonActiveBundles(info, target);
+                refreshOtherVersions(Collections.singleton(info), target);
             }
         });
     }
@@ -403,20 +397,26 @@ public class ModuleManagerImpl implements ModuleManager {
         });
     }
 
-    private void refreshNonActiveBundles(BundleInfo info, String target) {
-        List<Bundle> toBeRefreshed = getNonActiveBundlesToRefresh(info);
-        if (!toBeRefreshed.isEmpty()) {
-            for (Bundle b : toBeRefreshed) {
-                BundleInfo otherInfo = BundleInfo.fromBundle(b);
-                String key = otherInfo.getKey();
-                logger.info("Refreshing bundle {} as its other version {} is currently active...", key, info.getKey());
-                try {
-                    bundleService.refresh(otherInfo, target);
-                    logger.info("...done refreshing bundle {}", key);
-                } catch (Exception e) {
-                    logger.warn("Error refreshing bundle " + key, e);
-                }
-            }
+    private void refreshOtherVersions(Collection<BundleInfo> theseVersionInfos, String target) {
+
+        LinkedList<Bundle> otherVersions = new LinkedList<>();
+        for (BundleInfo thisVersionInfo : theseVersionInfos) {
+            otherVersions.addAll(getOtherVersionsToRefresh(thisVersionInfo));
+        }
+        if (otherVersions.isEmpty()) {
+            return;
+        }
+
+        ArrayList<BundleInfo> otherVersionInfos = new ArrayList<>(otherVersions.size());
+        for (Bundle otherVersion : otherVersions) {
+            otherVersionInfos.add(BundleInfo.fromBundle(otherVersion));
+        }
+
+        logger.info("Refreshing bundles {} as their other versions are currently active...", otherVersionInfos);
+        try {
+            bundleService.refresh(otherVersionInfos, target);
+        } catch (Exception e) {
+            logger.error("Error refreshing bundles", e);
         }
     }
 
@@ -448,33 +448,30 @@ public class ModuleManagerImpl implements ModuleManager {
         return bundleService.getLocalInfo(bundleInfo);
     }
 
-    /**
-     * Collects the Resolved bundles for the specified symbolic name that have to be refreshed.
-     */
-    private List<Bundle> getNonActiveBundlesToRefresh(BundleInfo info) {
-        List<Bundle> toBeRefreshed = null;
+    private List<Bundle> getOtherVersionsToRefresh(BundleInfo thisVersionInfo) {
+
+        List<Bundle> result = new LinkedList<>();
 
         // collect active and resolved module bundles
-        SortedMap<ModuleVersion, JahiaTemplatesPackage> allModuleVersions = templateManagerService
-                .getTemplatePackageRegistry().getAllModuleVersions().get(info.getSymbolicName());
+        Map<ModuleVersion, JahiaTemplatesPackage> allModuleVersions = templateManagerService
+                .getTemplatePackageRegistry().getAllModuleVersions().get(thisVersionInfo.getSymbolicName());
 
         if (allModuleVersions.size() > 1) {
             FrameworkWiring frameworkWiring = BundleLifecycleUtils.getFrameworkWiring();
 
             for (JahiaTemplatesPackage pkg : allModuleVersions.values()) {
-                Bundle otherBundle = pkg.getBundle();
-                if (otherBundle != null && otherBundle.getState() == Bundle.RESOLVED
-                        && !otherBundle.getVersion().toString().equals(info.getVersion())) {
+                Bundle otherVersion = pkg.getBundle();
+                if (otherVersion != null && otherVersion.getState() == Bundle.RESOLVED
+                        && !otherVersion.getVersion().toString().equals(thisVersionInfo.getVersion())) {
 
-                    // Sometimes a bundle can depends on other version of the same bundle,
+                    // Sometimes a bundle depends on another version of the same bundle,
                     // doing a refresh in this case will cause an infinite loop of start/stop operations
                     Collection<Bundle> dependencies = frameworkWiring
-                            .getDependencyClosure(Collections.singleton(otherBundle));
-
+                            .getDependencyClosure(Collections.singleton(otherVersion));
                     boolean doRefresh = true;
                     for (Bundle dependency : dependencies) {
-                        if (dependency.getSymbolicName().equals(info.getSymbolicName())
-                                && dependency.getVersion().toString().equals(info.getVersion())) {
+                        if (dependency.getSymbolicName().equals(thisVersionInfo.getSymbolicName())
+                                && dependency.getVersion().toString().equals(thisVersionInfo.getVersion())) {
                             // the active bundle depends on this one -> won't refresh it
                             doRefresh = false;
                             break;
@@ -482,16 +479,13 @@ public class ModuleManagerImpl implements ModuleManager {
                     }
 
                     if (doRefresh) {
-                        if (toBeRefreshed == null) {
-                            toBeRefreshed = new LinkedList<>();
-                        }
-                        toBeRefreshed.add(otherBundle);
+                        result.add(otherVersion);
                     }
                 }
             }
         }
 
-        return toBeRefreshed != null ? toBeRefreshed : Collections.<Bundle>emptyList();
+        return result;
     }
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {

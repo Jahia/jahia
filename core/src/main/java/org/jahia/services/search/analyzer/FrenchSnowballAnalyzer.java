@@ -43,20 +43,56 @@
  */
 package org.jahia.services.search.analyzer;
 
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.StopFilter;
+import org.apache.lucene.analysis.*;
+import org.apache.lucene.analysis.fr.ElisionFilter;
 import org.apache.lucene.analysis.fr.FrenchAnalyzer;
 import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
 import org.apache.lucene.analysis.snowball.SnowballFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.util.Version;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Arrays;
+
 /**
  * Filters {@link StandardTokenizer} with {@link StandardFilter}, {@link
  * LowerCaseFilter}, {@link StopFilter}, {@link SnowballFilter} for French and {@link org.apache.lucene.analysis.ASCIIFoldingFilter}.
  */
 public class FrenchSnowballAnalyzer extends ASCIIFoldingAnalyzer {
+
+    /** Default set of articles for ElisionFilter */
+    public static final CharArraySet DEFAULT_ARTICLES = CharArraySet.unmodifiableSet(
+            new CharArraySet(Arrays.asList(
+                    "l", "m", "t", "qu", "n", "s", "j", "d", "c", "jusqu", "quoiqu", "lorsqu", "puisqu"), true));
+
+
     public FrenchSnowballAnalyzer() {
         super(new SnowballAnalyzer(Version.LUCENE_30, "French", FrenchAnalyzer.getDefaultStopSet()));
+    }
+
+    /**
+     * Builds an analyzer with the given stop words
+     *
+     * @param stopwords
+     *          a stopword set
+     */
+    public FrenchSnowballAnalyzer(CharArraySet stopwords){
+        super(new SnowballAnalyzer(Version.LUCENE_30, "French", stopwords));
+    }
+
+    @Override
+    public TokenStream tokenStream(String fieldName, Reader reader) {
+        TokenStream result = super.tokenStream(fieldName, reader);
+        result = new ElisionFilter(result, DEFAULT_ARTICLES);
+        return result;
+    }
+
+    @Override
+    public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
+        TokenStream result = super.reusableTokenStream(fieldName, reader);
+        result = new ElisionFilter(result, DEFAULT_ARTICLES);
+        return result;
     }
 }

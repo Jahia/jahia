@@ -55,7 +55,6 @@ import org.apache.lucene.analysis.cz.CzechAnalyzer;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.el.GreekAnalyzer;
 import org.apache.lucene.analysis.fa.PersianAnalyzer;
-import org.apache.lucene.analysis.fr.FrenchAnalyzer;
 import org.apache.lucene.analysis.nl.DutchAnalyzer;
 import org.apache.lucene.analysis.ru.RussianAnalyzer;
 import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
@@ -63,6 +62,7 @@ import org.apache.lucene.analysis.th.ThaiAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.util.Version;
+import org.jahia.services.search.analyzer.JahiaFrenchAnalyzer;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -102,7 +102,7 @@ public class LanguageCustomizingAnalyzerRegistry implements AnalyzerRegistry<Str
         languageToAnalyzer.put("el", new AnalyzerWrapper(new GreekAnalyzer(Version.LUCENE_30), true));
         languageToAnalyzer.put("en", new AnalyzerWrapper(new SnowballAnalyzer(Version.LUCENE_30, "English", StopAnalyzer.ENGLISH_STOP_WORDS_SET), true));
         languageToAnalyzer.put("fa", new AnalyzerWrapper(new PersianAnalyzer(Version.LUCENE_30), true));
-        languageToAnalyzer.put("fr", new AnalyzerWrapper(new FrenchAnalyzer(Version.LUCENE_30), true));
+        languageToAnalyzer.put("fr", new AnalyzerWrapper(new JahiaFrenchAnalyzer(Version.LUCENE_30), true));
         languageToAnalyzer.put("nl", new AnalyzerWrapper(new DutchAnalyzer(Version.LUCENE_30), true));
         languageToAnalyzer.put("ru", new AnalyzerWrapper(new RussianAnalyzer(Version.LUCENE_30), true));
         languageToAnalyzer.put("th", new AnalyzerWrapper(new ThaiAnalyzer(Version.LUCENE_30), true));

@@ -187,6 +187,10 @@ body
     body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
       display:none;
     }
+
+    body[data-sitesettings="true"] & {
+      display:none;
+    }
   }
 
   .edit-menu-mode {
@@ -222,6 +226,10 @@ body
         height:20px;
         padding-top:5px;
       }
+
+      body[data-sitesettings="true"] & {
+        display:none;
+      }
   }
 
   .edit-menu-user {
@@ -231,15 +239,35 @@ body
     height: 40px;
     margin-top: 0;
     background-size: 23px 23px;
+
+    body[data-sitesettings="true"] & {
+      display:none;
+    }
   }
 
-  .toolbar-item-clipboard {}
+  .toolbar-item-clipboard {
+    body[data-sitesettings="true"] & {
+      display:none;
+    }
+  }
 
-  .toolbar-item-workinprogressadmin {}
+  .toolbar-item-workinprogressadmin {
+    body[data-sitesettings="true"] & {
+      display:none;
+    }
+  }
 
-  .toolbar-item-showtrashboard {}
+  .toolbar-item-showtrashboard {
+    body[data-sitesettings="true"] & {
+      display:none;
+    }
+  }
 
-  .edit-menu-cache {}
+  .edit-menu-cache {
+    body[data-sitesettings="true"] & {
+      display:none;
+    }
+  }
 
   .editmode-managers-menu {
       position: fixed;
@@ -266,7 +294,11 @@ body
       }
     }
 
-   .edit-menu-workflow {}
+   .edit-menu-workflow {
+     body[data-sitesettings="true"] & {
+      display:none;
+    }
+   }
 
    .edit-menu-publication {
      margin-top: 52px;
@@ -275,6 +307,10 @@ body
       &::after {
         content: $text_publish;
       }
+
+      body[data-sitesettings="true"] & {
+      display:none;
+    }
    }
 }
 
@@ -873,6 +909,10 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     top: 0 !important;
     padding: 0;
     height: 51px!important;
+
+    body[data-sitesettings="true"] & {
+      display:none;
+    }
 }
 
 /* HOVER LEFT MENU */
@@ -1953,7 +1993,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtCategory
   #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab {
     position: fixed;
     bottom: 0;
-    background: url(/engines/quick-fix/images/tabs-settings-dark@X2.png) no-repeat top 3px center;
+    background: url(/engines/quick-fix/images/tabs-settings-white@X2.png) no-repeat top 3px center;
     background-size: 23px 23px;
   }
 }
@@ -1963,8 +2003,8 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtCategory
 body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab {
   position: fixed;
   bottom: 0;
-  background: url(/engines/quick-fix/images/tabs-settings-dark@X2.png) no-repeat top 3px center;
-  background-size: 23px 23px;
+  background: url(/engines/quick-fix/images/tabs-settings-dark@X2.png) no-repeat top 3px center!important;
+  background-size: 23px 23px!important;
   &.x-tab-strip-active {
     position: fixed;
     bottom: 0;
@@ -4131,12 +4171,12 @@ body {
 
 /* SETTINGS SCREEN */
 
-.x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe {
-  &[src*='.manage']:nth-child(1), &[src*='.vanity']:nth-child(1), &[src*='.wcag']:nth-child(1), &[src*='.tags']:nth-child(1), &[src*='.marketing']:nth-child(1), &[src*='.most-visited-pages']:nth-child(1), &[src*='.optimization-dashboard']:nth-child(1), &[src*='.personalization-dashboard']:nth-child(1), &[src*='.htmlFiltering']:nth-child(1), &[src*='.page-models']:nth-child(1), &[src*='.linkChecker']:nth-child(1) {
-    margin-top: -46px !important;
-    height: calc(100% + 56px) !important;
-    width: calc(100% + 69px) !important;
-  }
+
+
+body[data-sitesettings="true"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > iframe {
+  margin-top: -46px !important;
+  height: calc(100% + 56px) !important;
+  width: calc(100% + 69px) !important;
 }
 
 /* HOVER LEFT MENU */
@@ -4321,45 +4361,7 @@ body {
   }
 }
 
-/* TOP ROW (LEFT) */
 
-/* TOP ROW (RIGHT) */
-
-/* TOP ROW (CENTER) */
-
-/* HEADER (CENTER) */
-
-/* TOOLBAR ACTIONS (CENTER) */
-
-/* TOOLBAR ACTION ::: CLOSE */
-
-/* TOOLBAR TITLE */
-
-/* BODY WRAP */
-
-/* MIDDLE LEFT */
-
-/* MIDDLE RIGHT */
-
-/* MIDDLE CENTER */
-
-/* MIDDLE BODY */
-
-/* MIDDLE CONTENT WRAP */
-
-/* MIDDLE CONTENT ::: FORM */
-
-/* MIDDLE MAIN ACTIONS BAR */
-
-/* BUTTONS ::: TOP ROW */
-
-/* BUTTONS ::: MIDDLE ROW */
-
-/* highlight left button - maybe just by TR position and NOT classname ... .x-btn-icon-small-left */
-
-/* BUTTONS ::: BOTTOM ROW */
-
-/* FOOTER */
 
 .x-abs-layout-item {
   /* left: auto!important; */

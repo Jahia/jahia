@@ -44,6 +44,7 @@
 package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.pipelines.impl.GenericPipeline;
 import org.jahia.pipelines.valves.Valve;
 import org.slf4j.Logger;
@@ -97,8 +98,10 @@ public abstract class AutoRegisteredBaseAuthValve extends BaseAuthValve implemen
 
     @Override
     public void destroy() throws Exception {
-        removeValve(getId());
-        logger.info("Unregistered authentication valve {}", getId());
+        if (JahiaContextLoaderListener.isRunning()) {
+            removeValve(getId());
+            logger.info("Unregistered authentication valve {}", getId());
+        }
     }
 
     /**

@@ -13,8 +13,6 @@ body
   xbackground: url(images/pageEditorLogo2.png) no-repeat top 15px left 15px;
 }
 
-#x-auto-1629 {}
-
 .x-toolbar-left {
   xpadding: 5px;
 }
@@ -2112,23 +2110,6 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtChannels
     background: yellow!important;
 }*/
 
-/* #x-auto-1614 {
-    background: black!important;;
-} */
-
-#x-auto-52 {
-  /* background: transparent; */
-  /* top: -34px; */
-  /* position: absolute; */
-  /* left: 36px; */
-  /* z-index: 999999!important; */
-}
-
-#x-auto-49 {
-  xbackground: red;
-  /*! float: none !important; */
-}
-
 /* MAIN PAGE (excluding top menu) */
 
 .x-panel-body {
@@ -2190,16 +2171,6 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtChannels
   font-size: 10px;
   font-weight: 400;
   width: auto !important;
-}
-
-#x-auto-1603 {
-  position: absolute;
-  left: 60px;
-  top: 40px;
-  z-index: 99;
-  /* position: absolute;
-  left: 15px;
-  top: 2px; */
 }
 
 .x-menu {
@@ -2397,11 +2368,6 @@ span.x-menu-item img {
   /* box-shadow: 0 0 10px 0 rgba(49,49,49,1); */
   /* padding: 10px 0; */
   z-index: 99999999999999 !important;
-}
-
-#x-auto-80 {
-  /* width: calc(100% - 20px)!important; */
-  /* margin-left: 20px; */
 }
 
 .x-panel-body.x-border-layout-ct {
@@ -2765,31 +2731,6 @@ span.x-menu-item img {
 
 .JahiaEditEngineButtonBar .x-btn-mc {
    width: 100px;
-}
-
-.JahiaEditEngineButtonBar #x-auto-9628 .x-btn-mc {
-   background: #079cf1;
-    border: 5px solid #079cf1;
-    left: 50px;
-    position: relative
-}
-
-.JahiaEditEngineButtonBar #x-auto-9628 .x-btn-mc button {
-   color: white;
-}
-
-
-.JahiaEditEngineButtonBar #x-auto-9629 .x-btn-mc {
-   text-indent: -50000px;
-    width: 20px;
-    position: absolute;
-    left: -100px;
-    top: 5px
-}
-
-.JahiaEditEngineButtonBar #x-auto-9629 .x-btn-mc:hover {
-    text-indent: 0;
-      width: 50px;
 }*/
 
 .JahiaEditEngineButtonBar .x-toolbar-cell {
@@ -2857,13 +2798,6 @@ span.x-menu-item img {
     }
   }
 }
-
-/* #x-auto-9627 {
-	margin-right: 5px;
-	position: absolute;
-	left: -70px;
-	top: 31px;
-} */
 
 .selection-top-simple {
   border: 10px solid blue;

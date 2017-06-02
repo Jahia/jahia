@@ -10,7 +10,7 @@ body
 }
 
 #editmode {
-  xbackground: url(/engines/quick-fix/images/pageEditorLogo2.png) no-repeat top 15px left 15px;
+  xbackground: url(images/pageEditorLogo2.png) no-repeat top 15px left 15px;
 }
 
 #x-auto-1629 {}
@@ -26,7 +26,7 @@ body
 /* MAIN TOP NAV HOLDER */
 
 .x-viewport-contributemode .x-toolbar-first, .x-viewport-editmode .x-toolbar-first {
-  background: url(/engines/quick-fix/images/hamburger.png) no-repeat top 17px left 19px !important;
+  background: url(images/hamburger.png) no-repeat top 17px left 19px !important;
   background: none !important;
   border: none !important;
   /* padding: 10px; */
@@ -177,7 +177,7 @@ body
   .edit-menu-view {
     position: fixed;
     left: 207px;
-    background: url(/engines/quick-fix/images/tabs-browse-white@X2.png) no-repeat top 3px center;
+    background: url(images/tabs-browse-white@X2.png) no-repeat top 3px center;
     top: 11px;
     background-size: 23px 23px;
     td.x-btn-mc {
@@ -199,7 +199,7 @@ body
     top: 6px;
     margin-top: 7px;
     z-index: 999999;
-    /* background: url(/engines/quick-fix/images/dx_solid_small.png) no-repeat left center, url(/engines/quick-fix/images/combo-arrow.png) no-repeat right center; */
+    /* background: url(images/dx_solid_small.png) no-repeat left center, url(images/combo-arrow.png) no-repeat right center; */
     width: 93px;
     height: 24px;
     /* padding-right: 10px; */
@@ -213,8 +213,8 @@ body
         margin-top: 0px;
         /* border-left: 1px solid rgba(238,238,238,0.2); */
         padding-left: 35px;
-        xbackground: url(/engines/quick-fix/images/combo-arrow.png) no-repeat right (center / 10%);
-        background: url(/engines/quick-fix/images/dx_logo_solid.png) no-repeat left 12px center / 20px 20px, url(/engines/quick-fix/images/combo-arrow.png) no-repeat right center;
+        xbackground: url(images/combo-arrow.png) no-repeat right (center / 10%);
+        background: url(images/dx_logo_solid.png) no-repeat left 12px center / 20px 20px, url(images/combo-arrow.png) no-repeat right center;
         padding-right: 2px;
         text-align: left;
         position: relative;
@@ -235,7 +235,7 @@ body
   .edit-menu-user {
     position: fixed;
     top: 10px;
-    background: url(/engines/quick-fix/images/tabs-usermenu-white@X2.png) no-repeat left 14px top 6px;
+    background: url(images/tabs-usermenu-white@X2.png) no-repeat left 14px top 6px;
     height: 40px;
     margin-top: 0;
     background-size: 23px 23px;
@@ -275,7 +275,7 @@ body
       left: 5px;
       z-index: 9999999999999999999999;
       display: block;
-      background: url(/engines/quick-fix/images/hamburger-light@X2.png) no-repeat center center;
+      background: url(images/hamburger-light@X2.png) no-repeat center center;
       /* background-size: 100%; */
       margin-top: 0;
       opacity: 1;
@@ -288,7 +288,7 @@ body
       &:hover {}
 
       body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-        background: url(/engines/quick-fix/images/hamburger-dark@X2.png) no-repeat center center;
+        background: url(images/hamburger-dark@X2.png) no-repeat center center;
       background-size: 29px 12px;
 
       }
@@ -302,7 +302,7 @@ body
 
    .edit-menu-publication {
      margin-top: 52px;
-      background: url(/engines/quick-fix/images/tabs-publish-white@X2.png) no-repeat top 3px center;
+      background: url(images/tabs-publish-white@X2.png) no-repeat top 3px center;
       background-size: 23px 23px;
       &::after {
         content: $text_publish;
@@ -347,7 +347,7 @@ body
 
 .x-viewport-contributemode .x-toolbar-first .x-toolbar-cell {
   &:nth-child(1) {
-    /* background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center; */
+    /* background: url(images/tabs-placeholder.png) no-repeat top 3px center; */
     position: fixed;
     left: 54px;
     opacity: 0.9;
@@ -364,7 +364,7 @@ body
         margin-top: 5px;
         border-left: 2px solid rgba(238,238,238,0.2);
         padding-left: 7px;
-        background: url(/engines/quick-fix/images/combo-arrow.png) no-repeat right center;
+        background: url(images/combo-arrow.png) no-repeat right center;
         padding-right: 5px;
         text-align: left;*/
         content: $text_contribute_mode;
@@ -374,8 +374,8 @@ body
         margin-top: 5px;
         border-left: 1px solid rgba(238,238,238,0.2);
         padding-left: 12px;
-        background: url(/engines/quick-fix/images/combo-arrow.png) no-repeat right center;
-        xbackground: url(/engines/quick-fix/images/dx_solid_small.png) no-repeat left 12px center, url(/engines/quick-fix/images/combo-arrow.png) no-repeat right center;
+        background: url(images/combo-arrow.png) no-repeat right center;
+        xbackground: url(images/dx_solid_small.png) no-repeat left 12px center, url(images/combo-arrow.png) no-repeat right center;
         padding-right: 5px;
         text-align: left;
         position: relative;
@@ -390,8 +390,8 @@ body
         margin-top: 0px;
         /* border-left: 1px solid rgba(238,238,238,0.2); */
         /* padding-left: 12px; */
-        background: url(/engines/quick-fix/images/combo-arrow.png) no-repeat right (center / 8%);
-        xbackground: url(/engines/quick-fix/images/dx_solid_small.png) no-repeat left 12px center, url(/engines/quick-fix/images/combo-arrow.png) no-repeat right center;
+        background: url(images/combo-arrow.png) no-repeat right (center / 8%);
+        xbackground: url(images/dx_solid_small.png) no-repeat left 12px center, url(images/combo-arrow.png) no-repeat right center;
         padding-right: 8px;
         text-align: left;
         position: relative;
@@ -414,7 +414,7 @@ body
     }
   }
   &:nth-child(2) {
-    background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
+    background: url(images/tabs-placeholder.png) no-repeat top 3px center;
     /* margin-left: 300px; */
     /* position: fixed; */
     /* left: 294px; */
@@ -423,13 +423,13 @@ body
     }
   }
   &:nth-child(3) {
-    background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
+    background: url(images/tabs-placeholder.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
       content: $text_upload;
     }
   }
   &:nth-child(4) {
-    background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
+    background: url(images/tabs-placeholder.png) no-repeat top 3px center;
     /* position: fixed; */
     right: 290px;
     > table:nth-child(1)::after {
@@ -437,7 +437,7 @@ body
     }
   }
   &:nth-child(5) {
-    background: url(/engines/quick-fix/images/tabs-browse.png) no-repeat top 3px center;
+    background: url(images/tabs-browse.png) no-repeat top 3px center;
     /* position: fixed; */
     /* left: 337px; */
     > table:nth-child(1)::after {
@@ -459,7 +459,7 @@ body
         border-left: 2px solid #00c500;
         height: 20px;
         width: 0;
-        xbackground: url(/engines/quick-fix/images/published.png);
+        xbackground: url(images/published.png);
         overflow: hidden;
         display: inline;
       }
@@ -467,7 +467,7 @@ body
         border-left: 2px solid orange;
         height: 20px;
         width: 0;
-        xbackground: url(/engines/quick-fix/images/published.png);
+        xbackground: url(images/published.png);
         overflow: hidden;
         display: inline;
       }
@@ -477,19 +477,19 @@ body
     }
   }
   &:nth-child(8) {
-    background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
+    background: url(images/tabs-placeholder.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
       content: $text_publish;
     }
   }
   &:nth-child(9) {
-    background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
+    background: url(images/tabs-placeholder.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
       content: $text_workflow;
     }
   }
   &:nth-child(10) {
-    background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
+    background: url(images/tabs-placeholder.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
       content: $text_tasks;
     }
@@ -500,7 +500,7 @@ body
     left: 4px;
     z-index: 9999999999999999999999;
     display: block;
-    background: url(/engines/quick-fix/images/dx_logo_solid.png) no-repeat center center;
+    background: url(images/dx_logo_solid.png) no-repeat center center;
     background-size: 67%;
     margin-top: 0;
     opacity: 1;
@@ -509,13 +509,13 @@ body
     }
   }
   &:nth-child(12) {
-    background: url(/engines/quick-fix/images/tabs-trash.png) no-repeat top 3px center;
+    background: url(images/tabs-trash.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
       content: $text_trash;
     }
   }
   &:nth-child(13) {
-    background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center;
+    background: url(images/tabs-placeholder.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
       content: $text_clipboard;
     }
@@ -526,7 +526,7 @@ body
   &:nth-child(15) {
     position: fixed;
     right: 10px;
-    background: url(/engines/quick-fix/images/tabs-usermenu.png) no-repeat center center;
+    background: url(images/tabs-usermenu.png) no-repeat center center;
     height: 40px;
     margin-top: 0;
     > table:nth-child(1)::after {
@@ -534,7 +534,7 @@ body
     }
   }
   &:nth-child(16) {
-    /* background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top 3px center; */
+    /* background: url(images/tabs-placeholder.png) no-repeat top 3px center; */
     position: fixed;
     left: 53px;
     top: 24px;
@@ -563,12 +563,12 @@ body
     }
     img {
     /*
-	background: url(/engines/quick-fix/images/icon-toggle-expanded-small-normal.png) no-repeat center center transparent;
+	background: url(images/icon-toggle-expanded-small-normal.png) no-repeat center center transparent;
     height: 22px;
     width: 25px;
     right: 0px;
     border: none;*/
-      background: url(/engines/quick-fix/images/combo-arrow.png) no-repeat center center transparent;
+      background: url(images/combo-arrow.png) no-repeat center center transparent;
       height: 20px;
       width: 25px;
       right: 14px;
@@ -673,7 +673,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode .x-toolbar-first .x-t
 
   }
   &:nth-child(5) {
-    background: url(/engines/quick-fix/images/tabs-workflow.png) no-repeat top 3px center;
+    background: url(images/tabs-workflow.png) no-repeat top 3px center;
     > table:nth-child(1)::after {
       content: $text_workflow;
     }
@@ -701,7 +701,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode .x-toolbar-first .x-t
 
 body[data-INDIGO-GWT-SIDE-PANEL="open"] .x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7) {
   opacity: 0.5;
-  background: url(/engines/quick-fix/images/hamburger-dark@X2.png) no-repeat center center;
+  background: url(images/hamburger-dark@X2.png) no-repeat center center;
   background-size: 29px 12px;
   &:hover {
     opacity: 1;
@@ -712,21 +712,21 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] .x-viewport-editmode .x-toolbar-first .x
 
 .x-viewport-editmode .x-toolbar-first .x-toolbar-cell {
   &:nth-child(8) {
-    background: url(/engines/quick-fix/images/tabs-placeholder-white@X2.png) no-repeat top center;
+    background: url(images/tabs-placeholder-white@X2.png) no-repeat top center;
     background-size: 23px;
     > table:nth-child(1)::after {
       content: $text_cache;
     }
   }
   &:nth-child(9) {
-    background: url(/engines/quick-fix/images/tabs-trash-white@X2.png) no-repeat top center;
+    background: url(images/tabs-trash-white@X2.png) no-repeat top center;
     background-size: 23px 23px;
     > table:nth-child(1)::after {
       content: $text_trash;
     }
   }
   &:nth-child(10) {
-    background: url(/engines/quick-fix/images/tabs-placeholder-white@X2.png) no-repeat top center;
+    background: url(images/tabs-placeholder-white@X2.png) no-repeat top center;
     background-size: 23px 23px;
     > table:nth-child(1)::after {
       content: $text_jobs;
@@ -947,7 +947,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-panel-body.x-border-layout-ct > div:nth
       border-left: 2px solid orange;
       height: 31px;
       width: 0;
-      xbackground: url(/engines/quick-fix/images/published.png);
+      xbackground: url(images/published.png);
       overflow: hidden;
       display: inline;
     }
@@ -955,7 +955,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-panel-body.x-border-layout-ct > div:nth
       border-left: 2px solid lightgreen;
       height: 28px;
       width: 0;
-      xbackground: url(/engines/quick-fix/images/published.png);
+      xbackground: url(images/published.png);
       overflow: hidden;
       display: inline;
     }
@@ -978,12 +978,12 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-panel-body.x-border-layout-ct > div:nth
 
 .x-menu-scroller-top {
   /* rgba(245,245,245,1) */
-  background-image: url(/engines/quick-fix/images/menu-scroll-up.png);
+  background-image: url(images/menu-scroll-up.png);
 }
 
 .x-menu-scroller-bottom {
   /* rgba(245,245,245,1) */
-  background-image: url(/engines/quick-fix/images/menu-scroll-down.png);
+  background-image: url(images/menu-scroll-down.png);
 }
 
 /* DIVIDER */
@@ -1006,7 +1006,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-panel-body.x-border-layout-ct > div:nth
       width: 16px;
       height: 16px;
       border: 1px solid red;
-      background: url(/engines/quick-fix/images/icon-more-options-white@X2.png) no-repeat center center;
+      background: url(images/icon-more-options-white@X2.png) no-repeat center center;
       background-size: 10px 2px;
       tbody {
         display: none;
@@ -1056,14 +1056,14 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-panel-body.x-border-layout-ct > div:nth
       input {
         width: 100% !important;
         body[data-lang="en"] & {
-          background: url(/engines/quick-fix/images/flags/united-kingdom.png) no-repeat center center / 15px 10px;
+          background: url(images/flags/united-kingdom.png) no-repeat center center / 15px 10px;
         }
         body[data-lang="fr"] & {
-          background: url(/engines/quick-fix/images/flags/france.png) no-repeat center center / 15px 10px;
+          background: url(images/flags/france.png) no-repeat center center / 15px 10px;
 
         }
         body[data-lang="de"] & {
-          background: url(/engines/quick-fix/images/flags/germany.png) no-repeat center center / 15px 10px;
+          background: url(images/flags/germany.png) no-repeat center center / 15px 10px;
 
         }
         &[type="text"] {
@@ -1083,7 +1083,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-panel-body.x-border-layout-ct > div:nth
         }
       }
       .x-form-field-wrap .x-form-trigger {
-        background: url(/engines/quick-fix/images/combo-arrow.png) no-repeat center center transparent;
+        background: url(images/combo-arrow.png) no-repeat center center transparent;
         height: 14px;
         width: 10px;
         left: 22px;
@@ -1112,7 +1112,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-panel-body.x-border-layout-ct > div:nth
     opacity: 1;
   }
   > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(6) > div {
-    background: url(/engines/quick-fix/images/icon-publication-launcher.png) no-repeat center center;
+    background: url(images/icon-publication-launcher.png) no-repeat center center;
     background-size: 100%;
     width: 18px;
     margin-top: 2px;
@@ -1262,13 +1262,13 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs .x-tab-strip.x-tab-
   height: 100%;
   position: absolute;
   top: 0;
-  background: url(/engines/quick-fix/images/icon-expand-side-bar.png) no-repeat center center #edf4f8;
+  background: url(images/icon-expand-side-bar.png) no-repeat center center #edf4f8;
   right: -15px;
 }
 
 body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs {
   > div:nth-child(1) > div:nth-child(2) {
-    background: url(/engines/quick-fix/images/icon-collapse-side-bar.png) no-repeat center center;
+    background: url(images/icon-collapse-side-bar.png) no-repeat center center;
     opacity: 0.1;
   }
   &:hover > div:nth-child(1) > div:nth-child(2) {
@@ -1281,7 +1281,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs {
   right: 30px;
   top: -4px;
   img {
-    background: url(/engines/quick-fix/images/icon-lock@X2.png) no-repeat !important;
+    background: url(images/icon-lock@X2.png) no-repeat !important;
     padding-left: 25px;
     width: 25px !important;
     height: 25px !important;
@@ -1289,7 +1289,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     display: block;
-    /* background: url(/engines/quick-fix/images/tabs-pages.png) no-repeat!important; */
+    /* background: url(images/tabs-pages.png) no-repeat!important; */
     background-position: center center !important;
     background-size: 19px 19px !important;
   }
@@ -1329,7 +1329,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] {
     left: 342px;
     pointer-events: all;
     margin-top: -21px;
-    background: url(/engines/quick-fix/images/icon-more-options-dark-50@X2.png) no-repeat center center;
+    background: url(images/icon-more-options-dark-50@X2.png) no-repeat center center;
     background-size: 10px 2px;
     text-indent: -50000px;
     display: block;
@@ -1338,17 +1338,17 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] {
     opacity: 0;
   }
   #JahiaGxtPagesTab .x-grid3-row-over .x-tree3-node-text::after, #JahiaGxtFileImagesBrowseTab .x-grid3-row-over .x-tree3-node-text::after, #JahiaGxtContentBrowseTab .x-grid3-row-over .x-tree3-node-text::after {
-    background: url(/engines/quick-fix/images/icon-more-options-dark@X2.png) no-repeat center center;
+    background: url(images/icon-more-options-dark@X2.png) no-repeat center center;
     background-size: 10px 2px;
     opacity: 1;
   }
   #JahiaGxtPagesTab .x-grid3-row-selected .x-tree3-node-text::after, #JahiaGxtFileImagesBrowseTab .x-grid3-row-selected .x-tree3-node-text::after, #JahiaGxtContentBrowseTab .x-grid3-row-selected .x-tree3-node-text::after {
-    background: url(/engines/quick-fix/images/icon-more-options-white-50@X2.png) no-repeat center center;
+    background: url(images/icon-more-options-white-50@X2.png) no-repeat center center;
     background-size: 10px 2px;
     opacity: 1;
   }
   #JahiaGxtPagesTab .x-grid3-row-selected.x-grid3-row-over .x-tree3-node-text::after, #JahiaGxtFileImagesBrowseTab .x-grid3-row-selected.x-grid3-row-over .x-tree3-node-text::after, #JahiaGxtContentBrowseTab .x-grid3-row-selected.x-grid3-row-over .x-tree3-node-text::after {
-    background: url(/engines/quick-fix/images/icon-more-options-white@X2.png) no-repeat center center;
+    background: url(images/icon-more-options-white@X2.png) no-repeat center center;
     background-size: 10px 2px;
   }
 }
@@ -1492,7 +1492,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] {
 
 #JahiaGxtPagesTab {
   .x-tree3-node-icon {
-    background: url(/engines/quick-fix/images/tabs-pages-dark@X2.png) no-repeat !important;
+    background: url(images/tabs-pages-dark@X2.png) no-repeat !important;
     padding-left: 16px;
     width: 16px;
     height: 16px;
@@ -1500,13 +1500,13 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     display: inline;
-    /* background: url(/engines/quick-fix/images/tabs-pages.png) no-repeat!important; */
+    /* background: url(images/tabs-pages.png) no-repeat!important; */
     opacity: 0.6;
     background-position: top -3px left -3px !important;
     background-size: 23px 23px !important;
   }
   .x-grid3-row-selected .x-tree3-node-icon {
-    background: url(/engines/quick-fix/images/tabs-pages-white@X2.png) no-repeat !important;
+    background: url(images/tabs-pages-white@X2.png) no-repeat !important;
     opacity: 0.9;
     background-size: 23px 23px !important;
     background-position: top -3px left -3px !important;
@@ -1517,7 +1517,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] {
 
 #JahiaGxtCreateContentTab {
   .x-tree3-node-text img {
-    background: url(/engines/quick-fix/images/tabs-content-dark@X2.png) top 1px center no-repeat !important;
+    background: url(images/tabs-content-dark@X2.png) top 1px center no-repeat !important;
     padding-left: 23px;
     width: 23px;
     overflow: hidden;
@@ -1529,11 +1529,11 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] {
   }
   .x-grid3-row-selected {
     .x-tree3-node-text img {
-      background: url(/engines/quick-fix/images/tabs-content-white@X2.png) top -1px center no-repeat !important;
+      background: url(images/tabs-content-white@X2.png) top -1px center no-repeat !important;
       background-size: 23px 23px !important;
     }
     .x-tree3-node-icon {
-      background: url(/engines/quick-fix/images/icon-page-small-dark-selected.png) no-repeat;
+      background: url(images/icon-page-small-dark-selected.png) no-repeat;
     }
   }
   .x-tree3-node-text img {
@@ -1541,7 +1541,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] {
       xdisplay: none;
       height: 20px;
       width: 20px;
-      background: url(/engines/quick-fix/images/tabs-files-dark@X2.png) no-repeat center center !important;
+      background: url(images/tabs-files-dark@X2.png) no-repeat center center !important;
       padding-left: 20px;
       overflow: hidden;
       display: inline;
@@ -1552,7 +1552,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] {
   }
   .x-grid3-row-selected .x-tree3-node-text img {
     &[src="/modules/assets/icons/jmix_formContent.png"], &[src="/modules/forum/icons/jmix_forumContent.png"], &[src="/modules/assets/icons/jmix_siteComponent.png"], &[src="/modules/assets/icons/jmix_socialComponent.png"], &[src="/modules/assets/icons/jmix_structuredContent.png"], &[src="/modules/assets/icons/jmix_multimediaContent.png"], &[src="/modules/assets/icons/jmix_basicContent.png"], &[src="/modules/assets/icons/jmix_listContent.png"], &[src="/modules/tags/icons/jmix_tagsContent.png"], &[src="/modules/assets/icons/jmix_queryContent.png"], &[src="/modules/assets/icons/jmix_droppableContent.png"], &[src="/modules/bootstrap3-core/icons/bootstrap3mix_component.png"], &[src="/modules/assets/icons/jmix_layoutComponentContent.png"] {
-      background: url(/engines/quick-fix/images/tabs-files@X2.png) no-repeat center center !important;
+      background: url(images/tabs-files@X2.png) no-repeat center center !important;
       background-size: 23px 23px !important;
       opacity: 1;
     }
@@ -1590,7 +1590,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs .x-tab-strip-active
 
 #JahiaGxtSidePanelTabs__JahiaGxtPagesTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-pages-white@X2.png) no-repeat;
+    background: url(images/tabs-pages-white@X2.png) no-repeat;
     padding-left: 23px;
     width: 23px;
     height: 23px;
@@ -1618,7 +1618,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] #JahiaGxtSidePanelTabs .x-tab-strip-active
 
 body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtPagesTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-pages-dark@X2.png) no-repeat;
+    background: url(images/tabs-pages-dark@X2.png) no-repeat;
     background-size: 23px 23px;
   }
   &::after {
@@ -1626,7 +1626,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtPagesTab
   }
   &.x-tab-strip-active {
     img {
-      background: url(/engines/quick-fix/images/tabs-pages-blue@X2.png) no-repeat;
+      background: url(images/tabs-pages-blue@X2.png) no-repeat;
       background-size: 23px 23px;
     }
     &::after {
@@ -1650,7 +1650,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtPagesTab
 
 #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-create-white@X2.png) no-repeat;
+    background: url(images/tabs-create-white@X2.png) no-repeat;
     padding-left: 23px;
     width: 23px;
     height: 23px;
@@ -1678,7 +1678,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtPagesTab
 
 body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-create-dark@X2.png) no-repeat;
+    background: url(images/tabs-create-dark@X2.png) no-repeat;
     background-size: 23px 23px;
   }
   &::after {
@@ -1686,7 +1686,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtCreateCo
   }
   &.x-tab-strip-active {
     img {
-      background: url(/engines/quick-fix/images/tabs-create-blue@X2.png) no-repeat;
+      background: url(images/tabs-create-blue@X2.png) no-repeat;
       background-size: 23px 23px;
     }
     &::after {
@@ -1707,7 +1707,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtCreateCo
 
 #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-content-white@X2.png) no-repeat;
+    background: url(images/tabs-content-white@X2.png) no-repeat;
     padding-left: 23px;
     width: 23px;
     height: 23px;
@@ -1735,7 +1735,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtCreateCo
 
 body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-content-dark@X2.png) no-repeat;
+    background: url(images/tabs-content-dark@X2.png) no-repeat;
     background-size: 23px 23px;
   }
   &::after {
@@ -1743,7 +1743,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtContentB
   }
   &.x-tab-strip-active {
     img {
-      background: url(/engines/quick-fix/images/tabs-content-blue@X2.png) no-repeat;
+      background: url(images/tabs-content-blue@X2.png) no-repeat;
       background-size: 23px 23px;
     }
     &::after {
@@ -1764,7 +1764,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtContentB
 
 #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-files@X2.png) no-repeat;
+    background: url(images/tabs-files@X2.png) no-repeat;
     padding-left: 23px;
     width: 23px;
     height: 23px;
@@ -1792,7 +1792,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtContentB
 
 body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-files-dark@X2.png) no-repeat;
+    background: url(images/tabs-files-dark@X2.png) no-repeat;
     background-size: 23px 23px;
   }
   &::after {
@@ -1800,7 +1800,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtFileImag
   }
   &.x-tab-strip-active {
     img {
-      background: url(/engines/quick-fix/images/tabs-files-blue@X2.png) no-repeat;
+      background: url(images/tabs-files-blue@X2.png) no-repeat;
       background-size: 23px 23px;
     }
     &::after {
@@ -1821,7 +1821,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtFileImag
 
 #JahiaGxtSidePanelTabs__JahiaGxtSearchTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-search-white@X2.png) no-repeat;
+    background: url(images/tabs-search-white@X2.png) no-repeat;
     padding-left: 23px;
     width: 23px;
     height: 23px;
@@ -1849,7 +1849,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtFileImag
 
 body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtSearchTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-search-dark@X2.png) no-repeat;
+    background: url(images/tabs-search-dark@X2.png) no-repeat;
     background-size: 23px 23px;
   }
   &::after {
@@ -1857,7 +1857,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtSearchTa
   }
   &.x-tab-strip-active {
     img {
-      background: url(/engines/quick-fix/images/tabs-search-blue@X2.png) no-repeat;
+      background: url(images/tabs-search-blue@X2.png) no-repeat;
       background-size: 23px 23px;
     }
     &::after {
@@ -1878,7 +1878,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtSearchTa
 
 #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-taxonomy-white@X2.png) no-repeat;
+    background: url(images/tabs-taxonomy-white@X2.png) no-repeat;
     padding-left: 23px;
     width: 23px;
     height: 23px;
@@ -1904,11 +1904,11 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtSearchTa
 
 #JahiaGxtCategoryBrowseTab {
   .x-grid3-row-selected img.x-tree3-node-icon {
-    background: url(/engines/quick-fix/images/placeholder-icon-white@X2.png) no-repeat !important;
+    background: url(images/placeholder-icon-white@X2.png) no-repeat !important;
     background-size: 13px 13px !important;
   }
   img.x-tree3-node-icon {
-    background: url(/engines/quick-fix/images/placeholder-icon-dark@X2.png) no-repeat !important;
+    background: url(images/placeholder-icon-dark@X2.png) no-repeat !important;
     padding-left: 16px;
     width: 16px;
     height: 16px;
@@ -1924,7 +1924,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtSearchTa
 
 body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab {
   img {
-    background: url(/engines/quick-fix/images/tabs-taxonomy-dark@X2.png) no-repeat;
+    background: url(images/tabs-taxonomy-dark@X2.png) no-repeat;
     background-size: 23px 23px;
   }
   &::after {
@@ -1932,7 +1932,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtCategory
   }
   &.x-tab-strip-active {
     img {
-      background: url(/engines/quick-fix/images/tabs-taxonomy-blue@X2.png) no-repeat;
+      background: url(images/tabs-taxonomy-blue@X2.png) no-repeat;
       background-size: 23px 23px;
     }
     &::after {
@@ -1966,7 +1966,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtCategory
 	content: "Hello";
 	width: 30px;
 	height: 30px;
-	background: url(/engines/quick-fix/images/dx_logo_solid.png) no-repeat center center;
+	background: url(images/dx_logo_solid.png) no-repeat center center;
 	ground-size: 100%;
 	display: block;
 	margin-bottom: 10px;
@@ -1993,7 +1993,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtCategory
   #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab {
     position: fixed;
     bottom: 0;
-    background: url(/engines/quick-fix/images/tabs-settings-white@X2.png) no-repeat top 3px center;
+    background: url(images/tabs-settings-white@X2.png) no-repeat top 3px center;
     background-size: 23px 23px;
   }
 }
@@ -2003,12 +2003,12 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtCategory
 body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab {
   position: fixed;
   bottom: 0;
-  background: url(/engines/quick-fix/images/tabs-settings-dark@X2.png) no-repeat top 3px center!important;
+  background: url(images/tabs-settings-dark@X2.png) no-repeat top 3px center!important;
   background-size: 23px 23px!important;
   &.x-tab-strip-active {
     position: fixed;
     bottom: 0;
-    background: url(/engines/quick-fix/images/tabs-settings-blue@X2.png) no-repeat top 3px center !important;
+    background: url(images/tabs-settings-blue@X2.png) no-repeat top 3px center !important;
     background-size: 23px 23px !important;
   }
 }
@@ -2072,7 +2072,7 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtChannels
 #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab {
   position: fixed;
   bottom: 50px;
-  background: url(/engines/quick-fix/images/tabs-devices-white@X2.png) no-repeat top 3px center;
+  background: url(images/tabs-devices-white@X2.png) no-repeat top 3px center;
   background-size: 23px 23px;
 }
 
@@ -2081,12 +2081,12 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtChannels
 body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab {
   position: fixed;
   bottom: 50px;
-  background: url(/engines/quick-fix/images/tabs-devices-dark@X2.png) no-repeat top 3px center;
+  background: url(images/tabs-devices-dark@X2.png) no-repeat top 3px center;
   background-size: 23px 23px;
   &.x-tab-strip-active {
     position: fixed;
     bottom: 50px;
-    background: url(/engines/quick-fix/images/tabs-devices-blue@X2.png) no-repeat top 3px center;
+    background: url(images/tabs-devices-blue@X2.png) no-repeat top 3px center;
     background-size: 23px 23px;
   }
 }
@@ -2237,13 +2237,13 @@ body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtChannels
     display: inline;
     vertical-align: top;
     &[src="/css/images/flags/en_on.png"] {
-      background: url(/engines/quick-fix/images/flags/united-kingdom.png) no-repeat !important;
+      background: url(images/flags/united-kingdom.png) no-repeat !important;
     }
     &[src="/css/images/flags/de_on.png"] {
-      background: url(/engines/quick-fix/images/flags/germany.png) no-repeat !important;
+      background: url(images/flags/germany.png) no-repeat !important;
     }
     &[src="/css/images/flags/fr_on.png"] {
-      background: url(/engines/quick-fix/images/flags/france.png) no-repeat !important;
+      background: url(images/flags/france.png) no-repeat !important;
     }
   }
 }
@@ -2316,7 +2316,7 @@ span.x-menu-item, div.x-combo-list-item {
 		top: 20px;
 		left: 20px;
 		z-index: 99;
-		background: url(/engines/quick-fix/images/icon-close-white@X2.png) no-repeat center center / 20px 20px;
+		background: url(images/icon-close-white@X2.png) no-repeat center center / 20px 20px;
 		text-indent: -50000px;
 		width: 20px;
 		height: 20px;
@@ -2374,7 +2374,7 @@ span.x-menu-item, div.x-combo-list-item {
       }
     }
     &:nth-child(1) span.x-menu-item, &:nth-child(2) span.x-menu-item, &:nth-child(3) span.x-menu-item, &:nth-child(4) span.x-menu-item, &:nth-child(5) span.x-menu-item, &:nth-child(6) span.x-menu-item, &:nth-child(7) span.x-menu-item {
-      background: url(/engines/quick-fix/images/dx_logo_inverted.png) no-repeat top 16px center;
+      background: url(images/dx_logo_inverted.png) no-repeat top 16px center;
       background-size: 50%;
     }
   }
@@ -2466,7 +2466,7 @@ span.x-menu-item img {
             top: 2px;
           }
           &:hover .x-form-field-wrap .x-form-trigger {
-            background: url(/engines/quick-fix/images/icon-toggle-expanded-small-white.png) no-repeat center center transparent;
+            background: url(images/icon-toggle-expanded-small-white.png) no-repeat center center transparent;
           }
         }
         &:nth-child(3) {
@@ -2743,13 +2743,13 @@ span.x-menu-item img {
       }
       div {
         .x-form-trigger.x-form-trigger-arrow {
-          background: url(/engines/quick-fix/images/icon-toggle-expanded-small-normal.png) no-repeat center center rgba(245, 245, 245, 1);
+          background: url(images/icon-toggle-expanded-small-normal.png) no-repeat center center rgba(245, 245, 245, 1);
           height: 29px;
           width: 25px;
           right: 0px;
         }
         &:hover .x-form-trigger.x-form-trigger-arrow {
-          background: url(/engines/quick-fix/images/icon-toggle-expanded-small-selected.png) no-repeat center center rgba(245, 245, 245, 1);
+          background: url(images/icon-toggle-expanded-small-selected.png) no-repeat center center rgba(245, 245, 245, 1);
           height: 29px;
           width: 25px;
           right: 0px;
@@ -2800,7 +2800,7 @@ span.x-menu-item img {
     /* position: absolute; */
     /* right: 1px; */
     /* top: 5px; */
-    background: url(/engines/quick-fix/images/icon-close-small-light.png) no-repeat left 5px center rgba(114, 121, 125, 1);
+    background: url(images/icon-close-small-light.png) no-repeat left 5px center rgba(114, 121, 125, 1);
     border: 5px solid rgba(114, 121, 125, 1);
     transition: all 0.2s ease-in 0.2s;
     width: 18px;
@@ -3061,7 +3061,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     /* background: blue; */
     padding: 5px 0px 5px 0;
     img {
-      background: url(/engines/quick-fix/images/icon-page-dark@X2.png) no-repeat !important;
+      background: url(images/icon-page-dark@X2.png) no-repeat !important;
       padding-left: 16px;
       width: 16px;
       height: 16px;
@@ -3073,7 +3073,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     }
   }
   .x-grid3-row-selected .x-grid3-col-icon img {
-    background: url(/engines/quick-fix/images/icon-page-small-dark-selected.png) no-repeat !important;
+    background: url(images/icon-page-small-dark-selected.png) no-repeat !important;
   }
   .my-paging-display {
     /* background: red; */
@@ -3335,10 +3335,10 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       right: 2px;
     }
     .x-form-trigger-arrow {
-      background: url(/engines/quick-fix/images/icon-toggle-expanded-small-normal.png) no-repeat center center;
+      background: url(images/icon-toggle-expanded-small-normal.png) no-repeat center center;
     }
     .x-form-clear-trigger {
-      background: url(/engines/quick-fix/images/icon-close-small-dark.png) no-repeat center center;
+      background: url(images/icon-close-small-dark.png) no-repeat center center;
     }
   }
   .x-form-twin-triggers {
@@ -3373,7 +3373,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       xtext-transform: none;
       font-size: 11px;
       font-weight: 300;
-      background: url(/engines/quick-fix/images/icon-magnifying-glass--small-white.png) no-repeat left 9px center #5c6164;
+      background: url(images/icon-magnifying-glass--small-white.png) no-repeat left 9px center #5c6164;
       padding: 9px 10px 8px 31px !important;
       height: auto !important;
     }
@@ -3488,7 +3488,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
   }
   img {
     &[src="/engines/images/devices/generic-small.png"] {
-      background: url(/engines/quick-fix/images/devices-generic-large.png) no-repeat !important;
+      background: url(images/devices-generic-large.png) no-repeat !important;
       padding-left: 150px;
       width: 150px;
       height: 150px;
@@ -3497,10 +3497,10 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       box-sizing: border-box;
       display: inline;
       margin-bottom: 20px;
-      /* background: url(/engines/quick-fix/images/tabs-pages.png) no-repeat!important; */
+      /* background: url(images/tabs-pages.png) no-repeat!important; */
     }
     &[src="/modules/channels/images/devices/iphone-small.png"] {
-      background: url(/engines/quick-fix/images/devices-iphone-small.png) no-repeat !important;
+      background: url(images/devices-iphone-small.png) no-repeat !important;
       padding-left: 150px;
       width: 150px;
       height: 150px;
@@ -3511,7 +3511,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       margin-bottom: 20px;
     }
     &[src="/modules/channels/images/devices/samsunggalaxys4-small.png"] {
-      background: url(/engines/quick-fix/images/devices-galaxy-s4-small.png) no-repeat !important;
+      background: url(images/devices-galaxy-s4-small.png) no-repeat !important;
       padding-left: 150px;
       width: 150px;
       height: 150px;
@@ -3522,7 +3522,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       margin-bottom: 20px;
     }
     &[src="/modules/channels/images/devices/samsunggalaxytab7-small.png"] {
-      background: url(/engines/quick-fix/images/devices-galaxy-tab-3-small.png) no-repeat !important;
+      background: url(images/devices-galaxy-tab-3-small.png) no-repeat !important;
       padding-left: 150px;
       width: 150px;
       height: 150px;
@@ -3533,7 +3533,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       margin-bottom: 20px;
     }
     &[src="/modules/channels/images/devices/android-small.png"] {
-      background: url(/engines/quick-fix/images/devices-android-small.png) no-repeat !important;
+      background: url(images/devices-android-small.png) no-repeat !important;
       padding-left: 150px;
       width: 150px;
       height: 150px;
@@ -3544,7 +3544,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       margin-bottom: 20px;
     }
     &[src="/modules/channels/images/devices/bbstorm-small.png"] {
-      background: url(/engines/quick-fix/images/devices-blackberry-storm-small.png) no-repeat !important;
+      background: url(images/devices-blackberry-storm-small.png) no-repeat !important;
       padding-left: 150px;
       width: 150px;
       height: 150px;
@@ -3555,7 +3555,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       margin-bottom: 20px;
     }
     &[src="/modules/channels/images/devices/samsunggalaxynote3-small.png"] {
-      background: url(/engines/quick-fix/images/devices-galaxy-note-3-small.png) no-repeat !important;
+      background: url(images/devices-galaxy-note-3-small.png) no-repeat !important;
       padding-left: 150px;
       width: 150px;
       height: 150px;
@@ -3566,7 +3566,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       margin-bottom: 20px;
     }
     &[src="/modules/channels/images/devices/kindlefire-small.png"] {
-      background: url(/engines/quick-fix/images/devices-kindle-fire-small.png) no-repeat !important;
+      background: url(images/devices-kindle-fire-small.png) no-repeat !important;
       padding-left: 150px;
       width: 150px;
       height: 150px;
@@ -3577,7 +3577,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       margin-bottom: 20px;
     }
     &[src="/modules/channels/images/devices/ipad-small.png"] {
-      background: url(/engines/quick-fix/images/devices-apple-ipad-small.png) no-repeat !important;
+      background: url(images/devices-apple-ipad-small.png) no-repeat !important;
       padding-left: 150px;
       width: 150px;
       height: 150px;
@@ -3588,7 +3588,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       margin-bottom: 20px;
     }
     &[src="/modules/channels/images/devices/samsunggalaxytab10.1-small.png"] {
-      background: url(/engines/quick-fix/images/devices-galaxy-tab-3-small.png) no-repeat !important;
+      background: url(images/devices-galaxy-tab-3-small.png) no-repeat !important;
       padding-left: 150px;
       width: 150px;
       height: 150px;
@@ -3600,7 +3600,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     }
   }
   form .x-form-trigger-arrow {
-    background: url(/engines/quick-fix/images/combo-arrow.png) no-repeat !important;
+    background: url(images/combo-arrow.png) no-repeat !important;
     padding-left: 17px;
     width: 17px;
     height: 11px;
@@ -3745,20 +3745,20 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
       color: rgba(49, 49, 49, 0.7);
     }
     img {
-      background: url(/engines/quick-fix/images/icon-magnifying-glass--small-white.png) no-repeat center center transparent;
+      background: url(images/icon-magnifying-glass--small-white.png) no-repeat center center transparent;
       border: none;
       left: 5px;
       top: 11px;
     }
     input[type="text"]:focus + img {
-      background: url(/engines/quick-fix/images/icon-magnifying-glass--small-hover.png) no-repeat center center transparent;
+      background: url(images/icon-magnifying-glass--small-hover.png) no-repeat center center transparent;
       border: none;
     }
   }
 }
 
 .x-tree3-node-joint {
-  background-image: url(/engines/quick-fix/images/icon-board.png) !important;
+  background-image: url(images/icon-board.png) !important;
   opacity: 0.5;
 }
 
@@ -3770,7 +3770,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
   xdisplay: none;
   height: 20px;
   width: 20px;
-  background: url(/engines/quick-fix/images/tabs-files-dark@X2.png) no-repeat center center;
+  background: url(images/tabs-files-dark@X2.png) no-repeat center center;
   padding-left: 20px;
   overflow: hidden;
   display: inline;
@@ -3780,14 +3780,14 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 }
 
 #JahiaGxtContentBrowseTab .x-grid3-row-selected img[src="/modules/assets/icons/jnt_virtualsite.png"] {
-  background: url(/engines/quick-fix/images/tabs-files@X2.png) no-repeat center center;
+  background: url(images/tabs-files@X2.png) no-repeat center center;
   background-size: 23px 23px;
   opacity: 1;
 }
 
 #JahiaGxtFileImagesBrowseTab {
   .x-grid3-row-selected img[src="/modules/assets/icons/jnt_virtualsite.png"] {
-    background: url(/engines/quick-fix/images/tabs-files@X2.png) no-repeat center center;
+    background: url(images/tabs-files@X2.png) no-repeat center center;
     background-size: 23px 23px;
     opacity: 1;
   }
@@ -3950,7 +3950,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     overflow-x: hidden !important;
   }
   img.x-tree3-node-icon {
-    background: url(/engines/quick-fix/images/placeholder-icon-dark@X2.png) no-repeat !important;
+    background: url(images/placeholder-icon-dark@X2.png) no-repeat !important;
     padding-left: 16px;
     width: 16px;
     height: 16px;
@@ -3961,7 +3961,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     background-size: 13px 13px !important;
   }
   .x-grid3-row-selected img.x-tree3-node-icon {
-    background: url(/engines/quick-fix/images/placeholder-icon-white@X2.png) no-repeat !important;
+    background: url(images/placeholder-icon-white@X2.png) no-repeat !important;
     background-size: 13px 13px !important;
   }
   .x-tree3-node-text {
@@ -3977,7 +3977,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     /* border-left: 3px solid lightgreen; */
     height: 20px;
     width: 20px;
-    background: url(/engines/quick-fix/images/tabs-files-dark@X2.png) no-repeat center center;
+    background: url(images/tabs-files-dark@X2.png) no-repeat center center;
     padding-left: 20px;
     overflow: hidden;
     display: inline;
@@ -3986,7 +3986,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     opacity: 0.6;
   }
   .x-grid3-row-selected img[src="/modules/assets/icons/jnt_contentFolder.png"] {
-    background: url(/engines/quick-fix/images/tabs-files@X2.png) no-repeat center center !important;
+    background: url(images/tabs-files@X2.png) no-repeat center center !important;
     background-size: 23px 23px !important;
     opacity: 1;
   }
@@ -3997,7 +3997,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     /* border-left: 3px solid lightgreen; */
     height: 20px;
     width: 20px;
-    background: url(/engines/quick-fix/images/tabs-files-dark@X2.png) no-repeat center center;
+    background: url(images/tabs-files-dark@X2.png) no-repeat center center;
     padding-left: 20px;
     overflow: hidden;
     display: inline;
@@ -4006,7 +4006,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
     opacity: 0.6;
   }
   .x-grid3-row-selected img[src="/modules/assets/icons/jnt_folder.png"] {
-    background: url(/engines/quick-fix/images/tabs-files@X2.png) no-repeat center center;
+    background: url(images/tabs-files@X2.png) no-repeat center center;
     background-size: 23px 23px;
     opacity: 1;
   }
@@ -4030,7 +4030,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
           display: block;
           width: 18px;
           height: 18px;
-          background: url(/engines/quick-fix/images/icon-check-on.png) no-repeat top left red;
+          background: url(images/icon-check-on.png) no-repeat top left red;
           z-index: 999999;
           text-indent: -50000px;
           background-size: 15px 15px;
@@ -4152,11 +4152,11 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
         text-indent: -50000px;
         right: 2px;
         top: 2px;
-        background: url(/engines/quick-fix/images/icon-more-options-white-50@X2.png) no-repeat center center rgba(49, 49, 49, 1);
+        background: url(images/icon-more-options-white-50@X2.png) no-repeat center center rgba(49, 49, 49, 1);
         background-size: 10px 2px;
         z-index: 9999999999;
         &:hover {
-          background: url(/engines/quick-fix/images/icon-more-options-white@X2.png) no-repeat center center rgba(49, 49, 49, 1);
+          background: url(images/icon-more-options-white@X2.png) no-repeat center center rgba(49, 49, 49, 1);
           background-size: 10px 2px;
           cursor: pointer;
         }
@@ -4237,7 +4237,7 @@ body {
       top: 10px;
       width: 45px;
       height: 45px;
-      background: url(/engines/quick-fix/images/icon-close-large.png) no-repeat center center #5c6164;
+      background: url(images/icon-close-large.png) no-repeat center center #5c6164;
     }
     .x-window-header-text {
       /* background: yellow; */
@@ -4392,7 +4392,7 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background: url(/engines/quick-fix/images/loader-animated.gif) no-repeat center center;
+    background: url(images/loader-animated.gif) no-repeat center center;
   }
   iframe {
     xxxbox-shadow: none !important;
@@ -4401,5 +4401,5 @@ body {
 }
 
 #JahiaGxtRefreshSidePanelButton {
-  background: url(/engines/quick-fix/images/icon-publication-launcher.png) no-repeat center center;
+  background: url(images/icon-publication-launcher.png) no-repeat center center;
 }

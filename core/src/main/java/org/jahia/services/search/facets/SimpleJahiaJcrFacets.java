@@ -44,6 +44,7 @@
 package org.jahia.services.search.facets;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.lucene.*;
 import org.apache.jackrabbit.core.query.lucene.hits.AbstractHitCollector;
 import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
@@ -116,9 +117,10 @@ public class SimpleJahiaJcrFacets {
 
     public static final String PROPNAME_INDEX_SEPARATOR = "#";
     
-    private static final Pattern propertyFieldPrefix = Pattern.compile("\\d+:[0-9a-zA-Z]+\\[(.*)");    
-    private static final Pattern nameFieldPrefix = Pattern.compile("(\\d+):(.*)");    
-
+    private static final Pattern PROPERTY_FIELD_PREFIX_PATTERN = Pattern.compile("\\d+:[0-9a-zA-Z]+\\[(.*)");    
+    private static final Pattern NAME_FIELD_PREFIX_PATTERN = Pattern.compile("(\\d+):(.*)");    
+    private static final Pattern UUID_PATTERN = Pattern.compile("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}");
+    
     /** The main set of documents all facet counts should be relative to */
     protected OpenBitSet docs;
     /** Configuration params behavior should be driven by */
@@ -470,7 +472,7 @@ public class SimpleJahiaJcrFacets {
         NamedList<Object> resolvedValues = new NamedList<>();
         for (Map.Entry<String, Object> facetValueEntry : values) {
             String facetValueKey = facetValueEntry.getKey();
-            facetValueKey = propertyFieldPrefix.matcher(facetValueKey).replaceFirst("$1") + "##q->##" + facetValueEntry.getKey();
+            facetValueKey = PROPERTY_FIELD_PREFIX_PATTERN.matcher(facetValueKey).replaceFirst("$1") + "##q->##" + facetValueEntry.getKey();
             resolvedValues.add(facetValueKey, facetValueEntry.getValue());
         }
         return resolvedValues;    
@@ -480,7 +482,7 @@ public class SimpleJahiaJcrFacets {
         NamedList<Object> resolvedValues = new NamedList<>();
         for (Map.Entry<String, Object> facetValueEntry : values) {
             String facetValueKey = facetValueEntry.getKey();
-            Matcher matcher = nameFieldPrefix.matcher(facetValueKey);
+            Matcher matcher = NAME_FIELD_PREFIX_PATTERN.matcher(facetValueKey);
             if (matcher.matches()) {
                 String nsPrefix = matcher.group(1);
                 try {
@@ -516,10 +518,15 @@ public class SimpleJahiaJcrFacets {
             
             for (Map.Entry<String, Object> facetValueEntry : values) {
                 String facetValueKey = facetValueEntry.getKey();
-                sortedLabels.put(
-                        renderer.getStringRendering(locale, fieldPropertyType, resolveReference
-                                ? currentUserSession.getNode(StringUtils.substring(facetValueKey, facetValueKey.indexOf('/'))) : facetValueKey),
-                        i++);
+                Object propertyValue = facetValueKey;
+                if (resolveReference) {
+                    if (facetValueKey.length() == NodeId.UUID_FORMATTED_LENGTH && UUID_PATTERN.matcher(facetValueKey).matches()) {
+                        propertyValue = currentUserSession.getNodeByIdentifier(facetValueKey);
+                    } else {
+                        propertyValue = currentUserSession.getNode(StringUtils.substring(facetValueKey, facetValueKey.indexOf('/')));
+                    }
+                } 
+                sortedLabels.put(renderer.getStringRendering(locale, fieldPropertyType, propertyValue), i++);
             }
             
             NamedList<Object> sortedValues = new NamedList<>();

@@ -94,6 +94,11 @@ public class BundleServiceDelegate implements BundleService {
     }
 
     @Override
+    public void refresh(Collection<BundleInfo> bundleInfos, String target) throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException {
+        lookupService().refresh(bundleInfos, target);
+    }
+
+    @Override
     public Map<String, BundleInformation> getInfo(BundleInfo bundleInfo, String target) throws ModuleManagementException, InvalidTargetException {
         return lookupService().getInfo(bundleInfo, target);
     }

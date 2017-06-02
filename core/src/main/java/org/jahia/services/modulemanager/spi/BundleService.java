@@ -127,6 +127,18 @@ public interface BundleService {
             throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
 
     /**
+     * Performs the refresh operation with the provided bundles on the target group of cluster nodes.
+     *
+     * @param bundleInfos The bundles to perform operation for
+     * @param target The group of cluster nodes targeted by the refresh operation (see JavaDoc of the class)
+     * @throws ModuleManagementException in case of operation failure
+     * @throws ModuleNotFoundException in case any if the corresponding bundles cannot be found
+     * @throws InvalidTargetException in case target is not a valid target for module operation
+     */
+    void refresh(Collection<BundleInfo> bundleInfos, String target)
+            throws ModuleManagementException, ModuleNotFoundException, InvalidTargetException;
+
+    /**
      * Get info about a bundle.
      *
      * @param bundleInfo The bundle to retrieve info about

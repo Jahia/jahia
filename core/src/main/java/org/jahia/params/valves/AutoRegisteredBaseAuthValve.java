@@ -44,10 +44,12 @@
 package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.pipelines.impl.GenericPipeline;
 import org.jahia.pipelines.valves.Valve;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -56,7 +58,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @author Sergiy Shyrkov
  * @since Jahia 6.6.0.0
  */
-public abstract class AutoRegisteredBaseAuthValve extends BaseAuthValve implements InitializingBean {
+public abstract class AutoRegisteredBaseAuthValve extends BaseAuthValve implements InitializingBean, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(AutoRegisteredBaseAuthValve.class);
 
@@ -91,6 +93,14 @@ public abstract class AutoRegisteredBaseAuthValve extends BaseAuthValve implemen
         } else {
             authPipeline.addValve(this);
             logger.info("Registered authentication valve {}", getId());
+        }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        if (JahiaContextLoaderListener.isRunning()) {
+            removeValve(getId());
+            logger.info("Unregistered authentication valve {}", getId());
         }
     }
 

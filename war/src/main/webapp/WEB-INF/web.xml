@@ -132,6 +132,13 @@
     </filter>
 
     <filter>
+        <description>Handle http request that use "HEAD" method</description>
+        <filter-name>HttpHeadRequestFilter</filter-name>
+        <filter-class>org.jahia.bin.filters.HttpHeadRequestFilter</filter-class>
+        <async-supported>true</async-supported>
+    </filter>
+
+    <filter>
         <description>Allows temporary disabling request serving and switching to a maintenance mode.</description>
         <filter-name>MaintenanceFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -157,6 +164,11 @@
 
     <filter-mapping>
         <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>HttpHeadRequestFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 

@@ -116,7 +116,7 @@ public class SimpleModule extends Module {
         add(html);
 
 
-        if (bindable) {
+        if (bindable && head !=null) {
             head.addTool(new ToolButton("x-tool-pin", new BindSelectionListener(mainModule)));
         }
     }

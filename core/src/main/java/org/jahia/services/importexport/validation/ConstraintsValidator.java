@@ -55,6 +55,7 @@ import org.xml.sax.Attributes;
 
 import javax.jcr.PropertyType;
 import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.*;
 
@@ -159,20 +160,26 @@ public class ConstraintsValidator implements ImportValidator {
                         // for i18n nodes we check on the parent node but for the mixins, they are directly on the i18n node
                         // in all cases we check first on the primary nodetype that can miss the property, then on the mixin that can set it, in this case the
                         // entry is removed from otherConstraintViolations
-                        if (!extendedPropertyDefinition.isMultiple()) {
-                            if (!typeToCheck.canSetProperty(propertyName, JCRValueFactoryImpl.getInstance().createValue(value))) {
-                                otherConstraintViolations.put(propertyPath, propertyName + CONSTRAINT_SEPARATOR + value);
+                        try {
+                            int requiredType = typeToCheck.getPropertyDefinitionsAsMap().get(propertyName).getRequiredType();
+                            if (!extendedPropertyDefinition.isMultiple()) {
+                                if (!typeToCheck.canSetProperty(propertyName, JCRValueFactoryImpl.getInstance().createValue(value, requiredType))) {
+                                    otherConstraintViolations.put(propertyPath, propertyName + CONSTRAINT_SEPARATOR + value);
+                                }
+                            } else {
+                                String[] valuesAsString = "".equals(value) ? new String[0] : Patterns.SPACE.split(value);
+                                Value[] values = new Value[valuesAsString.length];
+                                int i = 0;
+                                for (String s : valuesAsString) {
+                                    values[i++] = JCRValueFactoryImpl.getInstance().createValue(JCRMultipleValueUtils.decode(s), requiredType);
+                                }
+                                if (!typeToCheck.canSetProperty(propertyName, values)) {
+                                    otherConstraintViolations.put(propertyPath, propertyName + CONSTRAINT_SEPARATOR + Arrays.toString(valuesAsString));
+                                }
                             }
-                        } else {
-                            String[] valuesAsString = "".equals(value) ? new String[0] : Patterns.SPACE.split(value);
-                            Value[] values = new Value[valuesAsString.length];
-                            int i = 0;
-                            for (String s : valuesAsString) {
-                                values[i++] = JCRValueFactoryImpl.getInstance().createValue(JCRMultipleValueUtils.decode(s));
-                            }
-                            if (!typeToCheck.canSetProperty(propertyName, values)) {
-                                otherConstraintViolations.put(propertyPath, propertyName + CONSTRAINT_SEPARATOR + Arrays.toString(valuesAsString));
-                            }
+                        } catch (ValueFormatException e) {
+                            String v = extendedPropertyDefinition.isMultiple() ? Arrays.toString("".equals(value) ? new String[0] : Patterns.SPACE.split(value)) : value;
+                            otherConstraintViolations.put(propertyPath, propertyName + CONSTRAINT_SEPARATOR + v);
                         }
                     }
                 }

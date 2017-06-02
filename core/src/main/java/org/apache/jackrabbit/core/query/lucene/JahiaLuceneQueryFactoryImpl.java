@@ -76,6 +76,7 @@ import org.jahia.services.search.facets.JahiaQueryParser;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
+import org.jahia.utils.security.AccessManagerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,6 +138,64 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             }
         }
     };
+
+    static boolean checkIndexedAcl(Map<String, Boolean> checkedAcls, String aclUuid, SessionImpl session) throws RepositoryException {
+        if (aclUuid == null) {
+            return true;
+        }
+        boolean canRead = false;
+
+        String[] acls = Patterns.SPACE.split(aclUuid);
+        ArrayUtils.reverse(acls);
+
+        HashSet<String> readPermissions = null;
+        for (String acl : acls) {
+            if (acl.contains("/")) {
+                // ACL indexed contains a single user ACE, get the username
+                String singleUser = StringUtils.substringAfter(acl, "/");
+                acl =  StringUtils.substringBefore(acl, "/");
+                if (singleUser.indexOf('/') != -1) {
+                    // Granted roles are specified in the indexed entry
+                    String roles = StringUtils.substringBeforeLast(singleUser, "/");
+                    singleUser = StringUtils.substringAfterLast(singleUser, "/");
+                    if (!singleUser.equals(session.getUserID())) {
+                        // If user does not match, skip this ACL
+                        continue;
+                    } else {
+                        // If user matches, check if one the roles gives the read permission
+                        for (String role : StringUtils.split(roles, '/')) {
+                            if (null == readPermissions) {
+                                readPermissions = Sets.newHashSet(AccessManagerUtils.getPrivilegeName(Privilege.JCR_READ, session.getWorkspace().getName()));
+                            }
+                            if (((JahiaAccessManager)session.getAccessControlManager()).matchPermission(readPermissions,role)) {
+                                // User and role matches, read is granted
+                                return true;
+                            }
+                        }
+                    }
+                } else {
+                    if (!singleUser.equals(session.getUserID())) {
+                        // If user does not match, skip this ACL
+                        continue;
+                    }
+                    // Otherwise, do normal ACL check.
+                }
+            }
+            // Verify first if this acl has already been checked
+            Boolean aclChecked = checkedAcls.get(acl);
+            if (aclChecked == null) {
+                try {
+                    canRead = session.getAccessManager().canRead(null, new NodeId(acl));
+                    checkedAcls.put(acl, canRead);
+                } catch (RepositoryException e) {
+                }
+            } else {
+                canRead = aclChecked;
+            }
+            break;
+        }
+        return canRead;
+    }
 
     public JahiaLuceneQueryFactoryImpl(SessionImpl session, SearchIndex index, Map<String, Value> bindVariables) throws RepositoryException {
         super(session, index, bindVariables);
@@ -216,7 +275,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                         try {
                             boolean canRead = true;
                             if (isAclUuidInIndex()) {
-                                canRead = checkIndexedAcl(checkedAcls, infos);
+                                canRead = checkIndexedAcl(checkedAcls, infos.getAclUuid());
                             }
                             boolean checkVisibility = "1".equals(infos.getCheckVisibility()) && Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName());
 
@@ -281,6 +340,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
                                         if (isAclUuidInIndex() && !checkVisibility) {
                                             bitset.set(infos.getDocNumber());
                                         } else { //try to load nodeWrapper to check the visibility rules
+                                            @SuppressWarnings("unused")
                                             NodeImpl objectNode = getNodeWithAclAndVisibilityCheck(node, checkVisibility);
                                             bitset.set(infos.getDocNumber());
                                         }
@@ -398,56 +458,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         return objectNode;
     }
 
-    private boolean checkIndexedAcl(Map<String, Boolean> checkedAcls, IndexedNodeInfo infos) throws RepositoryException {
-        boolean canRead = true;
-
-        String[] acls = infos.getAclUuid() != null ?
-                Patterns.SPACE.split(infos.getAclUuid()) : ArrayUtils.EMPTY_STRING_ARRAY;
-        ArrayUtils.reverse(acls);
-
-        for (String acl : acls) {
-            if (acl.contains("/")) {
-                // ACL indexed contains a single user ACE, get the username
-                String singleUser = StringUtils.substringAfter(acl, "/");
-                acl =  StringUtils.substringBefore(acl, "/");
-                if (singleUser.contains("/")) {
-                    // Granted roles are specified in the indexed entry
-                    String roles = StringUtils.substringBeforeLast(singleUser, "/");
-                    singleUser = StringUtils.substringAfterLast(singleUser, "/");
-                    if (!singleUser.equals(session.getUserID())) {
-                        // If user does not match, skip this ACL
-                        continue;
-                    } else {
-                        // If user matches, check if one the roles gives the read permission
-                        for (String role : StringUtils.split(roles, '/')) {
-                            if (((JahiaAccessManager)session.getAccessControlManager()).matchPermission(Sets.newHashSet(Privilege.JCR_READ + "_" + session.getWorkspace().getName()),role)) {
-                                // User and role matches, read is granted
-                                return true;
-                            }
-                        }
-                    }
-                } else {
-                    if (!singleUser.equals(session.getUserID())) {
-                        // If user does not match, skip this ACL
-                        continue;
-                    }
-                    // Otherwise, do normal ACL check.
-                }
-            }
-            // Verify first if this acl has already been checked
-            Boolean aclChecked = checkedAcls.get(acl);
-            if (aclChecked == null) {
-                try {
-                    canRead = session.getAccessManager().canRead(null, new NodeId(acl));
-                    checkedAcls.put(acl, canRead);
-                } catch (RepositoryException e) {
-                }
-            } else {
-                canRead = aclChecked;
-            }
-            break;
-        }
-        return canRead;
+    private boolean checkIndexedAcl(Map<String, Boolean> checkedAcls, String aclUuid) throws RepositoryException {
+        return checkIndexedAcl(checkedAcls, aclUuid, session);
     }
 
     /**
@@ -460,8 +472,7 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
      * @return Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
      */
     public boolean isAclUuidInIndex() {
-        return index instanceof JahiaSearchIndex
-                && ((JahiaSearchIndex) index).isAddAclUuidInIndex();
+        return JahiaSearchIndex.isAclUuidInIndex(index);
     }
 
     /**

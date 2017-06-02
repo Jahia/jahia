@@ -1026,10 +1026,8 @@ public class JCRPublicationService extends JahiaService {
         List<PublicationInfo> infos = new ArrayList<PublicationInfo>();
         PublicationInfo tree = new PublicationInfo();
         infos.add(tree);
-        PublicationInfoNode root =
-                getPublicationInfo(stageNode, languages, includesReferences, includesSubnodes, allsubtree,
-                        sourceSession, destinationSession, new HashMap<String, PublicationInfoNode>(), infos, true, tree);
-        tree.setRoot(root);
+        tree.setRoot(getPublicationInfo(stageNode, languages, includesReferences, includesSubnodes, allsubtree,
+                sourceSession, destinationSession, new HashMap<String, PublicationInfoNode>(), infos, tree));
         return infos;
     }
 
@@ -1047,7 +1045,6 @@ public class JCRPublicationService extends JahiaService {
      * @param destinationSession destination session (live workspace)
      * @param infosMap           a Set of uuids, which don't need to be checked or have already been checked
      * @param infos              contains all publication infos
-     * @param checkLive          If true, verify also if the node is exists in live
      * @param currentPublicationInfo processed publicationInfo
      * @return the <code>PublicationInfo</code> for the requested node(s)
      * @throws RepositoryException
@@ -1057,7 +1054,7 @@ public class JCRPublicationService extends JahiaService {
                                                    boolean allsubtree, final JCRSessionWrapper sourceSession,
                                                    final JCRSessionWrapper destinationSession,
                                                    Map<String, PublicationInfoNode> infosMap,
-                                                   List<PublicationInfo> infos, boolean checkLive, PublicationInfo currentPublicationInfo) throws
+                                                   List<PublicationInfo> infos, PublicationInfo currentPublicationInfo) throws
             RepositoryException {
 
         PublicationInfoNode info = null;
@@ -1077,11 +1074,6 @@ public class JCRPublicationService extends JahiaService {
 
             if (node.isNodeType("jmix:nolive")) {
                 info.setStatus(PublicationInfo.PUBLISHED);
-                return info;
-            }
-
-            if (currentPublicationInfo != null && !currentPublicationInfo.hasLiveNode()) {
-                info.setStatus(PublicationInfo.NOT_PUBLISHED);
                 return info;
             }
 
@@ -1114,16 +1106,19 @@ public class JCRPublicationService extends JahiaService {
                 info.setWorkInProgress(true);
             }
 
-            info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet()));
-            if (checkLive && info.getStatus() == PublicationInfo.PUBLISHED) {
+            if (currentPublicationInfo.hasLiveNode() == null) {
                 try {
                     node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+                    currentPublicationInfo.setHasLiveNode(true);
                 } catch (ItemNotFoundException e) {
-                    if (currentPublicationInfo != null) {
-                        currentPublicationInfo.setHasLiveNode(false);
-                    }
-                    info.setStatus(PublicationInfo.NOT_PUBLISHED);
+                    currentPublicationInfo.setHasLiveNode(false);
                 }
+            }
+
+            if (!currentPublicationInfo.hasLiveNode()) {
+                info.setStatus(PublicationInfo.NOT_PUBLISHED);
+            } else {
+                info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet()));
             }
             // If in conflict we still need to have the translation nodes has they are part of the node to make it valid
             // in case we manage to resolve the conflict on publication
@@ -1158,16 +1153,14 @@ public class JCRPublicationService extends JahiaService {
                 if (!supportsPublication(sourceSession, n)) continue;
 
                 if (info.getStatus() == PublicationInfo.MARKED_FOR_DELETION || info.getStatus() == PublicationInfo.DELETED) {
-                    PublicationInfoNode child =
-                            getPublicationInfo(n, languages, includesReferences, true, true,
-                                    sourceSession, destinationSession, infosMap, infos, false, currentPublicationInfo);
-                    info.addChild(child);
+                    info.addChild(getPublicationInfo(n, languages, includesReferences, true, true,
+                            sourceSession, destinationSession, infosMap, infos, currentPublicationInfo));
                 } else if (languages != null && n.isNodeType("jnt:translation")) {
                     String translationLanguage = n.getProperty("jcr:language").getString();
                     if (languages.contains(translationLanguage)) {
                         PublicationInfoNode child =
                                 getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
-                                        sourceSession, destinationSession, infosMap, infos, false, currentPublicationInfo);
+                                        sourceSession, destinationSession, infosMap, infos, currentPublicationInfo);
                         info.addChild(child);
                         if(child.isWorkInProgress()) {
                             info.getChildren().clear();
@@ -1183,13 +1176,12 @@ public class JCRPublicationService extends JahiaService {
                         PublicationInfo newinfo = new PublicationInfo();
                         infos.add(newinfo);
                         newinfo.setRoot(getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree, sourceSession,
-                                destinationSession, infosMap, infos, true, newinfo));
+                                destinationSession, infosMap, infos, newinfo));
                     }
                     if (!hasIndependantPublication) {
                         if (n.isNodeType("jmix:lastPublished")) {
-                            PublicationInfoNode child = getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
-                                    sourceSession, destinationSession, infosMap, infos, false, currentPublicationInfo);
-                            info.addChild(child);
+                            info.addChild(getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
+                                    sourceSession, destinationSession, infosMap, infos, currentPublicationInfo));
                         } else if (includesReferences) {
                             getReferences(n, languages, includesReferences, includesSubnodes, sourceSession, destinationSession, infosMap,
                                     infos, info);
@@ -1333,9 +1325,10 @@ public class JCRPublicationService extends JahiaService {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("Calculating publication status for the reference property {}", propName);
                             }
-                            PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
-                                    includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, false, null);
-                            info.addReference(new PublicationInfo(n));
+                            PublicationInfo refInfo = new PublicationInfo();
+                            info.addReference(refInfo);
+                            refInfo.setRoot(getPublicationInfo(ref, languages, includesReferences,
+                                    includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, refInfo));
                         }
                     } catch (ItemNotFoundException e) {
                         if (def.getRequiredType() == PropertyType.REFERENCE) {
@@ -1360,9 +1353,10 @@ public class JCRPublicationService extends JahiaService {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Calculating publication status for the reference property {}", propName);
                         }
-                        PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
-                                includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, false, null);
-                        info.addReference(new PublicationInfo(n));
+                        PublicationInfo refInfo = new PublicationInfo();
+                        info.addReference(refInfo);
+                        refInfo.setRoot(getPublicationInfo(ref, languages, includesReferences,
+                                includesSubnodes, false, sourceSession, destinationSession, infosMap, infos, refInfo));
                     }
                 } catch (ItemNotFoundException e) {
                     if (def.getRequiredType() == PropertyType.REFERENCE) {

@@ -68,6 +68,15 @@ public class OperationResult implements Serializable {
         return new OperationResult("Operation successful", bundleInfo);
     }
 
+    /**
+     * Returns an operation result indicating successful operation for the specified bundles.
+     *
+     * @param bundleInfos the information about the target bundles
+     */
+    public static OperationResult success(List<BundleInfo> bundleInfos) {
+        return new OperationResult("Operation successful", bundleInfos);
+    }
+
     private List<BundleInfo> bundleInfos = new LinkedList<>();
     private String message;
 
@@ -91,6 +100,17 @@ public class OperationResult implements Serializable {
         if (bundleInfo != null) {
             this.bundleInfos.add(bundleInfo);
         }
+    }
+
+    /**
+     * Initializes an instance of this class.
+     *
+     * @param message description of the operation result
+     * @param bundleInfos the information about the target bundles
+     */
+    public OperationResult(String message, List<BundleInfo> bundleInfos) {
+        this(message);
+        setBundleInfos(bundleInfos);
     }
 
     /**

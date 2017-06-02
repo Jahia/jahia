@@ -47,6 +47,7 @@ import com.google.common.collect.Sets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSearchManager;
+import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
@@ -57,6 +58,7 @@ import org.apache.jackrabbit.core.session.SessionContext;
 import org.apache.jackrabbit.core.state.*;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.NameFactory;
+import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
 import org.apache.lucene.analysis.Analyzer;
@@ -66,6 +68,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.tika.parser.Parser;
@@ -119,6 +122,15 @@ public class JahiaSearchIndex extends SearchIndex {
                 }
             }
         }
+    }
+
+    /**
+     * Returns <code>true</code> if the supplied {@link SearchIndex} implementation has ACL-UUID stored in index.
+     *
+     * @return <code>true</code> if the supplied {@link SearchIndex} implementation has ACL-UUID stored in index
+     */
+    public static boolean isAclUuidInIndex(SearchIndex index) {
+        return index instanceof JahiaSearchIndex && ((JahiaSearchIndex) index).isAddAclUuidInIndex();
     }
 
     private static final Logger log = LoggerFactory.getLogger(JahiaSearchIndex.class);
@@ -933,5 +945,82 @@ public class JahiaSearchIndex extends SearchIndex {
                 log.warn("Unable to obtain state for the node " + child.getId() + ". Cause: " + e.getMessage(), e);
             }
         }
+    }
+
+    /**
+     * Executes the query on the search index.
+     *
+     * @param session         the session that executes the query.
+     * @param queryImpl       the query impl.
+     * @param query           the lucene query.
+     * @param orderProps      name of the properties for sort order.
+     * @param orderSpecs      the order specs for the sort order properties.
+     *                        <code>true</code> indicates ascending order,
+     *                        <code>false</code> indicates descending.
+     * @param orderFuncs      functions for the properties for sort order. 
+     * @param resultFetchHint a hint on how many results should be fetched.  @return the query hits.
+     * @throws IOException if an error occurs while searching the index.
+     */
+    @Override
+    public MultiColumnQueryHits executeQuery(SessionImpl session,
+                                             AbstractQueryImpl queryImpl,
+                                             Query query,
+                                             Path[] orderProps,
+                                             boolean[] orderSpecs,
+                                             String[] orderFuncs, long resultFetchHint)
+            throws IOException {
+        checkOpen();
+
+        Sort sort = new Sort(createSortFields(orderProps, orderSpecs, orderFuncs));
+
+        final IndexReader reader = getIndexReader(queryImpl.needsSystemTree());
+        JackrabbitIndexSearcher searcher = new JackrabbitIndexSearcher(
+                session, reader, getContext().getItemStateManager());
+        searcher.setSimilarity(getSimilarity());
+        return new JahiaFilterMultiColumnQueryHits(
+                searcher.execute(query, sort, resultFetchHint,
+                        QueryImpl.DEFAULT_SELECTOR_NAME), reader) {
+            public void close() throws IOException {
+                try {
+                    super.close();
+                } finally {
+                    Util.closeOrRelease(reader);
+                }
+            }
+        };
+    }
+
+    /**
+     * Executes the query on the search index.
+     *
+     * @param session         the session that executes the query.
+     * @param query           the query.
+     * @param orderings       the order specs for the sort order.
+     * @param resultFetchHint a hint on how many results should be fetched.
+     * @return the query hits.
+     * @throws IOException if an error occurs while searching the index.
+     */
+    @Override
+    public MultiColumnQueryHits executeQuery(SessionImpl session,
+                                             MultiColumnQuery query,
+                                             Ordering[] orderings,
+                                             long resultFetchHint)
+            throws IOException {
+        checkOpen();
+
+        final IndexReader reader = getIndexReader();
+        JackrabbitIndexSearcher searcher = new JackrabbitIndexSearcher(
+                session, reader, getContext().getItemStateManager());
+        searcher.setSimilarity(getSimilarity());
+        return new JahiaFilterMultiColumnQueryHits(
+                query.execute(searcher, orderings, resultFetchHint), reader) {
+            public void close() throws IOException {
+                try {
+                    super.close();
+                } finally {
+                    Util.closeOrRelease(reader);
+                }
+            }
+        };
     }
 }

@@ -16,7 +16,7 @@
               description="For category properties. The include children initial value." %>
 <%@ attribute name="displayIncludeChildren" required="false" type="java.lang.Boolean"
               description="For category properties. Display the include children checkbox." %>
-              
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
@@ -62,6 +62,8 @@
                         <option value="all_words" ${'all_words' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.nodeProperty.match.all_words"/></option>
                         <option value="exact_phrase" ${'exact_phrase' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.nodeProperty.match.exact_phrase"/></option>
                         <option value="without_words" ${'without_words' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.nodeProperty.match.without_words"/></option>
+                        <option value="exact_property_value" ${'exact_property_value' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.nodeProperty.match.exact_property_value"/></option>
+                        <option value="no_exact_property_value" ${'no_exact_property_value' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.nodeProperty.match.no_exact_property_value"/></option>
                     </select>
                     <input ${functions:attributes(attributes)} value="${fn:escapeXml(value)}"/>
                 </c:if>
@@ -73,11 +75,11 @@
                 <c:set var="value" value="${functions:default(param[propName], value)}"/>
                 <c:set var="categoryRoot"
                        value="${not empty descriptor.selectorOptions && not empty descriptor.selectorOptions.root ? descriptor.selectorOptions.root : '/sites/systemsite/categories'}"/>
-                <c:set var="valuesrc_category_display" value="${functions:default(param['src_category_display'], '')}"/>       
+                <c:set var="valuesrc_category_display" value="${functions:default(param['src_category_display'], '')}"/>
                 <input type="hidden" id="src_category_fieldid" name="${attributes.name}" value="${fn:escapeXml(value)}"/>
                 <input value="${valuesrc_category_display}" id="src_category_display" name="src_category_display" readonly />
                 <uiComponents:treeItemSelector fieldId="src_category_fieldid" displayFieldId="src_category_display" nodeTypes="jnt:category" selectableNodeTypes="jnt:category" root="${categoryRoot}"
-	                      includeChildren="${includeChildren}" displayIncludeChildren="${displayIncludeChildren}" fieldIdIncludeChildren="category_src_includeChildren" fieldNameIncludeChildren="src_properties(${nodeType}).${name}.categoryValue.includeChildren" />
+                          includeChildren="${includeChildren}" displayIncludeChildren="${displayIncludeChildren}" fieldIdIncludeChildren="category_src_includeChildren" fieldNameIncludeChildren="src_properties(${nodeType}).${name}.categoryValue.includeChildren" />
             </c:when>
             <c:when test="${descriptor.type == 'DATE'}">
                 <search:date name="src_properties(${nodeType}).${name}.dateValue" value="${value}" from="${from}"

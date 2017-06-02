@@ -133,6 +133,14 @@ public class Login implements Controller {
                     if (request.getParameter("redirect") != null) {
                         request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));
                     }
+                    String theme = SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.ui.theme");
+                    if (theme != null && !"default".equals(theme)) {
+                        String pathToCheck = "/errors/" + theme + "/error_401.jsp";
+                        if (request.getServletContext().getResource(pathToCheck) != null) {
+                            request.getRequestDispatcher("/errors/"+theme+"/error_401.jsp").forward(request, response);
+                            return null;
+                        }
+                    }
                     request.getRequestDispatcher("/errors/error_401.jsp").forward(request, response);
                 }
             } else {

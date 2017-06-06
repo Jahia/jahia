@@ -62,6 +62,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This servlet is used to catch the end of the initialization of the web application, as the order of
@@ -74,7 +75,9 @@ import org.slf4j.Logger;
  */
 public class EndInit extends HttpServlet {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(EndInit.class);
+    private static final long OSGI_STARTUP_WAIT_TIMEOUT = Long.getLong("org.jahia.osgi.startupWaitTimeout", 10 * 60 * 1000L);
+
+    private static Logger logger = LoggerFactory.getLogger(EndInit.class);
 
     private static final long serialVersionUID = -2221764992780224013L;
 
@@ -123,7 +126,9 @@ public class EndInit extends HttpServlet {
         
         logger.info("Got into EndInit");
         
-        waitForStartup();
+        if (OSGI_STARTUP_WAIT_TIMEOUT > 0) {
+            waitForStartup();
+        }
         
         finishInit();
         
@@ -162,15 +167,17 @@ public class EndInit extends HttpServlet {
         boolean stopWaiting = false;
         FrameworkService instance = FrameworkService.getInstance();
         synchronized (instance) {
-            while (!stopWaiting && !instance.isStarted()) {
-                try {
-                    logger.info("Start waiting for OSGi framework startup");
-                    instance.wait(10 * 60 * 1000L);
-                    stopWaiting = true;
-                    logger.info("Stopped waiting for OSGi framework startup");
-                } catch (InterruptedException e) {
-                    // ignore
+            if (!instance.isStarted()) {
+                logger.info("Start waiting for OSGi framework startup");
+                while (!stopWaiting && !instance.isStarted()) {
+                    try {
+                        instance.wait(OSGI_STARTUP_WAIT_TIMEOUT);
+                        stopWaiting = true;
+                    } catch (InterruptedException e) {
+                        // ignore
+                    }
                 }
+                logger.info("Stopped waiting for OSGi framework startup");
             }
         }
     }

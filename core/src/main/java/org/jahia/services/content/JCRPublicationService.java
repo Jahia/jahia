@@ -1115,10 +1115,10 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            if (!currentPublicationInfo.hasLiveNode()) {
+            info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet()));
+
+            if (info.getStatus() == PublicationInfo.PUBLISHED && !currentPublicationInfo.hasLiveNode()) {
                 info.setStatus(PublicationInfo.NOT_PUBLISHED);
-            } else {
-                info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet()));
             }
             // If in conflict we still need to have the translation nodes has they are part of the node to make it valid
             // in case we manage to resolve the conflict on publication

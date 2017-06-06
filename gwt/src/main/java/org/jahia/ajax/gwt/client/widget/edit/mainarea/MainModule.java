@@ -960,6 +960,10 @@ public class MainModule extends Module {
         refreshInfoLayer();
     }
 
+    public static void setGlobalSelectionDisabled(boolean globalSelectionDisabled) {
+        MainModule.globalSelectionDisabled = globalSelectionDisabled;
+    }
+
     public void refreshInfoLayer() {
         infoLayers.removeAll();
         if (!activeLayers.isEmpty()) {

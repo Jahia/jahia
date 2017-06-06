@@ -85,6 +85,7 @@ public class Resource {
 
     // lazy properties
     private String nodePath;
+    private String canonicalPath;
     private JCRSessionWrapper sessionWrapper;
     // Flag set after cache filter have been executed
     // used to detect node load before the cache filter that should be avoid for perf issues
@@ -109,6 +110,7 @@ public class Resource {
     public Resource(JCRNodeWrapper node, String templateType, String template, String contextConfiguration) {
         this.node = node;
         this.nodePath = node.getPath();
+        this.canonicalPath = node.getCanonicalPath();
         this.templateType = templateType;
         this.template = template;
         this.contextConfiguration = contextConfiguration;
@@ -130,6 +132,11 @@ public class Resource {
         this.templateType = templateType;
         this.template = template;
         this.contextConfiguration = contextConfiguration;
+        if (path.contains(JCRSessionWrapper.DEREF_SEPARATOR)) {
+            this.canonicalPath = getNode().getCanonicalPath();
+        } else {
+            this.canonicalPath = path;
+        }
         dependencies.add(path);
     }
 
@@ -386,7 +393,7 @@ public class Resource {
 
         Resource resource = (Resource) o;
 
-        if (nodePath != null ? !nodePath.equals(resource.nodePath) : resource.nodePath != null) {
+        if (canonicalPath != null ? !canonicalPath.equals(resource.canonicalPath) : resource.canonicalPath != null) {
             return false;
         }
         if (templateType != null ? !templateType.equals(resource.templateType) : resource.templateType != null) {
@@ -415,7 +422,7 @@ public class Resource {
     @Override
     public int hashCode() {
         int result = isNodeLoaded() ? node.hashCode() : 0;
-        result = 31 * result + (nodePath != null ? nodePath.hashCode() : 0);
+        result = 31 * result + (canonicalPath != null ? canonicalPath.hashCode() : 0);
         result = 31 * result + (templateType != null ? templateType.hashCode() : 0);
         result = 31 * result + (getResolvedTemplate() != null ? getResolvedTemplate().hashCode() : 0);
         result = 31 * result + (wrappers != null ? wrappers.hashCode() : 0);

@@ -49,6 +49,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.history.NodeVersionHistoryListener;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSite;
@@ -136,7 +137,7 @@ public class TestHelper {
             JahiaSite existingSite = service.getSiteByKey(name, session);
 
             if (existingSite != null) {
-                service.removeSite(existingSite);
+                deleteSite(existingSite);
                 session.refresh(false);
             }
         } catch (RepositoryException ex) {
@@ -218,10 +219,27 @@ public class TestHelper {
     }
 
     public static void deleteSite(String name) throws Exception {
+        deleteSite(ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(name));
+    }
+
+    public static void deleteSite(JahiaSite site) throws Exception {
+        if (site == null) {
+            return;
+        }
+
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
-        JahiaSite site = service.getSiteByKey(name);
-        if (site != null)
+        if (NodeVersionHistoryListener.isDisabled()) {
             service.removeSite(site);
+        } else {
+            try {
+                // temporary disable the listener to avoid launching node version history purge job
+                NodeVersionHistoryListener.setDisabled(true);
+                service.removeSite(site);
+            } finally {
+                // restore the listener state
+                NodeVersionHistoryListener.setDisabled(false);
+            }
+        }
     }
 
     public static int createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {

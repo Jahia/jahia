@@ -183,7 +183,7 @@ public class JahiaSitesService extends JahiaService {
 
     /**
      * Returns first found site node under <code>/sites</code> considering the list of sites to be skipped.
-     * 
+     *
      * @param session
      *            current JCR session
      * @return first found node under <code>/sites</code> considering the list of sites to be skipped

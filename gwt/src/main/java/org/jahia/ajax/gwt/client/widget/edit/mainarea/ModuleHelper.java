@@ -206,8 +206,6 @@ public class ModuleHelper {
         }
         parsed = false;
         nodesAndTypes = null;
-        // disable selection while loading nodes and types
-        MainModule.setGlobalSelectionDisabled(true);
         JahiaContentManagementService.App.getInstance()
                 .getNodesAndTypes(params, new ArrayList<String>(allNodetypes),
                         new BaseAsyncCallback<Map<String, List<? extends ModelData>>>() {
@@ -218,9 +216,10 @@ public class ModuleHelper {
                                         handleNodesAndTypesResult(result, mainModule, fmainPath, fmainTemplate);
                                     }
                                 }
-                                MainModule.setGlobalSelectionDisabled(false);
+                                mainModule.getEditLinker().getMainModule().unmask();
                             }
                             public void onApplicationFailure(Throwable caught) {
+                                mainModule.getEditLinker().getMainModule().unmask();
                                 Log.error("Unable to get node with publication info due to:", caught);
                             }
 
@@ -230,7 +229,7 @@ public class ModuleHelper {
         mainModule.parse(el);
         if (nodesAndTypes != null) {
             handleNodesAndTypesResult(nodesAndTypes, mainModule, fmainPath, fmainTemplate);
-            MainModule.setGlobalSelectionDisabled(false);
+            mainModule.getEditLinker().getMainModule().unmask();
         } else {
             parsed = true;
         }

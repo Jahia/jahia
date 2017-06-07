@@ -328,8 +328,8 @@ public class EditLinker implements Linker {
         if (sidePanel != null) {
             sidePanel.handleNewMainNodeLoaded(node);
         }
-        Document.get().getBody().setAttribute("data-nodedisplayname", node.getDisplayName());
-        Document.get().getBody().setAttribute("data-nodepath", node.getPath());
+        Document.get().getBody().setAttribute("data-main-node-displayname", node.getDisplayName());
+        Document.get().getBody().setAttribute("data-main-node-path", node.getPath());
         Document.get().getBody().setAttribute("data-sitesettings", Boolean.toString(node.equals(JahiaGWTParameters.getSiteNode())));
     }
 
@@ -435,6 +435,11 @@ public class EditLinker implements Linker {
         }
         selectionContext.setSelectedNodes(nodes);
         selectionContext.refresh(context);
+        if (selectionContext.getSingleSelection() != null) {
+            Document.get().getBody().setAttribute("data-singleselection-node-displayname", selectionContext.getSingleSelection().getDisplayName());
+            Document.get().getBody().setAttribute("data-singleselection-node-path", selectionContext.getSingleSelection().getPath());
+        }
+        Document.get().getBody().setAttribute("data-selection-count", selectionContext.getSelectedNodes() != null ? Integer.toString(selectionContext.getSelectedNodes().size()): "0");
     }
 
     /**

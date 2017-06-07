@@ -44,10 +44,9 @@
 package org.jahia.ajax.gwt.commons.server;
 
 /**
- * Created by IntelliJ IDEA.
- * @author : rincevent
- * @since : JAHIA 6.1
- * Created : 05/05/15
+ * Helper class that provides access to the JGroups channel service.
+ * 
+ * @author rincevent
  */
 public interface ChannelHolder {
     JGroupsChannel getChannel();

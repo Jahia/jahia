@@ -164,4 +164,5 @@
         <property name="jcrFolderName" value="pending-uploaded-files"/>
     </bean>
 
+    <bean id="BroadcasterHttpSessionDestroyedEventListener" class="org.jahia.ajax.gwt.commons.server.BroadcasterHttpSessionDestroyedEventListener"/>
 </beans>

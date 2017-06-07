@@ -97,6 +97,7 @@ public class JahiaSitesService extends JahiaService {
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
     protected EhCacheProvider ehCacheProvider;
+
     private SelfPopulatingCache siteKeyByServerNameCache;
     private SelfPopulatingCache siteDefaultLanguageBySiteKey;
     private SelfPopulatingCache sitesListCache;
@@ -183,7 +184,7 @@ public class JahiaSitesService extends JahiaService {
 
     /**
      * Returns first found site node under <code>/sites</code> considering the list of sites to be skipped.
-     * 
+     *
      * @param session
      *            current JCR session
      * @return first found node under <code>/sites</code> considering the list of sites to be skipped
@@ -374,9 +375,11 @@ public class JahiaSitesService extends JahiaService {
         boolean importingSystemSite = false;
         final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
         JCRSiteNode site = null;
+
         try {
 
             if (!siteExists(siteKey, session)) {
+
                 final JahiaTemplatesPackage templateSet = templateService.getAnyDeployedTemplatePackage(selectTmplSet);
                 final String templatePackage = templateSet.getId();
 
@@ -448,7 +451,9 @@ public class JahiaSitesService extends JahiaService {
             if (!site.isDefault() && !site.getSiteKey().equals(SYSTEM_SITE_KEY) && getNbSites() == 2) {
                 setDefaultSite(site, session);
             }
+
             if (!importingSystemSite) {
+
                 JahiaGroupManagerService jgms = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
                 siteNode.setMixLanguagesActive(false);
@@ -483,6 +488,7 @@ public class JahiaSitesService extends JahiaService {
                 siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, Collections.singleton("site-administrator"));
                 session.save();
             }
+
             Resource initialZip = null;
             if ("fileImport".equals(firstImport)) {
                 initialZip = fileImport;
@@ -583,7 +589,6 @@ public class JahiaSitesService extends JahiaService {
         List<JahiaTemplatesPackage> modules = moduleIdsToTemplatesPackage(modulesToDeploy != null ? Arrays.asList(modulesToDeploy) : Collections.<String>emptyList(), templateService);
         modules.add(templateService.getAnyDeployedTemplatePackage(JahiaTemplatesPackage.ID_DEFAULT));
         modules.add(templateSet);
-
         try {
             logger.info("Deploying modules {} to {}", modules.toString(), target);
             templateService.installModules(modules, target, session);
@@ -602,7 +607,6 @@ public class JahiaSitesService extends JahiaService {
                     packages.add(packageByFileName);
                 }
             }
-
             return packages;
         } else {
             return Collections.emptyList();
@@ -610,7 +614,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     /**
-     * remove a site, if the remived site is the default one:
+     * Remove a site; if the removed site is the default one:
      * - the first other site found will become the default
      * - if no other site found, no default site anymore
      *

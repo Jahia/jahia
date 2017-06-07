@@ -47,6 +47,8 @@
 				$(this).fadeOut();
 			});
 
+			/* TEST */
+
 			$("body").on("click", "#JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2)", function(e){
 				// Pin-Toggle Side Panel
 				$("body").attr("data-INDIGO-GWT-FULLSCREEN", function(index, attr){

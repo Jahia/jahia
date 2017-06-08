@@ -57,6 +57,7 @@ when we flush this entry we will flush the whole cache
             <list>
                 <bean class="org.jahia.services.render.filter.cache.LanguageCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.CannonicalPathCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.TemplateCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.TemplateTypeCacheKeyPartGenerator"/>
                 <ref bean="${org.jahia.aclCacheKeyPartGenerator.implementation:aclCacheKeyPartGenerator}"/>

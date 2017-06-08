@@ -172,7 +172,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         String result = aggregateFilter.prepare(context, mainResource, null);
         String key = generator.generate(mainResource, context, generator.getAttributesForKey(context, mainResource));
         String finalKey = generator.replacePlaceholdersInCacheKey(context, key);
-        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
 
         assertNull(result);
@@ -184,7 +184,7 @@ public class AggregateFilterTest extends JahiaTestCase {
 
         // test execute
         result = aggregateFilter.execute("MR render", context, mainResource, null);
-        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
 
         assertTrue(result != null && result.equals("MR render"));
@@ -197,7 +197,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         // test finalize
         aggregateFilter.finalize(context, mainResource, null);
         // stack should be flushed
-        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
         assertTrue(stack == null);
     }
 
@@ -220,7 +220,7 @@ public class AggregateFilterTest extends JahiaTestCase {
 
         // test prepare
         String result = aggregateFilter.prepare(context, mainResource, null);
-        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
 
         assertNull(result);
@@ -229,7 +229,7 @@ public class AggregateFilterTest extends JahiaTestCase {
 
         // test execute
         result = aggregateFilter.execute("Module render", context, mainResource, null);
-        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
 
         assertNull(stack);
@@ -239,7 +239,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         // test finalize
         aggregateFilter.finalize(context, mainResource, null);
         // stack should be flushed
-        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
         assertTrue(stack == null);
         assertTrue(moduleMap.size() == 0);
@@ -270,7 +270,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         context.getRequest().setAttribute("moduleMap", moduleMap);
 
         // init key stack
-        context.getRequest().setAttribute(AggregateFilter.FRAGMENT_KEYS_STACK, new Stack<String>());
+        context.getRequest().setAttribute(AggregateFilter.RESOURCES_STACK, new Stack<String>());
 
         // calculate fragment key
         String fragmentKey = generator.generate(fragmentResource, context, generator.getAttributesForKey(context, fragmentResource));
@@ -278,7 +278,7 @@ public class AggregateFilterTest extends JahiaTestCase {
 
         // prepare test, should return an esi tag include
         String result = aggregateFilter.prepare(context, fragmentResource, null);
-        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
         String expectedResult = ESI_TAG_START + fragmentKey + ESI_TAG_END;
 
@@ -291,7 +291,7 @@ public class AggregateFilterTest extends JahiaTestCase {
 
         // execute test
         result = aggregateFilter.execute(result, context, fragmentResource, null);
-        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
 
         assertTrue(result.equals(expectedResult));
@@ -303,7 +303,7 @@ public class AggregateFilterTest extends JahiaTestCase {
 
         // finalize test
         aggregateFilter.finalize(context, fragmentResource, null);
-        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
 
         assertTrue(moduleMap.size() == 3);
@@ -339,7 +339,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         fragmentResource.getModuleParams().put(AggregateFilter.AGGREGATING_KEY, fragmentKey);
 
         // init key stack
-        context.getRequest().setAttribute(AggregateFilter.FRAGMENT_KEYS_STACK, new Stack<String>());
+        context.getRequest().setAttribute(AggregateFilter.RESOURCES_STACK, new Stack<String>());
 
         // module map init
         Map<String, Object> moduleMap = new HashMap<>();
@@ -347,7 +347,7 @@ public class AggregateFilterTest extends JahiaTestCase {
 
         // test prepare
         String result = aggregateFilter.prepare(context, fragmentResource, null);
-        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        Stack<String> stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
 
         // result should be null to continue render chain
@@ -370,7 +370,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         // test execute
         result = aggregateFilter.execute(fragmentRender + subfragmentRender, context, fragmentResource, null);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
-        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
 
         // moduleMap should be fill with keys
         assertTrue(moduleMap.size() == 4);
@@ -383,7 +383,7 @@ public class AggregateFilterTest extends JahiaTestCase {
         // test finalize
         aggregateFilter.finalize(context, fragmentResource, null);
         moduleMap = (Map<String, Object>) context.getRequest().getAttribute("moduleMap");
-        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK);
+        stack = (Stack<String>) context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK);
 
         // moduleMap should be fill with keys from the fragment resource only
         assertTrue(moduleMap.size() == 4);
@@ -405,7 +405,7 @@ public class AggregateFilterTest extends JahiaTestCase {
 
             String result = RenderService.getInstance().render(resource, context);
             // key stack should be flushed
-            assertTrue(context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK) == null);
+            assertTrue(context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK) == null);
             // test that the render is good with subfragments
             assertTrue(!result.equals(getTestNodesPaths(rootNode, new StringBuilder())));
             // assert that result contain error message about recursion detected
@@ -428,7 +428,7 @@ public class AggregateFilterTest extends JahiaTestCase {
 
         String result = RenderService.getInstance().render(resource, context);
         // key stack should be flushed
-        assertTrue(context.getRequest().getAttribute(AggregateFilter.FRAGMENT_KEYS_STACK) == null);
+        assertTrue(context.getRequest().getAttribute(AggregateFilter.RESOURCES_STACK) == null);
         // test that the render is good with subfragments
         assertTrue(result.equals(getTestNodesPaths(rootNode, new StringBuilder())));
     }

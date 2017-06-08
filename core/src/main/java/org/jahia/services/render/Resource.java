@@ -121,22 +121,19 @@ public class Resource {
      * Lazy resource, that take the path instead of a node, the node will be load at first getNode() call using sessionWrapper
      *
      * @param path                 The path to the node to display
+     * @param cannonicalPath       If the path is a dereference path cannonicalPath contains the reference absolute path, empty if not
      * @param sessionWrapper       The session that will be used to load the node
      * @param templateType         template type
      * @param template
      * @param contextConfiguration
      */
-    public Resource(String path, JCRSessionWrapper sessionWrapper, String templateType, String template, String contextConfiguration) {
+    public Resource(String path, String cannonicalPath, JCRSessionWrapper sessionWrapper, String templateType, String template, String contextConfiguration) {
         this.nodePath = path;
         this.sessionWrapper = sessionWrapper;
         this.templateType = templateType;
         this.template = template;
         this.contextConfiguration = contextConfiguration;
-        if (path.contains(JCRSessionWrapper.DEREF_SEPARATOR)) {
-            this.canonicalPath = getNode().getCanonicalPath();
-        } else {
-            this.canonicalPath = path;
-        }
+        this.canonicalPath = cannonicalPath;
         dependencies.add(path);
     }
 

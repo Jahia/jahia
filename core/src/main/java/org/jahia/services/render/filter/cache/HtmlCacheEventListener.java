@@ -47,6 +47,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.observation.EventState;
+import org.apache.jackrabbit.core.state.NoSuchItemStateException;
 import org.jahia.services.content.*;
 import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -256,6 +257,10 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                         flushDependenciesOfPath(depCache, uuid, propagateToOtherClusterNodes);
                     } catch (PathNotFoundException e) {
                         //
+                    } catch (RepositoryException e) {
+                        if (e.getCause() == null || !(e.getCause() instanceof NoSuchItemStateException)) {
+                            throw e;
+                        }
                     }
                     cacheProvider.flushRegexpDependenciesOfPath(path, propagateToOtherClusterNodes);
                 }
@@ -273,6 +278,10 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                             flushDependenciesOfPath(depCache, sessionWrapper.getNode(path).getIdentifier(), propagateToOtherClusterNodes);
                         } catch (PathNotFoundException e) {
                             //
+                        } catch (RepositoryException e) {
+                            if (e.getCause() == null || !(e.getCause() instanceof NoSuchItemStateException)) {
+                                throw e;
+                            }
                         }
                         cacheProvider.flushRegexpDependenciesOfPath(path, propagateToOtherClusterNodes);
                     }
@@ -287,6 +296,10 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                             flushDependenciesOfPath(depCache, sessionWrapper.getNode(path).getIdentifier(), propagateToOtherClusterNodes);
                         } catch (PathNotFoundException e) {
                             //
+                        } catch (RepositoryException e) {
+                            if (e.getCause() == null || !(e.getCause() instanceof NoSuchItemStateException)) {
+                                throw e;
+                            }
                         }
                     }
                 }

@@ -48,7 +48,6 @@ import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.authorization.PrivilegeManager;
 import org.apache.jackrabbit.core.HierarchyManager;
-import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.RepositoryContext;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.id.ItemId;
@@ -70,7 +69,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
@@ -1087,7 +1085,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     private static long getClusterRevision() {
-        return ((JahiaRepositoryImpl) ((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).getContext().getClusterNode().getRevision();
+        return SpringJackrabbitRepository.getInstance().getClusterRevision();
     }
 
     public static void flushMatchingPermissions() {

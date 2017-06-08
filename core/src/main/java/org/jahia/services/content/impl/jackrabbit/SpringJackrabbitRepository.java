@@ -46,8 +46,12 @@ package org.jahia.services.content.impl.jackrabbit;
 import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.apache.jackrabbit.commons.AbstractRepository;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
+import org.apache.jackrabbit.core.cluster.ClusterException;
+import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
 import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -69,6 +73,21 @@ import java.io.IOException;
  */
 public class SpringJackrabbitRepository extends AbstractRepository implements JackrabbitRepository, ServletContextAware, ApplicationContextAware {
     
+    private static class Holder {
+        static final SpringJackrabbitRepository INSTANCE = new SpringJackrabbitRepository();
+    }
+    
+    private static final Logger logger = LoggerFactory.getLogger(SpringJackrabbitRepository.class);
+    
+    /**
+     * Returns a singleton instance of this class.
+     * 
+     * @return a singleton instance of this class
+     */
+    public static SpringJackrabbitRepository getInstance() {
+        return Holder.INSTANCE;
+    }
+
     private JackrabbitRepository repository;
 
     private Resource configFile;
@@ -238,4 +257,38 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         this.performMigrationToDataStoreIfNeeded = performMigrationToDataStoreIfNeeded;
     }
 
+    /**
+     * Jackrabbit cluster node instance or <code>null</code> if clustering is not activated.
+     * 
+     * @return Jackrabbit cluster node instance or <code>null</code> if clustering is not activated
+     */
+    public ClusterNode getClusterNode() {
+        return settings.isClusterActivated() ? ((JahiaRepositoryImpl) getRepository()).getContext().getClusterNode()
+                : null;
+    }
+
+    /**
+     * Returns current Jackrabbit cluster node revision or <code>0</code> if clustering is not activated.
+     * 
+     * @return current Jackrabbit cluster node revision or <code>0</code> if clustering is not activated
+     */
+    public long getClusterRevision() {
+        ClusterNode clusterNode = getClusterNode();
+        return clusterNode != null ? clusterNode.getRevision() : 0;
+    }
+
+    /**
+     * Performs the sync on the Jackrabbit cluster node. If clustering is not activated this method does nothing. Possible exceptions during
+     * cluster sync are logged by not propagated upper by this method.
+     */
+    public void syncClusterNode() {
+        ClusterNode clusterNode = getClusterNode();
+        if (clusterNode != null) {
+            try {
+                clusterNode.sync();
+            } catch (ClusterException e) {
+                logger.error("Error ocurred synchronizing cluster", e);
+            }
+        }
+    }
 }

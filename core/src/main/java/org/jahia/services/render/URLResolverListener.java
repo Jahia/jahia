@@ -45,9 +45,7 @@ package org.jahia.services.render;
 
 import net.sf.ehcache.Element;
 
-import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.jahia.services.content.DefaultEventListener;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
@@ -157,7 +155,7 @@ public class URLResolverListener extends DefaultEventListener {
     }
 
     private static long getClusterRevision() {
-        return ((JahiaRepositoryImpl) ((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).getContext().getClusterNode().getRevision();
+        return SpringJackrabbitRepository.getInstance().getClusterRevision();
     }
 
     public void setModuleCacheProvider(ModuleCacheProvider moduleCacheProvider) {

@@ -30,10 +30,9 @@
 	<c:if test="${useNewTheme}">
     <!-- CONTAINS CSS TO APPLY QUICK FIX -->
     <link rel="stylesheet" type="text/css" href="<c:url value='/engines/quick-fix/edit_${newThemeLocale}.css'/>"/>
-	<!-- <link rel="stylesheet" type="text/css" href="/engines/quick-fix/_output_edit.css" /> -->
-	<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
-	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 	<script>
+
+	/* LOTS OF QUICK N DIRTY CODING THAT NEEDS TO BE CLEANED UP ( WILL DO ONCE IT DOES WHAT I WANT IT TO ) */
 
 		var indigoQF = {
 			temp: null,
@@ -73,7 +72,13 @@
 							}
 
 							// Check for changes in document publication STATUS
-							publicationStatus = $(".x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(1) img");
+							if($("body > div:nth-child(1)").attr("config") == "contributemode"){
+								publicationStatus = $(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(7) img");
+
+							} else {
+								publicationStatus = $(".x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(1) img");
+
+							}
 
 							if(publicationStatus.attr("src") && (publicationStatus.attr("src") !== indigoQF.publication.status)){
 								indigoQF.publication.status = publicationStatus.attr("src");
@@ -127,11 +132,46 @@
 
 
 				// Set Position of Flag to just before the Page name
+				// Edit Mode
 				$("body[data-SELECTED-ITEMS='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)").css({
 					"left": (pageNameLeft + 92) + "px",
 					"opacity": 1
 				});
 
+				// Contribute Mode
+				/*$(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div").css({
+					"left": (pageNameLeft + 92) + "px",
+					"opacity": 1
+				});*/
+
+
+
+				var contributePageNameWidth = parseInt(window.getComputedStyle(document.querySelector('.x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div'), '::after').getPropertyValue('width')),
+					windowWidth = parseInt($("body").width()),
+					contributePageNameLeft = (windowWidth / 2) - (contributePageNameWidth / 2),
+					contributePageNameRight = (windowWidth / 2) + (contributePageNameWidth / 2) + 20;
+
+					console.log("contributePageNameLeft:", contributePageNameLeft);
+
+
+
+				// Slide Flag / Page Name left
+				$(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div input").css({
+					"margin-left": "-" + (contributePageNameWidth / 2) + "px"
+				});
+
+				$(".contribute-menu-publication").css({
+					left: contributePageNameRight + "px"
+				});
+
+				$(".contribute-menu-view").css({
+					left: (contributePageNameRight + 10) + "px"
+				});
+
+				// Edit Button
+				$(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(4) > table").css({
+					left: (contributePageNameRight) + "px"
+				});
 
 			},
 			updateSelectedItems: function(){
@@ -154,6 +194,9 @@
 				}
 
 				$(".x-current-page-path").attr("data-PAGE-NAME",label);
+
+				// Contribute Path Name (added to Langiage Selector - need to get a class for this)
+				$(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div").attr("data-PAGE-NAME",label);
 
 				indigoQF.updatePageMenuPositions();
 

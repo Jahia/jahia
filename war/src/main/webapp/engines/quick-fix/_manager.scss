@@ -49,12 +49,12 @@ body {
       }
     }
     .x-tool-close {
-      background: url(/engines/quick-fix/images/icon-close-large.png) no-repeat center center #5c6164;
+      background: url(./images/icon-close-large.png) no-repeat center center #5c6164;
       width: 45px;
       height: 45px;
     }
     .x-tool-refresh {
-      background: url(/engines/quick-fix/images/icon-publication-launcher.png) no-repeat center center;
+      background: url(./images/icon-publication-launcher.png) no-repeat center center;
       width: 45px;
       height: 45px;
       display: none;
@@ -437,7 +437,7 @@ body[data-INDIGO-SEARCH="on"] #JahiaGxtManagerMain > div:nth-child(1) > div:nth-
         font-size: 8px;
         text-transform: uppercase;
         font-weight: 400;
-        background: url(/engines/quick-fix/images/tabs-files.png) no-repeat top center #5c6164;
+        background: url(./images/tabs-files.png) no-repeat top center #5c6164;
         text-align: center;
         color: rgba(238, 238, 238, 1);
         /* opacity: 1!important; */
@@ -805,7 +805,7 @@ body[data-INDIGO-INLINE-EDIT-ENGINE="on"] #JahiaGxtManagerBottomTabs {
       display: block;
       width: 60px;
       padding-top: 23px;
-      background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top center #5c6164;
+      background: url(./images/tabs-placeholder.png) no-repeat top center #5c6164;
       font-family: Raleway;
       font-weight: 400;
       text-transform: uppercase;
@@ -817,12 +817,12 @@ body[data-INDIGO-INLINE-EDIT-ENGINE="on"] #JahiaGxtManagerBottomTabs {
 }
 
 body[data-INDIGO-INLINE-EDIT-ENGINE="on"] #JahiaGxtManagerBottomTabs .x-tab-panel-header .x-tab-strip a em > span > span {
-  background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top center #079cf1;
+  background: url(./images/tabs-placeholder.png) no-repeat top center #079cf1;
 }
 
 #JahiaGxtManagerBottomTabs {
   &:hover .x-tab-panel-header .x-tab-strip a em > span > span {
-    background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top center #079cf1;
+    background: url(./images/tabs-placeholder.png) no-repeat top center #079cf1;
   }
   .x-tab-strip-top .x-tab-strip-inner {
     background: none;
@@ -885,7 +885,7 @@ body[data-INDIGO-INLINE-EDIT-ENGINE="on"] #JahiaGxtManagerBottomTabs .x-tab-pane
   .x-panel-footer {
     width: 50px;
     height: 100%;
-    background: url(/engines/quick-fix/images/icon-collapse-side-bar.png) no-repeat left center;
+    background: url(./images/icon-collapse-side-bar.png) no-repeat left center;
     position: fixed;
     top: 0;
     right: 0;
@@ -897,7 +897,7 @@ body[data-INDIGO-INLINE-EDIT-ENGINE="on"] #JahiaGxtManagerBottomTabs .x-tab-pane
 /* USE AS THE EXPAND BUTTON */
 
 body[data-INDIGO-INLINE-EDIT-ENGINE="on"] #JahiaGxtManagerBottomTabs .x-panel-footer {
-  background: url(/engines/quick-fix/images/icon-expand-side-bar.png) no-repeat left center;
+  background: url(./images/icon-expand-side-bar.png) no-repeat left center;
 }
 
 #JahiaGxtManagerBottomTabs:hover .x-panel-footer {

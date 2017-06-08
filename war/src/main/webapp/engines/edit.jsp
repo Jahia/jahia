@@ -27,27 +27,218 @@
 	<!-- REM : Once Development has finished REMOVE unused Raleway Fonts ... -->
 	<link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
-
-	<c:if test="${not empty theme}">
+	<c:if test="${useNewTheme}">
     <!-- CONTAINS CSS TO APPLY QUICK FIX -->
-    <link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/edit${themeLocale}.css'/>"/>
-
+    <link rel="stylesheet" type="text/css" href="<c:url value='/engines/quick-fix/edit_${newThemeLocale}.css'/>"/>
+	<!-- <link rel="stylesheet" type="text/css" href="/engines/quick-fix/_output_edit.css" /> -->
+	<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
+	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 	<script>
 
 		var indigoQF = {
+			temp: null,
+			init: function(){
+				$("body").attr("data-SELECTED-ITEMS", 0);
+
+				var target = document.body,
+					observer = new MutationObserver(function(mutations){
+						var publicationStatus,
+							newNodes,
+							publishSplit,
+							publishName,
+							friendlyPublishName;
+
+						mutations.forEach(function(mutation){
+							newNodes = mutation.addedNodes;
+							attributeNames = mutation.attributeName;
+
+							if(attributeNames == "data-nodedisplayname"){
+								indigoQF.updateSelectedItems();
+
+							}
+
+							if(newNodes.length){
+								// New Nodes added, see if iframe is available
+								if($("iframe").length > 1){
+									if(!indigoQF.iframe.available){
+										indigoQF.iframe.available = true;
+
+										$($("iframe")[0]).load(function(){
+											indigoQF.listenForIframeDomChanges();
+
+										})
+									}
+								}
+
+							}
+
+							// Check for changes in document publication STATUS
+							publicationStatus = $(".x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(1) img");
+
+							if(publicationStatus.attr("src") && (publicationStatus.attr("src") !== indigoQF.publication.status)){
+								indigoQF.publication.status = publicationStatus.attr("src");
+
+								publishSplit = indigoQF.publication.status.split("/");
+								publishName = publishSplit[publishSplit.length - 1];
+								friendlyPublishName = publishName.substr(0, publishName.length - 4);
+
+								indigoQF.updatePublicationStatus(friendlyPublishName);
+
+
+							}
+
+						});
+					});
+
+					// Configuration of the observer:
+					var config = {
+						attributes: true,
+						childList: true,
+						characterData: true
+					};
+
+					// Pass in the target node, as well as the observer options
+					observer.observe(target, config);
+			},
+			updatePublicationStatus: function(status){
+				console.log("STATUS: ", status);
+				$("body").attr("data-PAGE-PUBLICATION-STATUS", status);
+
+			},
+			updatePageMenuPositions: function(){
+				console.log("updatePageMenuPositions::: called");
+				// Position Flag and Preview Menu accordingly
+				// Get Left Position of Page Name
+				var pageNameLeft = parseInt($(".x-border-panel.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)").position().left),
+					pageNameWidth = Math.floor($(".x-border-panel.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)").width()) - 1,
+					pageNameRight = pageNameLeft + pageNameWidth;
+
+				// Set Position of View Menu to right hand side of More Options Menu
+				$(".edit-menu-view").css({
+					"left": (pageNameRight + 76) + "px",
+					"opacity": 1
+				});
+
+				$(".edit-menu-publication").css({
+					"left": (pageNameRight + 65) + "px",
+					"opacity": 1
+				});
+
+
+
+				// Set Position of Flag to just before the Page name
+				$("body[data-SELECTED-ITEMS='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)").css({
+					"left": (pageNameLeft + 92) + "px",
+					"opacity": 1
+				});
+
+
+			},
+			updateSelectedItems: function(){
+				console.log("UPDATE SELECTED ITEMS CALLED");
+				var label;
+				$("body").attr("data-SELECTED-ITEMS", indigoQF.selections.count)
+
+				switch(indigoQF.selections.count){
+					case 0:
+						label = $("body").attr("data-nodedisplayname");
+						break;
+
+					case 1:
+						label = "1 selected item";
+						break;
+
+					default:
+						label = indigoQF.selections.count + " selected items";
+						break;
+				}
+
+				$(".x-current-page-path").attr("data-PAGE-NAME",label);
+
+				indigoQF.updatePageMenuPositions();
+
+
+			},
+			listenForIframeDomChanges: function(){
+				// The node to be monitored
+				var target = $($("iframe")[0].contentWindow.document).find("body")[0];
+
+				var observer = new MutationObserver(function( mutations ) {
+					mutations.forEach(function(mutation) {
+						var removedNodes = mutation.removedNodes,
+							addedNodes = mutation.addedNodes,
+							className;
+
+							if(removedNodes.length > 0){
+								$(removedNodes).each(function(){
+									className = $(this).attr("class") || "";
+
+									if(className.indexOf("selection-top") > -1){
+										//console.log("removed a selection", this);
+										indigoQF.selections.count--;
+										indigoQF.updateSelectedItems();
+
+									}
+								});
+							}
+
+							if(addedNodes.length > 0){
+								$(addedNodes).each(function(){
+									className = $(this).attr("class") || "";
+
+									if(className.indexOf("selection-top") > -1){
+										//console.log("added a selection", this);
+										indigoQF.selections.count++;
+										indigoQF.updateSelectedItems();
+
+
+									}
+								});
+							}
+
+
+					});
+
+				});
+
+				// Configuration of the observer:
+				var config = {
+					attributes: true,
+					childList: true,
+					characterData: true
+				};
+
+				// Pass in the target node, as well as the observer options
+				observer.observe(target, config);
+			},
 			JahiaGxtSidePanelTabs: {
 				mouseOutTimer: null,
 				justBeenClosed: false
+			},
+			selections: {
+				count: 0
+			},
+			pageName: {
+				left: null,
+				width: null,
+			},
+			iframe: {
+				available: false
+			},
+			publication: {
+				status: null
 			}
 		};
+
+		$(".x-current-page-path").load(function(){
+				console.log("loaded WIN", $("html").html());
+		});
 
 		$(document).ready(function(){
 
 			$("body").on("click", ".menu-editmode-managers-menu", function(){
 				$(this).fadeOut();
 			});
-
-			/* TEST */
 
 			$("body").on("click", "#JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2)", function(e){
 				// Pin-Toggle Side Panel
@@ -59,8 +250,10 @@
 
 			$("body").on("mouseenter", "#JahiaGxtSidePanelTabs", function(){
 				// Mouseover Side Panel tabs, so open it.
+				if($("body").attr("data-SELECTED-ITEMS") == "0"){
+					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
 
-				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
+				}
 			});
 
 			$("body").on("mouseleave", "#JahiaGxtSidePanelTabs", function(e){
@@ -104,7 +297,7 @@
 				// Fix: Once the user leaves the Side Panel there is a count down started (100ms). If the user hovers the Hamburger within those 100ms
 				//		we reopen it, almost as if it never closed.
 
-				if(indigoQF.JahiaGxtSidePanelTabs.justBeenClosed){
+				if(indigoQF.JahiaGxtSidePanelTabs.justBeenClosed && $("body").attr("data-SELECTED-ITEMS") == "0"){
 					// Side Panel was open less than 100ms ago, so repopen it.
 					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
 
@@ -129,7 +322,18 @@
 					$(this).trigger(eV);
 			})
 
+
+
+
+
+
+
 		});
+
+		window.onload = indigoQF.init;
+		window.onresize = indigoQF.updatePageMenuPositions;
+
+
 	</script>
 	<!-- END:::QUICK FIX -->
     </c:if>

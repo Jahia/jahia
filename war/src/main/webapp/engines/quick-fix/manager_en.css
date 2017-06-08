@@ -1,0 +1,829 @@
+/* COMMON */
+body {
+  /* padding:50px */
+  /* padding-top: 50px; */
+}
+
+.x-modal {
+  background: #5c6164;
+  opacity: 0.98;
+  z-index: 99999 !important;
+}
+
+#JahiaGxtImagePopup {
+  z-index: 999999 !important;
+}
+#JahiaGxtImagePopup .x-window-tl {
+  /* background: blue; */
+  padding-left: 0;
+  height: calc(100% - 16px) !important;
+  position: absolute;
+  top: 16px;
+  display: block;
+  overflow: visible !important;
+  left: 0;
+  width: 100% !important;
+  z-index: 999;
+}
+#JahiaGxtImagePopup .x-window-tr {
+  background: none;
+  padding-right: 0;
+  height: 100%;
+}
+#JahiaGxtImagePopup .x-window-tc {
+  background: none;
+  height: 100%;
+}
+#JahiaGxtImagePopup .x-window-tc > div {
+  /* background: pink; */
+  height: 100%;
+}
+#JahiaGxtImagePopup .x-window-tc > div > div {
+  float: none !important;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+}
+#JahiaGxtImagePopup .x-window-tc > div > div td {
+  float: right;
+}
+#JahiaGxtImagePopup .x-window-tc .x-tool-close {
+  background: url(/engines/quick-fix/images/icon-close-large.png) no-repeat center center #5c6164;
+  width: 45px;
+  height: 45px;
+}
+#JahiaGxtImagePopup .x-window-tc .x-tool-refresh {
+  background: url(/engines/quick-fix/images/icon-publication-launcher.png) no-repeat center center;
+  width: 45px;
+  height: 45px;
+  display: none;
+}
+#JahiaGxtImagePopup .x-window-ml {
+  padding: 0 !important;
+  background: none;
+}
+#JahiaGxtImagePopup .x-window-mr {
+  padding: 0 !important;
+  background: none !important;
+}
+#JahiaGxtImagePopup .x-window-mc {
+  background: transparent;
+  border: none !important;
+}
+#JahiaGxtImagePopup .x-window-body {
+  width: 100% !important;
+  /* left: 5px; */
+  position: relative;
+  /* top: -1px; */
+  height: calc(100% - 12px) !important;
+}
+#JahiaGxtImagePopup .x-window-body > div {
+  height: calc(100% - 4px) !important;
+  display: block;
+  width: 100% !important;
+}
+#JahiaGxtImagePopup .x-window-bwrap {
+  width: calc(100% - 12px) !important;
+  left: 5px;
+  top: -1px;
+}
+
+.x-window .x-resizable-handle {
+  background: red;
+  opacity: 1;
+}
+.x-window .x-resizable-handle-north {
+  top: 16px;
+}
+.x-window .x-resizable-handle-east {
+  top: 16px;
+  height: calc(100% - 16px) !important;
+  /* right: 6px; */
+}
+.x-window .x-resizable-handle-northeast {
+  top: 16px;
+}
+.x-window .x-resizable-handle-west, .x-window .x-resizable-handle-northwest {
+  top: 16px;
+  height: calc(100% - 16px) !important;
+}
+
+.x-vsplitbar {
+  display: none;
+}
+
+.x-border, .x-grid3-hd-row .x-grid3-hd, .x-grid3-row {
+  border: none !important;
+}
+
+.x-grid3-row-selected {
+  background: red !important;
+}
+.x-grid3-row-selected.x-grid3-row-over {
+  background: red !important;
+}
+
+.x-grid3-row-over {
+  background: purple !important;
+}
+
+.x-grid3-body .x-grid3-td-checker {
+  background: none !important;
+}
+
+.x-border-layout-ct, .x-tab-panel-header {
+  background: transparent !important;
+}
+
+/* TAB BORDERS */
+/* UNUSED */
+.x-btn-tl, .x-btn-tc, .x-btn-tr, .x-btn-ml, .x-btn-mr, .x-btn-bl, .x-btn-bc, .x-btn-br {
+  display: none;
+}
+
+/* USED */
+.x-btn-mc {
+  background-color: transparent !important;
+  background-image: none;
+}
+.x-btn-mc em {
+  background: none !important;
+}
+
+/* COMBOS */
+.x-component[role="combobox"] {
+  xborder: 5px solid orange;
+}
+.x-component[role="combobox"] input {
+  xborder: 5px solid purple;
+}
+.x-component[role="combobox"] .x-form-trigger-arrow {
+  xborder: 5px solid blue;
+}
+
+html, body {
+  height: 100%;
+  background: #5c6164;
+}
+
+#contentmanager {
+  height: 100% !important;
+  background: transparent;
+}
+#contentmanager > div:nth-child(1) {
+  height: 100% !important;
+  background: transparent;
+}
+#contentmanager > div:nth-child(1) > div:nth-child(1) {
+  height: 100% !important;
+  background: transparent;
+}
+#contentmanager > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) {
+  height: 100% !important;
+  background: transparent;
+}
+#contentmanager > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) {
+  height: 100% !important;
+  background: transparent;
+}
+
+/* TAB MENUS */
+.x-tab-panel-header {
+  /* border: 5px solid green; */
+}
+.x-tab-panel-header .x-tab-strip-wrap {
+  xborder: 1px solid purple;
+  display: none;
+}
+.x-tab-panel-header .x-tab-strip-spacer {
+  display: none;
+}
+.x-tab-panel-header ul.x-tab-strip-top {
+  /* background: pink; */
+  background: none;
+  border: none !important;
+}
+.x-tab-panel-header ul.x-tab-strip li {
+  background: none;
+}
+.x-tab-panel-header .x-tab-strip a {
+  xborder: 3px solid brown;
+}
+.x-tab-panel-header .x-tab-strip .x-tab-strip-active a {
+  xxborder: 3px solid green;
+}
+.x-tab-panel-header .x-tab-strip a em {
+  xborder: 3px solid brown;
+}
+.x-tab-panel-header .x-tab-strip a em > span {
+  xborder: 3px solid brown;
+}
+.x-tab-panel-header .x-tab-strip a em > span > span {
+  xborder: 3px solid brown;
+}
+.x-tab-panel-header .x-tab-strip .x-tab-strip-active a em > span > span {
+  xborder: 3px solid green;
+}
+
+/* TAB WRAPPER */
+/* TAB LIST UL */
+/* TAB LIST LI */
+/* TAB LIST ANCHOR */
+/* TAB LIST ANCHOR (SELECTED) */
+/* TAB LIST ANCHOR > CHILDREN */
+/* TAB LIST ANCHOR > LABEL */
+/* TAB LIST (SELECTED) ANCHOR > LABEL */
+/* HEADER */
+/* HEADER WRAPPER */
+.x-panel-tbar {
+  /* border: 2px solid red; */
+  position: fixed;
+  z-index: 9999;
+  /* display: none; */
+  left: 61px;
+  width: calc(100% - 63px) !important;
+  display: block;
+  /* background: blue; */
+  overflow: hidden;
+}
+
+/* HEADER */
+#JahiaGxtManagerToolbar {
+  xborder: 1px solid green;
+  xdisplay: none;
+  width: 250px !important;
+  /* background: red; */
+}
+#JahiaGxtManagerToolbar > .x-toolbar {
+  xborder: 1px solid green;
+  background: none !important;
+  width: 100%;
+  width: 236px;
+  border: none !important;
+}
+#JahiaGxtManagerToolbar > .x-toolbar > table {
+  /* background: purple; */
+  position: fixed;
+  left: 318px;
+  z-index: 9999;
+  display: block;
+  width: calc(100% - 348px);
+  /* background: red; */
+}
+#JahiaGxtManagerToolbar > .x-toolbar::before {
+  content: "File manager";
+  font-size: 26px;
+  font-family: Raleway;
+  font-weight: 100;
+  color: #eeeeee;
+}
+#JahiaGxtManagerToolbar .x-toolbar .x-toolbar-cell {
+  /* border: 5px solid red; */
+}
+#JahiaGxtManagerToolbar .x-toolbar .x-toolbar-cell .x-btn-text {
+  color: red !important;
+}
+#JahiaGxtManagerToolbar .x-toolbar .x-toolbar-cell:nth-child(4) {
+  position: absolute;
+  right: 0;
+}
+#JahiaGxtManagerToolbar .x-toolbar .x-toolbar-cell:nth-child(5) {
+  position: fixed;
+  left: 69px;
+}
+
+/* HEADER INNER WRAPPER */
+/* HEADER TAB */
+/* FILE */
+/* EDIT */
+/* IMAGE */
+/* VIEW */
+/* LANG COMBO */
+/* HEADER TAB BUTTON */
+/* USED */
+.x-panel-bwrap {
+  xxborder: 2px solid purple;
+  width: 100%;
+}
+
+.x-panel-body {
+  xxborder: 2px solid green;
+}
+
+/* MAIN BODY */
+#JahiaGxtManagerMain {
+  xborder: 1px solid aqua;
+}
+#JahiaGxtManagerMain > div:nth-child(1) > div:nth-child(2) {
+  position: relative;
+  background: transparent;
+}
+#JahiaGxtManagerMain > div:nth-child(1) > div:nth-child(2) > div {
+  xborder: 10px solid purple;
+  position: absolute;
+  z-index: 999;
+}
+#JahiaGxtManagerMain > div:nth-child(1) > div:nth-child(2) > div.x-hide-display {
+  z-index: 99;
+  display: none;
+}
+#JahiaGxtManagerMain > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) {
+  width: 350px !important;
+  margin-left: 60px;
+  position: relative;
+  /* background: pink; */
+  display: none;
+}
+
+/* SEARCH WINDOW */
+body[data-INDIGO-SEARCH="on"] #JahiaGxtManagerMain > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) {
+  display: block;
+}
+
+/* FILE TREE */
+#JahiaGxtManagerLeftTree {
+  xborder: 1px solid red !important;
+  width: 310px !important;
+  position: relative !important;
+  display: inline-block;
+  xxmargin-top: -50px;
+}
+#JahiaGxtManagerLeftTree > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) {
+  xborder: 1px solid purple !important;
+}
+#JahiaGxtManagerLeftTree > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) {
+  xborder: 1px solid purple !important;
+  display: none !important;
+}
+#JahiaGxtManagerLeftTree > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) {
+  xborder: 1px solid purple !important;
+  top: 46px !important;
+  left: 0 !important;
+}
+#JahiaGxtManagerLeftTree .x-panel {
+  xborder: 1px solid orange !important;
+  xposition: fixed;
+  /* background: purple!important; */
+}
+#JahiaGxtManagerLeftTree .x-panel .x-panel-toolbar {
+  xborder: 10px solid red;
+  position: absolute;
+  top: 4px;
+  right: 7px;
+  z-index: 999999;
+  float: none !important;
+}
+#JahiaGxtManagerLeftTree .x-hide-display {
+  display: block !important;
+}
+#JahiaGxtManagerLeftTree .x-panel > div.x-accordion-hd {
+  xborder: 1px solid pink !important;
+  xposition: fixed;
+  xleft: 0;
+  width: 60px;
+  padding: 0;
+  margin-bottom: 10px;
+}
+#JahiaGxtManagerLeftTree .x-panel > div.x-accordion-hd > img {
+  display: none;
+}
+#JahiaGxtManagerLeftTree .x-panel > div.x-accordion-hd > span {
+  display: block;
+  width: 60px;
+  padding-top: 20px;
+  font-family: Raleway;
+  font-size: 8px;
+  text-transform: uppercase;
+  font-weight: 400;
+  background: url(/engines/quick-fix/images/tabs-files.png) no-repeat top center #5c6164;
+  text-align: center;
+  color: #eeeeee;
+  /* opacity: 1!important; */
+}
+
+/* SEARCH LINE 1 */
+/* SEARCH LINE INPUT */
+/* SEARCH LINE FORM */
+/* TREE GROUP */
+/* TOOL BAR */
+/* TREE GROUP SELECTOR */
+body[data-INDIGO-SEARCH="on"] #JahiaGxtManagerLeftTree .x-panel > div.x-accordion-hd > span {
+  display: block;
+  /* background: red; */
+  width: 60px;
+  padding-top: 31px;
+  font-family: Raleway;
+  font-size: 8px;
+  text-transform: uppercase;
+  font-weight: 400;
+  /* opacity: 0.5!important; */
+  color: rgba(238, 238, 238, 0.2);
+}
+
+#JahiaGxtManagerLeftTree .x-panel.x-panel-collapsed > div.x-accordion-hd > span {
+  display: block;
+  /* background: red; */
+  width: 60px;
+  padding-top: 31px;
+  font-family: Raleway;
+  font-size: 8px;
+  text-transform: uppercase;
+  font-weight: 400;
+  /* opacity: 0.5!important; */
+  color: rgba(238, 238, 238, 0.2);
+}
+#JahiaGxtManagerLeftTree .x-accordion-hd .x-tool-toggle {
+  /*position: fixed;
+  top: 0;
+  left: 347px;
+  height: 100%;
+  background: pink;
+  width: 5px;*/
+  display: none;
+}
+#JahiaGxtManagerLeftTree .x-panel > div:nth-child(2) {
+  xborder: 1px solid red !important;
+  /* display: none!important */
+  position: absolute;
+  top: 0 !important;
+  left: 70px !important;
+  /* background: blue; */
+  width: 240px;
+  height: calc(100% - 0px);
+  padding-top: 20px;
+}
+#JahiaGxtManagerLeftTree .x-panel > div:nth-child(2) > div:nth-child(1) {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+#JahiaGxtManagerLeftTree .x-panel > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+#JahiaGxtManagerLeftTree .x-panel > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+#JahiaGxtManagerLeftTree .x-panel > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+#JahiaGxtManagerLeftTree .x-panel > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+  /* margin-top: -20px; */
+  /* background: blue; */
+  /* z-index: 999999; */
+  /* position: relative; */
+}
+#JahiaGxtManagerLeftTree .x-panel > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+#JahiaGxtManagerLeftTree .x-panel > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div {
+  width: 100% !important;
+  border: none;
+}
+#JahiaGxtManagerLeftTree .x-panel > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div > table {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+#JahiaGxtManagerLeftTree .x-panel > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div > table td {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+#JahiaGxtManagerLeftTree .x-tree3-node-joint {
+  border: 1px solid purple;
+}
+#JahiaGxtManagerLeftTree .x-tree3-node-icon {
+  xborder: 1px solid red;
+}
+#JahiaGxtManagerLeftTree .x-tree3-node-check {
+  xborder: 1px solid green;
+}
+#JahiaGxtManagerLeftTree .x-tree3-node-text {
+  xborder: 1px solid pink;
+}
+
+/* TREE GROUP DIRECTORY LIST */
+/* SEARCH PANEL */
+#JahiaGxtManagerMain > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) .x-panel > div:nth-child(2) {
+  left: 0px !important;
+  display: none;
+}
+
+body[data-INDIGO-SEARCH="on"] #JahiaGxtManagerMain > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) .x-panel > div:nth-child(2) {
+  display: block;
+  xborder: 50px solid red;
+  display: block;
+}
+
+#JahiaGxtManagerLeftTree .x-tab-panel-header {
+  width: 60px !important;
+  border: none;
+  padding: 0;
+  margin-bottom: 10px;
+  /* position: absolute; */
+  /* top: 50px; */
+}
+#JahiaGxtManagerLeftTree .x-tab-panel-header::before {
+  content: "Search";
+  display: block;
+  background: red;
+  width: 60px;
+  padding-top: 31px;
+  font-family: Raleway;
+  font-size: 8px;
+  text-transform: uppercase;
+  font-weight: 400;
+  /* margin-top: 90px; */
+}
+
+body[data-INDIGO-SEARCH="on"] #JahiaGxtManagerLeftTree .x-tab-panel-header::before {
+  background: pink;
+}
+
+#JahiaGxtManagerLeftTree .x-tab-panel-header ul {
+  xdisplay: none;
+}
+#JahiaGxtManagerLeftTree .x-tab-panel-header ul.x-tab-strip li:nth-child(1) {
+  xborder: 10px solid red;
+}
+#JahiaGxtManagerLeftTree .x-tab-panel-header ul.x-tab-strip li:nth-child(2) {
+  xxborder: 10px solid red;
+}
+
+/* BROWSE BUTTON */
+/* SEARCH BUTTON */
+/* RIGHT PANEL */
+#JahiaGxtManagerMain > div:nth-child(2) {
+  xborder: 1px solid blue !important;
+  /* background: blue; */
+  left: 0 !important;
+  position: relative !important;
+  display: inline-block;
+  width: calc(100% - 356px) !important;
+  /* background: purple; */
+  xtop: -50px !important;
+  background: transparent !important;
+}
+
+body[data-INDIGO-INLINE-EDIT-ENGINE="on"] #JahiaGxtManagerMain > div:nth-child(2) {
+  width: calc(100% - 740px) !important;
+}
+
+/* DIRECTORY CONTENTS */
+#JahiaGxtManagerTobTable {
+  xborder: 1px solid green !important;
+  margin-top: 53px;
+  height: 100%;
+  width: calc(100% - 30px) !important;
+}
+#JahiaGxtManagerTobTable .x-grid3-col-icon img {
+  /* border:1px solid red; */
+}
+#JahiaGxtManagerTobTable .x-grid3-col-name {
+  /* border:1px solid green; */
+}
+#JahiaGxtManagerTobTable .x-grid3-col-locked {
+  /* border:1px solid aqua; */
+}
+#JahiaGxtManagerTobTable .x-grid3-cell > div {
+  /* border:1px solid pink; */
+  font-family: Raleway;
+  font-size: 10px;
+}
+#JahiaGxtManagerTobTable .x-grid3-cell > div > span {
+  /* border:1px solid pink; */
+  font-family: Raleway;
+  font-size: 10px;
+  font-weight: 500;
+}
+#JahiaGxtManagerTobTable .x-grid3-row .x-grid3-row-checker, #JahiaGxtManagerTobTable .x-grid3-hd-checker {
+  background: blue;
+}
+#JahiaGxtManagerTobTable .x-grid3-row-selected .x-grid3-row-checker, #JahiaGxtManagerTobTable .x-grid3-hd-checker-on .x-grid3-hd-checker {
+  background: green;
+}
+
+.x-grid3-header {
+  background: none !important;
+}
+
+#JahiaGxtManagerTobTable img[src="/icons/publication/published.png"] {
+  /* border:1px solid red; */
+  width: 3px;
+  height: 20px;
+  padding-left: 3px;
+  overflow: hidden;
+  display: block;
+  box-sizing: border-box;
+  background: green;
+  position: absolute;
+  left: 28px;
+}
+#JahiaGxtManagerTobTable > div:nth-child(1) {
+  display: none;
+}
+#JahiaGxtManagerTobTable > div:nth-child(2) {
+  height: 100% !important;
+  background: transparent;
+  width: 100% !important;
+  border: none;
+}
+#JahiaGxtManagerTobTable > div:nth-child(2) > div:nth-child(1) {
+  height: 100% !important;
+  background: transparent;
+  width: 100% !important;
+  border: none;
+}
+#JahiaGxtManagerTobTable > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) {
+  height: 100% !important;
+  background: transparent;
+  width: 100% !important;
+  border: none;
+}
+#JahiaGxtManagerTobTable > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) {
+  height: 100% !important;
+  background: transparent;
+  width: 100% !important;
+  border: none;
+}
+#JahiaGxtManagerTobTable > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) {
+  height: 100% !important;
+  background: transparent;
+  width: 100% !important;
+  border: none;
+}
+#JahiaGxtManagerTobTable > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) {
+  height: 100% !important;
+  background: transparent;
+  width: 100% !important;
+  border: none;
+  height: calc(100% - 82px) !important;
+  /* background: pink; */
+}
+#JahiaGxtManagerTobTable > div:nth-child(2) > div:nth-child(2) {
+  position: fixed;
+  bottom: 0;
+}
+
+/* EDIT ENGINE TABS */
+#JahiaGxtManagerBottomTabs {
+  xborder: 1px solid violet !important;
+  position: fixed !important;
+  right: 10px;
+  top: 0px !important;
+  left: auto !important;
+  z-index: 99999;
+  /* background: pink; */
+  width: auto !important;
+  height: 100%;
+  width: 60px !important;
+}
+#JahiaGxtManagerBottomTabs:hover {
+  box-shadow: -5px -1px 10px 0px rgba(49, 49, 49, 0.5);
+}
+
+body[data-INDIGO-INLINE-EDIT-ENGINE="on"] #JahiaGxtManagerBottomTabs {
+  width: 430px !important;
+}
+
+#JahiaGxtManagerBottomTabs:hover {
+  width: 430px !important;
+}
+#JahiaGxtManagerBottomTabs > div {
+  height: 100% !important;
+  width: 100%;
+}
+#JahiaGxtManagerBottomTabs .x-tab-panel-header {
+  position: absolute;
+  width: 60px !important;
+  right: 0px;
+  z-index: 999999999;
+  border: none;
+}
+#JahiaGxtManagerBottomTabs .x-tab-panel-header .x-tab-strip-wrap {
+  display: block;
+  width: 100% !important;
+}
+#JahiaGxtManagerBottomTabs ul.x-tab-strip li {
+  display: block;
+  float: none;
+  /* width: 60px; */
+  margin: 0 0 10px 0;
+}
+#JahiaGxtManagerBottomTabs .x-tab-strip-top .x-tab-left {
+  padding: 0;
+  background: none;
+}
+#JahiaGxtManagerBottomTabs .x-tab-panel-header .x-tab-strip a {
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+#JahiaGxtManagerBottomTabs .x-tab-panel-header .x-tab-strip a em > span > span {
+  display: block;
+  width: 60px;
+  padding-top: 23px;
+  background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top center #5c6164;
+  font-family: Raleway;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 8px;
+  text-align: center;
+  color: rgba(238, 238, 238, 0.8);
+}
+
+body[data-INDIGO-INLINE-EDIT-ENGINE="on"] #JahiaGxtManagerBottomTabs .x-tab-panel-header .x-tab-strip a em > span > span {
+  background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top center #079cf1;
+}
+
+#JahiaGxtManagerBottomTabs:hover .x-tab-panel-header .x-tab-strip a em > span > span {
+  background: url(/engines/quick-fix/images/tabs-placeholder.png) no-repeat top center #079cf1;
+}
+#JahiaGxtManagerBottomTabs .x-tab-strip-top .x-tab-strip-inner {
+  background: none;
+}
+#JahiaGxtManagerBottomTabs .x-panel-body, #JahiaGxtManagerBottomTabs .x-panel-bbar {
+  display: block;
+}
+#JahiaGxtManagerBottomTabs .x-tab-panel-body {
+  display: none;
+  height: 100% !important;
+  background: #079cf1;
+}
+#JahiaGxtManagerBottomTabs .x-tab-panel-body > div {
+  height: 100% !important;
+  background: transparent;
+  width: calc(100% - 60px) !important;
+}
+
+body[data-INDIGO-INLINE-EDIT-ENGINE="on"] #JahiaGxtManagerBottomTabs .x-tab-panel-body {
+  display: block;
+  width: 100% !important;
+}
+
+#JahiaGxtManagerBottomTabs:hover .x-tab-panel-body {
+  display: block;
+  width: 100% !important;
+}
+#JahiaGxtManagerBottomTabs .x-panel {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+#XXXJahiaGxtManagerBottomTabs .x-panel-bwrap {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+#JahiaGxtManagerBottomTabs form {
+  height: auto !important;
+  width: 100% !important;
+  /* background: red; */
+}
+#JahiaGxtManagerBottomTabs:hover .x-panel-body, #JahiaGxtManagerBottomTabs:hover .x-panel-bbar {
+  xdisplay: block;
+}
+#JahiaGxtManagerBottomTabs .x-panel-body {
+  height: 100% !important;
+  width: 100% !important;
+  background: none;
+}
+#JahiaGxtManagerBottomTabs .x-panel-body > div:nth-child(1) {
+  width: 100% !important;
+}
+#JahiaGxtManagerBottomTabs .x-panel-footer {
+  width: 50px;
+  height: 100%;
+  background: url(/engines/quick-fix/images/icon-collapse-side-bar.png) no-repeat left center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9999999;
+  display: none;
+}
+
+/* USE AS THE EXPAND BUTTON */
+body[data-INDIGO-INLINE-EDIT-ENGINE="on"] #JahiaGxtManagerBottomTabs .x-panel-footer {
+  background: url(/engines/quick-fix/images/icon-expand-side-bar.png) no-repeat left center;
+}
+
+#JahiaGxtManagerBottomTabs:hover .x-panel-footer {
+  right: auto;
+  position: absolute;
+  left: -9px;
+  width: 10px;
+  display: block;
+}
+
+/*# sourceMappingURL=manager_en.css.map */

@@ -36,9 +36,9 @@
 	<!-- REM : Once Development has finished REMOVE unused Raleway Fonts ... -->
 	<link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
-    <c:if test="${not empty theme}">
+    <c:if test="${useNewTheme}">
 	<!-- CONTAINS CSS TO APPLY QUICK FIX -->
-    <link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/manager${themeLocale}.css'/>"/>
+    <link rel="stylesheet" type="text/css" href="<c:url value='/engines/quick-fix/manager_${newThemeLocale}.css'/>"/>
 	<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
 	<script>
 		$(document).ready(function(){

@@ -1106,19 +1106,21 @@ public class JCRPublicationService extends JahiaService {
                 info.setWorkInProgress(true);
             }
 
-            if (currentPublicationInfo.hasLiveNode() == null) {
-                try {
-                    node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
-                    currentPublicationInfo.setHasLiveNode(true);
-                } catch (ItemNotFoundException e) {
-                    currentPublicationInfo.setHasLiveNode(false);
-                }
-            }
-
             info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet()));
 
-            if (info.getStatus() == PublicationInfo.PUBLISHED && !currentPublicationInfo.hasLiveNode()) {
-                info.setStatus(PublicationInfo.NOT_PUBLISHED);
+            if (allsubtree) {
+                if (currentPublicationInfo.hasLiveNode() == null) {
+                    try {
+                        node.getCorrespondingNodePath(destinationSession.getWorkspace().getName());
+                        currentPublicationInfo.setHasLiveNode(true);
+                    } catch (ItemNotFoundException e) {
+                        currentPublicationInfo.setHasLiveNode(false);
+                    }
+                }
+
+                if (info.getStatus() == PublicationInfo.PUBLISHED && !currentPublicationInfo.hasLiveNode()) {
+                    info.setStatus(PublicationInfo.NOT_PUBLISHED);
+                }
             }
             // If in conflict we still need to have the translation nodes has they are part of the node to make it valid
             // in case we manage to resolve the conflict on publication

@@ -835,7 +835,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                                 final String likeTerm = asIsTerm.contains("*") ? stringToQueryLiteral(StringUtils
                                         .replaceChars(asIsTerm, '*', '%'))
                                         : stringToQueryLiteral("%" + asIsTerm + "%");
-                                String termConstraint = xpath ? ("jcr:like(fn:lower-case(fn:name()), " + likeTerm + ")") : ("LOWER(localname(n)) like " + likeTerm);
+                                String termConstraint = xpath ? ("jcr:like(fn:lower-case(fn:name()), " + likeTerm + ")") : ("LOWER(n.[j:nodename]) like " + likeTerm);
 
                                 if (previousOperand != null) {
                                     addConstraint(nameSearchConstraints, previousOperand, termConstraint);
@@ -859,8 +859,10 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                         }
                     }
 
-                    addConstraint(textSearchConstraints,
-                            OR, nameSearchConstraints.toString());
+                    if (nameSearchConstraints.length() > 0) {
+                        addConstraint(textSearchConstraints,
+                                OR, "(" + nameSearchConstraints.toString() + ")");
+                    }
                 }
                 if (searchFields.isTags() && getTaggingService() != null
                         && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)

@@ -67,6 +67,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -197,7 +198,11 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                         final String qs = StringUtils.substringAfter(responseWrapper.getRedirect(), "?");
                         final Map<String, String[]> params = new HashMap<String, String[]>();
                         if (!StringUtils.isEmpty(qs)) {
-                            params.put("webflowexecution" + identifierNoDashes, new String[]{StringUtils.substringAfterLast(qs, "webflowexecution" + identifierNoDashes + "=")});
+                            String[] pairs = qs.split("&");
+                            for (String pair : pairs) {
+                                int idx = pair.indexOf("=");
+                                params.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), new String[]{URLDecoder.decode(pair.substring(idx + 1), "UTF-8")});
+                            }
                         }
                         HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request) {
                             @Override

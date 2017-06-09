@@ -51,7 +51,7 @@
 							newNodes = mutation.addedNodes;
 							attributeNames = mutation.attributeName;
 
-							if(attributeNames == "data-nodedisplayname"){
+							if(attributeNames == "data-main-node-displayname"){
 								indigoQF.updateSelectedItems();
 
 							}
@@ -181,7 +181,7 @@
 
 				switch(indigoQF.selections.count){
 					case 0:
-						label = $("body").attr("data-nodedisplayname");
+						label = $("body").attr("data-main-node-displayname");
 						break;
 
 					case 1:

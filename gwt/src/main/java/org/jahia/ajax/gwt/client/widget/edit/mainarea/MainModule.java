@@ -1221,6 +1221,7 @@ public class MainModule extends Module {
                 // clear side panel
                 editLinker.getSidePanel().disable();
             }
+            editLinker.getMainModule().unmask();
             needParseAfterLayout = true;
             layout();
         } catch (Exception e) {

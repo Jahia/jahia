@@ -52,6 +52,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -196,7 +197,16 @@ public class JCRFilterTag extends AbstractJCRTag {
                     if (JCRContentUtils.isNodeType(re, filteredTypes)) {
                         res.add(re);
                     } else if(re.isNodeType("jnt:contentReference") && re.hasProperty(Constants.NODE)) {
-                        if (JCRContentUtils.isNodeType((JCRNodeWrapper) re.getProperty(Constants.NODE).getNode(), filteredTypes)) {
+                        JCRNodeWrapper ref = null;
+
+                        try {
+                            ref = (JCRNodeWrapper) re.getProperty(Constants.NODE).getNode();
+                        } catch (ItemNotFoundException e) {
+                            // referenced node does not exist anymore
+                        }
+
+                        // display empty ref or constraint checked ref
+                        if (ref == null || JCRContentUtils.isNodeType((JCRNodeWrapper) re.getProperty(Constants.NODE).getNode(), filteredTypes)) {
                             res.add(re);
                         }
                     }

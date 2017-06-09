@@ -190,7 +190,6 @@ public final class JahiaFrenchAnalyzer extends Analyzer {
         result = new StopFilter(StopFilter.getEnablePositionIncrementsVersionDefault(matchVersion),
                 result, stoptable);
         result = new FrenchStemFilter(result, excltable);
-        // Convert to lowercase after stemming!
         return result;
     }
 

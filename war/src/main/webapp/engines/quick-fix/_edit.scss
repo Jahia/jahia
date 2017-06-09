@@ -201,7 +201,7 @@ body
     width: 45px;
 
     body[data-SELECTED-ITEMS="0"] & {
-	    background: url(./images/tabs-browse-white@X2.png) no-repeat center right 5px  #6f7376;
+	    background: url(./images/tabs-browse-white@X2.png) no-repeat center right 5px  #545657;
     	background-size:23px 23px;
     }
 
@@ -383,7 +383,7 @@ body
 	  position: fixed;
       left: 0;
       opacity:0;
-      background: url(./images/tabs-publish-white@X2.png) no-repeat top left 3px #1d1d1d;
+      background: url(./images/tabs-publish-white@X2.png) no-repeat top -1px left 3px #1d1d1d;
       top: 15px;
       background-size: 23px 23px;
       border-radius: 100%;
@@ -392,16 +392,16 @@ body
 
       body[data-SELECTED-ITEMS="0"] & {
 
-      	background: url(./images/tabs-publish-white@X2.png) no-repeat top left 3px #6f7376;
+      	background: url(./images/tabs-publish-white@X2.png) no-repeat top -1px left 3px #545657;
       }
 
   	body[data-PAGE-PUBLICATION-STATUS="modified"][data-SELECTED-ITEMS="0"] & {
-      background: url(./images/tabs-publish-modified@X2.png) no-repeat top left 3px #6f7376;
+      background: url(./images/tabs-publish-modified@X2.png) no-repeat top -1px left 3px #545657;
   		background-size:23px 23px;
   	}
 
   	body[data-PAGE-PUBLICATION-STATUS="published"][data-SELECTED-ITEMS="0"] & {
-  		background: url(./images/tabs-publish-published@X2.png) no-repeat top left 3px #6f7376;
+  		background: url(./images/tabs-publish-published@X2.png) no-repeat top -1px left 3px #545657;
   		background-size:23px 23px;
   	}
 
@@ -509,6 +509,7 @@ body
 	  	  /* padding-right: 10px; */
 	  	  opacity: 0.9;
 
+
 	  	&::after {
 	  		content: $text_contribute_mode;
 	  		font-size: 14px;
@@ -587,7 +588,7 @@ body
 		  border-radius: 0 100% 100% 0;
 
 		  body[data-SELECTED-ITEMS="0"] & {
-		  	background: url(./images/tabs-create-white@X2.png) no-repeat center left -3px #6f7376;
+		  	background: url(./images/tabs-create-white@X2.png) no-repeat center left -3px #545657;
 		  	background-size: 18px 17px;
 		  }
 
@@ -624,7 +625,7 @@ body
     width: 45px;
 
 	body[data-SELECTED-ITEMS="0"] & {
-	    background: url(./images/tabs-browse-white@X2.png) no-repeat center right 5px  #6f7376;
+	    background: url(./images/tabs-browse-white@X2.png) no-repeat center right 5px  #545657;
     	background-size:23px 23px;
     }
 
@@ -666,7 +667,7 @@ body
 		  left: 0;
 		  opacity:0;
 		  opacity:1;
-		  background: url(./images/tabs-publish-white@X2.png) no-repeat top left 3px #1d1d1d;
+		  background: url(./images/tabs-publish-white@X2.png) no-repeat top -1px left 3px #1d1d1d;
 		  top: 15px;
 		  background-size: 23px 23px;
 		  border-radius: 100%;
@@ -675,16 +676,16 @@ body
 		  display: block;
 
 		  body[data-SELECTED-ITEMS="0"] & {
-	      	background: url(./images/tabs-publish-white@X2.png) no-repeat top left 3px #6f7376;
+	      	background: url(./images/tabs-publish-white@X2.png) no-repeat top -1px left 3px #545657;
 	      }
 
 			 body[data-PAGE-PUBLICATION-STATUS="published"][data-SELECTED-ITEMS="0"] & {
-	  		  background: url(./images/tabs-publish-published@X2.png) no-repeat top left 3px #6f7376;
+	  		  background: url(./images/tabs-publish-published@X2.png) no-repeat top -1px left 3px #545657;
 	  		  background-size:23px 23px;
 	  		}
 
 			body[data-PAGE-PUBLICATION-STATUS="modified"][data-SELECTED-ITEMS="0"] & {
-			  background: url(./images/tabs-publish-modified@X2.png) no-repeat top left 3px #6f7376;
+			  background: url(./images/tabs-publish-modified@X2.png) no-repeat top -1px left 3px #545657;
 			  background-size:23px 23px;
 			}
 
@@ -974,10 +975,11 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode .x-toolbar-first .x-t
 
   }
   &:nth-child(5) {
-    background: url(./images/tabs-workflow-black.png) no-repeat top 3px center;
-
+    background: url(./images/tabs-workflow-black@X2.png) no-repeat top 3px center;
+	background-size: 23px 23px;
 	body[data-SELECTED-ITEMS="0"] & {
-    	background: url(./images/tabs-workflow.png) no-repeat top 3px center;
+    	background: url(./images/tabs-workflow-white@X2.png) no-repeat top 3px center;
+		background-size: 23px 23px;
 	}
     > table:nth-child(1)::after {
       content: $text_workflow;
@@ -1361,7 +1363,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-panel-body.x-border-layout-ct > div:nth
 		  border-radius: 0 100% 100% 0;
 
 		  body[data-SELECTED-ITEMS="0"] & {
-		  	background: url(./images/icon-more-options-white@X2.png) no-repeat center left 3px #6f7376;
+		  	background: url(./images/icon-more-options-white@X2.png) no-repeat center left 3px #545657;
 		  	background-size: 10px 2px;
 		  }
 	  }

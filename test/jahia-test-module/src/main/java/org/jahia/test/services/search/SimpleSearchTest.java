@@ -222,7 +222,7 @@ public class SimpleSearchTest extends JahiaTestCase {
         criteria.getTerms().get(0).getFields().setKeywords(true);
 
         List<Hit<?>> hits = searchService.search(criteria, context).getResults();
-        assertEquals("Unexpected number of search results for: " + criteria.toString(), 13, hits.size());
+        assertEquals("Unexpected number of search results for: " + criteria.toString(), 15, hits.size());
 
         criteria.setFileType("pdf");
         hits = searchService.search(criteria, context).getResults();

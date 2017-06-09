@@ -197,16 +197,12 @@ public class JCRFilterTag extends AbstractJCRTag {
                     if (JCRContentUtils.isNodeType(re, filteredTypes)) {
                         res.add(re);
                     } else if(re.isNodeType("jnt:contentReference") && re.hasProperty(Constants.NODE)) {
-                        JCRNodeWrapper ref = null;
-
                         try {
-                            ref = (JCRNodeWrapper) re.getProperty(Constants.NODE).getNode();
+                            if (JCRContentUtils.isNodeType((JCRNodeWrapper) re.getProperty(Constants.NODE).getNode(), filteredTypes)) {
+                                res.add(re);
+                            }
                         } catch (ItemNotFoundException e) {
-                            // referenced node does not exist anymore
-                        }
-
-                        // display empty ref or constraint checked ref
-                        if (ref == null || JCRContentUtils.isNodeType((JCRNodeWrapper) re.getProperty(Constants.NODE).getNode(), filteredTypes)) {
+                            // referenced node does not exist anymore: display empty ref
                             res.add(re);
                         }
                     }

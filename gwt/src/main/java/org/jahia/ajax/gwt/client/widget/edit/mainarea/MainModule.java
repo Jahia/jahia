@@ -1420,7 +1420,7 @@ public class MainModule extends Module {
         }
     }-*/;
 
-    public final native int scrollTo(IFrameElement iFrameElement, int x, int y) /*-{
+    public final native void scrollTo(IFrameElement iFrameElement, int x, int y) /*-{
         iFrameElement.contentWindow.scrollTo(x, y);
     }-*/;
 

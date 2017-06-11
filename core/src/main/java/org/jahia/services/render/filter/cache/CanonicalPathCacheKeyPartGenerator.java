@@ -50,14 +50,14 @@ import org.jahia.services.render.Resource;
 import java.util.Properties;
 
 /**
- * Cache key to store cannonical path of a node if the path is a dereference path
+ * Cache key to store canonical path of a node if the path is a dereference path
  * @author David Griffon
  */
-public class CannonicalPathCacheKeyPartGenerator implements CacheKeyPartGenerator {
+public class CanonicalPathCacheKeyPartGenerator implements CacheKeyPartGenerator {
 
     @Override
     public String getKey() {
-        return "cannonicalPath";
+        return "canonicalPath";
     }
 
     @Override

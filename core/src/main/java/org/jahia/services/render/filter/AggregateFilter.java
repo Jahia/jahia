@@ -304,10 +304,10 @@ public class AggregateFilter extends AbstractFilter {
             String path = StringUtils.replace(keyAttrs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY);
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrs.get("language")), renderContext.getFallbackLocale());
 
-            String cannonicalPath = keyAttrs.get("cannonicalPath");
-            cannonicalPath = StringUtils.isEmpty(cannonicalPath) ? path : cannonicalPath;
+            String canonicalPath = keyAttrs.get("canonicalPath");
+            canonicalPath = StringUtils.isEmpty(canonicalPath) ? path : canonicalPath;
 
-            Resource resource = new Resource(path, cannonicalPath, currentUserSession, keyAttrs.get("templateType"), keyAttrs.get("template"), keyAttrs.get("context"));
+            Resource resource = new Resource(path, canonicalPath, currentUserSession, keyAttrs.get("templateType"), keyAttrs.get("template"), keyAttrs.get("context"));
 
             // Store sub fragment key in module params of the resource to use it in prepare()
             // instead of generating the sub fragment key from scratch

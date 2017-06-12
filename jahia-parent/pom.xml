@@ -195,7 +195,8 @@
             Include-Resource,
             Private-Package,
             Embed-Dependency,
-            Embed-Transitive
+            Embed-Transitive,
+            Jahia-Depends-Skip-Require-Capability
         </jahia.modules.bundle.removeheaders>
         <custom.modules.bundle.removeheaders>${jahia.modules.bundle.removeheaders}</custom.modules.bundle.removeheaders>
     </properties>

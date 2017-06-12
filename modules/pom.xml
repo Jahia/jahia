@@ -58,6 +58,7 @@
 
     <properties>
         <jahia-depends>default</jahia-depends>
+        <jahia-depends-skip-require-capability></jahia-depends-skip-require-capability>
         <jahia-module-type>module</jahia-module-type>
         <jahia-static-resources>/css,/icons,/images,/img,/javascript</jahia-static-resources>
         <embed-dependency>*; scope=compile|runtime; type=!pom; inline=false</embed-dependency>
@@ -226,6 +227,7 @@
 
                         <!-- Jahia manifest attributes -->
                         <Jahia-Depends>${jahia-depends}</Jahia-Depends>
+                        <Jahia-Depends-Skip-Require-Capability>${jahia-depends-skip-require-capability}</Jahia-Depends-Skip-Require-Capability>
                         <Jahia-Module-Type>${jahia-module-type}</Jahia-Module-Type>
                         <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>

@@ -64,6 +64,8 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
         super(configLocations);
     }
 
+    private final Object monitor = new Object();
+
     private static Map<String, Resource[]> rootClassPathResourcesCache = new ConcurrentHashMap<>();
 
     @Override
@@ -100,12 +102,35 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
     }
 
     @Override
+    public void startRefresh() {
+        synchronized (monitor) {
+            super.startRefresh();
+        }
+    }
+
+    @Override
     public void completeRefresh() {
         try {
-            super.completeRefresh();
+            synchronized (monitor) {
+                super.completeRefresh();
+            }
         } catch (Throwable e) {
             setFailingSpringStartup(e);
             throw e;
+        }
+    }
+
+    @Override
+    public void normalRefresh() {
+        synchronized (monitor) {
+            super.normalRefresh();
+        }
+    }
+
+    @Override
+    public void normalClose() {
+        synchronized (monitor) {
+            super.normalClose();
         }
     }
 

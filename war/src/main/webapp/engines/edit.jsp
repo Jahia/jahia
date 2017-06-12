@@ -256,7 +256,8 @@
 			},
 			JahiaGxtSidePanelTabs: {
 				mouseOutTimer: null,
-				justBeenClosed: false
+				justBeenClosed: false,
+				style: "click"
 			},
 			selections: {
 				count: 0
@@ -279,6 +280,33 @@
 
 		$(document).ready(function(){
 
+			$("body").on("click", ".x-viewport-editmode .x-toolbar-first > table", function(e){
+
+				if($(e.target).hasClass("x-toolbar-ct")){
+					console.log("Store in local storage (session)");
+					var indigoUIColor;
+
+					$("body").attr("data-INDIGO-UI", function(index, attr){
+						indigoUIColor = (attr == "light") ? "dark" : "light";
+
+						return indigoUIColor;
+					});
+
+					$(this).attr("data-INDIGO-UI", indigoUIColor);
+				} else {
+					console.log("IGNORE UI Switch");
+				}
+
+
+
+			})
+
+			$("body").on("click", ".editmode-managers-menu",function(){
+				// CLose side panel if open
+				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
+			})
+
+
 			$("body").on("click", ".menu-editmode-managers-menu", function(){
 				$(this).fadeOut();
 			});
@@ -291,48 +319,71 @@
 
 			});
 
-			$("body").on("mouseenter", "#JahiaGxtSidePanelTabs", function(){
-				// Mouseover Side Panel tabs, so open it.
-				if($("body").attr("data-SELECTED-ITEMS") == "0"){
-					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
 
-				}
-			});
+			switch(indigoQF.JahiaGxtSidePanelTabs.style){
+				case "click":
+					$("body").on("mousedown", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab, #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", function(){
+						// Trigger click on Side Panel Tabs on hover
+						//$(this).trigger("click");
+						var alreadyClicked = $(this).hasClass("x-tab-strip-active");
 
-			$("body").on("mouseleave", "#JahiaGxtSidePanelTabs", function(e){
-				// Mouse leaves the Side Panel
+						if(alreadyClicked && $("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+							// remove side panel
+							$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
+						} else {
+							// open panel
+							$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
 
-				if($("body > div.x-menu").length > 0){
-					// Use hasnt really left the Side Panel, they have just opened a context menu, so do not close the side panel.
+						}
 
-				} else {
-					// There is no context menu, so assume that the Side Panel has really been mouseout-ed - close it.
+					});
+					break;
+				case "rollover":
+					$("body").on("mouseenter", "#JahiaGxtSidePanelTabs", function(){
+						// Mouseover Side Panel tabs, so open it.
+						if($("body").attr("data-SELECTED-ITEMS") == "0"){
+							$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
 
-					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
+						}
+					});
 
-					// Set flag and timer to remove after 100ms.
-					indigoQF.JahiaGxtSidePanelTabs.justBeenClosed = true;
-					indigoQF.JahiaGxtSidePanelTabs.mouseOutTimer = setTimeout(function(){
-						// Mouseou-ed more than 100ms ago, so forget about it.
-						indigoQF.JahiaGxtSidePanelTabs.justBeenClosed = false;
-					}, 100);
-				}
+					$("body").on("mouseleave", "#JahiaGxtSidePanelTabs", function(e){
+						// Mouse leaves the Side Panel
 
-			});
+						if($("body > div.x-menu").length > 0){
+							// Use hasnt really left the Side Panel, they have just opened a context menu, so do not close the side panel.
 
-			$("body").on("mouseenter", ".x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) table > tbody > tr > td > div > table > tbody > tr > td:nth-child(1) input[type='text']", function(){
-				// Mouseover Site Selector
-				// Problem: The Site Selector is displayed as if it is part of the side panel. Only Problem is that it is not a child of Side Panel, so
-				//			When the user hovers it the Side Panel is effectivly mouseout-ed.
-				// Fix:		Reopen the side panel as soon as the Site Selector is hovered.
+						} else {
+							// There is no context menu, so assume that the Side Panel has really been mouseout-ed - close it.
 
-				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
-			})
+							$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
 
-			$("body").on("mouseover", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab, #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", function(){
-				// Trigger click on Side Panel Tabs on hover
-				$(this).trigger("click");
-			});
+							// Set flag and timer to remove after 100ms.
+							indigoQF.JahiaGxtSidePanelTabs.justBeenClosed = true;
+							indigoQF.JahiaGxtSidePanelTabs.mouseOutTimer = setTimeout(function(){
+								// Mouseou-ed more than 100ms ago, so forget about it.
+								indigoQF.JahiaGxtSidePanelTabs.justBeenClosed = false;
+							}, 100);
+						}
+
+					});
+
+					$("body").on("mouseenter", ".x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) table > tbody > tr > td > div > table > tbody > tr > td:nth-child(1) input[type='text']", function(){
+						// Mouseover Site Selector
+						// Problem: The Site Selector is displayed as if it is part of the side panel. Only Problem is that it is not a child of Side Panel, so
+						//			When the user hovers it the Side Panel is effectivly mouseout-ed.
+						// Fix:		Reopen the side panel as soon as the Site Selector is hovered.
+
+						$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
+					})
+
+					$("body").on("mouseover", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab, #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", function(){
+						// Trigger click on Side Panel Tabs on hover
+						$(this).trigger("click");
+					});
+					break;
+			}
+
 
 			$("body").on("mouseover", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", function(){
 				// Mouseover Hamburger

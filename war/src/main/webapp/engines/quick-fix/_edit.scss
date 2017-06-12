@@ -9,6 +9,44 @@ body {
         background: $color-background;
     }
     transition: all 0.3s ease-in 0s;
+
+	&[data-main-node-displayname] {
+		&::before {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			display: block;
+			text-align: center;
+			color: #f6f9fb;
+			font-family: Raleway;
+			font-weight: 300;
+			font-size: 16px;
+			display: block;
+			margin: 16px 0 0 35px;
+			margin: 16px 0 0 35px;
+
+		}
+	}
+
+	&[data-INDIGO-UI="light"] {
+		background: #FFF;
+
+	}
+
+	&[data-main-node-displayname="settings"] {
+		&::before {
+			content: "Get settings name from Thomas";
+
+		}
+	}
+
+	&[data-main-node-displayname="System Site"] {
+		&::before {
+			content: "Get settings name from Thomas";
+
+		}
+	}
 }
 .x-menu-sep-li {
     display: none;
@@ -435,6 +473,8 @@ span.x-menu-item img {
 .selection-top-simple {
     border: 10px solid blue;
 }
+
+
 .x-viewport-editmode > div:nth-child(1) {
     height: 100%;
     > div:nth-child(2) {
@@ -474,6 +514,64 @@ span.x-menu-item img {
         }
     }
 }
+
+.x-viewport-adminmode > div:nth-child(1) {
+    height: 100%;
+    > div:nth-child(2) {
+        height: 100%;
+        > div:nth-child(2) > div {
+			> div:nth-child(2) {
+				width: 100%!important;
+				pointer-events: none;
+
+				> div {
+					width: 100%!important;
+					xleft:60px!important;
+
+
+
+					> iframe {
+						margin-top: 8px;
+						margin-left: 60px;
+						width: calc(100% - 60px)!important;
+						pointer-events: all;
+					}
+
+				}
+			}
+            &:nth-child(1) {
+                height: 100% !important;
+                position: absolute;
+                left: 0 !important;
+                z-index: 0;
+                z-index: 99999 !important;
+                opacity: 1;
+                width: calc(100% - 60px) !important;
+                pointer-events: none;
+                background: transparent!important;
+            }
+            &:nth-child(2) {
+                height: 100% !important;
+                background: #5c6164 !important;
+                background: transparent!important;
+                position: absolute;
+                left: 0 !important;
+                width: calc(100% - 60px) !important;
+                z-index: 0;
+                z-index: 999;
+            }
+            &:nth-child(1) > div:nth-child(1) {
+                position: absolute !important;
+                top: -46px;
+                left: 0;
+                width: 100% !important;
+                z-index: 9999999;
+                display: none;
+            }
+        }
+    }
+}
+
 body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) {
     display: block;
 }
@@ -506,6 +604,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"] .x-viewport-editmode > div:nth-child(1) > 
 	&.x-border-layout-ct {
 		overflow: visible;
 		> div:nth-child(1) {
+			height: 100%;
 			> div {
 				&:nth-child(2) {
 					margin-top: 0px;
@@ -1092,7 +1191,12 @@ body {
 	        height: 40px;
 	        margin-bottom: 10px;
 	        margin-left: 0;
-	        opacity: 1;
+	        opacity: 0.8;
+
+			&:hover {
+				opacity: 1;
+				cursor: pointer;
+			}
 	    }
 	}
 
@@ -1108,10 +1212,11 @@ body {
 
 	&:hover {
 		.x-tab-strip-active {
-		    opacity: 1 !important;
+		    xopacity: 1 !important;
 		}
 	}
 
+	/* TEMP FOR DEBUGGING */
 	[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 		overflow: visible;
         width: 360px !important;
@@ -2505,6 +2610,11 @@ body {
         &:nth-child(1) {
             &::before {
                 content: $text_site_settings;
+
+				.x-viewport-adminmode & {
+					content: "Server Settings";
+				}
+
                 position: relative;
                 top: 0 !important;
                 font-size: 26px;
@@ -2567,6 +2677,16 @@ body {
 		}
     }
 
+}
+
+#JahiaGxtSettingsTab:nth-child(2) {
+	> div {
+        &:nth-child(1) {
+            &::before {
+                content: $text_site_settings;
+			}
+		}
+	}
 }
 
 
@@ -2698,6 +2818,13 @@ body {
 	&::after {
         content: $text_pages;
     }
+
+	body[data-indigo-gwt-side-panel="open"] &.x-tab-strip-active::after {
+		content: "< Pages";
+		content: $text_pages;
+		content: $text_pages;
+
+    }
 }
 
 #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab {
@@ -2767,7 +2894,7 @@ body {
         background-image: url(./images/tabs-files-black@X2.png);
 
         body[data-SELECTED-ITEMS="0"] & {
-            background-image: url(./images/tabs-files-white@X2.png);
+            background-image: url(./images/tabs-files@X2.png);
         }
 
 		body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
@@ -2869,6 +2996,10 @@ body {
 	position: fixed;
 	bottom: 0;
 
+	.x-viewport-adminmode & {
+		position:relative;;
+	}
+
 	&.x-tab-strip-active {
 		body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 			img {
@@ -2892,6 +3023,39 @@ body {
 
 	&::after {
         content: $text_settings;
+
+		.x-viewport-adminmode & {
+			content: "Server";
+		}
+    }
+}
+
+#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab:nth-child(2) {
+	position: relative;
+
+	&.x-tab-strip-active {
+		body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+			img {
+	            background-image: url(./images/tabs-settings-blue@X2.png);
+	        }
+		}
+	}
+
+	img {
+        background-image: url(./images/tabs-settings-black@X2.png);
+
+        body[data-SELECTED-ITEMS="0"] & {
+            background-image: url(./images/tabs-settings-white@X2.png);
+        }
+
+		body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+			background-image: url(./images/tabs-settings-dark@X2.png);
+		}
+
+    }
+
+	&::after {
+        content: "Sites";
     }
 }
 
@@ -3174,12 +3338,44 @@ body {
 		   width: 100%;
 		   display: block;
 		   position: relative;
+
+		   pointer-events: none;
+
+		   &::after {
+			   content: "Dark UI";
+				position: fixed;
+				bottom: 11px;
+				right: 6px;
+				display: block;
+				width: 50px;
+				background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
+				background-size: 23px 23px;
+				text-align: center;
+				padding-top: 23px;
+				font-weight: 400;
+				font-family: Raleway;
+				color: rgba(238, 238, 238, 0.9);
+				font-size: 8px;
+				text-transform: uppercase;
+				opacity: 0.8;
+				pointer-events: all;
+		   }
+
+		   &[data-INDIGO-UI="light"]::after {
+			   content: "Light UI";
+
+		   }
+
+		   &:hover::after {
+			   cursor: pointer;
+			   opacity: 1;
+		   }
 	   }
 
 	   > table, &:hover > table {
            opacity: 1;
            z-index: 999999;
-           pointer-events: all;
+           xpointer-events: all;
        }
 
 	   > table:nth-child(1) {
@@ -3369,6 +3565,9 @@ body {
 	       margin-top: 10px;
 	       opacity: 1;
 
+		   pointer-events: all;
+
+
 		   button {
 	           width: 50px !important;
 	           height: 35px !important;
@@ -3386,8 +3585,11 @@ body {
 
 		   }
 
-		   &:hover > table:nth-child(1)::after {
-		       color: rgba(238, 238, 238, 1);
+		   &:hover {
+			   cursor: pointer;
+			   > table:nth-child(1)::after {
+			       color: rgba(238, 238, 238, 1);
+			   }
 		   }
 
 		   &:nth-child(1) {
@@ -3938,7 +4140,6 @@ body {
 /***********************************************/
 
 .x-viewport-adminmode {
-
 	.x-toolbar-first {
 		background: url(./images/hamburger.png) no-repeat top 17px left 19px !important;
 	    background: none !important;
@@ -3977,6 +4178,10 @@ body {
 		    margin-top: 10px;
 		    opacity: 1;
 
+			&.x-hide-display {
+				display: block!important;
+			}
+
 			button {
  	           width: 50px !important;
  	           height: 35px !important;
@@ -3984,6 +4189,15 @@ body {
  	           background: transparent !important;
  	           text-indent: -50000px;
  	       }
+
+		   td.x-btn-mc {
+	           display: block;
+	           width: 50px;
+	           height: 23px;
+	           background: red;
+	           margin-bottom: 2px;
+	           background: transparent !important;
+	       }
 
 		   &:nth-child(1) > table:nth-child(1) td.x-btn-mc {
 	           display: block;
@@ -3999,6 +4213,10 @@ body {
 			}
 
 			.editmode-managers-menu {
+				&.x-hide-display {
+					display: block!important;
+				}
+
 				position: fixed;
  	           top: 10px;
  	           left: 5px;
@@ -4026,6 +4244,10 @@ body {
  	       }
 
 		   .admin-menu-user {
+			   &.x-hide-display {
+   					display: block!important;
+   				}
+
 	           position: fixed;
 	           top: 10px;
 	           background: url(./images/tabs-usermenu-black@X2.png) no-repeat left 14px top 6px;
@@ -4046,16 +4268,19 @@ body {
 	       }
 
 		   .admin-menu-mode {
+			   &.x-hide-display {
+   					display: block!important;
+   				}
 	           position: fixed;
-	           right: 97px;
+	           right: 73px;
 	           top: 6px;
 	           margin-top: 7px;
 	           z-index: 999999;
-	           width: 93px;
+	           width: 151px;
 	           height: 24px;
 	           opacity: 0.9;
 	           &::after {
-	               content: $text_edit_mode;
+	               content: "Administration";
 	               font-size: 14px;
 	               text-transform: uppercase;
 	               font-weight: 200;
@@ -4071,6 +4296,7 @@ body {
 	               display: block;
 	               height: 20px;
 	               padding-top: 5px;
+				   color: rgba(238, 238, 238, 0.9);
 	               body[data-SELECTED-ITEMS="0"] & {
 	                   background: url(./images/dx_logo_solid.png) no-repeat left 12px center / 20px 20px, url(./images/combo-arrow.png) no-repeat right center;
 	               }
@@ -4102,5 +4328,7 @@ body {
 		display: block;
 		position: absolute !important;
 	}
+
+
 
 }

@@ -7,7 +7,6 @@ body {
     background: #35383a;
     &[data-SELECTED-ITEMS="0"] {
         background: $color-background;
-        background: $color-background;
     }
     transition: all 0.3s ease-in 0s;
 }

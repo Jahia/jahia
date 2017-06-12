@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:util="http://www.springframework.org/schema/util"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <!-- global language switcher -->
@@ -26,7 +26,7 @@
             </bean>
         </property>
     </bean>
-    
+
     <bean id="Toolbar.Item.WorkInProgress" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="icon" value="workInProgress"/>
         <property name="titleKey" value="label.backgroundJobs"/>
@@ -42,7 +42,7 @@
             </bean>
         </property>
     </bean>
-    
+
     <!-- ////// items -->
 
     <bean id="Toolbar.Item.ViewACLStatus" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -561,7 +561,7 @@
             </list>
         </property>
     </bean>
-    
+
     <!-- Logout -->
     <bean id="Toolbar.Item.Logout" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
@@ -870,8 +870,8 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                 <property name="nodeTypes" value="jnt:category"/>
-                <property name="parentTypes" value="jnt:category"/>                
-             </bean>
+                <property name="parentTypes" value="jnt:category"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.newCategory"/>
         <property name="icon" value="newCategory"/>
@@ -888,7 +888,7 @@
         </property>
         <property name="titleKey" value="label.createTag"/>
         <property name="icon" value="newTag"/>
-    </bean>    
+    </bean>
 
 
     <bean id="Toolbar.Item.NewContentFolder" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -901,7 +901,7 @@
         <property name="titleKey" value="label.newContentFolder"/>
         <property name="icon" value="newContentFolder"/>
     </bean>
-    
+
     <bean id="Toolbar.Item.NewMenuAvailable" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
@@ -911,7 +911,7 @@
         </property>
         <property name="titleKey" value="label.newAvailableMenu"/>
         <property name="icon" value="newAvailableMenu"/>
-    </bean>    
+    </bean>
 
     <bean id="Toolbar.Item.NewContent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
@@ -1118,8 +1118,8 @@
     <bean id="Toolbar.Item.Rename" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.RenameActionItem">
-              <property name="maxNameSize" value="${jahia.jcr.maxNameSize}"/>
-              <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
+                <property name="maxNameSize" value="${jahia.jcr.maxNameSize}"/>
+                <property name="forbiddenNodeTypes" ref="forbidDeleteRenameCutForNodeTypes"/>
             </bean>
         </property>
         <property name="titleKey" value="label.rename"/>
@@ -1233,7 +1233,7 @@
     <bean id="Toolbar.Item.PublicationManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublicationManagerActionItem">
-                <property name="nodeTypes" value="${jahia.publicationManagerNodeTypes:jmix:publication,jmix:workflowRulesable}"/>
+                <property name="nodeTypes" value="${jahia.publicationManagerNodeTypes:jmix:publication,jmix:workflowRulesable,jnt:navMenuText}"/>
             </bean>
         </property>
         <property name="titleKey" value="label.publicationmanager"/>
@@ -1370,7 +1370,7 @@
         <value>jnt:componentFolder</value>
         <value>jnt:component</value>
     </util:list>
-    
+
     <bean id="Toolbar.Item.SiteHome" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToActionItem">
@@ -1454,5 +1454,5 @@
         <property name="titleKey" value="label.sourceControl.resolve"/>
         <property name="icon" value="scmResolve"/>
     </bean>
-    
+
 </beans>

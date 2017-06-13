@@ -37,7 +37,6 @@
 		var indigoQF = {
 			temp: null,
 			init: function(){
-				$("body").attr("data-SELECTED-ITEMS", 0);
 
 				var target = document.body,
 					observer = new MutationObserver(function(mutations){
@@ -56,18 +55,8 @@
 
 							}
 
-							if(newNodes.length){
-								// New Nodes added, see if iframe is available
-								if($("iframe").length > 1){
-									if(!indigoQF.iframe.available){
-										indigoQF.iframe.available = true;
-
-										$($("iframe")[0]).load(function(){
-											indigoQF.listenForIframeDomChanges();
-
-										})
-									}
-								}
+							if(attributeNames == "data-selection-count"){
+								indigoQF.updateSelectedItems();
 
 							}
 
@@ -114,38 +103,31 @@
 				console.log("updatePageMenuPositions::: called");
 				// Position Flag and Preview Menu accordingly
 				// Get Left Position of Page Name
+
+				// EDIT MODE
 				var pageNameLeft = parseInt($(".x-border-panel.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)").position().left),
 					pageNameWidth = Math.floor($(".x-border-panel.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)").width()) - 1,
-					pageNameRight = pageNameLeft + pageNameWidth;
+					pageNameRight = pageNameLeft + pageNameWidth,
+					fullScreen = $("body").attr("data-indigo-gwt-fullscreen");
 
-				// Set Position of View Menu to right hand side of More Options Menu
-				$(".edit-menu-view").css({
-					"left": (pageNameRight + 76) + "px",
-					"opacity": 1
-				});
+					$(".edit-menu-view").css({
+						"left": (pageNameRight + 76) + "px",
+						"opacity": 1
+					});
 
-				$(".edit-menu-publication").css({
-					"left": (pageNameRight + 65) + "px",
-					"opacity": 1
-				});
+					$(".edit-menu-publication").css({
+						"left": (pageNameRight + 65) + "px",
+						"opacity": 1
+					});
 
+					// Set Position of Flag to just before the Page name
+					// Edit Mode
+					$("body[data-selection-count='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)").css({
+						"left": (pageNameLeft + 92) + "px",
+						"opacity": 1
+					});
 
-
-				// Set Position of Flag to just before the Page name
-				// Edit Mode
-				$("body[data-SELECTED-ITEMS='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)").css({
-					"left": (pageNameLeft + 92) + "px",
-					"opacity": 1
-				});
-
-				// Contribute Mode
-				/*$(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div").css({
-					"left": (pageNameLeft + 92) + "px",
-					"opacity": 1
-				});*/
-
-
-
+				// CONTRIBUTE MODE
 				var contributePageNameWidth = parseInt(window.getComputedStyle(document.querySelector('.x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div'), '::after').getPropertyValue('width')),
 					windowWidth = parseInt($("body").width()),
 					contributePageNameLeft = (windowWidth / 2) - (contributePageNameWidth / 2),
@@ -173,13 +155,15 @@
 					left: (contributePageNameRight) + "px"
 				});
 
+
+
+
 			},
 			updateSelectedItems: function(){
-				console.log("UPDATE SELECTED ITEMS CALLED");
-				var label;
-				$("body").attr("data-SELECTED-ITEMS", indigoQF.selections.count)
+				var label,
+					dataSelectionCount = parseInt($("body").attr("data-selection-count"));
 
-				switch(indigoQF.selections.count){
+				switch(dataSelectionCount){
 					case 0:
 						label = $("body").attr("data-main-node-displayname");
 						break;
@@ -189,7 +173,7 @@
 						break;
 
 					default:
-						label = indigoQF.selections.count + " selected items";
+						label = dataSelectionCount + " selected items";
 						break;
 				}
 
@@ -201,58 +185,6 @@
 				indigoQF.updatePageMenuPositions();
 
 
-			},
-			listenForIframeDomChanges: function(){
-				// The node to be monitored
-				var target = $($("iframe")[0].contentWindow.document).find("body")[0];
-
-				var observer = new MutationObserver(function( mutations ) {
-					mutations.forEach(function(mutation) {
-						var removedNodes = mutation.removedNodes,
-							addedNodes = mutation.addedNodes,
-							className;
-
-							if(removedNodes.length > 0){
-								$(removedNodes).each(function(){
-									className = $(this).attr("class") || "";
-
-									if(className.indexOf("selection-top") > -1){
-										//console.log("removed a selection", this);
-										indigoQF.selections.count--;
-										indigoQF.updateSelectedItems();
-
-									}
-								});
-							}
-
-							if(addedNodes.length > 0){
-								$(addedNodes).each(function(){
-									className = $(this).attr("class") || "";
-
-									if(className.indexOf("selection-top") > -1){
-										//console.log("added a selection", this);
-										indigoQF.selections.count++;
-										indigoQF.updateSelectedItems();
-
-
-									}
-								});
-							}
-
-
-					});
-
-				});
-
-				// Configuration of the observer:
-				var config = {
-					attributes: true,
-					childList: true,
-					characterData: true
-				};
-
-				// Pass in the target node, as well as the observer options
-				observer.observe(target, config);
 			},
 			JahiaGxtSidePanelTabs: {
 				mouseOutTimer: null,
@@ -274,16 +206,12 @@
 			}
 		};
 
-		$(".x-current-page-path").load(function(){
-				console.log("loaded WIN", $("html").html());
-		});
 
 		$(document).ready(function(){
 
 			$("body").on("click", ".x-viewport-editmode .x-toolbar-first > table", function(e){
-
+				// UI Theme toggle (dark / light)
 				if($(e.target).hasClass("x-toolbar-ct")){
-					console.log("Store in local storage (session)");
 					var indigoUIColor;
 
 					$("body").attr("data-INDIGO-UI", function(index, attr){
@@ -293,8 +221,6 @@
 					});
 
 					$(this).attr("data-INDIGO-UI", indigoUIColor);
-				} else {
-					console.log("IGNORE UI Switch");
 				}
 
 
@@ -302,10 +228,9 @@
 			})
 
 			$("body").on("click", ".editmode-managers-menu",function(){
-				// CLose side panel if open
+				// Close side panel if open
 				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
 			})
-
 
 			$("body").on("click", ".menu-editmode-managers-menu", function(){
 				$(this).fadeOut();
@@ -341,7 +266,7 @@
 				case "rollover":
 					$("body").on("mouseenter", "#JahiaGxtSidePanelTabs", function(){
 						// Mouseover Side Panel tabs, so open it.
-						if($("body").attr("data-SELECTED-ITEMS") == "0"){
+						if($("body").attr("data-selection-count") == "0"){
 							$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
 
 						}
@@ -391,7 +316,7 @@
 				// Fix: Once the user leaves the Side Panel there is a count down started (100ms). If the user hovers the Hamburger within those 100ms
 				//		we reopen it, almost as if it never closed.
 
-				if(indigoQF.JahiaGxtSidePanelTabs.justBeenClosed && $("body").attr("data-SELECTED-ITEMS") == "0"){
+				if(indigoQF.JahiaGxtSidePanelTabs.justBeenClosed && $("body").attr("data-selection-count") == "0"){
 					// Side Panel was open less than 100ms ago, so repopen it.
 					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
 

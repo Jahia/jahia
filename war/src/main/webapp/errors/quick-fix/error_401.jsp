@@ -29,12 +29,12 @@
 </head>
 <body>
 
-  <section class="login" style="background-image: url(../../css/images/Background_Login-01.png);">
+  <section class="login" style="background-image: url(${pageContext.request.contextPath}/css/images/Background_Login-01.png);">
   	<div class="login-main">
   		<div class="position-container">
 
   			<div class="logo">
-  				<img src="../../css/images/dx_logo.png" alt="jahia logo">
+  				<img src="${pageContext.request.contextPath}/css/images/dx_logo.png" alt="jahia logo">
   			</div>
 
   			<div class="login-form">

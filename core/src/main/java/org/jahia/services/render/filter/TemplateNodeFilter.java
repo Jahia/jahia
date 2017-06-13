@@ -95,7 +95,15 @@ public class TemplateNodeFilter extends AbstractFilter {
 
             if (template != null && template.node != null) {
                 JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.node);
+
+                Template last = template;
+                while (last.next != null) {
+                    last = last.next;
+                }
+                JCRNodeWrapper currentTemplate = last.node != null ? resource.getNode().getSession().getNodeByIdentifier(last.node) : null;
+
                 renderContext.getRequest().setAttribute("previousTemplate", template);
+                renderContext.getRequest().setAttribute("currentTemplateNode", currentTemplate);
                 renderContext.getRequest().setAttribute("wrappedResource", resource);
                 Resource wrapperResource = new Resource(templateNode,
                         resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);

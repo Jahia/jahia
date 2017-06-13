@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -110,35 +110,6 @@ public class GWTInitTag extends AbstractJahiaTag {
                     StringUtils.isEmpty(locale) ? null : LanguageCodeConverters.languageCodeToLocale(locale),
                     StringUtils.isEmpty(uilocale) ? null : LanguageCodeConverters.languageCodeToLocale(uilocale))) ;
 
-            String theme = SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.ui.theme");
-            JahiaUser jahiaUser = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
-
-            if (request.getParameter("jahia.ui.theme") != null) {
-                theme = request.getParameter("jahia.ui.theme");
-                String userValue = jahiaUser.getProperty("jahia.ui.theme");
-                if (userValue == null || !userValue.equals(theme)) {
-                    try {
-                        JCRSessionWrapper userSession = JCRSessionFactory.getInstance().getCurrentUserSession();
-                        JCRUserNode user = (JCRUserNode) userSession.getNode(jahiaUser.getLocalPath());
-                        user.setProperty("jahia.ui.theme", theme);
-                        userSession.save();
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            } else if (jahiaUser != null && jahiaUser.getProperty("jahia.ui.theme") != null) {
-                theme = jahiaUser.getProperty("jahia.ui.theme");
-            }
-
-            Locale uiLocale = getUILocale();
-            if (LanguageCodeConverters.getAvailableBundleLocales().contains(uiLocale)) {
-                pageContext.setAttribute("themeLocale", "_"+ uiLocale.toLanguageTag());
-            } else {
-                pageContext.setAttribute("themeLocale", "_en");
-            }
-            if (theme != null && !theme.equals("default")) {
-                pageContext.setAttribute("theme", theme);
-            }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }

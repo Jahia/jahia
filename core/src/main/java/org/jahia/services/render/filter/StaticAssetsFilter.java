@@ -58,6 +58,7 @@ import org.apache.commons.collections.map.LazySortedMap;
 import org.apache.commons.collections.map.TransformedSortedMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.bin.Jahia;
@@ -344,18 +345,21 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         bodyElement = bodyElementList.get(0);
 
                         StartTag bodyStartTag = bodyElement.getStartTag();
+                        JCRNodeWrapper currentTemplateNode = (JCRNodeWrapper) renderContext.getRequest().getAttribute("currentTemplateNode");
                         outputDocument.replace(bodyStartTag.getEnd(), bodyStartTag.getEnd(), "\n" +
                                 "<div jahiatype=\"mainmodule\""
                                 + " path=\"" +
                                 resource.getNode().getPath() +
                                 "\" locale=\"" +
-                                resource.getLocale() + "\"" +
-                                " template=\"" +
+                                resource.getLocale() +
+                                "\" template=\"" +
                                 (resource.getTemplate() != null && !resource.getTemplate().equals("default") ? resource.getTemplate() : "") +
-                                "\"" + " nodetypes=\"" +
+                                "\" templateName=\"" +
+                                (currentTemplateNode != null ? StringEscapeUtils.escapeHtml(currentTemplateNode.getDisplayableName()) : "") +
+                                "\" nodetypes=\"" +
                                 ConstraintsHelper.getConstraints(
                                         renderContext.getMainResource().getNode()) +
-                                "\"" + ">");
+                                "\">");
                         if (doParse) {
                             outputDocument.replace(bodyStartTag.getEnd() - 1, bodyStartTag.getEnd()," jahia-parse-html=\"true\">");
                         }

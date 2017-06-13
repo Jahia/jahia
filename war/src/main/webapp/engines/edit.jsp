@@ -23,17 +23,12 @@
     <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.Jcrop.min.js'/>"></script>
     <script type="text/javascript" src="<c:url value='/modules/assets/javascript/clippy/jquery.clippy.min.js'/>"></script>
 
-	<!-- START:::QUICK FIX-->
 	<c:if test="${not empty theme}">
-		<!-- CONTAINS CSS TO APPLY QUICK FIX -->
 		<link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/edit${themeLocale}.css'/>"/>
-		
 		<!-- Javascript for theme -->
-		<script type="text/javascript" src="<c:url value='/engines/${theme}/js/main_fixes.js'/>"></script>
-	
+		<script type="text/javascript" src="<c:url value='/engines/${theme}/js/edit.js'/>"></script>
     </c:if>
-	<!-- END:::QUICK FIX -->
-	
+
 </head>
 
 <body>

@@ -32,38 +32,10 @@
         <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.jahia.js'/>"></script>
     </c:if>
 
-	<!-- START:::QUICK FIX-->
-	<!-- REM : Once Development has finished REMOVE unused Raleway Fonts ... -->
-	<link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
     <c:if test="${not empty theme}">
-	<!-- CONTAINS CSS TO APPLY QUICK FIX -->
-    <link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/manager${themeLocale}.css'/>"/>
-	<!-- ADDS ATTRIBUTE TO BODY TAG WHEN USER HAS CLICKED ON MANAGERS MENU ITEM -->
-	<script>
-		$(document).ready(function(){
-
-			$("body").on("click", "#JahiaGxtManagerBottomTabs .x-panel-footer", function(){
-				$("body").attr("data-INDIGO-INLINE-EDIT-ENGINE", function(index, attr){
-					return (attr == "on") ? "" : "on";
-				});
-			})
-
-
-			$("body").on("click", "#JahiaGxtManagerLeftTree .x-tab-panel-header", function(){
-				$("body").attr("data-INDIGO-SEARCH", "on");
-				$(this).find("li:nth-child(2) em").trigger("click");
-			})
-
-			$("body").on("click", "#JahiaGxtManagerLeftTree .x-panel > div.x-accordion-hd", function(){
-				$("body").attr("data-INDIGO-SEARCH", "");
-			})
-
-
-
-		});
-	</script>
-	<!-- END:::QUICK FIX -->
+        <link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/manager${themeLocale}.css'/>"/>
+        <!-- Javascript for theme -->
+        <script type="text/javascript" src="<c:url value='/engines/${theme}/js/manager.js'/>"></script>
     </c:if>
 </head>
 <body onload="window.focus()">

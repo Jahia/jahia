@@ -969,6 +969,10 @@ public class MainModule extends Module {
         refreshInfoLayer();
     }
 
+    public static void setGlobalSelectionDisabled(boolean globalSelectionDisabled) {
+        MainModule.globalSelectionDisabled = globalSelectionDisabled;
+    }
+
     public void refreshInfoLayer() {
         infoLayers.removeAll();
         if (!activeLayers.isEmpty()) {
@@ -1416,7 +1420,7 @@ public class MainModule extends Module {
         }
     }-*/;
 
-    public final native int scrollTo(IFrameElement iFrameElement, int x, int y) /*-{
+    public final native void scrollTo(IFrameElement iFrameElement, int x, int y) /*-{
         iFrameElement.contentWindow.scrollTo(x, y);
     }-*/;
 

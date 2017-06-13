@@ -43,13 +43,10 @@
  */
 package org.jahia.ajax.gwt.commons.server;
 
-import org.atmosphere.cpr.Broadcaster;
-
 /**
- * Created by IntelliJ IDEA.
- * @author : rincevent
- * @since : JAHIA 6.1
- * Created : 05/05/15
+ * JGroups channel which sends messages to the cluster.
+ * 
+ * @author rincevent
  */
 public interface JGroupsChannel {
     void send(String topic, Object message);

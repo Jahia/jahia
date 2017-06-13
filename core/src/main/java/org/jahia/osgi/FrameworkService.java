@@ -53,6 +53,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 
 import javax.script.Bindings;
@@ -74,6 +76,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.ScriptEngineUtils;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceReference;
@@ -96,6 +99,43 @@ public class FrameworkService implements FrameworkListener {
         static final FrameworkService INSTANCE = new FrameworkService(JahiaContextLoaderListener.getServletContext());
 
         private Holder() {
+        }
+    }
+
+    /**
+     * Timer task that checks if we have reached the OSGi framework beginning start level.
+     * 
+     * @author Sergiy Shyrkov
+     */
+    private static class StartLevelChecker extends TimerTask {
+
+        private int frameworkBeginningStartLevel = Integer
+                .parseInt(System.getProperty(Constants.FRAMEWORK_BEGINNING_STARTLEVEL));
+
+        @Override
+        public void run() {
+            final FrameworkService instance = getInstance();
+            synchronized (instance) {
+                if (instance.frameworkStartLevelChanged) {
+                    // we are done here: cancel the task
+                    cancel();
+                } else if (BundleLifecycleUtils.getFrameworkStartLevel() >= frameworkBeginningStartLevel) {
+                    instance.frameworkStartLevelChanged = true;
+                    logger.info("Framework start level reached");
+                    notifyStarted(instance);
+                    // we are done here: cancel the task
+                    cancel();
+                }
+            }
+        }
+        
+        @Override
+        public boolean cancel() {
+            logger.info("Cancelling the start level checker task");
+            boolean result = super.cancel();
+            getInstance().destroyTimer();
+
+            return result;
         }
     }
 
@@ -201,6 +241,8 @@ public class FrameworkService implements FrameworkListener {
     private long startTime;
 
     private BundleStarter bundleStarter;
+    
+    private Timer startLevelTimer = new Timer("OSGi-FrameworkService-Startup-Timer", true);
 
     private FrameworkService(ServletContext servletContext) {
         this.servletContext = servletContext;
@@ -262,6 +304,8 @@ public class FrameworkService implements FrameworkListener {
 
     private void setupStartupListener() {
         main.getFramework().getBundleContext().addFrameworkListener(this);
+        
+        startLevelTimer.schedule(new StartLevelChecker(), 1000L, 1000L);
     }
 
     private void setupSystemProperties() {
@@ -350,6 +394,7 @@ public class FrameworkService implements FrameworkListener {
      */
     public void stop() throws BundleException {
         if (this.main != null) {
+            destroyTimer();
             servletContext.removeAttribute(BundleContext.class.getName());
             try {
                 main.destroy();
@@ -358,6 +403,18 @@ public class FrameworkService implements FrameworkListener {
             }
         }
         logger.info("OSGi framework stopped");
+    }
+
+    protected void destroyTimer() {
+        if (startLevelTimer != null) {
+            try {
+                startLevelTimer.cancel();
+            } catch (Exception e) {
+                logger.warn("Error terminating timer thread", e);
+            } finally {
+                startLevelTimer = null;
+            }
+        }
     }
 
     private void updateFileReferencesIfNeeded() {

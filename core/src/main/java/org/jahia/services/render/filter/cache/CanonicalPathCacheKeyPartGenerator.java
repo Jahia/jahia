@@ -41,13 +41,32 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.commons.server;
+package org.jahia.services.render.filter.cache;
+
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+
+import java.util.Properties;
 
 /**
- * Helper class that provides access to the JGroups channel service.
- * 
- * @author rincevent
+ * Cache key to store canonical path of a node if the path is a dereference path
+ * @author David Griffon
  */
-public interface ChannelHolder {
-    JGroupsChannel getChannel();
+public class CanonicalPathCacheKeyPartGenerator implements CacheKeyPartGenerator {
+
+    @Override
+    public String getKey() {
+        return "canonicalPath";
+    }
+
+    @Override
+    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
+        return resource.getNode().getPath().contains(JCRSessionWrapper.DEREF_SEPARATOR) ? resource.getNode().getCanonicalPath() : "";
+    }
+
+    @Override
+    public String replacePlaceholders(RenderContext renderContext, String keyPart) {
+        return getKey();
+    }
 }

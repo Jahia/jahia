@@ -111,7 +111,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private static final int CACHE_ESI_TAG_END_LENGTH = CACHE_ESI_TAG_END.length();
     private static final int CACHE_TAG_LENGTH = CACHE_TAG_START_1.length() + CACHE_TAG_START_2.length() + CACHE_TAG_END.length();
 
+    // The "v" parameter is aimed to view the page at a specific date and is used e.g. in the advanced view (Edit mode -> "View" toolbar menu -> e.g. "Compare 2 published version").
     private static final String V = "v";
+    // The "ec" parameter is used to bypass cache when there is an error during form submit in say addComment or forum posts. Right now I see only the case, when wrong capture is entered.
     private static final String EC = "ec";
 
     public static final TextUtils.ReplacementGenerator GENERATOR = new TextUtils.ReplacementGenerator() {
@@ -236,7 +238,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         
         // Check if the key is in the list of non-cacheable keys. The cache can also be skipped by specifying the
         // ec parameter with the uuid of the current node.
-        if (!isCacheable(renderContext, resource, key, properties)) {
+        if (!isCacheable(renderContext, resource, key, properties) || byPassCache(renderContext, resource)) {
             getFragmentGenerationPermit(finalKey, renderContext.getRequest());
             return null;
         }
@@ -296,28 +298,32 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             return false;
         }
 
+        // check if we have a valid cache expiration
+        final String cacheExpiration = properties.getProperty(CACHE_EXPIRATION);
+        Long expiration = cacheExpiration != null ? Long.parseLong(cacheExpiration) : -1;
+        return expiration != 0L;
+    }
+
+    private boolean byPassCache(RenderContext renderContext, Resource resource) throws RepositoryException {
         // check v parameter
         if (renderContext.getRequest().getParameter(V) != null && renderContext.isLoggedIn()) {
-            return false;
+            return true;
         }
 
         // check ec parameter
         final String ecParameter = renderContext.getRequest().getParameter(EC);
         if (ecParameter != null) {
             if (ecParameter.equals(resource.getNode().getIdentifier())) {
-                return false;
+                return true;
             }
             for (Resource parent : renderContext.getResourcesStack()) {
                 if (ecParameter.equals(parent.getNode().getIdentifier())) {
-                    return false;
+                    return true;
                 }
             }
         }
 
-        // check if we have a valid cache expiration
-        final String cacheExpiration = properties.getProperty(CACHE_EXPIRATION);
-        Long expiration = cacheExpiration != null ? Long.parseLong(cacheExpiration) : -1;
-        return expiration != 0L;
+        return false;
     }
 
     /**
@@ -433,11 +439,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
 
         if (cacheable) {
-            final Cache cache = cacheProvider.getCache();
-            if (debugEnabled) {
-                logger.debug("Caching content for final key : {}", finalKey);
+            if (!byPassCache(renderContext, resource)) {
+                final Cache cache = cacheProvider.getCache();
+                if (debugEnabled) {
+                    logger.debug("Caching content for final key : {}", finalKey);
+                }
+                doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, bypassDependencies);
             }
-            doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, bypassDependencies);
         } else {
             notCacheableFragment.put(key, Boolean.TRUE);
         }

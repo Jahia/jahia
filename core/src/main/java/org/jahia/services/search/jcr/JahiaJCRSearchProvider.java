@@ -819,19 +819,50 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                 }
                 if (searchFields.isFilename()) {
                     StringBuilder nameSearchConstraints = new StringBuilder(256);
-                    for (String term : terms) {
-                        final String likeTerm = term.contains("*") ? stringToQueryLiteral(StringUtils
-                                .replaceChars(term, '*', '%'))
-                                : stringToQueryLiteral("%" + term + "%");
-                        String termConstraint = xpath ? ("jcr:like(fn:name(), " + likeTerm + ")") : ("localname(n) like " + likeTerm);
-                        if (textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
-                            termConstraint = "not(" + termConstraint + ")";
+
+                    if(textSearch.getMatch() == MatchType.AS_IS) {
+                        // special handling for AS_IS match type on file name search
+
+                        String[] asIsTerms = Patterns.SPACE.split(cleanMultipleWhiteSpaces(textSearch.getTerm()));
+                        String previousOperand = null;
+                        for (int i = 0; i < asIsTerms.length; i++) {
+                            String asIsTerm = StringUtils.lowerCase(asIsTerms[i]);
+
+                            // is an operand && no previous operand && not the first term && not the last term
+                            if((OR.equals(asIsTerm) || AND.equals(asIsTerm)) && previousOperand == null && i != 0 && i + 1 != asIsTerms.length) {
+                                previousOperand = asIsTerm;
+                            } else {
+                                final String likeTerm = asIsTerm.contains("*") ? stringToQueryLiteral(StringUtils
+                                        .replaceChars(asIsTerm, '*', '%'))
+                                        : stringToQueryLiteral("%" + asIsTerm + "%");
+                                String termConstraint = xpath ? ("jcr:like(fn:lower-case(fn:name()), " + likeTerm + ")") : ("LOWER(n.[j:nodename]) like " + likeTerm);
+
+                                if (previousOperand != null) {
+                                    addConstraint(nameSearchConstraints, previousOperand, termConstraint);
+                                    previousOperand = null;
+                                } else {
+                                    addConstraint(nameSearchConstraints, AND, termConstraint);
+                                }
+                            }
                         }
-                        addConstraint(nameSearchConstraints, constraint,
-                                termConstraint);
+                    } else {
+                        for (String term : terms) {
+                            final String likeTerm = term.contains("*") ? stringToQueryLiteral(StringUtils
+                                    .replaceChars(term, '*', '%'))
+                                    : stringToQueryLiteral("%" + term + "%");
+                            String termConstraint = xpath ? ("jcr:like(fn:name(), " + likeTerm + ")") : ("localname(n) like " + likeTerm);
+                            if (textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
+                                termConstraint = "not(" + termConstraint + ")";
+                            }
+                            addConstraint(nameSearchConstraints, constraint,
+                                    termConstraint);
+                        }
                     }
-                    addConstraint(textSearchConstraints,
-                            OR, nameSearchConstraints.toString());
+
+                    if (nameSearchConstraints.length() > 0) {
+                        addConstraint(textSearchConstraints,
+                                OR, "(" + nameSearchConstraints.toString() + ")");
+                    }
                 }
                 if (searchFields.isTags() && getTaggingService() != null
                         && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)

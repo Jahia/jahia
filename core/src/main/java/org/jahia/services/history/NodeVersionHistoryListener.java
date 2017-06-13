@@ -67,6 +67,8 @@ import org.slf4j.LoggerFactory;
 public class NodeVersionHistoryListener extends DefaultEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(NodeVersionHistoryListener.class);
+    
+    private static boolean disabled;
 
     private SchedulerService schedulerService;
 
@@ -83,6 +85,9 @@ public class NodeVersionHistoryListener extends DefaultEventListener {
      *            a bundle of events to process
      */
     public void onEvent(EventIterator events) {
+        if (disabled) {
+            return;
+        }
         String siteDeleted = null;
         Set<String> ids = new HashSet<String>();
         try {
@@ -129,5 +134,13 @@ public class NodeVersionHistoryListener extends DefaultEventListener {
      */
     public void setSchedulerService(SchedulerService schedulerService) {
         this.schedulerService = schedulerService;
+    }
+
+    public static void setDisabled(boolean disabled) {
+        NodeVersionHistoryListener.disabled = disabled;
+    }
+
+    public static boolean isDisabled() {
+        return disabled;
     }
 }

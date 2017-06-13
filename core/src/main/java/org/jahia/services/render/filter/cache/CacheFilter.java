@@ -72,7 +72,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CacheFilter extends AbstractFilter {
 
+    // The "v" parameter is aimed to view the page at a specific date and is used e.g. in the advanced view (Edit mode -> "View" toolbar menu -> e.g. "Compare 2 published version").
     private static final String FLAG_VERSION = "v";
+    // The "ec" parameter is used to bypass cache when there is an error during form submit in say addComment or forum posts. Right now I see only the case, when wrong capture is entered.
     private static final String FLAG_RANDOM = "ec";
     private static final String FLAG_ALL = "ALL";
     private static final Set<String> FLAGS_ALL_SET = Collections.singleton(FLAG_ALL);
@@ -118,17 +120,17 @@ public class CacheFilter extends AbstractFilter {
         if (element != null && element.getObjectValue() != null) {
             logger.debug("Fragment found in cache: {} ", path);
             return returnFromCache(renderContext, key, finalKey, element, moduleMap);
-        } else {
+        }
 
-            logger.debug("Fragment not found in cache: {} ", path);
+        logger.debug("Fragment not found in cache: {} ", path);
 
-            // Fragment need to be generate, load the node in the resource to avoid performance warning messages
-            // all the code execute after this allow to read the node from JCR.
-            resource.safeLoadNode();
+        // Fragment need to be generate, load the node in the resource to avoid performance warning messages
+        // all the code execute after this allow to read the node from JCR.
+        resource.safeLoadNode();
 
-            // test if fragment is not cacheable, no need for a latch if the fragment is not cacheable
-            if (isCacheable(renderContext, key, resource, cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource))) {
-
+        // test if fragment is not cacheable, no need for a latch if the fragment is not cacheable
+        if (isCacheable(renderContext, key, resource, cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource))) {
+            if (!byPassCache(renderContext, resource)) {
                 // The element is not found in the cache with that key. use latch to allow only one thread to generate the fragment
                 // All other threads will wait until the first thread finish the generation, then the LatchReleasedCallback will be executed
                 // for all the waiting threads.
@@ -143,15 +145,15 @@ public class CacheFilter extends AbstractFilter {
                     logger.debug("Latch released for fragment: {} but fragment not found in cache, generate it", path);
                 }
                 return null;
-            } else {
-                // store this fragment as a known non cacheable fragment
-                cacheProvider.addNonCacheableFragment(key);
-
-                // get permit to generate fragment (based on maximum allowed number of fragment generation in parallel)
-                generatorQueue.getFragmentGenerationPermit(finalKey, renderContext.getRequest());
-                return null;
             }
+        } else {
+            // store this fragment as a known non cacheable fragment
+            cacheProvider.addNonCacheableFragment(key);
         }
+
+        // get permit to generate fragment (based on maximum allowed number of fragment generation in parallel)
+        generatorQueue.getFragmentGenerationPermit(finalKey, renderContext.getRequest());
+        return null;
     }
 
     @Override
@@ -189,35 +191,40 @@ public class CacheFilter extends AbstractFilter {
             String finalKey = (String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY);
 
             if (isCacheable(renderContext, key, resource, fragmentProperties)) {
-                // because fragment is not served from the cache, but the all render chain, we check that the key is still
-                // the same after prepare() and execute() of all the render filters after the cache.
-                String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, fragmentProperties);
-                if (!generatedKey.equals(key)) {
-                    logger.warn("Key generation does not give the same result after execution: was '{}', now is '{}'", key, generatedKey);
-                }
-
-                if (!isAnError) {
-                    // Add self path as dependency for this fragment (for cache flush - will not impact the key)
-                    // necessary even if resource is already storing self node in dep, because of referenced nodes, for exemple:
-                    // resource: /sites/ACMESPACE/home/main/content-reference@/news_36-3
-                    // already have this path as dependency
-                    // but it need the referenced node also as dependency, and the referenced node path is retrieve using getCanonicalPath() that will return this:
-                    // /sites/ACMESPACE/contents/projects-news/news_36-3
-                    resource.getDependencies().add(resource.getNode().getCanonicalPath());
-
-                    // Add main resource if cache.mainResource is set
-                    if ("true".equals(fragmentProperties.getProperty("cache.mainResource"))) {
-                        resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
+                if (!byPassCache(renderContext, resource)) {
+                    // because fragment is not served from the cache, but the all render chain, we check that the key is still
+                    // the same after prepare() and execute() of all the render filters after the cache.
+                    String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, fragmentProperties);
+                    if (!generatedKey.equals(key)) {
+                        logger.warn("Key generation does not give the same result after execution: was '{}', now is '{}'", key, generatedKey);
                     }
+
+                    if (!isAnError) {
+                        // Add self path as dependency for this fragment (for cache flush - will not impact the key)
+                        // necessary even if resource is already storing self node in dep, because of referenced nodes, for exemple:
+                        // resource: /sites/ACMESPACE/home/main/content-reference@/news_36-3
+                        // already have this path as dependency
+                        // but it need the referenced node also as dependency, and the referenced node path is retrieve using getCanonicalPath() that will return this:
+                        // /sites/ACMESPACE/contents/projects-news/news_36-3
+                        resource.getDependencies().add(resource.getNode().getCanonicalPath());
+
+                        // Add main resource if cache.mainResource is set
+                        if ("true".equals(fragmentProperties.getProperty("cache.mainResource"))) {
+                            resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
+                        }
+                    }
+
+                    logger.debug("Caching fragment {} for final key: {}", resource.getPath(), finalKey);
+
+                    doCache(previousOut, renderContext, resource,
+                            isAnError ? errorCacheExpiration : Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)),
+                            cacheProvider.getCache(), finalKey, isAnError);
+                    // content is in cache and available, release latch for other threads waiting for this fragment
+                    generatorQueue.releaseLatch(finalKey);
+                } else {
+                    // release fragment generation permit
+                    generatorQueue.releaseFragmentGenerationPermit(finalKey);
                 }
-
-                logger.debug("Caching fragment {} for final key: {}", resource.getPath(), finalKey);
-
-                doCache(previousOut, renderContext, resource,
-                        isAnError ? errorCacheExpiration : Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)),
-                        cacheProvider.getCache(), finalKey, isAnError);
-                // content is in cache and available, release latch for other threads waiting for this fragment
-                generatorQueue.releaseLatch(finalKey);
             } else {
                 // release fragment generation permit
                 generatorQueue.releaseFragmentGenerationPermit(finalKey);
@@ -420,28 +427,32 @@ public class CacheFilter extends AbstractFilter {
             return false;
         }
 
+        // check if we have a valid cache expiration
+        final String cacheExpiration = fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION);
+        Long expiration = cacheExpiration != null ? Long.parseLong(cacheExpiration) : -1;
+        return expiration != 0L;
+    }
+
+    private boolean byPassCache(RenderContext renderContext, Resource resource) throws RepositoryException {
         // check v parameter
         if (renderContext.getRequest().getParameter(FLAG_VERSION) != null && renderContext.isLoggedIn()) {
-            return false;
+            return true;
         }
 
         // check ec parameter
         final String ecParameter = renderContext.getRequest().getParameter(FLAG_RANDOM);
         if (ecParameter != null) {
             if (ecParameter.equals(resource.getNode().getIdentifier())) {
-                return false;
+                return true;
             }
             for (Resource parent : renderContext.getResourcesStack()) {
                 if (ecParameter.equals(parent.getNode().getIdentifier())) {
-                    return false;
+                    return true;
                 }
             }
         }
 
-        // check if we have a valid cache expiration
-        final String cacheExpiration = fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION);
-        Long expiration = cacheExpiration != null ? Long.parseLong(cacheExpiration) : -1;
-        return expiration != 0L;
+        return false;
     }
 
     /**

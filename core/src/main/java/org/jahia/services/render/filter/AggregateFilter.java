@@ -121,8 +121,8 @@ public class AggregateFilter extends AbstractFilter {
     // flag put in prepare when we are aggregating subfragment
     public static final String AGGREGATING = "aggregateFilter.aggregating";
 
-    // Stack of final fragment keys, used to avoid fragment recursion and infinite loop
-    public static final String FRAGMENT_KEYS_STACK = "aggregateFilter.keysStack";
+    // Stack of resources, used to avoid fragment recursion and infinite loop
+    public static final String RESOURCES_STACK = "aggregateFilter.resourcesStack";
 
     // if this parameter is set to true in the request attributes, the aggregation is skipped
     public static final String SKIP_AGGREGATION = "aggregateFilter.skip";
@@ -142,7 +142,7 @@ public class AggregateFilter extends AbstractFilter {
         boolean isPageResource = Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration());
 
         // render chain haven't been start by a configuration page, aggregation can't be done
-        if (!isPageResource && request.getAttribute(FRAGMENT_KEYS_STACK) == null) {
+        if (!isPageResource && request.getAttribute(RESOURCES_STACK) == null) {
             return null;
         }
 
@@ -160,12 +160,12 @@ public class AggregateFilter extends AbstractFilter {
             // handle key stacks to avoid fragment include recursion
             if (isPageResource) {
                 // we are on main resource, initialize keys stack
-                request.setAttribute(FRAGMENT_KEYS_STACK, new Stack<>());
+                request.setAttribute(RESOURCES_STACK, new Stack<>());
             } else {
                 // we are aggregating, do a security recursion check and push key in stack if it's ok
                 @SuppressWarnings("unchecked")
-                Stack<String> keysStack = (Stack<String>) request.getAttribute(FRAGMENT_KEYS_STACK);
-                if(keysStack.contains(finalKey)) {
+                Stack<Resource> resourcesStack = (Stack<Resource>) request.getAttribute(RESOURCES_STACK);
+                if(resourcesStack.contains(resource)) {
                     // recursion detected
                     logger.warn("Loop detected while rendering resource {}. Please check your content structure and references.", resource.getPath());
                     if (!Constants.LIVE_WORKSPACE.equals(renderContext.getMode())) {
@@ -174,7 +174,7 @@ public class AggregateFilter extends AbstractFilter {
                     return StringUtils.EMPTY;
                 } else {
                     // no recursion detected push the key of current fragment in the stack, and continue
-                    keysStack.push(finalKey);
+                    resourcesStack.push(resource);
                 }
             }
 
@@ -206,7 +206,7 @@ public class AggregateFilter extends AbstractFilter {
         HttpServletRequest request =  renderContext.getRequest();
 
         // no keys stack, no aggregation
-        if (request.getAttribute(FRAGMENT_KEYS_STACK) == null) {
+        if (request.getAttribute(RESOURCES_STACK) == null) {
             return previousOut;
         }
 
@@ -238,13 +238,13 @@ public class AggregateFilter extends AbstractFilter {
         HttpServletRequest request = renderContext.getRequest();
 
         // no keys stack, no aggregation, nothing to clean
-        if(request.getAttribute(FRAGMENT_KEYS_STACK) == null) {
+        if(request.getAttribute(RESOURCES_STACK) == null) {
             return;
         }
 
         // we are finalizing on a main resource, remove keys stack
         if (Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration())) {
-            request.removeAttribute(FRAGMENT_KEYS_STACK);
+            request.removeAttribute(RESOURCES_STACK);
         }
 
         // we are finalizing on a sub fragment aggregation, pop the key from the stack
@@ -252,7 +252,7 @@ public class AggregateFilter extends AbstractFilter {
         Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
         if (moduleMap.get(AGGREGATING) == Boolean.TRUE) {
             @SuppressWarnings("unchecked")
-            Stack<String> keysStack = (Stack<String>) request.getAttribute(FRAGMENT_KEYS_STACK);
+            Stack<String> keysStack = (Stack<String>) request.getAttribute(RESOURCES_STACK);
             keysStack.pop();
         }
     }
@@ -303,7 +303,11 @@ public class AggregateFilter extends AbstractFilter {
             // Create lazy resource
             String path = StringUtils.replace(keyAttrs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY);
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrs.get("language")), renderContext.getFallbackLocale());
-            Resource resource = new Resource(path, currentUserSession, keyAttrs.get("templateType"), keyAttrs.get("template"), keyAttrs.get("context"));
+
+            String canonicalPath = keyAttrs.get("canonicalPath");
+            canonicalPath = StringUtils.isEmpty(canonicalPath) ? path : canonicalPath;
+
+            Resource resource = new Resource(path, canonicalPath, currentUserSession, keyAttrs.get("templateType"), keyAttrs.get("template"), keyAttrs.get("context"));
 
             // Store sub fragment key in module params of the resource to use it in prepare()
             // instead of generating the sub fragment key from scratch

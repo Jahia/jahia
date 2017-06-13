@@ -382,9 +382,6 @@ public class JCRSessionWrapper implements Session {
         String fullPath = parent.getPath() + DEREF_SEPARATOR + refPath;
         // check if one of the parent is the same as the referenced Node
 
-        if (checkCyclicReference(parent.getPath(), referencedNode.getPath())) {
-            throw new PathNotFoundException(String.format("cyclic reference %s in path %s", referencedNode.getPath(), fullPath));
-        }
         String refRootName = StringUtils.substringBefore(refPath, "/");
         if (!realReferencedNode.getName().equals(refRootName)) {
             throw new PathNotFoundException(fullPath);
@@ -399,28 +396,6 @@ public class JCRSessionWrapper implements Session {
         }
         sessionCacheByPath.put(fullPath, wrapper);
         return wrapper;
-    }
-
-    private boolean checkCyclicReference(String path, String reference) {
-        try {
-            int lastIndexOfDeref = StringUtils.lastIndexOf(path, DEREF_SEPARATOR);
-            while (lastIndexOfDeref != -1 || StringUtils.startsWith(path, reference + "/") || StringUtils.equals(path, reference)) {
-                if (lastIndexOfDeref != -1) {
-                    path = StringUtils.substring(path, 0, lastIndexOfDeref);
-                    JCRNodeWrapper referencedNode = (JCRNodeWrapper) getNode(path).getProperty(Constants.NODE).getNode();
-                    if (StringUtils.equals(referencedNode.getPath(), reference)) {
-                        return true;
-                    }
-                } else {
-                    return true;
-                }
-                lastIndexOfDeref = StringUtils.lastIndexOf(path, DEREF_SEPARATOR);
-            }
-        } catch (RepositoryException e) {
-            logger.debug("unable to check cyclic reference between node {} and its reference {}", new String[]{path, reference}, e);
-            // do nothing
-        }
-        return false;
     }
 
     public JCRNodeWrapper getNode(String path) throws PathNotFoundException, RepositoryException {

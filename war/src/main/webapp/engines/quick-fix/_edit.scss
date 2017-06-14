@@ -1,4 +1,5 @@
 @import "common";
+
 /***********************************************/
 /* COMMON **************************************/
 /***********************************************/
@@ -7,24 +8,24 @@ body {
     background: #35383a;
     &[data-selection-count="0"] {
         background: $color-background;
+		background: test()
     }
-    transition: all 0.3s ease-in 0s;
+	transition: all 0.3s ease-in 0s;
 
 	&[data-main-node-displayname] {
 		&::before {
+			display: block;
 			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			display: block;
-			text-align: center;
-			color: #f6f9fb;
+			top: 2px;
+			left: 13px;
+			height: 50px;
+			background-size: 35px 35px;
+			padding-left: 45px;
+			color: rgba(238, 238, 238, 0.9);
 			font-family: 'Nunito Sans', sans-serif;
-			font-weight: 300;
-			font-size: 16px;
-			display: block;
-			margin: 16px 0 0 35px;
-			margin: 16px 0 0 35px;
+			font-size: 21px;
+			font-weight: 100;
+			padding-top: 10px;
 
 		}
 	}
@@ -294,7 +295,7 @@ div.x-combo-list-item {
     padding: 4px 9px;
     font-family: 'Nunito Sans', sans-serif;
     font-size: 11px;
-    font-weight: 300;
+    font-weight: 200;
 }
 .x-item-disabled span.x-menu-item {
     color: rgba(238, 238, 238, 1) !important;
@@ -808,7 +809,8 @@ body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] .x-view
 					.edit-menu-edit {
 				        display: inline-block;
 				        margin-top: 0;
-				        top: 0;
+						top: -3px;
+				        top: -3px;
 				        position: relative;
 				        margin-left: 55px;
 				        > tbody {
@@ -1260,14 +1262,14 @@ body {
 			display: block;
 			position: fixed;
 			top: 2px;
-			left: 13px;
+			left: 15px;
 			height: 50px;
 			background: url(./images/dx_logo_solid.png) no-repeat left top 9px;
-			background-size: 35px 35px;
-			padding-left: 45px;
+			background-size: 32px 32px;
+			padding-left: 43px;
 			color: rgba(238, 238, 238, 0.9);
 			font-family: 'Nunito Sans', sans-serif;
-			font-size: 23px;
+			font-size: 21px;
 			font-weight: 100;
 			padding-top: 10px;
 
@@ -3710,15 +3712,16 @@ body {
 	           position: fixed;
 	           top: 10px;
 	           left: 5px;
+			   z-index: 9999999999999999999999;
 	           z-index: 9999999999999999999999;
 	           display: block;
-	           background: url(./images/hamburger-black@X2.png) no-repeat center center;
+	           background: url(./images/hamburger-black@X2.png) no-repeat top 10px center;
 	           margin-top: 0;
 	           opacity: 1;
 	           background-size: 29px 12px;
 	           opacity: 0.8;
 	           body[data-selection-count="0"] & {
-	               background: url(./images/hamburger-light@X2.png) no-repeat center center;
+	               background: url(./images/hamburger-light@X2.png) no-repeat top 10px center;
 	               background-size: 29px 12px;
 	           }
 	           &:hover {
@@ -3728,12 +3731,12 @@ body {
 	               content: "";
 	           }
 	           body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-	               background: url(./images/hamburger-dark@X2.png) no-repeat center center;
+	               background: url(./images/hamburger-dark@X2.png) no-repeat top 10px center;
 	               background-size: 29px 12px;
 	           }
 
 			   body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
-				   background: url(./images/hamburger-light@X2.png) no-repeat center center;
+				   background: url(./images/hamburger-light@X2.png) no-repeat top 10px center;
 	   				background-size: 29px 12px;
 		   		}
 	       }
@@ -3847,7 +3850,7 @@ body {
 	       &:nth-child(7) {
 			   body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 				   opacity: 0.5;
-			       background: url(./images/hamburger-dark@X2.png) no-repeat center center;
+			       background: url(./images/hamburger-dark@X2.png) no-repeat top 10px center;
 			       background-size: 29px 12px;
 			       &:hover {
 			           opacity: 1;
@@ -4046,7 +4049,7 @@ body {
 		            margin-bottom: 10px;
 		            color: #1d1d1d;
 		            body[data-selection-count="0"] & {
-		                color: rgba(238, 238, 238, 0.9);
+						color: rgba(238, 238, 238, 0.9);
 		            }
 		        }
 		    }
@@ -4223,19 +4226,19 @@ body {
 		        left: 5px;
 		        z-index: 9999999999999999999999;
 		        display: block;
-		        background: url(./images/hamburger-black@X2.png) no-repeat center center;
+		        background: url(./images/hamburger-black@X2.png) no-repeat top 10px center;
 		        margin-top: 0;
 		        opacity: 1;
 		        background-size: 29px 12px;
 		        body[data-selection-count="0"] & {
-		            background: url(./images/hamburger-light@X2.png) no-repeat center center;
+		            background: url(./images/hamburger-light@X2.png) no-repeat top 10px center;
 		            background-size: 29px 12px;
 		        }
 		        &::after {
 		            content: "";
 		        }
 		        body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-		            background: url(./images/hamburger-dark@X2.png) no-repeat center center;
+		            background: url(./images/hamburger-dark@X2.png) no-repeat top 10px center;
 		            background-size: 29px 12px;
 		        }
 		    }
@@ -4437,13 +4440,13 @@ body {
  	           left: 5px;
  	           z-index: 9999999999999999999999;
  	           display: block;
- 	           background: url(./images/hamburger-black@X2.png) no-repeat center center;
+ 	           background: url(./images/hamburger-black@X2.png) no-repeat top 10px center;
  	           margin-top: 0;
  	           opacity: 1;
  	           background-size: 29px 12px;
  	           opacity: 0.8;
  	           body[data-selection-count="0"] & {
- 	               background: url(./images/hamburger-light@X2.png) no-repeat center center;
+ 	               background: url(./images/hamburger-light@X2.png) no-repeat top 10px center;
  	               background-size: 29px 12px;
  	           }
  	           &:hover {
@@ -4453,7 +4456,7 @@ body {
  	               content: "";
  	           }
  	           body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
- 	               background: url(./images/hamburger-dark@X2.png) no-repeat center center;
+ 	               background: url(./images/hamburger-dark@X2.png) no-repeat top 10px center;
  	               background-size: 29px 12px;
  	           }
  	       }

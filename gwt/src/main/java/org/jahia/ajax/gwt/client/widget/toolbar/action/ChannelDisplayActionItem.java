@@ -91,6 +91,9 @@ public class ChannelDisplayActionItem extends BaseActionItem {
 
         horizontalPanel = new HorizontalPanel();
         horizontalPanel.add(comboBox);
+        horizontalPanel.addStyleName(getGwtToolbarItem().getClassName());
+        horizontalPanel.addStyleName("action-bar-menu-item");
+
         setEnabled(true);
 
     }

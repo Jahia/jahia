@@ -82,6 +82,8 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
      */
     private void initMainComponent() {
         mainComponent = new ComboBox<GWTJahiaLanguage>();
+        mainComponent.addStyleName(getGwtToolbarItem().getClassName());
+        mainComponent.addStyleName("action-bar-menu-item");
         mainComponent.setStore(new ListStore<GWTJahiaLanguage>());
         mainComponent.getStore().add(JahiaGWTParameters.getSiteLanguages());
         mainComponent.setDisplayField("displayName");

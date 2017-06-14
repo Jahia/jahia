@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.Style;
+import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
@@ -87,6 +88,7 @@ public class EditManager extends ContentPanel {
 
         sidePanel.setStyleAttribute("z-index", "999");
         sidePanel.addStyleName("gwt-only-panel");
+        sidePanel.addStyleName("window-side-panel");
         add(sidePanel, data);
 
         sidePanel.setVisible(!config.getTabs().isEmpty());
@@ -110,9 +112,21 @@ public class EditManager extends ContentPanel {
         lang.setDisplayName(JahiaGWTParameters.getLanguageDisplayName());
         editLinker.setLocale(lang);
 
+        addStyleName("app-container");
         Log.debug("Edit manager initiated in " + (System.currentTimeMillis() - start) + " ms");
     }
 
+
+    @Override
+    protected void onRender(Element parent, int pos) {
+        super.onRender(parent, pos);
+        if (this.toolbar != null) {
+            this.toolbar.addStyleName("action-bar-container");
+        }
+        if (this.body != null) {
+            this.body.addStyleName("window-container");
+        }
+    }
 
     public MainModule getMainModule() {
         return mainModule;

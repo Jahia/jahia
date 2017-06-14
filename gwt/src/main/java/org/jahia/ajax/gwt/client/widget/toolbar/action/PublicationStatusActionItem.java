@@ -92,6 +92,8 @@ public class PublicationStatusActionItem extends BaseActionItem {
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
         panel = new HorizontalPanel();
+        panel.addStyleName(getGwtToolbarItem().getClassName());
+        panel.addStyleName("action-bar-menu-item");
     }
 
     @Override

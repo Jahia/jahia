@@ -71,6 +71,8 @@ public class NodePathActionItem extends BaseActionItem {
                 ": " +
                 "</span><span class='x-current-page-path node-path-text'></span>");
         container.setStyleName("node-path-container");
+        container.addStyleName(getGwtToolbarItem().getClassName());
+        container.addStyleName("action-bar-menu-item");
         container.add(text, ".node-path-text");
         return container;
     }

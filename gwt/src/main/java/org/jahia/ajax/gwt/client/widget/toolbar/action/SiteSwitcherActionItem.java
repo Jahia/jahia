@@ -108,6 +108,8 @@ public class SiteSwitcherActionItem extends BaseActionItem {
 
         createSitesCombo();
         mainComponent.add(sitesCombo);
+        mainComponent.addStyleName(getGwtToolbarItem().getClassName());
+        mainComponent.addStyleName("action-bar-menu-item");
         refreshSitesList(linker);
     }
 

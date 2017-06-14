@@ -112,6 +112,7 @@ class SearchTabItem extends SidePanelTabItem {
         super.create(config);
         tab.setLayout(new FitLayout());
         final FormPanel searchForm = new FormPanel();
+        searchForm.addStyleName(gxtTabId+"-form");
         searchForm.setHeaderVisible(false);
         searchForm.setBorders(false);
         searchForm.setBodyBorder(false);
@@ -257,6 +258,7 @@ class SearchTabItem extends SidePanelTabItem {
         grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(columnConfigList));
 
         ContentPanel gridPanel = new ContentPanel();
+        gridPanel.addStyleName(gxtTabId+"-results");
         gridPanel.setLayout(new FitLayout());
         gridPanel.setBottomComponent(toolBar);
         gridPanel.setHeaderVisible(false);
@@ -264,7 +266,6 @@ class SearchTabItem extends SidePanelTabItem {
         gridPanel.setBodyBorder(false);
         gridPanel.setBorders(false);
         gridPanel.add(grid);
-
         panel.add(gridPanel, new RowData(1, 1, new Margins(0, 0, 0, 0)));
         tab.add(panel);
         grid.addListener(Events.OnDoubleClick, new Listener<GridEvent>() {

@@ -7,6 +7,7 @@
 			// Setup observers
 			indigoQF.observers.body();
 
+
 			// Setup listeners
 			$(document).ready(function(){
 				$("body").on("click", ".x-viewport-editmode .x-toolbar-first > table", indigoQF.listeners.toggleThemeMode)
@@ -48,7 +49,9 @@
 			},
 			currentPage: {
 				displayname: null
-			}
+			},
+			iframeLoaded: null,
+			iframeObserver: null
 		},
 		config: {
 			selectors: {
@@ -66,10 +69,10 @@
 			},
 
 			// Body updates
-			displaynameChanged: function(displayname){
-				indigoQF.status.currentPage.displayname = displayname;
+			displaynameChanged: function(){
 
 				var label;
+
 
 				switch(indigoQF.status.multiselection.count){
 					case 0:
@@ -290,12 +293,18 @@
 
 						mutations.forEach(function(mutation){
 							newNodes = mutation.addedNodes;
+							removedNodes = mutation.removedNodes;
 							attributeNames = mutation.attributeName;
+
+							if(attributeNames){
+								//console.log("attributeNames:", attributeNames);
+							}
 
 							if(attributeNames == "data-main-node-displayname"){
 								var pageName = $("body").attr("data-main-node-displayname");
+								indigoQF.status.currentPage.displayname = pageName;
 
-								indigoQF.listeners.displaynameChanged(pageName);
+								indigoQF.listeners.displaynameChanged();
 
 							}
 
@@ -336,4 +345,6 @@
 	}
 
 	window.onload = indigoQF.init;
+
+
 }());

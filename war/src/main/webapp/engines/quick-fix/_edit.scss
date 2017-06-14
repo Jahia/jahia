@@ -48,6 +48,13 @@ body {
 
 		}
 	}
+
+	&[data-sitesettings="true"] {
+		&::before {
+			content: "Get settings name from Thomas";
+
+		}
+	}
 }
 .x-menu-sep-li {
     display: none;
@@ -107,7 +114,7 @@ body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] .x-pane
         display: block;
         margin: 6px 0 0 35px;
         body[data-selection-count="0"] & {
-            color: #f6f9fb
+			color: #f6f9fb;
         }
     }
     body[data-selection-count="0"] &::before {

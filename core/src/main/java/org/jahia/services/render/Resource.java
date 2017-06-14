@@ -43,6 +43,8 @@
  */
 package org.jahia.services.render;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -405,7 +407,10 @@ public class Resource {
                 resource.resourceNodeType != null) {
             return false;
         }
-        if (moduleParams != null ? !moduleParams.equals(resource.moduleParams) : resource.moduleParams != null) {
+        // Filter cacheKey from stacked module params as the key is not added yet.
+        Map<String, Serializable> filteredmoduleParams = Maps.filterKeys(resource.moduleParams, Predicates.not(Predicates.equalTo("cacheKey")));
+
+        if (moduleParams != null ? !moduleParams.equals(filteredmoduleParams) : resource.moduleParams != null) {
             return false;
         }
 

@@ -94,6 +94,8 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
         mainComponent.setEditable(false);
         mainComponent.setValue(selectedLang);
         mainComponent.getListView().setStyleAttribute("font-size","11px");
+        mainComponent.getListView().addStyleName("menu-"+getGwtToolbarItem().getClassName());
+
         mainComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {

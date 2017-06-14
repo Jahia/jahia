@@ -89,6 +89,8 @@ public class ActionContextMenu extends ActionToolbarMenu {
      * @param gwtJahiaToolbar
      */
     private void createMenu(GWTJahiaToolbar gwtJahiaToolbar) {
+        addStyleName(gwtJahiaToolbar.getName());
+        addStyleName("context-menu");
         for (GWTJahiaToolbarItem item : gwtJahiaToolbar.getGwtToolbarItems()) {
             addItem(item);
         }

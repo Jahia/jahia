@@ -55,7 +55,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="filepickerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewFolder"/>
@@ -167,7 +167,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="imagepickerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewFolder"/>
@@ -266,7 +266,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="folderpickerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewFolder"/>
@@ -342,7 +342,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="contentfolderpickerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.Copy"/>
@@ -413,7 +413,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="portletpickerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewPortlet"/>
@@ -485,7 +485,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="pagepickerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.Copy"/>
@@ -572,7 +572,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="editorialpickerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.Copy"/>
@@ -639,7 +639,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="categorypickerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewCategory"/>
@@ -715,7 +715,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="sitepickerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list/>
                 </property>

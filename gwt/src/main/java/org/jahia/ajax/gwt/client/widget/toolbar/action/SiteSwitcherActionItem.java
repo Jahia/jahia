@@ -246,6 +246,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
         sitesCombo.setForceSelection(true);
         sitesCombo.getListView().setStyleAttribute("font-size", "11px");
         sitesCombo.setAllowBlank(true);
+        sitesCombo.getListView().addStyleName("menu-"+getGwtToolbarItem().getClassName());
 //        if (filterOnAvailableSources) {
 //            sitesCombo.setWidth(250);
 //        } else {

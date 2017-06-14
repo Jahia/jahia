@@ -304,7 +304,7 @@
                     </property>
                     <property name="treeColumns" ref="#{jahiaProperties['useFullPublicationInfoInMainAreaModules'] == 'true' ? 'editModePagesTreeColumnListWithPublicationInfo' : 'editModePagesTreeColumnList'}"/>
                     <property name="treeContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean id="pagesContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.NewPage"/>
@@ -417,7 +417,7 @@
                         </list>
                     </property>
                     <property name="treeContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean id="contentTreeContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.NewContentFolder"/>
@@ -444,7 +444,7 @@
                         </list>
                     </property>
                     <property name="tableContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean id="contentTableContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
@@ -493,7 +493,7 @@
                         </list>
                     </property>
                     <property name="treeContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean id="filesTreeContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.NewFolder"/>
@@ -514,7 +514,7 @@
                         </bean>
                     </property>
                     <property name="tableContextMenu">
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                        <bean id="filesTableContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Download"/>
@@ -619,7 +619,7 @@
                     </property>
                     <property name="requiredPermission" value="categoriesSelector"/>
                   <property name="tableContextMenu">
-                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                    <bean id="categoriesTableContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                       <property name="items">
                         <list>
                           <ref bean="Toolbar.Item.EditContent"/>
@@ -754,7 +754,7 @@
         </property>
         <property name="requiredPermission" value="searchSelector"/>
         <property name="tableContextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="searchTableContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.EditContent"/>

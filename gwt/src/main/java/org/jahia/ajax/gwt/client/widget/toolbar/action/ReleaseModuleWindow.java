@@ -82,6 +82,7 @@ public class ReleaseModuleWindow extends Window {
 
     public ReleaseModuleWindow(GWTModuleReleaseInfo releaseInfo) {
         super();
+        addStyleName("release-module-window");
         this.releaseInfo = releaseInfo != null ? releaseInfo : new GWTModuleReleaseInfo();
     }
 

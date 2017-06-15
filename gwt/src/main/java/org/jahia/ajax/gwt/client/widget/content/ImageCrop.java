@@ -98,6 +98,7 @@ public class ImageCrop extends Window {
     
     public ImageCrop(final Linker linker, final GWTJahiaNode n, List<Integer[]> predefinedSizes) {
         super();
+        addStyleName("image-crop");
         setLayout(new FitLayout());
         setSize(712, 550);
 

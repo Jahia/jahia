@@ -81,7 +81,7 @@ public class ImageResize extends Window {
 
     public ImageResize(final Linker linker, final GWTJahiaNode n, List<Integer[]> predefinedSizes) {
         super() ;
-
+        addStyleName("image-resize");
         this.linker = linker ;
 
         final int w = Integer.parseInt((String) n.get("j:width"));

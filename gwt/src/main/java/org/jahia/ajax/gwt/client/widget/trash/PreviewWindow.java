@@ -70,7 +70,7 @@ public class PreviewWindow extends Window {
     private LayoutContainer htmlPreview;
 
     public PreviewWindow(Linker linker, GWTJahiaNode jahiaNode) {
-
+        addStyleName("preview-window");
         setLayout(new BorderLayout());
         setSize(800,600);
 

@@ -105,6 +105,7 @@ public class TranslateContentEngine extends Window {
      */
     public TranslateContentEngine(GWTJahiaNode node, Linker linker, GWTJahiaLanguage srcLanguage,
                                   GWTJahiaLanguage destLanguage) {
+        addStyleName("translate-content-engine");
         this.linker = linker;
         this.node = node;
         this.srcLanguage = srcLanguage;

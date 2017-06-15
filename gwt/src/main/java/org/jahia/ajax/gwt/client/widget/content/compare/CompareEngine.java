@@ -115,6 +115,7 @@ public class CompareEngine extends Window {
 
     protected void init(boolean displayVersionSelector, boolean displayTwoPanels) {
         setLayout(new RowLayout(Style.Orientation.HORIZONTAL));
+        addStyleName("compare-engine");
         setBodyBorder(false);
         int windowHeight = com.google.gwt.user.client.Window.getClientHeight() - 10;
         int windowWidth = com.google.gwt.user.client.Window.getClientWidth() - 10;

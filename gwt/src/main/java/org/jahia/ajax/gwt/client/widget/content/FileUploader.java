@@ -164,6 +164,7 @@ public class FileUploader extends Window {
 
     public FileUploader(final Linker linker, final GWTJahiaNode location, String defaultUploadOption) {
         super();
+        addStyleName("file-uploader");
         if ("rename".equalsIgnoreCase(defaultUploadOption)) {
             uploadOption = UploadOption.RENAME;
         } else if ("version".equalsIgnoreCase(defaultUploadOption)) {

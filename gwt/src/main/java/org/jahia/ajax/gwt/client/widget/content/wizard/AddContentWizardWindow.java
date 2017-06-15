@@ -152,6 +152,7 @@ public class AddContentWizardWindow extends WizardWindow {
      */
     public AddContentWizardWindow(Linker linker, GWTJahiaNode parentNode, GWTJahiaNodeType nodeType) {
         super(null);
+        addStyleName("add-content-wizard-window");
         data = new AddContentData(nodeType);
         this.parentNode = parentNode;
         this.linker = linker;

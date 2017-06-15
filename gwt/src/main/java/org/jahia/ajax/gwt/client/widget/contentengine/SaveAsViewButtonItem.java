@@ -123,7 +123,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                     }
 
                 } else {
-                    MessageBox.alert(Messages.get("label.error", "Error"), Messages.getWithArgs("label.issueOccursTryingResolve", "An issue occurred when trying to resolve {0}", new Object[]{node.getPath()}), null);
+                    MessageBox.alert(Messages.get("label.error", "Error"), Messages.getWithArgs("label.issueOccursTryingResolve", "An issue occurred when trying to resolve {0}", new Object[]{node.getPath()}), null).getDialog().addStyleName("engine-save-error");
                     return;
                 }
                 final String modulePath = "/modules/" + filePath[INDEX_OF_MODULE_NAME];
@@ -262,7 +262,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
 
         JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
             public void onFailure(Throwable throwable) {
-                MessageBox.alert(Messages.get("label.error.processingRequestError", "An error occurred while processing your request"), throwable.getMessage(), null);
+                MessageBox.alert(Messages.get("label.error.processingRequestError", "An error occurred while processing your request"), throwable.getMessage(), null).getDialog().addStyleName("engine-save-error");
             }
 
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {

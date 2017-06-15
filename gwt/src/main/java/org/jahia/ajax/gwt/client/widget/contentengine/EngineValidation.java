@@ -151,7 +151,7 @@ public class EngineValidation {
             String continueMessage = Messages.get("label.continueAnyway", "Do you want to continue anyway ?");
             MessageBox.confirm(Messages.get("label.error", "Error"), result.message + "</br><b>" + continueMessage + "</b>", boxCallback);
         } else {
-            MessageBox.alert(Messages.get("label.error", "Error"), result.message, boxCallback);
+            MessageBox.alert(Messages.get("label.error", "Error"), result.message, boxCallback).getDialog().addStyleName("engine-save-error");
         }
     }
 

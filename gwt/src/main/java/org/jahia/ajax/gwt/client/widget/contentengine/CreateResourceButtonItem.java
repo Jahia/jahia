@@ -158,7 +158,7 @@ public class CreateResourceButtonItem extends SaveButtonItem {
         }
         JahiaContentManagementService.App.getInstance().createNode(parentPath, nodeName, engine.getType().getName(), null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
             public void onFailure(Throwable throwable) {
-                MessageBox.alert(Messages.get("label.error.processingRequestError", "An error occurred while processing your request"), throwable.getMessage(), null);
+                MessageBox.alert(Messages.get("label.error.processingRequestError", "An error occurred while processing your request"), throwable.getMessage(), null).getDialog().addStyleName("engine-save-error");
             }
 
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {

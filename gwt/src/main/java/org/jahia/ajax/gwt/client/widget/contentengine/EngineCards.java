@@ -86,6 +86,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
     public EngineCards(EngineContainer mainContainer, Linker linker) {
         super(new BorderLayout());
         setId("JahiaGxtEngineCards");
+        addStyleName("engine-cards");
 
         final ListStore<BaseModelData> store = new ListStore<BaseModelData>();
         ColumnConfig lang = new ColumnConfig("lang", 50);
@@ -149,6 +150,10 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         }
         list.getStore().add(data);
         cardsContainer.add(component);
+
+        String name = component.getClass().getName();
+        name = name.substring(name.lastIndexOf('.')+1).toLowerCase();
+        addStyleName(name+ "-ctn");
     }
 
     /**

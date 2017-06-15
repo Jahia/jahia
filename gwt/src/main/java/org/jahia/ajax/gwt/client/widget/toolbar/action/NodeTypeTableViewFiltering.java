@@ -118,6 +118,8 @@ public class NodeTypeTableViewFiltering extends BaseActionItem {
 
     private void initMainComponent() {
         mainComponent = new ComboBox<ModelData>();
+        mainComponent.addStyleName(getGwtToolbarItem().getClassName());
+        mainComponent.addStyleName("action-bar-menu-item");
         mainComponent.setDisplayField(GWTJahiaNode.PRIMARY_TYPE_LABEL);
         mainComponent.setTypeAhead(true);
         mainComponent.setTriggerAction(ComboBox.TriggerAction.ALL);

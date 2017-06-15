@@ -66,6 +66,7 @@ public class EngineWindow extends Window implements EngineContainer {
 
     public EngineWindow() {
         setId("JahiaGxtEngineWindow");
+        addStyleName("engine-window");
         setSize(750, 480);
         setBodyBorder(false);
         setClosable(false);

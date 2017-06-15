@@ -74,7 +74,7 @@ public class ImageRotate extends Window {
 
     public ImageRotate(final Linker linker, final GWTJahiaNode n) {
         super() ;
-
+        addStyleName("image-rotate");
         m_linker = linker ;
 
         setHeadingHtml(Messages.get("label.rotate"));

@@ -79,7 +79,7 @@ public class ContentImport extends Window {
 
     public ContentImport(final Linker linker, final GWTJahiaNode n, boolean replaceContent) {
         super();
-
+        addStyleName("content-import");
         m_linker = linker;
         this.replaceContent = replaceContent;
 

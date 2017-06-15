@@ -61,6 +61,7 @@ public class WorkflowDashboardEngine extends Window {
 
     public WorkflowDashboardEngine(Linker linker) {
         super();
+        addStyleName("workflow-dashboard-engine");
         this.linker = linker;
         setModal(true);
         setLayout(new FitLayout());

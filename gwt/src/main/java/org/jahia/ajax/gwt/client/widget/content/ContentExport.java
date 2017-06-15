@@ -68,6 +68,7 @@ public class ContentExport extends Window {
     public ContentExport(final Linker linker, final GWTJahiaNode n) {
         super();
 
+        addStyleName("content-export");
         setHeadingHtml(Messages.get("label.export"));
         setSize(500, 80);
         setResizable(false);

@@ -74,7 +74,7 @@ public class PasswordPrompt extends Window {
 
     public PasswordPrompt(final ManagerLinker linker, String username, final String providerKey, final MenuItem item, final String logoutLabel) {
         super() ;
-
+        addStyleName("password-prompt");
         m_linker = linker ;
 
         setHeadingHtml(Messages.get("label.password"));

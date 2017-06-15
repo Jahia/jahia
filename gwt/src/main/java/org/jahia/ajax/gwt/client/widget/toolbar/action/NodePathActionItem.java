@@ -46,7 +46,9 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HtmlContainer;
 import com.extjs.gxt.ui.client.widget.Text;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.HTML;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -69,6 +71,8 @@ public class NodePathActionItem extends BaseActionItem {
                 ": " +
                 "</span><span class='x-current-page-path node-path-text'></span>");
         container.setStyleName("node-path-container");
+        container.addStyleName(getGwtToolbarItem().getClassName());
+        container.addStyleName("action-bar-menu-item");
         container.add(text, ".node-path-text");
         return container;
     }
@@ -79,8 +83,13 @@ public class NodePathActionItem extends BaseActionItem {
         if (path.startsWith("/sites/"+node.getSiteKey())) {
             path = path.substring(node.getSiteKey().length()+8);
         }
+        text.addStyleName("node-path-text-inner");
         text.setStyleAttribute("color","");
         text.setText(path);
+        if (container.isRendered()) {
+            container.getElement().setAttribute("data-nodedisplayname", node.getDisplayName());
+            container.getElement().setAttribute("data-nodepath", node.getPath());
+        }
         container.setToolTip(path);
         if (linker instanceof EditLinker) {
             MainModule mainModule = ((EditLinker) linker).getMainModule();

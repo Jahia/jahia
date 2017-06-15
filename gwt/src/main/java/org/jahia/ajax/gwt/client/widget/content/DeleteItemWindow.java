@@ -86,7 +86,7 @@ public class DeleteItemWindow extends Window {
 
 	public DeleteItemWindow(final Linker linker, final LinkerSelectionContext lh, final boolean permanentlyDelete) {
 		super();
-
+		addStyleName("delete-item-window");
 		setSize(windowWidth, windowHeight);
 		setHeadingHtml("Informations");
 		setResizable(false);

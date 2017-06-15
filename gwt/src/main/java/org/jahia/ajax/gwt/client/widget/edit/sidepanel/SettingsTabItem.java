@@ -97,6 +97,8 @@ public class SettingsTabItem extends SidePanelTabItem {
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
         tab.setLayout(new FitLayout());
+        tab.setId("JahiaGxtSettingsTab");
+
         settingsPanel = new ContentPanel();
         settingsPanel.setAnimCollapse(false);
         settingsPanel.setHeadingHtml(Messages.get(label));

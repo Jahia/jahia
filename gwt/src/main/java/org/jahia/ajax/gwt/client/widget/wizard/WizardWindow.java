@@ -104,6 +104,7 @@ public class WizardWindow extends Window {
      */
     public WizardWindow(List<WizardCard> cards) {
         super();
+        addStyleName("wizard-window");
         this.cards = cards != null ? cards : new LinkedList<WizardCard>();
         for (WizardCard card : this.cards) {
             card.setWizardWindow(this);

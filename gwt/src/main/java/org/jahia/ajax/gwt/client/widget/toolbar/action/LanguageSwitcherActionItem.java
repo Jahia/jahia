@@ -82,6 +82,8 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
      */
     private void initMainComponent() {
         mainComponent = new ComboBox<GWTJahiaLanguage>();
+        mainComponent.addStyleName(getGwtToolbarItem().getClassName());
+        mainComponent.addStyleName("action-bar-menu-item");
         mainComponent.setStore(new ListStore<GWTJahiaLanguage>());
         mainComponent.getStore().add(JahiaGWTParameters.getSiteLanguages());
         mainComponent.setDisplayField("displayName");
@@ -92,6 +94,8 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
         mainComponent.setEditable(false);
         mainComponent.setValue(selectedLang);
         mainComponent.getListView().setStyleAttribute("font-size","11px");
+        mainComponent.getListView().addStyleName("menu-"+getGwtToolbarItem().getClassName());
+
         mainComponent.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {

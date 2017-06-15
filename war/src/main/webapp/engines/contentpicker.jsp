@@ -25,6 +25,13 @@
             <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>
             <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.Jcrop.min.js'/>"></script>
         </c:if>
+
+        <c:if test="${not empty theme}">
+            <link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/manager${themeLocale}.css'/>"/>
+            <!-- Javascript for theme -->
+            <script type="text/javascript" src="<c:url value='/engines/${theme}/js/manager.js'/>"></script>
+        </c:if>
+
 	</head>
 	<body>
         <internal:contentPicker conf="${fn:escapeXml(config)}" mimeTypes="${fn:escapeXml(param.mime)}" jahiaServletPath="/cms" filesServletPath="/files" jahiaContextPath="${pageContext.request.contextPath}"  callback="${fn:escapeXml(param.CKEditorFuncNum)}"/>    

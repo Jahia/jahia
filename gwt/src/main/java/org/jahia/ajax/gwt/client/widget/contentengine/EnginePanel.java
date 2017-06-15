@@ -70,6 +70,7 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
         setBodyBorder(false);
         setLayout(new FitLayout());
         setId("JahiaGxtEnginePanel");
+        addStyleName("engine-panel");
     }
 
     public ContentPanel getPanel() {
@@ -78,6 +79,9 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
 
     public void setEngine(Component component, String header, ButtonBar buttonsBar, GWTJahiaLanguage language, final Linker linker) {
         this.linker = linker instanceof EditLinker ? (EditLinker) linker : ((SidePanelLinker) linker).getEditLinker();
+        String name = component.getClass().getName();
+        name = name.substring(name.lastIndexOf('.')+1).toLowerCase();
+        addStyleName(name+ "-ctn");
         removeAll();
         add(component);
         head.setStyleAttribute("height", "20px");

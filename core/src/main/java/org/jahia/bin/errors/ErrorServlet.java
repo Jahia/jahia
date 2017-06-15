@@ -164,7 +164,21 @@ public class ErrorServlet extends HttpServlet {
         }
 
         if (null == path) {
-            String pathToCheck = "/errors/" + page;
+            String pathToCheck;
+            String theme = SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.ui.theme");
+            if (theme != null && !"default".equals(theme)) {
+                pathToCheck = "/errors/" + theme + "/" + page;
+                if (getServletContext().getResource(pathToCheck) != null) {
+                    return pathToCheck;
+                } else {
+                    pathToCheck = "/errors/error.jsp";
+                    if (getServletContext().getResource(pathToCheck) != null) {
+                        return pathToCheck;
+                    }
+                }
+            }
+
+            pathToCheck = "/errors/" + page;
             if (getServletContext().getResource(pathToCheck) != null) {
                 path = pathToCheck;
             } else {

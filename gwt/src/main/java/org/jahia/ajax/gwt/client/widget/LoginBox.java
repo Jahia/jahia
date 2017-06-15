@@ -80,6 +80,8 @@ public class LoginBox extends Window {
     }
 
     public LoginBox() {
+
+        addStyleName("login-box");
         this.setSize(400, 200);
         this.setModal(true);
         this.setBlinkModal(true);

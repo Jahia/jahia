@@ -59,6 +59,7 @@ public class JobListWindow extends Window {
 
     public JobListWindow(Linker linker, boolean adminMode) {
         super();
+        addStyleName("job-list-window");
         this.linker = linker;
         setLayout(new FitLayout());
         init(adminMode);

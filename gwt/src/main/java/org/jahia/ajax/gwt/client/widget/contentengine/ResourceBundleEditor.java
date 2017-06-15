@@ -782,7 +782,7 @@ public class ResourceBundleEditor extends LayoutContainer {
                             return;
                         }
                         if (!newLang.matches("[a-z]{2}(_[A-Z]{2})?")) {
-                            MessageBox.alert(Messages.get("label.error"), Messages.get("label.resourceBundle.addLanguage.invalidLang"), null);
+                            MessageBox.alert(Messages.get("label.error"), Messages.get("label.resourceBundle.addLanguage.invalidLang"), null).getDialog().addStyleName("engine-save-error");
                             return;
                         }
                         languages.add(newLang);

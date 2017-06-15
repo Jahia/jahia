@@ -92,7 +92,7 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="FileManager.Menu.File">
                             <property name="titleKey"
                                       value="fileMenu.label"/>
                             <property name="items">
@@ -107,7 +107,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="FileManager.Menu.Edit">
                             <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
@@ -124,7 +124,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="FileManager.Menu.Image">
                             <property name="titleKey" value="imageMenu.label"/>
                             <property name="items">
                                 <list>
@@ -134,7 +134,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="FileManager.Menu.View">
                             <property name="titleKey"
                                       value="viewMenu.label"/>
                             <property name="items">
@@ -153,7 +153,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="filemanagerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewFolder"/>
@@ -268,7 +268,7 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="PortletManager.Menu.File">
 
                             <property name="titleKey"
                                       value="fileMenu.label"/>
@@ -279,7 +279,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="PortletManager.Menu.Edit">
                             <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
@@ -295,7 +295,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="PortletManager.Menu.View">
                             <property name="titleKey"
                                       value="viewMenu.label"/>
                             <property name="items">
@@ -314,7 +314,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="portletmanagerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewPortletFolder"/>
@@ -398,7 +398,7 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="CategoryManager.Menu.File">
 
                             <property name="titleKey"
                                       value="fileMenu.label"/>
@@ -412,7 +412,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu"  id="CategoryManager.Menu.Edit">
                             <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
@@ -428,7 +428,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="CategoryManager.Menu.View">
                             <property name="titleKey"
                                       value="viewMenu.label"/>
                             <property name="items">
@@ -447,7 +447,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="categorymanagerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewCategory"/>
@@ -533,7 +533,7 @@
             </set>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="portletdefinitionmanagerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.DeployPortlets"/>
@@ -621,7 +621,7 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="RepositoryExplorer.Menu.File">
                             <property name="titleKey"
                                       value="fileMenu.label"/>
                             <property name="items">
@@ -639,7 +639,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="RepositoryExplorer.Menu.Edit">
                             <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
@@ -658,7 +658,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="RepositoryExplorer.Menu.View">
                             <property name="titleKey"
                                       value="viewMenu.label"/>
                             <property name="items">
@@ -673,7 +673,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="RepositoryExplorer.Menu.Image">
                             <property name="titleKey"
                                       value="imageMenu.label"/>
                             <property name="items">
@@ -691,7 +691,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="repositoryexplorerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.Rename"/>
@@ -817,7 +817,7 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="EditorialContentManager.Menu.File">
                             <property name="titleKey"
                                       value="fileMenu.label"/>
                             <property name="items">
@@ -827,7 +827,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="EditorialContentManager.Menu.Edit">
                             <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
@@ -844,7 +844,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="EditorialContentManager.Menu.View">
                             <property name="titleKey"
                                       value="viewMenu.label"/>
                             <property name="items">
@@ -864,7 +864,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="editorialcontentmanagerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.Rename"/>
@@ -985,7 +985,7 @@
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="SiteManager.Menu.File">
 
                             <property name="titleKey"
                                       value="fileMenu.label"/>
@@ -995,7 +995,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="SiteManager.Menu.Edit">
                             <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
@@ -1013,7 +1013,7 @@
                                 </list>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu">
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="SiteManager.Menu.View">
                             <property name="titleKey"
                                       value="viewMenu.label"/>
                             <property name="items">
@@ -1028,7 +1028,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="sitemanagerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.NewPage"/>
@@ -1127,7 +1127,7 @@
             </bean>
         </property>
         <property name="contextMenu">
-            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+            <bean id="batchmanagerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
                         <ref bean="Toolbar.Item.EditContent"/>

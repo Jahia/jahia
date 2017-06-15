@@ -85,7 +85,7 @@ public abstract class DistributionServerWindow extends Window {
     @Override
     protected void onRender(Element parent, int pos) {
         super.onRender(parent, pos);
-
+        addStyleName("distribution-server-window");
         setLayout(new FitLayout());
         setHeadingHtml(Messages.get("label.releaseModule.distributionServer", "Distribution server (Maven)"));
         setModal(true);

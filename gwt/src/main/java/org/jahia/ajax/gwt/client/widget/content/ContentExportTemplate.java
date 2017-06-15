@@ -71,7 +71,7 @@ public class ContentExportTemplate extends Window {
 
     public ContentExportTemplate(final Linker linker, final String path, final String name) {
         super() ;
-
+        addStyleName("content-export-template");
         setHeadingHtml(Messages.get("label.export"));
         setSize(500, 150);
         setResizable(false);

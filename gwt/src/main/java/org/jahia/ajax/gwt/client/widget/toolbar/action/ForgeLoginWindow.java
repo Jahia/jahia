@@ -67,6 +67,7 @@ public class ForgeLoginWindow extends Window {
 
     public ForgeLoginWindow() {
         super();
+        addStyleName("forge-login-window");
     }
 
     @Override

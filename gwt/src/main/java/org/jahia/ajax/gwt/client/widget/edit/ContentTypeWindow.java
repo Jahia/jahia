@@ -82,6 +82,7 @@ public class ContentTypeWindow extends Window {
     private ContentTypeTree contentTypeTree;
 
     public ContentTypeWindow(final Linker linker, GWTJahiaNode parent, List<GWTJahiaNodeType> components, final Map<String, GWTJahiaNodeProperty> props, final String nodeName, final boolean createInParentAndMoveBefore) {
+        addStyleName("content-type-window");
         this.linker = linker;
         this.parentNode = parent;
         setLayout(new FitLayout());

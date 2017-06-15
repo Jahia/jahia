@@ -244,11 +244,11 @@ public abstract class SaveButtonItem implements ButtonItem {
                             }
                         }
                     }
-            );
+            ).getDialog().addStyleName("engine-save-error");
         } else {
             String message = throwable.getMessage();
             MessageBox.alert(Messages.get("label.error"), Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
-                    + message, null);
+                    + message, null).getDialog().addStyleName("engine-save-error");
             Log.error("failed", throwable);
         }
         engine.unmask();

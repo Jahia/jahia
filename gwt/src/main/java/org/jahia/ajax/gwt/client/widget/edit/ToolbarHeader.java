@@ -77,12 +77,14 @@ public class ToolbarHeader extends Header {
         setHeight("22");
         leftWidgetPanel = new HorizontalPanel();
         leftWidgetPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+        addStyleName("toolbar-header");
     }
 
     @Override
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         leftWidgetPanel.addStyleName("x-panel-toolbar");
+        leftWidgetPanel.addStyleName("toolbar-left-container");
         leftWidgetPanel.setLayoutOnChange(true);
         leftWidgetPanel.setStyleAttribute("float", "left");
         leftWidgetPanel.getAriaSupport().setPresentation(true);
@@ -118,6 +120,7 @@ public class ToolbarHeader extends Header {
             if (horizontalPanel == null) {
                 horizontalPanel = new HorizontalPanel();
                 horizontalPanel.addStyleName("x-toolbar-header");
+                horizontalPanel.addStyleName("toolbar-right-container");
                 horizontalPanel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
             }
             horizontalPanel.add(tool);
@@ -147,6 +150,8 @@ public class ToolbarHeader extends Header {
         if (gwtToolbarItem instanceof GWTJahiaToolbarMenu) {
             GWTJahiaToolbarMenu gwtToolbarMenu = (GWTJahiaToolbarMenu) gwtToolbarItem;
             ActionToolbarMenu menu = new ActionToolbarMenu(linker);
+            menu.addStyleName("action-bar-menu");
+            menu.addStyleName("menu-"+gwtToolbarMenu.getClassName());
             menu.setActionItems(actionItems);
 
             for (GWTJahiaToolbarItem subItem : gwtToolbarMenu.getGwtToolbarItems()) {
@@ -154,6 +159,8 @@ public class ToolbarHeader extends Header {
             }
 
             Button menuToolItem = new Button(gwtToolbarMenu.getItemsGroupTitle());
+            menuToolItem.addStyleName("action-bar-menu-item");
+            menuToolItem.addStyleName(gwtToolbarMenu.getClassName());
             menuToolItem.setBorders(false);
             String minIconStyle = gwtToolbarMenu.getIcon();
             if (minIconStyle != null) {

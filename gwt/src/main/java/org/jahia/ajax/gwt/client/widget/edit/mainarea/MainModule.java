@@ -133,7 +133,7 @@ public class MainModule extends Module {
     public MainModule(final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
         super("main", path, nodeTypes, new BorderLayout());
         setScrollMode(Style.Scroll.NONE);
-
+        addStyleName("mainmodule");
         this.id = "main";
         this.path = path;
         this.template = template;
@@ -155,6 +155,7 @@ public class MainModule extends Module {
         head.setStyleAttribute("z-index", "999");
         head.setStyleAttribute("position", "relative");
         headContainer = new LayoutContainer(new FitLayout());
+        headContainer.addStyleName("mainmodule-head-container");
         headContainer.add(head);
         add(headContainer, new BorderLayoutData(Style.LayoutRegion.NORTH, 32));
 
@@ -229,13 +230,15 @@ public class MainModule extends Module {
             for (GWTJahiaToolbarItem item : config.getMainModuleToolbar().getGwtToolbarItems()) {
                 ((ToolbarHeader) head).addItem(linker, item);
             }
-            head.addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+            ToolButton refresh = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
                 public void componentSelected(IconButtonEvent event) {
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put(Linker.REFRESH_MAIN, true);
                     refresh(data);
                 }
-            }));
+            });
+            head.addTool(refresh);
+            refresh.addStyleName("window-actions-refresh");
 
             ((ToolbarHeader) head).attachTools();
 
@@ -1253,6 +1256,8 @@ public class MainModule extends Module {
         private boolean forceJavascriptRefresh = false;
 
         private EditFrame() {
+            super();
+            super.addStyleName("window-iframe");
         }
 
         public void onBrowserEvent(Event event) {

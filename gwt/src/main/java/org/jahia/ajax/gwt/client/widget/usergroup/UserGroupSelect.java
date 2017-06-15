@@ -95,6 +95,7 @@ public class UserGroupSelect extends Window {
     }
     
     public UserGroupSelect (final UserGroupAdder target, int viewMode, String siteKey, boolean singleSelectionMode) {
+        addStyleName("user-group-select");
         this.siteKey = siteKey;
         this.singleSelectionMode = singleSelectionMode;
         setModal(true);

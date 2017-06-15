@@ -89,6 +89,7 @@ public class PublicationManagerEngine extends Window {
 
     public PublicationManagerEngine(Linker linker, List<GWTJahiaLanguage> result, List<String> nodeTypes) {
         super();
+        addStyleName("publication-manager-engine");
         this.linker = linker;
         this.languages = result;
         this.nodeTypes = nodeTypes;

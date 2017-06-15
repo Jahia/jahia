@@ -92,6 +92,7 @@ public class SidePanelTabItem implements Serializable {
         this.config = sidePanelTab;
 
         tab = new TabItem();
+        tab.addStyleName("tab_"+sidePanelTab.getName());
         tab.setHtml("&nbsp;");
         tab.setIcon(ToolbarIconProvider.getInstance().getIcon(config.getIcon()));
         tab.getHeader().setToolTip(config.getTooltip());

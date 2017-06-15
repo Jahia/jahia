@@ -271,7 +271,10 @@ public abstract class BaseActionItem implements ActionItem {
      * @return
      */
     public Component createNewToolItem() {
-        return new Button();
+        Button button = new Button();
+        button.addStyleName(gwtToolbarItem.getClassName());
+        button.addStyleName("action-bar-tool-item");
+        return button;
     }
 
     /**
@@ -280,7 +283,10 @@ public abstract class BaseActionItem implements ActionItem {
      * @return
      */
     public MenuItem createMenuItem() {
-        return new MenuItem();
+        MenuItem menuItem = new MenuItem();
+        menuItem.addStyleName(gwtToolbarItem.getClassName());
+        menuItem.addStyleName("action-bar-menu-item");
+        return menuItem;
     }
 
     /**

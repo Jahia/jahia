@@ -612,8 +612,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <sassSourceDirectory>src/main/webapp/engines/quick-fix</sassSourceDirectory>
-                    <destination>src/main/webapp/engines/quick-fix</destination>
+                    <sassSourceDirectory>src/main/webapp/engines/jahia-anthracite</sassSourceDirectory>
+                    <destination>src/main/webapp/engines/jahia-anthracite</destination>
                 </configuration>
             </plugin>
         </plugins>

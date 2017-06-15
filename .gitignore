@@ -7,3 +7,4 @@
 *.versionsBackup
 **/.sass-cache
 war/src/main/webapp/engines/quick-fix/*.css*
+war/src/main/webapp/engines/jahia-anthracite/*.css*

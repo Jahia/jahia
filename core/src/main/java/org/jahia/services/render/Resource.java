@@ -295,7 +295,7 @@ public class Resource {
     // This test is only needed for render chain V1
     // It filters "cacheKey" key entry from module params as this parameter is not relevant in resource comparison
     private static Map<String, Serializable> filterModuleParams(Map<String, Serializable> moduleParams) {
-        return moduleParams.containsKey(CACHE_KEY) ? Maps.filterKeys(moduleParams, CACHE_KEY_PREDICATE) : moduleParams;
+        return (moduleParams != null && moduleParams.containsKey(CACHE_KEY)) ? Maps.filterKeys(moduleParams, CACHE_KEY_PREDICATE) : moduleParams;
     }
 
     @Override

@@ -43,6 +43,7 @@
  */
 package org.jahia.services.render;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
@@ -100,6 +101,10 @@ public class Resource {
     private ExtendedNodeType resourceNodeType;
     private Map<String, Serializable> moduleParams = new HashMap<String, Serializable>();
     private Set<String> regexpDependencies = new LinkedHashSet<String>();;
+
+    private static final String CACHE_KEY = "cacheKey";
+    private static final Predicate<String> CACHE_KEY_PREDICATE = Predicates.not(Predicates.equalTo(CACHE_KEY));
+
 
     /**
      * Creates a resource from the specified parameter
@@ -411,14 +416,16 @@ public class Resource {
                 resource.resourceNodeType != null) {
             return false;
         }
-        // Filter cacheKey from stacked module params as the key is not added yet.
-        Map<String, Serializable> filteredmoduleParams = Maps.filterKeys(resource.moduleParams, Predicates.not(Predicates.equalTo("cacheKey")));
-
-        if (moduleParams != null ? !moduleParams.equals(filteredmoduleParams) : resource.moduleParams != null) {
+        if (moduleParams != null ? filterModuleParams(moduleParams).equals(filterModuleParams(resource.moduleParams)) : resource.moduleParams != null) {
             return false;
         }
-
         return true;
+    }
+
+    // This test is only needed for render chain V1
+    // It filters "cacheKey" key entry from module params as this parameter is not relevant in resource comparison
+    private static Map<String, Serializable> filterModuleParams(Map<String, Serializable> moduleParams) {
+        return moduleParams.containsKey(CACHE_KEY) ? Maps.filterKeys(moduleParams, CACHE_KEY_PREDICATE) : moduleParams;
     }
 
     @Override

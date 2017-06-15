@@ -87,6 +87,7 @@ public class PublicationStatusWindow extends LayoutContainer {
         this.linker = linker;
         this.unpublish = unpublish;
         this.uuids = uuids;
+        addStyleName("publication-status-window");
         setScrollMode(Style.Scroll.NONE);
 
         TableData d = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);

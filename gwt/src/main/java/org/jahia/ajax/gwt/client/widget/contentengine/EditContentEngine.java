@@ -102,6 +102,7 @@ public class EditContentEngine extends AbstractContentEngine {
         init(engineContainer);
         loadEngine();
 
+        addStyleName("edit-content-engine");
 
         handlerRegistration = Window.addCloseHandler(new CloseHandler<Window>() {
             public void onClose(CloseEvent<Window> event) {

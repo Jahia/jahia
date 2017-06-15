@@ -140,6 +140,7 @@ public class WorkflowActionDialog extends LayoutContainer {
     private WorkflowActionDialog(Linker linker, EngineContainer container, String title, String language, String wfDefinitionNodeType, final GWTJahiaWorkflow
             workflow, List<GWTJahiaNode> selectedNodes) {
         super();
+        addStyleName("workflow-action-dialog");
         this.workflow = workflow;
         contentManagement = JahiaContentManagementService.App.getInstance();
         this.linker = linker;

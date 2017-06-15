@@ -98,10 +98,10 @@ public class TrashboardEngine extends LayoutContainer {
 
     public TrashboardEngine(Linker linker, EngineContainer container) {
         super(new FitLayout());
+        addStyleName("trashboard-engine");
         this.linker = linker;
         this.container = container;
         init();
-
         container.setEngine(this, Messages.get("label.trashboard", "Trash Board"), bar, null, this.linker);
     }
 

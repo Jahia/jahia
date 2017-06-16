@@ -82,6 +82,7 @@ import javax.jcr.query.*;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
@@ -105,6 +106,8 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     private static final Pattern AND_PATTERN = Pattern.compile(" AND ");
 
     private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile("\\s{2,}");
+    
+    private static final Pattern QUOTED_OR_PLAIN_TERMS_WITH_OPTIONAL_NEGATION_PATTERN = Pattern.compile("-*\"([^\"]*)\"|(\\S+)");    
 
     private static final Pattern NOT_PATTERN = Pattern.compile(" NOT ");
 
@@ -818,50 +821,9 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                     }
                 }
                 if (searchFields.isFilename()) {
-                    StringBuilder nameSearchConstraints = new StringBuilder(256);
-
-                    if(textSearch.getMatch() == MatchType.AS_IS) {
-                        // special handling for AS_IS match type on file name search
-
-                        String[] asIsTerms = Patterns.SPACE.split(cleanMultipleWhiteSpaces(textSearch.getTerm()));
-                        String previousOperand = null;
-                        for (int i = 0; i < asIsTerms.length; i++) {
-                            String asIsTerm = StringUtils.lowerCase(asIsTerms[i]);
-
-                            // is an operand && no previous operand && not the first term && not the last term
-                            if((OR.equals(asIsTerm) || AND.equals(asIsTerm)) && previousOperand == null && i != 0 && i + 1 != asIsTerms.length) {
-                                previousOperand = asIsTerm;
-                            } else {
-                                final String likeTerm = asIsTerm.contains("*") ? stringToQueryLiteral(StringUtils
-                                        .replaceChars(asIsTerm, '*', '%'))
-                                        : stringToQueryLiteral("%" + asIsTerm + "%");
-                                String termConstraint = xpath ? ("jcr:like(fn:lower-case(fn:name()), " + likeTerm + ")") : ("LOWER(n.[j:nodename]) like " + likeTerm);
-
-                                if (previousOperand != null) {
-                                    addConstraint(nameSearchConstraints, previousOperand, termConstraint);
-                                    previousOperand = null;
-                                } else {
-                                    addConstraint(nameSearchConstraints, AND, termConstraint);
-                                }
-                            }
-                        }
-                    } else {
-                        for (String term : terms) {
-                            final String likeTerm = term.contains("*") ? stringToQueryLiteral(StringUtils
-                                    .replaceChars(term, '*', '%'))
-                                    : stringToQueryLiteral("%" + term + "%");
-                            String termConstraint = xpath ? ("jcr:like(fn:name(), " + likeTerm + ")") : ("localname(n) like " + likeTerm);
-                            if (textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
-                                termConstraint = "not(" + termConstraint + ")";
-                            }
-                            addConstraint(nameSearchConstraints, constraint,
-                                    termConstraint);
-                        }
-                    }
-
-                    if (nameSearchConstraints.length() > 0) {
-                        addConstraint(textSearchConstraints,
-                                OR, "(" + nameSearchConstraints.toString() + ")");
+                    String nameSearchConstraints = createFilenameConstraints(textSearch, terms, constraint, xpath);
+                    if (!nameSearchConstraints.isEmpty()) {
+                        addConstraint(textSearchConstraints, OR, "(" + nameSearchConstraints + ")");
                     }
                 }
                 if (searchFields.isTags() && getTaggingService() != null
@@ -886,6 +848,76 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                 }
             }
         }
+    }
+    
+    private String createFilenameConstraints(Term textSearch, String[] terms, String constraint, boolean xpath) {
+        StringBuilder nameSearchConstraints = new StringBuilder(256);
+
+        if (textSearch.getMatch() == MatchType.AS_IS) {
+            // special handling for AS_IS match type on file name search
+            Matcher matcher = QUOTED_OR_PLAIN_TERMS_WITH_OPTIONAL_NEGATION_PATTERN.matcher(textSearch.getTerm());
+            String previousOperand = null;
+            while (matcher.find()) {
+                boolean negation = false;
+                String asIsTerm;
+                if (matcher.group(1) != null) {
+                    asIsTerm = matcher.group(1);
+                    if (matcher.group().startsWith("-")) {
+                        negation = true;
+                    }
+                } else {
+                    asIsTerm = matcher.group(2);
+                    if (asIsTerm.startsWith("-")) {
+                        asIsTerm = StringUtils.substring(asIsTerm, 1);
+                        negation = true;
+                    }
+                }
+
+                // is an operand && no previous operand && not the first term
+                if ((OR.equalsIgnoreCase(asIsTerm) || AND.equalsIgnoreCase(asIsTerm)) && previousOperand == null
+                        && nameSearchConstraints.length() != 0) {
+                    previousOperand = asIsTerm;
+                } else {
+                    if (!asIsTerm.isEmpty()) {
+                        String termConstraint = createNodenameLikeTermConstraint(asIsTerm, xpath);
+                        if (negation) {
+                            termConstraint = "not(" + termConstraint + ")";
+                        }
+                        if (previousOperand != null) {
+                            addConstraint(nameSearchConstraints, previousOperand, termConstraint);
+                            previousOperand = null;
+                        } else {
+                            addConstraint(nameSearchConstraints, AND, termConstraint);
+                        }
+                    } else {
+                        previousOperand = null;
+                    }
+                }
+            }
+            // if operand was the last term, then it should not be treated as operand
+            if (previousOperand != null) {
+                addConstraint(nameSearchConstraints, AND, previousOperand);
+            }
+        } else {
+            for (String term : terms) {
+                if (!term.isEmpty()) {
+                    String termConstraint = createNodenameLikeTermConstraint(term, xpath);
+                    if (textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
+                        termConstraint = "not(" + termConstraint + ")";
+                    }
+                    addConstraint(nameSearchConstraints, constraint, termConstraint);
+                }
+            }
+        }
+        return nameSearchConstraints.toString();
+    }
+    
+    private String createNodenameLikeTermConstraint(String term, boolean xpath) {
+        final String likeTerm = term.contains("*") ? stringToQueryLiteral(StringUtils.replaceChars(term, '*', '%'))
+                : stringToQueryLiteral("%" + term + "%");
+        String lowerCaseTerm = likeTerm.toLowerCase();
+        return xpath ? ("jcr:like(fn:lower-case(fn:name()), " + lowerCaseTerm + ")")
+                : ("LOWER(n.[j:nodename]) like " + lowerCaseTerm);
     }
 
     private void addLanguageConstraints(SearchCriteria params,

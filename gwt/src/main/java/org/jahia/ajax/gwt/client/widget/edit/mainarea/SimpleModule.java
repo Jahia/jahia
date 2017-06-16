@@ -149,6 +149,8 @@ public class SimpleModule extends Module {
                 public void handleEvent(ComponentEvent ce) {
                     if (selectable && !MainModule.isGlobalSelectionDisabled()) {
                         Log.info("click" + path + " : " + scriptInfo);
+                        // as the selection is on a module, disable selection of the main module
+                        mainModule.setSelectable(false);
                         mainModule.setCtrlActive(ce);
                         if (!ce.isRightClick() || !mainModule.getSelections().containsKey(SimpleModule.this)) {
                             mainModule.getEditLinker().onModuleSelection(SimpleModule.this);

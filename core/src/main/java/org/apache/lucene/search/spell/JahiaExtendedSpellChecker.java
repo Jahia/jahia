@@ -203,23 +203,19 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         // System.out.println("Q: " + query);
         IndexSearcher usedSearcher = searcher;
         ScoreDoc[] hits = null;
-        boolean retry = true;
-        while (retry) {
-            boolean useOtherSearcher = false;            
+        boolean retry = false;
+        do {
             try {
                 hits = usedSearcher.search(query, maxHits).scoreDocs;
-            } catch (IOException e) {
-                if (retry && usedSearcher != searcher) {
+                retry = false;
+            } catch (IOException | NullPointerException e) {
+                retry = !retry; // retry one time (at least)
+                if (!retry && usedSearcher != searcher) { // if searcher changed still retry again
                     usedSearcher = searcher;
-                    useOtherSearcher = true;    
-                } else {
-                    throw e;
+                    retry = true;
                 }
             } 
-            if (!useOtherSearcher) {
-                retry = false;
-            }
-        }
+        } while (retry); 
         // System.out.println("HITS: " + hits.length());
         SuggestWordQueue sugQueue = new SuggestWordQueue(numSug);
 

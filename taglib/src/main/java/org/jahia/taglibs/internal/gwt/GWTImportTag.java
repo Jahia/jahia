@@ -87,7 +87,11 @@ public class GWTImportTag extends AbstractJahiaTag {
                     try {
                         JCRSessionWrapper userSession = JCRSessionFactory.getInstance().getCurrentUserSession();
                         JCRUserNode user = (JCRUserNode) userSession.getNode(jahiaUser.getLocalPath());
-                        user.setProperty("jahia.ui.theme", theme);
+                        if (request.getServletContext().getResource("/engines/" + theme) != null) {
+                            user.setProperty("jahia.ui.theme", theme);
+                        } else if (user.hasProperty("jahia.ui.theme")) {
+                            user.getProperty("jahia.ui.theme").remove();
+                        }
                         userSession.save();
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);

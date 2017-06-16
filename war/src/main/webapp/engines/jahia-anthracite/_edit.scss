@@ -37,21 +37,21 @@ body {
 
 	&[data-main-node-displayname="settings"] {
 		&::before {
-			content: "Get settings name from Thomas";
+			content: attr(data-main-node-displayname);
 
 		}
 	}
 
 	&[data-main-node-displayname="System Site"] {
 		&::before {
-			content: "Get settings name from Thomas";
+			content: attr(data-sitekey);
 
 		}
 	}
 
 	&[data-sitesettings="true"] {
 		&::before {
-			content: "Get settings name from Thomas";
+			content: attr(data-main-node-displayname);
 
 		}
 	}

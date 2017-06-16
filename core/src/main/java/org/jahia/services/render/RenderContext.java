@@ -106,6 +106,8 @@ public class RenderContext {
     
     private boolean portletActionRequest;
 
+    private boolean ugcEnabled = true;
+
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
         this.response = response;
@@ -414,5 +416,13 @@ public class RenderContext {
 
     public void setPortletActionRequest(boolean portletActionRequest) {
         this.portletActionRequest = portletActionRequest;
+    }
+
+    public boolean isUgcEnabled() {
+        return isLiveMode() && ugcEnabled;
+    }
+
+    public void setUgcEnabled(boolean ugcEnabled) {
+        this.ugcEnabled = ugcEnabled;
     }
 }

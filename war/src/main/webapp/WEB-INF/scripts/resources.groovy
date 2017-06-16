@@ -75,7 +75,8 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
             condition = html.value.get("condition");
             if (condition != null) println("<!--["+condition+"]>");
             rel = html.value.get("rel");
-            println "<link id=\"staticAssetHTML${targetTag == 'HEAD'?'':targetTag}${i}\" rel=\"${rel!=null?rel:"import"}\" href=\"${html.key}\" />";
+            url = renderContext.response.encodeURL(html.key);
+            println "<link id=\"staticAssetHTML${targetTag == 'HEAD'?'':targetTag}${i}\" rel=\"${rel!=null?rel:"import"}\" href=\"${url}\" />"; 
             if (condition != null) println("<![endif]-->");
           }
           break;

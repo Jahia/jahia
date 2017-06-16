@@ -56,6 +56,10 @@ import java.util.Properties;
  * Cache key part generator that serializes (JSON) module parameters, if present. 
  */
 public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator {
+    private static final String ENCODED_DOUBLE_AT = "&dblAt;";
+    private static final String ENCODED_DOUBLE_QUOTES = "&dblQuote;";
+    private static final String ENCODED_PREFIX = "&amp;";
+
     @Override
     public String getKey() {
         return "moduleParams";
@@ -72,8 +76,16 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator 
         return keyPart;
     }
 
-    private String encodeString(String toBeEncoded) {
-        return toBeEncoded != null ? StringUtils.replace(toBeEncoded, "@@", "##").replace('"', '\'') : toBeEncoded;
+    protected static String decodeString(String toBeDencoded) {
+        return toBeDencoded != null && toBeDencoded.indexOf('&') != -1
+                ? StringUtils.replace(StringUtils.replace(StringUtils.replace(toBeDencoded, ENCODED_DOUBLE_AT, "@@"),
+                        ENCODED_DOUBLE_QUOTES, "\""), ENCODED_PREFIX, "&")
+                : toBeDencoded;
     }
 
+    protected static String encodeString(String toBeEncoded) {
+        return toBeEncoded != null ? StringUtils.replace(
+                StringUtils.replace(StringUtils.replace(toBeEncoded, "&", ENCODED_PREFIX), "@@", ENCODED_DOUBLE_AT),
+                "\"", ENCODED_DOUBLE_QUOTES) : toBeEncoded;
+    }
 }

@@ -97,8 +97,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final String PER_USER = "j:perUser";
     public static final String CACHE_EXPIRATION = "cache.expiration";
     public static final String HAS_PROCESSING_SEMAPHORE_PARAM = "aggregateCacheFilter.hasProcessingSemaphore";
-    public static final String EMPTY_USERKEY = "";    
-    
+    public static final String EMPTY_USERKEY = "";
+
     public static final String ALL = DependenciesCacheEvictionPolicy.ALL;
     public static final Set<String> ALL_SET = Collections.singleton(ALL);
 
@@ -111,9 +111,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private static final int CACHE_ESI_TAG_END_LENGTH = CACHE_ESI_TAG_END.length();
     private static final int CACHE_TAG_LENGTH = CACHE_TAG_START_1.length() + CACHE_TAG_START_2.length() + CACHE_TAG_END.length();
 
-    // The "v" parameter is aimed to view the page at a specific date and is used e.g. in the advanced view (Edit mode -> "View" toolbar menu -> e.g. "Compare 2 published version").
+    // The "v" parameter is aimed to bypass the cache in order to be able to view the page at a specific date.
     private static final String V = "v";
-    // The "ec" parameter is used to bypass cache when there is an error during form submit in say addComment or forum posts. Right now I see only the case, when wrong capture is entered.
+
+    // The "ec" parameter is used to bypass cache when there is an error during form submit in say addComment or forum posts.
     private static final String EC = "ec";
 
     public static final TextUtils.ReplacementGenerator GENERATOR = new TextUtils.ReplacementGenerator() {
@@ -235,10 +236,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             getFragmentGenerationPermit(finalKey, renderContext.getRequest());
             return null;
         }
-        
+
         // Check if the key is in the list of non-cacheable keys. The cache can also be skipped by specifying the
         // ec parameter with the uuid of the current node.
-        if (!isCacheable(renderContext, resource, key, properties) || byPassCache(renderContext, resource)) {
+        if (!isCacheable(renderContext, resource, key, properties) || bypassCache(renderContext, resource)) {
             getFragmentGenerationPermit(finalKey, renderContext.getRequest());
             return null;
         }
@@ -304,7 +305,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         return expiration != 0L;
     }
 
-    private boolean byPassCache(RenderContext renderContext, Resource resource) throws RepositoryException {
+    private boolean bypassCache(RenderContext renderContext, Resource resource) throws RepositoryException {
         // check v parameter
         if (renderContext.getRequest().getParameter(V) != null && renderContext.isLoggedIn()) {
             return true;
@@ -439,7 +440,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
 
         if (cacheable) {
-            if (!byPassCache(renderContext, resource)) {
+            if (!bypassCache(renderContext, resource)) {
                 final Cache cache = cacheProvider.getCache();
                 if (debugEnabled) {
                     logger.debug("Caching content for final key : {}", finalKey);
@@ -1139,8 +1140,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 throw new JahiaRuntimeException(ie);
             }
         }
-    }    
-    
+    }
+
     private void releaseFragmentGenerationPermit(HttpServletRequest request) {
         if (Boolean.TRUE.equals(request.getAttribute(HAS_PROCESSING_SEMAPHORE_PARAM))) {
             // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait
@@ -1148,7 +1149,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             request.removeAttribute(HAS_PROCESSING_SEMAPHORE_PARAM);
         }
     }
-    
+
     protected CountDownLatch avoidParallelProcessingOfSameModule(String key, HttpServletRequest request,
                                                                  Resource resource, Properties properties) throws RepositoryException {
         CountDownLatch latch = null;

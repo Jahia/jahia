@@ -197,7 +197,7 @@ public class JahiaSitesServiceTest {
         recreateLiveSession();
         assertDefaultSite(siteC.getSiteKey());
 
-        TestHelper.deleteSite(siteC);
+        siteService.removeSite(siteC);
         recreateLiveSession();
         assertNotNull(siteService.getDefaultSite(liveSession));
 
@@ -206,7 +206,7 @@ public class JahiaSitesServiceTest {
         recreateLiveSession();
         assertDefaultSite(siteA.getSiteKey());
 
-        TestHelper.deleteSite(siteB);
+        siteService.removeSite(siteB);
         recreateLiveSession();
         assertNotNull("There is no default site set", siteService.getDefaultSite(liveSession));
     }

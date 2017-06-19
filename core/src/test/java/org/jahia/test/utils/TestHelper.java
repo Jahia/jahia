@@ -54,7 +54,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.history.NodeVersionHistoryListener;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -145,7 +144,7 @@ public class TestHelper {
         JahiaSite site = service.getSiteByKey(name);
 
         if (site != null) {
-            deleteSite(site);
+            service.removeSite(site);
         }
         File siteZIPFile = null;
         File sharedZIPFile = null;
@@ -445,27 +444,10 @@ public class TestHelper {
     }
 
     public static void deleteSite(String name) throws Exception {
-        deleteSite(ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(name));
-    }
-
-    public static void deleteSite(JahiaSite site) throws Exception {
-        if (site == null) {
-            return;
-        }
-
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
-        if (NodeVersionHistoryListener.isDisabled()) {
+        JahiaSite site = service.getSiteByKey(name);
+        if (site != null)
             service.removeSite(site);
-        } else {
-            try {
-                // temporary disable the listener to avoid launching node version history purge job
-                NodeVersionHistoryListener.setDisabled(true);
-                service.removeSite(site);
-            } finally {
-                // restore the listener state
-                NodeVersionHistoryListener.setDisabled(false);
-            }
-        }
     }
 
     public static int createSubPages(Node currentNode, int level, int nbChildren) throws RepositoryException, LockException, ConstraintViolationException, NoSuchNodeTypeException, ItemExistsException, VersionException {

@@ -72,10 +72,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CacheFilter extends AbstractFilter {
 
-    // The "v" parameter is aimed to view the page at a specific date and is used e.g. in the advanced view (Edit mode -> "View" toolbar menu -> e.g. "Compare 2 published version").
+    // The "v" parameter is aimed to bypass the cache in order to be able to view the page at a specific date.
     private static final String FLAG_VERSION = "v";
-    // The "ec" parameter is used to bypass cache when there is an error during form submit in say addComment or forum posts. Right now I see only the case, when wrong capture is entered.
+
+    // The "ec" parameter is used to bypass cache when there is an error during form submit in say addComment or forum posts.
     private static final String FLAG_RANDOM = "ec";
+
     private static final String FLAG_ALL = "ALL";
     private static final Set<String> FLAGS_ALL_SET = Collections.singleton(FLAG_ALL);
     private static final String RENDERING_TIMER = "cacheFilter.rendering.timer";
@@ -130,7 +132,7 @@ public class CacheFilter extends AbstractFilter {
 
         // test if fragment is not cacheable, no need for a latch if the fragment is not cacheable
         if (isCacheable(renderContext, key, resource, cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource))) {
-            if (!byPassCache(renderContext, resource)) {
+            if (!bypassCache(renderContext, resource)) {
                 // The element is not found in the cache with that key. use latch to allow only one thread to generate the fragment
                 // All other threads will wait until the first thread finish the generation, then the LatchReleasedCallback will be executed
                 // for all the waiting threads.
@@ -191,7 +193,7 @@ public class CacheFilter extends AbstractFilter {
             String finalKey = (String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY);
 
             if (isCacheable(renderContext, key, resource, fragmentProperties)) {
-                if (!byPassCache(renderContext, resource)) {
+                if (!bypassCache(renderContext, resource)) {
                     // because fragment is not served from the cache, but the all render chain, we check that the key is still
                     // the same after prepare() and execute() of all the render filters after the cache.
                     String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, fragmentProperties);
@@ -433,7 +435,8 @@ public class CacheFilter extends AbstractFilter {
         return expiration != 0L;
     }
 
-    private boolean byPassCache(RenderContext renderContext, Resource resource) throws RepositoryException {
+    private boolean bypassCache(RenderContext renderContext, Resource resource) throws RepositoryException {
+
         // check v parameter
         if (renderContext.getRequest().getParameter(FLAG_VERSION) != null && renderContext.isLoggedIn()) {
             return true;

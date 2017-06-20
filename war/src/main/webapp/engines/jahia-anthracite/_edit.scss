@@ -5,10 +5,9 @@
 /***********************************************/
 
 body {
-    background: #35383a;
+    background: $color-background;
     &[data-selection-count="0"] {
         background: $color-background;
-		background: test()
     }
 	transition: all 0.3s ease-in 0s;
 
@@ -52,7 +51,17 @@ body {
 	&[data-sitesettings="true"] {
 		&::before {
 			content: attr(data-main-node-displayname);
+			content: "Digital Experience Manager Settings"
 
+		}
+	}
+
+	&[data-main-node-displayname="root"] {
+		&::before {
+			content: attr(data-main-node-displayname);
+			content: "Digital Experience Manager Settings";
+			background: url(./images/dx_logo_solid.png) no-repeat left 3px top 11px;
+		    background-size: 32px 32px;
 		}
 	}
 }
@@ -1157,6 +1166,10 @@ body {
     top: 9px;
     height: calc(100% - 10px);
 
+	.x-viewport-dashboardmode & {
+		padding-top:60px;
+	}
+
 	.x-panel-toolbar {
         float: none !important;
         padding-left: 10px;
@@ -1177,8 +1190,32 @@ body {
             .x-grid3-scroller {
                 height: 101% !important;
                 width: 100% !important;
+
+				.x-viewport-adminmode & {
+					height: calc(100% - 55px) !important;
+					top: 55px;
+				}
             }
         }
+
+		.x-viewport-dashboardmode &::before,
+		.x-viewport-adminmode &::before {
+			content: "Digital Experience Manager";
+		    display: block;
+		    position: fixed;
+		    top: 2px;
+		    left: 15px;
+		    height: 50px;
+		    background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+		    background-size: 32px 32px;
+		    padding-left: 43px;
+		    color: rgba(238, 238, 238, 0.9);
+		    font-family: 'Nunito Sans', sans-serif;
+		    font-size: 21px;
+		    font-weight: 100;
+		    padding-top: 10px;
+			display: none;
+		}
     }
 
 	.x-grid3-row {
@@ -1188,6 +1225,19 @@ body {
 		&:hover::after {
 	        background: red;
 	    }
+
+		.x-viewport-dashboardmode &,
+		.x-viewport-adminmode & {
+			width: 60px!important;
+			height: 55px!important;
+
+			opacity: 0.6;
+
+			table,
+			td {
+				width: 60px!important
+			}
+		}
     }
 
 	.x-grid3-row-selected {
@@ -1208,6 +1258,13 @@ body {
 			[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
 				color: rgba(246, 249, 251, 1);;
 			}
+
+			.x-viewport-dashboardmode &,
+			.x-viewport-adminmode & {
+				color: rgba(246, 249, 251, 1);
+				color: rgba(246, 249, 251, 1);
+
+			}
         }
 
         &:hover {
@@ -1216,6 +1273,11 @@ body {
             background: rgba(92, 97, 100, 1) !important;
         }
         .x-tree3-node {}
+
+		.x-viewport-dashboardmode &,
+		.x-viewport-adminmode & {
+			opacity: 1;
+		}
     }
     .x-grid3-row-over {
         background: rgba(92, 97, 100, 0.07) !important;
@@ -1230,6 +1292,12 @@ body {
 	    pointer-events: all;
 	    position: fixed;
 	    left: 0;
+
+		.x-viewport-dashboardmode &,
+		.x-viewport-adminmode & {
+			display: none;
+		}
+
     }
 
 	.x-tab-panel-body {
@@ -1242,6 +1310,15 @@ body {
         position: relative;
         padding-left: 70px;
         margin-top: -38px;
+
+		.x-viewport-dashboardmode &,
+		.x-viewport-adminmode & {
+			padding-left: 0!important;
+			padding-left: 0!important;
+			width: 60px!important;
+			margin-top: -60px!important;
+			height: calc(100% + 58px)!important;
+		}
     }
 
 	.x-tree3-node-text {
@@ -1257,6 +1334,23 @@ body {
 		[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
 			color: rgba(246, 249, 251, 0.58);;
 		}
+
+		.x-viewport-dashboardmode &,
+		.x-viewport-adminmode & {
+			color: rgba(246, 249, 251, 0.6);
+			display: block;
+			width: 60px;
+			text-align: center;
+			padding: 0;
+			font-size: 8px;
+			text-transform: uppercase;
+
+
+
+		}
+
+
+
     }
 
     .x-tab-strip.x-tab-strip-top {
@@ -1271,7 +1365,7 @@ body {
 			top: 2px;
 			left: 15px;
 			height: 50px;
-			background: url(./images/dx_logo_solid.png) no-repeat left top 9px;
+			background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
 			background-size: 32px 32px;
 			padding-left: 43px;
 			color: rgba(238, 238, 238, 0.9);
@@ -1281,6 +1375,8 @@ body {
 			padding-top: 10px;
 
 		}
+
+
     }
     .x-tab-strip-top .x-tab-right {
         background: none;
@@ -2752,6 +2848,12 @@ body {
 	height: 100% !important;
     position: relative;
 
+	.x-viewport-dashboardmode &,
+	.x-viewport-adminmode & {
+		padding: 0;
+		width: 100%!important;
+	}
+
 	> div {
         &:nth-child(1) {
             &::before {
@@ -2761,8 +2863,10 @@ body {
 					content: "Server Settings";
 				}
 
-				.x-viewport-dashboardmode & {
+				.x-viewport-dashboardmode &,
+				.x-viewport-adminmode & {
 					content: "My Dashboard";
+					display: none;
 				}
 
                 position: relative;
@@ -2778,7 +2882,7 @@ body {
             position: relative;
             > div:nth-child(2) {
                 position: relative;
-				height: calc(100% - 104px) !important;
+				height: calc(100%) !important;
 		        overflow-x: hidden !important;
 
                 > div:nth-child(1) {
@@ -2825,7 +2929,30 @@ body {
 			background: url(./images/placeholder-icon-white@X2.png) no-repeat !important;
 	        background-size: 13px 13px !important;
 		}
+
+		.x-viewport-dashboardmode &,
+		.x-viewport-adminmode & {
+			width: 50px!important;
+			height: 40px!important;
+			padding-left: 50px!important;
+			background: url(./images/tabs-content-white@X2.png) no-repeat !important;
+			background-size: 23px 23px!important;
+			background-position: center center!important;
+			display: block!important;
+			margin-left: 6px
+		}
     }
+
+	.x-tree3-el {
+		.x-viewport-dashboardmode &,
+		.x-viewport-adminmode & {
+			height: 50px;
+			img {
+				display: none;
+			}
+
+		}
+	}
 
 }
 
@@ -3204,7 +3331,7 @@ body {
 	&.x-tab-strip-active {
 		body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 			img {
-	            background-image: url(./images/tabs-settings-blue@X2.png);
+				background-image: url(./images/tabs-settings-blue@X2.png);
 	        }
 		}
 
@@ -3507,6 +3634,8 @@ body {
 .x-viewport-editmode {
 	.x-toolbar-first {
 	    background: url(./images/hamburger.png) no-repeat top 17px left 19px !important;
+		background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+		background-size: 32px 32px;
 	    background: none !important;
 	    border: none !important;
 	    position: fixed;
@@ -3722,14 +3851,14 @@ body {
 			   z-index: 9999999999999999999999;
 	           z-index: 9999999999999999999999;
 	           display: block;
-	           background: url(./images/hamburger-black@X2.png) no-repeat top 10px center;
+			   background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+			   background-size: 32px 32px;
 	           margin-top: 0;
 	           opacity: 1;
-	           background-size: 29px 12px;
 	           opacity: 0.8;
 	           body[data-selection-count="0"] & {
-	               background: url(./images/hamburger-light@X2.png) no-repeat top 10px center;
-	               background-size: 29px 12px;
+	               background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+	               background-size: 32px 32px;
 	           }
 	           &:hover {
 	               opacity: 1;
@@ -3739,13 +3868,19 @@ body {
 	           }
 	           body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 	               background: url(./images/hamburger-dark@X2.png) no-repeat top 10px center;
-	               background-size: 29px 12px;
+				   background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+	               background-size: 32px 32px;
 	           }
 
 			   body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
 				   background: url(./images/hamburger-light@X2.png) no-repeat top 10px center;
-	   				background-size: 29px 12px;
+				   background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+	   				background-size: 32px 32px;
 		   		}
+
+				.x-btn-mc {
+					height: 40px!important;
+				}
 	       }
 	       .edit-menu-workflow {
 	           margin-top: 50px;
@@ -3858,7 +3993,8 @@ body {
 			   body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 				   opacity: 0.5;
 			       background: url(./images/hamburger-dark@X2.png) no-repeat top 10px center;
-			       background-size: 29px 12px;
+				   background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+			       background-size: 32px 32px;
 			       &:hover {
 			           opacity: 1;
 			       }
@@ -3975,6 +4111,8 @@ body {
 .x-viewport-contributemode {
 	.x-toolbar-first {
 	    background: url(./images/hamburger.png) no-repeat top 17px left 19px !important;
+		background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px!important;
+		background-size: 32px 32px;
 	    background: none !important;
 	    border: none !important;
 	    position: fixed;
@@ -4234,20 +4372,27 @@ body {
 		        z-index: 9999999999999999999999;
 		        display: block;
 		        background: url(./images/hamburger-black@X2.png) no-repeat top 10px center;
+				background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
 		        margin-top: 0;
 		        opacity: 1;
-		        background-size: 29px 12px;
+		        background-size: 32px 32px;
 		        body[data-selection-count="0"] & {
 		            background: url(./images/hamburger-light@X2.png) no-repeat top 10px center;
-		            background-size: 29px 12px;
+					background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+		            background-size: 32px 32px;
 		        }
 		        &::after {
 		            content: "";
 		        }
 		        body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 		            background: url(./images/hamburger-dark@X2.png) no-repeat top 10px center;
-		            background-size: 29px 12px;
+					background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+		            background-size: 32px 32px;
 		        }
+
+				.x-btn-mc {
+					height: 40px!important;
+				}
 		    }
 		    > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(12) > table {
 		        background: url(./images/tabs-placeholder-black@X2.png) no-repeat top center;
@@ -4367,6 +4512,8 @@ body {
 .x-viewport-adminmode {
 	.x-toolbar-first {
 		background: url(./images/hamburger.png) no-repeat top 17px left 19px !important;
+		background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px!important;
+		background-size: 32px 32px;
 	    background: none !important;
 	    border: none !important;
 	    position: fixed;
@@ -4448,13 +4595,15 @@ body {
  	           z-index: 9999999999999999999999;
  	           display: block;
  	           background: url(./images/hamburger-black@X2.png) no-repeat top 10px center;
+			   background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
  	           margin-top: 0;
  	           opacity: 1;
- 	           background-size: 29px 12px;
+ 	           background-size: 32px 32px;
  	           opacity: 0.8;
  	           body[data-selection-count="0"] & {
  	               background: url(./images/hamburger-light@X2.png) no-repeat top 10px center;
- 	               background-size: 29px 12px;
+				   background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+ 	               background-size: 32px 32px;
  	           }
  	           &:hover {
  	               opacity: 1;
@@ -4464,8 +4613,13 @@ body {
  	           }
  	           body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
  	               background: url(./images/hamburger-dark@X2.png) no-repeat top 10px center;
- 	               background-size: 29px 12px;
+				   background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+ 	               background-size: 32px 32px;
  	           }
+
+			   .x-btn-mc {
+				   height: 40px!important;
+			   }
  	       }
 
 		   .admin-menu-user {
@@ -4569,6 +4723,8 @@ body {
 .x-viewport-dashboardmode {
 	.x-toolbar-first {
 		background: url(./images/hamburger.png) no-repeat top 17px left 19px !important;
+		background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+		background-size: 32px 32px;
 	    background: none !important;
 	    border: none !important;
 	    position: fixed;

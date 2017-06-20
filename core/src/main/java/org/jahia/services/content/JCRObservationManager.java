@@ -52,6 +52,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.observation.JackrabbitEvent;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.AdditionalEventInfo;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
@@ -352,10 +353,12 @@ public class JCRObservationManager implements ObservationManager {
                 event.setNodeTypes(Collections.<String>emptyList());
             }            
         }
-        if (event.getNodeTypes() != null) {
+        if (event.getNodeTypes() != null && requiredNodeTypes.length > 0) {
+            NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
             for (String requiredNodeType : requiredNodeTypes) {
                 for (String nodeType : event.getNodeTypes()) {
-                    if (NodeTypeRegistry.getInstance().getNodeType(nodeType).isNodeType(requiredNodeType)) {
+                    ExtendedNodeType nt = ntRegistry.getNodeType(nodeType, false);
+                    if (nt != null && nt.isNodeType(requiredNodeType)) {
                         return true;
                     }
                 }

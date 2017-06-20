@@ -876,7 +876,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                 // is an operand && no previous operand && not the first term
                 if ((OR.equalsIgnoreCase(asIsTerm) || AND.equalsIgnoreCase(asIsTerm)) && previousOperand == null
                         && nameSearchConstraints.length() != 0) {
-                    previousOperand = asIsTerm;
+                    previousOperand = asIsTerm.toLowerCase();
                 } else {
                     if (!asIsTerm.isEmpty()) {
                         String termConstraint = createNodenameLikeTermConstraint(asIsTerm, xpath);

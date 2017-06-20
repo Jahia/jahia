@@ -226,11 +226,20 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         SuggestWord sugWord = new SuggestWord();
         Set<String> foundWords = new HashSet<>();
         for (int i = 0; i < stop; i++) {
-
-            sugWord.string = usedSearcher.doc(hits[i].doc).get(language != null ? (F_WORD + "-" + language) : F_WORD); // get
-            // orig
-            // word
-
+            do {
+                try {
+                    // get orig word
+                    sugWord.string = usedSearcher.doc(hits[i].doc).get(language != null ? (F_WORD + "-" + language) : F_WORD);
+                    retry = false;
+                } catch (IOException | NullPointerException e) {
+                    retry = !retry; // retry one time (at least)
+                    if (!retry && usedSearcher != searcher) { // if searcher changed still retry again
+                        usedSearcher = searcher;
+                        retry = true;
+                    }
+                }
+            } while (retry);
+            
             // don't suggest a word for itself, that would be silly
             if (sugWord.string == null || word.equals(sugWord.string)) {
                 continue;
@@ -254,10 +263,7 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
                     sugWord.freq += ir.docFreq(new Term(aField, sugWord.string)); // freq
                 }
 
-                // in
-                // the
-                // index
-                // don't suggest a word that is not present in the field
+                // in the index don't suggest a word that is not present in the field
                 if ((morePopular && goalFreq > sugWord.freq) || sugWord.freq < 1) {
                     continue;
                 }

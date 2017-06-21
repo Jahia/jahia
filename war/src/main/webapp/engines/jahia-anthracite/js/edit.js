@@ -1,3 +1,10 @@
+/*
+
+	NOTE: The Side Menu Panel code is work in progress.
+
+*/
+
+
 (function(){
 	var indigoQF = {
 		init: function(){
@@ -8,15 +15,18 @@
 			indigoQF.observers.body();
 
 
+
 			// Setup listeners
 			$(document).ready(function(){
-				$("body").on("click", ".x-viewport-editmode .x-toolbar-first > table", indigoQF.listeners.toggleThemeMode)
-				$("body").on("click", ".editmode-managers-menu", indigoQF.listeners.openManagerMenu)
-				$("body").on("click", ".menu-editmode-managers-menu", indigoQF.listeners.closeManagerMenu);
-				$("body").on("click", "#JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2)", indigoQF.listeners.toggleSidePanelDocking);
-				$("body").on("mouseover", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", indigoQF.listeners.mouseOverHamburger)
-				$("body").on("click", "#JahiaGxtSidePanelTabs .x-tree3-node-text", indigoQF.listeners.clickSidePanelMoreOptionsButton)
-				$("body").on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickSidePanelFileThumbMoreOptionsButton)
+				$("body")
+					.on("click", ".x-viewport-editmode .x-toolbar-first > table", indigoQF.listeners.toggleThemeMode)
+					.on("click", ".editmode-managers-menu", indigoQF.listeners.openManagerMenu)
+					.on("click", ".menu-editmode-managers-menu", indigoQF.listeners.closeManagerMenu)
+					.on("click", "#JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2)", indigoQF.listeners.toggleSidePanelDocking)
+					.on("mouseover", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", indigoQF.listeners.mouseOverHamburger)
+					.on("click", "#JahiaGxtSidePanelTabs .x-tree3-node-text", indigoQF.listeners.clickSidePanelMoreOptionsButton)
+					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickSidePanelFileThumbMoreOptionsButton)
+					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row.sub-level-menu-item", indigoQF.listeners.closeSidePanelSubMenus);
 
 				switch(indigoQF.status.sidePanelTabs.style){
 					case "click":
@@ -33,7 +43,9 @@
 						$("body").on("mouseover", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab, #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", indigoQF.listeners.mouseEnterSidePanelTab);
 						break;
 				}
+
 			});
+
 
 
 		},
@@ -41,7 +53,10 @@
 			sidePanelTabs: {
 				mouseOutTimer: null,
 				justBeenClosed: false,
-				style: "click"
+				style: "click",
+				observer: null,
+				openedSide: null,
+				tabs: {}
 			},
 			publication: null,
 			multiselection: {
@@ -68,6 +83,112 @@
 
 			},
 
+			// Side Panel Menu loaded
+			sidePanelUpdated: function(nodes){
+				// REMOVE THE NODE JOINT WHEN NO CHILDREN
+
+				switch(indigoQF.status.currentPage.displayname){
+					case "settings":
+						var firstMenuItem = $(nodes[0]),
+							parentMenu = $(nodes[0].previousSibling),
+							parentMenuID = null,
+							parentMenuTop = (parentMenu.length > 0) ? parentMenu.position().top : 0,
+							imageSeperator = firstMenuItem.find(".x-tree3-el img:nth-child(1)"),
+							imageSeperatorWidth = imageSeperator.width(),
+							menuLevel = imageSeperatorWidth / 18,
+							className = (menuLevel == 0) ? " top-level-menu-item" : " sub-level-menu-item",
+							nCounter = 0,
+							nCounterAttr,
+							menuLevelAttr,
+							parentNCounter,
+							hasChildren;
+
+
+						nodes.forEach(function(node){
+							nCounter++;
+
+							$(node)
+								.attr("data-n-counter", nCounter)
+								.attr("data-menu-level", menuLevel)
+								.addClass("n-counter-" + nCounter)
+								.addClass(className)
+								.css("margin-top", parentMenuTop + "px");
+
+							hasChildren = $(node).find(".x-tree3-node-joint").attr("style").indexOf("height") > -1;
+
+							if(menuLevel == 0 && !hasChildren){
+								$(node).find(".x-tree3-node-joint").css("display", "none");
+							}
+
+							if(menuLevel > 0){
+								// Dealing with a sub menu so attach its parent ID
+								parentMenuID = parentMenu.attr("data-n-counter");
+
+								$(node).attr("parent-n-counter", parentMenuID);
+							}
+
+							$(node).on("click", function(e){
+
+								var menuItem = $(this).closest(".x-grid3-row"),
+									menuItemID = menuItem.attr("data-n-counter"),
+									menuLevel = menuItem.attr("data-menu-level");
+
+								if(menuLevel === "0"){
+									indigoQF.status.sidePanelTabs.openedSide = menuItemID;
+
+									$("#JahiaGxtSettingsTab").removeClass("disable-node-joint-" + indigoQF.status.sidePanelTabs.openedSide);
+
+									$(".sub-level-menu-item").not("[parent-n-counter='" + indigoQF.status.sidePanelTabs.openedSide + "']")
+										.attr("menu-item-visibility", "off")
+										.css("display", "none");
+
+									$(".sub-level-menu-item[parent-n-counter='" + indigoQF.status.sidePanelTabs.openedSide + "']")
+										.attr("menu-item-visibility", "on")
+										.css("display", "block");
+								}
+
+							})
+
+						});
+						break;
+				}
+
+
+			},
+
+			trackSidePanelSubMenus: function(){
+				indigoQF.status.sidePanelTabs.tabs = {};
+				$("#JahiaGxtSettingsTab").removeClass("disable-node-joint-1 disable-node-joint-2 disable-node-joint-3 disable-node-joint-4 disable-node-joint-5 disable-node-joint-6 disable-node-joint-7 disable-node-joint-8 disable-node-joint-9");
+
+				$(".sub-level-menu-item").each(function(){
+					var menuItem = $(this),
+						parentID = menuItem.attr("parent-n-counter"),
+						visibility = menuItem.attr("menu-item-visibility") || "on";
+
+					indigoQF.status.sidePanelTabs.tabs[parentID] = visibility;
+
+				});
+
+				for(parentID in indigoQF.status.sidePanelTabs.tabs){
+					if(indigoQF.status.sidePanelTabs.tabs[parentID] == "off"){
+						// Disable the node joint
+						$("#JahiaGxtSettingsTab").addClass("disable-node-joint-" + parentID);
+
+					}
+				}
+			},
+
+			closeSidePanelSubMenus: function(){
+				var menuItem = $(this),
+					parentMenuID = menuItem.attr("parent-n-counter");
+
+				$(".sub-level-menu-item[parent-n-counter='" + parentMenuID + "']")
+					.attr("menu-item-visibility", "off")
+					.css("display", "none");
+
+				indigoQF.listeners.trackSidePanelSubMenus();
+			},
+
 			// Body updates
 			displaynameChanged: function(){
 
@@ -92,6 +213,14 @@
 
 				// Contribute Path Name (added to Langiage Selector - need to get a class for this)
 				$(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div").attr("data-PAGE-NAME",label);
+
+				switch(indigoQF.status.currentPage.displayname){
+					case "settings":
+						// Need to wait until the menu has been written to screen, use observer (self deleteing)
+						// select the target node
+
+						break;
+				}
 
 				indigoQF.listeners.updatePageMenuPositions();
 			},
@@ -304,6 +433,9 @@
 								var pageName = $("body").attr("data-main-node-displayname");
 								indigoQF.status.currentPage.displayname = pageName;
 
+								// Start listening to menu again
+								indigoQF.observers.sidePanelTabs();
+
 								indigoQF.listeners.displaynameChanged();
 
 							}
@@ -340,6 +472,56 @@
 
 				// Pass in the target node, as well as the observer options
 				observer.observe(target, config);
+			},
+			sidePanelTabs: function(){
+				var config = {
+						attributes: true,
+						childList: true,
+						characterData: true,
+						subtree: true
+					},
+					target = document.getElementById("JahiaGxtSidePanelTabs");
+
+
+				indigoQF.status.sidePanelTabs.observer = new MutationObserver(function(mutations){
+					var publicationStatus,
+						newNodes;
+
+					mutations.forEach(function(mutation){
+						newNodes = mutation.addedNodes;
+						removedNodes = mutation.removedNodes;
+						//attributeNames = mutation.attributeName;
+
+						/*if(attributeNames){
+							//console.log("attributeNames:", attributeNames);
+						}*/
+
+						if(newNodes.length > 0){
+						  // Node(s) have been added
+						  if(newNodes[0].getAttribute("class").indexOf("x-grid3-row") > -1){
+							  // It is a Menu Node, so act upon it
+							  indigoQF.listeners.sidePanelUpdated(newNodes);
+							  indigoQF.listeners.trackSidePanelSubMenus();
+
+						  }
+						}
+
+						if(removedNodes.length > 0){
+						  // Node(s) have been added
+						  if(removedNodes[0].getAttribute("class").indexOf("x-grid3-row") > -1){
+							  // It is a Menu Node, so act upon it
+							  console.log("REMOVED MENU ITEM", removedNodes);
+							  indigoQF.listeners.trackSidePanelSubMenus();
+
+						  }
+						}
+
+
+					});
+				})
+
+				// Pass in the target node, as well as the observer options
+				indigoQF.status.sidePanelTabs.observer.observe(target, config);
 			}
 		}
 	}

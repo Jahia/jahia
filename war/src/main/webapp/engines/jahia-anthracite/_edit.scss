@@ -4,6 +4,27 @@
 /* COMMON **************************************/
 /***********************************************/
 
+
+
+
+#JahiaGxtSettingsTab {
+
+
+    @for $i from 1 through 30 {
+        &.disable-node-joint-#{$i} {
+            .n-counter-#{$i} {
+                .x-tree3-node-joint {
+                    pointer-events: none;
+                }
+            }
+        }
+    }
+
+
+
+}
+
+
 body {
     background: $color-background;
     &[data-selection-count="0"] {
@@ -1218,14 +1239,37 @@ body {
 		}
     }
 
-	.x-grid3-row {
+    .x-grid3-row {
         border: none;
         width: calc(100%) !important;
+
+        &.top-level-menu-item {
+
+        }
+
+        &.sub-level-menu-item {
+            background: red;
+            position: fixed;
+            left: 60px;
+            width: 180px!important;
+            width: 180px!important;
+
+            @for $i from 1 through 30 {
+                &.n-counter-#{$i} {
+                    top: $i * 25 + 25 + px;
+                }
+            }
+
+        }
 
 		&:hover::after {
 	        background: red;
 	    }
 
+
+    }
+
+    .top-level-menu-item.x-grid3-row {
 		.x-viewport-dashboardmode &,
 		.x-viewport-adminmode & {
 			width: 60px!important;
@@ -1335,22 +1379,26 @@ body {
 			color: rgba(246, 249, 251, 0.58);;
 		}
 
-		.x-viewport-dashboardmode &,
-		.x-viewport-adminmode & {
-			color: rgba(246, 249, 251, 0.6);
-			display: block;
-			width: 60px;
-			text-align: center;
-			padding: 0;
-			font-size: 8px;
-			text-transform: uppercase;
 
 
 
-		}
+
+    }
+
+    .top-level-menu-item .x-tree3-node-text {
+        .x-viewport-dashboardmode &,
+        .x-viewport-adminmode & {
+            color: rgba(246, 249, 251, 0.6);
+            display: block;
+            width: 60px;
+            text-align: center;
+            padding: 0;
+            font-size: 8px;
+            text-transform: uppercase;
 
 
 
+        }
     }
 
     .x-tab-strip.x-tab-strip-top {
@@ -2914,7 +2962,7 @@ body {
         width: 100% !important;
     }
 
-	img.x-tree3-node-icon {
+    img.x-tree3-node-icon {
         background: url(./images/placeholder-icon-dark@X2.png) no-repeat !important;
         padding-left: 16px;
         width: 16px;
@@ -2930,25 +2978,41 @@ body {
 	        background-size: 13px 13px !important;
 		}
 
+
+    }
+
+    .top-level-menu-item img.x-tree3-node-icon {
+
 		.x-viewport-dashboardmode &,
 		.x-viewport-adminmode & {
-			width: 50px!important;
-			height: 40px!important;
-			padding-left: 50px!important;
-			background: url(./images/tabs-content-white@X2.png) no-repeat !important;
-			background-size: 23px 23px!important;
-			background-position: center center!important;
-			display: block!important;
-			margin-left: 6px
+
+            width: 50px!important;
+            height: 40px!important;
+            padding-left: 50px!important;
+            background: url(./images/tabs-content-white@X2.png) no-repeat !important;
+            background-size: 23px 23px!important;
+            background-position: center center!important;
+            display: block!important;
+            margin-left: 6px;
+
+
 		}
     }
 
-	.x-tree3-el {
+	.top-level-menu-item .x-tree3-el {
 		.x-viewport-dashboardmode &,
 		.x-viewport-adminmode & {
 			height: 50px;
 			img {
 				display: none;
+
+                &.x-tree3-node-joint {
+                    display: block;
+                    position: absolute;
+                    width: 56px !important;
+                    height: 47px !important;
+                    background: none !important;
+                }
 			}
 
 		}

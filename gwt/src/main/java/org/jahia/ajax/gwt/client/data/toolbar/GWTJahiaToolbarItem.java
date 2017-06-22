@@ -183,6 +183,10 @@ public class GWTJahiaToolbarItem implements Serializable {
     }
 
     public String getClassName() {
-        return getId().toLowerCase().replace('.','-');
+        if (getId() == null) {
+            // We are not sure each toolbar item has an ID.
+            return "";
+        }
+        return getId().toLowerCase().replace('.', '-');
     }
 }

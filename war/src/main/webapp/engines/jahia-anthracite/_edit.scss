@@ -4,7 +4,17 @@
 /* COMMON **************************************/
 /***********************************************/
 
+/* DO NOT TOUCH ::: START */
 
+#JahiaGxtSidePanelTabs {
+    .x-grid3-row {
+
+        &[parent-id] {
+            xposition: fixed;
+        }
+
+    }
+}
 
 
 #JahiaGxtSettingsTab {
@@ -58,6 +68,7 @@
 
 }
 
+/* DO NOT TOUCH ::: END */
 
 body {
     background: $color-background;

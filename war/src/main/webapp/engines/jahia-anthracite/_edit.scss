@@ -8,9 +8,23 @@
 
 #JahiaGxtSidePanelTabs {
     .x-grid3-row {
+        display:none;
 
-        &[parent-id] {
-            xposition: fixed;
+        &[menu-item-level="0"] {
+            display: block;
+        }
+
+    }
+}
+
+#JahiaGxtSidePanelTabs {
+
+
+    @for $i from 1 through 50 {
+        &[current-sub-menu="#{$i}"] {
+            .x-grid3-row[parent-ID="#{$i}"] {
+                display: block;
+            }
         }
 
     }

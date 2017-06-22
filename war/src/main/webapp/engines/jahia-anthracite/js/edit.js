@@ -54,6 +54,9 @@
 				openedSide: null,
 				tabs: {}
 			},
+			panelMenu: {
+				openedJoint: null
+			},
 			publication: null,
 			multiselection: {
 				count: 0
@@ -76,6 +79,64 @@
 			windowLoad: function(){},
 			windowResize: function(){
 				indigoQF.listeners.updatePageMenuPositions();
+
+			},
+
+			panelMenuModifyDOM: function(){
+				//console.clear();
+				console.log("panelMenuModifyDOM() ::: Used to add class names / attributes to side panel so that it can be correctly displayed with CSS");
+
+				var menu = $("#JahiaGxtSidePanelTabs .x-grid3-row"),
+					previousItemLevel = 0;
+
+				menu.each(function(index, menuItem_el){
+					var menuItem = $(this),
+						indentSpacer = menuItem.find(".x-tree3-el > img:nth-child(1)"), // Sub menus are 'created' by indenting menu items with a transparent GIF spacer in multiples of 18. So a width of 0 is level 1, 18 is level 2, and so on...
+						indentSpacerWidth = indentSpacer.width(),
+						subMenuJoint = menuItem.find(".x-tree3-el .x-tree3-node-joint"), // If the menu item has a submenu then the joint is visible (has a height).
+						subMenuJointHeight = subMenuJoint.attr("style").indexOf("height") > -1,
+						hasSubMenu = subMenuJointHeight > 0,
+						menuItemLevel = indentSpacerWidth / 18,
+						parentItemLevel,
+						parentID = null;
+
+					if(menuItemLevel > 0){
+						// Sub menu item, so get ID from previous entry as this is its parent.
+						parentItemLevel = menuItemLevel - 1;
+						parentID = $(menuItem_el).prevAll("[menu-item-level='" + parentItemLevel + "']").first().attr("menu-id");
+
+					}
+
+					menuItem
+						.attr("menu-ID", index)
+						.attr("menu-item-level", menuItemLevel)
+						.attr("parent-ID", parentID)
+						.attr("has-sub-menu", hasSubMenu);
+
+					console.log(menuItem_el);
+
+				});
+
+				// Add sub menu IDs (0, 1, 2, ...)
+				var previousParentID = 0,
+					counter = 0;
+
+				menu.closest("[parent-id]").each(function(index, menuItem_el){
+					var parentID = $(menuItem_el).attr("parent-ID");
+
+					if(parentID == previousParentID){
+						counter++;
+					} else {
+						counter = 0;
+					}
+
+					$(menuItem_el).attr("sub-menu-ID", counter);
+
+					previousParentID = parentID;
+				});
+
+
+
 
 			},
 
@@ -454,7 +515,7 @@
 								indigoQF.status.currentPage.displayname = pageName;
 
 								// Start listening to menu again
-								indigoQF.observers.sidePanelTabs();
+								indigoQF.observers.panelMenuObserver();
 
 								indigoQF.listeners.displaynameChanged();
 
@@ -493,7 +554,96 @@
 				// Pass in the target node, as well as the observer options
 				observer.observe(target, config);
 			},
-			sidePanelTabs: function(){
+			panelMenuObserver: function(){
+				// Find out which menus are already loaded, then I can disable the joint...
+
+				console.log("sidePanelTabs() ::: Used to listen for changes to side menu panel and update CSS accordingly");
+
+				if(!indigoQF.status.sidePanelTabs.observer){
+					// Setup new observer
+
+
+					$("body").on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", function(e){
+
+						var menuItem = $(this),
+							menuID = menuItem.attr("menu-ID"),
+							hasSubMenu = menuItem.attr("has-sub-menu");
+
+							// console.log("CLICKED ON A MENU ITEM", hasSubMenu);
+
+					});
+
+					$("body").on("mousedown", "#JahiaGxtSidePanelTabs .x-grid3-row", function(e){
+
+						var clickedJoint = $(e.target).hasClass("x-tree3-node-joint"),
+							menuItem = $(this),
+							menuID = menuItem.attr("menu-ID");
+
+						if(clickedJoint){
+							if(indigoQF.status.panelMenu.openedJoint == menuID){
+								indigoQF.status.panelMenu.openedJoint = null; // close it
+							} else {
+								indigoQF.status.panelMenu.openedJoint = menuID; // clicked on a new one
+
+							}
+
+							$("#JahiaGxtSidePanelTabs").attr("current-sub-menu", indigoQF.status.panelMenu.openedJoint);
+
+						}
+
+
+
+					})
+
+					var config = {
+							attributes: true,
+							childList: true,
+							characterData: true,
+							subtree: true
+						},
+						target = document.getElementById("JahiaGxtSidePanelTabs");
+
+						indigoQF.status.sidePanelTabs.observer = new MutationObserver(function(mutations){
+							var publicationStatus,
+								newNodes,
+								removedNodes;
+
+							mutations.forEach(function(mutation){
+								newNodes = mutation.addedNodes;
+								removedNodes = mutation.removedNodes;
+
+								//console.log("mutation", mutation);
+
+								if(newNodes.length > 0){
+									// console.log("newNodes:", newNodes);
+									if($(newNodes[0]).hasClass("ext-el-mask")){
+										// console.log("sidePanelTabs() ::: GWT is modifying side panel");
+									}
+
+
+
+								}
+
+								if(removedNodes.length > 0){
+									// console.log("removedNodes:", removedNodes);
+								  if($(removedNodes[0]).hasClass("ext-el-mask") || $(removedNodes[0]).hasClass("x-tree3-node-joint")){
+									//   console.log("sidePanelTabs() ::: GWT has finished modifying side panel");
+									  indigoQF.listeners.panelMenuModifyDOM();
+								  }
+								}
+
+
+							});
+						})
+
+						// Pass in the target node, as well as the observer options
+						console.log("sidePanelTabs() ::: Attach Mutation Observer to #JahiaGxtSidePanelTabs");
+						indigoQF.status.sidePanelTabs.observer.observe(target, config);
+				} else {
+					console.log("ignore observer, already in place");
+				}
+			},
+			sidePanelTabsBAK: function(){
 				var config = {
 						attributes: true,
 						childList: true,

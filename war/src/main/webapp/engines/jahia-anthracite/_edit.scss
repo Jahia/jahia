@@ -9,6 +9,22 @@
 
 #JahiaGxtSettingsTab {
 
+    span.expand-sub-level-menu {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 999999999999999999999999999999;
+        background: purple;
+        width: 10px;
+        height: 10px;
+        text-indent: -50000px;
+
+        &:hover {
+            color: red;
+        }
+
+    }
 
     @for $i from 1 through 30 {
         &.disable-node-joint-#{$i} {
@@ -20,6 +36,24 @@
         }
     }
 
+
+
+}
+
+#JahiaGxtSidePanelTabs {
+
+
+    @for $i from 1 through 30 {
+        &[data-current-tab="#{$i}"] {
+            .x-grid3-row.top-level-menu-item.n-counter-#{$i} {
+                opacity: 1!important;
+                background: #079cf1!important;
+            }
+
+        }
+
+
+    }
 
 
 }
@@ -1248,16 +1282,39 @@ body {
         }
 
         &.sub-level-menu-item {
-            background: red;
+            background: #079cf1;
             position: fixed;
             left: 60px;
             width: 180px!important;
-            width: 180px!important;
+            padding: 16px 10px 5px 15px;
 
             @for $i from 1 through 30 {
                 &.n-counter-#{$i} {
-                    top: $i * 25 + 25 + px;
+                    top: $i * 46 + 25 + px;
                 }
+            }
+
+            .x-grid3-row-table {
+                width: 100%!important;
+            }
+
+            .x-tree3-node {
+                img {
+                    display: none;
+                }
+
+                img.x-tree3-node-icon {
+                    display: inline-block;
+                }
+            }
+
+            img.x-tree3-node-icon {
+                background: url(./images/placeholder-icon-white@X2.png) no-repeat !important;
+                background-size: 13px 13px!important;
+            }
+
+            .x-tree3-node-text {
+                color: #eeeeee;
             }
 
         }
@@ -1270,8 +1327,21 @@ body {
     }
 
     .top-level-menu-item.x-grid3-row {
-		.x-viewport-dashboardmode &,
 		.x-viewport-adminmode & {
+			width: 60px!important;
+			height: 55px!important;
+
+			opacity: 0.6;
+
+			table,
+			td {
+				width: 60px!important
+			}
+		}
+    }
+
+    .x-grid3-row {
+		.x-viewport-dashboardmode & {
 			width: 60px!important;
 			height: 55px!important;
 
@@ -1292,6 +1362,10 @@ body {
 		body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
 			background: rgba(246, 249, 251, 0.12) !important;
 		}
+
+        &.sub-level-menu-item {
+            background: blue!important;
+        }
 
 		.x-grid3-col-displayName,
 		.x-component,
@@ -1315,6 +1389,10 @@ body {
             background: #5c6164 !important;
             width: 100% !important;
             background: rgba(92, 97, 100, 1) !important;
+
+            &.sub-level-menu-item {
+                width: 180px !important;
+            }
         }
         .x-tree3-node {}
 
@@ -1325,6 +1403,10 @@ body {
     }
     .x-grid3-row-over {
         background: rgba(92, 97, 100, 0.07) !important;
+
+        &.sub-level-menu-item {
+            background: #35adf1!important;
+        }
     }
 
     .x-tab-panel-header {
@@ -1396,10 +1478,31 @@ body {
             font-size: 8px;
             text-transform: uppercase;
 
+            &.top-level-opened {
+                xbackground: blue!important;
+            }
+
 
 
         }
     }
+
+    .x-tree3-node-text {
+        .x-viewport-dashboardmode &{
+            color: rgba(246, 249, 251, 0.6);
+            display: block;
+            width: 60px;
+            text-align: center;
+            padding: 0;
+            font-size: 8px;
+            text-transform: uppercase;
+
+
+
+        }
+    }
+
+
 
     .x-tab-strip.x-tab-strip-top {
         border: none !important;
@@ -2983,7 +3086,6 @@ body {
 
     .top-level-menu-item img.x-tree3-node-icon {
 
-		.x-viewport-dashboardmode &,
 		.x-viewport-adminmode & {
 
             width: 50px!important;
@@ -2999,8 +3101,24 @@ body {
 		}
     }
 
-	.top-level-menu-item .x-tree3-el {
-		.x-viewport-dashboardmode &,
+    img.x-tree3-node-icon {
+
+		.x-viewport-dashboardmode & {
+
+            width: 50px!important;
+            height: 40px!important;
+            padding-left: 50px!important;
+            background: url(./images/tabs-content-white@X2.png) no-repeat !important;
+            background-size: 23px 23px!important;
+            background-position: center center!important;
+            display: block!important;
+            margin-left: 6px;
+
+
+		}
+    }
+
+    .top-level-menu-item .x-tree3-el {
 		.x-viewport-adminmode & {
 			height: 50px;
 			img {
@@ -3013,6 +3131,17 @@ body {
                     height: 47px !important;
                     background: none !important;
                 }
+			}
+
+		}
+	}
+
+    .x-tree3-el {
+		.x-viewport-dashboardmode & {
+			height: 50px;
+			img {
+				display: none;
+
 			}
 
 		}

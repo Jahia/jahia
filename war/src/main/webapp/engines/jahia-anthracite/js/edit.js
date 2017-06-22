@@ -1,10 +1,3 @@
-/*
-
-	NOTE: The Side Menu Panel code is work in progress.
-
-*/
-
-
 (function(){
 	var indigoQF = {
 		init: function(){
@@ -26,7 +19,10 @@
 					.on("mouseover", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", indigoQF.listeners.mouseOverHamburger)
 					.on("click", "#JahiaGxtSidePanelTabs .x-tree3-node-text", indigoQF.listeners.clickSidePanelMoreOptionsButton)
 					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickSidePanelFileThumbMoreOptionsButton)
-					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row.sub-level-menu-item", indigoQF.listeners.closeSidePanelSubMenus);
+					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row.sub-level-menu-item", indigoQF.listeners.closeSidePanelSubMenus)
+					.on("click", "#JahiaGxtSidePanelTabs .expand-sub-level-menu", function(){
+						alert("Expand Window");
+					});
 
 				switch(indigoQF.status.sidePanelTabs.style){
 					case "click":
@@ -87,12 +83,14 @@
 			sidePanelUpdated: function(nodes){
 				// REMOVE THE NODE JOINT WHEN NO CHILDREN
 
+
+
 				switch(indigoQF.status.currentPage.displayname){
 					case "settings":
 						var firstMenuItem = $(nodes[0]),
 							parentMenu = $(nodes[0].previousSibling),
 							parentMenuID = null,
-							parentMenuTop = (parentMenu.length > 0) ? parentMenu.position().top : 0,
+							parentMenuTop = (parentMenu.length > 0) ? parentMenu.position().top - 24 : 0,
 							imageSeperator = firstMenuItem.find(".x-tree3-el img:nth-child(1)"),
 							imageSeperatorWidth = imageSeperator.width(),
 							menuLevel = imageSeperatorWidth / 18,
@@ -125,6 +123,16 @@
 								parentMenuID = parentMenu.attr("data-n-counter");
 
 								$(node).attr("parent-n-counter", parentMenuID);
+
+								if(nCounter == 1){
+									// Position expand button relative to this button
+									// DO NOT ADD AS DECENDANT OF SETTINGS TAB
+									/*console.log("Update position of expand button", $(node));
+									$("#JahiaGxtSettingsTab .expand-sub-level-menu").css({
+										left: 254 + "px",
+										top: $(node).position().top + 71
+									});*/
+								}
 							}
 
 							$(node).on("click", function(e){
@@ -145,11 +153,17 @@
 									$(".sub-level-menu-item[parent-n-counter='" + indigoQF.status.sidePanelTabs.openedSide + "']")
 										.attr("menu-item-visibility", "on")
 										.css("display", "block");
+
+									$("#JahiaGxtSidePanelTabs").attr("data-current-tab", indigoQF.status.sidePanelTabs.openedSide);
+
 								}
+
+
 
 							})
 
 						});
+
 						break;
 				}
 
@@ -157,6 +171,9 @@
 			},
 
 			trackSidePanelSubMenus: function(){
+				// Not alway called !!
+				var openedMenu = null;
+
 				indigoQF.status.sidePanelTabs.tabs = {};
 				$("#JahiaGxtSettingsTab").removeClass("disable-node-joint-1 disable-node-joint-2 disable-node-joint-3 disable-node-joint-4 disable-node-joint-5 disable-node-joint-6 disable-node-joint-7 disable-node-joint-8 disable-node-joint-9");
 
@@ -167,18 +184,34 @@
 
 					indigoQF.status.sidePanelTabs.tabs[parentID] = visibility;
 
+					if(visibility == "on"){
+						openedMenu = parentID;
+						//console.log("Sub Menu Is open (" + parentID+ ")", indigoQF.status.sidePanelTabs.tabs);
+					}
+
+
 				});
+
+				if(openedMenu){
+					console.log("Sub menu is open (" + openedMenu + ")");
+				} else {
+					console.log("All Sub Menus are closed");
+					$("#JahiaGxtSidePanelTabs").attr("data-current-tab", "");
+
+				}
 
 				for(parentID in indigoQF.status.sidePanelTabs.tabs){
 					if(indigoQF.status.sidePanelTabs.tabs[parentID] == "off"){
 						// Disable the node joint
 						$("#JahiaGxtSettingsTab").addClass("disable-node-joint-" + parentID);
 
+
 					}
 				}
 			},
 
 			closeSidePanelSubMenus: function(){
+				console.log(":::closeSidePanelSubMenus()");
 				var menuItem = $(this),
 					parentMenuID = menuItem.attr("parent-n-counter");
 
@@ -218,6 +251,13 @@
 					case "settings":
 						// Need to wait until the menu has been written to screen, use observer (self deleteing)
 						// select the target node
+						console.log("inject the button here");
+						/*if($("#JahiaGxtSettingsTab .expand-sub-level-menu").length == 0){
+							$("<span class='expand-sub-level-menu'>Expand</span>").prependTo("#JahiaGxtSettingsTab");
+
+						}*/
+
+						indigoQF.listeners.closeSidePanelSubMenus();
 
 						break;
 				}

@@ -1,2 +1,25 @@
+/* Imports */
+
 @import "variables";
 @import "font";
+
+
+/* Custom scrollbar */
+
+::-webkit-scrollbar {
+	width: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: none;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #828282;
+	border-radius: 8px;
+	border: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #a7a7a7;
+}

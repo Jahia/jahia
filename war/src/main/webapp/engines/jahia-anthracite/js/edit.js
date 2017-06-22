@@ -83,8 +83,6 @@
 			sidePanelUpdated: function(nodes){
 				// REMOVE THE NODE JOINT WHEN NO CHILDREN
 
-
-
 				switch(indigoQF.status.currentPage.displayname){
 					case "settings":
 						var firstMenuItem = $(nodes[0]),
@@ -124,15 +122,6 @@
 
 								$(node).attr("parent-n-counter", parentMenuID);
 
-								if(nCounter == 1){
-									// Position expand button relative to this button
-									// DO NOT ADD AS DECENDANT OF SETTINGS TAB
-									/*console.log("Update position of expand button", $(node));
-									$("#JahiaGxtSettingsTab .expand-sub-level-menu").css({
-										left: 254 + "px",
-										top: $(node).position().top + 71
-									});*/
-								}
 							}
 
 							$(node).on("click", function(e){
@@ -164,6 +153,12 @@
 
 						});
 
+
+
+						$(".sub-level-menu-item")
+							.attr("menu-item-visibility", "off")
+							.css("display", "none");
+
 						break;
 				}
 
@@ -186,16 +181,13 @@
 
 					if(visibility == "on"){
 						openedMenu = parentID;
-						//console.log("Sub Menu Is open (" + parentID+ ")", indigoQF.status.sidePanelTabs.tabs);
 					}
 
 
 				});
 
 				if(openedMenu){
-					console.log("Sub menu is open (" + openedMenu + ")");
 				} else {
-					console.log("All Sub Menus are closed");
 					$("#JahiaGxtSidePanelTabs").attr("data-current-tab", "");
 
 				}
@@ -211,7 +203,6 @@
 			},
 
 			closeSidePanelSubMenus: function(){
-				console.log(":::closeSidePanelSubMenus()");
 				var menuItem = $(this),
 					parentMenuID = menuItem.attr("parent-n-counter");
 
@@ -249,15 +240,8 @@
 
 				switch(indigoQF.status.currentPage.displayname){
 					case "settings":
-						// Need to wait until the menu has been written to screen, use observer (self deleteing)
-						// select the target node
-						console.log("inject the button here");
-						/*if($("#JahiaGxtSettingsTab .expand-sub-level-menu").length == 0){
-							$("<span class='expand-sub-level-menu'>Expand</span>").prependTo("#JahiaGxtSettingsTab");
-
-						}*/
-
-						indigoQF.listeners.closeSidePanelSubMenus();
+						indigoQF.status.sidePanelTabs.hideInit = true;
+						indigoQF.listeners.trackSidePanelSubMenus();
 
 						break;
 				}
@@ -465,10 +449,6 @@
 							removedNodes = mutation.removedNodes;
 							attributeNames = mutation.attributeName;
 
-							if(attributeNames){
-								//console.log("attributeNames:", attributeNames);
-							}
-
 							if(attributeNames == "data-main-node-displayname"){
 								var pageName = $("body").attr("data-main-node-displayname");
 								indigoQF.status.currentPage.displayname = pageName;
@@ -530,11 +510,6 @@
 					mutations.forEach(function(mutation){
 						newNodes = mutation.addedNodes;
 						removedNodes = mutation.removedNodes;
-						//attributeNames = mutation.attributeName;
-
-						/*if(attributeNames){
-							//console.log("attributeNames:", attributeNames);
-						}*/
 
 						if(newNodes.length > 0){
 						  // Node(s) have been added
@@ -550,7 +525,6 @@
 						  // Node(s) have been added
 						  if(removedNodes[0].getAttribute("class").indexOf("x-grid3-row") > -1){
 							  // It is a Menu Node, so act upon it
-							  console.log("REMOVED MENU ITEM", removedNodes);
 							  indigoQF.listeners.trackSidePanelSubMenus();
 
 						  }

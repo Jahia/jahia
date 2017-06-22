@@ -28,6 +28,14 @@
         }
 
     }
+
+    .x-grid3-row {
+        &[sub-menu-available="true"] {
+            .x-tree3-node-joint {
+                xdisplay: none;
+            }
+        }
+    }
 }
 
 

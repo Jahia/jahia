@@ -96,6 +96,7 @@
 						subMenuJoint = menuItem.find(".x-tree3-el .x-tree3-node-joint"), // If the menu item has a submenu then the joint is visible (has a height).
 						subMenuJointHeight = subMenuJoint.attr("style").indexOf("height") > -1,
 						hasSubMenu = subMenuJointHeight > 0,
+						subMenuAlreadyLoaded = $("#JahiaGxtSidePanelTabs .x-grid3-row[parent-ID='" + index + "']").length > 0,
 						menuItemLevel = indentSpacerWidth / 18,
 						parentItemLevel,
 						parentID = null;
@@ -111,7 +112,8 @@
 						.attr("menu-ID", index)
 						.attr("menu-item-level", menuItemLevel)
 						.attr("parent-ID", parentID)
-						.attr("has-sub-menu", hasSubMenu);
+						.attr("has-sub-menu", hasSubMenu)
+						.attr("sub-menu-available", subMenuAlreadyLoaded);
 
 					console.log(menuItem_el);
 

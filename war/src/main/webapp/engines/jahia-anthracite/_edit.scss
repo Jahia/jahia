@@ -141,9 +141,9 @@
 /* DO NOT TOUCH ::: END */
 
 body {
-    background: $color-background;
+    background: $body-bg;
     &[data-selection-count="0"] {
-        background: $color-background;
+        background: $body-bg;
     }
 	transition: all 0.3s ease-in 0s;
 

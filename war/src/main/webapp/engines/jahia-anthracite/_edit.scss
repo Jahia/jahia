@@ -6,89 +6,137 @@
 
 /* DO NOT TOUCH ::: START */
 
-#JahiaGxtSidePanelTabs {
-    .x-grid3-row {
-        display:none;
-
-        &[menu-item-level="0"] {
-            display: block;
-        }
-
-    }
-}
 
 #JahiaGxtSidePanelTabs {
 
+	.x-viewport-adminmode & {
+		@for $i from 0 through 50 {
+	        &[current-sub-menu="#{$i}"] {
+				.x-grid3-row[parent-ID="#{$i}"] {
+					display: block;
+	            }
 
-    @for $i from 1 through 50 {
-        &[current-sub-menu="#{$i}"] {
-            .x-grid3-row[parent-ID="#{$i}"] {
-                display: block;
-            }
-        }
+				.x-grid3-row[menu-ID="#{$i}"] {
+					.x-tree3-el {
+						opacity: 1!important;
+					}
+	            }
+	        }
 
-    }
+	    }
 
-    .x-grid3-row {
-        &[sub-menu-available="true"] {
-            .x-tree3-node-joint {
-                xdisplay: none;
-            }
-        }
-    }
+		/*margin-top: $i * 60 + px*/
+
+		@for $i from 0 through 50 {
+			.x-grid3-row[menu-rel-ID="#{$i}"] {
+	            top: $i * 33 + px;
+	        }
+
+			.x-grid3-row[parent-rel-ID="#{$i}"][parent-ID] {
+				margin-top: $i * 55 - 5 +px
+	        }
+
+
+	    }
+
+		/**/
+
+
+
+	    .x-grid3-row {
+			display:none;
+			width: 60px !important;
+			height: 55px !important;
+
+			&[menu-item-level="0"] {
+	            display: block;
+
+	        }
+
+
+			.x-tree3-el {
+
+				opacity: 0.6;
+
+				&:hover {
+					opacity: 1;
+				}
+
+				img:nth-child(1),
+				img.x-tree3-node-joint {
+					display:none;
+				}
+
+				.x-tree3-node-text {
+					color: rgba(238, 238, 238, 0.6);
+				    margin-top: 5px;
+				    text-transform: uppercase;
+				    font-size: 8px;
+				    font-weight: 400;
+					text-align: center;
+				}
+
+
+			}
+
+
+			&[menu-item-level="0"] {
+				.x-tree3-node-icon {
+					width: 50px !important;
+				    height: 40px !important;
+				    padding-left: 50px !important;
+				    background: url(./images/tabs-content-white@X2.png) no-repeat !important;
+				    background-size: 23px 23px !important;
+				    background-position: center center !important;
+				    display: block !important;
+				    margin-left: 6px;
+				}
+			}
+
+			&[parent-ID] {
+				position: fixed;
+				left: 60px;
+				width: 180px !important;
+				padding: 8px 10px 0px 6px;
+				background: #00a0e3 !important;
+				height: 25px!important;
+
+				.x-tree3-el {
+					opacity: 1!important;
+				}
+
+				.x-tree3-node-text {
+					color: #eeeeee;
+				}
+
+				.x-tree3-node-icon {
+					background: url(./images/placeholder-icon-white@X2.png) no-repeat !important;
+					background-size: 13px 13px!important;
+				}
+
+				&:hover {
+					background: #05a5e7!important;
+				}
+
+
+
+			}
+
+
+
+			.x-tree3-el {
+				height: 55px;
+			}
+
+			> table {
+				width: 100%!important
+			}
+	    }
+	}
+
+
 }
 
-
-#JahiaGxtSettingsTab {
-
-    span.expand-sub-level-menu {
-        display: block;
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 999999999999999999999999999999;
-        background: purple;
-        width: 10px;
-        height: 10px;
-        text-indent: -50000px;
-
-        &:hover {
-            color: red;
-        }
-
-    }
-
-    @for $i from 1 through 30 {
-        &.disable-node-joint-#{$i} {
-            .n-counter-#{$i} {
-                .x-tree3-node-joint {
-                    pointer-events: none;
-                }
-            }
-        }
-    }
-
-
-
-}
-
-#JahiaGxtSidePanelTabs {
-
-
-    @for $i from 1 through 30 {
-        &[data-current-tab="#{$i}"] {
-            .x-grid3-row.top-level-menu-item.n-counter-#{$i} {
-                opacity: 1!important;
-                background: #079cf1!important;
-            }
-
-        }
-
-
-    }
-
-
-}
 
 /* DO NOT TOUCH ::: END */
 
@@ -5080,7 +5128,7 @@ body {
 	               }
 	           }
 	           body[data-sitesettings="true"] & {
-	               display: none;
+				   display: none;
 	           }
 	       }
 

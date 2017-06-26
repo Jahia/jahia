@@ -416,7 +416,7 @@ public class Resource {
                 resource.resourceNodeType != null) {
             return false;
         }
-        if (moduleParams != null ? filterModuleParams(moduleParams).equals(filterModuleParams(resource.moduleParams)) : resource.moduleParams != null) {
+        if (moduleParams != null ? !filterModuleParams(moduleParams).equals(filterModuleParams(resource.moduleParams)) : resource.moduleParams != null) {
             return false;
         }
         return true;

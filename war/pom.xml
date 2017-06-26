@@ -615,6 +615,13 @@
                     <sassSourceDirectory>src/main/webapp/engines/jahia-anthracite</sassSourceDirectory>
                     <destination>src/main/webapp/engines/jahia-anthracite</destination>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jruby</groupId>
+                        <artifactId>jruby-complete</artifactId>
+                        <version>9.1.12.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
 

@@ -69,7 +69,7 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem;
 import java.util.Date;
 
 /**
- * 
+ *
  * User: ktlili
  * Date: Mar 2, 2010
  * Time: 9:32:54 AM
@@ -82,7 +82,6 @@ public class VersionViewer extends ContentPanel {
     private String workspace = "default";
     private Frame currentFrame;
     private CalendarField versionComboBox;
-    //    private Slider slider;
     private boolean addButtons;
     private Button restoreButton;
     private boolean displayHighLigthButton;
@@ -142,6 +141,8 @@ public class VersionViewer extends ContentPanel {
             versionComboBox = new CalendarField(startDate);
             versionComboBox.setWidth(150);
             versionComboBox.addListener(Events.Change, new Listener<FieldEvent>() {
+
+                @Override
                 public void handleEvent(FieldEvent be) {
                     if (!be.getField().getValue().equals(previousValue[0])) {
                         previousValue[0] = (Date) be.getField().getValue();
@@ -153,15 +154,17 @@ public class VersionViewer extends ContentPanel {
             previousValue = new Date[]{versionDate};
         }
 
-        if(versionDate!=null) {
+        if (versionDate != null) {
             restoreButton = new Button(Messages.get("label.restore", "Restore"));
             restoreButton.setEnabled(false);
             restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     mask(Messages.get("label.restoring", "Restoring") + "...", "x-mask-loading");
-                    contentService.restoreNodeByIdentifierAndDate(uuid, versionDate, versionLabel!=null && !versionLabel.contains("live")?versionLabel:null, false,
+                    contentService.restoreNodeByIdentifierAndDate(uuid, versionDate, (versionLabel != null && !versionLabel.contains("live") ? versionLabel : null), false,
                             new BaseAsyncCallback<Void>() {
+
+                                @Override
                                 public void onSuccess(Void result) {
                                     unmask();
                                     compareEngine.setRefreshOpener(true);
@@ -211,6 +214,7 @@ public class VersionViewer extends ContentPanel {
 
             GWTJahiaToolbarItem gwtJahiaToolbarItem = new GWTJahiaToolbarItem();
             PublishActionItem actionItem = new PublishActionItem();
+            gwtJahiaToolbarItem.setId("VersionViewer.Toolbar.Item.Publish");
             gwtJahiaToolbarItem.setActionItem(actionItem);
             gwtJahiaToolbarItem.setTitle(Messages.get("label.publish"));
             gwtJahiaToolbarItem.setLayout(Constants.LAYOUT_BUTTON_LABEL);
@@ -223,6 +227,7 @@ public class VersionViewer extends ContentPanel {
             gwtJahiaToolbarItem = new GWTJahiaToolbarItem();
             actionItem = new PublishActionItem();
             actionItem.setAllSubTree(true);
+            gwtJahiaToolbarItem.setId("VersionViewer.Toolbar.Item.PublishAll");
             gwtJahiaToolbarItem.setActionItem(actionItem);
             gwtJahiaToolbarItem.setTitle(Messages.get("label.publishall"));
             gwtJahiaToolbarItem.setLayout(Constants.LAYOUT_BUTTON_LABEL);
@@ -245,7 +250,7 @@ public class VersionViewer extends ContentPanel {
             if (displayHighLigthButton) {
                 headerToolBar.add(hButton);
             }
-            if (versionDate!=null) {
+            if (versionDate != null) {
                 headerToolBar.add(restoreButton);
             }
             setTopComponent(headerToolBar);
@@ -270,14 +275,18 @@ public class VersionViewer extends ContentPanel {
             // version is not specified. Current.
             contentService.getNodeURLByIdentifier(null, uuid, previousValue[0], null, workspace, locale,
                     new BaseAsyncCallback<String>() {
+
+                        @Override
                         public void onSuccess(String url) {
                             currentFrame = setUrl(url);
                             setHeadingHtml(url);
                             unmask();
-                            if(restoreButton!=null)
-                            restoreButton.setEnabled(true);
+                            if (restoreButton != null) {
+                                restoreButton.setEnabled(true);
+                            }
                         }
 
+                        @Override
                         public void onApplicationFailure(Throwable throwable) {
                             Log.error("", throwable);
                             unmask();
@@ -310,6 +319,8 @@ public class VersionViewer extends ContentPanel {
      */
     public void displayHighLigth() {
         contentService.getHighlighted(getInnerHTML(), getCompareWith(), new BaseAsyncCallback<String>() {
+
+            @Override
             public void onSuccess(String s) {
                 IFrameElement frameElement = IFrameElement.as(currentFrame.getElement());
                 Document document = frameElement.getContentDocument();
@@ -319,6 +330,7 @@ public class VersionViewer extends ContentPanel {
                 }
             }
 
+            @Override
             public void onApplicationFailure(Throwable throwable) {
                 Log.error("Error when triing to display higthligthing", throwable);
             }

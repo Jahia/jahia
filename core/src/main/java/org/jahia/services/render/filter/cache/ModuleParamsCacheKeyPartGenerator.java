@@ -83,12 +83,17 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
         return keyPart;
     }
 
-    protected static String encodeString(String toBeEncoded) {
-        return toBeEncoded != null ? toBeEncoded.replace("&", ENCODED_PREFIX).replace("@@", ENCODED_DOUBLE_AT).replace("\"",ENCODED_DOUBLE_QUOTES) : null;
+    protected static String decodeString(String toBeDencoded) {
+        return toBeDencoded != null && toBeDencoded.indexOf('&') != -1
+                ? StringUtils.replace(StringUtils.replace(StringUtils.replace(toBeDencoded, ENCODED_DOUBLE_AT, "@@"),
+                        ENCODED_DOUBLE_QUOTES, "\""), ENCODED_PREFIX, "&")
+                : toBeDencoded;
     }
 
-    protected static String decodeString(String toBeDecoded) {
-        return toBeDecoded != null && toBeDecoded.contains("&") ? toBeDecoded.replace(ENCODED_DOUBLE_AT, "@@").replace(ENCODED_DOUBLE_QUOTES, "\"").replace(ENCODED_PREFIX, "&") : toBeDecoded;
+    protected static String encodeString(String toBeEncoded) {
+        return toBeEncoded != null ? StringUtils.replace(
+                StringUtils.replace(StringUtils.replace(toBeEncoded, "&", ENCODED_PREFIX), "@@", ENCODED_DOUBLE_AT),
+                "\"", ENCODED_DOUBLE_QUOTES) : toBeEncoded;
     }
 
     @Override

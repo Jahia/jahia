@@ -82,7 +82,7 @@
         <pluto.version>2.0.2</pluto.version>
         <spring.version>3.2.13.RELEASE</spring.version>
         <springwebflow-version>2.4.1.RELEASE</springwebflow-version>
-        <jackrabbit.version>2.4.5-jahia14-SNAPSHOT</jackrabbit.version>
+        <jackrabbit.version>2.4.5-jahia14</jackrabbit.version>
         <lucene.version>3.0.3</lucene.version>
         <jbpm.version>6.0.0.Final</jbpm.version>
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
@@ -175,7 +175,7 @@
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.6</jahia.commons.version>
-        <jahia.plugin.version>5.1-SNAPSHOT</jahia.plugin.version>
+        <jahia.plugin.version>5.1</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
         <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>

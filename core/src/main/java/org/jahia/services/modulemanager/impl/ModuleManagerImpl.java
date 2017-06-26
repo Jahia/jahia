@@ -164,14 +164,23 @@ public class ModuleManagerImpl implements ModuleManager {
 
     private OperationResult doInstall(Collection<PersistentBundle> infos, final String target, boolean start) throws ModuleManagementException {
         ArrayList<BundleInfo> bundleInfos = new ArrayList<>(infos.size());
+        // phase #1: install bundles but do not start
         for (PersistentBundle info : infos) {
-            if (start) {
-                stopPreviousVersions(info, target);
-            }
-            bundleService.install(info.getLocation(), target, start);
+            // install but do not start bundle yet
+            bundleService.install(info.getLocation(), target, false);
             bundleInfos.add(toBundleInfo(info));
         }
+        // phase #2: if start requested, stop the previous versions of bundles, start requested versions and perform refresh
         if (start) {
+            // phase #2.1 stop previous versions
+            for (PersistentBundle info : infos) {
+                stopPreviousVersions(info, target);
+            }
+            // phase #2.2 start new versions
+            for (PersistentBundle info : infos) {
+                bundleService.start(info, target);
+            }
+            // phase #2.3 refresh stopped versions
             refreshOtherVersions(bundleInfos, target);
         }
         return OperationResult.success(bundleInfos);

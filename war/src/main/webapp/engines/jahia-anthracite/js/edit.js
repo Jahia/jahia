@@ -7,8 +7,6 @@
 			// Setup observers
 			indigoQF.observers.body();
 
-
-
 			// Setup listeners
 			$(document).ready(function(){
 				$("body")
@@ -18,38 +16,35 @@
 					.on("click", "#JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2)", indigoQF.listeners.toggleSidePanelDocking)
 					.on("mouseover", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", indigoQF.listeners.mouseOverHamburger)
 					.on("click", "#JahiaGxtSidePanelTabs .x-tree3-node-text", indigoQF.listeners.clickSidePanelMoreOptionsButton)
-					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickSidePanelFileThumbMoreOptionsButton);
+					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickSidePanelFileThumbMoreOptionsButton)
+					.on("click", ".x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(2) > div:nth-child(2)", indigoQF.listeners.closeSidePanel)
+					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", indigoQF.listeners.addPageToHistory);
 
-				switch(indigoQF.status.sidePanelTabs.style){
+				// Setup side panel listeners accordingly to naviagtion style (rollover or click) as defined in indigoQF.status.panelMenu.style
+				switch(indigoQF.status.panelMenu.style){
 					case "click":
-						$("body").on("mousedown", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab, #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", indigoQF.listeners.clickSidePanelTab);
+						$("body").on("mousedown", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", indigoQF.listeners.clickSidePanelTab);
+						$("body").on("mousedown", "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", indigoQF.listeners.clickSidePanelSettingsTab);
 						break;
 
 					case "rollover":
 						$("body").on("mouseenter", "#JahiaGxtSidePanelTabs", indigoQF.listeners.mouseOverSidePanelTab);
-
 						$("body").on("mouseleave", "#JahiaGxtSidePanelTabs", indigoQF.listeners.mouseLeaveSidePanelTabs);
-
 						$("body").on("mouseenter", ".x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) table > tbody > tr > td > div > table > tbody > tr > td:nth-child(1) input[type='text']", indigoQF.listeners.mouseEnterSiteSelector)
-
 						$("body").on("mouseover", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab, #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", indigoQF.listeners.mouseEnterSidePanelTab);
 						break;
 				}
 
 			});
 
-
-
 		},
 		status: {
 			sidePanelTabs: {
 				mouseOutTimer: null,
-				justBeenClosed: false,
-				style: "click",
-				openedSide: null,
-				tabs: {}
+				justBeenClosed: false
 			},
 			panelMenu: {
+				style: "click",
 				openedJoint: null,
 				mouseOutTimer: null,
 				mouseOutTimeValue: 200,
@@ -68,10 +63,11 @@
 			iframeObserver: null
 		},
 		config: {
-			selectors: {
+			selectors: { // Ask Thomas for classes where possible
 				editModePageName: ".x-border-panel.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)",
 				editModeMoreInfo: "body[data-selection-count='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)",
-				contributeModeLanguageSelector: ".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div input"
+				contributeModeLanguageSelector: ".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div input",
+				closeSidePanelCapture: "[data-INDIGO-GWT-SIDE-PANEL='open'] .x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(2) > div:nth-child(2)"
 			}
 		},
 		listeners: {
@@ -83,9 +79,14 @@
 			},
 
 			panelMenuModifyDOM: function(){
+				/* PROBLEM ::: CONTENT OF GRID ROW IS EMPTY AT THE TIME OF PROCESSING */
 				// panelMenuModifyDOM() ::: Used to add class names / attributes to side panel so that it can be correctly displayed with CSS"
+				console.log("panelMenuModifyDOM() ::: recode DOM");
+				console.log("tab_serverSettings", $("#JahiaGxtSidePanelTabs .tab_serverSettings .x-grid3-row").length);
+				console.log("tab_systemSiteSettings", $("#JahiaGxtSidePanelTabs .tab_systemSiteSettings .x-grid3-row").length);
 
-				var menu = $("#JahiaGxtSidePanelTabs .x-grid3-row"),
+
+				var menu = $("#JahiaGxtSidePanelTabs .tab_serverSettings .x-grid3-row"),
 					previousItemLevel = 0,
 					relPosCounter = 0,
 					parentCounter = 0;
@@ -131,7 +132,51 @@
 						.attr("has-sub-menu", hasSubMenu)
 						.attr("sub-menu-available", subMenuAlreadyLoaded);
 
+
 				});
+
+
+
+
+
+				var menu = $("#JahiaGxtSidePanelTabs .tab_systemSiteSettings .x-grid3-row"),
+					previousItemLevel = 0,
+					relPosCounter = 0,
+					parentCounter = 0;
+					previousParentID = null,
+					systemSiteSettingsMenuItem = true;
+
+				menu.each(function(index, menuItem_el){
+					var menuItem = $(this),
+						indentSpacer = menuItem.find(".x-tree3-el > img:nth-child(1)"), // Sub menus are 'created' by indenting menu items with a transparent GIF spacer in multiples of 18. So a width of 0 is level 1, 18 is level 2, and so on...
+						indentSpacerWidth = indentSpacer.width(),
+						subMenuJoint = menuItem.find(".x-tree3-el .x-tree3-node-joint"), // If the menu item has a submenu then the joint is visible (has a height).
+						subMenuJointHeight = subMenuJoint.attr("style").indexOf("height") > -1,
+						hasSubMenu = subMenuJointHeight > 0,
+						subMenuAlreadyLoaded = $("#JahiaGxtSidePanelTabs .x-grid3-row[parent-ID='" + index + "']").length > 0,
+						menuItemLevel = indentSpacerWidth / 18,
+						menuItemLevel = 1,
+						parentItemLevel;
+						relPosCounter = null;
+						parentCounter++;
+
+					menuItem
+						.attr("menu-ID", index)
+						.attr("menu-rel-ID", relPosCounter)
+						.attr("menu-item-level", menuItemLevel)
+						.attr("menu-system-site-settings", systemSiteSettingsMenuItem)
+						.attr("parent-ID", "50")
+						.attr("parent-rel-ID", parentCounter)
+						.attr("has-sub-menu", hasSubMenu)
+						.attr("sub-menu-available", subMenuAlreadyLoaded);
+
+				});
+
+
+
+
+
+
 
 				// Add sub menu IDs (0, 1, 2, ...)
 				var previousParentID = 0,
@@ -151,45 +196,50 @@
 					previousParentID = parentID;
 				});
 
-
-
-
 			},
 
 			// Body updates
 			displaynameChanged: function(){
 
-				var label;
-
-
-				switch(indigoQF.status.multiselection.count){
-					case 0:
-						label = indigoQF.status.currentPage.displayname;
-						break;
-
-					case 1:
-						label = "1 selected item";
-						break;
-
-					default:
-						label = indigoQF.status.multiselection.count + " selected items";
-						break;
-				}
-
-				$(".x-current-page-path").attr("data-PAGE-NAME",label);
-
-				// Contribute Path Name (added to Langiage Selector - need to get a class for this)
-				$(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div").attr("data-PAGE-NAME",label);
+				var pageTitle;
 
 				switch(indigoQF.status.currentPage.displayname){
 					case "settings":
-						indigoQF.status.sidePanelTabs.hideInit = true;
+					case "System Site":
 
-						//indigoQF.status.panelMenu.observer
+						// Need to trigger a click on Settings tabs to make sure that the menus are loaded in advance.
+						$("#JahiaGxtSidePanelTabs .x-tab-panel-header li.x-component").trigger("click");
+
+						// Attach an observer to the Side Panel Menu
 						indigoQF.observers.panelMenuObserver();
-
 						break;
+
 					default:
+						// Presumably in Edit Mode or Contribute Mode, in which case we need to set the page title
+						switch(indigoQF.status.multiselection.count){
+							case 0:
+								pageTitle = indigoQF.status.currentPage.displayname;
+								break;
+
+							case 1:
+								pageTitle = "1 selected item";
+								break;
+
+							default:
+								pageTitle = indigoQF.status.multiselection.count + " selected items";
+								break;
+						}
+
+						// Page Title in Edit Made
+						$(".x-current-page-path").attr("data-PAGE-NAME",pageTitle);
+
+						// Page Title in Contribute Made
+						$(".x-viewport-contributemode .toolbar-itemsgroup-languageswitcher").attr("data-PAGE-NAME",pageTitle);
+
+						// Page Titles need centering
+						indigoQF.listeners.updatePageMenuPositions();
+
+						// Remove Mutation Observer used in Settings pages (if attached)
 						if(indigoQF.status.panelMenu.observer){
 							indigoQF.status.panelMenu.observer.disconnect();
 							indigoQF.status.panelMenu.observer = null;
@@ -197,45 +247,53 @@
 						}
 				}
 
-				indigoQF.listeners.updatePageMenuPositions();
+
 			},
 			countChanged: function(count){
+				// Multiple Items have been selected (in Edit Mode)
 				indigoQF.status.multiselection.count = count;
 
+				// Refresh the title of the page accordingly
 				indigoQF.listeners.displaynameChanged();
 			},
 			publicationStatusChanged: function(status){
+				// Publication status of the current page has changed (in edit or contribute mode). Update status accordingly.
 				$("body").attr("data-PAGE-PUBLICATION-STATUS", status);
 
 			},
 
 			updatePageMenuPositions: function(){
-				// EDIT MODE
-				var editMode = {};
+				// Center title to page and move surrounding menus to right and left.
+				// Ask Thomas for a body attribute to distinguish EDIT and CONTRIBUTE modes.
 
+				// EDIT MODE page title positions
+				var editMode = {};
 					editMode.pageNameLeft = parseInt($(indigoQF.config.selectors.editModePageName).position().left);
 					editMode.pageNameWidth = Math.floor($(indigoQF.config.selectors.editModePageName).width()) - 1;
 					editMode.pageNameRight = editMode.pageNameLeft + editMode.pageNameWidth;
 
+				// Preview Menu
 				$(".edit-menu-view").css({
 					"left": (editMode.pageNameRight + 76) + "px",
 					"opacity": 1
 				});
 
+				// Publication Menu
 				$(".edit-menu-publication").css({
 					"left": (editMode.pageNameRight + 65) + "px",
 					"opacity": 1
 				});
 
+				// More Info Menu (previously labeled as Edit )
 				$(indigoQF.config.selectors.editModeMoreInfo).css({
 					"left": (editMode.pageNameLeft + 92) + "px",
 					"opacity": 1
 				});
 
-				// CONTRIBUTE MODE
+				// CONTRIBUTE MODE page title positions
 				var contributeMode = {};
-
 					contributeMode.pageNameWidth = function(){
+						/* Because the Page Title is an ::after we can not access it via Jquery, have to get the computed width of the pseudo element ... */
 						var pageNameElement = document.querySelector('.x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div'),
 							returnValue = 0;
 
@@ -249,14 +307,17 @@
 					contributeMode.pageNameLeft = (contributeMode.windowWidth / 2) - (contributeMode.pageNameWidth / 2);
 					contributeMode.pageNameRight = (contributeMode.windowWidth / 2) + (contributeMode.pageNameWidth / 2) + 20;
 
+				// Language Selector
 				$(indigoQF.config.selectors.contributeModeLanguageSelector).css({
 					"margin-left": "-" + (contributeMode.pageNameWidth / 2) + "px"
 				});
 
+				// Publication Menu
 				$(".contribute-menu-publication").css({
 					left: contributeMode.pageNameRight + "px"
 				});
 
+				// Preview Menu
 				$(".contribute-menu-view").css({
 					left: (contributeMode.pageNameRight + 10) + "px"
 				});
@@ -269,46 +330,128 @@
 
 			// Button listeners
 			toggleThemeMode: function(e){
-				// UI Theme toggle (dark / light)
+				// Toggle the UI Theme by changing the body attribute accordingly.
+
+				/* The button firing this event is actually a pseudo element atached to a table.
+				// The tables CSS has been set to ignore all pointer events EXCEPT the pseudo element who accepts pointer events.
+				// This allows us to capture a click on the pseudo element, but we have to check that it a child of the table want the one that was clicked */
+
 				if($(e.target).hasClass("x-toolbar-ct")){
-					var indigoUIColor;
-
 					$("body").attr("data-INDIGO-UI", function(index, attr){
-						indigoUIColor = (attr == "light") ? "dark" : "light";
-
-						return indigoUIColor;
+						return (attr == "light") ? "dark" : "light";
 					});
 
-					$(this).attr("data-INDIGO-UI", indigoUIColor);
 				}
 			},
 			openManagerMenu: function(){
-				// Close side panel if open
-				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
+				// Manager Menu has been opened.
+
+				// Close the side panel if it is open.
+				indigoQF.listeners.closeSidePanel()
 			},
 			closeManagerMenu: function(){
+				// Manager Menu has been closed by clicking on the X.
+				// Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
 				$(this).fadeOut();
 			},
 			toggleSidePanelDocking: function(e){
-				// Pin-Toggle Side Panel
-				$("body").attr("data-INDIGO-GWT-FULLSCREEN", function(index, attr){
-					return (attr == "on") ? "" : "on";
-				})
+				// This listener has a dual purpose depending on where it was called from.
+				// If called from the Edit Mode then it toggles the Side Panel Menu as PINNED and FLOATING
+				// If it is called from the settings window then it acts as a close button, closing the settings and returning to the Edit Mode.
+
+				var windowStyle = $("body").attr("data-edit-window-style");
+
+				switch(windowStyle){
+					case "settings":
+						// SETTINGS MODE: Button acts as a button that closed the Settings Overlay Page
+
+						$("body").attr("data-edit-window-style", "default");
+						indigoQF.listeners.closeSidePanel()
+
+						// Load the last page displayed in the Edit Mode. Technically this should never be NULL. However, need to assign a value on first window load as it is currently only assigned when a user clicks a page in the Page Tree.
+						if(indigoQF.status.lastOpenedPage){
+							indigoQF.status.lastOpenedPage.trigger("mousedown");
+
+						} else {
+							// Could not find a page in the history so select the first page in the tree.
+							// Note that this probably will never work, because by default the tree is collapsed and item #2 is not yet loaded, so a trigger click wont work as it is not there.
+							// Also, we can not click the first element in the tree because it isnt actually a clickable page.
+							// To solve this problem, if there isnt a nth-child(2), then the first child first needs expanding (clicking).
+							$("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)").trigger("mousedown");
+						}
+
+						break;
+					default:
+						// EDIT MODE: Button acts as a toggle for the side panel
+						$("body").attr("data-INDIGO-GWT-FULLSCREEN", function(index, attr){
+							return (attr == "on") ? "" : "on";
+						})
+						break;
+				}
+
+
+
+			},
+			clickSidePanelSettingsTab: function(){
+				// User has clicke the Settings Tab Button.
+				if(indigoQF.status.currentPage.displayname != "settings" && $("body").attr("data-sitesettings") == "false"){
+					$("body").attr("data-edit-window-style", "settings");
+					indigoQF.listeners.openSidePanel()
+
+					if(indigoQF.status.lastSettingsPage){
+						// Found settings page in history so open it
+						indigoQF.status.lastSettingsPage.trigger("click");
+					} else {
+						// Need to check for loaded elements ...Not found a settings page in history, so open first
+						//$("#JahiaGxtSidePanelTabs #JahiaGxtSettingsTab .x-grid3-row:nth-child(1)").trigger("click");
+
+					}
+				}
+
 
 			},
 			clickSidePanelTab: function(){
-				// Trigger click on Side Panel Tabs on hover
-				//$(this).trigger("click");
-				var alreadyClicked = $(this).hasClass("x-tab-strip-active");
+				// User has clicked on one of the side panel tabs (except for Settings Tab which calls indigoQF.listeners.clickSidePanelSettingsTab)
 
-				if(alreadyClicked && $("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-					// remove side panel
-					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
+				// Menus for the Tabs that call this listener require a normal side panel display
+				$("body").attr("data-edit-window-style", "default");
+
+				var tabMenuActive = $(this).hasClass("x-tab-strip-active"),
+					sidePanelOpen = $("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open";
+
+				if(tabMenuActive && sidePanelOpen){
+					// CLOSE SIDE PANEL: Already open for current Tab Menu
+					indigoQF.listeners.closeSidePanel()
 				} else {
-					// open panel
-					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
+					// OPEN SIDE PANEL.
+					indigoQF.listeners.openSidePanel()
 
 				}
+
+
+
+			},
+			closeSidePanel: function(){
+				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
+
+			},
+			addPageToHistory: function(){
+				if($("body").attr("data-sitesettings") != "true" && $("body").attr("data-main-node-displayname") != "settings"){
+					var openedPage = $(this).closest("#JahiaGxtPagesTab").length > 0,
+						openedSettings = $(this).closest("#JahiaGxtSettingsTab").length > 0;
+
+						if(openedPage){
+							indigoQF.status.lastOpenedPage = $(this);
+						} else if(openedSettings){
+							indigoQF.status.lastSettingsPage = $(this);
+						}
+
+				}
+
+
+			},
+			openSidePanel: function(){
+				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
 
 			},
 			mouseEnterSidePanelTab: function(){
@@ -321,25 +464,26 @@
 				//			When the user hovers it the Side Panel is effectivly mouseout-ed.
 				// Fix:		Reopen the side panel as soon as the Site Selector is hovered.
 
-				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
+				indigoQF.listeners.openSidePanel()
 			},
 			mouseOverSidePanelTab: function(){
 				// Mouseover Side Panel tabs, so open it.
 				if($("body").attr("data-selection-count") == "0"){
-					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
+					indigoQF.listeners.openSidePanel()
 
 				}
 			},
 			mouseLeaveSidePanelTabs: function(e){
-				// Mouse leaves the Side Panel
+				// CHECK if the user has actually left the Side Panel OR if they have just opened a context menu, in which case keep the Side Panel Open.
+				// Note that this only applies when the Side Panel is activated on mouse over.
 
 				if($("body > div.x-menu").length > 0){
-					// Use hasnt really left the Side Panel, they have just opened a context menu, so do not close the side panel.
+					// A Context Menu has been found, so do not close the Side Panel.
 
 				} else {
-					// There is no context menu, so assume that the Side Panel has really been mouseout-ed - close it.
+					// No Context menu found, so assume that the Side Panel has really been mouseout-ed - close it.
 
-					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
+					indigoQF.listeners.closeSidePanel()
 
 					// Set flag and timer to remove after 100ms.
 					indigoQF.status.sidePanelTabs.justBeenClosed = true;
@@ -358,7 +502,7 @@
 
 				if(indigoQF.status.sidePanelTabs.justBeenClosed && $("body").attr("data-selection-count") == "0"){
 					// Side Panel was open less than 100ms ago, so repopen it.
-					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
+					indigoQF.listeners.openSidePanel()
 
 				}
 			},
@@ -381,43 +525,51 @@
 		},
 		observers: {
 			body: function(){
-				// Configuration of the observer:
-				var config = {
+				/*
+					Mutation Observer attached to BODY tag.
+					Listening for changes in attributes to determine if page has changed OR if the user has started a multiple selection.
+				*/
+
+
+				var // Configuration of the observer:
+					config = {
 						attributes: true,
 						childList: true,
 						characterData: true
+						//subtree: true
 					},
+
+					// Attach Mutation Observer to the BODY tag
 					target = document.body,
+
+					// Mutation Observer
 					observer = new MutationObserver(function(mutations){
 						var publicationStatus,
-							newNodes,
 							publishSplit,
 							publishName,
 							friendlyPublishName;
 
+						// Loop through all mutations in BODY tag
 						mutations.forEach(function(mutation){
-							newNodes = mutation.addedNodes;
-							removedNodes = mutation.removedNodes;
-							attributeNames = mutation.attributeName;
 
-							if(attributeNames == "data-main-node-displayname"){
-								var pageName = $("body").attr("data-main-node-displayname");
-								indigoQF.status.currentPage.displayname = pageName;
+							// Check if Page has been changed
+							if(mutation.attributeName == "data-main-node-displayname"){
+								indigoQF.status.currentPage.displayname = $("body").attr("data-main-node-displayname");
 
 								// Start listening to menu again
-
-
 								indigoQF.listeners.displaynameChanged();
 
 							}
 
-							if(attributeNames == "data-selection-count"){
+							// Check if multiple selection has been initiated
+							if(mutation.attributeName == "data-selection-count"){
 								var count = parseInt($("body").attr("data-selection-count"));
 
 								indigoQF.listeners.countChanged(count);
 
 							}
 
+							/* START MESSY */
 							// Check for changes in document publication STATUS
 							if($("body > div:nth-child(1)").attr("config") == "contributemode"){
 								publicationStatus = $(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(7) img");
@@ -437,6 +589,7 @@
 								indigoQF.listeners.publicationStatusChanged(friendlyPublishName);
 
 							}
+							/* END MESSY */
 
 						});
 					});
@@ -446,53 +599,18 @@
 			},
 			panelMenuObserver: function(){
 				//Used to listen for changes to side menu panel and update CSS accordingly
-
 				if(!indigoQF.status.panelMenu.observer){
-					// Setup new observer
+					// The Observer hasnt already been attached, so do it now.
 
 					// Used to control side panel menu by CLICK
 					$("body")
-						.off("click", ".x-viewport-adminmode #JahiaGxtSidePanelTabs-OFF .x-grid3-row")
-						.on("click", ".x-viewport-adminmode #JahiaGxtSidePanelTabs-OFF .x-grid3-row", function(e){
+						.off("mouseenter", "#JahiaGxtSidePanelTabs ul.x-tab-strip li:nth-child(2)")
+						.on("mouseenter", "#JahiaGxtSidePanelTabs ul.x-tab-strip li:nth-child(2)", function(){
+							indigoQF.status.panelMenu.openedJoint = 50;
+							$("#JahiaGxtSidePanelTabs").attr("current-sub-menu", indigoQF.status.panelMenu.openedJoint)
+						})
 
-						var clickedJoint = $(e.target).hasClass("x-tree3-node-joint"),
-							menuItem = $(this),
-							menuID = menuItem.attr("menu-ID"),
-							subMenuAvailable = menuItem.attr("sub-menu-available") == "true",
-							currentMenu = $("#JahiaGxtSidePanelTabs").attr("current-sub-menu");
-
-						if(clickedJoint){
-							// User asked to open sub menu
-							if(indigoQF.status.panelMenu.openedJoint == menuID){
-								indigoQF.status.panelMenu.openedJoint = null; // close it
-							} else {
-								indigoQF.status.panelMenu.openedJoint = menuID; // clicked on a new one
-
-							}
-
-							$("#JahiaGxtSidePanelTabs").attr("current-sub-menu", indigoQF.status.panelMenu.openedJoint);
-
-						} else {
-							// USer clicked elsewhere, see if submenu available, if so then toggle menu
-
-							if(currentMenu == menuID){
-								// Menu already visible so hide it
-								indigoQF.status.panelMenu.openedJoint = null;
-								$("#JahiaGxtSidePanelTabs").attr("current-sub-menu", indigoQF.status.panelMenu.openedJoint);
-
-							} else if(subMenuAvailable){
-								indigoQF.status.panelMenu.openedJoint = menuID;
-								$("#JahiaGxtSidePanelTabs").attr("current-sub-menu", indigoQF.status.panelMenu.openedJoint);
-
-							} else if(!subMenuAvailable){
-								menuItem.find(".x-tree3-node-joint").trigger("click");
-
-							}
-						}
-
-
-
-					})
+					// FOR THE TRASH ?!
 					$("body")
 						.off("click", ".x-viewport-adminmode #JahiaGxtSidePanelTabs .x-grid3-row")
 						.on("click", ".x-viewport-adminmode #JahiaGxtSidePanelTabs .x-grid3-row", function(e){
@@ -504,7 +622,6 @@
 								topLevelMenuItem = menuItem.attr("menu-item-level") == 0;
 
 							if(topLevelMenuItem){
-
 								if(currentMenu == menuID){
 									// Already open, so hide it
 									indigoQF.status.panelMenu.openedJoint = null;
@@ -520,6 +637,7 @@
 
 
 					});
+
 					// Used to control left panel menu by MOUSE OVER
 					$("body")
 						.off("mouseenter", ".x-viewport-adminmode #JahiaGxtSidePanelTabs .x-grid3-row")
@@ -595,15 +713,16 @@
 						},
 						target = document.getElementById("JahiaGxtSidePanelTabs");
 
+
 						indigoQF.status.panelMenu.observer = new MutationObserver(function(mutations){
-							var publicationStatus,
-								newNodes,
-								removedNodes;
+							var removedNodes;
 
 							mutations.forEach(function(mutation){
-								newNodes = mutation.addedNodes;
-								removedNodes = mutation.removedNodes;
+								// Knowing when the Side Panel is loaded is a real PAIN. There is no feedback.
+								// Nodes are added at a will and not even in one go, so we have to execute the callback a few times.
+								// The callback is executed when the LOADING MASK has been removed from the Menu.
 
+								removedNodes = mutation.removedNodes;
 
 								if(removedNodes.length > 0){
 								  if($(removedNodes[0]).hasClass("ext-el-mask") || $(removedNodes[0]).hasClass("x-tree3-node-joint")){
@@ -626,6 +745,7 @@
 		}
 	}
 
+	// Page is ready, so start the ball rolling ...
 	window.onload = indigoQF.init;
 
 

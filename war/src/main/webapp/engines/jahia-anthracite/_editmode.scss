@@ -1,0 +1,443 @@
+
+
+/***********************************************/
+/* EDIT MODE ***********************************/
+/***********************************************/
+
+.x-viewport-editmode {
+	.x-toolbar-first {
+		background-size: 32px 32px;
+		background: none !important;
+		border: none !important;
+		display: block;
+		top: 0;
+		height: 40px !important;
+		right: 2px;
+		left: auto;
+		pointer-events: all;
+		padding: 5px;
+		width: 49px;
+		z-index: 999999 !important;
+		overflow: visible !important;
+		position: fixed;
+	    &:hover {
+	        width: 49px;
+	        height: 100%;
+	        z-index: 999999 !important;
+	        overflow: visible !important;
+	        position: fixed;
+	    }
+
+		button {
+		    font-family: $font-1 !important;
+		}
+
+		.xtb-sep {
+		    background: none !important;
+		}
+
+		.x-btn-arrow {
+		    display: none;
+		}
+
+		> table {
+		   opacity: 0;
+		   width: 100%;
+		   display: block;
+		   position: relative;
+		   pointer-events: none;
+
+		   &::after {
+			  content: $text_dark_ui;
+				position: fixed;
+				bottom: 11px;
+				right: 6px;
+				display: block;
+				width: 50px;
+				background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
+				background-size: 23px 23px;
+				text-align: center;
+				padding-top: 23px;
+				font-weight: $normal;
+				font-family: $font-1;
+				color: rgba(238, 238, 238, 0.9);
+				font-size: 8px;
+				text-transform: uppercase;
+				opacity: 0.8;
+				pointer-events: all;
+		   }
+
+		   body[data-INDIGO-UI="light"] &::after {
+			   content: $text_light_ui;
+		   }
+
+		   &:hover::after {
+			   cursor: pointer;
+			   opacity: 1;
+		   }
+	   }
+
+	   > table, &:hover > table {
+           opacity: 1;
+           z-index: 999999;
+           xpointer-events: all;
+       }
+
+	   > table:nth-child(1) {
+		   table table {
+	           &::after {
+	               font-family: $font-1;
+	               font-size: 8px;
+	               text-transform: uppercase;
+	               font-weight: $normal;
+	               width: 100%;
+	               display: block;
+	               text-align: center;
+	               margin-bottom: 10px;
+	               color: $cod-gray;
+	               body[data-selection-count="0"] & {
+	                   color: rgba(238, 238, 238, 0.9);
+	               }
+	           }
+	       }
+	       td.x-btn-mc {
+	           display: block;
+	           width: 50px;
+	           height: 23px;
+	           background: red;
+	           margin-bottom: 2px;
+	           background: transparent !important;
+	       }
+	       .edit-menu-view {
+	           position: fixed;
+	           left: 0;
+	           opacity: 0;
+	           background: url(./images/tabs-browse-white@X2.png) no-repeat center right 5px $cod-gray;
+	           top: 15px;
+	           background-size: 23px 23px;
+	           border-radius: 0;
+	           height: 20px;
+	           display: block;
+	           width: 45px;
+	           body[data-selection-count="0"] & {
+	               background: url(./images/tabs-browse-white@X2.png) no-repeat center right 5px #545657;
+	               background-size: 23px 23px;
+	           }
+	           td.x-btn-mc {
+	               width: 25px!important;
+	           }
+	           body[data-INDIGO-GWT-SIDE-PANEL="open"] & {} body[data-sitesettings="true"] & {
+	               display: none;
+	           }
+	       }
+	       .edit-menu-mode {
+	           position: fixed;
+	           right: 97px;
+	           top: 6px;
+	           margin-top: 7px;
+	           z-index: 999999;
+	           width: 93px;
+	           height: 24px;
+	           opacity: 0.9;
+	           &::after {
+	               content: $text_edit_mode;
+	               font-size: 14px;
+	               text-transform: uppercase;
+	               font-weight: $semilight;
+	               margin-top: 0px;
+	               padding-left: 35px;
+	               background: url(./images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
+	               padding-right: 2px;
+	               text-align: left;
+	               position: relative;
+	               z-index: 1 !important;
+	               font-family: $font-1;
+	               width: calc(100% - 20px);
+	               display: block;
+	               height: 20px;
+	               padding-top: 5px;
+	               body[data-selection-count="0"] & {
+	                   background: url(./images/dx_logo_solid.png) no-repeat left 12px center / 20px 20px, url(./images/combo-arrow.png) no-repeat right center;
+	               }
+	           }
+	       }
+	       .edit-menu-user {
+	           position: fixed;
+	           top: 10px;
+	           background: url(./images/tabs-usermenu-black@X2.png) no-repeat left 14px top 6px;
+	           height: 40px;
+	           margin-top: 0;
+	           background-size: 23px 23px;
+	           opacity: 0.8;
+	           &:hover {
+	               opacity: 1;
+	           }
+	           body[data-selection-count="0"] & {
+	               background: url(./images/tabs-usermenu-white@X2.png) no-repeat left 14px top 6px;
+	               background-size: 23px 23px;
+	           }
+	       }
+	       .toolbar-item-clipboard {
+	           body[data-sitesettings="true"] & {
+	               display: none;
+	           }
+	       }
+	       .toolbar-item-workinprogressadmin {
+	           body[data-sitesettings="true"] & {
+	               display: none;
+	           }
+	       }
+	       .toolbar-item-showtrashboard {
+	           body[data-sitesettings="true"] & {
+	               display: none;
+	           }
+	       }
+	       .edit-menu-cache {
+	           body[data-sitesettings="true"] & {
+	               display: none;
+	           }
+	       }
+	       .editmode-managers-menu {
+						position: fixed;
+						top: 10px;
+						left: 5px;
+						z-index: 999999999;
+						display: block;
+						background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+						background-size: 32px 32px;
+						margin-top: 0;
+						opacity: 0.8;
+	           body[data-selection-count="0"] & {
+	               background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+	               background-size: 32px 32px;
+	           }
+	           &:hover {
+	               opacity: 1;
+	           }
+	           &::after {
+	               content: "";
+	           }
+	           body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+				   		background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+	            background-size: 32px 32px;
+	           }
+
+					.x-btn-mc {
+						height: 40px!important;
+					}
+	       }
+	       .edit-menu-workflow {
+	           margin-top: 50px;
+	           body[data-sitesettings="true"] & {
+	               display: none;
+	           }
+	       }
+	       .edit-menu-publication {
+	           position: fixed;
+	           left: 0;
+	           opacity: 0;
+	           background: url(./images/tabs-publish-white@X2.png) no-repeat top -1px left 3px $cod-gray;
+	           top: 15px;
+	           background-size: 23px 23px;
+	           border-radius: 100%;
+	           height: 20px;
+	           display: block;
+	           body[data-selection-count="0"] & {
+	               background: url(./images/tabs-publish-white@X2.png) no-repeat top -1px left 3px #545657;
+	           }
+	           body[data-PAGE-PUBLICATION-STATUS="modified"][data-selection-count="0"] & {
+	               background: url(./images/tabs-publish-modified@X2.png) no-repeat top -1px left 3px #545657;
+	               background-size: 23px 23px;
+	           }
+	           body[data-PAGE-PUBLICATION-STATUS="published"][data-selection-count="0"] & {
+	               background: url(./images/tabs-publish-published@X2.png) no-repeat top -1px left 3px #545657;
+	               background-size: 23px 23px;
+	           }
+	           td.x-btn-mc {
+	               width: 25px!important;
+	           }
+	           body[data-INDIGO-GWT-SIDE-PANEL="open"] & {} body[data-sitesettings="true"] & {
+	               display: none;
+	           }
+	       }
+	   }
+
+	   .x-toolbar-cell {
+			display: block;
+			margin-top: 10px;
+			opacity: 1;
+			pointer-events: all;
+
+		   button {
+           width: 50px !important;
+           height: 35px !important;
+           padding: 0 !important;
+           background: transparent !important;
+           text-indent: -50000px;
+	       }
+
+		   em {
+		       background: transparent !important;
+		   }
+
+		   .x-item-disabled {
+			   display: none;
+
+		   }
+
+		   &:hover {
+			   cursor: pointer;
+			   > table:nth-child(1)::after {
+			       color: $gallery-gray;
+			   }
+		   }
+
+		   &:nth-child(1) {
+			   body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
+				   left: 396px;
+			   }
+		   }
+
+		   &:nth-child(1) > table:nth-child(1)::after {
+			   body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
+				   border: none;
+			   }
+		   }
+
+		   &:nth-child(1) > table:nth-child(1) td.x-btn-mc {
+           display: block;
+           width: 50px;
+           background: red;
+           margin-bottom: 2px;
+           background: transparent !important;
+           display: none;
+	       }
+	       &:nth-child(2) {} &:nth-child(3) {
+	           display: none;
+	       }
+	       &:nth-child(4) {} &:nth-child(5) {
+	           background: url(./images/tabs-workflow-black@X2.png) no-repeat top 3px center;
+	           background-size: 23px 23px;
+	           body[data-selection-count="0"] & {
+	               background: url(./images/tabs-workflow-white@X2.png) no-repeat top 3px center;
+	               background-size: 23px 23px;
+	           }
+	           > table:nth-child(1)::after {
+	               content: $text_workflow;
+	           }
+	       }
+	       &:nth-child(6) > table:nth-child(1)::after {
+	           content: $text_tasks;
+	       }
+	       &:nth-child(7) {
+			   body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+						opacity: 0.5;
+						background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+						background-size: 32px 32px;
+			       &:hover {
+			           opacity: 1;
+			       }
+			   }
+		   }
+		   &:nth-child(8) {
+	           background: url(./images/tabs-placeholder-black@X2.png) no-repeat top center;
+	           background-size: 23px;
+	           body[data-selection-count="0"] & {
+	               background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
+	               background-size: 23px 23px;
+	           }
+	           opacity: 0.8;
+	           &:hover {
+	               opacity: 1;
+	           }
+	           > table:nth-child(1)::after {
+	               content: $text_cache;
+	           }
+	       }
+	       &:nth-child(9) {
+	           background: url(./images/tabs-trash-black@X2.png) no-repeat top center;
+	           background-size: 23px 23px;
+	           body[data-selection-count="0"] & {
+	               background: url(./images/tabs-trash-white@X2.png) no-repeat top center;
+	               background-size: 23px 23px;
+	           }
+	           opacity: 0.8;
+	           &:hover {
+	               opacity: 1;
+	           }
+	           > table:nth-child(1)::after {
+	               content: $text_trash;
+	           }
+	       }
+	       &:nth-child(10) {
+	           background: url(./images/tabs-placeholder-black@X2.png) no-repeat top center;
+	           background-size: 23px 23px;
+	           body[data-selection-count="0"] & {
+	               background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
+	               background-size: 23px 23px;
+	           }
+	           opacity: 0.8;
+	           &:hover {
+	               opacity: 1;
+	           }
+	           > table:nth-child(1)::after {
+	               content: $text_jobs;
+	           }
+	       }
+	       &:nth-child(11) > table:nth-child(1)::after {
+	           content: $text_clipboard;
+	       }
+
+		   > table:nth-child(1) tbody tr td table:nth-child(1) tbody tr td > div {
+	           display: none;
+	       }
+	   }
+	}
+
+	> div:nth-child(1) > div:nth-child(2) > div:nth-child(1) {
+	    height: 43px;
+	    pointer-events: none;
+	}
+
+	> div:nth-child(1) > div:nth-child(2) > div {
+	   &:nth-child(1) > div:nth-child(1) {
+		   z-index: 999999 !important;
+		   height: 60px;
+		   display: block;
+		   position: absolute !important;
+	   }
+	   &:nth-child(2) {
+		   height: calc(100% - 46px) !important;
+		   width: calc(100% - 69px) !important;
+		   > div:nth-child(2) > div:nth-child(2) {
+			   top: 0px !important;
+			   height: calc(100% - 9px) !important;
+			   width: calc(100% - 55px) !important;
+			   left: 60px !important;
+			   z-index: 9999;
+			   overflow: visible !important;
+		   }
+	   }
+   }
+
+   > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) {
+       body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
+				width: calc(100% - 424px) !important;
+				left: 429px !important;
+	   }
+   }
+
+   > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div {
+	   width: 100% !important;
+	   height: calc(100% + 4px) !important;
+	   > iframe:nth-child(1) {
+		   width: 100% !important;
+		   box-shadow: 0 10px 30px 1px rgba(0, 0, 0, 0.8) !important;
+		   margin-top: 8px !important;
+
+		   body[data-selection-count="0"] & {
+			   box-shadow: 0 5px 10px 1px rgba(49, 49, 49, 0.5)!important;
+		   }
+	   }
+   }
+}

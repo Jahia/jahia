@@ -2169,7 +2169,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             historyListJahia = contentManager.getContentHistory(sessionWrapper, nodeIdentifier, offset, limit);
             int size = historyListJahia.size();
-            historyListJahia = new ArrayList<GWTJahiaContentHistoryEntry>(historyListJahia.subList(offset, Math.min(size, offset + limit)));
+            if (offset > size) {
+                historyListJahia = new ArrayList<GWTJahiaContentHistoryEntry>(0);
+            } else {
+                historyListJahia = new ArrayList<GWTJahiaContentHistoryEntry>(historyListJahia.subList(offset, Math.min(size, offset + limit)));
+            }
             BasePagingLoadResult<GWTJahiaContentHistoryEntry> pagingLoadResult = new BasePagingLoadResult<GWTJahiaContentHistoryEntry>(historyListJahia, offset, size);
             return pagingLoadResult;
         } catch (RepositoryException e) {

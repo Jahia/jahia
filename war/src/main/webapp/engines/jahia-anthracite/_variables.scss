@@ -1,47 +1,139 @@
 
 /*======= Colors =======*/
+	/* Main colors */
+	$shuttle-gray: #5c6164; // main background
+	$nevada-gray: #646b6f;  // secondary background
+	$concrete-gray: #f2f2f2;  // light background (left menu panel)
+	$jahia-blue: #00a0e3;
+	$white: #ffffff;
+
+	$white-clouds: #F1F1F1;
+	$grey-clouds: #7a7e80;
+	$black-clouds: #1d1d1d;
+
+	/* Secondary colors */
+	$harlequin-green: #46e202;
+	$blaze-orange: #fe7100;
+	$botticelli-gray: #d9e8ef;
+	$rollingstone-gray: #72797d;
+	$oslo-gray: #919497;  // menu icons color
+	$gallery-gray: #eeeeee;
+	$mineshaft-gray: #313131;
+	$cod-gray: #1d1d1d;
 
 
-/* Main colors */
+/*======= Icons =======*/
+	/* Pages Icons */
+	$icon_pages_white_clouds:     "./images/tabs-pages-white@X2.png";
+	$icon_pages_grey_clouds:      "./images/tabs-pages-dark@X2.png";
+	$icon_pages_jahia_blue:       "./images/tabs-pages-blue@X2.png";
+	$icon_pages_black_clouds:     "./images/tabs-pages-black@X2.png";
 
-$shuttle-gray: #5c6164; // main background
-$nevada-gray: #646b6f;  // secondary background
-$concrete-gray: #f2f2f2;  // light background (left menu panel)
-$jahia-blue: #00a0e3;
-$white: #ffffff;
+	/* Create Icons */
+	$icon_create_white_clouds:    "./images/tabs-create-white@X2.png";
+	$icon_create_grey_clouds:     "./images/tabs-create-dark@X2.png";
+	$icon_create_jahia_blue:      "./images/tabs-create-blue@X2.png";
+	$icon_create_black_clouds:    "./images/tabs-create-black@X2.png";
 
+	/* Content Icons */
+	$icon_content_white_clouds:   "./images/tabs-content-white@X2.png";
+	$icon_content_grey_clouds:    "./images/tabs-content-dark@X2.png";
+	$icon_content_jahia_blue:     "./images/tabs-content-blue@X2.png";
+	$icon_content_black_clouds:   "./images/tabs-content-black@X2.png";
 
-/* Secondary colors */
+	/* File Icons */
+	$icon_files_white_clouds:     "./images/tabs-files@X2.png";
+	$icon_files_grey_clouds:      "./images/tabs-files-dark@X2.png";
+	$icon_files_jahia_blue:       "./images/tabs-files-blue@X2.png";
+	$icon_files_black_clouds:     "./images/tabs-files-black@X2.png";
 
-$harlequin-green: #46e202;
-$blaze-orange: #fe7100;
-$botticelli-gray: #d9e8ef;
-$rollingstone-gray: #72797d;
-$oslo-gray: #919497;  // menu icons color
-$gallery-gray: #eeeeee;
-$mineshaft-gray: #313131;
-$cod-gray: #1d1d1d;
+	/* Search Icons */
+	$icon_search_white_clouds:    "./images/tabs-search-white@X2.png";
+	$icon_search_grey_clouds:     "./images/tabs-search-dark@X2.png";
+	$icon_search_jahia_blue:      "./images/tabs-search-blue@X2.png";
+	$icon_search_black_clouds:    "./images/tabs-search-black@X2.png";
 
+	/* Taxonomy Icons */
+	$icon_taxonomy_white_clouds:  "./images/tabs-taxonomy-white@X2.png";
+	$icon_taxonomy_grey_clouds:   "./images/tabs-taxonomy-dark@X2.png";
+	$icon_taxonomy_jahia_blue:    "./images/tabs-taxonomy-blue@X2.png";
+	$icon_taxonomy_black_clouds:  "./images/tabs-taxonomy-black@X2.png";
 
-/* Setting page colors */
+	/* Devices Icons */
+	$icon_devices_white_clouds:   "./images/tabs-devices-white@X2.png";
+	$icon_devices_grey_clouds:    "./images/tabs-devices-dark@X2.png";
+	$icon_devices_jahia_blue:     "./images/tabs-devices-blue@X2.png";
+	$icon_devices_black_clouds:   "./images/tabs-devices-black@X2.png";
 
-$body-bg: $shuttle-gray;
+	/* Settings Icons */
+	$icon_settings_white_clouds:  "./images/tabs-settings-white@X2.png";
+	$icon_settings_grey_clouds:   "./images/tabs-settings-dark@X2.png";
+	$icon_settings_jahia_blue:    "./images/tabs-settings-blue@X2.png";
+	$icon_settings_black_clouds:  "./images/tabs-settings-black@X2.png";
+
 
 
 
 /*======= Fonts =======*/
+	/* Font families */
+	$font-1: 'Nunito Sans', sans-serif;
+
+	/* Font weights */
+	$extralight: 100;
+	$semilight: 200;
+	$light: 300;
+	$normal: 400;
+	$semibold: 500;
+	$bold: 700;
 
 
-/* Font families */
-
-$font-1: 'Nunito Sans', sans-serif;
 
 
-/* Font weights */
+	/*======= Themes =======*/
+		/* DARK UI */
+			/* COMMON */
+				$body-bg: $shuttle-gray;
 
-$extralight: 100;
-$semilight: 200;
-$light: 300;
-$normal: 400;
-$semibold: 500;
-$bold: 700;
+			/* EDIT MODE: SIDE PANEL */
+				/* LABEL COLOURS */
+				$button_closed_color_up:        $white-clouds;
+				$button_opened_color_up:        $grey-clouds;
+				$button_opened_color_selected:  $jahia-blue;
+				$button_color_off:          	$black-clouds;
+
+				/* ICONS */
+				$icon_closed_pages:         $icon_pages_white_clouds;
+				$icon_closed_create:        $icon_create_white_clouds;
+				$icon_closed_content:       $icon_content_white_clouds;
+				$icon_closed_files:         $icon_files_white_clouds;
+				$icon_closed_search:        $icon_search_white_clouds;
+				$icon_closed_taxonomy:      $icon_taxonomy_white_clouds;
+				$icon_closed_devices:       $icon_devices_white_clouds;
+				$icon_closed_settings:      $icon_settings_white_clouds;
+
+				$icon_open_pages:           $icon_pages_grey_clouds;
+				$icon_open_create:          $icon_create_grey_clouds;
+				$icon_open_content:         $icon_content_grey_clouds;
+				$icon_open_files:           $icon_files_grey_clouds;
+				$icon_open_search:          $icon_search_grey_clouds;
+				$icon_open_taxonomy:        $icon_taxonomy_grey_clouds;
+				$icon_open_devices:         $icon_devices_grey_clouds;
+				$icon_open_settings:        $icon_settings_grey_clouds;
+
+				$icon_selected_pages:       $icon_pages_jahia_blue;
+				$icon_selected_create:      $icon_create_jahia_blue;
+				$icon_selected_content:     $icon_content_jahia_blue;
+				$icon_selected_files:       $icon_files_jahia_blue;
+				$icon_selected_search:      $icon_search_jahia_blue;
+				$icon_selected_taxonomy:    $icon_taxonomy_jahia_blue;
+				$icon_selected_devices:     $icon_devices_jahia_blue;
+				$icon_selected_settings:    $icon_settings_jahia_blue;
+
+				$icon_off_pages:            $icon_pages_black_clouds;
+				$icon_off_create:           $icon_create_black_clouds;
+				$icon_off_content:          $icon_content_black_clouds;
+				$icon_off_files:            $icon_files_black_clouds;
+				$icon_off_search:           $icon_search_black_clouds;
+				$icon_off_taxonomy:         $icon_taxonomy_black_clouds;
+				$icon_off_devices:          $icon_devices_black_clouds;
+				$icon_off_settings:         $icon_settings_black_clouds;

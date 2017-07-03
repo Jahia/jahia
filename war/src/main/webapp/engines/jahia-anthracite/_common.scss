@@ -76,7 +76,7 @@ body {
 
 	&[data-sitesettings="true"] {
 		&::before {
-			content: $text_dxm_settings
+			content: $text_dxm_settings;
 
 		}
 	}

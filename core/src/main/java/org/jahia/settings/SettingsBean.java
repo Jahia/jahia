@@ -105,6 +105,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.sql.SQLException;
 import java.util.*;
 
 import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
@@ -112,6 +113,8 @@ import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProper
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
 
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
+    public static final String JAHIA_SAFE_BACKUP_RESTORE_MARKER = "safe-backup-restore";
+    public static final String JAHIA_SAFE_BACKUP_RESTORE_SYSTEM_PROP = "jahia.safe-backup-restore";
     private static final Logger logger = LoggerFactory.getLogger(SettingsBean.class);
 
     private static SettingsBean instance = null;
@@ -468,6 +471,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             if (System.getProperty("cluster.node.serverId") == null) {
                 setSystemProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
             }
+
+            DatabaseUtils.setDatasource(dataSource);
+
+            checkSafeBackupRestore();
+
             if(clusterActivated) {
                 initBindAddress();
                 // Expose binding port: use also cluster.tcp.ehcache.jahia.port for backward compatibility with Jahia 6.6
@@ -488,7 +496,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             initJerichoLogging();
 
-            DatabaseUtils.setDatasource(dataSource);
             if (isProcessingServer()) {
                 SqlPatcher.apply(getJahiaVarDiskPath(), applicationContext);
                 GroovyPatcher.executeScripts(servletContext, "contextInitializing");
@@ -507,6 +514,27 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         // if logging for Jericho is not explicitly enabled, we disable it by default
         if (!getBoolean("jahia.jericho.logging.enabled", false)) {
             Config.LoggerProvider = LoggerProvider.DISABLED;
+        }
+    }
+
+
+    private void checkSafeBackupRestore() {
+        File marker = new File(getJahiaVarDiskPath(), JAHIA_SAFE_BACKUP_RESTORE_MARKER);
+        if (marker.exists()) {
+            setSystemProperty(JAHIA_SAFE_BACKUP_RESTORE_SYSTEM_PROP, "true");
+
+            if(clusterActivated) {
+                logger.info("Detected safe backup restore marker, cleaning database table [JGROUPSPING] ...");
+                try {
+                    DatabaseUtils.executeStatements(Collections.singletonList("TRUNCATE TABLE `JGROUPSPING`"));
+                    logger.info("Database table [JGROUPSPING] successfully cleaned");
+                } catch (SQLException e) {
+                    logger.error("Unable to clean database table: JGROUPSPING", e);
+                }
+            }
+
+            // delete marker
+            marker.delete();
         }
     }
 

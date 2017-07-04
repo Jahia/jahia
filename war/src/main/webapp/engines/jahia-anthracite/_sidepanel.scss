@@ -24,7 +24,71 @@ $row_selected_over_icon: "./images/tabs-pages-white@X2.png";
 $row_more_options_icon: "./images/icon-more-options-dark-50@X2.png";
 
 
+/***********************************************/
+/* PLACEHOLDERS ********************************/
+/***********************************************/
 
+/* Side Panel */
+.window-side-panel {
+	z-index: 99999!important;
+	height: 100%;
+	pointer-events: none;
+
+	/* Contains Site Selector and Side Panel Refresh Button */
+	.x-panel-header {
+		position: absolute !important;
+	    top: 0px!important;
+	    /* height: 100% !important; */
+	    left: 37px !important;
+	    z-index: 99999 !important;
+	    opacity: 1;
+	    width: 100% !important;
+	    pointer-events: none;
+	    background: transparent !important;
+
+		body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
+			display: block;
+		}
+
+		/* Site Selector */
+		.edit-menu-sites {
+			pointer-events: all !important;
+			width: 263px !important;
+		}
+
+		/* Refresh side panel button */
+		#JahiaGxtRefreshSidePanelButton {
+			left: 252px;
+		    pointer-events: all;
+		    top: 14px;
+		    position: absolute;
+		}
+
+		/* Expand Collaspe Side Bar */
+		.x-tool-left {
+			display: none;
+		}
+	}
+	.x-panel-body {
+		width: 100% !important;
+		overflow: visible;
+		z-index: 999;
+		position: relative;
+		height: calc(100% + 4px) !important;
+	}
+
+	/* Left Panel Tab Button Container */
+	> .x-panel-bwrap {
+		margin-top: 0px;
+		width: 60px;
+		overflow: visible;
+		height: 100% !important;
+		z-index: 99;
+		position: relative;
+		pointer-events: all;
+	}
+
+}
 
 #JahiaGxtSidePanelTabs {
 	position: fixed;
@@ -34,11 +98,18 @@ $row_more_options_icon: "./images/icon-more-options-dark-50@X2.png";
     background: red !important;
     padding-top: 60px;
 
-	[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+	.x-grid-panel {
+		display: none;
 		width: auto!important;
 	}
 
+	[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+		width: auto!important;
 
+		.x-grid-panel {
+			display: block;
+		}
+	}
 
 	.x-tab-panel-header {
 		// Contains the Side Panel Tab Buttons
@@ -145,17 +216,14 @@ $row_more_options_icon: "./images/icon-more-options-dark-50@X2.png";
 						width: 100%!important;
 						background: transparent!important;
 						padding-top: 21px;
+						height: calc(100% - 81px)!important;
 					}
 				}
 			}
 
-
 		}
 
 	}
-
-
-
 
 	.x-panel-toolbar {
 	  float: none !important;
@@ -164,202 +232,347 @@ $row_more_options_icon: "./images/icon-more-options-dark-50@X2.png";
   }
 }
 
-.x-treegrid {
-	/* Tree grid */
-	height: 100%!important;
+/* FORMS */
+
+/* Global Form */
+form {
+	/* Maybe a little to general */
+	padding: 0!important;
 	width: auto!important;
 
-	.x-grid3-row-over .x-tree3-node-text::after {
-		/* MORE Info button visible (row has been hovered) */
-		/* MOVE TO #ID SPECIFIC PARTS AS NOT ALWAYS VISIBLE */
-		opacity: 1!important;
-		cursor: pointer;
-	}
+}
 
-	.x-grid3 {
-		// Secondary Container
-		height: calc(100% - 80px) !important;
-		width: auto!important;
-		background-color: transparent;
+/* Form Item Wrapper */
+.x-form-item {
+	/* Form item Outer Container ... */
+	margin:0;
 
-		.x-grid3-header {
-			// Header Bar, just contains "Title"
-			display: none;
+	.x-form-element {
+		/* Form Item Mid container */
+		padding: 0!important;
+
+		.x-form-field-wrap {
+			/* Form Item Inner Container */
+			left: auto;
+			top: auto;
+			width: auto!important;
 		}
 
-		.x-grid3-scroller {
-			// Tertiary Container
-			height: 100%!important;
+	}
+}
+
+
+/* Form Label */
+.x-form-item-label {
+	width: auto!important;
+	float: none!important;
+	padding: 0!important;
+	clear: both!important;
+	font-family: Nunito Sans;
+	font-size: 16px;
+	font-weight: 200;
+}
+
+/* Text Field Input */
+.x-form-text,
+.ext-strict .ext-webkit .x-small-editor .x-form-text { /* Lond Selector to overwrite GWT for Site Selector */
+	background: blue;
+	padding: 5px 40px 5px 20px; /* Leave Space for Trigger Buttons Overlay. If Only Child then remove extra padding below */
+	border:1px solid transparent;
+	font-family: Nunito Sans;
+	font-size: 16px;
+	font-weight: 200;
+	width: 100%!important;
+	color: white;
+	box-sizing: border-box;
+    display: inline-block;
+    height: auto!important;
+
+	&:only-child {
+		padding: 5px 20px;
+		display: block;
+	}
+}
+
+/* Action Buttons for Text Input */
+.x-form-trigger {
+	/* Generic CSS for an Action Button */
+	display: block;
+	position: absolute!important;
+    border: none !important;
+    vertical-align: middle;
+    right: 1px;
+    top: 7px!important;
+
+	.x-form-twin-triggers & {
+		/* Button is in a container, because there are multiple buttons */
+		display: inline-block;
+		position: relative;
+		border: none !important;
+		vertical-align: middle;
+		right: auto;
+		top: auto;
+	}
+
+	&.x-form-clear-trigger {
+		/* Clear button */
+		position: absolute!important;
+		right: 0px!important;
+	}
+
+	&.x-form-trigger-arrow {
+		/* Combo Down Arrow Button */
+		background: url(./images/icons/combo-arrow.png) no-repeat center center red!important;
+	}
+}
+
+/* Action Button Container (when multiple buttons exist) */
+.x-form-twin-triggers {
+	/* Container used when more than one button */
+	display: block;
+    position: absolute;
+    right: 20px;
+    top: 0;
+}
+
+
+/* Checkbox Container */
+.x-form-check-wrap {
+	height: auto!important;
+}
+
+/* Checkbox Radio Button */
+.x-form-radio {
+	left: auto!important;
+	top: auto!important;
+}
+
+/* Checkbox Label */
+.x-form-cb-label {
+	margin: 0 0 0 5px;
+	padding: 0!important;
+	font-family: Nunito Sans;
+	font-size: 16px;
+	font-weight: 200;
+	left: auto!important;
+	top: auto!important;
+}
+
+/* Button Bars at the end of Panels, ie OK, Save, Cancel, ... */
+.x-panel-btns {
+	padding: 0;
+
+	.x-panel-fbar {
+		/* Button Bar Container ... */
+	    padding: 0;
+	    left: auto;
+	    top: auto;
+
+		.x-toolbar-ct {
+			/* Yet Another Container */
+			display: block;
+			width: auto;
+		}
+	}
+}
+
+/* Button Container */
+
+
+/* Button Bar, regular button bar */
+.x-panel-btns {
+	.x-btn {
+		button {
+			background: green;
+			border:none;
+			font-family: Nunito Sans;
+			font-size: 16px;
+			font-weight: 200;
+			color: pink;
+			padding: 3px 10px!important;
+			height: auto!important;
 			width: auto!important;
-
-			.x-grid3-row {
-				// List Item
-				height: 25px!important;
-				width: auto!important;
-				border: none;
-
-				// Line hover
-				&.x-grid3-row-over {
-					background: $row_over_background!important;
-
-					.x-tree3-node-icon {
-						background-image: url($row_over_icon) !important;
-					}
-
-					.x-tree3-node-text {
-						color: $row_over_label!important;
-					}
-
-
-				}
-
-				// Line Selected
-				&.x-grid3-row-selected {
-					background-color: $row_selected_background!important;
-
-					.x-tree3-node-icon {
-						background-image: url($row_selected_icon) !important;
-					}
-
-					.x-tree3-node-text {
-						color: $row_selected_label!important;
-					}
-
-					// Line Hover on Selected
-					&.x-grid3-row-over {
-						background: $row_selected_over_icon!important;
-
-						.x-tree3-node-text {
-							color: $row_selected_over_label!important;
-						}
-					}
-				}
-
-
-
-				.x-grid3-row-table {
-					// Table containing actual List Item
-					height: 100%;
-					width: 100%!important;
-
-					.x-grid3-cell {
-						// Cell Containg the List Item
-						width: 100%!important;
-						padding: 0;
-
-						.x-grid3-cell-inner {
-							// Yet another container ...
-							height:100%!important;
-
-							.x-tree3-node {
-								// Oooh, another container !!
-								height: 100%!important;
-
-								.x-tree3-el {
-									// At last, the actual element !!
-									height: 100%;
-									width: auto!important;
-									padding: 2px 0 0px;
-
-									> img,
-									> span {
-										display: inline-block;
-										vertical-align: middle;
-									}
-
-									.x-tree3-node-joint {
-									}
-
-									.x-tree3-node-text {
-										// List Item Label
-										font-family: $font-1;
-										font-weight: $extralight;
-										color: $row_label;
-										font-size: 12px;
-										padding: 7px 0 0 !important;
-										pointer-events: none;
-
-										&::after {
-											content: "More";
-											position: fixed;
-											left: 270px;
-											pointer-events: all;
-											margin-top: -21px;
-											background-image: url($row_more_options_icon);
-											background-repeat: no-repeat;
-											background-position: center center;
-											background-size: 10px 2px;
-											text-indent: -50000px;
-											display: block;
-											width: 28px;
-											height: 25px;
-											opacity: 0;
-
-
-										}
-									}
-
-									.x-tree3-node-icon {
-										background-image: url($row_icon);
-										background-size: 23px 23px;
-										background-repeat: no-repeat;
-										padding-left: 23px;
-										width: 23px;
-										height: 23px;
-										overflow: hidden;
-										-moz-box-sizing: border-box;
-										box-sizing: border-box;
-										position: relative;
-									}
-
-									td > .x-tree3-node-icon {
-										/* NOT NECCESSARY IN THIS TAB SET */
-										display: none;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
 
 		}
 
 	}
 }
 
-.x-grid-panel {
-	/* Grid View of a list */
+/* Button Bar, pagination */
+.x-panel-bbar {
+	width: 100%;
+
+	.x-toolbar {
+		border:none;
+		width: auto!important;
+		padding: 0;
+		margin: 0;
+		background: transparent!important;
+	}
+}
+
+
+/* END FORMS */
+
+/* GRID 3 */
+.x-grid3 {
+	/* Container */
 	width: 100%!important;
+	height: 100%!important;
+	background: transparent;
 
-	.x-grid3 {
-		/* Container */
-		width: 100%!important;
+	.x-grid3-header {
+		/* Header bar (contains column names) */
+		display: none;
+	}
+
+	.x-grid3-body {
+		/* Contains the Actual List !! */
 		height: 100%!important;
-		background: transparent;
+	}
 
-		.x-grid3-viewport {
-			/* Another container */
-			height: 100%!important;
+	.x-grid3-scroller {
+		/* Another List Container */
+		height: 100%!important;
+		width: 100%!important;
+	}
 
-			.x-grid3-header {
-				/* Header bar (contains column names) */
+	.x-grid3-viewport {
+		/* Another container */
+		height: 100%!important;
+	}
+
+	.x-grid3-row {
+		/* List Item */
+		height: 25px!important;
+		width: 100%!important;
+		border: none;
+
+		// Line hover
+		&.x-grid3-row-over {
+			background: $row_over_background!important;
+
+			.x-tree3-node-icon {
+				background-image: url($row_over_icon) !important;
+			}
+
+			.x-tree3-node-text {
+				color: $row_over_label!important;
+			}
+
+
+		}
+
+		// Line Selected
+		&.x-grid3-row-selected {
+			background-color: $row_selected_background!important;
+
+			.x-tree3-node-icon {
+				background-image: url($row_selected_icon) !important;
+			}
+
+			.x-tree3-node-text {
+				color: $row_selected_label!important;
+			}
+
+			// Line Hover on Selected
+			&.x-grid3-row-over {
+				background: $row_selected_over_icon!important;
+
+				.x-tree3-node-text {
+					color: $row_selected_over_label!important;
+				}
+			}
+		}
+	}
+
+	.x-grid3-row-table {
+		// Table containing actual List Item
+		height: 100%;
+		width: 100%!important;
+
+		.x-grid3-cell {
+			// Cell Containg the List Item
+			padding: 0;
+
+			&.x-grid3-td-locked {
+				width: 25px;
 				display: none;
 			}
 
-			.x-grid3-scroller {
-				/* Another List Container */
-				height: 100%!important;
+			&.x-grid3-td-displayName {
 				width: 100%!important;
+			}
 
-				.x-grid3-body {
-					/* Contains the Actual List !! */
+			.x-grid3-cell-inner {
+				// Yet another container ...
+				height:100%!important;
+
+				.x-tree3-node {
+					// Oooh, another container !!
 					height: 100%!important;
 
-					.x-grid3-row {
-						/* List Item */
-						width: 100%!important;
-						border: none;
+					.x-tree3-el {
+						// At last, the actual element !!
+						height: 100%;
+						width: auto!important;
+						padding: 2px 0 0px;
+
+						> img,
+						> span {
+							display: inline-block;
+							vertical-align: middle;
+						}
+
+						.x-tree3-node-joint {
+						}
+
+						.x-tree3-node-text {
+							// List Item Label
+							font-family: $font-1;
+							font-weight: $extralight;
+							color: $row_label;
+							font-size: 12px;
+							padding: 7px 0 0 !important;
+							pointer-events: none;
+
+							&::after {
+								content: "More";
+								position: fixed;
+								left: 270px;
+								pointer-events: all;
+								margin-top: -21px;
+								background-image: url($row_more_options_icon);
+								background-repeat: no-repeat;
+								background-position: center center;
+								background-size: 10px 2px;
+								text-indent: -50000px;
+								display: block;
+								width: 28px;
+								height: 25px;
+								opacity: 0;
+
+
+							}
+						}
+
+						.x-tree3-node-icon {
+							background-image: url($row_icon);
+							background-size: 23px 23px;
+							background-repeat: no-repeat;
+							padding-left: 23px;
+							width: 23px;
+							height: 23px;
+							overflow: hidden;
+							-moz-box-sizing: border-box;
+							box-sizing: border-box;
+							position: relative;
+						}
+
+						td > .x-tree3-node-icon {
+							/* NOT NECCESSARY IN THIS TAB SET */
+							display: none;
+						}
 					}
 				}
 			}
@@ -367,8 +580,10 @@ $row_more_options_icon: "./images/icon-more-options-dark-50@X2.png";
 	}
 }
 
+/* END GLOBAL GRID PANEL */
+
 .thumb-wrap {
-	/* Used to create a thumb in List View */
+	/* Used to create a thumb in List View, ie. in Files */
 	border: none!important;
 	padding: 0!important;
 	width: 48%!important; /* Sets Actual Width Of Thumb */
@@ -521,8 +736,8 @@ $side_panel__tab_buttons: (
 	("#JahiaGxtCreateContentTab",   	$text_create,    	270),
 	("#JahiaGxtContentBrowseTab",   	$text_content,    	550),
 	("#JahiaGxtFileImagesBrowseTab",   	$text_files,    	550),
-	("#JahiaGxtSearchTab",   			$text_search,    	270),
-	("#JahiaGxtCategoryBrowseTab",   	$text_taxonomy,    	270),
+	("#JahiaGxtSearchTab",   			$text_search,    	550),
+	("#JahiaGxtCategoryBrowseTab",   	$text_taxonomy,    	550),
 	("#JahiaGxtChannelsTab",   			$text_devices,    	270)
 );
 
@@ -534,6 +749,21 @@ $side_panel__tab_buttons: (
 
 	#{$_tab_ID} {
 		width: #{$_tab_width}px!important;
+
+		@if ($_tab_ID == "#JahiaGxtSearchTab") {
+			> .x-panel-mc {
+				/* Equivalent of .box-inner */
+				width: 100%!important;
+
+				> .x-panel {
+					width: 50%!important;
+					display: inline-block;
+					height: 100%;
+				    vertical-align: top;
+				}
+			}
+
+		}
 
 		&::before {
 			/* Tab Content Header Label */
@@ -548,6 +778,28 @@ $side_panel__tab_buttons: (
 
 		}
 	}
+}
+
+/* Specific to Search Tabs */
+.JahiaGxtSearchTab-results {
+	> .x-panel-bwrap {
+		/* Results Container */
+		height: 100%;
+		position: relative;
+
+		.x-grid-panel {
+			height: 100%!important;
+		}
+
+		.x-panel-bbar {
+			position: absolute;
+			bottom: 0;
+		}
+
+
+	}
+
+
 }
 
 

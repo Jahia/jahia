@@ -956,7 +956,7 @@ span.x-menu-item img {
 .x-modal {
     background: rgba(92, 97, 100, 0.98);
     opacity: 1;
-    z-index: 9999999999 !important;
+    /*z-index: 999999999 !important;*/
     position: fixed !important;
 }
 

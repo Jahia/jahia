@@ -101,7 +101,6 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 
 import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
@@ -515,16 +514,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         File marker = new File(getJahiaVarDiskPath(), JAHIA_SAFE_BACKUP_RESTORE_MARKER);
         if (marker.exists()) {
             setSystemProperty(JAHIA_SAFE_BACKUP_RESTORE_SYSTEM_PROP, "true");
-
-            if(clusterActivated) {
-                logger.info("Detected safe backup restore marker, cleaning database table [JGROUPSPING] ...");
-                try {
-                    DatabaseUtils.executeStatements(Collections.singletonList("TRUNCATE TABLE `JGROUPSPING`"));
-                    logger.info("Database table [JGROUPSPING] successfully cleaned");
-                } catch (SQLException e) {
-                    logger.error("Unable to clean database table: JGROUPSPING", e);
-                }
-            }
 
             // delete marker
             marker.delete();

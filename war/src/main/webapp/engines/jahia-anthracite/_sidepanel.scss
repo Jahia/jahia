@@ -38,11 +38,7 @@ $row_more_options_icon: "./images/icon-more-options-dark-50@X2.png";
 		width: auto!important;
 	}
 
-	.x-grid3-row-over .x-tree3-node-text::after {
-		/* MORE Info button visible (row has been hovered) */
-		opacity: 1!important;
-		cursor: pointer;
-	}
+
 
 	.x-tab-panel-header {
 		// Contains the Side Panel Tab Buttons
@@ -131,163 +127,29 @@ $row_more_options_icon: "./images/icon-more-options-dark-50@X2.png";
 				}
 			}
 
-			.x-treegrid {
-				// Container for List of content
+			.x-box-inner {
 				height: 100%!important;
-				width: auto!important;
+				width: 100%!important;
 
-				.x-grid3 {
-					// Secondary Container
-					height: calc(100% - 80px) !important;
-					width: auto!important;
-					margin-top: 20px;
-					background-color: transparent;
+				.x-box-item {
+					/* Used in COntent Tabs, 2 x-box-items side by side contain list and results window */
+					height: 100%!important;
+					display: inline-block;
+					position: relative!important;
+					width: 50%!important;
+					top: 0!important;
+					background: transparent!important;
 
-					.x-grid3-header {
-						// Header Bar, just contains "Title"
-						display: none;
+					> .x-component {
+						/* Container for List View */
+						width: 100%!important;
+						background: transparent!important;
+						padding-top: 21px;
 					}
-
-					.x-grid3-scroller {
-						// Tertiary Container
-						height: 100%!important;
-						width: auto!important;
-
-						.x-grid3-row {
-							// List Item
-							height: 25px!important;
-							width: auto!important;
-							border: none;
-
-							// Line hover
-							&.x-grid3-row-over {
-								background: $row_over_background!important;
-
-								.x-tree3-node-icon {
-									background-image: url($row_over_icon) !important;
-								}
-
-								.x-tree3-node-text {
-									color: $row_over_label!important;
-								}
-
-
-							}
-
-							// Line Selected
-							&.x-grid3-row-selected {
-								background-color: $row_selected_background!important;
-
-								.x-tree3-node-icon {
-									background-image: url($row_selected_icon) !important;
-								}
-
-								.x-tree3-node-text {
-									color: $row_selected_label!important;
-								}
-
-								// Line Hover on Selected
-								&.x-grid3-row-over {
-									background: $row_selected_over_icon!important;
-
-									.x-tree3-node-text {
-										color: $row_selected_over_label!important;
-									}
-								}
-							}
-
-
-
-							.x-grid3-row-table {
-								// Table containing actual List Item
-								height: 100%;
-								width: 100%!important;
-
-								.x-grid3-cell {
-									// Cell Containg the List Item
-									width: 100%!important;
-									padding: 0;
-
-									.x-grid3-cell-inner {
-										// Yet another container ...
-										height:100%!important;
-
-										.x-tree3-node {
-											// Oooh, another container !!
-											height: 100%!important;
-
-											.x-tree3-el {
-												// At last, the actual element !!
-												height: 100%;
-												width: auto!important;
-											    padding: 2px 0 0px;
-
-												> img,
-												> span {
-													display: inline-block;
-													vertical-align: middle;
-												}
-
-												.x-tree3-node-joint {
-												}
-
-												.x-tree3-node-text {
-													// List Item Label
-													font-family: $font-1;
-													font-weight: $extralight;
-													color: $row_label;
-													font-size: 12px;
-													padding: 7px 0 0 !important;
-													pointer-events: none;
-
-													&::after {
-														content: "More";
-												        position: fixed;
-												        left: 270px;
-												        pointer-events: all;
-												        margin-top: -21px;
-												        background-image: url($row_more_options_icon);
-														background-repeat: no-repeat;
-														background-position: center center;
-												        background-size: 10px 2px;
-												        text-indent: -50000px;
-												        display: block;
-												        width: 28px;
-												        height: 25px;
-												        opacity: 0;
-
-
-													}
-												}
-
-												.x-tree3-node-icon {
-													background-image: url($row_icon);
-													background-size: 23px 23px;
-												    background-repeat: no-repeat;
-												    padding-left: 23px;
-												    width: 23px;
-												    height: 23px;
-												    overflow: hidden;
-												    -moz-box-sizing: border-box;
-												    box-sizing: border-box;
-												    position: relative;
-												}
-
-												td > .x-tree3-node-icon {
-													/* NOT NECCESSARY IN THIS TAB SET */
-													display: none;
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-
-					}
-
 				}
 			}
+
+
 		}
 
 	}
@@ -302,24 +164,373 @@ $row_more_options_icon: "./images/icon-more-options-dark-50@X2.png";
   }
 }
 
+.x-treegrid {
+	/* Tree grid */
+	height: 100%!important;
+	width: auto!important;
+
+	.x-grid3-row-over .x-tree3-node-text::after {
+		/* MORE Info button visible (row has been hovered) */
+		/* MOVE TO #ID SPECIFIC PARTS AS NOT ALWAYS VISIBLE */
+		opacity: 1!important;
+		cursor: pointer;
+	}
+
+	.x-grid3 {
+		// Secondary Container
+		height: calc(100% - 80px) !important;
+		width: auto!important;
+		background-color: transparent;
+
+		.x-grid3-header {
+			// Header Bar, just contains "Title"
+			display: none;
+		}
+
+		.x-grid3-scroller {
+			// Tertiary Container
+			height: 100%!important;
+			width: auto!important;
+
+			.x-grid3-row {
+				// List Item
+				height: 25px!important;
+				width: auto!important;
+				border: none;
+
+				// Line hover
+				&.x-grid3-row-over {
+					background: $row_over_background!important;
+
+					.x-tree3-node-icon {
+						background-image: url($row_over_icon) !important;
+					}
+
+					.x-tree3-node-text {
+						color: $row_over_label!important;
+					}
+
+
+				}
+
+				// Line Selected
+				&.x-grid3-row-selected {
+					background-color: $row_selected_background!important;
+
+					.x-tree3-node-icon {
+						background-image: url($row_selected_icon) !important;
+					}
+
+					.x-tree3-node-text {
+						color: $row_selected_label!important;
+					}
+
+					// Line Hover on Selected
+					&.x-grid3-row-over {
+						background: $row_selected_over_icon!important;
+
+						.x-tree3-node-text {
+							color: $row_selected_over_label!important;
+						}
+					}
+				}
+
+
+
+				.x-grid3-row-table {
+					// Table containing actual List Item
+					height: 100%;
+					width: 100%!important;
+
+					.x-grid3-cell {
+						// Cell Containg the List Item
+						width: 100%!important;
+						padding: 0;
+
+						.x-grid3-cell-inner {
+							// Yet another container ...
+							height:100%!important;
+
+							.x-tree3-node {
+								// Oooh, another container !!
+								height: 100%!important;
+
+								.x-tree3-el {
+									// At last, the actual element !!
+									height: 100%;
+									width: auto!important;
+									padding: 2px 0 0px;
+
+									> img,
+									> span {
+										display: inline-block;
+										vertical-align: middle;
+									}
+
+									.x-tree3-node-joint {
+									}
+
+									.x-tree3-node-text {
+										// List Item Label
+										font-family: $font-1;
+										font-weight: $extralight;
+										color: $row_label;
+										font-size: 12px;
+										padding: 7px 0 0 !important;
+										pointer-events: none;
+
+										&::after {
+											content: "More";
+											position: fixed;
+											left: 270px;
+											pointer-events: all;
+											margin-top: -21px;
+											background-image: url($row_more_options_icon);
+											background-repeat: no-repeat;
+											background-position: center center;
+											background-size: 10px 2px;
+											text-indent: -50000px;
+											display: block;
+											width: 28px;
+											height: 25px;
+											opacity: 0;
+
+
+										}
+									}
+
+									.x-tree3-node-icon {
+										background-image: url($row_icon);
+										background-size: 23px 23px;
+										background-repeat: no-repeat;
+										padding-left: 23px;
+										width: 23px;
+										height: 23px;
+										overflow: hidden;
+										-moz-box-sizing: border-box;
+										box-sizing: border-box;
+										position: relative;
+									}
+
+									td > .x-tree3-node-icon {
+										/* NOT NECCESSARY IN THIS TAB SET */
+										display: none;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}
+
+	}
+}
+
+.x-grid-panel {
+	/* Grid View of a list */
+	width: 100%!important;
+
+	.x-grid3 {
+		/* Container */
+		width: 100%!important;
+		height: 100%!important;
+		background: transparent;
+
+		.x-grid3-viewport {
+			/* Another container */
+			height: 100%!important;
+
+			.x-grid3-header {
+				/* Header bar (contains column names) */
+				display: none;
+			}
+
+			.x-grid3-scroller {
+				/* Another List Container */
+				height: 100%!important;
+				width: 100%!important;
+
+				.x-grid3-body {
+					/* Contains the Actual List !! */
+					height: 100%!important;
+
+					.x-grid3-row {
+						/* List Item */
+						width: 100%!important;
+						border: none;
+					}
+				}
+			}
+		}
+	}
+}
+
+.thumb-wrap {
+	/* Used to create a thumb in List View */
+	border: none!important;
+	padding: 0!important;
+	width: 48%!important; /* Sets Actual Width Of Thumb */
+	margin: 1% !important;
+	display: inline-block;
+	float: none!important;
+	height: 86px;
+	max-height: 86px;
+
+	&.x-view-item-sel {
+		background: purple!important;
+
+		.thumb {
+			z-index: 99;
+		}
+
+		.thumbDetails {
+			/* Show Thumb details when mouse over thumb-wrap */
+			display: block;
+			z-index: 9!important;
+
+			top: -2px;
+			min-height: calc(100% + 4px);
+			height: calc(100% + 4px);
+
+			> div {
+				display: none;
+			}
+		}
+
+		&.x-view-over {
+			.thumbDetails {
+				top: -24px;
+				min-height: calc(100% + 71px);
+				height:auto!important;
+				z-index: 999 !important;
+
+				> div {
+					display: block;
+				}
+			}
+		}
+	}
+
+	&.x-view-over {
+		background: none!important;
+
+		.thumb {
+			z-index: 99999;
+		}
+
+		.thumbDetails {
+			/* Show Thumb details when mouse over thumb-wrap */
+			display: block;
+			z-index: 9999!important;
+		}
+	}
+
+	> div:nth-child(1) {
+		/* Container for Thumb */
+		width:100%;
+		height:100%;
+		position: relative;
+	}
+
+	> div:nth-child(2) {
+		/* Contains extra Meta Data, namely for photos */
+		display: none;
+	}
+
+	.thumb {
+		/* Container for Thumb Image */
+		padding: 0!important;
+		width: 100%!important;
+		height: auto!important;
+		position: relative;
+
+		img{
+			/* Actual Thumb Image */
+			width: 100%;
+			margin: 0!important;
+		}
+	}
+
+	.thumbDetails {
+		/* Container for List of file information */
+		display: none;
+		left: -2px;
+		top: -24px;
+		width: calc(100% + 4px);
+		min-height: calc(100% + 71px);
+		position: absolute;
+		margin: 0 !important;
+		background: green;
+		z-index: 999 !important;
+
+		> div {
+			/* Generic Meta Data Value */
+			font-family: Nunito Sans;
+			font-size: 9px;
+			color: red;
+			text-align: center;
+
+			width: 100%;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+
+			b {
+				/* Generic Meta Data Label */
+				text-transform: uppercase;
+				color: blue;
+				font-size: 8px;
+			}
+
+
+			&:nth-child(1) {
+				/* Meta Data ::: Name */
+				margin-top: 6px;
+
+				b {
+					display: none;
+				}
+
+			}
+
+			&:nth-child(2) {
+				/* Meta Data ::: Title */
+				margin-top: 97px;
+
+			}
+			&:nth-child(3) {
+				/* Meta Data ::: Author */
+				display: none!important;
+
+			}
+
+		}
+
+
+	}
+}
+
 
 
 /* SIDE PANEL CONTENT STUFF */
 
 $side_panel__tab_buttons: (
-	("#JahiaGxtPagesTab",      			$text_pages,    	300),
-	("#JahiaGxtCreateContentTab",   	$text_create,    	300),
-	("#JahiaGxtContentBrowseTab",   	$text_content,    	300),
-	("#JahiaGxtFileImagesBrowseTab",   	$text_files,    	300),
-	("#JahiaGxtSearchTab",   			$text_search,    	300),
-	("#JahiaGxtCategoryBrowseTab",   	$text_taxonomy,    	300),
-	("#JahiaGxtChannelsTab",   			$text_devices,    	300)
+	("#JahiaGxtPagesTab",      			$text_pages,    	270),
+	("#JahiaGxtCreateContentTab",   	$text_create,    	270),
+	("#JahiaGxtContentBrowseTab",   	$text_content,    	550),
+	("#JahiaGxtFileImagesBrowseTab",   	$text_files,    	550),
+	("#JahiaGxtSearchTab",   			$text_search,    	270),
+	("#JahiaGxtCategoryBrowseTab",   	$text_taxonomy,    	270),
+	("#JahiaGxtChannelsTab",   			$text_devices,    	270)
 );
 
 @each $tab_button in $side_panel__tab_buttons {
 	$_tab_ID: #{nth($tab_button,1)};
 	$_text: "#{nth($tab_button,2)}";
-	$_tab_width: (#{nth($tab_button,3) + 25px});
+	$_tab_width: #{nth($tab_button,3)};
+	$_line_options_button: (#{nth($tab_button,3) + 25px});
 
 	#{$_tab_ID} {
 		width: #{$_tab_width}px!important;
@@ -332,7 +543,7 @@ $side_panel__tab_buttons: (
 		.x-tree3-node-text {
 			&::after {
 				/* MORE Options button */
-				left: #{$_tab_width}!important;
+				left: #{$_line_options_button}!important;
 			}
 
 		}

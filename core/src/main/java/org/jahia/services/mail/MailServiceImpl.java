@@ -55,6 +55,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -518,6 +519,24 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         if (evt instanceof RootContextInitializedEvent || evt instanceof MailSettingsChangedEvent) {
             sendMailEndpointUri = null;
             load();
+
+            if (Boolean.parseBoolean(System.getProperty(SettingsBean.JAHIA_SAFE_BACKUP_RESTORE_SYSTEM_PROP)) && evt instanceof RootContextInitializedEvent && settings.isServiceActivated()) {
+                logger.info("Detected safe backup restore marker, disabling mail service ...");
+
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.EDIT_WORKSPACE, null, new JCRCallback<Void>() {
+                        public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
+
+                            settings.setServiceActivated(false);
+                            store(settings, session);
+                            logger.info("Mail service successfully disabled");
+                            return null;
+                        }
+                    });
+                } catch (RepositoryException e) {
+                    logger.error("Error disabling mail service", e);
+                }
+            }
         }
     }
 

@@ -201,7 +201,8 @@
 			// Body updates
 			displaynameChanged: function(){
 
-				var pageTitle;
+				var pageTitle,
+					multiselect = "off";
 
 				switch(indigoQF.status.currentPage.displayname){
 					case "settings":
@@ -223,12 +224,17 @@
 
 							case 1:
 								pageTitle = "1 selected item";
+								multiselect = "on";
 								break;
 
 							default:
 								pageTitle = indigoQF.status.multiselection.count + " selected items";
+								multiselect = "on";
 								break;
 						}
+
+						// Set multiselect status in body attribute...
+						$("body").attr("data-multiselect", multiselect);
 
 						// Page Title in Edit Made
 						$(".x-current-page-path").attr("data-PAGE-NAME",pageTitle);

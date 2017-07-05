@@ -1,4 +1,4 @@
-@import "theme-dark";
+
 
 
 /*======= Colors =======*/
@@ -25,6 +25,10 @@
 
 
 /*======= Icons =======*/
+	/* More Options */
+	$icon_more_options_grey_clouds:     "./images/icon-more-options-dark-50@X2.png";
+
+
 	/* Pages Icons */
 	$icon_pages_white_clouds:     "./images/tabs-pages-white@X2.png";
 	$icon_pages_grey_clouds:      "./images/tabs-pages-dark@X2.png";
@@ -86,3 +90,7 @@
 	$normal: 400;
 	$semibold: 500;
 	$bold: 700;
+
+
+
+@import "theme-dark";

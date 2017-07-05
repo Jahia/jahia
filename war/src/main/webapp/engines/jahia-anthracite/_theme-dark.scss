@@ -49,3 +49,22 @@
     $icon_off_taxonomy:         $icon_taxonomy_black_clouds;
     $icon_off_devices:          $icon_devices_black_clouds;
     $icon_off_settings:         $icon_settings_black_clouds;
+
+
+    // ROWS ( i.e. Page Tree Lists ...)
+    $row_label: 					$white-clouds;
+    $row_icon: 						$icon_pages_grey_clouds;
+
+    $row_over_background: 			rgba( $grey-clouds, .2 );
+    $row_over_label: 				$white-clouds;
+    $row_over_icon: 				$icon_pages_white_clouds;
+
+    $row_selected_background: 		$grey-clouds;
+    $row_selected_label: 			$white-clouds;
+    $row_selected_icon: 			$icon_pages_white_clouds;
+
+    $row_selected_over_background: 	$grey-clouds;
+    $row_selected_over_label: 		$white-clouds;
+    $row_selected_over_icon: 		$icon_pages_white_clouds;
+
+    $row_more_options_icon: 		$icon_more_options_grey_clouds;

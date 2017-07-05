@@ -189,7 +189,7 @@ select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
 	-webkit-text-fill-color: #c6c6c6;
 	-webkit-box-shadow: none;
-	transition: background-color 5000s ease-in-out 0s;
+	transition: background-color 50000s ease-in-out 0s;
 }
 
 

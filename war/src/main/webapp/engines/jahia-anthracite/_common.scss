@@ -32,12 +32,12 @@
 /* Page Titles *********************************/
 /***********************************************/
 body {
-    background: $body-bg;
+	background: $body-bg;
 	transition: all 0.3s ease-in 0s;
 
 	/* Multiselect */
-    &[data-selection-count="0"] {
-        background: $body-bg;
+    &[data-multiselect="on"] {
+		background: $body-bg-multiselect;
     }
 
 
@@ -52,10 +52,13 @@ body {
 			background-size: 35px 35px;
 			padding-left: 45px;
 			color: rgba(238, 238, 238, 0.9);
-			font-family: $font-1;
-			font-size: 21px;
-			font-weight: $extralight;
+
 			padding-top: 10px;
+
+			font-family: $font-1;
+		    font-size: 21px;
+		    font-weight: $extralight;
+
 
 		}
 	}
@@ -158,32 +161,25 @@ body {
 	.x-current-page-path {
 	    display: block;
 	    > span {
-	        font-family: $font-1;
-	        color: #c1cdd3;
-	        font-weight: $extralight;
-	        font-style: italic;
-	        font-size: 11px;
-	        display: none;
-	        margin: 1px 0 0 20px;
+			display: none;
+
 	    }
-	    body[data-selection-count="0"] & > span {
-	        display: none;
-	    }
+
 	    &::before {
 	        content: attr(data-page-name);
-	        color: $white;
-	        font-family: $font-1;
-	        font-weight: $light;
-	        font-size: 16px;
+
+	        @extend %document_title;
+
 	        display: block;
-	        margin: 6px 0 0 35px;
-	        body[data-selection-count="0"] & {
-				color: #f6f9fb;
+			margin: 6px 0 0 55px;
+
+	        body[data-multiselect="on"] & {
+				@extend %multiselect_title;
+
+				margin: 6px 0 0 35px;
 	        }
 	    }
-	    body[data-selection-count="0"] &::before {
-	        margin: 6px 0 0 55px;
-	    }
+
 	}
 
 	> .x-panel-header {
@@ -249,16 +245,19 @@ body {
 				margin-left: 55px;
 				> tbody {
 					display: block;
-					background: url(./images/icon-more-options-white@X2.png) no-repeat center left 3px $cod-gray;
-					background-size: 10px 2px;
 					width: 20px;
 					height: 20px;
 					display: block;
 					border-radius: 0 100% 100% 0;
-					body[data-selection-count="0"] & {
-						background: url(./images/icon-more-options-white@X2.png) no-repeat center left 3px #545657;
+					background: url(./images/icon-more-options-white@X2.png) no-repeat center left 3px #545657;
+					background-size: 10px 2px;
+
+
+					body[data-multiselect="on"] & {
+						background: url(./images/icon-more-options-white@X2.png) no-repeat center left 3px $cod-gray;
 						background-size: 10px 2px;
 					}
+
 				}
 				> tbody > tr {
 					display: none;
@@ -294,9 +293,10 @@ body {
 				opacity: 0;
 			}
 			&:nth-child(5) {
-				display: none;
-				body[data-selection-count="0"] & {
-					display: block;
+				display: block;
+
+				body[data-multiselect="on"] & {
+					display: none;
 				}
 				> div {
 					width: 25px !important;
@@ -423,8 +423,113 @@ body {
 
 
 /***********************************************/
+/* Combo  **************************************/
+/***********************************************/
+
+
+/* Combo Outer Container */
+.x-combo-list {
+	width: auto !important;
+	background: transparent;
+    overflow: visible;
+    z-index: 99999999999 !important;
+
+	@extend %context_menu_holder;
+
+}
+
+/* Combo Inner Container */
+.x-combo-list-inner {
+	width: auto!important;
+	height: auto!important;
+	background: transparent;
+
+	/* Combo List Items that have Thumbs, ie. Channel Combo */
+	.thumb-wrap {
+
+		/* Actual thumb */
+		img {
+			display: none!important;
+		}
+
+		/* List item when normal Thumbed Combo */
+		.x-editable {
+			/* Actual Label of Combo Item */
+			@extend %context_menu_item;
+
+		}
+
+		/* Selected / Hovered */
+		&.x-combo-selected {
+			border:none!important;
+
+			/* List item when normal Thumbed Combo */
+			.x-editable {
+				@extend %context_menu_item_hover;
+			}
+		}
+
+	}
+}
+
+/* List item when normal Combo */
+.x-combo-list-item {
+	border:none;
+	@extend %context_menu_item;
+
+
+	/* Selected / Hovered */
+	&.x-view-highlightrow {
+		border:none!important;
+		@extend %context_menu_item_hover;
+
+	}
+}
+
+
+
+/***********************************************/
 /* Context Menus *******************************/
 /***********************************************/
+
+.x-menu {
+	width: auto !important;
+	background: transparent;
+    overflow: visible;
+    z-index: 99999999999 !important;
+
+	@extend %context_menu_holder;
+}
+
+.x-menu-list {
+	height: auto!important;
+}
+
+.x-menu-list-item {}
+
+.x-menu-item {
+	@extend %context_menu_item;
+
+	.x-item-disabled & {
+		@extend %context_menu_item_disabled;
+
+
+
+	}
+
+	.x-menu-item-active & {
+		@extend %context_menu_item_hover;
+	}
+
+}
+
+.x-item-disabled {
+	opacity: 1;
+}
+
+.x-menu-item-icon {
+	display: none;
+}
 
 /* Combo List Seperator line */
 .x-menu-sep-li {
@@ -449,113 +554,6 @@ body {
     background-image: url(./images/menu-scroll-down.png);
 }
 
-/* Context Menu Container */
-.x-menu {
-    background: $jahia-blue;
-    border: none;
-    overflow: visible;
-    box-shadow: 0 0 10px 0 rgba(49, 49, 49, 0.3);
-    z-index: 99999999999 !important;
-}
-
-.x-combo-list {
-    width: auto !important;
-}
-
-/* Context List Item */
-.x-combo-list-item {
-    border: none;
-    background: rgba(7, 156, 251, 1);
-    padding: 12px 21px 12px 15px !important;
-
-    &.x-view-highlightrow.x-combo-selected {
-        border: none !important;
-        background: rgba(53, 173, 241, 1);
-    }
-
-    img {
-		/* List Item With a Thumb, namely used for the Language Selector of Page */
-        padding-left: 21px;
-        width: 21px;
-        height: 14px;
-        overflow: hidden;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-        display: inline;
-        vertical-align: top;
-
-        &[src="/css/images/flags/en_on.png"] {
-            background: url(./images/flags@X2/united-kingdom@X2.png) no-repeat !important;
-            background-size: 21px 14px!important;
-        }
-        &[src="/css/images/flags/de_on.png"] {
-            background: url(./images/flags@X2/germany@X2.png) no-repeat !important;
-            background-size: 21px 14px!important;
-        }
-        &[src="/css/images/flags/fr_on.png"] {
-            background: url(./images/flags@X2/france@X2.png) no-repeat !important;
-            background-size: 21px 14px!important;
-        }
-    }
-}
-
-.x-combo-list-inner {
-	width: auto !important;
-}
-
-/* Combo List with Thumbs */
-.x-combo-list .thumb-wrap {
-    .thumb {
-        display: none;
-    }
-    .x-editable {
-        color: $shuttle-gray;
-        padding: 9px 14px;
-        font-family: $font-1;
-        font-size: 12px;
-        font-weight: $light;
-        background: $gallery-gray;
-        border: none !important;
-        text-align: left !important;
-    }
-    &.x-view-highlightrow.x-combo-selected {
-        border: none !important;
-        .x-editable {
-            border: none !important;
-            background: rgba(248, 248, 248, 1);
-        }
-    }
-}
-
-/* List Item Icon */
-.x-menu-item img {
-    display: none;
-}
-
-/* Font Style */
-span.x-menu-item,
-div.x-combo-list-item {
-    color: $gallery-gray;
-    padding: 4px 9px;
-    font-family: $font-1;
-    font-size: 11px;
-    font-weight: $semilight;
-}
-
-/* List Background */
-.x-menu-list,
-.x-combo-list {
-    overflow: visible;
-    background: $jahia-blue;
-    display: block;
-    height: auto !important;
-    z-index: 9999999999 !important;
-}
-
-/* Disabled List Item */
-.x-item-disabled span.x-menu-item {
-    color: $gallery-gray !important;
-}
 
 
 
@@ -563,150 +561,154 @@ div.x-combo-list-item {
 /* Thumb Wraps *********************************/
 /***********************************************/
 
-.thumb-wrap {
-	/* Used to create a thumb in List View, ie. in Files */
-	border: none!important;
-	padding: 0!important;
-	width: 48%!important; /* Sets Actual Width Of Thumb */
-	margin: 1% !important;
-	display: inline-block;
-	float: none!important;
-	height: 86px;
-	max-height: 86px;
+#images-view {
+	.thumb-wrap {
+		/* Used to create a thumb in List View, ie. in Files */
+		border: none!important;
+		padding: 0!important;
+		width: 48%!important; /* Sets Actual Width Of Thumb */
+		margin: 1% !important;
+		display: inline-block;
+		float: none!important;
+		height: 86px;
+		max-height: 86px;
 
-	&.x-view-item-sel {
-		background: purple!important;
+		&.x-view-item-sel {
+			background: purple!important;
 
-		.thumb {
-			z-index: 99;
-		}
+			.thumb {
+				z-index: 99;
+			}
 
-		.thumbDetails {
-			/* Show Thumb details when mouse over thumb-wrap */
-			display: block;
-			z-index: 9!important;
+			.thumbDetails {
+				/* Show Thumb details when mouse over thumb-wrap */
+				display: block;
+				z-index: 9!important;
 
-			top: -2px;
-			min-height: calc(100% + 4px);
-			height: calc(100% + 4px);
+				top: -2px;
+				min-height: calc(100% + 4px);
+				height: calc(100% + 4px);
 
-			> div {
-				display: none;
+				> div {
+					display: none;
+				}
+			}
+
+			&.x-view-over {
+				.thumbDetails {
+					top: -24px;
+					min-height: calc(100% + 71px);
+					height:auto!important;
+					z-index: 999 !important;
+
+					> div {
+						display: block;
+					}
+				}
 			}
 		}
 
 		&.x-view-over {
-			.thumbDetails {
-				top: -24px;
-				min-height: calc(100% + 71px);
-				height:auto!important;
-				z-index: 999 !important;
+			background: none!important;
 
-				> div {
-					display: block;
-				}
+			.thumb {
+				z-index: 99999;
+			}
+
+			.thumbDetails {
+				/* Show Thumb details when mouse over thumb-wrap */
+				display: block;
+				z-index: 9999!important;
 			}
 		}
-	}
 
-	&.x-view-over {
-		background: none!important;
+		> div:nth-child(1) {
+			/* Container for Thumb */
+			width:100%;
+			height:100%;
+			position: relative;
+		}
+
+		> div:nth-child(2) {
+			/* Contains extra Meta Data, namely for photos */
+			display: none;
+		}
 
 		.thumb {
-			z-index: 99999;
+			/* Container for Thumb Image */
+			padding: 0!important;
+			width: 100%!important;
+			height: auto!important;
+			position: relative;
+
+			img{
+				/* Actual Thumb Image */
+				width: 100%;
+				margin: 0!important;
+			}
 		}
 
 		.thumbDetails {
-			/* Show Thumb details when mouse over thumb-wrap */
-			display: block;
-			z-index: 9999!important;
-		}
-	}
+			/* Container for List of file information */
+			display: none;
+			left: -2px;
+			top: -24px;
+			width: calc(100% + 4px);
+			min-height: calc(100% + 71px);
+			position: absolute;
+			margin: 0 !important;
+			background: green;
+			z-index: 999 !important;
 
-	> div:nth-child(1) {
-		/* Container for Thumb */
-		width:100%;
-		height:100%;
-		position: relative;
-	}
+			> div {
+				/* Generic Meta Data Value */
+				font-family: Nunito Sans;
+				font-size: 9px;
+				color: red;
+				text-align: center;
 
-	> div:nth-child(2) {
-		/* Contains extra Meta Data, namely for photos */
-		display: none;
-	}
-
-	.thumb {
-		/* Container for Thumb Image */
-		padding: 0!important;
-		width: 100%!important;
-		height: auto!important;
-		position: relative;
-
-		img{
-			/* Actual Thumb Image */
-			width: 100%;
-			margin: 0!important;
-		}
-	}
-
-	.thumbDetails {
-		/* Container for List of file information */
-		display: none;
-		left: -2px;
-		top: -24px;
-		width: calc(100% + 4px);
-		min-height: calc(100% + 71px);
-		position: absolute;
-		margin: 0 !important;
-		background: green;
-		z-index: 999 !important;
-
-		> div {
-			/* Generic Meta Data Value */
-			font-family: Nunito Sans;
-			font-size: 9px;
-			color: red;
-			text-align: center;
-
-			width: 100%;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			overflow: hidden;
-
-			b {
-				/* Generic Meta Data Label */
-				text-transform: uppercase;
-				color: blue;
-				font-size: 8px;
-			}
-
-
-			&:nth-child(1) {
-				/* Meta Data ::: Name */
-				margin-top: 6px;
+				width: 100%;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
 
 				b {
-					display: none;
+					/* Generic Meta Data Label */
+					text-transform: uppercase;
+					color: blue;
+					font-size: 8px;
+				}
+
+
+				&:nth-child(1) {
+					/* Meta Data ::: Name */
+					margin-top: 6px;
+
+					b {
+						display: none;
+					}
+
+				}
+
+				&:nth-child(2) {
+					/* Meta Data ::: Title */
+					margin-top: 97px;
+
+				}
+				&:nth-child(3) {
+					/* Meta Data ::: Author */
+					display: none!important;
+
 				}
 
 			}
 
-			&:nth-child(2) {
-				/* Meta Data ::: Title */
-				margin-top: 97px;
-
-			}
-			&:nth-child(3) {
-				/* Meta Data ::: Author */
-				display: none!important;
-
-			}
 
 		}
-
-
 	}
 }
+
+
 
 
 
@@ -1120,10 +1122,14 @@ div.x-combo-list-item {
         left: 0px;
         position: absolute;
         color: $gallery-gray;
-        font-weight: $extralight;
-        font-size: 26px;
-        font-family: $font-1;
-        width: 100%;
+
+		font-family: $font-1;
+	    font-size: 26px;
+	    font-weight: $extralight;
+
+
+
+		width: 100%;
         padding-top: 26px;
         pointer-events: all;
         > {
@@ -1266,4 +1272,366 @@ div.x-combo-list-item {
         background: url(./images/loader-animated.gif) no-repeat center center;
     }
 
+}
+
+
+
+/***********************************************/
+/* FORMS  **************************************/
+/***********************************************/
+
+/* Global Form */
+form {
+	/* Maybe a little to general */
+	padding: 0!important;
+	width: auto!important;
+
+}
+
+/* Form Item Wrapper */
+.x-form-item {
+	/* Form item Outer Container ... */
+	margin:0;
+
+	.x-form-element {
+		/* Form Item Mid container */
+		padding: 0!important;
+
+		.x-form-field-wrap {
+			/* Form Item Inner Container */
+			left: auto;
+			top: auto;
+			width: auto!important;
+		}
+
+	}
+}
+
+
+/* Form Label */
+.x-form-item-label {
+	width: auto!important;
+	float: none!important;
+	padding: 0!important;
+	clear: both!important;
+	font-family: Nunito Sans;
+	font-size: 16px;
+	font-weight: 200;
+}
+
+/* Text Field Input */
+.x-form-text,
+.ext-strict .ext-webkit .x-small-editor .x-form-text { /* Lond Selector to overwrite GWT for Site Selector */
+	background:     $text_input_bg;
+	color:          $text_input_color;
+	border:         $text_input_border;
+	padding:        $text_input_padding;
+	font-weight:    $text_input_font_weight;
+	font-size:      $text_input_font_size;
+	font-family:    $text_input_font_family;
+
+	width: 100%!important;
+	box-sizing: border-box;
+    display: inline-block;
+    height: auto!important;
+
+	&:only-child {
+		padding: 5px 20px;
+		display: block;
+	}
+}
+
+/* Action Buttons for Text Input */
+.x-form-trigger {
+	/* Generic CSS for an Action Button */
+	display: block;
+	position: absolute!important;
+    border: none !important;
+    vertical-align: middle;
+    right: 1px;
+    top: 7px!important;
+
+	.x-form-twin-triggers & {
+		/* Button is in a container, because there are multiple buttons */
+		display: inline-block;
+		position: relative;
+		border: none !important;
+		vertical-align: middle;
+		right: auto;
+		top: auto;
+	}
+
+	&.x-form-clear-trigger {
+		/* Clear button */
+		position: absolute!important;
+		right: 0px!important;
+	}
+
+	&.x-form-trigger-arrow {
+		/* Combo Down Arrow Button */
+		background: url(./images/icons/combo-arrow.png) no-repeat center center red!important;
+	}
+}
+
+/* Action Button Container (when multiple buttons exist) */
+.x-form-twin-triggers {
+	/* Container used when more than one button */
+	display: block;
+    position: absolute;
+    right: 20px;
+    top: 0;
+}
+
+
+/* Checkbox Container */
+.x-form-check-wrap {
+	height: auto!important;
+}
+
+/* Checkbox Radio Button */
+.x-form-radio {
+	left: auto!important;
+	top: auto!important;
+}
+
+/* Checkbox Label */
+.x-form-cb-label {
+	margin: 0 0 0 5px;
+	padding: 0!important;
+	font-family: Nunito Sans;
+	font-size: 16px;
+	font-weight: 200;
+	left: auto!important;
+	top: auto!important;
+}
+
+/* Button Bars at the end of Panels, ie OK, Save, Cancel, ... */
+.x-panel-btns {
+	padding: 0;
+
+	.x-panel-fbar {
+		/* Button Bar Container ... */
+	    padding: 0;
+	    left: auto;
+	    top: auto;
+
+		.x-toolbar-ct {
+			/* Yet Another Container */
+			display: block;
+			width: auto;
+		}
+	}
+}
+
+/* Button Container */
+
+
+/* Button Bar, regular button bar */
+.x-panel-btns {
+	.x-btn {
+		button {
+			background: green;
+			border:none;
+			font-family: Nunito Sans;
+			font-size: 16px;
+			font-weight: 200;
+			color: pink;
+			padding: 3px 10px!important;
+			height: auto!important;
+			width: auto!important;
+
+		}
+
+	}
+}
+
+/* Button Bar, pagination */
+.x-panel-bbar {
+	width: 100%;
+
+	.x-toolbar {
+		border:none;
+		width: auto!important;
+		padding: 0;
+		margin: 0;
+		background: transparent!important;
+	}
+}
+
+
+
+/***********************************************/
+/* TREES  **************************************/
+/***********************************************/
+
+.x-grid3 {
+	/* Container */
+	width: 100%!important;
+	height: 100%!important;
+	background: transparent;
+
+	.x-grid3-header {
+		/* Header bar (contains column names) */
+		display: none;
+	}
+
+	.x-grid3-body {
+		/* Contains the Actual List !! */
+		height: 100%!important;
+	}
+
+	.x-grid3-scroller {
+		/* Another List Container */
+		height: 100%!important;
+		width: 100%!important;
+	}
+
+	.x-grid3-viewport {
+		/* Another container */
+		height: 100%!important;
+	}
+
+	.x-tree3-el-jnt,
+	.x-tree3-node-joint {
+		pointer-events: all;
+	}
+
+	/* List Item Backgrounds */
+	.x-grid3-row {
+		/* List Item */
+		height: 25px!important;
+		width: 100%!important;
+		border: none;
+
+
+
+		// Line hover
+		&.x-grid3-row-over {
+			background: $row_over_background!important;
+
+			.x-tree3-node-icon {
+				background-image: url($row_over_icon) !important;
+			}
+
+			.x-tree3-node-text {
+				color: $row_over_label!important;
+			}
+
+
+		}
+
+		// Line Selected
+		&.x-grid3-row-selected {
+			background-color: $row_selected_background!important;
+
+			.x-tree3-node-icon {
+				background-image: url($row_selected_icon) !important;
+			}
+
+			.x-tree3-node-text {
+				color: $row_selected_label!important;
+			}
+
+			// Line Hover on Selected
+			&.x-grid3-row-over {
+				background: $row_selected_over_icon!important;
+
+				.x-tree3-node-text {
+					color: $row_selected_over_label!important;
+				}
+			}
+		}
+	}
+
+	/* List Item Text Label */
+	.x-tree3-node-text,
+	.x-grid3-cell-inner {
+		// List Item Label
+		font-family: $font-1;
+		font-weight: $extralight;
+		color: $row_label;
+		font-size: 12px;
+		padding: 7px 0 0 !important;
+		pointer-events: none;
+
+		&::after {
+			content: "More";
+			position: fixed;
+			left: 270px;
+			pointer-events: all;
+			margin-top: -21px;
+			background-image: url($row_more_options_icon);
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-size: 10px 2px;
+			text-indent: -50000px;
+			display: block;
+			width: 28px;
+			height: 25px;
+			opacity: 0;
+		}
+	}
+
+	/* List Item Icon */
+	.x-tree3-node-icon {
+		background-image: url($row_icon);
+		background-size: 23px 23px;
+		background-repeat: no-repeat;
+		padding-left: 23px;
+		width: 23px;
+		height: 23px;
+		overflow: hidden;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		position: relative;
+	}
+
+	/* List Structure */
+	.x-grid3-row-table {
+		// Table containing actual List Item
+		height: 100%;
+		width: 100%!important;
+
+		.x-grid3-cell {
+			// Cell Containg the List Item
+			padding: 0;
+
+			&.x-grid3-td-locked {
+				width: 25px;
+				display: none;
+			}
+
+			&.x-grid3-td-displayName {
+				width: 100%!important;
+			}
+
+			.x-grid3-cell-inner {
+				// Yet another container ...
+				height:100%!important;
+
+				.x-tree3-node {
+					// Oooh, another container !!
+					height: 100%!important;
+
+					.x-tree3-el {
+						// At last, the actual element !!
+						height: 100%;
+						width: auto!important;
+						padding: 2px 0 0px;
+
+						> img,
+						> span {
+							display: inline-block;
+							vertical-align: middle;
+						}
+
+						td > .x-tree3-node-icon {
+							/* NOT NECCESSARY IN THIS TAB SET */
+							display: none;
+						}
+					}
+				}
+			}
+		}
+	}
 }

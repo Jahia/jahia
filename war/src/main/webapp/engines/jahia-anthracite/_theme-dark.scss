@@ -1,17 +1,22 @@
-/*======= Dark Theme =======*/
+/***********************************************/
+/* THEME COLOURS *******************************/
+/***********************************************/
+
+  /* GENERAL */
+  $body-bg: $rain-clouds;
+  $body-bg-multiselect: $dark-clouds;
 
 
-  /* COMMON */
-    $body-bg: $shuttle-gray;
+  /* EDIT MODE SIDE PANEL */
 
+    $side_panel_background: $transparent;
+    $side_panel_background_open: $white-clouds;
 
-  /* EDIT MODE: SIDE PANEL */
-
-    /* LABEL COLOURS */
-    $button_closed_color_up:        $white-clouds;
-    $button_opened_color_up:        $grey-clouds;
-    $button_opened_color_selected:  $jahia-blue;
-    $button_color_off:          	$black-clouds;
+    /* TOOL BUTTON LABEL COLORS  */
+    $tool_color_normal:         $white-clouds;
+    $tool_color_open:           $grey-clouds;
+    $tool_color_open_selected:  $jahia-blue;
+    $tool_color_off:          	$black-clouds;
 
     /* ICONS */
     $icon_closed_pages:         $icon_pages_white_clouds;
@@ -68,3 +73,119 @@
     $row_selected_over_icon: 		$icon_pages_white_clouds;
 
     $row_more_options_icon: 		$icon_more_options_grey_clouds;
+
+    // Text fields
+    $text_input_bg:                 $test-purple;
+    $text_input_color:              $test-pink;
+    $text_input_border:             1px solid transparent;
+    $text_input_padding:            5px 40px 5px 10px;
+    $text_input_font_weight:        200;
+    $text_input_font_size:          16px;
+    $text_input_font_family:        $font-1;
+
+
+/***********************************************/
+/* PLACEHOLDERS ********************************/
+/***********************************************/
+
+%side_paneL_container {
+    background: $side_panel_background !important;
+
+}
+
+%side_paneL_container_open {
+    background: $side_panel_background_open !important;
+
+}
+
+%side_paneL_title {
+    color: black;
+    font-size: 26px;
+    font-weight: $semilight;
+    font-family: $font-1;
+
+}
+
+%side_paneL_title_site_selector {
+
+}
+
+%document_title {
+    color: #f6f9fb;
+    font-family: $font-1;
+    font-weight: $light;
+    font-size: 16px;
+}
+
+%multiselect_title {
+    color: #f6f9fb;
+
+}
+
+%mode_combo_label {
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: $semilight;
+    font-family: $font-1;
+}
+
+%mode_combo_label_multiselect {
+    background: url(./images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
+
+}
+
+/* TOOL BAR BUTTONS, i.e. Pages, Content, Search, etc ... */
+
+%tool_button_label {
+    text-align: center;
+    font-family: $font-1;
+    font-size: 8px;
+    text-transform: uppercase;
+    font-weight: $normal;
+    color: $tool_color_normal;
+}
+
+%tool_button_label_multiselect {
+    color: $tool_color_off;
+
+}
+
+%tool_button_label_side_panel_open {
+    color: $tool_color_open;
+
+}
+
+
+%tool_button_label_side_panel_open_selected {
+    color: $tool_color_open_selected;
+
+}
+
+/* Context Menus */
+%context_menu_holder {
+    border: none;
+    box-shadow: 0 0 10px 0 rgba(49, 49, 49, 0.3);
+}
+
+%context_menu_item {
+    color: $gallery-gray;
+    padding: 4px 9px!important;
+    font-family: $font-1;
+    font-size: 11px;
+    font-weight: $semilight;
+    background: $jahia-blue;
+    text-align: left!important;
+}
+
+%context_menu_item_hover {
+    color: white;
+    background: black;
+}
+
+%context_menu_item_disabled {
+    color: pink !important;
+    font-style: italic;
+    opacity: 1;
+    background: $jahia-blue;
+
+}

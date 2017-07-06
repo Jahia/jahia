@@ -1,62 +1,109 @@
 /***********************************************/
-/* THEME COLOURS *******************************/
+/* THEME VARIABLES *****************************/
 /***********************************************/
 
-  /* GENERAL */
-  $body-bg: $rain-clouds;
-  $body-bg-multiselect: $dark-clouds;
 
 
-  /* EDIT MODE SIDE PANEL */
+/************************************ DEFAULTS */
 
-    $side_panel_background: $transparent;
-    $side_panel_background_open: $white-clouds;
-
-    /* TOOL BUTTON LABEL COLORS  */
-    $tool_color_normal:         $white-clouds;
-    $tool_color_open:           $grey-clouds;
-    $tool_color_open_selected:  $jahia-blue;
-    $tool_color_off:          	$black-clouds;
-
-    /* ICONS */
-    $icon_closed_pages:         $icon_pages_white_clouds;
-    $icon_closed_create:        $icon_create_white_clouds;
-    $icon_closed_content:       $icon_content_white_clouds;
-    $icon_closed_files:         $icon_files_white_clouds;
-    $icon_closed_search:        $icon_search_white_clouds;
-    $icon_closed_taxonomy:      $icon_taxonomy_white_clouds;
-    $icon_closed_devices:       $icon_devices_white_clouds;
-    $icon_closed_settings:      $icon_settings_white_clouds;
-
-    $icon_open_pages:           $icon_pages_grey_clouds;
-    $icon_open_create:          $icon_create_grey_clouds;
-    $icon_open_content:         $icon_content_grey_clouds;
-    $icon_open_files:           $icon_files_grey_clouds;
-    $icon_open_search:          $icon_search_grey_clouds;
-    $icon_open_taxonomy:        $icon_taxonomy_grey_clouds;
-    $icon_open_devices:         $icon_devices_grey_clouds;
-    $icon_open_settings:        $icon_settings_grey_clouds;
-
-    $icon_selected_pages:       $icon_pages_jahia_blue;
-    $icon_selected_create:      $icon_create_jahia_blue;
-    $icon_selected_content:     $icon_content_jahia_blue;
-    $icon_selected_files:       $icon_files_jahia_blue;
-    $icon_selected_search:      $icon_search_jahia_blue;
-    $icon_selected_taxonomy:    $icon_taxonomy_jahia_blue;
-    $icon_selected_devices:     $icon_devices_jahia_blue;
-    $icon_selected_settings:    $icon_settings_jahia_blue;
-
-    $icon_off_pages:            $icon_pages_black_clouds;
-    $icon_off_create:           $icon_create_black_clouds;
-    $icon_off_content:          $icon_content_black_clouds;
-    $icon_off_files:            $icon_files_black_clouds;
-    $icon_off_search:           $icon_search_black_clouds;
-    $icon_off_taxonomy:         $icon_taxonomy_black_clouds;
-    $icon_off_devices:          $icon_devices_black_clouds;
-    $icon_off_settings:         $icon_settings_black_clouds;
+    $default-font:                    $font-1;
+    $default-font-size:               14px;
+    $default-font-weight:             $normal;
+    $default-font-color:              $white-clouds;
 
 
-    // ROWS ( i.e. Page Tree Lists ...)
+
+/************************************** COMMON */
+
+    $body-bg:                         $rain-clouds;
+    $body-bg-multiselect:             $dark-clouds;
+
+
+
+/********************************** THUMB WRAPS */
+
+    $thumb_label:                  $black-clouds;
+    $thumb_label_background:       rgba($white-clouds, 0.7);
+
+    $thumb_background_up:          transparent;
+    $thumb_background_hover:       $grey-clouds;
+    $thumb_background_selected:    $jahia-blue;
+
+
+/********************************** SIDE PANEL */
+
+  $side_panel_background:         $transparent;
+  $side_panel_background_open:    $white-clouds;
+  $side_panel_drop_shadow:        7px 0px 45px rgba($dark-clouds, 0.9);
+
+
+
+/********************************** TOOL BUTTONS */
+
+    $tool_color_normal:             $white-clouds;
+    $tool_color_open:               $grey-clouds;
+    $tool_color_open_selected:      $jahia-blue;
+    $tool_color_off:          	    $black-clouds;
+
+/***************************************** ICONS */
+
+    $icon_closed_pages:             $icon_pages_white_clouds;
+    $icon_closed_create:            $icon_create_white_clouds;
+    $icon_closed_content:           $icon_content_white_clouds;
+    $icon_closed_files:             $icon_files_white_clouds;
+    $icon_closed_search:            $icon_search_white_clouds;
+    $icon_closed_taxonomy:          $icon_taxonomy_white_clouds;
+    $icon_closed_devices:           $icon_devices_white_clouds;
+    $icon_closed_settings:          $icon_settings_white_clouds;
+
+    $icon_open_pages:               $icon_pages_grey_clouds;
+    $icon_open_create:              $icon_create_grey_clouds;
+    $icon_open_content:             $icon_content_grey_clouds;
+    $icon_open_files:               $icon_files_grey_clouds;
+    $icon_open_search:              $icon_search_grey_clouds;
+    $icon_open_taxonomy:            $icon_taxonomy_grey_clouds;
+    $icon_open_devices:             $icon_devices_grey_clouds;
+    $icon_open_settings:            $icon_settings_grey_clouds;
+
+    $icon_selected_pages:           $icon_pages_jahia_blue;
+    $icon_selected_create:          $icon_create_jahia_blue;
+    $icon_selected_content:         $icon_content_jahia_blue;
+    $icon_selected_files:           $icon_files_jahia_blue;
+    $icon_selected_search:          $icon_search_jahia_blue;
+    $icon_selected_taxonomy:        $icon_taxonomy_jahia_blue;
+    $icon_selected_devices:         $icon_devices_jahia_blue;
+    $icon_selected_settings:        $icon_settings_jahia_blue;
+
+    $icon_off_pages:                $icon_pages_black_clouds;
+    $icon_off_create:               $icon_create_black_clouds;
+    $icon_off_content:              $icon_content_black_clouds;
+    $icon_off_files:                $icon_files_black_clouds;
+    $icon_off_search:               $icon_search_black_clouds;
+    $icon_off_taxonomy:             $icon_taxonomy_black_clouds;
+    $icon_off_devices:              $icon_devices_black_clouds;
+    $icon_off_settings:             $icon_settings_black_clouds;
+
+
+/********************************************* COMBOS */
+    $combo_icon_up:                 $icon_combo_arrow_white_clouds;
+    $combo_bg_up:                   $test-pink;
+
+    $combo_icon_hover:              $icon_combo_arrow_white_clouds;
+    $combo_bg_hover:                yellow;
+
+/********************************************* CONTEXT MENUS */
+    $context_bg_up:                 $jahia-blue;
+    $context_bg_hover:              lighten($context_bg_up, 5%);
+    $context_bg_disabled:           $jahia-blue;
+
+    $context_text_color_up:         $white-clouds;
+    $context_text_color_hover:      $white-clouds;
+    $context_text_color_disabled:   rgba($context_text_color_up, .7) !important;
+
+
+
+/********************************************* TREES */
+
     $row_label: 					$white-clouds;
     $row_icon: 						$icon_pages_grey_clouds;
 
@@ -74,7 +121,10 @@
 
     $row_more_options_icon: 		$icon_more_options_grey_clouds;
 
-    // Text fields
+
+
+/************************************** FORMS */
+
     $text_input_bg:                 $test-purple;
     $text_input_color:              $test-pink;
     $text_input_border:             1px solid transparent;
@@ -83,109 +133,311 @@
     $text_input_font_size:          16px;
     $text_input_font_family:        $font-1;
 
+    $form_clear_icon_up:            $icon_form_close_white_clouds;
+    $form_clear_bg_up:              $test-pink;
+
+    $form_clear_icon_hover:         $icon_form_close_white_clouds;
+    $form_clear_bg_hover:           yellow;
+
+
 
 /***********************************************/
-/* PLACEHOLDERS ********************************/
+/* THEME PLACEHOLDERS **************************/
 /***********************************************/
 
-%side_paneL_container {
-    background: $side_panel_background !important;
 
-}
+/********************************** SIDE PANEL */
 
-%side_paneL_container_open {
-    background: $side_panel_background_open !important;
+    %side_paneL_container {
+        background: $side_panel_background !important;
 
-}
+    }
 
-%side_paneL_title {
-    color: black;
-    font-size: 26px;
-    font-weight: $semilight;
-    font-family: $font-1;
+    %side_paneL_container_open {
+        background: $side_panel_background_open !important;
+        box-shadow: $side_panel_drop_shadow;
 
-}
+    }
 
-%side_paneL_title_site_selector {
+    %side_paneL_title {
+        @include text(26px, $dark-clouds, $extralight);
 
-}
+    }
 
-%document_title {
-    color: #f6f9fb;
-    font-family: $font-1;
-    font-weight: $light;
-    font-size: 16px;
-}
+    %side_paneL_title_site_selector {
 
-%multiselect_title {
-    color: #f6f9fb;
-
-}
-
-%mode_combo_label {
-    font-size: 14px;
-    text-transform: uppercase;
-    font-weight: $semilight;
-    font-family: $font-1;
-}
-
-%mode_combo_label_multiselect {
-    background: url(./images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
-
-}
-
-/* TOOL BAR BUTTONS, i.e. Pages, Content, Search, etc ... */
-
-%tool_button_label {
-    text-align: center;
-    font-family: $font-1;
-    font-size: 8px;
-    text-transform: uppercase;
-    font-weight: $normal;
-    color: $tool_color_normal;
-}
-
-%tool_button_label_multiselect {
-    color: $tool_color_off;
-
-}
-
-%tool_button_label_side_panel_open {
-    color: $tool_color_open;
-
-}
+    }
 
 
-%tool_button_label_side_panel_open_selected {
-    color: $tool_color_open_selected;
 
-}
+/********************************** DOCUMENT TITLE */
 
-/* Context Menus */
-%context_menu_holder {
-    border: none;
-    box-shadow: 0 0 10px 0 rgba(49, 49, 49, 0.3);
-}
+    %document_title {
+        @include text(16px, $white-clouds, $semilight);
+    }
 
-%context_menu_item {
-    color: $gallery-gray;
-    padding: 4px 9px!important;
-    font-family: $font-1;
-    font-size: 11px;
-    font-weight: $semilight;
-    background: $jahia-blue;
-    text-align: left!important;
-}
+    %multiselect_title {
+        color: $white-clouds;
 
-%context_menu_item_hover {
-    color: white;
-    background: black;
-}
+    }
 
-%context_menu_item_disabled {
-    color: pink !important;
-    font-style: italic;
-    opacity: 1;
-    background: $jahia-blue;
 
-}
+
+
+
+
+
+/************************************** MODE COMBO */
+
+    %mode_combo_label {
+        text-transform: uppercase;
+
+        @include text(14px, $white-clouds, $semilight);
+    }
+
+    %mode_combo_label_multiselect {
+        background: url(./images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
+
+    }
+
+
+
+/************************************ TOOL BUTTONS */
+
+    %tool_button_label {
+        text-align: center;
+        text-transform: uppercase;
+
+        @include text(8px, $tool_color_normal, $normal);
+    }
+
+    %tool_button_label_multiselect {
+        color: $tool_color_off;
+
+    }
+
+    %tool_button_label_side_panel_open {
+        color: $tool_color_open;
+
+    }
+
+
+    %tool_button_label_side_panel_open_selected {
+        color: $tool_color_open_selected;
+
+    }
+
+
+
+/********************************* CONTEXT MENUS */
+
+    %context_menu_holder {
+        border: none;
+        box-shadow: 0 0 10px 0 rgba(49, 49, 49, 0.3);
+    }
+
+    %context_menu_item {
+        text-align: left!important;
+
+        background: $context_bg_up;
+        padding: 4px 9px!important;
+        border: none;
+
+        @include text(11px, $context_text_color_up, $semilight);
+    }
+
+    %context_menu_item_hover {
+        color: $context_text_color_hover;
+        background: $context_bg_hover;
+
+    }
+
+    %context_menu_item_disabled {
+        color: $context_text_color_disabled;
+        font-style: italic;
+        opacity: 1;
+        background: $context_bg_disabled;
+
+    }
+
+    /* Personalised Context Menus */
+
+        /* More Info Menu */
+
+            %context_menu_holder--more_info {
+                box-shadow: 10px 10px 10px red;
+            }
+
+            %context_menu_item--more_info {
+                /**/
+            }
+
+            %context_menu_item_hover--more_info {
+                /**/
+            }
+
+            %context_menu_item_disabled--more_info {
+                /**/
+            }
+
+        /* Mode Menu */
+
+            %context_menu_holder--mode_menu {
+                box-shadow: 10px 10px 10px blue;
+            }
+
+            %context_menu_item--mode_menu {
+                /**/
+            }
+
+            %context_menu_item_hover--mode_menu {
+                /**/
+            }
+
+            %context_menu_item_disabled--mode_menu {
+                /**/
+            }
+
+
+
+/********************************* COMBO MENUS */
+
+    %combo_arrow_up {
+        background: no-repeat center center;
+        background-color: $combo_bg_up !important;
+        background-image: url($combo_icon_up);
+    }
+
+    %combo_arrow_hover {
+        background-color: $combo_bg_hover !important;
+        background-image: url($combo_icon_hover);
+    }
+
+
+
+/**************************************** FORMS */
+
+    %form_label {
+        padding: 0!important;
+
+        @include text(16px, $dark-clouds, $semilight);
+    }
+
+    %text_input {
+        background: $text_input_bg;
+        padding: $text_input_padding;
+        border: $text_input_border;
+
+        @include text($text_input_font_size, $text_input_color, $text_input_font_weight, $text_input_font_family);
+    }
+
+    %form_button {
+        background: green;
+        border:none;
+        padding: 3px 10px!important;
+
+        @include text(16px, $white-clouds, $semilight);
+    }
+
+    %form_clear_up {
+        background: no-repeat center center;
+        background-color: $form_clear_bg_up !important;
+        background-image: url($form_clear_icon_up);
+    }
+
+    %form_clear_hover {
+        background-color: $form_clear_bg_hover !important;
+        background-image: url($form_clear_icon_hover);
+    }
+
+
+
+
+
+/**************************************** TREES */
+
+    /* Labels */
+    %tree_line_text_up {
+        @include text(12px, $row_label, $extralight);
+        padding: 7px 0 0 !important;
+    }
+
+    %tree_line_text_hover {
+        color: $row_over_label!important;
+    }
+
+    %tree_line_text_selected {
+        color: $row_selected_label!important;
+
+    }
+
+    %tree_line_text_selected_hover {
+        color: $row_selected_over_label!important;
+
+    }
+
+    /* Backgrounds */
+    %tree_line_bg_up {
+        background: pink;
+    }
+
+    %tree_line_bg_hover {
+        background: $row_over_background!important;
+    }
+
+    %tree_line_bg_selected {
+        background-color: $row_selected_background!important;
+    }
+
+    %tree_line_bg_selected_hover {
+        background: $row_selected_over_icon!important;
+    }
+
+    /* Icons */
+    %tree_line_icon_up {
+        /*background-image: url($row_icon);
+        background-size: 23px 23px;
+        background-repeat: no-repeat;
+        padding-left: 23px;
+        width: 23px;
+        height: 23px;*/
+    }
+
+    %tree_line_icon_hover {
+        /*background-image: url($row_over_icon) !important;*/
+    }
+
+    %tree_line_icon_selected {
+        /*background-image: url($row_selected_icon) !important;*/
+    }
+
+    %tree_line_icon_selected_hover {
+        /*background-image: url($row_selected_icon) !important;*/
+    }
+
+
+/**************************************** THUMB WRAPS */
+
+    %thumb_label {
+        background: $thumb_label_background;
+        text-align: center;
+        padding: 10px;
+
+        @extend %ellipsis_overflow;
+        @include text(10px, $thumb_label, $bold);
+    }
+
+    %thumb_up {
+        background: $thumb_background_up;
+
+    }
+
+    %thumb_hover {
+        background: $thumb_background_hover;
+
+    }
+
+    %thumb_selected {
+        background: $thumb_background_selected;
+
+    }

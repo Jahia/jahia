@@ -31,9 +31,30 @@
 	$test-pink: pink;
 
 
+	/* Publication Colours */
+	$conflict: 							yellow;
+	$deleted: 							black;
+	$live-modified: 					orange;
+	$live-only: 						orange;
+	$locked: 							yellow;
+	$mandatory-language-unpublishable: 	orange;
+	$mandatory-language-valid:			green;
+	$marked-for-deletion:				red;
+	$modified: 							orange;
+	$multiple-wf:						orange;
+	$not-published: 					orange;
+	$one-wf: 							orange;
+	$published: 						green;
+	$unpublished: 						grey;
+	$waiting: 							white;
+	$work-in-progress:					orange;
+
+
 /*======= Icons =======*/
 	/* More Options */
 	$icon_more_options_grey_clouds:     "./images/icon-more-options-dark-50@X2.png";
+	$icon_combo_arrow_white_clouds:     "./images/icons/combo-arrow.png";
+	$icon_form_close_white_clouds:     "./images/icons/icon-close-small-light.png";
 
 
 	/* Pages Icons */
@@ -98,6 +119,17 @@
 	$semibold: 500;
 	$bold: 700;
 
+
+
+/***********************************************/
+/* PLACEHOLDERS ********************************/
+/***********************************************/
+
+%ellipsis_overflow {
+	text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
 
 
 @import "theme-dark";

@@ -1,5 +1,6 @@
 /* Imports */
 
+@import "functions";
 @import "variables";
 @import "font";
 
@@ -109,6 +110,7 @@ body {
 
 .window-container {
 	overflow: visible;
+	background: transparent;
 }
 
 /***********************************************/
@@ -147,6 +149,42 @@ body {
 	left: 0;
 	width: 100% !important;
 
+	/* Container */
+	.toolbar-header {
+		z-index: 999999999 !important;
+		right: 69px;
+		position: fixed !important;
+		overflow: visible;
+		text-align: center;
+		left: 60px;
+		width: calc(100% - 124px) !important;
+		top: 0 !important;
+		padding: 0;
+		height: 51px!important;
+
+		body[data-sitesettings="true"] & {
+			display: none;
+		}
+	}
+
+	.x-panel-toolbar {
+		&:nth-child(1) {
+			margin-top: 10px;
+	        display: inline-block;
+	        float: none !important;
+		}
+
+		&:nth-child(2) {
+	        float: none !important;
+	        margin-top: 0;
+	        margin-left: 4px;
+	        margin-right: 17px;
+	        z-index: 9999999999;
+	        position: relative;
+	        display: inline-block;
+	    }
+	}
+
 	.node-path-title {
 	    display: none;
 	}
@@ -182,213 +220,105 @@ body {
 
 	}
 
-	> .x-panel-header {
-		flow: visible;
-		z-index: 999999999 !important;
-		right: 69px;
-		position: fixed !important;
-		overflow: visible;
-		text-align: center;
-		left: 60px;
-		width: calc(100% - 124px) !important;
-		top: 0 !important;
-		padding: 0;
-		height: 51px!important;
 
-		body[data-sitesettings="true"] & {
+
+	/* More Info Button */
+	.edit-menu-edit {
+		display: inline-block;
+		margin-top: 0;
+		top: -3px;
+		position: relative;
+		margin-left: 55px;
+
+		/* Create Curver Border */
+		> tbody {
+			display: block;
+			width: 20px;
+			height: 20px;
+			border-radius: 0 100% 100% 0;
+			background-size: 10px 2px;
+			background-repeat: no-repeat;
+			background-position: center left 3px;
+			background-color: rgba($cod-gray, 0.2);
+			background-image: url(./images/icon-more-options-white@X2.png);
+
+			body[data-multiselect="on"] & {
+				background-color: $cod-gray;
+			}
+
+			/* Hide All the Junk from the old button */
+			td {
+				display: none;
+			}
+
+		}
+
+	}
+
+	.xtb-sep {
+		display: none;
+	}
+
+	.x-tool-refresh {
+		display: none;
+	}
+
+	.toolbar-item-publicationstatuswithtext {
+		display: none;
+	}
+
+	.toolbar-itemsgroup-languageswitcher {
+		pointer-events: all;
+		z-index: 999999999;
+		position: fixed;
+		left: 0;
+		top: 18px;
+		opacity: 0;
+
+		width: 25px !important;
+		height: 14px;
+
+		/* Hide When Multiselect is on */
+		body[data-multiselect="on"] & {
 			display: none;
 		}
 
-		body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
+		/* Input used to display flag instead of text input */
+		input {
+			border: none;
+			text-indent: -50000px;
+			height: 15px !important;
+			width: 100% !important;
+			padding: 0 !important;
+			background-color: transparent;
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-size: 23px 14px;
+
+			body[data-lang="en"] & {
+				background-image: url(./images/flags@X2/united-kingdom@X2.png);
+			}
+			body[data-lang="fr"] & {
+				background-image: url(./images/flags@X2/france@X2.png);
+			}
+			body[data-lang="de"] & {
+				background-image: url(./images/flags@X2/germany@X2.png);
+			}
 
 		}
 
-		> div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td {
-			&:nth-child(1) {
-				display: none;
-				td {
-					&:nth-child(1) {
-						display: none;
-						background: pink;
-					}
-					&:nth-child(2) {
-						height: 20px;
-					}
-				}
-				img {
-					&[src='/icons/publication/modified.png'] {
-						border-left: 2px solid $blaze-orange;
-						height: 31px;
-						width: 0;
-						overflow: hidden;
-						display: inline;
-					}
-					&[src='/icons/publication/published.png'] {
-						border-left: 2px solid $harlequin-green;
-						height: 28px;
-						width: 0;
-						overflow: hidden;
-						display: inline;
-					}
-				}
-			}
-
-			&:nth-child(2) {
-				display: none;
-			}
-
-			.edit-menu-edit {
-				display: inline-block;
-				margin-top: 0;
-				top: -3px;
-				position: relative;
-				margin-left: 55px;
-				> tbody {
-					display: block;
-					width: 20px;
-					height: 20px;
-					display: block;
-					border-radius: 0 100% 100% 0;
-					background: url(./images/icon-more-options-white@X2.png) no-repeat center left 3px #545657;
-					background-size: 10px 2px;
-
-
-					body[data-multiselect="on"] & {
-						background: url(./images/icon-more-options-white@X2.png) no-repeat center left 3px $cod-gray;
-						background-size: 10px 2px;
-					}
-
-				}
-				> tbody > tr {
-					display: none;
-				}
-			}
-			&:nth-child(300) {
-				border-radius: 100%;
-				background: rgba(238, 238, 238, 0.1);
-				display: inline-block;
-				position: fixed;
-				left: 236px;
-				top: 17px;
-				> table {
-					width: 16px;
-					height: 16px;
-					border: 1px solid red;
-					background: url(./images/icon-more-options-white@X2.png) no-repeat center center;
-					background-size: 10px 2px;
-					tbody {
-						display: none;
-					}
-				}
-			}
-			&:nth-child(4) {
-				display: none;
-			}
-			&:nth-child(5) {
-				pointer-events: all;
-				z-index: 999999999;
-				position: fixed;
-				left: 0;
-				top: 18px;
-				opacity: 0;
-			}
-			&:nth-child(5) {
-				display: block;
-
-				body[data-multiselect="on"] & {
-					display: none;
-				}
-				> div {
-					width: 25px !important;
-					height: 14px;
-				}
-				input {
-					width: 100% !important;
-					body[data-lang="en"] & {
-						background: url(./images/flags@X2/united-kingdom@X2.png) no-repeat center center / 23px 14px;
-					}
-					body[data-lang="fr"] & {
-						background: url(./images/flags@X2/france@X2.png) no-repeat center center / 23px 14px;
-					}
-					body[data-lang="de"] & {
-						background: url(./images/flags@X2/germany@X2.png) no-repeat center center / 23px 14px;
-					}
-					&[type="text"] {
-						background: transparent;
-						color: rgba(238, 238, 238, 0.6);
-						font-family: $font-1;
-						font-size: 10px;
-						font-weight: $light;
-						border: none;
-						text-indent: -50000px;
-						width: 100% !important;
-						padding: 0 !important;
-						height: 15px !important;
-					}
-				}
-				.x-form-field-wrap .x-form-trigger {
-					background: url(./images/combo-arrow.png) no-repeat center center transparent;
-					height: 14px;
-					width: 10px;
-					left: 22px;
-					border: none;
-					top: 0;
-					display: none;
-				}
-			}
-			&:nth-child(6) {
-				border-radius: 100%;
-				width: 20px;
-				height: 20px;
-				position: fixed;
-				right: 168px;
-				top: 18px;
-				opacity: 0.3;
-				display: none;
-			}
-
-
-		}
-
-		&:hover > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(6) {
-			opacity: 1;
-		}
-		> div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(6) > div {
-			background: url(./images/icon-publication-launcher.png) no-repeat center center;
-			background-size: 100%;
-			width: 18px;
-			margin-top: 2px;
-			float: none;
-			margin-left: 3px;
+		/* Combo Arrow */
+		.x-form-trigger {
+			display: none;
 		}
 	}
+
+
 }
 
 
-.x-border-panel.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) > div {
-    &:nth-child(1) {
-        margin-top: 10px;
-        display: inline-block;
-        float: none !important;
-    }
-    &:nth-child(2) {
-        float: none !important;
-        margin-top: 0;
-        margin-left: 4px;
-        margin-right: 17px;
-        z-index: 9999999999;
-        position: relative;
-        display: inline-block;
-    }
-}
 
-.x-panel-bwrap {} .x-border-layout-ct {
-    background: transparent;
-}
-.x-border {
-    border: none;
-    z-index: 9999 !important;
-}
+
 
 /***********************************************/
 /* BUTTONS *************************************/
@@ -492,6 +422,41 @@ body {
 /* Context Menus *******************************/
 /***********************************************/
 
+
+/* Add Personalised styling to specified context menus */
+$personalised_context_menus: (
+	// Context Menu Class (UID)			// Placeholder
+	(".menu-edit-menu-edit",      		more_info),
+	(".menu-edit-menu-mode",      		mode_menu)
+);
+
+@each $context_menu in $personalised_context_menus {
+	$_context_menu_class: #{nth($context_menu,1)};
+	$_placeholder: #{nth($context_menu,2)};
+
+	#{$_context_menu_class} {
+		&.x-menu {
+			@extend %context_menu_holder--#{$_placeholder};
+		}
+
+		.x-menu-item {
+			@extend %context_menu_item--#{$_placeholder};
+
+		}
+
+		.x-item-disabled & {
+			@extend %context_menu_item_disabled--#{$_placeholder};
+
+		}
+
+		.x-menu-item-active & {
+			@extend %context_menu_item_hover--#{$_placeholder};
+
+		}
+	}
+}
+
+
 .x-menu {
 	width: auto !important;
 	background: transparent;
@@ -561,152 +526,102 @@ body {
 /* Thumb Wraps *********************************/
 /***********************************************/
 
-#images-view {
-	.thumb-wrap {
-		/* Used to create a thumb in List View, ie. in Files */
-		border: none!important;
-		padding: 0!important;
-		width: 48%!important; /* Sets Actual Width Of Thumb */
-		margin: 1% !important;
-		display: inline-block;
-		float: none!important;
-		height: 86px;
-		max-height: 86px;
+.thumb-wrap {
+	/* Used to create a thumb in List View, ie. in Files */
+	border: none!important;
+	padding: 0!important;
+	width: 48%!important; /* Sets Actual Width Of Thumb */
+	margin: 1% 0 1% 1% !important;
+	display: inline-block;
+	float: none!important;
+	height: 86px;
+	max-height: 86px;
+	position: relative;
+	background: none;
 
-		&.x-view-item-sel {
-			background: purple!important;
 
-			.thumb {
-				z-index: 99;
-			}
+	> div {
+		/* Some Thumbs have extra divs containing more Meta Data, so hide them */
+		display: none;
 
-			.thumbDetails {
-				/* Show Thumb details when mouse over thumb-wrap */
+		/* Just show the first Div which contains the file name */
+		&:first-child {
+			display: block;
+		}
+	}
+
+	/* Image */
+	.thumb {
+		width: 100%!important;
+		height: auto!important;
+		padding: 5px!important;
+		box-sizing: border-box;
+
+		@extend %thumb_up;
+
+	}
+
+	/* Meta Data */
+	.thumbDetails {
+		position: absolute;
+	    top: 5px;
+	    left: 5px;
+	    z-index: 9;
+	    margin: 0 !important;
+	    width: calc(100% - 10px);
+	    display: none;
+
+		/* Meta Data */
+		div {
+			/* Hide ALL */
+			display: none;
+
+			/* Just Show the File Name Meta COntainer */
+			&:first-child {
 				display: block;
-				z-index: 9!important;
 
-				top: -2px;
-				min-height: calc(100% + 4px);
-				height: calc(100% + 4px);
+				@extend %thumb_label;
 
-				> div {
+
+				/* Hide Label */
+				b {
 					display: none;
 				}
-			}
 
-			&.x-view-over {
-				.thumbDetails {
-					top: -24px;
-					min-height: calc(100% + 71px);
-					height:auto!important;
-					z-index: 999 !important;
-
-					> div {
-						display: block;
-					}
-				}
 			}
 		}
 
-		&.x-view-over {
-			background: none!important;
+	}
 
-			.thumb {
-				z-index: 99999;
-			}
+	/* Hover State */
+	&.x-view-over {
+		.thumbDetails {
+			display: block;
 
-			.thumbDetails {
-				/* Show Thumb details when mouse over thumb-wrap */
-				display: block;
-				z-index: 9999!important;
-			}
-		}
-
-		> div:nth-child(1) {
-			/* Container for Thumb */
-			width:100%;
-			height:100%;
-			position: relative;
-		}
-
-		> div:nth-child(2) {
-			/* Contains extra Meta Data, namely for photos */
-			display: none;
 		}
 
 		.thumb {
-			/* Container for Thumb Image */
-			padding: 0!important;
-			width: 100%!important;
-			height: auto!important;
-			position: relative;
+			@extend %thumb_hover;
 
-			img{
-				/* Actual Thumb Image */
-				width: 100%;
-				margin: 0!important;
-			}
 		}
 
+	}
+
+	/* Selected State */
+	&.x-view-item-sel {
 		.thumbDetails {
-			/* Container for List of file information */
 			display: none;
-			left: -2px;
-			top: -24px;
-			width: calc(100% + 4px);
-			min-height: calc(100% + 71px);
-			position: absolute;
-			margin: 0 !important;
-			background: green;
-			z-index: 999 !important;
-
-			> div {
-				/* Generic Meta Data Value */
-				font-family: Nunito Sans;
-				font-size: 9px;
-				color: red;
-				text-align: center;
-
-				width: 100%;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-				overflow: hidden;
-
-				b {
-					/* Generic Meta Data Label */
-					text-transform: uppercase;
-					color: blue;
-					font-size: 8px;
-				}
-
-
-				&:nth-child(1) {
-					/* Meta Data ::: Name */
-					margin-top: 6px;
-
-					b {
-						display: none;
-					}
-
-				}
-
-				&:nth-child(2) {
-					/* Meta Data ::: Title */
-					margin-top: 97px;
-
-				}
-				&:nth-child(3) {
-					/* Meta Data ::: Author */
-					display: none!important;
-
-				}
-
-			}
-
 
 		}
+
+		.thumb {
+			@extend %thumb_selected;
+
+		}
+
 	}
 }
+
 
 
 
@@ -1312,23 +1227,14 @@ form {
 .x-form-item-label {
 	width: auto!important;
 	float: none!important;
-	padding: 0!important;
 	clear: both!important;
-	font-family: Nunito Sans;
-	font-size: 16px;
-	font-weight: 200;
+
+	@extend %form_label;
 }
 
 /* Text Field Input */
-.x-form-text,
-.ext-strict .ext-webkit .x-small-editor .x-form-text { /* Lond Selector to overwrite GWT for Site Selector */
-	background:     $text_input_bg;
-	color:          $text_input_color;
-	border:         $text_input_border;
-	padding:        $text_input_padding;
-	font-weight:    $text_input_font_weight;
-	font-size:      $text_input_font_size;
-	font-family:    $text_input_font_family;
+.x-form-text {
+	@extend %text_input;
 
 	width: 100%!important;
 	box-sizing: border-box;
@@ -1369,7 +1275,20 @@ form {
 
 	&.x-form-trigger-arrow {
 		/* Combo Down Arrow Button */
-		background: url(./images/icons/combo-arrow.png) no-repeat center center red!important;
+		@extend %combo_arrow_up;
+
+		&.x-form-trigger-over {
+			@extend %combo_arrow_hover;
+		}
+	}
+
+	&.x-form-clear-trigger {
+		/* Combo Down Arrow Button */
+		@extend %form_clear_up;
+
+		&.x-form-trigger-over {
+			@extend %form_clear_hover;
+		}
 	}
 }
 
@@ -1398,11 +1317,10 @@ form {
 .x-form-cb-label {
 	margin: 0 0 0 5px;
 	padding: 0!important;
-	font-family: Nunito Sans;
-	font-size: 16px;
-	font-weight: 200;
 	left: auto!important;
 	top: auto!important;
+
+	@extend %form_label;
 }
 
 /* Button Bars at the end of Panels, ie OK, Save, Cancel, ... */
@@ -1430,15 +1348,14 @@ form {
 .x-panel-btns {
 	.x-btn {
 		button {
-			background: green;
-			border:none;
-			font-family: Nunito Sans;
-			font-size: 16px;
-			font-weight: 200;
-			color: pink;
-			padding: 3px 10px!important;
 			height: auto!important;
-			width: auto!important;
+	        width: auto!important;
+
+			@extend %form_button;
+
+			img {
+				display: none;
+			}
 
 		}
 
@@ -1469,6 +1386,132 @@ form {
 	width: 100%!important;
 	height: 100%!important;
 	background: transparent;
+
+	.x-grid3-td-publicationInfo {
+		width: 3px!important;
+		height: 25px;
+		overflow: hidden;
+
+		position: absolute;
+		left: 0;
+
+		.x-grid3-col-publicationInfo {
+			padding: 0!important;
+
+		}
+
+		.x-component,
+		table {
+			height: 100%
+		}
+
+		img {
+			overflow: hidden;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			position: relative;
+
+			padding-left: 5px;
+			width: 5px;
+			height: 100%;
+
+			/* Conflict */
+			&[src="/icons/publication/conflict.png"] {
+				background: $conflict!important;
+
+			}
+
+			/* Deleted */
+			&[src="/icons/publication/deleted.png"] {
+				background: $deleted!important;
+
+			}
+
+			/* Live Modified */
+			&[src="/icons/publication/livemodified.png"] {
+				background: $live-modified!important;
+
+			}
+
+			/* Live Only */
+			&[src="/icons/publication/liveonly.png"] {
+				background: $live-only!important;
+
+			}
+
+			/* Locked */
+			&[src="/icons/publication/locked.png"] {
+				background: $locked!important;
+
+			}
+
+			/* Mandatory Language Unpublishable */
+			&[src="/icons/publication/mandatorylanguageunpublishable.png"] {
+				background: $mandatory-language-unpublishable!important;
+
+			}
+
+			/* Mandatory Language Valid */
+			&[src="/icons/publication/mandatorylanguagevalid.png"] {
+				background: $mandatory-language-valid!important;
+
+			}
+
+			/* Marked FOr Deletion */
+			&[src="/icons/publication/markedfordeletion.png"] {
+				background: $marked-for-deletion!important;
+
+			}
+
+			/* Modified */
+			&[src="/icons/publication/modified.png"] {
+				background: $modified!important;
+
+			}
+
+			/* Multiple WF */
+			&[src="/icons/publication/multipleWF.png"] {
+				background: $multiple-wf!important;
+
+			}
+
+			/* Not Published */
+			&[src="/icons/publication/notpublished.png"] {
+				background: $not-published!important;
+
+			}
+
+			/* One WF */
+			&[src="/icons/publication/oneWF.png"] {
+				background: $one-wf!important;
+
+			}
+
+			/* Published */
+			&[src="/icons/publication/published.png"] {
+				background: $published!important;
+
+			}
+
+			/* Unpublished */
+			&[src="/icons/publication/unpublished.png"] {
+				background: $unpublished!important;
+
+			}
+
+			/* Waiting */
+			&[src="/icons/publication/waiting.gif"] {
+				background: $waiting!important;
+
+			}
+
+			/* Work In Progress */
+			&[src="/icons/publication/workinprogress.png"] {
+				background: $work-in-progress!important;
+
+			}
+		}
+	}
 
 	.x-grid3-header {
 		/* Header bar (contains column names) */
@@ -1503,18 +1546,22 @@ form {
 		width: 100%!important;
 		border: none;
 
+		@extend %tree_line_bg_up;
+
 
 
 		// Line hover
 		&.x-grid3-row-over {
-			background: $row_over_background!important;
+			@extend %tree_line_bg_hover;
 
 			.x-tree3-node-icon {
-				background-image: url($row_over_icon) !important;
+				@extend %tree_line_icon_hover;
+
 			}
 
 			.x-tree3-node-text {
-				color: $row_over_label!important;
+				@extend %tree_line_text_hover;
+
 			}
 
 
@@ -1522,22 +1569,28 @@ form {
 
 		// Line Selected
 		&.x-grid3-row-selected {
-			background-color: $row_selected_background!important;
+			@extend %tree_line_bg_selected;
 
 			.x-tree3-node-icon {
-				background-image: url($row_selected_icon) !important;
+				@extend %tree_line_icon_selected;
+
 			}
 
 			.x-tree3-node-text {
-				color: $row_selected_label!important;
+				@extend %tree_line_text_selected;
 			}
 
 			// Line Hover on Selected
 			&.x-grid3-row-over {
-				background: $row_selected_over_icon!important;
+				@extend %tree_line_bg_selected_hover;
+
+				.x-tree3-node-icon {
+					@extend %tree_line_icon_selected_hover;
+
+				}
 
 				.x-tree3-node-text {
-					color: $row_selected_over_label!important;
+					@extend %tree_line_text_selected_hover;
 				}
 			}
 		}
@@ -1547,11 +1600,8 @@ form {
 	.x-tree3-node-text,
 	.x-grid3-cell-inner {
 		// List Item Label
-		font-family: $font-1;
-		font-weight: $extralight;
-		color: $row_label;
-		font-size: 12px;
-		padding: 7px 0 0 !important;
+		@extend %tree_line_text_up;
+
 		pointer-events: none;
 
 		&::after {
@@ -1574,12 +1624,8 @@ form {
 
 	/* List Item Icon */
 	.x-tree3-node-icon {
-		background-image: url($row_icon);
-		background-size: 23px 23px;
-		background-repeat: no-repeat;
-		padding-left: 23px;
-		width: 23px;
-		height: 23px;
+		@extend %tree_line_icon_up;
+
 		overflow: hidden;
 		-moz-box-sizing: border-box;
 		box-sizing: border-box;
@@ -1634,4 +1680,17 @@ form {
 			}
 		}
 	}
+}
+
+
+
+
+
+/***********************************************************************************/
+/* TRASH ???? **********************************************************************/
+/***********************************************************************************/
+
+.x-border {
+    border: none;
+	/*z-index: 9999 !important;*/
 }

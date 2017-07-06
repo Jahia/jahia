@@ -129,7 +129,6 @@
 
 
 		#JahiaGxtSidePanelTabs .tab_systemSiteSettings {
-
 			.x-viewport-adminmode & {
 				left: 150px;
 
@@ -172,9 +171,7 @@
 		}
 
 		#JahiaGxtSidePanelTabs {
-
-
-
+			/* Do all this with JS instead of generating CSS, as it creates thousands of lines ... */
 			.x-viewport-adminmode & {
 				@for $i from 0 through 50 {
 			        &[current-sub-menu="#{$i}"] {
@@ -210,25 +207,16 @@
 
 			    }
 
-
-
-
 			    .x-grid3-row {
-
-
-
 					display:none;
 					width: 60px !important;
 					height: 55px !important;
 
 					&[menu-item-level="0"] {
 			            display: block;
-
 			        }
 
-
 					.x-tree3-el {
-
 						opacity: 0.6;
 
 						&:hover {
@@ -251,7 +239,6 @@
 
 
 					}
-
 
 					&[menu-item-level="0"] {
 						.x-tree3-node-icon {
@@ -291,11 +278,7 @@
 							background: #05a5e7!important;
 						}
 
-
-
 					}
-
-
 
 					.x-tree3-el {
 						height: 55px;

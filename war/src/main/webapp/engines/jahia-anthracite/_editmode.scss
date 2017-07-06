@@ -291,7 +291,7 @@
 
             &:hover {
                 cursor: pointer;
-                > table: nth-child(1)::after {
+                > table:nth-child(1)::after {
                     color: $gallery-gray;
                 }
             }
@@ -423,7 +423,7 @@
     }
 
     > div:nth-child(1) > div:nth-child(2) > div {
-        &:nth-child(1) > div: nth-child(1) {
+        &:nth-child(1) > div:nth-child(1) {
             z-index: 999999 !important;
             height: 60px;
             display: block;
@@ -434,7 +434,7 @@
             height: calc(100% - 46px) !important;
             width: calc(100% - 69px) !important;
 
-            > div: nth-child(2) > div: nth-child(2) {
+            > div:nth-child(2) > div:nth-child(2) {
                 top: 0px !important;
                 height: calc(100% - 9px) !important;
                 width: calc(100% - 55px) !important;
@@ -456,7 +456,7 @@
         width: 100% !important;
         height: calc(100% + 4px) !important;
 
-        > iframe: nth-child(1) {
+        > iframe:nth-child(1) {
             width: 100% !important;
             box-shadow: 0 10px 30px 1px rgba(0, 0, 0, 0.8) !important;
             margin-top: 8px !important;

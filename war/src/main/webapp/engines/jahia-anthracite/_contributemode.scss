@@ -44,7 +44,7 @@
             display: inline-block;
             opacity: 1;
 
-            &:hover > table: nth-child(1)::after {
+            &:hover > table:nth-child(1)::after {
                 color: $gallery-gray;
             }
 

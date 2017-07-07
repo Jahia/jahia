@@ -1,14 +1,14 @@
-/***********************************************/
-/* SIDE PANEL  *********************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// SIDE PANEL ///////////////////////////////////
+/////////////////////////////////////////////////
 
 .window-side-panel {
 	z-index: 99999!important;
 	height: 100%;
 	pointer-events: none;
 
-	/* Contains Site Selector and Side Panel Refresh Button */
 	.x-panel-header {
+		/* Contains Site Selector and Side Panel Refresh Button */
 		position: absolute !important;
 	    top: 9px!important;
 		left: 67px !important;
@@ -23,8 +23,8 @@
 			display: block;
 		}
 
-		/* Site Selector */
 		.edit-menu-sites {
+			/* Site Selector */
 			pointer-events: all !important;
 			width: 220px !important;
 
@@ -44,15 +44,15 @@
 			}
 		}
 
-		/* Refresh side panel button */
 		#JahiaGxtRefreshSidePanelButton {
+			/* Refresh side panel button */
 		    pointer-events: all;
 			background: url(./images/icon-publication-launcher.png) no-repeat center center;
 
 		}
 
-		/* Expand Collaspe Side Bar */
 		.x-tool-left {
+			/* Expand Collaspe Side Bar */
 			display: none;
 		}
 
@@ -73,8 +73,9 @@
 		height: calc(100% + 4px) !important;
 	}
 
-	/* Left Panel Tab Button Container */
+
 	> .x-panel-bwrap {
+		/* Left Panel Tab Button Container */
 		margin-top: 0px;
 		width: 60px;
 		overflow: visible;
@@ -98,8 +99,9 @@
 	    height: 100%;
 	    padding-top: 60px;
 
-		/* Side Panel Buttons */
+
 		li {
+			/* Side Panel Buttons */
 			float: none;
             width: 50px;
             height: 40px;
@@ -253,8 +255,8 @@
 
 	// Corrections
 	#JahiaGxtSearchTab {
-		/* Search Tab doesnt use the typical x-box-inner, so write special rule for its equivalent */
 		> .x-panel-mc {
+			/* Search Tab doesnt use the typical x-box-inner, so write special rule for its equivalent */
 			/* Equivalent of .box-inner */
 			width: 100%!important;
 			height: calc(100% - 66px)!important;
@@ -279,9 +281,9 @@
 				height: 100%!important;
 			}
 
-			/* Footer Action Bars (Search & Paginator) */
 			.x-panel-bbar,
 			.x-panel-footer {
+				/* Footer Action Bars (Search & Paginator) */
 				position: absolute;
 				bottom: 50px;
 				z-index: 999;
@@ -292,9 +294,9 @@
 	}
 
 	#JahiaGxtChannelsTab.tab_channel.x-component { // Excessive Selector is to over rule hard to crush !important already on the element
-		/* Need to correct the layout of Left/Right to UP/Down on boxes */
 		.x-box-inner {
 			.x-box-item {
+				/* Need to correct the layout of Left/Right to UP/Down on boxes */
 				width: 100%!important;
 				height: 50%!important;
 			}
@@ -308,17 +310,9 @@
 
 
 
-
-
-/* END GLOBAL GRID PANEL */
-
-
-
-
-
-/***********************************************/
-/* SIDE PANEL LABELS / WIDTHS  *****************/
-/***********************************************/
+/////////////////////////////////////////////////
+// PERSONALISED WIDTHS & LABELS /////////////////
+/////////////////////////////////////////////////
 
 $side_panel__tab_buttons: (
 	// Tab ID							// Tab Label		// Tab Width
@@ -363,9 +357,9 @@ $side_panel__tab_buttons: (
 
 
 
-/*******************************************************************************************************************************/
-/* SIDE PANEL BUTTONS **********************************************************************************************************/
-/*******************************************************************************************************************************/
+/////////////////////////////////////////////////
+// BUTTONS //////////////////////////////////////
+/////////////////////////////////////////////////
 
     // MENUS
         $side_panel__tabs: (

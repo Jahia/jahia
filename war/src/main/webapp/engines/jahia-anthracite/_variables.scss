@@ -1,8 +1,10 @@
+/////////////////////////////////////////////////
+// COLOURS //////////////////////////////////////
+/////////////////////////////////////////////////
 
 
+///////// MAIN COLOURS
 
-/*======= Colors =======*/
-	/* Main colors */
 	$shuttle-gray: #5c6164; // main background
 	$nevada-gray: #646b6f;  // secondary background
 	$concrete-gray: #f2f2f2;  // light background (left menu panel)
@@ -17,7 +19,8 @@
 	$dark-clouds: #282b2d;
 	$black-clouds: #1d1d1d;
 
-	/* Secondary colors */
+///////// SECONDARY COLOURS
+
 	$harlequin-green: #46e202;
 	$blaze-orange: #fe7100;
 	$botticelli-gray: #d9e8ef;
@@ -31,7 +34,7 @@
 	$test-pink: pink;
 
 
-	/* Publication Colours */
+///////// PUBLICATION COLOURS
 	$conflict: 							yellow;
 	$deleted: 							black;
 	$live-modified: 					orange;
@@ -50,56 +53,60 @@
 	$work-in-progress:					orange;
 
 
-/*======= Icons =======*/
-	/* More Options */
+/////////////////////////////////////////////////
+// ICONS ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+
+///////// MORE OPTIONS
 	$icon_more_options_grey_clouds:     "./images/icon-more-options-dark-50@X2.png";
 	$icon_combo_arrow_white_clouds:     "./images/icons/combo-arrow.png";
 	$icon_form_close_white_clouds:     "./images/icons/icon-close-small-light.png";
 
 
-	/* Pages Icons */
+///////// PAGES
 	$icon_pages_white_clouds:     "./images/tabs-pages-white@X2.png";
 	$icon_pages_grey_clouds:      "./images/tabs-pages-dark@X2.png";
 	$icon_pages_jahia_blue:       "./images/tabs-pages-blue@X2.png";
 	$icon_pages_black_clouds:     "./images/tabs-pages-black@X2.png";
 
-	/* Create Icons */
+///////// CREATE
 	$icon_create_white_clouds:    "./images/tabs-create-white@X2.png";
 	$icon_create_grey_clouds:     "./images/tabs-create-dark@X2.png";
 	$icon_create_jahia_blue:      "./images/tabs-create-blue@X2.png";
 	$icon_create_black_clouds:    "./images/tabs-create-black@X2.png";
 
-	/* Content Icons */
+///////// CONTENT
 	$icon_content_white_clouds:   "./images/tabs-content-white@X2.png";
 	$icon_content_grey_clouds:    "./images/tabs-content-dark@X2.png";
 	$icon_content_jahia_blue:     "./images/tabs-content-blue@X2.png";
 	$icon_content_black_clouds:   "./images/tabs-content-black@X2.png";
 
-	/* File Icons */
+///////// FILE
 	$icon_files_white_clouds:     "./images/tabs-files@X2.png";
 	$icon_files_grey_clouds:      "./images/tabs-files-dark@X2.png";
 	$icon_files_jahia_blue:       "./images/tabs-files-blue@X2.png";
 	$icon_files_black_clouds:     "./images/tabs-files-black@X2.png";
 
-	/* Search Icons */
+///////// SEARCH
 	$icon_search_white_clouds:    "./images/tabs-search-white@X2.png";
 	$icon_search_grey_clouds:     "./images/tabs-search-dark@X2.png";
 	$icon_search_jahia_blue:      "./images/tabs-search-blue@X2.png";
 	$icon_search_black_clouds:    "./images/tabs-search-black@X2.png";
 
-	/* Taxonomy Icons */
+///////// TAXONOMY
 	$icon_taxonomy_white_clouds:  "./images/tabs-taxonomy-white@X2.png";
 	$icon_taxonomy_grey_clouds:   "./images/tabs-taxonomy-dark@X2.png";
 	$icon_taxonomy_jahia_blue:    "./images/tabs-taxonomy-blue@X2.png";
 	$icon_taxonomy_black_clouds:  "./images/tabs-taxonomy-black@X2.png";
 
-	/* Devices Icons */
+///////// DEVICES
 	$icon_devices_white_clouds:   "./images/tabs-devices-white@X2.png";
 	$icon_devices_grey_clouds:    "./images/tabs-devices-dark@X2.png";
 	$icon_devices_jahia_blue:     "./images/tabs-devices-blue@X2.png";
 	$icon_devices_black_clouds:   "./images/tabs-devices-black@X2.png";
 
-	/* Settings Icons */
+///////// SETTINGS
 	$icon_settings_white_clouds:  "./images/tabs-settings-white@X2.png";
 	$icon_settings_grey_clouds:   "./images/tabs-settings-dark@X2.png";
 	$icon_settings_jahia_blue:    "./images/tabs-settings-blue@X2.png";
@@ -107,29 +114,20 @@
 
 
 
-/*======= Fonts =======*/
-	/* Font families */
+/////////////////////////////////////////////////
+// FONTS ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+
+///////// FACES
+
 	$font-1: 'Nunito Sans', sans-serif;
 
-	/* Font weights */
+///////// WEIGHTS
+
 	$extralight: 100;
 	$semilight: 200;
 	$light: 300;
 	$normal: 400;
 	$semibold: 500;
 	$bold: 700;
-
-
-
-/***********************************************/
-/* PLACEHOLDERS ********************************/
-/***********************************************/
-
-%ellipsis_overflow {
-	text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-
-@import "theme-dark";

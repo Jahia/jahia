@@ -7,7 +7,9 @@
 @import "dashboardmode";
 
 
-/* START ::: NEED REINSERTING INTO SASS */
+/////////////////////////////////////////////////
+// NEED TO ADD TO SASS //////////////////////////
+/////////////////////////////////////////////////
 
 		body[data-edit-window-style="settings"] #JahiaGxtSettingsTab > div:nth-child(1)::before {
 			color: #dae8ea;
@@ -170,8 +172,8 @@
 
 		}
 
+		/* Do all this with JS instead of generating CSS, as it creates thousands of lines ... */
 		#JahiaGxtSidePanelTabs {
-			/* Do all this with JS instead of generating CSS, as it creates thousands of lines ... */
 			.x-viewport-adminmode & {
 				@for $i from 0 through 50 {
 			        &[current-sub-menu="#{$i}"] {
@@ -294,4 +296,4 @@
 		}
 
 
-/* END ::: NEED REINSERTING INTO SASS */
+/////////// END ::: NEED REINSERTING INTO SASS

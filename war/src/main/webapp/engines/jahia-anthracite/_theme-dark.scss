@@ -1,10 +1,9 @@
-/***********************************************/
-/* THEME VARIABLES *****************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// THEME VARIABLES //////////////////////////////
+/////////////////////////////////////////////////
 
 
-
-/************************************ DEFAULTS */
+///////// DEFAULTS
 
     $default-font:                    $font-1;
     $default-font-size:               14px;
@@ -13,14 +12,14 @@
 
 
 
-/************************************** COMMON */
+///////// COMMON
 
     $body-bg:                         $rain-clouds;
     $body-bg-multiselect:             $dark-clouds;
 
 
 
-/********************************** THUMB WRAPS */
+///////// THUMB WRAPS
 
     $thumb_label:                  $black-clouds;
     $thumb_label_background:       rgba($white-clouds, 0.7);
@@ -30,7 +29,7 @@
     $thumb_background_selected:    $jahia-blue;
 
 
-/********************************** SIDE PANEL */
+///////// SIDE PANEL
 
   $side_panel_background:         $transparent;
   $side_panel_background_open:    $white-clouds;
@@ -38,14 +37,16 @@
 
 
 
-/********************************** TOOL BUTTONS */
+///////// TOOL BUTTONS
 
     $tool_color_normal:             $white-clouds;
     $tool_color_open:               $grey-clouds;
     $tool_color_open_selected:      $jahia-blue;
     $tool_color_off:          	    $black-clouds;
 
-/***************************************** ICONS */
+
+
+///////// ICONS
 
     $icon_closed_pages:             $icon_pages_white_clouds;
     $icon_closed_create:            $icon_create_white_clouds;
@@ -84,14 +85,15 @@
     $icon_off_settings:             $icon_settings_black_clouds;
 
 
-/********************************************* COMBOS */
+///////// COMBOS
+
     $combo_icon_up:                 $icon_combo_arrow_white_clouds;
     $combo_bg_up:                   $test-pink;
 
     $combo_icon_hover:              $icon_combo_arrow_white_clouds;
     $combo_bg_hover:                yellow;
 
-/********************************************* CONTEXT MENUS */
+///////// CONTEXT MENUS
     $context_bg_up:                 $jahia-blue;
     $context_bg_hover:              lighten($context_bg_up, 5%);
     $context_bg_disabled:           $jahia-blue;
@@ -102,7 +104,7 @@
 
 
 
-/********************************************* TREES */
+///////// TREES
 
     $row_label: 					$white-clouds;
     $row_icon: 						$icon_pages_grey_clouds;
@@ -123,7 +125,7 @@
 
 
 
-/************************************** FORMS */
+///////// FORMS
 
     $text_input_bg:                 $test-purple;
     $text_input_color:              $test-pink;
@@ -141,12 +143,12 @@
 
 
 
-/***********************************************/
-/* THEME PLACEHOLDERS **************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// THEME PLACEHOLDERS ///////////////////////////
+/////////////////////////////////////////////////
 
 
-/********************************** SIDE PANEL */
+/* SIDE PANEL */
 
     %side_paneL_container {
         background: $side_panel_background !important;
@@ -170,7 +172,7 @@
 
 
 
-/********************************** DOCUMENT TITLE */
+/* DOCUMENT TITLE */
 
     %document_title {
         @include text(16px, $white-clouds, $semilight);
@@ -187,7 +189,7 @@
 
 
 
-/************************************** MODE COMBO */
+/* MODE COMBO */
 
     %mode_combo_label {
         text-transform: uppercase;
@@ -202,7 +204,7 @@
 
 
 
-/************************************ TOOL BUTTONS */
+/* TOOL BUTTONS */
 
     %tool_button_label {
         text-align: center;
@@ -229,7 +231,7 @@
 
 
 
-/********************************* CONTEXT MENUS */
+/* CONTEXT MENUS */
 
     %context_menu_holder {
         border: none;
@@ -260,47 +262,277 @@
 
     }
 
-    /* Personalised Context Menus */
+    // Personalised Context Menus
+	// You can use these placeholders to personalise each context menu.
+	// If left blank then they will assume the default style applied above.
 
-        /* More Info Menu */
-
-            %context_menu_holder--more_info {
-                box-shadow: 10px 10px 10px red;
-            }
-
-            %context_menu_item--more_info {
-                /**/
-            }
-
-            %context_menu_item_hover--more_info {
-                /**/
-            }
-
-            %context_menu_item_disabled--more_info {
-                /**/
-            }
-
-        /* Mode Menu */
-
-            %context_menu_holder--mode_menu {
-                box-shadow: 10px 10px 10px blue;
-            }
-
-            %context_menu_item--mode_menu {
-                /**/
-            }
-
-            %context_menu_item_hover--mode_menu {
-                /**/
-            }
-
-            %context_menu_item_disabled--mode_menu {
-                /**/
-            }
+        // Menus available in ALL / MULTIPLE pages
+			%context_menu_title--common_hamburger {
+				// content: $text_context_menu_hamburger;
+			}
+			%context_menu_holder--common_hamburger {}
+			%context_menu_item--common_hamburger {}
+			%context_menu_item_hover--common_hamburger {}
+			%context_menu_item_disabled--common_hamburger {}
 
 
+		// Menus available in Edit Mode
+			// Publication
+			%context_menu_title--edit_mode_publication {
+				content: $text_context_menu_publication;
+			}
+			%context_menu_holder--edit_mode_publication {}
+			%context_menu_item--edit_mode_publication {}
+			%context_menu_item_hover--edit_mode_publication {}
+			%context_menu_item_disabled--edit_mode_publication {}
 
-/********************************* COMBO MENUS */
+			// Preview
+			%context_menu_title--edit_mode_preview {
+				content: $text_context_menu_preview;
+
+			}
+			%context_menu_holder--edit_mode_preview {}
+			%context_menu_item--edit_mode_preview {}
+			%context_menu_item_hover--edit_mode_preview {}
+			%context_menu_item_disabled--edit_mode_preview {}
+
+			// More Info (old Edit button)
+			%context_menu_title--edit_mode_more_info {
+				content: $text_context_menu_more_info;
+			}
+			%context_menu_holder--edit_mode_more_info {}
+			%context_menu_item--edit_mode_more_info {}
+			%context_menu_item_hover--edit_mode_more_info {}
+			%context_menu_item_disabled--edit_mode_more_info {}
+
+			// Mode View
+			%context_menu_title--edit_mode_mode_view {
+				content: $text_context_menu_mode_view;
+			}
+			%context_menu_holder--edit_mode_mode_view {}
+			%context_menu_item--edit_mode_mode_view {}
+			%context_menu_item_hover--edit_mode_mode_view {}
+			%context_menu_item_disabled--edit_mode_mode_view {}
+
+			// User Menu
+			%context_menu_title--edit_mode_user_menu {
+				content: $text_context_menu_user_menu;
+			}
+			%context_menu_holder--edit_mode_user_menu {
+				box-shadow: 10px 10px 10px red;
+			}
+			%context_menu_item--edit_mode_user_menu {
+				background: yellow!important;
+			}
+			%context_menu_item_hover--edit_mode_user_menu {
+				background: pink!important;
+			}
+			%context_menu_item_disabled--edit_mode_user_menu {
+				background: black!important;
+
+			}
+
+			// Workflow
+			%context_menu_title--edit_mode_workflow {
+				content: $text_context_menu_workflow;
+			}
+			%context_menu_holder--edit_mode_workflow {}
+			%context_menu_item--edit_mode_workflow {}
+			%context_menu_item_hover--edit_mode_workflow {}
+			%context_menu_item_disabled--edit_mode_workflow {}
+
+			// Cache
+			%context_menu_title--edit_mode_cache {
+				content: $text_context_menu_cache;
+			}
+			%context_menu_holder--edit_mode_cache {}
+			%context_menu_item--edit_mode_cache {}
+			%context_menu_item_hover--edit_mode_cache {}
+			%context_menu_item_disabled--edit_mode_cache {}
+
+			// Page Edit Context
+			%context_menu_title--edit_mode_page_context {
+				content: $text_context_menu_page_edit;
+			}
+			%context_menu_holder--edit_mode_page_context {}
+			%context_menu_item--edit_mode_page_context {}
+			%context_menu_item_hover--edit_mode_page_context {}
+			%context_menu_item_disabled--edit_mode_page_context {}
+
+			// Side Panel > Pages
+			%context_menu_title--edit_mode_side_panel_pages {
+				content: $text_context_menu_side_panel_pages;
+			}
+			%context_menu_holder--edit_mode_side_panel_pages {}
+			%context_menu_item--edit_mode_side_panel_pages {}
+			%context_menu_item_hover--edit_mode_side_panel_pages {}
+			%context_menu_item_disabled--edit_mode_side_panel_pages {}
+
+			// Side Panel > Content > Tree
+			%context_menu_title--edit_mode_side_panel_content_tree {
+				content: $text_context_menu_side_panel_content_tree;
+			}
+			%context_menu_holder--edit_mode_side_panel_content_tree {}
+			%context_menu_item--edit_mode_side_panel_content_tree {}
+			%context_menu_item_hover--edit_mode_side_panel_content_tree {}
+			%context_menu_item_disabled--edit_mode_side_panel_content_tree {}
+
+			// Side Panel > Content > Item
+			%context_menu_title--edit_mode_side_panel_content_item {
+				content: $text_context_menu_side_panel_content_item;
+			}
+			%context_menu_holder--edit_mode_side_panel_content_item {}
+			%context_menu_item--edit_mode_side_panel_content_item {}
+			%context_menu_item_hover--edit_mode_side_panel_content_item {}
+			%context_menu_item_disabled--edit_mode_side_panel_content_item {}
+
+			// Side Panel > File > Tree
+			%context_menu_title--edit_mode_side_panel_file_tree {
+				content: $text_context_menu_side_panel_file_tree;
+			}
+			%context_menu_holder--edit_mode_side_panel_file_tree {}
+			%context_menu_item--edit_mode_side_panel_file_tree {}
+			%context_menu_item_hover--edit_mode_side_panel_file_tree {}
+			%context_menu_item_disabled--edit_mode_side_panel_file_tree {}
+
+			// Side Panel > File > Item
+			%context_menu_title--edit_mode_side_panel_file_item {
+				content: $text_context_menu_side_panel_file_item;
+			}
+			%context_menu_holder--edit_mode_side_panel_file_item {}
+			%context_menu_item--edit_mode_side_panel_file_item {}
+			%context_menu_item_hover--edit_mode_side_panel_file_item {}
+			%context_menu_item_disabled--edit_mode_side_panel_file_item {}
+
+			// Side Panel > Search
+			%context_menu_title--edit_mode_side_panel_search_item {
+				content: $text_context_menu_side_panel_search;
+			}
+			%context_menu_holder--edit_mode_side_panel_search_item {}
+			%context_menu_item--edit_mode_side_panel_search_item {}
+			%context_menu_item_hover--edit_mode_side_panel_search_item {}
+			%context_menu_item_disabled--edit_mode_side_panel_search_item {}
+
+			// Side Panel > Taxonomy
+			%context_menu_title--edit_mode_side_panel_taxonomy_item {
+				content: $text_context_menu_side_panel_taxonomy;
+			}
+			%context_menu_holder--edit_mode_side_panel_taxonomy_item {}
+			%context_menu_item--edit_mode_side_panel_taxonomy_item {}
+			%context_menu_item_hover--edit_mode_side_panel_taxonomy_item {}
+			%context_menu_item_disabled--edit_mode_side_panel_taxonomy_item {}
+
+		// Menus available in Admin Mode
+			// User Menu
+			%context_menu_title--admin_mode_user_menu {
+				content: $text_context_menu_admin_user_name;
+			}
+			%context_menu_holder--admin_mode_user_menu {
+				@extend %context_menu_holder--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item--admin_mode_user_menu {
+				@extend %context_menu_item--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item_hover--admin_mode_user_menu {
+				@extend %context_menu_item_hover--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item_disabled--admin_mode_user_menu {
+				@extend %context_menu_item_disabled--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			}
+
+			// Mode View
+			%context_menu_title--admin_mode_mode_view {
+				content: $text_context_menu_admin_mode_view;
+			}
+			%context_menu_holder--admin_mode_mode_view {
+				@extend %context_menu_holder--admin_mode_mode_view !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item--admin_mode_mode_view {
+				@extend %context_menu_item--admin_mode_mode_view !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item_hover--admin_mode_mode_view {
+				@extend %context_menu_item_hover--admin_mode_mode_view !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item_disabled--admin_mode_mode_view {
+				@extend %context_menu_item_disabled--admin_mode_mode_view !optional; // Apply same style as Edit Mode version
+			}
+
+
+
+		// Menus available in Dashboard Mode
+			// User Menu
+			%context_menu_title--dashboard_mode_user_menu {
+				content: $text_context_menu_dashboard_user_name;
+			}
+			%context_menu_holder--dashboard_mode_user_menu {
+				@extend %context_menu_holder--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item--dashboard_mode_user_menu {
+				@extend %context_menu_item--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item_hover--dashboard_mode_user_menu {
+				@extend %context_menu_item_hover--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item_disabled--dashboard_mode_user_menu {
+				@extend %context_menu_item_disabled--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			}
+
+		// Mode View
+			%context_menu_title--dashboard_mode_mode_view {
+				content: $text_context_menu_dashboard_mode_view;
+			}
+			%context_menu_holder--dashboard_mode_mode_view {
+				@extend %context_menu_holder--edit_mode_mode_view !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item--dashboard_mode_mode_view {
+				@extend %context_menu_item--edit_mode_mode_view !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item_hover--dashboard_mode_mode_view {
+				@extend %context_menu_item_hover--edit_mode_mode_view !optional; // Apply same style as Edit Mode version
+			}
+			%context_menu_item_disabled--dashboard_mode_mode_view {
+				@extend %context_menu_item_disabled--edit_mode_mode_view !optional; // Apply same style as Edit Mode version
+			}
+
+			// _common.scss uses this list to generate personalised menus according to placeholders above.
+			// If placeholders are empty then no classes are created.
+			// There is no need to edit this list.
+			// If you want to remove a personalised context menu then just empty the styling of the place holder above.
+
+			$personalised_context_menus: (
+				// COMMON MENUS
+				(".menu-editmode-managers-menu",    common_hamburger),
+
+				// EDIT MODE MENUS
+				(".menu-edit-menu-publication",     edit_mode_publication),
+				(".menu-edit-menu-view",      		edit_mode_preview),
+				(".menu-edit-menu-edit",      		edit_mode_more_info),
+				(".menu-edit-menu-mode",      		edit_mode_mode_view),
+				(".menu-edit-menu-user",      		edit_mode_user_menu),
+				(".menu-edit-menu-workflow",      	edit_mode_workflow),
+				(".menu-edit-menu-cache",      		edit_mode_cache),
+				(".editModeContextMenu",      		edit_mode_page_context),
+				(".pagesContextMenu",      			edit_mode_side_panel_pages),
+				(".contentTreeContextMenu",      	edit_mode_side_panel_content_tree),
+				(".contentTableContextMenu",      	edit_mode_side_panel_content_item),
+				(".filesTreeContextMenu",      		edit_mode_side_panel_file_tree),
+				(".filesTableContextMenu",      	edit_mode_side_panel_file_item),
+				(".searchTableContextMenu",      	edit_mode_side_panel_search_item),
+				(".categoriesTableContextMenu",     edit_mode_side_panel_taxonomy_item),
+
+				//ADMIN MODE MENUS
+				(".menu-admin-menu-user",      		admin_mode_user_menu),
+				(".menu-admin-menu-mode",      		admin_mode_mode_view),
+
+				// DASHBOARD MENUS
+				(".menu-dashboard-menu-user",      	dashboard_mode_user_menu),
+				(".menu-dashboard-menu-mode",      	dashboard_mode_mode_view)
+			);
+
+
+
+
+/* COMBO MENUS */
 
     %combo_arrow_up {
         background: no-repeat center center;
@@ -315,7 +547,7 @@
 
 
 
-/**************************************** FORMS */
+/* FORMS */
 
     %form_label {
         padding: 0!important;
@@ -354,7 +586,7 @@
 
 
 
-/**************************************** TREES */
+/* TREES */
 
     /* Labels */
     %tree_line_text_up {
@@ -393,30 +625,68 @@
         background: $row_selected_over_icon!important;
     }
 
-    /* Icons */
-    %tree_line_icon_up {
-        /*background-image: url($row_icon);
-        background-size: 23px 23px;
-        background-repeat: no-repeat;
-        padding-left: 23px;
-        width: 23px;
-        height: 23px;*/
-    }
+	// Personalised Tree Icons
+	// You can use these placeholders to personalise each trees icons.
+	// If left blank then they will assume GWT original icons.
 
-    %tree_line_icon_hover {
-        /*background-image: url($row_over_icon) !important;*/
-    }
+	// Pages Tree Icons
+		%tree_line_icon_up--pages {
+			background-image: url($row_icon);
+			background-size: 23px 23px;
+			background-repeat: no-repeat;
+			padding-left: 23px;
+			width: 23px;
+			height: 23px;
+		}
 
-    %tree_line_icon_selected {
-        /*background-image: url($row_selected_icon) !important;*/
-    }
+		%tree_line_icon_hover--pages {
+			background-image: url($row_over_icon) !important;
+		}
 
-    %tree_line_icon_selected_hover {
-        /*background-image: url($row_selected_icon) !important;*/
-    }
+		%tree_line_icon_selected--pages {
+			background-image: url($row_selected_icon) !important;
+		}
+
+		%tree_line_icon_selected_hover--pages {
+			background-image: url($row_selected_icon) !important;
+		}
+
+	// Create Tree Icons
+		%tree_line_icon_up--create {}
+		%tree_line_icon_hover--create {}
+		%tree_line_icon_selected--create {}
+		%tree_line_icon_selected_hover--create {}
+
+	// Content Tree Icons
+		%tree_line_icon_up--content {}
+		%tree_line_icon_hover--content {}
+		%tree_line_icon_selected--content {}
+		%tree_line_icon_selected_hover--content {}
+
+	// Files Tree Icons
+		%tree_line_icon_up--files {}
+		%tree_line_icon_hover--files {}
+		%tree_line_icon_selected--files {}
+		%tree_line_icon_selected_hover--files {}
+
+	// Taxonomy Tree Icons
+		%tree_line_icon_up--taxonomy {}
+		%tree_line_icon_hover--taxonomy {}
+		%tree_line_icon_selected--taxonomy {}
+		%tree_line_icon_selected_hover--taxonomy {}
+
+	$personalised_trees: (
+		("#JahiaGxtPagesTab",    			pages),
+		("#JahiaGxtCreateContentTab",    	create),
+		("#JahiaGxtContentBrowseTab",    	content),
+		("#JahiaGxtFileImagesBrowseTab",    files),
+		("#JahiaGxtCategoryBrowseTab",    	taxonomy),
 
 
-/**************************************** THUMB WRAPS */
+	);
+
+
+/* THUMB WRAPS */
 
     %thumb_label {
         background: $thumb_label_background;

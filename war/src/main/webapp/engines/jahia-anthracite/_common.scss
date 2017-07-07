@@ -1,13 +1,16 @@
-/* Imports */
+/////////////////////////////////////////////////
+// IMPORTS //////////////////////////////////////
+/////////////////////////////////////////////////
 
 @import "functions";
 @import "variables";
+@import "theme-dark";
 @import "font";
 
 
-/*************************************/
-/* Scroll Bars ***********************/
-/*************************************/
+/////////////////////////////////////////////////
+// SCROLL BARS //////////////////////////////////
+/////////////////////////////////////////////////
 
 ::-webkit-scrollbar {
 	width: 6px;
@@ -27,24 +30,39 @@
 	background: #a7a7a7;
 }
 
+/////////////////////////////////////////////////
+// PLACEHOLDERS /////////////////////////////////
+/////////////////////////////////////////////////
 
 
-/***********************************************/
-/* Page Titles *********************************/
-/***********************************************/
+///////// TEXT
+
+/* Three dotted ellipsis style */
+%ellipsis_overflow {
+	text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+
+
+/////////////////////////////////////////////////
+// PAGE TITLE CONTROLS //////////////////////////
+/////////////////////////////////////////////////
+
+
 body {
 	background: $body-bg;
 	transition: all 0.3s ease-in 0s;
 
-	/* Multiselect */
     &[data-multiselect="on"] {
+		/* Multiselect */
 		background: $body-bg-multiselect;
     }
 
-
-	/* Set Page Title */
 	&[data-main-node-displayname] {
 		&::before {
+			/* Set Page Title Style */
 			display: block;
 			position: fixed;
 			top: 2px;
@@ -66,6 +84,7 @@ body {
 
 	&[data-main-node-displayname="settings"] {
 		&::before {
+			/* Set Page Title Content for Settings */
 			content: attr(data-main-node-displayname);
 
 		}
@@ -73,6 +92,7 @@ body {
 
 	&[data-main-node-displayname="System Site"] {
 		&::before {
+			/* Set Page Title Content for System Settings */
 			content: attr(data-sitekey);
 
 		}
@@ -80,6 +100,7 @@ body {
 
 	&[data-sitesettings="true"] {
 		&::before {
+			/* Set Page Title Content for Settings */
 			content: $text_dxm_settings;
 
 		}
@@ -87,6 +108,7 @@ body {
 
 	&[data-main-node-displayname="root"] {
 		&::before {
+			/* Set Page Title Content for Settings */
 			content: $text_dxm_settings;
 			background: url(./images/dx_logo_solid.png) no-repeat left 3px top 11px;
 		    background-size: 32px 32px;
@@ -95,8 +117,9 @@ body {
 
 
 
-	/* Light Theme */
+
 	&[data-INDIGO-UI="light"] {
+		/* Set background to indigo light */
 		background: $white;
 
 	}
@@ -104,18 +127,18 @@ body {
 }
 
 
-/***********************************************/
-/* Window Container ****************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// WINDOW CONTAINER /////////////////////////////
+/////////////////////////////////////////////////
 
 .window-container {
 	overflow: visible;
 	background: transparent;
 }
 
-/***********************************************/
-/* App Container *******************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// APP CONTAINER ////////////////////////////////
+/////////////////////////////////////////////////
 
 .app-container .x-panel-header {
 	border: none;
@@ -130,9 +153,9 @@ body {
 
 
 
-/***********************************************/
-/* Main Module *********************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// MAIN MODULE //////////////////////////////////
+/////////////////////////////////////////////////
 
 .mainmodule {
 	height: 100% !important;
@@ -149,8 +172,8 @@ body {
 	left: 0;
 	width: 100% !important;
 
-	/* Container */
 	.toolbar-header {
+		/* Container */
 		z-index: 999999999 !important;
 		right: 69px;
 		position: fixed !important;
@@ -206,13 +229,13 @@ body {
 	    &::before {
 	        content: attr(data-page-name);
 
-	        @extend %document_title;
+	        @extend %document_title !optional;
 
 	        display: block;
 			margin: 6px 0 0 55px;
 
 	        body[data-multiselect="on"] & {
-				@extend %multiselect_title;
+				@extend %multiselect_title !optional;
 
 				margin: 6px 0 0 35px;
 	        }
@@ -222,16 +245,18 @@ body {
 
 
 
-	/* More Info Button */
+
 	.edit-menu-edit {
+		/* More Info Button */
 		display: inline-block;
 		margin-top: 0;
 		top: -3px;
 		position: relative;
 		margin-left: 55px;
 
-		/* Create Curver Border */
+
 		> tbody {
+			/* Create Curver Border */
 			display: block;
 			width: 20px;
 			height: 20px;
@@ -246,8 +271,9 @@ body {
 				background-color: $cod-gray;
 			}
 
-			/* Hide All the Junk from the old button */
+
 			td {
+				/* Hide All the Junk from the old button */
 				display: none;
 			}
 
@@ -278,13 +304,15 @@ body {
 		width: 25px !important;
 		height: 14px;
 
-		/* Hide When Multiselect is on */
+
 		body[data-multiselect="on"] & {
+			/* Hide When Multiselect is on */
 			display: none;
 		}
 
-		/* Input used to display flag instead of text input */
+
 		input {
+			/* Input used to display flag instead of text input */
 			border: none;
 			text-indent: -50000px;
 			height: 15px !important;
@@ -307,8 +335,9 @@ body {
 
 		}
 
-		/* Combo Arrow */
+
 		.x-form-trigger {
+			/* Combo Arrow */
 			display: none;
 		}
 	}
@@ -320,9 +349,9 @@ body {
 
 
 
-/***********************************************/
-/* BUTTONS *************************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// BUTTONS //////////////////////////////////////
+/////////////////////////////////////////////////
 
 .x-btn-mc {
     background: $botticelli-gray;
@@ -352,19 +381,20 @@ body {
 }
 
 
-/***********************************************/
-/* Combo  **************************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// COMBOS ///////////////////////////////////////
+/////////////////////////////////////////////////
 
 
-/* Combo Outer Container */
+
 .x-combo-list {
+	/* Combo Outer Container */
 	width: auto !important;
 	background: transparent;
     overflow: visible;
     z-index: 99999999999 !important;
 
-	@extend %context_menu_holder;
+	@extend %context_menu_holder !optional;
 
 }
 
@@ -377,25 +407,29 @@ body {
 	/* Combo List Items that have Thumbs, ie. Channel Combo */
 	.thumb-wrap {
 
-		/* Actual thumb */
+
 		img {
+			/* Actual thumb */
 			display: none!important;
 		}
 
-		/* List item when normal Thumbed Combo */
+
 		.x-editable {
-			/* Actual Label of Combo Item */
-			@extend %context_menu_item;
+			/* List item when normal Thumbed Combo
+			   Actual Label of Combo Item */
+			@extend %context_menu_item !optional;
 
 		}
 
-		/* Selected / Hovered */
+
 		&.x-combo-selected {
+			/* Selected / Hovered */
 			border:none!important;
 
-			/* List item when normal Thumbed Combo */
+
 			.x-editable {
-				@extend %context_menu_item_hover;
+				/* List item when normal Thumbed Combo */
+				@extend %context_menu_item_hover !optional;
 			}
 		}
 
@@ -405,57 +439,62 @@ body {
 /* List item when normal Combo */
 .x-combo-list-item {
 	border:none;
-	@extend %context_menu_item;
+	@extend %context_menu_item !optional;
 
 
-	/* Selected / Hovered */
+
 	&.x-view-highlightrow {
+		/* Selected / Hovered */
 		border:none!important;
-		@extend %context_menu_item_hover;
+		@extend %context_menu_item_hover !optional;
 
 	}
 }
 
 
 
-/***********************************************/
-/* Context Menus *******************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// CONTEXT MENUS ////////////////////////////////
+/////////////////////////////////////////////////
 
 
-/* Add Personalised styling to specified context menus */
-$personalised_context_menus: (
-	// Context Menu Class (UID)			// Placeholder
-	(".menu-edit-menu-edit",      		more_info),
-	(".menu-edit-menu-mode",      		mode_menu)
-);
+// Add Personalised styling to specified context menus from values stored in $personalised_context_menus in theme SASS
+	@each $context_menu in $personalised_context_menus {
+		$_context_menu_class: #{nth($context_menu,1)};
+		$_placeholder: #{nth($context_menu,2)};
 
-@each $context_menu in $personalised_context_menus {
-	$_context_menu_class: #{nth($context_menu,1)};
-	$_placeholder: #{nth($context_menu,2)};
+		#{$_context_menu_class} {
+			@extend %context_menu_holder--#{$_placeholder} !optional;
 
-	#{$_context_menu_class} {
-		&.x-menu {
-			@extend %context_menu_holder--#{$_placeholder};
-		}
+			.x-menu-list::before {
+				@extend %context_menu_title--#{$_placeholder} !optional;
 
-		.x-menu-item {
-			@extend %context_menu_item--#{$_placeholder};
+			}
 
-		}
+			.x-menu-item {
+				@extend %context_menu_item--#{$_placeholder} !optional;
 
-		.x-item-disabled & {
-			@extend %context_menu_item_disabled--#{$_placeholder};
+			}
 
-		}
+			.x-item-disabled {
+				.x-menu-item {
+					@extend %context_menu_item_disabled--#{$_placeholder} !optional;
 
-		.x-menu-item-active & {
-			@extend %context_menu_item_hover--#{$_placeholder};
+				}
+
+			}
+
+			.x-menu-item-active {
+				.x-menu-item {
+					@extend %context_menu_item_hover--#{$_placeholder} !optional;
+
+				}
+			}
 
 		}
 	}
-}
 
+/* Context Menus */
 
 .x-menu {
 	width: auto !important;
@@ -463,27 +502,42 @@ $personalised_context_menus: (
     overflow: visible;
     z-index: 99999999999 !important;
 
-	@extend %context_menu_holder;
+	@extend %context_menu_holder !optional;
 }
 
 .x-menu-list {
 	height: auto!important;
+
+	&::before {
+		background: #008ec9;
+	    width: 100%;
+	    display: block;
+	    padding: 3px 8px;
+	    font-family: "Nunito Sans";
+	    font-size: 8px;
+	    color: rgb(0, 95, 135);
+	    font-style: italic;
+	    text-transform: uppercase;
+	    font-weight: 600;
+	    box-shadow: inset -7px -4px 20px #037cae;
+	    z-index: 99999999999999;
+	}
 }
 
 .x-menu-list-item {}
 
 .x-menu-item {
-	@extend %context_menu_item;
+	@extend %context_menu_item !optional;
 
 	.x-item-disabled & {
-		@extend %context_menu_item_disabled;
+		@extend %context_menu_item_disabled !optional;
 
 
 
 	}
 
 	.x-menu-item-active & {
-		@extend %context_menu_item_hover;
+		@extend %context_menu_item_hover !optional;
 	}
 
 }
@@ -522,12 +576,13 @@ $personalised_context_menus: (
 
 
 
-/***********************************************/
-/* Thumb Wraps *********************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// THUMB WRAPS //////////////////////////////////
+/////////////////////////////////////////////////
 
+/* Thumb wraps
+   Used to create a thumb in List View, ie. in Files */
 .thumb-wrap {
-	/* Used to create a thumb in List View, ie. in Files */
 	border: none!important;
 	padding: 0!important;
 	width: 48%!important; /* Sets Actual Width Of Thumb */
@@ -544,25 +599,26 @@ $personalised_context_menus: (
 		/* Some Thumbs have extra divs containing more Meta Data, so hide them */
 		display: none;
 
-		/* Just show the first Div which contains the file name */
 		&:first-child {
+			/* Just show the first Div which contains the file name */
 			display: block;
 		}
 	}
 
-	/* Image */
 	.thumb {
+		/* Image */
 		width: 100%!important;
 		height: auto!important;
 		padding: 5px!important;
 		box-sizing: border-box;
 
-		@extend %thumb_up;
+		@extend %thumb_up !optional;
 
 	}
 
-	/* Meta Data */
+
 	.thumbDetails {
+		/* Meta Data */
 		position: absolute;
 	    top: 5px;
 	    left: 5px;
@@ -571,20 +627,20 @@ $personalised_context_menus: (
 	    width: calc(100% - 10px);
 	    display: none;
 
-		/* Meta Data */
+
 		div {
 			/* Hide ALL */
 			display: none;
 
-			/* Just Show the File Name Meta COntainer */
+
 			&:first-child {
+				/* Just Show the File Name Meta Container */
 				display: block;
 
-				@extend %thumb_label;
+				@extend %thumb_label !optional;
 
-
-				/* Hide Label */
 				b {
+					/* Hide Label */
 					display: none;
 				}
 
@@ -593,29 +649,31 @@ $personalised_context_menus: (
 
 	}
 
-	/* Hover State */
+
 	&.x-view-over {
 		.thumbDetails {
+			/* Hover State */
 			display: block;
 
 		}
 
 		.thumb {
-			@extend %thumb_hover;
+			@extend %thumb_hover !optional;
 
 		}
 
 	}
 
-	/* Selected State */
+
 	&.x-view-item-sel {
 		.thumbDetails {
+			/* Selected State */
 			display: none;
 
 		}
 
 		.thumb {
-			@extend %thumb_selected;
+			@extend %thumb_selected !optional;
 
 		}
 
@@ -628,9 +686,10 @@ $personalised_context_menus: (
 
 
 
-/***********************************************/
-/* Hamburger Full Screen Menu ******************/
-/***********************************************/
+/////////////////////////////////////////////////
+// HAMBURGER ////////////////////////////////////
+/////////////////////////////////////////////////
+
 .menu-editmode-managers-menu {
     position: absolute;
     top: 0 !important;
@@ -639,8 +698,8 @@ $personalised_context_menus: (
     height: 100% !important;
     background: rgba(53, 173, 241, 0.99);
 
-	/* Close Icon */
     &::after {
+		/* Close Icon */
         content: $text_close;
         display: block;
         position: fixed;
@@ -653,8 +712,9 @@ $personalised_context_menus: (
         z-index: 999;
     }
 
-	/* Menu Container */
+
     .x-menu-list {
+		/* Menu Container */
 		background: transparent;
         display: block;
         overflow: visible;
@@ -662,30 +722,34 @@ $personalised_context_menus: (
         margin: 100px auto;
         pointer-events: all;
 
-		/* Menu Title */
         &::before {
+			/* Menu Title */
             content: $text_dxm;
-            display: block;
-            text-align: center;
-            font-size: 46px;
-            color: rgba(238, 238, 238, 0.7);
-            font-family: $font-1 !important;
-            font-weight: $extralight;
-            margin-bottom: 10px;
+		    display: block;
+		    text-align: center;
+		    font-size: 46px;
+		    color: rgba(238, 238, 238, 0.7);
+		    font-family: "Nunito Sans", sans-serif !important;
+		    font-weight: 100;
+		    margin-bottom: 10px;
+		    background: none;
+		    box-shadow: none;
+		    text-transform: none;
+		    font-style: normal;
         }
 
 
 
     }
 
-	/* App Icon */
     .x-menu-list-item {
+		/* App Icon */
         margin: 10px;
         float: left;
         position: relative;
 
-		/* Hover States */
 		&.x-menu-item-active {
+			/* Hover States */
 			background: none;
 
 			.x-menu-item {
@@ -694,8 +758,9 @@ $personalised_context_menus: (
 			}
 		}
 
-		/* App Icon - Generic */
+
 		.x-menu-item {
+			/* App Icon - Generic */
 			width: 170px;
 	        margin: 1px;
 	        position: relative;
@@ -710,28 +775,34 @@ $personalised_context_menus: (
 
 		}
 
-		/* App Icon - Specific */
+
 		.toolbar-item-editorialcontentmanager {
+			/* App Icon - Content */
 			background-image: url(./images/dx_logo_inverted.png);
 		}
 
 		.toolbar-item-filemanager {
+			/* App Icon - File Manager */
 			background-image: url(./images/dx_logo_inverted.png);
 		}
 
 		.toolbar-item-portletmanager {
+			/* App Icon - Portlet Manager */
 			background-image: url(./images/dx_logo_inverted.png);
 		}
 
 		.toolbar-item-repositoryexplorer {
+			/* App Icon - Repo */
 			background-image: url(./images/dx_logo_inverted.png);
 		}
 
 		.toolbar-item-categorymanager {
+			/* App Icon - Category */
 			background-image: url(./images/dx_logo_inverted.png);
 		}
 
 		.toolbar-item-sitemanager {
+			/* App Icon - Site Manager */
 			background-image: url(./images/dx_logo_inverted.png);
 		}
 
@@ -748,11 +819,6 @@ $personalised_context_menus: (
     height: 100%;
     > div:nth-child(2) {
         height: 100%;
-        > div:nth-child(2) > div {
-
-
-
-        }
     }
 }
 
@@ -863,9 +929,10 @@ $personalised_context_menus: (
 
 
 
-/***********************************************/
-/* Edit Engine *********************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// EDIT ENGINE //////////////////////////////////
+/////////////////////////////////////////////////
+
 #JahiaGxtContentEngine {
     width: 100% !important;
     position: absolute;
@@ -1191,16 +1258,14 @@ $personalised_context_menus: (
 
 
 
-/***********************************************/
-/* FORMS  **************************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// FORMS ////////////////////////////////////////
+/////////////////////////////////////////////////
 
 /* Global Form */
 form {
-	/* Maybe a little to general */
 	padding: 0!important;
 	width: auto!important;
-
 }
 
 /* Form Item Wrapper */
@@ -1229,12 +1294,12 @@ form {
 	float: none!important;
 	clear: both!important;
 
-	@extend %form_label;
+	@extend %form_label !optional;
 }
 
 /* Text Field Input */
 .x-form-text {
-	@extend %text_input;
+	@extend %text_input !optional;
 
 	width: 100%!important;
 	box-sizing: border-box;
@@ -1275,19 +1340,19 @@ form {
 
 	&.x-form-trigger-arrow {
 		/* Combo Down Arrow Button */
-		@extend %combo_arrow_up;
+		@extend %combo_arrow_up !optional;
 
 		&.x-form-trigger-over {
-			@extend %combo_arrow_hover;
+			@extend %combo_arrow_hover !optional;
 		}
 	}
 
 	&.x-form-clear-trigger {
 		/* Combo Down Arrow Button */
-		@extend %form_clear_up;
+		@extend %form_clear_up !optional;
 
 		&.x-form-trigger-over {
-			@extend %form_clear_hover;
+			@extend %form_clear_hover !optional;
 		}
 	}
 }
@@ -1320,7 +1385,7 @@ form {
 	left: auto!important;
 	top: auto!important;
 
-	@extend %form_label;
+	@extend %form_label !optional;
 }
 
 /* Button Bars at the end of Panels, ie OK, Save, Cancel, ... */
@@ -1341,9 +1406,6 @@ form {
 	}
 }
 
-/* Button Container */
-
-
 /* Button Bar, regular button bar */
 .x-panel-btns {
 	.x-btn {
@@ -1351,7 +1413,7 @@ form {
 			height: auto!important;
 	        width: auto!important;
 
-			@extend %form_button;
+			@extend %form_button !optional;
 
 			img {
 				display: none;
@@ -1377,9 +1439,51 @@ form {
 
 
 
-/***********************************************/
-/* TREES  **************************************/
-/***********************************************/
+/////////////////////////////////////////////////
+// TREES ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+@each $tree in $personalised_trees {
+	$_tree_id: #{nth($tree,1)};
+	$_placeholder: #{nth($tree,2)};
+
+	#{$_tree_id} {
+		.x-tree3-node-icon,
+		.gwt-Image {
+			// List Item Icon
+			@extend %tree_line_icon_up--#{$_placeholder} !optional;
+		}
+
+		.x-grid3-row-over {
+			.x-tree3-node-icon,
+			.gwt-Image {
+				// Personalised Icon
+				@extend %tree_line_icon_hover--#{$_placeholder} !optional;
+
+			}
+
+		}
+
+		.x-grid3-row-selected {
+			.x-tree3-node-icon,
+			.gwt-Image {
+				// Personalised Icon: Selected
+				@extend %tree_line_icon_selected--#{$_placeholder} !optional;
+
+			}
+
+			&.x-grid3-row-over {
+				.x-tree3-node-icon,
+				.gwt-Image {
+					// Personalised Icon: Selected > Hover
+					@extend %tree_line_icon_selected_hover--#{$_placeholder} !optional;
+
+				}
+			}
+		}
+
+	}
+}
 
 .x-grid3 {
 	/* Container */
@@ -1415,98 +1519,114 @@ form {
 			width: 5px;
 			height: 100%;
 
-			/* Conflict */
+
 			&[src="/icons/publication/conflict.png"] {
+				/* Conflict */
 				background: $conflict!important;
 
 			}
 
-			/* Deleted */
+
 			&[src="/icons/publication/deleted.png"] {
+				/* Deleted */
 				background: $deleted!important;
 
 			}
 
-			/* Live Modified */
+
 			&[src="/icons/publication/livemodified.png"] {
+				/* Live Modified */
 				background: $live-modified!important;
 
 			}
 
-			/* Live Only */
+
 			&[src="/icons/publication/liveonly.png"] {
+				/* Live Only */
 				background: $live-only!important;
 
 			}
 
-			/* Locked */
+
 			&[src="/icons/publication/locked.png"] {
+				/* Locked */
 				background: $locked!important;
 
 			}
 
-			/* Mandatory Language Unpublishable */
+
 			&[src="/icons/publication/mandatorylanguageunpublishable.png"] {
+				/* Mandatory Language Unpublishable */
 				background: $mandatory-language-unpublishable!important;
 
 			}
 
-			/* Mandatory Language Valid */
+
 			&[src="/icons/publication/mandatorylanguagevalid.png"] {
+				/* Mandatory Language Valid */
 				background: $mandatory-language-valid!important;
 
 			}
 
-			/* Marked FOr Deletion */
+
 			&[src="/icons/publication/markedfordeletion.png"] {
+				/* Marked FOr Deletion */
 				background: $marked-for-deletion!important;
 
 			}
 
-			/* Modified */
+
 			&[src="/icons/publication/modified.png"] {
+				/* Modified */
 				background: $modified!important;
 
 			}
 
-			/* Multiple WF */
+
 			&[src="/icons/publication/multipleWF.png"] {
+				/* Multiple WF */
 				background: $multiple-wf!important;
 
 			}
 
-			/* Not Published */
+
 			&[src="/icons/publication/notpublished.png"] {
+				/* Not Published */
 				background: $not-published!important;
 
 			}
 
-			/* One WF */
+
 			&[src="/icons/publication/oneWF.png"] {
+				/* One WF */
 				background: $one-wf!important;
 
 			}
 
-			/* Published */
+
 			&[src="/icons/publication/published.png"] {
+				/* Published */
 				background: $published!important;
 
 			}
 
-			/* Unpublished */
+
 			&[src="/icons/publication/unpublished.png"] {
+				/* Unpublished */
 				background: $unpublished!important;
 
 			}
 
-			/* Waiting */
+
 			&[src="/icons/publication/waiting.gif"] {
+				/* Waiting */
 				background: $waiting!important;
 
 			}
 
-			/* Work In Progress */
+
 			&[src="/icons/publication/workinprogress.png"] {
+				/* Work In Progress */
 				background: $work-in-progress!important;
 
 			}
@@ -1539,68 +1659,68 @@ form {
 		pointer-events: all;
 	}
 
-	/* List Item Backgrounds */
+
 	.x-grid3-row {
 		/* List Item */
 		height: 25px!important;
 		width: 100%!important;
 		border: none;
 
-		@extend %tree_line_bg_up;
+		@extend %tree_line_bg_up !optional;
 
 
-
-		// Line hover
 		&.x-grid3-row-over {
-			@extend %tree_line_bg_hover;
+			/* Line Over */
+			@extend %tree_line_bg_hover !optional;
 
 			.x-tree3-node-icon {
-				@extend %tree_line_icon_hover;
+				@extend %tree_line_icon_hover !optional;
 
 			}
 
 			.x-tree3-node-text {
-				@extend %tree_line_text_hover;
+				@extend %tree_line_text_hover !optional;
 
 			}
 
 
 		}
 
-		// Line Selected
+
 		&.x-grid3-row-selected {
-			@extend %tree_line_bg_selected;
+			/* Line Selected */
+			@extend %tree_line_bg_selected !optional;
 
 			.x-tree3-node-icon {
-				@extend %tree_line_icon_selected;
+				@extend %tree_line_icon_selected !optional;
 
 			}
 
 			.x-tree3-node-text {
-				@extend %tree_line_text_selected;
+				@extend %tree_line_text_selected !optional;
 			}
 
-			// Line Hover on Selected
+
 			&.x-grid3-row-over {
-				@extend %tree_line_bg_selected_hover;
+				/* Line Hover on Selected */
+				@extend %tree_line_bg_selected_hover !optional;
 
 				.x-tree3-node-icon {
-					@extend %tree_line_icon_selected_hover;
+					@extend %tree_line_icon_selected_hover !optional;
 
 				}
 
 				.x-tree3-node-text {
-					@extend %tree_line_text_selected_hover;
+					@extend %tree_line_text_selected_hover !optional;
 				}
 			}
 		}
 	}
 
-	/* List Item Text Label */
 	.x-tree3-node-text,
 	.x-grid3-cell-inner {
-		// List Item Label
-		@extend %tree_line_text_up;
+		/* List Item Text Label */
+		@extend %tree_line_text_up !optional;
 
 		pointer-events: none;
 
@@ -1622,9 +1742,10 @@ form {
 		}
 	}
 
-	/* List Item Icon */
-	.x-tree3-node-icon {
-		@extend %tree_line_icon_up;
+	.x-tree3-node-icon,
+	.gwt-Image {
+		/* List Item Icon */
+
 
 		overflow: hidden;
 		-moz-box-sizing: border-box;
@@ -1632,14 +1753,14 @@ form {
 		position: relative;
 	}
 
-	/* List Structure */
+	// List Structure
 	.x-grid3-row-table {
 		// Table containing actual List Item
 		height: 100%;
 		width: 100%!important;
 
 		.x-grid3-cell {
-			// Cell Containg the List Item
+			/* Cell Containing the List Item */
 			padding: 0;
 
 			&.x-grid3-td-locked {
@@ -1672,7 +1793,7 @@ form {
 						}
 
 						td > .x-tree3-node-icon {
-							/* NOT NECCESSARY IN THIS TAB SET */
+							// NOT NECCESSARY IN THIS TAB SET
 							display: none;
 						}
 					}
@@ -1686,9 +1807,9 @@ form {
 
 
 
-/***********************************************************************************/
-/* TRASH ???? **********************************************************************/
-/***********************************************************************************/
+/////////////////////////////////////////////////
+// TRASH ??? ///////////////////////////////////
+/////////////////////////////////////////////////
 
 .x-border {
     border: none;

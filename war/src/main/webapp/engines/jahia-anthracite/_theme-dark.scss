@@ -21,19 +21,19 @@
 
 ///////// THUMB WRAPS
 
-    $thumb_label:                  $black-clouds;
-    $thumb_label_background:       rgba($white-clouds, 0.7);
+    $thumb_label:                  $dark-clouds;
+    $thumb_label_background:       rgba($white-clouds, 0.9);
 
     $thumb_background_up:          transparent;
-    $thumb_background_hover:       $grey-clouds;
+    $thumb_background_hover:       rgba($grey-clouds, 0.2);
     $thumb_background_selected:    $jahia-blue;
 
 
 ///////// SIDE PANEL
 
-  $side_panel_background:         $transparent;
-  $side_panel_background_open:    $white-clouds;
-  $side_panel_drop_shadow:        7px 0px 45px rgba($dark-clouds, 0.9);
+	$side_panel_background:         $transparent;
+	$side_panel_background_open:    $white-clouds;
+	$side_panel_drop_shadow:        7px 0px 45px rgba($dark-clouds, 0.9);
 
 
 
@@ -88,10 +88,10 @@
 ///////// COMBOS
 
     $combo_icon_up:                 $icon_combo_arrow_white_clouds;
-    $combo_bg_up:                   $test-pink;
+    $combo_bg_up:                   rgba($grey-clouds, .2);
 
     $combo_icon_hover:              $icon_combo_arrow_white_clouds;
-    $combo_bg_hover:                yellow;
+    $combo_bg_hover:                rgba($grey-clouds, .7);
 
 ///////// CONTEXT MENUS
     $context_bg_up:                 $jahia-blue;
@@ -106,14 +106,15 @@
 
 ///////// TREES
 
-    $row_label: 					$white-clouds;
+    $row_label: 					$grey-clouds;
     $row_icon: 						$icon_pages_grey_clouds;
+	$row_up_background: 			$transparent;
 
-    $row_over_background: 			rgba( $grey-clouds, .2 );
-    $row_over_label: 				$white-clouds;
-    $row_over_icon: 				$icon_pages_white_clouds;
+    $row_over_background: 			rgba( $grey-clouds, .1 );
+    $row_over_label: 				$black-clouds;
+    $row_over_icon: 				$icon_pages_grey_clouds;
 
-    $row_selected_background: 		$grey-clouds;
+    $row_selected_background: 		rgba( $grey-clouds, .7 );
     $row_selected_label: 			$white-clouds;
     $row_selected_icon: 			$icon_pages_white_clouds;
 
@@ -127,24 +128,33 @@
 
 ///////// FORMS
 
-    $text_input_bg:                 $test-purple;
-    $text_input_color:              $test-pink;
+    $text_input_bg:                 rgba($grey-clouds, .2);
+    $text_input_color:              $grey-clouds;
     $text_input_border:             1px solid transparent;
-    $text_input_padding:            5px 40px 5px 10px;
+    $text_input_padding:            3px 40px 3px 5px;
     $text_input_font_weight:        200;
-    $text_input_font_size:          16px;
+    $text_input_font_size:          12px;
     $text_input_font_family:        $font-1;
 
     $form_clear_icon_up:            $icon_form_close_white_clouds;
-    $form_clear_bg_up:              $test-pink;
+    $form_clear_bg_up:              rgba($grey-clouds, .5);
 
     $form_clear_icon_hover:         $icon_form_close_white_clouds;
-    $form_clear_bg_hover:           yellow;
+    $form_clear_bg_hover:           rgba($grey-clouds, .7);
 
+
+///////// BUTTONS
+	$button_normal_up: 				$jahia-blue;
+	$button_normal_hover: 			lighten($jahia-blue, 5%);
 
 
 /////////////////////////////////////////////////
 // THEME PLACEHOLDERS ///////////////////////////
+/////////////////////////////////////////////////
+// Enable the addition of extra styles,        //
+// very usefull as sometimes a change in       //
+// colour may require a change in font weight  //
+// or size, etc ...							   //
 /////////////////////////////////////////////////
 
 
@@ -162,7 +172,7 @@
     }
 
     %side_paneL_title {
-        @include text(26px, $dark-clouds, $extralight);
+        @include text(26px, $grey-clouds, $extralight);
 
     }
 
@@ -551,11 +561,13 @@
 
     %form_label {
         padding: 0!important;
+		margin-bottom: 3px;
+    	margin-top: 10px;
 
-        @include text(16px, $dark-clouds, $semilight);
+        @include text(11px, $dark-clouds, $semilight);
     }
 
-    %text_input {
+	%text_input {
         background: $text_input_bg;
         padding: $text_input_padding;
         border: $text_input_border;
@@ -563,12 +575,25 @@
         @include text($text_input_font_size, $text_input_color, $text_input_font_weight, $text_input_font_family);
     }
 
-    %form_button {
-        background: green;
-        border:none;
-        padding: 3px 10px!important;
+	%combo_input {
+        background: $text_input_bg;
+        padding: $text_input_padding !important;
+        border: $text_input_border;
 
-        @include text(16px, $white-clouds, $semilight);
+        @include text($text_input_font_size, $text_input_color, $text_input_font_weight, $text_input_font_family);
+    }
+
+	%form_button {
+        background: $button_normal_up;
+        border:none;
+        padding: 5px 15px!important;
+
+        @include text(11px, $white-clouds, $semilight);
+    }
+
+	%form_button_hover {
+        background: $button_normal_hover;
+
     }
 
     %form_clear_up {
@@ -610,7 +635,7 @@
 
     /* Backgrounds */
     %tree_line_bg_up {
-        background: pink;
+        background: $row_up_background!important;
     }
 
     %tree_line_bg_hover {
@@ -691,7 +716,7 @@
     %thumb_label {
         background: $thumb_label_background;
         text-align: center;
-        padding: 10px;
+        padding: 3px 10px;
 
         @extend %ellipsis_overflow;
         @include text(10px, $thumb_label, $bold);

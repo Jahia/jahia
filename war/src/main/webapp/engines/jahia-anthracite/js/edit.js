@@ -1,6 +1,9 @@
 (function(){
 	var indigoQF = {
 		init: function(){
+
+
+
 			// Attach window listeners
 			window.onresize = indigoQF.listeners.windowResize;
 
@@ -97,7 +100,7 @@
 						indentSpacer = menuItem.find(".x-tree3-el > img:nth-child(1)"), // Sub menus are 'created' by indenting menu items with a transparent GIF spacer in multiples of 18. So a width of 0 is level 1, 18 is level 2, and so on...
 						indentSpacerWidth = indentSpacer.width(),
 						subMenuJoint = menuItem.find(".x-tree3-el .x-tree3-node-joint"), // If the menu item has a submenu then the joint is visible (has a height).
-						subMenuJointHeight = subMenuJoint.attr("style").indexOf("height") > -1,
+						subMenuJointHeight = (subMenuJoint.length > 0) ? subMenuJoint.attr("style").indexOf("height") > -1 : 0,
 						hasSubMenu = subMenuJointHeight > 0,
 						subMenuAlreadyLoaded = $("#JahiaGxtSidePanelTabs .x-grid3-row[parent-ID='" + index + "']").length > 0,
 						menuItemLevel = indentSpacerWidth / 18,
@@ -151,7 +154,7 @@
 						indentSpacer = menuItem.find(".x-tree3-el > img:nth-child(1)"), // Sub menus are 'created' by indenting menu items with a transparent GIF spacer in multiples of 18. So a width of 0 is level 1, 18 is level 2, and so on...
 						indentSpacerWidth = indentSpacer.width(),
 						subMenuJoint = menuItem.find(".x-tree3-el .x-tree3-node-joint"), // If the menu item has a submenu then the joint is visible (has a height).
-						subMenuJointHeight = subMenuJoint.attr("style").indexOf("height") > -1,
+						subMenuJointHeight = (subMenuJoint.length > 0) ? subMenuJoint.attr("style").indexOf("height") > -1 : 0,
 						hasSubMenu = subMenuJointHeight > 0,
 						subMenuAlreadyLoaded = $("#JahiaGxtSidePanelTabs .x-grid3-row[parent-ID='" + index + "']").length > 0,
 						menuItemLevel = indentSpacerWidth / 18,
@@ -207,9 +210,9 @@
 				switch(indigoQF.status.currentPage.displayname){
 					case "settings":
 					case "System Site":
-
+						console.log("trigger the clicks");
 						// Need to trigger a click on Settings tabs to make sure that the menus are loaded in advance.
-						$("#JahiaGxtSidePanelTabs .x-tab-panel-header li.x-component").trigger("click");
+						$("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("click");
 
 						// Attach an observer to the Side Panel Menu
 						indigoQF.observers.panelMenuObserver();
@@ -398,10 +401,12 @@
 
 
 			},
-			clickSidePanelSettingsTab: function(){
+			clickSidePanelSettingsTab: function(forceClick){
+				console.log("Side panel settings");
 				// User has clicke the Settings Tab Button.
-				if(indigoQF.status.currentPage.displayname != "settings" && $("body").attr("data-sitesettings") == "false"){
+				if(indigoQF.status.currentPage.displayname != "settings" && ($("body").attr("data-sitesettings") == "false" || forceClick)){
 					$("body").attr("data-edit-window-style", "settings");
+
 					indigoQF.listeners.openSidePanel()
 
 					if(indigoQF.status.lastSettingsPage){
@@ -557,6 +562,15 @@
 
 						// Loop through all mutations in BODY tag
 						mutations.forEach(function(mutation){
+
+							if(mutation.attributeName == "data-sitesettings"){
+								console.log("DATA SITE SETTINGS CHANGE ...", $("body").attr("data-sitesettings"));
+
+								if($("body").attr("data-sitesettings") == "true" && $("body").attr("data-edit-window-style") != "settings"){
+									console.log("Gona trigger the click", $("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"));
+									indigoQF.listeners.clickSidePanelSettingsTab(true);
+								}
+							}
 
 							// Check if Page has been changed
 							if(mutation.attributeName == "data-main-node-displayname"){

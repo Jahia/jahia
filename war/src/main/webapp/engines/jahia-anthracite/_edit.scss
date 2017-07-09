@@ -11,34 +11,14 @@
 // NEED TO ADD TO SASS //////////////////////////
 /////////////////////////////////////////////////
 
-		body[data-edit-window-style="settings"] #JahiaGxtSettingsTab > div:nth-child(1)::before {
-			color: #dae8ea;
-		    font-size: 36px;
+
+		body[data-edit-window-style="settings"] {
+			background: $white-clouds;
 		}
 
-		body[data-edit-window-style="settings"] .x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) table > tbody > tr > td > div > table > tbody > tr > td:nth-child(1) input[type="text"] {
-			/* site selector tinput */
-			color: #a3aeaf;
-		}
-
-		body[data-edit-window-style="settings"] .x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) table > tbody > tr > td > div > table > tbody > tr > td:nth-child(1) > div {
-			top: 11px;
-		}
-
-		body[data-edit-window-style="settings"] #JahiaGxtSidePanelTabs .x-tree3-node-text {
-			color: #a3aeaf;
-		}
-
-		body[data-edit-window-style="settings"] #JahiaGxtSidePanelTabs .x-grid3-row-selected .x-tree3-node-text {
-			color: #eeeeee;
-		}
-
-		body[data-edit-window-style="settings"] #JahiaGxtSidePanelTabs .x-grid3-row-selected {
-			background: #a3aeaf!important;
-		}
 
 		body[data-edit-window-style="settings"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) {
-			width: calc(100% - 289px) !important;
+			width: calc(100% - 309px) !important;
 			left: 357px !important;
 		}
 
@@ -57,79 +37,22 @@
 		    height: calc(100% + 34px)!important;
 		}
 
-		body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab img {
-			background: url(./images/tabs-settings-white@X2.png)!important;
-			background-size: 23px 23px!important;
-		}
-
-		body[data-INDIGO-GWT-SIDE-PANEL="open"] #JahiaGxtSidePanelTabs__JahiaGxtSettingsTab::after {
-			color: rgba(238, 238, 238, 0.6)!important;
-		}
-
-		body[data-edit-window-style="settings"] #JahiaGxtSidePanelTabs .x-tab-strip.x-tab-strip-top {
-			opacity: 0;
-		}
-
-		body[data-edit-window-style="settings"] .x-viewport-editmode .x-toolbar-first > table:nth-child(1) .editmode-managers-menu {
-			display: none;
-		}
-
-		body[data-edit-window-style="settings"] .x-viewport-editmode .x-toolbar-first > table:nth-child(1) .edit-menu-mode {
-			display: none;
-
-		}
-
-		body[data-edit-window-style="settings"] .x-viewport-editmode .x-toolbar-first > table:nth-child(1) .edit-menu-user {
-			display: none;
-
-		}
-
-		body[data-edit-window-style="settings"] #JahiaGxtSidePanelTabs .x-tab-panel-body {
-			padding-left: 60px;
-			margin-top: -20px;
-
-		}
-
-		body[data-edit-window-style="settings"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(2) {
-			left: 60px;
-			top: 75px;
-		}
-
-		body[data-edit-window-style="settings"] #JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2) {
-			left: 20px;
-		    top: 20px;
-		    background: url(./images/icons/icon-close-large.png) no-repeat center center!important;
-		}
-
-		body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"] .x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) {
-			/* UED AS MASK FOR CAPUTURING CLICK TO CLOSE SIDE PANELS*/
-			top: 0;
-			left: 0;
-			width: 100%!important;
-			height: 100%!important;
-			z-index: 99;
-			position: fixed;
-			background: rgba(0,0,0,0);
-		}
-
-		[data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-gwt-fullscreen="on"] .x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) {
-			display: none;
-		}
-
-		body[data-sitesettings="true"][data-edit-window-style="settings"]::before {
-			content: ""!important;
-		}
-
-		#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab {
-			position: fixed;
-			right: 6px;
-		}
-
-		.x-viewport-editmode .x-toolbar-first > table::after {
-			bottom:61px!important;
-		}
 
 
+
+
+
+
+
+		/*
+			TRASH ???
+
+			body[data-sitesettings="true"][data-edit-window-style="settings"]::before {
+				content: ""!important;
+			} */
+
+
+		/* ADMIN MODE */
 		#JahiaGxtSidePanelTabs .tab_systemSiteSettings {
 			.x-viewport-adminmode & {
 				left: 150px;

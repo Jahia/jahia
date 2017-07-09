@@ -49,7 +49,7 @@
             &::after {
                 content: $text_dark_ui;
                 position: fixed;
-                bottom: 11px;
+				bottom:61px;
                 right: 6px;
                 display: block;
                 width: 50px;
@@ -64,11 +64,21 @@
                 text-transform: uppercase;
                 opacity: 0.8;
                 pointer-events: all;
+
+
+
             }
 
             body[data-INDIGO-UI="light"] &::after {
                 content: $text_light_ui;
             }
+
+			/*body[data-edit-window-style="settings"] &::after {
+				@extend %hide_from_view;
+			}*/
+
+
+
 
             &:hover::after {
                 cursor: pointer;
@@ -76,7 +86,7 @@
             }
         }
 
-        > table,
+		> table,
         &:hover > table {
             opacity: 1;
             z-index: 999999;
@@ -161,6 +171,11 @@
                         @extend %mode_combo_label_multiselect;
                     }
                 }
+
+				body[data-edit-window-style="settings"] & {
+					display: none!important;
+
+				}
             }
 
             .edit-menu-user {
@@ -180,6 +195,11 @@
                     background: url(./images/tabs-usermenu-white@X2.png) no-repeat left 14px top 6px;
                     background-size: 23px 23px;
                 }
+
+				body[data-edit-window-style="settings"] & {
+					display: none!important;
+
+				}
             }
 
             .toolbar-item-clipboard,
@@ -219,6 +239,10 @@
                     background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
                     background-size: 32px 32px;
                 }
+
+				body[data-edit-window-style="settings"] & {
+					display: none!important;
+				}
 
                 .x-btn-mc {
                     height: 40px!important;

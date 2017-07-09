@@ -7,11 +7,15 @@
 	height: 100%;
 	pointer-events: none;
 
+	.x-panel-header-text {
+		display: none;
+	}
+
 	.x-panel-header {
 		/* Contains Site Selector and Side Panel Refresh Button */
 		position: absolute !important;
-	    top: 9px!important;
-		left: 67px !important;
+	    top: 15px!important;
+		left: 71px !important;
 	    z-index: 99999 !important;
 	    opacity: 1;
 	    width: auto !important;
@@ -26,7 +30,7 @@
 		.edit-menu-sites {
 			/* Site Selector */
 			pointer-events: all !important;
-			width: 220px !important;
+			/*width: 220px !important;
 
 			> table {
 				width: 100%!important;
@@ -41,7 +45,7 @@
 
 					@include text(16px, $white-clouds, $semilight);
 				}
-			}
+			}*/
 		}
 
 		#JahiaGxtRefreshSidePanelButton {
@@ -71,6 +75,8 @@
 		z-index: 999;
 		position: relative;
 		height: calc(100% + 4px) !important;
+
+
 	}
 
 
@@ -83,6 +89,29 @@
 		z-index: 99;
 		position: relative;
 		pointer-events: all;
+
+		> div:nth-child(2) {
+			&.x-panel-footer {
+
+				display: none;
+
+				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
+					/* USED AS MASK FOR CAPUTURING CLICK TO CLOSE SIDE PANELS*/
+					/* Need to swap to a div that measures the height of the iframe so that scrolling can still be done */
+					top: 0;
+					left: 0;
+					width: 100%!important;
+					height: 100%!important;
+					z-index: 99;
+					position: fixed;
+					background: $transparent;
+					display: block;
+				}
+
+			}
+		}
+
+
 	}
 
 	#JahiaGxtSidePanelTabs {
@@ -155,9 +184,14 @@
 		}
 
 		.x-grid-panel {
+			height:100%!important;
 			display: none;
 			width: auto!important;
 			top: 0!important;
+
+			.x-viewport-adminmode & {
+				display: block;
+			}
 		}
 
 		[data-INDIGO-GWT-SIDE-PANEL="open"] & {
@@ -176,6 +210,8 @@
 			background-color: transparent!important;
 			display: inline-block;
 			vertical-align: top;
+			position: relative;
+			z-index: 999999;
 
 			ul.x-tab-strip-top {
 				// List for Tab Buttons
@@ -183,6 +219,26 @@
 				border:none;
 				padding: 0;
 				margin: 0;
+
+				body[data-edit-window-style="settings"] & {
+					/* Hide when settings menu open - need to keep the elements there for GWT so just slide them out ofview */
+					position: absolute;
+					left: -90px;
+
+				}
+			}
+
+			body[data-edit-window-style="settings"] & {
+				.x-tab-strip-spacer {
+					/* Close settings Button */
+					left: 10px;
+				    top: 10px;
+				    background: url(./images/icons/icon-close-large.png) no-repeat center center !important;
+				    width: 50px;
+				    height: 50px;
+				    position: absolute;
+				    position: fixed;
+				}
 			}
 		}
 
@@ -190,15 +246,21 @@
 			// Contains the Side Panel Tabs Content
 			display: inline-block;
 
-			width: calc(100% - 60px)!important;
+			width: calc(100% - 71px) !important;
+
+			.x-viewport-adminmode & {
+				width: 100%!important;
+			}
+
 			height: 100%!important;
 			vertical-align: top;
 			background: transparent;
 			margin-top: 30px;
+			margin-left: 11px;
 
 			> .x-component {
 				// Common for ALL Side Panel Contents
-				height:100%!important;
+				height:calc(100% - 90px) !important;
 
 				&::before {
 					content: "Title Here";
@@ -213,6 +275,7 @@
 				> .x-border-layout-ct {
 					/* Intermediary Container in CREATE tabs */
 					height: 100%!important;
+					width: 100%!important;
 
 					> .x-form-field-wrap {
 						/* Contains CREATE Search input */
@@ -259,7 +322,7 @@
 			/* Search Tab doesnt use the typical x-box-inner, so write special rule for its equivalent */
 			/* Equivalent of .box-inner */
 			width: 100%!important;
-			height: calc(100% - 66px)!important;
+			height: calc(100% - 6px)!important;
 			background: transparent;
 
 			> .x-panel {
@@ -285,7 +348,7 @@
 			.x-panel-footer {
 				/* Footer Action Bars (Search & Paginator) */
 				position: absolute;
-				bottom: 50px;
+				bottom: 20px;
 				z-index: 999;
 			}
 
@@ -322,7 +385,8 @@ $side_panel__tab_buttons: (
 	("#JahiaGxtFileImagesBrowseTab",   	$text_files,    	550),
 	("#JahiaGxtSearchTab",   			$text_search,    	550),
 	("#JahiaGxtCategoryBrowseTab",   	$text_taxonomy,    	550),
-	("#JahiaGxtChannelsTab",   			$text_devices,    	270)
+	("#JahiaGxtChannelsTab",   			$text_devices,    	270),
+	("#JahiaGxtSettingsTab",   			$text_settings,    	260)
 );
 
 @each $tab_button in $side_panel__tab_buttons {
@@ -332,7 +396,14 @@ $side_panel__tab_buttons: (
 	$_line_options_button: (#{nth($tab_button,3) + 25px});
 
 	#{$_tab_ID} {
+
 		width: #{$_tab_width}px!important;
+
+		body[data-indigo-gwt-side-panel=""] & {
+			display: none!important;
+		}
+
+
 
 		&::before {
 			/* Tab Content Header Label */
@@ -346,6 +417,12 @@ $side_panel__tab_buttons: (
 			}
 
 		}
+	}
+}
+
+#JahiaGxtSettingsTab {
+	> .x-component {
+		width: 100%!important;
 	}
 }
 

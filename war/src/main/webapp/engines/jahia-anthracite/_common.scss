@@ -44,6 +44,15 @@
     overflow: hidden;
 }
 
+/* Hide from View
+	SOmetimes we need to keep elements available on screen for GWT, so put them out of the view port but keep them clickable */
+
+%hide_from_view {
+	top: -60px;
+	left:-60px;
+
+}
+
 
 
 /////////////////////////////////////////////////
@@ -148,6 +157,7 @@ body {
 	top: -65px;
 	left: -257px;
 	height: 39px !important;
+	padding:0;
 
 }
 
@@ -1307,8 +1317,19 @@ form {
     height: auto!important;
 
 	&:only-child {
-		padding: 5px 20px;
+		padding-right: 5px;
 		display: block;
+	}
+}
+
+div[role="combobox"] {
+	.x-form-text {
+		@extend %combo_input !optional;
+
+		width: 100%!important;
+		box-sizing: border-box;
+	    display: inline-block;
+	    height: auto!important;
 	}
 }
 
@@ -1319,8 +1340,8 @@ form {
 	position: absolute!important;
     border: none !important;
     vertical-align: middle;
-    right: 1px;
-    top: 7px!important;
+    right: 0px;
+	height: 24px!important;
 
 	.x-form-twin-triggers & {
 		/* Button is in a container, because there are multiple buttons */
@@ -1362,7 +1383,7 @@ form {
 	/* Container used when more than one button */
 	display: block;
     position: absolute;
-    right: 20px;
+    right: 17px;
     top: 0;
 }
 
@@ -1414,6 +1435,10 @@ form {
 	        width: auto!important;
 
 			@extend %form_button !optional;
+
+			&:hover {
+				@extend %form_button_hover !optional;
+			}
 
 			img {
 				display: none;
@@ -1804,7 +1829,10 @@ form {
 }
 
 
-
+.ext-strict .ext-webkit .x-small-editor .x-form-text {
+	height: auto!important;
+	padding: 5px 40px 5px 10px;
+}
 
 
 /////////////////////////////////////////////////

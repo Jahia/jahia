@@ -113,7 +113,7 @@ import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProper
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
 
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
-    public static final String JAHIA_SAFE_BACKUP_RESTORE_MARKER = "safe-backup-restore";
+    private static final String JAHIA_SAFE_BACKUP_RESTORE_MARKER = "safe-backup-restore";
     public static final String JAHIA_SAFE_BACKUP_RESTORE_SYSTEM_PROP = "jahia.safe-backup-restore";
     private static final Logger logger = LoggerFactory.getLogger(SettingsBean.class);
 
@@ -523,18 +523,20 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         if (marker.exists()) {
             setSystemProperty(JAHIA_SAFE_BACKUP_RESTORE_SYSTEM_PROP, "true");
 
-            if(clusterActivated) {
-                logger.info("Detected safe backup restore marker, cleaning database table [JGROUPSPING] ...");
-                try {
-                    DatabaseUtils.executeStatements(Collections.singletonList("TRUNCATE TABLE `JGROUPSPING`"));
-                    logger.info("Database table [JGROUPSPING] successfully cleaned");
-                } catch (SQLException e) {
-                    logger.error("Unable to clean database table: JGROUPSPING", e);
+            try {
+                if (clusterActivated) {
+                    logger.info("Detected safe backup restore marker, cleaning database table [JGROUPSPING] ...");
+                    try {
+                        DatabaseUtils.executeStatements(Collections.singletonList("DELETE FROM JGROUPSPING"));
+                        logger.info("Database table [JGROUPSPING] successfully cleaned");
+                    } catch (SQLException e) {
+                        logger.error("Unable to clean database table: JGROUPSPING", e);
+                    }
                 }
+            } finally {
+                // delete marker
+                marker.delete();
             }
-
-            // delete marker
-            marker.delete();
         }
     }
 

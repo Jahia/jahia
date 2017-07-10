@@ -130,7 +130,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     }
 
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
-    public static final String JAHIA_SAFE_BACKUP_RESTORE_MARKER = "safe-backup-restore";
+    private static final String JAHIA_SAFE_BACKUP_RESTORE_MARKER = "safe-backup-restore";
     public static final String JAHIA_SAFE_BACKUP_RESTORE_SYSTEM_PROP = "jahia.safe-backup-restore";
     private static final Logger logger = LoggerFactory.getLogger(SettingsBean.class);
 

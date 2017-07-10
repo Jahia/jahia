@@ -18,9 +18,10 @@
 					.on("click", ".menu-editmode-managers-menu", indigoQF.listeners.closeManagerMenu)
 					.on("click", "#JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2)", indigoQF.listeners.toggleSidePanelDocking)
 					.on("mouseover", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", indigoQF.listeners.mouseOverHamburger)
-					.on("click", "#JahiaGxtSidePanelTabs .x-tree3-node-text", indigoQF.listeners.clickSidePanelMoreOptionsButton)
+					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", indigoQF.listeners.clickSidePanelMoreOptionsButton)
 					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickSidePanelFileThumbMoreOptionsButton)
 					.on("click", ".x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(2) > div:nth-child(2)", indigoQF.listeners.closeSidePanel)
+					.on("click", ".x-current-page-path", indigoQF.listeners.clearMultiSelection)
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", indigoQF.listeners.addPageToHistory);
 
 				// Setup side panel listeners accordingly to naviagtion style (rollover or click) as defined in indigoQF.status.panelMenu.style
@@ -79,6 +80,11 @@
 			windowResize: function(){
 				indigoQF.listeners.updatePageMenuPositions();
 
+			},
+
+			// Clear Multi select
+			clearMultiSelection: function(e){
+				$("iframe").trigger("click");
 			},
 
 			panelMenuModifyDOM: function(){
@@ -264,6 +270,10 @@
 
 				// Refresh the title of the page accordingly
 				indigoQF.listeners.displaynameChanged();
+
+				setTimeout(function(){
+					$(".editModeContextMenu .x-menu-list").attr("data-selected-name", $("body").attr("data-singleselection-node-displayname"));
+				}, 50);
 			},
 			publicationStatusChanged: function(status){
 				// Publication status of the current page has changed (in edit or contribute mode). Update status accordingly.
@@ -519,11 +529,19 @@
 			},
 			clickSidePanelMoreOptionsButton: function(e){
 				// Open Context Menu when clicking "More" button.
+				console.log(e.target);
+				var clickedElement = $(e.target),
+					acceptClick = clickedElement.hasClass("x-grid3-td-displayName");
 
-				var eV = new jQuery.Event("contextmenu");
-					eV.clientX = e.pageX;
-					eV.clientY = e.pageY;
-					$(this).trigger(eV);
+				if(acceptClick){
+					console.log("VALID CLICK FOR MORE OPTIONS");
+					var eV = new jQuery.Event("contextmenu");
+						eV.clientX = e.pageX;
+						eV.clientY = e.pageY;
+						$(this).trigger(eV);
+				}
+
+
 			},
 			clickSidePanelFileThumbMoreOptionsButton: function(e){
 				// Open Context Menu when clicking "More" button.

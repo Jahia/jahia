@@ -231,6 +231,7 @@ body {
 
 	.x-current-page-path {
 	    display: block;
+
 	    > span {
 			display: none;
 
@@ -246,6 +247,11 @@ body {
 
 	        body[data-multiselect="on"] & {
 				@extend %multiselect_title !optional;
+
+				background: url("./images/icons/icon-close-white@X2.png") no-repeat left center;
+				background-size: 12px 12px;
+				padding-left: 20px!important;
+				margin-left: 15px!important;
 
 				margin: 6px 0 0 35px;
 	        }
@@ -592,6 +598,28 @@ body {
 
 /* Thumb wraps
    Used to create a thumb in List View, ie. in Files */
+
+.x-combo-list-inner {
+	.thumb-wrap {
+		display: block;
+		width: 100%!important;
+		margin: 0!important;
+		height: auto;
+
+		.thumb {
+			display: none;
+
+		}
+
+		.x-editable {
+			display: block;
+		}
+	}
+
+
+}
+
+
 .thumb-wrap {
 	border: none!important;
 	padding: 0!important;
@@ -706,7 +734,7 @@ body {
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: rgba(53, 173, 241, 0.99);
+    background: $hamburger-bg;
 
     &::after {
 		/* Close Icon */
@@ -734,13 +762,11 @@ body {
 
         &::before {
 			/* Menu Title */
+			@include text(46px, $hamburger-title, $extralight);
+
             content: $text_dxm;
 		    display: block;
 		    text-align: center;
-		    font-size: 46px;
-		    color: rgba(238, 238, 238, 0.7);
-		    font-family: "Nunito Sans", sans-serif !important;
-		    font-weight: 100;
 		    margin-bottom: 10px;
 		    background: none;
 		    box-shadow: none;
@@ -751,6 +777,16 @@ body {
 
 
     }
+
+	$side_panel__tab_buttons: (
+		// App ID
+		(".toolbar-item-editorialcontentmanager",     	$app_icon_content_manager),
+		(".toolbar-item-filemanager",     				$app_icon_file_manager),
+		(".toolbar-item-portletmanager",     			$app_icon_portlet_manager),
+		(".toolbar-item-repositoryexplorer",     		$app_icon_repo_explorer),
+		(".toolbar-item-categorymanager",     			$app_icon_category_manager),
+		(".toolbar-item-sitemanager",     				$app_icon_site_manager)
+	);
 
     .x-menu-list-item {
 		/* App Icon */
@@ -763,7 +799,7 @@ body {
 			background: none;
 
 			.x-menu-item {
-				color: pink;
+				color: $hamburger_button_hover;
 				opacity: 1;
 			}
 		}
@@ -774,47 +810,31 @@ body {
 			width: 170px;
 	        margin: 1px;
 	        position: relative;
-	        padding: 120px 0 0 0;
-	        text-align: center;
+	        padding: 120px 0 0 0!important;
+	        text-align: center!important;
 
 			background-size: 50%;
 			background-repeat: no-repeat;
 			background-position: top 16px center;
-			color: red;
+			background-color: $transparent;
 			opacity: 0.8;
 
+			@include text(11px, $hamburger_button_up, $extralight);
+
 		}
 
 
-		.toolbar-item-editorialcontentmanager {
-			/* App Icon - Content */
-			background-image: url(./images/dx_logo_inverted.png);
+		@each $tab_button in $side_panel__tab_buttons {
+			$_app_UID: #{nth($tab_button,1)};
+			$_icon: "#{nth($tab_button,2)}";
+
+			#{$_app_UID} {
+				background-image: url($_icon);
+			}
+
 		}
 
-		.toolbar-item-filemanager {
-			/* App Icon - File Manager */
-			background-image: url(./images/dx_logo_inverted.png);
-		}
 
-		.toolbar-item-portletmanager {
-			/* App Icon - Portlet Manager */
-			background-image: url(./images/dx_logo_inverted.png);
-		}
-
-		.toolbar-item-repositoryexplorer {
-			/* App Icon - Repo */
-			background-image: url(./images/dx_logo_inverted.png);
-		}
-
-		.toolbar-item-categorymanager {
-			/* App Icon - Category */
-			background-image: url(./images/dx_logo_inverted.png);
-		}
-
-		.toolbar-item-sitemanager {
-			/* App Icon - Site Manager */
-			background-image: url(./images/dx_logo_inverted.png);
-		}
 
     }
 }
@@ -1320,6 +1340,14 @@ form {
 		padding-right: 5px;
 		display: block;
 	}
+
+	&:hover {
+		@extend %text_input_hover !optional;
+	}
+
+	&:focus {
+		@extend %text_input_focus !optional;
+	}
 }
 
 div[role="combobox"] {
@@ -1703,8 +1731,15 @@ div[role="combobox"] {
 
 			}
 
-			.x-tree3-node-text {
+			.x-grid3-td-displayName,
+			.gwt-content-label {
 				@extend %tree_line_text_hover !optional;
+
+				&::after {
+					background-image: url($row_more_options_icon_hover);
+					opacity: 1;
+
+				}
 
 			}
 
@@ -1721,8 +1756,15 @@ div[role="combobox"] {
 
 			}
 
-			.x-tree3-node-text {
+			.x-grid3-td-displayName,
+			.gwt-content-label {
 				@extend %tree_line_text_selected !optional;
+
+				&::after {
+					background-image: url($row_more_options_icon_selected);
+					opacity: 1;
+
+				}
 			}
 
 
@@ -1735,26 +1777,30 @@ div[role="combobox"] {
 
 				}
 
-				.x-tree3-node-text {
+				.x-grid3-td-displayName,
+				.gwt-content-label {
 					@extend %tree_line_text_selected_hover !optional;
+
+					&::after {
+						background-image: url($row_more_options_icon_selected_hover);
+
+					}
 				}
 			}
 		}
 	}
 
-	.x-tree3-node-text,
-	.x-grid3-cell-inner {
+	.x-grid3-td-displayName,
+	.gwt-content-label {
 		/* List Item Text Label */
 		@extend %tree_line_text_up !optional;
 
 		pointer-events: none;
 
 		&::after {
-			content: "More";
 			position: fixed;
-			left: 270px;
 			pointer-events: all;
-			margin-top: -21px;
+			margin-top: -26px;
 			background-image: url($row_more_options_icon);
 			background-repeat: no-repeat;
 			background-position: center center;
@@ -1766,6 +1812,25 @@ div[role="combobox"] {
 			opacity: 0;
 		}
 	}
+
+	.x-tree3-node-text {
+		top: -1px;
+	}
+
+	/*.x-grid3-td-displayName {
+		&::after {
+			left: 270px;
+		}
+	}
+
+	.x-grid3-td-displayName {
+		&::after {
+			left: 270px;
+			background: red;
+		}
+	}*/
+
+
 
 	.x-tree3-node-icon,
 	.gwt-Image {
@@ -1815,6 +1880,12 @@ div[role="combobox"] {
 						> span {
 							display: inline-block;
 							vertical-align: middle;
+
+							font-family: inherit;
+						    color: inherit;
+						    font-weight: inherit;
+						    padding: inherit;
+						    font-size: inherit;
 						}
 
 						td > .x-tree3-node-icon {
@@ -1832,6 +1903,10 @@ div[role="combobox"] {
 .ext-strict .ext-webkit .x-small-editor .x-form-text {
 	height: auto!important;
 	padding: 5px 40px 5px 10px;
+}
+
+.x-border-layout-ct {
+	background: none;
 }
 
 

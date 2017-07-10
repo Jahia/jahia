@@ -30,7 +30,7 @@
 		.edit-menu-sites {
 			/* Site Selector */
 			pointer-events: all !important;
-			/*width: 220px !important;
+			width: 250px!important;
 
 			> table {
 				width: 100%!important;
@@ -39,20 +39,24 @@
 			.x-form-field-wrap {
 				width:auto!important;
 
-				input {
-					padding: 5px 40px 5px 10px;
-					height: auto!important;
-
-					@include text(16px, $white-clouds, $semilight);
-				}
-			}*/
+			}
 		}
 
 		#JahiaGxtRefreshSidePanelButton {
 			/* Refresh side panel button */
 		    pointer-events: all;
 			background: url(./images/icon-publication-launcher.png) no-repeat center center;
+			left: 214px;
+		    position: absolute;
+		    top: 0px;
+		    background-color: rgba($grey-clouds, .2);
+		    background-size: 70%;
+		    height: 24px;
+		    width: 17px;
 
+			&:hover {
+				background-color: rgba($grey-clouds, .7);
+			}
 		}
 
 		.x-tool-left {
@@ -140,6 +144,10 @@
             display: block;
             pointer-events: all;
 
+			body[data-multiselect="on"] & {
+				pointer-events: none!important;
+			}
+
 			img {
 				background-size: 23px 23px;
 	            background-repeat: no-repeat;
@@ -226,6 +234,8 @@
 					left: -90px;
 
 				}
+
+
 			}
 
 			body[data-edit-window-style="settings"] & {
@@ -245,6 +255,7 @@
 		.x-tab-panel-body {
 			// Contains the Side Panel Tabs Content
 			display: inline-block;
+			box-sizing: border-box;
 
 			width: calc(100% - 71px) !important;
 
@@ -261,6 +272,8 @@
 			> .x-component {
 				// Common for ALL Side Panel Contents
 				height:calc(100% - 90px) !important;
+				padding-right: 20px;
+				box-sizing: border-box;
 
 				&::before {
 					content: "Title Here";
@@ -300,6 +313,12 @@
 						width: 50%!important;
 						top: 0!important;
 						background: transparent!important;
+
+						&:nth-child(1) {
+							padding-right: 20px;
+							box-sizing: border-box;
+
+						}
 
 						> .x-component {
 							/* Container for List View */
@@ -356,17 +375,98 @@
 		}
 	}
 
-	#JahiaGxtChannelsTab.tab_channel.x-component { // Excessive Selector is to over rule hard to crush !important already on the element
-		.x-box-inner {
-			.x-box-item {
-				/* Need to correct the layout of Left/Right to UP/Down on boxes */
-				width: 100%!important;
-				height: 50%!important;
+	#JahiaGxtChannelsTab {
+
+		.gwt-Image {
+			overflow: hidden;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			position: relative;
+
+			background-size: 150px 150px;
+			background-repeat: no-repeat;
+			padding-left: 150px;
+			width: 150px;
+			height: 150px;
+
+			&[src='/engines/images/devices/generic-small.png'] {
+				background-image: url($icon_device_generic);
+			}
+
+			&[src='/modules/channels/images/devices/iphone-small.png'] {
+				background-image: url($icon_device_iphone);
+			}
+
+			&[src='/modules/channels/images/devices/samsunggalaxys4-small.png'] {
+				background-image: url($icon_device_galaxy_s4);
+			}
+
+			&[src='/modules/channels/images/devices/samsunggalaxytab7-small.png'] {
+				background-image: url($icon_device_galaxy_tab7);
+			}
+
+			&[src='/modules/channels/images/devices/android-small.png'] {
+				background-image: url($icon_device_android);
+			}
+
+			&[src='/modules/channels/images/devices/bbstorm-small.png'] {
+				background-image: url($icon_device_blackberry);
+			}
+
+			&[src='/modules/channels/images/devices/samsunggalaxynote3-small.png'] {
+				background-image: url($icon_device_galaxy_note);
+			}
+
+			&[src='/modules/channels/images/devices/kindlefire-small.png'] {
+				background-image: url($icon_device_kindle);
+			}
+
+			&[src='/modules/channels/images/devices/ipad-small.png'] {
+				background-image: url($icon_device_ipad);
+			}
+
+			&[src='/modules/channels/images/devices/samsunggalaxytab10.1-small.png'] {
+				background-image: url($icon_device_galaxy_tab_small);
 			}
 		}
 
+		&.tab_channel.x-component { // Excessive Selector is to over rule hard to crush !important already on the element
+			.x-box-inner {
+				.x-box-item {
+					/* Need to correct the layout of Left/Right to UP/Down on boxes */
+					width: 100%!important;
+					height: calc(100% - 287px) !important;
+					padding-right:0!important;
+
+					&:nth-child(1) {
+						height: 287px!important;
+					}
+
+					&:nth-child(2) {
+						&::before {
+							content: "Device Details";
+							display: block;
+							margin-bottom: 5px;
+							margin-top: 20px;
+
+							@include text(17px, $device_details_title, $extralight);
+						}
+					}
+
+					.x-grid3-col-displayName {
+						@include text(11px, $device_details_label, $extralight);
+					}
+
+					.x-grid3-col-value {
+						@include text(11px, $device_details_value, $light);
+					}
+
+				}
+			}
 
 
+
+		}
 	}
 
 }
@@ -378,22 +478,23 @@
 /////////////////////////////////////////////////
 
 $side_panel__tab_buttons: (
-	// Tab ID							// Tab Label		// Tab Width
-	("#JahiaGxtPagesTab",      			$text_pages,    	270),
-	("#JahiaGxtCreateContentTab",   	$text_create,    	270),
-	("#JahiaGxtContentBrowseTab",   	$text_content,    	550),
-	("#JahiaGxtFileImagesBrowseTab",   	$text_files,    	550),
-	("#JahiaGxtSearchTab",   			$text_search,    	550),
-	("#JahiaGxtCategoryBrowseTab",   	$text_taxonomy,    	550),
-	("#JahiaGxtChannelsTab",   			$text_devices,    	270),
-	("#JahiaGxtSettingsTab",   			$text_settings,    	260)
+	// Tab ID							// Tab Label		// Tab Width	// Tree Options		// Content Options
+	("#JahiaGxtPagesTab",      			$text_pages,    	270,			292,				"none"),
+	("#JahiaGxtCreateContentTab",   	$text_create,    	270,			"none",				"none"),
+	("#JahiaGxtContentBrowseTab",   	$text_content,    	550,			287,				572),
+	("#JahiaGxtFileImagesBrowseTab",   	$text_files,    	550,			287,				"none"),
+	("#JahiaGxtSearchTab",   			$text_search,    	550,			"none",				572),
+	("#JahiaGxtCategoryBrowseTab",   	$text_taxonomy,    	550,			"none",				572),
+	("#JahiaGxtChannelsTab",   			$text_devices,    	270,			"none",				"none"),
+	("#JahiaGxtSettingsTab",   			$text_settings,    	260,			"none",				"none")
 );
 
 @each $tab_button in $side_panel__tab_buttons {
 	$_tab_ID: #{nth($tab_button,1)};
 	$_text: "#{nth($tab_button,2)}";
 	$_tab_width: #{nth($tab_button,3)};
-	$_line_options_button: (#{nth($tab_button,3) + 25px});
+	$_line_options_button_tree: #{nth($tab_button,4)};
+	$_line_options_button_content: #{nth($tab_button,5)};
 
 	#{$_tab_ID} {
 
@@ -410,13 +511,39 @@ $side_panel__tab_buttons: (
 			content: "#{$_text}"!important;
 		}
 
-		.x-tree3-node-text {
-			&::after {
-				/* MORE Options button */
-				left: #{$_line_options_button}!important;
+		@if ($_line_options_button_tree != "none") {
+			.x-grid3-td-displayName {
+				&::after {
+					/* MORE Options button for TREE */
+					left: #{$_line_options_button_tree}px!important;
+					content: "More";
+				}
+
+			}
+		}
+
+		@if ($_line_options_button_content != "none") {
+			.x-box-item:nth-child(2) .x-grid3-td-displayName {
+				&::after {
+					/* MORE Options button for CONTENT */
+					left: #{$_line_options_button_content}px!important;
+					content: "More";
+				}
+
 			}
 
+			@if ($_tab_ID == "#JahiaGxtSearchTab") {
+				.x-grid3-td-displayName {
+					&::after {
+						/* Exception for Search results */
+						left: #{$_line_options_button_content}px!important;
+						content: "More";
+					}
+				}
+			}
 		}
+
+
 	}
 }
 
@@ -424,6 +551,10 @@ $side_panel__tab_buttons: (
 	> .x-component {
 		width: 100%!important;
 	}
+}
+
+#JahiaGxtSettingsTab {
+	padding-right: 0!important;
 }
 
 

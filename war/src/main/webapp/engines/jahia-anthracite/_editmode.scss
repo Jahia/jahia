@@ -65,6 +65,12 @@
                 opacity: 0.8;
                 pointer-events: all;
 
+				body[data-multiselect="on"] & {
+					color: $tool_color_off;
+					background: url(./images/tabs-placeholder-black@X2.png) no-repeat top center;
+					background-size: 23px 23px;
+				}
+
 
 
             }
@@ -152,6 +158,10 @@
                 height: 24px;
                 opacity: 0.9;
 
+				body[data-multiselect="on"] & {
+					pointer-events: none;
+				}
+
                 &::after {
                     content: $text_edit_mode;
                     margin-top: 0px;
@@ -200,6 +210,10 @@
 					display: none!important;
 
 				}
+
+				body[data-multiselect="on"] & {
+					pointer-events: none;
+				}
             }
 
             .toolbar-item-clipboard,
@@ -209,6 +223,10 @@
                 body[data-sitesettings="true"] & {
                     display: none;
                 }
+
+				body[data-multiselect="on"] & {
+					pointer-events: none;
+				}
             }
 
             .editmode-managers-menu {
@@ -222,9 +240,10 @@
                 margin-top: 0;
                 opacity: 0.8;
 
-                body[data-selection-count="0"] & {
-                    background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+                body[data-multiselect="on"] & {
+                    background: url(./images/dx_logo_solid-black.png) no-repeat top 3px left 10px;
                     background-size: 32px 32px;
+					pointer-events: none;
                 }
 
                 &:hover {
@@ -254,6 +273,10 @@
                 body[data-sitesettings="true"] & {
                     display: none;
                 }
+
+				body[data-multiselect="on"] & {
+					pointer-events: none;
+				}
             }
 
             .edit-menu-publication {

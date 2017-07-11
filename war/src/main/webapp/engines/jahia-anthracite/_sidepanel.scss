@@ -197,7 +197,8 @@
 			width: auto!important;
 			top: 0!important;
 
-			.x-viewport-adminmode & {
+			.x-viewport-adminmode &,
+			.x-viewport-dashboardmode & {
 				display: block;
 			}
 		}
@@ -220,6 +221,11 @@
 			vertical-align: top;
 			position: relative;
 			z-index: 999999;
+
+			.x-viewport-adminmode &,
+			.x-viewport-dashboardmode & {
+				display: none;
+			}
 
 			ul.x-tab-strip-top {
 				// List for Tab Buttons
@@ -259,8 +265,11 @@
 
 			width: calc(100% - 71px) !important;
 
-			.x-viewport-adminmode & {
+			.x-viewport-adminmode &,
+			.x-viewport-dashboardmode & {
 				width: 100%!important;
+				margin-left: 0;
+				margin-top: 0;
 			}
 
 			height: 100%!important;
@@ -596,6 +605,8 @@ $side_panel__tab_buttons: (
 					position: fixed;
 					right: 6px;
 					bottom: 0;
+
+
 				}
 
                 img {

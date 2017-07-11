@@ -233,6 +233,7 @@
 
 							case 1:
 								pageTitle = "1 selected item";
+								pageTitle = $("body").attr("data-singleselection-node-displayname");
 								multiselect = "on";
 								break;
 

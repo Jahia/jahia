@@ -674,12 +674,24 @@
 
     %tree_line_text_hover {
         color: $row_over_label!important;
+
+		// Padding not dealt with in best manner ...
 		padding-right: 19px!important; // Make space for More options button
+
+		.x-viewport-adminmode & {
+			padding-right: 0!important; // Make space for More options button
+
+		}
     }
 
     %tree_line_text_selected {
         color: $row_selected_label!important;
 		padding-right: 19px!important; // Make space for More options button
+
+		.x-viewport-adminmode & {
+			padding-right: 0!important; // Make space for More options button
+
+		}
 
     }
 

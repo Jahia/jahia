@@ -95,6 +95,7 @@ body {
 		&::before {
 			/* Set Page Title Content for Settings */
 			content: attr(data-main-node-displayname);
+			content: "Server Settings"
 
 		}
 	}
@@ -252,6 +253,11 @@ body {
 				background-size: 12px 12px;
 				padding-left: 20px!important;
 				margin-left: 15px!important;
+
+				max-width: 200px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
 
 				margin: 6px 0 0 35px;
 	        }

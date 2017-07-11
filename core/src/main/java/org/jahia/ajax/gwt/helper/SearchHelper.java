@@ -389,8 +389,8 @@ public class SearchHelper {
         if (gwtQuery.getNodeTypes() != null && gwtQuery.getNodeTypes().size() == 1) {
             criteria.setNodeType(gwtQuery.getNodeTypes().get(0));
             gwtQuery.setNodeTypes(new LinkedList<String>());
-        }
-
+        }        
+        
         // language
         if (gwtQuery.getLanguage() != null && gwtQuery.getLanguage().getLanguage() != null) {
             criteria.getLanguages().setValue(gwtQuery.getLanguage().getLanguage());
@@ -487,11 +487,11 @@ public class SearchHelper {
             if (siteKey != null) {
                 criteria.setOriginSiteKey(siteKey);
             }
-
+            
         }
 
         if (gwtQuery.getSites() != null) {
-            SearchCriteria.CommaSeparatedSiteKeys sites = new SearchCriteria.CommaSeparatedSiteKeys();
+            SearchCriteria.CommaSeparatedMultipleValue sites = new SearchCriteria.CommaSeparatedMultipleValue();
             sites.setValues(gwtQuery.getSites().toArray(new String[gwtQuery.getSites().size()]));
             criteria.setSites(sites);
         }

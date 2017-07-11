@@ -142,7 +142,7 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
     public Suggestion suggest(String originalQuery, RenderContext context, int maxTermsToSuggest) {
         SearchCriteria sc = new SearchCriteria();
         sc.setTerm(originalQuery);
-        SearchCriteria.CommaSeparatedSiteKeys value = new SearchCriteria.CommaSeparatedSiteKeys();
+        SearchCriteria.CommaSeparatedMultipleValue value = new SearchCriteria.CommaSeparatedMultipleValue();
         value.setValue(context.getSite().getSiteKey());
         sc.setSites(value);
         return suggest(sc, context, maxTermsToSuggest);
@@ -150,9 +150,9 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
 
     /**
      * Execute rules on the list of hit objects.
-     *
+     * 
      * @param searchHits, list of JCRNodeHit objects
-     * @param context, current rendering context
+     * @param context, current rendering context 
      */
     public static void executeURLModificationRules(
             List<JCRNodeHit> searchHits, RenderContext context) {
@@ -162,13 +162,13 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
         RulesListener.getInstance(context.getMainResource().getWorkspace()).executeRules(searchHits,
                 globals);
         return;
-    }
-
+    }    
+    
     /**
      * Execute rules on a single search hit object.
-     *
+     * 
      * @param searchHit, JCRNodeHit object
-     * @param context, current rendering context
+     * @param context, current rendering context 
      */
     public static void executeURLModificationRules(
             Hit<?> searchHit, RenderContext context) {

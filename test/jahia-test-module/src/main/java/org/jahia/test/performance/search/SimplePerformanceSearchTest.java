@@ -55,7 +55,6 @@ import org.jahia.services.render.URLGenerator;
 import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteria.CommaSeparatedMultipleValue;
-import org.jahia.services.search.SearchCriteria.CommaSeparatedSiteKeys;
 import org.jahia.services.search.SearchService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
@@ -139,7 +138,7 @@ public class SimplePerformanceSearchTest extends JahiaTestCase {
     private SearchCriteria createSearchCriteria() {
         SearchCriteria criteria = new SearchCriteria();
 
-        CommaSeparatedSiteKeys oneSite = new CommaSeparatedSiteKeys();
+        CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
         oneSite.setValue(FIRST_TESTSITE_NAME);
 
         CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();

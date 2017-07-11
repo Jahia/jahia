@@ -344,7 +344,12 @@ public final class BundleUtils {
             if (moduleVersions.isEmpty()) {
                 modules.remove(moduleId);
             }
-            pkg.setClassLoader(null);
+            if (pkg == null) {
+                final String errMsg = String.format("Version %s of module %s does not exist", version, moduleId);
+                logger.warn(errMsg);
+            } else {
+                pkg.setClassLoader(null);
+            }
         }
     }
 

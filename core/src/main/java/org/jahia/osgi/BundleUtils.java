@@ -360,7 +360,11 @@ public final class BundleUtils {
             if (moduleVersions.isEmpty()) {
                 modules.remove(moduleId);
             }
-            pkg.setClassLoader(null);
+            if (pkg != null) {
+                pkg.setClassLoader(null);
+            } else {
+                logger.warn("Version {} of module {} does not exist", version, moduleId);
+            }
         }
     }
 

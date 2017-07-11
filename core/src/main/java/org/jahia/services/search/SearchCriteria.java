@@ -50,6 +50,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.map.LazyMap;
@@ -57,27 +59,63 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
+import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.DateUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Bean for holding all search parameters.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @SuppressWarnings("unchecked")
 public class SearchCriteria implements Serializable {
 
     /**
+     * Supports comma separated site keys, including validation that corresponding site nodes actually exist.
+     */
+    public static class CommaSeparatedSiteKeys extends CommaSeparatedMultipleValue {
+
+        private static final long serialVersionUID = 7086087078198027675L;
+
+        public CommaSeparatedSiteKeys() {
+        }
+
+        public CommaSeparatedSiteKeys(CommaSeparatedMultipleValue sites) {
+            setValues(sites.getValues());
+        }
+
+        @Override
+        public void setValue(String value) {
+            if (StringUtils.isEmpty(value)) {
+                super.setValue(value);
+            } else {
+                setValues(StringUtils.split(value, MULTIPLE_VALUE_SEPARATOR));
+            }
+        }
+
+        @Override
+        public void setValues(String[] values) {
+            validateSiteKeys(values);
+            super.setValues(values);
+        }
+    }
+
+    /**
      * Supports comma separated multiple values.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class CommaSeparatedMultipleValue extends MultipleValue {
 
-        private static final char MULTIPLE_VALUE_SEPARATOR = ',';
-        
+        protected static final char MULTIPLE_VALUE_SEPARATOR = ',';
+
         private static final long serialVersionUID = 2324041504396269857L;
 
         public void setValue(String value) {
@@ -97,10 +135,10 @@ public class SearchCriteria implements Serializable {
         }
 
     }
-    
+
     /**
      * Holder for the criterion of date type.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class DateValue implements Serializable {
@@ -193,7 +231,7 @@ public class SearchCriteria implements Serializable {
     /**
      * Represents a selactable value (file location, category etc.) that is a
      * part of the hierarchical structure.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class HierarchicalValue extends CommaSeparatedMultipleValue {
@@ -213,13 +251,13 @@ public class SearchCriteria implements Serializable {
 
     /**
      * Represents a multiple value holder.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static abstract class MultipleValue implements Serializable {
 
         private static final long serialVersionUID = 1797359207235144293L;
-        
+
         private String[] values;
 
         public String getValue() {
@@ -254,7 +292,7 @@ public class SearchCriteria implements Serializable {
 
     /**
      * Single search criterion on the node property.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class NodeProperty extends MultipleValue {
@@ -375,7 +413,7 @@ public class SearchCriteria implements Serializable {
 
     /**
      * Contains description of the node property.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class NodePropertyDescriptor implements Serializable {
@@ -400,7 +438,7 @@ public class SearchCriteria implements Serializable {
 
         /**
          * Initializes an instance of this class.
-         * 
+         *
          * @param name
          *            node type name
          * @param label
@@ -485,7 +523,7 @@ public class SearchCriteria implements Serializable {
             return ReflectionToStringBuilder.reflectionToString(this);
         }
     }
-    
+
     protected static class NodePropertyFactory implements Factory, Serializable {
         private static final long serialVersionUID = 3303613294641347422L;
 
@@ -513,7 +551,7 @@ public class SearchCriteria implements Serializable {
             return new Ordering();
         }
     }
-    
+
     private static class TermFactory implements Factory, Serializable {
 
         private static final long serialVersionUID = -7196425250357122068L;
@@ -523,10 +561,10 @@ public class SearchCriteria implements Serializable {
             return new Term();
         }
     }
-    
+
     /**
      * Single text search criterion with a search text and match type.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class Term implements Serializable {
@@ -537,7 +575,7 @@ public class SearchCriteria implements Serializable {
 
         /**
          * Represents a set of fields to consider during search.
-         * 
+         *
          * @author Sergiy Shyrkov
          */
         public static class SearchFields implements Serializable {
@@ -555,8 +593,8 @@ public class SearchCriteria implements Serializable {
             private boolean siteContent;
 
             private boolean tags;
-            
-            private boolean title;            
+
+            private boolean title;
 
             public boolean isDescription() {
                 return description;
@@ -584,8 +622,8 @@ public class SearchCriteria implements Serializable {
 
             public boolean isTitle() {
                 return title;
-            }            
-            
+            }
+
             public void setCustom(String[] customFields) {
                 for (String custom : customFields) {
                     if (custom != null) {
@@ -641,7 +679,7 @@ public class SearchCriteria implements Serializable {
                 this.siteContent = content;
                 this.tags = content;
             }
-            
+
             public void setFiles(boolean files) {
                 setDescription(files);
                 setFileContent(files);
@@ -653,10 +691,10 @@ public class SearchCriteria implements Serializable {
             public void setTags(boolean tags) {
                 this.tags = tags;
             }
-            
+
             public void setTitle(boolean title) {
                 this.title = title;
-            }            
+            }
 
             @Override
             public String toString() {
@@ -664,7 +702,7 @@ public class SearchCriteria implements Serializable {
                         TO_STRING_STYLE);
             }
 
-        }   
+        }
 
         private static final long serialVersionUID = -3881090179063748926L;
 
@@ -673,9 +711,9 @@ public class SearchCriteria implements Serializable {
         private MatchType match = MatchType.AS_IS;
 
         private String term;
-        
+
         private boolean applyFilter;
-        
+
         public SearchFields getFields() {
             return fields;
         }
@@ -687,7 +725,7 @@ public class SearchCriteria implements Serializable {
         public String getTerm() {
             return term;
         }
-       
+
         public boolean isEmpty() {
             return isValueEmpty(term);
         }
@@ -721,7 +759,7 @@ public class SearchCriteria implements Serializable {
 
     /**
      * Represents an ordering definition
-     * 
+     *
      * @author Benjamin Papez
      */
     public static class Ordering implements Serializable {
@@ -730,21 +768,21 @@ public class SearchCriteria implements Serializable {
         public enum Order {
             ASCENDING, DESCENDING;
         }
-        
+
         public enum CaseConversion {
             LOWER, UPPER;
         }
-        
+
         public enum Operand {
             SCORE, PROPERTY;
         }
-        
+
         private Order order = Order.DESCENDING;
         private CaseConversion caseConversion;
-        private Operand operand = Operand.SCORE;        
+        private Operand operand = Operand.SCORE;
         private boolean normalize;
         private String propertyName;
-        
+
         public Order getOrder() {
             return order;
         }
@@ -775,14 +813,14 @@ public class SearchCriteria implements Serializable {
         public void setOperand(Operand operand) {
             this.operand = operand;
         }
-        
+
         @Override
         public String toString() {
             return ReflectionToStringBuilder.reflectionToString(this,
                     TO_STRING_STYLE);
         }
-    }            
-    
+    }
+
     private static final long serialVersionUID = 4633533116047727827L;
 
     private static final ToStringStyle TO_STRING_STYLE = ToStringStyle.MULTI_LINE_STYLE;
@@ -812,6 +850,27 @@ public class SearchCriteria implements Serializable {
         return toStringItems;
     }
 
+    private static void validateSiteKeys(final String[] siteKeys) {
+
+        final JahiaSitesService siteService = JahiaSitesService.getInstance();
+
+        try {
+
+            JCRTemplate.getInstance().doExecuteWithSystemSessionInSameWorkspaceAndLocale(new JCRCallback<Void>() {
+
+                @Override
+                public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    for (String siteKey : siteKeys) {
+                        siteService.getSiteByKey(siteKey, session);
+                    }
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
+            throw new JahiaRuntimeException(e);
+        }
+    }
+
     private DateValue created = new DateValue();
 
     private String createdBy;
@@ -835,7 +894,7 @@ public class SearchCriteria implements Serializable {
     private long offset;
 
     private String originSiteKey;
-    
+
     private HierarchicalValue pagePath = new HierarchicalValue();
 
     private Map<String /* nodeType */, Map<String /* propertyName */, NodeProperty>> properties = LazyMap
@@ -844,9 +903,9 @@ public class SearchCriteria implements Serializable {
 
     private String rawQuery;
 
-    private CommaSeparatedMultipleValue sites = new CommaSeparatedMultipleValue();
-    private CommaSeparatedMultipleValue sitesForReferences = new CommaSeparatedMultipleValue();
-    
+    private CommaSeparatedSiteKeys sites = new CommaSeparatedSiteKeys();
+    private CommaSeparatedSiteKeys sitesForReferences = new CommaSeparatedSiteKeys();
+
     private List<Term> terms = LazyList.decorate(new LinkedList<Term>(), new TermFactory());
 
     private List<Ordering> orderings = LazyList.decorate(new LinkedList<Ordering>(), new OrderingFactory());
@@ -903,7 +962,7 @@ public class SearchCriteria implements Serializable {
     }
 
     /**
-     * Returns the start offset of the search hit list. If the offset was not set, returns 0.  
+     * Returns the start offset of the search hit list. If the offset was not set, returns 0.
      * @return the start offset of the search hit list. If the offset was not set, returns 0
      */
     public long getOffset() {
@@ -914,7 +973,7 @@ public class SearchCriteria implements Serializable {
      * Returns the origin site key, i.e. the key of the "current" site, where
      * the query was executed from. This value is used for example to resolve
      * the tag by its name as tags are site-specific.
-     * 
+     *
      * @return the originSiteKey the origin site key, i.e. the key of the
      *         "current" site, where the query was executed from. This value is
      *         used for example to resolve the tag by its name as tags are
@@ -952,7 +1011,7 @@ public class SearchCriteria implements Serializable {
     public CommaSeparatedMultipleValue getSites() {
         return sites;
     }
-    
+
     public CommaSeparatedMultipleValue getSitesForReferences() {
         return sitesForReferences;
     }
@@ -960,7 +1019,7 @@ public class SearchCriteria implements Serializable {
     public List<Term> getTerms() {
         return terms;
     }
-    
+
     public List<Ordering> getOrderings() {
         return orderings;
     }
@@ -968,7 +1027,7 @@ public class SearchCriteria implements Serializable {
     /**
      * Returns <code>true</code> if none of required search parameters was
      * specified; otherwise returns <code>false</code>.
-     * 
+     *
      * @return <code>true</code> if none of required search parameters was
      *         specified; otherwise returns <code>false</code>
      */
@@ -1063,13 +1122,14 @@ public class SearchCriteria implements Serializable {
      * Sets the origin site key, i.e. the key of the "current" site, where the
      * query was executed from. This value is used for example to resolve the
      * tag by its name as tags are site-specific.
-     * 
+     *
      * @param originSiteKey the origin site key, i.e. the key of the "current"
      *            site, where the query was executed from. This value is used
      *            for example to resolve the tag by its name as tags are
      *            site-specific.
      */
     public void setOriginSiteKey(String originSiteKey) {
+        validateSiteKeys(new String[] {originSiteKey});
         this.originSiteKey = originSiteKey;
     }
 
@@ -1087,18 +1147,26 @@ public class SearchCriteria implements Serializable {
     }
 
     public void setSites(CommaSeparatedMultipleValue sites) {
-        this.sites = sites;
+        this.sites = fromCommaSeparatedMultipleValue(sites);
     }
-    
+
     public void setSitesForReferences(CommaSeparatedMultipleValue sitesForReferences) {
-        this.sitesForReferences = sitesForReferences;
+        this.sitesForReferences = fromCommaSeparatedMultipleValue(sitesForReferences);
+    }
+
+    private static CommaSeparatedSiteKeys fromCommaSeparatedMultipleValue(CommaSeparatedMultipleValue sites) {
+        if (sites instanceof CommaSeparatedSiteKeys) {
+            return (CommaSeparatedSiteKeys) sites;
+        } else {
+            return new CommaSeparatedSiteKeys(sites);
+        }
     }
 
     /**
      * Simplified method for setting the search term. This method resets all
      * text searches, creates a new one with the provided term, default match
      * type and all search fields.
-     * 
+     *
      * @param term
      *            the search term string
      */
@@ -1112,7 +1180,7 @@ public class SearchCriteria implements Serializable {
     public void setTerms(List<Term> textSearches) {
         this.terms = textSearches;
     }
-    
+
     public void setOrderings(List<Ordering> orderings) {
         this.orderings = orderings;
     }

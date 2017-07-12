@@ -2,6 +2,20 @@
 	var indigoQF = {
 		init: function(){
 
+			if(indigoQF.status.quickMenu.active){
+				console.log("ITS ACTIVE");
+				$("body")
+					.attr("data-quick-menu", "on")
+					.prepend("<div id='quick-menu'><iframe scrolling='no' id='quick-menu-contents'></iframe></div>");
+				$('#quick-menu-contents').attr("src", '/cms/dashboardframe/default/en/users/root.projects.html');
+
+
+
+				console.log(indigoQF.status.user);
+
+			}
+
+
 
 
 			// Attach window listeners
@@ -16,6 +30,7 @@
 					.on("click", ".x-viewport-editmode .x-toolbar-first > table", indigoQF.listeners.toggleThemeMode)
 					.on("click", ".editmode-managers-menu", indigoQF.listeners.openManagerMenu)
 					.on("click", ".menu-editmode-managers-menu", indigoQF.listeners.closeManagerMenu)
+					.on("mousedown", ".menu-edit-menu-mode, .menu-edit-menu-user", indigoQF.listeners.closeManagerMenu)
 					.on("click", "#JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2)", indigoQF.listeners.toggleSidePanelDocking)
 					.on("mouseover", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", indigoQF.listeners.mouseOverHamburger)
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", indigoQF.listeners.clickSidePanelMoreOptionsButton)
@@ -64,7 +79,11 @@
 				displayname: null
 			},
 			iframeLoaded: null,
-			iframeObserver: null
+			iframeObserver: null,
+			user: {},
+			quickMenu: {
+				active: false
+			}
 		},
 		config: {
 			selectors: { // Ask Thomas for classes where possible
@@ -366,13 +385,53 @@
 			openManagerMenu: function(){
 				// Manager Menu has been opened.
 
+				if(indigoQF.status.quickMenu.active){
+					// Get admin mode / studio mode buttons if available
+					$("body").attr("data-quick-menu-open", "open");
+					$(".edit-menu-mode").trigger("click");
+					$(".contribute-menu-mode").trigger("click");
+
+					$(".edit-menu-user").trigger("click");
+					$(".contribute-menu-user").trigger("click");
+
+					$(".menu-edit-menu-user").attr("data-username", indigoQF.status.user.userName);
+
+					// Store values
+					//indigoQF.status.user.adminMode = $(".toolbar-item-admin").length;
+					//indigoQF.status.user.studioMode = $(".toolbar-item-studio").length;
+
+					// Remove duplucate stuff from mode menu
+					$(".toolbar-item-live").hide();
+					$(".toolbar-item-preview").hide();
+					$(".toolbar-item-contribute").hide();
+
+					// Get rid off menu
+					//$("body").trigger("click");
+
+					$('#quick-menu-contents').fadeIn("slow");
+					$("#quick-menu").addClass("open");
+				}
+
+
+
 				// Close the side panel if it is open.
 				indigoQF.listeners.closeSidePanel()
 			},
 			closeManagerMenu: function(){
 				// Manager Menu has been closed by clicking on the X.
 				// Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
-				$(this).fadeOut();
+				if(indigoQF.status.quickMenu.active){
+					$("body").attr("data-quick-menu-open", "");
+
+					$("#quick-menu").removeClass("open");
+					$('#quick-menu-contents').fadeOut();
+					$(".menu-contribute-menu-mode").fadeOut();
+					$(".menu-contribute-menu-user").fadeOut();
+					$(".menu-edit-menu-mode").fadeOut();
+					$(".menu-edit-menu-user").fadeOut();
+				}
+
+				$(".menu-editmode-managers-menu").fadeOut();
 			},
 			toggleSidePanelDocking: function(e){
 				// This listener has a dual purpose depending on where it was called from.
@@ -581,6 +640,14 @@
 
 						// Loop through all mutations in BODY tag
 						mutations.forEach(function(mutation){
+
+							if(mutation.attributeName == "data-currentuser"){
+								if(indigoQF.status.quickMenu.active){
+									indigoQF.status.user.userName = $("body").attr("data-currentuser");
+									$("#quick-menu-user-menu").html(indigoQF.status.user.userName);
+								}
+
+							}
 
 							if(mutation.attributeName == "data-sitesettings"){
 								console.log("DATA SITE SETTINGS CHANGE ...", $("body").attr("data-sitesettings"));

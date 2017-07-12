@@ -49,7 +49,7 @@
 			left: 214px;
 		    position: absolute;
 		    top: 0px;
-		    background-color: rgba($grey-clouds, .2);
+		    background-color: rgba($grey-clouds, .4);
 		    background-size: 70%;
 		    height: 24px;
 		    width: 17px;
@@ -232,7 +232,7 @@
 				background-color: transparent!important;
 				border:none;
 				padding: 0;
-				margin: 0;
+				margin: 0 0 0 5px;
 
 				body[data-edit-window-style="settings"] & {
 					/* Hide when settings menu open - need to keep the elements there for GWT so just slide them out ofview */

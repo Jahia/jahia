@@ -102,7 +102,7 @@
 ///////// COMBOS
 
     $combo_icon_up:                 $icon_combo_arrow_white_clouds;
-    $combo_bg_up:                   rgba($grey-clouds, .2);
+    $combo_bg_up:                   rgba($grey-clouds, .4);
 
     $combo_icon_hover:              $icon_combo_arrow_white_clouds;
     $combo_bg_hover:                rgba($grey-clouds, .7);
@@ -158,7 +158,7 @@
     $text_input_font_family:        $font-1;
 
     $form_clear_icon_up:            $icon_form_close_white_clouds;
-    $form_clear_bg_up:              rgba($grey-clouds, .2);
+    $form_clear_bg_up:              rgba($grey-clouds, .4);
 
     $form_clear_icon_hover:         $icon_form_close_white_clouds;
     $form_clear_bg_hover:           rgba($grey-clouds, .7);
@@ -279,7 +279,7 @@
         text-align: left!important;
 
         background: $context_bg_up;
-        padding: 4px 9px!important;
+        padding: 8px 9px !important;
         border: none;
 
         @include text(11px, $context_text_color_up, $semilight);
@@ -296,6 +296,8 @@
         font-style: italic;
         opacity: 1;
         background: $context_bg_disabled;
+
+        display: none;
 
     }
 

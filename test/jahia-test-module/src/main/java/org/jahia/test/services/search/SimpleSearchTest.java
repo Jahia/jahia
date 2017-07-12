@@ -57,7 +57,6 @@ import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchService;
 import org.jahia.services.search.SearchCriteria.CommaSeparatedMultipleValue;
-import org.jahia.services.search.SearchCriteria.CommaSeparatedSiteKeys;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
@@ -73,9 +72,9 @@ import javax.jcr.RepositoryException;
 /**
  * Unit test for simple fulltext search
  * settings (all, none, one, two languages) - with using user not having rights - publication with automatically publishing parent
- *
+ * 
  * @author Benjamin Papez
- *
+ * 
  */
 public class SimpleSearchTest extends JahiaTestCase {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(SimpleSearchTest.class);
@@ -125,9 +124,9 @@ public class SimpleSearchTest extends JahiaTestCase {
     }
 
     private RenderContext getContext() throws RepositoryException {
-        return getContext(FIRST_SITECONTENT_ROOT_NODE, Locale.ENGLISH);
+    	return getContext(FIRST_SITECONTENT_ROOT_NODE, Locale.ENGLISH);
     }
-
+    
     private RenderContext getContext(String siteRootNode, Locale locale) throws RepositoryException {
         RenderContext context = new RenderContext(getRequest(), getResponse(), getUser());
         JCRSessionWrapper session = JCRSessionFactory.getInstance()
@@ -139,10 +138,10 @@ public class SimpleSearchTest extends JahiaTestCase {
         context.setSite(homeNode.getResolveSite());
         context.setServletPath("/cms/render");
         new URLGenerator(context, resource);
-
+        
         return context;
     }
-
+    
     @Test
     public void testSimpleFulltextSearchOnSingleSite() throws Exception {
         SearchService searchService = ServicesRegistry.getInstance()
@@ -151,7 +150,7 @@ public class SimpleSearchTest extends JahiaTestCase {
 
         SearchCriteria criteria = new SearchCriteria();
 
-        CommaSeparatedSiteKeys oneSite = new CommaSeparatedSiteKeys();
+        CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
         oneSite.setValue(FIRST_TESTSITE_NAME);
 
         CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
@@ -178,7 +177,7 @@ public class SimpleSearchTest extends JahiaTestCase {
 
         SearchCriteria criteria = new SearchCriteria();
 
-        CommaSeparatedSiteKeys oneSite = new CommaSeparatedSiteKeys();
+        CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
         oneSite.setValue(FIRST_TESTSITE_NAME);
 
         CommaSeparatedMultipleValue frenchLang = new CommaSeparatedMultipleValue();
@@ -202,7 +201,7 @@ public class SimpleSearchTest extends JahiaTestCase {
 
         SearchCriteria criteria = new SearchCriteria();
 
-        CommaSeparatedSiteKeys oneSite = new CommaSeparatedSiteKeys();
+        CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
         oneSite.setValue(FIRST_TESTSITE_NAME);
 
         CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
@@ -233,7 +232,7 @@ public class SimpleSearchTest extends JahiaTestCase {
 
         SearchCriteria criteria = new SearchCriteria();
 
-        CommaSeparatedSiteKeys oneSite = new CommaSeparatedSiteKeys();
+        CommaSeparatedMultipleValue oneSite = new CommaSeparatedMultipleValue();
         oneSite.setValue(FIRST_TESTSITE_NAME);
 
         CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();
@@ -279,7 +278,7 @@ public class SimpleSearchTest extends JahiaTestCase {
 
         SearchCriteria criteria = new SearchCriteria();
 
-        CommaSeparatedSiteKeys twoSites = new CommaSeparatedSiteKeys();
+        CommaSeparatedMultipleValue twoSites = new CommaSeparatedMultipleValue();
         twoSites.setValue(FIRST_TESTSITE_NAME + "," + SECOND_TESTSITE_NAME);
 
         CommaSeparatedMultipleValue englishLang = new CommaSeparatedMultipleValue();

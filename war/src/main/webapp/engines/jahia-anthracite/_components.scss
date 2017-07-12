@@ -1,0 +1,1093 @@
+/////////////////////////////////////////////////
+// COMBOS ///////////////////////////////////////
+/////////////////////////////////////////////////
+
+
+
+.x-combo-list {
+	/* Combo Outer Container */
+	width: auto !important;
+	background: transparent;
+    overflow: visible;
+    z-index: $zindex_combo_list;
+
+	@extend %context_menu_holder !optional;
+
+}
+
+/* Combo Inner Container */
+.x-combo-list-inner {
+	width: auto!important;
+	height: auto!important;
+	background: transparent;
+
+	/* Combo List Items that have Thumbs, ie. Channel Combo */
+	.thumb-wrap {
+
+
+		img {
+			/* Actual thumb */
+			display: none!important;
+		}
+
+
+		.x-editable {
+			/* List item when normal Thumbed Combo
+			   Actual Label of Combo Item */
+			@extend %context_menu_item !optional;
+
+		}
+
+
+		&.x-combo-selected {
+			/* Selected / Hovered */
+			border:none!important;
+
+
+			.x-editable {
+				/* List item when normal Thumbed Combo */
+				@extend %context_menu_item_hover !optional;
+			}
+		}
+
+	}
+}
+
+/* List item when normal Combo */
+.x-combo-list-item {
+	border:none;
+	@extend %context_menu_item !optional;
+
+
+
+	&.x-view-highlightrow {
+		/* Selected / Hovered */
+		border:none!important;
+		@extend %context_menu_item_hover !optional;
+
+	}
+}
+
+
+
+/////////////////////////////////////////////////
+// CONTEXT MENUS ////////////////////////////////
+/////////////////////////////////////////////////
+
+
+// Add Personalised styling to specified context menus from values stored in $personalised_context_menus in theme SASS
+	@each $context_menu in $personalised_context_menus {
+		$_context_menu_class: #{nth($context_menu,1)};
+		$_placeholder: #{nth($context_menu,2)};
+
+		#{$_context_menu_class} {
+			@extend %context_menu_holder--#{$_placeholder} !optional;
+
+			.x-menu-list::before {
+				@extend %context_menu_title--#{$_placeholder} !optional;
+
+			}
+
+			.x-menu-item {
+				@extend %context_menu_item--#{$_placeholder} !optional;
+
+			}
+
+			.x-item-disabled {
+				.x-menu-item {
+					@extend %context_menu_item_disabled--#{$_placeholder} !optional;
+
+				}
+
+			}
+
+			.x-menu-item-active {
+				.x-menu-item {
+					@extend %context_menu_item_hover--#{$_placeholder} !optional;
+
+				}
+			}
+
+		}
+	}
+
+/* Context Menus */
+
+.x-menu {
+	width: auto !important;
+	background: transparent;
+    overflow: visible;
+    z-index: $zindex_context_menu;
+
+	@extend %context_menu_holder !optional;
+}
+
+.x-menu-list {
+	height: auto!important;
+
+	&::before {
+		background: #008ec9;
+	    width: 100%;
+	    display: block;
+	    padding: 3px 8px;
+	    font-family: "Nunito Sans";
+	    font-size: 8px;
+	    color: darken($jahia-blue, 25%);
+	    font-style: italic;
+	    text-transform: uppercase;
+	    font-weight: 600;
+	    z-index: $zindex_context_menu_title;
+	}
+}
+
+.x-menu-list-item {}
+
+.x-menu-item {
+	@extend %context_menu_item !optional;
+
+	.x-item-disabled & {
+		@extend %context_menu_item_disabled !optional;
+
+
+
+	}
+
+	.x-menu-item-active & {
+		@extend %context_menu_item_hover !optional;
+	}
+
+}
+
+.x-item-disabled {
+	opacity: 1;
+}
+
+.x-menu-item-icon {
+	display: none;
+}
+
+/* Combo List Seperator line */
+.x-menu-sep-li {
+    display: none;
+}
+
+/* Context Menu Drop Shadow */
+.x-shadow {
+    display: none !important;
+}
+
+/* Used for scrolling Context menus when they dont fit on screen */
+.x-menu-scroller {
+    background: rgba(245, 245, 245, 1);
+}
+
+.x-menu-scroller-top {
+    background-image: url(./images/menu-scroll-up.png);
+}
+
+.x-menu-scroller-bottom {
+    background-image: url(./images/menu-scroll-down.png);
+}
+
+
+
+
+/////////////////////////////////////////////////
+// THUMB WRAPS //////////////////////////////////
+/////////////////////////////////////////////////
+
+/* Thumb wraps
+   Used to create a thumb in List View, ie. in Files */
+
+.x-combo-list-inner {
+	.thumb-wrap {
+		display: block;
+		width: 100%!important;
+		margin: 0!important;
+		height: auto;
+
+		.thumb {
+			display: none;
+
+		}
+
+		.x-editable {
+			display: block;
+		}
+	}
+
+
+}
+
+
+.thumb-wrap {
+	border: none!important;
+	padding: 0!important;
+	width: 48%!important; /* Sets Actual Width Of Thumb */
+	margin: 1% 0 1% 1% !important;
+	display: inline-block;
+	float: none!important;
+	height: 86px;
+	max-height: 86px;
+	position: relative;
+	background: none;
+
+
+	> div {
+		/* Some Thumbs have extra divs containing more Meta Data, so hide them */
+		display: none;
+
+		&:first-child {
+			/* Just show the first Div which contains the file name */
+			display: block;
+		}
+	}
+
+	.thumb {
+		/* Image */
+		width: 100%!important;
+		height: auto!important;
+		padding: 5px!important;
+		box-sizing: border-box;
+
+		@extend %thumb_up !optional;
+
+	}
+
+
+	.thumbDetails {
+		/* Meta Data */
+		position: absolute;
+	    top: 5px;
+	    left: 5px;
+	    z-index: $zindex_thumb_details;
+	    margin: 0 !important;
+	    width: calc(100% - 10px);
+	    display: none;
+
+
+		div {
+			/* Hide ALL */
+			display: none;
+
+
+			&:first-child {
+				/* Just Show the File Name Meta Container */
+				display: block;
+
+				@extend %thumb_label !optional;
+
+				b {
+					/* Hide Label */
+					display: none;
+				}
+
+			}
+		}
+
+	}
+
+
+	&.x-view-over {
+		.thumbDetails {
+			/* Hover State */
+			display: block;
+
+		}
+
+		.thumb {
+			@extend %thumb_hover !optional;
+
+		}
+
+	}
+
+
+	&.x-view-item-sel {
+		.thumbDetails {
+			/* Selected State */
+			display: none;
+
+		}
+
+		.thumb {
+			@extend %thumb_selected !optional;
+
+		}
+
+	}
+}
+
+/////////////////////////////////////////////////
+// FORMS ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+
+
+/* Global Form */
+form {
+	padding: 0!important;
+	width: auto!important;
+}
+
+input {
+	// Text input
+}
+
+legend {
+	.field-set-header-text {
+		// Wahoo, the label text !!
+		@extend %form_legend;
+
+	}
+}
+
+fieldset {
+	border: none;
+	padding: 0px;
+	margin: 0 0 30px 0;
+
+}
+
+label {
+	// Label
+	@extend %form_label;
+
+}
+
+/* Form item Outer Container ... */
+.x-form-item {
+	margin:0;
+}
+
+/* Form Item Mid container */
+.x-form-element {
+	padding: 0!important;
+
+}
+
+/* Form Item Inner Container */
+.x-form-field-wrap {
+	left: 0!important;
+	top: 0!important;
+	width: auto!important;
+}
+
+
+/* Form Label */
+.x-form-item-label {
+	width: auto!important;
+	float: none!important;
+	clear: both!important;
+
+	@extend %form_label !optional;
+}
+
+/* Text Field Input */
+.x-form-text {
+	@extend %text_input !optional;
+
+	width: 100%!important;
+	box-sizing: border-box;
+    display: inline-block;
+    height: auto!important;
+
+	&:only-child {
+		padding-right: 5px;
+		display: block;
+	}
+
+	&:hover {
+		@extend %text_input_hover !optional;
+	}
+
+	&:focus {
+		@extend %text_input_focus !optional;
+	}
+}
+
+div[role="combobox"] {
+	.x-form-text {
+		@extend %combo_input !optional;
+
+		width: 100%!important;
+		box-sizing: border-box;
+	    display: inline-block;
+	    height: auto!important;
+	}
+}
+
+/* Action Buttons for Text Input */
+.x-form-trigger {
+	/* Generic CSS for an Action Button */
+	display: block;
+	position: absolute!important;
+    border: none !important;
+    vertical-align: middle;
+    right: 0px;
+	height: 24px!important;
+
+	.x-form-twin-triggers & {
+		/* Button is in a container, because there are multiple buttons */
+		display: inline-block;
+		position: relative;
+		border: none !important;
+		vertical-align: middle;
+		right: auto;
+		top: auto;
+	}
+
+	&.x-form-clear-trigger {
+		/* Clear button */
+		position: absolute!important;
+		right: 0px!important;
+	}
+
+	&.x-form-trigger-arrow {
+		/* Combo Down Arrow Button */
+		@extend %combo_arrow_up !optional;
+
+		&.x-form-trigger-over {
+			@extend %combo_arrow_hover !optional;
+		}
+	}
+
+	&.x-form-clear-trigger {
+		/* Combo Down Arrow Button */
+		@extend %form_clear_up !optional;
+
+		&.x-form-trigger-over {
+			@extend %form_clear_hover !optional;
+		}
+	}
+}
+
+/* Action Button Container (when multiple buttons exist) */
+.x-form-twin-triggers {
+	/* Container used when more than one button */
+	display: block;
+    position: absolute;
+    right: 17px;
+    top: 0;
+}
+
+
+/* Checkbox Container */
+.x-form-check-wrap {
+	height: auto!important;
+}
+
+/* Checkbox Radio Button */
+.x-form-radio {
+	left: auto!important;
+	top: auto!important;
+}
+
+/* Checkbox Label */
+.x-form-cb-label {
+	margin: 0 0 0 5px;
+	padding: 0!important;
+	left: auto!important;
+	top: auto!important;
+
+	@extend %form_label !optional;
+}
+
+// Form Buttons
+form {
+
+	.x-btn {
+		width: auto!important;
+
+
+		&.x-btn-noicon {
+			// Button has icon
+
+			button {
+				@extend %form_button_text;
+
+				width: 100%!important;
+				height: auto!important;
+
+			}
+		}
+
+		&.x-btn-text-icon {
+			// Button has icon
+			border:3px solid red;
+
+			button {
+				@extend %form_button_icon;
+
+				width: 100%!important;
+				height: auto!important;
+
+			}
+		}
+
+		&.x-btn-over {
+			// Over states
+
+			&.x-btn-noicon {
+				// Button has icon
+
+				button {
+					@extend %form_button_text_hover;
+
+					width: 100%!important;
+					height: auto!important;
+
+				}
+			}
+
+			&.x-btn-text-icon {
+				// Button has icon
+				border:3px solid red;
+
+				button {
+					@extend %form_button_icon_hover;
+
+					width: 100%!important;
+					height: auto!important;
+
+				}
+			}
+
+		}
+	}
+
+}
+
+/* Button Bars at the end of Panels, ie OK, Save, Cancel, ... */
+.x-panel-btns {
+	padding: 0;
+}
+
+// FOoter bar buttons, ie. SAVE, CANCEL, ...
+.x-panel-fbar {
+	/* Button Bar Container ... */
+	padding: 0;
+	left: auto;
+	top: auto;
+
+	.x-toolbar-ct {
+		/* Yet Another Container */
+		display: block;
+		width: auto;
+	}
+
+	.x-btn {
+		width: auto!important;
+
+
+		&.x-btn-noicon {
+			// Button has icon
+
+			button {
+				@extend %action_bar_button_text;
+
+				width: 100%!important;
+				height: auto!important;
+
+			}
+		}
+
+		&.x-btn-text-icon {
+			// Button has icon
+			border:3px solid red;
+
+			button {
+				@extend %action_bar_button_icon;
+
+				width: 100%!important;
+				height: auto!important;
+
+			}
+		}
+
+		&.x-btn-over {
+			// Over states
+
+			&.x-btn-noicon {
+				// Button has icon
+
+				button {
+					@extend %action_bar_button_text_over;
+
+					width: 100%!important;
+					height: auto!important;
+
+				}
+			}
+
+			&.x-btn-text-icon {
+				// Button has icon
+				border:3px solid red;
+
+				button {
+					@extend %action_bar_button_icon_over;
+
+					width: 100%!important;
+					height: auto!important;
+
+				}
+			}
+
+		}
+	}
+
+}
+
+/* Button Bar, regular button bar */
+.x-panel-btns {
+	.x-btn {
+		button {
+			height: auto!important;
+	        width: auto!important;
+
+			@extend %form_button !optional;
+
+			&:hover {
+				@extend %form_button_hover !optional;
+			}
+
+			img {
+				display: none;
+			}
+
+		}
+
+	}
+}
+
+/* Button Bar, pagination */
+.x-panel-bbar {
+	width: 100%;
+
+	.x-toolbar {
+		border:none;
+		width: auto!important;
+		padding: 0;
+		margin: 0;
+		background: transparent!important;
+	}
+}
+
+
+
+/////////////////////////////////////////////////
+// TREES ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+@each $tree in $personalised_trees {
+	$_tree_id: #{nth($tree,1)};
+	$_placeholder: #{nth($tree,2)};
+
+	#{$_tree_id} {
+		.x-tree3-node-icon,
+		.gwt-Image {
+			// List Item Icon
+			@extend %tree_line_icon_up--#{$_placeholder} !optional;
+		}
+
+		.x-grid3-row-over {
+			.x-tree3-node-icon,
+			.gwt-Image {
+				// Personalised Icon
+				@extend %tree_line_icon_hover--#{$_placeholder} !optional;
+
+			}
+
+		}
+
+		.x-grid3-row-selected {
+			.x-tree3-node-icon,
+			.gwt-Image {
+				// Personalised Icon: Selected
+				@extend %tree_line_icon_selected--#{$_placeholder} !optional;
+
+			}
+
+			&.x-grid3-row-over {
+				.x-tree3-node-icon,
+				.gwt-Image {
+					// Personalised Icon: Selected > Hover
+					@extend %tree_line_icon_selected_hover--#{$_placeholder} !optional;
+
+				}
+			}
+		}
+
+	}
+}
+
+.x-grid3 {
+	/* Container */
+	width: 100%!important;
+	height: 100%!important;
+	background: transparent;
+
+	.x-grid3-td-publicationInfo {
+		width: 3px!important;
+		height: 25px;
+		overflow: hidden;
+
+		position: absolute;
+		left: 0;
+
+		.x-grid3-col-publicationInfo {
+			padding: 0!important;
+
+		}
+
+		.x-component,
+		table {
+			height: 100%
+		}
+
+		img {
+			overflow: hidden;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			position: relative;
+
+			padding-left: 5px;
+			width: 5px;
+			height: 100%;
+
+
+			&[src="/icons/publication/conflict.png"] {
+				/* Conflict */
+				background: $conflict!important;
+
+			}
+
+
+			&[src="/icons/publication/deleted.png"] {
+				/* Deleted */
+				background: $deleted!important;
+
+			}
+
+
+			&[src="/icons/publication/livemodified.png"] {
+				/* Live Modified */
+				background: $live-modified!important;
+
+			}
+
+
+			&[src="/icons/publication/liveonly.png"] {
+				/* Live Only */
+				background: $live-only!important;
+
+			}
+
+
+			&[src="/icons/publication/locked.png"] {
+				/* Locked */
+				background: $locked!important;
+
+			}
+
+
+			&[src="/icons/publication/mandatorylanguageunpublishable.png"] {
+				/* Mandatory Language Unpublishable */
+				background: $mandatory-language-unpublishable!important;
+
+			}
+
+
+			&[src="/icons/publication/mandatorylanguagevalid.png"] {
+				/* Mandatory Language Valid */
+				background: $mandatory-language-valid!important;
+
+			}
+
+
+			&[src="/icons/publication/markedfordeletion.png"] {
+				/* Marked FOr Deletion */
+				background: $marked-for-deletion!important;
+
+			}
+
+
+			&[src="/icons/publication/modified.png"] {
+				/* Modified */
+				background: $modified!important;
+
+			}
+
+
+			&[src="/icons/publication/multipleWF.png"] {
+				/* Multiple WF */
+				background: $multiple-wf!important;
+
+			}
+
+
+			&[src="/icons/publication/notpublished.png"] {
+				/* Not Published */
+				background: $not-published!important;
+
+			}
+
+
+			&[src="/icons/publication/oneWF.png"] {
+				/* One WF */
+				background: $one-wf!important;
+
+			}
+
+
+			&[src="/icons/publication/published.png"] {
+				/* Published */
+				background: $published!important;
+
+			}
+
+
+			&[src="/icons/publication/unpublished.png"] {
+				/* Unpublished */
+				background: $unpublished!important;
+
+			}
+
+
+			&[src="/icons/publication/waiting.gif"] {
+				/* Waiting */
+				background: $waiting!important;
+
+			}
+
+
+			&[src="/icons/publication/workinprogress.png"] {
+				/* Work In Progress */
+				background: $work-in-progress!important;
+
+			}
+		}
+	}
+
+	.x-grid3-header {
+		/* Header bar (contains column names) */
+		display: none;
+	}
+
+	.x-grid3-body {
+		/* Contains the Actual List !! */
+		height: 100%!important;
+	}
+
+	.x-grid3-scroller {
+		/* Another List Container */
+		height: 100%!important;
+		width: 100%!important;
+	}
+
+	.x-grid3-viewport {
+		/* Another container */
+		height: 100%!important;
+	}
+
+	.x-tree3-el-jnt,
+	.x-tree3-node-joint {
+		pointer-events: all;
+	}
+
+
+	.x-grid3-row {
+		/* List Item */
+		height: 25px!important;
+		width: 100%!important;
+		border: none;
+
+		@extend %tree_line_bg_up !optional;
+
+
+		&.x-grid3-row-over {
+			/* Line Over */
+			@extend %tree_line_bg_hover !optional;
+
+			.x-tree3-node-icon {
+				@extend %tree_line_icon_hover !optional;
+
+			}
+
+			.x-grid3-td-displayName,
+			.gwt-content-label {
+				@extend %tree_line_text_hover !optional;
+
+				&::after {
+					background-image: url($row_more_options_icon_hover);
+					opacity: 1;
+
+				}
+
+			}
+
+
+		}
+
+
+		&.x-grid3-row-selected {
+			/* Line Selected */
+			@extend %tree_line_bg_selected !optional;
+
+			.x-tree3-node-icon {
+				@extend %tree_line_icon_selected !optional;
+
+			}
+
+			.x-grid3-td-displayName,
+			.gwt-content-label {
+				@extend %tree_line_text_selected !optional;
+
+				&::after {
+					background-image: url($row_more_options_icon_selected);
+					opacity: 1;
+
+				}
+			}
+
+
+			&.x-grid3-row-over {
+				/* Line Hover on Selected */
+				@extend %tree_line_bg_selected_hover !optional;
+
+				.x-tree3-node-icon {
+					@extend %tree_line_icon_selected_hover !optional;
+
+				}
+
+				.x-grid3-td-displayName,
+				.gwt-content-label {
+					@extend %tree_line_text_selected_hover !optional;
+
+					&::after {
+						background-image: url($row_more_options_icon_selected_hover);
+
+					}
+				}
+			}
+		}
+	}
+
+	.x-grid3-td-displayName,
+	.gwt-content-label {
+		/* List Item Text Label */
+		@extend %tree_line_text_up !optional;
+
+		pointer-events: none;
+
+		&::after {
+			position: fixed;
+			pointer-events: all;
+			margin-top: -26px;
+			background-image: url($row_more_options_icon);
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-size: 10px 2px;
+			text-indent: -50000px;
+			display: block;
+			width: 28px;
+			height: 25px;
+			opacity: 0;
+		}
+	}
+
+	.x-tree3-node-text {
+		top: -1px;
+	}
+
+	/*.x-grid3-td-displayName {
+		&::after {
+			left: 270px;
+		}
+	}
+
+	.x-grid3-td-displayName {
+		&::after {
+			left: 270px;
+			background: red;
+		}
+	}*/
+
+
+
+	.x-tree3-node-icon,
+	.gwt-Image {
+		/* List Item Icon */
+
+
+		overflow: hidden;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		position: relative;
+	}
+
+	// List Structure
+	.x-grid3-row-table {
+		// Table containing actual List Item
+		height: 100%;
+		width: 100%!important;
+
+		.x-grid3-cell {
+			/* Cell Containing the List Item */
+			padding: 0;
+
+			&.x-grid3-td-locked {
+				width: 25px;
+				display: none;
+			}
+
+			&.x-grid3-td-displayName {
+				width: 100%!important;
+			}
+
+			.x-grid3-cell-inner {
+				// Yet another container ...
+				height:100%!important;
+
+				.x-tree3-node {
+					// Oooh, another container !!
+					height: 100%!important;
+
+					.x-tree3-el {
+						// At last, the actual element !!
+						height: 100%;
+						width: auto!important;
+						padding: 2px 0 0px;
+
+						> img,
+						> span {
+							display: inline-block;
+							vertical-align: middle;
+
+							font-family: inherit;
+						    color: inherit;
+						    font-weight: inherit;
+						    padding: inherit;
+						    font-size: inherit;
+						}
+
+						td > .x-tree3-node-icon {
+							// NOT NECCESSARY IN THIS TAB SET
+							display: none;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+.ext-strict .ext-webkit .x-small-editor .x-form-text {
+	height: auto!important;
+	padding: 5px 40px 5px 10px;
+}
+
+.x-border-layout-ct {
+	background: none;
+}

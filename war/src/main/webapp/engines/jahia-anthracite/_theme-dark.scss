@@ -163,6 +163,14 @@
     $form_clear_icon_hover:         $icon_form_close_white_clouds;
     $form_clear_bg_hover:           rgba($grey-clouds, .7);
 
+    $edit_engine_title:             black;
+    $edit_engine_tab:               blue;
+    $edit_engine_tab_selected:      green;
+    $edit_engine_tab_over:          purple;
+    $edit_engine_tab_selected_over: yellow;
+    $form_legend:                   aqua;
+    $form_label:                    grey;
+
 
 ///////// BUTTONS
 	$button_normal_up: 				$jahia-blue;
@@ -660,6 +668,111 @@
     %form_clear_hover {
         background-color: $form_clear_bg_hover !important;
         background-image: url($form_clear_icon_hover);
+    }
+
+    %edit_engine_title {
+    	@include text(16px, $edit_engine_tab, $extralight);
+    }
+
+    %edit_engine_tab {
+    	padding: 5px 10px;
+
+    	@include text(16px, $edit_engine_tab, $normal);
+    }
+
+    %edit_engine_tab_selected {
+    	@include text(16px, $edit_engine_tab_selected + !important, $normal);
+    }
+
+    %edit_engine_tab_over {
+    	@include text(16px, $edit_engine_tab_over + !important, $normal);
+
+    }
+
+    %edit_engine_tab_selected_over {
+    	@include text(16px, $edit_engine_tab_selected_over + !important, $normal);
+
+    }
+
+    %form_legend {
+    	padding: 0;
+
+    	@include text(12px, $form_legend, $extralight);
+    }
+
+    %form_label {
+
+    	@include text(12px, $form_label, $bold);
+    }
+
+
+
+    %action_bar_button_text {
+    	background: pink;
+    	padding: 5px 10px;
+    	@include text(16px, red, $extralight);
+    }
+
+    %action_bar_button_text_over {
+    	background: red;
+    	padding: 5px 10px;
+    	@include text(16px, white, $extralight);
+    }
+
+    %action_bar_button_icon {
+    	background: orange;
+    	padding: 5px 10px 5px 29px;
+    	@include text(16px, red, $extralight);
+
+    	img {
+    		left: 5px!important;
+    	}
+    }
+
+
+
+    %action_bar_button_icon_over {
+    	background: yellow;
+    	padding: 5px 10px 5px 29px;
+    	@include text(16px, black, $extralight);
+
+    	img {
+    		left: 5px!important;
+    	}
+    }
+
+
+
+    %form_button_text {
+    	background: white;
+    	padding: 5px 10px;
+    	@include text(16px, black, $extralight);
+    }
+
+    %form_button_text_hover {
+    	background: black;
+    	padding: 5px 10px;
+    	@include text(16px, white, $extralight);
+    }
+
+    %form_button_icon {
+    	background: orange;
+    	padding: 5px 10px 5px 29px;
+    	@include text(16px, red, $extralight);
+
+    	img {
+    		left: 5px!important;
+    	}
+    }
+
+    %form_button_icon_hover {
+    	background: yellow;
+    	padding: 5px 10px 5px 29px;
+    	@include text(16px, red, $extralight);
+
+    	img {
+    		left: 5px!important;
+    	}
     }
 
 

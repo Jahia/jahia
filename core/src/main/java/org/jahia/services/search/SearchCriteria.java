@@ -50,8 +50,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.map.LazyMap;
@@ -59,11 +57,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jahia.exceptions.JahiaRuntimeException;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.DateUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -77,43 +70,13 @@ import org.joda.time.format.DateTimeFormatter;
 public class SearchCriteria implements Serializable {
 
     /**
-     * Supports comma separated site keys, including validation that corresponding site nodes actually exist.
-     */
-    public static class CommaSeparatedSiteKeys extends CommaSeparatedMultipleValue {
-
-        private static final long serialVersionUID = 7086087078198027675L;
-
-        public CommaSeparatedSiteKeys() {
-        }
-
-        public CommaSeparatedSiteKeys(CommaSeparatedMultipleValue sites) {
-            setValues(sites.getValues());
-        }
-
-        @Override
-        public void setValue(String value) {
-            if (StringUtils.isEmpty(value)) {
-                super.setValue(value);
-            } else {
-                setValues(StringUtils.split(value, MULTIPLE_VALUE_SEPARATOR));
-            }
-        }
-
-        @Override
-        public void setValues(String[] values) {
-            validateSiteKeys(values);
-            super.setValues(values);
-        }
-    }
-
-    /**
      * Supports comma separated multiple values.
      *
      * @author Sergiy Shyrkov
      */
     public static class CommaSeparatedMultipleValue extends MultipleValue {
 
-        protected static final char MULTIPLE_VALUE_SEPARATOR = ',';
+        private static final char MULTIPLE_VALUE_SEPARATOR = ',';
 
         private static final long serialVersionUID = 2324041504396269857L;
 
@@ -858,27 +821,6 @@ public class SearchCriteria implements Serializable {
         return toStringItems;
     }
 
-    private static void validateSiteKeys(final String[] siteKeys) {
-
-        final JahiaSitesService siteService = JahiaSitesService.getInstance();
-
-        try {
-
-            JCRTemplate.getInstance().doExecuteWithSystemSessionInSameWorkspaceAndLocale(new JCRCallback<Void>() {
-
-                @Override
-                public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    for (String siteKey : siteKeys) {
-                        siteService.getSiteByKey(siteKey, session);
-                    }
-                    return null;
-                }
-            });
-        } catch (RepositoryException e) {
-            throw new JahiaRuntimeException(e);
-        }
-    }
-
     private DateValue created = new DateValue();
 
     private String createdBy;
@@ -915,8 +857,8 @@ public class SearchCriteria implements Serializable {
     @Deprecated
     private String rawQuery;
 
-    private CommaSeparatedSiteKeys sites = new CommaSeparatedSiteKeys();
-    private CommaSeparatedSiteKeys sitesForReferences = new CommaSeparatedSiteKeys();
+    private CommaSeparatedMultipleValue sites = new CommaSeparatedMultipleValue();
+    private CommaSeparatedMultipleValue sitesForReferences = new CommaSeparatedMultipleValue();
 
     private List<Term> terms = LazyList.decorate(new LinkedList<Term>(), new TermFactory());
 
@@ -1144,7 +1086,6 @@ public class SearchCriteria implements Serializable {
      *            site-specific.
      */
     public void setOriginSiteKey(String originSiteKey) {
-        validateSiteKeys(new String[] {originSiteKey});
         this.originSiteKey = originSiteKey;
     }
 
@@ -1166,19 +1107,11 @@ public class SearchCriteria implements Serializable {
     }
 
     public void setSites(CommaSeparatedMultipleValue sites) {
-        this.sites = fromCommaSeparatedMultipleValue(sites);
+        this.sites = sites;
     }
 
     public void setSitesForReferences(CommaSeparatedMultipleValue sitesForReferences) {
-        this.sitesForReferences = fromCommaSeparatedMultipleValue(sitesForReferences);
-    }
-
-    private static CommaSeparatedSiteKeys fromCommaSeparatedMultipleValue(CommaSeparatedMultipleValue sites) {
-        if (sites instanceof CommaSeparatedSiteKeys) {
-            return (CommaSeparatedSiteKeys) sites;
-        } else {
-            return new CommaSeparatedSiteKeys(sites);
-        }
+        this.sitesForReferences = sitesForReferences;
     }
 
     /**

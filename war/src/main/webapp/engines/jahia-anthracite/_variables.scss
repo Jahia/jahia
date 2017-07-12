@@ -155,3 +155,84 @@
 	$normal: 400;
 	$semibold: 500;
 	$bold: 700;
+
+
+
+///////// ZINDEXES
+	/*
+
+	Previous Values, delete once sure no problems ...
+
+	$zindex_mainmodule:                     999;											3
+	$zindex_mainmodule_header:              999999999 !important;							9 important
+	$zindex_mainmodule_actions_menu:        9999999999;										10
+	$zindex_mainmodule_path_container:      999 !important;									3 important
+	$zindex_mainmodule_language_switcher:   999999999;										9
+
+	$zindex_combo_list:                     99999999999 !important;							11 important
+	$zindex_context_menu:                   99999999999 !important;							11 important
+	$zindex_context_menu_title:             99999999999999;									14
+
+	$zindex_thumb_details:                  9;												1
+	$zindex_hamburger_title:                999;											3
+
+	$zindex_window_side_panel:              99999 !important;								5 important
+	$zindex_window_side_panel_header:       99999 !important;								5 important
+	$zindex_window_side_panel_body:       	999;											3
+	$zindex_window_side_panel_container:    99;												2
+	$zindex_window_side_panel_container_2:    999999;										6
+	$zindex_window_side_panel_close_capture_mask:    99;									2
+	$zindex_window_side_panel_search_tab_actions:    999;									3
+
+	$zindex_edit_engine_panel:              999999 !important;								6
+
+	$zindex_modal_mask:                     9999999999 !important;							10 important
+
+	$zindex_toolbar_container: 				999999 !important;								6
+	$zindex_toolbar_container_2:			999999;											6
+
+	$zindex_mode_menu_context_menu: 		999999;											6
+	$zindex_mode_menu_context_menu_label: 	1 !important;									1
+
+	$zindex_hamburger_menu_button: 			999999999;										9
+
+	$zindex_action_bar_container: 			999999 !important;								6
+
+	$zindex_iframe_container: 				9999;											4*/
+
+	$zindex_mainmodule:                     30;
+	$zindex_mainmodule_header:              90 !important;
+	$zindex_mainmodule_actions_menu:        100;
+	$zindex_mainmodule_path_container:      30 !important;
+	$zindex_mainmodule_language_switcher:   90;
+
+	$zindex_combo_list:                     110 !important;
+	$zindex_context_menu:                   110 !important;
+	$zindex_context_menu_title:             140;
+
+	$zindex_thumb_details:                  10;
+	$zindex_hamburger_title:                30;
+
+	$zindex_window_side_panel:              50 !important;
+	$zindex_window_side_panel_header:       50 !important;
+	$zindex_window_side_panel_body:       	30;
+	$zindex_window_side_panel_container:    20;
+	$zindex_window_side_panel_container_2:    60;
+	$zindex_window_side_panel_close_capture_mask:    20;
+	$zindex_window_side_panel_search_tab_actions:    30;
+
+	$zindex_edit_engine_panel:              200 !important;
+
+	$zindex_modal_mask:                     100 !important;
+
+	$zindex_toolbar_container: 				60 !important;
+	$zindex_toolbar_container_2:			60;
+
+	$zindex_mode_menu_context_menu: 		60;
+	$zindex_mode_menu_context_menu_label: 	1 !important;
+
+	$zindex_hamburger_menu_button: 			90;
+
+	$zindex_action_bar_container: 			60 !important;
+
+	$zindex_iframe_container: 				40;

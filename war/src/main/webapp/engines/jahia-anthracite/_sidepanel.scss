@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////
 
 .window-side-panel {
-	z-index: 99999!important;
+	z-index: $zindex_window_side_panel;
 	height: 100%;
 	pointer-events: none;
 
@@ -16,7 +16,7 @@
 		position: absolute !important;
 	    top: 15px!important;
 		left: 71px !important;
-	    z-index: 99999 !important;
+	    z-index: $zindex_window_side_panel_header;
 	    opacity: 1;
 	    width: auto !important;
 	    pointer-events: none;
@@ -76,7 +76,7 @@
 	.x-panel-body {
 		width: 100% !important;
 		overflow: visible;
-		z-index: 999;
+		z-index: $zindex_window_side_panel_body;
 		position: relative;
 		height: calc(100% + 4px) !important;
 
@@ -90,7 +90,7 @@
 		width: 60px;
 		overflow: visible;
 		height: 100% !important;
-		z-index: 99;
+		z-index: $zindex_window_side_panel_container;
 		position: relative;
 		pointer-events: all;
 
@@ -106,7 +106,7 @@
 					left: 0;
 					width: 100%!important;
 					height: 100%!important;
-					z-index: 99;
+					z-index: $zindex_window_side_panel_close_capture_mask;
 					position: fixed;
 					background: $transparent;
 					display: block;
@@ -220,7 +220,7 @@
 			display: inline-block;
 			vertical-align: top;
 			position: relative;
-			z-index: 999999;
+			z-index: $zindex_window_side_panel_container_2;
 
 			.x-viewport-adminmode &,
 			.x-viewport-dashboardmode & {
@@ -377,7 +377,7 @@
 				/* Footer Action Bars (Search & Paginator) */
 				position: absolute;
 				bottom: 20px;
-				z-index: 999;
+				z-index: $zindex_window_side_panel_search_tab_actions;
 			}
 
 

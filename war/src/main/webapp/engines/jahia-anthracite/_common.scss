@@ -279,7 +279,7 @@ body {
 	background: transparent !important;
 	position: absolute;
 	left: 0 !important;
-	z-index: 999;
+	z-index: $zindex_mainmodule;
 	width: calc(100% - 0px) !important;
 }
 
@@ -291,7 +291,7 @@ body {
 
 	.toolbar-header {
 		/* Container */
-		z-index: 999999999 !important;
+		z-index: $zindex_mainmodule_header;
 		right: 69px;
 		position: fixed !important;
 		overflow: visible;
@@ -315,11 +315,12 @@ body {
 		}
 
 		&:nth-child(2) {
+			/* Page Actions Menu */
 	        float: none !important;
 	        margin-top: 0;
 	        margin-left: 4px;
 	        margin-right: 17px;
-	        z-index: 9999999999;
+	        z-index: $zindex_mainmodule_actions_menu;
 	        position: relative;
 	        display: inline-block;
 	    }
@@ -331,7 +332,7 @@ body {
 
 	.node-path-container {
 	    position: relative;
-	    z-index: 999;
+	    z-index: $zindex_mainmodule_path_container;
 	    display: block;
 	    max-width: 100% !important;
 	}
@@ -423,7 +424,7 @@ body {
 
 	.toolbar-itemsgroup-languageswitcher {
 		pointer-events: all;
-		z-index: 999999999;
+		z-index: $zindex_mainmodule_language_switcher;
 		position: fixed;
 		left: 0;
 		top: 18px;
@@ -520,7 +521,7 @@ body {
 	width: auto !important;
 	background: transparent;
     overflow: visible;
-    z-index: 99999999999 !important;
+    z-index: $zindex_combo_list;
 
 	@extend %context_menu_holder !optional;
 
@@ -628,7 +629,7 @@ body {
 	width: auto !important;
 	background: transparent;
     overflow: visible;
-    z-index: 99999999999 !important;
+    z-index: $zindex_context_menu;
 
 	@extend %context_menu_holder !optional;
 }
@@ -647,7 +648,7 @@ body {
 	    font-style: italic;
 	    text-transform: uppercase;
 	    font-weight: 600;
-	    z-index: 99999999999999;
+	    z-index: $zindex_context_menu_title;
 	}
 }
 
@@ -771,7 +772,7 @@ body {
 		position: absolute;
 	    top: 5px;
 	    left: 5px;
-	    z-index: 9;
+	    z-index: $zindex_thumb_details;
 	    margin: 0 !important;
 	    width: calc(100% - 10px);
 	    display: none;
@@ -858,7 +859,7 @@ body {
         text-indent: -50000px;
         width: 20px;
         height: 20px;
-        z-index: 999;
+        z-index: $zindex_hamburger_title;
     }
 
 
@@ -986,29 +987,32 @@ body {
 				}
 			}
             &:nth-child(1) {
+				// .window-side-panel
                 height: 100% !important;
                 position: absolute;
                 left: 0 !important;
-                z-index: 99999 !important;
+                z-index: $zindex_window_side_panel;
                 opacity: 1;
                 width: calc(100% - 60px) !important;
                 pointer-events: none;
                 background: transparent!important;
             }
             &:nth-child(2) {
+				// .mainmodule
                 height: 100% !important;
                 background: transparent!important;
                 position: absolute;
                 left: 0 !important;
                 width: calc(100% - 60px) !important;
-                z-index: 999;
+                z-index: $zindex_mainmodule;
             }
             &:nth-child(1) > div:nth-child(1) {
+				// .window-side-panel .x-panel-header
                 position: absolute !important;
                 top: -46px;
                 left: 0;
                 width: 100% !important;
-                z-index: 9999999;
+                z-index: $zindex_window_side_panel_header;
                 display: none;
             }
         }
@@ -1037,29 +1041,32 @@ body {
 				}
 			}
             &:nth-child(1) {
+				// .window-side-panel
                 height: 100% !important;
                 position: absolute;
                 left: 0 !important;
-                z-index: 99999 !important;
+				z-index: $zindex_window_side_panel;
                 opacity: 1;
                 width: calc(100% - 60px) !important;
                 pointer-events: none;
                 background: transparent!important;
             }
             &:nth-child(2) {
+				// .mainmodule
                 height: 100% !important;
                 background: transparent!important;
                 position: absolute;
                 left: 0 !important;
                 width: calc(100% - 60px) !important;
-                z-index: 999;
+				z-index: $zindex_mainmodule;
             }
             &:nth-child(1) > div:nth-child(1) {
+				// .window-side-panel .x-panel-header
                 position: absolute !important;
                 top: -46px;
                 left: 0;
                 width: 100% !important;
-                z-index: 9999999;
+                z-index: $zindex_window_side_panel_header;
                 display: none;
             }
         }
@@ -1074,7 +1081,213 @@ body {
 // EDIT ENGINE //////////////////////////////////
 /////////////////////////////////////////////////
 
-#JahiaGxtContentEngine {
+
+.engine-panel {
+
+	z-index: $zindex_edit_engine_panel;
+    position: fixed!important;
+    top: 0!important;
+    left: 0!important;
+    width: 100%!important;
+    height: 100%;
+
+	// HEADER
+	> .x-panel-header {
+
+		left: 0;
+
+		> div {
+			// Language Selector
+
+		}
+
+		.x-panel-header-text {
+			// Element Title
+		}
+	}
+
+	// BODY
+	> .x-panel-bwrap {
+
+		.x-panel-body {
+			// Container for body
+
+			.edit-content-engine {
+
+				#JahiaGxtEditEngineTabs {
+					// toolbar-item-publicationstatuswithtext
+					> .x-tab-panel-header {
+						// Tab list menu
+
+						.x-tab-strip-wrap {
+							// Menu Container
+
+							.x-tab-strip {
+								// At last, the final container
+
+								li {
+									// Tab entry
+
+
+									// Personalisation (if neccessary)
+
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-content {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-layout {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-metadata {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-seo {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-categories {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-options {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-liveroles {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-editroles {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-usages {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-history {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-visibility {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-workflow {}
+									#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-channels {}
+
+									&.x-tab-edge {
+										// DOnt know what this is yet
+									}
+
+									&.x-tab-strip-active {
+										// Selected Tab
+
+									}
+
+									.x-tab-strip-close {
+										// Dont know what it does yet
+
+									}
+
+									.x-tab-right {
+										// Button container
+
+										.x-tab-left {
+											// ANother button container
+
+											.x-tab-strip-inner {
+												// Yet another button container
+
+												.x-tab-strip-text {
+													// At last the button label !!
+
+												}
+											}
+										}
+									}
+								}
+
+							}
+						}
+
+						.x-tab-strip-spacer {
+							// Dont kjnow what this does yet
+
+						}
+					}
+
+					.x-tab-panel-body {
+						// Tab content container
+
+						#JahiaGxtEditEnginePanel-content {
+							// Tab contents
+
+							> .x-panel {
+								// Tab content container
+
+								.x-panel-header {
+									// Seems to be unused
+
+								}
+
+								.x-panel-bwrap {
+									// Form container
+
+									.x-panel-body {
+										// Form container
+
+										form {
+											// Finally, the form !!
+
+											fieldset {
+												legend {
+													.field-set-header-text {
+														// Wahoo, the label text !!
+
+													}
+
+													.x-form-label-left {
+														// Form item container
+
+														.x-form-item {
+															// Form item
+
+															.x-form-item-label {
+																// Label
+
+															}
+
+															.x-form-element {
+																// Form element container
+
+																.x-component {
+																	// Another Form container
+
+																	.x-box-inner {
+																		// Another Form container
+
+																		.x-form-field-wrap {
+																			// Text input container
+
+																			input {
+																				// Text input
+																			}
+																		}
+
+																		label {
+																			// Label
+																		}
+																	}
+																}
+															}
+														}
+
+													}
+												}
+
+											}
+										}
+									}
+
+									.x-panel-footer {
+										// Unused
+									}
+								}
+
+							}
+
+							// Personalisation
+							#JahiaGxtEditEnginePanel-content-en {}
+							#JahiaGxtEditEnginePanel-layout-en {} // check that this corresponds to other tabs when opened, plus does -en correspond to the language ?
+
+						}
+
+					}
+				}
+
+			}
+		}
+
+
+		> .x-panel-footer {
+			// BLANK DIV
+		}
+
+	}
+}
+
+
+#XXXJahiaGxtContentEngine {
     width: 100% !important;
     position: absolute;
     top: 0;
@@ -1084,7 +1297,7 @@ body {
     height: 100% !important;
 }
 
-#JahiaGxtEditEngineTabs {
+#XXXJahiaGxtEditEngineTabs {
     width: 100% !important;
     background: $shuttle-gray;
     display: block;
@@ -1102,7 +1315,7 @@ body {
 	}
 }
 
-#JahiaGxtEnginePanel {
+#XXXJahiaGxtEnginePanel {
 	left: 0 !important;
   top: -81px !important;
   width: calc(100% + 60px) !important;
@@ -1292,7 +1505,7 @@ body {
     }
 }
 
-.JahiaEditEngineButtonBar {
+.XXXJahiaEditEngineButtonBar {
 	position: absolute;
     top: 0;
     z-index: 9999999999;
@@ -1375,7 +1588,7 @@ body {
 .x-modal {
     background: rgba(92, 97, 100, 0.98);
     opacity: 1;
-    z-index: 9999999999 !important;
+    z-index: $zindex_modal_mask;
     position: fixed !important;
 }
 

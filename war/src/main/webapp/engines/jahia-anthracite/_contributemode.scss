@@ -14,7 +14,7 @@
         pointer-events: all;
         padding: 5px;
         width: 100%;
-        z-index: 999999 !important;
+        z-index: $zindex_toolbar_container;
         overflow: visible !important;
         position: fixed;
         background: transparent !important;
@@ -28,7 +28,7 @@
 
         &:hover {
             width: 100%;
-            z-index: 999999 !important;
+            z-index: $zindex_toolbar_container;
             overflow: visible !important;
             position: fixed;
         }
@@ -36,7 +36,7 @@
         > table,
         &:hover > table {
             opacity: 1;
-            z-index: 999999;
+            z-index: $zindex_toolbar_container_2;
             pointer-events: all;
         }
 
@@ -104,7 +104,7 @@
                 right: 75px;
                 top: 0;
                 margin-top: 0;
-                z-index: 999999;
+                z-index: $zindex_mode_menu_context_menu;
                 width: 169px;
                 height: 24px;
                 opacity: 0.9;
@@ -120,7 +120,7 @@
                     padding-right: 2px;
                     text-align: left;
                     position: absolute;
-                    z-index: 1 !important;
+                    z-index: $zindex_mode_menu_context_menu_label;
                     font-family: $font-1;
                     width: calc(100% - 20px);
                     display: block;
@@ -276,7 +276,7 @@
                 position: fixed;
                 top: 10px;
                 left: 5px;
-                z-index: 999999999;
+                z-index: $zindex_hamburger_menu_button;
                 display: block;
                 background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
                 margin-top: 0;
@@ -409,7 +409,7 @@
     }
 
     > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) {
-        z-index: 999999 !important;
+        z-index: $zindex_action_bar_container;
         height: 60px;
         display: block;
         position: absolute !important;

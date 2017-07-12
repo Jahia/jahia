@@ -15,14 +15,14 @@
         pointer-events: all;
         padding: 5px;
         width: 49px;
-        z-index: 999999 !important;
+        z-index: $zindex_toolbar_container;
         overflow: visible !important;
         position: fixed;
 
         &:hover {
             width: 49px;
             height: 100%;
-            z-index: 999999 !important;
+            z-index: $zindex_toolbar_container;
             overflow: visible !important;
             position: fixed;
         }
@@ -97,7 +97,7 @@
 		> table,
         &:hover > table {
             opacity: 1;
-            z-index: 999999;
+            z-index: $zindex_toolbar_container_2;
             xpointer-events: all;
         }
 
@@ -155,7 +155,7 @@
                 right: 97px;
                 top: 6px;
                 margin-top: 7px;
-                z-index: 999999;
+                z-index: $zindex_mode_menu_context_menu;
                 width: 93px;
                 height: 24px;
                 opacity: 0.9;
@@ -172,7 +172,7 @@
                     padding-right: 2px;
                     text-align: left;
                     position: relative;
-                    z-index: 1 !important;
+                    z-index: $zindex_mode_menu_context_menu_label;
                     width: calc(100% - 20px);
                     display: block;
                     height: 20px;
@@ -235,7 +235,7 @@
                 position: fixed;
                 top: 10px;
                 left: 5px;
-                z-index: 999999999;
+                z-index: $zindex_hamburger_menu_button;
                 display: block;
                 background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
                 background-size: 32px 32px;
@@ -473,7 +473,8 @@
 
     > div:nth-child(1) > div:nth-child(2) > div {
         &:nth-child(1) > div:nth-child(1) {
-            z-index: 999999 !important;
+            // .action-bar-container
+            z-index: $zindex_action_bar_container;
             height: 60px;
             display: block;
             position: absolute !important;
@@ -484,11 +485,12 @@
             width: calc(100% - 69px) !important;
 
             > div:nth-child(2) > div:nth-child(2) {
+                // iframe container
                 top: 0px !important;
                 height: calc(100% - 9px) !important;
                 width: calc(100% - 55px) !important;
                 left: 60px !important;
-                z-index: 9999;
+                z-index: $zindex_iframe_container;
                 overflow: visible !important;
             }
         }

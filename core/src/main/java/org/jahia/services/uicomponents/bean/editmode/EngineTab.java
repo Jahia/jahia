@@ -52,9 +52,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: ktlili
@@ -160,13 +158,13 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     public void afterPropertiesSet() throws Exception {
         if (parent instanceof List) {
             for (Object o : (List) parent) {
-                addTab(o);
+                addTab(getEngineTabs(o));
             }
         } else {
-            addTab(parent);
+            addTab(getEngineTabs(parent));
         }
-        addTab(parentManagerConfiguration);
-        addTab(parentEditConfiguration);
+        addTab(getEngineTabs(parentManagerConfiguration));
+        addTab(getEngineTabs(parentEditConfiguration));
     }
 
     public void destroy() throws Exception {
@@ -185,30 +183,29 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
         removeTab(getEngineTabs(parentManagerConfiguration), getId());
     }
 
-    private void addTab(Object parent) {
-        List<EngineTab> tabs = getEngineTabs(parent);
-
-        if (tabs != null) {
+    private void addTab(List<List<EngineTab>> tabs) {
+        if (!tabs.isEmpty()) {
             removeTab(tabs, getId());
-
-            int index = -1;
-            if (position >= 0) {
-                index = position;
-            } else if (positionBefore != null) {
-                index = tabs.indexOf(new EngineTab(positionBefore));
-            } else if (positionAfter != null) {
-                index = tabs.indexOf(new EngineTab(positionAfter));
+            for (List<EngineTab> t : tabs) {
+                int index = -1;
+                if (position >= 0) {
+                    index = position;
+                } else if (positionBefore != null) {
+                    index = t.indexOf(new EngineTab(positionBefore));
+                } else if (positionAfter != null) {
+                    index = t.indexOf(new EngineTab(positionAfter));
+                    if (index != -1) {
+                        index++;
+                    }
+                    if (index >= tabs.size()) {
+                        index = -1;
+                    }
+                }
                 if (index != -1) {
-                    index++;
+                    t.add(index, this);
+                } else {
+                    t.add(this);
                 }
-                if (index >= tabs.size()) {
-                    index = -1;
-                }
-            }
-            if (index != -1) {
-                tabs.add(index, this);
-            } else {
-                tabs.add(this);
             }
         } else if (this.parent != null) {
             throw new IllegalArgumentException("Unknown parent type '"
@@ -218,36 +215,52 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
         }
     }
 
-    protected static void removeTab(List<EngineTab> tabs, String tabId) {
-        if (tabs != null && tabId != null && tabId.length() > 0) {
-            for (Iterator<EngineTab> iterator = tabs.iterator(); iterator.hasNext();) {
-                EngineTab tab = iterator.next();
-                if (tab.getId() != null && tab.getId().equals(tabId)) {
-                    iterator.remove();
+    protected static void removeTab(List<List<EngineTab>> tabs, String tabId) {
+        if (!tabs.isEmpty() && tabId != null && tabId.length() > 0) {
+            for (List<EngineTab> t : tabs) {
+                for (Iterator<EngineTab> iterator = t.iterator(); iterator.hasNext();) {
+                    EngineTab tab = iterator.next();
+                    if (tab.getId() != null && tab.getId().equals(tabId)) {
+                        iterator.remove();
+                    }
                 }
             }
         }
     }
 
-    private List<EngineTab> getEngineTabs(Object parent) {
+    private List<List<EngineTab>> getEngineTabs(Object parent) {
+        List<List<EngineTab>> results = new ArrayList<>();
         if (parent == null) {
-            return null;
+            return results;
         }
         if (parent instanceof String) {
             parent = SpringContextSingleton.getBean((String) parent);
         }
         List<EngineTab> tabs = null;
+
         if (parent instanceof EditConfiguration) {
             tabs = ((EditConfiguration) parent).getDefaultEditConfiguration().getEngineTabs();
             if (tabs == null) {
                 tabs = new LinkedList<EngineTab>();
                 ((EditConfiguration) parent).getDefaultEditConfiguration().setEngineTabs(tabs);
             }
+
+            for (Map.Entry<String, ?> entry : SpringContextSingleton.getInstance().getContext().getBeansOfType(EditConfiguration.class).entrySet()) {
+                if (entry.getKey().startsWith(((EditConfiguration) parent).getName() + "-")) {
+                    results.addAll(getEngineTabs(entry.getValue()));
+                }
+            }
         } else if (parent instanceof ManagerConfiguration) {
             tabs = ((ManagerConfiguration) parent).getEngineTabs();
             if (tabs == null) {
                 tabs = new LinkedList<EngineTab>();
                 ((ManagerConfiguration) parent).setEngineTabs(tabs);
+            }
+
+            for (Map.Entry<String, ?> entry : SpringContextSingleton.getInstance().getContext().getBeansOfType(EditConfiguration.class).entrySet()) {
+                if (entry.getKey().startsWith(((ManagerConfiguration) parent).getName() + "-")) {
+                    results.addAll(getEngineTabs(entry.getValue()));
+                }
             }
         } else if (parent instanceof EngineConfiguration) {
             tabs = ((EngineConfiguration) parent).getEngineTabs();
@@ -262,7 +275,8 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
                 ((Engine) parent).setTabs(tabs);
             }
         }
-        return tabs;
+        results.add(tabs);
+        return results;
     }
 
     public void setParent(Object parent) {

@@ -81,6 +81,8 @@ import org.jahia.utils.Url;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import javax.jcr.RepositoryException;
 import javax.script.*;
@@ -225,7 +227,7 @@ public class UIConfigHelper {
 
         // create gwtTollbar
         GWTJahiaToolbar gwtToolbar = new GWTJahiaToolbar();
-        gwtToolbar.setName(toolbar.getName());
+        gwtToolbar.setName(StringUtils.substringBeforeLast(toolbar.getName(), "#"));
         gwtToolbar.setTitle(getResources(toolbar.getTitleKey(), uiLocale != null ? uiLocale : locale, site, jahiaUser));
         gwtToolbar.setDisplayTitle(toolbar.isDisplayTitle());
 
@@ -284,7 +286,7 @@ public class UIConfigHelper {
      */
     public GWTManagerConfiguration getGWTManagerConfiguration(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, String name) throws GWTJahiaServiceException {
         try {
-            ManagerConfiguration config = (ManagerConfiguration) SpringContextSingleton.getBean(name);
+            ManagerConfiguration config = (ManagerConfiguration) getThemedConfiguration(name, request);
             if (config != null) {
                 logger.debug("Config. " + name + " found.");
                 GWTManagerConfiguration gwtConfig = new GWTManagerConfiguration();
@@ -462,7 +464,7 @@ public class UIConfigHelper {
 
         // creat items-group
         GWTJahiaToolbarMenu gwtToolbarMenu = new GWTJahiaToolbarMenu();
-        gwtToolbarMenu.setId(menu.getId());
+        gwtToolbarMenu.setId(StringUtils.substringBeforeLast(menu.getId(), "#"));
 
         gwtToolbarMenu.setIcon(menu.getIcon());
         if (menu.getTitleKey() != null) {
@@ -541,7 +543,7 @@ public class UIConfigHelper {
     private GWTJahiaToolbarItem createGWTItem(JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Item item) {
         // GWTJahiaToolbarItem
         GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
-        gwtToolbarItem.setId(item.getId());
+        gwtToolbarItem.setId(StringUtils.substringBeforeLast(item.getId(), "#"));
         if (item.getTitleKey() != null) {
             gwtToolbarItem.setTitle(getResources(item.getTitleKey(), uiLocale != null ? uiLocale : locale, site,
                     jahiaUser));
@@ -592,10 +594,12 @@ public class UIConfigHelper {
      */
     public GWTEditConfiguration getGWTEditConfiguration(String name, String contextPath, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, JCRSessionWrapper session) throws GWTJahiaServiceException {
         try {
-            EditConfiguration config = (EditConfiguration) SpringContextSingleton.getBean(name);
+
+            EditConfiguration config = (EditConfiguration) getThemedConfiguration(name, request);
+
             if (config != null) {
                 GWTEditConfiguration gwtConfig = new GWTEditConfiguration();
-                gwtConfig.setName(config.getName());
+                gwtConfig.setName(name);
 
                 String defaultLocation = config.getDefaultLocation();
                 if (defaultLocation.contains("$defaultSiteHome")) {
@@ -888,6 +892,18 @@ public class UIConfigHelper {
         return value;
     }
 
+    private Object getThemedConfiguration(String name, HttpServletRequest request) {
+        Object config = SpringContextSingleton.getBean(name);
+        String theme = (String) request.getSession().getAttribute("jahia.ui.theme");
+        if (theme != null) {
+            try {
+                config = SpringContextSingleton.getBean(name+"-"+theme);
+            } catch (NoSuchBeanDefinitionException e) {
+                // Ignore
+            }
+        }
+        return config;
+    }
 
     /**
      * Return tru

@@ -48,6 +48,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.Visibility;
+import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -56,6 +58,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: jahia
@@ -250,6 +253,14 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
             String beanId = StringUtils.substringBefore(parentPath, ".");
             Object bean = SpringContextSingleton.getBean(beanId);
             String propertyPath = StringUtils.substringAfter(parentPath, ".");
+            if (bean instanceof EditConfiguration || bean instanceof ManagerConfiguration) {
+                for (Map.Entry<String, ?> entry : SpringContextSingleton.getInstance().getContext().getBeansOfType(bean.getClass()).entrySet()) {
+                    if (entry.getKey().startsWith(beanId + "-")) {
+                        addToParent(entry.getKey() + "." + propertyPath);
+                    }
+                }
+            }
+
             if (propertyPath.length() > 0) {
                 bean = PropertyUtils.getNestedProperty(bean, propertyPath);
             }

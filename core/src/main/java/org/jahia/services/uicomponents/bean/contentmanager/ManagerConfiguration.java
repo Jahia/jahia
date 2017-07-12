@@ -46,6 +46,7 @@ package org.jahia.services.uicomponents.bean.contentmanager;
 import org.jahia.services.uicomponents.bean.editmode.EngineConfiguration;
 import org.jahia.services.uicomponents.bean.editmode.EngineTab;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
+import org.springframework.beans.factory.BeanNameAware;
 
 import java.io.Serializable;
 import java.util.*;
@@ -56,10 +57,13 @@ import java.util.*;
  * Date: Apr 12, 2010
  * Time: 2:54:37 PM
  */
-public class ManagerConfiguration implements Serializable {
+public class ManagerConfiguration implements Serializable, BeanNameAware {
 
     private static final long serialVersionUID = -8372296247741073414L;
-    
+
+
+    private String name;
+
     private List<Column> treeColumns;
     private List<Column> tableColumns;
     private List<Repository> repositories;
@@ -123,6 +127,14 @@ public class ManagerConfiguration implements Serializable {
         treeColumns = new ArrayList<Column>();
         repositories = new ArrayList<Repository>();
         engineTabs = new ArrayList<EngineTab>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setBeanName(String name) {
+        this.name = name;
     }
 
     public void setHideLeftPanel(boolean hide) {

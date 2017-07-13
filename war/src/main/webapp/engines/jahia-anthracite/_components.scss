@@ -68,6 +68,51 @@
 	}
 }
 
+/////////////////////////////////////////////////
+// LIST BOX /////////////////////////////////////
+/////////////////////////////////////////////////
+
+.x-form-list {
+	border: none;
+	background: red;
+
+	.x-combo-list {
+		/* Combo Outer Container */
+		width: auto !important;
+		background: transparent!important;
+	    overflow: scroll!important;
+	    z-index: $zindex_combo_list;
+		position: relative;
+
+		@extend %list_box_holder !optional;
+
+	}
+
+	.x-combo-list-item {
+		border:none;
+		box-sizing: border-box;
+		@extend %list_box_item !optional;
+
+
+
+		&.x-combo-over {
+			/* Selected / Hovered */
+			border:none!important;
+			@extend %list_box_item_hover !optional;
+
+		}
+
+		&.x-view-highlightrow {
+			/* Selected / Hovered */
+			border:none!important;
+			@extend %list_box_item_selected !optional;
+
+		}
+	}
+}
+
+
+
 
 
 /////////////////////////////////////////////////
@@ -335,24 +380,29 @@ input {
 }
 
 legend {
-	.field-set-header-text {
+	padding: 0!important;
+
+	.x-fieldset-header-text {
 		// Wahoo, the label text !!
 		@extend %form_legend;
 
 	}
 }
 
+.x-form-checkbox {
+	left: 0!important;
+	top: 0!important;
+	position: relative!important;
+}
+
 fieldset {
-	border: none;
-	padding: 0px;
-	margin: 0 0 30px 0;
+
+	@extend %form_fieldset;
 
 }
 
 label {
-	// Label
-	@extend %form_label;
-
+	// See .x-form-item-label
 }
 
 /* Form item Outer Container ... */
@@ -379,6 +429,8 @@ label {
 	width: auto!important;
 	float: none!important;
 	clear: both!important;
+	display: inline-block!important;
+	margin-top: 17px!important;
 
 	@extend %form_label !optional;
 }
@@ -404,6 +456,8 @@ label {
 	&:focus {
 		@extend %text_input_focus !optional;
 	}
+
+
 }
 
 div[role="combobox"] {
@@ -494,7 +548,8 @@ div[role="combobox"] {
 }
 
 // Form Buttons
-form {
+form,
+.edit-content-engine { // CHANGE THIS AFTER TO BE INCLUDING GENERAL STYLING AND THEN PERSONALISE ...
 
 	.x-btn {
 		width: auto!important;
@@ -514,7 +569,7 @@ form {
 
 		&.x-btn-text-icon {
 			// Button has icon
-			border:3px solid red;
+			//border:3px solid red;
 
 			button {
 				@extend %form_button_icon;
@@ -542,7 +597,7 @@ form {
 
 			&.x-btn-text-icon {
 				// Button has icon
-				border:3px solid red;
+				xborder:3px solid red;
 
 				button {
 					@extend %form_button_icon_hover;
@@ -594,7 +649,7 @@ form {
 
 		&.x-btn-text-icon {
 			// Button has icon
-			border:3px solid red;
+			xborder:3px solid red;
 
 			button {
 				@extend %action_bar_button_icon;
@@ -622,7 +677,7 @@ form {
 
 			&.x-btn-text-icon {
 				// Button has icon
-				border:3px solid red;
+				xborder:3px solid red;
 
 				button {
 					@extend %action_bar_button_icon_over;
@@ -915,7 +970,8 @@ form {
 			}
 
 			.x-grid3-td-displayName,
-			.gwt-content-label {
+			.gwt-content-label,
+			.x-grid3-cell-inner {
 				@extend %tree_line_text_hover !optional;
 
 				&::after {
@@ -940,7 +996,8 @@ form {
 			}
 
 			.x-grid3-td-displayName,
-			.gwt-content-label {
+			.gwt-content-label,
+			.x-grid3-cell-inner {
 				@extend %tree_line_text_selected !optional;
 
 				&::after {
@@ -974,7 +1031,8 @@ form {
 	}
 
 	.x-grid3-td-displayName,
-	.gwt-content-label {
+	.gwt-content-label,
+	.x-grid3-cell-inner {
 		/* List Item Text Label */
 		@extend %tree_line_text_up !optional;
 
@@ -1083,11 +1141,65 @@ form {
 }
 
 
+/* Not sure about the fiability of this as it is relying on ext-webkit ... */
 .ext-strict .ext-webkit .x-small-editor .x-form-text {
 	height: auto!important;
 	padding: 5px 40px 5px 10px;
 }
 
+/* Modal Mask */
+.x-modal {
+    background: rgba(92, 97, 100, 0.98);
+    opacity: 1;
+    z-index: $zindex_modal_mask;
+    position: fixed !important;
+}
+
+/* Loading Loader */
+.x-masked {
+    > div {
+        opacity: 0;
+    }
+    &::before {
+        content: $text_loading;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: url(./images/loader-animated.gif) no-repeat center center;
+    }
+
+}
+
+/* SHOULD SIMPLIFY ALOT OF CODE WHEN REDOING edit-modes, etc ... */
+
+.x-panel-body {
+	border: none !important;
+	background: transparent !important;
+}
+
 .x-border-layout-ct {
 	background: none;
+}
+
+
+.x-border-panel {
+	width: 100%!important;
+	height: 100%!important;
+	border: none!important;
+}
+
+.x-panel-tl,
+.x-panel-bl {
+	display: none;
+}
+
+.x-panel-ml,
+.x-panel-mr,
+.x-panel-mc {
+	background: none;
+	border: none;
+	padding: 0;
 }

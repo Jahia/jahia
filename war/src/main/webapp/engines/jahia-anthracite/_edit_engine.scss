@@ -4,11 +4,35 @@
 
 .engine-panel {
 	z-index: $zindex_edit_engine_panel;
+	background: $edit_engine_bg;
     position: fixed!important;
     top: 0!important;
     left: 0!important;
     width: 100%!important;
     height: 100%;
+
+	form {
+		height: auto!important;
+	}
+
+	.x-form-readonly {
+		 .x-form-text {
+			@extend %text_input_disabled !optional;
+
+		}
+	}
+
+	.x-box-layout-ct,
+	.x-box-inner {
+		width: 100%!important;
+	}
+
+	.x-form-label-left {
+		border-left: 1px solid $form_fieldset_left_border;
+		padding-left: 7px;
+	}
+
+
 
 	////////// TABS
 	.x-tab-strip .x-tab-strip-text {
@@ -53,6 +77,124 @@
 	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-workflow {}
 	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-channels {}
 
+	// Personalised COntent Window
+	#JahiaGxtEditEnginePanel-content,
+	#JahiaGxtEditEnginePanel-metadata {
+		/* left floating forms */
+		.x-form-item-label {
+			float:left!important;
+			margin-top: 0!important;
+			width: 150px!important;
+		}
+
+		.x-form-text:only-child {
+			display: inline-block;
+		}
+
+		.x-form-field-wrap {
+			float: left;
+			width: calc(100% - 307px) !important;
+		}
+
+		.x-btn {
+			margin-left: 10px;
+			display: inline-block;
+		}
+	}
+
+	#JahiaGxtEditEnginePanel-content{
+		// Fix problem with non floating form element.
+		#Title {
+			.x-form-item:nth-child(1) {
+				.x-form-element {
+					width: calc(100% - 150px);
+					float: left;
+				}
+			}
+		}
+	}
+
+
+
+	#JahiaGxtEditEnginePanel-channels {
+		/* Fix for the channel double list selecor */
+
+		.x-form-item:nth-child(1) {
+
+			/* Double List Selector holder */
+			width: 100%!important;
+
+			> .x-form-element {
+
+				> .x-component {
+					/* Another Container */
+
+					width: 100%!important;
+
+					.x-form-group {
+						/* Yet another container */
+						height: auto!important;
+					}
+				}
+			}
+
+
+
+		}
+	}
+
+	#JahiaGxtEditEnginePanel-layout {
+		/* Preview window */
+
+		> .x-component {
+
+			&:nth-child(1){
+				/* Form */
+				height: auto!important;
+			}
+
+			&:nth-child(2){
+				/* Preview sections */
+				height: auto!important;
+				width: 100%!important;
+
+				> div {
+					/* Preview Holders */
+					height: 100%!important;
+					width: 100%!important;
+					background: transparent!important;
+
+					> div {
+						/* Another preview container */
+						height: 100%!important;
+						width: 100%!important;
+						background: transparent!important;
+
+						.gwt-HTML {
+							/* Preview container */
+							height: 100%!important;
+							width: 100%!important;
+							background: transparent!important;
+						}
+
+					}
+
+
+
+
+				}
+
+
+			}
+
+
+		}
+
+
+	}
+
+
+	// EDIT ENGINE - STRUCTURE
 
 	// HEADER
 	> div.x-panel-header {
@@ -60,16 +202,17 @@
 		left: 0!important;
 	    top: 0!important;
 	    position: fixed!important;
-	    background: red!important;
-	    height: 50px!important;
+	    height: 120px!important;
 	    z-index: 10;
 	    width: 100%;
-		padding: 13px;
+		padding: 35px 73px;
 		box-sizing: border-box;
 
 		> div {
 			// Language Selector
-
+			float: right;
+		    margin-top: 8px;
+		    margin-right: 24px;
 		}
 
 		.x-panel-header-text {
@@ -83,15 +226,26 @@
 	// BODY
 	> .x-panel-bwrap {
 
-		height: calc(100% - 100px);
+		height: calc(100% - 220px);
 	    position: fixed;
 	    width: 100%;
-	    top: 50px;
+	    top: 120px;
+
+		.x-panel-tbar {
+			// Top action bar
+			display: block;
+			width: 100%!important;
+			height: 50px;
+
+			.x-toolbar {
+				width: 100%!important;
+			}
+
+		}
 
 		.x-panel-body {
 			// Container for body
 			width: 100%!important;
-			background: pink!important;
 			height: 100%!important;
 			overflow: scroll;
 
@@ -108,12 +262,14 @@
 
 					> .x-tab-panel-header {
 						// Tab list menu
-						width: 330px!important;
+						width: 250px !important;
 						display: inline-block;
 						box-sizing: border-box;
 						vertical-align: top;
 						border: none;
 						height: 100%;
+						background: none;
+						padding: 0 0 0 75px;
 
 						.x-tab-strip-wrap {
 							// Menu Container
@@ -125,6 +281,9 @@
 								width: 100%;
 								height: 100%;
 								border:none;
+								background: none;
+								padding: 0;
+								margin: 0;
 
 								li {
 									// Tab entry
@@ -164,10 +323,11 @@
 					.x-tab-panel-body {
 						// Tab content container
 						display: inline-block;
-						width: calc(100% - 330px)!important;
+						width: calc(100% - 321px) !important;
 						box-sizing: border-box;
 						vertical-align: top;
 						height: 100%!important;
+						background: none;
 
 						> .x-panel-mc {
 							// Default tab content window
@@ -177,10 +337,17 @@
 							border:none!important;
 							padding:0;
 
+							> .x-grid-panel {
+								top: 0!important;
+								width: 100%!important;
+								height: 100%!important;
+							}
+
 							> .x-panel {
 								// Tab content container
 								border:none!important;
 								height: 100%;
+								width: 100%!important;
 
 								.x-panel-header {
 									// Seems to be unused
@@ -207,19 +374,6 @@
 							}
 						}
 
-						/*
-						// Personalised tab content window
-						#JahiaGxtEditEnginePanel-content {
-							// Tab contents
-
-
-
-							// Personalisation
-							#JahiaGxtEditEnginePanel-content-en {}
-							#JahiaGxtEditEnginePanel-layout-en {} // check that this corresponds to other tabs when opened, plus does -en correspond to the language ?
-
-						}*/
-
 					}
 				}
 
@@ -228,344 +382,58 @@
 
 		> .x-panel-bbar {
 			// Footer action bar
-			background: blue;
 			display: block;
 			width: 100%!important;
-			height: 50px;
+			height: 100px;
 			position: fixed;
 			bottom: 0;
 			left: 0;
+			padding: 10px 0 0 75px;
+
+			.x-panel-fbar {
+				width: 100%!important;
+				height: 100%;
+
+				.x-toolbar-cell {
+
+					button {
+						// Remove icons for these buttons
+						padding-left: 10px;
+						img {
+							display: none;
+						}
+					}
+
+					&:nth-child(1) {
+						/* Save as work in progress */
+						position: absolute;
+						top: 43px;
+					}
+
+					&:nth-child(2) {
+						/* Save */
+						padding-bottom: 20px;
+
+						// Make suggested colour
+						button {
+							@extend %action_bar_button_icon_suggested;
+
+						}
+					}
+
+					&:nth-child(3) {
+						/* Cancel */
+						padding-bottom: 20px;
+					}
+				}
+			}
 
 		}
-
 
 		> .x-panel-footer {
 			// BLANK DIV
+			display: none;
 		}
 
 	}
-}
-
-
-#XXXJahiaGxtContentEngine {
-    width: 100% !important;
-    position: absolute;
-    top: 0;
-    left: -1px;
-    display: block;
-    background: $shuttle-gray;
-    height: 100% !important;
-}
-
-#XXXJahiaGxtEditEngineTabs {
-    width: 100% !important;
-    background: $shuttle-gray;
-    display: block;
-    height: calc(100% - 84px) !important;
-    padding-top: 69px;
-
-	.x-panel-bwrap {
-	    width: 100% !important;
-	    height: calc(100% - -9px) !important;
-	}
-
-	> div:nth-child(2) div:nth-child(1).x-panel-body {
-	    width: 100% !important;
-	    height: calc(100% - 0px) !important;
-	}
-}
-
-#XXXJahiaGxtEnginePanel {
-	left: 0 !important;
-  top: -81px !important;
-  width: calc(100% + 60px) !important;
-  z-index: 999999999 !important;
-  position: relative !important;
-  height: calc(100% + 81px) !important;
-  .x-panel-body {
-      width: 100% !important;
-      height: calc(100% - 6px) !important;
-      background: red;
-  }
-  > div:nth-child(2) div:nth-child(1).x-panel-body {
-      width: 100% !important;
-      height: calc(100% - 74px) !important;
-  }
-	.x-panel-bwrap {
-	    width: 100% !important;
-	    height: calc(100% - 6px) !important;
-	}
-
-	ul.x-tab-strip {
-        background: $shuttle-gray;
-        display: inline-block;
-        width: 200px;
-        vertical-align: top;
-        margin-left: 50px;
-        margin-top: 30px;
-        li {
-            float: none;
-        }
-    }
-    .x-tab-panel-header {
-        width: auto !important;
-        background: none;
-        display: inline-block;
-        vertical-align: top;
-        border: none;
-        margin-top: 31px;
-    }
-    .x-tab-panel-body {
-        width: calc(100% - 252px) !important;
-        display: inline-block;
-        background: $shuttle-gray !important;
-        margin-top: 53px;
-        height: calc(100% - 53px) !important;
-        > div > div {
-            height: 100% !important;
-            form {
-                height: 100% !important;
-            }
-        }
-    }
-    span.x-tab-strip-text {
-        color: #c1cdd3 !important;
-        font-weight: $semilight;
-        font-family: $font-1;
-        font-size: 14px;
-    }
-    .x-tab-strip-top .x-tab-right {
-        background: none;
-    }
-    ul.x-tab-strip-top {
-        border: none !important;
-        border-left: 1px solid rgba(49, 49, 49, 0.4) !important;
-    }
-    .x-panel-mc {
-        background: transparent;
-        height: 100% !important;
-    }
-    .x-fieldset {
-        border: none;
-        background: $nevada-gray;
-        padding: 34px 13px 0;
-        position: relative;
-        margin-bottom: 11px;
-        legend {
-            border: none;
-            position: absolute;
-            top: 11px;
-            font-family: $font-1;
-            text-transform: uppercase;
-            font-size: 11px;
-            left: 11px;
-            color: $botticelli-gray;
-        }
-    }
-    .x-form-item .x-form-item-label {
-        color: rgba(197, 205, 209, 0.5);
-        font-style: italic;
-        font-weight: $light;
-        font-family: $font-1;
-    }
-    .x-form-text,
-    textarea.x-form-field {
-        padding: 5px;
-        border: none;
-        color: $botticelli-gray;
-        font-family: $font-1;
-        font-weight: $normal;
-        transition: all 0.3s ease-in 0s;
-        border-bottom: 1px solid rgba(165, 176, 181, 0.2);
-        background: transparent;
-    }
-    .x-form-text:hover,
-    textarea.x-form-field:hover {
-        background: rgba(165, 176, 181, 0.3) !important;
-        color: $botticelli-gray;
-    }
-    .x-form-text:focus,
-    textarea.x-form-field:focus,
-    .x-form-text:active,
-    textarea.x-form-field:active {
-        background: rgba(247, 248, 250, 1) !important;
-        color: $shuttle-gray;
-    }
-    .x-form-label-top .x-form-element {
-        padding: 0 !important;
-        margin-top: 5px;
-    }
-    .x-form-item {
-        margin-bottom: 20px;
-    }
-    .x-btn {
-        margin-top: 5px;
-    }
-    ul.x-tab-strip li {
-        border-left: 3px solid transparent;
-        left: -4px;
-        &.x-tab-strip-active {
-            border-left: 3px solid $white;
-        }
-    }
-    .x-tab-strip-over span.x-tab-strip-text,
-    li.x-tab-strip-active span.x-tab-strip-text {
-        color: $white !important;
-    }
-    .x-panel-header {
-        z-index: 99999999 !important;
-        top: 45px;
-        left: 0px;
-        position: absolute;
-        color: $gallery-gray;
-
-		font-family: $font-1;
-	    font-size: 26px;
-	    font-weight: $extralight;
-
-
-
-		width: 100%;
-        padding-top: 26px;
-        pointer-events: all;
-        > {
-            div {
-                background: $white;
-                margin-right: 61px;
-                input[type="text"] {
-                    background: rgb(234, 230, 230);
-                    color: rgb(77, 77, 77);
-                    padding: 3px 8px 3px;
-                    font-size: 10px;
-                    text-transform: uppercase;
-                }
-                &:hover input[type="text"] {
-                    background: $gallery-gray !important;
-                    color: $mineshaft-gray;
-                }
-            }
-            span {
-                margin-left: 42px;
-            }
-            div {
-                .x-form-trigger.x-form-trigger-arrow {
-                    background: url(./images/icon-toggle-expanded-small-normal.png) no-repeat center center rgba(245, 245, 245, 1);
-                    height: 29px;
-                    width: 25px;
-                    right: 0px;
-                }
-                &:hover .x-form-trigger.x-form-trigger-arrow {
-                    background: url(./images/icon-toggle-expanded-small-selected.png) no-repeat center center rgba(245, 245, 245, 1);
-                    height: 29px;
-                    width: 25px;
-                    right: 0px;
-                }
-            }
-        }
-    }
-}
-
-.XXXJahiaEditEngineButtonBar {
-	position: absolute;
-    top: 0;
-    z-index: 9999999999;
-    display: block;
-    width: 100% !important;
-    background: #3f4244;
-    left: 0;
-    bottom: 0;
-    padding: 21px 46px;
-    text-align: left;
-    .x-toolbar-ct {
-        margin: 0;
-    }
-
-	.x-toolbar-cell {
-	    float: right;
-	    &:nth-child(3) .x-btn-mc {
-	        text-indent: -50000px;
-	        background: url(./images/icon-close-small-light.png) no-repeat left 5px center $rollingstone-gray;
-	        border: 5px solid $rollingstone-gray;
-	        transition: all 0.2s ease-in 0.2s;
-	        width: 18px;
-	        height: 18px;
-	    }
-	    &:nth-child(2) .x-btn-mc button {
-	        color: $white;
-	    }
-	    &:nth-child(1) .x-btn-mc {
-	        button {
-	            color: rgba(193, 205, 211, 1);
-	        }
-	        &:hover {
-	            text-indent: 0;
-	            width: 50px;
-	            padding-left: 20px !important;
-	        }
-	    }
-	    &:nth-child(2) .x-btn-mc {
-	        background: $jahia-blue;
-	        border: 5px solid $jahia-blue;
-	        padding: 0 15px !important;
-	    }
-	    &:nth-child(1) {
-	        margin-right: 5px;
-	        position: relative;
-	        margin-top: 8px;
-	        label {
-	            color: #80878b;
-	            text-transform: uppercase;
-	            font-family: $font-1;
-	            font-size: 10px;
-	            text-indent: -50000px;
-	            width: 0px !important;
-	            display: block !important;
-	            float: right !important;
-	            &::after {
-	                color: red;
-	                content: $text_work_in_progress;
-	                display: block !important;
-	                left: 87px;
-	                position: relative;
-	                float: right;
-	                overflow: visible;
-	                text-indent: 0;
-	                width: auto;
-	                font-size: 9px;
-	            }
-	        }
-	    }
-	}
-}
-
-.x-panel-body {
-	border: none !important;
-	background: transparent !important;
-}
-
-
-/* Modal Mask */
-.x-modal {
-    background: rgba(92, 97, 100, 0.98);
-    opacity: 1;
-    z-index: $zindex_modal_mask;
-    position: fixed !important;
-}
-
-/* Loading Loader */
-.x-masked {
-    > div {
-        opacity: 0;
-    }
-    &::before {
-        content: $text_loading;
-        display: block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: url(./images/loader-animated.gif) no-repeat center center;
-    }
-
 }

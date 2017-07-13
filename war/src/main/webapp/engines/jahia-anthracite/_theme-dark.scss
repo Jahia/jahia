@@ -148,9 +148,11 @@
 	$text_input_bg:                 rgba($grey-clouds, .1);
 	$text_input_bg_focus:           rgba($grey-clouds, .7);
     $text_input_bg_hover:           rgba($grey-clouds, .3);
+    $text_input_bg_disabled:        rgba($grey-clouds, .05);
 	$text_input_color:              $grey-clouds;
 	$text_input_color_hover:        $dark-clouds;
     $text_input_color_focus:        $white-clouds;
+    $text_input_color_disabled:     rgba($grey-clouds, .7);
     $text_input_border:             1px solid transparent;
     $text_input_padding:            3px 40px 3px 5px;
     $text_input_font_weight:        200;
@@ -163,13 +165,17 @@
     $form_clear_icon_hover:         $icon_form_close_white_clouds;
     $form_clear_bg_hover:           rgba($grey-clouds, .7);
 
-    $edit_engine_title:             black;
-    $edit_engine_tab:               blue;
-    $edit_engine_tab_selected:      green;
-    $edit_engine_tab_over:          purple;
-    $edit_engine_tab_selected_over: yellow;
-    $form_legend:                   aqua;
-    $form_label:                    grey;
+    $edit_engine_title:             $dark-clouds;
+    $edit_engine_tab:               rgba($dark-clouds, .5);
+    $edit_engine_tab_selected:      $jahia-blue;
+    $edit_engine_tab_over:          rgba($dark-clouds, .7);
+    $edit_engine_tab_selected_over: $jahia-blue;
+    $edit_engine_bg:                $white-clouds;
+
+    $form_legend_text:              $black-clouds;
+    $form_label_text:               rgba($black-clouds, .7);
+    $form_fieldset_bg:              darken($white-clouds, 1%);
+    $form_fieldset_left_border:     rgba($dark-clouds, .3);
 
 
 ///////// BUTTONS
@@ -274,6 +280,44 @@
 
     }
 
+/* List Box */
+
+        %list_box_holder {
+            border: none;
+            box-shadow: 0 0 10px 0 rgba(49, 49, 49, 0.3);
+        }
+
+        %list_box_item {
+            text-align: left!important;
+
+            background: $context_bg_up;
+            padding: 8px 9px !important;
+            border: none;
+            width: 100%;
+
+            @include text(11px, $context_text_color_up, $semilight);
+        }
+
+        %list_box_item_hover {
+            color: $context_text_color_hover;
+            background: $context_bg_hover;
+
+        }
+
+        %list_box_item_selected {
+            color: red;
+            background: pink;
+        }
+
+        %list_box_item_disabled {
+            color: $context_text_color_disabled;
+            font-style: italic;
+            opacity: 1;
+            background: $context_bg_disabled;
+
+            display: none;
+
+        }
 
 
 /* CONTEXT MENUS */
@@ -610,8 +654,7 @@
 
     %form_label {
         padding: 0!important;
-		margin-bottom: 3px;
-    	margin-top: 10px;
+        margin: 0!important;
 
         @include text(11px, $dark-clouds, $semilight);
     }
@@ -634,6 +677,17 @@
 	%text_input_focus {
         background: $text_input_bg_focus;
 		color: $text_input_color_focus;
+    }
+
+    %text_input_disabled {
+        background: $transparent;
+        padding: $text_input_padding;
+        padding-left: 0;
+        border: $text_input_border;
+
+		transition: all 0.15s ease-in 0s;
+
+        @include text($text_input_font_size, $text_input_color, $text_input_font_weight, $text_input_font_family);
     }
 
 	%combo_input {
@@ -671,38 +725,49 @@
     }
 
     %edit_engine_title {
-    	@include text(16px, $edit_engine_tab, $extralight);
+    	@include text(29px, $edit_engine_title, $extralight);
     }
 
     %edit_engine_tab {
-    	padding: 5px 10px;
+    	padding: 5px 0;
 
-    	@include text(16px, $edit_engine_tab, $normal);
+    	@include text(17px, $edit_engine_tab, $extralight);
     }
 
     %edit_engine_tab_selected {
-    	@include text(16px, $edit_engine_tab_selected + !important, $normal);
+    	@include text(17px, $edit_engine_tab_selected + !important, $extralight);
     }
 
     %edit_engine_tab_over {
-    	@include text(16px, $edit_engine_tab_over + !important, $normal);
+    	@include text(17px, $edit_engine_tab_over + !important, $extralight);
 
     }
 
     %edit_engine_tab_selected_over {
-    	@include text(16px, $edit_engine_tab_selected_over + !important, $normal);
+    	@include text(17px, $edit_engine_tab_selected_over + !important, $extralight);
 
     }
 
     %form_legend {
-    	padding: 0;
+    	padding: 0!important;
+        position: absolute;
+        top: 7px;
+        left: 10px;
 
-    	@include text(12px, $form_legend, $extralight);
+    	@include text(16px, $form_legend_text, $extralight);
+    }
+
+    %form_fieldset {
+        border: none!important;
+        padding: 38px 10px 10px 11px !important;
+        margin: 0 0 30px 0 !important;
+        //background: $form_fieldset_bg;
+        position: relative;
     }
 
     %form_label {
 
-    	@include text(12px, $form_label, $bold);
+    	@include text(12px, $form_label_text, $normal);
     }
 
 
@@ -720,48 +785,52 @@
     }
 
     %action_bar_button_icon {
-    	background: orange;
+    	background: $grey-clouds;
+        opacity: 0.7;
     	padding: 5px 10px 5px 29px;
-    	@include text(16px, red, $extralight);
+    	@include text(16px, $white-clouds, $extralight);
 
     	img {
     		left: 5px!important;
     	}
+    }
+
+    %action_bar_button_icon_suggested {
+    	background: $jahia-blue;
+
     }
 
 
 
     %action_bar_button_icon_over {
-    	background: yellow;
+        opacity: 1;
     	padding: 5px 10px 5px 29px;
-    	@include text(16px, black, $extralight);
 
-    	img {
-    		left: 5px!important;
-    	}
+
     }
 
 
 
     %form_button_text {
-    	background: white;
-    	padding: 5px 10px;
-    	@include text(16px, black, $extralight);
+    	background: $white-clouds;
+        text-transform: uppercase;
+    	padding: 4px 0 0;
+        border-bottom: 1px solid #00a0e3;
+    	@include text(10px, $jahia-blue, $normal);
     }
 
     %form_button_text_hover {
-    	background: black;
-    	padding: 5px 10px;
-    	@include text(16px, white, $extralight);
+    	@include text(10px, lighten($jahia-blue, 1%), $normal);
     }
 
     %form_button_icon {
-    	background: orange;
+    	background: $grey-clouds;
     	padding: 5px 10px 5px 29px;
-    	@include text(16px, red, $extralight);
+    	@include text(16px, $white-clouds, $extralight);
 
     	img {
-    		left: 5px!important;
+            left: 5px!important;
+    		top: 7px!important;
     	}
     }
 

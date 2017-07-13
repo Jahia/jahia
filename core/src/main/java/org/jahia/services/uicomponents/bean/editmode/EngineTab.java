@@ -48,8 +48,11 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.io.Serializable;
 import java.util.*;
@@ -59,7 +62,7 @@ import java.util.*;
  * Date: Apr 14, 2010
  * Time: 12:37:29 PM
  */
-public class EngineTab implements Serializable, Comparable<EngineTab>, InitializingBean, DisposableBean {
+public class EngineTab implements Serializable, Comparable<EngineTab>, InitializingBean, DisposableBean, ApplicationContextAware {
     
     private static final long serialVersionUID = -5995531303789738603L;
     
@@ -77,7 +80,9 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     private int position = -1;
     private String positionAfter;
     private String positionBefore;
-    
+
+    private ApplicationContext applicationContext;
+
     public EngineTab() {
         super();
     }
@@ -167,6 +172,11 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
         addTab(getEngineTabs(parentEditConfiguration));
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
     public void destroy() throws Exception {
         if (!JahiaContextLoaderListener.isRunning()) {
             return;
@@ -245,7 +255,7 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
                 ((EditConfiguration) parent).getDefaultEditConfiguration().setEngineTabs(tabs);
             }
 
-            for (Map.Entry<String, ?> entry : SpringContextSingleton.getInstance().getContext().getBeansOfType(EditConfiguration.class).entrySet()) {
+            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(EditConfiguration.class).entrySet()) {
                 if (entry.getKey().startsWith(((EditConfiguration) parent).getName() + "-")) {
                     results.addAll(getEngineTabs(entry.getValue()));
                 }
@@ -257,7 +267,7 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
                 ((ManagerConfiguration) parent).setEngineTabs(tabs);
             }
 
-            for (Map.Entry<String, ?> entry : SpringContextSingleton.getInstance().getContext().getBeansOfType(EditConfiguration.class).entrySet()) {
+            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(EditConfiguration.class).entrySet()) {
                 if (entry.getKey().startsWith(((ManagerConfiguration) parent).getName() + "-")) {
                     results.addAll(getEngineTabs(entry.getValue()));
                 }

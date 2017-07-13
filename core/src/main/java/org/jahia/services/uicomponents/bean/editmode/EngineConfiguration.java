@@ -47,8 +47,11 @@ import org.jahia.ajax.gwt.client.widget.contentengine.ButtonItem;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -61,7 +64,7 @@ import java.util.Map;
  * see {@link org.jahia.ajax.gwt.helper.UIConfigHelper} for link
  */
 
-public class EngineConfiguration implements Serializable, InitializingBean, DisposableBean {
+public class EngineConfiguration implements Serializable, InitializingBean, DisposableBean, ApplicationContextAware {
 
     private static final long serialVersionUID = -5991528610464460659L;
 
@@ -74,6 +77,8 @@ public class EngineConfiguration implements Serializable, InitializingBean, Disp
     private List<ButtonItem> commonButtons = new ArrayList<ButtonItem>();
 
     private Object parent;
+
+    private ApplicationContext applicationContext;
 
     public String getKey() {
         return key;
@@ -135,6 +140,11 @@ public class EngineConfiguration implements Serializable, InitializingBean, Disp
         this.parent = parent;
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
     public void afterPropertiesSet() throws Exception {
         if (parent instanceof List) {
             for (Object o : (List) parent) {
@@ -184,7 +194,7 @@ public class EngineConfiguration implements Serializable, InitializingBean, Disp
         if (parent instanceof EditConfiguration) {
             results.add(((EditConfiguration) parent).getEngineConfigurations());
 
-            for (Map.Entry<String, ?> entry : SpringContextSingleton.getInstance().getContext().getBeansOfType(EditConfiguration.class).entrySet()) {
+            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(EditConfiguration.class).entrySet()) {
                 if (entry.getKey().startsWith(((EditConfiguration) parent).getName() + "-")) {
                     results.addAll(getParentConfigurationMap(entry.getValue()));
                 }
@@ -192,7 +202,7 @@ public class EngineConfiguration implements Serializable, InitializingBean, Disp
         } else if (parent instanceof ManagerConfiguration) {
             results.add(((ManagerConfiguration) parent).getEngineConfigurations());
 
-            for (Map.Entry<String, ?> entry : SpringContextSingleton.getInstance().getContext().getBeansOfType(EditConfiguration.class).entrySet()) {
+            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(EditConfiguration.class).entrySet()) {
                 if (entry.getKey().startsWith(((ManagerConfiguration) parent).getName() + "-")) {
                     results.addAll(getParentConfigurationMap(entry.getValue()));
                 }

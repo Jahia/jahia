@@ -45,7 +45,6 @@ package org.jahia.services.search.jcr;
 
 import com.google.common.collect.Sets;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math.util.MathUtils;
@@ -398,8 +397,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             includeChildren = params.getPagePath().isIncludeChildren();
         }
         if (path != null) {
-            String[] pathTokens = path != null ? Patterns.SLASH.split(StringEscapeUtils
-                    .unescapeHtml(path)) : ArrayUtils.EMPTY_STRING_ARRAY;
+            String[] pathTokens = Patterns.SLASH.split(StringEscapeUtils.unescapeHtml(path));
             String lastFolder = null;
             StringBuilder jcrPath = new StringBuilder(64);
             jcrPath.append("/jcr:root/");
@@ -501,11 +499,11 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     }
 
     private String getNodeType(SearchCriteria params) {
-        if(StringUtils.isNotEmpty(params.getNodeType())) {
+        if (StringUtils.isNotEmpty(params.getNodeType())) {
             return params.getNodeType();
         }
 
-        if(isFileSearch(params) && !isSiteSearch(params)) {
+        if (isFileSearch(params) && !isSiteSearch(params)) {
             return Constants.NT_HIERARCHYNODE;
 //        } else if (!isFileSearch(params) && isSiteSearch(params)) {
 //            return Constants.JAHIANT_CONTENT;
@@ -957,7 +955,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                     '%')) + ")" : "jcr:content/@jcr:mimeType="
                     + stringToQueryLiteral(mimeType);
         } else {
-            return "n.[jcr:mimetype]="+stringToQueryLiteral(mimeType);
+            return "n.[jcr:mimetype]=" + stringToQueryLiteral(mimeType);
         }
 
     }

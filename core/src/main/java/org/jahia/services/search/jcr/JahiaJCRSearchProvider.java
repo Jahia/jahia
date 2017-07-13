@@ -106,8 +106,8 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     private static final Pattern AND_PATTERN = Pattern.compile(" AND ");
 
     private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile("\\s{2,}");
-    
-    private static final Pattern QUOTED_OR_PLAIN_TERMS_WITH_OPTIONAL_NEGATION_PATTERN = Pattern.compile("-*\"([^\"]*)\"|(\\S+)");    
+
+    private static final Pattern QUOTED_OR_PLAIN_TERMS_WITH_OPTIONAL_NEGATION_PATTERN = Pattern.compile("-*\"([^\"]*)\"|(\\S+)");
 
     private static final Pattern NOT_PATTERN = Pattern.compile(" NOT ");
 
@@ -351,7 +351,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             } else {
                 query.append("ischildnode(n,'");
             }
-            query.append(path).append("')");
+            query.append(JCRContentUtils.sqlEncode(ISO9075.encodePath(path))).append("')");
             query.append(")");
         } else if (!params.getSites().isEmpty()) {
             query.append("where (");
@@ -368,7 +368,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                     }
                 }
                 for (String site : sites) {
-                    query.append("isdescendantnode(n,'/sites/").append(site).append("') or ");
+                    query.append("isdescendantnode(n,'/sites/").append(JCRContentUtils.sqlEncode(site)).append("') or ");
                 }
                 query.delete(query.length() - 4, query.length());
             }
@@ -446,9 +446,8 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                         if (i > 0) {
                             query.append(" or ");
                         }
-                        query.append("fn:name() = '");
-                        query.append(site);
-                        query.append("'");
+                        query.append("fn:name() = ");
+                        query.append(stringToQueryLiteral(site));
                         i++;
                     }
                     query.append("]");
@@ -849,7 +848,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             }
         }
     }
-    
+
     private String createFilenameConstraints(Term textSearch, String[] terms, String constraint, boolean xpath) {
         StringBuilder nameSearchConstraints = new StringBuilder(256);
 
@@ -911,7 +910,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         }
         return nameSearchConstraints.toString();
     }
-    
+
     private String createNodenameLikeTermConstraint(String term, boolean xpath) {
         final String likeTerm = term.contains("*") ? stringToQueryLiteral(StringUtils.replaceChars(term, '*', '%'))
                 : stringToQueryLiteral("%" + term + "%");

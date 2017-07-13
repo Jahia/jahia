@@ -44,6 +44,7 @@
 package org.jahia.services.search.jcr;
 
 import com.google.common.collect.Sets;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -78,6 +79,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.query.*;
+
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -104,8 +106,8 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     private static final Pattern AND_PATTERN = Pattern.compile(" AND ");
 
     private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile("\\s{2,}");
-    
-    private static final Pattern QUOTED_OR_PLAIN_TERMS_WITH_OPTIONAL_NEGATION_PATTERN = Pattern.compile("-*\"([^\"]*)\"|(\\S+)");    
+
+    private static final Pattern QUOTED_OR_PLAIN_TERMS_WITH_OPTIONAL_NEGATION_PATTERN = Pattern.compile("-*\"([^\"]*)\"|(\\S+)");
 
     private static final Pattern NOT_PATTERN = Pattern.compile(" NOT ");
 
@@ -167,9 +169,9 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                 Map<String, JCRNodeHit> addedHits = new HashMap<String, JCRNodeHit>();
                 List<JCRNodeHit> hitsToAdd = new ArrayList<JCRNodeHit>();
                 final int requiredHits = limit + offset;
-                
+
                 boolean displayableNodeCompat = Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("search.displayableNodeCompat"));
-                
+
                 while (it.hasNext()) {
                     count++;
                     Row row = it.nextRow();
@@ -186,23 +188,23 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                             boolean skipNode = isNodeToSkip(node, criteria, languages);
 
                             JCRNodeHit hit = !skipNode ? buildHit(row, node, context, usageFilterSites) : null;
-                            
-                            if (!skipNode && !displayableNodeCompat) { 
-                            	//check if node is invisible (or don't have a displayable parent or reference)
+
+                            if (!skipNode && !displayableNodeCompat) {
+                                //check if node is invisible (or don't have a displayable parent or reference)
                                 skipNode = hit.getDisplayableNode() == null;
-                            }                            
+                            }
                             if (!skipNode && usageFilterSites != null
                                     && !usageFilterSites.contains(node.getResolveSite().getName())) {
                                 skipNode = hit.getUsages().isEmpty();
                             }
                             if (!skipNode) {
                                 hitsToAdd.add(hit);
-                                
+
                                 if (hitsToAdd.size() + addedHits.size() >= requiredHits) {
                                     SearchServiceImpl.executeURLModificationRules(hitsToAdd, context);
                                     addHitsToResults(hitsToAdd, results, addedHits, offset);
                                     hitsToAdd.clear();
-                                    
+
                                     if (addedHits.size() >= requiredHits) {
                                         response.setHasMore(true);
                                         if (it.getSize() > 0) {
@@ -269,7 +271,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             }
         }
     }
-    
+
     private boolean isNodeToSkip(JCRNodeWrapper node, SearchCriteria criteria, Set<String> languages) {
         boolean skipNode = false;
         try {
@@ -348,7 +350,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             } else {
                 query.append("ischildnode(n,'");
             }
-            query.append(path).append("')");
+            query.append(JCRContentUtils.sqlEncode(ISO9075.encodePath(path))).append("')");
             query.append(")");
         } else if (!params.getSites().isEmpty()) {
             query.append("where (");
@@ -365,7 +367,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                     }
                 }
                 for (String site : sites) {
-                    query.append("isdescendantnode(n,'/sites/").append(site).append("') or ");
+                    query.append("isdescendantnode(n,'/sites/").append(JCRContentUtils.sqlEncode(site)).append("') or ");
                 }
                 query.delete(query.length() - 4, query.length());
             }
@@ -377,7 +379,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
 
         query = appendConstraints(params, query, false);
         query = appendOrdering(params, query, false);
-        
+
         return query.toString();
     }
 
@@ -443,9 +445,8 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                         if (i > 0) {
                             query.append(" or ");
                         }
-                        query.append("fn:name() = '");
-                        query.append(site);
-                        query.append("'");
+                        query.append("fn:name() = ");
+                        query.append(stringToQueryLiteral(site));
                         i++;
                     }
                     query.append("]");
@@ -465,7 +466,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
 
         query = appendConstraints(params, query, true);
         query = appendOrdering(params, query, true);
-        
+
         xpathQuery = query.toString();
 
         if (logger.isDebugEnabled()) {
@@ -544,7 +545,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
 
         return query;
     }
-    
+
     private StringBuilder appendOrdering(SearchCriteria params, StringBuilder query, boolean xpath) {
         StringBuilder orderByClause = new StringBuilder();
         if (params.getOrderings().isEmpty()) {
@@ -831,7 +832,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                         }
                     }
                     if (terms.length > 1) {
-                        String tag = taggingService.getTagHandler().execute(textSearch.getTerm());                            
+                        String tag = taggingService.getTagHandler().execute(textSearch.getTerm());
                         if (!StringUtils.isEmpty(tag)) {
                             addConstraint(textSearchConstraints, OR, getPropertyName("j:tagList", xpath) + "=" + stringToJCRSearchExp(tag));
                         }
@@ -844,7 +845,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             }
         }
     }
-    
+
     private String createFilenameConstraints(Term textSearch, String[] terms, String constraint, boolean xpath) {
         StringBuilder nameSearchConstraints = new StringBuilder(256);
 
@@ -906,14 +907,14 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         }
         return nameSearchConstraints.toString();
     }
-    
+
     private String createNodenameLikeTermConstraint(String term, boolean xpath) {
         final String likeTerm = term.contains("*") ? stringToQueryLiteral(StringUtils.replaceChars(term, '*', '%'))
                 : stringToQueryLiteral("%" + term + "%");
         String lowerCaseTerm = likeTerm.toLowerCase();
         return xpath ? ("jcr:like(fn:lower-case(fn:name()), " + lowerCaseTerm + ")")
                 : ("LOWER(n.[j:nodename]) like " + lowerCaseTerm);
-    }    
+    }
 
     private void addLanguageConstraints(SearchCriteria params,
                                         StringBuilder constraints, boolean xpath) {
@@ -985,7 +986,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     private String getSearchExpressionForMatchType(String term,
                                                    MatchType matchType, boolean applyFilter, String postfix) {
         // as Lucene does not analyze wildcard terms, check whether integrator requested Jahia
-        // to apply this accent filter 
+        // to apply this accent filter
         if (applyFilter && StringUtils.containsAny(term, "?*")) {
             term = removeAccents(term);
         }
@@ -1242,7 +1243,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         }
 
         Locale locale = context.getMainResourceLocale();
-        
+
         Suggestion suggestion = null;
         JCRSessionWrapper session;
         try {

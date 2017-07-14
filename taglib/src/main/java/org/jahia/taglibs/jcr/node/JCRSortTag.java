@@ -166,12 +166,12 @@ public class JCRSortTag extends AbstractJCRTag {
 
                         final boolean o1HasProp = o1.hasProperty(prop);
                         final boolean o2HasProp = o2.hasProperty(prop);
-                        int r;
+                        int r = 0;
                         if (!o1HasProp && o2HasProp) {
                             r = -multiplier;
                         } else if (!o2HasProp && o1HasProp) {
                             r = multiplier;
-                        } else {
+                        } else if (o1HasProp && o2HasProp) {
                             Property p1 = o1.getProperty(prop);
                             Property p2 = o2.getProperty(prop);
                             if (referenceProp != null) {

@@ -80,7 +80,6 @@
 		position: relative;
 		height: calc(100% + 4px) !important;
 
-
 	}
 
 
@@ -99,9 +98,10 @@
 
 				display: none;
 
+				/*
 				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
-					/* USED AS MASK FOR CAPUTURING CLICK TO CLOSE SIDE PANELS*/
-					/* Need to swap to a div that measures the height of the iframe so that scrolling can still be done */
+					// USED AS MASK FOR CAPUTURING CLICK TO CLOSE SIDE PANELS
+					// Need to swap to a div that measures the height of the iframe so that scrolling can still be done
 					top: 0;
 					left: 0;
 					width: 100%!important;
@@ -111,6 +111,7 @@
 					background: $transparent;
 					display: block;
 				}
+				*/
 
 			}
 		}

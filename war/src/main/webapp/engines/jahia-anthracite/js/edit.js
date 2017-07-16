@@ -26,6 +26,17 @@
 
 			// Setup listeners
 			$(document).ready(function(){
+				$(window).on("blur", function(){
+					// Window has lost focus, so presume that the user has clicked in the iframe.
+					// If the side panel is open, then close it
+
+					if($("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+						indigoQF.listeners.closeSidePanel()
+
+					}
+
+				});
+
 				$("body")
 					.on("click", ".x-viewport-editmode .x-toolbar-first > table", indigoQF.listeners.toggleThemeMode)
 					.on("click", ".editmode-managers-menu", indigoQF.listeners.openManagerMenu)
@@ -35,7 +46,6 @@
 					.on("mouseover", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", indigoQF.listeners.mouseOverHamburger)
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", indigoQF.listeners.clickSidePanelMoreOptionsButton)
 					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickSidePanelFileThumbMoreOptionsButton)
-					.on("click", ".x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(2) > div:nth-child(2)", indigoQF.listeners.closeSidePanel)
 					.on("click", ".x-current-page-path", indigoQF.listeners.clearMultiSelection)
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", indigoQF.listeners.addPageToHistory);
 
@@ -90,7 +100,8 @@
 				editModePageName: ".x-border-panel.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)",
 				editModeMoreInfo: "body[data-selection-count='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)",
 				contributeModeLanguageSelector: ".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div input",
-				closeSidePanelCapture: "[data-INDIGO-GWT-SIDE-PANEL='open'] .x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(2) > div:nth-child(2)"
+				closeSidePanelCapture: "[data-INDIGO-GWT-SIDE-PANEL='open'] .x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(2) > div:nth-child(2)",
+				closeSidePanelCapture: "[data-INDIGO-GWT-SIDE-PANEL='open'] .gwt-body-edit"
 			}
 		},
 		listeners: {
@@ -264,6 +275,13 @@
 
 						// Set multiselect status in body attribute...
 						$("body").attr("data-multiselect", multiselect);
+
+						// QUICKFIX::: CLose Side Panel If Open ( user has selected an element )
+						if($("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+							indigoQF.listeners.closeSidePanel();
+
+						}
+						// END QUICKFIX
 
 						// Page Title in Edit Made
 						$(".x-current-page-path").attr("data-PAGE-NAME",pageTitle);
@@ -514,6 +532,7 @@
 			},
 			closeSidePanel: function(){
 				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
+				console.log("CLOSE IT");
 
 			},
 			addPageToHistory: function(){
@@ -640,6 +659,15 @@
 
 						// Loop through all mutations in BODY tag
 						mutations.forEach(function(mutation){
+
+							if(mutation.attributeName == "class"){
+								if($("body").hasClass("x-dd-cursor")){
+									// x-dd-cursor class is what GWT uses to say that a drag and drop has started.
+									indigoQF.listeners.closeSidePanel();
+
+								}
+
+							}
 
 							if(mutation.attributeName == "data-currentuser"){
 								if(indigoQF.status.quickMenu.active){

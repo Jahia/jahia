@@ -45,6 +45,7 @@ package org.jahia.services.render.webflow;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.filter.TemplateAttributesFilter;
 import org.jahia.services.render.scripting.Script;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +101,10 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
                 if (request.getParameter("jsite") != null) {
                     params.put("jsite", request.getParameter("jsite"));
                 }
+                if (request.getAttribute(TemplateAttributesFilter.FORCED_LOCALE_ATTRIBUTE) != null) {
+                    params.put(WebflowAction.WEBFLOW_LOCALE_PARAMETER,request.getAttribute(TemplateAttributesFilter.FORCED_LOCALE_ATTRIBUTE).toString());
+                }
+
                 appendQueryParameters(path, params, getEncodingScheme(request));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);

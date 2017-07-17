@@ -652,12 +652,7 @@
 
 /* FORMS */
 
-    %form_label {
-        padding: 0!important;
-        margin: 0!important;
 
-        @include text(11px, $dark-clouds, $semilight);
-    }
 
 	%text_input {
         background: $text_input_bg;
@@ -765,11 +760,13 @@
         position: relative;
     }
 
-    %form_label {
 
-    	@include text(12px, $form_label_text, $normal);
+	%form_label {
+        padding: 0!important;
+        margin: 0!important;
+
+        @include text(11px, $dark-clouds, $semilight, $font-1 !important);
     }
-
 
 
     %action_bar_button_text {

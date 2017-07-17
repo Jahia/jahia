@@ -393,6 +393,12 @@ legend {
 	left: 0!important;
 	top: 0!important;
 	position: relative!important;
+	margin-right: 3px;
+
+	&:only-child {
+		margin: 0;
+		top: 3px!important;
+	}
 }
 
 fieldset {
@@ -403,6 +409,8 @@ fieldset {
 
 label {
 	// See .x-form-item-label
+
+	@extend %form_label !optional;
 }
 
 /* Form item Outer Container ... */
@@ -529,6 +537,7 @@ div[role="combobox"] {
 /* Checkbox Container */
 .x-form-check-wrap {
 	height: auto!important;
+	margin-right: 10px;
 }
 
 /* Checkbox Radio Button */
@@ -1139,6 +1148,111 @@ form,
 		}
 	}
 }
+
+///////////// RICH TEXT MENU
+
+.cke {
+	// CKE Rich Text Editor
+
+	background: transparent!important;
+    border: none!important;
+    box-shadow: none!important;
+}
+
+.cke_inner {
+	// CKE container
+	background: transparent!important;
+}
+
+.cke_top {
+	// CKE Toolbar Container
+	width: 100%!important;
+	box-sizing: border-box!important;
+	background: transparent!important;
+    border: none!important;
+    box-shadow: none!important;
+	padding: 10px 0 4px!important;
+}
+
+.cke_toolbox {
+	// CKE Toolbox Container
+
+}
+
+.cke_toolbar {
+	// CKE Tool Group Container
+
+}
+
+.cke_toolgroup {
+	// CKE Tool Group
+	border: none!important;
+	background: #e4e5e5!important;
+	box-shadow: none!important;
+	border-radius: 0!important;
+}
+
+
+
+.cke_combo {
+	// CKE Combo Container
+
+}
+
+.cke_combo_label {
+	// CKE Combo Label
+	text-shadow: none!important;
+
+}
+
+.cke_combo_button {
+	// CKE Combo Button
+	border: none!important;
+	background: #e4e5e5!important;
+	box-shadow: none!important;
+	border-radius: 0!important;
+}
+
+.cke_combo_text {
+	// CKE Combo Label
+	text-shadow: none!important;
+}
+
+
+
+
+
+.cke_contents {
+	// CKE Content Container
+}
+
+.cke_wysiwyg_frame {
+	// CKE Content (in iframe)
+
+}
+
+.cke_bottom {
+	// CKE Footer Container
+	border: none!important;
+    background: #e4e5e5!important;
+}
+
+.cke_resizer {
+	// CKE Resizer button
+	display: none!important;
+
+}
+
+.cke_path {
+	// CKE Path Selector
+
+	a {
+		// CKE Path Item
+		text-shadow: none;
+		@include text(12px, $dark-clouds, $extralight);
+	}
+}
+
 
 
 /* Not sure about the fiability of this as it is relying on ext-webkit ... */

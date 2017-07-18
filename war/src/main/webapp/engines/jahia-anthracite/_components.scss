@@ -414,7 +414,11 @@ input[type="checkbox"] {
 	margin-right: 3px;
 
 	legend & {
-		width: 25px!important;
+		width: 46px !important;
+		position: absolute !important;
+		height: 17px!important;
+		top: 13px;
+		right: 22px;
 
 		&:hover {
 			cursor: pointer;
@@ -439,20 +443,57 @@ input[type="checkbox"] {
 		box-sizing: border-box;
 
 		legend & {
-			content: '';
-			position: absolute;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			border: 1px solid #7a7e80;
-			box-shadow: inset 1px 1px 2px 1px rgba(40, 43, 45, 0.1);
-			box-sizing: border-box;
-			/* border-radius: 100px; */
-			width: 25px;
-			background: grey;
+			content: 'Off';
+		    position: absolute;
+		    left: 0;
+		    top: 0;
+		    width: 100%;
+		    height: 100%;
+		    border: 1px solid #7a7e80;
+		    box-shadow: inset 1px 1px 2px 1px rgba(40, 43, 45, 0.1);
+		    box-sizing: border-box;
+		    /* border-radius: 100px; */
+		    width: 46px;
+		    background: #505050;
+		    border: none;
+		    text-align: right;
+		    padding-right: 4px;
+		    font-size: 10px;
+		    font-weight: 800;
+		    color: #7a7a7a;
+		    text-transform: uppercase;
+		    line-height: 17px;
 		}
 	}
+
+	&:checked:before {
+
+		legend & {
+			content: " ";
+		    position: absolute;
+		    left: 0;
+		    top: 0;
+		    width: 100%;
+		    height: 100%;
+		    border: 1px solid #7a7e80;
+		    box-shadow: inset 1px 1px 2px 1px rgba(40, 43, 45, 0.1);
+		    box-sizing: border-box;
+		    /* border-radius: 100px; */
+		    width: 46px;
+		    background: #505050;
+		    border: none;
+		    text-align: left;
+		    padding-left: 6px;
+		    font-size: 10px;
+		    font-weight: 800;
+		    color: #f1f1f1;
+		    text-transform: uppercase;
+		    line-height: 17px;
+		}
+
+	}
+
+
 
 	&:checked:after {
 		content: " ";
@@ -467,22 +508,29 @@ input[type="checkbox"] {
 		background-size: 15px 15px;
 
 		legend & {
-			content: " ";
+			content: "On";
 			position: absolute;
-			right: 1px;
+			right: 2px;
 			left: auto;
-			top: 1px;
+			top: 2px;
 			width: 100%;
 			height: 100%;
 			text-align: center;
 			color: white;
 			background-size: 15px 15px;
-			width: 13px;
+			width: 15px;
 			height: 13px;
-			background: #00e700;
+			background: #1bb010;
+			color: white;
+			text-transform: uppercase;
+			font-size: 10px;
+			font-weight: 800;
+			padding: 0 5px;
 		}
 
 	}
+
+
 
 	&:not(:checked):after {
 		content: " ";
@@ -495,27 +543,36 @@ input[type="checkbox"] {
 		color: white;
 
 		legend & {
-			content: " ";
 			position: absolute;
 			right: auto;
-			left: 1px;
-			top: 1px;
+			left: 2px;
+			top: 2px;
 			width: 100%;
 			height: 100%;
 			text-align: center;
 			color: white;
 			background-size: 15px 15px;
-			width: 13px;
+			width: 15px;
 			height: 13px;
-			background: $white-clouds;
+			background: #6b6c6d;
+			/* padding: 0 5px; */
+			color: grey;
+			text-transform: uppercase;
+			font-size: 10px;
+			font-weight: 800;
+			content: " ";
 		}
 
 	}
 
 
 
+
+
 	+ .x-fieldset-header-text {
-		margin-left: 33px;
+		float: left;
+		position: relative;
+		left: 0;
 	}
 }
 
@@ -556,7 +613,6 @@ label {
 	float: none!important;
 	clear: both!important;
 	display: inline-block!important;
-	margin-top: 17px!important;
 
 	@extend %form_label !optional;
 }
@@ -564,6 +620,12 @@ label {
 /* Text Field Input */
 .x-form-text {
 	@extend %text_input !optional;
+
+	// Exceptions ...
+	.engine-panel & {
+		@extend %text_input--edit_engine !optional;
+
+	}
 
 	width: 100%!important;
 	box-sizing: border-box;
@@ -577,10 +639,27 @@ label {
 
 	&:hover {
 		@extend %text_input_hover !optional;
+
+		// Exceptions ...
+		.engine-panel & {
+			@extend %text_input_hover--edit_engine !optional;
+
+		}
 	}
 
 	&:focus {
 		@extend %text_input_focus !optional;
+
+		// Exceptions ...
+		.engine-panel & {
+			@extend %text_input_focus--edit_engine !optional;
+
+		}
+	}
+
+	&[disabled] {
+		@extend %text_input_disabled--edit_engine !optional;
+
 	}
 
 
@@ -621,24 +700,48 @@ div[role="combobox"] {
 		/* Clear button */
 		position: absolute!important;
 		right: 0px!important;
+
+
 	}
 
 	&.x-form-trigger-arrow {
 		/* Combo Down Arrow Button */
 		@extend %combo_arrow_up !optional;
 
+		.engine-panel & {
+			@extend %combo_arrow_up--edit_panel !optional;
+
+		}
+
 		&.x-form-trigger-over {
 			@extend %combo_arrow_hover !optional;
+
+			.engine-panel & {
+				@extend %combo_arrow_hover--edit_panel !optional;
+
+			}
 		}
 	}
 
 	&.x-form-clear-trigger {
-		/* Combo Down Arrow Button */
+		/* Combo X Button */
 		@extend %form_clear_up !optional;
+
+		.engine-panel & {
+			@extend %form_clear_up--edit_panel !optional;
+
+		}
 
 		&.x-form-trigger-over {
 			@extend %form_clear_hover !optional;
+
+			.engine-panel & {
+				@extend %form_clear_hover--edit_panel !optional;
+
+			}
 		}
+
+
 	}
 }
 

@@ -2,6 +2,22 @@
 // EDIT ENGINE //////////////////////////////////
 /////////////////////////////////////////////////
 
+body {
+
+	&:before {
+		content: attr(data-singleselection-node-displayname);
+	    display: block;
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    z-index: 9999;
+	    left: 314px!important;
+	    top: 47px!important;
+	    font-size: 18px!important;
+	}
+
+}
+
 .engine-panel {
 	z-index: $zindex_edit_engine_panel;
 	background: $edit_engine_bg;
@@ -11,13 +27,33 @@
     width: 100%!important;
     height: 100%;
 
+	&:before {
+		content: "DX Edit Mode";
+	    font-size: 36px;
+	    display: inline-block;
+	    color: #dddcdc;
+	    margin-left: -2px;
+	    margin-right: 65px;
+	    margin-top: 15px;
+	    position: fixed;
+	    width: 250px;
+	    left: 72px;
+	    top: 40px;
+		font-family: Raleway;
+		font-weight: 100;
+	}
+
+	fieldset {
+		width: 100%!important;
+	}
+
 	form {
 		height: auto!important;
 	}
 
 	.x-form-readonly {
 		 .x-form-text {
-			@extend %text_input_disabled !optional;
+			@extend %text_input_disabled--edit_engine !optional;
 
 		}
 	}
@@ -28,9 +64,9 @@
 	}
 
 	.x-form-label-left {
-		border-left: 1px solid $form_fieldset_left_border;
+		/*border-left: 1px solid $form_fieldset_left_border;
 		border-left: 3px solid rgba(40, 43, 45, 0.1);
-		padding-left: 7px;
+		padding-left: 7px;*/
 	}
 
 
@@ -152,6 +188,17 @@
 			&:nth-child(1){
 				/* Form */
 				height: auto!important;
+				width: 100%!important;
+
+				> div {
+					width: 100%!important;
+
+				}
+
+				.x-panel-bwrap {
+					width: 100%!important;
+
+				}
 			}
 
 			&:nth-child(2){
@@ -200,24 +247,33 @@
 	// HEADER
 	> div.x-panel-header {
 
-		left: 0!important;
-	    top: 0!important;
-	    position: fixed!important;
-	    height: 120px!important;
+		left: 0 !important;
+	    top: 0 !important;
+	    position: fixed !important;
+	    height: 130px !important;
 	    z-index: 10;
 	    width: 100%;
-		padding: 35px 73px;
-		box-sizing: border-box;
+	    box-sizing: border-box;
 
 		> div {
 			// Language Selector
-			float: right;
-		    margin-top: 8px;
-		    margin-right: 24px;
+			margin-right: 24px;
+		    position: absolute;
+		    right: 46px;
+		    top: 67px;
+
+			input {
+				// FInd better way of skining input in general for all form elements in edit mode
+				background: #656565;
+				color: #bfc3c1;
+			}
 		}
 
 		.x-panel-header-text {
 			// Element Title
+			position: absolute;
+		    top: 77px;
+		    left: 359px;
 
 			@extend %edit_engine_title;
 
@@ -227,10 +283,10 @@
 	// BODY
 	> .x-panel-bwrap {
 
-		height: calc(100% - 220px);
-	    position: fixed;
-	    width: 100%;
-	    top: 120px;
+		height: calc(100% - 130px);
+		position: fixed;
+		width: 100%;
+		top: 130px;
 
 		.x-panel-tbar {
 			// Top action bar
@@ -263,34 +319,44 @@
 
 					> .x-tab-panel-header {
 						// Tab list menu
-						width: 250px !important;
+						width: 360px !important;
 						display: inline-block;
 						box-sizing: border-box;
 						vertical-align: top;
 						border: none;
 						height: 100%;
 						background: none;
-						padding: 0 0 0 75px;
+						padding: 0 0 0 73px;
 
 						.x-tab-strip-wrap {
 							// Menu Container
 							width: 100%;
 							height: 100%;
+							padding-left: -1px;
 
 							.x-tab-strip {
 								// At last, the final container
 								width: 100%;
-								height: 100%;
+								height: auto;
 								border:none;
+								border-left: 1px solid #4b4b4b;
 								background: none;
-								padding: 0;
+								padding: 0 0 0 5px;
 								margin: 0;
+
+
 
 								li {
 									// Tab entry
 									float: none;
 									margin-left: 0;
 									display: block;
+
+									&.x-tab-strip-active {
+										border-left: 3px solid #eaeaea;
+									    left: -7px;
+									    padding-left: 4px;
+									}
 
 									.x-tab-right {
 										// Button container
@@ -324,10 +390,10 @@
 					.x-tab-panel-body {
 						// Tab content container
 						display: inline-block;
-						width: calc(100% - 321px) !important;
+						width: calc(100% - 431px) !important;
 						box-sizing: border-box;
 						vertical-align: top;
-						height: 100%!important;
+						height: 100% !important;
 						background: none;
 
 						> .x-panel-mc {
@@ -384,8 +450,8 @@
 		> .x-panel-bbar {
 			// Footer action bar
 			display: block;
-			width: 100%!important;
-			height: 100px;
+			width: 283px!important;
+			height: 120px;
 			position: fixed;
 			bottom: 0;
 			left: 0;

@@ -166,13 +166,13 @@
     $form_clear_bg_hover:           rgba($grey-clouds, .7);
 
     $edit_engine_title:             $dark-clouds;
-    $edit_engine_tab:               rgba($dark-clouds, .5);
-    $edit_engine_tab_selected:      $jahia-blue;
-    $edit_engine_tab_over:          rgba($dark-clouds, .7);
-    $edit_engine_tab_selected_over: $jahia-blue;
-    $edit_engine_bg:                $white-clouds;
+    $edit_engine_tab:               #a3a3a3;
+    $edit_engine_tab_selected:      #f1f1f1;
+    $edit_engine_tab_over:          rgba($edit_engine_tab_selected, .7);
+    $edit_engine_tab_selected_over: $edit_engine_tab_selected;
+    $edit_engine_bg:                #5e5e5e;
 
-    $form_legend_text:              $black-clouds;
+    $form_legend_text:              #ebebeb;
     $form_label_text:               rgba($black-clouds, .7);
     $form_fieldset_bg:              darken($white-clouds, 1%);
     $form_fieldset_left_border:     rgba($dark-clouds, .3);
@@ -648,18 +648,28 @@
         background-image: url($combo_icon_hover);
     }
 
+    // EDIT ENGINE EXEPTIONS
+        %combo_arrow_up--edit_panel {
+            background-color: transparent !important;
+            opacity: 0.5;
+        }
+
+        %combo_arrow_hover--edit_panel {
+            background-color: transparent !important;
+            opacity: 1;
+        }
+
 
 
 /* FORMS */
 
 
-
-	%text_input {
+    %text_input {
         background: $text_input_bg;
         padding: $text_input_padding;
         border: $text_input_border;
 
-		transition: all 0.15s ease-in 0s;
+        transition: all 0.15s ease-in 0s;
 
         @include text($text_input_font_size, $text_input_color, $text_input_font_weight, $text_input_font_family);
     }
@@ -676,14 +686,38 @@
 
     %text_input_disabled {
         background: $transparent;
-        padding: $text_input_padding;
+
+
+        padding: 3px 40px 3px 5px;
         padding-left: 0;
-        border: $text_input_border;
+        border: 1px solid transparent;
+        transition: all 0.15s ease-in 0s;
 
-		transition: all 0.15s ease-in 0s;
-
-        @include text($text_input_font_size, $text_input_color, $text_input_font_weight, $text_input_font_family);
+        @include text($text_input_font_size, #d1d1d1, $text_input_font_weight, $text_input_font_family);
     }
+
+    // EDIT ENGINES EXCEPTION
+        %text_input--edit_engine {
+            background: #6a6a6a;
+
+            @include text($text_input_font_size, #dddcdc, $text_input_font_weight, $text_input_font_family);
+        }
+
+        %text_input_hover--edit_engine {
+            background: #797878;
+            color: #F9F8F8!important;
+        }
+
+    	%text_input_focus--edit_engine {
+            background: #dddcdc;
+    		color: #5e5e5e!important;
+        }
+
+        %text_input_disabled--edit_engine {
+            background: transparent !important;
+            @include text($text_input_font_size, rgb(164, 163, 163)!important, $text_input_font_weight, $text_input_font_family);
+
+        }
 
 	%combo_input {
         padding: $text_input_padding !important;
@@ -719,27 +753,40 @@
         background-image: url($form_clear_icon_hover);
     }
 
+    // EDIT PANEL EXCEPTIONS
+        %form_clear_up--edit_panel {
+            background-color: transparent !important;
+            opacity: 0.5;
+        }
+
+        %form_clear_hover--edit_panel {
+            background-color: transparent !important;
+            opacity: 1;
+        }
+
     %edit_engine_title {
-    	@include text(29px, $edit_engine_title, $extralight);
+    	@include text(14px, #a5a5a5, $extralight);
+
+
     }
 
     %edit_engine_tab {
-    	padding: 5px 0;
+    	padding: 5px 0 5px 5px;
 
-    	@include text(17px, $edit_engine_tab, $extralight);
+    	@include text(14px, $edit_engine_tab, $extralight);
     }
 
     %edit_engine_tab_selected {
-    	@include text(17px, $edit_engine_tab_selected + !important, $extralight);
+    	@include text(14px, $edit_engine_tab_selected + !important, $extralight);
     }
 
     %edit_engine_tab_over {
-    	@include text(17px, $edit_engine_tab_over + !important, $extralight);
+    	@include text(14px, $edit_engine_tab_selected + !important, $extralight);
 
     }
 
     %edit_engine_tab_selected_over {
-    	@include text(17px, $edit_engine_tab_selected_over + !important, $extralight);
+    	@include text(14px, $edit_engine_tab_selected_over + !important, $extralight);
 
     }
 
@@ -755,26 +802,31 @@
 	%form_legend {
     	padding: 0!important;
         position: absolute;
-        top: -2px;
-        left: 10px;
+        top: 14px;
+        left: 30px;
+        text-transform: uppercase;
 
-    	@include text(16px, $form_legend_text, $extralight);
+    	@include text(11px, $form_legend_text, $semibold);
     }
 
     %form_fieldset {
-        border: none!important;
-        padding: 28px 10px 10px 11px !important;
-        margin: 0 0 30px 0 !important;
-        //background: $form_fieldset_bg;
+        border: none !important;
+        padding: 43px 10px 20px 29px !important;
+        margin: 0 23px 10px 0 !important;
         position: relative;
+        background: #656565;
+        box-sizing: border-box;
     }
 
 
 	%form_label {
         padding: 0!important;
         margin: 0!important;
+        text-transform: uppercase;
+        line-height: 24px;
 
-        @include text(11px, $dark-clouds, $semilight, $font-1 !important);
+        //@include text(11px, $dark-clouds, $semilight, $font-1 !important);
+        @include text(10px, rgba(209, 209, 209, 0.6), $semibold, $font-1 !important);
     }
 
 
@@ -792,7 +844,7 @@
 
     %action_bar_button_icon {
     	background: $grey-clouds;
-        opacity: 0.7;
+        opacity: 1;
     	padding: 5px 10px 5px 29px;
     	@include text(16px, $white-clouds, $extralight);
 
@@ -802,7 +854,8 @@
     }
 
     %action_bar_button_icon_suggested {
-    	background: $jahia-blue;
+        background: $jahia-blue;
+    	background: #f26d4f;
 
     }
 
@@ -818,11 +871,11 @@
 
 
     %form_button_text {
-    	background: $white-clouds;
+    	background: transparent;
         text-transform: uppercase;
     	padding: 4px 0 0;
-        border-bottom: 1px solid #00a0e3;
-    	@include text(10px, $jahia-blue, $normal);
+        border-bottom: 1px solid #999999;
+    	@include text(10px, #dddcdc, $normal);
     }
 
     %form_button_text_hover {

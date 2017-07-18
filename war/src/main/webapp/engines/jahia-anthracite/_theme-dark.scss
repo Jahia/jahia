@@ -743,10 +743,19 @@
 
     }
 
-    %form_legend {
+	%form_legend_collapsed {
+    	//padding: 0!important;
+        //position: absolute;
+        //top: -2px;
+        //left: 10px;
+
+    	//@include text(16px, rgba($form_legend_text, .2), $extralight);
+    }
+
+	%form_legend {
     	padding: 0!important;
         position: absolute;
-        top: 7px;
+        top: -2px;
         left: 10px;
 
     	@include text(16px, $form_legend_text, $extralight);
@@ -754,7 +763,7 @@
 
     %form_fieldset {
         border: none!important;
-        padding: 38px 10px 10px 11px !important;
+        padding: 28px 10px 10px 11px !important;
         margin: 0 0 30px 0 !important;
         //background: $form_fieldset_bg;
         position: relative;

@@ -350,7 +350,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             } else {
                 query.append("ischildnode(n,'");
             }
-            query.append(JCRContentUtils.sqlEncode(ISO9075.encodePath(path))).append("')");
+            query.append(JCRContentUtils.sqlEncode(path)).append("')");
             query.append(")");
         } else if (!params.getSites().isEmpty()) {
             query.append("where (");
@@ -405,6 +405,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                 if (folder.length() == 0) {
                     continue;
                 }
+                folder = ISO9075.encode(folder);
                 if (!includeChildren) {
                     if (lastFolder != null) {
                         jcrPath.append(lastFolder).append("/");
@@ -418,7 +419,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                 jcrPath.append("/");
                 lastFolder = "*";
             }
-            query.append(ISO9075.encodePath(jcrPath.toString())).append("element(").append(
+            query.append(jcrPath).append("element(").append(
                     lastFolder).append(",").append(
                     getNodeType(params)).append(")");
         } else if (!params.getSites().isEmpty()) {
@@ -436,7 +437,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                     }
                 }
                 if (sites.size() == 1) {
-                    query.append(sites.iterator().next());
+                    query.append(ISO9075.encode(sites.iterator().next()));
                 } else {
                     query.append("*[");
                     int i = 0;
@@ -445,7 +446,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                             query.append(" or ");
                         }
                         query.append("fn:name() = ");
-                        query.append(stringToQueryLiteral(site));
+                        query.append(stringToQueryLiteral(ISO9075.encode(site)));
                         i++;
                     }
                     query.append("]");

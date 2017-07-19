@@ -49,6 +49,8 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -424,5 +426,39 @@ public class ModuleHelper {
             simpleModules.put(path,new ArrayList<SimpleModule>());
         }
         simpleModules.get(path).add(simpleModule);
+    }
+
+    /**
+     * Loads the specified node type information from the server and does a call to the provided callback after the result is received.
+     * 
+     * @param nodeType
+     *            the node type name to request from server
+     * @param callback
+     *            the callback handler
+     */
+    public static void loadNodeType(String nodeType, final AsyncCallback<GWTJahiaNodeType> callback) {
+        JahiaContentManagementService.App.getInstance().getNodeType(nodeType, new AsyncCallback<GWTJahiaNodeType>() {
+            public void onFailure(Throwable caught) {
+                callback.onFailure(caught);
+            }
+
+            public void onSuccess(GWTJahiaNodeType result) {
+                if (result != null) {
+                    nodeTypes.put(result.getName(), result);
+                }
+                callback.onSuccess(result);
+            }
+        });
+    }
+
+    /**
+     * Checks if the specified node is allowed to be edited according to the component permissions.
+     * 
+     * @param nodeType
+     *            the node type to be checked
+     * @return <code>true</code> if the specified node is allowed to be edited; <code>false</code> otherwise
+     */
+    public static boolean canUseComponentForEdit(GWTJahiaNodeType nodeType) {
+        return !Boolean.FALSE.equals(nodeType.get("canUseComponentForEdit"));
     }
 }

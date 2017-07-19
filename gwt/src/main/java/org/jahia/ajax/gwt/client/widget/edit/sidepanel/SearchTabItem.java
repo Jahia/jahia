@@ -270,19 +270,18 @@ class SearchTabItem extends SidePanelTabItem {
         grid.addListener(Events.OnDoubleClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent be) {
                 final GWTJahiaNode node = (GWTJahiaNode) be.getModel();
-                if (ModuleHelper.getNodeType(node.getNodeTypes().get(0)) == null) {
-                    JahiaContentManagementService.App.getInstance().getNodeType(node.getNodeTypes().get(0), new AsyncCallback<GWTJahiaNodeType>() {
-                        public void onFailure(Throwable caught) {
-                            // Do nothing
-                        }
+                String nodeTypeName = node.getNodeTypes().get(0);
+                GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(nodeTypeName);
+                if (nodeType == null) {
+                    ModuleHelper.loadNodeType(nodeTypeName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                         public void onSuccess(GWTJahiaNodeType result) {
-                            if (!Boolean.FALSE.equals(result.get("canUseComponentForEdit"))) {
+                            if (ModuleHelper.canUseComponentForEdit(result)) {
                                 EngineLoader.showEditEngine(editLinker, node, null);
                             }
                         }
                     });
                 } else {
-                    if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(node.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
+                    if (ModuleHelper.canUseComponentForEdit(nodeType)) {
                         EngineLoader.showEditEngine(editLinker, node, null);
                     }
                 }

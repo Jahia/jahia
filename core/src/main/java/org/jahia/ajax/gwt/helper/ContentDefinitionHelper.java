@@ -952,9 +952,15 @@ public class ContentDefinitionHelper {
     }
 
     private boolean checkPermissionForType(ExtendedNodeType type, JCRNodeWrapper node) throws NoSuchNodeTypeException {
-        NodeTypeRegistry.getInstance().getNodeType("jmix:accessControllableContent").getDeclaredSubtypes();
-
-        List<ExtendedNodeType> superTypes = Arrays.asList(type.getSupertypes());
+        ExtendedNodeType[] supertypesArray = type.getSupertypes();
+        if (supertypesArray.length == 0) {
+            // nothing to check
+            return true;
+        }
+        Set<ExtendedNodeType> superTypes = new HashSet<>(supertypesArray.length);
+        for (ExtendedNodeType superType : supertypesArray) {
+            superTypes.add(superType);
+        }
         NodeTypeIterator it = NodeTypeRegistry.getInstance().getNodeType("jmix:accessControllableContent").getDeclaredSubtypes();
 
         boolean allowed = true;

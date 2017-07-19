@@ -75,7 +75,7 @@ public class TranslateActionItem extends BaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getSingleSelection() != null
-                && !Boolean.FALSE.equals(ModuleHelper.getNodeType(lh.getSingleSelection().getNodeTypes().get(0)).get("canUseComponentForEdit"))
+                && ModuleHelper.canUseComponentForEdit(ModuleHelper.getNodeType(lh.getSingleSelection().getNodeTypes().get(0)))
                 && !lh.isRootNode()
                 && !lh.isLocked() && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()));

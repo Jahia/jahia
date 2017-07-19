@@ -119,8 +119,7 @@ public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
     protected boolean isNodeTypeAllowed(GWTJahiaNode selectedNode) {
         GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(selectedNode.getNodeTypes().get(0));
         if (nodeType != null) {
-            Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForEdit");
-            if (canUseComponentForCreate != null && !canUseComponentForCreate) {
+            if (!ModuleHelper.canUseComponentForEdit(nodeType)) {
                 return false;
             }
         }

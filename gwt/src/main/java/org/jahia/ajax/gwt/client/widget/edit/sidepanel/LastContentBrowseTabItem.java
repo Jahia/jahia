@@ -180,20 +180,18 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
             public void handleEvent(GridEvent<GWTJahiaNode> baseEvent) {
                 final GWTJahiaNode gwtJahiaNode = baseEvent.getModel();
                 if (gwtJahiaNode != null && editLinker != null) {
-                    if (ModuleHelper.getNodeType(gwtJahiaNode.getNodeTypes().get(0)) == null) {
-                        JahiaContentManagementService.App.getInstance().getNodeType(gwtJahiaNode.getNodeTypes().get(0), new AsyncCallback<GWTJahiaNodeType>() {
-                            public void onFailure(Throwable caught) {
-                                // Do nothing
-                            }
-
+                    String nodeTypeName = gwtJahiaNode.getNodeTypes().get(0);
+                    GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(nodeTypeName);
+                    if (nodeType == null) {
+                        ModuleHelper.loadNodeType(nodeTypeName, new BaseAsyncCallback<GWTJahiaNodeType>() {
                             public void onSuccess(GWTJahiaNodeType result) {
-                                if (!Boolean.FALSE.equals(result.get("canUseComponentForEdit"))) {
+                                if (ModuleHelper.canUseComponentForEdit(result)) {
                                     EngineLoader.showEditEngine(editLinker, gwtJahiaNode, null);
                                 }
                             }
                         });
                     } else {
-                        if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(gwtJahiaNode.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
+                        if (ModuleHelper.canUseComponentForEdit(nodeType)) {
                             EngineLoader.showEditEngine(editLinker, gwtJahiaNode, null);
                         }
                     }

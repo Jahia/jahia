@@ -43,6 +43,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
@@ -59,16 +61,56 @@ public class EditSourceContentActionItem extends BaseActionItem {
 	private static final long serialVersionUID = -2912157212228173779L;
 
 	public void onComponentSelection() {
-        EngineLoader.showEditEngine(linker, linker.getSelectionContext().getSingleSelection().getReferencedNode(), null);
+	    final GWTJahiaNode referencedNode = linker.getSelectionContext().getSingleSelection().getReferencedNode();
+        String refNodeTypeName = referencedNode.getNodeTypes().get(0);
+        GWTJahiaNodeType refNodeType = ModuleHelper.getNodeType(refNodeTypeName);
+        if (refNodeType != null) {
+            if (ModuleHelper.canUseComponentForEdit(refNodeType)) {
+                EngineLoader.showEditEngine(linker, referencedNode, null);
+            }
+        } else {
+            // we need to request the reference node type from server
+            ModuleHelper.loadNodeType(refNodeTypeName, new BaseAsyncCallback<GWTJahiaNodeType>() {
+                public void onSuccess(GWTJahiaNodeType result) {
+                    if (ModuleHelper.canUseComponentForEdit(result)) {
+                        // we allow editing the referenced node
+                        EngineLoader.showEditEngine(linker, referencedNode, null);
+                    } else {
+                        setEnabled(false);
+                    }
+                }
+            });
+        }
     }
 
 	public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         final GWTJahiaNode singleSelection = lh.getSingleSelection();
-        setEnabled(singleSelection != null
+        boolean enabled = singleSelection != null
+                && singleSelection.isReference()
                 && !lh.isRootNode()
                 && hasPermission(lh.getSelectionPermissions())
-                && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()) && singleSelection.isReference()
-                && !Boolean.FALSE.equals(ModuleHelper.getNodeType(singleSelection.getReferencedNode().getNodeTypes().get(0)).get("canUseComponentForEdit")));
+                && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions());
+        if (enabled) {
+            String refNodeTypeName = singleSelection.getReferencedNode().getNodeTypes().get(0);
+            GWTJahiaNodeType refNodeType = ModuleHelper.getNodeType(refNodeTypeName);
+            if (refNodeType != null) {
+                // we have the reference node type here
+                enabled = ModuleHelper.canUseComponentForEdit(refNodeType);
+            } else {
+                // we need to request the reference node type from server
+                // as it is done asynchronously, we enable the action item, but will do the check once again in the onComponentSelection() method
+                ModuleHelper.loadNodeType(refNodeTypeName, new BaseAsyncCallback<GWTJahiaNodeType>() {
+                    public void onSuccess(GWTJahiaNodeType result) {
+                        if (!ModuleHelper.canUseComponentForEdit(result)) {
+                            // we disable this action item
+                            setEnabled(false);
+                        }
+                    }
+                });
+            }
+        }
+        
+        setEnabled(enabled);
 	}
 }

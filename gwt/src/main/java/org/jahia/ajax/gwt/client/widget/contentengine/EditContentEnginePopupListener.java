@@ -64,7 +64,7 @@ public class EditContentEnginePopupListener implements Listener<ComponentEvent> 
         if (!module.isSelectable() || MainModule.isGlobalSelectionDisabled()) {
             return;
         }
-        if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(module.getNode().getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
+        if (ModuleHelper.canUseComponentForEdit(ModuleHelper.getNodeType(module.getNode().getNodeTypes().get(0)))) {
             EngineLoader.showEditEngine(editLinker, module.getNode(), null);
         }
     }

@@ -27,6 +27,16 @@ body {
     width: 100%!important;
     height: 100%;
 
+
+
+	.x-form-element {
+		> div {
+			> div:only-child {
+				width: calc(100% - 150px)!important;
+			}
+		}
+	}
+
 	&:before {
 		content: "DX Edit Mode";
 	    font-size: 36px;
@@ -45,7 +55,73 @@ body {
 
 	fieldset {
 		width: 100%!important;
+
+		.x-form-item-label {
+			float:left!important;
+			margin-top: 0!important;
+			width: 150px!important;
+		}
+
+		.x-form-text:only-child {
+			display: inline-block;
+		}
+
+		.x-form-field-wrap {
+			float: left;
+			width: calc(100% - 297px) !important;
+		}
+
+		@include button("fieldset");
+
+		.x-form-item:hover {
+			//@include button("fieldset");
+
+		}
+
+		.x-btn-text  {
+			color: #c5c4c4;
+		}
+
+
+		// Fix information block in content tab
+		> .x-form-label-left {
+			// Seems to be a holder for the information sections, need to double check !!
+			> table {
+				// Information table
+				width: 100%!important;
+				display: block;
+
+				tbody, tr, td {
+					display: block;
+				}
+
+				td {
+					&:nth-child(1) {
+						// Seems to be blank all the time, so getting rid of it. Double Check !!
+						display: none;
+					}
+
+					&:nth-child(2) {
+
+					}
+				}
+
+				.gwt-HTML {
+					@include text(12px, #dddcdc, $semilight);
+
+					b {
+						width: 150px;
+						display: inline-block;
+
+						@extend %form_label !optional;
+					}
+				}
+			}
+		}
+
+
 	}
+
 
 	form {
 		height: auto!important;
@@ -63,11 +139,7 @@ body {
 		width: 100%!important;
 	}
 
-	.x-form-label-left {
-		/*border-left: 1px solid $form_fieldset_left_border;
-		border-left: 3px solid rgba(40, 43, 45, 0.1);
-		padding-left: 7px;*/
-	}
+
 
 
 
@@ -99,6 +171,9 @@ body {
 
 	}
 
+
+
+
 	////////// PERSONALISED TABS
 	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-content {}
 	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-layout {}
@@ -118,37 +193,41 @@ body {
 	#JahiaGxtEditEnginePanel-content,
 	#JahiaGxtEditEnginePanel-metadata {
 		/* left floating forms */
-		.x-form-item-label {
-			float:left!important;
-			margin-top: 0!important;
-			width: 150px!important;
-		}
 
-		.x-form-text:only-child {
-			display: inline-block;
-		}
-
-		.x-form-field-wrap {
-			float: left;
-			width: calc(100% - 307px) !important;
-		}
-
-		.x-btn {
-			margin-left: 10px;
-			display: inline-block;
-		}
 	}
 
 	#JahiaGxtEditEnginePanel-content{
 		// Fix problem with non floating form element.
 		#Title {
+			// Contains sytems name / title
 			.x-form-item:nth-child(1) {
+				// System Name
 				.x-form-element {
 					width: calc(100% - 150px);
 					float: left;
 				}
+
+				.x-box-inner {
+					width: 100%!important;
+				}
+
+				.x-form-field-wrap {
+					width: calc(100% - 319px) !important;
+				}
+
+				.x-form-check-wrap {
+					left: 466px!important;
+				    top: 4px!important;
+				}
+
+				label {
+					left: 480px!important;
+					top: 4px!important;
+				}
 			}
 		}
+
+
 	}
 
 
@@ -262,11 +341,6 @@ body {
 		    right: 46px;
 		    top: 67px;
 
-			input {
-				// FInd better way of skining input in general for all form elements in edit mode
-				background: #656565;
-				color: #bfc3c1;
-			}
 		}
 
 		.x-panel-header-text {
@@ -463,14 +537,6 @@ body {
 
 				.x-toolbar-cell {
 
-					button {
-						// Remove icons for these buttons
-						padding-left: 10px;
-						img {
-							display: none;
-						}
-					}
-
 					&:nth-child(1) {
 						/* Save as work in progress */
 						position: absolute;
@@ -482,8 +548,10 @@ body {
 						padding-bottom: 20px;
 
 						// Make suggested colour
+						@include button("actionbar-suggested");
+
 						button {
-							@extend %action_bar_button_icon_suggested;
+							//@extend %button_suggested;
 
 						}
 					}

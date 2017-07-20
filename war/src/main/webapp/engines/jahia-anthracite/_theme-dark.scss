@@ -2,6 +2,9 @@
 // THEME VARIABLES //////////////////////////////
 /////////////////////////////////////////////////
 
+///////// BASE COLORS
+    $edit_engine_base:              $rain-clouds;
+
 
 ///////// DEFAULTS
 
@@ -51,6 +54,72 @@
     $tool_color_open_selected:      $jahia-blue;
     $tool_color_off:          	    $black-clouds;
 
+///////// FORMS
+
+	$text_input_bg:                 rgba($grey-clouds, .1);
+	$text_input_bg_focus:           rgba($grey-clouds, .7);
+    $text_input_bg_hover:           rgba($grey-clouds, .3);
+    $text_input_bg_disabled:        rgba($grey-clouds, .05);
+	$text_input_color:              $grey-clouds;
+	$text_input_color_hover:        $dark-clouds;
+    $text_input_color_focus:        $white-clouds;
+    $text_input_color_disabled:     rgba($grey-clouds, .7);
+    $text_input_border:             1px solid transparent;
+    $text_input_padding:            3px 40px 3px 5px;
+    $text_input_font_weight:        200;
+    $text_input_font_size:          12px;
+    $text_input_font_family:        $font-1;
+
+    $form_clear_icon_up:            $icon_form_close_white_clouds;
+    $form_clear_bg_up:              rgba($grey-clouds, .4);
+
+    $form_clear_icon_hover:         $icon_form_close_white_clouds;
+    $form_clear_bg_hover:           rgba($grey-clouds, .7);
+
+
+    $edit_engine_title:             $dark-clouds;
+    $edit_engine_tab:               #a3a3a3;
+    $edit_engine_tab_selected:      #f1f1f1;
+    $edit_engine_tab_over:          rgba($edit_engine_tab_selected, .7);
+    $edit_engine_tab_selected_over: $edit_engine_tab_selected;
+    $edit_engine_bg:                $edit_engine_base;
+
+    $edit_engine_input_bg:          lighten($edit_engine_base, 6%);
+    $edit_engine_input_bg_hover:    lighten($edit_engine_base, 8%);
+    $edit_engine_input_bg_focus:    lighten($edit_engine_base, 75%);
+
+    $edit_engine_input_color:          lighten($edit_engine_base, 75%);
+    $edit_engine_input_color_hover:    lighten($edit_engine_base, 85%);
+    $edit_engine_input_color_focus:    darken($edit_engine_base, 50%);
+
+    $form_legend_color:             lighten($edit_engine_base, 55%);
+    $form_label_text:               lighten($edit_engine_base, 30%);
+    $form_fieldset_bg:              lighten($edit_engine_base, 2%);
+
+
+///////// CHECKBOX
+
+    $checkbox_unchecked_bg:         $white-clouds;
+    $checkbox_unchecked_border:     1px solid $grey-clouds;
+    $checkbox_unchecked_shadow:     inset 1px 1px 2px 1px rgba($dark-clouds, 0.1);
+
+    $checkbox_checked_bg:           #04bd04;
+    $checkbox_checked_tick:         "./images/icons/icon-check-white@X2.png";
+
+
+
+///////// SWITCHER (TOGGLE)
+
+    $toggle_bg:                     darken($form_fieldset_bg, 8%);
+    $toggle_shadow:                 inset 1px 1px 2px 1px rgba(40, 43, 45, 0.1);
+
+    $toggle_off_label:              "Off";
+    $toggle_off_shuttle:            $form_fieldset_bg;
+    $toggle_off_color:              lighten($form_fieldset_bg, 4%);
+
+    $toggle_on_label:               "On";
+    $toggle_on_shuttle:             #1bb010;
+    $toggle_on_color:               $white-clouds;
 
 
 ///////// ICONS
@@ -143,39 +212,19 @@
 
 
 
-///////// FORMS
 
-	$text_input_bg:                 rgba($grey-clouds, .1);
-	$text_input_bg_focus:           rgba($grey-clouds, .7);
-    $text_input_bg_hover:           rgba($grey-clouds, .3);
-    $text_input_bg_disabled:        rgba($grey-clouds, .05);
-	$text_input_color:              $grey-clouds;
-	$text_input_color_hover:        $dark-clouds;
-    $text_input_color_focus:        $white-clouds;
-    $text_input_color_disabled:     rgba($grey-clouds, .7);
-    $text_input_border:             1px solid transparent;
-    $text_input_padding:            3px 40px 3px 5px;
-    $text_input_font_weight:        200;
-    $text_input_font_size:          12px;
-    $text_input_font_family:        $font-1;
 
-    $form_clear_icon_up:            $icon_form_close_white_clouds;
-    $form_clear_bg_up:              rgba($grey-clouds, .4);
+///////// CKE RICH TEXT EDITOR
+    $cke_icon_set:                  "./images/icons/icons-cke.png";
+    $cke_toolgroup_bg:              lighten($edit_engine_base, 6%);
+    $cke_toolgroup_bg_hover:        lighten($edit_engine_base, 8%);
+    $cke_tool_bg_hover:             lighten($edit_engine_base, 12%);
+    $cke_tool_bg_on:                lighten($edit_engine_base, 16%);
+    $cke_combo_bg:                  lighten($edit_engine_base, 75%);
+    $cke_label:                     lighten($edit_engine_base, 75%);
+    $cke_path_bg:                   lighten($edit_engine_base, 75%);
+    $cke_path_text:                 darken($edit_engine_base, 50%);
 
-    $form_clear_icon_hover:         $icon_form_close_white_clouds;
-    $form_clear_bg_hover:           rgba($grey-clouds, .7);
-
-    $edit_engine_title:             $dark-clouds;
-    $edit_engine_tab:               #a3a3a3;
-    $edit_engine_tab_selected:      #f1f1f1;
-    $edit_engine_tab_over:          rgba($edit_engine_tab_selected, .7);
-    $edit_engine_tab_selected_over: $edit_engine_tab_selected;
-    $edit_engine_bg:                #5e5e5e;
-
-    $form_legend_text:              #ebebeb;
-    $form_label_text:               rgba($black-clouds, .7);
-    $form_fieldset_bg:              darken($white-clouds, 1%);
-    $form_fieldset_left_border:     rgba($dark-clouds, .3);
 
 
 ///////// BUTTONS
@@ -663,6 +712,47 @@
 
 /* FORMS */
 
+    %checkbox_unchecked {
+        border: $checkbox_unchecked_border;
+		background: $checkbox_unchecked_bg;
+		box-shadow: $checkbox_unchecked_shadow;
+    }
+
+    %checkbox_checked {
+        background: no-repeat center center;
+        background-image: url($checkbox_checked_tick);
+        background-size: 15px 15px;
+        background-color: $checkbox_checked_bg;
+    }
+
+    %toggle_off_rails {
+        content: $toggle_off_label;
+        background: $toggle_bg;
+        box-shadow: $toggle_shadow;
+        text-transform: uppercase;
+
+        @include text(10px, $toggle_off_color, $extrabold);
+    }
+
+    %toggle_off_shuttle {
+        content: " ";
+        background: $toggle_off_shuttle;
+
+    }
+
+    %toggle_on_rails {
+    	content: " ";
+    }
+
+    %toggle_on_shuttle {
+        content: $toggle_on_label;
+        color: $toggle_on_color;
+        background: $toggle_on_shuttle;
+        color: white;
+        text-transform: uppercase;
+        font-size: 10px;
+        font-weight: 800;
+    }
 
     %text_input {
         background: $text_input_bg;
@@ -698,19 +788,19 @@
 
     // EDIT ENGINES EXCEPTION
         %text_input--edit_engine {
-            background: #6a6a6a;
+            background: $edit_engine_input_bg;
 
-            @include text($text_input_font_size, #dddcdc, $text_input_font_weight, $text_input_font_family);
+            @include text($text_input_font_size, $edit_engine_input_color, $text_input_font_weight, $text_input_font_family);
         }
 
         %text_input_hover--edit_engine {
-            background: #797878;
-            color: #F9F8F8!important;
+            background: $edit_engine_input_bg_hover;
+            color: $edit_engine_input_color_hover !important;
         }
 
     	%text_input_focus--edit_engine {
-            background: #dddcdc;
-    		color: #5e5e5e!important;
+            background: $edit_engine_input_bg_focus;
+    		color: $edit_engine_input_color_focus !important;
         }
 
         %text_input_disabled--edit_engine {
@@ -719,7 +809,7 @@
 
         }
 
-	%combo_input {
+    %combo_input {
         padding: $text_input_padding !important;
         border: $text_input_border;
 
@@ -727,6 +817,16 @@
 		font-size: $text_input_font_size;
 		font-weight: $text_input_font_weight;
     }
+
+    // EDIT ENGINES EXCEPTION
+        %combo_input--edit_engine {
+            padding: $text_input_padding !important;
+            border: $text_input_border;
+
+    		font-family: $text_input_font_family;
+    		font-size: $text_input_font_size;
+    		font-weight: $text_input_font_weight;
+        }
 
 	%form_button {
         background: $button_normal_up;
@@ -791,12 +891,7 @@
     }
 
 	%form_legend_collapsed {
-    	//padding: 0!important;
-        //position: absolute;
-        //top: -2px;
-        //left: 10px;
 
-    	//@include text(16px, rgba($form_legend_text, .2), $extralight);
     }
 
 	%form_legend {
@@ -806,7 +901,7 @@
         left: 30px;
         text-transform: uppercase;
 
-    	@include text(11px, $form_legend_text, $semibold);
+    	@include text(11px, $form_legend_color, $semibold);
     }
 
     %form_fieldset {
@@ -814,7 +909,7 @@
         padding: 43px 10px 20px 29px !important;
         margin: 0 23px 10px 0 !important;
         position: relative;
-        background: #656565;
+        background: $form_fieldset_bg;
         box-sizing: border-box;
     }
 
@@ -826,25 +921,127 @@
         line-height: 24px;
 
         //@include text(11px, $dark-clouds, $semilight, $font-1 !important);
-        @include text(10px, rgba(209, 209, 209, 0.6), $semibold, $font-1 !important);
+        @include text(10px, $form_label_text, $semibold, $font-1 !important);
     }
 
 
-    %action_bar_button_text {
-    	background: pink;
+
+
+
+////////// BUTTONS
+
+    // FORM
+    %button_text--form {
+        background: transparent;
+        text-transform: uppercase;
+        padding: 4px 0 0;
+        @include text(10px, #dddcdc, $normal);
+    }
+
+    %button_text_hover--form {
+        @include text(10px, $white-clouds, $normal);
+    }
+
+    %button_icon--form {
+        background: $grey-clouds;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, $white-clouds, $extralight);
+
+        img {
+            left: 5px!important;
+            top: 7px!important;
+        }
+    }
+
+    %button_icon_hover--form {
+        background: yellow;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, red, $extralight);
+
+        img {
+            left: 5px!important;
+        }
+    }
+
+    // PANEL
+    %button_text--panel {
+        background: transparent;
+        text-transform: uppercase;
+        padding: 4px 0 0;
+        @include text(10px, #dddcdc, $normal);
+    }
+
+    %button_text_hover--panel {
+        @include text(10px, $white-clouds, $normal);
+    }
+
+    %button_icon--panel {
+        background: $grey-clouds;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, $white-clouds, $extralight);
+
+    }
+
+    %button_icon_hover--panel {
+        background: purple;
+        @include text(16px, red, $extralight);
+
+    }
+
+    // FIELDSET
+    %button_text--fieldset {
+        background: #737373;
+        text-transform: uppercase;
+        padding: 5px 10px;
+        @include text(10px, #dddcdc, $normal);
+    }
+
+    %button_text_parent_hover--fieldset {
+        background: #f26d4f!important;
+        @include text(10px, $white-clouds, $normal);
+    }
+
+    %button_text_hover--fieldset {
+        background: #f26d4f;
+        @include text(10px, $white-clouds, $normal);
+    }
+
+    %button_icon--fieldset {
+        background: $grey-clouds;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, $white-clouds, $extralight);
+
+        img {
+            left: 5px!important;
+            top: 7px!important;
+        }
+    }
+
+    %button_icon_hover--fieldset {
+        background: yellow;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, red, $extralight);
+
+        img {
+            left: 5px!important;
+        }
+    }
+
+    // ACTION BAR
+    %button_text--actionbar {
+        background: pink;
     	padding: 5px 10px;
     	@include text(16px, red, $extralight);
     }
 
-    %action_bar_button_text_over {
-    	background: red;
+    %button_text_hover--actionbar {
+        background: red;
     	padding: 5px 10px;
     	@include text(16px, white, $extralight);
     }
 
-    %action_bar_button_icon {
-    	background: $grey-clouds;
-        opacity: 1;
+    %button_icon--actionbar {
+        background: $grey-clouds;
     	padding: 5px 10px 5px 29px;
     	@include text(16px, $white-clouds, $extralight);
 
@@ -853,55 +1050,33 @@
     	}
     }
 
-    %action_bar_button_icon_suggested {
-        background: $jahia-blue;
-    	background: #f26d4f;
-
+    %button_icon_hover--actionbar {
+        background: pink;
+        @include text(16px, red, $extralight);
     }
 
-
-
-    %action_bar_button_icon_over {
-        opacity: 1;
-    	padding: 5px 10px 5px 29px;
-
-
-    }
-
-
-
-    %form_button_text {
-    	background: transparent;
-        text-transform: uppercase;
-    	padding: 4px 0 0;
-        border-bottom: 1px solid #999999;
-    	@include text(10px, #dddcdc, $normal);
-    }
-
-    %form_button_text_hover {
-    	@include text(10px, lighten($jahia-blue, 1%), $normal);
-    }
-
-    %form_button_icon {
-    	background: $grey-clouds;
-    	padding: 5px 10px 5px 29px;
-    	@include text(16px, $white-clouds, $extralight);
-
-    	img {
-            left: 5px!important;
-    		top: 7px!important;
-    	}
-    }
-
-    %form_button_icon_hover {
-    	background: yellow;
-    	padding: 5px 10px 5px 29px;
+    // ACTION BAR ::: SUGGESTED
+    %button_text--actionbar-suggested {
+        background: #f26d4f;
     	@include text(16px, red, $extralight);
-
-    	img {
-    		left: 5px!important;
-    	}
     }
+
+    %button_text_hover--actionbar-suggested {
+        background: red;
+    	@include text(16px, white, $extralight);
+    }
+
+    %button_icon--actionbar-suggested {
+        background: #f26d4f;
+    	@include text(16px, $white-clouds, $extralight);
+    }
+
+    %button_icon_hover--actionbar-suggested {
+        background: purple;
+        @include text(16px, red, $extralight);
+    }
+
+
 
 
 

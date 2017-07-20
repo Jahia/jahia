@@ -4,3 +4,62 @@
     color: $_color;
     font-weight: $_weight;
 }
+
+@mixin button($_button_id, $_extra: "none"){
+
+    .x-btn {
+		width: auto!important;
+
+        button {
+            width: 100%!important;
+            height: auto!important;
+        }
+
+		&.x-btn-noicon {
+			// Button has icon
+			button {
+				@extend %button_text--#{$_button_id};
+
+			}
+		}
+
+		&.x-btn-text-icon {
+			// Button has icon
+
+			button {
+                @extend %button_icon--#{$_button_id};
+
+                @if($_extra == "remove-icons"){
+                    padding-left: 10px;
+
+                    img {
+                        display: none;
+
+                    }
+                }
+
+			}
+		}
+
+		&.x-btn-over {
+			// Over states
+
+			&.x-btn-noicon {
+				// Button has icon
+				button {
+                    @extend %button_text_hover--#{$_button_id};
+
+				}
+			}
+
+			&.x-btn-text-icon {
+				// Button has icon
+				button {
+                    @extend %button_icon_hover--#{$_button_id};
+
+				}
+			}
+
+		}
+	}
+}

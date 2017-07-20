@@ -395,27 +395,19 @@ legend {
 
 }
 
-/*.x-form-checkbox {
-	left: 0!important;
-	top: 0!important;
-	position: relative!important;
-	margin-right: 3px;
-
-	&:only-child {
-		margin: 0;
-		top: 3px!important;
-	}
-}*/
 
 input[type="checkbox"] {
+	// UNCHECKED STATE
 	position: relative!important;
 	width: 15px!important;
 	height: 15px!important;
 	margin-right: 3px;
 
+
+	// AS SWITCHER
 	legend & {
-		width: 46px !important;
 		position: absolute !important;
+		width: 46px !important;
 		height: 17px!important;
 		top: 13px;
 		right: 22px;
@@ -425,10 +417,6 @@ input[type="checkbox"] {
 		}
 	}
 
-	&.x-form-checkbox:focus {
-		// Need extra weight to over ride GXT selector
-		outline: none!important;
-	}
 
 	&:before {
 		content: '';
@@ -437,144 +425,79 @@ input[type="checkbox"] {
 		top: 0;
 		width: 100%;
 		height: 100%;
-		border: 1px solid $grey-clouds;
-		background: white;
-		box-shadow: inset 1px 1px 2px 1px rgba($dark-clouds, 0.1);
 		box-sizing: border-box;
 
+		@extend %checkbox_unchecked;
+
+		// AS SWITCHER
 		legend & {
-			content: 'Off';
-		    position: absolute;
-		    left: 0;
-		    top: 0;
 		    width: 100%;
 		    height: 100%;
-		    border: 1px solid #7a7e80;
-		    box-shadow: inset 1px 1px 2px 1px rgba(40, 43, 45, 0.1);
-		    box-sizing: border-box;
-		    /* border-radius: 100px; */
 		    width: 46px;
-		    background: #505050;
 		    border: none;
 		    text-align: right;
 		    padding-right: 4px;
-		    font-size: 10px;
-		    font-weight: 800;
-		    color: #7a7a7a;
-		    text-transform: uppercase;
 		    line-height: 17px;
+
+			@extend %toggle_off_rails;
 		}
 	}
-
-	&:checked:before {
-
-		legend & {
-			content: " ";
-		    position: absolute;
-		    left: 0;
-		    top: 0;
-		    width: 100%;
-		    height: 100%;
-		    border: 1px solid #7a7e80;
-		    box-shadow: inset 1px 1px 2px 1px rgba(40, 43, 45, 0.1);
-		    box-sizing: border-box;
-		    /* border-radius: 100px; */
-		    width: 46px;
-		    background: #505050;
-		    border: none;
-		    text-align: left;
-		    padding-left: 6px;
-		    font-size: 10px;
-		    font-weight: 800;
-		    color: #f1f1f1;
-		    text-transform: uppercase;
-		    line-height: 17px;
-		}
-
-	}
-
-
-
-	&:checked:after {
+	&:after {
 		content: " ";
 		position: absolute;
 		left: 0;
 		top: 0;
 		width: 100%;
 		height: 100%;
-		text-align: center;
-		color: white;
-		background: url(./images/icons/icon-check-white@X2.png) no-repeat center center #04bd04;
-		background-size: 15px 15px;
 
+		// AS SWITCHER
 		legend & {
-			content: "On";
-			position: absolute;
-			right: 2px;
-			left: auto;
-			top: 2px;
-			width: 100%;
-			height: 100%;
-			text-align: center;
-			color: white;
-			background-size: 15px 15px;
-			width: 15px;
-			height: 13px;
-			background: #1bb010;
-			color: white;
-			text-transform: uppercase;
-			font-size: 10px;
-			font-weight: 800;
-			padding: 0 5px;
-		}
-
-	}
-
-
-
-	&:not(:checked):after {
-		content: " ";
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		text-align: center;
-		color: white;
-
-		legend & {
-			position: absolute;
 			right: auto;
 			left: 2px;
 			top: 2px;
-			width: 100%;
-			height: 100%;
-			text-align: center;
-			color: white;
-			background-size: 15px 15px;
 			width: 15px;
 			height: 13px;
-			background: #6b6c6d;
-			/* padding: 0 5px; */
-			color: grey;
-			text-transform: uppercase;
-			font-size: 10px;
-			font-weight: 800;
-			content: " ";
-		}
 
+			@extend %toggle_off_shuttle;
+		}
 	}
 
+	// CHECKED STATE
+		&:checked:before {
 
+			// AS SWITCHER
+			legend & {
+				@extend %toggle_on_rails;
+			}
+		}
+		&:checked:after {
+			@extend %checkbox_checked;
 
+			// AS SWITCHER
+			legend & {
+				right: 2px;
+				left: auto;
+				text-align: center;
+				padding: 0 5px;
 
+				@extend %toggle_on_shuttle;
+			}
+		}
+
+	// FOCUS
+	&.x-form-checkbox:focus {
+		// Need extra weight to over ride GXT selector
+		outline: none!important;
+	}
 
 	+ .x-fieldset-header-text {
 		float: left;
 		position: relative;
 		left: 0;
 	}
+
 }
+
 
 fieldset {
 
@@ -668,6 +591,7 @@ label {
 div[role="combobox"] {
 	.x-form-text {
 		@extend %combo_input !optional;
+
 
 		width: 100%!important;
 		box-sizing: border-box;
@@ -780,66 +704,7 @@ div[role="combobox"] {
 // Form Buttons
 form,
 .edit-content-engine { // CHANGE THIS AFTER TO BE INCLUDING GENERAL STYLING AND THEN PERSONALISE ...
-
-	.x-btn {
-		width: auto!important;
-
-
-		&.x-btn-noicon {
-			// Button has icon
-
-			button {
-				@extend %form_button_text;
-
-				width: 100%!important;
-				height: auto!important;
-
-			}
-		}
-
-		&.x-btn-text-icon {
-			// Button has icon
-			//border:3px solid red;
-
-			button {
-				@extend %form_button_icon;
-
-				width: 100%!important;
-				height: auto!important;
-
-			}
-		}
-
-		&.x-btn-over {
-			// Over states
-
-			&.x-btn-noicon {
-				// Button has icon
-
-				button {
-					@extend %form_button_text_hover;
-
-					width: 100%!important;
-					height: auto!important;
-
-				}
-			}
-
-			&.x-btn-text-icon {
-				// Button has icon
-				xborder:3px solid red;
-
-				button {
-					@extend %form_button_icon_hover;
-
-					width: 100%!important;
-					height: auto!important;
-
-				}
-			}
-
-		}
-	}
+	@include button("form");
 
 }
 
@@ -861,88 +726,15 @@ form,
 		width: auto;
 	}
 
-	.x-btn {
-		width: auto!important;
+	@include button("actionbar", "remove-icons");
 
-
-		&.x-btn-noicon {
-			// Button has icon
-
-			button {
-				@extend %action_bar_button_text;
-
-				width: 100%!important;
-				height: auto!important;
-
-			}
-		}
-
-		&.x-btn-text-icon {
-			// Button has icon
-			xborder:3px solid red;
-
-			button {
-				@extend %action_bar_button_icon;
-
-				width: 100%!important;
-				height: auto!important;
-
-			}
-		}
-
-		&.x-btn-over {
-			// Over states
-
-			&.x-btn-noicon {
-				// Button has icon
-
-				button {
-					@extend %action_bar_button_text_over;
-
-					width: 100%!important;
-					height: auto!important;
-
-				}
-			}
-
-			&.x-btn-text-icon {
-				// Button has icon
-				xborder:3px solid red;
-
-				button {
-					@extend %action_bar_button_icon_over;
-
-					width: 100%!important;
-					height: auto!important;
-
-				}
-			}
-
-		}
-	}
 
 }
 
 /* Button Bar, regular button bar */
 .x-panel-btns {
-	.x-btn {
-		button {
-			height: auto!important;
-	        width: auto!important;
+	@include button("panel", "remove-icons");
 
-			@extend %form_button !optional;
-
-			&:hover {
-				@extend %form_button_hover !optional;
-			}
-
-			img {
-				display: none;
-			}
-
-		}
-
-	}
 }
 
 /* Button Bar, pagination */
@@ -1378,6 +1170,51 @@ form,
 	background: transparent!important;
     border: none!important;
     box-shadow: none!important;
+
+	// Need to override with weight as well as importance
+	span.cke_toolgroup a {
+		.cke_button_icon {
+			background-image: url($cke_icon_set) !important;
+
+		}
+
+		&.cke_button_on {
+			background: $cke_tool_bg_on !important;
+			border-radius: 0;
+			box-shadow: none;
+
+			&:hover,
+			&:focus,
+			&:active {
+				background: $cke_tool_bg_on !important;
+			    border-radius: 0;
+			    box-shadow: none;
+
+
+			}
+		}
+
+		&.cke_button_off,
+		&.cke_button_disabled {
+			&:hover {
+				background: $cke_tool_bg_hover !important;
+			    border-radius: 0;
+			    box-shadow: none;
+
+
+			}
+
+			&:focus,
+			&:active {
+				background: $cke_tool_bg_hover !important;
+			    border-radius: 0;
+			    box-shadow: none;
+
+
+			}
+		}
+	}
+
 }
 
 .cke_inner {
@@ -1405,12 +1242,21 @@ form,
 
 }
 
+
+
 .cke_toolgroup {
 	// CKE Tool Group
 	border: none!important;
-	background: #e4e5e5!important;
+	background: $cke_toolgroup_bg!important;
 	box-shadow: none!important;
 	border-radius: 0!important;
+	padding: 4px 10px!important;
+
+	transition: all 0.2s ease-in 0s!important;
+
+	&:hover {
+		background: $cke_toolgroup_bg_hover !important;
+	}
 }
 
 
@@ -1429,14 +1275,20 @@ form,
 .cke_combo_button {
 	// CKE Combo Button
 	border: none!important;
-	background: #e4e5e5!important;
+	background: $cke_combo_bg !important;
 	box-shadow: none!important;
 	border-radius: 0!important;
+	padding: 4px!important;
 }
 
-.cke_combo_text {
+.cke_combo_text,
+.cke_button_label {
 	// CKE Combo Label
 	text-shadow: none!important;
+}
+
+.cke_button_label {
+	color:$cke_label !important;
 }
 
 
@@ -1455,7 +1307,7 @@ form,
 .cke_bottom {
 	// CKE Footer Container
 	border: none!important;
-    background: #e4e5e5!important;
+    background: $cke_path_bg !important;
 }
 
 .cke_resizer {
@@ -1470,8 +1322,12 @@ form,
 	a {
 		// CKE Path Item
 		text-shadow: none;
-		@include text(12px, $dark-clouds, $extralight);
+		@include text(12px, $cke_path_text, $extralight);
 	}
+}
+
+.cke_toolbar_break {
+	clear: none!important;
 }
 
 

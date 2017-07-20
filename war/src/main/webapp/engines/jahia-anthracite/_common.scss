@@ -177,12 +177,12 @@ body[data-quick-menu="on"] {
 
 
 body {
-	background: $body-bg;
+	background: $APP--BG--COLOUR;
 	transition: all 0.3s ease-in 0s;
 
     &[data-multiselect="on"] {
 		/* Multiselect */
-		background: $body-bg-multiselect;
+		background: $APP--BG--COLOUR---MULTISELECTION;
     }
 
 	&[data-main-node-displayname] {
@@ -199,7 +199,7 @@ body {
 
 			padding-top: 10px;
 
-			font-family: $font-1;
+			font-family: $DEFAULT--FONT--FAMILY;
 		    font-size: 21px;
 		    font-weight: $extralight;
 
@@ -537,7 +537,7 @@ body {
     left: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: $hamburger-bg;
+    background: $HAMBURGER--BG--COLOUR;
 
     &::after {
 		/* Close Icon */
@@ -565,7 +565,7 @@ body {
 
         &::before {
 			/* Menu Title */
-			@include text(46px, $hamburger-title, $extralight);
+			@include text(46px, $HAMBURGER--TITLE--COLOUR, $extralight);
 
             content: $text_dxm;
 		    display: block;
@@ -583,12 +583,12 @@ body {
 
 	$side_panel__tab_buttons: (
 		// App ID
-		(".toolbar-item-editorialcontentmanager",     	$app_icon_content_manager),
-		(".toolbar-item-filemanager",     				$app_icon_file_manager),
-		(".toolbar-item-portletmanager",     			$app_icon_portlet_manager),
-		(".toolbar-item-repositoryexplorer",     		$app_icon_repo_explorer),
-		(".toolbar-item-categorymanager",     			$app_icon_category_manager),
-		(".toolbar-item-sitemanager",     				$app_icon_site_manager)
+		(".toolbar-item-editorialcontentmanager",     	$HAMBURGER--ICON--CONTENT_MANAGER),
+		(".toolbar-item-filemanager",     				$HAMBURGER--ICON--FILE_MANAGER),
+		(".toolbar-item-portletmanager",     			$HAMBURGER--ICON--PORTLET_MANAGER),
+		(".toolbar-item-repositoryexplorer",     		$HAMBURGER--ICON--REPO_EXPLORER),
+		(".toolbar-item-categorymanager",     			$HAMBURGER--ICON--CATEGORY_MANAGER),
+		(".toolbar-item-sitemanager",     				$HAMBURGER--ICON--SITE_MANAGER)
 	);
 
     .x-menu-list-item {
@@ -602,7 +602,7 @@ body {
 			background: none;
 
 			.x-menu-item {
-				color: $hamburger_button_hover;
+				color: $HAMBURGER--BUTTON--COLOUR---HOVER;
 				opacity: 1;
 			}
 		}
@@ -622,7 +622,7 @@ body {
 			background-color: $transparent;
 			opacity: 0.8;
 
-			@include text(11px, $hamburger_button_up, $extralight);
+			@include text(11px, $HAMBURGER--BUTTON--COLOUR---UP, $extralight);
 
 		}
 

@@ -68,7 +68,7 @@
         > table:nth-child(1) {
             table table {
                 &::after {
-                    font-family: $font-1;
+                    font-family: $DEFAULT--FONT--FAMILY;
                     font-size: 8px;
                     text-transform: uppercase;
                     font-weight: $normal;
@@ -121,7 +121,7 @@
                     text-align: left;
                     position: absolute;
                     z-index: $zindex_mode_menu_context_menu_label;
-                    font-family: $font-1;
+                    font-family: $DEFAULT--FONT--FAMILY;
                     width: calc(100% - 20px);
                     display: block;
                     height: 20px;
@@ -338,7 +338,7 @@
                         content: attr(data-page-name);
                         position: relative;
                         color: $white;
-                        font-family: $font-1;
+                        font-family: $DEFAULT--FONT--FAMILY;
                         font-weight: $light;
                         font-size: 16px;
                         display: inline-block;
@@ -349,7 +349,7 @@
                     input {
                         background: transparent;
                         color: rgba(238, 238, 238, 0.6);
-                        font-family: $font-1;
+                        font-family: $DEFAULT--FONT--FAMILY;
                         font-size: 10px;
                         font-weight: $light;
                         border: none;

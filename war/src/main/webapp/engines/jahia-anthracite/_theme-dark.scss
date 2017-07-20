@@ -1,277 +1,374 @@
-/////////////////////////////////////////////////
-// THEME VARIABLES //////////////////////////////
-/////////////////////////////////////////////////
+////
+//// VARIABLES
+////
+//// These variables cover the vast majority of styling of the DX Application.
+//// With the exception of a couple of border widths and font sizes, the styles
+//// are not changing layout but just colouring, icons and labels.
+////
+//// The variables are categorised as follows:
+////     BASE COLOURS
+////     DEFAULTS
+////     APPLICATION
+////     FORMS
+////     BUTTONS
+////     TREES
+////     RICH TEXT EDITOR
+////     TOOL BUTTONS
+////     THUMBS
+////     HAMBURGER MENU
+////     EDIT ENGINE
+////     SIDE PANEL
 
-///////// BASE COLORS
-    $edit_engine_base:              $rain-clouds;
 
 
-///////// DEFAULTS
-
-    $default-font:                    $font-1;
-    $default-font-size:               14px;
-    $default-font-weight:             $normal;
-    $default-font-color:              $white-clouds;
-
-
-
-///////// COMMON
-
-    $body-bg:                         $rain-clouds;
-    $body-bg-multiselect:             $dark-clouds;
-
-///////// HAMBURGER MENU
-    $hamburger-bg:                    rgba($jahia-blue, .99);
-	$hamburger-title: 				  rgba($white-clouds, .7);
-
-	$hamburger_button_up:			  rgba($white-clouds, .8);
-	$hamburger_button_hover:		  $white-clouds;
-
-
-
-///////// THUMB WRAPS
-
-    $thumb_label:                  $dark-clouds;
-    $thumb_label_background:       rgba($white-clouds, 0.9);
-
-    $thumb_background_up:          transparent;
-    $thumb_background_hover:       rgba($grey-clouds, 0.2);
-    $thumb_background_selected:    $jahia-blue;
-
-
-///////// SIDE PANEL
-
-	$side_panel_background:         $transparent;
-	$side_panel_background_open:    $white-clouds;
-	$side_panel_drop_shadow:        7px 0px 45px rgba($dark-clouds, 0.9);
-
-
-
-///////// TOOL BUTTONS
-
-    $tool_color_normal:             $white-clouds;
-    $tool_color_open:               $grey-clouds;
-    $tool_color_open_selected:      $jahia-blue;
-    $tool_color_off:          	    $black-clouds;
-
-///////// FORMS
-
-	$text_input_bg:                 rgba($grey-clouds, .1);
-	$text_input_bg_focus:           rgba($grey-clouds, .7);
-    $text_input_bg_hover:           rgba($grey-clouds, .3);
-    $text_input_bg_disabled:        rgba($grey-clouds, .05);
-	$text_input_color:              $grey-clouds;
-	$text_input_color_hover:        $dark-clouds;
-    $text_input_color_focus:        $white-clouds;
-    $text_input_color_disabled:     rgba($grey-clouds, .7);
-    $text_input_border:             1px solid transparent;
-    $text_input_padding:            3px 40px 3px 5px;
-    $text_input_font_weight:        200;
-    $text_input_font_size:          12px;
-    $text_input_font_family:        $font-1;
-
-    $form_clear_icon_up:            $icon_form_close_white_clouds;
-    $form_clear_bg_up:              rgba($grey-clouds, .4);
-
-    $form_clear_icon_hover:         $icon_form_close_white_clouds;
-    $form_clear_bg_hover:           rgba($grey-clouds, .7);
-
-
-    $edit_engine_title:             $dark-clouds;
-    $edit_engine_tab:               #a3a3a3;
-    $edit_engine_tab_selected:      #f1f1f1;
-    $edit_engine_tab_over:          rgba($edit_engine_tab_selected, .7);
-    $edit_engine_tab_selected_over: $edit_engine_tab_selected;
-    $edit_engine_bg:                $edit_engine_base;
-
-    $edit_engine_input_bg:          lighten($edit_engine_base, 6%);
-    $edit_engine_input_bg_hover:    lighten($edit_engine_base, 8%);
-    $edit_engine_input_bg_focus:    lighten($edit_engine_base, 75%);
-
-    $edit_engine_input_color:          lighten($edit_engine_base, 75%);
-    $edit_engine_input_color_hover:    lighten($edit_engine_base, 85%);
-    $edit_engine_input_color_focus:    darken($edit_engine_base, 50%);
-
-    $form_legend_color:             lighten($edit_engine_base, 55%);
-    $form_label_text:               lighten($edit_engine_base, 30%);
-    $form_fieldset_bg:              lighten($edit_engine_base, 2%);
-
-
-///////// CHECKBOX
-
-    $checkbox_unchecked_bg:         $white-clouds;
-    $checkbox_unchecked_border:     1px solid $grey-clouds;
-    $checkbox_unchecked_shadow:     inset 1px 1px 2px 1px rgba($dark-clouds, 0.1);
-
-    $checkbox_checked_bg:           #04bd04;
-    $checkbox_checked_tick:         "./images/icons/icon-check-white@X2.png";
-
-
-
-///////// SWITCHER (TOGGLE)
-
-    $toggle_bg:                     darken($form_fieldset_bg, 8%);
-    $toggle_shadow:                 inset 1px 1px 2px 1px rgba(40, 43, 45, 0.1);
-
-    $toggle_off_label:              "Off";
-    $toggle_off_shuttle:            $form_fieldset_bg;
-    $toggle_off_color:              lighten($form_fieldset_bg, 4%);
-
-    $toggle_on_label:               "On";
-    $toggle_on_shuttle:             #1bb010;
-    $toggle_on_color:               $white-clouds;
-
-
-///////// ICONS
-
-    $icon_closed_pages:             $icon_pages_white_clouds;
-    $icon_closed_create:            $icon_create_white_clouds;
-    $icon_closed_content:           $icon_content_white_clouds;
-    $icon_closed_files:             $icon_files_white_clouds;
-    $icon_closed_search:            $icon_search_white_clouds;
-    $icon_closed_taxonomy:          $icon_taxonomy_white_clouds;
-    $icon_closed_devices:           $icon_devices_white_clouds;
-    $icon_closed_settings:          $icon_settings_white_clouds;
-
-    $icon_open_pages:               $icon_pages_grey_clouds;
-    $icon_open_create:              $icon_create_grey_clouds;
-    $icon_open_content:             $icon_content_grey_clouds;
-    $icon_open_files:               $icon_files_grey_clouds;
-    $icon_open_search:              $icon_search_grey_clouds;
-    $icon_open_taxonomy:            $icon_taxonomy_grey_clouds;
-    $icon_open_devices:             $icon_devices_grey_clouds;
-    $icon_open_settings:            $icon_settings_grey_clouds;
-
-    $icon_selected_pages:           $icon_pages_jahia_blue;
-    $icon_selected_create:          $icon_create_jahia_blue;
-    $icon_selected_content:         $icon_content_jahia_blue;
-    $icon_selected_files:           $icon_files_jahia_blue;
-    $icon_selected_search:          $icon_search_jahia_blue;
-    $icon_selected_taxonomy:        $icon_taxonomy_jahia_blue;
-    $icon_selected_devices:         $icon_devices_jahia_blue;
-    $icon_selected_settings:        $icon_settings_jahia_blue;
-
-    $icon_off_pages:                $icon_pages_black_clouds;
-    $icon_off_create:               $icon_create_black_clouds;
-    $icon_off_content:              $icon_content_black_clouds;
-    $icon_off_files:                $icon_files_black_clouds;
-    $icon_off_search:               $icon_search_black_clouds;
-    $icon_off_taxonomy:             $icon_taxonomy_black_clouds;
-    $icon_off_devices:              $icon_devices_black_clouds;
-    $icon_off_settings:             $icon_settings_black_clouds;
-
-	$app_icon_content_manager:		$app_icon_content_manager_white;
-	$app_icon_file_manager:			$app_icon_file_manager_white;
-	$app_icon_portlet_manager:		$app_icon_portlet_manager_white;
-	$app_icon_repo_explorer:		$app_icon_repo_explorer_white;
-	$app_icon_category_manager:		$app_icon_category_manager_white;
-	$app_icon_site_manager:			$app_icon_site_manager_white;
-
-
-///////// COMBOS
-
-    $combo_icon_up:                 $icon_combo_arrow_white_clouds;
-    $combo_bg_up:                   rgba($grey-clouds, .4);
-
-    $combo_icon_hover:              $icon_combo_arrow_white_clouds;
-    $combo_bg_hover:                rgba($grey-clouds, .7);
-
-///////// CONTEXT MENUS
-    $context_bg_up:                 $jahia-blue;
-    $context_bg_hover:              lighten($context_bg_up, 5%);
-    $context_bg_disabled:           $jahia-blue;
-
-    $context_text_color_up:         $white-clouds;
-    $context_text_color_hover:      $white-clouds;
-    $context_text_color_disabled:   rgba($context_text_color_up, .7) !important;
-
-
-
-///////// TREES
-
-    $row_label: 					$grey-clouds;
-    $row_icon: 						$icon_pages_grey_clouds;
-	$row_up_background: 			$transparent;
-
-    $row_over_background: 			rgba( $grey-clouds, .1 );
-    $row_over_label: 				$black-clouds;
-    $row_over_icon: 				$icon_pages_grey_clouds;
-
-    $row_selected_background: 		rgba( $grey-clouds, .7 );
-    $row_selected_label: 			$white-clouds;
-    $row_selected_icon: 			$icon_pages_white_clouds;
-
-    $row_selected_over_background: 	$grey-clouds;
-    $row_selected_over_label: 		$white-clouds;
-    $row_selected_over_icon: 		$icon_pages_white_clouds;
-
-	$row_more_options_icon: 				$icon_more_options_grey_clouds;
-	$row_more_options_icon_hover: 			$icon_more_options_grey_clouds;
-	$row_more_options_icon_selected: 		$icon_more_options_white_clouds;
-    $row_more_options_icon_selected_hover: 	$icon_more_options_white_clouds;
-
-
-
-
-
-///////// CKE RICH TEXT EDITOR
-    $cke_icon_set:                  "./images/icons/icons-cke.png";
-    $cke_toolgroup_bg:              lighten($edit_engine_base, 6%);
-    $cke_toolgroup_bg_hover:        lighten($edit_engine_base, 8%);
-    $cke_tool_bg_hover:             lighten($edit_engine_base, 12%);
-    $cke_tool_bg_on:                lighten($edit_engine_base, 16%);
-    $cke_combo_bg:                  lighten($edit_engine_base, 75%);
-    $cke_label:                     lighten($edit_engine_base, 75%);
-    $cke_path_bg:                   lighten($edit_engine_base, 75%);
-    $cke_path_text:                 darken($edit_engine_base, 50%);
-
-
-
-///////// BUTTONS
-	$button_normal_up: 				$jahia-blue;
-	$button_normal_hover: 			lighten($jahia-blue, 5%);
-
-
-///////// DEVICE DEVICES
-	$device_details_title: 			$grey-clouds;
-	$device_details_label: 			$grey-clouds;
-	$device_details_value: 			$grey-clouds;
 
 /////////////////////////////////////////////////
-// THEME PLACEHOLDERS ///////////////////////////
+// BASE COLOURS /////////////////////////////////
 /////////////////////////////////////////////////
-// Enable the addition of extra styles,        //
-// very usefull as sometimes a change in       //
-// colour may require a change in font weight  //
-// or size, etc ...							   //
+    $APP--BASE--COLOUR:                                             $rain-clouds;
+    $EDIT_ENGINE--BASE--COLOUR:                                     $rain-clouds;
+
+
+
+/////////////////////////////////////////////////
+// DEFAULTS /////////////////////////////////////
+/////////////////////////////////////////////////
+    $DEFAULT--FONT--FAMILY:                                         $nunito;
+    $DEFAULT--FONT--SIZE:                                           14px;
+    $DEFAULT--FONT--WEIGHT:                                         $normal;
+    $DEFAULT--FONT--COLOUR:                                         $white-clouds;
+
+    $DEFAULT--TITLE_FONT--FAMILY:                                   $raleway;
+
+
+
+/////////////////////////////////////////////////
+// PUBLICATION COLOURS //////////////////////////
+/////////////////////////////////////////////////
+    $PUBLICATION--COLOUR---CONFLICT: 							    yellow;
+    $PUBLICATION--COLOUR---DELETED: 							    black;
+    $PUBLICATION--COLOUR---LIVE_MODIFIED: 					        orange;
+    $PUBLICATION--COLOUR---LIVE_ONLY: 						        orange;
+    $PUBLICATION--COLOUR---LOCKED: 							        yellow;
+    $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_UNPUBLISHABLE: 	    orange;
+    $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_VALID:			    green;
+    $PUBLICATION--COLOUR---MARKED_FOR_DELETION:				        red;
+    $PUBLICATION--COLOUR---MODIFIED: 							    orange;
+    $PUBLICATION--COLOUR---MULTIPLE_WORK_FLOW:						orange;
+    $PUBLICATION--COLOUR---NOT_PUBLISHED: 					        orange;
+    $PUBLICATION--COLOUR---SINGLE_WORK_FLOW: 						orange;
+    $PUBLICATION--COLOUR---PUBLISHED: 						        green;
+    $PUBLICATION--COLOUR---UNPUBLISHED: 						    grey;
+    $PUBLICATION--COLOUR---WAITING: 							    white;
+    $PUBLICATION--COLOUR---WORK_IN_PROGRESS:					    orange;
+
+
+/////////////////////////////////////////////////
+// APPLICATION //////////////////////////////////
 /////////////////////////////////////////////////
 
-
-/* SIDE PANEL */
-
-    %side_paneL_container {
-        background: $side_panel_background !important;
-
-    }
-
-    %side_paneL_container_open {
-        background: $side_panel_background_open !important;
-        box-shadow: $side_panel_drop_shadow;
-
-    }
-
-    %side_paneL_title {
-        @include text(26px, $grey-clouds, $extralight);
-
-    }
-
-    %side_paneL_title_site_selector {
-
-    }
+    $APP--BG--COLOUR:                                               $rain-clouds;
+    $APP--BG--COLOUR---MULTISELECTION:                              $dark-clouds;
 
 
 
-/* DOCUMENT TITLE */
+/////////////////////////////////////////////////
+// FORMS ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+    // MISC
+    $FORM--LEGEND--FONT--COLOUR:                                    lighten($EDIT_ENGINE--BASE--COLOUR, 55%);
+    $FORM--LABEL--FONT--COLOUR:                                     lighten($EDIT_ENGINE--BASE--COLOUR, 30%);
+    $FORM--FIELDSET--BG--COLOUR:                                    lighten($EDIT_ENGINE--BASE--COLOUR, 2%);
+
+    // TEXT INPUTS
+	$FORM--TEXT_INPUT--BG--COLOUR:                                  rgba($grey-clouds, .1);
+	$FORM--TEXT_INPUT--BG--COLOUR---FOCUS:                          rgba($grey-clouds, .7);
+    $FORM--TEXT_INPUT--BG--COLOUR---HOVER:                          rgba($grey-clouds, .3);
+    $FORM--TEXT_INPUT--BG--COLOUR---DISABLED:                       rgba($grey-clouds, .05);
+	$FORM--TEXT_INPUT--FONT--COLOUR:                                $grey-clouds;
+	$FORM--TEXT_INPUT--FONT--COLOUR---HOVER:                        $dark-clouds;
+    $FORM--TEXT_INPUT--FONT--COLOUR---FOCUS:                        $white-clouds;
+    $FORM--TEXT_INPUT--FONT--COLOUR---DISABLED:                     rgba($grey-clouds, .7);
+    $FORM--TEXT_INPUT--BORDER--COLOUR:                              1px solid transparent;
+    $FORM--TEXT_INPUT--PADDING:                                     3px 40px 3px 5px;
+    $FORM--TEXT_INPUT--FONT--WEIGHT:                                200;
+    $FORM--TEXT_INPUT--FONT--SIZE:                                  12px;
+    $FORM--TEXT_INPUT--FONT--FAMILY:                                $DEFAULT--FONT--FAMILY;
+
+    // CLEAR BUTTON
+    $FORM--CLEAR_BUTTON--ICON---UP:                                 $icon_form_close_white_clouds;
+    $FORM--CLEAR_BUTTON--BG--COLOUR---UP:                           rgba($grey-clouds, .4);
+    $FORM--CLEAR_BUTTON--ICON---HOVER:                              $icon_form_close_white_clouds;
+    $FORM--CLEAR_BUTTON--BG--COLOUR---HOVER:                        rgba($grey-clouds, .7);
+
+    // CHECKBOXES
+    $FORM--CHECKBOX--BG--COLOUR---UNCHECKED:                        $white-clouds;
+    $FORM--CHECKBOX--BORDER---UNCHECKED:                            1px solid $grey-clouds;
+    $FORM--CHECKBOX--SHADOW---UNCHECKED:                            inset 1px 1px 2px 1px rgba($dark-clouds, 0.1);
+    $FORM--CHECKBOX--BG--COLOUR---CHECKED:                          #04bd04;
+    $FORM--CHECKBOX--ICON---CHECKED:                                "./images/icons/icon-check-white@X2.png";
+
+    // TOGGLES
+    $FORM--TOGGLE--BG--COLOUR:                                      darken($FORM--FIELDSET--BG--COLOUR, 8%);
+    $FORM--TOGGLE--BG--SHADOW:                                      inset 1px 1px 2px 1px rgba(40, 43, 45, 0.1);
+    $FORM--TOGGLE--FONT--LOCALISED_STRING---OFF:                    "Off";
+    $FORM--TOGGLE--SHUTTLE--COLOUR---OFF:                           $FORM--FIELDSET--BG--COLOUR;
+    $FORM--TOGGLE--FONT--COLOUR---OFF:                              lighten($FORM--FIELDSET--BG--COLOUR, 4%);
+    $FORM--TOGGLE--FONT--LOCALISED_STRING---ON:                     "On";
+    $FORM--TOGGLE--SHUTTLE--COLOUR---ON:                            #1bb010;
+    $FORM--TOGGLE--FONT--COLOUR---ON:                               $white-clouds;
+
+    // COMBOS
+    $FORM--COMBO--ICON---UP:                                        $ICON--ARROW_DOWN---WHITE;
+    $FORM--COMBO--BG--COLOUR---UP:                                  rgba($grey-clouds, .4);
+    $FORM--COMBO--ICON---HOVER:                                     $ICON--ARROW_DOWN---WHITE;
+    $FORM--COMBO--BG--COLOUR---HOVER:                               rgba($grey-clouds, .7);
+
+    // CONTEXT MENUS
+    $FORM--CONTEXT_MENU--BG--COLOUR---UP:                           $jahia-blue;
+    $FORM--CONTEXT_MENU--BG--COLOUR---HOVER:                        lighten($FORM--CONTEXT_MENU--BG--COLOUR---UP, 5%);
+    $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED:                     $jahia-blue;
+    $FORM--CONTEXT_MENU--FONT--COLOUR---UP:                         $white-clouds;
+    $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER:                      $white-clouds;
+    $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED:                   rgba($FORM--CONTEXT_MENU--FONT--COLOUR---UP, .7) !important;
+
+    // TABLES
+    $FORM--TABLE--TITLE--COLOUR: 			                        $grey-clouds;
+	$FORM--TABLE--LABEL--COLOUR: 			                        $grey-clouds;
+	$FORM--TABLE--VALUE--COLOUR: 			                        $grey-clouds;
+
+
+
+/////////////////////////////////////////////////
+// BUTTONS //////////////////////////////////////
+/////////////////////////////////////////////////
+
+    // DEFAULT BUTTON
+	$BUTTON--BG--COLOUR---UP: 				                        $jahia-blue;
+    $BUTTON--FONT--COLOUR---UP:                                     white;
+	$BUTTON--BG--COLOUR---HOVER: 			                        lighten($jahia-blue, 5%);
+    $BUTTON--FONT--COLOUR---HOVER:                                  white;
+
+
+/////////////////////////////////////////////////
+// TREES ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+    // ROW UP
+    $TREE--ROW--FONT--COLOUR---UP: 					                $grey-clouds;
+    $TREE--ROW--ICON---UP: 						                    $icon_pages_grey_clouds;
+	$TREE--ROW--BG--COLOUR---UP: 			                        $transparent;
+
+    // ROW HOVER
+    $TREE--ROW--BG--COLOUR---HOVER: 			                    rgba( $grey-clouds, .1 );
+    $TREE--ROW--FONT--COLOUR---HOVER: 				                $black-clouds;
+    $TREE--ROW--ICON---HOVER: 				                        $icon_pages_grey_clouds;
+
+    // ROW SELECTED
+    $TREE--ROW--BG--COLOUR---SELECTED: 		                       rgba( $grey-clouds, .7 );
+    $TREE--ROW--FONT--COLOUR---SELECTED: 			               $white-clouds;
+    $TREE--ROW--ICON---SELECTED: 			                       $icon_pages_white_clouds;
+
+    // ROW HOVER SELECTED
+    $TREE--ROW--BG--COLOUR---SELECTED_HOVER: 	                   $grey-clouds;
+    $TREE--ROW--FONT--COLOUR---SELECTED_HOVER: 		               $white-clouds;
+    $TREE--ROW--ICON---SELECTED_HOVER: 		                       $icon_pages_white_clouds;
+
+    // MORE OPTIONS BUTTON
+	$TREE--MORE_OPTIONS--ICON---UP: 				               $ICON--MORE_OPTIONS---GREY;
+	$TREE--MORE_OPTIONS--ICON---HOVER: 			                   $ICON--MORE_OPTIONS---GREY;
+	$TREE--MORE_OPTIONS--ICON---SELECTED: 		                   $ICON--MORE_OPTIONS---WHITE;
+    $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER: 	               $ICON--MORE_OPTIONS---WHITE;
+
+
+
+/////////////////////////////////////////////////
+// RICH TEXT EDITOR /////////////////////////////
+/////////////////////////////////////////////////
+
+    // ICONS
+    $RICH_TEXT_EDITOR--ICON_SET:                                    "./images/icons/icons-cke.png";
+
+    // TOOL GROUP
+    $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--UP:                   lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
+    $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--HOVER:                lighten($EDIT_ENGINE--BASE--COLOUR, 8%);
+
+    // TOOL
+    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--UP:                        transparent;
+    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER:                     lighten($EDIT_ENGINE--BASE--COLOUR, 12%);
+    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED:                  lighten($EDIT_ENGINE--BASE--COLOUR, 16%);
+
+    // COMBO
+    $RICH_TEXT_EDITOR--COMBO--BG--COLOUR:                           lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+
+    // LABEL
+    $RICH_TEXT_EDITOR--LABEL--FONT--COLOUR:                         lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+
+    // PATH
+    $RICH_TEXT_EDITOR--PATH--BG--COLOUR:                            lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+    $RICH_TEXT_EDITOR--PATH--FONT--COLOUR:                          darken($EDIT_ENGINE--BASE--COLOUR, 50%);
+
+
+
+/////////////////////////////////////////////////
+// TOOL BUTTONS /////////////////////////////////
+/////////////////////////////////////////////////
+
+    $TOOL--BUTTON--FONT--COLOUR---NORMAL:                           $white-clouds;
+    $TOOL--BUTTON--FONT--COLOUR---OPEN:                             $grey-clouds;
+    $TOOL--BUTTON--FONT--COLOUR---OPEN_SELECTED:                    $jahia-blue;
+    $TOOL--BUTTON--FONT--COLOUR---OFF:          	                $black-clouds;
+
+
+
+/////////////////////////////////////////////////
+// THUMBS ///////////////////////////////////////
+/////////////////////////////////////////////////
+
+    $THUMB--FONT--COLOUR:                                           $dark-clouds;
+    $THUMB--FONT--BG--COLOUR:                                       rgba($white-clouds, 0.9);
+    $THUMB--BG--COLOUR---UP:                                        transparent;
+    $THUMB--BG--COLOUR---HOVER:                                     rgba($grey-clouds, 0.2);
+    $THUMB--BG--COLOUR---SELECTED:                                  $jahia-blue;
+
+
+
+/////////////////////////////////////////////////
+// HAMBURGER MENU ///////////////////////////////
+/////////////////////////////////////////////////
+
+    $HAMBURGER--BG--COLOUR:                                         rgba($jahia-blue, .99);
+	$HAMBURGER--TITLE--COLOUR: 				                        rgba($white-clouds, .7);
+	$HAMBURGER--BUTTON--COLOUR---UP:			                    rgba($white-clouds, .8);
+	$HAMBURGER--BUTTON--COLOUR---HOVER:		                        $white-clouds;
+
+    // APPLICATION ICONS
+	$HAMBURGER--ICON--CONTENT_MANAGER:		                        $ICON--CONTENT_MANAGER---WHITE;
+	$HAMBURGER--ICON--FILE_MANAGER:			                        $ICON--FILE_MANAGER---WHITE;
+	$HAMBURGER--ICON--PORTLET_MANAGER:		                        $ICON--PORTLET_MANAGER---WHITE;
+	$HAMBURGER--ICON--REPO_EXPLORER:		                        $ICON--REPO_EXPLORER---WHITE;
+	$HAMBURGER--ICON--CATEGORY_MANAGER:		                        $ICON--CATEGORY_MANAGER---WHITE;
+	$HAMBURGER--ICON--SITE_MANAGER:			                        $ICON--SITE_MANAGER---WHITE;
+
+
+
+/////////////////////////////////////////////////
+// EDIT ENGINE //////////////////////////////////
+/////////////////////////////////////////////////
+
+    $EDIT_ENGINE--TITLE--FONT--COLOUR:                              $dark-clouds;
+    $EDIT_ENGINE--TAB--FONT--COLOUR:                                #a3a3a3;
+    $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED:                     #f1f1f1;
+    $EDIT_ENGINE--TAB--FONT--COLOUR---HOVER:                        rgba($EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED, .7);
+    $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over:                $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED;
+    $EDIT_ENGINE--BG--COLOUR:                                       $EDIT_ENGINE--BASE--COLOUR;
+    $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR:                           lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
+    $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---HOVER:                   lighten($EDIT_ENGINE--BASE--COLOUR, 8%);
+    $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---FOCUS:                   lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+    $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR:                         lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+    $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---HOVER:                 lighten($EDIT_ENGINE--BASE--COLOUR, 85%);
+    $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---FOCUS:                 darken($EDIT_ENGINE--BASE--COLOUR, 50%);
+
+
+
+/////////////////////////////////////////////////
+// SIDE PANEL ///////////////////////////////////
+/////////////////////////////////////////////////
+
+    // PANEL BACKGROUND
+	$SIDE_PANEL--BG--COLOUR--CLOSED:                               $transparent;
+	$SIDE_PANEL--BG--COLOUR---OPENED:                              $white-clouds;
+	$SIDE_PANEL--BG--SHADOW:                                       7px 0px 45px rgba($dark-clouds, 0.9);
+
+    // TAB ICONS ::: CLOSED
+    $SIDE_PANEL--ICON--PAGES---CLOSED:                             $icon_pages_white_clouds;
+    $SIDE_PANEL--ICON--CREATE---CLOSED:                            $icon_create_white_clouds;
+    $SIDE_PANEL--ICON--CONTENT---CLOSED:                           $icon_content_white_clouds;
+    $SIDE_PANEL--ICON--FILES---CLOSED:                             $icon_files_white_clouds;
+    $SIDE_PANEL--ICON--SEARCH---CLOSED:                            $icon_search_white_clouds;
+    $SIDE_PANEL--ICON--TAXONOMY---CLOSED:                          $icon_taxonomy_white_clouds;
+    $SIDE_PANEL--ICON--DEVICES---CLOSED:                           $icon_devices_white_clouds;
+    $SIDE_PANEL--ICON--SETTINGS---CLOSED:                          $icon_settings_white_clouds;
+
+    // TAB ICONS ::: OPEN
+    $SIDE_PANEL--ICON--SETTINGS---OPEN:                            $icon_pages_grey_clouds;
+    $SIDE_PANEL--ICON--CREATE---OPEN:                              $icon_create_grey_clouds;
+    $SIDE_PANEL--ICON--CONTENT---OPEN:                             $icon_content_grey_clouds;
+    $SIDE_PANEL--ICON--FILES---OPEN:                               $icon_files_grey_clouds;
+    $SIDE_PANEL--ICON--SEARCH---OPEN:                              $icon_search_grey_clouds;
+    $SIDE_PANEL--ICON--TAXONOMY---OPEN:                            $icon_taxonomy_grey_clouds;
+    $SIDE_PANEL--ICON--DEVICES---OPEN:                             $icon_devices_grey_clouds;
+    $SIDE_PANEL--ICON--SETTINGS---OPEN:                            $icon_settings_grey_clouds;
+
+    // TAB ICONS ::: SELECTED
+    $SIDE_PANEL--ICON--PAGES---SELECTED:                           $icon_pages_jahia_blue;
+    $SIDE_PANEL--ICON--CREATE---SELECTED:                          $icon_create_jahia_blue;
+    $SIDE_PANEL--ICON--CONTENT---SELECTED:                         $icon_content_jahia_blue;
+    $SIDE_PANEL--ICON--FILES---SELECTED:                           $icon_files_jahia_blue;
+    $SIDE_PANEL--ICON--SEARCH---SELECTED:                          $icon_search_jahia_blue;
+    $SIDE_PANEL--ICON--TAXONOMY---SELECTED:                        $icon_taxonomy_jahia_blue;
+    $SIDE_PANEL--ICON--DEVICES---SELECTED:                         $icon_devices_jahia_blue;
+    $SIDE_PANEL--ICON--SETTINGS---SELECTED:                        $icon_settings_jahia_blue;
+
+    // TAB ICONS ::: OFF
+    $SIDE_PANEL--ICON--PAGES---OFF:                                $icon_pages_black_clouds;
+    $SIDE_PANEL--ICON--CREATE---OFF:                               $icon_create_black_clouds;
+    $SIDE_PANEL--ICON--CONTENT---OFF:                              $icon_content_black_clouds;
+    $SIDE_PANEL--ICON--FILES---OFF:                                $icon_files_black_clouds;
+    $SIDE_PANEL--ICON--SEARCH---OFF:                               $icon_search_black_clouds;
+    $SIDE_PANEL--ICON--TAXONOMY---OFF:                             $icon_taxonomy_black_clouds;
+    $SIDE_PANEL--ICON--DEVICES---OFF:                              $icon_devices_black_clouds;
+    $SIDE_PANEL--ICON--SETTINGS---OFF:                             $icon_settings_black_clouds;
+
+
+
+////
+//// PLACE HOLDERS
+////
+//// These placeholders allow more control over the styling of the majority of
+//// elements in the DX Application.
+//// Please just be aware that changing the SIZE of elements may have undesired effects
+//// on other elements :)
+////
+//// The placeholders are categorised as follows:
+////     APPLICATION
+////     FORMS
+////     COMBO MENUS
+////     COMBO MENU ::: MODE SELECTOR
+////     LIST BOX
+////     CONTEXT MENU
+////     CONTEXT MENU ::: HAMBURGER
+////     CONTEXT MENU ::: PUBLICATION
+////     CONTEXT MENU ::: PREVIEW
+////     CONTEXT MENU ::: MORE INFO
+////     CONTEXT MENU ::: MODE VIEW (EDIT MODE)
+////     CONTEXT MENU ::: MODE VIEW (ADMIN MODE)
+////     CONTEXT MENU ::: MODE VIEW (DASHBOARD MODE)
+////     CONTEXT MENU ::: USER MENU (EDIT MODE)
+////     CONTEXT MENU ::: USER MENU (ADMIN MODE)
+////     CONTEXT MENU ::: USER MENU (DASHBOARD MODE)
+////     CONTEXT MENU ::: WORKFLOW
+////     CONTEXT MENU ::: CACHE
+////     CONTEXT MENU ::: PAGE EDIT CONTENT
+////     CONTEXT MENU ::: SIDE PANEL ::: PAGES
+////     CONTEXT MENU ::: SIDE PANEL ::: CONTENT ::: TREE
+////     CONTEXT MENU ::: SIDE PANEL ::: CONTENT ::: ITEM
+////     CONTEXT MENU ::: SIDE PANEL ::: FILE ::: TREE
+////     CONTEXT MENU ::: SIDE PANEL ::: FILE ::: ITEM
+////     CONTEXT MENU ::: SIDE PANEL ::: SEARCH
+////     CONTEXT MENU ::: SIDE PANEL ::: TAXONOMY
+////     BUTTONS ::: FORM
+////     BUTTONS ::: PANEL
+////     BUTTONS ::: FIELDSET
+////     BUTTONS ::: ACTION BAR
+////     BUTTONS ::: ACTION BAR ::: SUGGESTED
+
+
+
+/////////////////////////////////////////////////
+// APPLICATION //////////////////////////////////
+/////////////////////////////////////////////////
 
     %document_title {
         @include text(16px, $white-clouds, $semilight);
@@ -279,57 +376,232 @@
 
     %multiselect_title {
         color: $white-clouds;
-
-
     }
 
 
 
+/////////////////////////////////////////////////
+// FORMS ////////////////////////////////////////
+/////////////////////////////////////////////////
 
+    // CHECKBOX
+    %checkbox_unchecked {
+        border: $FORM--CHECKBOX--BORDER---UNCHECKED;
+		background: $FORM--CHECKBOX--BG--COLOUR---UNCHECKED;
+		box-shadow: $FORM--CHECKBOX--SHADOW---UNCHECKED;
+    }
 
+    %checkbox_checked {
+        background: no-repeat center center;
+        background-image: url($FORM--CHECKBOX--ICON---CHECKED);
+        background-size: 15px 15px;
+        background-color: $FORM--CHECKBOX--BG--COLOUR---CHECKED;
+    }
 
+    // LEGENDS
+    %form_legend_collapsed {}
 
-/* MODE COMBO */
-
-    %mode_combo_label {
+	%form_legend {
+    	padding: 0!important;
+        position: absolute;
+        top: 14px;
+        left: 30px;
         text-transform: uppercase;
 
-        @include text(14px, $white-clouds, $semilight);
+    	@include text(11px, $FORM--LEGEND--FONT--COLOUR, $semibold);
     }
 
-    %mode_combo_label_multiselect {
-        background: url(./images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
-
+    // FIELDSET
+    %form_fieldset {
+        border: none !important;
+        padding: 43px 10px 20px 29px !important;
+        margin: 0 23px 10px 0 !important;
+        position: relative;
+        background: $FORM--FIELDSET--BG--COLOUR;
+        box-sizing: border-box;
     }
 
+    // LABELS
+	%form_label {
+        padding: 0!important;
+        margin: 0!important;
+        text-transform: uppercase;
+        line-height: 24px;
 
+        @include text(10px, $FORM--LABEL--FONT--COLOUR, $semibold, $DEFAULT--FONT--FAMILY !important);
+    }
 
-/* TOOL BUTTONS */
-
-    %tool_button_label {
-        text-align: center;
+    // TOGGLE
+    %toggle_off_rails {
+        content: $FORM--TOGGLE--FONT--LOCALISED_STRING---OFF;
+        background: $FORM--TOGGLE--BG--COLOUR;
+        box-shadow: $FORM--TOGGLE--BG--SHADOW;
         text-transform: uppercase;
 
-        @include text(8px, $tool_color_normal, $normal);
+        @include text(10px, $FORM--TOGGLE--FONT--COLOUR---OFF, $extrabold);
     }
 
-    %tool_button_label_multiselect {
-        color: $tool_color_off;
-
+    %toggle_off_shuttle {
+        content: " ";
+        background: $FORM--TOGGLE--SHUTTLE--COLOUR---OFF;
     }
 
-    %tool_button_label_side_panel_open {
-        color: $tool_color_open;
-
+    %toggle_on_rails {
+    	content: " ";
     }
 
-
-    %tool_button_label_side_panel_open_selected {
-        color: $tool_color_open_selected;
-
+    %toggle_on_shuttle {
+        content: $FORM--TOGGLE--FONT--LOCALISED_STRING---ON;
+        color: $FORM--TOGGLE--FONT--COLOUR---ON;
+        background: $FORM--TOGGLE--SHUTTLE--COLOUR---ON;
+        color: white;
+        text-transform: uppercase;
+        font-size: 10px;
+        font-weight: 800;
     }
 
-/* List Box */
+    // TEXT INPUT
+    %text_input {
+        background: $FORM--TEXT_INPUT--BG--COLOUR;
+        padding: $FORM--TEXT_INPUT--PADDING;
+        border: $FORM--TEXT_INPUT--BORDER--COLOUR;
+        transition: all 0.15s ease-in 0s;
+
+        @include text($FORM--TEXT_INPUT--FONT--SIZE, $FORM--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+    }
+
+	%text_input_hover {
+        background: $FORM--TEXT_INPUT--BG--COLOUR---HOVER;
+        color: $FORM--TEXT_INPUT--FONT--COLOUR---HOVER;
+    }
+
+	%text_input_focus {
+        background: $FORM--TEXT_INPUT--BG--COLOUR---FOCUS;
+		color: $FORM--TEXT_INPUT--FONT--COLOUR---FOCUS;
+    }
+
+    %text_input_disabled {
+        background: $transparent;
+        padding: 3px 40px 3px 5px;
+        padding-left: 0;
+        border: 1px solid transparent;
+        transition: all 0.15s ease-in 0s;
+
+        @include text($FORM--TEXT_INPUT--FONT--SIZE, #d1d1d1, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+    }
+
+    // EDIT ENGINES EXCEPTION
+        %text_input--edit_engine {
+            background: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR;
+
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
+        %text_input_hover--edit_engine {
+            background: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---HOVER;
+            color: $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---HOVER !important;
+        }
+
+    	%text_input_focus--edit_engine {
+            background: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---FOCUS;
+    		color: $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+        }
+
+        %text_input_disabled--edit_engine {
+            background: transparent !important;
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, rgb(164, 163, 163)!important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
+
+    // CLEAR FORM BUTTON
+    %form_clear_up {
+        background: no-repeat center center;
+        background-color: $FORM--CLEAR_BUTTON--BG--COLOUR---UP !important;
+        background-image: url($FORM--CLEAR_BUTTON--ICON---UP);
+		background-size: 45%;
+    }
+
+    %form_clear_hover {
+        background-color: $FORM--CLEAR_BUTTON--BG--COLOUR---HOVER !important;
+        background-image: url($FORM--CLEAR_BUTTON--ICON---HOVER);
+    }
+
+    // EDIT PANEL EXCEPTIONS
+        %form_clear_up--edit_panel {
+            background-color: transparent !important;
+            opacity: 0.5;
+        }
+
+        %form_clear_hover--edit_panel {
+            background-color: transparent !important;
+            opacity: 1;
+        }
+
+
+
+/////////////////////////////////////////////////
+// COMBO MENUS //////////////////////////////////
+/////////////////////////////////////////////////
+
+    %combo_arrow_up {
+        background: no-repeat center center;
+        background-color: $FORM--COMBO--BG--COLOUR---UP !important;
+        background-image: url($FORM--COMBO--ICON---UP);
+    }
+
+    %combo_arrow_hover {
+        background-color: $FORM--COMBO--BG--COLOUR---HOVER !important;
+        background-image: url($FORM--COMBO--ICON---HOVER);
+    }
+
+    %combo_input {
+        padding: $FORM--TEXT_INPUT--PADDING !important;
+        border: $FORM--TEXT_INPUT--BORDER--COLOUR;
+		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
+		font-size: $FORM--TEXT_INPUT--FONT--SIZE;
+		font-weight: $FORM--TEXT_INPUT--FONT--WEIGHT;
+    }
+
+    // EDIT ENGINE EXEPTIONS
+        %combo_arrow_up--edit_panel {
+            background-color: transparent !important;
+            opacity: 0.5;
+        }
+
+        %combo_arrow_hover--edit_panel {
+            background-color: transparent !important;
+            opacity: 1;
+        }
+
+        %combo_input--edit_engine {
+            padding: $FORM--TEXT_INPUT--PADDING !important;
+            border: $FORM--TEXT_INPUT--BORDER--COLOUR;
+    		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
+    		font-size: $FORM--TEXT_INPUT--FONT--SIZE;
+    		font-weight: $FORM--TEXT_INPUT--FONT--WEIGHT;
+        }
+
+
+
+/////////////////////////////////////////////////
+// COMBO ::: MODE SELECTOR //////////////////////
+/////////////////////////////////////////////////
+
+%mode_combo_label {
+    text-transform: uppercase;
+
+    @include text(14px, $white-clouds, $semilight);
+}
+
+%mode_combo_label_multiselect {
+    background: url(./images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
+}
+
+
+
+/////////////////////////////////////////////////
+// LIST BOX /////////////////////////////////////
+/////////////////////////////////////////////////
 
         %list_box_holder {
             border: none;
@@ -338,19 +610,17 @@
 
         %list_box_item {
             text-align: left!important;
-
-            background: $context_bg_up;
+            background: $FORM--CONTEXT_MENU--BG--COLOUR---UP;
             padding: 8px 9px !important;
             border: none;
             width: 100%;
 
-            @include text(11px, $context_text_color_up, $semilight);
+            @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $semilight);
         }
 
         %list_box_item_hover {
-            color: $context_text_color_hover;
-            background: $context_bg_hover;
-
+            color: $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER;
+            background: $FORM--CONTEXT_MENU--BG--COLOUR---HOVER;
         }
 
         %list_box_item_selected {
@@ -359,17 +629,18 @@
         }
 
         %list_box_item_disabled {
-            color: $context_text_color_disabled;
+            color: $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED;
             font-style: italic;
             opacity: 1;
-            background: $context_bg_disabled;
-
+            background: $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED;
             display: none;
-
         }
 
 
-/* CONTEXT MENUS */
+
+/////////////////////////////////////////////////
+// CONTEXT MENU /////////////////////////////////
+/////////////////////////////////////////////////
 
     %context_menu_holder {
         border: none;
@@ -378,28 +649,24 @@
 
     %context_menu_item {
         text-align: left!important;
-
-        background: $context_bg_up;
+        background: $FORM--CONTEXT_MENU--BG--COLOUR---UP;
         padding: 8px 9px !important;
         border: none;
 
-        @include text(11px, $context_text_color_up, $semilight);
+        @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $semilight);
     }
 
     %context_menu_item_hover {
-        color: $context_text_color_hover;
-        background: $context_bg_hover;
-
+        color: $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER;
+        background: $FORM--CONTEXT_MENU--BG--COLOUR---HOVER;
     }
 
     %context_menu_item_disabled {
-        color: $context_text_color_disabled;
+        color: $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED;
         font-style: italic;
         opacity: 1;
-        background: $context_bg_disabled;
-
+        background: $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED;
         display: none;
-
     }
 
     // Personalised Context Menus
@@ -407,14 +674,11 @@
 	// If left blank then they will assume the default style applied above.
 
         // Menus available in ALL / MULTIPLE pages
-			%context_menu_title--common_hamburger {
-				// content: $text_context_menu_hamburger;
-			}
+			%context_menu_title--common_hamburger {}
 			%context_menu_holder--common_hamburger {}
 			%context_menu_item--common_hamburger {}
 			%context_menu_item_hover--common_hamburger {}
 			%context_menu_item_disabled--common_hamburger {}
-
 
 		// Menus available in Edit Mode
 			// Publication
@@ -423,8 +687,6 @@
 
 				body[data-multiselect="on"] & {
 					content: $text_context_menu_publication_selection;
-
-
 				}
 			}
 			%context_menu_holder--edit_mode_publication {}
@@ -438,7 +700,6 @@
 
 				body[data-multiselect="on"] & {
 					content: $text_context_menu_preview_selection;
-
 				}
 
 			}
@@ -453,7 +714,6 @@
 
 				body[data-multiselect="on"] & {
 					content: $text_context_menu_more_info_selection;
-
 				}
 			}
 			%context_menu_holder--edit_mode_more_info {}
@@ -683,252 +943,9 @@
 
 
 
-
-/* COMBO MENUS */
-
-    %combo_arrow_up {
-        background: no-repeat center center;
-        background-color: $combo_bg_up !important;
-        background-image: url($combo_icon_up);
-    }
-
-    %combo_arrow_hover {
-        background-color: $combo_bg_hover !important;
-        background-image: url($combo_icon_hover);
-    }
-
-    // EDIT ENGINE EXEPTIONS
-        %combo_arrow_up--edit_panel {
-            background-color: transparent !important;
-            opacity: 0.5;
-        }
-
-        %combo_arrow_hover--edit_panel {
-            background-color: transparent !important;
-            opacity: 1;
-        }
-
-
-
-/* FORMS */
-
-    %checkbox_unchecked {
-        border: $checkbox_unchecked_border;
-		background: $checkbox_unchecked_bg;
-		box-shadow: $checkbox_unchecked_shadow;
-    }
-
-    %checkbox_checked {
-        background: no-repeat center center;
-        background-image: url($checkbox_checked_tick);
-        background-size: 15px 15px;
-        background-color: $checkbox_checked_bg;
-    }
-
-    %toggle_off_rails {
-        content: $toggle_off_label;
-        background: $toggle_bg;
-        box-shadow: $toggle_shadow;
-        text-transform: uppercase;
-
-        @include text(10px, $toggle_off_color, $extrabold);
-    }
-
-    %toggle_off_shuttle {
-        content: " ";
-        background: $toggle_off_shuttle;
-
-    }
-
-    %toggle_on_rails {
-    	content: " ";
-    }
-
-    %toggle_on_shuttle {
-        content: $toggle_on_label;
-        color: $toggle_on_color;
-        background: $toggle_on_shuttle;
-        color: white;
-        text-transform: uppercase;
-        font-size: 10px;
-        font-weight: 800;
-    }
-
-    %text_input {
-        background: $text_input_bg;
-        padding: $text_input_padding;
-        border: $text_input_border;
-
-        transition: all 0.15s ease-in 0s;
-
-        @include text($text_input_font_size, $text_input_color, $text_input_font_weight, $text_input_font_family);
-    }
-
-	%text_input_hover {
-        background: $text_input_bg_hover;
-        color: $text_input_color_hover;
-    }
-
-	%text_input_focus {
-        background: $text_input_bg_focus;
-		color: $text_input_color_focus;
-    }
-
-    %text_input_disabled {
-        background: $transparent;
-
-
-        padding: 3px 40px 3px 5px;
-        padding-left: 0;
-        border: 1px solid transparent;
-        transition: all 0.15s ease-in 0s;
-
-        @include text($text_input_font_size, #d1d1d1, $text_input_font_weight, $text_input_font_family);
-    }
-
-    // EDIT ENGINES EXCEPTION
-        %text_input--edit_engine {
-            background: $edit_engine_input_bg;
-
-            @include text($text_input_font_size, $edit_engine_input_color, $text_input_font_weight, $text_input_font_family);
-        }
-
-        %text_input_hover--edit_engine {
-            background: $edit_engine_input_bg_hover;
-            color: $edit_engine_input_color_hover !important;
-        }
-
-    	%text_input_focus--edit_engine {
-            background: $edit_engine_input_bg_focus;
-    		color: $edit_engine_input_color_focus !important;
-        }
-
-        %text_input_disabled--edit_engine {
-            background: transparent !important;
-            @include text($text_input_font_size, rgb(164, 163, 163)!important, $text_input_font_weight, $text_input_font_family);
-
-        }
-
-    %combo_input {
-        padding: $text_input_padding !important;
-        border: $text_input_border;
-
-		font-family: $text_input_font_family;
-		font-size: $text_input_font_size;
-		font-weight: $text_input_font_weight;
-    }
-
-    // EDIT ENGINES EXCEPTION
-        %combo_input--edit_engine {
-            padding: $text_input_padding !important;
-            border: $text_input_border;
-
-    		font-family: $text_input_font_family;
-    		font-size: $text_input_font_size;
-    		font-weight: $text_input_font_weight;
-        }
-
-	%form_button {
-        background: $button_normal_up;
-        border:none;
-        padding: 5px 15px!important;
-
-        @include text(11px, $white-clouds, $semilight);
-    }
-
-	%form_button_hover {
-        background: $button_normal_hover;
-
-    }
-
-    %form_clear_up {
-        background: no-repeat center center;
-        background-color: $form_clear_bg_up !important;
-        background-image: url($form_clear_icon_up);
-		background-size: 45%;
-    }
-
-    %form_clear_hover {
-        background-color: $form_clear_bg_hover !important;
-        background-image: url($form_clear_icon_hover);
-    }
-
-    // EDIT PANEL EXCEPTIONS
-        %form_clear_up--edit_panel {
-            background-color: transparent !important;
-            opacity: 0.5;
-        }
-
-        %form_clear_hover--edit_panel {
-            background-color: transparent !important;
-            opacity: 1;
-        }
-
-    %edit_engine_title {
-    	@include text(14px, #a5a5a5, $extralight);
-
-
-    }
-
-    %edit_engine_tab {
-    	padding: 5px 0 5px 5px;
-
-    	@include text(14px, $edit_engine_tab, $extralight);
-    }
-
-    %edit_engine_tab_selected {
-    	@include text(14px, $edit_engine_tab_selected + !important, $extralight);
-    }
-
-    %edit_engine_tab_over {
-    	@include text(14px, $edit_engine_tab_selected + !important, $extralight);
-
-    }
-
-    %edit_engine_tab_selected_over {
-    	@include text(14px, $edit_engine_tab_selected_over + !important, $extralight);
-
-    }
-
-	%form_legend_collapsed {
-
-    }
-
-	%form_legend {
-    	padding: 0!important;
-        position: absolute;
-        top: 14px;
-        left: 30px;
-        text-transform: uppercase;
-
-    	@include text(11px, $form_legend_color, $semibold);
-    }
-
-    %form_fieldset {
-        border: none !important;
-        padding: 43px 10px 20px 29px !important;
-        margin: 0 23px 10px 0 !important;
-        position: relative;
-        background: $form_fieldset_bg;
-        box-sizing: border-box;
-    }
-
-
-	%form_label {
-        padding: 0!important;
-        margin: 0!important;
-        text-transform: uppercase;
-        line-height: 24px;
-
-        //@include text(11px, $dark-clouds, $semilight, $font-1 !important);
-        @include text(10px, $form_label_text, $semibold, $font-1 !important);
-    }
-
-
-
-
-
-////////// BUTTONS
+/////////////////////////////////////////////////
+// BUTTONS //////////////////////////////////////
+/////////////////////////////////////////////////
 
     // FORM
     %button_text--form {
@@ -1078,61 +1095,55 @@
 
 
 
+/////////////////////////////////////////////////
+// TREES ////////////////////////////////////////
+/////////////////////////////////////////////////
 
-
-
-
-/* TREES */
-
-    /* Labels */
+    // LABELS
     %tree_line_text_up {
-        @include text(12px, $row_label, $extralight);
-        xpadding: 7px 0 0 !important;
+        @include text(12px, $TREE--ROW--FONT--COLOUR---UP, $extralight);
     }
 
     %tree_line_text_hover {
-        color: $row_over_label!important;
+        color: $TREE--ROW--FONT--COLOUR---HOVER!important;
 
 		// Padding not dealt with in best manner ...
 		padding-right: 19px!important; // Make space for More options button
 
 		.x-viewport-adminmode & {
 			padding-right: 0!important; // Make space for More options button
-
 		}
     }
 
     %tree_line_text_selected {
-        color: $row_selected_label!important;
+        color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
 		padding-right: 19px!important; // Make space for More options button
 
 		.x-viewport-adminmode & {
 			padding-right: 0!important; // Make space for More options button
-
 		}
 
     }
 
     %tree_line_text_selected_hover {
-        color: $row_selected_over_label!important;
-
+        color: $TREE--ROW--FONT--COLOUR---SELECTED_HOVER!important;
     }
 
-    /* Backgrounds */
+    // BACKGROUNDS
     %tree_line_bg_up {
-        background: $row_up_background!important;
+        background: $TREE--ROW--BG--COLOUR---UP!important;
     }
 
     %tree_line_bg_hover {
-        background: $row_over_background!important;
+        background: $TREE--ROW--BG--COLOUR---HOVER!important;
     }
 
     %tree_line_bg_selected {
-        background-color: $row_selected_background!important;
+        background-color: $TREE--ROW--BG--COLOUR---SELECTED!important;
     }
 
     %tree_line_bg_selected_hover {
-        background: $row_selected_over_icon!important;
+        background: $TREE--ROW--ICON---SELECTED_HOVER!important;
     }
 
 	// Personalised Tree Icons
@@ -1141,7 +1152,7 @@
 
 	// Pages Tree Icons
 		%tree_line_icon_up--pages {
-			background-image: url($row_icon);
+			background-image: url($TREE--ROW--ICON---UP);
 			background-size: 23px 23px;
 			background-repeat: no-repeat;
 			padding-left: 23px;
@@ -1150,15 +1161,15 @@
 		}
 
 		%tree_line_icon_hover--pages {
-			background-image: url($row_over_icon) !important;
+			background-image: url($TREE--ROW--ICON---HOVER) !important;
 		}
 
 		%tree_line_icon_selected--pages {
-			background-image: url($row_selected_icon) !important;
+			background-image: url($TREE--ROW--ICON---SELECTED) !important;
 		}
 
 		%tree_line_icon_selected_hover--pages {
-			background-image: url($row_selected_icon) !important;
+			background-image: url($TREE--ROW--ICON---SELECTED) !important;
 		}
 
 	// Create Tree Icons
@@ -1190,34 +1201,109 @@
 		("#JahiaGxtCreateContentTab",    	create),
 		("#JahiaGxtContentBrowseTab",    	content),
 		("#JahiaGxtFileImagesBrowseTab",    files),
-		("#JahiaGxtCategoryBrowseTab",    	taxonomy),
-
-
+		("#JahiaGxtCategoryBrowseTab",    	taxonomy)
 	);
 
 
-/* THUMB WRAPS */
+
+/////////////////////////////////////////////////
+// THUMB WRAPS //////////////////////////////////
+/////////////////////////////////////////////////
 
     %thumb_label {
-        background: $thumb_label_background;
+        background: $THUMB--FONT--BG--COLOUR;
         text-align: center;
         padding: 3px 10px;
 
         @extend %ellipsis_overflow;
-        @include text(10px, $thumb_label, $bold);
+        @include text(10px, $THUMB--FONT--COLOUR, $bold);
     }
 
     %thumb_up {
-        background: $thumb_background_up;
-
+        background: $THUMB--BG--COLOUR---UP;
     }
 
     %thumb_hover {
-        background: $thumb_background_hover;
-
+        background: $THUMB--BG--COLOUR---HOVER;
     }
 
     %thumb_selected {
-        background: $thumb_background_selected;
+        background: $THUMB--BG--COLOUR---SELECTED;
+    }
 
+
+
+/////////////////////////////////////////////////
+// SIDE PANEL ///////////////////////////////////
+/////////////////////////////////////////////////
+
+    %side_paneL_container {
+        background: $SIDE_PANEL--BG--COLOUR--CLOSED !important;
+    }
+
+    %side_paneL_container_open {
+        background: $SIDE_PANEL--BG--COLOUR---OPENED !important;
+        box-shadow: $SIDE_PANEL--BG--SHADOW;
+    }
+
+    %side_paneL_title {
+        @include text(26px, $grey-clouds, $extralight);
+    }
+
+    %side_paneL_title_site_selector {}
+
+
+
+/////////////////////////////////////////////////
+// TOOL BUTTONS /////////////////////////////////
+/////////////////////////////////////////////////
+
+    %tool_button_label {
+        text-align: center;
+        text-transform: uppercase;
+
+        @include text(8px, $TOOL--BUTTON--FONT--COLOUR---NORMAL, $normal);
+    }
+
+    %tool_button_label_multiselect {
+        color: $TOOL--BUTTON--FONT--COLOUR---OFF;
+    }
+
+    %tool_button_label_side_panel_open {
+        color: $TOOL--BUTTON--FONT--COLOUR---OPEN;
+    }
+
+
+    %tool_button_label_side_panel_open_selected {
+        color: $TOOL--BUTTON--FONT--COLOUR---OPEN_SELECTED;
+    }
+
+
+
+/////////////////////////////////////////////////
+// EDIT ENGINE //////////////////////////////////
+/////////////////////////////////////////////////
+
+    // TITLE
+    %edit_engine_title {
+    	@include text(14px, #a5a5a5, $extralight);
+    }
+
+    // TAB BUTTONS
+    %edit_engine_tab {
+    	padding: 5px 0 5px 5px;
+
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR, $extralight);
+    }
+
+    %edit_engine_tab_selected {
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $extralight);
+    }
+
+    %edit_engine_tab_over {
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $extralight);
+    }
+
+    %edit_engine_tab_selected_over {
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over + !important, $extralight);
     }

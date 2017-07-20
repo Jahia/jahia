@@ -37,22 +37,7 @@
 
 
 ///////// PUBLICATION COLOURS
-	$conflict: 							yellow;
-	$deleted: 							black;
-	$live-modified: 					orange;
-	$live-only: 						orange;
-	$locked: 							yellow;
-	$mandatory-language-unpublishable: 	orange;
-	$mandatory-language-valid:			green;
-	$marked-for-deletion:				red;
-	$modified: 							orange;
-	$multiple-wf:						orange;
-	$not-published: 					orange;
-	$one-wf: 							orange;
-	$published: 						green;
-	$unpublished: 						grey;
-	$waiting: 							white;
-	$work-in-progress:					orange;
+
 
 
 /////////////////////////////////////////////////
@@ -61,10 +46,11 @@
 
 
 ///////// MORE OPTIONS
-	$icon_more_options_white_clouds:     "./images/icon-more-options-light.png";
-	$icon_more_options_grey_clouds:     "./images/icon-more-options-dark-50@X2.png";
-	$icon_combo_arrow_white_clouds:     "./images/icons/combo-arrow.png";
-	$icon_form_close_grey_clouds:     "./images/icons/icon-close-small-light.png";
+	$ICON--MORE_OPTIONS---WHITE:     "./images/icon-more-options-light.png";
+	$ICON--MORE_OPTIONS---GREY:     "./images/icon-more-options-dark-50@X2.png";
+
+	$ICON--ARROW_DOWN---WHITE:     "./images/icons/combo-arrow.png";
+	$ICON--CLOSE_SMALL---GREY:     "./images/icons/icon-close-small-light.png";
 	$icon_form_close_white_clouds:     "./images/icons/icon-close-white@X2.png";
 
 
@@ -131,12 +117,12 @@
 
 
 ///////// APPS
-	$app_icon_content_manager_white: 	"./images/dx_logo_inverted.png";
-	$app_icon_file_manager_white: 		"./images/dx_logo_inverted.png";
-	$app_icon_portlet_manager_white: 	"./images/dx_logo_inverted.png";
-	$app_icon_repo_explorer_white: 		"./images/dx_logo_inverted.png";
-	$app_icon_category_manager_white: 	"./images/dx_logo_inverted.png";
-	$app_icon_site_manager_white: 		"./images/dx_logo_inverted.png";
+	$ICON--CONTENT_MANAGER---WHITE: 	"./images/dx_logo_inverted.png";
+	$ICON--FILE_MANAGER---WHITE: 		"./images/dx_logo_inverted.png";
+	$ICON--PORTLET_MANAGER---WHITE: 	"./images/dx_logo_inverted.png";
+	$ICON--REPO_EXPLORER---WHITE: 		"./images/dx_logo_inverted.png";
+	$ICON--CATEGORY_MANAGER---WHITE: 	"./images/dx_logo_inverted.png";
+	$ICON--SITE_MANAGER---WHITE: 		"./images/dx_logo_inverted.png";
 
 
 
@@ -147,7 +133,8 @@
 
 ///////// FACES
 
-	$font-1: 'Nunito Sans', sans-serif;
+	$nunito: 'Nunito Sans', sans-serif;
+	$raleway: 'Raleway', sans-serif;
 
 ///////// WEIGHTS
 

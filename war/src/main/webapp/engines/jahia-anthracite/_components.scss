@@ -835,112 +835,112 @@ form,
 
 			&[src="/icons/publication/conflict.png"] {
 				/* Conflict */
-				background: $conflict!important;
+				background: $PUBLICATION--COLOUR---CONFLICT!important;
 
 			}
 
 
 			&[src="/icons/publication/deleted.png"] {
 				/* Deleted */
-				background: $deleted!important;
+				background: $PUBLICATION--COLOUR---DELETED!important;
 
 			}
 
 
 			&[src="/icons/publication/livemodified.png"] {
 				/* Live Modified */
-				background: $live-modified!important;
+				background: $PUBLICATION--COLOUR---LIVE_MODIFIED!important;
 
 			}
 
 
 			&[src="/icons/publication/liveonly.png"] {
 				/* Live Only */
-				background: $live-only!important;
+				background: $PUBLICATION--COLOUR---LIVE_ONLY!important;
 
 			}
 
 
 			&[src="/icons/publication/locked.png"] {
 				/* Locked */
-				background: $locked!important;
+				background: $PUBLICATION--COLOUR---LOCKED!important;
 
 			}
 
 
 			&[src="/icons/publication/mandatorylanguageunpublishable.png"] {
 				/* Mandatory Language Unpublishable */
-				background: $mandatory-language-unpublishable!important;
+				background: $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_UNPUBLISHABLE!important;
 
 			}
 
 
 			&[src="/icons/publication/mandatorylanguagevalid.png"] {
 				/* Mandatory Language Valid */
-				background: $mandatory-language-valid!important;
+				background: $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_VALID!important;
 
 			}
 
 
 			&[src="/icons/publication/markedfordeletion.png"] {
 				/* Marked FOr Deletion */
-				background: $marked-for-deletion!important;
+				background: $PUBLICATION--COLOUR---MARKED_FOR_DELETION!important;
 
 			}
 
 
 			&[src="/icons/publication/modified.png"] {
 				/* Modified */
-				background: $modified!important;
+				background: $PUBLICATION--COLOUR---MODIFIED!important;
 
 			}
 
 
 			&[src="/icons/publication/multipleWF.png"] {
 				/* Multiple WF */
-				background: $multiple-wf!important;
+				background: $PUBLICATION--COLOUR---MULTIPLE_WORK_FLOW!important;
 
 			}
 
 
 			&[src="/icons/publication/notpublished.png"] {
 				/* Not Published */
-				background: $not-published!important;
+				background: $PUBLICATION--COLOUR---NOT_PUBLISHED!important;
 
 			}
 
 
 			&[src="/icons/publication/oneWF.png"] {
 				/* One WF */
-				background: $one-wf!important;
+				background: $PUBLICATION--COLOUR---SINGLE_WORK_FLOW!important;
 
 			}
 
 
 			&[src="/icons/publication/published.png"] {
 				/* Published */
-				background: $published!important;
+				background: $PUBLICATION--COLOUR---PUBLISHED!important;
 
 			}
 
 
 			&[src="/icons/publication/unpublished.png"] {
 				/* Unpublished */
-				background: $unpublished!important;
+				background: $PUBLICATION--COLOUR---UNPUBLISHED!important;
 
 			}
 
 
 			&[src="/icons/publication/waiting.gif"] {
 				/* Waiting */
-				background: $waiting!important;
+				background: $PUBLICATION--COLOUR---WAITING!important;
 
 			}
 
 
 			&[src="/icons/publication/workinprogress.png"] {
 				/* Work In Progress */
-				background: $work-in-progress!important;
+				background: $PUBLICATION--COLOUR---WORK_IN_PROGRESS!important;
 
 			}
 		}
@@ -997,7 +997,7 @@ form,
 				@extend %tree_line_text_hover !optional;
 
 				&::after {
-					background-image: url($row_more_options_icon_hover);
+					background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);
 					opacity: 1;
 
 				}
@@ -1023,7 +1023,7 @@ form,
 				@extend %tree_line_text_selected !optional;
 
 				&::after {
-					background-image: url($row_more_options_icon_selected);
+					background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
 					opacity: 1;
 
 				}
@@ -1044,7 +1044,7 @@ form,
 					@extend %tree_line_text_selected_hover !optional;
 
 					&::after {
-						background-image: url($row_more_options_icon_selected_hover);
+						background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED_HOVER);
 
 					}
 				}
@@ -1064,7 +1064,7 @@ form,
 			position: fixed;
 			pointer-events: all;
 			margin-top: -26px;
-			background-image: url($row_more_options_icon);
+			background-image: url($TREE--MORE_OPTIONS--ICON---UP);
 			background-repeat: no-repeat;
 			background-position: center center;
 			background-size: 10px 2px;
@@ -1174,19 +1174,19 @@ form,
 	// Need to override with weight as well as importance
 	span.cke_toolgroup a {
 		.cke_button_icon {
-			background-image: url($cke_icon_set) !important;
+			background-image: url($RICH_TEXT_EDITOR--ICON_SET) !important;
 
 		}
 
 		&.cke_button_on {
-			background: $cke_tool_bg_on !important;
+			background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED !important;
 			border-radius: 0;
 			box-shadow: none;
 
 			&:hover,
 			&:focus,
 			&:active {
-				background: $cke_tool_bg_on !important;
+				background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED !important;
 			    border-radius: 0;
 			    box-shadow: none;
 
@@ -1197,7 +1197,7 @@ form,
 		&.cke_button_off,
 		&.cke_button_disabled {
 			&:hover {
-				background: $cke_tool_bg_hover !important;
+				background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER !important;
 			    border-radius: 0;
 			    box-shadow: none;
 
@@ -1206,7 +1206,7 @@ form,
 
 			&:focus,
 			&:active {
-				background: $cke_tool_bg_hover !important;
+				background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER !important;
 			    border-radius: 0;
 			    box-shadow: none;
 
@@ -1247,7 +1247,7 @@ form,
 .cke_toolgroup {
 	// CKE Tool Group
 	border: none!important;
-	background: $cke_toolgroup_bg!important;
+	background: $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--UP!important;
 	box-shadow: none!important;
 	border-radius: 0!important;
 	padding: 4px 10px!important;
@@ -1255,7 +1255,7 @@ form,
 	transition: all 0.2s ease-in 0s!important;
 
 	&:hover {
-		background: $cke_toolgroup_bg_hover !important;
+		background: $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--HOVER !important;
 	}
 }
 
@@ -1275,7 +1275,7 @@ form,
 .cke_combo_button {
 	// CKE Combo Button
 	border: none!important;
-	background: $cke_combo_bg !important;
+	background: $RICH_TEXT_EDITOR--COMBO--BG--COLOUR !important;
 	box-shadow: none!important;
 	border-radius: 0!important;
 	padding: 4px!important;
@@ -1288,7 +1288,7 @@ form,
 }
 
 .cke_button_label {
-	color:$cke_label !important;
+	color:$RICH_TEXT_EDITOR--LABEL--FONT--COLOUR !important;
 }
 
 
@@ -1307,7 +1307,7 @@ form,
 .cke_bottom {
 	// CKE Footer Container
 	border: none!important;
-    background: $cke_path_bg !important;
+    background: $RICH_TEXT_EDITOR--PATH--BG--COLOUR !important;
 }
 
 .cke_resizer {
@@ -1322,7 +1322,7 @@ form,
 	a {
 		// CKE Path Item
 		text-shadow: none;
-		@include text(12px, $cke_path_text, $extralight);
+		@include text(12px, $RICH_TEXT_EDITOR--PATH--FONT--COLOUR, $extralight);
 	}
 }
 

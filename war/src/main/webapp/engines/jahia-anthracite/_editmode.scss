@@ -15,14 +15,14 @@
         pointer-events: all;
         padding: 5px;
         width: 49px;
-        z-index: $zindex_toolbar_container;
+        z-index: $ZINDEX--TOOLBAR--CONTAINER;
         overflow: visible !important;
         position: fixed;
 
         &:hover {
             width: 49px;
             height: 100%;
-            z-index: $zindex_toolbar_container;
+            z-index: $ZINDEX--TOOLBAR--CONTAINER;
             overflow: visible !important;
             position: fixed;
         }
@@ -57,7 +57,7 @@
                 background-size: 23px 23px;
                 text-align: center;
                 padding-top: 23px;
-                font-weight: $normal;
+                font-weight: $FONT--WEIGHT---NORMAL;
                 font-family: $DEFAULT--FONT--FAMILY;
                 color: rgba(238, 238, 238, 0.9);
                 font-size: 8px;
@@ -97,7 +97,7 @@
 		> table,
         &:hover > table {
             opacity: 1;
-            z-index: $zindex_toolbar_container_2;
+            z-index: $ZINDEX--TOOLBAR--CONTAINER_SUB;
             xpointer-events: all;
         }
 
@@ -108,9 +108,9 @@
                     display: block;
                     text-align: center;
                     margin-bottom: 10px;
-                    @extend %tool_button_label;
+                    @extend %CSS_BLOCK--TOOL_BUTTON;
                     body[data-multiselect="on"] & {
-                        @extend %tool_button_label_multiselect;
+                        @extend %CSS_BLOCK--TOOL_BUTTON---MULTI_SELECT;
                     }
                 }
             }
@@ -128,7 +128,7 @@
                 position: fixed;
                 left: 0;
                 opacity: 0;
-                background: url(./images/tabs-browse-white@X2.png) no-repeat center right 5px $cod-gray;
+                background: url(./images/tabs-browse-white@X2.png) no-repeat center right 5px $COLOUR--BLACK_CLOUDS;
                 top: 15px;
                 background-size: 23px 23px;
                 border-radius: 0;
@@ -155,7 +155,7 @@
                 right: 97px;
                 top: 6px;
                 margin-top: 7px;
-                z-index: $zindex_mode_menu_context_menu;
+                z-index: $ZINDEX--CONTEXT_MENU--MODE_MENU;
                 width: 93px;
                 height: 24px;
                 opacity: 0.9;
@@ -172,15 +172,15 @@
                     padding-right: 2px;
                     text-align: left;
                     position: relative;
-                    z-index: $zindex_mode_menu_context_menu_label;
+                    z-index: $ZINDEX--CONTEXT_MENU--MODE_MENU---LABEL;
                     width: calc(100% - 20px);
                     display: block;
                     height: 20px;
                     padding-top: 5px;
-                    @extend %mode_combo_label;
+                    @extend %CSS_BLOCK--FORM--MODE_COMBO--LABEL;
 
                     body[data-multiselect="on"] & {
-                        @extend %mode_combo_label_multiselect;
+                        @extend %CSS_BLOCK--FORM--MODE_COMBO--LABEL---MULTI_SELECT;
                     }
                 }
 
@@ -235,7 +235,7 @@
                 position: fixed;
                 top: 10px;
                 left: 5px;
-                z-index: $zindex_hamburger_menu_button;
+                z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
                 display: block;
                 background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
                 background-size: 32px 32px;
@@ -285,7 +285,7 @@
                 position: fixed;
                 left: 0;
                 opacity: 0;
-                background: url(./images/tabs-publish-white@X2.png) no-repeat top -1px left 3px $cod-gray;
+                background: url(./images/tabs-publish-white@X2.png) no-repeat top -1px left 3px $COLOUR--BLACK_CLOUDS;
                 top: 15px;
                 background-size: 23px 23px;
                 border-radius: 100%;
@@ -341,7 +341,7 @@
             &:hover {
                 cursor: pointer;
                 > table:nth-child(1)::after {
-                    color: $gallery-gray;
+                    color: $COLOUR--WHITE_CLOUDS;
                 }
             }
 
@@ -474,7 +474,7 @@
     > div:nth-child(1) > div:nth-child(2) > div {
         &:nth-child(1) > div:nth-child(1) {
             // .action-bar-container
-            z-index: $zindex_action_bar_container;
+            z-index: $ZINDEX--ACTION_BAR--CONTAINER;
             height: 60px;
             display: block;
             position: absolute !important;
@@ -490,7 +490,7 @@
                 height: calc(100% - 9px) !important;
                 width: calc(100% - 55px) !important;
                 left: 60px !important;
-                z-index: $zindex_iframe_container;
+                z-index: $ZINDEX--IFRAME--CONTAINER;
                 overflow: visible !important;
             }
         }

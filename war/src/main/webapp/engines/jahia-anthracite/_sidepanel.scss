@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////
 
 .window-side-panel {
-	z-index: $zindex_window_side_panel;
+	z-index: $ZINDEX--SIDE_PANEL;
 	height: 100%;
 	pointer-events: none;
 
@@ -16,7 +16,7 @@
 		position: absolute !important;
 	    top: 15px!important;
 		left: 71px !important;
-	    z-index: $zindex_window_side_panel_header;
+	    z-index: $ZINDEX--SIDE_PANEL--HEADER;
 	    opacity: 1;
 	    width: auto !important;
 	    pointer-events: none;
@@ -49,13 +49,13 @@
 			left: 214px;
 		    position: absolute;
 		    top: 0px;
-		    background-color: rgba($grey-clouds, .4);
+		    background-color: rgba($COLOUR--GREY_CLOUDS, .4);
 		    background-size: 70%;
 		    height: 24px;
 		    width: 17px;
 
 			&:hover {
-				background-color: rgba($grey-clouds, .7);
+				background-color: rgba($COLOUR--GREY_CLOUDS, .7);
 			}
 		}
 
@@ -76,7 +76,7 @@
 	.x-panel-body {
 		width: 100% !important;
 		overflow: visible;
-		z-index: $zindex_window_side_panel_body;
+		z-index: $ZINDEX--SIDE_PANEL--BODY;
 		position: relative;
 		height: calc(100% + 4px) !important;
 
@@ -89,7 +89,7 @@
 		width: 60px;
 		overflow: visible;
 		height: 100% !important;
-		z-index: $zindex_window_side_panel_container;
+		z-index: $ZINDEX--SIDE_PANEL--CONTAINER;
 		position: relative;
 		pointer-events: all;
 
@@ -106,9 +106,9 @@
 					left: 0;
 					width: 100%!important;
 					height: 100%!important;
-					z-index: $zindex_window_side_panel_close_capture_mask;
+					z-index: $ZINDEX--SIDE_PANEL--CLOSE_CAPTURE_MASK;
 					position: fixed;
-					background: $transparent;
+					background: $COLOUR--TRANSPARENT;
 					display: block;
 				}
 				*/
@@ -120,10 +120,10 @@
 	}
 
 	#JahiaGxtSidePanelTabs {
-		@extend %side_paneL_container;
+		@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER;
 
 		body[data-indigo-gwt-side-panel="open"] & {
-			@extend %side_paneL_container_open;
+			@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER---OPEN;
 
 		}
 
@@ -171,21 +171,21 @@
 	            display: block;
 	            margin-top: 5px;
 
-				@extend %tool_button_label;
+				@extend %CSS_BLOCK--TOOL_BUTTON;
 
 				body[data-multiselect="on"] & {
-					@extend %tool_button_label_multiselect;
+					@extend %CSS_BLOCK--TOOL_BUTTON---MULTI_SELECT;
 				}
 
 				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-					@extend %tool_button_label_side_panel_open;
+					@extend %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN;
 				}
 
 			}
 
 			&.x-tab-strip-active::after {
 				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-					@extend %tool_button_label_side_panel_open_selected;
+					@extend %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN_SELECTED;
 
 				}
 			}
@@ -221,7 +221,7 @@
 			display: inline-block;
 			vertical-align: top;
 			position: relative;
-			z-index: $zindex_window_side_panel_container_2;
+			z-index: $ZINDEX--SIDE_PANEL--CONTAINER_SUB;
 
 			.x-viewport-adminmode &,
 			.x-viewport-dashboardmode & {
@@ -287,7 +287,7 @@
 
 				&::before {
 					content: "Title Here";
-					@extend %side_paneL_title;
+					@extend %CSS_BLOCK--SIDE_PANEL--TITLE;
 				    display: block;
 
 				    position: absolute;
@@ -378,7 +378,7 @@
 				/* Footer Action Bars (Search & Paginator) */
 				position: absolute;
 				bottom: 20px;
-				z-index: $zindex_window_side_panel_search_tab_actions;
+				z-index: $ZINDEX--SIDE_PANEL--SEARCH_TAB---ACTIONS;
 			}
 
 
@@ -400,43 +400,43 @@
 			height: 150px;
 
 			&[src='/engines/images/devices/generic-small.png'] {
-				background-image: url($icon_device_generic);
+				background-image: url($ICON--DEVICE---GENERIC);
 			}
 
 			&[src='/modules/channels/images/devices/iphone-small.png'] {
-				background-image: url($icon_device_iphone);
+				background-image: url($ICON--DEVICE---IPHONE);
 			}
 
 			&[src='/modules/channels/images/devices/samsunggalaxys4-small.png'] {
-				background-image: url($icon_device_galaxy_s4);
+				background-image: url($ICON--DEVICE---GALAXY_S4);
 			}
 
 			&[src='/modules/channels/images/devices/samsunggalaxytab7-small.png'] {
-				background-image: url($icon_device_galaxy_tab7);
+				background-image: url($ICON--DEVICE---GALAXY_TAB7);
 			}
 
 			&[src='/modules/channels/images/devices/android-small.png'] {
-				background-image: url($icon_device_android);
+				background-image: url($ICON--DEVICE---ANDROID);
 			}
 
 			&[src='/modules/channels/images/devices/bbstorm-small.png'] {
-				background-image: url($icon_device_blackberry);
+				background-image: url($ICON--DEVICE---BLACKBERRY);
 			}
 
 			&[src='/modules/channels/images/devices/samsunggalaxynote3-small.png'] {
-				background-image: url($icon_device_galaxy_note);
+				background-image: url($ICON--DEVICE---GALAXY_NOTE);
 			}
 
 			&[src='/modules/channels/images/devices/kindlefire-small.png'] {
-				background-image: url($icon_device_kindle);
+				background-image: url($ICON--DEVICE---KINDLE);
 			}
 
 			&[src='/modules/channels/images/devices/ipad-small.png'] {
-				background-image: url($icon_device_ipad);
+				background-image: url($ICON--DEVICE---IPAD);
 			}
 
 			&[src='/modules/channels/images/devices/samsunggalaxytab10.1-small.png'] {
-				background-image: url($icon_device_galaxy_tab_small);
+				background-image: url($ICON--DEVICE---GALAXY_TAB_SMALL);
 			}
 		}
 
@@ -459,16 +459,16 @@
 							margin-bottom: 5px;
 							margin-top: 20px;
 
-							@include text(17px, $FORM--TABLE--TITLE--COLOUR, $extralight);
+							@include text(17px, $FORM--TABLE--TITLE--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
 						}
 					}
 
 					.x-grid3-col-displayName {
-						@include text(11px, $FORM--TABLE--LABEL--COLOUR, $extralight);
+						@include text(11px, $FORM--TABLE--LABEL--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
 					}
 
 					.x-grid3-col-value {
-						@include text(11px, $FORM--TABLE--VALUE--COLOUR, $light);
+						@include text(11px, $FORM--TABLE--VALUE--COLOUR, $FONT--WEIGHT---LIGHT);
 					}
 
 				}

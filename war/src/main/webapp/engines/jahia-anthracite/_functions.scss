@@ -18,7 +18,7 @@
 		&.x-btn-noicon {
 			// Button has icon
 			button {
-				@extend %button_text--#{$_button_id};
+				@extend %CSS_BLOCK--BUTTON--TEXT\:#{$_button_id} !optional;
 
 			}
 		}
@@ -27,7 +27,7 @@
 			// Button has icon
 
 			button {
-                @extend %button_icon--#{$_button_id};
+                @extend %CSS_BLOCK--BUTTON--ICON\:#{$_button_id} !optional;
 
                 @if($_extra == "remove-icons"){
                     padding-left: 10px;
@@ -47,7 +47,7 @@
 			&.x-btn-noicon {
 				// Button has icon
 				button {
-                    @extend %button_text_hover--#{$_button_id};
+                    @extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:#{$_button_id} !optional;
 
 				}
 			}
@@ -55,7 +55,7 @@
 			&.x-btn-text-icon {
 				// Button has icon
 				button {
-                    @extend %button_icon_hover--#{$_button_id};
+                    @extend %CSS_BLOCK--BUTTON--ICON---HOVER\:#{$_button_id} !optional;
 
 				}
 			}

@@ -201,7 +201,7 @@ body {
 
 			font-family: $DEFAULT--FONT--FAMILY;
 		    font-size: 21px;
-		    font-weight: $extralight;
+		    font-weight: $FONT--WEIGHT---EXTRALIGHT;
 
 
 		}
@@ -246,7 +246,7 @@ body {
 
 	&[data-INDIGO-UI="light"] {
 		/* Set background to indigo light */
-		background: $white;
+		background: $COLOUR--WHITE;
 
 	}
 
@@ -289,7 +289,7 @@ body {
 	background: transparent !important;
 	position: absolute;
 	left: 0 !important;
-	z-index: $zindex_mainmodule;
+	z-index: $ZINDEX--MAINMODULE;
 	width: calc(100% - 0px) !important;
 }
 
@@ -301,7 +301,7 @@ body {
 
 	.toolbar-header {
 		/* Container */
-		z-index: $zindex_mainmodule_header;
+		z-index: $ZINDEX--MAINMODULE--HEADER;
 		right: 69px;
 		position: fixed !important;
 		overflow: visible;
@@ -330,7 +330,7 @@ body {
 	        margin-top: 0;
 	        margin-left: 4px;
 	        margin-right: 17px;
-	        z-index: $zindex_mainmodule_actions_menu;
+	        z-index: $ZINDEX--MAINMODULE--ACTIONS_MENU;
 	        position: relative;
 	        display: inline-block;
 	    }
@@ -342,7 +342,7 @@ body {
 
 	.node-path-container {
 	    position: relative;
-	    z-index: $zindex_mainmodule_path_container;
+	    z-index: $ZINDEX--MAINMODULE--PATH_CONTAINER;
 	    display: block;
 	    max-width: 100% !important;
 	}
@@ -403,11 +403,11 @@ body {
 			background-size: 10px 2px;
 			background-repeat: no-repeat;
 			background-position: center left 3px;
-			background-color: rgba($cod-gray, 0.2);
+			background-color: rgba($COLOUR--BLACK_CLOUDS, 0.2);
 			background-image: url(./images/icon-more-options-white@X2.png);
 
 			body[data-multiselect="on"] & {
-				background-color: $cod-gray;
+				background-color: $COLOUR--BLACK_CLOUDS;
 			}
 
 
@@ -434,7 +434,7 @@ body {
 
 	.toolbar-itemsgroup-languageswitcher {
 		pointer-events: all;
-		z-index: $zindex_mainmodule_language_switcher;
+		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
 		position: fixed;
 		left: 0;
 		top: 18px;
@@ -550,7 +550,7 @@ body {
         text-indent: -50000px;
         width: 20px;
         height: 20px;
-        z-index: $zindex_hamburger_title;
+        z-index: $ZINDEX--HAMBURGER---TITLE;
     }
 
 
@@ -565,7 +565,7 @@ body {
 
         &::before {
 			/* Menu Title */
-			@include text(46px, $HAMBURGER--TITLE--COLOUR, $extralight);
+			@include text(46px, $HAMBURGER--TITLE--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
 
             content: $text_dxm;
 		    display: block;
@@ -619,10 +619,10 @@ body {
 			background-size: 50%;
 			background-repeat: no-repeat;
 			background-position: top 16px center;
-			background-color: $transparent;
+			background-color: $COLOUR--TRANSPARENT;
 			opacity: 0.8;
 
-			@include text(11px, $HAMBURGER--BUTTON--COLOUR---UP, $extralight);
+			@include text(11px, $HAMBURGER--BUTTON--COLOUR---UP, $FONT--WEIGHT---EXTRALIGHT);
 
 		}
 
@@ -682,7 +682,7 @@ body {
                 height: 100% !important;
                 position: absolute;
                 left: 0 !important;
-                z-index: $zindex_window_side_panel;
+                z-index: $ZINDEX--SIDE_PANEL;
                 opacity: 1;
                 width: calc(100% - 60px) !important;
                 pointer-events: none;
@@ -695,7 +695,7 @@ body {
                 position: absolute;
                 left: 0 !important;
                 width: calc(100% - 60px) !important;
-                z-index: $zindex_mainmodule;
+                z-index: $ZINDEX--MAINMODULE;
             }
             &:nth-child(1) > div:nth-child(1) {
 				// .window-side-panel .x-panel-header
@@ -703,7 +703,7 @@ body {
                 top: -46px;
                 left: 0;
                 width: 100% !important;
-                z-index: $zindex_window_side_panel_header;
+                z-index: $ZINDEX--SIDE_PANEL--HEADER;
                 display: none;
             }
         }
@@ -736,7 +736,7 @@ body {
                 height: 100% !important;
                 position: absolute;
                 left: 0 !important;
-				z-index: $zindex_window_side_panel;
+				z-index: $ZINDEX--SIDE_PANEL;
                 opacity: 1;
                 width: calc(100% - 60px) !important;
                 pointer-events: none;
@@ -749,7 +749,7 @@ body {
                 position: absolute;
                 left: 0 !important;
                 width: calc(100% - 60px) !important;
-				z-index: $zindex_mainmodule;
+				z-index: $ZINDEX--MAINMODULE;
             }
             &:nth-child(1) > div:nth-child(1) {
 				// .window-side-panel .x-panel-header
@@ -757,7 +757,7 @@ body {
                 top: -46px;
                 left: 0;
                 width: 100% !important;
-                z-index: $zindex_window_side_panel_header;
+                z-index: $ZINDEX--SIDE_PANEL--HEADER;
                 display: none;
             }
         }

@@ -25,20 +25,22 @@
 /////////////////////////////////////////////////
 // BASE COLOURS /////////////////////////////////
 /////////////////////////////////////////////////
-    $APP--BASE--COLOUR:                                             $rain-clouds;
-    $EDIT_ENGINE--BASE--COLOUR:                                     $rain-clouds;
+    $APP--BASE--COLOUR:                                             $COLOUR--RAIN_CLOUDS;
+    $EDIT_ENGINE--BASE--COLOUR:                                     $COLOUR--RAIN_CLOUDS;
 
 
 
 /////////////////////////////////////////////////
 // DEFAULTS /////////////////////////////////////
 /////////////////////////////////////////////////
-    $DEFAULT--FONT--FAMILY:                                         $nunito;
+    $DEFAULT--FONT--FAMILY:                                         $FONT--FAMILY---NUNITO;
     $DEFAULT--FONT--SIZE:                                           14px;
-    $DEFAULT--FONT--WEIGHT:                                         $normal;
-    $DEFAULT--FONT--COLOUR:                                         $white-clouds;
+    $DEFAULT--FONT--WEIGHT:                                         $FONT--WEIGHT---NORMAL;
+    $DEFAULT--FONT--COLOUR:                                         $COLOUR--WHITE_CLOUDS;
 
-    $DEFAULT--TITLE_FONT--FAMILY:                                   $raleway;
+    $DEFAULT--TITLE_FONT--FAMILY:                                   $FONT--FAMILY---RALEWAY;
+
+	$DEFAULT--TRANSITION: 											$TRANSITION--QUICK---ALL;
 
 
 
@@ -67,8 +69,8 @@
 // APPLICATION //////////////////////////////////
 /////////////////////////////////////////////////
 
-    $APP--BG--COLOUR:                                               $rain-clouds;
-    $APP--BG--COLOUR---MULTISELECTION:                              $dark-clouds;
+    $APP--BG--COLOUR:                                               $COLOUR--RAIN_CLOUDS;
+    $APP--BG--COLOUR---MULTISELECTION:                              $COLOUR--DARK_CLOUDS;
 
 
 
@@ -82,61 +84,61 @@
     $FORM--FIELDSET--BG--COLOUR:                                    lighten($EDIT_ENGINE--BASE--COLOUR, 2%);
 
     // TEXT INPUTS
-	$FORM--TEXT_INPUT--BG--COLOUR:                                  rgba($grey-clouds, .1);
-	$FORM--TEXT_INPUT--BG--COLOUR---FOCUS:                          rgba($grey-clouds, .7);
-    $FORM--TEXT_INPUT--BG--COLOUR---HOVER:                          rgba($grey-clouds, .3);
-    $FORM--TEXT_INPUT--BG--COLOUR---DISABLED:                       rgba($grey-clouds, .05);
-	$FORM--TEXT_INPUT--FONT--COLOUR:                                $grey-clouds;
-	$FORM--TEXT_INPUT--FONT--COLOUR---HOVER:                        $dark-clouds;
-    $FORM--TEXT_INPUT--FONT--COLOUR---FOCUS:                        $white-clouds;
-    $FORM--TEXT_INPUT--FONT--COLOUR---DISABLED:                     rgba($grey-clouds, .7);
-    $FORM--TEXT_INPUT--BORDER--COLOUR:                              1px solid transparent;
+	$FORM--TEXT_INPUT--BG--COLOUR:                                  rgba($COLOUR--GREY_CLOUDS, .1);
+	$FORM--TEXT_INPUT--BG--COLOUR---FOCUS:                          rgba($COLOUR--GREY_CLOUDS, .7);
+    $FORM--TEXT_INPUT--BG--COLOUR---HOVER:                          rgba($COLOUR--GREY_CLOUDS, .3);
+    $FORM--TEXT_INPUT--BG--COLOUR---DISABLED:                       rgba($COLOUR--GREY_CLOUDS, .05);
+	$FORM--TEXT_INPUT--FONT--COLOUR:                                $COLOUR--GREY_CLOUDS;
+	$FORM--TEXT_INPUT--FONT--COLOUR---HOVER:                        $COLOUR--DARK_CLOUDS;
+    $FORM--TEXT_INPUT--FONT--COLOUR---FOCUS:                        $COLOUR--WHITE_CLOUDS;
+    $FORM--TEXT_INPUT--FONT--COLOUR---DISABLED:                     rgba($COLOUR--GREY_CLOUDS, .7);
+    $FORM--TEXT_INPUT--BORDER--COLOUR:                              1px solid $COLOUR--TRANSPARENT;
     $FORM--TEXT_INPUT--PADDING:                                     3px 40px 3px 5px;
-    $FORM--TEXT_INPUT--FONT--WEIGHT:                                200;
+    $FORM--TEXT_INPUT--FONT--WEIGHT:                                $FONT--WEIGHT---SEMILIGHT;
     $FORM--TEXT_INPUT--FONT--SIZE:                                  12px;
     $FORM--TEXT_INPUT--FONT--FAMILY:                                $DEFAULT--FONT--FAMILY;
 
     // CLEAR BUTTON
-    $FORM--CLEAR_BUTTON--ICON---UP:                                 $icon_form_close_white_clouds;
-    $FORM--CLEAR_BUTTON--BG--COLOUR---UP:                           rgba($grey-clouds, .4);
-    $FORM--CLEAR_BUTTON--ICON---HOVER:                              $icon_form_close_white_clouds;
-    $FORM--CLEAR_BUTTON--BG--COLOUR---HOVER:                        rgba($grey-clouds, .7);
+    $FORM--CLEAR_BUTTON--ICON---UP:                                 $ICON--CLOSE_SMALL---WHITE;
+    $FORM--CLEAR_BUTTON--BG--COLOUR---UP:                           rgba($COLOUR--GREY_CLOUDS, .4);
+    $FORM--CLEAR_BUTTON--ICON---HOVER:                              $ICON--CLOSE_SMALL---WHITE;
+    $FORM--CLEAR_BUTTON--BG--COLOUR---HOVER:                        rgba($COLOUR--GREY_CLOUDS, .7);
 
     // CHECKBOXES
-    $FORM--CHECKBOX--BG--COLOUR---UNCHECKED:                        $white-clouds;
-    $FORM--CHECKBOX--BORDER---UNCHECKED:                            1px solid $grey-clouds;
-    $FORM--CHECKBOX--SHADOW---UNCHECKED:                            inset 1px 1px 2px 1px rgba($dark-clouds, 0.1);
-    $FORM--CHECKBOX--BG--COLOUR---CHECKED:                          #04bd04;
-    $FORM--CHECKBOX--ICON---CHECKED:                                "./images/icons/icon-check-white@X2.png";
+    $FORM--CHECKBOX--BG--COLOUR---UNCHECKED:                        $COLOUR--WHITE_CLOUDS;
+    $FORM--CHECKBOX--BORDER---UNCHECKED:                            1px solid $COLOUR--GREY_CLOUDS;
+    $FORM--CHECKBOX--SHADOW---UNCHECKED:                            inset 1px 1px 2px 1px rgba($COLOUR--DARK_CLOUDS, 0.1);
+    $FORM--CHECKBOX--BG--COLOUR---CHECKED:                          $COLOUR--VIVID_GRASS;
+    $FORM--CHECKBOX--ICON---CHECKED:                                $ICON--TICK---WHITE;
 
     // TOGGLES
     $FORM--TOGGLE--BG--COLOUR:                                      darken($FORM--FIELDSET--BG--COLOUR, 8%);
     $FORM--TOGGLE--BG--SHADOW:                                      inset 1px 1px 2px 1px rgba(40, 43, 45, 0.1);
-    $FORM--TOGGLE--FONT--LOCALISED_STRING---OFF:                    "Off";
+    $FORM--TOGGLE--FONT--LOCALISED_STRING---OFF:                    $text_off;
     $FORM--TOGGLE--SHUTTLE--COLOUR---OFF:                           $FORM--FIELDSET--BG--COLOUR;
     $FORM--TOGGLE--FONT--COLOUR---OFF:                              lighten($FORM--FIELDSET--BG--COLOUR, 4%);
-    $FORM--TOGGLE--FONT--LOCALISED_STRING---ON:                     "On";
-    $FORM--TOGGLE--SHUTTLE--COLOUR---ON:                            #1bb010;
-    $FORM--TOGGLE--FONT--COLOUR---ON:                               $white-clouds;
+    $FORM--TOGGLE--FONT--LOCALISED_STRING---ON:                     $text_on;
+    $FORM--TOGGLE--SHUTTLE--COLOUR---ON:                            $COLOUR--VIVID_GRASS;
+    $FORM--TOGGLE--FONT--COLOUR---ON:                               $COLOUR--WHITE_CLOUDS;
 
     // COMBOS
     $FORM--COMBO--ICON---UP:                                        $ICON--ARROW_DOWN---WHITE;
-    $FORM--COMBO--BG--COLOUR---UP:                                  rgba($grey-clouds, .4);
+    $FORM--COMBO--BG--COLOUR---UP:                                  rgba($COLOUR--GREY_CLOUDS, .4);
     $FORM--COMBO--ICON---HOVER:                                     $ICON--ARROW_DOWN---WHITE;
-    $FORM--COMBO--BG--COLOUR---HOVER:                               rgba($grey-clouds, .7);
+    $FORM--COMBO--BG--COLOUR---HOVER:                               rgba($COLOUR--GREY_CLOUDS, .7);
 
     // CONTEXT MENUS
-    $FORM--CONTEXT_MENU--BG--COLOUR---UP:                           $jahia-blue;
+    $FORM--CONTEXT_MENU--BG--COLOUR---UP:                           $COLOUR--JAHIA_BLUE;
     $FORM--CONTEXT_MENU--BG--COLOUR---HOVER:                        lighten($FORM--CONTEXT_MENU--BG--COLOUR---UP, 5%);
-    $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED:                     $jahia-blue;
-    $FORM--CONTEXT_MENU--FONT--COLOUR---UP:                         $white-clouds;
-    $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER:                      $white-clouds;
+    $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED:                     $COLOUR--JAHIA_BLUE;
+    $FORM--CONTEXT_MENU--FONT--COLOUR---UP:                         $COLOUR--WHITE_CLOUDS;
+    $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER:                      $COLOUR--WHITE_CLOUDS;
     $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED:                   rgba($FORM--CONTEXT_MENU--FONT--COLOUR---UP, .7) !important;
 
     // TABLES
-    $FORM--TABLE--TITLE--COLOUR: 			                        $grey-clouds;
-	$FORM--TABLE--LABEL--COLOUR: 			                        $grey-clouds;
-	$FORM--TABLE--VALUE--COLOUR: 			                        $grey-clouds;
+    $FORM--TABLE--TITLE--COLOUR: 			                        $COLOUR--GREY_CLOUDS;
+	$FORM--TABLE--LABEL--COLOUR: 			                        $COLOUR--GREY_CLOUDS;
+	$FORM--TABLE--VALUE--COLOUR: 			                        $COLOUR--GREY_CLOUDS;
 
 
 
@@ -145,41 +147,75 @@
 /////////////////////////////////////////////////
 
     // DEFAULT BUTTON
-	$BUTTON--BG--COLOUR---UP: 				                        $jahia-blue;
-    $BUTTON--FONT--COLOUR---UP:                                     white;
-	$BUTTON--BG--COLOUR---HOVER: 			                        lighten($jahia-blue, 5%);
-    $BUTTON--FONT--COLOUR---HOVER:                                  white;
+	$BUTTON--BG--COLOUR---UP: 				                        $COLOUR--JAHIA_BLUE;
+    $BUTTON--FONT--COLOUR---UP:                                     $COLOUR--WHITE;
+	$BUTTON--BG--COLOUR---HOVER: 			                        lighten($COLOUR--JAHIA_BLUE, 5%);
+    $BUTTON--FONT--COLOUR---HOVER:                                  $COLOUR--WHITE;
 
+	// FORM BUTTON
+	$BUTTON--BG--COLOUR---UP\:FORM: 				                $COLOUR--TRANSPARENT;
+    $BUTTON--FONT--COLOUR---UP\:FORM:                               $COLOUR--BLACK_CLOUDS;
+
+	$BUTTON--BG--COLOUR---HOVER\:FORM: 			                    $COLOUR--TRANSPARENT;
+    $BUTTON--FONT--COLOUR---HOVER\:FORM:                            $COLOUR--GREY_CLOUDS;
+
+	// PANEL BUTTON
+	$BUTTON--BG--COLOUR---UP\:SIDE_PANEL: 				                $COLOUR--TEST-1;
+    $BUTTON--FONT--COLOUR---UP\:SIDE_PANEL:                              $COLOUR--TEST-2;
+
+	$BUTTON--BG--COLOUR---HOVER\:SIDE_PANEL: 			                $COLOUR--TEST-2;
+    $BUTTON--FONT--COLOUR---HOVER\:SIDE_PANEL:                           $COLOUR--TEST-1;
+
+	// FIELDSET BUTTON
+	$BUTTON--BG--COLOUR---UP\:FIELDSET: 				            $COLOUR--GREY_CLOUDS;
+    $BUTTON--FONT--COLOUR---UP\:FIELDSET:                           $COLOUR--DUSTY_CLOUDS;
+
+	$BUTTON--BG--COLOUR---HOVER\:FIELDSET: 			                $COLOUR--DIRTY_ORANGE;
+    $BUTTON--FONT--COLOUR---HOVER\:FIELDSET:                        $COLOUR--WHITE_CLOUDS;
+
+	// ACTION BAR BUTTON
+	$BUTTON--BG--COLOUR---UP\:ACTIONBAR: 				            $COLOUR--ASH_CLOUDS;
+    $BUTTON--FONT--COLOUR---UP\:ACTIONBAR:                          $COLOUR--WHITE_CLOUDS;
+
+	$BUTTON--BG--COLOUR---HOVER\:ACTIONBAR: 			            lighten($COLOUR--ASH_CLOUDS, 3%);
+    $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR:                       lighten($COLOUR--WHITE_CLOUDS, 3%);
+
+	// ACTION BAR (SUGGESTED) BUTTON
+	$BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED: 				 $COLOUR--DIRTY_ORANGE;
+    $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED:               $COLOUR--WHITE_CLOUDS;
+
+	$BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED: 			 lighten($COLOUR--DIRTY_ORANGE, 3%);
+    $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED:            lighten($COLOUR--WHITE_CLOUDS, 3%);
 
 /////////////////////////////////////////////////
 // TREES ////////////////////////////////////////
 /////////////////////////////////////////////////
 
     // ROW UP
-    $TREE--ROW--FONT--COLOUR---UP: 					                $grey-clouds;
-    $TREE--ROW--ICON---UP: 						                    $icon_pages_grey_clouds;
-	$TREE--ROW--BG--COLOUR---UP: 			                        $transparent;
+    $TREE--ROW--FONT--COLOUR---UP: 					                $COLOUR--GREY_CLOUDS;
+    $TREE--ROW--ICON---UP: 						                    $ICON--PAGES---GREY;
+	$TREE--ROW--BG--COLOUR---UP: 			                        $COLOUR--TRANSPARENT;
 
     // ROW HOVER
-    $TREE--ROW--BG--COLOUR---HOVER: 			                    rgba( $grey-clouds, .1 );
-    $TREE--ROW--FONT--COLOUR---HOVER: 				                $black-clouds;
-    $TREE--ROW--ICON---HOVER: 				                        $icon_pages_grey_clouds;
+    $TREE--ROW--BG--COLOUR---HOVER: 			                    rgba( $COLOUR--GREY_CLOUDS, .1 );
+    $TREE--ROW--FONT--COLOUR---HOVER: 				                $COLOUR--BLACK_CLOUDS;
+    $TREE--ROW--ICON---HOVER: 				                        $ICON--PAGES---GREY;
 
     // ROW SELECTED
-    $TREE--ROW--BG--COLOUR---SELECTED: 		                       rgba( $grey-clouds, .7 );
-    $TREE--ROW--FONT--COLOUR---SELECTED: 			               $white-clouds;
-    $TREE--ROW--ICON---SELECTED: 			                       $icon_pages_white_clouds;
+    $TREE--ROW--BG--COLOUR---SELECTED: 		                       	rgba( $COLOUR--GREY_CLOUDS, .7 );
+    $TREE--ROW--FONT--COLOUR---SELECTED: 			               	$COLOUR--WHITE_CLOUDS;
+    $TREE--ROW--ICON---SELECTED: 			                       	$ICON--PAGES---WHITE;
 
     // ROW HOVER SELECTED
-    $TREE--ROW--BG--COLOUR---SELECTED_HOVER: 	                   $grey-clouds;
-    $TREE--ROW--FONT--COLOUR---SELECTED_HOVER: 		               $white-clouds;
-    $TREE--ROW--ICON---SELECTED_HOVER: 		                       $icon_pages_white_clouds;
+    $TREE--ROW--BG--COLOUR---SELECTED_HOVER: 	                   	$COLOUR--GREY_CLOUDS;
+    $TREE--ROW--FONT--COLOUR---SELECTED_HOVER: 		               	$COLOUR--WHITE_CLOUDS;
+    $TREE--ROW--ICON---SELECTED_HOVER: 		                       	$ICON--PAGES---WHITE;
 
     // MORE OPTIONS BUTTON
-	$TREE--MORE_OPTIONS--ICON---UP: 				               $ICON--MORE_OPTIONS---GREY;
-	$TREE--MORE_OPTIONS--ICON---HOVER: 			                   $ICON--MORE_OPTIONS---GREY;
-	$TREE--MORE_OPTIONS--ICON---SELECTED: 		                   $ICON--MORE_OPTIONS---WHITE;
-    $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER: 	               $ICON--MORE_OPTIONS---WHITE;
+	$TREE--MORE_OPTIONS--ICON---UP: 				               	$ICON--MORE_OPTIONS---GREY;
+	$TREE--MORE_OPTIONS--ICON---HOVER: 			                   	$ICON--MORE_OPTIONS---GREY;
+	$TREE--MORE_OPTIONS--ICON---SELECTED: 		                   	$ICON--MORE_OPTIONS---WHITE;
+    $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER: 	               	$ICON--MORE_OPTIONS---WHITE;
 
 
 
@@ -188,14 +224,14 @@
 /////////////////////////////////////////////////
 
     // ICONS
-    $RICH_TEXT_EDITOR--ICON_SET:                                    "./images/icons/icons-cke.png";
+    $RICH_TEXT_EDITOR--ICON_SET:                                    $ICON--RICH_TEXT--TOOLBUTTONS;
 
     // TOOL GROUP
     $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--UP:                   lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
     $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--HOVER:                lighten($EDIT_ENGINE--BASE--COLOUR, 8%);
 
     // TOOL
-    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--UP:                        transparent;
+    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--UP:                        $COLOUR--TRANSPARENT;
     $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER:                     lighten($EDIT_ENGINE--BASE--COLOUR, 12%);
     $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED:                  lighten($EDIT_ENGINE--BASE--COLOUR, 16%);
 
@@ -215,10 +251,10 @@
 // TOOL BUTTONS /////////////////////////////////
 /////////////////////////////////////////////////
 
-    $TOOL--BUTTON--FONT--COLOUR---NORMAL:                           $white-clouds;
-    $TOOL--BUTTON--FONT--COLOUR---OPEN:                             $grey-clouds;
-    $TOOL--BUTTON--FONT--COLOUR---OPEN_SELECTED:                    $jahia-blue;
-    $TOOL--BUTTON--FONT--COLOUR---OFF:          	                $black-clouds;
+    $TOOL--BUTTON--FONT--COLOUR---NORMAL:                           $COLOUR--WHITE_CLOUDS;
+    $TOOL--BUTTON--FONT--COLOUR---OPEN:                             $COLOUR--GREY_CLOUDS;
+    $TOOL--BUTTON--FONT--COLOUR---OPEN_SELECTED:                    $COLOUR--JAHIA_BLUE;
+    $TOOL--BUTTON--FONT--COLOUR---OFF:          	                $COLOUR--BLACK_CLOUDS;
 
 
 
@@ -226,11 +262,11 @@
 // THUMBS ///////////////////////////////////////
 /////////////////////////////////////////////////
 
-    $THUMB--FONT--COLOUR:                                           $dark-clouds;
-    $THUMB--FONT--BG--COLOUR:                                       rgba($white-clouds, 0.9);
-    $THUMB--BG--COLOUR---UP:                                        transparent;
-    $THUMB--BG--COLOUR---HOVER:                                     rgba($grey-clouds, 0.2);
-    $THUMB--BG--COLOUR---SELECTED:                                  $jahia-blue;
+    $THUMB--FONT--COLOUR:                                           $COLOUR--DARK_CLOUDS;
+    $THUMB--FONT--BG--COLOUR:                                       rgba($COLOUR--WHITE_CLOUDS, 0.9);
+    $THUMB--BG--COLOUR---UP:                                        $COLOUR--TRANSPARENT;
+    $THUMB--BG--COLOUR---HOVER:                                     rgba($COLOUR--GREY_CLOUDS, 0.2);
+    $THUMB--BG--COLOUR---SELECTED:                                  $COLOUR--JAHIA_BLUE;
 
 
 
@@ -238,10 +274,10 @@
 // HAMBURGER MENU ///////////////////////////////
 /////////////////////////////////////////////////
 
-    $HAMBURGER--BG--COLOUR:                                         rgba($jahia-blue, .99);
-	$HAMBURGER--TITLE--COLOUR: 				                        rgba($white-clouds, .7);
-	$HAMBURGER--BUTTON--COLOUR---UP:			                    rgba($white-clouds, .8);
-	$HAMBURGER--BUTTON--COLOUR---HOVER:		                        $white-clouds;
+    $HAMBURGER--BG--COLOUR:                                         rgba($COLOUR--JAHIA_BLUE, .99);
+	$HAMBURGER--TITLE--COLOUR: 				                        rgba($COLOUR--WHITE_CLOUDS, .7);
+	$HAMBURGER--BUTTON--COLOUR---UP:			                    rgba($COLOUR--WHITE_CLOUDS, .8);
+	$HAMBURGER--BUTTON--COLOUR---HOVER:		                        $COLOUR--WHITE_CLOUDS;
 
     // APPLICATION ICONS
 	$HAMBURGER--ICON--CONTENT_MANAGER:		                        $ICON--CONTENT_MANAGER---WHITE;
@@ -257,9 +293,9 @@
 // EDIT ENGINE //////////////////////////////////
 /////////////////////////////////////////////////
 
-    $EDIT_ENGINE--TITLE--FONT--COLOUR:                              $dark-clouds;
-    $EDIT_ENGINE--TAB--FONT--COLOUR:                                #a3a3a3;
-    $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED:                     #f1f1f1;
+    $EDIT_ENGINE--TITLE--FONT--COLOUR:                              $COLOUR--DARK_CLOUDS;
+    $EDIT_ENGINE--TAB--FONT--COLOUR:                                $COLOUR--ASH_CLOUDS;
+    $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED:                     $COLOUR--WHITE_CLOUDS;
     $EDIT_ENGINE--TAB--FONT--COLOUR---HOVER:                        rgba($EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED, .7);
     $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over:                $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED;
     $EDIT_ENGINE--BG--COLOUR:                                       $EDIT_ENGINE--BASE--COLOUR;
@@ -277,49 +313,49 @@
 /////////////////////////////////////////////////
 
     // PANEL BACKGROUND
-	$SIDE_PANEL--BG--COLOUR--CLOSED:                               $transparent;
-	$SIDE_PANEL--BG--COLOUR---OPENED:                              $white-clouds;
-	$SIDE_PANEL--BG--SHADOW:                                       7px 0px 45px rgba($dark-clouds, 0.9);
+	$SIDE_PANEL--BG--COLOUR--CLOSED:                               	$COLOUR--TRANSPARENT;
+	$SIDE_PANEL--BG--COLOUR---OPENED:                              	$COLOUR--WHITE_CLOUDS;
+	$SIDE_PANEL--BG--SHADOW:                                       	7px 0px 45px rgba($COLOUR--DARK_CLOUDS, 0.9);
 
     // TAB ICONS ::: CLOSED
-    $SIDE_PANEL--ICON--PAGES---CLOSED:                             $icon_pages_white_clouds;
-    $SIDE_PANEL--ICON--CREATE---CLOSED:                            $icon_create_white_clouds;
-    $SIDE_PANEL--ICON--CONTENT---CLOSED:                           $icon_content_white_clouds;
-    $SIDE_PANEL--ICON--FILES---CLOSED:                             $icon_files_white_clouds;
-    $SIDE_PANEL--ICON--SEARCH---CLOSED:                            $icon_search_white_clouds;
-    $SIDE_PANEL--ICON--TAXONOMY---CLOSED:                          $icon_taxonomy_white_clouds;
-    $SIDE_PANEL--ICON--DEVICES---CLOSED:                           $icon_devices_white_clouds;
-    $SIDE_PANEL--ICON--SETTINGS---CLOSED:                          $icon_settings_white_clouds;
+    $SIDE_PANEL--ICON--PAGES---CLOSED:                             	$ICON--PAGES---WHITE;
+    $SIDE_PANEL--ICON--CREATE---CLOSED:                            	$ICON--CREATE---WHITE;
+    $SIDE_PANEL--ICON--CONTENT---CLOSED:                           	$ICON--CONTENT---WHITE;
+    $SIDE_PANEL--ICON--FILES---CLOSED:                             	$ICON--FILES---WHITE;
+    $SIDE_PANEL--ICON--SEARCH---CLOSED:                            	$ICON--SEARCH---WHITE;
+    $SIDE_PANEL--ICON--TAXONOMY---CLOSED:                          	$ICON--TAXONOMY---WHITE;
+    $SIDE_PANEL--ICON--DEVICES---CLOSED:                           	$ICON--DEVICES---WHITE;
+    $SIDE_PANEL--ICON--SETTINGS---CLOSED:                          	$ICON--SETTINGS---WHITE;
 
     // TAB ICONS ::: OPEN
-    $SIDE_PANEL--ICON--SETTINGS---OPEN:                            $icon_pages_grey_clouds;
-    $SIDE_PANEL--ICON--CREATE---OPEN:                              $icon_create_grey_clouds;
-    $SIDE_PANEL--ICON--CONTENT---OPEN:                             $icon_content_grey_clouds;
-    $SIDE_PANEL--ICON--FILES---OPEN:                               $icon_files_grey_clouds;
-    $SIDE_PANEL--ICON--SEARCH---OPEN:                              $icon_search_grey_clouds;
-    $SIDE_PANEL--ICON--TAXONOMY---OPEN:                            $icon_taxonomy_grey_clouds;
-    $SIDE_PANEL--ICON--DEVICES---OPEN:                             $icon_devices_grey_clouds;
-    $SIDE_PANEL--ICON--SETTINGS---OPEN:                            $icon_settings_grey_clouds;
+    $SIDE_PANEL--ICON--SETTINGS---OPEN:                            	$ICON--PAGES---GREY;
+    $SIDE_PANEL--ICON--CREATE---OPEN:                              	$ICON--CREATE---GREY;
+    $SIDE_PANEL--ICON--CONTENT---OPEN:                             	$ICON--CONTENT---GREY;
+    $SIDE_PANEL--ICON--FILES---OPEN:                               	$ICON--FILES---GREY;
+    $SIDE_PANEL--ICON--SEARCH---OPEN:                              	$ICON--SEARCH---GREY;
+    $SIDE_PANEL--ICON--TAXONOMY---OPEN:                            	$ICON--TAXONOMY---GREY;
+    $SIDE_PANEL--ICON--DEVICES---OPEN:                             	$ICON--DEVICES---GREY;
+    $SIDE_PANEL--ICON--SETTINGS---OPEN:                            	$ICON--SETTINGS---GREY;
 
     // TAB ICONS ::: SELECTED
-    $SIDE_PANEL--ICON--PAGES---SELECTED:                           $icon_pages_jahia_blue;
-    $SIDE_PANEL--ICON--CREATE---SELECTED:                          $icon_create_jahia_blue;
-    $SIDE_PANEL--ICON--CONTENT---SELECTED:                         $icon_content_jahia_blue;
-    $SIDE_PANEL--ICON--FILES---SELECTED:                           $icon_files_jahia_blue;
-    $SIDE_PANEL--ICON--SEARCH---SELECTED:                          $icon_search_jahia_blue;
-    $SIDE_PANEL--ICON--TAXONOMY---SELECTED:                        $icon_taxonomy_jahia_blue;
-    $SIDE_PANEL--ICON--DEVICES---SELECTED:                         $icon_devices_jahia_blue;
-    $SIDE_PANEL--ICON--SETTINGS---SELECTED:                        $icon_settings_jahia_blue;
+    $SIDE_PANEL--ICON--PAGES---SELECTED:                           	$ICON--PAGES---BLUE;
+    $SIDE_PANEL--ICON--CREATE---SELECTED:                          	$ICON--CREATE---BLUE;
+    $SIDE_PANEL--ICON--CONTENT---SELECTED:                         	$ICON--CONTENT---BLUE;
+    $SIDE_PANEL--ICON--FILES---SELECTED:                           	$ICON--FILES---BLUE;
+    $SIDE_PANEL--ICON--SEARCH---SELECTED:                          	$ICON--SEARCH---BLUE;
+    $SIDE_PANEL--ICON--TAXONOMY---SELECTED:                        	$ICON--TAXONOMY---BLUE;
+    $SIDE_PANEL--ICON--DEVICES---SELECTED:                         	$ICON--DEVICES---BLUE;
+    $SIDE_PANEL--ICON--SETTINGS---SELECTED:                        	$ICON--SETTINGS---BLUE;
 
     // TAB ICONS ::: OFF
-    $SIDE_PANEL--ICON--PAGES---OFF:                                $icon_pages_black_clouds;
-    $SIDE_PANEL--ICON--CREATE---OFF:                               $icon_create_black_clouds;
-    $SIDE_PANEL--ICON--CONTENT---OFF:                              $icon_content_black_clouds;
-    $SIDE_PANEL--ICON--FILES---OFF:                                $icon_files_black_clouds;
-    $SIDE_PANEL--ICON--SEARCH---OFF:                               $icon_search_black_clouds;
-    $SIDE_PANEL--ICON--TAXONOMY---OFF:                             $icon_taxonomy_black_clouds;
-    $SIDE_PANEL--ICON--DEVICES---OFF:                              $icon_devices_black_clouds;
-    $SIDE_PANEL--ICON--SETTINGS---OFF:                             $icon_settings_black_clouds;
+    $SIDE_PANEL--ICON--PAGES---OFF:                                	$ICON--PAGES---BLACK;
+    $SIDE_PANEL--ICON--CREATE---OFF:                               	$ICON--CREATE---BLACK;
+    $SIDE_PANEL--ICON--CONTENT---OFF:                              	$ICON--CONTENT---BLACK;
+    $SIDE_PANEL--ICON--FILES---OFF:                                	$ICON--FILES---BLACK;
+    $SIDE_PANEL--ICON--SEARCH---OFF:                               	$ICON--SEARCH---BLACK;
+    $SIDE_PANEL--ICON--TAXONOMY---OFF:                             	$ICON--TAXONOMY---BLACK;
+    $SIDE_PANEL--ICON--DEVICES---OFF:                              	$ICON--DEVICES---BLACK;
+    $SIDE_PANEL--ICON--SETTINGS---OFF:                             	$ICON--SETTINGS---BLACK;
 
 
 
@@ -371,11 +407,11 @@
 /////////////////////////////////////////////////
 
     %document_title {
-        @include text(16px, $white-clouds, $semilight);
+        @include text(16px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
     }
 
     %multiselect_title {
-        color: $white-clouds;
+        color: $COLOUR--WHITE_CLOUDS;
     }
 
 
@@ -385,13 +421,13 @@
 /////////////////////////////////////////////////
 
     // CHECKBOX
-    %checkbox_unchecked {
+    %CSS_BLOCK--CHECKBOX---UNCHECKED {
         border: $FORM--CHECKBOX--BORDER---UNCHECKED;
 		background: $FORM--CHECKBOX--BG--COLOUR---UNCHECKED;
 		box-shadow: $FORM--CHECKBOX--SHADOW---UNCHECKED;
     }
 
-    %checkbox_checked {
+    %CSS_BLOCK--CHECKBOX---CHECKED {
         background: no-repeat center center;
         background-image: url($FORM--CHECKBOX--ICON---CHECKED);
         background-size: 15px 15px;
@@ -399,20 +435,20 @@
     }
 
     // LEGENDS
-    %form_legend_collapsed {}
+    %CSS_BLOCK--FORM--LEGEND---COLLAPSED {}
 
-	%form_legend {
+	%CSS_BLOCK--FORM--LEGEND {
     	padding: 0!important;
         position: absolute;
         top: 14px;
         left: 30px;
         text-transform: uppercase;
 
-    	@include text(11px, $FORM--LEGEND--FONT--COLOUR, $semibold);
+    	@include text(11px, $FORM--LEGEND--FONT--COLOUR, $FONT--WEIGHT---SEMIBOLD);
     }
 
     // FIELDSET
-    %form_fieldset {
+    %CSS_BLOCK--FIELDSET {
         border: none !important;
         padding: 43px 10px 20px 29px !important;
         margin: 0 23px 10px 0 !important;
@@ -422,46 +458,46 @@
     }
 
     // LABELS
-	%form_label {
+	%CSS_BLOCK--FORM--LABEL {
         padding: 0!important;
         margin: 0!important;
         text-transform: uppercase;
         line-height: 24px;
 
-        @include text(10px, $FORM--LABEL--FONT--COLOUR, $semibold, $DEFAULT--FONT--FAMILY !important);
+        @include text(10px, $FORM--LABEL--FONT--COLOUR, $FONT--WEIGHT---SEMIBOLD, $DEFAULT--FONT--FAMILY !important);
     }
 
     // TOGGLE
-    %toggle_off_rails {
+    %CSS_BLOCK--FORM--TOGGLE--BG {
         content: $FORM--TOGGLE--FONT--LOCALISED_STRING---OFF;
         background: $FORM--TOGGLE--BG--COLOUR;
         box-shadow: $FORM--TOGGLE--BG--SHADOW;
         text-transform: uppercase;
 
-        @include text(10px, $FORM--TOGGLE--FONT--COLOUR---OFF, $extrabold);
+        @include text(10px, $FORM--TOGGLE--FONT--COLOUR---OFF, $FONT--WEIGHT---EXTRABOLD);
     }
 
-    %toggle_off_shuttle {
+    %CSS_BLOCK--FORM--TOGGLE--SHUTTLE---OFF {
         content: " ";
         background: $FORM--TOGGLE--SHUTTLE--COLOUR---OFF;
     }
 
-    %toggle_on_rails {
+    %CSS_BLOCK--FORM--TOGGLE--BG---ON {
     	content: " ";
     }
 
-    %toggle_on_shuttle {
+    %CSS_BLOCK--FORM--TOGGLE--SHUTTLE---ON {
         content: $FORM--TOGGLE--FONT--LOCALISED_STRING---ON;
         color: $FORM--TOGGLE--FONT--COLOUR---ON;
         background: $FORM--TOGGLE--SHUTTLE--COLOUR---ON;
-        color: white;
+        color: $COLOUR--WHITE;
         text-transform: uppercase;
         font-size: 10px;
-        font-weight: 800;
+        font-weight: $FONT--WEIGHT---EXTRABOLD;
     }
 
     // TEXT INPUT
-    %text_input {
+    %CSS_BLOCK--FORM--TEXT_INPUT {
         background: $FORM--TEXT_INPUT--BG--COLOUR;
         padding: $FORM--TEXT_INPUT--PADDING;
         border: $FORM--TEXT_INPUT--BORDER--COLOUR;
@@ -470,70 +506,70 @@
         @include text($FORM--TEXT_INPUT--FONT--SIZE, $FORM--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
     }
 
-	%text_input_hover {
+	%CSS_BLOCK--FORM--TEXT_INPUT---HOVER {
         background: $FORM--TEXT_INPUT--BG--COLOUR---HOVER;
         color: $FORM--TEXT_INPUT--FONT--COLOUR---HOVER;
     }
 
-	%text_input_focus {
+	%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS {
         background: $FORM--TEXT_INPUT--BG--COLOUR---FOCUS;
 		color: $FORM--TEXT_INPUT--FONT--COLOUR---FOCUS;
     }
 
-    %text_input_disabled {
-        background: $transparent;
+    %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED {
+        background: $COLOUR--TRANSPARENT;
         padding: 3px 40px 3px 5px;
         padding-left: 0;
-        border: 1px solid transparent;
-        transition: all 0.15s ease-in 0s;
+        border: 1px solid $COLOUR--TRANSPARENT;
+        transition: $DEFAULT--TRANSITION;
 
-        @include text($FORM--TEXT_INPUT--FONT--SIZE, #d1d1d1, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--DUSTY_CLOUDS, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
     }
 
     // EDIT ENGINES EXCEPTION
-        %text_input--edit_engine {
+        %CSS_BLOCK--FORM--TEXT_INPUT\:EDIT_ENGINE {
             background: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR;
 
             @include text($FORM--TEXT_INPUT--FONT--SIZE, $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
         }
 
-        %text_input_hover--edit_engine {
+        %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:EDIT_ENGINE {
             background: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---HOVER;
             color: $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---HOVER !important;
         }
 
-    	%text_input_focus--edit_engine {
+    	%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:EDIT_ENGINE {
             background: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---FOCUS;
     		color: $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
         }
 
-        %text_input_disabled--edit_engine {
+        %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE {
             background: transparent !important;
-            @include text($FORM--TEXT_INPUT--FONT--SIZE, rgb(164, 163, 163)!important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
         }
 
 
     // CLEAR FORM BUTTON
-    %form_clear_up {
+    %CSS_BLOCK--FORM--CLEAR_BUTTON---UP {
         background: no-repeat center center;
         background-color: $FORM--CLEAR_BUTTON--BG--COLOUR---UP !important;
         background-image: url($FORM--CLEAR_BUTTON--ICON---UP);
 		background-size: 45%;
     }
 
-    %form_clear_hover {
+    %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER {
         background-color: $FORM--CLEAR_BUTTON--BG--COLOUR---HOVER !important;
         background-image: url($FORM--CLEAR_BUTTON--ICON---HOVER);
     }
 
     // EDIT PANEL EXCEPTIONS
-        %form_clear_up--edit_panel {
-            background-color: transparent !important;
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:EDIT_ENGINE {
+            background-color: $COLOUR--TRANSPARENT !important;
             opacity: 0.5;
         }
 
-        %form_clear_hover--edit_panel {
-            background-color: transparent !important;
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:EDIT_ENGINE {
+            background-color: $COLOUR--TRANSPARENT !important;
             opacity: 1;
         }
 
@@ -543,18 +579,18 @@
 // COMBO MENUS //////////////////////////////////
 /////////////////////////////////////////////////
 
-    %combo_arrow_up {
+    %CSS_BLOCK--FORM--COMBO--ARROW---UP {
         background: no-repeat center center;
         background-color: $FORM--COMBO--BG--COLOUR---UP !important;
         background-image: url($FORM--COMBO--ICON---UP);
     }
 
-    %combo_arrow_hover {
+    %CSS_BLOCK--FORM--COMBO--ARROW---HOVER {
         background-color: $FORM--COMBO--BG--COLOUR---HOVER !important;
         background-image: url($FORM--COMBO--ICON---HOVER);
     }
 
-    %combo_input {
+    %CSS_BLOCK--FORM--COMBO--TEXT_INPUT {
         padding: $FORM--TEXT_INPUT--PADDING !important;
         border: $FORM--TEXT_INPUT--BORDER--COLOUR;
 		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
@@ -563,17 +599,17 @@
     }
 
     // EDIT ENGINE EXEPTIONS
-        %combo_arrow_up--edit_panel {
-            background-color: transparent !important;
+        %CSS_BLOCK--FORM--COMBO--ARROW---UP\:EDIT_ENGINE {
+            background-color: $COLOUR--TRANSPARENT !important;
             opacity: 0.5;
         }
 
-        %combo_arrow_hover--edit_panel {
-            background-color: transparent !important;
+        %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:EDIT_ENGINE {
+            background-color: $COLOUR--TRANSPARENT !important;
             opacity: 1;
         }
 
-        %combo_input--edit_engine {
+        %CSS_BLOCK--FORM--COMBO--TEXT_INPUT\:EDIT_ENGINE {
             padding: $FORM--TEXT_INPUT--PADDING !important;
             border: $FORM--TEXT_INPUT--BORDER--COLOUR;
     		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
@@ -587,14 +623,14 @@
 // COMBO ::: MODE SELECTOR //////////////////////
 /////////////////////////////////////////////////
 
-%mode_combo_label {
+%CSS_BLOCK--FORM--MODE_COMBO--LABEL {
     text-transform: uppercase;
 
-    @include text(14px, $white-clouds, $semilight);
+    @include text(14px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
 }
 
-%mode_combo_label_multiselect {
-    background: url(./images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
+%CSS_BLOCK--FORM--MODE_COMBO--LABEL---MULTI_SELECT {
+    background: url($ICON--DX---BLACK) no-repeat left 12px center / 20px 20px;
 }
 
 
@@ -603,32 +639,32 @@
 // LIST BOX /////////////////////////////////////
 /////////////////////////////////////////////////
 
-        %list_box_holder {
+        %CSS_BLOCK--FORM--LIST_BOX--HOLDER {
             border: none;
-            box-shadow: 0 0 10px 0 rgba(49, 49, 49, 0.3);
+            box-shadow: 0 0 10px 0 rgba($COLOUR--DARK_CLOUDS, .3);
         }
 
-        %list_box_item {
+        %CSS_BLOCK--FORM--LIST_BOX--ITEM {
             text-align: left!important;
             background: $FORM--CONTEXT_MENU--BG--COLOUR---UP;
             padding: 8px 9px !important;
             border: none;
             width: 100%;
 
-            @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $semilight);
+            @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---SEMILIGHT);
         }
 
-        %list_box_item_hover {
+        %CSS_BLOCK--FORM--LIST_BOX--ITEM---HOVER {
             color: $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER;
             background: $FORM--CONTEXT_MENU--BG--COLOUR---HOVER;
         }
 
-        %list_box_item_selected {
-            color: red;
+        %CSS_BLOCK--FORM--LIST_BOX--ITEM---SELECTED {
+            color: blue;
             background: pink;
         }
 
-        %list_box_item_disabled {
+        %CSS_BLOCK--FORM--LIST_BOX--ITEM---DISABLED {
             color: $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED;
             font-style: italic;
             opacity: 1;
@@ -642,26 +678,26 @@
 // CONTEXT MENU /////////////////////////////////
 /////////////////////////////////////////////////
 
-    %context_menu_holder {
+    %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER {
         border: none;
-        box-shadow: 0 0 10px 0 rgba(49, 49, 49, 0.3);
+        box-shadow: 0 0 10px 0 rgba($COLOUR--DARK_CLOUDS, .3);
     }
 
-    %context_menu_item {
+    %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM {
         text-align: left!important;
         background: $FORM--CONTEXT_MENU--BG--COLOUR---UP;
         padding: 8px 9px !important;
         border: none;
 
-        @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $semilight);
+        @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---SEMILIGHT);
     }
 
-    %context_menu_item_hover {
+    %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER {
         color: $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER;
         background: $FORM--CONTEXT_MENU--BG--COLOUR---HOVER;
     }
 
-    %context_menu_item_disabled {
+    %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED {
         color: $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED;
         font-style: italic;
         opacity: 1;
@@ -674,28 +710,28 @@
 	// If left blank then they will assume the default style applied above.
 
         // Menus available in ALL / MULTIPLE pages
-			%context_menu_title--common_hamburger {}
-			%context_menu_holder--common_hamburger {}
-			%context_menu_item--common_hamburger {}
-			%context_menu_item_hover--common_hamburger {}
-			%context_menu_item_disabled--common_hamburger {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:COMMON_HAMBURGER {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:COMMON_HAMBURGER {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:COMMON_HAMBURGER {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:COMMON_HAMBURGER {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:COMMON_HAMBURGER {}
 
 		// Menus available in Edit Mode
 			// Publication
-			%context_menu_title--edit_mode_publication {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--PUBLICATION {
 				content: $text_context_menu_publication_page;
 
 				body[data-multiselect="on"] & {
 					content: $text_context_menu_publication_selection;
 				}
 			}
-			%context_menu_holder--edit_mode_publication {}
-			%context_menu_item--edit_mode_publication {}
-			%context_menu_item_hover--edit_mode_publication {}
-			%context_menu_item_disabled--edit_mode_publication {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--PUBLICATION {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--PUBLICATION {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--PUBLICATION {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--PUBLICATION {}
 
 			// Preview
-			%context_menu_title--edit_mode_preview {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--PREVIEW {
 				content: $text_context_menu_preview_page;
 
 				body[data-multiselect="on"] & {
@@ -703,207 +739,207 @@
 				}
 
 			}
-			%context_menu_holder--edit_mode_preview {}
-			%context_menu_item--edit_mode_preview {}
-			%context_menu_item_hover--edit_mode_preview {}
-			%context_menu_item_disabled--edit_mode_preview {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--PREVIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--PREVIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--PREVIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--PREVIEW {}
 
 			// More Info (old Edit button)
-			%context_menu_title--edit_mode_more_info {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--MORE_INFO {
 				content: $text_context_menu_more_info_page;
 
 				body[data-multiselect="on"] & {
 					content: $text_context_menu_more_info_selection;
 				}
 			}
-			%context_menu_holder--edit_mode_more_info {}
-			%context_menu_item--edit_mode_more_info {}
-			%context_menu_item_hover--edit_mode_more_info {}
-			%context_menu_item_disabled--edit_mode_more_info {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--MORE_INFO {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--MORE_INFO {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--MORE_INFO {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--MORE_INFO {}
 
 			// Mode View
-			%context_menu_title--edit_mode_mode_view {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--MODE_VIEW {
 				//content: $text_context_menu_mode_view;
 			}
-			%context_menu_holder--edit_mode_mode_view {}
-			%context_menu_item--edit_mode_mode_view {}
-			%context_menu_item_hover--edit_mode_mode_view {}
-			%context_menu_item_disabled--edit_mode_mode_view {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--MODE_VIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--MODE_VIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--MODE_VIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--MODE_VIEW {}
 
 			// User Menu
-			%context_menu_title--edit_mode_user_menu {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--USER_MENU {
 				//content: $text_context_menu_user_menu;
 			}
-			%context_menu_holder--edit_mode_user_menu {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--USER_MENU {
 			}
-			%context_menu_item--edit_mode_user_menu {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--USER_MENU {
 			}
-			%context_menu_item_hover--edit_mode_user_menu {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--USER_MENU {
 			}
-			%context_menu_item_disabled--edit_mode_user_menu {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--USER_MENU {
 
 			}
 
 			// Workflow
-			%context_menu_title--edit_mode_workflow {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--WORKFLOW {
 				//content: $text_context_menu_workflow;
 			}
-			%context_menu_holder--edit_mode_workflow {}
-			%context_menu_item--edit_mode_workflow {}
-			%context_menu_item_hover--edit_mode_workflow {}
-			%context_menu_item_disabled--edit_mode_workflow {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--WORKFLOW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--WORKFLOW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--WORKFLOW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--WORKFLOW {}
 
 			// Cache
-			%context_menu_title--edit_mode_cache {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--CACHE {
 				//content: $text_context_menu_cache;
 			}
-			%context_menu_holder--edit_mode_cache {}
-			%context_menu_item--edit_mode_cache {}
-			%context_menu_item_hover--edit_mode_cache {}
-			%context_menu_item_disabled--edit_mode_cache {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--CACHE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--CACHE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--CACHE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--CACHE {}
 
 			// Page Edit Context
-			%context_menu_title--edit_mode_page_context {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--PAGE_CONTEXT {
 				content: attr(data-selected-name)
 			}
-			%context_menu_holder--edit_mode_page_context {}
-			%context_menu_item--edit_mode_page_context {}
-			%context_menu_item_hover--edit_mode_page_context {}
-			%context_menu_item_disabled--edit_mode_page_context {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--PAGE_CONTEXT {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--PAGE_CONTEXT {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--PAGE_CONTEXT {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--PAGE_CONTEXT {}
 
 			// Side Panel > Pages
-			%context_menu_title--edit_mode_side_panel_pages {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--PAGES {
 				//content: $text_context_menu_side_panel_pages;
 			}
-			%context_menu_holder--edit_mode_side_panel_pages {}
-			%context_menu_item--edit_mode_side_panel_pages {}
-			%context_menu_item_hover--edit_mode_side_panel_pages {}
-			%context_menu_item_disabled--edit_mode_side_panel_pages {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--PAGES {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--PAGES {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--PAGES {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--PAGES {}
 
 			// Side Panel > Content > Tree
-			%context_menu_title--edit_mode_side_panel_content_tree {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--CONTENT--TREE {
 				//content: $text_context_menu_side_panel_content_tree;
 			}
-			%context_menu_holder--edit_mode_side_panel_content_tree {}
-			%context_menu_item--edit_mode_side_panel_content_tree {}
-			%context_menu_item_hover--edit_mode_side_panel_content_tree {}
-			%context_menu_item_disabled--edit_mode_side_panel_content_tree {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--CONTENT--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--CONTENT--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--CONTENT--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--CONTENT--TREE {}
 
 			// Side Panel > Content > Item
-			%context_menu_title--edit_mode_side_panel_content_item {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--CONTENT--ITEM {
 				//content: $text_context_menu_side_panel_content_item;
 			}
-			%context_menu_holder--edit_mode_side_panel_content_item {}
-			%context_menu_item--edit_mode_side_panel_content_item {}
-			%context_menu_item_hover--edit_mode_side_panel_content_item {}
-			%context_menu_item_disabled--edit_mode_side_panel_content_item {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--CONTENT--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--CONTENT--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--CONTENT--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--CONTENT--ITEM {}
 
 			// Side Panel > File > Tree
-			%context_menu_title--edit_mode_side_panel_file_tree {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--FILE--TREE {
 				//content: $text_context_menu_side_panel_file_tree;
 			}
-			%context_menu_holder--edit_mode_side_panel_file_tree {}
-			%context_menu_item--edit_mode_side_panel_file_tree {}
-			%context_menu_item_hover--edit_mode_side_panel_file_tree {}
-			%context_menu_item_disabled--edit_mode_side_panel_file_tree {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--FILE--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--FILE--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--FILE--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--FILE--TREE {}
 
 			// Side Panel > File > Item
-			%context_menu_title--edit_mode_side_panel_file_item {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--FILE--ITEM {
 				//content: $text_context_menu_side_panel_file_item;
 			}
-			%context_menu_holder--edit_mode_side_panel_file_item {}
-			%context_menu_item--edit_mode_side_panel_file_item {}
-			%context_menu_item_hover--edit_mode_side_panel_file_item {}
-			%context_menu_item_disabled--edit_mode_side_panel_file_item {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--FILE--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--FILE--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--FILE--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--FILE--ITEM {}
 
 			// Side Panel > Search
-			%context_menu_title--edit_mode_side_panel_search_item {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--SEARCH--ITEM {
 				//content: $text_context_menu_side_panel_search;
 			}
-			%context_menu_holder--edit_mode_side_panel_search_item {}
-			%context_menu_item--edit_mode_side_panel_search_item {}
-			%context_menu_item_hover--edit_mode_side_panel_search_item {}
-			%context_menu_item_disabled--edit_mode_side_panel_search_item {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--SEARCH--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--SEARCH--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--SEARCH--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--SEARCH--ITEM {}
 
 			// Side Panel > Taxonomy
-			%context_menu_title--edit_mode_side_panel_taxonomy_item {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--TAXONOMY--ITEM {
 				//content: $text_context_menu_side_panel_taxonomy;
 			}
-			%context_menu_holder--edit_mode_side_panel_taxonomy_item {}
-			%context_menu_item--edit_mode_side_panel_taxonomy_item {}
-			%context_menu_item_hover--edit_mode_side_panel_taxonomy_item {}
-			%context_menu_item_disabled--edit_mode_side_panel_taxonomy_item {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--TAXONOMY--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--TAXONOMY--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--TAXONOMY--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--TAXONOMY--ITEM {}
 
 		// Menus available in Admin Mode
 			// User Menu
-			%context_menu_title--admin_mode_user_menu {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:ADMIN_MODE--USER_MENU {
 				content: $text_context_menu_admin_user_name;
 			}
-			%context_menu_holder--admin_mode_user_menu {
-				@extend %context_menu_holder--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:ADMIN_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item--admin_mode_user_menu {
-				@extend %context_menu_item--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:ADMIN_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item_hover--admin_mode_user_menu {
-				@extend %context_menu_item_hover--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:ADMIN_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item_disabled--admin_mode_user_menu {
-				@extend %context_menu_item_disabled--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:ADMIN_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
 			}
 
 			// Mode View
-			%context_menu_title--admin_mode_mode_view {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:ADMIN_MODE--MODE_VIEW {
 				content: $text_context_menu_admin_mode_view;
 			}
-			%context_menu_holder--admin_mode_mode_view {
-				@extend %context_menu_holder--admin_mode_mode_view !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:ADMIN_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:ADMIN_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item--admin_mode_mode_view {
-				@extend %context_menu_item--admin_mode_mode_view !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:ADMIN_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:ADMIN_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item_hover--admin_mode_mode_view {
-				@extend %context_menu_item_hover--admin_mode_mode_view !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:ADMIN_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:ADMIN_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item_disabled--admin_mode_mode_view {
-				@extend %context_menu_item_disabled--admin_mode_mode_view !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:ADMIN_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:ADMIN_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
 			}
 
 
 
 		// Menus available in Dashboard Mode
 			// User Menu
-			%context_menu_title--dashboard_mode_user_menu {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:DASHBOARD_MODE--USER_MENU {
 				content: $text_context_menu_dashboard_user_name;
 			}
-			%context_menu_holder--dashboard_mode_user_menu {
-				@extend %context_menu_holder--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:DASHBOARD_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item--dashboard_mode_user_menu {
-				@extend %context_menu_item--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:DASHBOARD_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item_hover--dashboard_mode_user_menu {
-				@extend %context_menu_item_hover--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:DASHBOARD_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item_disabled--dashboard_mode_user_menu {
-				@extend %context_menu_item_disabled--edit_mode_user_menu !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:DASHBOARD_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
 			}
 
 		// Mode View
-			%context_menu_title--dashboard_mode_mode_view {
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:DASHBOARD_MODE--MODE_VIEW {
 				content: $text_context_menu_dashboard_mode_view;
 			}
-			%context_menu_holder--dashboard_mode_mode_view {
-				@extend %context_menu_holder--edit_mode_mode_view !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:DASHBOARD_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item--dashboard_mode_mode_view {
-				@extend %context_menu_item--edit_mode_mode_view !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:DASHBOARD_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item_hover--dashboard_mode_mode_view {
-				@extend %context_menu_item_hover--edit_mode_mode_view !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:DASHBOARD_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
 			}
-			%context_menu_item_disabled--dashboard_mode_mode_view {
-				@extend %context_menu_item_disabled--edit_mode_mode_view !optional; // Apply same style as Edit Mode version
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:DASHBOARD_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
 			}
 
 			// _common.scss uses this list to generate personalised menus according to placeholders above.
@@ -948,21 +984,22 @@
 /////////////////////////////////////////////////
 
     // FORM
-    %button_text--form {
-        background: transparent;
+    %CSS_BLOCK--BUTTON--TEXT\:FORM {
+		background: $BUTTON--BG--COLOUR---UP\:FORM;
         text-transform: uppercase;
         padding: 4px 0 0;
-        @include text(10px, #dddcdc, $normal);
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:FORM, $FONT--WEIGHT---NORMAL);
     }
 
-    %button_text_hover--form {
-        @include text(10px, $white-clouds, $normal);
+    %CSS_BLOCK--BUTTON--TEXT---HOVER\:FORM {
+		background: $BUTTON--BG--COLOUR---HOVER\:FORM;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FORM, $FONT--WEIGHT---NORMAL);
     }
 
-    %button_icon--form {
-        background: $grey-clouds;
+    %CSS_BLOCK--BUTTON--ICON\:FORM {
+        background: $BUTTON--BG--COLOUR---UP\:FORM;
         padding: 5px 10px 5px 29px;
-        @include text(16px, $white-clouds, $extralight);
+        @include text(16px, $BUTTON--FONT--COLOUR---UP\:FORM, $FONT--WEIGHT---EXTRALIGHT);
 
         img {
             left: 5px!important;
@@ -970,63 +1007,61 @@
         }
     }
 
-    %button_icon_hover--form {
-        background: yellow;
+    %CSS_BLOCK--BUTTON--ICON---HOVER\:FORM {
+        background: $BUTTON--BG--COLOUR---HOVER\:FORM;
         padding: 5px 10px 5px 29px;
-        @include text(16px, red, $extralight);
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:FORM, $FONT--WEIGHT---EXTRALIGHT);
 
         img {
             left: 5px!important;
         }
     }
 
-    // PANEL
-    %button_text--panel {
-        background: transparent;
-        text-transform: uppercase;
-        padding: 4px 0 0;
-        @include text(10px, #dddcdc, $normal);
+    // SIDE PANEL
+	%CSS_BLOCK--BUTTON--TEXT\:SIDE_PANEL {
+        background: $BUTTON--BG--COLOUR---UP\:SIDE_PANEL !important;
+        color: $BUTTON--FONT--COLOUR---UP\:SIDE_PANEL !important;
     }
 
-    %button_text_hover--panel {
-        @include text(10px, $white-clouds, $normal);
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:SIDE_PANEL {
+		background: $BUTTON--BG--COLOUR---HOVER\:SIDE_PANEL !important;
+        color: $BUTTON--FONT--COLOUR---HOVER\:SIDE_PANEL !important;
     }
 
-    %button_icon--panel {
-        background: $grey-clouds;
-        padding: 5px 10px 5px 29px;
-        @include text(16px, $white-clouds, $extralight);
+	%CSS_BLOCK--BUTTON--ICON\:SIDE_PANEL {
+        background: $BUTTON--BG--COLOUR---UP\:SIDE_PANEL !important;
+        color: $BUTTON--FONT--COLOUR---UP\:SIDE_PANEL !important;
 
     }
 
-    %button_icon_hover--panel {
-        background: purple;
-        @include text(16px, red, $extralight);
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:SIDE_PANEL {
+        background: $BUTTON--BG--COLOUR---HOVER\:SIDE_PANEL !important;
+        color: $BUTTON--FONT--COLOUR---HOVER\:SIDE_PANEL !important;
 
     }
 
     // FIELDSET
-    %button_text--fieldset {
-        background: #737373;
+	%CSS_BLOCK--BUTTON--TEXT\:FIELDSET {
+        background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
         text-transform: uppercase;
         padding: 5px 10px;
-        @include text(10px, #dddcdc, $normal);
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---NORMAL);
     }
 
-    %button_text_parent_hover--fieldset {
-        background: #f26d4f!important;
-        @include text(10px, $white-clouds, $normal);
+	%CSS_BLOCK--BUTTON--TEXT--HOVER_PARENT\:FIELDSET {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET!important;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---NORMAL);
     }
 
-    %button_text_hover--fieldset {
-        background: #f26d4f;
-        @include text(10px, $white-clouds, $normal);
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:FIELDSET {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---NORMAL);
     }
 
-    %button_icon--fieldset {
-        background: $grey-clouds;
+	%CSS_BLOCK--BUTTON--ICON\:FIELDSET {
+        background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
         padding: 5px 10px 5px 29px;
-        @include text(16px, $white-clouds, $extralight);
+        @include text(16px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---EXTRALIGHT);
 
         img {
             left: 5px!important;
@@ -1034,10 +1069,10 @@
         }
     }
 
-    %button_icon_hover--fieldset {
-        background: yellow;
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:FIELDSET {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET !important;
         padding: 5px 10px 5px 29px;
-        @include text(16px, red, $extralight);
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---EXTRALIGHT);
 
         img {
             left: 5px!important;
@@ -1045,52 +1080,52 @@
     }
 
     // ACTION BAR
-    %button_text--actionbar {
-        background: pink;
+	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR {
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR;
     	padding: 5px 10px;
-    	@include text(16px, red, $extralight);
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR, $FONT--WEIGHT---EXTRALIGHT);
     }
 
-    %button_text_hover--actionbar {
-        background: red;
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR {
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR;
     	padding: 5px 10px;
-    	@include text(16px, white, $extralight);
+    	@include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR, $FONT--WEIGHT---EXTRALIGHT);
     }
 
-    %button_icon--actionbar {
-        background: $grey-clouds;
+	%CSS_BLOCK--BUTTON--ICON\:ACTIONBAR {
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR;
     	padding: 5px 10px 5px 29px;
-    	@include text(16px, $white-clouds, $extralight);
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR, $FONT--WEIGHT---EXTRALIGHT);
 
     	img {
     		left: 5px!important;
     	}
     }
 
-    %button_icon_hover--actionbar {
-        background: pink;
-        @include text(16px, red, $extralight);
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:ACTIONBAR {
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR, $FONT--WEIGHT---EXTRALIGHT);
     }
 
     // ACTION BAR ::: SUGGESTED
-    %button_text--actionbar-suggested {
-        background: #f26d4f;
-    	@include text(16px, red, $extralight);
+	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED, $FONT--WEIGHT---EXTRALIGHT);
     }
 
-    %button_text_hover--actionbar-suggested {
-        background: red;
-    	@include text(16px, white, $extralight);
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED;
+    	@include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED, $FONT--WEIGHT---EXTRALIGHT);
     }
 
-    %button_icon--actionbar-suggested {
-        background: #f26d4f;
-    	@include text(16px, $white-clouds, $extralight);
+	%CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED, $FONT--WEIGHT---EXTRALIGHT);
     }
 
-    %button_icon_hover--actionbar-suggested {
-        background: purple;
-        @include text(16px, red, $extralight);
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED, $FONT--WEIGHT---EXTRALIGHT);
     }
 
 
@@ -1100,11 +1135,11 @@
 /////////////////////////////////////////////////
 
     // LABELS
-    %tree_line_text_up {
-        @include text(12px, $TREE--ROW--FONT--COLOUR---UP, $extralight);
+    %CSS_BLOCK--TREE--ROW--TEXT---UP {
+        @include text(12px, $TREE--ROW--FONT--COLOUR---UP, $FONT--WEIGHT---EXTRALIGHT);
     }
 
-    %tree_line_text_hover {
+    %CSS_BLOCK--TREE--ROW--TEXT---HOVER {
         color: $TREE--ROW--FONT--COLOUR---HOVER!important;
 
 		// Padding not dealt with in best manner ...
@@ -1115,7 +1150,7 @@
 		}
     }
 
-    %tree_line_text_selected {
+    %CSS_BLOCK--TREE--ROW--TEXT---SELECTED {
         color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
 		padding-right: 19px!important; // Make space for More options button
 
@@ -1125,24 +1160,24 @@
 
     }
 
-    %tree_line_text_selected_hover {
+    %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER {
         color: $TREE--ROW--FONT--COLOUR---SELECTED_HOVER!important;
     }
 
     // BACKGROUNDS
-    %tree_line_bg_up {
+    %CSS_BLOCK--TREE--ROW--BG---UP {
         background: $TREE--ROW--BG--COLOUR---UP!important;
     }
 
-    %tree_line_bg_hover {
+    %CSS_BLOCK--TREE--ROW--BG---HOVER {
         background: $TREE--ROW--BG--COLOUR---HOVER!important;
     }
 
-    %tree_line_bg_selected {
+    %CSS_BLOCK--TREE--ROW--BG---SELECTED {
         background-color: $TREE--ROW--BG--COLOUR---SELECTED!important;
     }
 
-    %tree_line_bg_selected_hover {
+    %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER {
         background: $TREE--ROW--ICON---SELECTED_HOVER!important;
     }
 
@@ -1151,7 +1186,7 @@
 	// If left blank then they will assume GWT original icons.
 
 	// Pages Tree Icons
-		%tree_line_icon_up--pages {
+		%CSS_BLOCK--TREE--ICON---UP\:PAGES {
 			background-image: url($TREE--ROW--ICON---UP);
 			background-size: 23px 23px;
 			background-repeat: no-repeat;
@@ -1160,48 +1195,48 @@
 			height: 23px;
 		}
 
-		%tree_line_icon_hover--pages {
+		%CSS_BLOCK--TREE--ICON---HOVER\:PAGES {
 			background-image: url($TREE--ROW--ICON---HOVER) !important;
 		}
 
-		%tree_line_icon_selected--pages {
+		%CSS_BLOCK--TREE--ICON---SELECTED\:PAGES {
 			background-image: url($TREE--ROW--ICON---SELECTED) !important;
 		}
 
-		%tree_line_icon_selected_hover--pages {
+		%CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:PAGES {
 			background-image: url($TREE--ROW--ICON---SELECTED) !important;
 		}
 
 	// Create Tree Icons
-		%tree_line_icon_up--create {}
-		%tree_line_icon_hover--create {}
-		%tree_line_icon_selected--create {}
-		%tree_line_icon_selected_hover--create {}
+		%CSS_BLOCK--TREE--ICON---UP\:CREATE {}
+		%CSS_BLOCK--TREE--ICON---HOVER\:CREATE {}
+		%CSS_BLOCK--TREE--ICON---SELECTED\:CREATE {}
+		%CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:CREATE {}
 
 	// Content Tree Icons
-		%tree_line_icon_up--content {}
-		%tree_line_icon_hover--content {}
-		%tree_line_icon_selected--content {}
-		%tree_line_icon_selected_hover--content {}
+		%CSS_BLOCK--TREE--ICON---UP\:CONTENT {}
+		%CSS_BLOCK--TREE--ICON---HOVER\:CONTENT {}
+		%CSS_BLOCK--TREE--ICON---SELECTED\:CONTENT {}
+		%CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:CONTENT {}
 
 	// Files Tree Icons
-		%tree_line_icon_up--files {}
-		%tree_line_icon_hover--files {}
-		%tree_line_icon_selected--files {}
-		%tree_line_icon_selected_hover--files {}
+		%CSS_BLOCK--TREE--ICON---UP\:FILES {}
+		%CSS_BLOCK--TREE--ICON---HOVER\:FILES {}
+		%CSS_BLOCK--TREE--ICON---SELECTED\:FILES {}
+		%CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:FILES {}
 
 	// Taxonomy Tree Icons
-		%tree_line_icon_up--taxonomy {}
-		%tree_line_icon_hover--taxonomy {}
-		%tree_line_icon_selected--taxonomy {}
-		%tree_line_icon_selected_hover--taxonomy {}
+		%CSS_BLOCK--TREE--ICON---UP\:TAXONOMY {}
+		%CSS_BLOCK--TREE--ICON---HOVER\:TAXONOMY {}
+		%CSS_BLOCK--TREE--ICON---SELECTED\:TAXONOMY {}
+		%CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:TAXONOMY {}
 
 	$personalised_trees: (
-		("#JahiaGxtPagesTab",    			pages),
-		("#JahiaGxtCreateContentTab",    	create),
-		("#JahiaGxtContentBrowseTab",    	content),
-		("#JahiaGxtFileImagesBrowseTab",    files),
-		("#JahiaGxtCategoryBrowseTab",    	taxonomy)
+		("#JahiaGxtPagesTab",    			PAGES),
+		("#JahiaGxtCreateContentTab",    	CREATE),
+		("#JahiaGxtContentBrowseTab",    	CONTENT),
+		("#JahiaGxtFileImagesBrowseTab",    FILES),
+		("#JahiaGxtCategoryBrowseTab",    	TAXONOMY)
 	);
 
 
@@ -1210,24 +1245,24 @@
 // THUMB WRAPS //////////////////////////////////
 /////////////////////////////////////////////////
 
-    %thumb_label {
+    %CSS_BLOCK--THUMB--LABEL {
         background: $THUMB--FONT--BG--COLOUR;
         text-align: center;
         padding: 3px 10px;
 
         @extend %ellipsis_overflow;
-        @include text(10px, $THUMB--FONT--COLOUR, $bold);
+        @include text(10px, $THUMB--FONT--COLOUR, $FONT--WEIGHT---BOLD);
     }
 
-    %thumb_up {
+    %CSS_BLOCK--THUMB--BG---UP {
         background: $THUMB--BG--COLOUR---UP;
     }
 
-    %thumb_hover {
+    %CSS_BLOCK--THUMB--BG---HOVER {
         background: $THUMB--BG--COLOUR---HOVER;
     }
 
-    %thumb_selected {
+    %CSS_BLOCK--THUMB--BG---SELECTED {
         background: $THUMB--BG--COLOUR---SELECTED;
     }
 
@@ -1237,20 +1272,18 @@
 // SIDE PANEL ///////////////////////////////////
 /////////////////////////////////////////////////
 
-    %side_paneL_container {
+    %CSS_BLOCK--SIDE_PANEL--CONTAINER {
         background: $SIDE_PANEL--BG--COLOUR--CLOSED !important;
     }
 
-    %side_paneL_container_open {
+    %CSS_BLOCK--SIDE_PANEL--CONTAINER---OPEN {
         background: $SIDE_PANEL--BG--COLOUR---OPENED !important;
         box-shadow: $SIDE_PANEL--BG--SHADOW;
     }
 
-    %side_paneL_title {
-        @include text(26px, $grey-clouds, $extralight);
+    %CSS_BLOCK--SIDE_PANEL--TITLE {
+        @include text(26px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
     }
-
-    %side_paneL_title_site_selector {}
 
 
 
@@ -1258,23 +1291,23 @@
 // TOOL BUTTONS /////////////////////////////////
 /////////////////////////////////////////////////
 
-    %tool_button_label {
+    %CSS_BLOCK--TOOL_BUTTON {
         text-align: center;
         text-transform: uppercase;
 
-        @include text(8px, $TOOL--BUTTON--FONT--COLOUR---NORMAL, $normal);
+        @include text(8px, $TOOL--BUTTON--FONT--COLOUR---NORMAL, $FONT--WEIGHT---NORMAL);
     }
 
-    %tool_button_label_multiselect {
+    %CSS_BLOCK--TOOL_BUTTON---MULTI_SELECT {
         color: $TOOL--BUTTON--FONT--COLOUR---OFF;
     }
 
-    %tool_button_label_side_panel_open {
+    %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN {
         color: $TOOL--BUTTON--FONT--COLOUR---OPEN;
     }
 
 
-    %tool_button_label_side_panel_open_selected {
+    %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN_SELECTED {
         color: $TOOL--BUTTON--FONT--COLOUR---OPEN_SELECTED;
     }
 
@@ -1285,25 +1318,25 @@
 /////////////////////////////////////////////////
 
     // TITLE
-    %edit_engine_title {
-    	@include text(14px, #a5a5a5, $extralight);
+    %CSS_BLOCK--EDIT_ENGINE--TITLE {
+    	@include text(14px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
     }
 
     // TAB BUTTONS
-    %edit_engine_tab {
+    %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON {
     	padding: 5px 0 5px 5px;
 
-    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR, $extralight);
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
     }
 
-    %edit_engine_tab_selected {
-    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $extralight);
+    %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---SELECTED {
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $FONT--WEIGHT---EXTRALIGHT);
     }
 
-    %edit_engine_tab_over {
-    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $extralight);
+    %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER {
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $FONT--WEIGHT---EXTRALIGHT);
     }
 
-    %edit_engine_tab_selected_over {
-    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over + !important, $extralight);
+    %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER_SELECTED {
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over + !important, $FONT--WEIGHT---EXTRALIGHT);
     }

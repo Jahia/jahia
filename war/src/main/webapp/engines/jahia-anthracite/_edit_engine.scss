@@ -19,7 +19,7 @@ body {
 }
 
 .engine-panel {
-	z-index: $zindex_edit_engine_panel;
+	z-index: $ZINDEX--SIDE_PANEL--EDIT_ENGINE;
 	background: $EDIT_ENGINE--BG--COLOUR;
     position: fixed!important;
     top: 0!important;
@@ -71,10 +71,10 @@ body {
 			width: calc(100% - 297px) !important;
 		}
 
-		@include button("fieldset");
+		@include button("FIELDSET");
 
 		.x-form-item:hover {
-			//@include button("fieldset");
+			//@include button("FIELDSET");
 
 		}
 
@@ -107,13 +107,13 @@ body {
 				}
 
 				.gwt-HTML {
-					@include text(12px, #dddcdc, $semilight);
+					@include text(12px, #dddcdc, $FONT--WEIGHT---SEMILIGHT);
 
 					b {
 						width: 150px;
 						display: inline-block;
 
-						@extend %form_label !optional;
+						@extend %CSS_BLOCK--FORM--LABEL !optional;
 					}
 				}
 			}
@@ -129,7 +129,7 @@ body {
 
 	.x-form-readonly {
 		 .x-form-text {
-			@extend %text_input_disabled--edit_engine !optional;
+			@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE !optional;
 
 		}
 	}
@@ -146,28 +146,28 @@ body {
 	////////// TABS
 	.x-tab-strip .x-tab-strip-text {
 		// At last the button label !!
-		@extend %edit_engine_tab;
+		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON;
 
 	}
 
 	////////// TAB OVER
 	.x-tab-strip-over .x-tab-strip-text {
 		// At last the button label !!
-		@extend %edit_engine_tab_over;
+		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER;
 
 	}
 
 	////////// TAB SELECTED
 	.x-tab-strip-active .x-tab-strip-text {
 		// At last the button label !!
-		@extend %edit_engine_tab_selected;
+		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---SELECTED;
 
 	}
 
 	////////// TAB SELECTED & HOVER
 	.x-tab-strip-active.x-tab-strip-over .x-tab-strip-text {
 		// At last the button label !!
-		@extend %edit_engine_tab_selected_over;
+		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER_SELECTED;
 
 	}
 
@@ -216,12 +216,12 @@ body {
 				}
 
 				.x-form-check-wrap {
-					left: 466px!important;
+					left: calc(100% - 29px)!important;
 				    top: 4px!important;
 				}
 
 				label {
-					left: 480px!important;
+					left: calc(100% - 310px)!important;
 					top: 4px!important;
 				}
 			}
@@ -349,7 +349,7 @@ body {
 		    top: 77px;
 		    left: 359px;
 
-			@extend %edit_engine_title;
+			@extend %CSS_BLOCK--EDIT_ENGINE--TITLE;
 
 		}
 	}
@@ -474,7 +474,7 @@ body {
 							// Default tab content window
 							height: 100%!important;
 							width: 100%!important;
-							background: $transparent;
+							background: $COLOUR--TRANSPARENT;
 							border:none!important;
 							padding:0;
 
@@ -548,7 +548,7 @@ body {
 						padding-bottom: 20px;
 
 						// Make suggested colour
-						@include button("actionbar-suggested");
+						@include button("ACTIONBAR---SUGGESTED");
 
 						button {
 							//@extend %button_suggested;

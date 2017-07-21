@@ -9,9 +9,9 @@
 	width: auto !important;
 	background: transparent;
     overflow: visible;
-    z-index: $zindex_combo_list;
+    z-index: $ZINDEX--COMBO_LIST;
 
-	@extend %context_menu_holder !optional;
+	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER !optional;
 
 }
 
@@ -34,7 +34,7 @@
 		.x-editable {
 			/* List item when normal Thumbed Combo
 			   Actual Label of Combo Item */
-			@extend %context_menu_item !optional;
+			@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM !optional;
 
 		}
 
@@ -46,7 +46,7 @@
 
 			.x-editable {
 				/* List item when normal Thumbed Combo */
-				@extend %context_menu_item_hover !optional;
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER !optional;
 			}
 		}
 
@@ -56,14 +56,14 @@
 /* List item when normal Combo */
 .x-combo-list-item {
 	border:none;
-	@extend %context_menu_item !optional;
+	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM !optional;
 
 
 
 	&.x-view-highlightrow {
 		/* Selected / Hovered */
 		border:none!important;
-		@extend %context_menu_item_hover !optional;
+		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER !optional;
 
 	}
 }
@@ -81,31 +81,31 @@
 		width: auto !important;
 		background: transparent!important;
 	    overflow: scroll!important;
-	    z-index: $zindex_combo_list;
+	    z-index: $ZINDEX--COMBO_LIST;
 		position: relative;
 
-		@extend %list_box_holder !optional;
+		@extend %CSS_BLOCK--FORM--LIST_BOX--HOLDER !optional;
 
 	}
 
 	.x-combo-list-item {
 		border:none;
 		box-sizing: border-box;
-		@extend %list_box_item !optional;
+		@extend %CSS_BLOCK--FORM--LIST_BOX--ITEM !optional;
 
 
 
 		&.x-combo-over {
 			/* Selected / Hovered */
 			border:none!important;
-			@extend %list_box_item_hover !optional;
+			@extend %CSS_BLOCK--FORM--LIST_BOX--ITEM---HOVER !optional;
 
 		}
 
 		&.x-view-highlightrow {
 			/* Selected / Hovered */
 			border:none!important;
-			@extend %list_box_item_selected !optional;
+			@extend %CSS_BLOCK--FORM--LIST_BOX--ITEM---SELECTED !optional;
 
 		}
 	}
@@ -126,21 +126,21 @@
 		$_placeholder: #{nth($context_menu,2)};
 
 		#{$_context_menu_class} {
-			@extend %context_menu_holder--#{$_placeholder} !optional;
+			@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER--#{$_placeholder} !optional;
 
 			.x-menu-list::before {
-				@extend %context_menu_title--#{$_placeholder} !optional;
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--TITLE--#{$_placeholder} !optional;
 
 			}
 
 			.x-menu-item {
-				@extend %context_menu_item--#{$_placeholder} !optional;
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM--#{$_placeholder} !optional;
 
 			}
 
 			.x-item-disabled {
 				.x-menu-item {
-					@extend %context_menu_item_disabled--#{$_placeholder} !optional;
+					@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED--#{$_placeholder} !optional;
 
 				}
 
@@ -148,7 +148,7 @@
 
 			.x-menu-item-active {
 				.x-menu-item {
-					@extend %context_menu_item_hover--#{$_placeholder} !optional;
+					@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER--#{$_placeholder} !optional;
 
 				}
 			}
@@ -162,9 +162,9 @@
 	width: auto !important;
 	background: transparent;
     overflow: visible;
-    z-index: $zindex_context_menu;
+    z-index: $ZINDEX--CONTEXT_MENU;
 
-	@extend %context_menu_holder !optional;
+	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER !optional;
 }
 
 .x-menu-list {
@@ -177,28 +177,28 @@
 	    padding: 3px 8px;
 	    font-family: "Nunito Sans";
 	    font-size: 8px;
-	    color: darken($jahia-blue, 25%);
+	    color: darken($COLOUR--JAHIA_BLUE, 25%);
 	    font-style: italic;
 	    text-transform: uppercase;
 	    font-weight: 600;
-	    z-index: $zindex_context_menu_title;
+	    z-index: $ZINDEX--CONTEXT_MENU---TITLE;
 	}
 }
 
 .x-menu-list-item {}
 
 .x-menu-item {
-	@extend %context_menu_item !optional;
+	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM !optional;
 
 	.x-item-disabled & {
-		@extend %context_menu_item_disabled !optional;
+		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED !optional;
 
 
 
 	}
 
 	.x-menu-item-active & {
-		@extend %context_menu_item_hover !optional;
+		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER !optional;
 	}
 
 }
@@ -295,7 +295,7 @@
 		padding: 5px!important;
 		box-sizing: border-box;
 
-		@extend %thumb_up !optional;
+		@extend %CSS_BLOCK--THUMB--BG---UP !optional;
 
 	}
 
@@ -305,7 +305,7 @@
 		position: absolute;
 	    top: 5px;
 	    left: 5px;
-	    z-index: $zindex_thumb_details;
+	    z-index: $ZINDEX--THUMB---DETAILS;
 	    margin: 0 !important;
 	    width: calc(100% - 10px);
 	    display: none;
@@ -320,7 +320,7 @@
 				/* Just Show the File Name Meta Container */
 				display: block;
 
-				@extend %thumb_label !optional;
+				@extend %CSS_BLOCK--THUMB--LABEL !optional;
 
 				b {
 					/* Hide Label */
@@ -341,7 +341,7 @@
 		}
 
 		.thumb {
-			@extend %thumb_hover !optional;
+			@extend %CSS_BLOCK--THUMB--BG---HOVER !optional;
 
 		}
 
@@ -356,7 +356,7 @@
 		}
 
 		.thumb {
-			@extend %thumb_selected !optional;
+			@extend %CSS_BLOCK--THUMB--BG---SELECTED !optional;
 
 		}
 
@@ -384,10 +384,10 @@ legend {
 
 	.x-fieldset-header-text {
 		// Wahoo, the label text !!
-		@extend %form_legend;
+		@extend %CSS_BLOCK--FORM--LEGEND;
 
 		.x-panel-collapsed & {
-			@extend %form_legend_collapsed !optional;
+			@extend %CSS_BLOCK--FORM--LEGEND---COLLAPSED !optional;
 		}
 
 	}
@@ -427,7 +427,7 @@ input[type="checkbox"] {
 		height: 100%;
 		box-sizing: border-box;
 
-		@extend %checkbox_unchecked;
+		@extend %CSS_BLOCK--CHECKBOX---UNCHECKED;
 
 		// AS SWITCHER
 		legend & {
@@ -439,7 +439,7 @@ input[type="checkbox"] {
 		    padding-right: 4px;
 		    line-height: 17px;
 
-			@extend %toggle_off_rails;
+			@extend %CSS_BLOCK--FORM--TOGGLE--BG;
 		}
 	}
 	&:after {
@@ -458,7 +458,7 @@ input[type="checkbox"] {
 			width: 15px;
 			height: 13px;
 
-			@extend %toggle_off_shuttle;
+			@extend %CSS_BLOCK--FORM--TOGGLE--SHUTTLE---OFF;
 		}
 	}
 
@@ -467,11 +467,11 @@ input[type="checkbox"] {
 
 			// AS SWITCHER
 			legend & {
-				@extend %toggle_on_rails;
+				@extend %CSS_BLOCK--FORM--TOGGLE--BG---ON;
 			}
 		}
 		&:checked:after {
-			@extend %checkbox_checked;
+			@extend %CSS_BLOCK--CHECKBOX---CHECKED;
 
 			// AS SWITCHER
 			legend & {
@@ -480,7 +480,7 @@ input[type="checkbox"] {
 				text-align: center;
 				padding: 0 5px;
 
-				@extend %toggle_on_shuttle;
+				@extend %CSS_BLOCK--FORM--TOGGLE--SHUTTLE---ON;
 			}
 		}
 
@@ -501,14 +501,14 @@ input[type="checkbox"] {
 
 fieldset {
 
-	@extend %form_fieldset;
+	@extend %CSS_BLOCK--FIELDSET;
 
 }
 
 label {
 	// See .x-form-item-label
 
-	@extend %form_label !optional;
+	@extend %CSS_BLOCK--FORM--LABEL !optional;
 }
 
 /* Form item Outer Container ... */
@@ -537,16 +537,16 @@ label {
 	clear: both!important;
 	display: inline-block!important;
 
-	@extend %form_label !optional;
+	@extend %CSS_BLOCK--FORM--LABEL !optional;
 }
 
 /* Text Field Input */
 .x-form-text {
-	@extend %text_input !optional;
+	@extend %CSS_BLOCK--FORM--TEXT_INPUT !optional;
 
 	// Exceptions ...
 	.engine-panel & {
-		@extend %text_input--edit_engine !optional;
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT\:EDIT_ENGINE !optional;
 
 	}
 
@@ -561,27 +561,27 @@ label {
 	}
 
 	&:hover {
-		@extend %text_input_hover !optional;
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER !optional;
 
 		// Exceptions ...
 		.engine-panel & {
-			@extend %text_input_hover--edit_engine !optional;
+			@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:EDIT_ENGINE !optional;
 
 		}
 	}
 
 	&:focus {
-		@extend %text_input_focus !optional;
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS !optional;
 
 		// Exceptions ...
 		.engine-panel & {
-			@extend %text_input_focus--edit_engine !optional;
+			@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:EDIT_ENGINE !optional;
 
 		}
 	}
 
 	&[disabled] {
-		@extend %text_input_disabled--edit_engine !optional;
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE !optional;
 
 	}
 
@@ -590,7 +590,7 @@ label {
 
 div[role="combobox"] {
 	.x-form-text {
-		@extend %combo_input !optional;
+		@extend %CSS_BLOCK--FORM--COMBO--TEXT_INPUT !optional;
 
 
 		width: 100%!important;
@@ -630,18 +630,18 @@ div[role="combobox"] {
 
 	&.x-form-trigger-arrow {
 		/* Combo Down Arrow Button */
-		@extend %combo_arrow_up !optional;
+		@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP !optional;
 
 		.engine-panel & {
-			@extend %combo_arrow_up--edit_panel !optional;
+			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:EDIT_ENGINE !optional;
 
 		}
 
 		&.x-form-trigger-over {
-			@extend %combo_arrow_hover !optional;
+			@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER !optional;
 
 			.engine-panel & {
-				@extend %combo_arrow_hover--edit_panel !optional;
+				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:EDIT_ENGINE !optional;
 
 			}
 		}
@@ -649,18 +649,18 @@ div[role="combobox"] {
 
 	&.x-form-clear-trigger {
 		/* Combo X Button */
-		@extend %form_clear_up !optional;
+		@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP !optional;
 
 		.engine-panel & {
-			@extend %form_clear_up--edit_panel !optional;
+			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:EDIT_ENGINE !optional;
 
 		}
 
 		&.x-form-trigger-over {
-			@extend %form_clear_hover !optional;
+			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER !optional;
 
 			.engine-panel & {
-				@extend %form_clear_hover--edit_panel !optional;
+				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER--edit_panel !optional;
 
 			}
 		}
@@ -698,13 +698,13 @@ div[role="combobox"] {
 	left: auto!important;
 	top: auto!important;
 
-	@extend %form_label !optional;
+	@extend %CSS_BLOCK--FORM--LABEL !optional;
 }
 
 // Form Buttons
 form,
 .edit-content-engine { // CHANGE THIS AFTER TO BE INCLUDING GENERAL STYLING AND THEN PERSONALISE ...
-	@include button("form");
+	@include button("FORM");
 
 }
 
@@ -726,14 +726,14 @@ form,
 		width: auto;
 	}
 
-	@include button("actionbar", "remove-icons");
+	@include button("ACTIONBAR", "remove-icons");
 
 
 }
 
 /* Button Bar, regular button bar */
 .x-panel-btns {
-	@include button("panel", "remove-icons");
+	@include button("SIDE_PANEL", "remove-icons");
 
 }
 
@@ -764,14 +764,14 @@ form,
 		.x-tree3-node-icon,
 		.gwt-Image {
 			// List Item Icon
-			@extend %tree_line_icon_up--#{$_placeholder} !optional;
+			@extend %CSS_BLOCK--TREE--ICON---UP\:#{$_placeholder} !optional;
 		}
 
 		.x-grid3-row-over {
 			.x-tree3-node-icon,
 			.gwt-Image {
 				// Personalised Icon
-				@extend %tree_line_icon_hover--#{$_placeholder} !optional;
+				@extend %CSS_BLOCK--TREE--ICON---HOVER\:#{$_placeholder} !optional;
 
 			}
 
@@ -781,7 +781,7 @@ form,
 			.x-tree3-node-icon,
 			.gwt-Image {
 				// Personalised Icon: Selected
-				@extend %tree_line_icon_selected--#{$_placeholder} !optional;
+				@extend %CSS_BLOCK--TREE--ICON---SELECTED\:#{$_placeholder} !optional;
 
 			}
 
@@ -789,7 +789,7 @@ form,
 				.x-tree3-node-icon,
 				.gwt-Image {
 					// Personalised Icon: Selected > Hover
-					@extend %tree_line_icon_selected_hover--#{$_placeholder} !optional;
+					@extend %CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:#{$_placeholder} !optional;
 
 				}
 			}
@@ -979,12 +979,12 @@ form,
 		width: 100%!important;
 		border: none;
 
-		@extend %tree_line_bg_up !optional;
+		@extend %CSS_BLOCK--TREE--ROW--BG---UP !optional;
 
 
 		&.x-grid3-row-over {
 			/* Line Over */
-			@extend %tree_line_bg_hover !optional;
+			@extend %CSS_BLOCK--TREE--ROW--BG---HOVER !optional;
 
 			.x-tree3-node-icon {
 				@extend %tree_line_icon_hover !optional;
@@ -994,7 +994,7 @@ form,
 			.x-grid3-td-displayName,
 			.gwt-content-label,
 			.x-grid3-cell-inner {
-				@extend %tree_line_text_hover !optional;
+				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER !optional;
 
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);
@@ -1010,7 +1010,7 @@ form,
 
 		&.x-grid3-row-selected {
 			/* Line Selected */
-			@extend %tree_line_bg_selected !optional;
+			@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED !optional;
 
 			.x-tree3-node-icon {
 				@extend %tree_line_icon_selected !optional;
@@ -1020,7 +1020,7 @@ form,
 			.x-grid3-td-displayName,
 			.gwt-content-label,
 			.x-grid3-cell-inner {
-				@extend %tree_line_text_selected !optional;
+				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED !optional;
 
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
@@ -1032,7 +1032,7 @@ form,
 
 			&.x-grid3-row-over {
 				/* Line Hover on Selected */
-				@extend %tree_line_bg_selected_hover !optional;
+				@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER !optional;
 
 				.x-tree3-node-icon {
 					@extend %tree_line_icon_selected_hover !optional;
@@ -1041,7 +1041,7 @@ form,
 
 				.x-grid3-td-displayName,
 				.gwt-content-label {
-					@extend %tree_line_text_selected_hover !optional;
+					@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER !optional;
 
 					&::after {
 						background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED_HOVER);
@@ -1056,7 +1056,7 @@ form,
 	.gwt-content-label,
 	.x-grid3-cell-inner {
 		/* List Item Text Label */
-		@extend %tree_line_text_up !optional;
+		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP !optional;
 
 		pointer-events: none;
 
@@ -1322,7 +1322,7 @@ form,
 	a {
 		// CKE Path Item
 		text-shadow: none;
-		@include text(12px, $RICH_TEXT_EDITOR--PATH--FONT--COLOUR, $extralight);
+		@include text(12px, $RICH_TEXT_EDITOR--PATH--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
 	}
 }
 
@@ -1342,7 +1342,7 @@ form,
 .x-modal {
     background: rgba(92, 97, 100, 0.98);
     opacity: 1;
-    z-index: $zindex_modal_mask;
+    z-index: $ZINDEX--MODAL---MASK;
     position: fixed !important;
 }
 

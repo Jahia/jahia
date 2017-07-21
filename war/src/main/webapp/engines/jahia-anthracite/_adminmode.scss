@@ -19,7 +19,7 @@
 		pointer-events: all;
 		padding: 5px;
 		width: 49px;
-		z-index: $zindex_toolbar_container;
+		z-index: $ZINDEX--TOOLBAR--CONTAINER;
 		overflow: visible !important;
 		position: fixed;
 
@@ -29,7 +29,7 @@
 
 		> table {
 			opacity: 1;
-			z-index: $zindex_toolbar_container;
+			z-index: $ZINDEX--TOOLBAR--CONTAINER;
 			pointer-events: all;
 		}
 
@@ -80,7 +80,7 @@
 					position: fixed;
 					top: 10px;
 					left: 5px;
-					z-index: $zindex_hamburger_menu_button;
+					z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
 					display: block;
 					background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
 					margin-top: 0;
@@ -138,7 +138,7 @@
 	           right: 73px;
 	           top: 6px;
 	           margin-top: 7px;
-	           z-index: $zindex_mode_menu_context_menu;
+	           z-index: $ZINDEX--CONTEXT_MENU--MODE_MENU;
 	           width: 151px;
 	           height: 24px;
 	           opacity: 0.9;
@@ -146,14 +146,14 @@
 								content: $text_administration;
 								font-size: 14px;
 								text-transform: uppercase;
-								font-weight: $semilight;
+								font-weight: $FONT--WEIGHT---SEMILIGHT;
 								margin-top: 0px;
 								padding-left: 35px;
 								background: url(./images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
 								padding-right: 2px;
 								text-align: left;
 								position: relative;
-								z-index: $zindex_mode_menu_context_menu_label;
+								z-index: $ZINDEX--CONTEXT_MENU--MODE_MENU---LABEL;
 								font-family: $DEFAULT--FONT--FAMILY;
 								width: calc(100% - 20px);
 								display: block;
@@ -186,7 +186,7 @@
 	}
 
 	> div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) {
-		z-index: $zindex_action_bar_container;
+		z-index: $ZINDEX--ACTION_BAR--CONTAINER;
 		height: 60px;
 		display: block;
 		position: absolute !important;

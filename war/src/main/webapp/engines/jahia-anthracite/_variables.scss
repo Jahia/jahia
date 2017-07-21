@@ -2,41 +2,27 @@
 // COLOURS //////////////////////////////////////
 /////////////////////////////////////////////////
 
+	$COLOUR--JAHIA_BLUE: 						rgb(0,160,227);
+	$COLOUR--WHITE_CLOUDS: 						rgb(241,241,241);
+	$COLOUR--DUSTY_CLOUDS: 						rgb(209,209,209);
+	$COLOUR--ASH_CLOUDS: 						rgb(163,163,163);
+	$COLOUR--GREY_CLOUDS: 						rgb(122,126,128);
+	$COLOUR--LEAD_CLOUDS: 						rgb(115,115,115);
+	$COLOUR--RAIN_CLOUDS: 						rgb(92,97,100);
+	$COLOUR--DARK_CLOUDS: 						rgb(40,43,45);
+	$COLOUR--BLACK_CLOUDS: 						rgb(29,29,29);
+	$COLOUR--WHITE: 							rgb(255,255,255);
+	$COLOUR--VIVID_GRASS: 						rgb(4,189,4);
 
-///////// MAIN COLOURS
+	$COLOUR--DIRTY_ORANGE: 						rgb(242,109,79);
 
-	$shuttle-gray: #5c6164; // main background
-	$nevada-gray: #646b6f;  // secondary background
-	$concrete-gray: #f2f2f2;  // light background (left menu panel)
-	$jahia-blue: #00a0e3;
-	$white: #ffffff;
+	$COLOUR--TRANSPARENT: 						rgba(0,0,0,0);
 
-	$transparent: transparent;
+	$COLOUR--TEST-1: 								red;
+	$COLOUR--TEST-2:								yellow;
 
-	$white-clouds: #F1F1F1;
-	$grey-clouds: #7a7e80;
-	$rain-clouds: #5c6164;
-	$dark-clouds: #282b2d;
-	$black-clouds: #1d1d1d;
-
-///////// SECONDARY COLOURS
-
-	$harlequin-green: #46e202;
-	$blaze-orange: #fe7100;
-	$botticelli-gray: #d9e8ef;
-	$rollingstone-gray: #72797d;
-	$oslo-gray: #919497;  // menu icons color
-	$gallery-gray: #eeeeee;
-	$mineshaft-gray: #313131;
-	$cod-gray: #1d1d1d;
-
-	$test-purple: purple;
-	$test-pink: pink;
-
-	$dark-green: 		#04bd04;
-
-
-///////// PUBLICATION COLOURS
+	$COLOUR--TEST-3: 								brown;
+	$COLOUR--TEST-4:								orange;
 
 
 
@@ -44,185 +30,168 @@
 // ICONS ////////////////////////////////////////
 /////////////////////////////////////////////////
 
+	// RICH TEXT EDITOR ICON SET
+	$ICON--RICH_TEXT--TOOLBUTTONS: 				"./images/icons/icons-cke.png";
 
-///////// MORE OPTIONS
-	$ICON--MORE_OPTIONS---WHITE:     "./images/icon-more-options-light.png";
-	$ICON--MORE_OPTIONS---GREY:     "./images/icon-more-options-dark-50@X2.png";
+	// MORE OPTIONS
+	$ICON--TICK---WHITE:     					"./images/icons/icon-check-white@X2.png";
 
-	$ICON--ARROW_DOWN---WHITE:     "./images/icons/combo-arrow.png";
-	$ICON--CLOSE_SMALL---GREY:     "./images/icons/icon-close-small-light.png";
-	$icon_form_close_white_clouds:     "./images/icons/icon-close-white@X2.png";
+	// MORE OPTIONS
+	$ICON--MORE_OPTIONS---WHITE:     			"./images/icon-more-options-light.png";
+	$ICON--MORE_OPTIONS---GREY:     			"./images/icon-more-options-dark-50@X2.png";
+	$ICON--ARROW_DOWN---WHITE:     				"./images/icons/combo-arrow.png";
+	$ICON--CLOSE_SMALL---GREY:     				"./images/icons/icon-close-small-light.png";
+	$ICON--CLOSE_SMALL---WHITE:     			"./images/icons/icon-close-white@X2.png";
 
+	// DEVICES
+	$ICON--DEVICE---GENERIC: 					"./images/devices/devices-generic-large.png";
+	$ICON--DEVICE---IPHONE: 					"./images/devices/devices-iphone-small.png";
+	$ICON--DEVICE---GALAXY_S4: 					"./images/devices/devices-galaxy-s4-small.png";
+	$ICON--DEVICE---GALAXY_TAB7: 				"./images/devices/devices-galaxy-tab-3-small.png";
+	$ICON--DEVICE---ANDROID: 					"./images/devices/devices-android-small.png";
+	$ICON--DEVICE---BLACKBERRY: 				"./images/devices/devices-blackberry-storm-small.png";
+	$ICON--DEVICE---GALAXY_NOTE: 				"./images/devices/devices-galaxy-note-3-small.png";
+	$ICON--DEVICE---KINDLE: 					"./images/devices/devices-kindle-fire-small.png";
+	$ICON--DEVICE---IPAD: 						"./images/devices/devices-apple-ipad-small.png";
+	$ICON--DEVICE---GALAXY_TAB_SMALL: 			"./images/devices/devices-galaxy-tab-3-small.png";
+	// PAGES
+	$ICON--PAGES---WHITE:     					"./images/tabs-pages-white@X2.png";
+	$ICON--PAGES---GREY:      					"./images/tabs-pages-dark@X2.png";
+	$ICON--PAGES---BLUE:       					"./images/tabs-pages-blue@X2.png";
+	$ICON--PAGES---BLACK:     					"./images/tabs-pages-black@X2.png";
 
-///////// DEVICES
-	$icon_device_generic: 				"./images/devices/devices-generic-large.png";
-	$icon_device_iphone: 				"./images/devices/devices-iphone-small.png";
-	$icon_device_galaxy_s4: 			"./images/devices/devices-galaxy-s4-small.png";
-	$icon_device_galaxy_tab7: 			"./images/devices/devices-galaxy-tab-3-small.png";
-	$icon_device_android: 				"./images/devices/devices-android-small.png";
-	$icon_device_blackberry: 			"./images/devices/devices-blackberry-storm-small.png";
-	$icon_device_galaxy_note: 			"./images/devices/devices-galaxy-note-3-small.png";
-	$icon_device_kindle: 				"./images/devices/devices-kindle-fire-small.png";
-	$icon_device_ipad: 					"./images/devices/devices-apple-ipad-small.png";
-	$icon_device_galaxy_tab_small: 		"./images/devices/devices-galaxy-tab-3-small.png";
+	// CREATE
+	$ICON--CREATE---WHITE:    					"./images/tabs-create-white@X2.png";
+	$ICON--CREATE---GREY:     					"./images/tabs-create-dark@X2.png";
+	$ICON--CREATE---BLUE:      					"./images/tabs-create-blue@X2.png";
+	$ICON--CREATE---BLACK:    					"./images/tabs-create-black@X2.png";
 
+	// CONTENT
+	$ICON--CONTENT---WHITE:   					"./images/tabs-content-white@X2.png";
+	$ICON--CONTENT---GREY:    					"./images/tabs-content-dark@X2.png";
+	$ICON--CONTENT---BLUE:     					"./images/tabs-content-blue@X2.png";
+	$ICON--CONTENT---BLACK:   					"./images/tabs-content-black@X2.png";
 
-///////// PAGES
-	$icon_pages_white_clouds:     "./images/tabs-pages-white@X2.png";
-	$icon_pages_grey_clouds:      "./images/tabs-pages-dark@X2.png";
-	$icon_pages_jahia_blue:       "./images/tabs-pages-blue@X2.png";
-	$icon_pages_black_clouds:     "./images/tabs-pages-black@X2.png";
+	// FILE
+	$ICON--FILES---WHITE:     					"./images/tabs-files@X2.png";
+	$ICON--FILES---GREY:      					"./images/tabs-files-dark@X2.png";
+	$ICON--FILES---BLUE:       					"./images/tabs-files-blue@X2.png";
+	$ICON--FILES---BLACK:     					"./images/tabs-files-black@X2.png";
 
-///////// CREATE
-	$icon_create_white_clouds:    "./images/tabs-create-white@X2.png";
-	$icon_create_grey_clouds:     "./images/tabs-create-dark@X2.png";
-	$icon_create_jahia_blue:      "./images/tabs-create-blue@X2.png";
-	$icon_create_black_clouds:    "./images/tabs-create-black@X2.png";
+	// SEARCH
+	$ICON--SEARCH---WHITE:    					"./images/tabs-search-white@X2.png";
+	$ICON--SEARCH---GREY:     					"./images/tabs-search-dark@X2.png";
+	$ICON--SEARCH---BLUE:      					"./images/tabs-search-blue@X2.png";
+	$ICON--SEARCH---BLACK:    					"./images/tabs-search-black@X2.png";
 
-///////// CONTENT
-	$icon_content_white_clouds:   "./images/tabs-content-white@X2.png";
-	$icon_content_grey_clouds:    "./images/tabs-content-dark@X2.png";
-	$icon_content_jahia_blue:     "./images/tabs-content-blue@X2.png";
-	$icon_content_black_clouds:   "./images/tabs-content-black@X2.png";
+	// TAXONOMY
+	$ICON--TAXONOMY---WHITE:  					"./images/tabs-taxonomy-white@X2.png";
+	$ICON--TAXONOMY---GREY:   					"./images/tabs-taxonomy-dark@X2.png";
+	$ICON--TAXONOMY---BLUE:    					"./images/tabs-taxonomy-blue@X2.png";
+	$ICON--TAXONOMY---BLACK:  					"./images/tabs-taxonomy-black@X2.png";
 
-///////// FILE
-	$icon_files_white_clouds:     "./images/tabs-files@X2.png";
-	$icon_files_grey_clouds:      "./images/tabs-files-dark@X2.png";
-	$icon_files_jahia_blue:       "./images/tabs-files-blue@X2.png";
-	$icon_files_black_clouds:     "./images/tabs-files-black@X2.png";
+	// DEVICES
+	$ICON--DEVICES---WHITE:   					"./images/tabs-devices-white@X2.png";
+	$ICON--DEVICES---GREY:    					"./images/tabs-devices-dark@X2.png";
+	$ICON--DEVICES---BLUE:     					"./images/tabs-devices-blue@X2.png";
+	$ICON--DEVICES---BLACK:   					"./images/tabs-devices-black@X2.png";
 
-///////// SEARCH
-	$icon_search_white_clouds:    "./images/tabs-search-white@X2.png";
-	$icon_search_grey_clouds:     "./images/tabs-search-dark@X2.png";
-	$icon_search_jahia_blue:      "./images/tabs-search-blue@X2.png";
-	$icon_search_black_clouds:    "./images/tabs-search-black@X2.png";
+	// SETTINGS
+	$ICON--SETTINGS---WHITE:  					"./images/tabs-settings-white@X2.png";
+	$ICON--SETTINGS---GREY:   					"./images/tabs-settings-dark@X2.png";
+	$ICON--SETTINGS---BLUE:    					"./images/tabs-settings-blue@X2.png";
+	$ICON--SETTINGS---BLACK:  					"./images/tabs-settings-black@X2.png";
 
-///////// TAXONOMY
-	$icon_taxonomy_white_clouds:  "./images/tabs-taxonomy-white@X2.png";
-	$icon_taxonomy_grey_clouds:   "./images/tabs-taxonomy-dark@X2.png";
-	$icon_taxonomy_jahia_blue:    "./images/tabs-taxonomy-blue@X2.png";
-	$icon_taxonomy_black_clouds:  "./images/tabs-taxonomy-black@X2.png";
+	// APPS
+	$ICON--CONTENT_MANAGER---WHITE: 			"./images/dx_logo_inverted.png";
+	$ICON--FILE_MANAGER---WHITE: 				"./images/dx_logo_inverted.png";
+	$ICON--PORTLET_MANAGER---WHITE: 			"./images/dx_logo_inverted.png";
+	$ICON--REPO_EXPLORER---WHITE: 				"./images/dx_logo_inverted.png";
+	$ICON--CATEGORY_MANAGER---WHITE: 			"./images/dx_logo_inverted.png";
+	$ICON--SITE_MANAGER---WHITE: 				"./images/dx_logo_inverted.png";
 
-///////// DEVICES
-	$icon_devices_white_clouds:   "./images/tabs-devices-white@X2.png";
-	$icon_devices_grey_clouds:    "./images/tabs-devices-dark@X2.png";
-	$icon_devices_jahia_blue:     "./images/tabs-devices-blue@X2.png";
-	$icon_devices_black_clouds:   "./images/tabs-devices-black@X2.png";
-
-///////// SETTINGS
-	$icon_settings_white_clouds:  "./images/tabs-settings-white@X2.png";
-	$icon_settings_grey_clouds:   "./images/tabs-settings-dark@X2.png";
-	$icon_settings_jahia_blue:    "./images/tabs-settings-blue@X2.png";
-	$icon_settings_black_clouds:  "./images/tabs-settings-black@X2.png";
-
-
-///////// APPS
-	$ICON--CONTENT_MANAGER---WHITE: 	"./images/dx_logo_inverted.png";
-	$ICON--FILE_MANAGER---WHITE: 		"./images/dx_logo_inverted.png";
-	$ICON--PORTLET_MANAGER---WHITE: 	"./images/dx_logo_inverted.png";
-	$ICON--REPO_EXPLORER---WHITE: 		"./images/dx_logo_inverted.png";
-	$ICON--CATEGORY_MANAGER---WHITE: 	"./images/dx_logo_inverted.png";
-	$ICON--SITE_MANAGER---WHITE: 		"./images/dx_logo_inverted.png";
+	$ICON--DX---BLACK: 							"./images/dx_logo_solid-black.png";
 
 
 
 /////////////////////////////////////////////////
-// FONTS ////////////////////////////////////////
+// FONT FAMILIES ////////////////////////////////
 /////////////////////////////////////////////////
 
-
-///////// FACES
-
-	$nunito: 'Nunito Sans', sans-serif;
-	$raleway: 'Raleway', sans-serif;
-
-///////// WEIGHTS
-
-	$extralight: 100;
-	$semilight: 200;
-	$light: 300;
-	$normal: 400;
-	$semibold: 500;
-	$bold: 700;
-	$extrabold: 800;
+	$FONT--FAMILY---NUNITO: 					"Nunito Sans", sans-serif;
+	$FONT--FAMILY---RALEWAY: 					"Raleway", sans-serif;
 
 
 
-///////// ZINDEXES
-	/*
+/////////////////////////////////////////////////
+// TRANSITIONS //////////////////////////////////
+/////////////////////////////////////////////////
 
-	Previous Values, delete once sure no problems ...
+	// QUICK
+	$TRANSITION--QUICK---ALL:          			all 0.15s ease-in 0s;
 
-	$zindex_mainmodule:                     999;											3
-	$zindex_mainmodule_header:              999999999 !important;							9 important
-	$zindex_mainmodule_actions_menu:        9999999999;										10
-	$zindex_mainmodule_path_container:      999 !important;									3 important
-	$zindex_mainmodule_language_switcher:   999999999;										9
+/////////////////////////////////////////////////
+// FONT WEIGHTS /////////////////////////////////
+/////////////////////////////////////////////////
 
-	$zindex_combo_list:                     99999999999 !important;							11 important
-	$zindex_context_menu:                   99999999999 !important;							11 important
-	$zindex_context_menu_title:             99999999999999;									14
+	$FONT--WEIGHT---EXTRALIGHT: 				100;
+	$FONT--WEIGHT---SEMILIGHT: 					200;
+	$FONT--WEIGHT---LIGHT: 						300;
+	$FONT--WEIGHT---NORMAL: 					400;
+	$FONT--WEIGHT---SEMIBOLD: 					500;
+	$FONT--WEIGHT---BOLD: 						700;
+	$FONT--WEIGHT---EXTRABOLD: 					800;
 
-	$zindex_thumb_details:                  9;												1
-	$zindex_hamburger_title:                999;											3
 
-	$zindex_window_side_panel:              99999 !important;								5 important
-	$zindex_window_side_panel_header:       99999 !important;								5 important
-	$zindex_window_side_panel_body:       	999;											3
-	$zindex_window_side_panel_container:    99;												2
-	$zindex_window_side_panel_container_2:    999999;										6
-	$zindex_window_side_panel_close_capture_mask:    99;									2
-	$zindex_window_side_panel_search_tab_actions:    999;									3
 
-	$zindex_edit_engine_panel:              999999 !important;								6
+/////////////////////////////////////////////////
+// Z INDEXES ////////////////////////////////////
+/////////////////////////////////////////////////
 
-	$zindex_modal_mask:                     9999999999 !important;							10 important
+	// MAIN MODULE
+	$ZINDEX--MAINMODULE:                     	30;
+	$ZINDEX--MAINMODULE--HEADER:              	90 !important;
+	$ZINDEX--MAINMODULE--ACTIONS_MENU:        	100;
+	$ZINDEX--MAINMODULE--PATH_CONTAINER:      	30 !important;
+	$ZINDEX--MAINMODULE--LANGUAGE_SWITCHER:   	90;
 
-	$zindex_toolbar_container: 				999999 !important;								6
-	$zindex_toolbar_container_2:			999999;											6
+	// COMBO LISTS
+	$ZINDEX--COMBO_LIST:                     	1100 !important;
 
-	$zindex_mode_menu_context_menu: 		999999;											6
-	$zindex_mode_menu_context_menu_label: 	1 !important;									1
+	// CONTEXT MENUS
+	$ZINDEX--CONTEXT_MENU:                   	1100 !important;
+	$ZINDEX--CONTEXT_MENU---TITLE:             	140;
+	$ZINDEX--CONTEXT_MENU--MODE_MENU: 			60;
+	$ZINDEX--CONTEXT_MENU--MODE_MENU---LABEL: 	1 !important;
 
-	$zindex_hamburger_menu_button: 			999999999;										9
+	// THUMBS
+	$ZINDEX--THUMB---DETAILS:                  	10;
 
-	$zindex_action_bar_container: 			999999 !important;								6
+	// HAMBURGER MENU
+	$ZINDEX--HAMBURGER---TITLE:                	30;
 
-	$zindex_iframe_container: 				9999;											4*/
+	// SIDE PANEL
+	$ZINDEX--SIDE_PANEL:              			50 !important;
+	$ZINDEX--SIDE_PANEL--HEADER:       			50 !important;
+	$ZINDEX--SIDE_PANEL--BODY:       			30;
+	$ZINDEX--SIDE_PANEL--CONTAINER:    			20;
+	$ZINDEX--SIDE_PANEL--CONTAINER_SUB:    		60;
+	$ZINDEX--SIDE_PANEL--CLOSE_CAPTURE_MASK:    20;
+	$ZINDEX--SIDE_PANEL--SEARCH_TAB---ACTIONS:  30;
+	$ZINDEX--SIDE_PANEL--EDIT_ENGINE:           200 !important;
 
-	$zindex_mainmodule:                     30;
-	$zindex_mainmodule_header:              90 !important;
-	$zindex_mainmodule_actions_menu:        100;
-	$zindex_mainmodule_path_container:      30 !important;
-	$zindex_mainmodule_language_switcher:   90;
+	// MODAL
+	$ZINDEX--MODAL---MASK:                     	100 !important;
 
-	$zindex_combo_list:                     1100 !important;
-	$zindex_context_menu:                   1100 !important;
-	$zindex_context_menu_title:             140;
+	// TOOLBAR
+	$ZINDEX--TOOLBAR--CONTAINER: 				60 !important;
+	$ZINDEX--TOOLBAR--CONTAINER_SUB:			60;
 
-	$zindex_thumb_details:                  10;
-	$zindex_hamburger_title:                30;
+	// HAMBURGER MENU
+	$ZINDEX--HAMBURGER_MENU---BUTTON: 			90;
 
-	$zindex_window_side_panel:              50 !important;
-	$zindex_window_side_panel_header:       50 !important;
-	$zindex_window_side_panel_body:       	30;
-	$zindex_window_side_panel_container:    20;
-	$zindex_window_side_panel_container_2:    60;
-	$zindex_window_side_panel_close_capture_mask:    20;
-	$zindex_window_side_panel_search_tab_actions:    30;
+	// ACTION BAR
+	$ZINDEX--ACTION_BAR--CONTAINER: 			60 !important;
 
-	$zindex_edit_engine_panel:              200 !important;
-
-	$zindex_modal_mask:                     100 !important;
-
-	$zindex_toolbar_container: 				60 !important;
-	$zindex_toolbar_container_2:			60;
-
-	$zindex_mode_menu_context_menu: 		60;
-	$zindex_mode_menu_context_menu_label: 	1 !important;
-
-	$zindex_hamburger_menu_button: 			90;
-
-	$zindex_action_bar_container: 			60 !important;
-
-	$zindex_iframe_container: 				40;
+	// IFRAME
+	$ZINDEX--IFRAME--CONTAINER: 				40;

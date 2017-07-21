@@ -595,9 +595,9 @@
 	// TEXT AREA
     %CSS_BLOCK--FORM--TEXT_AREA {
         background: $FORM--TEXT_AREA--BG--COLOUR !important;
-        padding: $FORM--TEXT_AREA--PADDING;
+        padding: $FORM--TEXT_AREA--PADDING !important;
         border: $FORM--TEXT_AREA--BORDER--COLOUR !important;
-        transition: all 0.15s ease-in 0s;
+        transition: none !important;
 
         @include text($FORM--TEXT_AREA--FONT--SIZE, $FORM--TEXT_AREA--FONT--COLOUR, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
     }

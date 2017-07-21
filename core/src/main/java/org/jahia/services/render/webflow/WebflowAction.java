@@ -83,21 +83,21 @@ public class WebflowAction extends Action {
         }
         Enumeration<?> parameterNames = req.getParameterNames();
         while (parameterNames.hasMoreElements()) {
-            String s = (String) parameterNames.nextElement();
-            if (s.startsWith("webflowexecution")) {
-                String id = s.substring("webflowexecution".length()).replace('_','-');
+            String parameterName = (String) parameterNames.nextElement();
+            if (parameterName.startsWith("webflowexecution")) {
+                String id = parameterName.substring("webflowexecution".length()).replace('_', '-');
                 String view = "default";
                 if (id.contains("--")) {
                     view = StringUtils.substringAfter(id, "--");
-                    id = StringUtils.substringBefore(id,"--");
+                    id = StringUtils.substringBefore(id, "--");
                 }
                 if (forcedLocale != null) {
                     req.setAttribute(TemplateAttributesFilter.FORCED_LOCALE_ATTRIBUTE, Locale.forLanguageTag(forcedLocale));
                 }
-                JCRNodeWrapper n = JCRTemplate.getInstance().getSessionFactory().getCurrentUserSession(renderContext.getWorkspace(), renderContext.getMainResourceLocale()).getNodeByUUID(id);
-                req.setAttribute("actionParameters",parameters);
-                renderService.render(new Resource(n, urlResolver.getResource().getTemplateType(), view , Resource.CONFIGURATION_MODULE), renderContext);
-                return new ActionResult(HttpServletResponse.SC_OK, renderContext.getRedirect(), true, null );
+                JCRNodeWrapper node = JCRTemplate.getInstance().getSessionFactory().getCurrentUserSession(renderContext.getWorkspace(), renderContext.getMainResourceLocale()).getNodeByUUID(id);
+                req.setAttribute("actionParameters", parameters);
+                renderService.render(new Resource(node, urlResolver.getResource().getTemplateType(), view, Resource.CONFIGURATION_MODULE), renderContext);
+                return new ActionResult(HttpServletResponse.SC_OK, renderContext.getRedirect(), true, null);
             }
         }
         return ActionResult.OK;

@@ -69,6 +69,7 @@ body {
 		.x-form-field-wrap {
 			float: left;
 			width: calc(100% - 297px) !important;
+			height: auto!important;
 		}
 
 		@include button("FIELDSET");

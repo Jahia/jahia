@@ -83,7 +83,7 @@
     $FORM--LABEL--FONT--COLOUR:                                     lighten($EDIT_ENGINE--BASE--COLOUR, 30%);
     $FORM--FIELDSET--BG--COLOUR:                                    lighten($EDIT_ENGINE--BASE--COLOUR, 2%);
 
-    // TEXT INPUTS
+	// TEXT INPUTS
 	$FORM--TEXT_INPUT--BG--COLOUR:                                  rgba($COLOUR--GREY_CLOUDS, .1);
 	$FORM--TEXT_INPUT--BG--COLOUR---FOCUS:                          rgba($COLOUR--GREY_CLOUDS, .7);
     $FORM--TEXT_INPUT--BG--COLOUR---HOVER:                          rgba($COLOUR--GREY_CLOUDS, .3);
@@ -97,6 +97,21 @@
     $FORM--TEXT_INPUT--FONT--WEIGHT:                                $FONT--WEIGHT---SEMILIGHT;
     $FORM--TEXT_INPUT--FONT--SIZE:                                  12px;
     $FORM--TEXT_INPUT--FONT--FAMILY:                                $DEFAULT--FONT--FAMILY;
+
+	// TEXT AREA
+	$FORM--TEXT_AREA--BG--COLOUR:                                  rgba($COLOUR--GREY_CLOUDS, .1);
+	$FORM--TEXT_AREA--BG--COLOUR---FOCUS:                          rgba($COLOUR--GREY_CLOUDS, .7);
+    $FORM--TEXT_AREA--BG--COLOUR---HOVER:                          rgba($COLOUR--GREY_CLOUDS, .3);
+    $FORM--TEXT_AREA--BG--COLOUR---DISABLED:                       rgba($COLOUR--GREY_CLOUDS, .05);
+	$FORM--TEXT_AREA--FONT--COLOUR:                                $COLOUR--GREY_CLOUDS;
+	$FORM--TEXT_AREA--FONT--COLOUR---HOVER:                        $COLOUR--DARK_CLOUDS;
+    $FORM--TEXT_AREA--FONT--COLOUR---FOCUS:                        $COLOUR--WHITE_CLOUDS;
+    $FORM--TEXT_AREA--FONT--COLOUR---DISABLED:                     rgba($COLOUR--GREY_CLOUDS, .7);
+    $FORM--TEXT_AREA--BORDER--COLOUR:                              1px solid $COLOUR--TRANSPARENT;
+    $FORM--TEXT_AREA--PADDING:                                     3px 40px 3px 5px;
+    $FORM--TEXT_AREA--FONT--WEIGHT:                                $FONT--WEIGHT---SEMILIGHT;
+    $FORM--TEXT_AREA--FONT--SIZE:                                  12px;
+    $FORM--TEXT_AREA--FONT--FAMILY:                                $DEFAULT--FONT--FAMILY;
 
     // CLEAR BUTTON
     $FORM--CLEAR_BUTTON--ICON---UP:                                 $ICON--CLOSE_SMALL---WHITE;
@@ -310,12 +325,19 @@
     $EDIT_ENGINE--TAB--FONT--COLOUR---HOVER:                        rgba($EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED, .7);
     $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over:                $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED;
     $EDIT_ENGINE--BG--COLOUR:                                       $EDIT_ENGINE--BASE--COLOUR;
-    $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR:                           lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
+	$EDIT_ENGINE--TEXT_INPUT--BG--COLOUR:                           lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
     $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---HOVER:                   lighten($EDIT_ENGINE--BASE--COLOUR, 8%);
     $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---FOCUS:                   lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
     $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR:                         lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
     $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---HOVER:                 lighten($EDIT_ENGINE--BASE--COLOUR, 85%);
     $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---FOCUS:                 darken($EDIT_ENGINE--BASE--COLOUR, 50%);
+
+	$EDIT_ENGINE--TEXT_AREA--BG--COLOUR:                           lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
+    $EDIT_ENGINE--TEXT_AREA--BG--COLOUR---HOVER:                   lighten($EDIT_ENGINE--BASE--COLOUR, 8%);
+    $EDIT_ENGINE--TEXT_AREA--BG--COLOUR---FOCUS:                   lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+    $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR:                         lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+    $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR---HOVER:                 lighten($EDIT_ENGINE--BASE--COLOUR, 85%);
+    $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR---FOCUS:                 darken($EDIT_ENGINE--BASE--COLOUR, 50%);
 
 /////////////////////////////////////////////////
 // DUAL LIST //////////////////////////////////
@@ -518,7 +540,7 @@
         font-weight: $FONT--WEIGHT---EXTRABOLD;
     }
 
-    // TEXT INPUT
+	// TEXT INPUT
     %CSS_BLOCK--FORM--TEXT_INPUT {
         background: $FORM--TEXT_INPUT--BG--COLOUR;
         padding: $FORM--TEXT_INPUT--PADDING;
@@ -548,7 +570,7 @@
         @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--DUSTY_CLOUDS, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
     }
 
-    // EDIT ENGINES EXCEPTION
+	// EDIT ENGINES EXCEPTION
         %CSS_BLOCK--FORM--TEXT_INPUT\:EDIT_ENGINE {
             background: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR;
 
@@ -569,6 +591,58 @@
             background: transparent !important;
             @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
         }
+
+	// TEXT AREA
+    %CSS_BLOCK--FORM--TEXT_AREA {
+        background: $FORM--TEXT_AREA--BG--COLOUR !important;
+        padding: $FORM--TEXT_AREA--PADDING;
+        border: $FORM--TEXT_AREA--BORDER--COLOUR !important;
+        transition: all 0.15s ease-in 0s;
+
+        @include text($FORM--TEXT_AREA--FONT--SIZE, $FORM--TEXT_AREA--FONT--COLOUR, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+    }
+
+	%CSS_BLOCK--FORM--TEXT_AREA---HOVER {
+        background: $FORM--TEXT_AREA--BG--COLOUR---HOVER;
+        color: $FORM--TEXT_AREA--FONT--COLOUR---HOVER;
+    }
+
+	%CSS_BLOCK--FORM--TEXT_AREA---FOCUS {
+        background: $FORM--TEXT_AREA--BG--COLOUR---FOCUS;
+		color: $FORM--TEXT_AREA--FONT--COLOUR---FOCUS;
+    }
+
+    %CSS_BLOCK--FORM--TEXT_AREA---DISABLED {
+        background: $COLOUR--TRANSPARENT;
+        padding: 3px 40px 3px 5px;
+        padding-left: 0;
+        border: 1px solid $COLOUR--TRANSPARENT;
+        transition: $DEFAULT--TRANSITION;
+
+        @include text($FORM--TEXT_AREA--FONT--SIZE, $COLOUR--DUSTY_CLOUDS, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+    }
+
+	// EDIT ENGINES EXCEPTION
+		%CSS_BLOCK--FORM--TEXT_AREA\:EDIT_ENGINE {
+			background: $EDIT_ENGINE--TEXT_AREA--BG--COLOUR !important;
+
+			@include text($FORM--TEXT_AREA--FONT--SIZE, $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+		}
+
+		%CSS_BLOCK--FORM--TEXT_AREA---HOVER\:EDIT_ENGINE {
+			background: $EDIT_ENGINE--TEXT_AREA--BG--COLOUR---HOVER !important;
+			color: $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR---HOVER !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_AREA---FOCUS\:EDIT_ENGINE {
+			background: $EDIT_ENGINE--TEXT_AREA--BG--COLOUR---FOCUS !important;
+			color: $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR---FOCUS !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_AREA---DISABLED\:EDIT_ENGINE {
+			background: transparent !important;
+			@include text($FORM--TEXT_AREA--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+		}
 
 	// DUAL LIST
         %CSS_BLOCK--FORM--TEXT_INPUT\:DUAL_LIST {

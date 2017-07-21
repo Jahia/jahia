@@ -74,11 +74,14 @@
 
 .x-form-list {
 	border: none;
-	background: red;
+	background: $COLOUR--WHITE_CLOUDS;
+	height: 200px!important;
+
 
 	.x-combo-list {
 		/* Combo Outer Container */
 		width: auto !important;
+		height: 100% !important;
 		background: transparent!important;
 	    overflow: scroll!important;
 	    z-index: $ZINDEX--COMBO_LIST;
@@ -550,6 +553,11 @@ label {
 
 	}
 
+	#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT\:DUAL_LIST !optional;
+
+	}
+
 	width: 100%!important;
 	box-sizing: border-box;
     display: inline-block;
@@ -568,6 +576,11 @@ label {
 			@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:EDIT_ENGINE !optional;
 
 		}
+
+		#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
+			@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:DUAL_LIST !optional;
+
+		}
 	}
 
 	&:focus {
@@ -576,6 +589,11 @@ label {
 		// Exceptions ...
 		.engine-panel & {
 			@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:EDIT_ENGINE !optional;
+
+		}
+
+		#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
+			@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:DUAL_LIST !optional;
 
 		}
 	}
@@ -656,11 +674,21 @@ div[role="combobox"] {
 
 		}
 
+		#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
+			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:DUAL_LIST !optional;
+
+		}
+
 		&.x-form-trigger-over {
 			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER !optional;
 
 			.engine-panel & {
-				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER--edit_panel !optional;
+				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:EDIT_ENGINE !optional;
+
+			}
+
+			#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
+				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:DUAL_LIST !optional;
 
 			}
 		}
@@ -1393,4 +1421,38 @@ form,
 	background: none;
 	border: none;
 	padding: 0;
+}
+
+.x-form-focus, textarea.x-form-focus {
+	border:none;
+}
+
+.arrow-double-right,
+.arrow-double-left,
+.arrow-right,
+.arrow-left {
+	background: no-repeat center center!important;
+	background-size: 12px 12px!important;
+	opacity: 0.8;
+	padding: 3px 0;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.arrow-double-right {
+	background-image:url(./images/icons/icon_arrow_right_double_white@X2.png)!important;
+}
+
+.arrow-right {
+	background-image:url(./images/icons/icon_arrow_right_single_white@X2.png)!important;
+}
+
+.arrow-double-left {
+	background-image:url(./images/icons/icon_arrow_left_double_white@X2.png)!important;
+}
+
+.arrow-left {
+	background-image:url(./images/icons/icon_arrow_left_single_white@X2.png)!important;
 }

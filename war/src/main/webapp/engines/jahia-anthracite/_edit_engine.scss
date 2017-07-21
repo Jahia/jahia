@@ -235,27 +235,94 @@ body {
 	#JahiaGxtEditEnginePanel-channels {
 		/* Fix for the channel double list selecor */
 
-		.x-form-item:nth-child(1) {
+		.x-form-item {
+			&:nth-child(1) {
 
-			/* Double List Selector holder */
-			width: 100%!important;
+				/* Double List Selector holder */
+				width: 100%!important;
 
-			> .x-form-element {
+				> .x-form-element {
 
-				> .x-component {
-					/* Another Container */
+					> .x-component {
+						/* Another Container */
 
-					width: 100%!important;
+						width: 100%!important;
 
-					.x-form-group {
-						/* Yet another container */
-						height: auto!important;
+						.x-form-group {
+							/* Yet another container */
+							height: auto!important;
+							width: 100%!important;
+							background: $COLOUR--TRANSPARENT;
+
+							> table {
+								display: block;
+
+								> tbody > tr > td {
+									// SOURCE LIST
+									&:nth-child(1) {
+
+										.x-form-list {
+											padding-top: 35px;
+
+										}
+
+										// INPUT FILTER
+										> div > table > tbody > tr:nth-child(1) {
+											position: absolute;
+											top: 29px;
+											width: calc(50% - 27px);
+											left: 5px;
+
+											> td {
+												width: 100%;
+												display: inline-block;
+
+												> div {
+													width: 100%!important;
+												}
+											}
+										}
+									}
+
+									// BUTTONS
+									&:nth-child(2) {
+										> div {
+											margin-top: 73px!important;
+										}
+									}
+
+									// SELECTION LIST
+									&:nth-child(3) {
+										.x-form-list {
+											height: 235px!important;
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}
 
+			&:nth-child(2) {
+				margin-top: 20px;
+				// EXCLUDE / INCLUDE COMBO
+				label {
+					// The label is already in the combo - waste of time having both
+					display: none!important;
+				}
 
+				// MAKE THE COMBO TAKE FULL WIDTH OF FIELDSET
+				> div {
+					> div {
+						width: 100%!important;
 
+						> div {
+							width: 100%!important;
+						}
+					}
+				}
+			}
 		}
 	}
 

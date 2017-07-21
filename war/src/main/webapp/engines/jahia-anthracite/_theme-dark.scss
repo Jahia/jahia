@@ -127,13 +127,24 @@
     $FORM--COMBO--ICON---HOVER:                                     $ICON--ARROW_DOWN---WHITE;
     $FORM--COMBO--BG--COLOUR---HOVER:                               rgba($COLOUR--GREY_CLOUDS, .7);
 
-    // CONTEXT MENUS
+	// CONTEXT MENUS
     $FORM--CONTEXT_MENU--BG--COLOUR---UP:                           $COLOUR--JAHIA_BLUE;
     $FORM--CONTEXT_MENU--BG--COLOUR---HOVER:                        lighten($FORM--CONTEXT_MENU--BG--COLOUR---UP, 5%);
     $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED:                     $COLOUR--JAHIA_BLUE;
     $FORM--CONTEXT_MENU--FONT--COLOUR---UP:                         $COLOUR--WHITE_CLOUDS;
     $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER:                      $COLOUR--WHITE_CLOUDS;
     $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED:                   rgba($FORM--CONTEXT_MENU--FONT--COLOUR---UP, .7) !important;
+
+	// DUAL LIST
+    $FORM--LIST_BOX--BG--COLOUR---UP:                           $COLOUR--WHITE_CLOUDS;
+    $FORM--LIST_BOX--BG--COLOUR---HOVER:                        $COLOUR--DUSTY_CLOUDS;
+    $FORM--LIST_BOX--BG--COLOUR---DISABLED:                     red;
+	$FORM--LIST_BOX--BG--COLOUR---SELECTED: 					$COLOUR--ASH_CLOUDS;
+
+    $FORM--LIST_BOX--FONT--COLOUR---UP:                         $COLOUR--RAIN_CLOUDS;
+    $FORM--LIST_BOX--FONT--COLOUR---HOVER:                      $COLOUR--DARK_CLOUDS;
+    $FORM--LIST_BOX--FONT--COLOUR---DISABLED:                   yellow;
+	$FORM--LIST_BOX--FONT--COLOUR---SELECTED: 					$COLOUR--WHITE_CLOUDS;
 
     // TABLES
     $FORM--TABLE--TITLE--COLOUR: 			                        $COLOUR--GREY_CLOUDS;
@@ -306,6 +317,17 @@
     $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---HOVER:                 lighten($EDIT_ENGINE--BASE--COLOUR, 85%);
     $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---FOCUS:                 darken($EDIT_ENGINE--BASE--COLOUR, 50%);
 
+/////////////////////////////////////////////////
+// DUAL LIST //////////////////////////////////
+/////////////////////////////////////////////////
+
+    $DUAL_LIST--TEXT_INPUT--BG--COLOUR:                           lighten($COLOUR--DUSTY_CLOUDS, 8%);
+    $DUAL_LIST--TEXT_INPUT--BG--COLOUR---HOVER:                   $COLOUR--DUSTY_CLOUDS;
+    $DUAL_LIST--TEXT_INPUT--BG--COLOUR---FOCUS:                   $COLOUR--GREY_CLOUDS;
+
+	$DUAL_LIST--TEXT_INPUT--FONT--COLOUR:                         $COLOUR--LEAD_CLOUDS;
+    $DUAL_LIST--TEXT_INPUT--FONT--COLOUR---HOVER:                 darken($COLOUR--LEAD_CLOUDS, 8%);
+    $DUAL_LIST--TEXT_INPUT--FONT--COLOUR---FOCUS:				  $COLOUR--WHITE_CLOUDS;
 
 
 /////////////////////////////////////////////////
@@ -548,6 +570,28 @@
             @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
         }
 
+	// DUAL LIST
+        %CSS_BLOCK--FORM--TEXT_INPUT\:DUAL_LIST {
+            background: $DUAL_LIST--TEXT_INPUT--BG--COLOUR;
+
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $DUAL_LIST--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
+        %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:DUAL_LIST {
+            background: $DUAL_LIST--TEXT_INPUT--BG--COLOUR---HOVER;
+            color: $DUAL_LIST--TEXT_INPUT--FONT--COLOUR---HOVER !important;
+        }
+
+    	%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:DUAL_LIST {
+            background: $DUAL_LIST--TEXT_INPUT--BG--COLOUR---FOCUS !important;
+    		color: $DUAL_LIST--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+        }
+
+        %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:DUAL_LIST {
+            background: transparent !important;
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
 
     // CLEAR FORM BUTTON
     %CSS_BLOCK--FORM--CLEAR_BUTTON---UP {
@@ -570,6 +614,17 @@
 
         %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:EDIT_ENGINE {
             background-color: $COLOUR--TRANSPARENT !important;
+            opacity: 1;
+        }
+
+	// DUAL LIST EXCEPTIONS
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:DUAL_LIST {
+            background-color: $COLOUR--ASH_CLOUDS !important;
+            opacity: 0.5;
+        }
+
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:DUAL_LIST {
+            background-color: $COLOUR--ASH_CLOUDS !important;
             opacity: 1;
         }
 
@@ -641,34 +696,34 @@
 
         %CSS_BLOCK--FORM--LIST_BOX--HOLDER {
             border: none;
-            box-shadow: 0 0 10px 0 rgba($COLOUR--DARK_CLOUDS, .3);
+            box-shadow: none;
         }
 
         %CSS_BLOCK--FORM--LIST_BOX--ITEM {
             text-align: left!important;
-            background: $FORM--CONTEXT_MENU--BG--COLOUR---UP;
+            background: $FORM--LIST_BOX--BG--COLOUR---UP;
             padding: 8px 9px !important;
             border: none;
             width: 100%;
 
-            @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---SEMILIGHT);
+            @include text(11px, $FORM--LIST_BOX--FONT--COLOUR---UP, $FONT--WEIGHT---SEMILIGHT);
         }
 
         %CSS_BLOCK--FORM--LIST_BOX--ITEM---HOVER {
-            color: $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER;
-            background: $FORM--CONTEXT_MENU--BG--COLOUR---HOVER;
+            color: $FORM--LIST_BOX--FONT--COLOUR---HOVER;
+            background: $FORM--LIST_BOX--BG--COLOUR---HOVER;
         }
 
         %CSS_BLOCK--FORM--LIST_BOX--ITEM---SELECTED {
-            color: blue;
-            background: pink;
+            color: $FORM--LIST_BOX--FONT--COLOUR---SELECTED;
+            background: $FORM--LIST_BOX--BG--COLOUR---SELECTED;
         }
 
         %CSS_BLOCK--FORM--LIST_BOX--ITEM---DISABLED {
-            color: $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED;
+            color: $FORM--LIST_BOX--FONT--COLOUR---DISABLED;
             font-style: italic;
             opacity: 1;
-            background: $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED;
+            background: $FORM--LIST_BOX--BG--COLOUR---DISABLED;
             display: none;
         }
 

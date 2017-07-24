@@ -28,6 +28,23 @@ body {
     height: 100%;
 
 
+	// Modal Mask
+	.ext-el-mask {
+		position: fixed;
+		background: $DIALOGUE--MASK--BG--COLOUR;
+	}
+
+	// Override mask all when Modal Mask is on
+	.x-masked > div {
+		opacity: 1;
+	}
+
+	// Remove Loading Animation when Panel is open
+	.ext-el-mask-msg.x-mask-loading {
+		display: none!important;
+	}
+
+
 
 	.x-form-element {
 		> div {
@@ -398,7 +415,7 @@ body {
 	    top: 0 !important;
 	    position: fixed !important;
 	    height: 130px !important;
-	    z-index: 10;
+	    // z-index: 10; DELETE ?
 	    width: 100%;
 	    box-sizing: border-box;
 

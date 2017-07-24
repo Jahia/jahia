@@ -75,6 +75,21 @@
 
 
 /////////////////////////////////////////////////
+// DIALOGUES ////////////////////////////////////
+/////////////////////////////////////////////////
+
+	// MASK
+	$DIALOGUE--MASK--BG--COLOUR: 									rgba($APP--BASE--COLOUR, .9);
+	$DIALOGUE--TITLE--FONT--SIZE: 									32px;
+	$DIALOGUE--TITLE--FONT--COLOUR: 								$COLOUR--WHITE_CLOUDS;
+	$DIALOGUE--TITLE--FONT--WEIGHT: 								$FONT--WEIGHT---EXTRALIGHT;
+	$DIALOGUE--TITLE--FONT--FAMILY: 								$FONT--FAMILY---RALEWAY;
+
+	$DIALOGUE--BODY--FONT--SIZE: 									14px;
+	$DIALOGUE--BODY--FONT--COLOUR: 									$COLOUR--DUSTY_CLOUDS;
+	$DIALOGUE--BODY--FONT--WEIGHT: 									$FONT--WEIGHT---EXTRALIGHT;
+
+/////////////////////////////////////////////////
 // FORMS ////////////////////////////////////////
 /////////////////////////////////////////////////
 
@@ -1210,21 +1225,21 @@
 
     // ACTION BAR
 	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR {
-        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR;
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR !important;
     	padding: 5px 10px;
-    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR, $FONT--WEIGHT---EXTRALIGHT);
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR !important, $FONT--WEIGHT---EXTRALIGHT);
     }
 
 	%CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR {
-        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR;
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR !important;
     	padding: 5px 10px;
-    	@include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR, $FONT--WEIGHT---EXTRALIGHT);
+    	@include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR !important, $FONT--WEIGHT---EXTRALIGHT);
     }
 
 	%CSS_BLOCK--BUTTON--ICON\:ACTIONBAR {
-        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR;
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR !important;
     	padding: 5px 10px 5px 29px;
-    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR, $FONT--WEIGHT---EXTRALIGHT);
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR !important, $FONT--WEIGHT---EXTRALIGHT);
 
     	img {
     		left: 5px!important;
@@ -1232,29 +1247,29 @@
     }
 
 	%CSS_BLOCK--BUTTON--ICON---HOVER\:ACTIONBAR {
-        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR;
-        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR, $FONT--WEIGHT---EXTRALIGHT);
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR !important;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR !important, $FONT--WEIGHT---EXTRALIGHT);
     }
 
     // ACTION BAR ::: SUGGESTED
 	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED {
-        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED;
-    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED, $FONT--WEIGHT---EXTRALIGHT);
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
     }
 
 	%CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED {
-        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED;
-    	@include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED, $FONT--WEIGHT---EXTRALIGHT);
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
     }
 
 	%CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SUGGESTED {
-        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED;
-    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED, $FONT--WEIGHT---EXTRALIGHT);
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
     }
 
 	%CSS_BLOCK--BUTTON--ICON---HOVER\:ACTIONBAR---SUGGESTED {
-        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED;
-        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED, $FONT--WEIGHT---EXTRALIGHT);
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
     }
 
 

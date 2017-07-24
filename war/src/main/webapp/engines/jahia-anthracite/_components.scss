@@ -1428,6 +1428,59 @@ form,
 
 }
 
+/* Dialogues */
+.x-window-dlg {
+
+	margin-top: -32px; // Trying to offset the increase in height of dialogue due to extra large title.
+
+	// BASIC STRUCTURE RESET
+	.x-window-tl,
+	.x-window-tr,
+	.x-window-tc,
+	.x-window-ml,
+	.x-window-mr,
+	.x-window-mc,
+	.x-window-body,
+	.x-window-bl,
+	.x-window-br,
+	.x-window-bc,
+	.x-window-footer {
+		border:none;
+		background: none;
+		padding: 0;
+	}
+
+	.x-window-header {
+		padding: 0;
+		cursor: auto;
+		pointer-events: none; // Remove the draggable feature of dialogue
+		margin-bottom: 5px;
+	}
+
+	.x-window-header-text {
+		@include text($DIALOGUE--TITLE--FONT--SIZE, $DIALOGUE--TITLE--FONT--COLOUR, $DIALOGUE--TITLE--FONT--WEIGHT, $DIALOGUE--TITLE--FONT--FAMILY);
+	}
+
+	// ICONS
+	.ext-mb-warning {
+		display: none;
+	}
+
+	// CONTENT
+	.ext-mb-text {
+		@include text($DIALOGUE--BODY--FONT--SIZE, $DIALOGUE--BODY--FONT--COLOUR, $DIALOGUE--BODY--FONT--WEIGHT);
+
+	}
+
+	// ACTION BAR
+	.x-panel-btns {
+		margin-top: 20px;
+	}
+
+}
+
+
+
 /* SHOULD SIMPLIFY ALOT OF CODE WHEN REDOING edit-modes, etc ... */
 
 .x-panel-body {

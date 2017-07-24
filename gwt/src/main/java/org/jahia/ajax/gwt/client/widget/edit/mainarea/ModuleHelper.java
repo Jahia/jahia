@@ -49,7 +49,6 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -66,6 +65,20 @@ import java.util.*;
  * Time: 12:04:41 PM
  */
 public class ModuleHelper {
+    
+    /**
+     * Callback interface that is used to get a result of a possibly asynchronous call for the component edit permission check.
+     */
+    public interface CanUseComponentForEditCallback {
+        /**
+         * Callback function that is passed the result of the component check.
+         * 
+         * @param canUseComponentForEdit
+         *            <code>true</code> if the components can be used for edit; <code>false</code> otherwise
+         */
+        void handle(boolean canUseComponentForEdit);
+    }
+
     private static final List<String> FIELDS = Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
 
     private static final List<String> FIELDS_FULL_INFO = Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
@@ -429,29 +442,6 @@ public class ModuleHelper {
     }
 
     /**
-     * Loads the specified node type information from the server and does a call to the provided callback after the result is received.
-     * 
-     * @param nodeType
-     *            the node type name to request from server
-     * @param callback
-     *            the callback handler
-     */
-    public static void loadNodeType(String nodeType, final AsyncCallback<GWTJahiaNodeType> callback) {
-        JahiaContentManagementService.App.getInstance().getNodeType(nodeType, new AsyncCallback<GWTJahiaNodeType>() {
-            public void onFailure(Throwable caught) {
-                callback.onFailure(caught);
-            }
-
-            public void onSuccess(GWTJahiaNodeType result) {
-                if (result != null) {
-                    nodeTypes.put(result.getName(), result);
-                }
-                callback.onSuccess(result);
-            }
-        });
-    }
-
-    /**
      * Checks if the specified node is allowed to be edited according to the component permissions.
      * 
      * @param nodeType
@@ -459,6 +449,48 @@ public class ModuleHelper {
      * @return <code>true</code> if the specified node is allowed to be edited; <code>false</code> otherwise
      */
     public static boolean canUseComponentForEdit(GWTJahiaNodeType nodeType) {
-        return !Boolean.FALSE.equals(nodeType.get("canUseComponentForEdit"));
+        Object value = nodeType.get("canUseComponentForEdit");
+
+        // positive return is in case when either we do not have a value for the canUseComponentForEdit in the node type (null) 
+        // or the value is true
+        return value == null || Boolean.TRUE.equals(value);
+    }
+
+    /**
+     * Check the specified node type if it permits the editing. If the node type information is not available on the client side, it loads
+     * the specified node type information from the server first. In both cases the method does a call to the provided callback after the
+     * check.
+     * 
+     * @param nodeTypeName
+     *            the node type name to request from server
+     * @param callback
+     *            the callback handler
+     */
+    public static void checkCanUseComponentForEdit(String nodeTypeName,
+            final CanUseComponentForEditCallback callback) {
+        GWTJahiaNodeType nodeType = getNodeType(nodeTypeName);
+        if (nodeType != null) {
+            // we have the node type info on the client
+            callback.handle(canUseComponentForEdit(nodeType));
+        } else {
+            // we need to request the node type info from the server and perform the check after we get it
+            JahiaContentManagementService.App.getInstance().getNodeType(nodeTypeName,
+                    new BaseAsyncCallback<GWTJahiaNodeType>() {
+                        @Override
+                        public void onApplicationFailure(Throwable caught) {
+                            super.onApplicationFailure(caught);
+                            callback.handle(false);
+                        }
+
+                        public void onSuccess(GWTJahiaNodeType result) {
+                            if (result != null) {
+                                nodeTypes.put(result.getName(), result);
+                                callback.handle(canUseComponentForEdit(result));
+                            } else {
+                                callback.handle(false);
+                            }
+                        }
+                    });
+        }
     }
 }

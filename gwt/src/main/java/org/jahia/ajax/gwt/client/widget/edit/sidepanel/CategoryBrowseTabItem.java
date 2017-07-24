@@ -56,8 +56,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -67,6 +65,7 @@ import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper.CanUseComponentForEditCallback;
 
 import java.util.Comparator;
 
@@ -146,21 +145,14 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
             public void handleEvent(GridEvent<GWTJahiaNode> baseEvent) {
                 final GWTJahiaNode gwtJahiaNode = baseEvent.getModel();
                 if (gwtJahiaNode != null && editLinker != null) {
-                    String nodeTypeName = gwtJahiaNode.getNodeTypes().get(0);
-                    GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(nodeTypeName);
-                    if (nodeType == null) {
-                        ModuleHelper.loadNodeType(nodeTypeName, new BaseAsyncCallback<GWTJahiaNodeType>() {
-                            public void onSuccess(GWTJahiaNodeType result) {
-                                if (ModuleHelper.canUseComponentForEdit(result)) {
-                                    EngineLoader.showEditEngine(editLinker, gwtJahiaNode, null);
-                                }
+                    ModuleHelper.checkCanUseComponentForEdit(gwtJahiaNode.getNodeTypes().get(0), new CanUseComponentForEditCallback() {
+                        @Override
+                        public void handle(boolean canUseComponentForEdit) {
+                            if (canUseComponentForEdit) {
+                                EngineLoader.showEditEngine(editLinker, gwtJahiaNode, null);
                             }
-                        });
-                    } else {
-                        if (ModuleHelper.canUseComponentForEdit(nodeType)) {
-                            EngineLoader.showEditEngine(editLinker, gwtJahiaNode, null);
                         }
-                    }
+                    });
                 }
             }
         });

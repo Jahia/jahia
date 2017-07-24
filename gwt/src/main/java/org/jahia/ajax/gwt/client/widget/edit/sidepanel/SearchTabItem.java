@@ -80,6 +80,7 @@ import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper.CanUseComponentForEditCallback;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
 import java.util.*;
@@ -270,21 +271,14 @@ class SearchTabItem extends SidePanelTabItem {
         grid.addListener(Events.OnDoubleClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent be) {
                 final GWTJahiaNode node = (GWTJahiaNode) be.getModel();
-                String nodeTypeName = node.getNodeTypes().get(0);
-                GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(nodeTypeName);
-                if (nodeType == null) {
-                    ModuleHelper.loadNodeType(nodeTypeName, new BaseAsyncCallback<GWTJahiaNodeType>() {
-                        public void onSuccess(GWTJahiaNodeType result) {
-                            if (ModuleHelper.canUseComponentForEdit(result)) {
-                                EngineLoader.showEditEngine(editLinker, node, null);
-                            }
+                ModuleHelper.checkCanUseComponentForEdit(node.getNodeTypes().get(0), new CanUseComponentForEditCallback() {
+                    @Override
+                    public void handle(boolean canUseComponentForEdit) {
+                        if (canUseComponentForEdit) {
+                            EngineLoader.showEditEngine(editLinker, node, null);
                         }
-                    });
-                } else {
-                    if (ModuleHelper.canUseComponentForEdit(nodeType)) {
-                        EngineLoader.showEditEngine(editLinker, node, null);
                     }
-                }
+                });
             }
         });
         grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));

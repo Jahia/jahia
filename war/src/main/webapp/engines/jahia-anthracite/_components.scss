@@ -1428,11 +1428,7 @@ form,
 
 }
 
-/* Dialogues */
-.x-window-dlg {
-
-	margin-top: -32px; // Trying to offset the increase in height of dialogue due to extra large title.
-
+/* All Dialogues, popups, etc, etc ... */
 	// BASIC STRUCTURE RESET
 	.x-window-tl,
 	.x-window-tr,
@@ -1451,33 +1447,38 @@ form,
 	}
 
 	.x-window-header {
-		padding: 0;
+		padding: 0!important;
 		cursor: auto;
 		pointer-events: none; // Remove the draggable feature of dialogue
 		margin-bottom: 5px;
 	}
 
-	.x-window-header-text {
-		@include text($DIALOGUE--TITLE--FONT--SIZE, $DIALOGUE--TITLE--FONT--COLOUR, $DIALOGUE--TITLE--FONT--WEIGHT, $DIALOGUE--TITLE--FONT--FAMILY);
+/* Specific to Dialogues (ie. alert windows ) */
+	.x-window-dlg {
+
+		margin-top: -32px; // Trying to offset the increase in height of dialogue due to extra large title.
+
+		.x-window-header-text {
+			@include text($DIALOGUE--TITLE--FONT--SIZE, $DIALOGUE--TITLE--FONT--COLOUR, $DIALOGUE--TITLE--FONT--WEIGHT, $DIALOGUE--TITLE--FONT--FAMILY);
+		}
+
+		// ICONS
+		.ext-mb-warning {
+			display: none;
+		}
+
+		// CONTENT
+		.ext-mb-text {
+			@include text($DIALOGUE--BODY--FONT--SIZE, $DIALOGUE--BODY--FONT--COLOUR, $DIALOGUE--BODY--FONT--WEIGHT);
+
+		}
+
+		// ACTION BAR
+		.x-panel-btns {
+			margin-top: 20px;
+		}
+
 	}
-
-	// ICONS
-	.ext-mb-warning {
-		display: none;
-	}
-
-	// CONTENT
-	.ext-mb-text {
-		@include text($DIALOGUE--BODY--FONT--SIZE, $DIALOGUE--BODY--FONT--COLOUR, $DIALOGUE--BODY--FONT--WEIGHT);
-
-	}
-
-	// ACTION BAR
-	.x-panel-btns {
-		margin-top: 20px;
-	}
-
-}
 
 
 

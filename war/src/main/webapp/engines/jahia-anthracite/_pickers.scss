@@ -1,0 +1,394 @@
+#JahiaGxtContentPickerWindow {
+	// Reset global position of picker as whole page
+	width: 100%!important;
+	height: 100%!important;
+	left: 0!important;
+	top: 0!important;
+
+	background: red;
+
+	/////////// STRUCTURE
+
+	// HEADER HEIGHT
+	.x-window-tl {
+		height: 100px;
+		background: blue;
+	}
+
+	// BODY WRAPPER
+	.x-window-bwrap {
+		height: calc(100% - 100px);
+		background: green;
+		padding: 0 35px;
+
+	}
+
+	// BODY CONTAINERS
+	.x-window-ml,
+	.x-window-mr,
+	.x-window-mc,
+	.x-window-body,
+	.x-window-body > div,
+	.x-panel-bwrap,
+	.x-panel-body,
+	#JahiaGxtManagerMain,
+	.x-grid-panel {
+		height: 100%!important;
+		width: 100%!important;
+	}
+
+
+
+
+	// BODY TOOL BAR
+	.x-panel-tbar {
+		position: fixed;
+		top: 0;
+		right: 0;
+	}
+
+	/////////// STYLING
+
+	// PICKER TITLE
+	.x-window-header {
+		margin: 0;
+
+		.x-panel-toolbar {
+			float:none!important;
+		}
+	}
+	.x-window-header-text {
+		pointer-events: all;
+		margin: 7px 0 0 70px;
+		display: block;
+		@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
+	}
+
+	// CLOSE BUTTON
+	.x-tool-close {
+		float: none;
+		top: 40px;
+		left: 40px;
+		position: relative;
+		margin: 0;
+		pointer-events: all;
+		background: red;
+		width: 25px;
+		height: 25px;
+	}
+
+	//
+
+	// TREE
+	#JahiaGxtManagerLeftTree {
+		height: calc(100% - 60px)!important; // Make room for save, close buttons
+		width: 300px !important;
+	    vertical-align: top;
+	    display: inline-block;
+	    position: relative!important;
+
+		// Browse / Search Tabs
+		.x-tab-panel-header {
+			width: 100%!important;
+			border:none!important;
+			background: transparent;
+
+			.x-tab-strip-wrap {
+				.x-tab-strip {
+					border:none;
+					background: none;
+					padding: 0;
+
+					li {
+						// BROWSE TAB
+						&:nth-child(1) {
+							display: none;
+						}
+
+						// SEARCH TAB
+						&:nth-child(2) {
+							margin: 0;
+							position: fixed;
+							left: 36;
+							top: 340px;
+
+							// LABEL
+							&::after {
+								content: "Search";
+								display: block;
+								background: red;
+								width: 60px;
+								text-align: center;
+								text-transform: uppercase;
+
+								@include text(8px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---NORMAL);
+							}
+
+							// ICON
+							img {
+								background-size: 23px 23px;
+							    background-repeat: no-repeat;
+								background-image: url(./images/tabs-pages-white@X2.png);
+							    padding-left: 23px;
+							    width: 23px;
+							    height: 23px;
+							    overflow: hidden;
+							    -moz-box-sizing: border-box;
+							    box-sizing: border-box;
+							    display: block;
+							    position: relative;
+
+								margin: 0 auto;
+
+								left: 0;
+								top: 0;
+							}
+
+							// ANCHORS
+							a {
+								display: none;
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+
+		// Tree Container
+		.x-tab-panel-body {
+			// Container
+			width: 100%!important;
+			height: 100%!important;
+			background: transparent;
+
+			> div {
+				height: 100%!important;
+
+				// BROWSE TAB CONTAINER
+				&:nth-child(1) {
+					background: aqua;
+					display: block!important;
+
+					&.x-hide-display + div.x-component {
+						// SEARCH TAB IS OPEN
+						display: block;
+					}
+
+					+ div {
+						// SEARCH TAB
+						display: none;
+					}
+				}
+
+				// SEARCH TAB CONTAINER
+				&:nth-child(2) {
+					position: absolute;
+				    top: 0;
+				    width: calc(100% - 60px)!important;
+				    right: 0;
+
+					// FIX CONTAINER HEIGHTS
+					> .x-panel,
+					.x-panel-bwrap,
+					.x-panel-ml,
+					.x-panel-mr,
+					.x-panel-mc,
+					form,
+					fieldset {
+						width: 100%!important;
+						height: 100%!important;
+					}
+
+					.x-panel-tl {
+						display: none;
+					}
+
+
+
+
+				}
+
+				width: 100%!important;
+
+				// Another Container
+				> div {
+					width: 100%!important;
+
+					// Site Groups
+					> div {
+						width: 100%!important;
+
+					}
+				}
+			}
+		}
+
+		// Tree Site Panel Header
+
+		// UNSELECTED PANEL TAB
+
+		.x-panel {
+			.x-panel-header {
+				pointer-events: none; // STOP CLICKING ON CURRENT OPENED SITE TAB, AS IT HIDES IT !!
+			}
+
+		}
+
+		.x-panel-collapsed {
+			.x-panel-header {
+				// HIDE TOOLBAR
+				.x-panel-toolbar {
+					display: none;
+				}
+
+				pointer-events: all!important;
+				&::after {
+					background: yellow;
+				}
+			}
+		}
+
+
+
+		.x-panel-header {
+
+			width: 60px!important;
+			padding: 0;
+			height: 40px;
+			margin-bottom: 10px;
+
+			// LABEL
+			&::after {
+				content: "Sites";
+				display: block;
+				background: red;
+				width: 60px;
+				text-align: center;
+				text-transform: uppercase;
+
+				@include text(8px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---NORMAL);
+			}
+
+			// ICON
+			img {
+				float: none!important;
+				display: block!important;
+
+				background-size: 23px 23px;
+			    background-repeat: no-repeat;
+				background-image: url(./images/tabs-pages-white@X2.png);
+			    padding-left: 23px;
+			    width: 23px;
+			    height: 23px;
+			    overflow: hidden;
+			    -moz-box-sizing: border-box;
+			    box-sizing: border-box;
+			    display: block;
+			    position: relative;
+
+				margin: 0 auto;
+
+			}
+
+			// TOOLBAR (Refresh, minimise)
+			.x-panel-toolbar {
+				float: none!important;
+			    position: absolute!important;
+			    top: 0!important;
+			    right: 0!important;
+				display: block;
+				pointer-events: all;
+				background: red;
+				z-index: 9999;
+			}
+
+			// TITLE
+			.x-panel-header-text {
+				display: none;
+			}
+
+		}
+
+		// TREES (1 per Site)
+		.x-panel-bwrap {
+			position: absolute;
+			right: 0;
+			width: calc(100% - 60px)!important;
+			background: purple;
+			left: auto!important;
+		}
+	}
+
+	// TREE CONTENT CONTAINER
+	#JahiaGxtManagerLeftTree + div {
+		width: calc(100% - 300px)!important;
+	    background: orange;
+	    left: auto!important;
+	    position: relative!important;
+	    display: inline-block;
+	    vertical-align: top;
+	}
+
+	// TREE CONTENT CONTAINER
+	#JahiaGxtManagerTobTable {
+
+		// SEEMS UNUSED ...
+		> .x-panel-header {
+			display: none;
+		}
+	}
+
+	// ACTION BAR (Save, Cancel)
+	.x-window-bbar {
+		background: pink;
+	    width: 300px !important;
+	    position: absolute;
+	    bottom: 0;
+	    height: 60px;
+	    padding-left: 60px;
+	    box-sizing: border-box;
+
+		.x-panel-fbar {
+			width: 100%!important;
+		}
+	}
+
+
+
+
+
+
+
+
+
+	// STOP RESIZE ISSUES WHEN BEING LOADED FOR FIRST TIME( GWT ADDS AN ANIMATION )
+	.x-grid3-viewport,
+	.x-grid3-body {
+		width: 100%!important;
+	}
+
+
+
+
+
+
+
+
+	// REMOVE UNNECCESSARY STUFF
+	.x-resizable-handle,
+	.x-tool-restore,
+	.x-tool-toggle,
+	.x-tool-maximize {
+		display: none!important;
+	}
+
+	.x-accordion-hd {
+		background: transparent;
+	}
+
+	.x-fieldset-bwrap {
+		transition: 0!important;
+	}
+}

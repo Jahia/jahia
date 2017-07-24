@@ -31,7 +31,7 @@
 					// If the side panel is open, then close it
 
 					if($("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-						indigoQF.listeners.closeSidePanel()
+						//indigoQF.listeners.closeSidePanel()
 
 					}
 
@@ -47,7 +47,11 @@
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", indigoQF.listeners.clickSidePanelMoreOptionsButton)
 					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickSidePanelFileThumbMoreOptionsButton)
 					.on("click", ".x-current-page-path", indigoQF.listeners.clearMultiSelection)
-					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", indigoQF.listeners.addPageToHistory);
+					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", indigoQF.listeners.addPageToHistory)
+					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", function(){
+						console.log("REMOVE");
+						$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
+					});
 
 				// Setup side panel listeners accordingly to naviagtion style (rollover or click) as defined in indigoQF.status.panelMenu.style
 				switch(indigoQF.status.panelMenu.style){

@@ -2583,7 +2583,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private List<GWTJahiaNodeType> checkComponentPermissions(List<GWTJahiaNodeType> types) {
         if (types != null && types.size() > 0) {
             JCRSiteNode site = getSite();
-            if (site != null && site.getPath().startsWith("/sites")) {
+            if (site.getPath().startsWith("/sites")) {
                 for (GWTJahiaNodeType type : types) {
                     try {
                         boolean perm = contentDefinition.checkPermissionForType(type.getName(), site);

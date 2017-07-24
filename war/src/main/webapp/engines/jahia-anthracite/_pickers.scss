@@ -1,3 +1,6 @@
+$PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
+
+
 #JahiaGxtContentPickerWindow {
 	// Reset global position of picker as whole page
 	width: 100%!important;
@@ -5,21 +8,21 @@
 	left: 0!important;
 	top: 0!important;
 
-	background: red;
+	background: $PICKER--BG--COLOUR;
 
 	/////////// STRUCTURE
 
 	// HEADER HEIGHT
 	.x-window-tl {
-		height: 100px;
-		background: blue;
+		height: 130px;
+		// background: blue;
 	}
 
 	// BODY WRAPPER
 	.x-window-bwrap {
-		height: calc(100% - 100px);
-		background: green;
-		padding: 0 35px;
+		height: calc(100% - 130px);
+		// background: green;
+		padding: 0 50px;
 
 	}
 
@@ -32,7 +35,8 @@
 	.x-panel-bwrap,
 	.x-panel-body,
 	#JahiaGxtManagerMain,
-	.x-grid-panel {
+	.x-grid-panel,
+	#images-view {
 		height: 100%!important;
 		width: 100%!important;
 	}
@@ -42,9 +46,92 @@
 
 	// BODY TOOL BAR
 	.x-panel-tbar {
-		position: fixed;
-		top: 0;
-		right: 0;
+		background: transparent;
+	    width: 100%!important;
+	    height: 100%;
+	    top: 0;
+	    left: 0;
+	    position: fixed;
+	    z-index: 99;
+	    pointer-events: none;
+
+		// TOOLBAR CONTAINER
+		.x-toolbar {
+			border:none;
+			padding: 0;
+			background: none;
+		}
+
+		// SEPERATOR
+		.xtb-sep {
+			display: none;
+		}
+
+		.action-bar-tool-item {
+			// Hide all toolbar options
+			display: none;
+
+			// PREVIEW BUTTON STUFF
+			&.toolbar-item-filepreview {
+				position: fixed;
+				pointer-events: all;
+				right: 80px;
+
+			}
+
+			&.indigo-show-button {
+				display: block;
+			}
+
+			&.x-item-disabled {
+				display: none!important;
+			}
+
+			// VIEW BUTTONS
+			&.toolbar-item-listview,
+			&.toolbar-item-thumbsview,
+			&.toolbar-item-detailedview {
+				display: block;
+				pointer-events: all;
+				width: 25px;
+				height: 25px;
+
+				img {
+					display: none;
+				}
+			}
+
+			// LIST VIEW
+			&.toolbar-item-listview {
+				background: pink;
+			}
+
+			// THUMBS VIEW
+			&.toolbar-item-thumbsview {
+				background: blue;
+			}
+
+			// DETAILED VIEW
+			&.toolbar-item-detailedview {
+				background: red;
+			}
+		}
+
+		// FILE OPERATIONS
+		.x-toolbar-left {
+
+		}
+
+		// DISPLAY OPTIONS
+		#JahiaGxtManagerToolbar .x-toolbar-right {
+		    position: fixed;
+		    right: 52px;
+		    top: 55px;
+		}
+
+
+
+
 	}
 
 	/////////// STYLING
@@ -59,38 +146,28 @@
 	}
 	.x-window-header-text {
 		pointer-events: all;
-		margin: 7px 0 0 70px;
+		margin: 57px 0 0 64px;
 		display: block;
-		@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
+		@include text(36px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
 	}
 
-	// CLOSE BUTTON
-	.x-tool-close {
-		float: none;
-		top: 40px;
-		left: 40px;
-		position: relative;
-		margin: 0;
-		pointer-events: all;
-		background: red;
-		width: 25px;
-		height: 25px;
-	}
 
-	//
 
 	// TREE
 	#JahiaGxtManagerLeftTree {
-		height: calc(100% - 60px)!important; // Make room for save, close buttons
+		height: calc(100% - 120px)!important; // Make room for save, close buttons
 		width: 300px !important;
 	    vertical-align: top;
 	    display: inline-block;
 	    position: relative!important;
+		margin-right: 20px;
 
 		// Browse / Search Tabs
 		.x-tab-panel-header {
 			width: 100%!important;
+			height: 0!important;
 			border:none!important;
+			padding:0!important;
 			background: transparent;
 
 			.x-tab-strip-wrap {
@@ -98,6 +175,7 @@
 					border:none;
 					background: none;
 					padding: 0;
+					margin: 0;
 
 					li {
 						// BROWSE TAB
@@ -116,7 +194,7 @@
 							&::after {
 								content: "Search";
 								display: block;
-								background: red;
+								// background: red;
 								width: 60px;
 								text-align: center;
 								text-transform: uppercase;
@@ -128,7 +206,7 @@
 							img {
 								background-size: 23px 23px;
 							    background-repeat: no-repeat;
-								background-image: url(./images/tabs-pages-white@X2.png);
+								background-image: $ICON--SETTINGS---GREY;
 							    padding-left: 23px;
 							    width: 23px;
 							    height: 23px;
@@ -168,7 +246,7 @@
 
 				// BROWSE TAB CONTAINER
 				&:nth-child(1) {
-					background: aqua;
+					// background: aqua;
 					display: block!important;
 
 					&.x-hide-display + div.x-component {
@@ -238,6 +316,12 @@
 
 		.x-panel-collapsed {
 			.x-panel-header {
+
+				img {
+					background: url($ICON--PAGES---GREY) no-repeat center center !important;
+					background-size: 23px 23px !important;
+				}
+
 				// HIDE TOOLBAR
 				.x-panel-toolbar {
 					display: none;
@@ -245,7 +329,8 @@
 
 				pointer-events: all!important;
 				&::after {
-					background: yellow;
+					// background: yellow;
+					color: $COLOUR--GREY_CLOUDS;
 				}
 			}
 		}
@@ -258,30 +343,33 @@
 			padding: 0;
 			height: 40px;
 			margin-bottom: 10px;
+			opacity: 0.8;
+
+			&:hover {
+				opacity: 1;
+			}
 
 			// LABEL
 			&::after {
 				content: "Sites";
 				display: block;
-				background: red;
+				// background: red;
 				width: 60px;
 				text-align: center;
 				text-transform: uppercase;
 
-				@include text(8px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---NORMAL);
+				@include text(8px, $COLOUR--JAHIA_BLUE, $FONT--WEIGHT---NORMAL);
 			}
 
 			// ICON
 			img {
 				float: none!important;
 				display: block!important;
-
-				background-size: 23px 23px;
-			    background-repeat: no-repeat;
-				background-image: url(./images/tabs-pages-white@X2.png);
+				background: url($ICON--PAGES---BLUE) no-repeat center center !important;
+				background-size: 23px 23px !important;
 			    padding-left: 23px;
-			    width: 23px;
-			    height: 23px;
+			    width: 23px!important;
+			    height: 23px!important;
 			    overflow: hidden;
 			    -moz-box-sizing: border-box;
 			    box-sizing: border-box;
@@ -300,7 +388,7 @@
 			    right: 0!important;
 				display: block;
 				pointer-events: all;
-				background: red;
+				// background: red;
 				z-index: 9999;
 			}
 
@@ -316,19 +404,122 @@
 			position: absolute;
 			right: 0;
 			width: calc(100% - 60px)!important;
-			background: purple;
+			// background: purple;
 			left: auto!important;
+			padding-top: 2px;
+			box-sizing: border-box;
 		}
 	}
 
 	// TREE CONTENT CONTAINER
 	#JahiaGxtManagerLeftTree + div {
-		width: calc(100% - 300px)!important;
-	    background: orange;
+		width: calc(100% - 320px) !important;
+	    // background: orange;
 	    left: auto!important;
 	    position: relative!important;
 	    display: inline-block;
 	    vertical-align: top;
+
+		#images-view {
+			// Toolbar for thumb view
+			background: transparent;
+			padding-top: 33px;
+			box-sizing: border-box;
+
+			.x-toolbar {
+				pointer-events: all;
+			    width: calc(100% - 437px) !important;
+			    left: auto;
+			    right: 52px;
+			    position: absolute;
+			    top: 121px;
+			    padding-bottom: 7px;
+			    box-sizing: border-box;
+			    border-bottom: 1px solid red;
+
+				.xtb-text {
+					// LABELS
+					margin-right: 5px!important;
+
+					@extend %CSS_BLOCK--FORM--LABEL;
+				}
+
+				// FILTER CONTAINER
+				.x-toolbar-left {
+					width: 375px;
+
+					.x-toolbar-cell {
+						display: inline-block;
+					}
+
+					.xtb-sep {
+						background: transparent;
+						width: 10px;
+						display: block;
+					}
+				}
+
+				// ZOOM CONTAINER
+				.x-toolbar-right {
+
+				}
+			}
+
+			// THUMB CONTAINER
+			.x-view {
+				width: 100%!important;
+				height: 100%!important;
+				background: transparent;
+			}
+
+			.x-view-over {
+				background: none!important;
+
+				.thumb {
+					background: #e4e5e6;
+				}
+
+			}
+
+
+
+			.thumb-wrap {
+				height: initial!important;
+				max-height: initial!important;
+				width: initial!important;
+
+				&.x-view-over {
+					span {
+						background: #e4e5e6;
+						color: $COLOUR--RAIN_CLOUDS;
+					}
+				}
+
+				&.x-view-item-sel {
+					background: $COLOUR--JAHIA_BLUE;
+
+					span {
+						background: $COLOUR--JAHIA_BLUE!important;
+						color: $COLOUR--WHITE_CLOUDS;
+					}
+				}
+
+				// TITLE / FILE SIZE
+				span {
+					background: transparent;
+					text-align: center;
+					@include text(11px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---NORMAL);
+
+					&:last-child {
+						padding-bottom: 10px;
+					}
+				}
+			}
+
+			.thumb {
+				padding: 10px!important;
+			}
+		}
 	}
 
 	// TREE CONTENT CONTAINER
@@ -342,16 +533,27 @@
 
 	// ACTION BAR (Save, Cancel)
 	.x-window-bbar {
-		background: pink;
+		// background: pink;
 	    width: 300px !important;
 	    position: absolute;
 	    bottom: 0;
-	    height: 60px;
-	    padding-left: 60px;
+	    height: 120px;
+	    padding-left: 12px;
 	    box-sizing: border-box;
 
 		.x-panel-fbar {
 			width: 100%!important;
+
+			.x-toolbar-cell {
+
+				&:nth-child(1) {
+					/* Save */
+
+					// Make suggested colour
+					@include button("ACTIONBAR---SUGGESTED");
+				}
+			}
+
 		}
 	}
 
@@ -380,7 +582,8 @@
 	.x-resizable-handle,
 	.x-tool-restore,
 	.x-tool-toggle,
-	.x-tool-maximize {
+	.x-tool-maximize,
+	.x-tool-close {
 		display: none!important;
 	}
 

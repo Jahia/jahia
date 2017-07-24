@@ -292,12 +292,16 @@
 
 	.thumb {
 		/* Image */
-		width: 100%!important;
 		height: auto!important;
 		padding: 5px!important;
 		box-sizing: border-box;
 
 		@extend %CSS_BLOCK--THUMB--BG---UP !optional;
+
+		#JahiaGxtFileImagesBrowseTab & {
+			width: 100%!important;
+
+		}
 
 	}
 
@@ -594,6 +598,13 @@ label {
 
 	}
 
+	#JahiaGxtManagerTobTable & {
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT\:PICKER_FILTER !optional;
+
+	}
+
+
+
 	width: 100%!important;
 	box-sizing: border-box;
     display: inline-block;
@@ -617,6 +628,11 @@ label {
 			@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:DUAL_LIST !optional;
 
 		}
+
+		#JahiaGxtManagerTobTable & {
+			@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_FILTER !optional;
+
+		}
 	}
 
 	&:focus {
@@ -630,6 +646,11 @@ label {
 
 		#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
 			@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:DUAL_LIST !optional;
+
+		}
+
+		#JahiaGxtManagerTobTable & {
+			@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:PICKER_FILTER !optional;
 
 		}
 	}
@@ -691,11 +712,21 @@ div[role="combobox"] {
 
 		}
 
+		#JahiaGxtManagerTobTable & {
+			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:PICKER_FILTER !optional;
+
+		}
+
 		&.x-form-trigger-over {
 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER !optional;
 
 			.engine-panel & {
 				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:EDIT_ENGINE !optional;
+
+			}
+
+			#JahiaGxtManagerTobTable & {
+				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:PICKER_FILTER !optional;
 
 			}
 		}
@@ -715,6 +746,11 @@ div[role="combobox"] {
 
 		}
 
+		#JahiaGxtManagerTobTable & {
+			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:PICKER_FILTER !optional;
+
+		}
+
 		&.x-form-trigger-over {
 			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER !optional;
 
@@ -725,6 +761,11 @@ div[role="combobox"] {
 
 			#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
 				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:DUAL_LIST !optional;
+
+			}
+
+			#JahiaGxtManagerTobTable & {
+				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:PICKER_FILTER !optional;
 
 			}
 		}
@@ -1060,6 +1101,11 @@ form,
 			.x-grid3-cell-inner {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER !optional;
 
+				&.x-grid3-col-size {
+					@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL !optional;
+
+				}
+
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);
 					opacity: 1;
@@ -1086,6 +1132,11 @@ form,
 			.x-grid3-cell-inner {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED !optional;
 
+				&.x-grid3-col-size {
+					@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED\:SMALL_LABEL !optional;
+
+				}
+
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
 					opacity: 1;
@@ -1100,6 +1151,11 @@ form,
 
 				.x-tree3-node-icon {
 					@extend %tree_line_icon_selected_hover !optional;
+
+				}
+
+				&.x-grid3-col-size {
+					@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
 
 				}
 
@@ -1121,6 +1177,11 @@ form,
 	.x-grid3-cell-inner {
 		/* List Item Text Label */
 		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP !optional;
+
+		&.x-grid3-col-size {
+			@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
+
+		}
 
 		pointer-events: none;
 
@@ -1441,17 +1502,26 @@ form,
 	.x-window-br,
 	.x-window-bc,
 	.x-window-footer {
-		border:none;
-		background: none;
-		padding: 0;
+		border:none!important;
+		background: none!important;
+		padding: 0!important;
 	}
 
 	.x-window-header {
 		padding: 0!important;
-		cursor: auto;
 		pointer-events: none; // Remove the draggable feature of dialogue
 		margin-bottom: 5px;
+
 	}
+
+	.x-window-draggable {
+		.x-window-header-text {
+			cursor: auto!important;
+			pointer-events: none!important;
+
+		}
+	}
+
 
 /* Specific to Dialogues (ie. alert windows ) */
 	.x-window-dlg {
@@ -1481,6 +1551,34 @@ form,
 	}
 
 
+
+/* Sliders */
+.x-slider-horz, .x-slider-horz .x-slider-end, .x-slider-horz .x-slider-inner {
+	background: none!important;
+}
+.x-slider-horz .x-slider-thumb {
+	background: $COLOUR--ASH_CLOUDS;
+    border-radius: 100%;
+    width: 12px;
+    height: 12px;
+    top: 5px;
+
+	&:hover {
+		background: $COLOUR--GREY_CLOUDS;
+
+	}
+}
+
+.x-slider-end::before {
+    content: "Slider";
+    text-indent: -50000px;
+    display: block;
+    height: 3px;
+    background: $COLOUR--DUSTY_CLOUDS;
+    position: absolute;
+    top: 10px;
+    width: 100%;
+}
 
 /* SHOULD SIMPLIFY ALOT OF CODE WHEN REDOING edit-modes, etc ... */
 

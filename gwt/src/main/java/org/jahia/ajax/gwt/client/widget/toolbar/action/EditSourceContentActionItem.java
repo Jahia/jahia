@@ -43,13 +43,13 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper.CanUseComponentForEditCallback;
 
 /**
  * Action item used to open the edit engine for the original content source.
@@ -70,9 +70,10 @@ public class EditSourceContentActionItem extends BaseActionItem {
             }
         } else {
             // we need to request the reference node type from server
-            ModuleHelper.loadNodeType(refNodeTypeName, new BaseAsyncCallback<GWTJahiaNodeType>() {
-                public void onSuccess(GWTJahiaNodeType result) {
-                    if (ModuleHelper.canUseComponentForEdit(result)) {
+            ModuleHelper.checkCanUseComponentForEdit(refNodeTypeName, new CanUseComponentForEditCallback() {
+                @Override
+                public void handle(boolean canUseComponentForEdit) {
+                    if (canUseComponentForEdit) {
                         // we allow editing the referenced node
                         EngineLoader.showEditEngine(linker, referencedNode, null);
                     } else {
@@ -91,26 +92,19 @@ public class EditSourceContentActionItem extends BaseActionItem {
                 && !lh.isRootNode()
                 && hasPermission(lh.getSelectionPermissions())
                 && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions());
-        if (enabled) {
-            String refNodeTypeName = singleSelection.getReferencedNode().getNodeTypes().get(0);
-            GWTJahiaNodeType refNodeType = ModuleHelper.getNodeType(refNodeTypeName);
-            if (refNodeType != null) {
-                // we have the reference node type here
-                enabled = ModuleHelper.canUseComponentForEdit(refNodeType);
-            } else {
-                // we need to request the reference node type from server
-                // as it is done asynchronously, we enable the action item, but will do the check once again in the onComponentSelection() method
-                ModuleHelper.loadNodeType(refNodeTypeName, new BaseAsyncCallback<GWTJahiaNodeType>() {
-                    public void onSuccess(GWTJahiaNodeType result) {
-                        if (!ModuleHelper.canUseComponentForEdit(result)) {
-                            // we disable this action item
-                            setEnabled(false);
-                        }
-                    }
-                });
-            }
-        }
-        
+
         setEnabled(enabled);
+
+        if (enabled) {
+            ModuleHelper.checkCanUseComponentForEdit(singleSelection.getReferencedNode().getNodeTypes().get(0),
+                    new CanUseComponentForEditCallback() {
+                        @Override
+                        public void handle(boolean canUseComponentForEdit) {
+                            if (isEnabled() && !canUseComponentForEdit) {
+                                setEnabled(false);
+                            }
+                        }
+                    });
+        }
 	}
 }

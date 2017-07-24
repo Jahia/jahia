@@ -368,6 +368,19 @@
 
 
 /////////////////////////////////////////////////
+// DUAL LIST //////////////////////////////////
+/////////////////////////////////////////////////
+
+    $PICKER_FILTER--TEXT_INPUT--BG--COLOUR:                           lighten($COLOUR--DUSTY_CLOUDS, 8%);
+    $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---HOVER:                   $COLOUR--DUSTY_CLOUDS;
+    $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---FOCUS:                   $COLOUR--GREY_CLOUDS;
+
+	$PICKER_FILTER--TEXT_INPUT--FONT--COLOUR:                         $COLOUR--LEAD_CLOUDS;
+    $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---HOVER:                 darken($COLOUR--LEAD_CLOUDS, 8%);
+    $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---FOCUS:				  $COLOUR--WHITE_CLOUDS;
+
+
+/////////////////////////////////////////////////
 // SIDE PANEL ///////////////////////////////////
 /////////////////////////////////////////////////
 
@@ -681,6 +694,30 @@
             @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
         }
 
+	// PICKER FILTERS
+		%CSS_BLOCK--FORM--TEXT_INPUT\:PICKER_FILTER {
+			width: 120px!important;
+			background: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR;
+			padding: 1px 15px 2px 5px!important;
+
+			@include text($FORM--TEXT_INPUT--FONT--SIZE, $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_FILTER {
+			background: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---HOVER;
+			color: $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---HOVER !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:PICKER_FILTER {
+			background: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---FOCUS !important;
+			color: $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:PICKER_FILTER {
+			background: transparent !important;
+			@include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+		}
+
 
     // CLEAR FORM BUTTON
     %CSS_BLOCK--FORM--CLEAR_BUTTON---UP {
@@ -717,6 +754,19 @@
             opacity: 1;
         }
 
+	// PICKER FILTER EXCEPTIONS
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:PICKER_FILTER {
+			background-color: transparent !important;
+			background-image: url($ICON--CLOSE_LARGE---GREY) !important;
+			height: 21px!important;
+            opacity: 0.5;
+        }
+
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:PICKER_FILTER {
+            // background-color: $COLOUR--ASH_CLOUDS !important;
+            opacity: 1;
+        }
+
 
 
 /////////////////////////////////////////////////
@@ -742,7 +792,7 @@
 		font-weight: $FORM--TEXT_INPUT--FONT--WEIGHT;
     }
 
-    // EDIT ENGINE EXEPTIONS
+	// EDIT ENGINE EXEPTIONS
         %CSS_BLOCK--FORM--COMBO--ARROW---UP\:EDIT_ENGINE {
             background-color: $COLOUR--TRANSPARENT !important;
             opacity: 0.5;
@@ -754,6 +804,28 @@
         }
 
         %CSS_BLOCK--FORM--COMBO--TEXT_INPUT\:EDIT_ENGINE {
+            padding: $FORM--TEXT_INPUT--PADDING !important;
+            border: $FORM--TEXT_INPUT--BORDER--COLOUR;
+    		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
+    		font-size: $FORM--TEXT_INPUT--FONT--SIZE;
+    		font-weight: $FORM--TEXT_INPUT--FONT--WEIGHT;
+        }
+
+	// PICKER FILTER EXEPTIONS
+        %CSS_BLOCK--FORM--COMBO--ARROW---UP\:PICKER_FILTER {
+            background-color: transparent !important;
+			background-image: url($ICON--ARROW_DOWN---GREY) !important;
+			height: 21px!important;
+
+            opacity: 0.5;
+        }
+
+        %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:PICKER_FILTER {
+            background-color: $COLOUR--TRANSPARENT !important;
+            opacity: 1;
+        }
+
+        %CSS_BLOCK--FORM--COMBO--TEXT_INPUT\:PICKER_FILTER {
             padding: $FORM--TEXT_INPUT--PADDING !important;
             border: $FORM--TEXT_INPUT--BORDER--COLOUR;
     		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
@@ -1278,13 +1350,13 @@
 // TREES ////////////////////////////////////////
 /////////////////////////////////////////////////
 
-    // LABELS
-    %CSS_BLOCK--TREE--ROW--TEXT---UP {
-        @include text(12px, $TREE--ROW--FONT--COLOUR---UP, $FONT--WEIGHT---EXTRALIGHT);
-    }
+	// LABELS
+	%CSS_BLOCK--TREE--ROW--TEXT---UP {
+		@include text(12px, $TREE--ROW--FONT--COLOUR---UP, $FONT--WEIGHT---EXTRALIGHT);
+	}
 
-    %CSS_BLOCK--TREE--ROW--TEXT---HOVER {
-        color: $TREE--ROW--FONT--COLOUR---HOVER!important;
+	%CSS_BLOCK--TREE--ROW--TEXT---HOVER {
+		color: $TREE--ROW--FONT--COLOUR---HOVER!important;
 
 		// Padding not dealt with in best manner ...
 		padding-right: 19px!important; // Make space for More options button
@@ -1292,21 +1364,45 @@
 		.x-viewport-adminmode & {
 			padding-right: 0!important; // Make space for More options button
 		}
-    }
+	}
 
-    %CSS_BLOCK--TREE--ROW--TEXT---SELECTED {
-        color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
+	%CSS_BLOCK--TREE--ROW--TEXT---SELECTED {
+		color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
 		padding-right: 19px!important; // Make space for More options button
 
 		.x-viewport-adminmode & {
 			padding-right: 0!important; // Make space for More options button
 		}
 
-    }
+	}
 
-    %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER {
-        color: $TREE--ROW--FONT--COLOUR---SELECTED_HOVER!important;
-    }
+	%CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER {
+		color: $TREE--ROW--FONT--COLOUR---SELECTED_HOVER!important;
+	}
+
+	// SMALL LABEL
+	%CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL {
+		line-height: 20px;
+		@include text(10px, $TREE--ROW--FONT--COLOUR---UP, $FONT--WEIGHT---EXTRALIGHT);
+	}
+
+	%CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL {
+		// color: $TREE--ROW--FONT--COLOUR---HOVER!important;
+	}
+
+	%CSS_BLOCK--TREE--ROW--TEXT---SELECTED\:SMALL_LABEL {
+		/*color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
+		padding-right: 19px!important; // Make space for More options button
+
+		.x-viewport-adminmode & {
+			padding-right: 0!important; // Make space for More options button
+		}*/
+
+	}
+
+	%CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER\:SMALL_LABEL {
+		//color: $TREE--ROW--FONT--COLOUR---SELECTED_HOVER!important;
+	}
 
     // BACKGROUNDS
     %CSS_BLOCK--TREE--ROW--BG---UP {

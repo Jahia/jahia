@@ -583,6 +583,8 @@ label {
 }
 
 
+
+
 /* Text Field Input */
 .x-form-text {
 	@extend %CSS_BLOCK--FORM--TEXT_INPUT !optional;
@@ -590,11 +592,6 @@ label {
 	// Exceptions ...
 	.engine-panel & {
 		@extend %CSS_BLOCK--FORM--TEXT_INPUT\:EDIT_ENGINE !optional;
-
-	}
-
-	#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT\:DUAL_LIST !optional;
 
 	}
 
@@ -624,11 +621,6 @@ label {
 
 		}
 
-		#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
-			@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:DUAL_LIST !optional;
-
-		}
-
 		#JahiaGxtManagerTobTable & {
 			@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_FILTER !optional;
 
@@ -641,11 +633,6 @@ label {
 		// Exceptions ...
 		.engine-panel & {
 			@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:EDIT_ENGINE !optional;
-
-		}
-
-		#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
-			@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:DUAL_LIST !optional;
 
 		}
 
@@ -675,6 +662,9 @@ div[role="combobox"] {
 	}
 }
 
+/* DUAL LIST */
+
+
 /* Action Buttons for Text Input */
 .x-form-trigger {
 	/* Generic CSS for an Action Button */
@@ -702,6 +692,8 @@ div[role="combobox"] {
 
 
 	}
+
+
 
 	&.x-form-trigger-arrow {
 		/* Combo Down Arrow Button */
@@ -732,17 +724,22 @@ div[role="combobox"] {
 		}
 	}
 
+
+
 	&.x-form-clear-trigger {
+
+
+
 		/* Combo X Button */
 		@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP !optional;
 
-		.engine-panel & {
-			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:EDIT_ENGINE !optional;
-
+		// Text adjacent field is in FOCUS
+		.x-form-text:focus + & {
+			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS !optional;
 		}
 
-		#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
-			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:DUAL_LIST !optional;
+		.engine-panel & {
+			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:EDIT_ENGINE !optional;
 
 		}
 
@@ -756,11 +753,6 @@ div[role="combobox"] {
 
 			.engine-panel & {
 				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:EDIT_ENGINE !optional;
-
-			}
-
-			#JahiaGxtEditEnginePanel-channels .x-form-item:nth-child(1) & {
-				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:DUAL_LIST !optional;
 
 			}
 

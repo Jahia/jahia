@@ -214,6 +214,43 @@
 
 	}
 
+	#JahiaGxtEditEnginePanel-contributeMode {
+		.x-form-item {
+
+			// Editable in content mode checkbox
+			&:nth-child(1) {
+				// Get rid of first label as it is duplicated
+				> label {
+					display: none!important;
+				}
+
+				// Fix position of checkbox
+				input[type="checkbox"] {
+					left: 0!important;
+				}
+			}
+
+			// Select dual list
+			&:nth-child(2) {
+
+				// Add a bit of space with previous block
+				margin-top: 20px;
+
+				// Fix width of label
+				> label {
+					width: 100%!important;
+				}
+
+			}
+
+		}
+
+		@include dual_list();
+
+	}
+
+
+
 	#JahiaGxtEditEnginePanel-content{
 		// Fix problem with non floating form element.
 		#Title {
@@ -254,76 +291,9 @@
 		/* Fix for the channel double list selecor */
 
 		.x-form-item {
-			&:nth-child(1) {
-
-				/* Double List Selector holder */
-				width: 100%!important;
-
-				> .x-form-element {
-
-					> .x-component {
-						/* Another Container */
-
-						width: 100%!important;
-
-						.x-form-group {
-							/* Yet another container */
-							height: auto!important;
-							width: 100%!important;
-							background: $COLOUR--TRANSPARENT;
-
-							> table {
-								display: block;
-
-								> tbody > tr > td {
-									// SOURCE LIST
-									&:nth-child(1) {
-
-										.x-form-list {
-											padding-top: 35px;
-
-										}
-
-										// INPUT FILTER
-										> div > table > tbody > tr:nth-child(1) {
-											position: absolute;
-											top: 29px;
-											width: calc(50% - 27px);
-											left: 5px;
-
-											> td {
-												width: 100%;
-												display: inline-block;
-
-												> div {
-													width: 100%!important;
-												}
-											}
-										}
-									}
-
-									// BUTTONS
-									&:nth-child(2) {
-										> div {
-											margin-top: 73px!important;
-										}
-									}
-
-									// SELECTION LIST
-									&:nth-child(3) {
-										.x-form-list {
-											height: 235px!important;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-
 			&:nth-child(2) {
 				margin-top: 20px;
+
 				// EXCLUDE / INCLUDE COMBO
 				label {
 					// The label is already in the combo - waste of time having both
@@ -342,6 +312,8 @@
 				}
 			}
 		}
+
+		@include dual_list();
 	}
 
 	#JahiaGxtEditEnginePanel-layout {

@@ -63,3 +63,86 @@
 		}
 	}
 }
+
+@mixin dual_list($_id: "DUAL_LIST"){
+    .x-form-group {
+        /* Yet another container */
+        height: auto!important;
+        width: 100%!important;
+        background: $COLOUR--TRANSPARENT;
+
+        > table {
+            display: block;
+
+            > tbody > tr > td {
+                // SOURCE LIST
+                &:nth-child(1) {
+
+                    .x-form-list {
+                        padding-top: 35px;
+
+                    }
+
+                    // INPUT FILTER
+                    > div > table > tbody > tr:nth-child(1) {
+                        position: absolute;
+                        top: 29px;
+                        width: calc(50% - 37px);
+                        left: 5px;
+
+
+                    }
+                }
+
+                // BUTTONS
+                &:nth-child(2) {
+                    > div {
+                        margin-top: 73px!important;
+                    }
+                }
+
+                // SELECTION LIST
+                &:nth-child(3) {
+                    .x-form-list {
+                        height: 235px!important;
+                    }
+                }
+            }
+        }
+
+        .x-form-clear-trigger {
+            @extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:#{$_id} !optional;
+
+            &:hover {
+                @extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:#{$_id} !optional;
+            }
+        }
+
+        .x-form-text {
+            @extend %CSS_BLOCK--FORM--TEXT_INPUT\:#{$_id} !optional;
+
+            &:hover {
+                @extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:#{$_id} !optional;
+            }
+
+            &:focus {
+                @extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:#{$_id} !optional;
+            }
+        }
+
+        // FILTER CONTAINER
+        .x-form-field-wrap {
+            width: 100%!important;
+        }
+
+        .x-table-layout-cell {
+            width: 100%!important;
+            display: inline-block;
+        }
+    }
+
+    // Text adjacent field is in FOCUS
+    .x-form-group .x-form-text:focus + .x-form-clear-trigger {
+        @extend %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS\:#{$_id} !optional;
+    }
+}

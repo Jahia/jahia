@@ -756,6 +756,12 @@
         background-image: url($FORM--CLEAR_BUTTON--ICON---HOVER);
     }
 
+    %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS {
+        background-color: transparent !important;
+        opacity: 1!important;
+        background-image: url($FORM--CLEAR_BUTTON--ICON---HOVER);
+    }
+
     // EDIT PANEL EXCEPTIONS
         %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:EDIT_ENGINE {
             background-color: $COLOUR--TRANSPARENT !important;
@@ -776,6 +782,13 @@
         %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:DUAL_LIST {
             background-color: $COLOUR--ASH_CLOUDS !important;
             opacity: 1;
+        }
+
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS\:DUAL_LIST {
+            border:5px solid red;
+            background-color: transparent !important;
+            opacity: 1!important;
+            background-image: url($FORM--CLEAR_BUTTON--ICON---HOVER);
         }
 
 	// PICKER FILTER EXCEPTIONS

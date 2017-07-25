@@ -172,6 +172,9 @@
 	// THUMBS
 	$ZINDEX--THUMB---DETAILS:                  	10;
 
+	// PICKER WINDOW
+	$ZINDEX--PICKER_WINDOW:                  	1030 !important;
+
 	// HAMBURGER MENU
 	$ZINDEX--HAMBURGER---TITLE:                	30;
 
@@ -187,6 +190,7 @@
 
 	// MODAL
 	$ZINDEX--MODAL---MASK:                     	100 !important;
+	$ZINDEX--MODAL---MASK\:IMAGE_PREVIEW:      	1040 !important;
 
 	// TOOLBAR
 	$ZINDEX--TOOLBAR--CONTAINER: 				60 !important;

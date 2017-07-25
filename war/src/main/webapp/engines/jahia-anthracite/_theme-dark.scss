@@ -97,6 +97,7 @@
     $FORM--LEGEND--FONT--COLOUR:                                    lighten($EDIT_ENGINE--BASE--COLOUR, 55%);
     $FORM--LABEL--FONT--COLOUR:                                     lighten($EDIT_ENGINE--BASE--COLOUR, 30%);
     $FORM--FIELDSET--BG--COLOUR:                                    lighten($EDIT_ENGINE--BASE--COLOUR, 2%);
+    $FORM--FIELDSET--BG--COLOUR\:PICKER_SEARCH:                     $COLOUR--WHITE_CLOUDS;
 
 	// TEXT INPUTS
 	$FORM--TEXT_INPUT--BG--COLOUR:                                  rgba($COLOUR--GREY_CLOUDS, .1);
@@ -193,7 +194,21 @@
 	$BUTTON--BG--COLOUR---HOVER: 			                        lighten($COLOUR--JAHIA_BLUE, 5%);
     $BUTTON--FONT--COLOUR---HOVER:                                  $COLOUR--WHITE;
 
-	// FORM BUTTON
+    // PICKER SEARCH
+	$BUTTON--BG--COLOUR---UP\:PICKER_SEARCH: 				        yellow;
+    $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH:                      red;
+
+	$BUTTON--BG--COLOUR---HOVER\:PICKER_SEARCH: 			        black;
+    $BUTTON--FONT--COLOUR---HOVER\:PICKER_SEARCH:                   orange;
+
+    // PICKER SEARCH SUGGESTED
+	$BUTTON--BG--COLOUR---UP\:PICKER_SEARCH---SUGGESTED: 				        red;
+    $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH---SUGGESTED:                      yellow;
+
+	$BUTTON--BG--COLOUR---HOVER\:PICKER_SEARCH---SUGGESTED: 			        orange;
+    $BUTTON--FONT--COLOUR---HOVER\:PICKER_SEARCH---SUGGESTED:                   black;
+
+    // FORM BUTTON
 	$BUTTON--BG--COLOUR---UP\:FORM: 				                $COLOUR--TRANSPARENT;
     $BUTTON--FONT--COLOUR---UP\:FORM:                               $COLOUR--BLACK_CLOUDS;
 
@@ -527,6 +542,15 @@
         position: relative;
         background: $FORM--FIELDSET--BG--COLOUR;
         box-sizing: border-box;
+    }
+
+    // FIELDSET
+    %CSS_BLOCK--FIELDSET\:PICKER_SEARCH {
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        position: relative;
+        background: $FORM--FIELDSET--BG--COLOUR\:PICKER_SEARCH!important;
     }
 
     // LABELS
@@ -1199,16 +1223,64 @@
 // BUTTONS //////////////////////////////////////
 /////////////////////////////////////////////////
 
+    // PICKER SEARCH BUTTON
+    %CSS_BLOCK--BUTTON--TEXT\:PICKER_SEARCH {
+        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--BUTTON--TEXT---HOVER\:PICKER_SEARCH {
+        background: $BUTTON--BG--COLOUR---HOVER\:PICKER_SEARCH;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:PICKER_SEARCH, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--BUTTON--ICON\:PICKER_SEARCH {
+        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH, $FONT--WEIGHT---EXTRALIGHT);
+
+        img {
+            left: 5px!important;
+            top: 7px!important;
+        }
+    }
+
+    // PICKER SEARCH BUTTON SUGGESTED
+    %CSS_BLOCK--BUTTON--TEXT\:PICKER_SEARCH---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH---SUGGESTED;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH---SUGGESTED, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--BUTTON--TEXT---HOVER\:PICKER_SEARCH---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---HOVER\:PICKER_SEARCH---SUGGESTED;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:PICKER_SEARCH---SUGGESTED, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--BUTTON--ICON\:PICKER_SEARCH---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH---SUGGESTED;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH---SUGGESTED, $FONT--WEIGHT---EXTRALIGHT);
+
+        img {
+            left: 5px!important;
+            top: 7px!important;
+        }
+    }
+
     // FORM
     %CSS_BLOCK--BUTTON--TEXT\:FORM {
-		background: $BUTTON--BG--COLOUR---UP\:FORM;
+        background: $BUTTON--BG--COLOUR---UP\:FORM;
         text-transform: uppercase;
         padding: 4px 0 0;
         @include text(10px, $BUTTON--FONT--COLOUR---UP\:FORM, $FONT--WEIGHT---NORMAL);
     }
 
     %CSS_BLOCK--BUTTON--TEXT---HOVER\:FORM {
-		background: $BUTTON--BG--COLOUR---HOVER\:FORM;
+        background: $BUTTON--BG--COLOUR---HOVER\:FORM;
         @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FORM, $FONT--WEIGHT---NORMAL);
     }
 

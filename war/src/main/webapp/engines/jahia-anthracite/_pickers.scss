@@ -7,6 +7,7 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 	height: 100%!important;
 	left: 0!important;
 	top: 0!important;
+	z-index: $ZINDEX--PICKER_WINDOW;
 
 	background: $PICKER--BG--COLOUR;
 
@@ -156,11 +157,20 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 	// TREE
 	#JahiaGxtManagerLeftTree {
 		height: calc(100% - 120px)!important; // Make room for save, close buttons
-		width: 300px !important;
+		width: 320px !important;
 	    vertical-align: top;
 	    display: inline-block;
 	    position: relative!important;
 		margin-right: 20px;
+
+		// SEARCH TAB
+		form {
+			fieldset {
+				@extend %CSS_BLOCK--FIELDSET\:PICKER_SEARCH;
+			}
+		}
+
+
 
 		// Browse / Search Tabs
 		.x-tab-panel-header {
@@ -187,8 +197,7 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 						&:nth-child(2) {
 							margin: 0;
 							position: fixed;
-							left: 36;
-							top: 340px;
+							top: 406px;
 
 							// LABEL
 							&::after {
@@ -199,14 +208,14 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 								text-align: center;
 								text-transform: uppercase;
 
-								@include text(8px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---NORMAL);
+								@include text(8px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---NORMAL);
 							}
 
 							// ICON
 							img {
 								background-size: 23px 23px;
 							    background-repeat: no-repeat;
-								background-image: $ICON--SETTINGS---GREY;
+								background-image: url($ICON--SETTINGS---GREY);
 							    padding-left: 23px;
 							    width: 23px;
 							    height: 23px;
@@ -266,6 +275,7 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 				    top: 0;
 				    width: calc(100% - 60px)!important;
 				    right: 0;
+					background: $FORM--FIELDSET--BG--COLOUR\:PICKER_SEARCH;
 
 					// FIX CONTAINER HEIGHTS
 					> .x-panel,
@@ -277,10 +287,126 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 					fieldset {
 						width: 100%!important;
 						height: 100%!important;
+						position: relative;
 					}
 
 					.x-panel-tl {
 						display: none;
+					}
+
+					.x-panel-body {
+						// Fix width of form
+						> div {
+						    width: 100%!important;
+						    box-sizing: border-box;
+						    margin: 0!important;
+
+							// Contains search text input AND save / search buttons
+							&:nth-child(1) {
+								table {
+									width: 100%;
+								}
+
+								.x-btn-mc {
+									text-align: left;
+								}
+
+								td {
+									// SEARCH TEXT INPUT CONTAINER
+									&:nth-child(1) {
+
+									}
+
+									// SEARCH BUTTON CONTAINER
+									&:nth-child(2) {
+										// MOVE BUTTON TO POSITION
+										table {
+											position: absolute;
+										    top: 500px;
+										    z-index: 9;
+											left: 0;
+
+											// STYLE BUTTON
+											.x-btn-text {
+												width: auto!important;
+												height: auto!important;
+												font-size: 1px;
+												&::after {
+													content: "Search";
+													display: block;
+													width: 100%;
+													height: 100%;
+													box-sizing: border-box;
+
+													@extend %CSS_BLOCK--BUTTON--TEXT\:PICKER_SEARCH---SUGGESTED;
+
+													&:hover {
+														@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:PICKER_SEARCH---SUGGESTED;
+
+													}
+
+												}
+
+												// REMOVE IMAGE
+												img {
+													display: none;
+												}
+											}
+										}
+
+
+
+									}
+
+									// SAVE SEARCH CONTAINER
+									&:nth-child(3) {
+										// MOVE BUTTON TO POSITION
+										table {
+											position: absolute;
+										    top: 522px;
+										    z-index: 9;
+											left: 0;
+
+											// STYLE BUTTON
+											.x-btn-text {
+												width: auto!important;
+												height: auto!important;
+												font-size: 1px;
+												&::after {
+													content: "Save search";
+													display: block;
+													width: 100%;
+													height: 100%;
+													box-sizing: border-box;
+
+													@extend %CSS_BLOCK--BUTTON--TEXT\:PICKER_SEARCH;
+
+													&:hover {
+														@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:PICKER_SEARCH;
+
+													}
+
+												}
+
+												// REMOVE IMAGE
+												img {
+													display: none;
+												}
+											}
+										}
+
+
+									}
+								}
+							}
+						}
+					}
+
+					fieldset {
+						// Messing up width of form
+						.x-form-label-left {
+							width: 100%!important
+						}
 					}
 
 
@@ -328,10 +454,15 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 				}
 
 				pointer-events: all!important;
-				&::after {
-					// background: yellow;
-					color: $COLOUR--GREY_CLOUDS;
+
+				.x-panel-header-text {
+					// LABEL
+					&::after {
+						color: $COLOUR--GREY_CLOUDS;
+
+					}
 				}
+
 			}
 		}
 
@@ -341,7 +472,8 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 
 			width: 60px!important;
 			padding: 0;
-			height: 40px;
+			height: 45px;
+			margin-top: 3px;
 			margin-bottom: 10px;
 			opacity: 0.8;
 
@@ -349,17 +481,7 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 				opacity: 1;
 			}
 
-			// LABEL
-			&::after {
-				content: "Sites";
-				display: block;
-				// background: red;
-				width: 60px;
-				text-align: center;
-				text-transform: uppercase;
 
-				@include text(8px, $COLOUR--JAHIA_BLUE, $FONT--WEIGHT---NORMAL);
-			}
 
 			// ICON
 			img {
@@ -378,6 +500,24 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 
 				margin: 0 auto;
 
+				// Set labels for tabs
+				&[src="/icons/websiteRepository.png"] ~ .x-panel-header-text::after {
+					content: "Current Site"!important;
+				}
+
+				&[src="/icons/sitesRepository.png"] ~ .x-panel-header-text::after {
+					content: "All Sites"!important;
+				}
+
+				&[src="/icons/myExternalRepository.png"] ~ .x-panel-header-text::after {
+					content: "External Repositories"!important;
+				}
+
+				&[src="/icons/myRepository.png"] ~ .x-panel-header-text::after {
+					content: "Workspace"!important;
+				}
+
+
 			}
 
 			// TOOLBAR (Refresh, minimise)
@@ -394,7 +534,26 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 
 			// TITLE
 			.x-panel-header-text {
-				display: none;
+				visibility: hidden;
+			    position: relative;
+
+				// LABEL
+				&::after {
+					content: "Saved Searches";
+					display: block;
+					width: 60px;
+					text-align: center;
+					text-transform: uppercase;
+					font-family: "Nunito Sans", sans-serif;
+					font-size: 8px;
+					color: #00a0e3;
+					font-weight: 400;
+					visibility: visible;
+					position: absolute;
+					top: 0;
+
+					@include text(8px, $COLOUR--JAHIA_BLUE, $FONT--WEIGHT---NORMAL);
+				}
 			}
 
 		}
@@ -403,22 +562,23 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 		.x-panel-bwrap {
 			position: absolute;
 			right: 0;
-			width: calc(100% - 60px)!important;
+			width: calc(100% - 80px)!important;
 			// background: purple;
 			left: auto!important;
-			padding-top: 2px;
 			box-sizing: border-box;
 		}
 	}
 
 	// TREE CONTENT CONTAINER
 	#JahiaGxtManagerLeftTree + div {
-		width: calc(100% - 320px) !important;
+		width: calc(100% - 340px) !important;
 	    // background: orange;
 	    left: auto!important;
 	    position: relative!important;
 	    display: inline-block;
 	    vertical-align: top;
+		margin-top: 6px;
+    	height: calc(100% - 6px)!important;
 
 		#images-view {
 			// Toolbar for thumb view

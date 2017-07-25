@@ -433,6 +433,8 @@
 			position: absolute;
 		    top: 77px;
 		    left: 359px;
+			width: 100%;
+    		pointer-events: none;
 
 			@extend %CSS_BLOCK--EDIT_ENGINE--TITLE;
 
@@ -475,12 +477,14 @@
 			height: 100%!important;
 			overflow: scroll;
 
-			.edit-content-engine {
+			.edit-content-engine,
+			.create-content-engine {
 
 				width: 100%!important;
 				height: 100%!important;
 
-				#JahiaGxtEditEngineTabs {
+				#JahiaGxtEditEngineTabs,
+				> div {
 					// Edit Engine COntent Container
 					width: 100%!important;
 					height: 100%!important;
@@ -645,13 +649,22 @@
 						// Make suggested colour
 						@include button("ACTIONBAR---SUGGESTED");
 
-						button {
-							//@extend %button_suggested;
+
+					}
+
+					&:nth-child(3) {
+						/* Cancel */
+						padding-bottom: 20px;
+
+
+						// VERY DIRTY !!! INSTALL LATEST VERSION OF SASS COMPILER TO USE selector-append()
+						@at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3){
+							@include button("ACTIONBAR---SUGGESTED");
 
 						}
 					}
 
-					&:nth-child(3) {
+					&:nth-child(4) {
 						/* Cancel */
 						padding-bottom: 20px;
 					}

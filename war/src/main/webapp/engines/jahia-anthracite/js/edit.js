@@ -58,7 +58,7 @@
 
 						$(".toolbar-item-filepreview")
 							.css({
-								top: (topPosition + 124) + "px"
+								top: (topPosition + 130) + "px"
 							})
 							.addClass("indigo-show-button");
 
@@ -141,6 +141,23 @@
 			},
 
 			// Edit Engine Controller
+			imagePreview: function(state){
+				switch(state){
+					case "open":
+						console.log("OPENED IMAGE PREVIEW");
+						$("body").attr("data-INDIGO-IMAGE-PREVIEW", "open");
+
+						// Attribute used to display the friendly name in edit panel
+						$(".engine-panel > div.x-panel-header .x-panel-header-text").attr("data-friendly-name", nodeDisplayName);
+						break;
+
+					case "close":
+						console.log("CLOSED IMAGE PREVIEW");
+						$("body").attr("data-INDIGO-IMAGE-PREVIEW", "");
+						break;
+				}
+			},
+
 			editEngine: function(state){
 				var nodeDisplayName = $("body").attr("data-singleselection-node-displayname");
 
@@ -724,11 +741,14 @@
 						mutations.forEach(function(mutation){
 
 							if(mutation.removedNodes.length > 0){
+
 								if($(mutation.removedNodes[0]).attr("id") == "JahiaGxtContentPickerWindow"){
 									indigoQF.listeners.picker("close");
 
 								} else if($(mutation.removedNodes[0]).attr("id") == "JahiaGxtEnginePanel"){
 									indigoQF.listeners.editEngine("close");
+								} else if($(mutation.removedNodes[0]).attr("id") == "JahiaGxtImagePopup"){
+									indigoQF.listeners.imagePreview("close");
 								}
 							}
 
@@ -737,6 +757,8 @@
 									indigoQF.listeners.picker("open");
 								} else if($(mutation.addedNodes[0]).attr("id") == "JahiaGxtEnginePanel"){
 									indigoQF.listeners.editEngine("open");
+								} else if($(mutation.addedNodes[0]).attr("id") == "JahiaGxtImagePopup"){
+									indigoQF.listeners.imagePreview("open");
 								}
 							}
 

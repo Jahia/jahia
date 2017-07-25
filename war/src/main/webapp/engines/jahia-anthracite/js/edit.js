@@ -51,6 +51,30 @@
 					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", function(){
 						console.log("REMOVE");
 						$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
+					})
+					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", function(e){
+						var row = $(this),
+							topPosition = row.position().top;
+
+						$(".toolbar-item-filepreview")
+							.css({
+								top: (topPosition + 124) + "px"
+							})
+							.addClass("indigo-show-button");
+
+						//row.find("td:nth-child(1)").trigger("click");
+						//row.trigger("click");
+
+
+						//row.find(".x-grid3-cell").triggerHandler("click");
+
+					})
+					.on("mouseenter", ".toolbar-item-filepreview", function(e){
+						$(".toolbar-item-filepreview").addClass("indigo-show-button");
+
+					})
+					.on("mouseleave", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", function(e){
+						$(".toolbar-item-filepreview").removeClass("indigo-show-button")
 					});
 
 				// Setup side panel listeners accordingly to naviagtion style (rollover or click) as defined in indigoQF.status.panelMenu.style

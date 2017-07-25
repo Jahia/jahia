@@ -35,8 +35,14 @@
 	}
 
 	// Override mask all when Modal Mask is on
-	.x-masked > div {
-		opacity: 1;
+	.x-masked {
+		&:before {
+			content: "";
+		}
+
+		> div {
+			opacity: 1;
+		}
 	}
 
 	// Remove Loading Animation when Panel is open

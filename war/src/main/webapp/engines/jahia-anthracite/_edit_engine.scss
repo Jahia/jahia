@@ -2,7 +2,7 @@
 // EDIT ENGINE //////////////////////////////////
 /////////////////////////////////////////////////
 
-body {
+/*body {
 
 	&:before {
 		content: attr(data-singleselection-node-displayname);
@@ -16,7 +16,7 @@ body {
 	    font-size: 18px!important;
 	}
 
-}
+}*/
 
 .engine-panel {
 	z-index: $ZINDEX--SIDE_PANEL--EDIT_ENGINE;
@@ -435,6 +435,16 @@ body {
 		    left: 359px;
 
 			@extend %CSS_BLOCK--EDIT_ENGINE--TITLE;
+
+			&::before {
+				content: attr(data-friendly-name);
+			    display: block;
+			    position: absolute;
+			    top: -18px;
+			    left: 0px;
+
+				@include text(18px !important, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT)
+			}
 
 		}
 	}

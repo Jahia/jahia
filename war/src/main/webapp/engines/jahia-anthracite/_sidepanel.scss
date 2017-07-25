@@ -284,6 +284,12 @@
 				height:calc(100% - 90px) !important;
 				padding-right: 20px;
 				box-sizing: border-box;
+				display: none;
+
+				body[data-indigo-gwt-side-panel="open"] & {
+					display: block
+				}
+
 
 				&::before {
 					content: "Title Here";

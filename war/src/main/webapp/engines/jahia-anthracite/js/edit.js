@@ -140,6 +140,41 @@
 
 			},
 
+			// Edit Engine Controller
+			editEngine: function(state){
+				var nodeDisplayName = $("body").attr("data-singleselection-node-displayname");
+
+				switch(state){
+					case "open":
+						console.log("OPENED EDIT ENGINE for ", nodeDisplayName);
+						$("body").attr("data-INDIGO-EDIT-ENGINE", "open");
+
+						// Attribute used to display the friendly name in edit panel
+						$(".engine-panel > div.x-panel-header .x-panel-header-text").attr("data-friendly-name", nodeDisplayName);
+						break;
+
+					case "close":
+						console.log("CLOSED EDIT ENGINE");
+						$("body").attr("data-INDIGO-EDIT-ENGINE", "");
+						break;
+				}
+			},
+
+			// Picker Controller
+			picker: function(state){
+				switch(state){
+					case "open":
+						console.log("OPENED PICKER");
+						$("body").attr("data-INDIGO-PICKER", "open");
+						break;
+
+					case "close":
+						console.log("CLOSED PICKER");
+						$("body").attr("data-INDIGO-PICKER", "");
+						break;
+				}
+			},
+
 			// Clear Multi select
 			clearMultiSelection: function(e){
 				$("iframe").trigger("click");
@@ -671,8 +706,8 @@
 					config = {
 						attributes: true,
 						childList: true,
-						characterData: true
-						//subtree: true
+						characterData: true,
+						subtree: true
 					},
 
 					// Attach Mutation Observer to the BODY tag
@@ -687,6 +722,23 @@
 
 						// Loop through all mutations in BODY tag
 						mutations.forEach(function(mutation){
+
+							if(mutation.removedNodes.length > 0){
+								if($(mutation.removedNodes[0]).attr("id") == "JahiaGxtContentPickerWindow"){
+									indigoQF.listeners.picker("close");
+
+								} else if($(mutation.removedNodes[0]).attr("id") == "JahiaGxtEnginePanel"){
+									indigoQF.listeners.editEngine("close");
+								}
+							}
+
+							if(mutation.addedNodes.length > 0){
+								if($(mutation.addedNodes[0]).attr("id") == "JahiaGxtContentPickerWindow"){
+									indigoQF.listeners.picker("open");
+								} else if($(mutation.addedNodes[0]).attr("id") == "JahiaGxtEnginePanel"){
+									indigoQF.listeners.editEngine("open");
+								}
+							}
 
 							if(mutation.attributeName == "class"){
 								if($("body").hasClass("x-dd-cursor")){

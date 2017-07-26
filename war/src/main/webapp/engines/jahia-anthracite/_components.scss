@@ -1,8 +1,306 @@
 /////////////////////////////////////////////////
-// COMBOS ///////////////////////////////////////
+// DATE PICKER //////////////////////////////////
 /////////////////////////////////////////////////
 
+$DATE_PICKER--BG--COLOUR: red;
 
+// MAIN CONTAINER
+.x-date-menu {
+	box-shadow: none;
+
+	// Another container
+	.x-menu-list {
+		padding: 5px 10px 10px;
+	    background: $DATE_PICKER--BG--COLOUR;
+
+		// Yet another container
+		.x-menu-list-item {
+
+			// Last container
+			.x-date-picker {
+				background: transparent;
+
+				// Header and footer containers
+				> table {
+
+					// Month navigator container
+					&:nth-child(1) {
+
+						td {
+							background: transparent;
+							padding: 5px 5px 10px;
+
+
+							// Previous month button contaeinr
+							&.x-date-left {
+
+								// button (can not use the button() mixin here)
+								.x-date-left-icon {
+									background-image:url(./images/icons/icon_arrow_left_single_white@X2.png)!important;
+									background-size: 16px 16px;
+
+									opacity: 0.8;
+
+									&:hover {
+										opacity: 1;
+									}
+
+								}
+							}
+
+							// Month Combo Container (actually a button - do not use button() mixin)
+							&.x-date-middle {
+
+								// Button container, contains downward arrow
+								.x-btn-arrow {
+
+									background: url($ICON--ARROW_DOWN---WHITE) no-repeat right center;
+									padding-right: 15px;
+
+									// Actual button, contains label
+									button {
+										text-transform: uppercase;
+										@include text(11px, white, $FONT--WEIGHT---NORMAL)
+									}
+								}
+
+							}
+
+							// Next month button contaeinr
+							&.x-date-right {
+
+								// button (can not use the button() mixin here)
+								.x-date-right-icon {
+									background-image:url(./images/icons/icon_arrow_right_single_white@X2.png)!important;
+									background-size: 16px 16px;
+
+									opacity: 0.8;
+
+									&:hover {
+										opacity: 1;
+									}
+
+
+								}
+							}
+						}
+
+					}
+
+
+					// Today Link button
+					&:nth-child(3) {
+						background: transparent;
+						// Today link container
+						.x-date-bottom {
+
+							background: transparent;
+							border:none;
+							padding: 0;
+
+							.x-btn-text {
+								height: auto;
+								padding: 4px;
+								background: purple;
+								@include text(11px, red, $FONT--WEIGHT---LIGHT);
+
+								&:hover {
+									color: yellow;
+									background: orange;
+								}
+							}
+
+
+						}
+
+					}
+				}
+
+				// Date grid container
+				> div {
+
+					// Header days of week
+					.x-date-days {
+
+						// Day of week container
+						td {
+							width: 25px;
+							border:none;
+							@include text(10px, white, $FONT--WEIGHT---BOLD);
+						}
+
+						// Day of week label
+						span {
+
+						}
+
+					}
+
+					// Days of month container
+					.x-date-inner {
+
+						// Day entry
+						td {
+
+							border: none;
+							width: 25px;
+							height: 25px;
+
+							// Day container
+							a {
+								text-align: center;
+							    height: 100%;
+							    line-height: 21px;
+
+								font-weight: inherit;
+								color: inherit;
+							}
+
+							// Day label
+							span {
+								font-weight: inherit;
+								color: inherit;
+							}
+
+							// Selected date
+							&.x-date-selected {
+								background: green;
+
+								// Hover date
+								&.x-date-active-hover {
+									background: green!important;
+
+									span {
+										color: aqua;
+									}
+								}
+
+								a {
+									border:none;
+									background: transparent;
+
+								}
+
+								span {
+									color: aqua;
+								}
+							}
+
+							// Day belonging to previous month
+							&.x-date-prevday {
+								font-weight: $FONT--WEIGHT---EXTRALIGHT;
+								color: black;
+							}
+
+							// Day belonging to current month
+							&.x-date-active {
+								font-weight: $FONT--WEIGHT---EXTRALIGHT;
+								color: yellow;
+							}
+
+							// Day belonging to following month
+							&.x-date-nextday {
+								font-weight: $FONT--WEIGHT---EXTRALIGHT;
+								color: black;
+							}
+
+							// Hover date
+							&.x-date-active-hover {
+								background: purple!important;
+							}
+						}
+
+					}
+				}
+			}
+
+			// Drop down to change month / year
+			.x-date-mp {
+
+				width: calc(100% + 20px)!important;
+				top: -5px!important;
+				left: -10px!important;
+				height: calc(100% + 15px)!important;
+				background: yellow;
+
+				// Top Container
+				> table {
+
+					width: 100%!important;
+					height: 100%!important;
+
+					td {
+						width: 25px;
+						height: 25px;
+
+						// Actual button
+						a {
+
+							font-size: inherit;
+							font-weight: inherit;
+							font-family: inherit;
+							color: inherit;
+						}
+
+						// Month button
+						&.x-date-mp-month {
+							@include text(12px, blue, $FONT--WEIGHT---EXTRABOLD);
+						}
+
+						// Year button
+						&.x-date-mp-year {
+
+						}
+
+						// Selected button
+						&.x-date-mp-sel {
+
+						}
+
+						// Year naviagtion button
+						&.x-date-mp-ybtn {
+
+							// Previous year block button
+							.x-date-mp-prev {
+
+							}
+
+							// Following year block button
+							.x-date-mp-next {
+
+							}
+
+						}
+					}
+
+				}
+
+				// OK, Cancel buttons container
+				.x-date-mp-btns {
+
+
+					// OK button
+					.x-date-mp-ok {
+
+					}
+
+					// Cancel button
+					.x-date-mp-cancel {
+
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+
+
+/////////////////////////////////////////////////
+// COMBOS ///////////////////////////////////////
+/////////////////////////////////////////////////
 
 .x-combo-list {
 	/* Combo Outer Container */

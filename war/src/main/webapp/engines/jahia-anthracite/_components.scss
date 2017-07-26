@@ -675,6 +675,10 @@ div[role="combobox"] {
     right: 0px;
 	height: 24px!important;
 
+	.x-triggerfield-noedit + & {
+		border:5px solid blue!important;
+	}
+
 	.x-form-twin-triggers & {
 		/* Button is in a container, because there are multiple buttons */
 		display: inline-block;
@@ -688,7 +692,7 @@ div[role="combobox"] {
 	&.x-form-clear-trigger {
 		/* Clear button */
 		position: absolute!important;
-		right: 0px!important;
+		left: 0px!important;
 
 
 	}
@@ -697,7 +701,13 @@ div[role="combobox"] {
 
 	&.x-form-trigger-arrow {
 		/* Combo Down Arrow Button */
+		right: 0;
+
 		@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP !optional;
+
+		.x-triggerfield-noedit + .x-form-twin-triggers  & {
+			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:OPEN_PICKER !optional;
+		}
 
 		.engine-panel & {
 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:EDIT_ENGINE !optional;
@@ -711,6 +721,10 @@ div[role="combobox"] {
 
 		&.x-form-trigger-over {
 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER !optional;
+
+			.x-triggerfield-noedit + .x-form-twin-triggers  & {
+				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:OPEN_PICKER !optional;
+			}
 
 			.engine-panel & {
 				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:EDIT_ENGINE !optional;
@@ -771,8 +785,9 @@ div[role="combobox"] {
 	/* Container used when more than one button */
 	display: block;
     position: absolute;
-    right: 17px;
+    right: 0;
     top: 0;
+	width: 34px;
 }
 
 

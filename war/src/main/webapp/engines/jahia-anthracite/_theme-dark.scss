@@ -158,6 +158,12 @@
     $FORM--COMBO--ICON---HOVER:                                     $ICON--ARROW_DOWN---WHITE;
     $FORM--COMBO--BG--COLOUR---HOVER:                               rgba($COLOUR--GREY_CLOUDS, .7);
 
+    // OPEN PICKER COMBOS
+    $FORM--COMBO--ICON---UP\:OPEN_PICKER:                           $ICON--MORE_OPTIONS---WHITE;
+    $FORM--COMBO--BG--COLOUR---UP\:OPEN_PICKER:                     transparent;
+    $FORM--COMBO--ICON---HOVER\:OPEN_PICKER:                        $ICON--MORE_OPTIONS---WHITE;
+    $FORM--COMBO--BG--COLOUR---HOVER\:OPEN_PICKER:                  transparent;
+
 	// CONTEXT MENUS
     $FORM--CONTEXT_MENU--BG--COLOUR---UP:                           $COLOUR--JAHIA_BLUE;
     $FORM--CONTEXT_MENU--BG--COLOUR---HOVER:                        lighten($FORM--CONTEXT_MENU--BG--COLOUR---UP, 5%);
@@ -814,11 +820,24 @@
         background: no-repeat center center;
         background-color: $FORM--COMBO--BG--COLOUR---UP !important;
         background-image: url($FORM--COMBO--ICON---UP);
+        font-style:italic;
     }
 
     %CSS_BLOCK--FORM--COMBO--ARROW---HOVER {
         background-color: $FORM--COMBO--BG--COLOUR---HOVER !important;
         background-image: url($FORM--COMBO--ICON---HOVER);
+    }
+
+    %CSS_BLOCK--FORM--COMBO--ARROW---UP\:OPEN_PICKER {
+        background: no-repeat center center;
+        background-color: $FORM--COMBO--BG--COLOUR---UP\:OPEN_PICKER !important;
+        background-image: url($FORM--COMBO--ICON---UP\:OPEN_PICKER);
+        font-style:italic;
+    }
+
+    %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:OPEN_PICKER {
+        background-color: $FORM--COMBO--BG--COLOUR---HOVER\:OPEN_PICKER !important;
+        background-image: url($FORM--COMBO--ICON---HOVER\:OPEN_PICKER);
     }
 
     %CSS_BLOCK--FORM--COMBO--TEXT_INPUT {

@@ -1,18 +1,17 @@
 (function(){
 	var indigoQF = {
 		init: function(){
+			// Copy Anthracite CSS to remove / add when dropping in and out of STUDIO mode
+			indigoQF.status.css.storedCSS = $('link[rel=stylesheet][href="/engines/jahia-anthracite/edit_en.css"]').clone();
+
+			// Check what mode the page is ( edit, contrbute, studio, etc, etc ...)
+			indigoQF.listeners.checkMode();
 
 			if(indigoQF.status.quickMenu.active){
-				console.log("ITS ACTIVE");
 				$("body")
 					.attr("data-quick-menu", "on")
 					.prepend("<div id='quick-menu'><iframe scrolling='no' id='quick-menu-contents'></iframe></div>");
 				$('#quick-menu-contents').attr("src", '/cms/dashboardframe/default/en/users/root.projects.html');
-
-
-
-				console.log(indigoQF.status.user);
-
 			}
 
 
@@ -49,7 +48,7 @@
 					.on("click", ".x-current-page-path", indigoQF.listeners.clearMultiSelection)
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", indigoQF.listeners.addPageToHistory)
 					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", function(){
-						console.log("REMOVE");
+						// console.log("REMOVE");
 						$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
 					})
 					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", function(e){
@@ -96,6 +95,10 @@
 
 		},
 		status: {
+			css: {
+				storedCSS: null,
+				active: true
+			},
 			sidePanelTabs: {
 				mouseOutTimer: null,
 				justBeenClosed: false
@@ -141,11 +144,70 @@
 
 			},
 
+			checkMode: function(element){
+
+				// When the page is loaded for the first time, the config attr value is valid, however, once the user changes modes
+				// via the naviagtion it is no longer updated. So, in that case we need to react to changes in a class name that is added to another div.
+
+				if(element){
+					// Used when the user has changed modes by clicking on links
+
+					if($(element).hasClass("x-viewport-editmode")){
+						indigoQF.listeners.changedMode("editmode");
+					} else if($(element).hasClass("x-viewport-contributemode")){
+						indigoQF.listeners.changedMode("contributemode");
+					} else if($(element).hasClass("x-viewport-studiomode")){
+						indigoQF.listeners.changedMode("studiomode");
+					} else if($(element).hasClass("x-viewport-adminmode")){
+						indigoQF.listeners.changedMode("adminmode");
+					} else if($(element).hasClass("x-viewport-dashboardmode")){
+						indigoQF.listeners.changedMode("dashboardmode");
+					}
+				} else {
+					// Used when the page is first loaded
+					var pageLoadMode = $("body > div:nth-child(1)").attr("config");
+					indigoQF.listeners.changedMode(pageLoadMode);
+
+				}
+
+
+			},
+
+			// User has changed modes
+			changedMode: function(mode){
+				switch(mode){
+					case "studiomode":
+						// Remove Anthracite CSS style sheet
+						$('link[rel=stylesheet][href="/engines/jahia-anthracite/edit_en.css"]').remove();
+
+						// Register the fact that it has been removed
+						indigoQF.status.css.active = false;
+						break;
+
+					case "editmode":
+					case "contributemode":
+					case "adminmode":
+					case "dashboardmode":
+					default:
+
+						if(!indigoQF.status.css.active){
+							// Anthracite CSS has been removed, so plug it back in
+							$("head").append(indigoQF.status.css.storedCSS);
+						}
+
+						break;
+				}
+
+				$("body").attr("data-LOADED", true)
+			},
+
+
+
 			// Edit Engine Controller
 			imagePreview: function(state){
 				switch(state){
 					case "open":
-						console.log("OPENED IMAGE PREVIEW");
+						// console.log("OPENED IMAGE PREVIEW");
 						$("body").attr("data-INDIGO-IMAGE-PREVIEW", "open");
 
 						// Attribute used to display the friendly name in edit panel
@@ -153,7 +215,7 @@
 						break;
 
 					case "close":
-						console.log("CLOSED IMAGE PREVIEW");
+						// console.log("CLOSED IMAGE PREVIEW");
 						$("body").attr("data-INDIGO-IMAGE-PREVIEW", "");
 						break;
 				}
@@ -164,7 +226,7 @@
 
 				switch(state){
 					case "open":
-						console.log("OPENED EDIT ENGINE for ", nodeDisplayName);
+						// console.log("OPENED EDIT ENGINE for ", nodeDisplayName);
 						$("body").attr("data-INDIGO-EDIT-ENGINE", "open");
 
 						// Attribute used to display the friendly name in edit panel
@@ -172,7 +234,7 @@
 						break;
 
 					case "close":
-						console.log("CLOSED EDIT ENGINE");
+						// console.log("CLOSED EDIT ENGINE");
 						$("body").attr("data-INDIGO-EDIT-ENGINE", "");
 						break;
 				}
@@ -182,12 +244,12 @@
 			picker: function(state){
 				switch(state){
 					case "open":
-						console.log("OPENED PICKER");
+						// console.log("OPENED PICKER");
 						$("body").attr("data-INDIGO-PICKER", "open");
 						break;
 
 					case "close":
-						console.log("CLOSED PICKER");
+						// console.log("CLOSED PICKER");
 						$("body").attr("data-INDIGO-PICKER", "");
 						break;
 				}
@@ -201,9 +263,9 @@
 			panelMenuModifyDOM: function(){
 				/* PROBLEM ::: CONTENT OF GRID ROW IS EMPTY AT THE TIME OF PROCESSING */
 				// panelMenuModifyDOM() ::: Used to add class names / attributes to side panel so that it can be correctly displayed with CSS"
-				console.log("panelMenuModifyDOM() ::: recode DOM");
-				console.log("tab_serverSettings", $("#JahiaGxtSidePanelTabs .tab_serverSettings .x-grid3-row").length);
-				console.log("tab_systemSiteSettings", $("#JahiaGxtSidePanelTabs .tab_systemSiteSettings .x-grid3-row").length);
+				// console.log("panelMenuModifyDOM() ::: recode DOM");
+				// console.log("tab_serverSettings", $("#JahiaGxtSidePanelTabs .tab_serverSettings .x-grid3-row").length);
+				// console.log("tab_systemSiteSettings", $("#JahiaGxtSidePanelTabs .tab_systemSiteSettings .x-grid3-row").length);
 
 
 				var menu = $("#JahiaGxtSidePanelTabs .tab_serverSettings .x-grid3-row"),
@@ -327,7 +389,7 @@
 				switch(indigoQF.status.currentPage.displayname){
 					case "settings":
 					case "System Site":
-						console.log("trigger the clicks");
+						// console.log("trigger the clicks");
 						// Need to trigger a click on Settings tabs to make sure that the menus are loaded in advance.
 						$("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("click");
 
@@ -453,7 +515,7 @@
 					"margin-left": "-" + (contributeMode.pageNameWidth / 2) + "px"
 				});
 
-				console.log("margin-left:" + (contributeMode.pageNameWidth / 2) + "px");
+				// console.log("margin-left:" + (contributeMode.pageNameWidth / 2) + "px");
 
 				// Publication Menu
 				$(".contribute-menu-publication").css({
@@ -576,7 +638,7 @@
 
 			},
 			clickSidePanelSettingsTab: function(forceClick){
-				console.log("Side panel settings");
+				// console.log("Side panel settings");
 				// User has clicke the Settings Tab Button.
 				if(indigoQF.status.currentPage.displayname != "settings" && ($("body").attr("data-sitesettings") == "false" || forceClick)){
 					$("body").attr("data-edit-window-style", "settings");
@@ -622,7 +684,7 @@
 			},
 			closeSidePanel: function(){
 				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
-				console.log("CLOSE IT");
+				// console.log("CLOSE IT");
 
 			},
 			addPageToHistory: function(){
@@ -698,12 +760,12 @@
 			},
 			clickSidePanelMoreOptionsButton: function(e){
 				// Open Context Menu when clicking "More" button.
-				console.log(e.target);
+				// console.log(e.target);
 				var clickedElement = $(e.target),
 					acceptClick = clickedElement.hasClass("x-grid3-td-displayName");
 
 				if(acceptClick){
-					console.log("VALID CLICK FOR MORE OPTIONS");
+					// console.log("VALID CLICK FOR MORE OPTIONS");
 					var eV = new jQuery.Event("contextmenu");
 						eV.clientX = e.pageX;
 						eV.clientY = e.pageY;
@@ -770,14 +832,24 @@
 								} else if($(mutation.addedNodes[0]).attr("id") == "JahiaGxtImagePopup"){
 									indigoQF.listeners.imagePreview("open");
 								}
+
 							}
 
+
 							if(mutation.attributeName == "class"){
+								indigoQF.listeners.checkMode(mutation.target);
+
+
+
 								if($("body").hasClass("x-dd-cursor")){
 									// x-dd-cursor class is what GWT uses to say that a drag and drop has started.
 									indigoQF.listeners.closeSidePanel();
 
 								}
+
+								// if($("body > div:nth-child(1) > div:nth-child(1)").hasClass("x-viewport-editmode")){
+								// 	console.log("EDIT MODE");
+								// }
 
 							}
 
@@ -790,10 +862,10 @@
 							}
 
 							if(mutation.attributeName == "data-sitesettings"){
-								console.log("DATA SITE SETTINGS CHANGE ...", $("body").attr("data-sitesettings"));
+								// console.log("DATA SITE SETTINGS CHANGE ...", $("body").attr("data-sitesettings"));
 
 								if($("body").attr("data-sitesettings") == "true" && $("body").attr("data-edit-window-style") != "settings"){
-									console.log("Gona trigger the click", $("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"));
+									// console.log("Gona trigger the click", $("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab"));
 									indigoQF.listeners.clickSidePanelSettingsTab(true);
 								}
 							}

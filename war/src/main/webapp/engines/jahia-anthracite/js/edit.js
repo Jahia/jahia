@@ -128,6 +128,7 @@
 				editModePageName: ".x-border-panel.x-border-layout-ct > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)",
 				editModeMoreInfo: "body[data-selection-count='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)",
 				contributeModeLanguageSelector: ".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div input",
+				editModeLanguageSelector: ".mainmodule-head-container .toolbar-itemsgroup-languageswitcher",
 				closeSidePanelCapture: "[data-INDIGO-GWT-SIDE-PANEL='open'] .x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(2) > div:nth-child(2)",
 				closeSidePanelCapture: "[data-INDIGO-GWT-SIDE-PANEL='open'] .gwt-body-edit"
 			}
@@ -427,6 +428,9 @@
 					"opacity": 1
 				});
 
+				// More Language Menu (previously labeled as Edit )
+				$(indigoQF.config.selectors.editModeLanguageSelector).attr("style", "left: " + (editMode.pageNameLeft + 92) + "px !important; opacity: 1");
+
 				// CONTRIBUTE MODE page title positions
 				var contributeMode = {};
 					contributeMode.pageNameWidth = function(){
@@ -448,6 +452,8 @@
 				$(indigoQF.config.selectors.contributeModeLanguageSelector).css({
 					"margin-left": "-" + (contributeMode.pageNameWidth / 2) + "px"
 				});
+
+				console.log("margin-left:" + (contributeMode.pageNameWidth / 2) + "px");
 
 				// Publication Menu
 				$(".contribute-menu-publication").css({

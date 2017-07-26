@@ -598,6 +598,10 @@
 			clickSidePanelTab: function(){
 				// User has clicked on one of the side panel tabs (except for Settings Tab which calls indigoQF.listeners.clickSidePanelSettingsTab)
 
+				var clickedTabID = $(this).attr("id");
+
+				$("body").attr("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
+
 				// Menus for the Tabs that call this listener require a normal side panel display
 				$("body").attr("data-edit-window-style", "default");
 

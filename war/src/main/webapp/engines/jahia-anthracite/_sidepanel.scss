@@ -7,6 +7,43 @@
 	height: 100%;
 	pointer-events: none;
 
+	.edit-menu-sites {
+		/* Site Selector */
+		pointer-events: all !important;
+		width: 250px!important;
+		display:none;
+
+		> table {
+			width: 100%!important;
+		}
+
+		.x-form-field-wrap {
+			width:auto!important;
+
+		}
+
+		body[data-INDIGO-GWT-PANEL-TAB="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
+			display: block;
+		}
+	}
+
+	#JahiaGxtRefreshSidePanelButton {
+		/* Refresh side panel button */
+		pointer-events: all;
+		background: url(./images/icons/icon-publication-launcher-grey.png) no-repeat center center;
+		left: 301px;
+		position: fixed;
+		top: 29px;
+		/* background-size: 70%; */
+		height: 24px;
+		width: 17px;
+		opacity: 0.5;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+
 	.x-panel-header-text {
 		display: none;
 	}
@@ -14,7 +51,7 @@
 	.x-panel-header {
 		/* Contains Site Selector and Side Panel Refresh Button */
 		position: absolute !important;
-	    top: 15px!important;
+	    top: 35px!important;
 		left: 71px !important;
 	    z-index: $ZINDEX--SIDE_PANEL--HEADER;
 	    opacity: 1;
@@ -25,38 +62,6 @@
 
 		body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
 			display: block;
-		}
-
-		.edit-menu-sites {
-			/* Site Selector */
-			pointer-events: all !important;
-			width: 250px!important;
-
-			> table {
-				width: 100%!important;
-			}
-
-			.x-form-field-wrap {
-				width:auto!important;
-
-			}
-		}
-
-		#JahiaGxtRefreshSidePanelButton {
-			/* Refresh side panel button */
-		    pointer-events: all;
-			background: url(./images/icon-publication-launcher.png) no-repeat center center;
-			left: 214px;
-		    position: absolute;
-		    top: 0px;
-		    background-color: rgba($COLOUR--GREY_CLOUDS, .4);
-		    background-size: 70%;
-		    height: 24px;
-		    width: 17px;
-
-			&:hover {
-				background-color: rgba($COLOUR--GREY_CLOUDS, .7);
-			}
 		}
 
 		.x-tool-left {
@@ -276,8 +281,12 @@
 			height: 100%!important;
 			vertical-align: top;
 			background: transparent;
-			margin-top: 30px;
+			margin-top: 20px;
 			margin-left: 11px;
+
+			body[data-INDIGO-GWT-PANEL-TAB="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
+				margin-top: 52px;
+			}
 
 			> .x-component {
 				// Common for ALL Side Panel Contents

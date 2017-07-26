@@ -522,7 +522,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             sendMailEndpointUri = null;
 
             if (evt instanceof RootContextInitializedEvent
-                    && Boolean.getBoolean(SettingsBean.JAHIA_SAFE_BACKUP_RESTORE_SYSTEM_PROP)) {
+                    && Boolean.getBoolean(SettingsBean.JAHIA_BACKUP_RESTORE_SYSTEM_PROP)) {
                 logger.info("Detected safe backup restore marker, checking if the mail service needs to be disabled...");
 
                 try {

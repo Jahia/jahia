@@ -183,16 +183,8 @@ html {
 }
 
 body {
-	background: url($ICON--DX---WHITE) center center no-repeat $APP--BG--COLOUR---LOADING;
-	width: 100%;
-	height: 100%;
-	opacity: 0;
+	background: $APP--BG--COLOUR;
 	transition: all 0.3s ease-in 0s;
-
-	&[data-loaded="true"] {
-		background: $APP--BG--COLOUR;
-		opacity: 1;
-	}
 
     &[data-multiselect="on"] {
 		/* Multiselect */

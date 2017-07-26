@@ -113,8 +113,8 @@ import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProper
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
 
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
-    private static final String JAHIA_SAFE_BACKUP_RESTORE_MARKER = "safe-backup-restore";
-    public static final String JAHIA_SAFE_BACKUP_RESTORE_SYSTEM_PROP = "jahia.safe-backup-restore";
+    private static final String JAHIA_BACKUP_RESTORE_MARKER = "backup-restore";
+    public static final String JAHIA_BACKUP_RESTORE_SYSTEM_PROP = "jahia.backup-restore";
     private static final Logger logger = LoggerFactory.getLogger(SettingsBean.class);
 
     private static SettingsBean instance = null;
@@ -519,9 +519,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
 
     private void checkSafeBackupRestore() {
-        File marker = new File(getJahiaVarDiskPath(), JAHIA_SAFE_BACKUP_RESTORE_MARKER);
+        File marker = new File(getJahiaVarDiskPath(), JAHIA_BACKUP_RESTORE_MARKER);
         if (marker.exists()) {
-            setSystemProperty(JAHIA_SAFE_BACKUP_RESTORE_SYSTEM_PROP, "true");
+            setSystemProperty(JAHIA_BACKUP_RESTORE_SYSTEM_PROP, "true");
 
             try {
                 if (clusterActivated) {

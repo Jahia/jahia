@@ -108,8 +108,8 @@
 	$FORM--TEXT_INPUT--FONT--COLOUR---HOVER:                        $COLOUR--DARK_CLOUDS;
     $FORM--TEXT_INPUT--FONT--COLOUR---FOCUS:                        $COLOUR--WHITE_CLOUDS;
     $FORM--TEXT_INPUT--FONT--COLOUR---DISABLED:                     rgba($COLOUR--GREY_CLOUDS, .7);
-    $FORM--TEXT_INPUT--BORDER--COLOUR:                              1px solid $COLOUR--TRANSPARENT;
-    $FORM--TEXT_INPUT--PADDING:                                     3px 40px 3px 5px;
+    $FORM--TEXT_INPUT--BORDER:                                      1px solid $COLOUR--TRANSPARENT !important;
+    $FORM--TEXT_INPUT--PADDING:                                     3px 40px 3px 5px !important;
     $FORM--TEXT_INPUT--FONT--WEIGHT:                                $FONT--WEIGHT---SEMILIGHT;
     $FORM--TEXT_INPUT--FONT--SIZE:                                  12px;
     $FORM--TEXT_INPUT--FONT--FAMILY:                                $DEFAULT--FONT--FAMILY;
@@ -123,7 +123,7 @@
 	$FORM--TEXT_AREA--FONT--COLOUR---HOVER:                        $COLOUR--DARK_CLOUDS;
     $FORM--TEXT_AREA--FONT--COLOUR---FOCUS:                        $COLOUR--WHITE_CLOUDS;
     $FORM--TEXT_AREA--FONT--COLOUR---DISABLED:                     rgba($COLOUR--GREY_CLOUDS, .7);
-    $FORM--TEXT_AREA--BORDER--COLOUR:                              1px solid $COLOUR--TRANSPARENT;
+    $FORM--TEXT_AREA--BORDER:                                      1px solid $COLOUR--TRANSPARENT;
     $FORM--TEXT_AREA--PADDING:                                     3px 40px 3px 5px;
     $FORM--TEXT_AREA--FONT--WEIGHT:                                $FONT--WEIGHT---SEMILIGHT;
     $FORM--TEXT_AREA--FONT--SIZE:                                  12px;
@@ -596,7 +596,7 @@
     %CSS_BLOCK--FORM--TEXT_INPUT {
         background: $FORM--TEXT_INPUT--BG--COLOUR;
         padding: $FORM--TEXT_INPUT--PADDING;
-        border: $FORM--TEXT_INPUT--BORDER--COLOUR;
+        border: $FORM--TEXT_INPUT--BORDER;
         transition: all 0.15s ease-in 0s;
 
         @include text($FORM--TEXT_INPUT--FONT--SIZE, $FORM--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
@@ -648,7 +648,7 @@
     %CSS_BLOCK--FORM--TEXT_AREA {
         background: $FORM--TEXT_AREA--BG--COLOUR !important;
         padding: $FORM--TEXT_AREA--PADDING !important;
-        border: $FORM--TEXT_AREA--BORDER--COLOUR !important;
+        border: $FORM--TEXT_AREA--BORDER !important;
         transition: none !important;
 
         @include text($FORM--TEXT_AREA--FONT--SIZE, $FORM--TEXT_AREA--FONT--COLOUR, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
@@ -823,7 +823,7 @@
 
     %CSS_BLOCK--FORM--COMBO--TEXT_INPUT {
         padding: $FORM--TEXT_INPUT--PADDING !important;
-        border: $FORM--TEXT_INPUT--BORDER--COLOUR;
+        border: $FORM--TEXT_INPUT--BORDER;
 		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
 		font-size: $FORM--TEXT_INPUT--FONT--SIZE;
 		font-weight: $FORM--TEXT_INPUT--FONT--WEIGHT;
@@ -842,7 +842,7 @@
 
         %CSS_BLOCK--FORM--COMBO--TEXT_INPUT\:EDIT_ENGINE {
             padding: $FORM--TEXT_INPUT--PADDING !important;
-            border: $FORM--TEXT_INPUT--BORDER--COLOUR;
+            border: $FORM--TEXT_INPUT--BORDER;
     		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
     		font-size: $FORM--TEXT_INPUT--FONT--SIZE;
     		font-weight: $FORM--TEXT_INPUT--FONT--WEIGHT;
@@ -864,7 +864,7 @@
 
         %CSS_BLOCK--FORM--COMBO--TEXT_INPUT\:PICKER_FILTER {
             padding: $FORM--TEXT_INPUT--PADDING !important;
-            border: $FORM--TEXT_INPUT--BORDER--COLOUR;
+            border: $FORM--TEXT_INPUT--BORDER;
     		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
     		font-size: $FORM--TEXT_INPUT--FONT--SIZE;
     		font-weight: $FORM--TEXT_INPUT--FONT--WEIGHT;
@@ -963,11 +963,27 @@
 	// If left blank then they will assume the default style applied above.
 
         // Menus available in ALL / MULTIPLE pages
-			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:COMMON_HAMBURGER {}
-			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:COMMON_HAMBURGER {}
-			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:COMMON_HAMBURGER {}
-			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:COMMON_HAMBURGER {}
-			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:COMMON_HAMBURGER {}
+            // Hamburger menu
+            %CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:COMMON_HAMBURGER {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:COMMON_HAMBURGER {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:COMMON_HAMBURGER {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:COMMON_HAMBURGER {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:COMMON_HAMBURGER {}
+
+            // Language Selector
+            %CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:LANGUAGE_SELECTOR {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:LANGUAGE_SELECTOR {
+                // border: 10px solid orangered;
+                //
+                // // Need extra Selector Weight ...
+                // &.x-combo-list-inner {
+                //     width: auto!important;
+                //
+                // }
+            }
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:LANGUAGE_SELECTOR {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:LANGUAGE_SELECTOR {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:LANGUAGE_SELECTOR {}
 
 		// Menus available in Edit Mode
 			// Publication
@@ -1202,32 +1218,33 @@
 
 			$personalised_context_menus: (
 				// COMMON MENUS
-				(".menu-editmode-managers-menu",    common_hamburger),
+				(".menu-editmode-managers-menu",    COMMON_HAMBURGER),
+                (".menu-toolbar-itemsgroup-languageswitcher", LANGUAGE_SELECTOR),
 
 				// EDIT MODE MENUS
-				(".menu-edit-menu-publication",     edit_mode_publication),
-				(".menu-edit-menu-view",      		edit_mode_preview),
-				(".menu-edit-menu-edit",      		edit_mode_more_info),
-				(".menu-edit-menu-mode",      		edit_mode_mode_view),
-				(".menu-edit-menu-user",      		edit_mode_user_menu),
-				(".menu-edit-menu-workflow",      	edit_mode_workflow),
-				(".menu-edit-menu-cache",      		edit_mode_cache),
-				(".editModeContextMenu",      		edit_mode_page_context),
-				(".pagesContextMenu",      			edit_mode_side_panel_pages),
-				(".contentTreeContextMenu",      	edit_mode_side_panel_content_tree),
-				(".contentTableContextMenu",      	edit_mode_side_panel_content_item),
-				(".filesTreeContextMenu",      		edit_mode_side_panel_file_tree),
-				(".filesTableContextMenu",      	edit_mode_side_panel_file_item),
-				(".searchTableContextMenu",      	edit_mode_side_panel_search_item),
-				(".categoriesTableContextMenu",     edit_mode_side_panel_taxonomy_item),
+				(".menu-edit-menu-publication",     EDIT_MODE--PUBLICATION),
+				(".menu-edit-menu-view",      		EDIT_MODE--PREVIEW),
+				(".menu-edit-menu-edit",      		EDIT_MODE--MORE_INFO),
+				(".menu-edit-menu-mode",      		EDIT_MODE--MODE_VIEW),
+				(".menu-edit-menu-user",      		EDIT_MODE--USER_MENU),
+				(".menu-edit-menu-workflow",      	EDIT_MODE--WORKFLOW),
+				(".menu-edit-menu-cache",      		EDIT_MODE--CACHE),
+				(".editModeContextMenu",      		EDIT_MODE--PAGE_CONTEXT),
+				(".pagesContextMenu",      			EDIT_MODE--SIDE_PANEL--PAGES),
+				(".contentTreeContextMenu",      	EDIT_MODE--SIDE_PANEL--CONTENT_TREE),
+				(".contentTableContextMenu",      	EDIT_MODE--SIDE_PANEL--CONTENT_ITEM),
+				(".filesTreeContextMenu",      		EDIT_MODE--SIDE_PANEL--FILE_TREE),
+				(".filesTableContextMenu",      	EDIT_MODE--SIDE_PANEL--FILE_ITEM),
+				(".searchTableContextMenu",      	EDIT_MODE--SIDE_PANEL--SEARCH_ITEM),
+				(".categoriesTableContextMenu",     EDIT_MODE--SIDE_PANEL--TAXONOMY_ITEM),
 
 				//ADMIN MODE MENUS
-				(".menu-admin-menu-user",      		admin_mode_user_menu),
-				(".menu-admin-menu-mode",      		admin_mode_mode_view),
+				(".menu-admin-menu-user",      		ADMIN_MODE--USER_MENU),
+				(".menu-admin-menu-mode",      		ADMIN_MODE--MODE_VIEW),
 
 				// DASHBOARD MENUS
-				(".menu-dashboard-menu-user",      	dashboard_mode_user_menu),
-				(".menu-dashboard-menu-mode",      	dashboard_mode_mode_view)
+				(".menu-dashboard-menu-user",      	DASHBOARD_MODE--USER_MENU),
+				(".menu-dashboard-menu-mode",      	DASHBOARD_MODE--MODE_VIEW)
 			);
 
 

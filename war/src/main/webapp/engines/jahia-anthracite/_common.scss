@@ -16,28 +16,28 @@
 /////////////////////////////////////////////////
 
 // DOES NOT WORK - NEEDS CHECKING
-/*
 
-::-webkit-scrollbar {
-	width: 6px;
-}
 
-::-webkit-scrollbar-track {
-	background: none;
-}
+// ::-webkit-scrollbar {
+// 	width: 6px;
+// }
 
-::-webkit-scrollbar-thumb {
-	background: #828282;
-	border-radius: 8px;
-	border: 0;
-}
+// ::-webkit-scrollbar-track {
+// 	background: none;
+// }
 
-::-webkit-scrollbar-thumb:hover {
-	background: #a7a7a7;
-	background: red;
-}
+// ::-webkit-scrollbar-thumb {
+// 	background: #828282;
+// 	border-radius: 8px;
+// 	border: 0;
+// }
 
-*/
+// ::-webkit-scrollbar-thumb:hover {
+// 	background: #a7a7a7;
+// 	background: red;
+// }
+
+
 
 
 
@@ -437,8 +437,7 @@ body {
 		pointer-events: all;
 		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
 		position: fixed;
-		left: 0;
-		top: 18px;
+		top: 18px!important;
 		opacity: 0;
 
 		width: 25px !important;

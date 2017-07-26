@@ -128,21 +128,21 @@
 		$_placeholder: #{nth($context_menu,2)};
 
 		#{$_context_menu_class} {
-			@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER--#{$_placeholder} !optional;
+			@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:#{$_placeholder} !optional;
 
 			.x-menu-list::before {
-				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--TITLE--#{$_placeholder} !optional;
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:#{$_placeholder} !optional;
 
 			}
 
 			.x-menu-item {
-				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM--#{$_placeholder} !optional;
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:#{$_placeholder} !optional;
 
 			}
 
 			.x-item-disabled {
 				.x-menu-item {
-					@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED--#{$_placeholder} !optional;
+					@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:#{$_placeholder} !optional;
 
 				}
 
@@ -150,7 +150,7 @@
 
 			.x-menu-item-active {
 				.x-menu-item {
-					@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER--#{$_placeholder} !optional;
+					@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:#{$_placeholder} !optional;
 
 				}
 			}
@@ -1447,12 +1447,14 @@ form,
 	clear: none!important;
 }
 
-
-
-/* Not sure about the fiability of this as it is relying on ext-webkit ... */
+/* BROWSER FIXES ( Actually over rides of GXT fixes ) */
+.ext-strict .ext-gecko .x-small-editor .x-form-text,
 .ext-strict .ext-webkit .x-small-editor .x-form-text {
 	height: auto!important;
-	padding: 5px 40px 5px 10px;
+}
+
+.ext-strict .ext-gecko .x-small-editor .x-form-field-wrap .x-form-trigger {
+	height: 24px!important;
 }
 
 /* Modal Mask */

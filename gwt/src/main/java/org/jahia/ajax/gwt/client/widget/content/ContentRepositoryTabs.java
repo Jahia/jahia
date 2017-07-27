@@ -130,6 +130,7 @@ public class ContentRepositoryTabs extends LeftComponent {
                 @Override
                 public void handleEvent(BaseEvent be) {
                     if (!tab.isExpanded()) {
+                        tabExpanded = true;
                         tab.refresh(null);
                     }
                 }

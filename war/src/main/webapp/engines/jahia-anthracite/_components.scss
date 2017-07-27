@@ -2,16 +2,33 @@
 // DATE PICKER //////////////////////////////////
 /////////////////////////////////////////////////
 
-$DATE_PICKER--BG--COLOUR: red;
+.x-form-field-wrap .x-form-date-trigger {
+	background: red;
 
-// MAIN CONTAINER
+	&:hover {
+		background: pink;
+	}
+}
+
 .x-date-menu {
 	box-shadow: none;
+	background: transparent!important;
+
+
+
+	td {
+		transition: all 0.15s ease-in 0s;
+	}
 
 	// Another container
 	.x-menu-list {
 		padding: 5px 10px 10px;
 	    background: $DATE_PICKER--BG--COLOUR;
+		box-shadow: 0 0 10px 0 rgba($COLOUR--DARK_CLOUDS, .3);
+
+		body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] & {
+			margin-left: 67px;
+		}
 
 		// Yet another container
 		.x-menu-list-item {
@@ -36,13 +53,10 @@ $DATE_PICKER--BG--COLOUR: red;
 
 								// button (can not use the button() mixin here)
 								.x-date-left-icon {
-									background-image:url(./images/icons/icon_arrow_left_single_white@X2.png)!important;
-									background-size: 16px 16px;
-
-									opacity: 0.8;
+									@extend %CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH_BUTTON---UP !optional;
 
 									&:hover {
-										opacity: 1;
+										@extend %CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH_BUTTON---HOVER !optional;
 									}
 
 								}
@@ -54,13 +68,16 @@ $DATE_PICKER--BG--COLOUR: red;
 								// Button container, contains downward arrow
 								.x-btn-arrow {
 
-									background: url($ICON--ARROW_DOWN---WHITE) no-repeat right center;
-									padding-right: 15px;
+									background: none;
+									padding: 0;
 
 									// Actual button, contains label
 									button {
-										text-transform: uppercase;
-										@include text(11px, white, $FONT--WEIGHT---NORMAL)
+										@extend %CSS_BLOCK--DATE_PICKER--COMBO---UP;
+
+										&:hover {
+											@extend %CSS_BLOCK--DATE_PICKER--COMBO---HOVER;
+										}
 									}
 								}
 
@@ -71,13 +88,10 @@ $DATE_PICKER--BG--COLOUR: red;
 
 								// button (can not use the button() mixin here)
 								.x-date-right-icon {
-									background-image:url(./images/icons/icon_arrow_right_single_white@X2.png)!important;
-									background-size: 16px 16px;
-
-									opacity: 0.8;
+									@extend %CSS_BLOCK--DATE_PICKER--NEXT_MONTH_BUTTON---UP !optional;
 
 									&:hover {
-										opacity: 1;
+										@extend %CSS_BLOCK--DATE_PICKER--NEXT_MONTH_BUTTON---HOVER !optional;
 									}
 
 
@@ -96,17 +110,13 @@ $DATE_PICKER--BG--COLOUR: red;
 
 							background: transparent;
 							border:none;
-							padding: 0;
+							padding: 9px 0 0 0;
 
 							.x-btn-text {
-								height: auto;
-								padding: 4px;
-								background: purple;
-								@include text(11px, red, $FONT--WEIGHT---LIGHT);
+								@extend %CSS_BLOCK--DATE_PICKER--TODAY_BUTTON---UP;
 
 								&:hover {
-									color: yellow;
-									background: orange;
+									@extend %CSS_BLOCK--DATE_PICKER--TODAY_BUTTON---HOVER;
 								}
 							}
 
@@ -125,8 +135,9 @@ $DATE_PICKER--BG--COLOUR: red;
 						// Day of week container
 						td {
 							width: 25px;
-							border:none;
-							@include text(10px, white, $FONT--WEIGHT---BOLD);
+
+							@extend %CSS_BLOCK--DATE_PICKER--DAY_OF_WEEK;
+
 						}
 
 						// Day of week label
@@ -154,6 +165,9 @@ $DATE_PICKER--BG--COLOUR: red;
 
 								font-weight: inherit;
 								color: inherit;
+
+								border:none;
+								background: transparent;
 							}
 
 							// Day label
@@ -164,49 +178,37 @@ $DATE_PICKER--BG--COLOUR: red;
 
 							// Selected date
 							&.x-date-selected {
-								background: green;
+								@extend %CSS_BLOCK--DATE_PICKER--SELECTED_MONTH---UP;
 
 								// Hover date
 								&.x-date-active-hover {
-									background: green!important;
-
-									span {
-										color: aqua;
-									}
-								}
-
-								a {
-									border:none;
-									background: transparent;
+									@extend %CSS_BLOCK--DATE_PICKER--SELECTED_MONTH---HOVER;
 
 								}
 
-								span {
-									color: aqua;
-								}
+
 							}
 
 							// Day belonging to previous month
 							&.x-date-prevday {
-								font-weight: $FONT--WEIGHT---EXTRALIGHT;
-								color: black;
+								@extend %CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH---UP;
 							}
 
 							// Day belonging to current month
 							&.x-date-active {
-								font-weight: $FONT--WEIGHT---EXTRALIGHT;
-								color: yellow;
+								@extend %CSS_BLOCK--DATE_PICKER--CURRENT_MONTH---UP;
+
 							}
 
 							// Day belonging to following month
 							&.x-date-nextday {
-								font-weight: $FONT--WEIGHT---EXTRALIGHT;
-								color: black;
+								@extend %CSS_BLOCK--DATE_PICKER--NEXT_MONTH---UP;
 							}
 
 							// Hover date
 							&.x-date-active-hover {
-								background: purple!important;
+								@extend %CSS_BLOCK--DATE_PICKER--CURRENT_MONTH---HOVER;
+
 							}
 						}
 
@@ -221,17 +223,42 @@ $DATE_PICKER--BG--COLOUR: red;
 				top: -5px!important;
 				left: -10px!important;
 				height: calc(100% + 15px)!important;
-				background: yellow;
+				background: $DATE_PICKER--MONTH_PICKER--BG--COLOUR;
+				padding-top: 33px;
+				box-sizing: border-box;
+
+				table,
+				tbody {
+					display: block;
+					width: 100%!important;
+					height: 100%!important;
+					box-sizing: border-box;
+				}
+
+				tbody {
+					padding: 5px 5px 0 5px;
+				}
+
+				tr {
+					display: block;
+					width: 100%;
+					height: 16.2%;
+					box-sizing: border-box;
+				}
+
+				td {
+					display: inline-block;
+					width: 25%;
+					height: 100%;
+					box-sizing: border-box;
+					line-height: 24px;
+					padding: 5px 0;
+				}
 
 				// Top Container
 				> table {
 
-					width: 100%!important;
-					height: 100%!important;
-
 					td {
-						width: 25px;
-						height: 25px;
 
 						// Actual button
 						a {
@@ -240,53 +267,133 @@ $DATE_PICKER--BG--COLOUR: red;
 							font-weight: inherit;
 							font-family: inherit;
 							color: inherit;
+							height: 100%;
+							padding: 0;
+							border: none;
+							background: none;
+							line-height: inherit;
+
 						}
 
 						// Month button
 						&.x-date-mp-month {
-							@include text(12px, blue, $FONT--WEIGHT---EXTRABOLD);
+							@extend %CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---UP;
+
+							&:hover {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---HOVER;
+							}
+
+							// Selected button
+							&.x-date-mp-sel {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---SELECTED;
+
+								&:hover {
+									@extend %CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---SELECTED_HOVER;
+								}
+
+							}
+
+
 						}
 
 						// Year button
 						&.x-date-mp-year {
+							@extend %CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---UP;
 
+							&:hover {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---HOVER;
+							}
+
+							// Selected button
+							&.x-date-mp-sel {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---SELECTED;
+
+								&:hover {
+									@extend %CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---SELECTED_HOVER;
+								}
+
+							}
 						}
 
-						// Selected button
-						&.x-date-mp-sel {
 
-						}
 
 						// Year naviagtion button
 						&.x-date-mp-ybtn {
 
+							padding: 0!important;
+
+							a {
+								width: 100%;
+							}
+
 							// Previous year block button
 							.x-date-mp-prev {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--PREVIOUS_YEAR---UP;
 
+								&:hover {
+									@extend %CSS_BLOCK--DATE_PICKER--MODAL--PREVIOUS_YEAR---HOVER;
+								}
 							}
 
 							// Following year block button
 							.x-date-mp-next {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--NEXT_YEAR---UP;
+
+								&:hover {
+									@extend %CSS_BLOCK--DATE_PICKER--MODAL--NEXT_YEAR---HOVER;
+								}
 
 							}
 
 						}
+
 					}
 
+				}
+
+				// Seperator dividing Months / Years
+				.x-date-mp-sep {
+					border:none;
 				}
 
 				// OK, Cancel buttons container
 				.x-date-mp-btns {
 
+					height: 16%;
+				    background: none;
+				    position: absolute;
+				    top: 0;
+				    left: 0;
+
+					td {
+						width: 100%;
+						padding: 5px;
+						box-sizing: border-box;
+						border: none;
+
+						&:before {
+							@extend %CSS_BLOCK--DATE_PICKER--MODAL--LABEL;
+						}
+					}
 
 					// OK button
 					.x-date-mp-ok {
+
+						@extend %CSS_BLOCK--DATE_PICKER--OK_BUTTON---UP;
+
+						&:hover {
+							@extend %CSS_BLOCK--DATE_PICKER--OK_BUTTON---HOVER;
+						}
 
 					}
 
 					// Cancel button
 					.x-date-mp-cancel {
+						@extend %CSS_BLOCK--DATE_PICKER--CANCEL_BUTTON---UP;
 
+						&:hover {
+							@extend %CSS_BLOCK--DATE_PICKER--CANCEL_BUTTON---HOVER;
+						}
 					}
 				}
 			}

@@ -44,6 +44,35 @@
 					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", function(){
 						$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
 					})
+					.on("mousedown", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", function(){
+
+
+						// if(!$(this).parent().hasClass("x-panel-collapsed")){
+						// 	console.log("ALREADY OPENED");
+						// 	$(this).parent().removeClass("x-panel-collapsed");
+						// 	$(this).siblings(".x-panel-bwrap").show();
+						// }
+
+						setTimeout(function(){
+							$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", "");
+						}, 500);
+
+						//x-panel-collapsed
+
+						// $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer").trigger("click");
+					})
+					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", function(){
+						console.log("open the panel");
+
+
+						/// Toggle the attribute in body tag
+						$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", function(id, label){
+							return (label == "open") ? "" : "open";
+						});
+					})
+					// .on("mouseout", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", function(){
+					// 	$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", "");
+					// })
 					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", function(e){
 						var row = $(this),
 							topPosition = row.position().top;

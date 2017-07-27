@@ -1,5 +1,17 @@
 $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 
+#JahiaGxtManagerLeftTree .x-component.x-panel .x-panel-header {
+	position: absolute!important;
+	top: 0;
+}
+
+#JahiaGxtManagerLeftTree .x-component.x-panel.x-panel-collapsed .x-panel-header {
+	position: relative!important;
+}
+
+body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div > div {
+	padding-top: 35px;
+}
 
 #JahiaGxtContentPickerWindow {
 	// Reset global position of picker as whole page
@@ -15,7 +27,7 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 
 	// HEADER HEIGHT
 	.x-window-tl {
-		height: 130px;
+		height: 84px;
 		// background: blue;
 	}
 
@@ -23,7 +35,7 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 	.x-window-bwrap {
 		height: calc(100% - 130px);
 		// background: green;
-		padding: 0 50px;
+		padding: 0 47px;
 
 	}
 
@@ -126,8 +138,8 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 		// DISPLAY OPTIONS
 		#JahiaGxtManagerToolbar .x-toolbar-right {
 		    position: fixed;
-		    right: 52px;
-		    top: 55px;
+			right: 62px;
+			top: 43px;
 		}
 
 
@@ -147,7 +159,7 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 	}
 	.x-window-header-text {
 		pointer-events: all;
-		margin: 57px 0 0 64px;
+		margin: 37px 0 0 44px;
 		display: block;
 		@include text(36px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
 	}
@@ -179,6 +191,22 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 			border:none!important;
 			padding:0!important;
 			background: transparent;
+
+			// HIJACK TO USE AS TRIGGER FOR COMBO BOX
+			.x-tab-strip-spacer {
+				position: fixed;
+			    top: 84px;
+			    left: 47px;
+			    width: 320px;
+			    height: 35px;
+			    background: red;
+			    z-index: 999;
+			    opacity: 0.5;
+
+				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+					// display: none;
+				}
+			}
 
 			.x-tab-strip-wrap {
 				.x-tab-strip {
@@ -424,6 +452,7 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 					> div {
 						width: 100%!important;
 
+
 					}
 				}
 			}
@@ -435,7 +464,7 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 
 		.x-panel {
 			.x-panel-header {
-				pointer-events: none; // STOP CLICKING ON CURRENT OPENED SITE TAB, AS IT HIDES IT !!
+				// pointer-events: none; // STOP CLICKING ON CURRENT OPENED SITE TAB, AS IT HIDES IT !!
 			}
 
 		}
@@ -443,39 +472,43 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 		.x-panel-collapsed {
 			.x-panel-header {
 
-				img {
-					background: url($ICON--PAGES---GREY) no-repeat center center !important;
-					background-size: 23px 23px !important;
+				display: none;
+
+
+				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+					display: block;
 				}
 
 				// HIDE TOOLBAR
 				.x-panel-toolbar {
 					display: none;
+
+
 				}
 
 				pointer-events: all!important;
 
-				.x-panel-header-text {
-					// LABEL
-					&::after {
-						color: $COLOUR--GREY_CLOUDS;
-
-					}
-				}
 
 			}
+
+
 		}
+
+
 
 
 
 		.x-panel-header {
 
-			width: 60px!important;
-			padding: 0;
-			height: 45px;
-			margin-top: 3px;
-			margin-bottom: 10px;
-			opacity: 0.8;
+		    opacity: 0.8;
+		    width: 100%!important;
+		    border: 1px solid red!important;
+		    text-align: left;
+		    padding: 5px 10px;
+		    background: blue;
+		    opacity: 1;
+		    position: relative;
+		    z-index: 9;
 
 			&:hover {
 				opacity: 1;
@@ -483,40 +516,24 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 
 
 
+
+
 			// ICON
 			img {
-				float: none!important;
-				display: block!important;
-				background: url($ICON--PAGES---BLUE) no-repeat center center !important;
+				float: none !important;
+				display: inline-block !important;
+				background: url(./images/tabs-pages-blue@X2.png) no-repeat center center !important;
 				background-size: 23px 23px !important;
-			    padding-left: 23px;
-			    width: 23px!important;
-			    height: 23px!important;
-			    overflow: hidden;
-			    -moz-box-sizing: border-box;
-			    box-sizing: border-box;
-			    display: block;
-			    position: relative;
+				padding-left: 23px;
+				width: 23px !important;
+				height: 23px !important;
+				overflow: hidden;
+				-moz-box-sizing: border-box;
+				box-sizing: border-box;
+				display: block;
+				position: relative;
 
 				margin: 0 auto;
-
-				// Set labels for tabs
-				&[src="/icons/websiteRepository.png"] ~ .x-panel-header-text::after {
-					content: "Current Site"!important;
-				}
-
-				&[src="/icons/sitesRepository.png"] ~ .x-panel-header-text::after {
-					content: "All Sites"!important;
-				}
-
-				&[src="/icons/myExternalRepository.png"] ~ .x-panel-header-text::after {
-					content: "External Repositories"!important;
-				}
-
-				&[src="/icons/myRepository.png"] ~ .x-panel-header-text::after {
-					content: "Workspace"!important;
-				}
-
 
 			}
 
@@ -534,26 +551,9 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 
 			// TITLE
 			.x-panel-header-text {
-				visibility: hidden;
-			    position: relative;
+				display: inline-block;
+			    color: white;
 
-				// LABEL
-				&::after {
-					content: "Saved Searches";
-					display: block;
-					width: 60px;
-					text-align: center;
-					text-transform: uppercase;
-					font-family: "Nunito Sans", sans-serif;
-					font-size: 8px;
-					color: #00a0e3;
-					font-weight: 400;
-					visibility: visible;
-					position: absolute;
-					top: 0;
-
-					@include text(8px, $COLOUR--JAHIA_BLUE, $FONT--WEIGHT---NORMAL);
-				}
 			}
 
 		}
@@ -562,10 +562,10 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 		.x-panel-bwrap {
 			position: absolute;
 			right: 0;
-			width: calc(100% - 80px)!important;
-			// background: purple;
-			left: auto!important;
+			width: calc(100% - 80px) !important;
+			left: 2px !important;
 			box-sizing: border-box;
+			top: 50px;
 		}
 	}
 
@@ -697,8 +697,7 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 	    width: 300px !important;
 	    position: absolute;
 	    bottom: 0;
-	    height: 120px;
-	    padding-left: 12px;
+	    height: 90px;
 	    box-sizing: border-box;
 
 		.x-panel-fbar {

@@ -27,6 +27,8 @@
     width: 100%!important;
     height: 100%;
 
+	@include text_input("EDIT_ENGINE");
+
 
 	// Modal Mask
 	.ext-el-mask {

@@ -994,19 +994,6 @@ label {
 .x-form-text {
 	@extend %CSS_BLOCK--FORM--TEXT_INPUT !optional;
 
-	// Exceptions ...
-	.engine-panel & {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT\:EDIT_ENGINE !optional;
-
-	}
-
-	#JahiaGxtManagerTobTable & {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT\:PICKER_FILTER !optional;
-
-	}
-
-
-
 	width: 100%!important;
 	box-sizing: border-box;
     display: inline-block;
@@ -1019,36 +1006,14 @@ label {
 
 	&:hover {
 		@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER !optional;
-
-		// Exceptions ...
-		.engine-panel & {
-			@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:EDIT_ENGINE !optional;
-
-		}
-
-		#JahiaGxtManagerTobTable & {
-			@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_FILTER !optional;
-
-		}
 	}
 
 	&:focus {
 		@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS !optional;
-
-		// Exceptions ...
-		.engine-panel & {
-			@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:EDIT_ENGINE !optional;
-
-		}
-
-		#JahiaGxtManagerTobTable & {
-			@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:PICKER_FILTER !optional;
-
-		}
 	}
 
 	&[disabled] {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE !optional;
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED !optional;
 
 	}
 
@@ -1081,7 +1046,6 @@ div[role="combobox"] {
 	height: 24px!important;
 
 	.x-triggerfield-noedit + & {
-		border:5px solid blue!important;
 	}
 
 	.x-form-twin-triggers & {
@@ -1092,12 +1056,21 @@ div[role="combobox"] {
 		vertical-align: middle;
 		right: auto;
 		top: auto;
+
+		&.x-form-clear-trigger {
+			/* Clear button */
+			left: 0px!important;
+			right: auto!important;
+
+
+		}
 	}
 
 	&.x-form-clear-trigger {
 		/* Clear button */
 		position: absolute!important;
-		left: 0px!important;
+		// left: 0px!important;
+		right: 0px!important;
 
 
 	}
@@ -1510,19 +1483,19 @@ form,
 
 			.x-grid3-td-displayName,
 			.gwt-content-label,
-			.x-grid3-cell-inner {
+			.x-grid3-col-name {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER !optional;
-
-				&.x-grid3-col-size {
-					@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL !optional;
-
-				}
 
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);
 					opacity: 1;
 
 				}
+
+			}
+
+			.x-grid3-col-size {
+				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL !optional;
 
 			}
 
@@ -1541,19 +1514,20 @@ form,
 
 			.x-grid3-td-displayName,
 			.gwt-content-label,
-			.x-grid3-cell-inner {
+			.x-grid3-col-name,
+			.x-tree3-node-text {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED !optional;
-
-				&.x-grid3-col-size {
-					@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED\:SMALL_LABEL !optional;
-
-				}
 
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
 					opacity: 1;
 
 				}
+			}
+
+			.x-grid3-col-size {
+				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED\:SMALL_LABEL !optional;
+
 			}
 
 
@@ -1566,13 +1540,15 @@ form,
 
 				}
 
-				&.x-grid3-col-size {
+				.x-grid3-col-size {
 					@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
 
 				}
 
 				.x-grid3-td-displayName,
-				.gwt-content-label {
+				.gwt-content-label,
+				.x-grid3-col-name,
+				.x-tree3-node-text {
 					@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER !optional;
 
 					&::after {
@@ -1585,15 +1561,10 @@ form,
 	}
 
 	.x-grid3-td-displayName,
-	.gwt-content-label,
-	.x-grid3-cell-inner {
+	.gwt-content-label {
 		/* List Item Text Label */
 		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP !optional;
 
-		&.x-grid3-col-size {
-			@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
-
-		}
 
 		pointer-events: none;
 
@@ -1611,6 +1582,22 @@ form,
 			height: 25px;
 			opacity: 0;
 		}
+	}
+
+	.x-tree3-node-text,
+	.x-grid3-col-name {
+		/* List Item Text Label */
+		// @extend %CSS_BLOCK--TREE--ROW--TEXT---UP !optional;
+
+		@include text(12px !important, $TREE--ROW--FONT--COLOUR---UP !important, $FONT--WEIGHT---EXTRALIGHT !important);
+
+
+
+	}
+
+	.x-grid3-col-size {
+		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
+
 	}
 
 	.x-tree3-node-text {

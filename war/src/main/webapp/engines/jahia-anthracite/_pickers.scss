@@ -10,7 +10,7 @@ $PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 }
 
 body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div > div {
-	padding-top: 35px;
+	padding-top: 24px;
 }
 
 #JahiaGxtContentPickerWindow {
@@ -18,7 +18,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 	width: 100%!important;
 	height: 100%!important;
 	left: 0!important;
-	top: 0!important;
+	top: 10px!important;
 	z-index: $ZINDEX--PICKER_WINDOW;
 
 	background: $PICKER--BG--COLOUR;
@@ -27,13 +27,13 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 	// HEADER HEIGHT
 	.x-window-tl {
-		height: 84px;
+		height: 74px;
 		// background: blue;
 	}
 
 	// BODY WRAPPER
 	.x-window-bwrap {
-		height: calc(100% - 130px);
+		height: calc(100% - 74px);
 		// background: green;
 		padding: 0 47px;
 
@@ -138,8 +138,8 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 		// DISPLAY OPTIONS
 		#JahiaGxtManagerToolbar .x-toolbar-right {
 		    position: fixed;
-			right: 62px;
-			top: 43px;
+			right: 52px;
+			top: 33px;
 		}
 
 
@@ -159,7 +159,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 	}
 	.x-window-header-text {
 		pointer-events: all;
-		margin: 37px 0 0 44px;
+		margin: 27px 0 0 44px;
 		display: block;
 		@include text(36px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
 	}
@@ -195,13 +195,13 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 			// HIJACK TO USE AS TRIGGER FOR COMBO BOX
 			.x-tab-strip-spacer {
 				position: fixed;
-			    top: 84px;
-			    left: 47px;
-			    width: 320px;
-			    height: 35px;
-			    background: red;
-			    z-index: 999;
-			    opacity: 0.5;
+				top: 74px;
+				left: 47px;
+				width: 320px;
+				height: 24px;
+				background: red;
+				z-index: 999;
+				opacity: 0;
 
 				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
 					// display: none;
@@ -218,25 +218,60 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 					li {
 						// BROWSE TAB
 						&:nth-child(1) {
-							display: none;
+							margin: 0;
+							position: fixed;
+							z-index: 99999;
+							background-image: url($ICON--CLOSE_LARGE---WHITE);
+							width: 20px;
+							height: 20px;
+							background-size: 16px;
+							background-repeat: no-repeat;
+							text-indent: -50000px;
+
+							top: 44px;
+						    left: 31px;
+
+							a {
+								background: none!important;
+								padding: 0;
+							}
+
+							em {
+								background: none!important;
+								padding: 0!important;
+							}
+							span {
+								background: none!important;
+								padding:none!important;
+							}
 						}
 
 						// SEARCH TAB
 						&:nth-child(2) {
 							margin: 0;
 							position: fixed;
-							top: 406px;
+							top: 0px;
+							left:250px;
 
 							// LABEL
 							&::after {
-								content: "Search";
+								content: " ";
 								display: block;
-								// background: red;
-								width: 60px;
+								width: 30px;
+								height: 30px;
 								text-align: center;
-								text-transform: uppercase;
+								background: url($ICON--SEARCH--SMALL_GREY) no-repeat center center;
+								background-color: lighten($COLOUR--DUSTY_CLOUDS, 10%);
+								border-radius: 100%;
+								margin-top: 13px;
+								margin-left: 10px;
 
-								@include text(8px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---NORMAL);
+
+							}
+
+							&:hover::after {
+								cursor: pointer;
+								background-color: lighten($COLOUR--DUSTY_CLOUDS, 9%);
 							}
 
 							// ICON
@@ -257,6 +292,8 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 								left: 0;
 								top: 0;
+
+								visibility: hidden;
 							}
 
 							// ANCHORS
@@ -289,6 +326,34 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 					&.x-hide-display + div.x-component {
 						// SEARCH TAB IS OPEN
 						display: block;
+					    position: fixed;
+					    width: 367px !important;
+					    top: 0;
+					    box-shadow: inset 5px 0px 34px $COLOUR--BLACK_CLOUDS;
+					    padding: 30px;
+					    box-sizing: border-box;
+					    background: $COLOUR--DARK_CLOUDS !important;
+
+						@include text_input("SEARCH_PANEL");
+
+						&:before {
+							content: "Search";
+
+							margin-left: 26px;
+
+							@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
+						}
+
+						&:after {
+							content: "Results";
+						    position: fixed;
+						    top: 30px;
+						    font-size: 26px;
+						    left: 384px;
+						    font-weight: 200;
+						    font-family: Nunito Sans;
+						    color: $COLOUR--DARK_CLOUDS;
+						}
 					}
 
 					+ div {
@@ -301,9 +366,10 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				&:nth-child(2) {
 					position: absolute;
 				    top: 0;
-				    width: calc(100% - 60px)!important;
-				    right: 0;
-					background: $FORM--FIELDSET--BG--COLOUR\:PICKER_SEARCH;
+				    width: 100%!important;
+				    left: 0;
+					// background: $PICKER--BG--COLOUR!important;
+					z-index: 9999;
 
 					// FIX CONTAINER HEIGHTS
 					> .x-panel,
@@ -322,8 +388,19 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 						display: none;
 					}
 
+					.x-panel-bwrap {
+						padding-top: 0;
+						left: 0!important;
+					}
+					.x-panel-header {
+						background: transparent!important;
+					}
+
+
+
 					.x-panel-body {
 						// Fix width of form
+						overflow-y: scroll!important;
 						> div {
 						    width: 100%!important;
 						    box-sizing: border-box;
@@ -331,8 +408,10 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 							// Contains search text input AND save / search buttons
 							&:nth-child(1) {
-								table {
+								> table {
 									width: 100%;
+								    position: absolute;
+								    bottom: 40px;
 								}
 
 								.x-btn-mc {
@@ -342,34 +421,42 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 								td {
 									// SEARCH TEXT INPUT CONTAINER
 									&:nth-child(1) {
-
+										position: fixed;
+										width: 100%;
+										display: block;
+										/* height: 85px; */
+										background: $COLOUR--DARK_CLOUDS;
+										z-index: 999999;
+										/* display: none; */
+										top: 72px;
+										width: 318px;
 									}
 
 									// SEARCH BUTTON CONTAINER
 									&:nth-child(2) {
 										// MOVE BUTTON TO POSITION
+										display: inline-block;
 										table {
-											position: absolute;
-										    top: 500px;
-										    z-index: 9;
-											left: 0;
+
 
 											// STYLE BUTTON
 											.x-btn-text {
 												width: auto!important;
 												height: auto!important;
 												font-size: 1px;
+												display: inline-block;
 												&::after {
 													content: "Search";
 													display: block;
 													width: 100%;
 													height: 100%;
 													box-sizing: border-box;
+													padding: 5px 10px 5px 10px;
 
-													@extend %CSS_BLOCK--BUTTON--TEXT\:PICKER_SEARCH---SUGGESTED;
+													@extend %CSS_BLOCK--BUTTON--ICON\:SEARCH_PANEL---SUGGESTED;
 
 													&:hover {
-														@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:PICKER_SEARCH---SUGGESTED;
+														@extend %CSS_BLOCK--BUTTON--ICON---HOVER\:SEARCH_PANEL---SUGGESTED;
 
 													}
 
@@ -388,29 +475,33 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 									// SAVE SEARCH CONTAINER
 									&:nth-child(3) {
-										// MOVE BUTTON TO POSITION
+										display: inline-block;
 										table {
-											position: absolute;
-										    top: 522px;
-										    z-index: 9;
-											left: 0;
+
 
 											// STYLE BUTTON
 											.x-btn-text {
 												width: auto!important;
 												height: auto!important;
 												font-size: 1px;
+
+												display: inline-block;
 												&::after {
 													content: "Save search";
 													display: block;
-													width: 100%;
-													height: 100%;
 													box-sizing: border-box;
 
-													@extend %CSS_BLOCK--BUTTON--TEXT\:PICKER_SEARCH;
+													padding: 5px 10px 5px 10px;
+
+													// position: fixed;
+													// top: 0;
+													// right: 0;
+
+
+													@extend %CSS_BLOCK--BUTTON--ICON\:SEARCH_PANEL;
 
 													&:hover {
-														@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:PICKER_SEARCH;
+														@extend %CSS_BLOCK--BUTTON--ICON---HOVER\:SEARCH_PANEL;
 
 													}
 
@@ -431,9 +522,11 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 					}
 
 					fieldset {
+						background: transparent!important;
+
 						// Messing up width of form
 						.x-form-label-left {
-							width: 100%!important
+							width: 100%!important;
 						}
 					}
 
@@ -477,6 +570,14 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
 					display: block;
+
+					.x-panel-header-text {
+						@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM;
+
+						&:hover {
+							@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER;
+						}
+					}
 				}
 
 				// HIDE TOOLBAR
@@ -500,59 +601,66 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 		.x-panel-header {
 
-		    opacity: 0.8;
 		    width: 100%!important;
-		    border: 1px solid red!important;
 		    text-align: left;
-		    padding: 5px 10px;
-		    background: blue;
-		    opacity: 1;
+		    padding: 0;
 		    position: relative;
 		    z-index: 9;
 
-			&:hover {
-				opacity: 1;
+			box-sizing: border-box;
+			box-shadow: inset -18px 0px $FORM--COMBO--BG--COLOUR---UP;
+
+			body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+				box-shadow: none;
+
 			}
-
-
-
-
 
 			// ICON
 			img {
-				float: none !important;
-				display: inline-block !important;
-				background: url(./images/tabs-pages-blue@X2.png) no-repeat center center !important;
-				background-size: 23px 23px !important;
-				padding-left: 23px;
-				width: 23px !important;
-				height: 23px !important;
-				overflow: hidden;
-				-moz-box-sizing: border-box;
-				box-sizing: border-box;
-				display: block;
-				position: relative;
-
-				margin: 0 auto;
-
+				display: none!important;
 			}
 
 			// TOOLBAR (Refresh, minimise)
 			.x-panel-toolbar {
 				float: none!important;
-			    position: absolute!important;
+			    position: fixed!important;
 			    top: 0!important;
 			    right: 0!important;
 				display: block;
 				pointer-events: all;
-				// background: red;
 				z-index: 9999;
 			}
 
 			// TITLE
 			.x-panel-header-text {
-				display: inline-block;
-			    color: white;
+				display: block;
+
+				background-repeat: no-repeat;
+				background-position: right center;
+		        background-image: url($FORM--COMBO--ICON---UP);
+
+				@extend %CSS_BLOCK--FORM--TEXT_INPUT;
+
+				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+					@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS;
+
+				}
+
+			}
+
+			&.indigo-hover {
+				box-shadow: inset -18px 0px $FORM--COMBO--BG--COLOUR---HOVER;
+
+				.x-panel-header-text {
+					// background-color: $FORM--TEXT_AREA--BG--COLOUR---FOCUS;
+					background-repeat: no-repeat;
+					background-position: right center;
+					background-image: url($FORM--COMBO--ICON---HOVER);
+
+
+					@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER;
+
+				}
 
 			}
 
@@ -562,10 +670,10 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 		.x-panel-bwrap {
 			position: absolute;
 			right: 0;
-			width: calc(100% - 80px) !important;
+			width: 100% !important;
 			left: 2px !important;
 			box-sizing: border-box;
-			top: 50px;
+			padding-top: 50px;
 		}
 	}
 
@@ -580,6 +688,12 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 		margin-top: 6px;
     	height: calc(100% - 6px)!important;
 
+		// .x-grid3 .x-grid3-row {
+		// 	&.indigo-FAKE-HIDE {
+		// 		display: none;
+		// 	}
+		// }
+
 		#images-view {
 			// Toolbar for thumb view
 			background: transparent;
@@ -592,10 +706,10 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 			    left: auto;
 			    right: 52px;
 			    position: absolute;
-			    top: 121px;
+			    top: 74px;
 			    padding-bottom: 7px;
 			    box-sizing: border-box;
-			    border-bottom: 1px solid red;
+
 
 				.xtb-text {
 					// LABELS
@@ -604,11 +718,72 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 					@extend %CSS_BLOCK--FORM--LABEL;
 				}
 
+
+
+
 				// FILTER CONTAINER
 				.x-toolbar-left {
 					width: 375px;
 
 					.x-toolbar-cell {
+						// SEARCH LABEL
+						&:nth-child(1) {
+							display: none;
+						}
+
+						// SEARCH FIELD
+						&:nth-child(2) {
+							@include text_input("PICKER_FILTER");
+						}
+
+						// SORT COMBO
+						&:nth-child(5) {
+							@include text_input("PICKER_SORT");
+
+						}
+
+						// INVERT BUTTON
+						&:nth-child(6) {
+							margin-left: 5px;
+							@include button("TOGGLE_ASC");
+
+
+
+							> table {
+								> tbody {
+									display: inline-block;
+									vertical-align: middle;
+									margin-left: 5px;
+
+								}
+
+								&.x-btn-pressed {
+									&:before {
+										content: $text_descending;
+									}
+								}
+
+								&:before {
+									content: $text_ascending;
+								    display: inline-block;
+								    vertical-align: middle;
+
+									@extend %CSS_BLOCK--FORM--LABEL;
+
+
+
+								}
+							}
+
+							.x-btn-pressed {
+								&.x-btn.x-btn-noicon button {
+									background-image: url($ICON--DESC--WHITE)!important;
+
+								}
+							}
+
+						}
+
 						display: inline-block;
 					}
 
@@ -630,6 +805,10 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				width: 100%!important;
 				height: 100%!important;
 				background: transparent;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					height: calc(100% - 110px) !important;
+				}
 			}
 
 			.x-view-over {
@@ -647,6 +826,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				height: initial!important;
 				max-height: initial!important;
 				width: initial!important;
+				margin: 0!important;
 
 				&.x-view-over {
 					span {
@@ -699,6 +879,11 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 	    bottom: 0;
 	    height: 90px;
 	    box-sizing: border-box;
+
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			left: 387px;
+
+		}
 
 		.x-panel-fbar {
 			width: 100%!important;

@@ -323,6 +323,21 @@
 	$BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED: 			 lighten($COLOUR--DIRTY_ORANGE, 3%);
     $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED:            lighten($COLOUR--WHITE_CLOUDS, 3%);
 
+
+	// SEARCH PANEL (SUGGESTED) BUTTON
+	$BUTTON--BG--COLOUR---UP\:SEARCH_PANEL---SUGGESTED: 			 	$COLOUR--WHITE_CLOUDS;
+	$BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL---SUGGESTED:               $COLOUR--GREY_CLOUDS;
+
+	$BUTTON--BG--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED: 			 	lighten($COLOUR--WHITE_CLOUDS, 3%);
+	$BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED:            lighten($COLOUR--GREY_CLOUDS, 3%);
+
+	// SEARCH PANEL (NORMAL) BUTTON
+	$BUTTON--BG--COLOUR---UP\:SEARCH_PANEL: 				 			transparent;
+	$BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL:               			$COLOUR--WHITE_CLOUDS;
+
+	$BUTTON--BG--COLOUR---HOVER\:SEARCH_PANEL: 			 				transparent;
+	$BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL:            			lighten($COLOUR--WHITE_CLOUDS, 3%);
+
 /////////////////////////////////////////////////
 // TREES ////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -450,6 +465,18 @@
     $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR---FOCUS:                 darken($EDIT_ENGINE--BASE--COLOUR, 50%);
 
 /////////////////////////////////////////////////
+// SEARCH PANEL  ////////////////////////////////
+/////////////////////////////////////////////////
+
+	$SEARCH_PANEL--TEXT_INPUT--BG--COLOUR:                           lighten($COLOUR--DARK_CLOUDS, 4%);
+	$SEARCH_PANEL--TEXT_INPUT--BG--COLOUR---HOVER:                   lighten($COLOUR--DARK_CLOUDS, 8%);
+	$SEARCH_PANEL--TEXT_INPUT--BG--COLOUR---FOCUS:                   lighten($COLOUR--DARK_CLOUDS, 75%);
+	$SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR:                         lighten($COLOUR--DARK_CLOUDS, 75%);
+	$SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR---HOVER:                 lighten($COLOUR--DARK_CLOUDS, 85%);
+	$SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR---FOCUS:                 $COLOUR--DARK_CLOUDS;
+
+
+/////////////////////////////////////////////////
 // DUAL LIST //////////////////////////////////
 /////////////////////////////////////////////////
 
@@ -463,7 +490,7 @@
 
 
 /////////////////////////////////////////////////
-// DUAL LIST //////////////////////////////////
+// PICKER FILT //////////////////////////////////
 /////////////////////////////////////////////////
 
     $PICKER_FILTER--TEXT_INPUT--BG--COLOUR:                           lighten($COLOUR--DUSTY_CLOUDS, 8%);
@@ -473,6 +500,18 @@
 	$PICKER_FILTER--TEXT_INPUT--FONT--COLOUR:                         $COLOUR--LEAD_CLOUDS;
     $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---HOVER:                 darken($COLOUR--LEAD_CLOUDS, 8%);
     $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---FOCUS:				  $COLOUR--WHITE_CLOUDS;
+
+/////////////////////////////////////////////////
+// PICKER SORT //////////////////////////////////
+/////////////////////////////////////////////////
+
+    $PICKER_SORT--TEXT_INPUT--BG--COLOUR:                           lighten($COLOUR--DUSTY_CLOUDS, 8%);
+    $PICKER_SORT--TEXT_INPUT--BG--COLOUR---HOVER:                   $COLOUR--DUSTY_CLOUDS;
+    $PICKER_SORT--TEXT_INPUT--BG--COLOUR---FOCUS:                   $COLOUR--GREY_CLOUDS;
+
+	$PICKER_SORT--TEXT_INPUT--FONT--COLOUR:                         $COLOUR--LEAD_CLOUDS;
+    $PICKER_SORT--TEXT_INPUT--FONT--COLOUR---HOVER:                 darken($COLOUR--LEAD_CLOUDS, 8%);
+    $PICKER_SORT--TEXT_INPUT--FONT--COLOUR---FOCUS:				  $COLOUR--WHITE_CLOUDS;
 
 
 /////////////////////////////////////////////////
@@ -932,6 +971,28 @@
             @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
         }
 
+	// SEARCH PANEL EXCEPTION
+        %CSS_BLOCK--FORM--TEXT_INPUT\:SEARCH_PANEL {
+            background: $SEARCH_PANEL--TEXT_INPUT--BG--COLOUR;
+
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
+        %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:SEARCH_PANEL {
+            background: $SEARCH_PANEL--TEXT_INPUT--BG--COLOUR---HOVER;
+            color: $SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR---HOVER !important;
+        }
+
+    	%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:SEARCH_PANEL {
+            background: $SEARCH_PANEL--TEXT_INPUT--BG--COLOUR---FOCUS;
+    		color: $SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+        }
+
+        %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:SEARCH_PANEL {
+            background: transparent !important;
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
 	// TEXT AREA
     %CSS_BLOCK--FORM--TEXT_AREA {
         background: $FORM--TEXT_AREA--BG--COLOUR !important;
@@ -984,6 +1045,8 @@
 			@include text($FORM--TEXT_AREA--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
 		}
 
+
+
 	// DUAL LIST
         %CSS_BLOCK--FORM--TEXT_INPUT\:DUAL_LIST {
             background: $DUAL_LIST--TEXT_INPUT--BG--COLOUR;
@@ -1006,26 +1069,55 @@
             @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
         }
 
-	// PICKER FILTERS
+	// PICKER SEARCH
 		%CSS_BLOCK--FORM--TEXT_INPUT\:PICKER_FILTER {
-			width: 120px!important;
+			// width: 120px!important;
 			background: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR;
-			padding: 1px 15px 2px 5px!important;
+			background-image: url($ICON--SEARCH--SMALL_GREY);
+			background-repeat: no-repeat;
+			background-position: left 5px center;
+			background-size: 10px 10px;
+			padding: 1px 15px 2px 19px !important;
 
 			@include text($FORM--TEXT_INPUT--FONT--SIZE, $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
 		}
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_FILTER {
-			background: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---HOVER;
+			background-color: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---HOVER;
 			color: $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---HOVER !important;
 		}
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:PICKER_FILTER {
-			background: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---FOCUS !important;
+			background-image: url($ICON--SEARCH--SMALL_WHITE);
+			background-color: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---FOCUS !important;
 			color: $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
 		}
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:PICKER_FILTER {
+			background-color: transparent !important;
+			@include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+		}
+
+	// PICKER SORT
+		%CSS_BLOCK--FORM--TEXT_INPUT\:PICKER_SORT {
+			width: 120px!important;
+			background: $PICKER_SORT--TEXT_INPUT--BG--COLOUR;
+			padding: 1px 15px 2px 5px!important;
+
+			@include text($FORM--TEXT_INPUT--FONT--SIZE, $PICKER_SORT--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_SORT {
+			background: $PICKER_SORT--TEXT_INPUT--BG--COLOUR---HOVER;
+			color: $PICKER_SORT--TEXT_INPUT--FONT--COLOUR---HOVER !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:PICKER_SORT {
+			background: $PICKER_SORT--TEXT_INPUT--BG--COLOUR---FOCUS !important;
+			color: $PICKER_SORT--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:PICKER_SORT {
 			background: transparent !important;
 			@include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
 		}
@@ -1698,7 +1790,7 @@
         }
     }
 
-    // ACTION BAR
+	// ACTION BAR
 	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR {
         background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR !important;
     	padding: 5px 10px;
@@ -1726,6 +1818,27 @@
         @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR !important, $FONT--WEIGHT---EXTRALIGHT);
     }
 
+	// INVERT
+	%CSS_BLOCK--BUTTON--TEXT\:TOGGLE_ASC {
+	    background: #a3a3a3 !important;
+	    background-image: url($ICON--ASC--WHITE)!important;
+	    text-indent: -50000px;
+	    width: 22px!important;
+	    background-position: center center!important;
+	    background-repeat: no-repeat!important;
+	    background-size: 11px!important;
+	    height: 21px!important;
+		opacity: 0.8;
+
+
+	}
+
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:TOGGLE_ASC {
+		opacity: 1;
+    }
+
+
+
     // ACTION BAR ::: SUGGESTED
 	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED {
         background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
@@ -1745,6 +1858,42 @@
 	%CSS_BLOCK--BUTTON--ICON---HOVER\:ACTIONBAR---SUGGESTED {
         background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
         @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+
+	// SEARCH PANEL SUGGESTED
+	%CSS_BLOCK--BUTTON--ICON\:SEARCH_PANEL---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:SEARCH_PANEL---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:SEARCH_PANEL---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED !important;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	// SEARCH PANEL NORMAL
+	%CSS_BLOCK--BUTTON--ICON\:SEARCH_PANEL {
+        background: $BUTTON--BG--COLOUR---UP\:SEARCH_PANEL !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:SEARCH_PANEL {
+        background: $BUTTON--BG--COLOUR---HOVER\:SEARCH_PANEL !important;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+
+
+	// ACTION BAR ::: SUGGESTED
+	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
     }
 
 
@@ -1786,15 +1935,16 @@
 	// SMALL LABEL
 	%CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL {
 		line-height: 20px;
-		@include text(10px, $TREE--ROW--FONT--COLOUR---UP, $FONT--WEIGHT---EXTRALIGHT);
+		@include text(10px !important, $TREE--ROW--FONT--COLOUR---UP !important, $FONT--WEIGHT---EXTRALIGHT !important);
 	}
 
 	%CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL {
-		// color: $TREE--ROW--FONT--COLOUR---HOVER!important;
+		color: $TREE--ROW--FONT--COLOUR---HOVER!important;
 	}
 
 	%CSS_BLOCK--TREE--ROW--TEXT---SELECTED\:SMALL_LABEL {
-		/*color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
+		color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
+		/*
 		padding-right: 19px!important; // Make space for More options button
 
 		.x-viewport-adminmode & {

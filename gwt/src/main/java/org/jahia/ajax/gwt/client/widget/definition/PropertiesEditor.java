@@ -615,7 +615,9 @@ public class PropertiesEditor extends FormPanel {
                     values.add(getPropertyValue(s, propDef.getRequiredType()));
                 }
             } else {
-                values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
+                if (fld.getValue() != null) {
+                    values.add(getPropertyValue(fld.getValue(), propDef.getRequiredType()));
+                }
             }
         }
 

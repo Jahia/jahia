@@ -56,6 +56,7 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
@@ -251,7 +252,7 @@ public class PropertiesEditor extends FormPanel {
      * @param fieldSetGrouping
      */
     private void addItems(final GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items,
-                          boolean optional, boolean fieldSetGrouping, Field remoteField) {
+                          boolean optional, boolean fieldSetGrouping, Field<?> remoteField) {
 
         FieldSet fieldSet = null;
         if (remoteField != null) {
@@ -311,7 +312,7 @@ public class PropertiesEditor extends FormPanel {
                 if (!isWriteable || (!isNonI18NWriteable && !definition.isNode() && !((GWTJahiaPropertyDefinition)definition).isInternationalized())) {
                     field.setReadOnly(true);
                     if (field instanceof TriggerField) {
-                        ((TriggerField) field).setHideTrigger(true);
+                        ((TriggerField<?>) field).setHideTrigger(true);
                     }
                 }
 
@@ -346,6 +347,8 @@ public class PropertiesEditor extends FormPanel {
                                 fieldSet.setExpanded(false);
                             }
                             fieldSet.addListener(Events.Collapse, new Listener<FieldSetEvent>() {
+
+                                @Override
                                 public void handleEvent(FieldSetEvent componentEvent) {
                                     removedTypes.add(nodeType.getName());
                                     addedTypes.remove(nodeType.getName());
@@ -354,7 +357,8 @@ public class PropertiesEditor extends FormPanel {
                                         if (component instanceof PropertyAdapterField) {
                                             PropertyAdapterField adapterField = (PropertyAdapterField) component;
                                             if (adapterField.getField() instanceof ComboBox) {
-                                                removeExternalMixin(((ComboBox) adapterField.getField()).getSelection(),adapterField);
+                                                @SuppressWarnings({"unchecked", "rawtypes"}) List<GWTJahiaValueDisplayBean> selection = ((ComboBox) adapterField.getField()).getSelection();
+                                                removeExternalMixin(selection, adapterField);
                                             }
                                         }
                                         component.setData("addedField", null);
@@ -362,6 +366,8 @@ public class PropertiesEditor extends FormPanel {
                                 }
                             });
                             fieldSet.addListener(Events.Expand, new Listener<FieldSetEvent>() {
+
+                                @Override
                                 public void handleEvent(FieldSetEvent componentEvent) {
                                     addedTypes.add(nodeType.getName());
                                     removedTypes.remove(nodeType.getName());
@@ -370,6 +376,8 @@ public class PropertiesEditor extends FormPanel {
                                     w.addAll(fs.getItems());
                                     fs.removeAll();
                                     DeferredCommand.addCommand(new Command() {
+
+                                        @Override
                                         public void execute() {
                                             for (Component component : w) {
                                                 component.setWidth("98%");
@@ -392,9 +400,11 @@ public class PropertiesEditor extends FormPanel {
                     }
                 }
                 if (field instanceof ComboBox) {
-                    final ComboBox<GWTJahiaValueDisplayBean> c = (ComboBox<GWTJahiaValueDisplayBean>) field;
+                    @SuppressWarnings("unchecked") final ComboBox<GWTJahiaValueDisplayBean> c = (ComboBox<GWTJahiaValueDisplayBean>) field;
                     final List<GWTJahiaValueDisplayBean> oldSelection = c.getSelection();
                     c.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaValueDisplayBean>() {
+
+                        @Override
                         public void selectionChanged(SelectionChangedEvent<GWTJahiaValueDisplayBean> event) {
                             removeExternalMixin(oldSelection, adapterField);
                             setExternalMixin(adapterField, true);
@@ -410,7 +420,7 @@ public class PropertiesEditor extends FormPanel {
                     }
                 }
                 if (defaultedProperties.contains(field.getName())) {
-                    field.setData("defaultedField","true");
+                    field.setData("defaultedField", "true");
                 }
             }
         }
@@ -420,6 +430,7 @@ public class PropertiesEditor extends FormPanel {
      * Set template
      *
      */
+    @SuppressWarnings("unchecked")
     private void setExternalMixin(PropertyAdapterField c, boolean b) {
         String addMixin = null;
         if (c.getValue() != null) {
@@ -567,7 +578,7 @@ public class PropertiesEditor extends FormPanel {
     public static List<GWTJahiaNodePropertyValue> getPropertyValues(Field<?> field, GWTJahiaItemDefinition itemDef) {
         List<GWTJahiaNodePropertyValue> values = new ArrayList<GWTJahiaNodePropertyValue>();
         Field<?> fld = field;
-        if(field instanceof PropertyAdapterField) {
+        if (field instanceof PropertyAdapterField) {
             fld = ((PropertyAdapterField)field).getField();
         }
         if (itemDef.isNode()) {
@@ -590,7 +601,7 @@ public class PropertiesEditor extends FormPanel {
             GWTJahiaPropertyDefinition propDef = (GWTJahiaPropertyDefinition) itemDef;
             // case of a list property
             if (fld instanceof DualListField) {
-                List<GWTJahiaValueDisplayBean> selection =
+                @SuppressWarnings("unchecked") List<GWTJahiaValueDisplayBean> selection =
                         ((DualListField<GWTJahiaValueDisplayBean>) fld).getToList().getStore().getModels();
                 for (GWTJahiaValueDisplayBean valueDisplayBean : selection) {
                     GWTJahiaNodePropertyValue propertyValue =
@@ -610,9 +621,9 @@ public class PropertiesEditor extends FormPanel {
                     values.add(propertyValue);
                 }
             } else if (fld instanceof MultipleTextField || fld instanceof MultipleNumberField || fld instanceof TagField) {
-                List l = (List) fld.getValue();
-                for (Object s : l) {
-                    values.add(getPropertyValue(s, propDef.getRequiredType()));
+                List<?> list = (List<?>) fld.getValue();
+                for (Object item : list) {
+                    values.add(getPropertyValue(item, propDef.getRequiredType()));
                 }
             } else {
                 if (fld.getValue() != null) {
@@ -700,19 +711,19 @@ public class PropertiesEditor extends FormPanel {
     }
 
     public class PropertyAdapterField extends AdapterField {
-        private Field field;
+        private Field<?> field;
         private boolean dirty = false;
         private GWTJahiaItemDefinition definition;
         private LayoutContainer panel;
 
-        public PropertyAdapterField(final Field field, final GWTJahiaItemDefinition definition, final GWTJahiaNodeProperty property) {
+        public PropertyAdapterField(final Field<?> field, final GWTJahiaItemDefinition definition, final GWTJahiaNodeProperty property) {
             super(new LayoutContainer());
             panel = (LayoutContainer) getWidget();
 
             if (isMultipleEdit && !definition.isProtected()) {
                 field.setEnabled(false);
                 final CheckBox checkbox = new CheckBox();
-                final Field f = field;
+                final Field<?> f = field;
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
                     public void handleEvent(ComponentEvent event) {
                         if (checkbox.getValue()) {
@@ -738,7 +749,7 @@ public class PropertiesEditor extends FormPanel {
                 panel.add(field);
                 field.setWidth("98%");
                 if (isWriteable && viewCopyToAllLangs && JahiaGWTParameters.getSiteLanguages() != null && JahiaGWTParameters.getSiteLanguages().size() > 1 && definition.isInternationalized()) {
-                    final Button button = new Button(Messages.get("label.translate.copyall","Copy to all languages"));
+                    final Button button = new Button(Messages.get("label.translate.copyall", "Copy to all languages"));
                     button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent ce) {
@@ -777,8 +788,10 @@ public class PropertiesEditor extends FormPanel {
                                             Messages.get("label.translate.suggest", "Suggest translation"),
                                             Messages.get("label.translate.suggest.confirm", "Do you want to replace the content by an automatic translation of it?"),
                                             new Listener<MessageBoxEvent>() {
+
+                                                @Override
                                                 public void handleEvent(MessageBoxEvent be) {
-                                                    if(Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
+                                                    if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
                                                         String srcLanguage = translationSource.getDisplayedLocale().getLanguage();
                                                         int i = srcLanguage.indexOf("_");
                                                         if (i > -1) {
@@ -790,15 +803,18 @@ public class PropertiesEditor extends FormPanel {
                                                             destLanguage = destLanguage.substring(0, i);
                                                         }
                                                         JahiaContentManagementService.App.getInstance().translate(finalSourceProperty, definition, srcLanguage, destLanguage, JahiaGWTParameters.getSiteUUID(), new BaseAsyncCallback<GWTJahiaNodeProperty>() {
+
+                                                            @Override
                                                             public void onApplicationFailure(Throwable throwable) {
                                                                 com.google.gwt.user.client.Window.alert(Messages.get("failure.property.translation", "Property translation failed") + "\n\n"
                                                                         + throwable.getMessage());
                                                                 Log.error("Failed to translate property", throwable);
                                                             }
 
+                                                            @Override
                                                             public void onSuccess(GWTJahiaNodeProperty newProp) {
-                                                                Field f = getFieldsMap().get(definition.getName()).getField();
-                                                                FormFieldCreator.copyValue(newProp, f);
+                                                                Field<?> field = getFieldsMap().get(definition.getName()).getField();
+                                                                FormFieldCreator.copyValue(newProp, field);
                                                             }
                                                         });
                                                     }
@@ -823,7 +839,7 @@ public class PropertiesEditor extends FormPanel {
             setLabelSeparator(field.getLabelSeparator());
         }
 
-        public Field getField() {
+        public Field<?> getField() {
             return field;
         }
 
@@ -831,10 +847,12 @@ public class PropertiesEditor extends FormPanel {
             return definition;
         }
 
+        @Override
         public Object getValue() {
             return field.getValue();
         }
 
+        @Override
         public boolean isDirty() {
             return dirty || field.isDirty();
         }
@@ -843,11 +861,13 @@ public class PropertiesEditor extends FormPanel {
             this.dirty = dirty;
         }
 
+        @Override
         public void setVisible(boolean visible) {
             super.setVisible(visible);
             field.setVisible(visible);
         }
 
+        @Override
         public void setEnabled(boolean enabled) {
             super.setEnabled(enabled);
             field.setEnabled(enabled);
@@ -857,6 +877,8 @@ public class PropertiesEditor extends FormPanel {
         public void setWidth(final String width) {
             super.setWidth(width);
             DeferredCommand.addCommand(new Command() {
+
+                @Override
                 public void execute() {
                     field.setWidth(width);
                 }

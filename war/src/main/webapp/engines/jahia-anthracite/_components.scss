@@ -1911,6 +1911,16 @@ form,
 	// clear: none!important;
 }
 
+.x-form-invalid {
+	border:none!important;
+	background:none!important;
+
+	// INLINE ERROR DETAILS
+	> div:nth-child(1) {
+		// display: none;
+	}
+}
+
 /* BROWSER FIXES ( Actually over rides of GXT fixes ) */
 .ext-strict .ext-gecko .x-small-editor .x-form-text,
 .ext-strict .ext-webkit .x-small-editor .x-form-text {
@@ -1995,7 +2005,8 @@ form,
 		}
 
 		// ICONS
-		.ext-mb-warning {
+		.ext-mb-warning,
+		.ext-mb-question {
 			display: none;
 		}
 

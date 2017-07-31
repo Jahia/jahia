@@ -9,7 +9,7 @@
 
 
 			// Copy Anthracite CSS to remove / add when dropping in and out of STUDIO mode
-			indigoQF.status.css.storedCSS = $('link[rel=stylesheet][href="/engines/jahia-anthracite/edit_en.css"]').clone();
+			indigoQF.status.css.storedCSS = $('link[rel=stylesheet][href$="edit_en.css"]').clone();
 
 			// Attach window listeners
 			window.onresize = indigoQF.listeners.windowResize;

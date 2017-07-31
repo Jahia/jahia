@@ -4,6 +4,7 @@
 
 	$COLOUR--JAHIA_BLUE: 						rgb(0,160,227);
 	$COLOUR--WHITE_CLOUDS: 						rgb(241,241,241);
+	$COLOUR--CREAM_CLOUDS: 						rgb(228,229,230);
 	$COLOUR--DUSTY_CLOUDS: 						rgb(209,209,209);
 	$COLOUR--ASH_CLOUDS: 						rgb(163,163,163);
 	$COLOUR--GREY_CLOUDS: 						rgb(122,126,128);
@@ -30,6 +31,10 @@
 // ICONS ////////////////////////////////////////
 /////////////////////////////////////////////////
 
+	// PREVIEW
+	$ICON--PREVIEW--SMALL_WHITE: 				"./images/icons/icon_preview_small_white.png";
+	$ICON--PREVIEW--SMALL_GREY: 				"./images/icons/icon_preview_small_grey.png";
+
 	// RICH TEXT EDITOR ICON SET
 	$ICON--RICH_TEXT--TOOLBUTTONS: 				"./images/icons/icons-cke.png";
 
@@ -49,11 +54,15 @@
 	$ICON--MORE_OPTIONS---GREY:     			"./images/icon-more-options-dark-50@X2.png";
 	$ICON--ARROW_DOWN---WHITE:     				"./images/icons/combo-arrow.png";
 	$ICON--ARROW_DOWN---GREY:     				"./images/icons/combo-arrow-grey.png";
+
+	// CLOSE ICONS
 	$ICON--CLOSE_SMALL---GREY:     				"./images/icons/icon-close-small-light.png";
 	$ICON--CLOSE_SMALL---WHITE:     			"./images/icons/icon-close-white@X2.png";
 	$ICON--CLOSE_LARGE---WHITE:     			"./images/icons/icon-close-white@X2.png";
 	$ICON--CLOSE_LARGE---GREY:     				"./images/icons/icon-close-grey@X2.png";
 
+	// BACK ICONS
+	$ICON--BACK--GREY: 							"./images/icons/icon-back-grey@X2.png";
 
 
 	// DEVICES

@@ -325,18 +325,35 @@
 
 
 	// SEARCH PANEL (SUGGESTED) BUTTON
-	$BUTTON--BG--COLOUR---UP\:SEARCH_PANEL---SUGGESTED: 			 	$COLOUR--WHITE_CLOUDS;
-	$BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL---SUGGESTED:               $COLOUR--GREY_CLOUDS;
+	$BUTTON--BG--COLOUR---UP\:SEARCH_PANEL---SUGGESTED: 			 	$COLOUR--RAIN_CLOUDS;
+	$BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL---SUGGESTED:               $COLOUR--WHITE_CLOUDS;
 
-	$BUTTON--BG--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED: 			 	lighten($COLOUR--WHITE_CLOUDS, 3%);
-	$BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED:            lighten($COLOUR--GREY_CLOUDS, 3%);
+	$BUTTON--BG--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED: 			 	lighten($COLOUR--RAIN_CLOUDS, 3%);
+	$BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED:            lighten($COLOUR--WHITE_CLOUDS, 3%);
 
 	// SEARCH PANEL (NORMAL) BUTTON
 	$BUTTON--BG--COLOUR---UP\:SEARCH_PANEL: 				 			transparent;
-	$BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL:               			$COLOUR--WHITE_CLOUDS;
+	$BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL:               			$COLOUR--RAIN_CLOUDS;
 
 	$BUTTON--BG--COLOUR---HOVER\:SEARCH_PANEL: 			 				transparent;
-	$BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL:            			lighten($COLOUR--WHITE_CLOUDS, 3%);
+	$BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL:            			lighten($COLOUR--RAIN_CLOUDS, 3%);
+
+/////////////////////////////////////////////////
+// TREES ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+	$TREE--MENU--BG--COLOUR---UP: 										$COLOUR--CREAM_CLOUDS;
+	$TREE--MENU--BG--COLOUR---UP\:SEARCH:								transparent;
+	$TREE--MENU--BG--COLOUR---SELECTED:									$COLOUR--DIRTY_ORANGE;
+	$TREE--MENU--BG--COLOUR---SELECTED\:SEARCH:							$COLOUR--DIRTY_ORANGE;
+	$TREE--MENU--ICON--MORE_OPTIONS---UP:								$ICON--MORE_OPTIONS---GREY;
+	$TREE--MENU--ICON--MORE_OPTIONS---UP\:SEARCH:						$ICON--MORE_OPTIONS---WHITE;
+	$TREE--MENU--ICON--MORE_OPTIONS---SELECTED:							$ICON--MORE_OPTIONS---WHITE;
+
+	$TREE--MENU--ICON--PREVIEW---UP:									$ICON--PREVIEW--SMALL_GREY;
+	$TREE--MENU--ICON--PREVIEW---UP\:SEARCH:							$ICON--PREVIEW--SMALL_WHITE;
+	$TREE--MENU--ICON--PREVIEW---SELECTED:								$ICON--PREVIEW--SMALL_WHITE;
+
 
 /////////////////////////////////////////////////
 // TREES ////////////////////////////////////////
@@ -367,6 +384,36 @@
 	$TREE--MORE_OPTIONS--ICON---HOVER: 			                   	$ICON--MORE_OPTIONS---GREY;
 	$TREE--MORE_OPTIONS--ICON---SELECTED: 		                   	$ICON--MORE_OPTIONS---WHITE;
     $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER: 	               	$ICON--MORE_OPTIONS---WHITE;
+
+/////////////////////////////////////////////////
+// TREES FOR SEARCH RESULT //////////////////////
+/////////////////////////////////////////////////
+
+    // ROW UP
+    $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT: 					                darken($COLOUR--WHITE_CLOUDS, 3%);
+    $TREE--ROW--ICON---UP\:SEARCH_RESULT: 						                    $ICON--PAGES---GREY;
+	$TREE--ROW--BG--COLOUR---UP\:SEARCH_RESULT: 			                        transparent;
+
+    // ROW HOVER
+    $TREE--ROW--BG--COLOUR---HOVER\:SEARCH_RESULT: 			                    rgba( $COLOUR--GREY_CLOUDS, .1 );
+    $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT: 				                lighten($COLOUR--WHITE_CLOUDS, 10%);
+    $TREE--ROW--ICON---HOVER\:SEARCH_RESULT: 				                        $ICON--PAGES---GREY;
+
+    // ROW SELECTED
+    $TREE--ROW--BG--COLOUR---SELECTED\:SEARCH_RESULT: 		                       	rgba( $COLOUR--GREY_CLOUDS, .7 );
+    $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT: 			               	$COLOUR--WHITE_CLOUDS;
+    $TREE--ROW--ICON---SELECTED\:SEARCH_RESULT: 			                       	$ICON--PAGES---WHITE;
+
+    // ROW HOVER SELECTED
+    $TREE--ROW--BG--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: 	                   	$COLOUR--GREY_CLOUDS;
+    $TREE--ROW--FONT--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: 		               	$COLOUR--WHITE_CLOUDS;
+    $TREE--ROW--ICON---SELECTED_HOVER\:SEARCH_RESULT: 		                       	$ICON--PAGES---WHITE;
+
+    // MORE OPTIONS BUTTON
+	$TREE--MORE_OPTIONS--ICON---UP\:SEARCH_RESULT: 				               	$ICON--MORE_OPTIONS---GREY;
+	$TREE--MORE_OPTIONS--ICON---HOVER\:SEARCH_RESULT: 			                   	$ICON--MORE_OPTIONS---GREY;
+	$TREE--MORE_OPTIONS--ICON---SELECTED\:SEARCH_RESULT: 		                   	$ICON--MORE_OPTIONS---WHITE;
+    $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER\:SEARCH_RESULT: 	               	$ICON--MORE_OPTIONS---WHITE;
 
 
 
@@ -620,6 +667,57 @@
         color: $COLOUR--WHITE_CLOUDS;
     }
 
+
+/////////////////////////////////////////////////
+// MORE INFO BUTTONS ////////////////////////////
+/////////////////////////////////////////////////
+	%CSS_BLOCK--MORE_INFO---UP {
+		background: url($TREE--MENU--ICON--MORE_OPTIONS---UP) no-repeat center center $TREE--MENU--BG--COLOUR---UP;
+		background-size: 10px 2px;
+	}
+
+	%CSS_BLOCK--MORE_INFO---SELECTED {
+		background: url($TREE--MENU--ICON--MORE_OPTIONS---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED !important;
+		background-size: 10px 2px!important;
+	}
+
+	// SEARCH
+	%CSS_BLOCK--MORE_INFO---UP\:SEARCH {
+		background: url($TREE--MENU--ICON--MORE_OPTIONS---UP\:SEARCH) no-repeat center center $TREE--MENU--BG--COLOUR---UP\:SEARCH;
+		background-size: 10px 2px;
+	}
+
+	%CSS_BLOCK--MORE_INFO---SELECTED\:SEARCH {
+		background: url($TREE--MENU--ICON--MORE_OPTIONS---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED !important;
+		background-size: 10px 2px!important;
+	}
+
+
+/////////////////////////////////////////////////
+// PREVIEW BUTTONS //////////////////////////////
+/////////////////////////////////////////////////
+	%CSS_BLOCK--PREVIEW_BUTTON---UP {
+		background: url($TREE--MENU--ICON--PREVIEW---UP) no-repeat center center $TREE--MENU--BG--COLOUR---UP;
+	}
+
+	%CSS_BLOCK--PREVIEW_BUTTON---UP\:SEARCH {
+		background: url($TREE--MENU--ICON--PREVIEW---UP\:SEARCH) no-repeat center center $TREE--MENU--BG--COLOUR---UP\:SEARCH;
+	}
+
+	%CSS_BLOCK--PREVIEW_BUTTON---SELECTED {
+		background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED;
+
+	}
+
+	%CSS_BLOCK--PREVIEW_BUTTON---SELECTED\:SEARCH {
+		background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED\:SEARCH;
+
+	}
+
+	%CSS_BLOCK--PREVIEW_BUTTON---HOVER {
+		// background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED;
+
+	}
 
 /////////////////////////////////////////////////
 // DATE PICKER //////////////////////////////////
@@ -1959,6 +2057,7 @@
 
     // BACKGROUNDS
     %CSS_BLOCK--TREE--ROW--BG---UP {
+		padding-left: 6px;
         background: $TREE--ROW--BG--COLOUR---UP!important;
     }
 
@@ -2057,6 +2156,7 @@
 
     %CSS_BLOCK--THUMB--BG---SELECTED {
         background: $THUMB--BG--COLOUR---SELECTED;
+		background: $COLOUR--DIRTY_ORANGE;
     }
 
 

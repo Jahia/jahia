@@ -1,15 +1,15 @@
 (function(){
 	var indigoQF = {
+		triggerMouseEvent : function (node, eventType) {
+		    var clickEvent = document.createEvent ('MouseEvents');
+		    clickEvent.initEvent (eventType, true, true);
+		    node.dispatchEvent (clickEvent);
+		},
 		init: function(){
+
+
 			// Copy Anthracite CSS to remove / add when dropping in and out of STUDIO mode
 			indigoQF.status.css.storedCSS = $('link[rel=stylesheet][href="/engines/jahia-anthracite/edit_en.css"]').clone();
-
-			if(indigoQF.status.quickMenu.active){
-				$("body")
-					.attr("data-quick-menu", "on")
-					.prepend("<div id='quick-menu'><iframe scrolling='no' id='quick-menu-contents'></iframe></div>");
-				$('#quick-menu-contents').attr("src", '/cms/dashboardframe/default/en/users/root.projects.html');
-			}
 
 			// Attach window listeners
 			window.onresize = indigoQF.listeners.windowResize;
@@ -31,25 +31,71 @@
 				});
 
 				$("body")
+					.on("click", ".toolbar-item-filepreview", indigoQF.listeners.mouseClickFilePreviewButton)
+					.on("mouseenter", ".toolbar-item-filepreview", indigoQF.listeners.mouseOverFilePreviewButton)
+					.on("mouseleave", ".toolbar-item-filepreview", indigoQF.listeners.mouseOutFilePreviewButton)
+					.on("mouseenter", ".thumb-wrap", indigoQF.listeners.mouseOverImagePickerThumb)
+					.on("mouseenter", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", indigoQF.listeners.mouseOverImagePickerRow)
+					.on("click", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", function(){
+						$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+					})
+					.on("click", ".x-grid3-row .x-grid3-td-size", indigoQF.listeners.clickMoreOptionsButton)
+					.on("click", ".x-grid3-row .x-tree3-el", indigoQF.listeners.clickMoreOptionsButton)
+					.on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", indigoQF.listeners.clickMoreOptionsButton)
+					.on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap", function(){
+						$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+					})
+
 					.on("click", ".x-viewport-editmode .x-toolbar-first > table", indigoQF.listeners.toggleThemeMode)
 					.on("click", ".editmode-managers-menu", indigoQF.listeners.openManagerMenu)
 					.on("click", ".menu-editmode-managers-menu", indigoQF.listeners.closeManagerMenu)
 					.on("mousedown", ".menu-edit-menu-mode, .menu-edit-menu-user", indigoQF.listeners.closeManagerMenu)
 					.on("click", "#JahiaGxtSidePanelTabs > div:nth-child(1) > div:nth-child(2)", indigoQF.listeners.toggleSidePanelDocking)
 					.on("mouseover", ".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(7)", indigoQF.listeners.mouseOverHamburger)
-					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", indigoQF.listeners.clickSidePanelMoreOptionsButton)
-					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickSidePanelFileThumbMoreOptionsButton)
+					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", function(e){
+						indigoQF.listeners.clickMoreOptionsButton(e, "x-grid3-td-displayName");
+					})
+					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickMoreOptionsButton)
 					.on("click", ".x-current-page-path", indigoQF.listeners.clearMultiSelection)
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", indigoQF.listeners.addPageToHistory)
-					.on("mousedown", "#JahiaGxtManagerLeftTree .x-tab-strip-wrap li:nth-child(1)", function(){
-						console.log("CLOSED SEARCH");
-						// $("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").removeClass("indigo-FAKE-HIDE");
-						$("body").attr("data-INDIGO-PICKER-SEARCH", "");
+					.on("click", "#JahiaGxtContentPickerWindow", function(){
+						// console.log("CLOSE PANEL IF OPEN");
+						$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", "");
 					})
+					// NOT WOKING IN FF ??
+					.on("mousedown", "#JahiaGxtManagerLeftTree .x-tab-strip-wrap li:nth-child(1)", function(){
+						// console.log("CLOSED SEARCH");
+						$("body").attr("data-INDIGO-PICKER-SEARCH", "");
+
+						// Oki, this gets fun :S
+						// First click of refresh button hides all the sources (dont ask why). SO need to click again, however.
+						// Problem, once clicking the refresh button the first time, we lose ability to differentiate it from the other refresh tools because classes are removed.
+						// SOlution, first get the refresh tool element before first click. Store element. Then trigger second click on the element without need of class.
+						// We need to leave a split second between the clicks, so using a timeout. 500ms seems to be enough - unfortunately a noticable time lapse before restoring file list.
+						var refreshButton = $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel").not(".x-panel-collapsed").find(".x-tool-refresh")[0];
+
+						$(refreshButton).trigger("click");
+
+						// indigoQF.triggerMouseEvent($(refreshButton)[0], "click");
+						// indigoQF.triggerMouseEvent($(refreshButton)[0], "click");
+
+
+						setTimeout(function(){
+							// indigoQF.triggerMouseEvent($(refreshButton)[0], "click");
+							$(refreshButton).trigger("click");
+						}, 500);
+
+					})
+					// NOT WOKING IN FF
 					.on("mousedown", "#JahiaGxtManagerLeftTree .x-tab-strip-wrap li:nth-child(2)", function(){
-						console.log("OPENED SEARCH");
-						// $("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").addClass("indigo-FAKE-HIDE");
+						// console.log("OPENED SEARCH");
 						$("body").attr("data-INDIGO-PICKER-SEARCH", "open");
+
+						$("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
+
+						setTimeout(function(){
+							$("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
+						}, 50);
 					})
 					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", function(){
 						$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
@@ -63,8 +109,9 @@
 
 						// $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer").trigger("click");
 					})
-					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", function(){
-						console.log("open the panel");
+					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", function(e){
+						e.stopPropagation();
+						// console.log("open the panel");
 
 						$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 
@@ -74,7 +121,7 @@
 						});
 					})
 					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", function(){
-						console.log("OVER THE SPACER");
+						// console.log("OVER THE SPACER");
 						if($("body").attr("data-indigo-picker-source-panel") != "open"){
 							$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
 						}
@@ -87,11 +134,39 @@
 					// })
 					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", function(e){
 						var row = $(this),
-							topPosition = row.position().top;
+							box = row[0].getBoundingClientRect(),
+							left = box.left,
+							top = box.top,
+							width = box.width;
+							console.log(left, " x ", top);
 
-						$(".toolbar-item-filepreview")
+						$("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
 							.css({
-								top: (topPosition + 74) + "px"
+								top: (top) + "px",
+								left: (left + width - 58) + "px"
+							})
+							.addClass("indigo-show-button");
+
+						//row.find("td:nth-child(1)").trigger("click");
+						//row.trigger("click");
+
+
+						//row.find(".x-grid3-cell").triggerHandler("click");
+
+					})
+					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", function(e){
+						var thumb = $(this),
+							box = thumb[0].getBoundingClientRect(),
+							left = box.left,
+							top = box.top,
+							width = box.width;
+
+						console.log(left, " x ", top);
+
+						$("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
+							.css({
+								top: (top) + "px",
+								left: (left + width - 52) + "px"
 							})
 							.addClass("indigo-show-button");
 
@@ -103,11 +178,11 @@
 
 					})
 					.on("mouseenter", ".toolbar-item-filepreview", function(e){
-						$(".toolbar-item-filepreview").addClass("indigo-show-button");
+						$("#JahiaGxtManagerToolbar .toolbar-item-filepreview").addClass("indigo-show-button");
 
 					})
 					.on("mouseleave", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", function(e){
-						$(".toolbar-item-filepreview").removeClass("indigo-show-button")
+						$("#JahiaGxtManagerToolbar .toolbar-item-filepreview").removeClass("indigo-show-button")
 					});
 
 				// Setup side panel listeners accordingly to naviagtion style (rollover or click) as defined in indigoQF.status.panelMenu.style
@@ -156,8 +231,8 @@
 			iframeLoaded: null,
 			iframeObserver: null,
 			user: {},
-			quickMenu: {
-				active: false
+			filePicker: {
+				currentItem: null
 			}
 		},
 		config: {
@@ -177,6 +252,8 @@
 				indigoQF.listeners.updatePageMenuPositions();
 
 			},
+
+
 
 			checkMode: function(element){
 
@@ -230,7 +307,7 @@
 						$("body").attr("data-INDIGO-IMAGE-PREVIEW", "open");
 
 						// Attribute used to display the friendly name in edit panel
-						$(".engine-panel > div.x-panel-header .x-panel-header-text").attr("data-friendly-name", nodeDisplayName);
+						$(".engine-panel > div.x-panel-header .x-panel-header-text").attr("data-friendly-name", "nodeDisplayName");
 						break;
 
 					case "close":
@@ -561,54 +638,13 @@
 				}
 			},
 			openManagerMenu: function(){
-				// Manager Menu has been opened.
-
-				if(indigoQF.status.quickMenu.active){
-					// Get admin mode / studio mode buttons if available
-					$("body").attr("data-quick-menu-open", "open");
-					$(".edit-menu-mode").trigger("click");
-					$(".contribute-menu-mode").trigger("click");
-
-					$(".edit-menu-user").trigger("click");
-					$(".contribute-menu-user").trigger("click");
-
-					$(".menu-edit-menu-user").attr("data-username", indigoQF.status.user.userName);
-
-					// Store values
-					//indigoQF.status.user.adminMode = $(".toolbar-item-admin").length;
-					//indigoQF.status.user.studioMode = $(".toolbar-item-studio").length;
-
-					// Remove duplucate stuff from mode menu
-					$(".toolbar-item-live").hide();
-					$(".toolbar-item-preview").hide();
-					$(".toolbar-item-contribute").hide();
-
-					// Get rid off menu
-					//$("body").trigger("click");
-
-					$('#quick-menu-contents').fadeIn("slow");
-					$("#quick-menu").addClass("open");
-				}
-
-
-
 				// Close the side panel if it is open.
 				indigoQF.listeners.closeSidePanel()
+
 			},
 			closeManagerMenu: function(){
 				// Manager Menu has been closed by clicking on the X.
 				// Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
-				if(indigoQF.status.quickMenu.active){
-					$("body").attr("data-quick-menu-open", "");
-
-					$("#quick-menu").removeClass("open");
-					$('#quick-menu-contents').fadeOut();
-					$(".menu-contribute-menu-mode").fadeOut();
-					$(".menu-contribute-menu-user").fadeOut();
-					$(".menu-edit-menu-mode").fadeOut();
-					$(".menu-edit-menu-user").fadeOut();
-				}
-
 				$(".menu-editmode-managers-menu").fadeOut();
 			},
 			toggleSidePanelDocking: function(e){
@@ -768,28 +804,76 @@
 
 				}
 			},
-			clickSidePanelMoreOptionsButton: function(e){
+			clickMoreOptionsButton: function(e, matchClass){
 				// Open Context Menu when clicking "More" button.
-				var clickedElement = $(e.target),
-					acceptClick = clickedElement.hasClass("x-grid3-td-displayName");
+				// if matchClass is passed, then the click is ONLY accepted if the clicked element has that class.
+				// if matchClass is not passed then it is accepted.
+
+				var acceptClick = (matchClass) ? $(e.target).hasClass(matchClass) : true,
+					eV;
 
 				if(acceptClick){
-					var eV = new jQuery.Event("contextmenu");
-						eV.clientX = e.pageX;
-						eV.clientY = e.pageY;
-						$(this).trigger(eV);
-				}
-
-
-			},
-			clickSidePanelFileThumbMoreOptionsButton: function(e){
-				// Open Context Menu when clicking "More" button.
-
-				var eV = new jQuery.Event("contextmenu");
+					eV = new jQuery.Event("contextmenu");
 					eV.clientX = e.pageX;
 					eV.clientY = e.pageY;
-					$(this).trigger(eV);
+
+					$(e.target).trigger(eV);
+				}
+
 			},
+			mouseOverImagePickerRow: function(e){
+				indigoQF.status.filePicker.currentItem = $(this)[0];
+				indigoQF.status.filePicker.title = $(this).find(".x-grid3-col-name").html();
+
+				if($(this).hasClass("x-grid3-row-selected")){
+					$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+
+				} else {
+					$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "unselected");
+
+				}
+
+				$(".toolbar-item-filepreview").attr("indigo-preview-button", "show");
+			},
+			mouseOverImagePickerThumb: function(e){
+				indigoQF.status.filePicker.currentItem = $(this)[0];
+				indigoQF.status.filePicker.title = $(this).attr("id");
+
+				if($(this).hasClass("x-view-item-sel")){
+					$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+
+				} else {
+					$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "unselected");
+
+				}
+
+				$(".toolbar-item-filepreview").attr("indigo-preview-button", "show");
+
+			},
+			mouseOverFilePreviewButton: function(){
+				$(indigoQF.status.filePicker.currentItem)
+					.addClass("x-view-over")
+					.addClass("x-grid3-row-over");
+			},
+			mouseOutFilePreviewButton: function(){
+				$(indigoQF.status.filePicker.currentItem)
+					.removeClass("x-view-over")
+					.removeClass("x-grid3-row-over");
+			},
+			mouseClickFilePreviewButton: function(e, secondClick){
+				indigoQF.triggerMouseEvent(indigoQF.status.filePicker.currentItem, "mousedown");
+				indigoQF.triggerMouseEvent(indigoQF.status.filePicker.currentItem, "mouseup");
+
+				if(!secondClick){
+					$("#JahiaGxtImagePopup").remove(); // remove OLD preview
+					$(this).trigger("click", [true]); // Reopen with new preview
+					$("#JahiaGxtImagePopup .x-window-bwrap").attr("data-file-name", indigoQF.status.filePicker.title);
+
+				}
+
+				$(".toolbar-item-filepreview").attr("indigo-preview-button", "hide");
+
+			}
 		},
 		observers: {
 			body: function(){
@@ -855,14 +939,6 @@
 
 								}
 
-
-							}
-
-							if(mutation.attributeName == "data-currentuser"){
-								if(indigoQF.status.quickMenu.active){
-									indigoQF.status.user.userName = $("body").attr("data-currentuser");
-									$("#quick-menu-user-menu").html(indigoQF.status.user.userName);
-								}
 
 							}
 

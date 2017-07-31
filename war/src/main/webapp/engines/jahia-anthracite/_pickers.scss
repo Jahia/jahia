@@ -23,6 +23,11 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 	background: $PICKER--BG--COLOUR;
 
+	body[data-INDIGO-PICKER-SEARCH="open"] & {
+		background: $COLOUR--RAIN_CLOUDS;
+
+	}
+
 	/////////// STRUCTURE
 
 	// HEADER HEIGHT
@@ -47,6 +52,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 	.x-window-body > div,
 	.x-panel-bwrap,
 	.x-panel-body,
+	.x-panel-body > .x-view,
 	#JahiaGxtManagerMain,
 	.x-grid-panel,
 	#images-view {
@@ -88,13 +94,43 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 			&.toolbar-item-filepreview {
 				position: fixed;
 				pointer-events: all;
-				right: 80px;
+				right: auto;
+
+				width: 25px;
+				height: 25px;
+
+				@extend %CSS_BLOCK--PREVIEW_BUTTON---UP;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					@extend %CSS_BLOCK--PREVIEW_BUTTON---UP\:SEARCH;
+				}
+
+				&:hover {
+					// @extend %CSS_BLOCK--PREVIEW_BUTTON---HOVER;
+				}
+
+
+				display: none;
+
+				img {
+					display: none;
+				}
+
+				&[indigo-preview-button="show"] {
+					display: block;
+				}
+
+				&[indigo-preview-button-state="selected"] {
+					@extend %CSS_BLOCK--PREVIEW_BUTTON---SELECTED;
+
+					body[data-INDIGO-PICKER-SEARCH="open"] & {
+						@extend %CSS_BLOCK--PREVIEW_BUTTON---SELECTED\:SEARCH;
+					}
+
+				}
 
 			}
 
-			&.indigo-show-button {
-				display: block;
-			}
 
 			&.x-item-disabled {
 				display: none!important;
@@ -140,6 +176,10 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 		    position: fixed;
 			right: 52px;
 			top: 33px;
+
+			body[data-INDIGO-PICKER-SEARCH="open"] & {
+				display: none;
+			}
 		}
 
 
@@ -175,10 +215,80 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 	    position: relative!important;
 		margin-right: 20px;
 
+		.x-grid3-row {
+
+			.x-tree3-el {
+
+				pointer-events: none;
+				width: 100%!important;
+
+				&::after {
+					pointer-events: all;
+					content: "Hey";
+					text-indent: -50000px;
+					background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
+					background-size: 10px 2px;
+					width: 28px;
+					height: 25px;
+					position: absolute;
+					right: -11px;
+					top: 0;
+					cursor: pointer;
+					z-index: 99999999999;
+					opacity: 0;
+
+
+				}
+
+			}
+
+			&.x-grid3-row-over .x-tree3-el::after {
+				opacity: 1;
+			}
+
+			&.x-grid3-row-selected .x-tree3-el::after {
+				background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+				background-size: 10px 2px;
+			}
+
+		}
+
 		// SEARCH TAB
 		form {
 			fieldset {
 				@extend %CSS_BLOCK--FIELDSET\:PICKER_SEARCH;
+			}
+		}
+
+		// SAVED SEARCH ROWS
+		.x-panel-body {
+			> .x-view {
+				background: transparent;
+
+				.x-view-item {
+					border: none!important;
+
+					@extend %CSS_BLOCK--TREE--ROW--TEXT---UP;
+					@extend %CSS_BLOCK--TREE--ROW--BG---UP;
+
+					&.x-view-item-over {
+						@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER;
+						@extend %CSS_BLOCK--TREE--ROW--BG---HOVER;
+
+						&.x-view-item-sel {
+							@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER;
+							@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER;
+						}
+
+					}
+
+					&.x-view-item-sel {
+						@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED;
+						@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED;
+
+
+					}
+				}
 			}
 		}
 
@@ -198,10 +308,14 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				top: 74px;
 				left: 47px;
 				width: 320px;
-				height: 24px;
+				height: 32px;
 				background: red;
 				z-index: 999;
 				opacity: 0;
+
+				body.ext-gecko & {
+					top: 81px;
+				}
 
 				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
 					// display: none;
@@ -221,28 +335,56 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 							margin: 0;
 							position: fixed;
 							z-index: 99999;
-							background-image: url($ICON--CLOSE_LARGE---WHITE);
+							// background-image: url($ICON--CLOSE_LARGE---GREY);
 							width: 20px;
 							height: 20px;
-							background-size: 16px;
-							background-repeat: no-repeat;
+
 							text-indent: -50000px;
 
-							top: 44px;
-						    left: 31px;
+							top: 41px;
+						    left: 26px;
+
+							// left: -50000px;
+							//
+							// body[data-INDIGO-PICKER-SEARCH="open"] & {
+							// 	left: 31px;
+							// }
 
 							a {
 								background: none!important;
 								padding: 0;
+
+								&.x-tab-right {
+									width: 100%;
+									height: 100%;
+								}
 							}
 
 							em {
 								background: none!important;
 								padding: 0!important;
+								width: 100%;
+								height: 100%;
 							}
 							span {
 								background: none!important;
 								padding:none!important;
+								width: 100%;
+								height: 100%;
+
+								span {
+									display: none;
+									background-image: url($ICON--BACK--GREY) !important;
+									background-size: 20px 20px !important;
+									background-repeat: no-repeat !important;
+									width: 100%;
+									height: 100%;
+
+									body[data-INDIGO-PICKER-SEARCH="open"] & {
+										display: block;
+									}
+								}
+
 							}
 						}
 
@@ -252,6 +394,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 							position: fixed;
 							top: 0px;
 							left:250px;
+							z-index: 9999999999999;
 
 							// LABEL
 							&::after {
@@ -265,6 +408,9 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 								border-radius: 100%;
 								margin-top: 13px;
 								margin-left: 10px;
+								z-index: 9999999999999;
+								pointer-events: all;
+								position: relative;
 
 
 							}
@@ -329,19 +475,19 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 					    position: fixed;
 					    width: 367px !important;
 					    top: 0;
-					    box-shadow: inset 5px 0px 34px $COLOUR--BLACK_CLOUDS;
+					    box-shadow: 5px 0px 34px $COLOUR--BLACK_CLOUDS;
 					    padding: 30px;
 					    box-sizing: border-box;
-					    background: $COLOUR--DARK_CLOUDS !important;
+					    background: $COLOUR--WHITE_CLOUDS !important;
 
-						@include text_input("SEARCH_PANEL");
+						@include text_input("SIDE_PANEL");
 
 						&:before {
 							content: "Search";
 
-							margin-left: 26px;
+							margin-left: 21px;
 
-							@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
+							@include text(36px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
 						}
 
 						&:after {
@@ -352,7 +498,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 						    left: 384px;
 						    font-weight: 200;
 						    font-family: Nunito Sans;
-						    color: $COLOUR--DARK_CLOUDS;
+						    color: $COLOUR--WHITE_CLOUDS;
 						}
 					}
 
@@ -425,11 +571,11 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 										width: 100%;
 										display: block;
 										/* height: 85px; */
-										background: $COLOUR--DARK_CLOUDS;
+										background: $COLOUR--WHITE_CLOUDS;
 										z-index: 999999;
 										/* display: none; */
 										top: 72px;
-										width: 318px;
+										width: 305px;
 									}
 
 									// SEARCH BUTTON CONTAINER
@@ -540,6 +686,8 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				// Another Container
 				> div {
 					width: 100%!important;
+					padding-top: 57px;
+					box-sizing: border-box;
 
 					// Site Groups
 					> div {
@@ -629,6 +777,10 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				display: block;
 				pointer-events: all;
 				z-index: 9999;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					display: none;
+				}
 			}
 
 			// TITLE
@@ -688,11 +840,50 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 		margin-top: 6px;
     	height: calc(100% - 6px)!important;
 
-		// .x-grid3 .x-grid3-row {
-		// 	&.indigo-FAKE-HIDE {
-		// 		display: none;
-		// 	}
-		// }
+		.x-grid3-row {
+
+			.x-grid3-td-size {
+
+				pointer-events: none;
+				width: 100%!important;
+
+				&::after {
+
+					@extend %CSS_BLOCK--MORE_INFO---UP;
+
+					pointer-events: all;
+					content: "Hey";
+					text-indent: -50000px;
+
+					width: 28px;
+					height: 25px;
+
+					position: absolute;
+					right: 0;
+					cursor: pointer;
+					margin-top: -26px;
+					z-index: 99999999999;
+					opacity: 0;
+
+					body[data-indigo-picker-search="open"] & {
+						@extend %CSS_BLOCK--MORE_INFO---UP\:SEARCH;
+
+					}
+
+				}
+
+			}
+
+			&.x-grid3-row-over .x-grid3-td-size::after,
+			&:hover .x-grid3-td-size::after {
+				opacity: 1;
+			}
+
+			&.x-grid3-row-selected .x-grid3-td-size::after {
+				@extend %CSS_BLOCK--MORE_INFO---SELECTED;
+			}
+
+		}
 
 		#images-view {
 			// Toolbar for thumb view
@@ -815,7 +1006,13 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				background: none!important;
 
 				.thumb {
-					background: #e4e5e6;
+					background: $COLOUR--CREAM_CLOUDS;
+				}
+
+				&.x-view-item-sel {
+					.thumb {
+						background: $COLOUR--DIRTY_ORANGE;
+					}
 				}
 
 			}
@@ -830,16 +1027,16 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 				&.x-view-over {
 					span {
-						background: #e4e5e6;
+						background: $COLOUR--CREAM_CLOUDS;
 						color: $COLOUR--RAIN_CLOUDS;
 					}
 				}
 
 				&.x-view-item-sel {
-					background: $COLOUR--JAHIA_BLUE;
+					background: $COLOUR--DIRTY_ORANGE;
 
 					span {
-						background: $COLOUR--JAHIA_BLUE!important;
+						background: $COLOUR--DIRTY_ORANGE!important;
 						color: $COLOUR--WHITE_CLOUDS;
 					}
 				}
@@ -854,11 +1051,51 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 						padding-bottom: 10px;
 					}
 				}
+
+				.thumb {
+					padding: 10px!important;
+
+					pointer-events: none;
+					width: 100%!important;
+
+					&::after {
+						@extend %CSS_BLOCK--MORE_INFO---UP;
+
+						pointer-events: all;
+						content: "Hey";
+						text-indent: -50000px;
+						width: 28px;
+						height: 25px;
+						position: absolute;
+						right: 0;
+						cursor: pointer;
+						margin-top: -26px;
+						z-index: 99999999999;
+						opacity: 0;
+						top: 26px;
+
+						body[data-indigo-picker-search="open"] & {
+							@extend %CSS_BLOCK--MORE_INFO---UP\:SEARCH;
+						}
+
+					}
+
+				}
+
+				&.x-view-over .thumb::after,
+				&:hover .thumb::after {
+					opacity: 1;
+				}
+
+				&.x-view-item-sel .thumb::after {
+					@extend %CSS_BLOCK--MORE_INFO---SELECTED;
+
+					body[data-indigo-picker-search="open"] & {
+						@extend %CSS_BLOCK--MORE_INFO---SELECTED\:SEARCH;
+					}
+				}
 			}
 
-			.thumb {
-				padding: 10px!important;
-			}
 		}
 	}
 
@@ -882,6 +1119,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
 			left: 387px;
+			height: 70px;
 
 		}
 

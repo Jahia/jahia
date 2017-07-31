@@ -1471,10 +1471,18 @@ form,
 
 		@extend %CSS_BLOCK--TREE--ROW--BG---UP !optional;
 
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			background-color: $TREE--ROW--BG--COLOUR---UP\:SEARCH_RESULT!important;
+		}
+
 
 		&.x-grid3-row-over {
 			/* Line Over */
 			@extend %CSS_BLOCK--TREE--ROW--BG---HOVER !optional;
+
+			body[data-INDIGO-PICKER-SEARCH="open"] & {
+				background-color: $TREE--ROW--BG--COLOUR---HOVER\:SEARCH_RESULT!important;
+			}
 
 			.x-tree3-node-icon {
 				@extend %tree_line_icon_hover !optional;
@@ -1485,6 +1493,10 @@ form,
 			.gwt-content-label,
 			.x-grid3-col-name {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER !optional;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+				}
 
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);
@@ -1497,6 +1509,10 @@ form,
 			.x-grid3-col-size {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL !optional;
 
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+				}
+
 			}
 
 
@@ -1506,6 +1522,14 @@ form,
 		&.x-grid3-row-selected {
 			/* Line Selected */
 			@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED !optional;
+
+			body[data-INDIGO-PICKER-SEARCH="open"] & {
+				background-color: $TREE--ROW--BG--COLOUR---SELECTED\:SEARCH_RESULT!important;
+			}
+
+			#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div & {
+				// background-color: rgb(242, 109, 79) !important;
+			}
 
 			.x-tree3-node-icon {
 				@extend %tree_line_icon_selected !optional;
@@ -1518,6 +1542,10 @@ form,
 			.x-tree3-node-text {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED !optional;
 
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					color: $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT!important;
+				}
+
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
 					opacity: 1;
@@ -1528,12 +1556,20 @@ form,
 			.x-grid3-col-size {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED\:SMALL_LABEL !optional;
 
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					color: $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT!important;
+				}
+
 			}
 
 
 			&.x-grid3-row-over {
 				/* Line Hover on Selected */
 				@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER !optional;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					background-color: $TREE--ROW--BG--COLOUR---SELECTED_HOVER\:SEARCH_RESULT!important;
+				}
 
 				.x-tree3-node-icon {
 					@extend %tree_line_icon_selected_hover !optional;
@@ -1543,6 +1579,10 @@ form,
 				.x-grid3-col-size {
 					@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
 
+					body[data-INDIGO-PICKER-SEARCH="open"] & {
+						color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+					}
+
 				}
 
 				.x-grid3-td-displayName,
@@ -1550,6 +1590,10 @@ form,
 				.x-grid3-col-name,
 				.x-tree3-node-text {
 					@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER !optional;
+
+					body[data-INDIGO-PICKER-SEARCH="open"] & {
+						color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+					}
 
 					&::after {
 						background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED_HOVER);
@@ -1564,6 +1608,10 @@ form,
 	.gwt-content-label {
 		/* List Item Text Label */
 		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP !optional;
+
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			color: $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT!important;
+		}
 
 
 		pointer-events: none;
@@ -1591,12 +1639,21 @@ form,
 
 		@include text(12px !important, $TREE--ROW--FONT--COLOUR---UP !important, $FONT--WEIGHT---EXTRALIGHT !important);
 
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			@include text(12px !important, $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT !important, $FONT--WEIGHT---EXTRALIGHT !important);
+
+		}
+
 
 
 	}
 
 	.x-grid3-col-size {
 		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
+
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			color: $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT!important;
+		}
 
 	}
 
@@ -1958,6 +2015,8 @@ form,
 	// Popup image preview (used in pickers)
 	#JahiaGxtImagePopup {
 
+		margin-top: -112px; // Offset the title
+
 		.x-resizable-handle {
 			display: none;
 		}
@@ -1965,17 +2024,32 @@ form,
 		&:before {
 			content: "Preview";
 			display: block;
-			position: absolute;
-			top: -30px;
-			left: 0;
 			width: 100%;
 			/* text-align: center; */
-			font-size: 36px;
-			font-weight: 100;
-			font-family: Raleway;
-			color: white;
-			padding-left: 30px;
 			pointer-events: none;
+			margin-left: -2px;
+
+			@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
+		}
+
+		.x-window-bwrap {
+			&:before {
+				content: attr(data-file-name);
+				display: block;
+				width: 100%;
+				/* text-align: center; */
+				@include text(16px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
+				pointer-events: none;
+				margin-bottom: 9px;
+			}
+		}
+
+
+
+		.x-window-tl {
+			position: absolute;
+			bottom: -47px; // Negate the offset added to main container of popup
+			left: -3px;
 		}
 
 		// Image Container
@@ -1988,10 +2062,10 @@ form,
 
 			.x-panel-toolbar {
 				> table {
-					top: -18px;
-				    position: absolute;
-				    left: 0;
-				    width: 100%;
+					// top: -18px;
+				    // position: absolute;
+				    // left: 0;
+				    // width: 100%;
 				}
 			}
 
@@ -2002,35 +2076,52 @@ form,
 			}
 
 			.x-tool-close {
-				background: url($ICON--CLOSE_SMALL---WHITE);
-				background-size: 20px 20px;
-			    width: 20px;
-			    height: 20px;
-			    position: absolute;
-			    left: 0px;
-			    top: 0;
+				width: auto!important;
+				height: auto!important;
+				font-size: 1px;
+				// position: absolute!important;
+    			// right: 18px;
 				pointer-events: all;
+
+				&::after {
+					content: "Cancel";
+					display: block;
+					width: 100%;
+					height: 100%;
+					box-sizing: border-box;
+
+					@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR;
+
+					&:hover {
+						@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR;
+
+					}
+
+				}
+
 			}
 
 			.x-btn-text {
 				width: auto!important;
 				height: auto!important;
 				font-size: 1px;
-				position: absolute!important;
-    			right: 18px;
+				// position: absolute!important;
+    			// right: 18px;
 				pointer-events: all;
 
 				&::after {
-					content: "Use this image";
+					content: "Save";
 					display: block;
 					width: 100%;
 					height: 100%;
 					box-sizing: border-box;
+					margin-top: -1px;
+					padding: 5px 10px;
 
-					@extend %CSS_BLOCK--BUTTON--TEXT\:PICKER_SEARCH---SUGGESTED;
+					@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED;
 
 					&:hover {
-						@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:PICKER_SEARCH---SUGGESTED;
+						@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED;
 
 					}
 

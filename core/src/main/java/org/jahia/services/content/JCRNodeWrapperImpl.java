@@ -3722,7 +3722,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             objectNode.getSession().save();
         }
 
-        lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
+        if (hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
+            lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
+        }
 
         if (logger.isDebugEnabled()) {
             logger.debug("markForDeletion for node {} took {} ms", getPath(),
@@ -3756,7 +3758,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
 
             // set lock
-            child.lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
+            if (child.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
+                child.lockAndStoreToken(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
+            }
 
             // recurse into children
             markNodesForDeletion(child);

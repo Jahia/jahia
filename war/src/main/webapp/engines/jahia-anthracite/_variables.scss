@@ -219,9 +219,13 @@
 	$ZINDEX--SIDE_PANEL--SEARCH_TAB---ACTIONS:  30;
 	$ZINDEX--SIDE_PANEL--EDIT_ENGINE:           200 !important;
 
+	// EDIT ENGINE
+	$ZINDEX--EDIT_ENGINE--DIALOGUE: 			99;
+
 	// MODAL
 	$ZINDEX--MODAL---MASK:                     	100 !important;
 	$ZINDEX--MODAL---MASK\:IMAGE_PREVIEW:      	1040 !important;
+	$ZINDEX--MODAL---MASK\:EDIT_ENGINE:      	9 !important;
 
 	// TOOLBAR
 	$ZINDEX--TOOLBAR--CONTAINER: 				60 !important;

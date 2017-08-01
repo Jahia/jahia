@@ -1933,13 +1933,17 @@ form,
 
 /* Modal Mask */
 .x-modal {
-    background: rgba(92, 97, 100, 0.98);
+    background: $MODAL--BG--COLOUR;
     opacity: 1;
     z-index: $ZINDEX--MODAL---MASK;
     position: fixed !important;
 
 	body[data-INDIGO-IMAGE-PREVIEW="open"] & {
 		z-index: $ZINDEX--MODAL---MASK\:IMAGE_PREVIEW;
+	}
+
+	body[data-INDIGO-EDIT-ENGINE="open"] & {
+		// z-index: $ZINDEX--MODAL---MASK\:EDIT_ENGINE;
 	}
 }
 
@@ -2006,7 +2010,8 @@ form,
 
 		// ICONS
 		.ext-mb-warning,
-		.ext-mb-question {
+		.ext-mb-question,
+		.ext-mb-info {
 			display: none;
 		}
 
@@ -2019,6 +2024,32 @@ form,
 		// ACTION BAR
 		.x-panel-btns {
 			margin-top: 20px;
+		}
+
+		// Have to use an x-clear DIV to act as the modal mask.
+		&.x-window-plain {
+			.x-window-tl,
+			.x-window-ml {
+				position: relative;
+				z-index: $ZINDEX--EDIT_ENGINE--DIALOGUE;
+			}
+
+			.x-panel-btns {
+				.x-panel-fbar {
+					position: relative;
+					z-index: $ZINDEX--EDIT_ENGINE--DIALOGUE;
+				}
+
+				.x-clear {
+					background: $MODAL--BG--COLOUR;
+					position: fixed;
+					left: 0;
+					top: 0;
+					width: 100%;
+					height: 100%;
+					z-index: $ZINDEX--MODAL---MASK\:EDIT_ENGINE;
+				}
+			}
 		}
 
 	}

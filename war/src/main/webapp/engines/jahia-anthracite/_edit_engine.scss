@@ -32,8 +32,7 @@
 
 	// Modal Mask
 	.ext-el-mask {
-		position: fixed;
-		background: $DIALOGUE--MASK--BG--COLOUR;
+		display: none!important;
 	}
 
 	// Override mask all when Modal Mask is on

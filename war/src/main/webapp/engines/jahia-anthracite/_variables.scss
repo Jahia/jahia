@@ -222,10 +222,14 @@
 	// EDIT ENGINE
 	$ZINDEX--EDIT_ENGINE--DIALOGUE: 			99;
 
+	// CKE EDITOR
+	$ZINDEX--CKE_EDITOR--DIALOGUE: 				200;
+
 	// MODAL
 	$ZINDEX--MODAL---MASK:                     	100 !important;
 	$ZINDEX--MODAL---MASK\:IMAGE_PREVIEW:      	1040 !important;
 	$ZINDEX--MODAL---MASK\:EDIT_ENGINE:      	9 !important;
+	$ZINDEX--MODAL---MASK\:CKE_EDITOR:      	100 !important;
 
 	// TOOLBAR
 	$ZINDEX--TOOLBAR--CONTAINER: 				60 !important;

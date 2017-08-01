@@ -1911,6 +1911,212 @@ form,
 	// clear: none!important;
 }
 
+// CKEditor Dialogues
+
+// Modal Mask
+.cke_dialog_background_cover {
+	background: $MODAL--BG--COLOUR !important;
+	opacity: 1!important;
+	z-index: $ZINDEX--MODAL---MASK\:CKE_EDITOR !important;
+}
+
+// Dialogue Container
+.cke_dialog {
+	z-index: ZINDEX--CKE_EDITOR--DIALOGUE !important;
+
+
+	// ANother Dialigue Container
+	.cke_dialog_body {
+		background: transparent;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+
+		// Dialogue CLose button
+		.cke_dialog_close_button {
+			// right: 0;
+			// top: 0;
+			// background: blue;
+			display: none!important;
+
+			// Button Label
+			.cke_label {
+				display: none;
+			}
+		}
+	}
+
+	// Dialogue Title Bar
+	.cke_dialog_title {
+		text-shadow: none;
+		border: none;
+		padding: 0;
+		border-radius: 0;
+		background: transparent;
+		box-shadow: none;
+		margin-bottom: 10px;
+		pointer-events: none!important; // disables the drag feature of popup
+
+		@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+
+
+	}
+
+	// Tabs
+	.cke_dialog_tabs {}
+
+	// Dialogue Body / Footer container
+	.cke_dialog_contents {
+		padding: 0;
+		margin: 0;
+		background: transparent;
+		border: none;
+		border-radius: 0;
+	}
+
+	// Dialogue Body Container
+	.cke_dialog_contents_body {
+		padding: 0;
+		margin: 0;
+		background: transparent;
+		height: auto!important;
+	}
+
+	iframe.cke_pasteframe {
+		background: $COLOUR--WHITE_CLOUDS!important;
+		border-radius: 0!important;
+		border: none!important;
+	}
+
+	.cke_dialog_page_contents {
+
+		p,
+		.cke_dialog_ui_html {
+			margin: 0 0 10px 0;
+
+			@include text(14px, $COLOUR--DUSTY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+			strong {
+				font-weight: $FONT--WEIGHT---BOLD;
+				color: lighten($COLOUR--DUSTY_CLOUDS, 5%);
+				font-size: inherit;
+				font-family: inherit;
+			}
+		}
+
+		a {
+			@include text(14px, $COLOUR--DIRTY_ORANGE !important, $FONT--WEIGHT---NORMAL);
+
+			&:hover {
+
+			}
+
+			&:active {
+
+			}
+
+			&:visited {
+
+			}
+		}
+
+	}
+
+	.cke_dialog_ui_vbox {}
+	.cke_dialog_ui_vbox_child {}
+
+	.cke_dialog_footer {
+		border: 0;
+		outline: 0;
+		box-shadow: none;
+		border-radius: 0;
+		background: transparent;
+		text-align: left;
+
+		margin-top: 10px;
+	    display: block;
+	}
+
+	.cke_dialog_ui_hbox {}
+
+	.cke_dialog_footer_buttons {
+		display: inline-block;
+		margin: 0;
+
+		// Reverse buttons so that OK comes first
+		td {
+			float: right;
+			margin-right: 5px;
+		}
+	}
+
+	.cke_dialog_ui_button {
+		padding: 0;
+		margin: 0;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+		background: transparent;
+
+		// Normal Button
+		span {
+			padding: 5px 10px!important;
+			background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
+	    	@include text(16px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important);
+			text-shadow: none;
+
+			&:hover {
+				background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+		    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+			}
+		}
+
+		// Cancel Button
+		&.cke_dialog_ui_button_cancel {
+
+
+			span {
+				padding: 5px 10px!important;
+				@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR;
+
+				&:hover {
+					@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR;
+
+				}
+
+
+			}
+		}
+	}
+
+
+	// CKE About POP UP Specific
+	.cke_about_container {
+		padding: 0;
+		margin: 0;
+
+		.cke_about_logo {
+			// height: 81px;
+			// background-color: transparent;
+			// background-image: url(http://localhost:8080/modules/ckeditor/javascript/plugins/about/dialogs/logo_ckeditor.png);
+			// background-position: center;
+			// background-repeat: no-repeat;
+			// margin: 0;
+			display: none;
+		}
+
+
+	}
+
+}
+
+
+
+
+
+
+
+
 .x-form-invalid {
 	border:none!important;
 	background:none!important;

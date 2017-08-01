@@ -74,6 +74,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
@@ -112,6 +113,8 @@ public class URLResolver {
     private static String[] servletsAllowingUrlMapping = new String[] {
             StringUtils.substringAfterLast(Render.getRenderServletPath(), "/")
     };
+
+    private static JahiaSitesService sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
 
     private String urlPathInfo = null;
     private String servletPart = "";
@@ -290,13 +293,13 @@ public class URLResolver {
         boolean mappingResolved = false;
 
         try {
-            siteKeyByServerName = ServicesRegistry.getInstance().getJahiaSitesService().getSitenameByServerName(serverName);
+            siteKeyByServerName = sitesService.getSitenameByServerName(serverName);
         } catch (JahiaException e) {
             logger.warn("Error finding site via servername: " + serverName, e);
         }
 
         if (getSiteKey() == null) {
-            String siteKeyInPath = StringUtils.substringBetween(getPath(), "/sites/", "/");
+            String siteKeyInPath = resolveSiteKeyFromPath(getPath());
             if (!StringUtils.isEmpty(siteKeyInPath)) {
                 setSiteKey(siteKeyInPath);
             } else if (!Url.isLocalhost(serverName)) {
@@ -487,7 +490,7 @@ public class URLResolver {
                             String nodePath = JCRContentUtils.escapeNodePath(path.endsWith("/*") ? path.substring(0,
                                     path.lastIndexOf("/*")) : path);
 
-                            String siteName = StringUtils.substringBetween(nodePath, "/sites/", "/");
+                            String siteName = resolveSiteKeyFromPath(nodePath);
                             if (siteName != null && session.itemExists("/sites/" + siteName)) {
                                 siteInfo = new SiteInfo((JCRSiteNode) session.getNode("/sites/" + siteName));
 
@@ -670,6 +673,23 @@ public class URLResolver {
                         return r;
                     }
                 });
+    }
+
+
+    private String resolveSiteKeyFromPath(String path) {
+        String siteKey = StringUtils.substringBetween(path, "/sites/", "/");
+        final String siteString = StringUtils.substringAfter(path, "/sites/");
+        if (StringUtils.isEmpty(siteKey) && StringUtils.isNotEmpty(siteString)) {
+            for (String key = siteString; ; key = StringUtils.substringBeforeLast(key, ".")) {
+                if (sitesService.getSitesNames().contains(key)) {
+                    return key;
+                }
+                if (!StringUtils.contains(key, ".")) {
+                    break;
+                }
+            }
+        }
+        return siteKey;
     }
 
     /**

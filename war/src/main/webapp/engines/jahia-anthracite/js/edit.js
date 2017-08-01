@@ -1,9 +1,9 @@
 (function(){
 	var indigoQF = {
-		triggerMouseEvent : function (node, eventType) {
-		    var clickEvent = document.createEvent ('MouseEvents');
-		    clickEvent.initEvent (eventType, true, true);
-		    node.dispatchEvent (clickEvent);
+		triggerMouseEvent: function(node, eventType) {
+		    var clickEvent = document.createEvent("MouseEvents");
+		    clickEvent.initEvent(eventType, true, true);
+		    node.dispatchEvent(clickEvent);
 		},
 		init: function(){
 
@@ -19,16 +19,7 @@
 
 			// Setup listeners
 			$(document).ready(function(){
-				$(window).on("blur", function(){
-					// Window has lost focus, so presume that the user has clicked in the iframe.
-					// If the side panel is open, then close it
-
-					if($("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-						//indigoQF.listeners.closeSidePanel()
-
-					}
-
-				});
+				$(window).on("blur", indigoQF.listeners.windowBlur);
 
 				$("body")
 					.on("click", ".toolbar-item-filepreview", indigoQF.listeners.mouseClickFilePreviewButton)
@@ -36,16 +27,11 @@
 					.on("mouseleave", ".toolbar-item-filepreview", indigoQF.listeners.mouseOutFilePreviewButton)
 					.on("mouseenter", ".thumb-wrap", indigoQF.listeners.mouseOverImagePickerThumb)
 					.on("mouseenter", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", indigoQF.listeners.mouseOverImagePickerRow)
-					.on("click", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", function(){
-						$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
-					})
+					.on("click", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", indigoQF.listeners.selectPickerFile)
 					.on("click", ".x-grid3-row .x-grid3-td-size", indigoQF.listeners.clickMoreOptionsButton)
 					.on("click", ".x-grid3-row .x-tree3-el", indigoQF.listeners.clickMoreOptionsButton)
 					.on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", indigoQF.listeners.clickMoreOptionsButton)
-					.on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap", function(){
-						$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
-					})
-
+					.on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap", indigoQF.listeners.selectPickerFile)
 					.on("click", ".x-viewport-editmode .x-toolbar-first > table", indigoQF.listeners.toggleThemeMode)
 					.on("click", ".editmode-managers-menu", indigoQF.listeners.openManagerMenu)
 					.on("click", ".menu-editmode-managers-menu", indigoQF.listeners.closeManagerMenu)
@@ -58,131 +44,30 @@
 					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickMoreOptionsButton)
 					.on("click", ".x-current-page-path", indigoQF.listeners.clearMultiSelection)
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", indigoQF.listeners.addPageToHistory)
-					.on("click", "#JahiaGxtContentPickerWindow", function(){
-						// console.log("CLOSE PANEL IF OPEN");
-						$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", "");
-					})
-					// NOT WOKING IN FF ??
-					.on("mousedown", "#JahiaGxtManagerLeftTree .x-tab-strip-wrap li:nth-child(1)", function(){
-						// console.log("CLOSED SEARCH");
-						$("body").attr("data-INDIGO-PICKER-SEARCH", "");
-
-						// Oki, this gets fun :S
-						// First click of refresh button hides all the sources (dont ask why). SO need to click again, however.
-						// Problem, once clicking the refresh button the first time, we lose ability to differentiate it from the other refresh tools because classes are removed.
-						// SOlution, first get the refresh tool element before first click. Store element. Then trigger second click on the element without need of class.
-						// We need to leave a split second between the clicks, so using a timeout. 500ms seems to be enough - unfortunately a noticable time lapse before restoring file list.
-						var refreshButton = $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel").not(".x-panel-collapsed").find(".x-tool-refresh")[0];
-
-						$(refreshButton).trigger("click");
-
-						// indigoQF.triggerMouseEvent($(refreshButton)[0], "click");
-						// indigoQF.triggerMouseEvent($(refreshButton)[0], "click");
-
-
-						setTimeout(function(){
-							// indigoQF.triggerMouseEvent($(refreshButton)[0], "click");
-							$(refreshButton).trigger("click");
-						}, 500);
-
-					})
-					// NOT WOKING IN FF
-					.on("mousedown", "#JahiaGxtManagerLeftTree .x-tab-strip-wrap li:nth-child(2)", function(){
-						// console.log("OPENED SEARCH");
-						$("body").attr("data-INDIGO-PICKER-SEARCH", "open");
-
-						$("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
-
-						setTimeout(function(){
-							$("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
-						}, 50);
-					})
-					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", function(){
-						$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
-					})
-					.on("mousedown", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", function(){
-						setTimeout(function(){
-							$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", "");
-						}, 500);
-
-						//x-panel-collapsed
-
-						// $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer").trigger("click");
-					})
-					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", function(e){
-						e.stopPropagation();
-						// console.log("open the panel");
-
-						$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
-
-						/// Toggle the attribute in body tag
-						$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", function(id, label){
-							return (label == "open") ? "" : "open";
-						});
-					})
-					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", function(){
-						// console.log("OVER THE SPACER");
-						if($("body").attr("data-indigo-picker-source-panel") != "open"){
-							$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
-						}
-					})
-					.on("mouseleave", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", function(){
-						$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
-					})
-					// .on("mouseout", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", function(){
-					// 	$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", "");
-					// })
+					.on("mousedown", "#JahiaGxtManagerLeftTree .x-tab-strip-wrap li:nth-child(1)", indigoQF.listeners.closeSearchPanel)
+					.on("mousedown", "#JahiaGxtManagerLeftTree .x-tab-strip-wrap li:nth-child(2)", indigoQF.listeners.openSearchPanel)
+					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", indigoQF.listeners.changePickerSource)
+					.on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", indigoQF.listeners.togglePickerSourceCombo)
+					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", indigoQF.listeners.mouseOverPickerSourceTrigger)
+					.on("mouseleave", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", indigoQF.listeners.mouseOutPickerSourceTrigger)
 					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", function(e){
-						var row = $(this),
-							box = row[0].getBoundingClientRect(),
-							left = box.left,
-							top = box.top,
-							width = box.width;
-							console.log(left, " x ", top);
-
-						$("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
-							.css({
-								top: (top) + "px",
-								left: (left + width - 58) + "px"
-							})
-							.addClass("indigo-show-button");
-
-						//row.find("td:nth-child(1)").trigger("click");
-						//row.trigger("click");
-
-
-						//row.find(".x-grid3-cell").triggerHandler("click");
+						console.log("MOUSE ENTER ::: G");
+						// Position the preview button next to the file whilst hovering
+						indigoQF.listeners.repositionFilePreviewButton(e, {
+							left: -58,
+							top: 0
+						});
 
 					})
 					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", function(e){
-						var thumb = $(this),
-							box = thumb[0].getBoundingClientRect(),
-							left = box.left,
-							top = box.top,
-							width = box.width;
-
-						console.log(left, " x ", top);
-
-						$("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
-							.css({
-								top: (top) + "px",
-								left: (left + width - 52) + "px"
-							})
-							.addClass("indigo-show-button");
-
-						//row.find("td:nth-child(1)").trigger("click");
-						//row.trigger("click");
+						console.log("MOUSE ENTER ::: GGGG");
+						// Position the preview button next to the file whilst hovering
+						indigoQF.listeners.repositionFilePreviewButton(e, {
+							left: -52,
+							top: 0
+						});
 
 
-						//row.find(".x-grid3-cell").triggerHandler("click");
-
-					})
-					.on("mouseenter", ".toolbar-item-filepreview", function(e){
-						$("#JahiaGxtManagerToolbar .toolbar-item-filepreview").addClass("indigo-show-button");
-
-					})
-					.on("mouseleave", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", function(e){
-						$("#JahiaGxtManagerToolbar .toolbar-item-filepreview").removeClass("indigo-show-button")
 					});
 
 				// Setup side panel listeners accordingly to naviagtion style (rollover or click) as defined in indigoQF.status.panelMenu.style
@@ -252,8 +137,110 @@
 				indigoQF.listeners.updatePageMenuPositions();
 
 			},
+			windowBlur: function(){
+				// Window has lost focus, so presume that the user has clicked in the iframe.
+				// If the side panel is open, then close it
+
+				if($("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+					//indigoQF.listeners.closeSidePanel()
+
+				}
+
+			},
 
 
+			closeSearchPanel: function(){
+				// CLOSE SEARCH PANEL
+				console.log("MOUSEDOWN ::: H");
+
+				// Hide the search panel
+				$("body").attr("data-INDIGO-PICKER-SEARCH", "");
+
+				// Display the BROWSE panels
+				$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
+
+				// Get the refresh button
+				var refreshButton = $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel").not(".x-panel-collapsed").find(".x-tool-refresh")[0];
+
+				// CLick on the refresh button to reload the content of the directory
+				indigoQF.triggerMouseEvent(refreshButton, "click");
+
+
+
+			},
+			openSearchPanel: function(){
+				// OPEN SEARCH PANEL
+				console.log("MOUSEDOWN ::: A");
+
+				// Display the search panel
+				$("body").attr("data-INDIGO-PICKER-SEARCH", "open");
+
+				// Put the results in LIST mode
+				$("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
+
+				// Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
+				$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").addClass("x-hide-display");
+
+
+				// Remove the directory listing ( gives the search panel an empty start)
+				setTimeout(function(){
+					$("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
+				}, 250);
+			},
+			changePickerSource: function(){
+				// CHANGE SOURCE
+				console.log("CLICK ::: B");
+				// The user has changed SOURCE, so we just need to hide the combo...
+				$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", "");
+			},
+			togglePickerSourceCombo: function(e){
+				// USER HAS CLICKED THE COMBO TRIGGER
+				console.log("CLICK ::: D");
+				e.stopPropagation();
+				// console.log("open the panel");
+
+				$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+
+				/// Toggle the attribute in body tag
+				$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", function(id, label){
+					return (label == "open") ? "" : "open";
+				});
+			},
+			mouseOverPickerSourceTrigger: function(){
+				// USER HAS ROLLED OVER THE COMBO TRIGGER
+				console.log("MOUSE ENTER ::: E");
+				// console.log("OVER THE SPACER");
+				if($("body").attr("data-indigo-picker-source-panel") != "open"){
+					$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
+				}
+			},
+			mouseOutPickerSourceTrigger: function(){
+				// USER HAS ROLLED OUT OF THE COMBO TRIGGER
+				console.log("MOUSE LEAVE ::: F");
+				$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+			},
+			repositionFilePreviewButton: function(e, offset){
+				var offset = offset || {
+						left: 0,
+						top: 0
+					},
+					file = $(e.currentTarget),
+					box = file[0].getBoundingClientRect(),
+					left = box.left,
+					top = box.top,
+					width = box.width;
+					console.log(left, " x ", top);
+
+				$("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
+					.css({
+						top: (top + (offset.top)) + "px",
+						left: ((left + width) + offset.left) + "px"
+					})
+					.addClass("indigo-show-button");
+			},
+			selectPickerFile: function(){
+				$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+			},
 
 			checkMode: function(element){
 

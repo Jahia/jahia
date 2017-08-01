@@ -35,19 +35,18 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 	}
 
 	.x-tool-refresh {
-		background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center;
-		background-color: lighten($COLOUR--DUSTY_CLOUDS, 10%);
-		height: 30px;
-		width: 30px;
-
-		border-radius: 100%;
-
-		position: fixed;
-		right: 134px;
-	    top: 36px;
+		background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center;
+		background-color: $COLOUR--RAIN_CLOUDS;
+	    height: 20px;
+	    width: 20px;
+	    border-radius: 100%;
+	    position: fixed;
+	    right: 107px;
+	    top: 41px;
+	    background-size: 14px 11px;
 
 		&:hover {
-			background-color: lighten($COLOUR--DUSTY_CLOUDS, 9%);
+			background-color: lighten($COLOUR--RAIN_CLOUDS, 9%);
 		}
 	}
 
@@ -168,24 +167,43 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				width: 25px;
 				height: 25px;
 
+				opacity: 0.3;
+
 				img {
 					display: none;
+				}
+
+				&:hover {
+					opacity: 1;
 				}
 			}
 
 			// LIST VIEW
 			&.toolbar-item-listview {
-				background: pink;
+				background: url($ICON--DISPLAY--LIST--GREY) no-repeat center center;
+
+				body[indigo-PICKER-DISPLAY="list"] & {
+					opacity: 0.8;
+				}
 			}
 
 			// THUMBS VIEW
 			&.toolbar-item-thumbsview {
-				background: blue;
+				background: url($ICON--DISPLAY--THUMBS--GREY) no-repeat center center;
+
+				body[indigo-PICKER-DISPLAY="thumbs"] & {
+					opacity: 0.8;
+				}
 			}
 
 			// DETAILED VIEW
 			&.toolbar-item-detailedview {
-				background: red;
+				background: url($ICON--DISPLAY--DETAILS--GREY) no-repeat center center;
+				display: none;
+
+				body[indigo-PICKER-DISPLAY="details"] & {
+					opacity: 0.8;
+				}
 			}
 		}
 

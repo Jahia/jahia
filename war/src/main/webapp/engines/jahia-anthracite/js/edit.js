@@ -41,6 +41,8 @@
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", function(e){
 						indigoQF.listeners.clickMoreOptionsButton(e, "x-grid3-td-displayName");
 					})
+					.on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", indigoQF.listeners.listView)
+					.on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", indigoQF.listeners.thumbView)
 					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickMoreOptionsButton)
 					.on("click", ".x-current-page-path", indigoQF.listeners.clearMultiSelection)
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", indigoQF.listeners.addPageToHistory)
@@ -148,6 +150,14 @@
 
 			},
 
+			listView: function(){
+				console.log("LIST VIEW");
+				$("body").attr("indigo-PICKER-DISPLAY", "list");
+			},
+			thumbView: function(){
+				console.log("THUMBS VIEW");
+				$("body").attr("indigo-PICKER-DISPLAY", "thumbs");
+			},
 
 			closeSearchPanel: function(){
 				// CLOSE SEARCH PANEL
@@ -327,7 +337,8 @@
 
 						$("body")
 							.attr("data-INDIGO-PICKER-SEARCH", "")
-							.attr("data-INDIGO-PICKER", "open");
+							.attr("data-INDIGO-PICKER", "open")
+							.attr("indigo-PICKER-DISPLAY", "thumbs");
 						break;
 
 					case "close":

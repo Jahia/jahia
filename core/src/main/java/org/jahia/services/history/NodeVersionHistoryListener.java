@@ -68,6 +68,8 @@ public class NodeVersionHistoryListener extends DefaultEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(NodeVersionHistoryListener.class);
 
+    private static boolean disabled;
+
     private SchedulerService schedulerService;
 
     @Override
@@ -83,6 +85,9 @@ public class NodeVersionHistoryListener extends DefaultEventListener {
      *            a bundle of events to process
      */
     public void onEvent(EventIterator events) {
+        if (isDisabled()) {
+            return;
+        }
         String siteDeleted = null;
         Set<String> ids = new HashSet<String>();
         try {
@@ -129,5 +134,22 @@ public class NodeVersionHistoryListener extends DefaultEventListener {
      */
     public void setSchedulerService(SchedulerService schedulerService) {
         this.schedulerService = schedulerService;
+    }
+
+    /**
+     * Disables or enables the processing of JCR events after site deletion, which triggers the background job for purging of node version
+     * histories for the nodes of the deleted site.<br/>
+     * Note, please, this method is only used during the execution of tests.
+     * 
+     * @param disabled
+     *            <code>true</code> if the listener should be disabled; <code>false</code> otherwise
+     * @since 7.1.2.6
+     */
+    public static synchronized void setDisabled(boolean disabled) {
+        NodeVersionHistoryListener.disabled = disabled;
+    }
+
+    private static synchronized boolean isDisabled() {
+        return disabled;
     }
 }

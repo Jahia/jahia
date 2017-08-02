@@ -28,9 +28,13 @@
 					.on("mouseenter", ".thumb-wrap", indigoQF.listeners.mouseOverImagePickerThumb)
 					.on("mouseenter", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", indigoQF.listeners.mouseOverImagePickerRow)
 					.on("click", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", indigoQF.listeners.selectPickerFile)
-					.on("click", ".x-grid3-row .x-grid3-td-size", indigoQF.listeners.clickMoreOptionsButton)
-					.on("click", ".x-grid3-row .x-tree3-el", indigoQF.listeners.clickMoreOptionsButton)
-					.on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", indigoQF.listeners.clickMoreOptionsButton)
+					.on("click", ".x-grid3-row .x-grid3-td-size", indigoQF.listeners.clickMoreOptionsButton) // File Picker > Search > Results List
+					.on("click", ".x-grid3-row .x-tree3-el", function(e){
+						// Side Panel > Trees
+
+						indigoQF.listeners.clickMoreOptionsButton(e, "x-tree3-el");
+					})
+					.on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", indigoQF.listeners.clickMoreOptionsButton) // File Picker > Thumb View
 					.on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap", indigoQF.listeners.selectPickerFile)
 					.on("click", ".x-viewport-editmode .x-toolbar-first > table", indigoQF.listeners.toggleThemeMode)
 					.on("click", ".editmode-managers-menu", indigoQF.listeners.openManagerMenu)
@@ -44,7 +48,7 @@
 					.on("click", "#JahiaGxtContentPickerWindow", indigoQF.listeners.closeSourcePicker)
 					.on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", indigoQF.listeners.listView)
 					.on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", indigoQF.listeners.thumbView)
-					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickMoreOptionsButton)
+					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickMoreOptionsButton) // NOT IN USE
 					.on("click", ".x-current-page-path", indigoQF.listeners.clearMultiSelection)
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", indigoQF.listeners.addPageToHistory)
 					.on("mousedown", "#JahiaGxtManagerLeftTree .x-tab-strip-wrap li:nth-child(1)", indigoQF.listeners.closeSearchPanel)
@@ -54,7 +58,6 @@
 					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", indigoQF.listeners.mouseOverPickerSourceTrigger)
 					.on("mouseleave", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", indigoQF.listeners.mouseOutPickerSourceTrigger)
 					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", function(e){
-						console.log("MOUSE ENTER ::: G");
 						// Position the preview button next to the file whilst hovering
 						indigoQF.listeners.repositionFilePreviewButton(e, {
 							left: -58,
@@ -63,7 +66,6 @@
 
 					})
 					.on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", function(e){
-						console.log("MOUSE ENTER ::: GGGG");
 						// Position the preview button next to the file whilst hovering
 						indigoQF.listeners.repositionFilePreviewButton(e, {
 							left: -52,
@@ -157,17 +159,14 @@
 			},
 
 			listView: function(){
-				console.log("LIST VIEW");
 				$("body").attr("indigo-PICKER-DISPLAY", "list");
 			},
 			thumbView: function(){
-				console.log("THUMBS VIEW");
 				$("body").attr("indigo-PICKER-DISPLAY", "thumbs");
 			},
 
 			closeSearchPanel: function(){
 				// CLOSE SEARCH PANEL
-				console.log("MOUSEDOWN ::: H");
 
 				// Hide the search panel
 				$("body").attr("data-INDIGO-PICKER-SEARCH", "");
@@ -186,7 +185,6 @@
 			},
 			openSearchPanel: function(){
 				// OPEN SEARCH PANEL
-				console.log("MOUSEDOWN ::: A");
 
 				// Close source picker if open
 				indigoQF.listeners.closeSourcePicker();
@@ -209,15 +207,12 @@
 			},
 			changePickerSource: function(){
 				// CHANGE SOURCE
-				console.log("CLICK ::: B");
 				// The user has changed SOURCE, so we just need to hide the combo...
 				$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", "");
 			},
 			togglePickerSourceCombo: function(e){
 				// USER HAS CLICKED THE COMBO TRIGGER
-				console.log("CLICK ::: D");
 				e.stopPropagation();
-				// console.log("open the panel");
 
 				$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 
@@ -228,15 +223,12 @@
 			},
 			mouseOverPickerSourceTrigger: function(){
 				// USER HAS ROLLED OVER THE COMBO TRIGGER
-				console.log("MOUSE ENTER ::: E");
-				// console.log("OVER THE SPACER");
 				if($("body").attr("data-indigo-picker-source-panel") != "open"){
 					$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
 				}
 			},
 			mouseOutPickerSourceTrigger: function(){
 				// USER HAS ROLLED OUT OF THE COMBO TRIGGER
-				console.log("MOUSE LEAVE ::: F");
 				$("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 			},
 			repositionFilePreviewButton: function(e, offset){
@@ -249,7 +241,6 @@
 					left = box.left,
 					top = box.top,
 					width = box.width;
-					console.log(left, " x ", top);
 
 				$("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
 					.css({

@@ -5,6 +5,9 @@
 		    clickEvent.initEvent(eventType, true, true);
 		    node.dispatchEvent(clickEvent);
 		},
+		test: {
+
+		},
 		init: function(){
 
 
@@ -147,7 +150,8 @@
 				// If the side panel is open, then close it
 
 				if($("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-					//indigoQF.listeners.closeSidePanel()
+					console.log("CLOSE ::: FROM C");
+					indigoQF.listeners.closeSidePanel()
 
 				}
 
@@ -497,6 +501,14 @@
 								pageTitle = "1 selected item";
 								pageTitle = $("body").attr("data-singleselection-node-displayname");
 								multiselect = "on";
+
+								// QUICKFIX::: CLose Side Panel If Open ( user has selected an element )
+								if($("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+									console.log("CLOSE ::: FROM D");
+									indigoQF.listeners.closeSidePanel();
+
+								}
+								// END QUICKFIX
 								break;
 
 							default:
@@ -508,12 +520,7 @@
 						// Set multiselect status in body attribute...
 						$("body").attr("data-multiselect", multiselect);
 
-						// QUICKFIX::: CLose Side Panel If Open ( user has selected an element )
-						if($("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-							indigoQF.listeners.closeSidePanel();
 
-						}
-						// END QUICKFIX
 
 						// Page Title in Edit Made
 						$(".x-current-page-path").attr("data-PAGE-NAME",pageTitle);
@@ -638,6 +645,7 @@
 			},
 			openManagerMenu: function(){
 				// Close the side panel if it is open.
+				console.log("CLOSE ::: FROM E");
 				indigoQF.listeners.closeSidePanel()
 
 			},
@@ -658,6 +666,7 @@
 						// SETTINGS MODE: Button acts as a button that closed the Settings Overlay Page
 
 						$("body").attr("data-edit-window-style", "default");
+						console.log("CLOSE ::: FROM F");
 						indigoQF.listeners.closeSidePanel()
 
 						// Load the last page displayed in the Edit Mode. Technically this should never be NULL. However, need to assign a value on first window load as it is currently only assigned when a user clicks a page in the Page Tree.
@@ -718,6 +727,7 @@
 
 				if(tabMenuActive && sidePanelOpen){
 					// CLOSE SIDE PANEL: Already open for current Tab Menu
+					console.log("CLOSE ::: FROM G");
 					indigoQF.listeners.closeSidePanel()
 				} else {
 					// OPEN SIDE PANEL.
@@ -729,6 +739,7 @@
 
 			},
 			closeSidePanel: function(){
+				console.log("CLOSING SEARCH PANEL");
 				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
 
 			},
@@ -780,6 +791,7 @@
 				} else {
 					// No Context menu found, so assume that the Side Panel has really been mouseout-ed - close it.
 
+					console.log("CLOSE ::: FROM A");
 					indigoQF.listeners.closeSidePanel()
 
 					// Set flag and timer to remove after 100ms.
@@ -930,11 +942,17 @@
 							if(mutation.attributeName == "class"){
 								indigoQF.listeners.checkMode(mutation.target);
 
-
-
 								if($("body").hasClass("x-dd-cursor")){
 									// x-dd-cursor class is what GWT uses to say that a drag and drop has started.
-									indigoQF.listeners.closeSidePanel();
+
+									// Double check that a drag is actually taking place, sometimes GWT leaves the x-dd-cursor class on the body tag when the user stops a drag by clicking ESC key
+									var dragIcon = $("body").find(".x-dd-drag-proxy").length > 0;
+
+									if(dragIcon){
+										console.log("CLOSE ::: FROM B");
+
+										indigoQF.listeners.closeSidePanel();
+									}
 
 								}
 

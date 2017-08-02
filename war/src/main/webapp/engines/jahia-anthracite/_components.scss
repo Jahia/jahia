@@ -1911,6 +1911,12 @@ form,
 	// clear: none!important;
 }
 
+.cke_dialog_ui_checkbox {
+	label {
+		@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+	}
+}
+
 // CKEditor Dialogues
 
 // Modal Mask
@@ -1922,8 +1928,31 @@ form,
 
 // Dialogue Container
 .cke_dialog {
-	z-index: ZINDEX--CKE_EDITOR--DIALOGUE !important;
+	background: $FORM--FIELDSET--BG--COLOUR!important;
+	padding: 20px!important;
+	display: block;
 
+	.FlashPreviewBox,
+	.ImagePreviewBox {
+		border: none!important;
+		padding: 0!important;
+		background: $COLOUR--WHITE_CLOUDS!important;
+	}
+
+	.cke_btn_locked,
+	.cke_btn_reset {
+		background-color: $COLOUR--DUSTY_CLOUDS!important;
+		padding: 3px 2px !important;
+		background-position: center!important;
+	}
+
+	.cke_dialog_ui_hbox_last {
+	}
+
+	.cke_dark_background {
+		@include text(28px, $COLOUR--DARK_CLOUDS !important, $FONT--WEIGHT---EXTRALIGHT);
+		border:none!important;
+	}
 
 	// ANother Dialigue Container
 	.cke_dialog_body {
@@ -1963,7 +1992,108 @@ form,
 	}
 
 	// Tabs
-	.cke_dialog_tabs {}
+	.cke_dialog_tabs {
+		position: relative;
+		left: 0;
+		background: transparent;
+		height: auto;
+		// background: $FORM--FIELDSET--BG--COLOUR;
+		margin: 0;
+		// padding: 15px 20px 0;
+		box-sizing: border-box;
+		display: block;
+		width: 100%;
+		margin-bottom: 10px;
+
+		a {
+			height: auto;
+			line-height: normal;
+			padding: 0;
+			border: none;
+			border-radius: 0;
+			background: transparent;
+			margin-right: 10px;
+			text-transform: uppercase;
+
+			@include text(11px, $COLOUR--DUSTY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+			&.cke_dialog_tab_selected {
+				color: $COLOUR--WHITE_CLOUDS;
+				border-bottom: 3px solid $COLOUR--DIRTY_ORANGE!important;
+
+			}
+
+			&:hover {
+				color: $COLOUR--WHITE_CLOUDS!important;
+				background: inherit!important;
+				border-bottom: 3px solid $COLOUR--GREY_CLOUDS;
+
+				&.cke_dialog_tab_selected {
+					border-bottom: 3px solid $COLOUR--DIRTY_ORANGE;
+
+				}
+			}
+
+		}
+	}
+
+	// LABEL
+	.cke_dialog_ui_labeled_label {
+		@extend %CSS_BLOCK--FORM--LABEL;
+	}
+
+	.cke_dialog_ui_input_select {
+		display: block!important;
+	}
+
+	// SELECT / COMBO CONTAINER
+	.cke_dialog_ui_select {
+
+
+		// SELECT
+		select {
+
+			width: 100%;
+			border: none;
+			line-height: normal;
+			background: transparent;
+			border-radius: 0;
+			box-shadow: none;
+
+			appearance: none;
+			-moz-appearance: none;
+			-webkit-appearance: none;
+
+			background: url($ICON--ARROW_DOWN---WHITE) no-repeat right 5px center;
+			background-color: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR;
+			padding: 3px 5px !important;
+			@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+
+			&:focus {
+				border:none;
+			}
+
+			option {
+
+			}
+		}
+
+	}
+
+	// TEXT INPUT CONTAINER
+	.cke_dialog_ui_text {
+		input {
+			// @extend %CSS_BLOCK--FORM--TEXT_INPUT;
+			// @extend %CSS_BLOCK--FORM--TEXT_INPUT\:EDIT_ENGINE;
+
+			border-radius: 0;
+			box-shadow: none;
+			border:none;
+
+			@include text_input("EDIT_ENGINE");
+		}
+	}
 
 	// Dialogue Body / Footer container
 	.cke_dialog_contents {
@@ -1972,14 +2102,32 @@ form,
 		background: transparent;
 		border: none;
 		border-radius: 0;
+
+		display: block;
+	    box-sizing: border-box;
+	    width: 100%;
+
+		// table,
+		// tbody,
+		// tr {
+		// 	display: block;
+		// }
+
+		tr {
+			margin-bottom: 1px;
+		}
 	}
 
 	// Dialogue Body Container
 	.cke_dialog_contents_body {
-		padding: 0;
 		margin: 0;
-		background: transparent;
 		height: auto!important;
+
+		// background: $FORM--FIELDSET--BG--COLOUR;
+	    // padding: 20px 20px 25px;
+		padding: 0;
+	    // width: 100%!important;
+	    box-sizing: border-box;
 	}
 
 	iframe.cke_pasteframe {
@@ -1989,6 +2137,23 @@ form,
 	}
 
 	.cke_dialog_page_contents {
+
+		> table {
+			> tbody {
+				> tr {
+					margin-bottom: 20px;
+				}
+			}
+		}
+
+		fieldset {
+			padding: 0!important;
+			margin-top: 10px!important;
+
+			legend {
+				@extend %CSS_BLOCK--FORM--LABEL;
+			}
+		}
 
 		p,
 		.cke_dialog_ui_html {
@@ -2007,23 +2172,42 @@ form,
 		a {
 			@include text(14px, $COLOUR--DIRTY_ORANGE !important, $FONT--WEIGHT---NORMAL);
 
-			&:hover {
+		}
 
+		.cke_dialog_ui_button {
+			padding: 0;
+			margin: 0;
+			border: none;
+			border-radius: 0;
+			box-shadow: none;
+			background: transparent;
+			display: block;
+
+			// Normal Button
+			span {
+				// padding: 5px 10px!important;
+				background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
+		    	@include text(12px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important);
+				text-shadow: none;
+				padding: 4px;
+				text-align: center;
+
+				&:hover {
+					background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+			    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+				}
 			}
 
-			&:active {
-
-			}
-
-			&:visited {
-
-			}
 		}
 
 	}
 
 	.cke_dialog_ui_vbox {}
-	.cke_dialog_ui_vbox_child {}
+	.cke_dialog_ui_vbox_child {
+		padding: 0!important;
+		display: block;
+		margin-bottom: 5px;
+	}
 
 	.cke_dialog_footer {
 		border: 0;
@@ -2033,61 +2217,80 @@ form,
 		background: transparent;
 		text-align: left;
 
-		margin-top: 10px;
+		margin-top: 50px;
 	    display: block;
 	}
 
-	.cke_dialog_ui_hbox {}
+	.cke_dialog_ui_hbox {
+		// margin-bottom: 10px!important;
+	}
 
 	.cke_dialog_footer_buttons {
 		display: inline-block;
 		margin: 0;
+
+		tbody,
+		tr,
+		td {
+			display: inline-block;
+		}
 
 		// Reverse buttons so that OK comes first
 		td {
 			float: right;
 			margin-right: 5px;
 		}
-	}
 
-	.cke_dialog_ui_button {
-		padding: 0;
-		margin: 0;
-		border: none;
-		border-radius: 0;
-		box-shadow: none;
-		background: transparent;
+		.cke_dialog_ui_button {
+			padding: 0;
+			margin: 0;
+			border: none;
+			border-radius: 0;
+			box-shadow: none;
+			background: transparent;
+			display: block;
 
-		// Normal Button
-		span {
-			padding: 5px 10px!important;
-			background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
-	    	@include text(16px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important);
-			text-shadow: none;
-
-			&:hover {
-				background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
-		    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
-			}
-		}
-
-		// Cancel Button
-		&.cke_dialog_ui_button_cancel {
-
-
+			// Normal Button
 			span {
 				padding: 5px 10px!important;
-				@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR;
+				background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
+		    	@include text(16px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important);
+				text-shadow: none;
 
 				&:hover {
-					@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR;
+					background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+			    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+				}
+			}
+
+			// Cancel Button
+			&.cke_dialog_ui_button_cancel {
+
+
+				span {
+					padding: 5px 10px!important;
+					@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR;
+
+					&:hover {
+						@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR;
+
+					}
+
 
 				}
-
-
 			}
 		}
 	}
+
+	a {
+		&:active,
+		&:focus {
+			border: none!important;
+			padding: 0!important;
+		}
+	}
+
+
 
 
 	// CKE About POP UP Specific
@@ -2107,6 +2310,75 @@ form,
 
 
 	}
+
+	// CKE Template List
+	.cke_tpl_list {
+		border: none;
+		background: transparent;
+		margin: 5px 0;
+
+		a {
+			display: block;
+			margin: 1px 0;
+
+			.cke_tpl_item {
+				margin:0;
+				padding: 0;
+				border: none;
+				padding: 5px 16px;
+				background-color: rgba( $COLOUR--WHITE_CLOUDS, .9 );
+			}
+
+			&:hover,
+			&:focus,
+			&:active {
+				box-shadow: inset -35px 0 $COLOUR--DIRTY_ORANGE;
+				background-color: $COLOUR--WHITE_CLOUDS;
+
+				.cke_tpl_item {
+					border: none;
+					background: url($ICON--NEXT--WHITE) no-repeat right 7px center;
+					background-size: 20px 20px;
+				}
+			}
+		}
+	}
+
+	.cke_dialog_ui_checkbox {
+		display: block;
+		margin-top: 10px;
+		vertical-align: middle;
+
+		input {
+			vertical-align: middle;
+		}
+	}
+
+	.cke_tpl_preview {
+		width: 100%!important;
+
+		td {
+			padding: 0;
+
+			br {
+				display: none;
+			}
+
+			span {
+				@include  text(14px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---NORMAL);
+			}
+
+			.cke_tpl_title {
+				display: none;
+			}
+
+		}
+	}
+
+	.cke_dialog_footer_buttons {
+	}
+
+
 
 }
 

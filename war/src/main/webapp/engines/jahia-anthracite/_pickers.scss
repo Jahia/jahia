@@ -530,7 +530,11 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 					    box-sizing: border-box;
 					    background: $COLOUR--WHITE_CLOUDS !important;
 
-						@include text_input("SIDE_PANEL");
+
+						.x-form-text {
+							@include text_input("SIDE_PANEL");
+
+						}
 
 						&:before {
 							content: "Search";
@@ -979,13 +983,16 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 						// SEARCH FIELD
 						&:nth-child(2) {
-							@include text_input("PICKER_FILTER");
+							.x-form-text {
+								@include text_input("PICKER_FILTER");
+							}
 						}
 
 						// SORT COMBO
 						&:nth-child(5) {
-							@include text_input("PICKER_SORT");
-
+							.x-form-text {
+								@include text_input("PICKER_SORT");
+							}
 						}
 
 						// INVERT BUTTON

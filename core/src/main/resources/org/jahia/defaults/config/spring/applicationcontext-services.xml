@@ -350,4 +350,8 @@
     <bean id="BaseTagAction" class="org.jahia.services.tags.BaseTagAction" abstract="true">
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
     </bean>
+
+    <bean id="ReadOnlyModeController" class="org.jahia.settings.readonlymode.ReadOnlyModeController" depends-on="springContextSingleton">
+        <property name="settingsBean" ref="settingsBean"/>
+    </bean>
 </beans>

@@ -425,4 +425,14 @@ public class RenderContext {
     public void setUgcEnabled(boolean ugcEnabled) {
         this.ugcEnabled = ugcEnabled;
     }
+
+    /**
+     * Checks the state of the read-only mode.
+     * 
+     * @return <code>true</code> if the full read only mode is currently enabled; <code>false</code> otherwise
+     */
+    public boolean isReadOnlyMode() {
+        return SettingsBean.getInstance().isFullReadOnlyMode();
+    }
+
 }

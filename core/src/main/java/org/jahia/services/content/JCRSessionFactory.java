@@ -64,6 +64,7 @@ import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.readonlymode.ReadOnlyModeSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -77,7 +78,7 @@ import org.springframework.web.context.ServletContextAware;
  * @author toto
  * @see JCRTemplate
  */
-public class JCRSessionFactory implements Repository, ServletContextAware {
+public class JCRSessionFactory implements Repository, ServletContextAware, ReadOnlyModeSupport {
 
     private static final Comparator<String> invertedStringComparator = new Comparator<String>() {
         public int compare(String s1, String s2) {
@@ -107,6 +108,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
     private ThreadLocal<Boolean> readOnlyCacheEnabled = new ThreadLocal<Boolean>();
     private LocalValidatorFactoryBean validatorFactoryBean;
+    private boolean readOnlyModeEnabled;
 
     private JCRSessionFactory() {
         super();
@@ -298,7 +300,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                     logger.warn("Cannot find user "+jahiaPrincipal.getName() + "@" + jahiaPrincipal.getRealm());
                 }
             }
-            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale);
+            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale, readOnlyModeEnabled);
         }
         throw new LoginException("Can't login");
     }
@@ -609,6 +611,16 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
      */
     public boolean areMultipleMountPointsRegistered() {
         return mountPoints.size() > 1;
+    }
+
+    @Override
+    public int getReadOnlyModePriority() {
+        return 0;
+    }
+
+    @Override
+    public void onReadOnlyModeChanged(boolean readOnlyModeIsOn, long timeout) {
+        this.readOnlyModeEnabled = readOnlyModeIsOn;
     }
 
 }

@@ -190,6 +190,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private int accessManagerPathPermissionCacheMaxSize = 100;
     private int queryApproxCountLimit;
     private boolean readOnlyMode;
+    private boolean fullReadOnlyMode;
     private DataSource dataSource;
     private ClusterSettingsInitializer clusterSettingsInitializer;
     private String internetExplorerCompatibility;
@@ -1434,5 +1435,14 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public void setLicenseFile(Resource licenseFile) {
         this.licenseFile = licenseFile;
+    }
+
+    public boolean isFullReadOnlyMode() {
+        return fullReadOnlyMode;
+    }
+
+    public void setFullReadOnlyMode(boolean fullReadOnlyMode) {
+        this.fullReadOnlyMode = fullReadOnlyMode;
+        setReadOnlyMode(fullReadOnlyMode);
     }
 }

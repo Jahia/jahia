@@ -47,6 +47,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
+import org.jahia.settings.readonlymode.ReadOnlyModeController;
+import org.jahia.settings.readonlymode.ReadOnlyModeSupport;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +64,7 @@ import static org.jahia.services.scheduler.BackgroundJob.*;
  *
  * @author Sergiy Shyrkov
  */
-public class SchedulerService extends JahiaService {
+public class SchedulerService extends JahiaService implements ReadOnlyModeSupport {
 
     /**
      * Jahia Spring factory bean that creates, but does not start Quartz scheduler instance. So the instance remain in standby mode until
@@ -95,6 +97,8 @@ public class SchedulerService extends JahiaService {
 
     private ThreadLocal<List<JobDetail>> ramScheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
 
+    private boolean readOnlyMode;
+
     public Integer deleteAllCompletedJobs() throws SchedulerException {
         return deleteAllCompletedJobs(PURGE_ALL_STRATEGY, true);
     }
@@ -110,6 +114,7 @@ public class SchedulerService extends JahiaService {
 
     public Integer deleteAllCompletedJobs(Map<Pattern, Long> purgeStrategy,
                                           boolean purgeWithNoEndDate, boolean isRAMScheduler) throws SchedulerException {
+        checkReadOnlyMode();
         logger.info("Start looking for completed jobs in {} scheduler", isRAMScheduler ? "RAM" : "persistent");
         int deletedCount = 0;
 
@@ -271,6 +276,9 @@ public class SchedulerService extends JahiaService {
     }
 
     public void scheduleJobNow(JobDetail jobDetail, boolean useRamScheduler) throws SchedulerException {
+        if (!useRamScheduler) {
+            checkReadOnlyMode();
+        }
         JobDataMap data = jobDetail.getJobDataMap();
         SimpleTrigger trigger = new SimpleTrigger(jobDetail.getName() + "_Trigger",
                 INSTANT_TRIGGER_GROUP);
@@ -295,6 +303,9 @@ public class SchedulerService extends JahiaService {
     }
 
     public void scheduleJobAtEndOfRequest(JobDetail jobDetail, boolean useRamScheduler) throws SchedulerException {
+        if (!useRamScheduler) {
+            checkReadOnlyMode();
+        }
         List<JobDetail> jobList = useRamScheduler?ramScheduledAtEndOfRequest.get():scheduledAtEndOfRequest.get();
 
         if (jobList == null) {
@@ -382,4 +393,44 @@ public class SchedulerService extends JahiaService {
         }
     }
 
+    @Override
+    public int getReadOnlyModePriority() {
+        return 1000;
+    }
+
+    @Override
+    public void onReadOnlyModeChanged(boolean readOnlyModeIsOn, long timeout) {
+        this.readOnlyMode = readOnlyModeIsOn;
+        if (readOnlyModeIsOn) {
+            logger.info("Entering read-only mode. Putting schedulers to standby...");
+            try {
+                if (ramScheduler.isStarted() && !ramScheduler.isInStandbyMode()) {
+                    ramScheduler.standby();
+                }
+                if (scheduler.isStarted() && !scheduler.isInStandbyMode()) {
+                    scheduler.standby();
+                }
+                logger.info("Done putting schedulers to standby");
+            } catch (SchedulerException e) {
+                logger.error("Unable to put scheduler into standby mode. Cause: " + e.getMessage(), e);
+            }
+        } else {
+            logger.info("Exiting read-only mode. Starting schedulers...");
+            try {
+                if (!ramScheduler.isStarted() || ramScheduler.isInStandbyMode()) {
+                    startSchedulers();
+                }
+                logger.info("Done starting schedulers");
+            } catch (SchedulerException | JahiaInitializationException e) {
+                logger.error("Unable to start schedulers when exiting read-only mode. Cause: " + e.getMessage(), e);
+            }
+        }
+    }
+
+    private void checkReadOnlyMode() {
+        if (readOnlyMode) {
+            ReadOnlyModeController.readOnlyModeViolated(
+                    "The scheduler service is currently in read-only mode and cannot perform any data or state modifications");
+        }
+    }
 }

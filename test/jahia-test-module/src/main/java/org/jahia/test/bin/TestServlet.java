@@ -44,6 +44,7 @@
 package org.jahia.test.bin;
 
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.history.NodeVersionHistoryListener;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
 import org.jahia.test.SurefireTestNGXMLResultFormatter;
 import org.jahia.utils.ClassLoaderUtils;
@@ -90,7 +91,12 @@ import junit.framework.TestSuite;
 public class TestServlet extends BaseTestController {
     
     private transient static Logger logger = LoggerFactory.getLogger(TestServlet.class);
-    
+
+    static {
+        // if this class is deployed, we disable the listener for deleting node version histories of nodes after a site is deleted
+        NodeVersionHistoryListener.setDisabled(true);
+    }
+
     protected void handleGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException {
 
             String pathInfo = StringUtils.substringAfter(httpServletRequest.getPathInfo(), "/test");

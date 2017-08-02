@@ -1928,7 +1928,7 @@ form,
 
 // Dialogue Container
 .cke_dialog {
-	background: $FORM--FIELDSET--BG--COLOUR!important;
+	background: $RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR!important;
 	padding: 20px!important;
 	display: block;
 
@@ -1936,12 +1936,12 @@ form,
 	.ImagePreviewBox {
 		border: none!important;
 		padding: 0!important;
-		background: $COLOUR--WHITE_CLOUDS!important;
+		background: $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR!important;
 	}
 
 	.cke_btn_locked,
 	.cke_btn_reset {
-		background-color: $COLOUR--DUSTY_CLOUDS!important;
+		background-color: $RICH_TEXT_EDITOR--DIALOGUE--BUTTON_ICON--BG--COLOUR!important;
 		padding: 3px 2px !important;
 		background-position: center!important;
 	}
@@ -1950,7 +1950,7 @@ form,
 	}
 
 	.cke_dark_background {
-		@include text(28px, $COLOUR--DARK_CLOUDS !important, $FONT--WEIGHT---EXTRALIGHT);
+		@include text(28px, $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR !important, $FONT--WEIGHT---EXTRALIGHT);
 		border:none!important;
 	}
 
@@ -1986,7 +1986,7 @@ form,
 		margin-bottom: 10px;
 		pointer-events: none!important; // disables the drag feature of popup
 
-		@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+		@include text(36px, $RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
 
 
 	}
@@ -2015,21 +2015,20 @@ form,
 			margin-right: 10px;
 			text-transform: uppercase;
 
-			@include text(11px, $COLOUR--DUSTY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+			@include text(11px, $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
 
 			&.cke_dialog_tab_selected {
-				color: $COLOUR--WHITE_CLOUDS;
-				border-bottom: 3px solid $COLOUR--DIRTY_ORANGE!important;
-
+				color: $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED;
+				border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED!important;
 			}
 
 			&:hover {
-				color: $COLOUR--WHITE_CLOUDS!important;
+				color: $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED!important;
 				background: inherit!important;
-				border-bottom: 3px solid $COLOUR--GREY_CLOUDS;
+				border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---HOVER;
 
 				&.cke_dialog_tab_selected {
-					border-bottom: 3px solid $COLOUR--DIRTY_ORANGE;
+					border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED;
 
 				}
 			}
@@ -2131,7 +2130,7 @@ form,
 	}
 
 	iframe.cke_pasteframe {
-		background: $COLOUR--WHITE_CLOUDS!important;
+		background: $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR!important;
 		border-radius: 0!important;
 		border: none!important;
 	}
@@ -2159,18 +2158,18 @@ form,
 		.cke_dialog_ui_html {
 			margin: 0 0 10px 0;
 
-			@include text(14px, $COLOUR--DUSTY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+			@include text(14px, $RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
 
 			strong {
 				font-weight: $FONT--WEIGHT---BOLD;
-				color: lighten($COLOUR--DUSTY_CLOUDS, 5%);
+				color: lighten($RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR, 5%);
 				font-size: inherit;
 				font-family: inherit;
 			}
 		}
 
 		a {
-			@include text(14px, $COLOUR--DIRTY_ORANGE !important, $FONT--WEIGHT---NORMAL);
+			@include text(14px, $RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR !important, $FONT--WEIGHT---NORMAL);
 
 		}
 
@@ -2326,18 +2325,18 @@ form,
 				padding: 0;
 				border: none;
 				padding: 5px 16px;
-				background-color: rgba( $COLOUR--WHITE_CLOUDS, .9 );
+				background-color: $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR;
 			}
 
 			&:hover,
 			&:focus,
 			&:active {
-				box-shadow: inset -35px 0 $COLOUR--DIRTY_ORANGE;
-				background-color: $COLOUR--WHITE_CLOUDS;
+				box-shadow: inset -35px 0 $RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON--BG--COLOUR---SELECTED;
+				background-color: $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR---SELECTED;
 
 				.cke_tpl_item {
 					border: none;
-					background: url($ICON--NEXT--WHITE) no-repeat right 7px center;
+					background: url($RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON---SELECTED) no-repeat right 7px center;
 					background-size: 20px 20px;
 				}
 			}

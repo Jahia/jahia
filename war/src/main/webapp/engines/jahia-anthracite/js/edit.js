@@ -41,6 +41,7 @@
 					.on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", function(e){
 						indigoQF.listeners.clickMoreOptionsButton(e, "x-grid3-td-displayName");
 					})
+					.on("click", "#JahiaGxtContentPickerWindow", indigoQF.listeners.closeSourcePicker)
 					.on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", indigoQF.listeners.listView)
 					.on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", indigoQF.listeners.thumbView)
 					.on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", indigoQF.listeners.clickMoreOptionsButton)
@@ -150,6 +151,11 @@
 
 			},
 
+			closeSourcePicker: function(){
+				$("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", "");
+
+			},
+
 			listView: function(){
 				console.log("LIST VIEW");
 				$("body").attr("indigo-PICKER-DISPLAY", "list");
@@ -181,6 +187,10 @@
 			openSearchPanel: function(){
 				// OPEN SEARCH PANEL
 				console.log("MOUSEDOWN ::: A");
+
+				// Close source picker if open
+				indigoQF.listeners.closeSourcePicker();
+
 
 				// Display the search panel
 				$("body").attr("data-INDIGO-PICKER-SEARCH", "open");
@@ -273,7 +283,7 @@
 				switch(mode){
 					case "studiomode":
 						// Remove Anthracite CSS style sheet
-						$('link[rel=stylesheet][href$="edit_en.css"]').remove();
+						$('link[rel=stylesheet][href="/engines/jahia-anthracite/edit_en.css"]').remove();
 
 						// Register the fact that it has been removed
 						indigoQF.status.css.active = false;

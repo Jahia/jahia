@@ -13,6 +13,12 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 	padding-top: 24px;
 }
 
+// Move context menu up and to the left to hide the other image menu otions
+.x-menu.imagepickerContextMenu .x-menu-list {
+	margin-top: -30px;
+	margin-left: -50px;
+}
+
 #JahiaGxtContentPickerWindow {
 	// Reset global position of picker as whole page
 	width: 100%!important;

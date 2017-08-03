@@ -598,4 +598,13 @@
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
         <function-signature>java.lang.String formatISODate(java.lang.String,java.lang.String,java.util.Locale)</function-signature>
     </function>
+
+    <function>
+        <description>
+            Detects and returns the current site key using data, available in the supplied request object.
+        </description>
+        <name>currentSiteKey</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String getCurrentSiteKey(javax.servlet.http.HttpServletRequest)</function-signature>
+    </function>
 </taglib>

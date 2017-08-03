@@ -15,29 +15,27 @@
 // SCROLL BARS //////////////////////////////////
 /////////////////////////////////////////////////
 
-// DOES NOT WORK - NEEDS CHECKING
+::-webkit-scrollbar {
+ 	width: 6px;
+	height: 6px;
+ }
+ 
+::-webkit-scrollbar-track {
+	background: none;
+}
 
+::-webkit-scrollbar-thumb {
+	background: #b9bbbc;
+	border: 0;
+}
 
-// ::-webkit-scrollbar {
-// 	width: 6px;
-// }
+::-webkit-scrollbar-corner {
+	background: none;
+}
 
-// ::-webkit-scrollbar-track {
-// 	background: none;
-// }
-
-// ::-webkit-scrollbar-thumb {
-// 	background: #828282;
-// 	border-radius: 8px;
-// 	border: 0;
-// }
-
-// ::-webkit-scrollbar-thumb:hover {
-// 	background: #a7a7a7;
-// 	background: red;
-// }
-
-
+::-webkit-scrollbar-thumb:hover {
+	background: #a7a7a7;
+}
 
 
 

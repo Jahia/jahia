@@ -1,19 +1,95 @@
 (function(){
+	// CONTANTS
+	var PERSISTANT = true;
+
 	var indigoQF = {
+		counter: 0,
 		triggerMouseEvent: function(node, eventType) {
-		    var clickEvent = document.createEvent("MouseEvents");
-		    clickEvent.initEvent(eventType, true, true);
-		    node.dispatchEvent(clickEvent);
-		},
-		test: {
+			if(node){
+				var clickEvent = document.createEvent("MouseEvents");
+				clickEvent.initEvent(eventType, true, true);
+				node.dispatchEvent(clickEvent);
+			}
 
 		},
 		init: function(){
-			// $("body").attr("data-INDIGO-GWT-SIDE-PANEL", "preload");
+			// Set up INDIGO listeners (listening to changes in DOM)
+			indigoQF.GWT.onTreeChange("JahiaGxtPagesTab", function(tree){
+				// console.log("PAGE TREE UPDATED ...", tree);
 
-			// $("#JahiaGxtSidePanelTabs, #JahiaGxtPagesTab, .window-side-panel #JahiaGxtSidePanelTabs .x-tab-panel-body > .x-component, .window-side-panel #JahiaGxtSidePanelTabs .x-grid-panel, .x-grid3 .x-grid3-header").css("display", "block");
+			}, PERSISTANT);
 
-			// indigoQF.listeners.openSidePanel();
+			indigoQF.GWT.onOpen("#JahiaGxtContentPickerWindow", function(){
+				// console.log("OPEN PICKER");
+				indigoQF.listeners.picker("open");
+			}, PERSISTANT);
+
+			indigoQF.GWT.onOpen("#JahiaGxtEnginePanel", function(){
+				// console.log("OPEN EDIT ENGINE");
+				indigoQF.listeners.editEngine("open");
+			}, PERSISTANT);
+
+			indigoQF.GWT.onOpen("#JahiaGxtImagePopup", function(){
+				// console.log("OPEN IMAGE POPUP");
+				indigoQF.listeners.imagePreview("open");
+			}, PERSISTANT);
+
+			indigoQF.GWT.onOpen(".menu-edit-menu-mode", function(){
+				// console.log("OPEN MENU EDIT MENU MODE");
+			}, PERSISTANT);
+
+
+			indigoQF.GWT.onOpen(".x-dd-drag-proxy", function(){
+				// console.log("::: XXX ::: STARTED TO DRAG");
+				indigoQF.listeners.closeSidePanel();
+			}, PERSISTANT);
+
+			indigoQF.GWT.onClose(".x-dd-drag-proxy", function(){
+				// console.log("::: XXX ::: STOPPED DRAGGING");
+			}, PERSISTANT);
+
+			indigoQF.GWT.onAttr("body", "data-selection-count", function(value){
+				// console.log("::: XXX ::: UPDATED MULTI SELECT");
+				indigoQF.listeners.countChanged(parseInt(value));
+			}, PERSISTANT);
+
+			indigoQF.GWT.onAttr("body", "data-main-node-displayname", function(value){
+				// console.log("::: XXX ::: UPDATED PAGE NAME");
+
+				indigoQF.status.currentPage.displayname = value;
+				indigoQF.listeners.displaynameChanged();
+
+			}, PERSISTANT);
+
+			indigoQF.GWT.onAttr("body > div:nth-child(1) > div:nth-child(1)", "class", function(value){
+				// console.log("::: XXX ::: SITE HOLDER HAS CHANGED", value);
+				indigoQF.listeners.changedMode(value);
+
+			}, PERSISTANT);
+
+			indigoQF.GWT.onAttr("body", "data-sitesettings", function(value){
+				// console.log("::: XXX ::: data-sitesettings HAS CHANGED", value);
+
+				if($("body").attr("data-sitesettings") == "true" && $("body").attr("data-edit-window-style") != "settings"){
+					indigoQF.listeners.clickSidePanelSettingsTab(true);
+				}
+
+			}, PERSISTANT);
+
+			indigoQF.GWT.onClose("#JahiaGxtContentPickerWindow", function(){
+				// console.log("CLOSE PICKER");
+				indigoQF.listeners.picker("close");
+			}, PERSISTANT);
+
+			indigoQF.GWT.onClose("#JahiaGxtEnginePanel", function(){
+				// console.log("CLOSE EDIT ENGINE");
+				indigoQF.listeners.editEngine("close");
+			}, PERSISTANT);
+
+			indigoQF.GWT.onClose("#JahiaGxtImagePopup", function(){
+				// console.log("CLOSE IMAGE POPUP");
+				indigoQF.listeners.imagePreview("close");
+			}, PERSISTANT);
 
 
 
@@ -29,6 +105,10 @@
 			// Setup listeners
 			$(document).ready(function(){
 				$(window).on("blur", indigoQF.listeners.windowBlur);
+
+				// indigoQF.listeners.queue("pagesPanel", function(){
+				// 	console.log("YIPEEE LOADED PAGES PANEL");
+				// });
 
 				$("body")
 					.on("click", ".app-container", function(e){
@@ -153,7 +233,151 @@
 				closeSidePanelCapture: "[data-INDIGO-GWT-SIDE-PANEL='open'] .gwt-body-edit"
 			}
 		},
+		GWT: {
+			queues: {
+				update: {
+					"settingsPanel": [],
+					"pagesPanels": []
+				}
+			},
+			trigger: function(params){
+				var eventType = params.eventType,
+					queueID = params.queueID,
+					nodes = params.nodes,
+					value = params.value,
+					attribute = params.attribute,
+					persistantFunctions = []; // Any persistant callbacks are stored here and readded to the queue after queue execution
+
+				// Loop through queue ...
+				if(indigoQF.GWT.queues[eventType] && indigoQF.GWT.queues[eventType][queueID]){
+
+					// Attributes
+					if(attribute){
+						if(indigoQF.GWT.queues[eventType][queueID][attribute]){
+							while (indigoQF.GWT.queues[eventType][queueID][attribute].length > 0) {
+								queueItem = indigoQF.GWT.queues[eventType][queueID][attribute].pop();
+								queueItem.callback(value);
+
+								// If the persistant flag is true, save the callback to be reinserted to the queue after exection of while loop.
+								if(queueItem.persistant){
+									persistantFunctions.push(queueItem);
+								}
+							}
+
+							// Add any permanenet callbacks back into the queue
+							indigoQF.GWT.queues[eventType][queueID][attribute] = indigoQF.GWT.queues[eventType][queueID][attribute].concat(persistantFunctions);
+						}
+
+
+					} else {
+						while (indigoQF.GWT.queues[eventType][queueID].length > 0) {
+							queueItem = indigoQF.GWT.queues[eventType][queueID].pop();
+							queueItem.callback(nodes);
+
+							// If the persistant flag is true, save the callback to be reinserted to the queue after exection of while loop.
+							if(queueItem.persistant){
+								persistantFunctions.push(queueItem);
+							}
+						}
+
+						// Add any permanenet callbacks back into the queue
+						indigoQF.GWT.queues[eventType][queueID] = indigoQF.GWT.queues[eventType][queueID].concat(persistantFunctions);
+					}
+
+
+
+				}
+
+			},
+			on: function(params){
+
+				var eventType = params.eventType,
+					queueID = params.queueID,
+					callback = params.callback,
+					persistant = params.persistant,
+					attribute = params.attribute;
+
+				if(!indigoQF.GWT.queues[eventType]){
+					// Not been initialised, so create entry in queue for this queueID
+					indigoQF.GWT.queues[eventType] = {}
+				}
+
+				if(!indigoQF.GWT.queues[eventType][queueID]){
+					// Not been initialised, so create entry in queue for this queueID
+					indigoQF.GWT.queues[eventType][queueID] = []
+				}
+
+				if(attribute){
+					if(!indigoQF.GWT.queues[eventType][queueID][attribute]){
+						indigoQF.GWT.queues[eventType][queueID][attribute] = [];
+					}
+
+					indigoQF.GWT.queues[eventType][queueID][attribute].push({
+						persistant: persistant,
+						callback: callback
+					});
+				} else {
+					indigoQF.GWT.queues[eventType][queueID].push({
+						persistant: persistant,
+						callback: callback
+					});
+				}
+
+
+			},
+
+			// SHORT HAND EVENT LISTENERS
+			onUpdate: function(queueID, callback, persistant){
+				indigoQF.GWT.on({
+					eventType: "update",
+					queueID: queueID,
+					callback: callback,
+					persistant: persistant
+				})
+
+			},
+			onTreeChange: function(queueID, callback, persistant){
+				indigoQF.GWT.on({
+					eventType: "trees",
+					queueID: queueID,
+					callback: callback,
+					persistant: persistant
+				})
+
+			},
+			onOpen: function(queueID, callback, persistant){
+				indigoQF.GWT.on({
+					eventType: "open",
+					queueID: queueID,
+					callback: callback,
+					persistant: persistant
+				})
+
+			},
+			onClose: function(queueID, callback, persistant){
+				indigoQF.GWT.on({
+					eventType: "close",
+					queueID: queueID,
+					callback: callback,
+					persistant: persistant
+				})
+
+			},
+			onAttr: function(queueID, attribute, callback, persistant){
+				indigoQF.GWT.on({
+					eventType: "attribute",
+					attribute: attribute,
+					queueID: queueID,
+					callback: callback,
+					persistant: persistant
+				})
+
+			}
+
+		},
 		listeners: {
+			// Add to queue
+
 			// Window listeners
 			windowLoad: function(){},
 			windowResize: function(){
@@ -272,26 +496,10 @@
 				$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
 			},
 
-			checkMode: function(element){
-
-				if($(element).hasClass("x-viewport-editmode")){
-					indigoQF.listeners.changedMode("editmode");
-				} else if($(element).hasClass("x-viewport-contributemode")){
-					indigoQF.listeners.changedMode("contributemode");
-				} else if($(element).hasClass("x-viewport-studiomode")){
-					indigoQF.listeners.changedMode("studiomode");
-				} else if($(element).hasClass("x-viewport-adminmode")){
-					indigoQF.listeners.changedMode("adminmode");
-				} else if($(element).hasClass("x-viewport-dashboardmode")){
-					indigoQF.listeners.changedMode("dashboardmode");
-				}
-
-			},
-
 			// User has changed modes
 			changedMode: function(mode){
 				switch(mode){
-					case "studiomode":
+					case "x-viewport-studiomode":
 						// Remove Anthracite CSS style sheet
 						$('link[rel=stylesheet][href$="edit_en.css"]').remove();
 
@@ -299,10 +507,10 @@
 						indigoQF.status.css.active = false;
 						break;
 
-					case "editmode":
-					case "contributemode":
-					case "adminmode":
-					case "dashboardmode":
+					case "x-viewport-editmode":
+					case "x-viewport-contributemode":
+					case "x-viewport-adminmode":
+					case "x-viewport-dashboardmode":
 					default:
 
 						if(!indigoQF.status.css.active){
@@ -710,8 +918,16 @@
 						// Found settings page in history so open it
 						indigoQF.status.lastSettingsPage.trigger("click");
 					} else {
-						// Need to check for loaded elements ...Not found a settings page in history, so open first
-						//$("#JahiaGxtSidePanelTabs #JahiaGxtSettingsTab .x-grid3-row:nth-child(1)").trigger("click");
+						// Trigger click on first list item WHEN it has loaded...
+
+						// PUT BACK HERE
+
+
+						// indigoQF.GWT.onTreeChange("settings", function(){
+						// 	var firstInList = $("#JahiaGxtSidePanelTabs #JahiaGxtSettingsTab .x-grid3-row:nth-child(1)")[0];
+						// 	indigoQF.triggerMouseEvent(firstInList, "mousedown");
+						// 	indigoQF.triggerMouseEvent(firstInList, "click");
+						// });
 
 					}
 				}
@@ -744,12 +960,15 @@
 
 			},
 			closeSidePanel: function(){
-				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
 
-				// Revert iframes body style attribute to what it was originally
-				$(".window-iframe").contents().find("body").attr("style", indigoQF.status.sidePanelTabs.iframeBodyStyle);
+				if($("body").attr("data-edit-window-style") != "settings"){
+					$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
 
-				console.log($(".window-iframe").contents().find("body").attr("style"));
+					// Revert iframes body style attribute to what it was originally
+					$(".window-iframe").contents().find("body").attr("style", indigoQF.status.sidePanelTabs.iframeBodyStyle);
+
+				}
+
 
 			},
 			addPageToHistory: function(){
@@ -772,17 +991,19 @@
 
 				// GWT has problems populating the site page tree when the side panel is hidden.
 				// Solution: When the side panel is opened for the FIRST TIME ONLY, the refresh button is triggered and the sites page tree is populated correctly.
-				if(indigoQF.status.sidePanelTabs.firstLoad){
-					$(".window-side-panel #JahiaGxtRefreshSidePanelButton").trigger("click");
-					indigoQF.status.sidePanelTabs.firstLoad = false;
+				if($("body").attr("data-sitesettings") == "false"){
+					if(indigoQF.status.sidePanelTabs.firstLoad){
+						$(".window-side-panel #JahiaGxtRefreshSidePanelButton").trigger("click");
+						indigoQF.status.sidePanelTabs.firstLoad = false;
+					}
+
+					// SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
+					indigoQF.status.sidePanelTabs.iframeBodyStyle = $(".window-iframe").contents().find("body").attr("style") || "";
+
+					// Remove pointer events from the iframes body, which means that once a user clicks on the iframe to exit the side panel, the content is not automatically selected.
+					$(".window-iframe").contents().find("body").attr("style", indigoQF.status.sidePanelTabs.iframeBodyStyle + " pointer-events: none !important");
 				}
 
-				// SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
-				indigoQF.status.sidePanelTabs.iframeBodyStyle = $(".window-iframe").contents().find("body").attr("style") || "";
-
-				// Remove pointer events from the iframes body, which means that once a user clicks on the iframe to exit the side panel, the content is not automatically selected.
-				$(".window-iframe").contents().find("body").attr("style", indigoQF.status.sidePanelTabs.iframeBodyStyle + " pointer-events: none !important");
-				console.log($(".window-iframe").contents().find("body").attr("style"));
 
 			},
 			mouseEnterSidePanelTab: function(){
@@ -926,7 +1147,6 @@
 
 					// Attach Mutation Observer to the BODY tag
 					target = document.body,
-
 					// Mutation Observer
 					observer = new MutationObserver(function(mutations){
 						var publicationStatus,
@@ -937,71 +1157,100 @@
 						// Loop through all mutations in BODY tag
 						mutations.forEach(function(mutation){
 
+							// check for onClose
 							if(mutation.removedNodes.length > 0){
-								if($(mutation.removedNodes[0]).attr("id") == "JahiaGxtContentPickerWindow"){
-									indigoQF.listeners.picker("close");
+								for(removedID in indigoQF.GWT.queues["close"]){
+									if(removedID[0] == "#"){
+										// Trying tp match an element ID
+										if($(mutation.removedNodes[0]).attr("id") == removedID.substring(1)){
+											indigoQF.GWT.trigger({
+												eventType: "close",
+												queueID: removedID,
+												nodes: mutation.removedNodes[0]
+											});
+										}
+									} else if(removedID[0] == "."){
+										// Pressumed to be a classname
+										if($(mutation.removedNodes[0]).hasClass(removedID.substring(1))){
+											indigoQF.GWT.trigger({
+												eventType: "close",
+												queueID: addID,
+												nodes: mutation.removedNodes[0]
+											});
 
-								} else if($(mutation.removedNodes[0]).attr("id") == "JahiaGxtEnginePanel"){
-									indigoQF.listeners.editEngine("close");
-								} else if($(mutation.removedNodes[0]).attr("id") == "JahiaGxtImagePopup"){
-									indigoQF.listeners.imagePreview("close");
+										}
+									}
 								}
 							}
 
+							// check for onOpen
 							if(mutation.addedNodes.length > 0){
-								if($(mutation.addedNodes[0]).attr("id") == "JahiaGxtContentPickerWindow"){
-									indigoQF.listeners.picker("open");
-								} else if($(mutation.addedNodes[0]).attr("id") == "JahiaGxtEnginePanel"){
-									indigoQF.listeners.editEngine("open");
-								} else if($(mutation.addedNodes[0]).attr("id") == "JahiaGxtImagePopup"){
-									indigoQF.listeners.imagePreview("open");
+								for(addID in indigoQF.GWT.queues["open"]){
+
+									if(addID[0] == "#"){
+										// Trying tp match an element ID
+										if($(mutation.addedNodes[0]).attr("id") == addID.substring(1)){
+											indigoQF.GWT.trigger({
+												eventType: "open",
+												queueID: addID,
+												nodes: mutation.addedNodes[0]
+											});
+										}
+									} else if(addID[0] == "."){
+										// Pressumed to be a classname
+										if($(mutation.addedNodes[0]).hasClass(addID.substring(1))){
+											indigoQF.GWT.trigger({
+												eventType: "open",
+												queueID: addID,
+												nodes: mutation.addedNodes[0]
+											});
+
+										}
+									}
+
+
 								}
 
-							}
+								if($(mutation.addedNodes[0]).hasClass("x-grid3-row")){
+									var firstBranch = $(mutation.addedNodes[0]);
 
-
-							if(mutation.attributeName == "class"){
-								indigoQF.listeners.checkMode(mutation.target);
-
-								if($("body").hasClass("x-dd-cursor")){
-									// x-dd-cursor class is what GWT uses to say that a drag and drop has started.
-
-									// Double check that a drag is actually taking place, sometimes GWT leaves the x-dd-cursor class on the body tag when the user stops a drag by clicking ESC key
-									var dragIcon = $("body").find(".x-dd-drag-proxy").length > 0;
-
-									if(dragIcon){
-
-										indigoQF.listeners.closeSidePanel();
+									for(treeID in indigoQF.GWT.queues["trees"]){
+										if(firstBranch.closest("#" + treeID).length > 0){
+											indigoQF.GWT.trigger({
+												eventType: "trees",
+												queueID: treeID,
+												nodes: mutation.addedNodes
+											});
+										}
 									}
 
 								}
 
-
 							}
 
-							if(mutation.attributeName == "data-sitesettings"){
+							// Check for onAttr
+							if(mutation.attributeName) {
+								for(selector in indigoQF.GWT.queues["attribute"]){
+									if(mutation.target == $(selector)[0]){
+										// Matched selector
 
-								if($("body").attr("data-sitesettings") == "true" && $("body").attr("data-edit-window-style") != "settings"){
-									indigoQF.listeners.clickSidePanelSettingsTab(true);
+										for(attribute in indigoQF.GWT.queues["attribute"][selector]){
+											if(attribute == mutation.attributeName){
+												indigoQF.GWT.trigger({
+													eventType: "attribute",
+													queueID: selector,
+													attribute: attribute,
+													value: mutation.target.attributes[attribute].value
+												});
+
+											}
+										}
+
+									}
 								}
 							}
 
-							// Check if Page has been changed
-							if(mutation.attributeName == "data-main-node-displayname"){
-								indigoQF.status.currentPage.displayname = $("body").attr("data-main-node-displayname");
 
-								// Start listening to menu again
-								indigoQF.listeners.displaynameChanged();
-
-							}
-
-							// Check if multiple selection has been initiated
-							if(mutation.attributeName == "data-selection-count"){
-								var count = parseInt($("body").attr("data-selection-count"));
-
-								indigoQF.listeners.countChanged(count);
-
-							}
 
 							/* START MESSY */
 							// Check for changes in document publication STATUS

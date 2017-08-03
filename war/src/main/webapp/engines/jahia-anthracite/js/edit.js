@@ -9,6 +9,12 @@
 
 		},
 		init: function(){
+			// $("body").attr("data-INDIGO-GWT-SIDE-PANEL", "preload");
+
+			// $("#JahiaGxtSidePanelTabs, #JahiaGxtPagesTab, .window-side-panel #JahiaGxtSidePanelTabs .x-tab-panel-body > .x-component, .window-side-panel #JahiaGxtSidePanelTabs .x-grid-panel, .x-grid3 .x-grid3-header").css("display", "block");
+
+			// indigoQF.listeners.openSidePanel();
+
 
 
 			// Copy Anthracite CSS to remove / add when dropping in and out of STUDIO mode
@@ -25,6 +31,14 @@
 				$(window).on("blur", indigoQF.listeners.windowBlur);
 
 				$("body")
+					.on("click", ".app-container", function(e){
+
+						var inSidePanel = $(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
+						if(inSidePanel.length == 0){
+							indigoQF.listeners.closeSidePanel();
+						}
+
+					})
 					.on("click", ".toolbar-item-filepreview", indigoQF.listeners.mouseClickFilePreviewButton)
 					.on("mouseenter", ".toolbar-item-filepreview", indigoQF.listeners.mouseOverFilePreviewButton)
 					.on("mouseleave", ".toolbar-item-filepreview", indigoQF.listeners.mouseOutFilePreviewButton)
@@ -103,7 +117,8 @@
 			},
 			sidePanelTabs: {
 				mouseOutTimer: null,
-				justBeenClosed: false
+				justBeenClosed: false,
+				firstLoad: true
 			},
 			panelMenu: {
 				style: "click",
@@ -150,8 +165,8 @@
 				// If the side panel is open, then close it
 
 				if($("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-					console.log("CLOSE ::: FROM C");
-					indigoQF.listeners.closeSidePanel()
+					indigoQF.listeners.closeSidePanel();
+
 
 				}
 
@@ -502,13 +517,7 @@
 								pageTitle = $("body").attr("data-singleselection-node-displayname");
 								multiselect = "on";
 
-								// QUICKFIX::: CLose Side Panel If Open ( user has selected an element )
-								if($("body").attr("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-									console.log("CLOSE ::: FROM D");
-									indigoQF.listeners.closeSidePanel();
 
-								}
-								// END QUICKFIX
 								break;
 
 							default:
@@ -645,8 +654,6 @@
 			},
 			openManagerMenu: function(){
 				// Close the side panel if it is open.
-				console.log("CLOSE ::: FROM E");
-				indigoQF.listeners.closeSidePanel()
 
 			},
 			closeManagerMenu: function(){
@@ -666,7 +673,6 @@
 						// SETTINGS MODE: Button acts as a button that closed the Settings Overlay Page
 
 						$("body").attr("data-edit-window-style", "default");
-						console.log("CLOSE ::: FROM F");
 						indigoQF.listeners.closeSidePanel()
 
 						// Load the last page displayed in the Edit Mode. Technically this should never be NULL. However, need to assign a value on first window load as it is currently only assigned when a user clicks a page in the Page Tree.
@@ -727,7 +733,6 @@
 
 				if(tabMenuActive && sidePanelOpen){
 					// CLOSE SIDE PANEL: Already open for current Tab Menu
-					console.log("CLOSE ::: FROM G");
 					indigoQF.listeners.closeSidePanel()
 				} else {
 					// OPEN SIDE PANEL.
@@ -739,8 +744,12 @@
 
 			},
 			closeSidePanel: function(){
-				console.log("CLOSING SEARCH PANEL");
 				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "");
+
+				// Revert iframes body style attribute to what it was originally
+				$(".window-iframe").contents().find("body").attr("style", indigoQF.status.sidePanelTabs.iframeBodyStyle);
+
+				console.log($(".window-iframe").contents().find("body").attr("style"));
 
 			},
 			addPageToHistory: function(){
@@ -760,6 +769,20 @@
 			},
 			openSidePanel: function(){
 				$("body").attr("data-INDIGO-GWT-SIDE-PANEL", "open");
+
+				// GWT has problems populating the site page tree when the side panel is hidden.
+				// Solution: When the side panel is opened for the FIRST TIME ONLY, the refresh button is triggered and the sites page tree is populated correctly.
+				if(indigoQF.status.sidePanelTabs.firstLoad){
+					$(".window-side-panel #JahiaGxtRefreshSidePanelButton").trigger("click");
+					indigoQF.status.sidePanelTabs.firstLoad = false;
+				}
+
+				// SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
+				indigoQF.status.sidePanelTabs.iframeBodyStyle = $(".window-iframe").contents().find("body").attr("style") || "";
+
+				// Remove pointer events from the iframes body, which means that once a user clicks on the iframe to exit the side panel, the content is not automatically selected.
+				$(".window-iframe").contents().find("body").attr("style", indigoQF.status.sidePanelTabs.iframeBodyStyle + " pointer-events: none !important");
+				console.log($(".window-iframe").contents().find("body").attr("style"));
 
 			},
 			mouseEnterSidePanelTab: function(){
@@ -791,7 +814,6 @@
 				} else {
 					// No Context menu found, so assume that the Side Panel has really been mouseout-ed - close it.
 
-					console.log("CLOSE ::: FROM A");
 					indigoQF.listeners.closeSidePanel()
 
 					// Set flag and timer to remove after 100ms.
@@ -916,7 +938,6 @@
 						mutations.forEach(function(mutation){
 
 							if(mutation.removedNodes.length > 0){
-
 								if($(mutation.removedNodes[0]).attr("id") == "JahiaGxtContentPickerWindow"){
 									indigoQF.listeners.picker("close");
 
@@ -949,7 +970,6 @@
 									var dragIcon = $("body").find(".x-dd-drag-proxy").length > 0;
 
 									if(dragIcon){
-										console.log("CLOSE ::: FROM B");
 
 										indigoQF.listeners.closeSidePanel();
 									}

@@ -293,7 +293,7 @@
 				switch(mode){
 					case "studiomode":
 						// Remove Anthracite CSS style sheet
-						$('link[rel=stylesheet][href="/engines/jahia-anthracite/edit_en.css"]').remove();
+						$('link[rel=stylesheet][href$="edit_en.css"]').remove();
 
 						// Register the fact that it has been removed
 						indigoQF.status.css.active = false;

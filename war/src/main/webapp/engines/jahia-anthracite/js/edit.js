@@ -1276,8 +1276,6 @@ Dex.dumpQueue();
 		Dex.init();
 
 		eventListeners.attach();
-
-		// eventHandlers.changedMode("x-viewport-"+$("#editmode").attr("config"));
 	}
 
 	$(document).ready(function(){

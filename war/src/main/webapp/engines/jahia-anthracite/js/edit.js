@@ -550,28 +550,32 @@ Dex.dumpQueue();
 
 		// User has changed modes
 		changedMode: function(mode){
-			switch(mode){
-				case "x-viewport-studiomode":
-					// Remove Anthracite CSS style sheet
-					$('link[rel=stylesheet][href$="edit_en.css"]').remove();
+			mode.split(" ").forEach(function(cl) {
+                if (cl.indexOf("x-viewport") == 0) {
+                    switch (cl) {
+                        case "x-viewport-studiomode":
+                            // Remove Anthracite CSS style sheet
+                            $('link[rel=stylesheet][href$="edit_en.css"]').remove();
 
-					// Register the fact that it has been removed
-					data.css.active = false;
-					break;
+                            // Register the fact that it has been removed
+                            data.css.active = false;
+                            break;
 
-				case "x-viewport-editmode":
-				case "x-viewport-contributemode":
-				case "x-viewport-adminmode":
-				case "x-viewport-dashboardmode":
-				default:
+                        case "x-viewport-editmode":
+                        case "x-viewport-contributemode":
+                        case "x-viewport-adminmode":
+                        case "x-viewport-dashboardmode":
+                        default:
 
-					if(!data.css.active){
-						// Anthracite CSS has been removed, so plug it back in
-						$("head").append(data.css.storedCSS);
-					}
+                            if (!data.css.active) {
+                                // Anthracite CSS has been removed, so plug it back in
+                                $("head").append(data.css.storedCSS);
+                            }
 
-					break;
-			}
+                            break;
+                    }
+                }
+            })
 
 		},
 
@@ -1272,6 +1276,8 @@ Dex.dumpQueue();
 		Dex.init();
 
 		eventListeners.attach();
+
+		// eventHandlers.changedMode("x-viewport-"+$("#editmode").attr("config"));
 	}
 
 	$(document).ready(function(){

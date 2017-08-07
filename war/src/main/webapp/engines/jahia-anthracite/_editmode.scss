@@ -294,6 +294,8 @@
 
                 body[data-selection-count="0"] & {
                     background: url(./images/tabs-publish-white@X2.png) no-repeat top -1px left 3px #545657;
+					background-size: 23px 23px;
+
                 }
 
                 body[data-PAGE-PUBLICATION-STATUS="modified"][data-selection-count="0"] & {

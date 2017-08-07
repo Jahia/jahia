@@ -64,7 +64,7 @@ public class HttpClientServiceTest {
 
         assertTrue(httpClientService.executeGet("http://www.dw.com/en/legal-notice/a-15718492").contains("Legal"));
 
-        assertTrue(httpClientService.executeGet("https://www.oracle.com/legal/privacy/index.html").contains("Privacy"));
+        assertTrue(httpClientService.executeGet("https://www.ibm.com/privacy/us/en/").contains("Privacy"));
     }
 
 }

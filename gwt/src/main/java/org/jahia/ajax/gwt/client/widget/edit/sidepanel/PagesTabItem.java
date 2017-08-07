@@ -46,15 +46,16 @@ package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.TreeGridDropTarget;
-import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -138,7 +139,8 @@ public class PagesTabItem extends SidePanelTabItem {
                 }
             }
         });
-        pageTree.setSelectionModel(new TreeGridClickSelectionModel());
+        final TreeGridClickSelectionModel selectionModel = new TreeGridClickSelectionModel();
+        pageTree.setSelectionModel(selectionModel);
         this.pageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 final GWTJahiaNode node = se.getSelectedItem();
@@ -151,8 +153,30 @@ public class PagesTabItem extends SidePanelTabItem {
             }
         });
         this.pageTree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-        
-        pageTree.setContextMenu(createContextMenu(config.getTreeContextMenu(), pageTree.getSelectionModel()));
+
+        Menu contextMenu = createContextMenu(config.getTreeContextMenu(), selectionModel);
+
+        contextMenu.addListener(Events.Show, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                Element row = pageTree.getView().getRow(selectionModel.getRightClickSelectionModel().getSelectedItem());
+                if (row != null) {
+                    row.addClassName("context-menu-open");
+                }
+            }
+        });
+        contextMenu.addListener(Events.Hide, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                Element row = pageTree.getView().getRow(selectionModel.getRightClickSelectionModel().getSelectedItem());
+                if (row != null) {
+                    row.removeClassName("context-menu-open");
+                }
+            }
+        });
+
+        pageTree.setContextMenu(contextMenu);
+
         selectMainNodeTreeLoadListener = new SelectMainNodeTreeLoadListener(pageTree);
         tab.add(pageTree);
     }

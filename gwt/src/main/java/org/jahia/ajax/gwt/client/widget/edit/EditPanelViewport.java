@@ -76,6 +76,7 @@ public class EditPanelViewport extends Viewport {
 
     public void setViewportStyleName(String name) {
         setStyleName("x-viewport-" + name);
+        addStyleName("x-jahia-root");
     }
 
 

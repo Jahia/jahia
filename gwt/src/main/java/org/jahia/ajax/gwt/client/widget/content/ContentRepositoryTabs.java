@@ -109,7 +109,9 @@ public class ContentRepositoryTabs extends LeftComponent {
         m_component.setBorders(false);
 
         browseTabITem = new TabItem(Messages.get("browse.label", "Browse"));
+        browseTabITem.setId("CRTbrowseTabItem");
         searchTabITem = new TabItem(Messages.get("label.search", "Search"));
+        searchTabITem.setId("CRTsearchTabItem");
 
         ChangeAccordionListener<ComponentEvent> accordionListener = new ChangeAccordionListener<ComponentEvent>();
         // init main panel and add accordions

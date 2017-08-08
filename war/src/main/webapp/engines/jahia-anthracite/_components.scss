@@ -1844,7 +1844,19 @@ form,
 
 .cke_combo {
 	// CKE Combo Container
+}
 
+.cke_panel {
+	background: $COLOUR--WHITE !important;
+	border: 6px solid #6b7074 !important;
+	border-radius: 0 !important;
+	margin-top: 8px !important;
+}
+
+.cke_combopanel {
+	border-width: 1px !important;
+	border-color: #dddcdc !important;
+	margin-top: 4px !important;
 }
 
 .cke_combo_label {

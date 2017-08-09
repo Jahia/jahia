@@ -53,14 +53,7 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.modulemanager.Constants;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -114,6 +107,17 @@ public class ModulesPackage {
             return;
         }
         Map<String, PackagedModule> copy = new LinkedHashMap<>(modules);
+
+        Map<String, String> exports = new HashMap<>();
+        for (PackagedModule m : modules.values()) {
+            String attr = m.getManifestAttributes().getValue("Export-Package");
+            if (attr != null) {
+                String[] split = attr.replaceAll("\"[^\"]*\"", "").split(",");
+                for (String s : split) {
+                    exports.put(StringUtils.substringBefore(s, ";"), m.getName());
+                }
+            }
+        }
         // we build a Directed Acyclic Graph of dependencies (only those, which are present in the package)
         DAG dag = new DAG();
         for (PackagedModule m : modules.values()) {
@@ -121,6 +125,16 @@ public class ModulesPackage {
             for (String dep : m.getDepends()) {
                 if (modules.containsKey(dep)) {
                     dag.addEdge(m.getName(), dep);
+                }
+            }
+            String attr = m.getManifestAttributes().getValue("Import-Package");
+            if (attr != null) {
+                String[] split = attr.replaceAll("\"[^\"]*\"", "").split(",");
+                for (String s : split) {
+                    String n = StringUtils.substringBefore(s, ";");
+                    if (exports.containsKey(n) && !exports.get(n).equals(m.getName()) && !dag.hasEdge(m.getName(), exports.get(n))) {
+                        dag.addEdge(m.getName(), exports.get(n));
+                    }
                 }
             }
         }
@@ -163,8 +177,8 @@ public class ModulesPackage {
                     Attributes moduleManifestAttributes = moduleJarFile.getManifest().getMainAttributes();
                     String bundleName = moduleManifestAttributes.getValue(Constants.ATTR_NAME_BUNDLE_SYMBOLIC_NAME);
                     String jahiaGroupId = moduleManifestAttributes.getValue(Constants.ATTR_NAME_GROUP_ID);
-                    if (bundleName == null || jahiaGroupId == null) {
-                        throw new IOException("Jar file "+jar.getName()+ " in package does not seems to be a DX bundle.");
+                    if (bundleName == null) {
+                        throw new IOException("Jar file "+jar.getName()+ " in package does not seems to be a valid bundle.");
                     }
                     modules.put(bundleName, new PackagedModule(bundleName, moduleManifestAttributes, moduleFile));
                 } finally {

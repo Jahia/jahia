@@ -46,35 +46,32 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.jahia.server</groupId>
-        <artifactId>jahia-root</artifactId>
+        <groupId>org.jahia.features</groupId>
+        <artifactId>jahia-features</artifactId>
         <version>7.2.1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jahia.features</groupId>
-    <artifactId>jahia-features</artifactId>
-    <name>Jahia OSGi Features</name>
-    <packaging>pom</packaging>
+    <artifactId>dx-jackson</artifactId>
+    <name>Jahia DX Jackson Karaf OSGi Feature</name>
+    <packaging>feature</packaging>
 
-    <modules>
-        <module>gemini-blueprint</module>
-        <module>core</module>
-        <module>jackson</module>
-        <module>jax-rs</module>
-        <module>standard</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.8.9</version>
+        </dependency>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.karaf.tooling</groupId>
-                <artifactId>karaf-maven-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <startLevel>30</startLevel>
-                    <includeTransitiveDependency>false</includeTransitiveDependency>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.8.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.8.9</version>
+        </dependency>
+    </dependencies>
 </project>

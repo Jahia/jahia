@@ -72,6 +72,13 @@
         </dependency>
         <dependency>
             <groupId>org.jahia.features</groupId>
+            <artifactId>dx-jackson</artifactId>
+            <version>7.2.1.1-SNAPSHOT</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.features</groupId>
             <artifactId>dx-core</artifactId>
             <version>7.2.1.1-SNAPSHOT</version>
             <classifier>features</classifier>

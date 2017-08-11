@@ -495,6 +495,18 @@
 
 		}
 	}
+	
+	
+	// Highlight item when menu is open (PAGES tab)
+	
+	.x-grid3 .x-grid3-row.context-menu-open {
+		background: $COLOUR--CREAM_CLOUDS !important;
+	}
+
+	.x-grid3 .x-grid3-row.x-grid3-row-selected.context-menu-open {
+		background: rgba($COLOUR--GREY_CLOUDS, 0.7) !important;
+	}
+
 
 }
 

@@ -941,11 +941,17 @@ Dex.dumpQueue();
                 eV;
 
             if(acceptClick){
-                eV = new jQuery.Event("contextmenu");
-                eV.clientX = e.pageX;
-                eV.clientY = e.pageY;
-
-                $(e.target).trigger(eV);
+                $(e.target).trigger({
+                    type: 'mousedown',
+                    button: 2,
+                    which:3,
+                    clientX: e.pageX,
+                    clientY: e.pageY
+                }).trigger({
+                    type:"contextmenu",
+                    clientX: e.pageX,
+                    clientY: e.pageY
+                });
             }
 
         },

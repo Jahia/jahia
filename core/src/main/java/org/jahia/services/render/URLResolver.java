@@ -99,9 +99,9 @@ import static org.jahia.api.Constants.LIVE_WORKSPACE;
 public class URLResolver {
 
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-    
+
     private static final String DEFAULT_WORKSPACE = LIVE_WORKSPACE;
-    
+
     private static final Pattern MACRO_URL_PATTERN = Pattern.compile("(.?)*.html##[a-zA-Z]*##$");
 
     private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";
@@ -152,7 +152,7 @@ public class URLResolver {
      *
      * @param pathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo())
      * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName())
-     * @param request  the current HTTP servlet request object 
+     * @param request  the current HTTP servlet request object
      */
     protected URLResolver(String pathInfo, String serverName, String workspace, HttpServletRequest request, Ehcache nodePathCache, Ehcache siteInfoCache) {
         super();
@@ -174,7 +174,7 @@ public class URLResolver {
                     StringUtils.indexOf(getUrlPathInfo(), "/", 1));
             path = StringUtils.substring(getUrlPathInfo(), servletPart.length() + 2,
                     getUrlPathInfo().length());
-        } 
+        }
         if (!resolveUrlMapping(serverName, request)) {
             init();
             if (!Url.isLocalhost(serverName) && isMappable()
@@ -237,14 +237,14 @@ public class URLResolver {
             init();
         }
     }
- 
+
     private void init() {
         workspace = verifyWorkspace(StringUtils.substringBefore(path, "/"));
         path = StringUtils.substringAfter(path, "/");
         locale = verifyLanguage(StringUtils.substringBefore(path, "/"));
         path = "/" + (locale != null ? StringUtils.substringAfter(path, "/") : path);
 
-        // TODO: this is perhaps a temporary limitation as URL points to special templates, when 
+        // TODO: this is perhaps a temporary limitation as URL points to special templates, when
         // there are more than one dots - and the path needs to end with .html
         // and in some cases macro extension are added like the ##requestParameters## for languageswitcher
         String lastPart = StringUtils.substringAfterLast(path, "/");
@@ -255,7 +255,7 @@ public class URLResolver {
             mappable = true;
         }
     }
-    
+
     private Date getVersionDate(HttpServletRequest req) {
         // we assume here that the date has been passed as milliseconds.
         String msString = req.getParameter("v");
@@ -273,11 +273,11 @@ public class URLResolver {
             return null;
         }
     }
-    
+
     private String getVersionLabel(HttpServletRequest req) {
         return req.getParameter("l");
     }
-    
+
     private boolean isServletAllowingUrlMapping() {
         boolean isServletAllowingUrlMapping = false;
         for (String servletAllowingUrlMapping : servletsAllowingUrlMapping) {
@@ -677,19 +677,28 @@ public class URLResolver {
 
 
     private String resolveSiteKeyFromPath(String path) {
+
+        // .../sites/[siteKey]/... case.
         String siteKey = StringUtils.substringBetween(path, "/sites/", "/");
-        final String siteString = StringUtils.substringAfter(path, "/sites/");
-        if (StringUtils.isEmpty(siteKey) && StringUtils.isNotEmpty(siteString)) {
-            for (String key = siteString; ; key = StringUtils.substringBeforeLast(key, ".")) {
-                if (sitesService.getSitesNames().contains(key)) {
-                    return key;
-                }
-                if (!StringUtils.contains(key, ".")) {
-                    break;
-                }
+        if (StringUtils.isNotEmpty(siteKey)) {
+            return siteKey;
+        }
+
+        // .../sites/[siteKey].[templatename].[templatetype] or .../sites/[siteKey].[templatetype] case.
+        // Note, siteKey itself may contain a point.
+        String pathEnding = StringUtils.substringAfter(path, "/sites/");
+        if (StringUtils.isEmpty(pathEnding)) {
+            return null;
+        }
+        List<String> siteNames = sitesService.getSitesNames();
+        for (String siteKeyCandidate = pathEnding; true; siteKeyCandidate = StringUtils.substringBeforeLast(siteKeyCandidate, ".")) {
+            if (siteNames.contains(siteKeyCandidate)) {
+                return siteKeyCandidate;
+            }
+            if (!StringUtils.contains(siteKeyCandidate, ".")) {
+                return null;
             }
         }
-        return siteKey;
     }
 
     /**
@@ -762,7 +771,7 @@ public class URLResolver {
 
     /**
      * Set the URL location for a redirection suggestion.
-     * @param redirectUrl suggested vanity URL to redirect to 
+     * @param redirectUrl suggested vanity URL to redirect to
      */
     public void setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
@@ -775,19 +784,19 @@ public class URLResolver {
     public void setVanityUrl(String vanityUrl) {
         this.vanityUrl = vanityUrl;
     }
-    
+
     protected Locale verifyLanguage(String lang) {
         if (StringUtils.isEmpty(lang)) {
             return DEFAULT_LOCALE;
         }
-        
+
         if (!LanguageCodeConverters.LANGUAGE_PATTERN.matcher(lang).matches()) {
             return null;
         }
-        
+
         return LanguageCodeConverters.languageCodeToLocale(lang);
     }
-    
+
     protected String verifyWorkspace(String workspace) {
         if (StringUtils.isEmpty(workspace)) {
             if (workspace == null) {
@@ -805,7 +814,7 @@ public class URLResolver {
                 path = this.workspace + "/" + path;
             }
         }
-        
+
         return workspace;
     }
 

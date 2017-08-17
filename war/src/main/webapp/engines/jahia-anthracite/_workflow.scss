@@ -74,16 +74,6 @@
 			height: 38px !important;
 			
 			.x-grid3-td-displayName table.x-btn-noicon {
-				//background: #a3a3a3 !important;
-				position: absolute;
-				top: 3px;
-				height: 32px;
-				padding: 2px 4px;
-				padding-top: 5px;
-				pointer-events: all;
-			}
-			
-			.x-grid3-td-displayName table.x-btn-noicon {
 				position: absolute;
 				top: 3px;
 				height: 28px;
@@ -91,14 +81,15 @@
 				padding-top: 4px;
 				pointer-events: all;
 				background: #a3a3a3;
-			}
-			
-			.x-grid3-td-displayName table.x-btn-noicon button {
-				font-family: $FONT--FAMILY---NUNITO;
-				font-size: 13px;
-				color: $COLOUR--WHITE_CLOUDS !important;
-				font-weight: $FONT--WEIGHT---EXTRALIGHT;
-				margin-top: -1px;
+				
+				button {
+					font-family: $FONT--FAMILY---NUNITO;
+					font-size: 13px;
+					color: $COLOUR--WHITE_CLOUDS !important;
+					font-weight: $FONT--WEIGHT---EXTRALIGHT;
+					margin-top: -1px;
+				}
+				
 			}
 			
 		}

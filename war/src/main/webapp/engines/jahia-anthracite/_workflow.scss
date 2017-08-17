@@ -83,6 +83,24 @@
 				pointer-events: all;
 			}
 			
+			.x-grid3-td-displayName table.x-btn-noicon {
+				position: absolute;
+				top: 3px;
+				height: 28px;
+				padding: 2px 6px;
+				padding-top: 4px;
+				pointer-events: all;
+				background: #a3a3a3;
+			}
+			
+			.x-grid3-td-displayName table.x-btn-noicon button {
+				font-family: $FONT--FAMILY---NUNITO;
+				font-size: 13px;
+				color: $COLOUR--WHITE_CLOUDS !important;
+				font-weight: $FONT--WEIGHT---EXTRALIGHT;
+				margin-top: -1px;
+			}
+			
 		}
 		
 		.x-grid3-row-table {
@@ -96,7 +114,7 @@
 				background: #F44336;
 				margin-top: 4px;
 				height: 24px;
-				padding: 0;
+				padding: 0 4px;
 				color: rgb(239, 239, 239);
 			
 				img {
@@ -129,6 +147,10 @@
 
 	.x-grid3-td-locale img {
 		margin-top: 8px;
+	}
+	
+	.x-grid3-td-nodeWrapper button {
+		font-size: 13px !important;
 	}
 
 }

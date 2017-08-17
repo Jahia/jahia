@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -76,6 +76,7 @@ import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.PomUtils;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -1002,54 +1003,56 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     private void clearModuleTemplateNodes() {
-        logger.info("Start checking module template nodes");
-        long start = System.currentTimeMillis();
-        int count = 0;
+        if (Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("modules.purgeAtStartup", "true"))) {
+            logger.info("Start checking module template nodes");
+            long start = System.currentTimeMillis();
+            int count = 0;
 
-        try {
-            count = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
-                @Override
-                public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    int innerCount = 0;
+            try {
+                count = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Integer>() {
+                    @Override
+                    public Integer doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        int innerCount = 0;
 
-                    QueryResult qr = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:moduleVersion] as version where isdescendantnode(version,'/modules/')", Query.JCR_SQL2).execute();
+                        QueryResult qr = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:moduleVersion] as version where isdescendantnode(version,'/modules/')", Query.JCR_SQL2).execute();
 
-                    for (NodeIterator moduleVersions = qr.getNodes(); moduleVersions.hasNext();){
-                        JCRNodeWrapper moduleVersionNode = (JCRNodeWrapper) moduleVersions.next();
+                        for (NodeIterator moduleVersions = qr.getNodes(); moduleVersions.hasNext(); ) {
+                            JCRNodeWrapper moduleVersionNode = (JCRNodeWrapper) moduleVersions.next();
 
-                        // this module have templates node, check if it's still in the list of deployed module
-                        if (moduleVersionNode.hasNode("templates")) {
+                            // this module have templates node, check if it's still in the list of deployed module
+                            if (moduleVersionNode.hasNode("templates")) {
 
-                            String packageId = moduleVersionNode.getParent().getName();
-                            ModuleVersion moduleVersion = new ModuleVersion(moduleVersionNode.getName());
+                                String packageId = moduleVersionNode.getParent().getName();
+                                ModuleVersion moduleVersion = new ModuleVersion(moduleVersionNode.getName());
 
-                            SortedMap<ModuleVersion, JahiaTemplatesPackage> availableVersions = templatePackageRegistry.getAllModuleVersions().get(packageId);
+                                SortedMap<ModuleVersion, JahiaTemplatesPackage> availableVersions = templatePackageRegistry.getAllModuleVersions().get(packageId);
 
-                            if (availableVersions == null || !availableVersions.containsKey(moduleVersion)) {
-                                // no module found for this version, clean module nodes
-                                try {
-                                    templatePackageDeployer.clearModuleNodes(packageId, moduleVersion);
-                                    logger.info("Template nodes have been purged for module {} v{}", packageId, moduleVersion);
-                                    innerCount++;
-                                } catch (RepositoryException e) {
-                                    logger.error("Error while purging module template nodes for module " + packageId + " v" + moduleVersion, e);
+                                if (availableVersions == null || !availableVersions.containsKey(moduleVersion)) {
+                                    // no module found for this version, clean module nodes
+                                    try {
+                                        templatePackageDeployer.clearModuleNodes(packageId, moduleVersion);
+                                        logger.info("Template nodes have been purged for module {} v{}", packageId, moduleVersion);
+                                        innerCount++;
+                                    } catch (RepositoryException e) {
+                                        logger.error("Error while purging module template nodes for module " + packageId + " v" + moduleVersion, e);
+                                    }
                                 }
                             }
                         }
+
+                        return innerCount;
                     }
+                });
+            } catch (RepositoryException e) {
+                logger.error("Error while cleaning module template nodes", e);
+            }
 
-                    return innerCount;
-                }
-            });
-        } catch (RepositoryException e) {
-            logger.error("Error while cleaning module template nodes", e);
-        }
-
-        String timeTaken = DateUtils.formatDurationWords(System.currentTimeMillis() - start);
-        if (count > 0) {
-            logger.info("Module template nodes cleanup finished for {} module(s) in {}", count, timeTaken);
-        } else {
-            logger.info("Module template nodes check finished in {}. No cleanup needed.", timeTaken);
+            String timeTaken = DateUtils.formatDurationWords(System.currentTimeMillis() - start);
+            if (count > 0) {
+                logger.info("Module template nodes cleanup finished for {} module(s) in {}", count, timeTaken);
+            } else {
+                logger.info("Module template nodes check finished in {}. No cleanup needed.", timeTaken);
+            }
         }
     }
 

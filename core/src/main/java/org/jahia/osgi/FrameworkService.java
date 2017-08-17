@@ -80,6 +80,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.startlevel.FrameworkStartLevel;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -239,6 +240,7 @@ public class FrameworkService implements FrameworkListener {
     private Main main;
     private final ServletContext servletContext;
     private long startTime;
+    private int defaultStartLevel = 100;
 
     private BundleStarter bundleStarter;
     
@@ -270,7 +272,7 @@ public class FrameworkService implements FrameworkListener {
 
     @Override
     public void frameworkEvent(FrameworkEvent event) {
-        if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED) {
+        if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED && (main.getFramework().adapt(FrameworkStartLevel.class)).getStartLevel() >= defaultStartLevel) {
             final FrameworkService instance = getInstance();
             synchronized (instance) {
                 instance.frameworkStartLevelChanged = true;
@@ -337,6 +339,10 @@ public class FrameworkService implements FrameworkListener {
         } catch (Exception e) {
             logger.error("Unable to load properties from file " + file + ". Cause: " + e.getMessage(), e);
             karafConfigProperties = new org.apache.felix.utils.properties.Properties();
+        }
+
+        if (karafConfigProperties.containsKey("org.osgi.framework.startlevel.beginning")) {
+            defaultStartLevel = Integer.parseInt(karafConfigProperties.get("org.osgi.framework.startlevel.beginning"));
         }
 
         StringBuilder extraSystemPackages = new StringBuilder(karafConfigProperties.getProperty("org.osgi.framework.system.packages.extra"));

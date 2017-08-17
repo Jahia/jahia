@@ -12,6 +12,10 @@
 		line-height: 64px;
 		padding-left: 16px !important;
 		margin-top: 5px;
+		
+		.x-panel-toolbar > table {
+			pointer-events: all;
+		}
 
 		.x-window-header-text {
 			text-shadow: none;
@@ -33,9 +37,10 @@
 			margin-right: 16px;
 
 			table tbody tr td .x-tool-close {
-				background: #818588;							// change to close icon
 				height: 22px;
 				width: 22px;
+				background-image: url(./images/icon-close-large.png);
+				background-position: initial !important;
 			}
 		
 		}
@@ -67,6 +72,17 @@
 			background: rgb(239, 239, 239) !important;
 			color: rgb(99, 99, 99) !important;
 			height: 38px !important;
+			
+			.x-grid3-td-displayName table.x-btn-noicon {
+				//background: #a3a3a3 !important;
+				position: absolute;
+				top: 3px;
+				height: 32px;
+				padding: 2px 4px;
+				padding-top: 5px;
+				pointer-events: all;
+			}
+			
 		}
 		
 		.x-grid3-row-table {

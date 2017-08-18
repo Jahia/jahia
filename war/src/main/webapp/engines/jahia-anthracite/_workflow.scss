@@ -145,3 +145,50 @@
 	}
 
 }
+
+
+
+/***********************************************/
+/* WORKFLOW PREVIEW MODAL ***********************/
+/***********************************************/
+
+
+.content-preview {
+    background: $COLOUR--RAIN_CLOUDS;
+    padding: 8px;
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    box-sizing: border-box;
+
+	.x-window-header {
+		height: 33px;
+
+		.x-panel-toolbar {
+			pointer-events: all;
+
+			.x-tool-close {
+				height: 22px;
+				width: 22px;
+				background-image: url(./images/icon-close-large.png);
+				background-position: initial;
+				margin-top: 4px;
+				margin-right: 4px;
+			}
+
+			.x-tool-maximize {
+				display: none;
+			}
+		
+		}
+	
+	}
+	
+	.x-window-body {
+		position: fixed;
+		width: calc(100% - 16px ) !important;
+		height: calc(100% - 54px ) !important;
+	}
+
+}

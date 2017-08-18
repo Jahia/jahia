@@ -172,6 +172,7 @@ public class ContentActions {
             if (url != null) {
                 HTML link = new HTML(Messages.get("downloadMessage.label") + "<br /><br /><a href=\"" + url + "\" target=\"_new\">" + SafeHtmlUtils.htmlEscape(selection.getName()) + "</a>");
                 final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
+                dl.addStyleName("download-file");
                 dl.setModal(true);
                 dl.setHeadingHtml(Messages.get("label.download"));
                 dl.setLayout(new FlowLayout());

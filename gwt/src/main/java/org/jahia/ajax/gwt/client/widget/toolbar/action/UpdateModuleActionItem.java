@@ -188,6 +188,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
     
     private void showUpdateResult(String output, boolean isError) {
         final Window wnd = new Window();
+        wnd.addStyleName("update-results-modal");
         wnd.setWidth(450);
         wnd.setHeight(250);
         wnd.setModal(true);

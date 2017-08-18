@@ -122,6 +122,7 @@ public class NewViewActionItem extends BaseActionItem  {
                         public void onSuccess(List<GWTJahiaNodeType> result) {
                             linker.loaded();
                             final com.extjs.gxt.ui.client.widget.Window popup = new com.extjs.gxt.ui.client.widget.Window();
+                            popup.addStyleName("new-view-modal");
                             popup.setHeadingHtml(Messages.get("label.addView", "Add view"));
                             popup.setHeight(400);
                             popup.setWidth(350);

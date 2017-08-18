@@ -274,6 +274,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                         "default", locale, false, new BaseAsyncCallback<String>() {
                                             public void onSuccess(String url) {
                                                 Window window = new Window();
+                                                window.addStyleName("content-preview");
                                                 window.setMaximizable(true);
                                                 window.setSize(800, 600);
                                                 window.setUrl(url);
@@ -296,6 +297,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                         "default", locale, true, new BaseAsyncCallback<String>() {
                                             public void onSuccess(String url) {
                                                 Window window = new Window();
+                                                window.addStyleName("content-incontext-preview");
                                                 window.setMaximizable(true);
                                                 window.setSize(1000, 750);
                                                 window.setUrl(url);

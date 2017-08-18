@@ -69,6 +69,7 @@ public class PortletDefinitionField extends TriggerField<String> {
             return;
         }
         final Window w = new Window();
+        w.addStyleName("portlet-definition-window");
         w.setLayout(new FitLayout());
         final PortletDefinitionCard card = new PortletDefinitionCard();
         w.setModal(true);

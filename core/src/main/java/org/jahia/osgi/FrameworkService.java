@@ -119,11 +119,11 @@ public class FrameworkService implements FrameworkListener {
         public void run() {
             final FrameworkService instance = getInstance();
             synchronized (instance) {
-                if (instance.frameworkStartLevelChanged) {
+                if (instance.frameworkStartLevelReached) {
                     // we are done here: cancel the task
                     cancel();
                 } else if (BundleLifecycleUtils.getFrameworkStartLevel() >= frameworkBeginningStartLevel) {
-                    instance.frameworkStartLevelChanged = true;
+                    instance.frameworkStartLevelReached = true;
                     logger.info("Framework start level reached " + frameworkBeginningStartLevel);
                     notifyStarted(instance);
                     // we are done here: cancel the task
@@ -192,7 +192,7 @@ public class FrameworkService implements FrameworkListener {
      * Notify this service that the container has actually started.
      */
     private static void notifyStarted(FrameworkService instance) {
-        if (instance.frameworkStartLevelChanged && instance.fileInstallStarted) {
+        if (instance.frameworkStartLevelReached && instance.fileInstallStarted) {
             // send synchronous event about startup
             sendEvent(EVENT_TOPIC_LIFECYCLE, Collections.singletonMap("type", EVENT_TYPE_OSGI_STARTED), false);
 
@@ -238,7 +238,7 @@ public class FrameworkService implements FrameworkListener {
     }
 
     private boolean fileInstallStarted;
-    private boolean frameworkStartLevelChanged;
+    private boolean frameworkStartLevelReached;
     private Main main;
     private final ServletContext servletContext;
     private long startTime;
@@ -277,8 +277,8 @@ public class FrameworkService implements FrameworkListener {
         if (event.getType() == FrameworkEvent.STARTLEVEL_CHANGED && BundleLifecycleUtils.getFrameworkStartLevel() >= frameworkBeginningStartLevel) {
             final FrameworkService instance = getInstance();
             synchronized (instance) {
-                if (!instance.frameworkStartLevelChanged) {
-                    instance.frameworkStartLevelChanged = true;
+                if (!instance.frameworkStartLevelReached) {
+                    instance.frameworkStartLevelReached = true;
                     logger.info("Framework start level reached " + frameworkBeginningStartLevel);
                     notifyStarted(instance);
                 }
@@ -292,7 +292,7 @@ public class FrameworkService implements FrameworkListener {
      * @return <code>true</code> if the OSGi container is completely started; <code>false</code> otherwise
      */
     public boolean isStarted() {
-        return frameworkStartLevelChanged && fileInstallStarted;
+        return frameworkStartLevelReached && fileInstallStarted;
     }
 
     private void restoreSystemProperties(Map<String, String> systemPropertiesToRestore) {

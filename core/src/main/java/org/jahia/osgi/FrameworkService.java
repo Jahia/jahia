@@ -109,12 +109,6 @@ public class FrameworkService implements FrameworkListener {
      */
     private class StartLevelChecker extends TimerTask {
 
-        private int frameworkBeginningStartLevel;
-
-        public StartLevelChecker(int frameworkBeginningStartLevel) {
-            this.frameworkBeginningStartLevel = frameworkBeginningStartLevel;
-        }
-
         @Override
         public void run() {
             synchronized (FrameworkService.this) {
@@ -310,7 +304,7 @@ public class FrameworkService implements FrameworkListener {
         frameworkBeginningStartLevel = Integer.parseInt(System.getProperty(Constants.FRAMEWORK_BEGINNING_STARTLEVEL));
         main.getFramework().getBundleContext().addFrameworkListener(this);
 
-        startLevelTimer.schedule(new StartLevelChecker(frameworkBeginningStartLevel), 1000L, 1000L);
+        startLevelTimer.schedule(new StartLevelChecker(), 1000L, 1000L);
     }
 
     private void setupSystemProperties() {

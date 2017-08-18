@@ -101,39 +101,39 @@ public class ModulesPackage {
 
         return dependencies;
     }
-    
+
     private static void sortByDependencies(Map<String, PackagedModule> modules) throws CycleDetectedException {
         if (modules.size() <= 1) {
             return;
         }
         Map<String, PackagedModule> copy = new LinkedHashMap<>(modules);
 
+        // we build a Directed Acyclic Graph of dependencies (only those, which are present in the package)
+        DAG dag = new DAG();
         Map<String, String> exports = new HashMap<>();
-        for (PackagedModule m : modules.values()) {
-            String attr = m.getManifestAttributes().getValue("Export-Package");
-            if (attr != null) {
-                String[] split = attr.replaceAll("\"[^\"]*\"", "").split(",");
-                for (String s : split) {
-                    exports.put(StringUtils.substringBefore(s, ";"), m.getName());
+        for (PackagedModule module : modules.values()) {
+            String exportPackagesString = module.getManifestAttributes().getValue(org.osgi.framework.Constants.EXPORT_PACKAGE);
+            if (exportPackagesString != null) {
+                String[] exportPackages = exportPackagesString.replaceAll("\"[^\"]*\"", "").split(",");
+                for (String exportPackage : exportPackages) {
+                    exports.put(StringUtils.substringBefore(exportPackage, ";"), module.getName());
                 }
             }
         }
-        // we build a Directed Acyclic Graph of dependencies (only those, which are present in the package)
-        DAG dag = new DAG();
-        for (PackagedModule m : modules.values()) {
-            dag.addVertex(m.getName());
-            for (String dep : m.getDepends()) {
-                if (modules.containsKey(dep)) {
-                    dag.addEdge(m.getName(), dep);
+        for (PackagedModule module : modules.values()) {
+            dag.addVertex(module.getName());
+            for (String dependency : module.getDepends()) {
+                if (modules.containsKey(dependency)) {
+                    dag.addEdge(module.getName(), dependency);
                 }
             }
-            String attr = m.getManifestAttributes().getValue("Import-Package");
-            if (attr != null) {
-                String[] split = attr.replaceAll("\"[^\"]*\"", "").split(",");
-                for (String s : split) {
-                    String n = StringUtils.substringBefore(s, ";");
-                    if (exports.containsKey(n) && !exports.get(n).equals(m.getName()) && !dag.hasEdge(m.getName(), exports.get(n))) {
-                        dag.addEdge(m.getName(), exports.get(n));
+            String importPackagesString = module.getManifestAttributes().getValue(org.osgi.framework.Constants.IMPORT_PACKAGE);
+            if (importPackagesString != null) {
+                String[] importPackages = importPackagesString.replaceAll("\"[^\"]*\"", "").split(",");
+                for (String importPackage : importPackages) {
+                    String importPackageName = StringUtils.substringBefore(importPackage, ";");
+                    if (exports.containsKey(importPackageName) && !exports.get(importPackageName).equals(module.getName()) && !dag.hasEdge(module.getName(), exports.get(importPackageName))) {
+                        dag.addEdge(module.getName(), exports.get(importPackageName));
                     }
                 }
             }
@@ -144,8 +144,8 @@ public class ModulesPackage {
         List<String> vertexes = TopologicalSorter.sort(dag);
 
         modules.clear();
-        for (String v : vertexes) {
-            modules.put(v, copy.get(v));
+        for (String vertex : vertexes) {
+            modules.put(vertex, copy.get(vertex));
         }
     }
 
@@ -176,9 +176,8 @@ public class ModulesPackage {
                     moduleJarFile = new JarFile(moduleFile);
                     Attributes moduleManifestAttributes = moduleJarFile.getManifest().getMainAttributes();
                     String bundleName = moduleManifestAttributes.getValue(Constants.ATTR_NAME_BUNDLE_SYMBOLIC_NAME);
-                    String jahiaGroupId = moduleManifestAttributes.getValue(Constants.ATTR_NAME_GROUP_ID);
                     if (bundleName == null) {
-                        throw new IOException("Jar file "+jar.getName()+ " in package does not seems to be a valid bundle.");
+                        throw new IOException("Jar file " + jar.getName() + " in package does not seem to be a valid bundle.");
                     }
                     modules.put(bundleName, new PackagedModule(bundleName, moduleManifestAttributes, moduleFile));
                 } finally {
@@ -189,7 +188,7 @@ public class ModulesPackage {
                 }
             }
         }
-        
+
         // we finally sort modules based on dependencies
         try {
             sortByDependencies(modules);

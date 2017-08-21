@@ -1702,10 +1702,6 @@ form,
 				display: none;
 			}
 
-			&.x-grid3-td-displayName {
-				width: 100%!important;
-			}
-
 			.x-grid3-cell-inner {
 				// Yet another container ...
 				height:100%!important;
@@ -1741,6 +1737,10 @@ form,
 			}
 		}
 	}
+}
+
+.x-panel .x-grid3 .x-grid3-row-table .x-grid3-cell.x-grid3-td-displayName {    // make sure selector works everywhere it needs to.
+	width: 100% !important;
 }
 
 ///////////// RICH TEXT MENU

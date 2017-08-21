@@ -53,7 +53,6 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.urlrewrite.ServerNameToSiteMapper;
-import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.Url;
@@ -94,11 +93,11 @@ public class VanityUrlMapper {
         String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), "");
         String fullUrl = ctx + Render.getRenderServletPath() + outboundUrl;
         hsRequest.setAttribute(VANITY_KEY, fullUrl);
-        
+
         if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName())) {
             String serverName = null;
             String siteKey = null;
-            String contextToCheck = outboundContext;            
+            String contextToCheck = outboundContext;
             int schemaDelimiterIndex = outboundContext.indexOf("://");
             if (schemaDelimiterIndex != -1) {
                 try {
@@ -123,36 +122,42 @@ public class VanityUrlMapper {
                 siteKey = lookupSiteKeyByServerName(host);
             }
             if (StringUtils.equals(ctx, contextToCheck)) {
-                String url = "/render" + outboundUrl;
+                String path = "/render";
+                int queryIndex = outboundUrl.indexOf('?');
+                if (queryIndex < 0) {
+                    path += outboundUrl;
+                } else {
+                    path += outboundUrl.substring(0, queryIndex);
+                }
                 try {
-                    url = URLDecoder.decode(url, "UTF-8");
+                    path = URLDecoder.decode(path, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     // shouldn't happen
                     throw new RuntimeException(e);
                 }
-                URLResolver urlResolver = urlResolverFactory.createURLResolver(url, hsRequest.getServerName(), hsRequest);
+                URLResolver urlResolver = urlResolverFactory.createURLResolver(path, hsRequest.getServerName(), hsRequest);
                 try {
                     JCRNodeWrapper node = urlResolver.getNode();
                     if (urlResolver.isMapped()) {
                         RenderContext context = (RenderContext) hsRequest.getAttribute("renderContext");
                         if (siteKey == null) {
                             siteKey = context != null ? context.getSite().getSiteKey() : node.getResolveSite().getSiteKey();
-                        }                        
+                        }
                         VanityUrl vanityUrl = vanityUrlService
                                 .getVanityUrlForWorkspaceAndLocale(
                                         node,
                                         urlResolver.getWorkspace(),
                                         urlResolver.getLocale(), siteKey);
                         if (vanityUrl != null && vanityUrl.isActive()) {
-                        	//for macros some parameters added (like ##requestParameters## for languageswitcher)
-                        	String macroExtension = "";
-                        	if (fullUrl.matches("(.?)*##[a-zA-Z]*##$")) {
-                        		macroExtension = "##" + StringUtils.substringBetween(fullUrl, "##") + "##";
-                        	}
+                            //for macros some parameters added (like ##requestParameters## for languageswitcher)
+                            String macroExtension = "";
+                            if (fullUrl.matches("(.?)*##[a-zA-Z]*##$")) {
+                                macroExtension = "##" + StringUtils.substringBetween(fullUrl, "##") + "##";
+                            }
                             hsRequest.setAttribute(VANITY_KEY, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl() + macroExtension);
                             if (serverName != null) {
                                 hsRequest.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK, serverName);
-                            }                            
+                            }
                         }
                     }
                 } catch (RepositoryException e) {
@@ -164,7 +169,7 @@ public class VanityUrlMapper {
             }
         }
     }
-    
+
     private static String lookupSiteKeyByServerName(String host) {
         JahiaSite site = null;
         if (SpringContextSingleton.getInstance().isInitialized()) {
@@ -176,7 +181,7 @@ public class VanityUrlMapper {
         }
         return site != null ? site.getSiteKey() : "";
     }
-    
+
 }
 
 

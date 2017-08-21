@@ -149,11 +149,12 @@
 
 
 /***********************************************/
-/* WORKFLOW PREVIEW MODAL ***********************/
+/* PREVIEW & IN-CONTEXT MODAL *********************/
 /***********************************************/
 
 
-.content-preview {
+.content-preview,
+.content-incontext-preview {
     background: $COLOUR--RAIN_CLOUDS;
     padding: 8px;
     width: 100% !important;

@@ -1745,6 +1745,91 @@ form,
 
 ///////////// RICH TEXT MENU
 
+
+// CKEDITOR errors
+
+.wcag-panel {
+
+	.x-grid3 {
+		background: #6b7074;
+		
+		.x-grid3-header {
+			display: table-cell;
+			background: #848a8e;
+			border-left-color: #848a8e;
+			border-right-color: #848a8e;
+			color: $COLOUR--WHITE_CLOUDS;
+		}
+
+	}
+	
+	.x-panel-body {
+		overflow: hidden !important;
+	}
+
+}
+
+.wcag-warning-grid {
+
+	.x-grid3 {
+	
+		.x-grid3-viewport {
+			height: auto !important;
+		}
+		
+		.x-grid3-row {
+			background: #6b7074 !important;
+			margin-top: 5px;
+			
+			td.x-grid3-cell {
+				border-right-color: #6b7074 !important;
+				line-height: 19px;
+				color: #dddcdc;
+				
+				.x-grid3-col-message {
+					padding-top: 5px;
+				}
+				
+				.x-grid3-col-example a {
+					color: $COLOUR--WHITE_CLOUDS;
+					text-decoration: none;
+					background: $COLOUR--RAIN_CLOUDS;
+					padding: 6px;
+					margin-left: 6px;
+				}
+
+			}
+			
+			.x-grid3-td-numberer {
+				background: #6b7074;
+			}
+
+		}
+		
+		.x-grid3-cell-inner.x-grid3-col-numberer {
+			color: #fff;
+			text-align: center;
+			padding: 3px 0 !important;
+			border-radius: 42px;
+			font-weight: 600;
+		}
+		
+		.x-grid3-col-type img {
+			background: none !important;
+			//background-color: red !important;
+			background-image: url(./images/icons/ic_warning@2x.png) !important;
+		}
+		
+		td.x-grid3-hd-over .x-grid3-hd-inner,
+		td.x-grid3-hd-menu-open .x-grid3-hd-inner {
+			background: #8e9194 !important;
+		}
+	
+	}
+
+}
+
+
 .cke {
 	// CKE Rich Text Editor
 

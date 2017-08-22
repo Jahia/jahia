@@ -1773,6 +1773,12 @@ form,
 
 	.x-grid3 {
 	
+		.x-grid3-body {
+			overflow-y: scroll !important;
+			overflow-x: hidden;
+			max-height: 84px !important;
+		}
+			
 		.x-grid3-viewport {
 			height: auto !important;
 		}
@@ -1816,13 +1822,24 @@ form,
 		
 		.x-grid3-col-type img {
 			background: none !important;
-			//background-color: red !important;
 			background-image: url(./images/icons/ic_warning@2x.png) !important;
+			background-size: contain !important;
+		}
+		
+		.x-grid3-col-context img,
+		.x-grid3-col-code img {
+			background: none !important;
+			background-image: url(./images/icons/ic_info_outline@2x.png) !important;
+			background-size: contain !important;
 		}
 		
 		td.x-grid3-hd-over .x-grid3-hd-inner,
 		td.x-grid3-hd-menu-open .x-grid3-hd-inner {
 			background: #8e9194 !important;
+		}
+		
+		.x-grid3-scroller {
+			overflow-x: hidden !important;
 		}
 	
 	}

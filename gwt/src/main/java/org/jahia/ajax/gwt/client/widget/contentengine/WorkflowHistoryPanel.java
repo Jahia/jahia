@@ -396,6 +396,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         tree.setAutoExpandColumn("displayName");
         tree.getTreeView().setRowHeight(25);
         tree.setTrackMouseOver(false);
+        tree.setAutoExpandMax(5000);
         add(tree);
 
         listener = new Poller.PollListener<TaskEvent>() {

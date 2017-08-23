@@ -72,8 +72,8 @@ public class WorkflowDashboardEngine extends Window {
         setHeadingHtml(Messages.get("label.workflowdashboard", "Workflow Dashboard"));
         setLayout(new FitLayout());
         setSize(900, 600);
-
-        add(new WorkflowHistoryPanel(this,linker));        
+        setMaximizable(true);
+        add(new WorkflowHistoryPanel(this,linker));
     }
 
 }

@@ -380,6 +380,10 @@ Dex.dumpQueue();
             // console.log("CLOSE IMAGE POPUP");
             eventHandlers.imagePreview("close");
         },
+        workflowDashboardOpened: function(){
+            // console.log("OPEN IMAGE POPUP");
+            mouse.trigger($(".workflow-dashboard-engine .x-tool-maximize")[0],"click")
+        },
 
         // JQUERY HANDLERS
         // Window listeners
@@ -1063,6 +1067,8 @@ Dex.dumpQueue();
             Dex("#JahiaGxtEnginePanel").onClose(eventHandlers.closedEditEngine);
 
             Dex("#JahiaGxtImagePopup").onClose(eventHandlers.closedImagePopup);
+
+            Dex(".workflow-dashboard-engine").onOpen(eventHandlers.workflowDashboardOpened)
 
             // BROWSER LISTENERS
             console.log("ATTACHING BROWSER LISTENERS");

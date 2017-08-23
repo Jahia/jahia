@@ -6,6 +6,15 @@
 
 .workflow-dashboard-engine {
 	background:  lighten($EDIT_ENGINE--BASE--COLOUR, 2%) !important;
+	
+	table.x-grid3-row-table {
+		width: fit-content !important;
+		margin-left: 8px;
+	}
+	
+	.x-panel-toolbar .x-tool-restore {
+		display: none;
+	}
 
 	.x-window-header {
 		height: 64px !important;

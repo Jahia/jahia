@@ -1748,6 +1748,12 @@ form,
 
 // CKEDITOR errors
 
+.app-container .wcag-panel .x-panel-header {
+    position: initial !important;
+    padding-top: 20px;
+    left: 0;
+}
+
 .wcag-panel {
 
 	.x-grid3 {
@@ -1765,9 +1771,6 @@ form,
 	
 	.x-panel-header {
 		display: block !important;
-		position: initial !important;
-		padding-top: 20px;
-		left: 0;
 		width: 100%;
 		color: #f1f1f1;
 		

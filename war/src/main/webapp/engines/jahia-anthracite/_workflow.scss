@@ -71,6 +71,11 @@
 		.x-grid3-row.x-grid3-row-selected {
 			background: rgb(239, 239, 239) !important;
 			color: rgb(99, 99, 99) !important;
+			
+			.x-grid3-td-displayName {
+				padding-right: 0 !important;
+			}
+
 		}
 
 		.x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {

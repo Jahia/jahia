@@ -1763,6 +1763,24 @@ form,
 
 	}
 	
+	.x-panel-header {
+		display: block !important;
+		position: initial !important;
+		padding-top: 20px;
+		left: 0;
+		width: 100%;
+		color: #f1f1f1;
+		
+		.x-panel-toolbar {
+			margin-right: 24px;
+		}
+
+	}
+	
+	.x-panel-bwrap {
+		margin-right: 24px;
+	}
+
 	.x-panel-body {
 		overflow: hidden !important;
 	}

@@ -2046,6 +2046,10 @@ form,
 	background: $RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR!important;
 	padding: 20px!important;
 	display: block;
+	
+	.cke_dialog_ui_text input {
+		padding: 3px 4px !important;	// Fix for Image Properties modal inputs
+	}
 
 	.FlashPreviewBox,
 	.ImagePreviewBox {

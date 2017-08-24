@@ -801,29 +801,33 @@ Dex.dumpQueue();
 
         },
         clickSidePanelSettingsTab: function(forceClick){
-            // User has clicke the Settings Tab Button.
-            if(data.currentPage.displayname != "settings" && (data.body.getAttribute("data-sitesettings") == "false" || forceClick)){
-                data.body.setAttribute("data-edit-window-style", "settings");
+			// User has clicked the Settings Tab Button.
+			if(data.currentPage.displayname != "settings" && (data.body.getAttribute("data-sitesettings") == "false" || forceClick)){
+				data.body.setAttribute("data-edit-window-style", "settings");
 
-                eventHandlers.openSidePanel()
+				eventHandlers.openSidePanel()
 
-                if(data.lastSettingsPage){
-                    // Found settings page in history so open it
-                    data.lastSettingsPage.trigger("click");
-                } else {
-                    // Trigger click on first list item WHEN it has loaded...
-                    Dex("#JahiaGxtSettingsTab").onceTreeChange(function(nodes){
-                        var firstInList = nodes[0];
-                        mouse.trigger(firstInList, "mousedown");
-                        mouse.trigger(firstInList, "click");
-                    });
+				if(data.lastSettingsPage){
+					// Found settings page in history so open it
+					data.lastSettingsPage.trigger("click");
+				} else {
+					// Trigger click on first list item WHEN it has loaded...
+					if ($("#JahiaGxtSettingsTab .x-grid3-row")[0]) {
+						var firstInList = $("#JahiaGxtSettingsTab .x-grid3-row")[0]  ;
+						mouse.trigger(firstInList, "mousedown");
+						mouse.trigger(firstInList, "click");
+					} else {
+						Dex("#JahiaGxtSettingsTab").onceTreeChange(function(nodes){
+							var firstInList = nodes[0];
+							mouse.trigger(firstInList, "mousedown");
+							mouse.trigger(firstInList, "click");
+						});
+					}
 
+				}
+			}
 
-                }
-            }
-
-
-        },
+		},
         clickSidePanelTab: function(){
             // User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
 
@@ -1116,8 +1120,8 @@ Dex.dumpQueue();
                 .on("mouseleave", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", eventHandlers.mouseOutPickerSourceTrigger)
                 .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", eventHandlers.mouseOverTreeRow)
                 .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", eventHandlers.mouseOverTreeThumb)
-                .on("mousedown", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", eventHandlers.clickSidePanelTab)
-                .on("mousedown", "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", eventHandlers.clickSidePanelSettingsTab);
+                .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", eventHandlers.clickSidePanelTab)
+                .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", eventHandlers.clickSidePanelSettingsTab);
         }
     }
 

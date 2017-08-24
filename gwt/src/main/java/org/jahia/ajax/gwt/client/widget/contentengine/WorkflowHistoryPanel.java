@@ -234,7 +234,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         config.add(column);
 
         column = new ColumnConfig("nodeWrapper", Messages.get("label.workflow.start.node", "Workflow Starting Node"),
-                150);
+                200);
         column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
 
             /**

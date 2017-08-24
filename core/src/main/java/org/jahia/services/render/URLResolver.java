@@ -74,6 +74,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
@@ -98,9 +99,9 @@ import static org.jahia.api.Constants.LIVE_WORKSPACE;
 public class URLResolver {
 
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-    
+
     private static final String DEFAULT_WORKSPACE = LIVE_WORKSPACE;
-    
+
     private static final Pattern MACRO_URL_PATTERN = Pattern.compile("(.?)*.html##[a-zA-Z]*##$");
 
     private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";
@@ -112,6 +113,8 @@ public class URLResolver {
     private static String[] servletsAllowingUrlMapping = new String[] {
             StringUtils.substringAfterLast(Render.getRenderServletPath(), "/")
     };
+
+    private static JahiaSitesService sitesService = ServicesRegistry.getInstance().getJahiaSitesService();
 
     private String urlPathInfo = null;
     private String servletPart = "";
@@ -149,7 +152,7 @@ public class URLResolver {
      *
      * @param pathInfo  the path info (usually obtained with @link javax.servlet.http.HttpServletRequest.getPathInfo())
      * @param serverName  the server name (usually obtained with @link javax.servlet.http.HttpServletRequest.getServerName())
-     * @param request  the current HTTP servlet request object 
+     * @param request  the current HTTP servlet request object
      */
     protected URLResolver(String pathInfo, String serverName, String workspace, HttpServletRequest request, Ehcache nodePathCache, Ehcache siteInfoCache) {
         super();
@@ -171,7 +174,7 @@ public class URLResolver {
                     StringUtils.indexOf(getUrlPathInfo(), "/", 1));
             path = StringUtils.substring(getUrlPathInfo(), servletPart.length() + 2,
                     getUrlPathInfo().length());
-        } 
+        }
         if (!resolveUrlMapping(serverName, request)) {
             init();
             if (!Url.isLocalhost(serverName) && isMappable()
@@ -234,14 +237,14 @@ public class URLResolver {
             init();
         }
     }
- 
+
     private void init() {
         workspace = verifyWorkspace(StringUtils.substringBefore(path, "/"));
         path = StringUtils.substringAfter(path, "/");
         locale = verifyLanguage(StringUtils.substringBefore(path, "/"));
         path = "/" + (locale != null ? StringUtils.substringAfter(path, "/") : path);
 
-        // TODO: this is perhaps a temporary limitation as URL points to special templates, when 
+        // TODO: this is perhaps a temporary limitation as URL points to special templates, when
         // there are more than one dots - and the path needs to end with .html
         // and in some cases macro extension are added like the ##requestParameters## for languageswitcher
         String lastPart = StringUtils.substringAfterLast(path, "/");
@@ -252,7 +255,7 @@ public class URLResolver {
             mappable = true;
         }
     }
-    
+
     private Date getVersionDate(HttpServletRequest req) {
         // we assume here that the date has been passed as milliseconds.
         String msString = req.getParameter("v");
@@ -270,11 +273,11 @@ public class URLResolver {
             return null;
         }
     }
-    
+
     private String getVersionLabel(HttpServletRequest req) {
         return req.getParameter("l");
     }
-    
+
     private boolean isServletAllowingUrlMapping() {
         boolean isServletAllowingUrlMapping = false;
         for (String servletAllowingUrlMapping : servletsAllowingUrlMapping) {
@@ -290,13 +293,13 @@ public class URLResolver {
         boolean mappingResolved = false;
 
         try {
-            siteKeyByServerName = ServicesRegistry.getInstance().getJahiaSitesService().getSitenameByServerName(serverName);
+            siteKeyByServerName = sitesService.getSitenameByServerName(serverName);
         } catch (JahiaException e) {
             logger.warn("Error finding site via servername: " + serverName, e);
         }
 
         if (getSiteKey() == null) {
-            String siteKeyInPath = StringUtils.substringBetween(getPath(), "/sites/", "/");
+            String siteKeyInPath = resolveSiteKeyFromPath(getPath());
             if (!StringUtils.isEmpty(siteKeyInPath)) {
                 setSiteKey(siteKeyInPath);
             } else if (!Url.isLocalhost(serverName)) {
@@ -312,11 +315,9 @@ public class URLResolver {
                 String tempWorkspace = verifyWorkspace(StringUtils.substringBefore(getPath(), "/"));
                 tempPath = StringUtils.substringAfter(getPath(), "/");
                 VanityUrl resolvedVanityUrl = null;
-                if(logger.isDebugEnabled()){
-                    logger.debug("Trying to resolve vanity url for tempPath = " + tempPath);
-                }
+                logger.debug("Trying to resolve vanity url for tempPath = " + tempPath);
                 boolean doNotMatchesCrossSitesPattern = !crossSitesURLPattern.matcher(tempPath).matches();
-                if(!StringUtils.isEmpty(getSiteKey()) && doNotMatchesCrossSitesPattern) {
+                if (!StringUtils.isEmpty(getSiteKey()) && doNotMatchesCrossSitesPattern) {
                     List<VanityUrl> vanityUrls = getVanityUrlService()
                             .findExistingVanityUrls("/" + tempPath,
                                     getSiteKey(), tempWorkspace);
@@ -398,7 +399,7 @@ public class URLResolver {
      */
     public Locale getLocale() {
         Locale uiLocale = null;
-        if(renderContext!=null && renderContext.isForceUILocaleForJCRSession()){
+        if (renderContext!=null && renderContext.isForceUILocaleForJCRSession()) {
             uiLocale = renderContext.getUILocale();
         }
         return uiLocale!=null ? uiLocale:locale;
@@ -462,10 +463,7 @@ public class URLResolver {
      */
     protected JCRNodeWrapper resolveNode(final String workspace,
                                          final Locale locale, final String path) throws RepositoryException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Resolving node for workspace '" + workspace
-                    + "' locale '" + locale + "' and path '" + path + "'");
-        }
+        logger.debug("Resolving node for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         final String cacheKey = getCacheKey(workspace, locale, path);
         if (resolvedNodes.containsKey(cacheKey)) {
             return resolvedNodes.get(cacheKey);
@@ -473,21 +471,23 @@ public class URLResolver {
         JCRNodeWrapper node = null;
         Element element = nodePathCache.get(cacheKey);
         String nodePath = null;
-        if(element!=null) {
+        if (element!=null) {
             nodePath = (String) element.getObjectValue();
         }
             element = siteInfoCache.get(cacheKey);
-        if(element!=null) {
+        if (element!=null) {
             siteInfo = (SiteInfo) element.getObjectValue();
         }
         if (nodePath == null || siteInfo == null) {
             nodePath = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, locale,
                     new JCRCallback<String>() {
+
+                        @Override
                         public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             String nodePath = JCRContentUtils.escapeNodePath(path.endsWith("/*") ? path.substring(0,
                                     path.lastIndexOf("/*")) : path);
 
-                            String siteName = StringUtils.substringBetween(nodePath, "/sites/", "/");
+                            String siteName = resolveSiteKeyFromPath(nodePath);
                             if (siteName != null && session.itemExists("/sites/" + siteName)) {
                                 siteInfo = new SiteInfo((JCRSiteNode) session.getNode("/sites/" + siteName));
 
@@ -495,10 +495,7 @@ public class URLResolver {
                                     session.setFallbackLocale(LanguageCodeConverters.getLocaleFromCode(siteInfo.getDefaultLanguage()));
                                 }
                             }
-                            if (logger.isDebugEnabled()) {
-                                logger.debug(cacheKey + " has not been found in the cache, still looking for node " +
-                                        nodePath);
-                            }
+                            logger.debug(cacheKey + " has not been found in the cache, still looking for node " + nodePath);
                             JCRNodeWrapper node = null;
                             while (true) {
                                 try {
@@ -523,9 +520,9 @@ public class URLResolver {
                         }
                     });
         }
-        if(siteInfo == null) {
+        if (siteInfo == null) {
             siteInfoCache.remove(cacheKey);
-            throw new RepositoryException("could not resolve site for "+path+" in workspace "+ workspace + " in language "+locale);
+            throw new RepositoryException("could not resolve site for " + path + " in workspace " + workspace + " in language " + locale);
         }
         if (siteInfo.isMixLanguagesActive() && siteInfo.getDefaultLanguage() != null) {
             JCRSessionFactory.getInstance().setFallbackLocale(LanguageCodeConverters.getLocaleFromCode(siteInfo.getDefaultLanguage()));
@@ -572,16 +569,15 @@ public class URLResolver {
      */
     protected Resource resolveResource(final String workspace, final Locale locale, final String path)
             throws RepositoryException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Resolving resource for workspace '" + workspace
-                    + "' locale '" + locale + "' and path '" + path + "'");
-        }
+        logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
         if (locale == null) {
             throw new JahiaBadRequestException("Unknown locale");
         }
         final URLResolver urlResolver = this;
         return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,
                 workspace, locale, new JCRCallback<Resource>() {
+
+                    @Override
                     public Resource doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
                         String ext = null;
@@ -672,6 +668,32 @@ public class URLResolver {
                 });
     }
 
+
+    private String resolveSiteKeyFromPath(String path) {
+
+        // .../sites/[siteKey]/... case.
+        String siteKey = StringUtils.substringBetween(path, "/sites/", "/");
+        if (StringUtils.isNotEmpty(siteKey)) {
+            return siteKey;
+        }
+
+        // .../sites/[siteKey].[templatename].[templatetype] or .../sites/[siteKey].[templatetype] case.
+        // Note, siteKey itself may contain a point.
+        String pathEnding = StringUtils.substringAfter(path, "/sites/");
+        if (StringUtils.isEmpty(pathEnding)) {
+            return null;
+        }
+        List<String> siteNames = sitesService.getSitesNames();
+        for (String siteKeyCandidate = pathEnding; true; siteKeyCandidate = StringUtils.substringBeforeLast(siteKeyCandidate, ".")) {
+            if (siteNames.contains(siteKeyCandidate)) {
+                return siteKeyCandidate;
+            }
+            if (!StringUtils.contains(siteKeyCandidate, ".")) {
+                return null;
+            }
+        }
+    }
+
     /**
      * Checks whether the URL points to a Jahia content object, which can be mapped to vanity URLs.
      * @return true if current node can be mapped to vanity URLs, otherwise false
@@ -742,7 +764,7 @@ public class URLResolver {
 
     /**
      * Set the URL location for a redirection suggestion.
-     * @param redirectUrl suggested vanity URL to redirect to 
+     * @param redirectUrl suggested vanity URL to redirect to
      */
     public void setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
@@ -755,19 +777,19 @@ public class URLResolver {
     public void setVanityUrl(String vanityUrl) {
         this.vanityUrl = vanityUrl;
     }
-    
+
     protected Locale verifyLanguage(String lang) {
         if (StringUtils.isEmpty(lang)) {
             return DEFAULT_LOCALE;
         }
-        
+
         if (!LanguageCodeConverters.LANGUAGE_PATTERN.matcher(lang).matches()) {
             return null;
         }
-        
+
         return LanguageCodeConverters.languageCodeToLocale(lang);
     }
-    
+
     protected String verifyWorkspace(String workspace) {
         if (StringUtils.isEmpty(workspace)) {
             if (workspace == null) {
@@ -785,7 +807,7 @@ public class URLResolver {
                 path = this.workspace + "/" + path;
             }
         }
-        
+
         return workspace;
     }
 

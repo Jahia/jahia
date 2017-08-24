@@ -120,6 +120,8 @@ public class TemplatePackageRegistry {
 
     static final String TEMPLATES_SET = "templatesSet";
     public static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
+
+        @Override
         public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
             if (o2.getModulePriority() != o1.getModulePriority()) {
                 return o2.getModulePriority() - o1.getModulePriority();
@@ -650,6 +652,8 @@ public class TemplatePackageRegistry {
         if (eventListener.getEventTypes() > 0) {
             try {
                 JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, eventListener.getWorkspace(), null, new JCRCallback<Object>() {
+
+                    @Override
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         final Workspace workspace = session.getWorkspace();
 
@@ -721,6 +725,7 @@ public class TemplatePackageRegistry {
             }
         }
 
+        @Override
         public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
             if (!JahiaContextLoaderListener.isRunning()) {
                 return;
@@ -890,6 +895,7 @@ public class TemplatePackageRegistry {
 
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
             if (bean instanceof RenderServiceAware) {
@@ -1101,6 +1107,7 @@ public class TemplatePackageRegistry {
             return bean;
         }
 
+        @Override
         public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
             return bean;
         }

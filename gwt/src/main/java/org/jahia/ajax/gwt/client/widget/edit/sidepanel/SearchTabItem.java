@@ -80,6 +80,7 @@ import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper.CanUseComponentForEditCallback;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
 import java.util.*;
@@ -271,22 +272,14 @@ class SearchTabItem extends SidePanelTabItem {
         grid.addListener(Events.OnDoubleClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent be) {
                 final GWTJahiaNode node = (GWTJahiaNode) be.getModel();
-                if (ModuleHelper.getNodeType(node.getNodeTypes().get(0)) == null) {
-                    JahiaContentManagementService.App.getInstance().getNodeType(node.getNodeTypes().get(0), new AsyncCallback<GWTJahiaNodeType>() {
-                        public void onFailure(Throwable caught) {
-                            // Do nothing
+                ModuleHelper.checkCanUseComponentForEdit(node.getNodeTypes().get(0), new CanUseComponentForEditCallback() {
+                    @Override
+                    public void handle(boolean canUseComponentForEdit) {
+                        if (canUseComponentForEdit) {
+                            EngineLoader.showEditEngine(editLinker, node, null);
                         }
-                        public void onSuccess(GWTJahiaNodeType result) {
-                            if (!Boolean.FALSE.equals(result.get("canUseComponentForEdit"))) {
-                                EngineLoader.showEditEngine(editLinker, node, null);
-                            }
-                        }
-                    });
-                } else {
-                    if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(node.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
-                        EngineLoader.showEditEngine(editLinker, node, null);
                     }
-                }
+                });
             }
         });
         grid.setContextMenu(createContextMenu(config.getTableContextMenu(), grid.getSelectionModel()));

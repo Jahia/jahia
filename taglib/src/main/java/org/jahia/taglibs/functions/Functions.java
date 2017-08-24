@@ -56,6 +56,8 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
+import org.jahia.services.render.URLResolver;
+import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
@@ -405,6 +407,36 @@ public class Functions {
             return DateTimeFormat.forPattern(pattern).withLocale(locale != null ? locale : Locale.ENGLISH).print(!dateToParse.endsWith("Z") ? dateTime : dateTime.toDateTime(DateTimeZone.forID("UTC")));
         } catch (Exception e) {
             logger.debug("Unable to parse date:"+dateToParse,e);
+            return null;
+        }
+    }
+    
+    /**
+     * Detects the current site key using data, available in the supplied request object.
+     * 
+     * @param request
+     *            the current HTTP request object
+     * @return the current site key
+     * @since 7.1.2.6
+     */
+    public static String getCurrentSiteKey(HttpServletRequest request) {
+        RenderContext ctx = (RenderContext) request.getAttribute("renderContext");
+        if (ctx != null && ctx.getSite() != null) {
+            return ctx.getSite().getSiteKey();
+        }
+
+        URLResolver urlResolver = (URLResolver) request.getAttribute("urlResolver");
+        if (urlResolver != null) {
+            return urlResolver.getSiteKey();
+        }
+
+        try {
+            return ((URLResolverFactory) SpringContextSingleton.getBean("urlResolverFactory"))
+                    .createURLResolver(request.getPathInfo(), request.getServerName(), request).getSiteKey();
+        } catch (Exception e) {
+            logger.warn("Unable to detect current site key based on the data from current HTTP request. Cause: "
+                    + e.getMessage(), e);
+
             return null;
         }
     }

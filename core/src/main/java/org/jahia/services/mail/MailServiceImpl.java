@@ -55,6 +55,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -83,6 +84,8 @@ import java.util.ResourceBundle;
  */
 public class MailServiceImpl extends MailService implements CamelContextAware, InitializingBean, DisposableBean, ApplicationListener<ApplicationEvent> {
     
+    private static final String MAIL_SERVER_SETTINGS_NODE = "/settings/mail-server";
+
     /**
      * This event is fired when the changes in mail server connection settings are detected (notification from other cluster nodes).
      * 
@@ -433,7 +436,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
 
                     JCRNodeWrapper mailNode = null;
                     try {
-                        mailNode = session.getNode("/settings/mail-server");
+                        mailNode = session.getNode(MAIL_SERVER_SETTINGS_NODE);
                         cfg.setServiceActivated(mailNode.hasProperty("j:activated")
                                 && mailNode.getProperty("j:activated").getBoolean());
                         cfg.setUri(mailNode.hasProperty("j:uri") ? mailNode.getProperty("j:uri")
@@ -494,7 +497,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
     protected void store(MailSettings cfg, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper mailNode = null;
         try {
-            mailNode = session.getNode("/settings/mail-server");
+            mailNode = session.getNode(MAIL_SERVER_SETTINGS_NODE);
         } catch (PathNotFoundException e) {
             if (session.nodeExists("/settings")) {
                 mailNode = session.getNode("/settings").addNode("mail-server",
@@ -517,6 +520,32 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
     public void onApplicationEvent(ApplicationEvent evt) {
         if (evt instanceof RootContextInitializedEvent || evt instanceof MailSettingsChangedEvent) {
             sendMailEndpointUri = null;
+
+            if (evt instanceof RootContextInitializedEvent
+                    && Boolean.getBoolean(SettingsBean.JAHIA_BACKUP_RESTORE_SYSTEM_PROP)) {
+                logger.info("Detected safe backup restore marker, checking if the mail service needs to be disabled...");
+
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.EDIT_WORKSPACE, null,
+                            new JCRCallback<Void>() {
+                                public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                    if (session.nodeExists(MAIL_SERVER_SETTINGS_NODE)) {
+                                        JCRNodeWrapper node = session.getNode(MAIL_SERVER_SETTINGS_NODE);
+                                        if (node.hasProperty("j:activated")
+                                                && node.getProperty("j:activated").getBoolean()) {
+                                            node.setProperty("j:activated", false);
+                                            session.save();
+                                            logger.info("Mail service successfully disabled");
+                                        }
+                                    }
+                                    return null;
+                                }
+                            });
+                } catch (RepositoryException e) {
+                    logger.error("Error disabling mail service", e);
+                }
+            }
+
             load();
         }
     }

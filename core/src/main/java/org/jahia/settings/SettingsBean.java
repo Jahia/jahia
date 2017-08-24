@@ -130,6 +130,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     }
 
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
+    private static final String JAHIA_BACKUP_RESTORE_MARKER = "backup-restore";
+    public static final String JAHIA_BACKUP_RESTORE_SYSTEM_PROP = "jahia.backup-restore";
     private static final Logger logger = LoggerFactory.getLogger(SettingsBean.class);
 
     private static SettingsBean instance = null;
@@ -464,6 +466,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             if (System.getProperty("cluster.node.serverId") == null) {
                 setSystemProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
             }
+
+            DatabaseUtils.setDatasource(dataSource);
+
+            checkSafeBackupRestore();
+
             if (clusterActivated) {
                 clusterSettingsInitializer.initClusterSettings(this);
             }
@@ -478,7 +485,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             initJerichoLogging();
 
-            DatabaseUtils.setDatasource(dataSource);
             if (isProcessingServer()) {
                 SqlPatcher.apply(getJahiaVarDiskPath(), applicationContext);
                 GroovyPatcher.executeScripts(servletContext, "contextInitializing");
@@ -501,6 +507,16 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         // if logging for Jericho is not explicitly enabled, we disable it by default
         if (!getBoolean("jahia.jericho.logging.enabled", false)) {
             Config.LoggerProvider = LoggerProvider.DISABLED;
+        }
+    }
+
+    private void checkSafeBackupRestore() {
+        File marker = new File(getJahiaVarDiskPath(), JAHIA_BACKUP_RESTORE_MARKER);
+        if (marker.exists()) {
+            setSystemProperty(JAHIA_BACKUP_RESTORE_SYSTEM_PROP, "true");
+
+            // delete marker
+            marker.delete();
         }
     }
 

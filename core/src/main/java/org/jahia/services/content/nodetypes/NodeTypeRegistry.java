@@ -205,6 +205,15 @@ public class NodeTypeRegistry implements NodeTypeManager {
                 ExtendedNodeType previous = nodetypes.put(nodeType.getNameObject(), nodeType);
                 if (previous != null) {
                     previousTypes.add(previous);
+
+                    // check for subTypes coming from other bundles, already registered on previous nodetype
+                    NodeTypeIterator subtypes = previous.getSubtypes();
+                    while (subtypes.hasNext()) {
+                        ExtendedNodeType subType = (ExtendedNodeType) subtypes.next();
+                        if (!StringUtils.equals(subType.getSystemId(), previous.getSystemId())) {
+                            nodeType.addSubType(subType);
+                        }
+                    }
                 }
             }
 

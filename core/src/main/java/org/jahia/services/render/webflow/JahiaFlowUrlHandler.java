@@ -45,6 +45,7 @@ package org.jahia.services.render.webflow;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.filter.TemplateAttributesFilter;
 import org.jahia.services.render.scripting.Script;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(JahiaFlowUrlHandler.class);
 
     @Override
@@ -89,16 +90,20 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
     @Override
     public String createFlowExecutionUrl(String flowId, String flowExecutionKey, HttpServletRequest request) {
         WebflowDispatcherScript script = (WebflowDispatcherScript) request.getAttribute("script");
-        JCRNodeWrapper n = (JCRNodeWrapper) request.getAttribute("currentNode");
-        if (script != null && n != null) {
+        JCRNodeWrapper currentNode = (JCRNodeWrapper) request.getAttribute("currentNode");
+        if (script != null && currentNode != null) {
             StringBuilder path = new StringBuilder(request.getRequestURI());
             path.append('?');
-            Map<String,String> params = new HashMap<String, String>();
+            Map<String, String> params = new HashMap<String, String>();
             try {
-                String name = getExecutionName(request, n);
+                String name = getExecutionName(request, currentNode);
                 params.put(name, flowExecutionKey);
                 if (request.getParameter("jsite") != null) {
                     params.put("jsite", request.getParameter("jsite"));
+                }
+                Object forcedLocale = request.getAttribute(TemplateAttributesFilter.FORCED_LOCALE_ATTRIBUTE);
+                if (forcedLocale != null) {
+                    params.put(WebflowAction.WEBFLOW_LOCALE_PARAMETER, forcedLocale.toString());
                 }
                 appendQueryParameters(path, params, getEncodingScheme(request));
             } catch (RepositoryException e) {
@@ -121,7 +126,7 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
     }
 
     @Override
-    public String createFlowDefinitionUrl(String flowId, AttributeMap input, HttpServletRequest request) {
+    public String createFlowDefinitionUrl(String flowId, AttributeMap<?> input, HttpServletRequest request) {
         return super.createFlowDefinitionUrl(flowId, input, request);
     }
 

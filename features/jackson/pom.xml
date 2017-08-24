@@ -46,36 +46,32 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.jahia.server</groupId>
-        <artifactId>jahia-root</artifactId>
+        <groupId>org.jahia.features</groupId>
+        <artifactId>jahia-features</artifactId>
         <version>7.2.1.1-indigo_41-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jahia.test</groupId>
-    <artifactId>jahia-test-parent</artifactId>
-    <name>Jahia Test Parent Package</name>
-    <packaging>pom</packaging>
+    <artifactId>dx-jackson</artifactId>
+    <name>Jahia DX Jackson Karaf OSGi Feature</name>
+    <packaging>feature</packaging>
 
-    <repositories>
-        <repository>
-            <id>jahia-public</id>
-            <name>Jahia Public Repository</name>
-            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.8.9</version>
+        </dependency>
 
-    <modules>
-        <module>core-test-framework</module>
-        <module>module-test-framework</module>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.8.9</version>
+        </dependency>
 
-        <module>dummy-modules</module>
-        <module>jahia-test-module</module>
-    </modules>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.8.9</version>
+        </dependency>
+    </dependencies>
 </project>

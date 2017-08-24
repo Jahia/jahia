@@ -54,6 +54,7 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.AdditionalEventInfo;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -80,7 +81,7 @@ public class JCRObservationManager implements ObservationManager {
     public static final int EXTERNAL_SYNC = 12;
     public static final int IMPORT = 13;
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRObservationManager.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRObservationManager.class);
 
     private static ThreadLocal<Boolean> eventListenersAvailableDuringPublishOnly = new ThreadLocal<Boolean>();
     private static ThreadLocal<Boolean> allEventListenersDisabled = new ThreadLocal<Boolean>();
@@ -112,8 +113,8 @@ public class JCRObservationManager implements ObservationManager {
      * <code>absPath</code> (or within its subtree, if <code>isDeep</code> is <code>true</code>) will be received.
      * It is permissible to register a listener for a path where no node currently exists. The path can also be
      * a regular expression (as the parameter is an absolute path, Jahia will automatically add the begin/end line
-     * character and if isDeep is true, Jahia appends to the regular expression, to include the path and subtree). 
-     * If this parameter is <code>null</code> then no path-related restriction is placed on events received. 
+     * character and if isDeep is true, Jahia appends to the regular expression, to include the path and subtree).
+     * If this parameter is <code>null</code> then no path-related restriction is placed on events received.
      * </li>
      * <li>
      * <code>uuid</code>: Only events whose associated node has one of the UUIDs in this list will be
@@ -123,10 +124,10 @@ public class JCRObservationManager implements ObservationManager {
      * <li>
      * <code>nodeTypeName</code>: Only events whose associated node has one of the node types
      * (or a subtype of one of the node types) in this list will be received. If this parameter is
-     * <code>null</code> then no node type-related restriction is placed on events received. 
+     * <code>null</code> then no node type-related restriction is placed on events received.
      * WARNING: if a listener only filters on nodeTypeName, then this can slow down the system, as for all
      * events we need to determine the nodeType of the node. If possible you should use another filter like
-     * the path to reduce the number of events, where nodetype needs to be determined. 
+     * the path to reduce the number of events, where nodetype needs to be determined.
      * </li>
      * </ul>
      * The restrictions are "ANDed" together. In other words, for a particular node to be "listened to" it must meet all the restrictions.
@@ -335,7 +336,7 @@ public class JCRObservationManager implements ObservationManager {
                     } catch (Exception e) {
                         logger.warn("Error processing event by listener. Cause: " + e.getMessage(), e);
                     }
-                
+
             }
         }
     }
@@ -351,7 +352,7 @@ public class JCRObservationManager implements ObservationManager {
             } catch (RepositoryException e) {
                 logger.debug("Could not retrieve node (type)", e);
                 event.setNodeTypes(Collections.<String>emptyList());
-            }            
+            }
         }
         if (event.getNodeTypes() != null && requiredNodeTypes.length > 0) {
             NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
@@ -377,7 +378,7 @@ public class JCRObservationManager implements ObservationManager {
         }
         return false;
     }
-    
+
     public static <X> X doWorkspaceWriteCall(JCRSessionWrapper session, int operationType, JCRCallback<X> callback)
             throws RepositoryException {
         currentSession.set(session);
@@ -443,10 +444,10 @@ public class JCRObservationManager implements ObservationManager {
         }
         return false;
     }
-    
+
     /**
      * Returns a list of node types for deleted node, if this information is available in the provided event object.
-     * 
+     *
      * @param event
      *            the event for deleted node
      * @return a list of node types for deleted node, if this information is available in the provided event object
@@ -475,7 +476,7 @@ public class JCRObservationManager implements ObservationManager {
             this.nodeTypeName = nodeTypeName;
             this.uuid = uuid;
             this.useExternalEvents = useExternalEvents;
-            
+
             if (this.absPath != null) {
                 pathPattern = Pattern.compile("^" + this.absPath + (this.isDeep ? (this.absPath.endsWith("/") ? "(.*)*" : "(/.*)*") : "") + "$");
             }
@@ -494,6 +495,7 @@ public class JCRObservationManager implements ObservationManager {
          * @throws java.util.NoSuchElementException
          *          if iteration has no more <code>EventListener</code>s.
          */
+        @Override
         public EventListener nextEventListener() {
             return ((EventConsumer) next()).listener;
         }
@@ -516,10 +518,12 @@ public class JCRObservationManager implements ObservationManager {
             this.relativeRoot = relativeRoot;
         }
 
+        @Override
         public int getType() {
             return event.getType();
         }
 
+        @Override
         public String getPath() throws RepositoryException {
             if (effectivePath == null) {
                 effectivePath = !mountPoint.equals("/") ? (mountPoint + event.getPath()
@@ -529,10 +533,12 @@ public class JCRObservationManager implements ObservationManager {
             return effectivePath;
         }
 
+        @Override
         public String getUserID() {
             return event.getUserID();
         }
 
+        @Override
         public String getIdentifier() throws RepositoryException {
             if (identifier == null) {
                 if (isExtensionNode(getPath())) {
@@ -549,36 +555,44 @@ public class JCRObservationManager implements ObservationManager {
                     identifier = event.getIdentifier();
                 }
             }
-            
+
             return identifier;
         }
 
-        @SuppressWarnings("rawtypes")
+        @Override
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         public Map getInfo() throws RepositoryException {
-            return event.getInfo();
+            Map info = event.getInfo();
+            JahiaUser user = session.getUser();
+            if (user != null) {
+                info.put("userProvider", user.getProviderName());
+            }
+            return info;
         }
 
+        @Override
         public String getUserData() throws RepositoryException {
             return event.getUserData();
         }
 
+        @Override
         public long getDate() throws RepositoryException {
             return event.getDate();
         }
 
         public void setNodeTypes(List<String> nodeTypes) {
             this.nodeTypes = nodeTypes;
-        }        
-        
+        }
+
         public List<String> getNodeTypes() {
             return nodeTypes;
         }
-        
+
         public boolean isExternal() {
             return event instanceof JackrabbitEvent ? ((JackrabbitEvent) event).isExternal()
                     : false;
         }
-        
+
         /**
          * Returns <code>true</code> if this <code>Event</code> is equal to another
          * object.
@@ -596,7 +610,7 @@ public class JCRObservationManager implements ObservationManager {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || this.getClass() != o.getClass()) return false;
-            
+
             return event.equals(((EventWrapper)o).event);
         }
 

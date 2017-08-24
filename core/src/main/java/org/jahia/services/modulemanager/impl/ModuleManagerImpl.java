@@ -465,7 +465,7 @@ public class ModuleManagerImpl implements ModuleManager {
         Map<ModuleVersion, JahiaTemplatesPackage> allModuleVersions = templateManagerService
                 .getTemplatePackageRegistry().getAllModuleVersions().get(thisVersionInfo.getSymbolicName());
 
-        if (allModuleVersions.size() > 1) {
+        if (allModuleVersions != null && allModuleVersions.size() > 1) {
             FrameworkWiring frameworkWiring = BundleLifecycleUtils.getFrameworkWiring();
 
             for (JahiaTemplatesPackage pkg : allModuleVersions.values()) {

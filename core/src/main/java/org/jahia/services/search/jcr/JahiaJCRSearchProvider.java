@@ -45,7 +45,6 @@ package org.jahia.services.search.jcr;
 
 import com.google.common.collect.Sets;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math.util.MathUtils;
@@ -106,8 +105,8 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     private static final Pattern AND_PATTERN = Pattern.compile(" AND ");
 
     private static final Pattern MULTIPLE_SPACES_PATTERN = Pattern.compile("\\s{2,}");
-    
-    private static final Pattern QUOTED_OR_PLAIN_TERMS_WITH_OPTIONAL_NEGATION_PATTERN = Pattern.compile("-*\"([^\"]*)\"|(\\S+)");    
+
+    private static final Pattern QUOTED_OR_PLAIN_TERMS_WITH_OPTIONAL_NEGATION_PATTERN = Pattern.compile("-*\"([^\"]*)\"|(\\S+)");
 
     private static final Pattern NOT_PATTERN = Pattern.compile(" NOT ");
 
@@ -351,7 +350,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             } else {
                 query.append("ischildnode(n,'");
             }
-            query.append(path).append("')");
+            query.append(JCRContentUtils.sqlEncode(path)).append("')");
             query.append(")");
         } else if (!params.getSites().isEmpty()) {
             query.append("where (");
@@ -368,7 +367,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                     }
                 }
                 for (String site : sites) {
-                    query.append("isdescendantnode(n,'/sites/").append(site).append("') or ");
+                    query.append("isdescendantnode(n,'/sites/").append(JCRContentUtils.sqlEncode(site)).append("') or ");
                 }
                 query.delete(query.length() - 4, query.length());
             }
@@ -398,8 +397,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             includeChildren = params.getPagePath().isIncludeChildren();
         }
         if (path != null) {
-            String[] pathTokens = path != null ? Patterns.SLASH.split(StringEscapeUtils
-                    .unescapeHtml(path)) : ArrayUtils.EMPTY_STRING_ARRAY;
+            String[] pathTokens = Patterns.SLASH.split(StringEscapeUtils.unescapeHtml(path));
             String lastFolder = null;
             StringBuilder jcrPath = new StringBuilder(64);
             jcrPath.append("/jcr:root/");
@@ -407,6 +405,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                 if (folder.length() == 0) {
                     continue;
                 }
+                folder = ISO9075.encode(folder);
                 if (!includeChildren) {
                     if (lastFolder != null) {
                         jcrPath.append(lastFolder).append("/");
@@ -420,7 +419,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                 jcrPath.append("/");
                 lastFolder = "*";
             }
-            query.append(ISO9075.encodePath(jcrPath.toString())).append("element(").append(
+            query.append(jcrPath).append("element(").append(
                     lastFolder).append(",").append(
                     getNodeType(params)).append(")");
         } else if (!params.getSites().isEmpty()) {
@@ -438,7 +437,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                     }
                 }
                 if (sites.size() == 1) {
-                    query.append(sites.iterator().next());
+                    query.append(ISO9075.encode(sites.iterator().next()));
                 } else {
                     query.append("*[");
                     int i = 0;
@@ -446,9 +445,8 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                         if (i > 0) {
                             query.append(" or ");
                         }
-                        query.append("fn:name() = '");
-                        query.append(site);
-                        query.append("'");
+                        query.append("fn:name() = ");
+                        query.append(stringToQueryLiteral(ISO9075.encode(site)));
                         i++;
                     }
                     query.append("]");
@@ -502,11 +500,11 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     }
 
     private String getNodeType(SearchCriteria params) {
-        if(StringUtils.isNotEmpty(params.getNodeType())) {
+        if (StringUtils.isNotEmpty(params.getNodeType())) {
             return params.getNodeType();
         }
 
-        if(isFileSearch(params) && !isSiteSearch(params)) {
+        if (isFileSearch(params) && !isSiteSearch(params)) {
             return Constants.NT_HIERARCHYNODE;
 //        } else if (!isFileSearch(params) && isSiteSearch(params)) {
 //            return Constants.JAHIANT_CONTENT;
@@ -849,7 +847,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             }
         }
     }
-    
+
     private String createFilenameConstraints(Term textSearch, String[] terms, String constraint, boolean xpath) {
         StringBuilder nameSearchConstraints = new StringBuilder(256);
 
@@ -911,7 +909,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         }
         return nameSearchConstraints.toString();
     }
-    
+
     private String createNodenameLikeTermConstraint(String term, boolean xpath) {
         final String likeTerm = term.contains("*") ? stringToQueryLiteral(StringUtils.replaceChars(term, '*', '%'))
                 : stringToQueryLiteral("%" + term + "%");
@@ -958,7 +956,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                     '%')) + ")" : "jcr:content/@jcr:mimeType="
                     + stringToQueryLiteral(mimeType);
         } else {
-            return "n.[jcr:mimetype]="+stringToQueryLiteral(mimeType);
+            return "n.[jcr:mimetype]=" + stringToQueryLiteral(mimeType);
         }
 
     }

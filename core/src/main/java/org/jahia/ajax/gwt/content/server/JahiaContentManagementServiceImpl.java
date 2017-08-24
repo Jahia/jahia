@@ -2318,7 +2318,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             historyListJahia = contentManager.getContentHistory(sessionWrapper, nodeIdentifier, offset, limit);
             int size = historyListJahia.size();
-            historyListJahia = new ArrayList<GWTJahiaContentHistoryEntry>(historyListJahia.subList(offset, Math.min(size, offset + limit)));
+            if (offset > size) {
+                historyListJahia = new ArrayList<GWTJahiaContentHistoryEntry>(0);
+            } else {
+                historyListJahia = new ArrayList<GWTJahiaContentHistoryEntry>(historyListJahia.subList(offset, Math.min(size, offset + limit)));
+            }
             BasePagingLoadResult<GWTJahiaContentHistoryEntry> pagingLoadResult = new BasePagingLoadResult<GWTJahiaContentHistoryEntry>(historyListJahia, offset, size);
             return pagingLoadResult;
         } catch (RepositoryException e) {
@@ -2564,24 +2568,34 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     @Override
     public GWTJahiaNodeType getNodeType(String name) throws GWTJahiaServiceException {
-        return contentDefinition.getNodeType(name, getUILocale());
+        GWTJahiaNodeType type = contentDefinition.getNodeType(name, getUILocale());
+        if (type != null) {
+            checkComponentPermissions(Collections.singletonList(type));
+        }
+        return type;
     }
 
     @Override
     public List<GWTJahiaNodeType> getNodeTypes(List<String> names) throws GWTJahiaServiceException {
-        List<GWTJahiaNodeType> types = contentDefinition.getNodeTypes(names, getUILocale());
+        return checkComponentPermissions(contentDefinition.getNodeTypes(names, getUILocale()));
+    }
 
-        try {
-            if (getSite().getPath().startsWith("/sites")) {
+    private List<GWTJahiaNodeType> checkComponentPermissions(List<GWTJahiaNodeType> types) {
+        if (types != null && types.size() > 0) {
+            JCRSiteNode site = getSite();
+            if (site.getPath().startsWith("/sites")) {
                 for (GWTJahiaNodeType type : types) {
-                    boolean perm = contentDefinition.checkPermissionForType(type.getName(), getSite());
-                    type.set("canUseComponentForCreate", perm);
-                    type.set("canUseComponentForEdit", perm);
+                    try {
+                        boolean perm = contentDefinition.checkPermissionForType(type.getName(), site);
+                        type.set("canUseComponentForCreate", perm);
+                        type.set("canUseComponentForEdit", perm);
+                    } catch (RepositoryException e) {
+                        logger.error("Cannot check component permissions for type " + type, e);
+                    }
                 }
             }
-        } catch (RepositoryException e) {
-            logger.error("Cannot get components", e);
         }
+
         return types;
     }
 

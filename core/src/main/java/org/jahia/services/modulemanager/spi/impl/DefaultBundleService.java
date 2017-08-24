@@ -59,6 +59,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,6 +68,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The default implementation of the {@link BundleService} which is using direct bundle operations (BundleContext.installBundle(),
@@ -81,6 +84,7 @@ import java.util.Map;
 public class DefaultBundleService implements BundleService {
 
     private JahiaTemplateManagerService templateManagerService;
+    private static final Logger logger = LoggerFactory.getLogger(DefaultBundleService.class);
 
     private static Bundle getBundleEnsureExists(BundleInfo bundleInfo) throws ModuleNotFoundException {
         Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
@@ -172,10 +176,27 @@ public class DefaultBundleService implements BundleService {
 
     @Override
     public Map<String, BundleInformation> getInfo(BundleInfo bundleInfo, String target) throws ModuleManagementException, InvalidTargetException {
+
         if (target != null) {
             throw new InvalidTargetException(target);
         }
-        BundleInformation info = getLocalInfo(bundleInfo);
+
+        BundleInformation info;
+        try {
+            info = getLocalInfo(bundleInfo);
+        } catch (final Exception e) {
+
+            logger.error("Error retrieving bundle info", e);
+
+            // Return a special implementation of the BundleInformation to indicate failure.
+            info = new BundleInformation() {
+
+                @Override
+                public org.jahia.osgi.BundleState getOsgiState() throws ModuleManagementException {
+                    throw new ModuleManagementException(e.getMessage(), e);
+                }
+            };
+        }
         return Collections.singletonMap("", info);
     }
 
@@ -186,11 +207,27 @@ public class DefaultBundleService implements BundleService {
             throw new InvalidTargetException(target);
         }
 
-        Map<String, BundleInformation> result = new LinkedHashMap<String, BundleInformation>();
-        for (BundleInfo bundleInfo : new LinkedHashSet<BundleInfo>(bundleInfos)) {
-            BundleInformation info = getLocalInfo(bundleInfo);
-            result.put(bundleInfo.getKey(), info);
+        Map<String, BundleInformation> result;
+        try {
+            result = new LinkedHashMap<String, BundleInformation>();
+            for (BundleInfo bundleInfo : new LinkedHashSet<BundleInfo>(bundleInfos)) {
+                BundleInformation info = getLocalInfo(bundleInfo);
+                result.put(bundleInfo.getKey(), info);
+            }
+        } catch (final Exception e) {
+
+            logger.error("Error retrieving bundle info", e);
+
+            // Return a special implementation of the Map to indicate failure.
+            result = new FailingMap<String, BundleInformation>(new ExceptionProvider() {
+
+                @Override
+                public RuntimeException get() {
+                    return new ModuleManagementException(e.getMessage(), e);
+                }
+            });
         }
+
         return Collections.singletonMap("", result);
     }
 
@@ -231,5 +268,86 @@ public class DefaultBundleService implements BundleService {
                 return (moduleState == null ? null : moduleState.getState());
             }
         };
+    }
+
+    protected interface ExceptionProvider {
+
+        RuntimeException get();
+    }
+
+    /**
+     * A special implementation of the Map whose any method simply throws an exception provided by the associated ExceptionProvider.
+     */
+    protected static class FailingMap<K, V> implements Map<K, V> {
+
+        private ExceptionProvider exceptionProvider;
+
+        /**
+         * Create an instance of the map.
+         * @param exceptionProvider Exception provider to obtain exceptions to throw from
+         */
+        public FailingMap(ExceptionProvider exceptionProvider) {
+            this.exceptionProvider = exceptionProvider;
+        }
+
+        @Override
+        public void clear() {
+            throw exceptionProvider.get();
+        }
+
+        @Override
+        public boolean containsKey(Object arg0) {
+            throw exceptionProvider.get();
+        }
+
+        @Override
+        public boolean containsValue(Object arg0) {
+            throw exceptionProvider.get();
+        }
+
+        @Override
+        public Set<java.util.Map.Entry<K, V>> entrySet() {
+            throw exceptionProvider.get();
+        }
+
+        @Override
+        public V get(Object arg0) {
+            throw exceptionProvider.get();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            throw exceptionProvider.get();
+        }
+
+        @Override
+        public Set<K> keySet() {
+            throw exceptionProvider.get();
+        }
+
+        @Override
+        public V put(K arg0, V arg1) {
+            throw exceptionProvider.get();
+        }
+
+        @Override
+        public void putAll(Map<? extends K, ? extends V> arg0) {
+            throw exceptionProvider.get();
+        }
+
+        @Override
+        public V remove(Object arg0) {
+            throw exceptionProvider.get();
+        }
+
+        @Override
+        public int size() {
+            throw exceptionProvider.get();
+        }
+
+        @Override
+        public Collection<V> values() {
+            throw exceptionProvider.get();
+        }
     }
 }

@@ -43,11 +43,13 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper.CanUseComponentForEditCallback;
 
 /**
  * Action item used to open the edit engine for the original content source.
@@ -59,16 +61,50 @@ public class EditSourceContentActionItem extends BaseActionItem {
 	private static final long serialVersionUID = -2912157212228173779L;
 
 	public void onComponentSelection() {
-        EngineLoader.showEditEngine(linker, linker.getSelectionContext().getSingleSelection().getReferencedNode(), null);
+	    final GWTJahiaNode referencedNode = linker.getSelectionContext().getSingleSelection().getReferencedNode();
+        String refNodeTypeName = referencedNode.getNodeTypes().get(0);
+        GWTJahiaNodeType refNodeType = ModuleHelper.getNodeType(refNodeTypeName);
+        if (refNodeType != null) {
+            if (ModuleHelper.canUseComponentForEdit(refNodeType)) {
+                EngineLoader.showEditEngine(linker, referencedNode, null);
+            }
+        } else {
+            // we need to request the reference node type from server
+            ModuleHelper.checkCanUseComponentForEdit(refNodeTypeName, new CanUseComponentForEditCallback() {
+                @Override
+                public void handle(boolean canUseComponentForEdit) {
+                    if (canUseComponentForEdit) {
+                        // we allow editing the referenced node
+                        EngineLoader.showEditEngine(linker, referencedNode, null);
+                    } else {
+                        setEnabled(false);
+                    }
+                }
+            });
+        }
     }
 
 	public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         final GWTJahiaNode singleSelection = lh.getSingleSelection();
-        setEnabled(singleSelection != null
+        boolean enabled = singleSelection != null
+                && singleSelection.isReference()
                 && !lh.isRootNode()
                 && hasPermission(lh.getSelectionPermissions())
-                && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()) && singleSelection.isReference()
-                && !Boolean.FALSE.equals(ModuleHelper.getNodeType(singleSelection.getReferencedNode().getNodeTypes().get(0)).get("canUseComponentForEdit")));
+                && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions());
+
+        setEnabled(enabled);
+
+        if (enabled) {
+            ModuleHelper.checkCanUseComponentForEdit(singleSelection.getReferencedNode().getNodeTypes().get(0),
+                    new CanUseComponentForEditCallback() {
+                        @Override
+                        public void handle(boolean canUseComponentForEdit) {
+                            if (isEnabled() && !canUseComponentForEdit) {
+                                setEnabled(false);
+                            }
+                        }
+                    });
+        }
 	}
 }

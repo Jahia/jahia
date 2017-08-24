@@ -81,7 +81,7 @@ public class JCRObservationManager implements ObservationManager {
     public static final int EXTERNAL_SYNC = 12;
     public static final int IMPORT = 13;
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRObservationManager.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRObservationManager.class);
 
     private static ThreadLocal<Boolean> eventListenersAvailableDuringPublishOnly = new ThreadLocal<Boolean>();
     private static ThreadLocal<Boolean> allEventListenersDisabled = new ThreadLocal<Boolean>();
@@ -495,6 +495,7 @@ public class JCRObservationManager implements ObservationManager {
          * @throws java.util.NoSuchElementException
          *          if iteration has no more <code>EventListener</code>s.
          */
+        @Override
         public EventListener nextEventListener() {
             return ((EventConsumer) next()).listener;
         }
@@ -517,10 +518,12 @@ public class JCRObservationManager implements ObservationManager {
             this.relativeRoot = relativeRoot;
         }
 
+        @Override
         public int getType() {
             return event.getType();
         }
 
+        @Override
         public String getPath() throws RepositoryException {
             if (effectivePath == null) {
                 effectivePath = !mountPoint.equals("/") ? (mountPoint + event.getPath()
@@ -530,10 +533,12 @@ public class JCRObservationManager implements ObservationManager {
             return effectivePath;
         }
 
+        @Override
         public String getUserID() {
             return event.getUserID();
         }
 
+        @Override
         public String getIdentifier() throws RepositoryException {
             if (identifier == null) {
                 if (isExtensionNode(getPath())) {
@@ -554,6 +559,7 @@ public class JCRObservationManager implements ObservationManager {
             return identifier;
         }
 
+        @Override
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public Map getInfo() throws RepositoryException {
             Map info = event.getInfo();
@@ -564,10 +570,12 @@ public class JCRObservationManager implements ObservationManager {
             return info;
         }
 
+        @Override
         public String getUserData() throws RepositoryException {
             return event.getUserData();
         }
 
+        @Override
         public long getDate() throws RepositoryException {
             return event.getDate();
         }

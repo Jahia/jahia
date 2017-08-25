@@ -862,7 +862,8 @@ Dex.dumpQueue();
                 $(".window-iframe").contents().find("body").attr("style", data.sidePanelTabs.iframeBodyStyle);
 
             }
-
+			
+			eventHandlers.updatePageMenuPositions()
 
         },
         addPageToHistory: function(){

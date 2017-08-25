@@ -210,7 +210,7 @@ body {
 		height: 51px!important;
 
 		body[data-sitesettings="true"] & {
-			display: none;
+			visibility: hidden;
 		}
 	}
 

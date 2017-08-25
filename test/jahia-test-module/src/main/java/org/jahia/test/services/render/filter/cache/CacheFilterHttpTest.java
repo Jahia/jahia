@@ -452,8 +452,11 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             for (String user : users) {
                 for (String path : paths) {
                     System.out.println(user + " - " + path);
-                    if (!m.get(user + path).equals(getContent(getUrl(path), user, "password", null))) {
-                        fail("Different content for " + user + " , " + path + " when flushing : " + toFlush);
+                    String previousContent = m.get(user + path);
+                    String currentContent = getContent(getUrl(path), user, "password", null);
+                    if (!previousContent.equals(currentContent)) {
+                        fail("Different content for " + user + " , " + path + " when flushing : " + toFlush + "\nPrevious content:\n"
+                                + previousContent + "\nCurrent content:\n" + currentContent);
                     }
                     checkCacheContent(cache, cacheCopy, toFlush);
                 }

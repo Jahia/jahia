@@ -54,7 +54,6 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.AdditionalEventInfo;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -560,14 +559,9 @@ public class JCRObservationManager implements ObservationManager {
         }
 
         @Override
-        @SuppressWarnings({ "rawtypes", "unchecked" })
+        @SuppressWarnings({ "rawtypes" })
         public Map getInfo() throws RepositoryException {
-            Map info = event.getInfo();
-            JahiaUser user = session.getUser();
-            if (user != null) {
-                info.put("userProvider", user.getProviderName());
-            }
-            return info;
+            return event.getInfo();
         }
 
         @Override

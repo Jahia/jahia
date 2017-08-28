@@ -1691,7 +1691,6 @@ form,
 	.x-grid3-row-table {
 		// Table containing actual List Item
 		height: 100%;
-		width: 100%!important;
 
 		.x-grid3-cell {
 			/* Cell Containing the List Item */
@@ -1740,6 +1739,10 @@ form,
 }
 
 .x-panel .x-grid3 .x-grid3-row-table .x-grid3-cell.x-grid3-td-displayName {    // make sure selector works everywhere it needs to.
+	width: 100% !important;
+}
+
+.x-panel .x-grid3 .x-grid3-row-table {    // Changed to fix table bug on workflow modal.
 	width: 100% !important;
 }
 

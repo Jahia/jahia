@@ -354,7 +354,7 @@ public class JCRSessionWrapper implements Session {
                     if (wrapper == null) {
                         wrapper = provider.getNodeWrapper(node, localPath, null, this);
                     }
-                    
+
                     if (!isAliased) {
                         sessionCacheByPath.put(path, wrapper);
                         sessionCacheByIdentifier.put(wrapper.getIdentifier(), wrapper);
@@ -564,7 +564,7 @@ public class JCRSessionWrapper implements Session {
                     try {
                         JCRNodeValidator validatorDecoratedNode = (JCRNodeValidator) validatorEntry.getValue().newInstance(node);
                         LocalValidatorFactoryBean validatorFactoryBean = sessionFactory.getValidatorFactoryBean();
-                        
+
                         // if we are in non-import operation we enforce Default and DefaultSkipOnImportGroup;
                         // if we are in an import operation we do not enforce the DefaultSkipOnImportGroup, but rather only the Default one
                         Set<ConstraintViolation<JCRNodeValidator>> validate = !isImportOperation ? validatorFactoryBean
@@ -581,7 +581,7 @@ public class JCRSessionWrapper implements Session {
                                     AdvancedGroup.class, AdvancedSkipOnImportGroup.class) : validatorFactoryBean
                                     .validate(validatorDecoratedNode, AdvancedGroup.class);
                         }
-                        
+
                         constraintViolations.addAll(validate);
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                         logger.error(e.getMessage(), e);
@@ -1295,7 +1295,12 @@ public class JCRSessionWrapper implements Session {
         return "JCRSessionWrapper (" + workspace.getName() + ", " + locale + ", " + user + " [aliased as " + getAliasedUser()
                 + "]) {sessions=" + sessions + '}';
     }
+
     public JCRUserNode getUserNode() throws RepositoryException {
         return (JCRUserNode) getNode(user.getLocalPath());
+    }
+
+    public String getIdentifier() {
+        return uuid.toString();
     }
 }

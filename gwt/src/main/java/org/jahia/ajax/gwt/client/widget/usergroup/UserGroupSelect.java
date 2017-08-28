@@ -100,6 +100,7 @@ public class UserGroupSelect extends Window {
         setModal(true);
         setSize(500, 500);
         setLayout(new FitLayout());
+        setId("JahiaGxtUserGroupSelect");
 
         switch (viewMode) {
             case VIEW_TABS:

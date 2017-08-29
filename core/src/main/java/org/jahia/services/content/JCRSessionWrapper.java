@@ -139,7 +139,7 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> uuidMapping = new HashMap<String, String>();
     private Map<String, String> pathMapping = new LinkedHashMap<String, String>();
 
-    private Map<String,Object> resolvedReferences = new HashMap<String, Object>();
+    private Map<String, Object> resolvedReferences = new HashMap<String, Object>();
 
     private boolean isSystem;
     private boolean skipValidation;
@@ -171,27 +171,29 @@ public class JCRSessionWrapper implements Session {
         this.locale = locale;
         this.fallbackLocale = fallbackLocale;
         this.sessionFactory = sessionFactory;
-        if(!isSystem) {
+        if (!isSystem) {
             activeSessions.incrementAndGet();
         }
-        if(SettingsBean.getInstance().isDevelopmentMode()) {
-            thisSessionTrace = new Exception((isSystem?"System ":"")+"Session: " + uuid + " Thread: " + Thread.currentThread().getName() + "_" + Thread.currentThread().getId() + " created " + new DateTime().toString());
+        if (SettingsBean.getInstance().isDevelopmentMode()) {
+            thisSessionTrace = new Exception((isSystem ? "System ":"") + "Session: " + uuid + " Thread: " + Thread.currentThread().getName() + "_" + Thread.currentThread().getId() + " created " + new DateTime().toString());
         } else {
-            thisSessionTrace = new Exception((isSystem?"System ":"")+"Session: " + uuid);
+            thisSessionTrace = new Exception((isSystem ? "System ":"") + "Session: " + uuid);
         }
         activeSessionsObjects.put(uuid, this);
     }
 
-
+    @Override
     public JCRNodeWrapper getRootNode() throws RepositoryException {
         JCRStoreProvider provider = sessionFactory.getProvider("/");
         return provider.getNodeWrapper(getProviderSession(provider).getRootNode(), "/", null, this);
     }
 
+    @Override
     public Repository getRepository() {
         return sessionFactory;
     }
 
+    @Override
     public String getUserID() {
         return ((SimpleCredentials) credentials).getUserID();
     }
@@ -208,14 +210,17 @@ public class JCRSessionWrapper implements Session {
         this.skipValidation = skipValidation;
     }
 
+    @Override
     public Object getAttribute(String s) {
         return null;
     }
 
+    @Override
     public String[] getAttributeNames() {
         return new String[0];
     }
 
+    @Override
     public JCRWorkspaceWrapper getWorkspace() {
         return workspace;
     }
@@ -224,14 +229,12 @@ public class JCRSessionWrapper implements Session {
         return locale;
     }
 
-    //    public void setInterceptorsEnabled(boolean interceptorsEnabled) {
-//        this.interceptorsEnabled = interceptorsEnabled;
-//    }
-
+    @Override
     public Session impersonate(Credentials credentials) throws LoginException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
 
+    @Override
     public JCRNodeWrapper getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
         return getNodeByUUID(uuid, true);
     }
@@ -314,6 +317,7 @@ public class JCRSessionWrapper implements Session {
         return provider.getNodeWrapper(n, this);
     }
 
+    @Override
     public JCRItemWrapper getItem(String path) throws PathNotFoundException, RepositoryException {
         return getItem(path, true);
     }
@@ -398,6 +402,7 @@ public class JCRSessionWrapper implements Session {
         return wrapper;
     }
 
+    @Override
     public JCRNodeWrapper getNode(String path) throws PathNotFoundException, RepositoryException {
         return getNode(path, true);
     }
@@ -411,6 +416,7 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    @Override
     public boolean itemExists(String path) throws RepositoryException {
         try {
             getItem(path);
@@ -420,6 +426,7 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    @Override
     public void move(String source, String dest)
             throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException,
             LockException, RepositoryException {
@@ -453,6 +460,7 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    @Override
     public void save()
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
@@ -494,6 +502,8 @@ public class JCRSessionWrapper implements Session {
         changedNodes.clear();
 
         JCRObservationManager.doWorkspaceWriteCall(this, operationType, new JCRCallback<Object>() {
+
+            @Override
             public Object doInJCR(JCRSessionWrapper thisSession) throws RepositoryException {
                 for (Session session : sessions.values()) {
                     session.save();
@@ -602,7 +612,7 @@ public class JCRSessionWrapper implements Session {
                     ExtendedPropertyDefinition propertyDefinition = node.getApplicablePropertyDefinition(
                             propertyName);
                     if (propertyDefinition == null) {
-                        propertyDefinition = node.getApplicablePropertyDefinition(propertyName.replaceFirst("_",":"));
+                        propertyDefinition = node.getApplicablePropertyDefinition(propertyName.replaceFirst("_", ":"));
                     }
                     if (propertyDefinition != null) {
                         Locale errorLocale = null;
@@ -633,7 +643,7 @@ public class JCRSessionWrapper implements Session {
         return ccve;
     }
 
-
+    @Override
     public void refresh(boolean b) throws RepositoryException {
         for (Session session : sessions.values()) {
             session.refresh(b);
@@ -645,6 +655,7 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    @Override
     public boolean hasPendingChanges() throws RepositoryException {
         for (Session session : sessions.values()) {
             if (session.hasPendingChanges()) {
@@ -654,6 +665,7 @@ public class JCRSessionWrapper implements Session {
         return false;
     }
 
+    @Override
     public ValueFactory getValueFactory() {
         return JCRValueFactoryImpl.getInstance();
     }
@@ -667,16 +679,19 @@ public class JCRSessionWrapper implements Session {
      * @param actions a comma separated list of action strings.
      * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
+    @Override
     public void checkPermission(String absPath, String actions) throws AccessControlException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
 
+    @Override
     public ContentHandler getImportContentHandler(String s, int i)
             throws PathNotFoundException, ConstraintViolationException, VersionException, LockException,
             RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
 
+    @Override
     public void importXML(String path, InputStream inputStream, int uuidBehavior)
             throws IOException, PathNotFoundException, ItemExistsException, ConstraintViolationException,
             VersionException, InvalidSerializedDataException, LockException, RepositoryException {
@@ -729,6 +744,7 @@ public class JCRSessionWrapper implements Session {
      * @throws NamespaceException
      * @throws RepositoryException
      */
+    @Override
     public void setNamespacePrefix(String prefix, String uri) throws NamespaceException, RepositoryException {
         nsToPrefix.put(uri, prefix);
         prefixToNs.put(prefix, uri);
@@ -740,14 +756,12 @@ public class JCRSessionWrapper implements Session {
                     nsReg.registerNamespace(prefix, uri);
                 }
             } catch (RepositoryException e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Prefix/uri could not be registered in workspace's registry- " + prefix + "/" + uri,
-                            e);
-                }
+                logger.debug("Prefix/uri could not be registered in workspace's registry- " + prefix + "/" + uri, e);
             }
         }
     }
 
+    @Override
     public String[] getNamespacePrefixes() throws RepositoryException {
         Set<String> wsPrefixes =
                 new HashSet<String>(Arrays.asList(getWorkspace().getNamespaceRegistry().getPrefixes()));
@@ -755,6 +769,7 @@ public class JCRSessionWrapper implements Session {
         return wsPrefixes.toArray(new String[wsPrefixes.size()]);
     }
 
+    @Override
     public String getNamespaceURI(String prefix) throws NamespaceException, RepositoryException {
         if (prefixToNs.containsKey(prefix)) {
             return prefixToNs.get(prefix);
@@ -762,6 +777,7 @@ public class JCRSessionWrapper implements Session {
         return getWorkspace().getNamespaceRegistry().getURI(prefix);
     }
 
+    @Override
     public String getNamespacePrefix(String uri) throws NamespaceException, RepositoryException {
         if (nsToPrefix.containsKey(uri)) {
             return nsToPrefix.get(uri);
@@ -769,6 +785,7 @@ public class JCRSessionWrapper implements Session {
         return getWorkspace().getNamespaceRegistry().getPrefix(uri);
     }
 
+    @Override
     public void logout() {
         for (Session session : sessions.values()) {
             if (session.isLive()) {
@@ -784,7 +801,7 @@ public class JCRSessionWrapper implements Session {
         if (activeSessionsObjects.remove(uuid) == null) {
             logger.error("Could not removed session " + this + " opened here \n", thisSessionTrace);
         }
-        if(!isSystem) {
+        if (!isSystem) {
             long actives = activeSessions.decrementAndGet();
             if (logger.isDebugEnabled() && actives < activeSessionsObjects.size()) {
                 Map<UUID, JCRSessionWrapper> copyActives = new HashMap<UUID, JCRSessionWrapper>(activeSessionsObjects);
@@ -796,6 +813,7 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    @Override
     public boolean isLive() {
         return isLive;
     }
@@ -809,6 +827,7 @@ public class JCRSessionWrapper implements Session {
      * @deprecated As of JCR 2.0, {@link LockManager#addLockToken(String)}
      * should be used instead.
      */
+    @Override
     public void addLockToken(String token) {
         tokens.add(token);
         for (Session session : sessions.values()) {
@@ -816,6 +835,7 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    @Override
     public String[] getLockTokens() {
         List<String> allTokens = new ArrayList<String>(tokens);
         for (Session session : sessions.values()) {
@@ -829,6 +849,7 @@ public class JCRSessionWrapper implements Session {
         return allTokens.toArray(new String[allTokens.size()]);
     }
 
+    @Override
     public void removeLockToken(String token) {
         tokens.remove(token);
         for (Session session : sessions.values()) {
@@ -916,6 +937,7 @@ public class JCRSessionWrapper implements Session {
      * @throws SAXException          if the SAX event handler failed
      * @throws RepositoryException   if another error occurs
      */
+    @Override
     public void exportDocumentView(String path, ContentHandler handler, boolean skipBinary, boolean noRecurse)
             throws PathNotFoundException, SAXException, RepositoryException {
         DocumentViewExporter exporter = new DocumentViewExporter(this, handler, skipBinary, noRecurse);
@@ -939,6 +961,7 @@ public class JCRSessionWrapper implements Session {
      * @throws SAXException          if the SAX event handler failed
      * @throws RepositoryException   if another error occurs
      */
+    @Override
     public void exportSystemView(String path, ContentHandler handler, boolean skipBinary, boolean noRecurse)
             throws PathNotFoundException, SAXException, RepositoryException {
 
@@ -964,6 +987,7 @@ public class JCRSessionWrapper implements Session {
      * @throws IOException         if the SAX serialization failed
      * @throws RepositoryException if another error occurs
      */
+    @Override
     public void exportDocumentView(String absPath, OutputStream out, boolean skipBinary, boolean noRecurse)
             throws IOException, RepositoryException {
         try {
@@ -993,6 +1017,7 @@ public class JCRSessionWrapper implements Session {
      * @throws IOException         if the SAX serialization failed
      * @throws RepositoryException if another error occurs
      */
+    @Override
     public void exportSystemView(String absPath, OutputStream out, boolean skipBinary, boolean noRecurse)
             throws IOException, RepositoryException {
         try {
@@ -1037,22 +1062,27 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    @Override
     public JCRNodeWrapper getNodeByIdentifier(String id) throws ItemNotFoundException, RepositoryException {
         return getNodeByUUID(id);
     }
 
+    @Override
     public Property getProperty(String absPath) throws PathNotFoundException, RepositoryException {
         return (Property) getItem(absPath);
     }
 
+    @Override
     public boolean nodeExists(String absPath) throws RepositoryException {
         return itemExists(absPath);
     }
 
+    @Override
     public boolean propertyExists(String absPath) throws RepositoryException {
         return itemExists(absPath);
     }
 
+    @Override
     public void removeItem(String absPath)
             throws VersionException, LockException, ConstraintViolationException, AccessDeniedException,
             RepositoryException {
@@ -1087,10 +1117,12 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    @Override
     public boolean hasPermission(String absPath, String actions) throws RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
 
+    @Override
     public boolean hasCapability(String s, Object o, Object[] objects) throws RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
@@ -1105,11 +1137,13 @@ public class JCRSessionWrapper implements Session {
      *                                                 is not supported.
      * @since JCR 2.0
      */
+    @Override
     public AccessControlManager getAccessControlManager()
             throws UnsupportedRepositoryOperationException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }
 
+    @Override
     public RetentionManager getRetentionManager() throws UnsupportedRepositoryOperationException, RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }

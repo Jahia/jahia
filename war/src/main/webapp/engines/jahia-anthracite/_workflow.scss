@@ -289,9 +289,7 @@
 
 		> .x-border-panel:first-child {
 		    height: 150px !important;
-		    width: calc(100% - 144px) !important;
-		    margin-left: 72px;
-		    margin-right: 72px;
+		    width: 100% !important;
 		}
 
 		.x-grid3-body {

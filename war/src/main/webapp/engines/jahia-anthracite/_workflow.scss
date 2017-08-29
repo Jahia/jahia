@@ -6,13 +6,13 @@
 
 .workflow-dashboard-engine {
 	background:  lighten($EDIT_ENGINE--BASE--COLOUR, 2%) !important;
-	
+
 	table.x-grid3-row-table {
 		//width: fit-content !important;
 		//width: -moz-max-content !important;
 		margin-left: 8px;
 	}
-	
+
 	.x-panel-toolbar .x-tool-restore {
 		display: none;
 	}
@@ -22,7 +22,7 @@
 		line-height: 64px;
 		padding-left: 16px !important;
 		margin-top: 5px;
-		
+
 		.x-panel-toolbar > table {
 			pointer-events: all;
 		}
@@ -52,13 +52,13 @@
 				background-image: url(./images/icon-close-large.png);
 				background-position: initial !important;
 			}
-		
+
 		}
-	
+
 	}
 
 	.x-grid3 {
-	
+
 		.x-grid3-header {
 			display: table-cell;
 			background: #818588;
@@ -72,7 +72,7 @@
 		.x-grid3-row.x-grid3-row-selected {
 			background: rgb(239, 239, 239) !important;
 			color: rgb(99, 99, 99) !important;
-			
+
 			.x-grid3-td-displayName {
 				padding-right: 0 !important;
 			}
@@ -88,7 +88,7 @@
 			color: rgb(99, 99, 99) !important;
 			height: 38px !important;
 			box-sizing: border-box;
-			
+
 			.x-grid3-td-displayName table.x-btn-noicon {
 				position: absolute;
 				top: 3px;
@@ -97,7 +97,7 @@
 				padding-top: 4px;
 				pointer-events: all;
 				background: #a3a3a3;
-				
+
 				button {
 					font-family: $FONT--FAMILY---NUNITO;
 					font-size: 13px;
@@ -105,37 +105,37 @@
 					font-weight: $FONT--WEIGHT---EXTRALIGHT;
 					margin-top: -1px;
 				}
-				
+
 			}
-			
+
 		}
-		
+
 		.x-grid3-row-table {
-		
+
 			.x-grid3-cell .x-grid3-cell-inner label {
 				line-height: 32px;
 				color: #818588;
 			}
-			
+
 			.x-btn-text-icon .x-btn-icon-small-left .x-btn-text {
 				background: #F44336;
 				margin-top: 4px;
 				height: 24px;
 				padding: 0 4px;
 				color: rgb(239, 239, 239);
-			
+
 				img {
 					display: none !important;
 				}
-			
+
 			}
-			
+
 		}
-	
+
 	}
-	
+
 	.x-grid3-hd-row {
-	
+
 		.x-grid3-hd {
 			border-left-color: #818588;
 			border-right-color: #b0b2b3;
@@ -145,7 +145,7 @@
 		.x-grid3-hd.x-grid3-hd-menu-open div {
 			background: rgb(142, 145, 148) !important;
 		}
-	
+
 	}
 
 	.x-grid3-col-displayName table {
@@ -155,7 +155,7 @@
 	.x-grid3-td-locale img {
 		margin-top: 8px;
 	}
-	
+
 	.x-grid3-td-nodeWrapper button {
 		font-size: 13px !important;
 	}
@@ -197,15 +197,141 @@
 			.x-tool-maximize {
 				display: none;
 			}
-		
+
 		}
-	
+
 	}
-	
+
 	.x-window-body {
 		position: fixed;
 		width: calc(100% - 16px ) !important;
 		height: calc(100% - 54px ) !important;
 	}
+
+}
+
+
+/***********************************************/
+/* PUBLICATION DASHBOARD ***********************/
+/***********************************************/
+
+
+.workflowactiondialog-card.engine-panel {
+
+	> div.x-panel-header .x-panel-header-text {
+	    color: #a3a3a3;
+	    display: inline-block;
+	    position: fixed;
+	    width: 100%;
+	    left: 70px;
+	    top: 96px;
+
+			&:before {
+			    display: none;
+			}
+	}
+
+	> .x-panel-bwrap {
+	    margin-top: 16px;
+	}
+
+	&:before {
+		content: "Publication dashboard" !important;
+		width: 380px !important;
+	}
+
+
+	/* Footer buttons bar */
+
+	> .x-panel-bwrap > .x-panel-bbar {
+	    background: #474a4c;
+	    width: 100% !important;
+	    position: fixed;
+	    height: 82px;
+
+			.x-panel-fbar .x-toolbar-cell {
+
+				&:nth-child(1) {
+				    position: relative;
+				    top: 0;
+				    padding-bottom: 20px;
+				    padding-top: 20px;
+
+						.x-btn.x-btn-noicon button {
+						    background: #f26d4f !important;
+						}
+
+				}
+
+				&:nth-child(2) {
+				    padding-top: 20px;
+
+						.x-btn.x-btn-noicon button {
+						    background: #a3a3a3 !important;
+						}
+
+				}
+
+				&:nth-child(3) {
+				    padding-top: 20px;
+				}
+
+			}
+
+	}
+
+}
+
+.workflowactiondialog-ctn {
+    width: calc(100% - 144px) !important;
+    margin-left: 72px;
+    margin-right: 72px;
+
+		> .x-border-panel:first-child {
+		    height: 150px !important;
+		    width: calc(100% - 144px) !important;
+		    margin-left: 72px;
+		    margin-right: 72px;
+		}
+
+		.x-grid3-body {
+		    overflow: hidden;
+		}
+
+		.workflow-action-dialog {
+		    border-top: 2px solid #717578;
+		    width: 100% !important;
+		    padding-top: 8px;
+		    margin-top: 8px;
+		}
+
+		.x-grid3 .x-grid3-row-table .x-grid3-cell {
+
+			.x-grid3-cell-inner {
+					line-height: 21px;
+					color: #dddcdc;
+			}
+
+			&:last-child {
+			    width: 340px !important;
+			}
+
+		}
+
+		.x-panel-fbar {
+
+			.x-toolbar-ct {
+					float: right;
+			}
+
+			.x-btn.x-btn-noicon button {
+			    background: #717578 !important;
+			    padding: 0;
+			    font-size: 14px;
+			    margin-right: 16px;
+			    font-weight: 400;
+			}
+
+		}
 
 }

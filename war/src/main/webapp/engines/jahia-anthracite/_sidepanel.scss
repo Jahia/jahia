@@ -39,6 +39,10 @@
 		width: 17px;
 		opacity: 0.5;
 
+		body[data-edit-window-style="settings"] & {
+			top: 62px;
+		}
+
 		&:hover {
 			opacity: 1;
 		}
@@ -76,6 +80,12 @@
 		body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 			display: block;
 		}
+
+		// body[data-edit-window-style="settings"] & {
+		// 	> div:nth-child(2) {
+		// 		display: none;
+		// 	}
+		// }
 
 
 	}
@@ -233,6 +243,7 @@
 			.x-viewport-adminmode &,
 			.x-viewport-dashboardmode & {
 				display: none;
+				display: block;
 			}
 
 			ul.x-tab-strip-top {
@@ -255,13 +266,24 @@
 			body[data-edit-window-style="settings"] & {
 				.x-tab-strip-spacer {
 					/* Close settings Button */
-					left: 10px;
-				    top: 10px;
-				    background: url(./images/icons/icon-close-large.png) no-repeat center center !important;
+					left: 68px;
+				    bottom: 40px;
+				    // background: url(./images/icons/icon-close-large.png) no-repeat center center !important;
 				    width: 50px;
 				    height: 50px;
-				    position: absolute;
+				    // position: absolute;
 				    position: fixed;
+
+					&::before {
+						content: "Done";
+						font-family: Raleway;
+						font-size: 16px;
+						/* text-transform: uppercase; */
+						font-weight: 100;
+						background: #f26d4f;
+						padding: 6px 9px;
+						color: white;
+					}
 				}
 			}
 		}
@@ -283,7 +305,7 @@
 			height: 100%!important;
 			vertical-align: top;
 			background: transparent;
-			margin-top: 20px;
+			margin-top: 60px;
 			margin-left: 11px;
 
 			body[data-INDIGO-GWT-PANEL-TAB="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
@@ -310,6 +332,20 @@
 				    position: absolute;
 				    top: 23px;
 					left: 70px;
+
+					/* DEV TEMP */
+
+
+
+					body[data-edit-window-style="settings"] & {
+						top:50px;
+						left: 70px;
+
+						font-size: 36px;
+						font-weight: 100;
+					}
+
+					/* END TEMP */
 				}
 
 				> .x-border-layout-ct {
@@ -495,10 +531,10 @@
 
 		}
 	}
-	
-	
+
+
 	// Highlight item when menu is open (PAGES tab)
-	
+
 	.x-grid3 .x-grid3-row.context-menu-open {
 		background: $COLOUR--CREAM_CLOUDS !important;
 	}
@@ -525,7 +561,7 @@ $side_panel__tab_buttons: (
 	("#JahiaGxtSearchTab",   			$text_search,    	550,			"none",				572),
 	("#JahiaGxtCategoryBrowseTab",   	$text_taxonomy,    	550,			"none",				572),
 	("#JahiaGxtChannelsTab",   			$text_devices,    	270,			"none",				"none"),
-	("#JahiaGxtSettingsTab",   			$text_settings,    	260,			"none",				"none")
+	("#JahiaGxtSettingsTab",   			$text_site_settings,    	260,			"none",				"none")
 );
 
 @each $tab_button in $side_panel__tab_buttons {

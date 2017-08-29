@@ -2093,6 +2093,29 @@
         background: $TREE--ROW--ICON---SELECTED_HOVER!important;
     }
 
+
+
+    %CSS_BLOCK--TREE--ROW--BG---UP\:SETTINGS {
+		padding: 4px 0 4px 10px;
+        background: $COLOUR--TRANSPARENT !important;
+        border-left: 1px solid #c5c5c5!important;
+
+    }
+
+    %CSS_BLOCK--TREE--ROW--BG---HOVER\:SETTINGS {
+        background: $TREE--ROW--BG--COLOUR---HOVER!important;
+    }
+
+    %CSS_BLOCK--TREE--ROW--BG---SELECTED\:SETTINGS {
+        background-color: $COLOUR--TRANSPARENT !important;
+        border-left: 3px solid #f26d4f!important;
+        margin-left: -1px;
+    }
+
+    %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER\:SETTINGS {
+        background: $TREE--ROW--ICON---SELECTED_HOVER!important;
+    }
+
 	// Personalised Tree Icons
 	// You can use these placeholders to personalise each trees icons.
 	// If left blank then they will assume GWT original icons.

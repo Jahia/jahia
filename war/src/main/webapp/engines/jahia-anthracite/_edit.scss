@@ -54,6 +54,11 @@
 
 
 		/* ADMIN MODE */
+
+		#JahiaGxtSidePanelTabs {
+			background: red!important;
+		}
+
 		#JahiaGxtSidePanelTabs .tab_systemSiteSettings {
 			.x-viewport-adminmode & {
 				left: 150px;
@@ -97,7 +102,7 @@
 		}
 
 		/* Do all this with JS instead of generating CSS, as it creates thousands of lines ... */
-		#JahiaGxtSidePanelTabs {
+		#JahiaGxtSidePanelTabsXXXX {
 			.x-viewport-adminmode & {
 				@for $i from 0 through 50 {
 			        &[current-sub-menu="#{$i}"] {

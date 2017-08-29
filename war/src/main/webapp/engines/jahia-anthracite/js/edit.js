@@ -363,7 +363,7 @@ Dex.dumpQueue();
         settingsChanged: function(value){
             // console.log("::: XXX ::: data-sitesettings HAS CHANGED", value);
 
-            if(data.body.getAttribute("data-sitesettings") == "true" && data.body.getAttribute.attr("data-edit-window-style") != "settings"){
+            if(data.body.getAttribute("data-sitesettings") == "true" && data.body.getAttribute("data-edit-window-style") != "settings"){
                 eventHandlers.clickSidePanelSettingsTab(true);
             }
         },
@@ -862,7 +862,7 @@ Dex.dumpQueue();
                 $(".window-iframe").contents().find("body").attr("style", data.sidePanelTabs.iframeBodyStyle);
 
             }
-			
+
 			eventHandlers.updatePageMenuPositions()
 
         },

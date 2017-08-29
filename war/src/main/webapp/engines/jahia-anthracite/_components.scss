@@ -1450,6 +1450,10 @@ form,
 		/* Another List Container */
 		height: 100%!important;
 		width: 100%!important;
+
+		body[data-edit-window-style="settings"] & {
+			padding-left: 1px;
+		}
 	}
 
 	.x-grid3-viewport {
@@ -1470,6 +1474,14 @@ form,
 		border: none;
 
 		@extend %CSS_BLOCK--TREE--ROW--BG---UP !optional;
+
+		body[data-edit-window-style="settings"] & {
+			@extend %CSS_BLOCK--TREE--ROW--BG---UP\:SETTINGS !optional;
+
+			img {
+				display: none!important;
+			}
+		}
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
 			background-color: $TREE--ROW--BG--COLOUR---UP\:SEARCH_RESULT!important;
@@ -1523,6 +1535,10 @@ form,
 			/* Line Selected */
 			@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED !optional;
 
+			body[data-edit-window-style="settings"] & {
+				@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED\:SETTINGS !optional;
+			}
+
 			body[data-INDIGO-PICKER-SEARCH="open"] & {
 				background-color: $TREE--ROW--BG--COLOUR---SELECTED\:SEARCH_RESULT!important;
 			}
@@ -1542,8 +1558,14 @@ form,
 			.x-tree3-node-text {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED !optional;
 
+
+
 				body[data-INDIGO-PICKER-SEARCH="open"] & {
 					color: $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT!important;
+				}
+
+				body[data-edit-window-style="settings"] & {
+					@include text(14px !important, #313131 !important, $FONT--WEIGHT---NORMAL !important);
 				}
 
 				&::after {
@@ -1642,6 +1664,10 @@ form,
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
 			@include text(12px !important, $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT !important, $FONT--WEIGHT---EXTRALIGHT !important);
 
+		}
+
+		body[data-edit-window-style="settings"] & {
+			@include text(14px !important, $TREE--ROW--FONT--COLOUR---UP !important, $FONT--WEIGHT---EXTRALIGHT !important);
 		}
 
 
@@ -1761,7 +1787,7 @@ form,
 
 	.x-grid3 {
 		background: #6b7074;
-		
+
 		.x-grid3-header {
 			display: table-cell;
 			background: #848a8e;
@@ -1771,18 +1797,18 @@ form,
 		}
 
 	}
-	
+
 	.x-panel-header {
 		display: block !important;
 		width: 100%;
 		color: #f1f1f1;
-		
+
 		.x-panel-toolbar {
 			margin-right: 24px;
 		}
 
 	}
-	
+
 	.x-panel-bwrap {
 		margin-right: 24px;
 	}
@@ -1796,30 +1822,30 @@ form,
 .wcag-warning-grid {
 
 	.x-grid3 {
-	
+
 		.x-grid3-body {
 			overflow-y: scroll !important;
 			overflow-x: hidden;
 			max-height: 84px !important;
 		}
-			
+
 		.x-grid3-viewport {
 			height: auto !important;
 		}
-		
+
 		.x-grid3-row {
 			background: #6b7074 !important;
 			margin-top: 5px;
-			
+
 			td.x-grid3-cell {
 				border-right-color: #6b7074 !important;
 				line-height: 19px;
 				color: #dddcdc;
-				
+
 				.x-grid3-col-message {
 					padding-top: 5px;
 				}
-				
+
 				.x-grid3-col-example a {
 					color: $COLOUR--WHITE_CLOUDS;
 					text-decoration: none;
@@ -1829,13 +1855,13 @@ form,
 				}
 
 			}
-			
+
 			.x-grid3-td-numberer {
 				background: #6b7074;
 			}
 
 		}
-		
+
 		.x-grid3-cell-inner.x-grid3-col-numberer {
 			color: #fff;
 			text-align: center;
@@ -1843,29 +1869,29 @@ form,
 			border-radius: 42px;
 			font-weight: 600;
 		}
-		
+
 		.x-grid3-col-type img {
 			background: none !important;
 			background-image: url(./images/icons/ic_warning@2x.png) !important;
 			background-size: contain !important;
 		}
-		
+
 		.x-grid3-col-context img,
 		.x-grid3-col-code img {
 			background: none !important;
 			background-image: url(./images/icons/ic_info_outline@2x.png) !important;
 			background-size: contain !important;
 		}
-		
+
 		td.x-grid3-hd-over .x-grid3-hd-inner,
 		td.x-grid3-hd-menu-open .x-grid3-hd-inner {
 			background: #8e9194 !important;
 		}
-		
+
 		.x-grid3-scroller {
 			overflow-x: hidden !important;
 		}
-	
+
 	}
 
 }
@@ -2070,7 +2096,7 @@ form,
 	background: $RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR!important;
 	padding: 20px!important;
 	display: block;
-	
+
 	.cke_dialog_ui_text input {
 		padding: 3px 4px !important;	// Fix for Image Properties modal inputs
 	}

@@ -73,9 +73,9 @@ import java.util.List;
  * Date: 20 déc. 2007
  * Time: 11:53:45
  */
-public class AddedNodeFact extends AbstractNodeFact implements Updateable {
+public class AddedNodeFact extends AbstractNodeFact implements Updateable, ModifiedNodeFact {
     private static Logger logger = LoggerFactory.getLogger(AddedNodeFact.class);
-    
+
     static boolean isLocked(JCRNodeWrapper node) throws AccessDeniedException, UnsupportedRepositoryOperationException,
             LockException, RepositoryException {
         boolean locked = node.isLocked();
@@ -253,4 +253,13 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         return node != null ? node.getIdentifier() : null;
     }
 
+    @Override
+    public String getNodeIdentifier() throws RepositoryException {
+        return getIdentifier();
+    }
+
+    @Override
+    public String getNodeType() throws RepositoryException {
+        return getNode().getPrimaryNodeTypeName();
+    }
 }

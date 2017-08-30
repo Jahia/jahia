@@ -68,7 +68,7 @@ import java.util.Map;
  * User: toto
  */
 
-public class ChangedPropertyFact implements Updateable {
+public class ChangedPropertyFact implements Updateable, ModifiedPropertyFact {
     private static Logger logger = LoggerFactory.getLogger(ChangedPropertyFact.class);
 
     private String path;
@@ -361,5 +361,25 @@ public class ChangedPropertyFact implements Updateable {
 
     public List<String> getInstalledModules() {
         return nodeWrapper.getInstalledModules();
+    }
+
+    @Override
+    public String getWorkspace() throws RepositoryException {
+        return getNode().getWorkspace();
+    }
+
+    @Override
+    public JCRSessionWrapper getSession() throws RepositoryException {
+        return getNode().getSession();
+    }
+
+    @Override
+    public String getNodeIdentifier() throws RepositoryException {
+        return getNode().getIdentifier();
+    }
+
+    @Override
+    public String getNodeType() throws RepositoryException {
+        return getNode().getNodeType();
     }
 }

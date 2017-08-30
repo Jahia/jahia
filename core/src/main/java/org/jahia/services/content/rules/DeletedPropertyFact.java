@@ -44,6 +44,7 @@
 package org.jahia.services.content.rules;
 
 import org.drools.core.spi.KnowledgeHelper;
+import org.jahia.services.content.JCRSessionWrapper;
 
 import javax.jcr.RepositoryException;
 
@@ -53,7 +54,7 @@ import javax.jcr.RepositoryException;
  * Date: 17 janv. 2008
  * Time: 15:20:31
  */
-public class DeletedPropertyFact {
+public class DeletedPropertyFact implements ModifiedPropertyFact {
     private String nodePath;
     private AddedNodeFact node;
     private String name;
@@ -93,5 +94,25 @@ public class DeletedPropertyFact {
      */
     public String getOperationType() {
         return node.getOperationType();
+    }
+
+    @Override
+    public String getWorkspace() throws RepositoryException {
+        return getNode().getWorkspace();
+    }
+
+    @Override
+    public JCRSessionWrapper getSession() throws RepositoryException {
+        return getNode().getSession();
+    }
+
+    @Override
+    public String getNodeIdentifier() throws RepositoryException {
+        return getNode().getIdentifier();
+    }
+
+    @Override
+    public String getNodeType() throws RepositoryException {
+        return getNode().getNodeType();
     }
 }

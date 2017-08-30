@@ -57,7 +57,7 @@ import java.util.List;
  *
  * @author toto
  */
-public class DeletedNodeFact implements NodeFact {
+public class DeletedNodeFact implements NodeFact, ModifiedNodeFact {
     private String path;
     private String identifier;
     private JCRSessionWrapper session;
@@ -155,5 +155,15 @@ public class DeletedNodeFact implements NodeFact {
 
     public void setTypes(List<String> types) {
         this.types = types;
+    }
+
+    @Override
+    public String getNodeIdentifier() throws RepositoryException {
+        return getIdentifier();
+    }
+
+    @Override
+    public String getNodeType() throws RepositoryException {
+        return types.get(0);
     }
 }

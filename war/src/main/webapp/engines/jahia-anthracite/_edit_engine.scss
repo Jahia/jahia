@@ -18,7 +18,12 @@
 
 }*/
 
-.engine-panel {
+
+
+
+
+.engine-panel,
+.engine-window {
 	z-index: $ZINDEX--SIDE_PANEL--EDIT_ENGINE;
 	background: $EDIT_ENGINE--BG--COLOUR;
     position: fixed!important;
@@ -26,6 +31,140 @@
     left: 0!important;
     width: 100%!important;
     height: 100%;
+
+	.x-tab-panel {
+		// Edit Engine COntent Container
+		width: 100%!important;
+		height: 100%!important;
+		border: none!important;
+
+		.x-tab-panel-header {
+			// Tab list menu
+			width: 387px !important;
+			display: inline-block;
+			box-sizing: border-box;
+			vertical-align: top;
+			border: none;
+			height: 100%;
+			background: none;
+			padding: 0 0 0 73px;
+
+			.x-tab-strip-wrap {
+				// Menu Container
+				width: 100%;
+				height: 100%;
+				padding-left: -1px;
+
+				.x-tab-strip {
+					// At last, the final container
+					width: 100%;
+					height: auto;
+					border:none;
+					border-left: 1px solid #4b4b4b;
+					background: none;
+					padding: 0 0 0 5px;
+					margin: 0;
+
+					li {
+						// Tab entry
+						float: none;
+						margin-left: 0;
+						display: block;
+
+						&.x-tab-strip-active {
+							border-left: 3px solid #eaeaea;
+							left: -7px;
+							padding-left: 4px;
+						}
+
+						.x-tab-right {
+							// Button container
+							background: none;
+							padding: 0;
+							margin: 0;
+
+							.x-tab-left {
+								// ANother button container
+								background: none;
+								padding: 0;
+
+								.x-tab-strip-inner {
+									// Yet another button container
+									background: none;
+
+
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.x-tab-strip-spacer {
+				// Dont kjnow what this does yet
+
+			}
+
+		}
+
+		.x-tab-panel-body {
+			// Tab content container
+
+			display: inline-block;
+			width: calc(100% - 456px) !important;
+			box-sizing: border-box;
+			vertical-align: top;
+			height: 100% !important;
+			background: none;
+
+			> .x-panel-mc {
+				// Default tab content window
+				height: 100%!important;
+				width: 100%!important;
+				background: $COLOUR--TRANSPARENT;
+				border:none!important;
+				padding:0;
+
+				> .x-grid-panel {
+					top: 0!important;
+					width: 100%!important;
+					height: 100%!important;
+				}
+
+				> .x-panel {
+					// Tab content container
+					border:none!important;
+					height: 100%;
+					width: 100%!important;
+
+					.x-panel-header {
+						// Seems to be unused
+						display: none;
+
+					}
+
+					.x-panel-bwrap {
+						// Tab COntent Container
+						height:100%;
+
+						.x-panel-body {
+							// Form container
+
+
+						}
+
+						.x-panel-footer {
+							// Unused
+							display: none;
+						}
+					}
+
+				}
+			}
+
+
+		}
+	}
 
 
 	.x-form-text {
@@ -391,6 +530,7 @@
 	// EDIT ENGINE - STRUCTURE
 
 	// HEADER
+	> div.x-window-tl .x-window-header,
 	> div.x-panel-header {
 
 		left: 0 !important;
@@ -410,6 +550,7 @@
 
 		}
 
+		.x-window-header-text,
 		.x-panel-header-text {
 			// Element Title
 			position: absolute;
@@ -434,6 +575,7 @@
 	}
 
 	// BODY
+	> .x-window-bwrap,
 	> .x-panel-bwrap {
 
 		height: calc(100% - 130px);
@@ -453,158 +595,21 @@
 
 		}
 
+		.x-window-body,
 		.x-panel-body {
 			// Container for body
 			width: 100%!important;
 			height: 100%!important;
 			overflow: scroll;
 
-			.edit-content-engine,
-			.create-content-engine,
-			.engine-cards,
-			.workflow-action-dialog {
-
+			> div {
 				width: 100%!important;
 				height: 100%!important;
-
-				#JahiaGxtEditEngineTabs,
-				&#JahiaGxtEngineCards,
-				> div {
-					// Edit Engine COntent Container
-					width: 100%!important;
-					height: 100%!important;
-					border: none!important;
-
-					.x-tab-panel-header {
-						// Tab list menu
-						width: 387px !important;
-						display: inline-block;
-						box-sizing: border-box;
-						vertical-align: top;
-						border: none;
-						height: 100%;
-						background: none;
-						padding: 0 0 0 73px;
-
-						.x-tab-strip-wrap {
-							// Menu Container
-							width: 100%;
-							height: 100%;
-							padding-left: -1px;
-
-							.x-tab-strip {
-								// At last, the final container
-								width: 100%;
-								height: auto;
-								border:none;
-								border-left: 1px solid #4b4b4b;
-								background: none;
-								padding: 0 0 0 5px;
-								margin: 0;
-
-
-
-								li {
-									// Tab entry
-									float: none;
-									margin-left: 0;
-									display: block;
-
-									&.x-tab-strip-active {
-										border-left: 3px solid #eaeaea;
-									    left: -7px;
-									    padding-left: 4px;
-									}
-
-									.x-tab-right {
-										// Button container
-										background: none;
-										padding: 0;
-										margin: 0;
-
-										.x-tab-left {
-											// ANother button container
-											background: none;
-											padding: 0;
-
-											.x-tab-strip-inner {
-												// Yet another button container
-												background: none;
-
-
-											}
-										}
-									}
-								}
-							}
-						}
-
-						.x-tab-strip-spacer {
-							// Dont kjnow what this does yet
-
-						}
-					}
-
-					.x-tab-panel-body {
-						// Tab content container
-						display: inline-block;
-						width: calc(100% - 456px) !important;
-						box-sizing: border-box;
-						vertical-align: top;
-						height: 100% !important;
-						background: none;
-
-						> .x-panel-mc {
-							// Default tab content window
-							height: 100%!important;
-							width: 100%!important;
-							background: $COLOUR--TRANSPARENT;
-							border:none!important;
-							padding:0;
-
-							> .x-grid-panel {
-								top: 0!important;
-								width: 100%!important;
-								height: 100%!important;
-							}
-
-							> .x-panel {
-								// Tab content container
-								border:none!important;
-								height: 100%;
-								width: 100%!important;
-
-								.x-panel-header {
-									// Seems to be unused
-									display: none;
-
-								}
-
-								.x-panel-bwrap {
-									// Tab COntent Container
-									height:100%;
-
-									.x-panel-body {
-										// Form container
-
-
-									}
-
-									.x-panel-footer {
-										// Unused
-										display: none;
-									}
-								}
-
-							}
-						}
-
-					}
-				}
-
 			}
+
 		}
 
+		.x-window-bbar,
 		> .x-panel-bbar {
 			// Footer action bar
 			display: block;
@@ -655,6 +660,8 @@
 					}
 				}
 			}
+
+
 
 		}
 

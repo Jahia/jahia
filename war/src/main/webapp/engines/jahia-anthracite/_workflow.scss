@@ -284,8 +284,6 @@
 
 .workflowactiondialog-ctn {
     width: calc(100% - 144px) !important;
-    margin-left: 72px;
-    margin-right: 72px;
 
 		> .x-border-panel:first-child {
 		    height: 150px !important;
@@ -301,6 +299,10 @@
 		    width: 100% !important;
 		    padding-top: 8px;
 		    margin-top: 8px;
+
+			> div {
+				width: 100%!important;
+			}
 		}
 
 		.x-grid3 .x-grid3-row-table .x-grid3-cell {

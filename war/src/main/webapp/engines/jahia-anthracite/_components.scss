@@ -1717,6 +1717,7 @@ form,
 	.x-grid3-row-table {
 		// Table containing actual List Item
 		height: 100%;
+		display: block;
 
 		.x-grid3-cell {
 			/* Cell Containing the List Item */

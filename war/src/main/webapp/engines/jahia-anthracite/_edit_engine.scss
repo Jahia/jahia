@@ -460,19 +460,21 @@
 			overflow: scroll;
 
 			.edit-content-engine,
-			.create-content-engine {
+			.create-content-engine,
+			.engine-cards {
 
 				width: 100%!important;
 				height: 100%!important;
 
 				#JahiaGxtEditEngineTabs,
+				&#JahiaGxtEngineCards,
 				> div {
 					// Edit Engine COntent Container
 					width: 100%!important;
 					height: 100%!important;
 					border: none!important;
 
-					> .x-tab-panel-header {
+					.x-tab-panel-header {
 						// Tab list menu
 						width: 387px !important;
 						display: inline-block;

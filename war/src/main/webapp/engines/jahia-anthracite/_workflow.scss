@@ -233,11 +233,21 @@
 
 	> .x-panel-bwrap {
 	    margin-top: 16px;
+
+			.x-panel-body.x-panel-body-noborder {
+			    overflow: hidden !important;
+			}
+
 	}
 
 	&:before {
 		content: "Publication dashboard" !important;
 		width: 380px !important;
+	}
+
+	.x-tab-panel .x-tab-panel-body {
+		overflow: auto;
+		overflow-x: hidden;
 	}
 
 

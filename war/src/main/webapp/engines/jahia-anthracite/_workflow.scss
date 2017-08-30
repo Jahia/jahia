@@ -290,19 +290,38 @@
 		    width: 100% !important;
 		}
 
+		.x-border-panel > .x-panel-bwrap {
+			width: calc(100% - 162px) !important;
+		}
+
 		.x-grid3-body {
-		    overflow: hidden;
+			padding: 0 72px;
 		}
 
 		.workflow-action-dialog {
-		    border-top: 2px solid #717578;
-		    width: 100% !important;
-		    padding-top: 8px;
-		    margin-top: 8px;
+			border-top: 1px solid #717578;
+			width: 100% !important;
+			padding-top: 16px;
+			margin-top: 8px;
 
 			> div {
 				width: 100%!important;
 			}
+
+			.x-border-panel img.gwt-Image {
+				background: #f26d4f;
+				position: relative;
+				overflow: hidden;
+				width: 11px;
+				height: 11px;
+				padding: 11px 11px 0 0;
+				box-sizing: border-box;
+				border-radius: 50%;
+				margin-left: 4px;
+				margin-right: 4px;
+				margin-top: 1px;
+			}
+
 		}
 
 		.x-grid3 .x-grid3-row-table .x-grid3-cell {
@@ -332,6 +351,16 @@
 			    font-weight: 400;
 			}
 
+		}
+
+		.x-border-layout-ct .x-border-panel {
+			height: 24px !important;
+			margin-top: 14px;
+			color: #eaeaea;
+		}
+
+		.x-tab-panel-body {
+			border-color: #5c6164;
 		}
 
 }

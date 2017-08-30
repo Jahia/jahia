@@ -90,18 +90,22 @@ public class DeletedNodeFact implements NodeFact, ModifiedNodeFact {
         workspace = parent.getNode().getSession().getWorkspace().getName();
     }
 
+    @Override
     public String toString() {
         return "deleted " + path;
     }
 
+    @Override
     public String getPath() {
         return path;
     }
 
+    @Override
     public AddedNodeFact getParent() {
         return parent;
     }
 
+    @Override
     public String getIdentifier() {
         return identifier;
     }
@@ -110,6 +114,7 @@ public class DeletedNodeFact implements NodeFact, ModifiedNodeFact {
         this.identifier = identifier;
     }
 
+    @Override
     public JCRSessionWrapper getSession() throws RepositoryException {
         return session;
     }
@@ -118,10 +123,12 @@ public class DeletedNodeFact implements NodeFact, ModifiedNodeFact {
         this.session = session;
     }
 
+    @Override
     public String getWorkspace() throws RepositoryException {
         return workspace;
     }
 
+    @Override
     public String getLanguage() throws RepositoryException {
         return parent.getLanguage();
     }
@@ -133,10 +140,12 @@ public class DeletedNodeFact implements NodeFact, ModifiedNodeFact {
      * @throws javax.jcr.RepositoryException in case of a repository access error
      * @since Jahia 6.6
      */
+    @Override
     public String getOperationType() {
         return operationType;
     }
 
+    @Override
     public void setOperationType(String operationType) {
         this.operationType = operationType;
     }

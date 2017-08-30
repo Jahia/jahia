@@ -61,6 +61,7 @@ public class MovedNodeFact extends AbstractNodeFact implements ModifiedNodeFact 
         return originalPath;
     }
 
+    @Override
     public String toString() {
         return "moved "+node.getPath();
     }

@@ -73,14 +73,17 @@ public class DeletedPropertyFact implements ModifiedPropertyFact {
         name = property;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public AddedNodeFact getNode() {
         return node;
     }
 
+    @Override
     public String toString() {
         return "deleted " + nodePath + "/" + name;
     }

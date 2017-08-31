@@ -56,6 +56,7 @@ import org.apache.jackrabbit.util.Text;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.settings.SettingsBean;
 import org.springframework.core.io.Resource;
 
@@ -166,6 +167,17 @@ public final class WebUtils {
                 "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 295075800000L);
+    }
+
+    /**
+     * Sets proper response headers in case of file download, based on node name as file name
+     * @param response current response
+     * @param node node that will be used to generate the file name
+     * @param targetFileExtension file extension
+     */
+    public static void setFileDownloadHeaders(HttpServletResponse response, JCRNodeWrapper node, String targetFileExtension) {
+        response.setHeader("Content-Disposition", "attachment; filename=\""
+                + StringUtils.substringBeforeLast(node.getName(), ".") + "." + targetFileExtension + "\"");
     }
     
     /**

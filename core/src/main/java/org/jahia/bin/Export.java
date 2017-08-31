@@ -233,6 +233,7 @@ public class Export extends JahiaController implements ServletContextAware {
                 response.setContentType("text/xml");
                 //make sure this file is not cached by the client (or a proxy middleman)
                 WebUtils.setNoCacheHeaders(response);
+                WebUtils.setFileDownloadHeaders(response, node, "xml");
 
                 if ("template".equals(request.getParameter(CLEANUP))) {
                     params.put(ImportExportService.XSL_PATH, templatesCleanupXsl);

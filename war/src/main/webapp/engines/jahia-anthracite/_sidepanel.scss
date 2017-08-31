@@ -39,7 +39,8 @@
 		width: 17px;
 		opacity: 0.5;
 
-		body[data-edit-window-style="settings"] & {
+		body[data-edit-window-style="settings"] &,
+		.x-viewport-adminmode & {
 			top: 62px;
 		}
 
@@ -91,7 +92,7 @@
 	}
 
 	.x-panel-body {
-		width: 100% !important;
+		// width: 100% !important;
 		overflow: visible;
 		z-index: $ZINDEX--SIDE_PANEL--BODY;
 		position: relative;
@@ -139,10 +140,13 @@
 	#JahiaGxtSidePanelTabs {
 		@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER;
 
-		body[data-indigo-gwt-side-panel="open"] & {
+		body[data-indigo-gwt-side-panel="open"] &,
+		.x-viewport-adminmode & {
 			@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER---OPEN;
 
 		}
+
+
 
 		position: fixed;
 	    width: 60px !important;
@@ -215,7 +219,7 @@
 			width: auto!important;
 			top: 0!important;
 
-			.x-viewport-adminmode &,
+			// .x-viewport-adminmode &,
 			.x-viewport-dashboardmode & {
 				display: block;
 			}
@@ -240,7 +244,7 @@
 			position: relative;
 			z-index: $ZINDEX--SIDE_PANEL--CONTAINER_SUB;
 
-			.x-viewport-adminmode &,
+			// .x-viewport-adminmode &,
 			.x-viewport-dashboardmode & {
 				display: none;
 				display: block;
@@ -253,7 +257,8 @@
 				padding: 0;
 				margin: 0 0 0 5px;
 
-				body[data-edit-window-style="settings"] & {
+				body[data-edit-window-style="settings"] &,
+				.x-viewport-adminmode & {
 					/* Hide when settings menu open - need to keep the elements there for GWT so just slide them out ofview */
 					position: absolute;
 					left: -90px;
@@ -264,6 +269,7 @@
 			}
 
 			body[data-edit-window-style="settings"] & {
+
 				.x-tab-strip-spacer {
 					/* Close settings Button */
 					left: 68px;
@@ -273,6 +279,10 @@
 				    height: 50px;
 				    // position: absolute;
 				    position: fixed;
+
+					.x-viewport-adminmode & {
+						display: none!important;
+					}
 
 					&::before {
 						content: "Done";
@@ -295,7 +305,6 @@
 
 			width: calc(100% - 71px) !important;
 
-			.x-viewport-adminmode &,
 			.x-viewport-dashboardmode & {
 				width: 100%!important;
 				margin-left: 0;
@@ -319,7 +328,8 @@
 				box-sizing: border-box;
 				display: none;
 
-				body[data-indigo-gwt-side-panel="open"] & {
+				body[data-indigo-gwt-side-panel="open"] &,
+				.x-viewport-adminmode & {
 					display: block
 				}
 
@@ -337,12 +347,19 @@
 
 
 
-					body[data-edit-window-style="settings"] & {
+					body[data-edit-window-style="settings"] &,
+					.x-viewport-adminmode & {
 						top:50px;
 						left: 70px;
 
 						font-size: 36px;
 						font-weight: 100;
+					}
+
+					.x-viewport-adminmode & {
+						content: "DX Admin" !important;
+
+					    padding-left: 39px;
 					}
 
 					/* END TEMP */
@@ -682,7 +699,8 @@ $side_panel__tab_buttons: (
 						background-image: url($_icon_off);
                     }
 
-                    body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+                    body[data-INDIGO-GWT-SIDE-PANEL="open"] &,
+					.x-viewport-adminmode & {
 						@if ($_tab_ID == '#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
 							background-image: url($_icon_closed);
 

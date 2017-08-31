@@ -1451,7 +1451,8 @@ form,
 		height: 100%!important;
 		width: 100%!important;
 
-		body[data-edit-window-style="settings"] & {
+		body[data-edit-window-style="settings"] &,
+		.x-viewport-adminmode & {
 			padding-left: 1px;
 		}
 	}
@@ -1475,7 +1476,8 @@ form,
 
 		@extend %CSS_BLOCK--TREE--ROW--BG---UP !optional;
 
-		body[data-edit-window-style="settings"] & {
+		body[data-edit-window-style="settings"] &,
+		.x-viewport-adminmode & {
 			@extend %CSS_BLOCK--TREE--ROW--BG---UP\:SETTINGS !optional;
 
 			img {
@@ -1535,7 +1537,8 @@ form,
 			/* Line Selected */
 			@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED !optional;
 
-			body[data-edit-window-style="settings"] & {
+			body[data-edit-window-style="settings"] &,
+			.x-viewport-adminmode & {
 				@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED\:SETTINGS !optional;
 			}
 
@@ -1564,7 +1567,8 @@ form,
 					color: $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT!important;
 				}
 
-				body[data-edit-window-style="settings"] & {
+				body[data-edit-window-style="settings"] &,
+				.x-viewport-adminmode & {
 					@include text(14px !important, #313131 !important, $FONT--WEIGHT---NORMAL !important);
 				}
 
@@ -1666,7 +1670,8 @@ form,
 
 		}
 
-		body[data-edit-window-style="settings"] & {
+		body[data-edit-window-style="settings"] &,
+		.x-viewport-adminmode & {
 			@include text(14px !important, $TREE--ROW--FONT--COLOUR---UP !important, $FONT--WEIGHT---EXTRALIGHT !important);
 		}
 

@@ -5,7 +5,131 @@
 /* ADMIN MODE **********************************/
 /***********************************************/
 
+.x-viewport-adminmode,
+body[data-edit-window-style="settings"] {
+
+	#JahiaGxtSettingsTab & {
+		&::before {
+			content: "Server Settings";
+		}
+	}
+
+	.x-grid3 .x-grid3-row {
+		height: 29px!important;
+
+		&.x-grid3-row-over {
+			cursor: pointer;
+		}
+
+		&:last-child {
+			margin-top: 20px;
+		}
+
+		table,
+		tbody,
+		tr,
+		td {
+			display: block;
+		}
+
+		&.unselectable-row {
+			// background: red!important;
+			pointer-events: none;
+			margin-top: 20px;
+			margin-bottom: 3px;
+
+			.x-tree3-node-joint {
+				width: 100%!important;
+				display: inline-block!important;
+				opacity: 0;
+				position: absolute!important;
+				background: url($ICON--ARROW_EXPAND---GREY) no-repeat left 6px center !important;
+
+				&:hover {
+					cursor: pointer;
+				}
+			}
+
+			span.x-tree3-node-text {
+				// margin-left: 11px;
+				// font-style: italic;
+				// color: rgb(122, 126, 128)!important;
+				// text-transform: uppercase;
+				// font-size: 11px!important;
+				// font-weight: 700!important;
+				// color: #7a7e80 !important;
+
+				&::after {
+					content: " ...";
+				}
+			}
+		}
+
+		.x-tree3-el {
+			img {
+
+				&[style='height:18px;width:18px;'] {
+					border-left: 1px solid #c4cace;
+					display: inline-block!important;
+					opacity: 1!important;
+					height: 27px!important;
+					margin-left: 1px;
+				}
+
+				&[style='height:18px;width:0px;'] {
+					opacity: 0!important;
+					margin-top: 10px;
+				}
+
+
+
+				&.x-tree3-node-joint {
+					// display: none!important;
+					// opacity: 1!important;
+					position: relative;
+					// left: -5px;
+				}
+
+			}
+
+
+			.x-tree3-node-text {
+				color: #686b6d !important;
+			}
+		}
+
+		// SELECTED
+		&.x-grid3-row-selected {
+			.x-tree3-el {
+				img {
+
+					&[style='height:18px;width:18px;'] {
+						border-left: 3px solid #00a0e3;
+						margin-left: 0px;
+						width: 17px!important;
+					}
+
+
+
+				}
+
+				.x-tree3-node-text {
+					font-family: "Nunito Sans", sans-serif;
+					font-size: 14px !important;
+					color: #00a0e3 !important;
+					font-weight: 400 !important;
+				}
+
+
+			}
+		}
+
+
+	}
+}
+
 .x-viewport-adminmode {
+
 	.x-toolbar-first {
 		background-size: 32px 32px;
 		background: none !important;
@@ -77,15 +201,17 @@
 					display: block!important;
 				}
 
-					position: fixed;
-					top: 10px;
-					left: 5px;
-					z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
-					display: block;
-					background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
-					margin-top: 0;
-					background-size: 32px 32px;
-					opacity: 0.8;
+				position: fixed;
+				top: 54px;
+				left: 60px;
+				z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
+				display: block;
+				background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+				margin-top: 0;
+				background-size: 32px 32px;
+				opacity: 0.9;
+				width: 50px;
+				height: 50px;
  	           body[data-selection-count="0"] & {
 							background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
 							background-size: 32px 32px;
@@ -174,6 +300,7 @@
 
 	> div:nth-child(1) {
 		height: 100%;
+		background: #f1f1f1;
 
 		> div:nth-child(2) {
 			height: 100%;

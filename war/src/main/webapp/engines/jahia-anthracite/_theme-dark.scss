@@ -2096,9 +2096,9 @@
 
 
     %CSS_BLOCK--TREE--ROW--BG---UP\:SETTINGS {
-		padding: 4px 0 4px 10px;
+		// padding: 4px 0 4px 10px;
         background: $COLOUR--TRANSPARENT !important;
-        border-left: 1px solid #c5c5c5!important;
+        // border-left: 1px solid #c5c5c5!important;
 
     }
 
@@ -2108,8 +2108,8 @@
 
     %CSS_BLOCK--TREE--ROW--BG---SELECTED\:SETTINGS {
         background-color: $COLOUR--TRANSPARENT !important;
-        border-left: 3px solid #f26d4f!important;
-        margin-left: -1px;
+        // border-left: 3px solid #f26d4f!important;
+        // margin-left: -1px;
     }
 
     %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER\:SETTINGS {

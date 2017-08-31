@@ -395,6 +395,7 @@ Dex.dumpQueue();
             // Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+                console.log("BLURRRRRER");
                 eventHandlers.closeSidePanel();
             }
 
@@ -403,6 +404,7 @@ Dex.dumpQueue();
         clickAppContainer: function(e){
             var inSidePanel = $(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
             if(inSidePanel.length == 0){
+                console.log("HERE NOW");
                 eventHandlers.closeSidePanel();
             }
         },
@@ -507,26 +509,40 @@ Dex.dumpQueue();
         changedMode: function(mode){
             mode.split(" ").forEach(function(cl) {
                 if (cl.indexOf("x-viewport") == 0) {
+
+                    // Add / remove Anthracite CSS accordingly ...
+                    if(cl == "x-viewport-studiomode"){
+                        // Remove Anthracite CSS style sheet
+                        $('link[rel=stylesheet][href$="edit_en.css"]').remove();
+
+                        // Register the fact that it has been removed
+                        data.css.active = false;
+
+                    } else {
+                        if (!data.css.active) {
+                            // Anthracite CSS has been removed, so plug it back in
+                            $("head").append(data.css.storedCSS);
+                        }
+
+                    }
+
+                    if(cl == "x-viewport-adminmode"){
+                        data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+                    } else {
+                        data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
+                    }
+
                     switch (cl) {
-                        case "x-viewport-studiomode":
-                            // Remove Anthracite CSS style sheet
-                            $('link[rel=stylesheet][href$="edit_en.css"]').remove();
-
-                            // Register the fact that it has been removed
-                            data.css.active = false;
-                            break;
-
-                        case "x-viewport-editmode":
-                        case "x-viewport-contributemode":
                         case "x-viewport-adminmode":
+                            data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no");
+
+                            break;
+                        case "x-viewport-editmode":
+                        case "x-viewport-studiomode":
+                        case "x-viewport-contributemode":
                         case "x-viewport-dashboardmode":
                         default:
-
-                            if (!data.css.active) {
-                                // Anthracite CSS has been removed, so plug it back in
-                                $("head").append(data.css.storedCSS);
-                            }
-
+                            data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
                             break;
                     }
                 }
@@ -830,7 +846,6 @@ Dex.dumpQueue();
 		},
         clickSidePanelTab: function(){
             // User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
-
             var clickedTabID = $(this).attr("id");
 
             data.body.setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
@@ -854,8 +869,9 @@ Dex.dumpQueue();
 
         },
         closeSidePanel: function(){
+            console.log("CLOSE SIDE PANEL");
 
-            if(data.body.getAttribute("data-edit-window-style") !== "settings"){
+            if(data.body.getAttribute("data-edit-window-style") !== "settings" && data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
                 data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
 
                 // Revert iframes body style attribute to what it was originally
@@ -898,12 +914,16 @@ Dex.dumpQueue();
 
         },
         disableIframeClick: function(){
-            // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
-            var iframeBody = $(".window-iframe").contents().find("body");
-            data.sidePanelTabs.iframeBodyStyle = iframeBody.attr("style") || "";
+            console.log('data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL")', data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL"));
+            if(data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && data.body.getAttribute("data-sitesettings") == "false"){
+                // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
+                var iframeBody = $(".window-iframe").contents().find("body");
+                data.sidePanelTabs.iframeBodyStyle = iframeBody.attr("style") || "";
 
-            // Remove pointer events from the iframes body, which means that once a user clicks on the iframe to exit the side panel, the content is not automatically selected.
-            iframeBody.attr("style", data.sidePanelTabs.iframeBodyStyle + " pointer-events: none !important");
+                // Remove pointer events from the iframes body, which means that once a user clicks on the iframe to exit the side panel, the content is not automatically selected.
+                iframeBody.attr("style", data.sidePanelTabs.iframeBodyStyle + " pointer-events: none !important");
+            }
+
         },
         mouseEnterSidePanelTab: function(){
             // Trigger click on Side Panel Tabs on hover
@@ -1044,6 +1064,22 @@ Dex.dumpQueue();
             // HOME BREW EVENT LISTENERS
             // Set up INDIGO listeners (listening to changes in DOM)
             console.log("ATTACHING HOME BREW LISTENERS");
+
+            Dex("#JahiaGxtSettingsTab").onTreeChange(function(tree){
+                console.log("SETTINGS TAB TREE CHANGED ...", tree.length);
+
+                for (n = 0;  n < tree.length; n++){
+                    if($(tree[n]).find(".x-tree3-node-joint").css("background-image") != "none"){
+                        // Branch has children, so disable clicks
+                        console.log($(tree[n]).find(".x-tree3-node-joint").css("background-position"));
+                        $(tree[n]).addClass("unselectable-row");
+
+
+
+
+                    }
+                }
+            });
 
             Dex("#JahiaGxtPagesTab").onTreeChange(eventHandlers.pageTreeUpdate);
 

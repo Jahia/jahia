@@ -240,7 +240,7 @@
                 background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
                 background-size: 32px 32px;
                 margin-top: 0;
-                opacity: 0.8;
+                opacity: 0.9;
 
                 body[data-multiselect="on"] & {
                     background: url(./images/dx_logo_solid-black.png) no-repeat top 3px left 10px;
@@ -513,6 +513,11 @@
             width: 100% !important;
             box-shadow: 0 10px 30px 1px rgba(0, 0, 0, 0.8) !important;
             margin-top: 8px !important;
+
+            body[data-edit-window-style="settings"] & {
+                margin-top: 0px !important;
+
+            }
 
             body[data-selection-count="0"] & {
                 box-shadow: 0 5px 10px 1px rgba(49, 49, 49, 0.5)!important;

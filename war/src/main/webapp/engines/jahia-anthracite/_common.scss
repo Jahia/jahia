@@ -557,17 +557,17 @@ body {
         height: 100%;
         > div:nth-child(2) > div {
 			> div:nth-child(2) {
-				width: 100%!important;
-				pointer-events: none;
+				// width: 100%!important;
+				xpointer-events: none;
 
 				> div {
-					width: 100%!important;
+					// width: 100%!important;
 
 
 					> iframe {
-						margin-top: 8px;
-						margin-left: 60px;
-						width: calc(100% - 60px)!important;
+						// margin-top: 8px;
+						// margin-left: 60px;
+						// width: calc(100% - 60px)!important;
 						pointer-events: all;
 					}
 

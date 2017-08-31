@@ -215,7 +215,7 @@
 /* PUBLICATION DASHBOARD ***********************/
 /***********************************************/
 
-// TO-DO: add sass variables. 
+// TO-DO: add sass variables.
 
 
 .workflowactiondialog-card.engine-panel {
@@ -399,10 +399,15 @@
 
 		}
 
-		.x-border-layout-ct:nth-child(2) form button.x-btn-text {
-			background: #b9bbbc;
-			padding: 8px 16px;
-			margin-top: 8px;
+		.x-border-layout-ct:nth-child(2) {
+			height: auto !important;
+
+			form button.x-btn-text {
+				background: #b9bbbc;
+				padding: 8px 16px;
+				margin-top: 8px;
+			}
+
 		}
 
 }

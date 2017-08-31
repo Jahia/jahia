@@ -215,8 +215,17 @@
 /* PUBLICATION DASHBOARD ***********************/
 /***********************************************/
 
+// TO-DO: add sass variables. 
+
 
 .workflowactiondialog-card.engine-panel {
+
+	.workflow-action-dialog {
+		border-top: 1px solid #717578;
+		width: 100% !important;
+		padding-top: 16px;
+		margin-top: 8px;
+	}
 
 	> div.x-panel-header .x-panel-header-text {
 	    color: #a3a3a3;
@@ -309,10 +318,6 @@
 		}
 
 		.workflow-action-dialog {
-			border-top: 1px solid #717578;
-			width: 100% !important;
-			padding-top: 16px;
-			margin-top: 8px;
 
 			> div {
 				width: 100%!important;
@@ -363,7 +368,7 @@
 
 		}
 
-		.x-border-layout-ct .x-border-panel {
+		.x-border-layout-ct:nth-child(1) > .x-border-panel {
 			height: 24px !important;
 			margin-top: 14px;
 			color: #eaeaea;
@@ -371,6 +376,33 @@
 
 		.x-tab-panel-body {
 			border-color: #5c6164;
+		}
+
+		.x-border-layout-ct:nth-child(2) > .x-border-panel {
+			position: initial !important;
+
+			&:first-child {
+				background: #616669;
+				height: 126px !important;
+				width: calc(100% - 162px) !important;
+				margin-bottom: 30px;
+				margin-top: 8px;
+
+				> .x-component {
+					background: #616669 !important;
+					padding: 4px 8px;
+					color: #dddbdb;
+					border-bottom: 1px solid #717578 !important;
+				}
+
+			}
+
+		}
+
+		.x-border-layout-ct:nth-child(2) form button.x-btn-text {
+			background: #b9bbbc;
+			padding: 8px 16px;
+			margin-top: 8px;
 		}
 
 }

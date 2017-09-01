@@ -40,7 +40,8 @@
 		opacity: 0.5;
 
 		body[data-edit-window-style="settings"] &,
-		.x-viewport-adminmode & {
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
 			top: 62px;
 		}
 
@@ -141,7 +142,8 @@
 		@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER;
 
 		body[data-indigo-gwt-side-panel="open"] &,
-		.x-viewport-adminmode & {
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
 			@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER---OPEN;
 
 		}
@@ -220,9 +222,9 @@
 			top: 0!important;
 
 			// .x-viewport-adminmode &,
-			.x-viewport-dashboardmode & {
-				display: block;
-			}
+			// .x-viewport-dashboardmode & {
+			// 	display: block;
+			// }
 		}
 
 		[data-INDIGO-GWT-SIDE-PANEL="open"] & {
@@ -245,10 +247,10 @@
 			z-index: $ZINDEX--SIDE_PANEL--CONTAINER_SUB;
 
 			// .x-viewport-adminmode &,
-			.x-viewport-dashboardmode & {
-				display: none;
-				display: block;
-			}
+			// .x-viewport-dashboardmode & {
+			// 	display: none;
+			// 	display: block;
+			// }
 
 			ul.x-tab-strip-top {
 				// List for Tab Buttons
@@ -258,7 +260,8 @@
 				margin: 0 0 0 5px;
 
 				body[data-edit-window-style="settings"] &,
-				.x-viewport-adminmode & {
+				.x-viewport-adminmode &,
+				.x-viewport-dashboardmode & {
 					/* Hide when settings menu open - need to keep the elements there for GWT so just slide them out ofview */
 					position: absolute;
 					left: -90px;
@@ -280,7 +283,8 @@
 				    // position: absolute;
 				    position: fixed;
 
-					.x-viewport-adminmode & {
+					.x-viewport-adminmode &,
+					.x-viewport-dashboardmode & {
 						display: none!important;
 					}
 
@@ -305,17 +309,13 @@
 
 			width: calc(100% - 71px) !important;
 
-			.x-viewport-dashboardmode & {
-				width: 100%!important;
-				margin-left: 0;
-				margin-top: 0;
-			}
+
 
 			height: 100%!important;
 			vertical-align: top;
 			background: transparent;
 			margin-top: 60px;
-			margin-left: 11px;
+			// margin-left: 11px;
 
 			body[data-INDIGO-GWT-PANEL-TAB="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
 				margin-top: 52px;
@@ -329,7 +329,8 @@
 				display: none;
 
 				body[data-indigo-gwt-side-panel="open"] &,
-				.x-viewport-adminmode & {
+				.x-viewport-adminmode &,
+				.x-viewport-dashboardmode & {
 					display: block
 				}
 
@@ -348,7 +349,8 @@
 
 
 					body[data-edit-window-style="settings"] &,
-					.x-viewport-adminmode & {
+					.x-viewport-adminmode &,
+					.x-viewport-dashboardmode & {
 						top:50px;
 						left: 70px;
 
@@ -358,6 +360,12 @@
 
 					.x-viewport-adminmode & {
 						content: "DX Admin" !important;
+
+					    padding-left: 39px;
+					}
+
+					.x-viewport-dashboardmode & {
+						content: "DX Home" !important;
 
 					    padding-left: 39px;
 					}
@@ -700,7 +708,8 @@ $side_panel__tab_buttons: (
                     }
 
                     body[data-INDIGO-GWT-SIDE-PANEL="open"] &,
-					.x-viewport-adminmode & {
+					.x-viewport-adminmode &,
+					.x-viewport-dashboardmode & {
 						@if ($_tab_ID == '#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
 							background-image: url($_icon_closed);
 

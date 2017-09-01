@@ -5,6 +5,44 @@
 /***********************************************/
 
 .x-viewport-dashboardmode {
+
+	.editmode-managers-menu {
+		&.x-hide-display {
+			display: block!important;
+		}
+
+		position: fixed;
+		top: 54px;
+		left: 60px;
+		z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
+		display: block;
+		background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+		margin-top: 0;
+		background-size: 32px 32px;
+		opacity: 0.9;
+		width: 50px;
+		height: 50px;
+	   body[data-selection-count="0"] & {
+					background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+					background-size: 32px 32px;
+	   }
+	   &:hover {
+		   opacity: 1;
+	   }
+	   &::after {
+		   content: "";
+	   }
+	   body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+			background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+			background-size: 32px 32px;
+	   }
+
+		   .x-btn-mc {
+			   height: 40px!important;
+		   }
+   }
+
+
 	.x-grid3-row {
 		pointer-events: all;
 	}

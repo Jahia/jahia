@@ -2031,7 +2031,8 @@
 		// Padding not dealt with in best manner ...
 		padding-right: 19px!important; // Make space for More options button
 
-		.x-viewport-adminmode & {
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
 			padding-right: 0!important; // Make space for More options button
 		}
 	}
@@ -2040,7 +2041,8 @@
 		color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
 		padding-right: 19px!important; // Make space for More options button
 
-		.x-viewport-adminmode & {
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
 			padding-right: 0!important; // Make space for More options button
 		}
 

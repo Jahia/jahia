@@ -1452,7 +1452,8 @@ form,
 		width: 100%!important;
 
 		body[data-edit-window-style="settings"] &,
-		.x-viewport-adminmode & {
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
 			padding-left: 1px;
 		}
 	}
@@ -1477,7 +1478,8 @@ form,
 		@extend %CSS_BLOCK--TREE--ROW--BG---UP !optional;
 
 		body[data-edit-window-style="settings"] &,
-		.x-viewport-adminmode & {
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
 			@extend %CSS_BLOCK--TREE--ROW--BG---UP\:SETTINGS !optional;
 
 			img {
@@ -1538,7 +1540,8 @@ form,
 			@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED !optional;
 
 			body[data-edit-window-style="settings"] &,
-			.x-viewport-adminmode & {
+			.x-viewport-adminmode &,
+			.x-viewport-dashboardmode & {
 				@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED\:SETTINGS !optional;
 			}
 
@@ -1671,7 +1674,8 @@ form,
 		}
 
 		body[data-edit-window-style="settings"] &,
-		.x-viewport-adminmode & {
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
 			@include text(14px !important, $TREE--ROW--FONT--COLOUR---UP !important, $FONT--WEIGHT---EXTRALIGHT !important);
 		}
 

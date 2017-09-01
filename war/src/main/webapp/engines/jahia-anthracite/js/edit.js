@@ -526,7 +526,7 @@ Dex.dumpQueue();
 
                     }
 
-                    if(cl == "x-viewport-adminmode"){
+                    if(cl == "x-viewport-adminmode" || cl == "x-viewport-dashboardmode"){
                         data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
                     } else {
                         data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
@@ -534,6 +534,7 @@ Dex.dumpQueue();
 
                     switch (cl) {
                         case "x-viewport-adminmode":
+                        case "x-viewport-dashboardmode":
                             data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no");
 
                             break;

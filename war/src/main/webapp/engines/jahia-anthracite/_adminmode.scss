@@ -6,11 +6,21 @@
 /***********************************************/
 
 .x-viewport-adminmode,
+.x-viewport-dashboardmode,
 body[data-edit-window-style="settings"] {
+
+	.x-grid3 .x-grid3-body {
+		padding-left: 4px;
+	}
+
 	.x-grid3 .x-grid3-row {
-		border-left: 1px solid #d4d3d3;
-		padding-left: 15px!important;
+
+
+
+		// border-left: 1px solid #d4d3d3;
+		padding-left: 0!important;
 		height: 30px!important;
+		position: relative;
 
 		table,
 		tbody,
@@ -31,11 +41,15 @@ body[data-edit-window-style="settings"] {
 		}
 
 		&.x-grid3-row-selected {
-			border-left: 3px solid #099ad6;
-			margin-left: -1px;
+			// border-left: 3px solid #099ad6;
+			// margin-left: -1px;
 
 			.x-tree3-node-text {
 				color: #099ad6!important;
+
+				&::before {
+					background: #099ad6;
+				}
 
 			}
 		}
@@ -45,13 +59,35 @@ body[data-edit-window-style="settings"] {
 		}
 
 		.x-tree3-node-text {
-			margin-left: 16px;
+			margin-left: 31px;
 			line-height: 30px;
+
+			&::before {
+				content: "> ";
+			    /* margin-right: 5px; */
+			    /* position: absolute; */
+			    /* left: -5px; */
+			    /* z-index: 999999999; */
+			    display: block;
+			    width: 5px;
+			    height: 5px;
+			    background: #d4d3d3;
+			    /* top: 11px; */
+			    text-indent: -50000px;
+			    border-radius: 100%;
+			    display: inline-block;
+			    top: 12px;
+			    position: relative;
+			    LEFT: -13PX;
+			}
 
 		}
 
 		&.unselectable-row {
 			pointer-events: none;
+			padding-left: 15px!important;
+
+
 
 			.x-tree3-node-icon {
 				// display: inline-block!important;
@@ -83,8 +119,24 @@ body[data-edit-window-style="settings"] {
 
 				&::before {
 					content: "> ";
-					margin-right: 4px;
+					margin-right: 5px;
+					/* position: absolute; */
+					/* left: -5px; */
+					/* z-index: 999999999; */
+					display: block;
+					width: 10px;
+					height: 10px;
+					background: #d4d3d3;
+					/* top: 11px; */
+					text-indent: -50000px;
+					border-radius: 100%;
+					display: inline-block;
+					top: 8px;
+					position: relative;
+					LEFT: 0;
 				}
+
+
 			}
 		}
 	}
@@ -308,8 +360,8 @@ body[data-edit-window-style="settingsXXX"] {
  	               content: "";
  	           }
  	           body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-							background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
-							background-size: 32px 32px;
+					background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+					background-size: 32px 32px;
  	           }
 
 				   .x-btn-mc {

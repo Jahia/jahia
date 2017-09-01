@@ -344,6 +344,7 @@
 			.x-grid3-cell-inner {
 					line-height: 21px;
 					color: #dddcdc;
+					font-family: "Nunito Sans", sans-serif;
 			}
 
 			&:last-child {
@@ -376,6 +377,47 @@
 
 		.x-tab-panel-body {
 			border-color: #5c6164;
+
+			.x-grid3-body {
+			    padding-right: 160px;
+			    padding-left: 0;
+			}
+
+			.x-panel-fbar .x-btn.x-btn-noicon button {
+				background: rgba(113, 117, 120, 0) !important;
+				color: #f1f1f1 !important;
+			}
+
+			.x-grid-group-hd {
+		    border-bottom-color: #989898;
+		    border-width: 1px;
+		    border-bottom-style: dashed;
+		    padding: 4px 0;
+		    padding-top: 8px;
+
+				.x-grid-group-div {
+					color: #cacbcc;
+					font-weight: 500;
+					font-size: 14px;
+					font-family: "Nunito Sans", sans-serif;
+					padding-left: 22px;
+					background-image: url(./images/icons/ic_arrow_up@2x.png);
+					background-size: 18px;
+					background-position: left;
+				}
+
+			}
+
+			.x-grid-group-collapsed .x-grid-group-hd .x-grid-group-div {
+				background-image: url(./images/icons/ic_down_@2x.png);
+				background-size: 18px;
+				background-position: left;
+			}
+
+			.x-grid3 .x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {
+				color: #959698;
+			}
+
 		}
 
 		.x-border-layout-ct:nth-child(2) > .x-border-panel {

@@ -57,12 +57,15 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.HashMultimap;
+
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.jahia.api.Constants.*;
 
@@ -89,6 +92,8 @@ public class JCRPublicationService extends JahiaService {
     private Set<String> referencedNodeTypesToSkip = Collections.emptySet();
 
     private boolean skipAllReferenceProperties;
+
+    private Set<PublicationEventListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<PublicationEventListener, Boolean>());
 
     private JCRPublicationService() {
         super();
@@ -356,6 +361,11 @@ public class JCRPublicationService extends JahiaService {
             }
         }
 
+        Collection<PublicationEvent.ContentPublicationInfo> nodePublicationInfos = null;
+        if (!listeners.isEmpty()) {
+            nodePublicationInfos = collectNodePublicationInfos(toPublish);
+        }
+
         String userID = destinationSession.getUserID();
         if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
             userID = userID.substring(JahiaLoginModule.SYSTEM.length());
@@ -505,9 +515,76 @@ public class JCRPublicationService extends JahiaService {
                         destinationSession.getWorkspace().getName(), commentBuf != null ? commentBuf.toString() : "");
             }
         }
+
+        if (nodePublicationInfos != null) {
+            notifyListeners(sourceSession, destinationSession, nodePublicationInfos);
+        }
+
         // Refresh this user system sessions after publication
         sourceSession.refresh(false);
         destinationSession.refresh(false);
+    }
+
+    private static Collection<PublicationEvent.ContentPublicationInfo> collectNodePublicationInfos(Collection<JCRNodeWrapper> toPublish) throws RepositoryException {
+
+        // Iterate through translation nodes to build a map of publication languages by content node UUIDs.
+        HashMultimap<String, String> publicationLanguagesByNodeUuid = HashMultimap.create();
+        for (JCRNodeWrapper node : toPublish) {
+            if (!node.getPrimaryNodeTypeName().equals(Constants.JAHIANT_TRANSLATION)) {
+                continue;
+            }
+            JCRNodeWrapper contentNode = node.getParent();
+            String language = node.getPropertyAsString(Constants.JCR_LANGUAGE);
+            publicationLanguagesByNodeUuid.put(contentNode.getIdentifier(), language);
+        }
+
+        // Compose content publication info.
+        LinkedHashSet<PublicationEvent.ContentPublicationInfo> nodePublicationInfos = new LinkedHashSet<>();
+        for (JCRNodeWrapper node : toPublish) {
+            if (node.getPrimaryNodeTypeName().equals(Constants.JAHIANT_TRANSLATION)) {
+                // Consider translation node publication as a publication of its content (parent) node.
+                node = node.getParent();
+            }
+            String uuid = node.getIdentifier();
+            Collection<String> publicationLanguages = publicationLanguagesByNodeUuid.get(uuid);
+            if (publicationLanguages.isEmpty()) {
+                publicationLanguages = null;
+            }
+            nodePublicationInfos.add(new PublicationEvent.ContentPublicationInfo(uuid, node.getPath(), node.getPrimaryNodeTypeName(), publicationLanguages));
+        }
+
+        return nodePublicationInfos;
+    }
+
+    private void notifyListeners(final JCRSessionWrapper sourceSession, final JCRSessionWrapper destinationSession, final Collection<PublicationEvent.ContentPublicationInfo> nodePublicationInfos) {
+
+        final long timestamp = System.currentTimeMillis();
+
+        for (PublicationEventListener listener : listeners) {
+
+            listener.onPublicationCompleted(new PublicationEvent() {
+
+                @Override
+                public long getTimestamp() {
+                    return timestamp;
+                }
+
+                @Override
+                public JCRSessionWrapper getSourceSession() {
+                    return sourceSession;
+                }
+
+                @Override
+                public JCRSessionWrapper getDestinationSession() {
+                    return destinationSession;
+                }
+
+                @Override
+                public Collection<ContentPublicationInfo> getContentPublicationInfos() {
+                    return Collections.unmodifiableCollection(nodePublicationInfos);
+                }
+            });
+        }
     }
 
     private CloneResult ensureNodeInDestinationWorkspace(final JCRNodeWrapper node,
@@ -814,7 +891,6 @@ public class JCRPublicationService extends JahiaService {
         } finally {
             JahiaAccessManager.setDeniedPaths(null);
         }
-        JCRNodeWrapper destinationNode = null;
         try {
             cloneResult.root = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
         } catch (RepositoryException e) {
@@ -1484,4 +1560,21 @@ public class JCRPublicationService extends JahiaService {
         this.batchSize = batchSize;
     }
 
+    /**
+     * Register a listener of publication events.
+     *
+     * @param listener Publication events listener to register.
+     */
+    public void registerListener(PublicationEventListener listener) {
+        listeners.add(listener);
+    }
+
+    /**
+     * Unregister a listener of publication events.
+     *
+     * @param listener Publication events listener to unregister.
+     */
+    public void unregisterListener(PublicationEventListener listener) {
+        listeners.remove(listener);
+    }
 }

@@ -7,6 +7,91 @@
 
 .x-viewport-adminmode,
 body[data-edit-window-style="settings"] {
+	.x-grid3 .x-grid3-row {
+		border-left: 1px solid #d4d3d3;
+		padding-left: 15px!important;
+		height: 30px!important;
+
+		table,
+		tbody,
+		tr,
+		td {
+			display: block!important;
+			height: 100%!important;
+		}
+
+		.x-tree3-node-icon {
+			display: none!important;
+
+
+		}
+
+		&:hover {
+			cursor: pointer;
+		}
+
+		&.x-grid3-row-selected {
+			border-left: 3px solid #099ad6;
+			margin-left: -1px;
+
+			.x-tree3-node-text {
+				color: #099ad6!important;
+
+			}
+		}
+
+		.x-tree3-node-joint {
+			display: none!important;
+		}
+
+		.x-tree3-node-text {
+			margin-left: 16px;
+			line-height: 30px;
+
+		}
+
+		&.unselectable-row {
+			pointer-events: none;
+
+			.x-tree3-node-icon {
+				// display: inline-block!important;
+
+
+			}
+
+			.x-tree3-node-joint {
+				width: 100%!important;
+				display: inline-block!important;
+				opacity: 0;
+				position: absolute!important;
+				background: url($ICON--ARROW_EXPAND---GREY) no-repeat left 6px center !important;
+
+				&:hover {
+					cursor: pointer;
+				}
+			}
+
+			span.x-tree3-node-text {
+				// margin-left: 11px;
+				font-style: italic;
+				// color: rgb(122, 126, 128)!important;
+				// text-transform: uppercase;
+				// font-size: 11px!important;
+				// font-weight: 700!important;
+				color: #7a7e80 !important;
+				margin-left: 0;
+
+				&::before {
+					content: "> ";
+					margin-right: 4px;
+				}
+			}
+		}
+	}
+}
+
+.x-viewport-adminmodeXXX,
+body[data-edit-window-style="settingsXXX"] {
 
 	#JahiaGxtSettingsTab & {
 		&::before {

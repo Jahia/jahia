@@ -99,6 +99,9 @@ public class Export extends JahiaController implements ServletContextAware {
     }
 
     private String cleanupXsl;
+    
+    private boolean downloadExportedXmlAsFile;
+
     private ImportExportService importExportService;
     private String templatesCleanupXsl;
 
@@ -233,7 +236,9 @@ public class Export extends JahiaController implements ServletContextAware {
                 response.setContentType("text/xml");
                 //make sure this file is not cached by the client (or a proxy middleman)
                 WebUtils.setNoCacheHeaders(response);
-                WebUtils.setFileDownloadHeaders(response, node, "xml");
+                if (downloadExportedXmlAsFile) {
+                    WebUtils.setFileDownloadHeaders(response, StringUtils.substringBeforeLast(node.getName(), ".") + ".xml");
+                }
 
                 if ("template".equals(request.getParameter(CLEANUP))) {
                     params.put(ImportExportService.XSL_PATH, templatesCleanupXsl);
@@ -306,5 +311,9 @@ public class Export extends JahiaController implements ServletContextAware {
 
     public void setImportExportService(ImportExportService importExportService) {
         this.importExportService = importExportService;
+    }
+
+    public void setDownloadExportedXmlAsFile(boolean downloadExportedXmlAsFile) {
+        this.downloadExportedXmlAsFile = downloadExportedXmlAsFile;
     }
 }

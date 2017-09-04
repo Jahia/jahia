@@ -161,6 +161,7 @@
                     <bean name="org.jahia.bin.Export" class="org.jahia.bin.Export">
                         <property name="importExportService" ref="ImportExportService"/>
                         <property name="requireAuthenticatedUser" value="true"/>
+                        <property name="downloadExportedXmlAsFile" value="${jahia.export.downloadExportedXmlAsFile:true}"/>
                     </bean>
                 </entry>
                 <entry key="/wcag/**">

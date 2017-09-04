@@ -469,7 +469,7 @@
 		    left: 70px;
 		    top: 96px;
 
-				:before {
+				&:before {
 					content: "" !important;
 				}
 
@@ -488,10 +488,22 @@
 						float: none;
 					}
 
+					.x-panel-fbar .x-toolbar-cell {
+						padding-top: 20px;
+
+						&:nth-child(1) {
+							position: relative;
+							top: 0;
+							padding-bottom: 20px;
+						}
+
+					}
+
 					.x-btn.x-btn-noicon button {
-				    padding: 5px 10px;
-				    font-weight: 100;
-				    background: #a3a3a3 !important;
+						padding: 5px 10px;
+						font-weight: 100;
+						background: #a3a3a3 !important;
+						font-size: 16px;
 					}
 
 				}

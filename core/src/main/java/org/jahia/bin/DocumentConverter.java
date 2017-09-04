@@ -66,6 +66,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.transform.DocumentConverterService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
+import org.jahia.utils.WebUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -124,8 +125,7 @@ public class DocumentConverter extends JahiaController {
             JCRNodeWrapper node = session.getNode(nodePath);
             if (node.isNodeType("nt:file")) {
                 response.setContentType(targetFormat);
-                response.setHeader("Content-Disposition", "attachment; filename=\""
-                        + StringUtils.substringBeforeLast(node.getName(), ".") + "." + targetFileExtension + "\"");
+                WebUtils.setFileDownloadHeaders(response, StringUtils.substringBeforeLast(node.getName(), ".") + "." + targetFileExtension);
                 is = node.getFileContent().downloadFile();
                 converterService.convert(is, converterService.getMimeType(FilenameUtils.getExtension(node.getName())),
                         response.getOutputStream(), targetFormat);
@@ -166,9 +166,8 @@ public class DocumentConverter extends JahiaController {
             stream = inputFile.getInputStream();
             // return a file
             response.setContentType(returnedMimeType);
-            response.setHeader("Content-Disposition", "attachment; filename=\""
-                    + FilenameUtils.getBaseName(inputFile.getName()) + "."
-                    + converterService.getExtension(returnedMimeType) + "\"");
+            WebUtils.setFileDownloadHeaders(response, FilenameUtils.getBaseName(inputFile.getName()) + "."
+                    + converterService.getExtension(returnedMimeType));
 
             converterService.convert(stream, inputFile.getContentType(), outputStream, returnedMimeType);
 

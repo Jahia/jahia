@@ -56,7 +56,6 @@ import org.apache.jackrabbit.util.Text;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.settings.SettingsBean;
 import org.springframework.core.io.Resource;
 
@@ -170,14 +169,15 @@ public final class WebUtils {
     }
 
     /**
-     * Sets proper response headers in case of file download, based on node name as file name
-     * @param response current response
-     * @param node node that will be used to generate the file name
-     * @param targetFileExtension file extension
+     * Sets proper response headers in case of file download using the provided file name.
+     * 
+     * @param response
+     *            current response
+     * @param fileName
+     *            the file name to use in the response header
      */
-    public static void setFileDownloadHeaders(HttpServletResponse response, JCRNodeWrapper node, String targetFileExtension) {
-        response.setHeader("Content-Disposition", "attachment; filename=\""
-                + StringUtils.substringBeforeLast(node.getName(), ".") + "." + targetFileExtension + "\"");
+    public static void setFileDownloadHeaders(HttpServletResponse response, String fileName) {
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
     }
     
     /**

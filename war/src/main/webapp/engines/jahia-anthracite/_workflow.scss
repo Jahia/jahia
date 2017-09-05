@@ -437,6 +437,18 @@
 					border-bottom: 1px solid #717578 !important;
 				}
 
+				&:empty:before {
+					content: "No comments";
+					text-align: center;
+					width: calc(100% - 162px);
+					position: absolute;
+					margin-top: 54px;
+					color: #9ea0a2;
+					font-size: 12px;
+					height: 16px;
+					font-family: "Raleway", sans-serif;
+				}
+
 			}
 
 		}
@@ -453,7 +465,7 @@
 		}
 
 
-		/* Content preview from workflow dashboard. */
+		/* Content review from workflow dashboard. */
 
 		&.x-panel.engine-panel {
 

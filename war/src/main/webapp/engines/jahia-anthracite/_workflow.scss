@@ -524,10 +524,14 @@
 
 			.x-tab-panel .x-tab-panel-body {
 				overflow-y: scroll;
-				height: calc(100% - 94px) !important;
+				height: calc(100% - 102px) !important;
 
 				.x-form-label-left > .x-form-item:nth-child(2) {
 					margin-top: 24px;
+				}
+
+				.x-form-label-left > .x-form-item .cke {
+					width: 100% !important;
 				}
 
 			}

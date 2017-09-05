@@ -21,8 +21,9 @@
 		body[data-edit-window-style="settings"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2),
 		.x-viewport-adminmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2),
 		.x-viewport-dashboardmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) {
-			width: calc(100% - 309px) !important;
-			left: 357px !important;
+			width: calc(100% - 308px) !important;
+			left: 356px !important;
+			overflow: visible!important;
 		}
 
 		body[data-edit-window-style="settings"] #JahiaGxtSidePanelTabs,
@@ -81,6 +82,7 @@
 			.x-viewport-dashboardmode &,
 			.x-viewport-adminmode & {
 				left: 150px;
+				display: block!important;
 
 				.x-tree3-el {
 					height: 25px!important;

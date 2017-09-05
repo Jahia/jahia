@@ -362,7 +362,8 @@ Dex.dumpQueue();
         },
         settingsChanged: function(value){
             // console.log("::: XXX ::: data-sitesettings HAS CHANGED", value);
-
+console.log("OPNED IFRAME SETTINGS PANEL");
+$(".window-iframe").contents().find("head").prepend("<style>.well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}</style>");
             if(data.body.getAttribute("data-sitesettings") == "true" && data.body.getAttribute("data-edit-window-style") != "settings"){
                 eventHandlers.clickSidePanelSettingsTab(true);
             }
@@ -1069,17 +1070,32 @@ Dex.dumpQueue();
             Dex("#JahiaGxtSettingsTab").onTreeChange(function(tree){
                 console.log("SETTINGS TAB TREE CHANGED ...", tree.length);
 
+				var menuItemDepth;
+
                 for (n = 0;  n < tree.length; n++){
                     if($(tree[n]).find(".x-tree3-node-joint").css("background-image") != "none"){
                         // Branch has children, so disable clicks
                         console.log($(tree[n]).find(".x-tree3-node-joint").css("background-position"));
                         $(tree[n]).addClass("unselectable-row");
 
-
-
-
                     }
+
+					menuItemDepth = $(tree[n]).find(".x-tree3-el img").first().width() / 18;
+
+					$(tree[n]).attr("data-INDIGO-MENU-LEVEL-DEPTH", menuItemDepth);
+
+					// console.log("Level: ", menuItemDepth;
+					//
+					// console.log("Loop\n\t\t", $(tree[n]), "\n\t\t", $(tree[n]).next());
                 }
+
+				console.log($(tree[0]).prev());
+
+				$(tree[0]).prev().addClass("indigo-opened");
+
+				for(n = 0; n < tree.length; n++){
+					console.log(n, " depth: ", $(tree[n]).attr("data-INDIGO-MENU-LEVEL-DEPTH"));
+				}
             });
 
             Dex("#JahiaGxtPagesTab").onTreeChange(eventHandlers.pageTreeUpdate);
@@ -1121,6 +1137,10 @@ Dex.dumpQueue();
             $(window).on("blur", eventHandlers.windowBlur);
 
             $("body")
+				.on("mousedown", ".x-tree3-node-joint", function(){
+					console.log("CLICKED");
+					$(this).closest(".x-grid3-row").toggleClass("indigo-opened");
+				})
                 .on("click", ".app-container", eventHandlers.clickAppContainer)
                 .on("click", ".toolbar-item-filepreview", eventHandlers.mouseClickFilePreviewButton)
                 .on("mouseenter", ".toolbar-item-filepreview", eventHandlers.mouseOverFilePreviewButton)

@@ -79,7 +79,7 @@
 			float:none!important;
 		}
 
-		body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+		body[data-INDIGO-GWT-SIDE-PANEL="open"][data-edit-window-style="default"] & {
 			display: block;
 		}
 
@@ -170,6 +170,10 @@
 
 			body[data-multiselect="on"] & {
 				pointer-events: none!important;
+			}
+
+			body[data-sitesettings="true"] & {
+				display: none!important;
 			}
 
 			img {
@@ -324,14 +328,29 @@
 			> .x-component {
 				// Common for ALL Side Panel Contents
 				height:calc(100% - 90px) !important;
-				padding-right: 20px;
 				box-sizing: border-box;
 				display: none;
 
 				body[data-indigo-gwt-side-panel="open"] &,
 				.x-viewport-adminmode &,
 				.x-viewport-dashboardmode & {
-					display: block
+					display: block;
+					height:auto !important; // DEV TEMP
+
+
+
+					&.tab_serverSettings > .x-component {
+						&::before {
+							content: "Server";
+						}
+					}
+
+					&.tab_systemSiteSettings > .x-component {
+						margin-top: 20px;
+						&::before {
+							content: "System";
+						}
+					}
 				}
 
 
@@ -650,6 +669,12 @@ $side_panel__tab_buttons: (
 #JahiaGxtSettingsTab {
 	> .x-component {
 		width: 100%!important;
+
+		.x-panel-body {
+			> .x-component {
+				height: auto!important;
+			}
+		}
 	}
 }
 
@@ -743,7 +768,7 @@ $side_panel__tab_buttons: (
 
 
 		#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab:nth-child(2) {
-			position: relative;
+			bottom: 50px;
 
 			&.x-tab-strip-active {
 				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
@@ -771,3 +796,128 @@ $side_panel__tab_buttons: (
 		        content: $text_sites;
 		    }
 		}
+
+
+
+
+.x-viewport-adminmode,
+.x-viewport-dashboardmode,
+body[data-edit-window-style="settings"] {
+
+	#JahiaGxtSidePanelTabs .x-tab-panel-body {
+		height: calc(100% - 230px)!important;
+		overflow-y: scroll;
+	}
+
+	.x-grid3 {
+		.x-grid3-body {
+			padding-left: 4px;
+		}
+
+		.x-grid3-row {
+			padding-left: 0!important;
+			height: 30px!important;
+			position: relative;
+
+			table,
+			tbody,
+			tr,
+			td {
+				display: block!important;
+				height: 100%!important;
+			}
+
+			&:hover {
+				cursor: pointer;
+			}
+
+			.x-tree3-node-icon,
+			.x-tree3-node-joint {
+				display: none!important;
+			}
+
+			// PAGE
+			.x-tree3-node-text {
+				margin-left: 31px;
+				line-height: 30px;
+
+				&::before {
+					content: ">";
+				    display: block;
+				    width: 5px;
+				    height: 5px;
+				    background: $COLOUR--DUSTY_CLOUDS;
+				    text-indent: -50000px;
+				    border-radius: 100%;
+				    display: inline-block;
+				    top: 12px;
+					left: -8px;
+				    position: relative;
+				}
+			}
+
+			// PAGE [SELECTED]
+			&.x-grid3-row-selected .x-tree3-node-text {
+				color: $COLOUR--JAHIA_BLUE!important;
+
+				&::before {
+					background: $COLOUR--JAHIA_BLUE;
+				}
+
+			}
+
+			// FOLDER
+			&.unselectable-row {
+				pointer-events: none;
+				padding-left: 15px!important;
+
+				.x-tree3-node-joint {
+					width: 100%!important;
+					display: inline-block!important;
+					opacity: 0;
+					position: absolute!important;
+
+					&:hover {
+						cursor: pointer;
+					}
+				}
+
+				// FOLDER LABEL
+				span.x-tree3-node-text {
+					color: #7a7e80 !important;
+					margin-left: 0;
+
+					&::before {
+						content: ">";
+					    margin-right: 5px;
+					    display: block;
+					    width: 17px;
+					    height: 17px;
+					    background: $COLOUR--DUSTY_CLOUDS;
+					    text-indent: -50000px;
+					    display: inline-block;
+					    top: 5px;
+						left: 2px;
+					    position: relative;
+					    background: url($ICON--FOLDER--SMALL---GREY) no-repeat center center;
+					    background-size: 16px;
+					}
+
+
+				}
+			}
+
+			// FOLDER [OPENED]
+			&.unselectable-row.indigo-opened {
+				.x-tree3-node-text {
+					font-style: italic;
+
+					&::before {
+					    background-image: url($ICON--FOLDER_OPEN--SMALL---GREY);
+					}
+				}
+			}
+		}
+	}
+
+}

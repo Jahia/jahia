@@ -19,6 +19,10 @@
         overflow: visible !important;
         position: fixed;
 
+		body[data-sitesettings="true"] & {
+			display:none!important;
+		}
+
         &:hover {
             width: 49px;
             height: 100%;

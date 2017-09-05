@@ -257,6 +257,11 @@
 	.x-tab-panel .x-tab-panel-body {
 		overflow: auto;
 		overflow-x: hidden;
+
+		&:nth-child(2) {
+			overflow-y: hidden;
+		}
+
 	}
 
 
@@ -370,7 +375,7 @@
 		}
 
 		.x-border-layout-ct:nth-child(1) > .x-border-panel {
-			height: 24px !important;
+			//height: 24px !important;
 			margin-top: 14px;
 			color: #eaeaea;
 		}

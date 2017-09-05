@@ -1068,34 +1068,31 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
             console.log("ATTACHING HOME BREW LISTENERS");
 
             Dex("#JahiaGxtSettingsTab").onTreeChange(function(tree){
-                console.log("SETTINGS TAB TREE CHANGED ...", tree.length);
 
-				var menuItemDepth;
+				var firstBranch = tree[0],
+					parentBranch = firstBranch.previousSibling,
+					branch,
+					nodeJoint;
 
                 for (n = 0;  n < tree.length; n++){
-                    if($(tree[n]).find(".x-tree3-node-joint").css("background-image") != "none"){
-                        // Branch has children, so disable clicks
-                        console.log($(tree[n]).find(".x-tree3-node-joint").css("background-position"));
-                        $(tree[n]).addClass("unselectable-row");
 
-                    }
+					branch = tree[n],
+					nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
 
-					menuItemDepth = $(tree[n]).find(".x-tree3-el img").first().width() / 18;
+					// See if Node joint is activated ( activation is assumed when a background image is assigned to the button )
+					if(	nodeJoint.style &&
+						nodeJoint.style.backgroundImage){
 
-					$(tree[n]).attr("data-INDIGO-MENU-LEVEL-DEPTH", menuItemDepth);
+						// Branch has children, so disable clicks by adding class name "unselectable-row"
+						branch.classList.add("unselectable-row");
+					}
 
-					// console.log("Level: ", menuItemDepth;
-					//
-					// console.log("Loop\n\t\t", $(tree[n]), "\n\t\t", $(tree[n]).next());
                 }
 
-				console.log($(tree[0]).prev());
-
-				$(tree[0]).prev().addClass("indigo-opened");
-
-				for(n = 0; n < tree.length; n++){
-					console.log(n, " depth: ", $(tree[n]).attr("data-INDIGO-MENU-LEVEL-DEPTH"));
+				if(parentBranch){
+					parentBranch.classList.add("indigo-opened");
 				}
+
             });
 
             Dex("#JahiaGxtPagesTab").onTreeChange(eventHandlers.pageTreeUpdate);

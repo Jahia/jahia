@@ -339,17 +339,32 @@
 
 
 
-					&.tab_serverSettings > .x-component {
-						&::before {
-							content: "Server";
+					&.tab_serverSettings {
+
+						&.x-hide-display {
+							display: block!important;
+						}
+
+						> .x-component {
+							&::before {
+								content: "Server";
+							}
 						}
 					}
 
-					&.tab_systemSiteSettings > .x-component {
-						margin-top: 20px;
-						&::before {
-							content: "System";
+					&.tab_systemSiteSettings {
+
+						&.x-hide-display {
+							display: block!important;
 						}
+
+						> .x-component {
+							margin-top: 20px;
+							&::before {
+								content: "System";
+							}
+						}
+
 					}
 				}
 

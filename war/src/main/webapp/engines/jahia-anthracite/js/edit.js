@@ -267,7 +267,6 @@
 
             } else {
                 // NO ENTRIES
-                console.log("NO MATCHES ...");
             }
         }
     };
@@ -313,16 +312,19 @@ Dex.dumpQueue();
     var eventHandlers = {
         // HOME BREW HANDLERS
 
+        ////////////////////////////////////////////////////
+        // PANELS, TREES, ENGINES  /////////////////////////
+        ////////////////////////////////////////////////////
         pageTreeUpdate: function(tree){
             // console.log("PAGE TREE UPDATED ...", tree);
 
         },
         pickerOpened: function(){
-            console.log("OPEN PICKER");
+            // console.log("OPEN PICKER");
             eventHandlers.picker("open");
         },
         enginePanelOpened: function(){
-            console.log("OPEN EDIT ENGINE");
+            // console.log("OPEN EDIT ENGINE");
             eventHandlers.editEngine("open");
         },
         imagePopupOpened: function(){
@@ -330,8 +332,13 @@ Dex.dumpQueue();
             eventHandlers.imagePreview("open");
         },
         modeMenuOpened: function(){
-            console.log("OPEN MENU EDIT MENU MODE");
+            // console.log("OPEN MENU EDIT MENU MODE");
         },
+
+        //////////////////////////////////
+        // DRAGS /////////////////////////
+        //////////////////////////////////
+
         startDrag: function(){
             // console.log("::: XXX ::: STARTED TO DRAG");
             eventHandlers.closeSidePanel();
@@ -339,33 +346,78 @@ Dex.dumpQueue();
         stopDrag: function(){
             // console.log("::: XXX ::: STOPPED DRAGGING");
         },
-        multiSelectUpdate: function(value){
-            // console.log("::: XXX ::: UPDATED MULTI SELECT");
-            eventHandlers.countChanged(parseInt(value));
+
+
+        //////////////////////////////////
+        // MULTI SELECT //////////////////
+        //////////////////////////////////
+
+        clearMultiSelection: function(e){
+            mouse.trigger(document.getElementsByClassName("window-iframe")[0], "click");
+
         },
-        pageChanged: function(value){
-            // console.log("::: XXX ::: UPDATED PAGE NAME");
 
-            data.currentPage.displayname = value;
-            eventHandlers.displaynameChanged();
+        selectionOnChange: function(value){
+            var count = parseInt(value);
 
-            if(data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                eventHandlers.disableIframeClick();
+            // Multiple Items have been selected (in Edit Mode) or removed
+            // Check if value is different
+            if(data.multiselection.count == count){
+                return false;
+
+            } else {
+                data.multiselection.count = count;
+
             }
 
-            console.log("Changed ...");
+            // Refresh the title of the page accordingly
+            eventHandlers.updateEditTopBar();
+
+            setTimeout(function(){
+                $(".editModeContextMenu .x-menu-list").attr("data-selected-name", data.body.getAttribute("data-singleselection-node-displayname"));
+            }, 50);
+        },
+
+        pageOnChange: function(value){
+
+            // console.log("pageOnChange() ::: ", value);
+
+            if(data.currentPage.displayname == value){
+                return false;
+            } else {
+                data.currentPage.displayname = value;
+
+            }
+
+            if( data.mode == "edit" ||
+                data.mode == "contribute"){
+
+                    // Need to update the header bar
+                    eventHandlers.updateEditTopBar();
+
+                    if(data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+                        eventHandlers.disableIframeClick();
+                    }
+
+            }
 
         },
-        changeMode: function(value){
-            // console.log("::: XXX ::: SITE HOLDER HAS CHANGED", value);
-            eventHandlers.changedMode(value);
+
+        pageOnChangeSRC: function(value){
+            // console.log("pageOnChangeSRC() ::: ", value);
         },
+
         settingsChanged: function(value){
-            // console.log("::: XXX ::: data-sitesettings HAS CHANGED", value);
-console.log("OPNED IFRAME SETTINGS PANEL");
-$(".window-iframe").contents().find("head").prepend("<style>.well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}</style>");
-            if(data.body.getAttribute("data-sitesettings") == "true" && data.body.getAttribute("data-edit-window-style") != "settings"){
-                eventHandlers.clickSidePanelSettingsTab(true);
+            eventHandlers.dump("setingsChanged");
+
+            // Remove certain styling from the Settings Pages ...
+            $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}</style>");
+
+            // If Side Panel is not opened then open it
+            if( data.body.getAttribute("data-sitesettings") == "true" &&
+                data.body.getAttribute("data-edit-window-style") != "settings"){
+
+                eventHandlers.openSettings();
             }
         },
         closedPicker: function(){
@@ -396,7 +448,7 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
             // Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                console.log("BLURRRRRER");
+                // console.log("BLURRRRRER");
                 eventHandlers.closeSidePanel();
             }
 
@@ -405,7 +457,7 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
         clickAppContainer: function(e){
             var inSidePanel = $(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
             if(inSidePanel.length == 0){
-                console.log("HERE NOW");
+                // console.log("HERE NOW");
                 eventHandlers.closeSidePanel();
             }
         },
@@ -506,47 +558,246 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
             $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
         },
 
+        anthraciteCSS: function(turnOn){
+            if(turnOn){
+                if (!data.css.active) {
+                    // Anthracite CSS has been removed, so plug it back in
+                    $("head").append(data.css.storedCSS);
+                }
+            } else if(data.css.active){
+                // Remove Anthracite CSS style sheet
+               $('link[rel=stylesheet][href$="edit_en.css"]').remove();
+
+               // Register the fact that it has been removed
+               data.css.active = false;
+            }
+        },
+
+        dump: function(from){
+            // console.log("");
+            // console.log("---");
+            // console.log(from+"()");
+            // console.log("data.mode = ", data.mode);
+            // console.log("body['data-sitesettings'] = ", data.body.getAttribute("data-sitesettings"));
+            // console.log("body['data-edit-window-style'] = ", data.body.getAttribute("data-edit-window-style"));
+            // console.log("---");
+            // console.log("");
+        },
+
+        openSettings: function(){
+            console.log("OPEN SETTINGS");
+            if(data.mode == "edit"){
+                data.body.setAttribute("data-edit-window-style", "settings");
+            }
+            eventHandlers.dump("openSettings");
+
+            eventHandlers.openSidePanel();
+
+            if(!data.history.editor){
+                // Need to store the button of the current edit page so we can revert later
+                data.history.editor = document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row")[1];
+
+            }
+
+            if(data.history.settings){
+                // Trigger click on last viewed settings page
+                mouse.trigger(data.history.settings, "click");
+
+            } else {
+                // Wait until the menu has been loaded, then click on the first available menu button
+                Dex("#JahiaGxtSettingsTab").onceTreeChange(function(tree){
+                    var branch,
+                        nodeJoint,
+                        firstClickableBranch;
+
+                    for (n = 0;  n < tree.length; n++){
+
+    					branch = tree[n];
+    					nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
+
+    					// If node jint has no background then it opens a page
+    					if(	nodeJoint &&
+                            nodeJoint.style &&
+    						!nodeJoint.style.backgroundImage){
+
+    						// Branch has no children, so it opens a page
+                            firstClickableBranch = branch;
+
+                            break;
+    					}
+
+                    }
+
+                    mouse.trigger(firstClickableBranch, "mousedown");
+                    mouse.trigger(firstClickableBranch, "click");
+                });
+
+            }
+        },
+
+        closeSettings: function(){
+
+            data.body.setAttribute("data-edit-window-style", "default");
+            eventHandlers.dump("closeSettings");
+
+            eventHandlers.closeSidePanel();
+
+            if(data.history.editor){
+                // Trigger click on last viewed settings page
+                mouse.trigger(data.history.editor, "mousedown");
+                mouse.trigger(data.history.editor, "mouseup");
+            } else {
+                mouse.trigger(document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")[0], "mousedown");
+
+            }
+
+        },
+
+        load: {
+            admin: function(){
+                if(data.mode == "admin"){
+                    return false;
+                } else {
+                    console.log("ADMIN MODE >>>>>>>>>>>>>>>>>>");
+                    data.mode = "admin";
+                }
+
+                var systemSettingsTabs = document.querySelectorAll(".tab_systemSiteSettings")[0],
+                    serverSettingsTabs = document.querySelectorAll(".tab_serverSettings")[0];
+
+                if(systemSettingsTabs){
+                    if(window.getComputedStyle(systemSettingsTabs).display == "none"){
+                        // System Settings Tabs have not been loaded, so trigger click to open them
+                        mouse.trigger(document.querySelectorAll("#JahiaGxtSidePanelTabs li")[0], "click");
+                    }
+
+                }
+
+                if(serverSettingsTabs){
+                    if(window.getComputedStyle(serverSettingsTabs).display == "none"){
+                        // Server Settings Tabs have not been loaded, so trigger click to open them
+                        mouse.trigger(document.querySelectorAll("#JahiaGxtSidePanelTabs li")[1], "click");
+                    }
+
+                }
+
+                // Use Anthracite CSS
+                eventHandlers.anthraciteCSS(true);
+
+                // Set attributes to be used by CSS
+                data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no");
+                data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+
+            },
+            edit: function(){
+                if(data.mode == "edit"){
+                    return false;
+                } else {
+                    console.log("EDIT MODE >>>>>>>>>>>>>>>>>>");
+                    data.mode = "edit";
+
+                    // Reset the history as the items will have been reloaded and therefore no longer accessible
+                    data.history = {
+                        settings: null,
+                        editor: null
+                    }
+
+                    // Reset to force reload of settings menu via triggering click on refresh button (later on)
+                    data.sidePanelTabs.firstLoad = true;
+                }
+
+                // Use Anthracite CSS
+                eventHandlers.anthraciteCSS(true);
+
+                // Set attributes to be used by CSS
+                data.body.setAttribute("data-edit-window-style", "default");
+                data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
+                data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+
+
+
+
+
+
+            },
+            dashboard: function(){
+                if(data.mode == "dashboard"){
+                    return false;
+                } else {
+                    console.log("DASHBOARD MODE >>>>>>>>>>>>>>>>>>");
+                    data.mode = "dashboard";
+                }
+
+                // Use Anthracite CSS
+                eventHandlers.anthraciteCSS(true);
+
+                // Set attributes to be used by CSS
+                data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no");
+                data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+
+            },
+            studio: function(){
+                if(data.mode == "studio"){
+                    return false;
+                } else {
+                    console.log("STUDIO MODE >>>>>>>>>>>>>>>>>>");
+                    data.mode = "studio";
+                }
+
+                // Dont use Anthracite CSS
+                eventHandlers.anthraciteCSS(false);
+
+                // Set attributes to be used by CSS
+                data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
+                data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+
+            },
+            contribute: function(){
+                if(data.mode == "contribute"){
+                    return false;
+                } else {
+                    console.log("CONTRIBUTE MODE >>>>>>>>>>>>>>>>>>");
+                    data.mode = "contribute";
+                }
+
+                // Use Anthracite CSS
+                eventHandlers.anthraciteCSS(true);
+
+                // Set attributes to be used by CSS
+                data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
+                data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+
+            }
+        },
+
         // User has changed modes
         changedMode: function(mode){
             mode.split(" ").forEach(function(cl) {
                 if (cl.indexOf("x-viewport") == 0) {
 
-                    // Add / remove Anthracite CSS accordingly ...
-                    if(cl == "x-viewport-studiomode"){
-                        // Remove Anthracite CSS style sheet
-                        $('link[rel=stylesheet][href$="edit_en.css"]').remove();
-
-                        // Register the fact that it has been removed
-                        data.css.active = false;
-
-                    } else {
-                        if (!data.css.active) {
-                            // Anthracite CSS has been removed, so plug it back in
-                            $("head").append(data.css.storedCSS);
-                        }
-
-                    }
-
-                    if(cl == "x-viewport-adminmode" || cl == "x-viewport-dashboardmode"){
-                        data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
-                    } else {
-                        data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
-                    }
-
                     switch (cl) {
-                        case "x-viewport-adminmode":
-                        case "x-viewport-dashboardmode":
-                            data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no");
+                        case "x-viewport-editmode":
+                            eventHandlers.load.edit();
 
                             break;
-                        case "x-viewport-editmode":
-                        case "x-viewport-studiomode":
-                        case "x-viewport-contributemode":
+                        case "x-viewport-adminmode":
+                            eventHandlers.load.admin();
+
+                            break;
                         case "x-viewport-dashboardmode":
-                        default:
-                            data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+                            eventHandlers.load.dashboard();
+
+                            break;
+                        case "x-viewport-studiomode":
+                            eventHandlers.load.studio();
+
+                            break;
+                        case "x-viewport-contributemode":
+                            eventHandlers.load.contribute();
+
                             break;
                     }
+
                 }
             })
 
@@ -603,83 +854,55 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
             }
         },
 
-        // Clear Multi select
-        clearMultiSelection: function(e){
-            $("iframe").trigger("click");
-        },
 
-        // Body updates
-        displaynameChanged: function(){
 
+        updateEditTopBar: function(){
             var pageTitle,
                 multiselect = "off";
 
-            switch(data.currentPage.displayname){
-                case "settings":
-                case "System Site":
-                    // Need to trigger a click on Settings tabs to make sure that the menus are loaded in advance.
-                    $("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("click");
+            // Presumably in Edit Mode or Contribute Mode, in which case we need to set the page title
+            switch(data.multiselection.count){
+                case 0:
+                    pageTitle = data.currentPage.displayname;
+                    break;
 
-                    // Attach an observer to the Side Panel Menu
-                    // observers => panelMenuObserver(); PUT BACK ??????
+                case 1:
+                    pageTitle = "1 selected item";
+                    pageTitle = data.body.getAttribute("data-singleselection-node-displayname");
+                    multiselect = "on";
+
+
                     break;
 
                 default:
-                    // Presumably in Edit Mode or Contribute Mode, in which case we need to set the page title
-                    switch(data.multiselection.count){
-                        case 0:
-                            pageTitle = data.currentPage.displayname;
-                            break;
-
-                        case 1:
-                            pageTitle = "1 selected item";
-                            pageTitle = data.body.getAttribute("data-singleselection-node-displayname");
-                            multiselect = "on";
-
-
-                            break;
-
-                        default:
-                            pageTitle = data.multiselection.count + " selected items";
-                            multiselect = "on";
-                            break;
-                    }
-
-                    // Set multiselect status in body attribute...
-                    data.body.setAttribute("data-multiselect", multiselect);
-
-
-
-                    // Page Title in Edit Made
-                    $(".x-current-page-path").attr("data-PAGE-NAME",pageTitle);
-
-                    // Page Title in Contribute Made
-                    $(".x-viewport-contributemode .toolbar-itemsgroup-languageswitcher").attr("data-PAGE-NAME",pageTitle);
-
-                    // Page Titles need centering
-                    eventHandlers.updatePageMenuPositions();
-
-                    // Remove Mutation Observer used in Settings pages (if attached)
-                    if(data.panelMenu.observer){
-                        data.panelMenu.observer.disconnect();
-                        data.panelMenu.observer = null;
-
-                    }
+                    pageTitle = data.multiselection.count + " selected items";
+                    multiselect = "on";
+                    break;
             }
 
+            // Set multiselect status in body attribute...
+            data.body.setAttribute("data-multiselect", multiselect);
 
+
+
+            // Page Title in Edit Made
+            $(".x-current-page-path").attr("data-PAGE-NAME",pageTitle);
+
+            // Page Title in Contribute Made
+            $(".x-viewport-contributemode .toolbar-itemsgroup-languageswitcher").attr("data-PAGE-NAME",pageTitle);
+
+            // Page Titles need centering
+            eventHandlers.updatePageMenuPositions();
+
+            // Remove Mutation Observer used in Settings pages (if attached)
+            if(data.panelMenu.observer){
+                data.panelMenu.observer.disconnect();
+                data.panelMenu.observer = null;
+
+            }
         },
-        countChanged: function(count){
-            // Multiple Items have been selected (in Edit Mode)
-            data.multiselection.count = count;
 
-            // Refresh the title of the page accordingly
-            eventHandlers.displaynameChanged();
 
-            setTimeout(function(){
-                $(".editModeContextMenu .x-menu-list").attr("data-selected-name", data.body.getAttribute("data-singleselection-node-displayname"));
-            }, 50);
-        },
         publicationStatusChanged: function(status){
             // Publication status of the current page has changed (in edit or contribute mode). Update status accordingly.
             data.body().setAttribute("data-PAGE-PUBLICATION-STATUS", status);
@@ -781,6 +1004,7 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
             $(".menu-editmode-managers-menu").fadeOut();
         },
         toggleSidePanelDocking: function(e){
+            console.log("AM I USED ????????????");
             // This listener has a dual purpose depending on where it was called from.
             // If called from the Edit Mode then it toggles the Side Panel Menu as PINNED and FLOATING
             // If it is called from the settings window then it acts as a close button, closing the settings and returning to the Edit Mode.
@@ -820,30 +1044,31 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
         },
         clickSidePanelSettingsTab: function(forceClick){
 			// User has clicked the Settings Tab Button.
-			if(data.currentPage.displayname != "settings" && (data.body.getAttribute("data-sitesettings") == "false" || forceClick)){
-				data.body.setAttribute("data-edit-window-style", "settings");
-
-				eventHandlers.openSidePanel()
-
-				if(data.lastSettingsPage){
-					// Found settings page in history so open it
-					data.lastSettingsPage.trigger("click");
-				} else {
-					// Trigger click on first list item WHEN it has loaded...
-					if ($("#JahiaGxtSettingsTab .x-grid3-row")[0]) {
-						var firstInList = $("#JahiaGxtSettingsTab .x-grid3-row")[0]  ;
-						mouse.trigger(firstInList, "mousedown");
-						mouse.trigger(firstInList, "click");
-					} else {
-						Dex("#JahiaGxtSettingsTab").onceTreeChange(function(nodes){
-							var firstInList = nodes[0];
-							mouse.trigger(firstInList, "mousedown");
-							mouse.trigger(firstInList, "click");
-						});
-					}
-
-				}
-			}
+            // console.log("OPENED SETTINGS ", forceClick);
+			// if(data.currentPage.displayname != "settings" && (data.body.getAttribute("data-sitesettings") == "false" || forceClick)){
+			// 	data.body.setAttribute("data-edit-window-style", "settings");
+            //
+			// 	eventHandlers.openSidePanel()
+            //
+			// 	if(data.lastSettingsPage){
+			// 		// Found settings page in history so open it
+			// 		data.lastSettingsPage.trigger("click");
+			// 	} else {
+			// 		// Trigger click on first list item WHEN it has loaded...
+			// 		if ($("#JahiaGxtSettingsTab .x-grid3-row")[0]) {
+			// 			var firstInList = $("#JahiaGxtSettingsTab .x-grid3-row")[0]  ;
+			// 			mouse.trigger(firstInList, "mousedown");
+			// 			mouse.trigger(firstInList, "click");
+			// 		} else {
+			// 			Dex("#JahiaGxtSettingsTab").onceTreeChange(function(nodes){
+			// 				var firstInList = nodes[0];
+			// 				mouse.trigger(firstInList, "mousedown");
+			// 				mouse.trigger(firstInList, "click");
+			// 			});
+			// 		}
+            //
+			// 	}
+			// }
 
 		},
         clickSidePanelTab: function(){
@@ -853,7 +1078,7 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
             data.body.setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
 
             // Menus for the Tabs that call this listener require a normal side panel display
-            data.body.setAttribute("data-edit-window-style", "default");
+            // data.body.setAttribute("data-edit-window-style", "default");
 
             var tabMenuActive = $(this).hasClass("x-tab-strip-active"),
                 sidePanelOpen = data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open";
@@ -871,7 +1096,6 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
 
         },
         closeSidePanel: function(){
-            console.log("CLOSE SIDE PANEL");
 
             if(data.body.getAttribute("data-edit-window-style") !== "settings" && data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
                 data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
@@ -885,6 +1109,26 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
 
         },
         addPageToHistory: function(){
+
+
+
+            var windowStyle;
+
+            if(data.mode == "edit"){
+                // In Edit Mode so remember clicks
+
+                windowStyle = data.body.getAttribute("data-edit-window-style");
+
+                if(windowStyle == "settings"){
+                    // CLicked on a settings page
+                    data.history.settings = this;
+                } else {
+                    data.history.editor = this;
+
+                }
+
+            }
+
             if(data.body.getAttribute("data-sitesettings") !== "true" && data.body.getAttribute("data-main-node-displayname") !== "settings"){
                 var openedPage = $(this).closest("#JahiaGxtPagesTab").length > 0,
                     openedSettings = $(this).closest("#JahiaGxtSettingsTab").length > 0;
@@ -916,7 +1160,6 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
 
         },
         disableIframeClick: function(){
-            console.log('data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL")', data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL"));
             if(data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && data.body.getAttribute("data-sitesettings") == "false"){
                 // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
                 var iframeBody = $(".window-iframe").contents().find("body");
@@ -1065,7 +1308,6 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
         attach: function(){
             // HOME BREW EVENT LISTENERS
             // Set up INDIGO listeners (listening to changes in DOM)
-            console.log("ATTACHING HOME BREW LISTENERS");
 
             Dex("#JahiaGxtSettingsTab").onTreeChange(function(tree){
 
@@ -1080,7 +1322,8 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
 					nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
 
 					// See if Node joint is activated ( activation is assumed when a background image is assigned to the button )
-					if(	nodeJoint.style &&
+					if(	nodeJoint &&
+                        nodeJoint.style &&
 						nodeJoint.style.backgroundImage){
 
 						// Branch has children, so disable clicks by adding class name "unselectable-row"
@@ -1109,9 +1352,11 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
 
             Dex(".x-dd-drag-proxy").onClose(eventHandlers.stopDrag);
 
-            Dex("body").onAttr("data-selection-count", eventHandlers.multiSelectUpdate);
+            Dex("body").onAttr("data-selection-count", eventHandlers.selectionOnChange);
 
-            Dex("body").onAttr("data-main-node-displayname", eventHandlers.pageChanged);
+            Dex("body").onAttr("data-main-node-displayname", eventHandlers.pageOnChange);
+
+            Dex(".window-iframe").onAttr("src", eventHandlers.pageOnChangeSRC);
 
             Dex(".x-jahia-root").onAttr("class", eventHandlers.changedMode);
 
@@ -1126,16 +1371,13 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
             Dex(".workflow-dashboard-engine").onOpen(eventHandlers.workflowDashboardOpened)
 
             // BROWSER LISTENERS
-            console.log("ATTACHING BROWSER LISTENERS");
             window.onresize = eventHandlers.windowResize;
 
             // JQUERY EVENT LISTENERS
-            console.log("ATTACHING JQUERY LISTENERS");
             $(window).on("blur", eventHandlers.windowBlur);
 
             $("body")
 				.on("mousedown", ".x-tree3-node-joint", function(){
-					console.log("CLICKED");
 					$(this).closest(".x-grid3-row").toggleClass("indigo-opened");
 				})
                 .on("click", ".app-container", eventHandlers.clickAppContainer)
@@ -1157,7 +1399,7 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
                 .on("click", ".editmode-managers-menu", eventHandlers.openManagerMenu)
                 .on("click", ".menu-editmode-managers-menu", eventHandlers.closeManagerMenu)
                 .on("mousedown", ".menu-edit-menu-mode, .menu-edit-menu-user", eventHandlers.closeManagerMenu)
-                .on("click", "#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", eventHandlers.toggleSidePanelDocking)
+                .on("click", "#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", eventHandlers.closeSettings)
                 .on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", function(e){
                     eventHandlers.clickMoreOptionsButton(e, "x-grid3-td-displayName");
                 })
@@ -1176,13 +1418,17 @@ $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!im
                 .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", eventHandlers.mouseOverTreeRow)
                 .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", eventHandlers.mouseOverTreeThumb)
                 .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", eventHandlers.clickSidePanelTab)
-                .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", eventHandlers.clickSidePanelSettingsTab);
+                .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", eventHandlers.openSettings);
         }
     }
 
 
     // DATA
     var data = {
+        history: {
+            settings: null,
+            editor: null
+        },
         css: {
             storedCSS: null,
             active: true

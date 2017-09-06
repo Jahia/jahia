@@ -430,10 +430,14 @@
 
 			&:first-child {
 				background: #616669;
-				height: 126px !important;
 				width: calc(100% - 162px) !important;
 				margin-bottom: 30px;
 				margin-top: 8px;
+				max-height: 200px;
+
+				&:empty {
+					margin-bottom: 0;
+				}
 
 				> .x-component {
 					background: #616669 !important;
@@ -528,7 +532,7 @@
 			}
 
 			.x-tab-panel .x-tab-panel-body {
-				overflow-y: scroll;
+				overflow-y: auto;
 				height: calc(100% - 102px) !important;
 
 				.x-form-label-left > .x-form-item:nth-child(2) {
@@ -537,6 +541,10 @@
 
 				.x-form-label-left > .x-form-item .cke {
 					width: 100% !important;
+				}
+
+				> div:nth-child(1) {
+					overflow: hidden;
 				}
 
 			}

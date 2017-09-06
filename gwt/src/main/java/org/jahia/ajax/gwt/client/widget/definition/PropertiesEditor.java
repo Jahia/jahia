@@ -257,8 +257,8 @@ public class PropertiesEditor extends FormPanel {
         if (remoteField != null) {
             fieldSet = (FieldSet) remoteField.getParent();
         }
-        for (final GWTJahiaItemDefinition definition : items) {
-
+        for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
+            final GWTJahiaItemDefinition definition = items.get(itemIndex);
             final FormLayout fl = new FormLayout();
             fl.setLabelWidth(0);
 
@@ -322,13 +322,14 @@ public class PropertiesEditor extends FormPanel {
                 FormData fd = new FormData("98%");
                 fd.setMargins(new Margins(0));
                 if (remoteField != null) {
-                    int i = 1;
+                    int propertyIndex = 1;
+                    // iterate other properties until find the one that set the remote field
                     for (Component component : fieldSet.getItems()) {
                         if (component.equals(remoteField)) {
-                            fieldSet.insert(adapterField, i, fd);
+                            fieldSet.insert(adapterField, propertyIndex + itemIndex, fd);
                             break;
                         }
-                        i++;
+                        propertyIndex++;
                     }
                 }   else {
                     fieldSet.add(adapterField, fd);

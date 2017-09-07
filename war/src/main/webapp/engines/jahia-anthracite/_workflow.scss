@@ -7,12 +7,6 @@
 .workflow-dashboard-engine {
 	background:  lighten($EDIT_ENGINE--BASE--COLOUR, 2%) !important;
 
-	table.x-grid3-row-table {
-		//width: fit-content !important;
-		//width: -moz-max-content !important;
-		margin-left: 8px;
-	}
-
 	.x-panel-toolbar .x-tool-restore {
 		display: none;
 	}
@@ -108,6 +102,10 @@
 
 			}
 
+			.x-grid3-cell-last.x-grid3-td-operation {
+				padding-left: 8px;
+			}
+
 		}
 
 		.x-grid3-row-table {
@@ -128,6 +126,11 @@
 					display: none !important;
 				}
 
+			}
+
+			.x-grid3-cell {
+				overflow: hidden;
+				display: inline-block;
 			}
 
 		}

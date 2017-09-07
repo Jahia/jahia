@@ -293,14 +293,22 @@
 					}
 
 					&::before {
-						content: "Done";
-						font-family: Raleway;
-						font-size: 16px;
+						content: $text_done;
+						@include text(16px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+						// font-family: Raleway;
+						// font-size: 16px;
 						/* text-transform: uppercase; */
 						font-weight: 100;
-						background: #f26d4f;
+						background: $COLOUR--DIRTY_ORANGE;
 						padding: 6px 9px;
-						color: white;
+						// color: white;
+
+
+					}
+
+					&:hover {
+						cursor: pointer;
 					}
 				}
 			}
@@ -331,6 +339,13 @@
 				box-sizing: border-box;
 				display: none;
 
+				position: relative;
+				left:-9px;
+
+				.x-viewport-editmode & {
+
+				}
+
 				body[data-indigo-gwt-side-panel="open"] &,
 				.x-viewport-adminmode &,
 				.x-viewport-dashboardmode & {
@@ -347,7 +362,11 @@
 
 						> .x-component {
 							&::before {
-								content: "Server";
+								content: $text_server_settings;
+								margin: 0 0 4px 19px;
+
+								text-transform: uppercase;
+								@include text(10px, $COLOUR--ASH_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
 							}
 						}
 					}
@@ -361,7 +380,11 @@
 						> .x-component {
 							margin-top: 20px;
 							&::before {
-								content: "System";
+								content: $text_system_settings;
+								margin: 0 0 4px 19px;
+
+								text-transform: uppercase;
+								@include text(10px, $COLOUR--ASH_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
 							}
 						}
 
@@ -374,7 +397,7 @@
 					@extend %CSS_BLOCK--SIDE_PANEL--TITLE;
 				    display: block;
 
-				    position: absolute;
+				    position: fixed;
 				    top: 23px;
 					left: 70px;
 
@@ -826,7 +849,7 @@ body[data-edit-window-style="settings"] {
 
 	.x-grid3 {
 		.x-grid3-body {
-			padding-left: 4px;
+			// padding-left: 4px;
 		}
 
 		.x-grid3-row {

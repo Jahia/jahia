@@ -79,10 +79,13 @@
 		}
 
 		#JahiaGxtSidePanelTabs .tab_systemSiteSettings {
+
+
 			.x-viewport-dashboardmode &,
 			.x-viewport-adminmode & {
 				left: 150px;
 				display: block!important;
+				margin-top: 40px;
 
 				.x-tree3-el {
 					height: 25px!important;

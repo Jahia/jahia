@@ -837,6 +837,8 @@
 
 				// Reset to force reload of settings menu via triggering click on refresh button (later on)
 				app.edit.sidepanel.data.firstRun = true;
+				app.edit.sidepanel.data.firstRunSettings = true;
+				app.edit.sidepanel.data.firstRunPages = true;
 
 				app.edit.topbar.build();
 

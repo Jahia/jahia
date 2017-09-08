@@ -172,7 +172,8 @@
 				pointer-events: none!important;
 			}
 
-			body[data-sitesettings="true"] & {
+			body[data-sitesettings="true"] &,
+			.x-viewport-adminmode & {
 				display: none!important;
 			}
 

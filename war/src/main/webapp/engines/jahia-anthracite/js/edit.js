@@ -276,25 +276,13 @@
         Dex("body").attach(mutationObserverCallback);
     };
 
-    Dex.dumpQueue = function(){
-        console.log("// Dex queue ::: ", queue);
-    };
-
     if(exposeAs){
         window[exposeAs] = Dex;
     }
 
 })("Dex");
 
-
-Dex.dumpQueue();
-
-
-
-
-
 (function(exposeAs){
-    console.log("VERSION Dex");
 
     // MOUSE CONTROLLER
     var mouse = {
@@ -308,361 +296,500 @@ Dex.dumpQueue();
         }
     };
 
-    // EVENT HANDLERS
-    var eventHandlers = {
-        // HOME BREW HANDLERS
+	var app = {
+		data: {
+			currentApp: null
+		},
+		onChange: function(mode){
+			mode.split(" ").forEach(function(cl) {
+                if (cl.indexOf("x-viewport") == 0) {
 
-        ////////////////////////////////////////////////////
-        // PANELS, TREES, ENGINES  /////////////////////////
-        ////////////////////////////////////////////////////
-        pageTreeUpdate: function(tree){
-            // console.log("PAGE TREE UPDATED ...", tree);
-
-        },
-        pickerOpened: function(){
-            // console.log("OPEN PICKER");
-            eventHandlers.picker("open");
-        },
-        enginePanelOpened: function(){
-            // console.log("OPEN EDIT ENGINE");
-            eventHandlers.editEngine("open");
-        },
-        imagePopupOpened: function(){
-            // console.log("OPEN IMAGE POPUP");
-            eventHandlers.imagePreview("open");
-        },
-        modeMenuOpened: function(){
-            // console.log("OPEN MENU EDIT MENU MODE");
-        },
-
-        //////////////////////////////////
-        // DRAGS /////////////////////////
-        //////////////////////////////////
-
-        startDrag: function(){
-            // console.log("::: XXX ::: STARTED TO DRAG");
-            eventHandlers.closeSidePanel();
-        },
-        stopDrag: function(){
-            // console.log("::: XXX ::: STOPPED DRAGGING");
-        },
-
-
-        //////////////////////////////////
-        // MULTI SELECT //////////////////
-        //////////////////////////////////
-
-        clearMultiSelection: function(e){
-            mouse.trigger(document.getElementsByClassName("window-iframe")[0], "click");
-
-        },
-
-        selectionOnChange: function(value){
-            var count = parseInt(value);
-
-            // Multiple Items have been selected (in Edit Mode) or removed
-            // Check if value is different
-            if(data.multiselection.count == count){
-                return false;
-
-            } else {
-                data.multiselection.count = count;
-
-            }
-
-            // Refresh the title of the page accordingly
-            eventHandlers.updateEditTopBar();
-
-            setTimeout(function(){
-                $(".editModeContextMenu .x-menu-list").attr("data-selected-name", data.body.getAttribute("data-singleselection-node-displayname"));
-            }, 50);
-        },
-
-        pageOnChange: function(value){
-
-            // console.log("pageOnChange() ::: ", value);
-
-            if(data.currentPage.displayname == value){
-                return false;
-            } else {
-                data.currentPage.displayname = value;
-
-            }
-
-            if( data.mode == "edit" ||
-                data.mode == "contribute"){
-
-                    // Need to update the header bar
-                    eventHandlers.updateEditTopBar();
-
-                    if(data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                        eventHandlers.disableIframeClick();
-                    }
-
-            }
-
-        },
-
-        pageOnChangeSRC: function(value){
-            // console.log("pageOnChangeSRC() ::: ", value);
-        },
-
-        settingsChanged: function(value){
-            eventHandlers.dump("setingsChanged");
-
-            // Remove certain styling from the Settings Pages ...
-            $(".window-iframe").contents().find("head").prepend("<style>.well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}</style>");
-
-            // If Side Panel is not opened then open it
-            if( data.body.getAttribute("data-sitesettings") == "true" &&
-                data.body.getAttribute("data-edit-window-style") != "settings"){
-
-                eventHandlers.openSettings();
-            }
-        },
-        closedPicker: function(){
-            // console.log("CLOSE PICKER");
-            eventHandlers.picker("close");
-        },
-        closedEditEngine: function(){
-            // console.log("CLOSE EDIT ENGINE");
-            eventHandlers.clearMultiSelection();
-            eventHandlers.editEngine("close");
-        },
-        closedImagePopup: function(){
-            // console.log("CLOSE IMAGE POPUP");
-            eventHandlers.imagePreview("close");
-        },
-        workflowDashboardOpened: function(){
-            // console.log("OPEN IMAGE POPUP");
-            mouse.trigger($(".workflow-dashboard-engine .x-tool-maximize")[0],"click")
-        },
-
-        // JQUERY HANDLERS
-        // Window listeners
-        windowLoad: function(){},
-        windowResize: function(){
-            eventHandlers.updatePageMenuPositions();
-        },
-        windowBlur: function(){
-            // Window has lost focus, so presume that the user has clicked in the iframe.
-            // If the side panel is open, then close it
-            if(data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                // console.log("BLURRRRRER");
-                eventHandlers.closeSidePanel();
-            }
-
-        },
-
-        clickAppContainer: function(e){
-            var inSidePanel = $(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
-            if(inSidePanel.length == 0){
-                // console.log("HERE NOW");
-                eventHandlers.closeSidePanel();
-            }
-        },
-
-        closeSourcePicker: function(){
-            data.body.setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
-        },
-
-        listView: function(){
-            data.body.setAttribute("indigo-PICKER-DISPLAY", "list");
-        },
-        thumbView: function(){
-            data.body.setAttribute("indigo-PICKER-DISPLAY", "thumbs");
-        },
-
-        closeSearchPanel: function(){
-            // CLOSE SEARCH PANEL
-
-            // Hide the search panel
-            data.body.setAttribute("data-INDIGO-PICKER-SEARCH", "");
-
-            // Display the BROWSE panels
-            $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
-
-            // Get the refresh button
-            var refreshButton = $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel").not(".x-panel-collapsed").find(".x-tool-refresh")[0];
-
-            // CLick on the refresh button to reload the content of the directory
-            mouse.trigger(refreshButton, "click");
-        },
-        openSearchPanel: function(){
-            // OPEN SEARCH PANEL
-
-            // Close source picker if open
-            eventHandlers.closeSourcePicker();
-
-
-            // Display the search panel
-            data.body.setAttribute("data-INDIGO-PICKER-SEARCH", "open");
-
-            // Put the results in LIST mode
-            $("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
-
-            // Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
-            $("#CRTbrowseTabItem").addClass("x-hide-display");
-
-
-            // Remove the directory listing ( gives the search panel an empty start)
-            setTimeout(function(){
-                $("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
-            }, 250);
-        },
-        changePickerSource: function(){
-            // CHANGE SOURCE
-            // The user has changed SOURCE, so we just need to hide the combo...
-            data.body.setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
-        },
-        togglePickerSourceCombo: function(e){
-            // USER HAS CLICKED THE COMBO TRIGGER
-            e.stopPropagation();
-
-            $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
-
-            /// Toggle the attribute in body tag
-            $("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", function(id, label){
-                return (label == "open") ? "" : "open";
-            });
-        },
-        mouseOverPickerSourceTrigger: function(){
-            // USER HAS ROLLED OVER THE COMBO TRIGGER
-            if(data.body.getAttribute("data-indigo-picker-source-panel") != "open"){
-                $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
-            }
-        },
-        mouseOutPickerSourceTrigger: function(){
-            // USER HAS ROLLED OUT OF THE COMBO TRIGGER
-            $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
-        },
-        repositionFilePreviewButton: function(e, offset){
-            var offset = offset || {
-                    left: 0,
-                    top: 0
-                },
-                file = $(e.currentTarget),
-                box = file[0].getBoundingClientRect(),
-                left = box.left,
-                top = box.top,
-                width = box.width;
-
-            $("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
-                .css({
-                    top: (top + (offset.top)) + "px",
-                    left: ((left + width) + offset.left) + "px"
-                })
-                .addClass("indigo-show-button");
-        },
-        selectPickerFile: function(){
-            $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
-        },
-
-        anthraciteCSS: function(turnOn){
-            if(turnOn){
-                if (!data.css.active) {
-                    // Anthracite CSS has been removed, so plug it back in
-                    $("head").append(data.css.storedCSS);
-                }
-            } else if(data.css.active){
-                // Remove Anthracite CSS style sheet
-               $('link[rel=stylesheet][href$="edit_en.css"]').remove();
-
-               // Register the fact that it has been removed
-               data.css.active = false;
-            }
-        },
-
-        dump: function(from){
-            // console.log("");
-            // console.log("---");
-            // console.log(from+"()");
-            // console.log("data.mode = ", data.mode);
-            // console.log("body['data-sitesettings'] = ", data.body.getAttribute("data-sitesettings"));
-            // console.log("body['data-edit-window-style'] = ", data.body.getAttribute("data-edit-window-style"));
-            // console.log("---");
-            // console.log("");
-        },
-
-        openSettings: function(){
-            console.log("OPEN SETTINGS");
-            if(data.mode == "edit"){
-                data.body.setAttribute("data-edit-window-style", "settings");
-            }
-            eventHandlers.dump("openSettings");
-
-            eventHandlers.openSidePanel();
-
-            if(!data.history.editor){
-                // Need to store the button of the current edit page so we can revert later
-                data.history.editor = document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row")[1];
-
-            }
-
-            if(data.history.settings){
-                // Trigger click on last viewed settings page
-                mouse.trigger(data.history.settings, "click");
-
-            } else {
-                // Wait until the menu has been loaded, then click on the first available menu button
-                Dex("#JahiaGxtSettingsTab").onceTreeChange(function(tree){
-                    var branch,
-                        nodeJoint,
-                        firstClickableBranch;
-
-                    for (n = 0;  n < tree.length; n++){
-
-    					branch = tree[n];
-    					nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
-
-    					// If node jint has no background then it opens a page
-    					if(	nodeJoint &&
-                            nodeJoint.style &&
-    						!nodeJoint.style.backgroundImage){
-
-    						// Branch has no children, so it opens a page
-                            firstClickableBranch = branch;
+                    switch (cl) {
+                        case "x-viewport-editmode":
+							app.switch("edit");
 
                             break;
-    					}
+                        case "x-viewport-adminmode":
+							app.switch("admin");
 
+                            break;
+                        case "x-viewport-dashboardmode":
+							app.switch("dashboard");
+
+                            break;
+                        case "x-viewport-studiomode":
+							app.switch("studio");
+
+                            break;
+                        case "x-viewport-contributemode":
+							app.switch("contribute");
+
+                            break;
                     }
 
-                    mouse.trigger(firstClickableBranch, "mousedown");
-                    mouse.trigger(firstClickableBranch, "click");
-                });
-
-            }
-        },
-
-        closeSettings: function(){
-
-            data.body.setAttribute("data-edit-window-style", "default");
-            eventHandlers.dump("closeSettings");
-
-            eventHandlers.closeSidePanel();
-
-            if(data.history.editor){
-                // Trigger click on last viewed settings page
-                mouse.trigger(data.history.editor, "mousedown");
-                mouse.trigger(data.history.editor, "mouseup");
-            } else {
-                mouse.trigger(document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")[0], "mousedown");
-
-            }
-
-        },
-
-        load: {
-            admin: function(){
-                if(data.mode == "admin"){
-                    return false;
-                } else {
-                    console.log("ADMIN MODE >>>>>>>>>>>>>>>>>>");
-                    data.mode = "admin";
                 }
+            })
+		},
+		onResize: function(){
+			if(app.data.currentApp == "edit"){
+				app.edit.topbar.reposition();
+			}
 
-                var systemSettingsTabs = document.querySelectorAll(".tab_systemSiteSettings")[0],
+			if(app.data.currentApp == "contribute"){
+				app.contribute.topbar.reposition();
+			}
+		},
+		onBlur: function(){
+			// Window has lost focus, so presume that the user has clicked in the iframe.
+            // If the side panel is open, then close it
+            if(app.data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+                app.edit.sidepanel.close();
+            }
+		},
+		onClick: function(e){
+			console.log("CLICKED THE APP");
+			var inSidePanel = $(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
+            if(inSidePanel.length == 0){
+                app.edit.sidepanel.close();
+            }
+		},
+		switch: function(appID){
+			if(app.data.currentApp == appID){
+				return false;
+
+			}
+
+			app.data.currentApp = appID;
+
+			data.mode = appID;
+
+			app[appID].onOpen();
+
+		},
+		contextMenus: {
+			managerMenu: {
+				onOpen: function(){},
+				onClose: function(){
+					// Manager Menu has been closed by clicking on the X.
+		            // Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
+		            $(".menu-editmode-managers-menu").fadeOut();
+				}
+			}
+		},
+		theme: {
+			data: {
+				skin: "dark",
+				enabled: true,
+				storedCSS: null
+			},
+			onToggle: function(e){
+				// Toggle the UI Theme by changing the body attribute accordingly.
+
+	            /* The button firing this event is actually a pseudo element atached to a table.
+	            // The tables CSS has been set to ignore all pointer events EXCEPT the pseudo element who accepts pointer events.
+	            // This allows us to capture a click on the pseudo element, but we have to check that it a child of the table want the one that was clicked */
+	            if($(e.target).hasClass("x-toolbar-ct")){
+
+					if(app.theme.data.skin == "dark"){
+						app.theme.data.skin = "light";
+					} else {
+						app.theme.data.skin = "dark";
+					}
+
+					$("body").attr("data-INDIGO-UI", app.theme.data.skin);
+
+	            }
+			},
+			on: function(changeSkin){
+				if(changeSkin){
+					app.theme.data.skin = changeSkin;
+				}
+
+				if(!app.theme.data.enabled){
+					// Anthracite CSS has been removed, so plug it back in
+                    $("head").append(app.theme.data.storedCSS);
+				}
+			},
+			off: function(){
+				if(app.theme.data.enabled){
+					// Remove Anthracite CSS style sheet
+	               $('link[rel=stylesheet][href$="edit_en.css"]').remove();
+
+	               // Register the fact that it has been removed
+	               app.theme.data.enabled = false;
+				}
+			},
+		},
+		picker: {
+			data: {
+				currentItem: null,
+				title: null
+			},
+			onOpen: function(){
+				app.data.body.setAttribute("data-INDIGO-PICKER-SEARCH", "");
+				app.data.body.setAttribute("data-INDIGO-PICKER", "open");
+				app.data.body.setAttribute("indigo-PICKER-DISPLAY", "thumbs");
+			},
+			onClose: function(){
+				app.data.body.setAttribute("data-INDIGO-PICKER", "");
+
+			},
+			onClick: function(){
+				app.data.body.setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
+
+			},
+			onListView: function(){
+				app.data.body.setAttribute("indigo-PICKER-DISPLAY", "list");
+
+			},
+			onThumbView: function(){
+				app.data.body.setAttribute("indigo-PICKER-DISPLAY", "thumbs");
+
+			},
+			row: {
+				onClick: function(){
+					$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+
+				},
+				onMouseOver: function(e){
+					// Position the preview button next to the file whilst hovering
+		            app.picker.previewButton.reposition(e, {
+		                left: -58,
+		                top: 0
+		            });
+
+					app.picker.data.currentItem = $(this)[0];
+		            app.picker.data.title = $(this).find(".x-grid3-col-name").html();
+
+		            if($(this).hasClass("x-grid3-row-selected")){
+		                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+
+		            } else {
+		                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "unselected");
+
+		            }
+
+		            $(".toolbar-item-filepreview").attr("indigo-preview-button", "show");
+				},
+				onContext: function(e){
+					// Open Context Menu when clicking "More" button.
+					// if matchClass is passed, then the click is ONLY accepted if the clicked element has that class.
+					// if matchClass is not passed then it is accepted.
+					var acceptClick = $(e.target).hasClass("x-tree3-el");
+
+					if(acceptClick){
+						$(e.target).trigger({
+							type: 'mousedown',
+							button: 2,
+							which:3,
+							clientX: e.pageX,
+							clientY: e.pageY
+						}).trigger({
+							type:"contextmenu",
+							clientX: e.pageX,
+							clientY: e.pageY
+						});
+					}
+				}
+			},
+			thumb: {
+				onClick: function(){
+					$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+
+				},
+				onMouseOver: function(e){
+					// Position the preview button next to the file whilst hovering
+		            app.picker.previewButton.reposition(e, {
+		                left: -52,
+		                top: 0
+		            });
+
+					app.picker.data.currentItem = $(this)[0];
+		            app.picker.data.title = $(this).attr("id");
+
+		            if($(this).hasClass("x-view-item-sel")){
+		                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+
+		            } else {
+		                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "unselected");
+
+		            }
+
+		            $(".toolbar-item-filepreview").attr("indigo-preview-button", "show");
+				},
+				onContext: function(e){
+					// Open Context Menu when clicking "More" button.
+					$(e.target).trigger({
+						type: 'mousedown',
+						button: 2,
+						which:3,
+						clientX: e.pageX,
+						clientY: e.pageY
+					}).trigger({
+						type:"contextmenu",
+						clientX: e.pageX,
+						clientY: e.pageY
+					});
+
+				}
+
+			},
+			previewButton: {
+				onMouseOver: function(){
+					$(app.picker.data.currentItem)
+		                .addClass("x-view-over")
+		                .addClass("x-grid3-row-over");
+				},
+				onMouseOut: function(){
+					$(app.picker.data.currentItem)
+		                .removeClass("x-view-over")
+		                .removeClass("x-grid3-row-over");
+				},
+				onClick: function(e, secondClick){
+					mouse.trigger(app.picker.data.currentItem, "mousedown");
+		            mouse.trigger(app.picker.data.currentItem, "mouseup");
+
+		            if(!secondClick){
+		                $("#JahiaGxtImagePopup").remove(); // remove OLD preview
+		                $(this).trigger("click", [true]); // Reopen with new preview
+		                $("#JahiaGxtImagePopup .x-window-bwrap").attr("data-file-name", app.picker.data.title);
+
+		            }
+
+		            $(".toolbar-item-filepreview").attr("indigo-preview-button", "hide");
+				},
+				reposition: function(e, offset){
+					var offset = offset || {
+		                    left: 0,
+		                    top: 0
+		                },
+		                file = $(e.currentTarget),
+		                box = file[0].getBoundingClientRect(),
+		                left = box.left,
+		                top = box.top,
+		                width = box.width;
+
+		            $("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
+		                .css({
+		                    top: (top + (offset.top)) + "px",
+		                    left: ((left + width) + offset.left) + "px"
+		                })
+		                .addClass("indigo-show-button");
+				},
+			},
+
+			source: {
+				onChange: function(){},
+				onMouseOver: function(){
+					// USER HAS ROLLED OVER THE COMBO TRIGGER
+		            if(app.data.body.getAttribute("data-indigo-picker-source-panel") != "open"){
+		                $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
+		            }
+				},
+				onMouseOut: function(){
+					// USER HAS ROLLED OUT OF THE COMBO TRIGGER
+		            $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+				},
+				close: function(){
+					// CHANGE SOURCE
+		            // The user has changed SOURCE, so we just need to hide the combo...
+		            app.data.body.setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
+				},
+				open: function(){},
+				toggle: function(e){
+					// USER HAS CLICKED THE COMBO TRIGGER
+		            e.stopPropagation();
+
+		            $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+
+		            /// Toggle the attribute in body tag
+		            $("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", function(id, label){
+		                return (label == "open") ? "" : "open";
+		            });
+				}
+			},
+			search: {
+				open: function(){
+					// OPEN SEARCH PANEL
+
+		            // Close source picker if open
+		            app.picker.onClose();
+
+
+		            // Display the search panel
+		            app.data.body.setAttribute("data-INDIGO-PICKER-SEARCH", "open");
+
+		            // Put the results in LIST mode
+		            $("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
+
+		            // Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
+		            $("#CRTbrowseTabItem").addClass("x-hide-display");
+
+
+		            // Remove the directory listing ( gives the search panel an empty start)
+		            setTimeout(function(){
+		                $("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
+		            }, 250);
+				},
+				close: function(){
+					// CLOSE SEARCH PANEL
+
+		            // Hide the search panel
+		            app.data.body.setAttribute("data-INDIGO-PICKER-SEARCH", "");
+
+		            // Display the BROWSE panels
+		            $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
+
+		            // Get the refresh button
+		            var refreshButton = $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel").not(".x-panel-collapsed").find(".x-tool-refresh")[0];
+
+		            // CLick on the refresh button to reload the content of the directory
+		            mouse.trigger(refreshButton, "click");
+				},
+
+				onContext: function(e){
+					// Open Context Menu when clicking "More" button.
+					$(e.target).trigger({
+						type: 'mousedown',
+						button: 2,
+						which:3,
+						clientX: e.pageX,
+						clientY: e.pageY
+					}).trigger({
+						type:"contextmenu",
+						clientX: e.pageX,
+						clientY: e.pageY
+					});
+				}
+			}
+		},
+		imagePreview: {
+			onOpen: function(){
+				app.data.body.setAttribute("data-INDIGO-IMAGE-PREVIEW", "open");
+
+				// Attribute used to display the friendly name in edit panel
+				$(".engine-panel > div.x-panel-header .x-panel-header-text").attr("data-friendly-name", "nodeDisplayName");
+			},
+			onClose: function(){
+				app.data.body.setAttribute("data-INDIGO-IMAGE-PREVIEW", "");
+
+			}
+		},
+		engine: {
+			onOpen: function(){
+				console.log("::: APP ::: ENGINE ::: OPEN");
+				var nodeDisplayName = app.data.body.getAttribute("data-singleselection-node-displayname");
+
+				app.data.body.setAttribute("data-INDIGO-EDIT-ENGINE", "open");
+
+				// Attribute used to display the friendly name in edit panel
+				$(".engine-panel > div.x-panel-header .x-panel-header-text").attr("data-friendly-name", nodeDisplayName);
+			},
+			onClose: function(){
+				console.log("::: APP ::: ENGINE ::: CLOSE");
+				app.iframe.clearSelection();
+				app.data.body.setAttribute("data-INDIGO-EDIT-ENGINE", "");
+
+			},
+		},
+		workflow: {
+			dashboard: {
+				onOpen: function(){
+					mouse.trigger($(".workflow-dashboard-engine .x-tool-maximize")[0],"click")
+
+				}
+			}
+		},
+		iframe: {
+			data: {
+				currentUrl: null,
+				displayName: null,
+				selectionCount: 0,
+				bodyStyle: null
+			},
+			// Event Handlers
+			onChangeSRC: function(value){
+				console.log("::: APP ::: IFRAME ::: ONCHANGESRC", value);
+				app.iframe.data.currentUrl = value;
+
+			},
+			onChange: function(value){
+				console.log("::: APP ::: IFRAME ::: ONCHANGE", value);
+
+				if(app.iframe.data.displayName == value){
+					return false;
+				}
+
+				app.iframe.data.displayName = value;
+
+				switch(app.data.currentApp){
+					case "edit":
+						// Need to update the header bar
+						app.edit.topbar.build();
+
+						if(app.edit.sidepanel.isOpen()){
+							app.iframe.disableClicks();
+						}
+
+						break;
+
+					case "contribute":
+						// Need to update the header bar
+						app.contribute.topbar.build();
+
+						break;
+				}
+
+
+			},
+			onSelect: function(value){
+				console.log("::: APP ::: IFRAME ::: ONSELECT");
+				var count = parseInt(value);
+
+				// Multiple Items have been selected (in Edit Mode) or removed
+				// Check if value is different
+				if(app.iframe.data.selectionCount == count){
+					return false;
+
+				}
+
+				app.iframe.data.selectionCount = count;
+
+				// Refresh the title of the page accordingly
+				app.edit.topbar.build();
+
+				// MOVE TO A DEX LISTENER ON MENU ITEM
+				// setTimeout(function(){
+				// 	$(".editModeContextMenu .x-menu-list").attr("data-selected-name", app.data.body.getAttribute("data-singleselection-node-displayname"));
+				// }, 50);
+			},
+
+			clearSelection: function(){
+				console.log("::: APP ::: IFRAME ::: CLEARSELECTION");
+
+				mouse.trigger(document.getElementsByClassName("window-iframe")[0], "click");
+
+			},
+
+			disableClicks: function(){
+				console.log("::: APP ::: IFRAME ::: DISABLECLICKS");
+
+				if(app.data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && app.data.body.getAttribute("data-sitesettings") == "false"){
+	                // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
+	                var iframeBody = $(".window-iframe").contents().find("body");
+	                app.iframe.data.bodyStyle = iframeBody.attr("style") || "";
+
+	                // Remove pointer events from the iframes body, which means that once a user clicks on the iframe to exit the side panel, the content is not automatically selected.
+	                iframeBody.attr("style", app.iframe.data.bodyStyle + " pointer-events: none !important");
+	            }
+			}
+		},
+		admin: {
+			// Event Handlers
+			onOpen: function(){
+				console.log("::: APP ::: ADMIN ::: OPENED");
+
+				var systemSettingsTabs = document.querySelectorAll(".tab_systemSiteSettings")[0],
                     serverSettingsTabs = document.querySelectorAll(".tab_serverSettings")[0];
 
                 if(systemSettingsTabs){
@@ -682,625 +809,519 @@ Dex.dumpQueue();
                 }
 
                 // Use Anthracite CSS
-                eventHandlers.anthraciteCSS(true);
+				app.theme.on();
 
                 // Set attributes to be used by CSS
-                data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no");
-                data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
-
-            },
-            edit: function(){
-                if(data.mode == "edit"){
-                    return false;
-                } else {
-                    console.log("EDIT MODE >>>>>>>>>>>>>>>>>>");
-                    data.mode = "edit";
-
-                    // Reset the history as the items will have been reloaded and therefore no longer accessible
-                    data.history = {
-                        settings: null,
-                        editor: null
-                    }
-
-                    // Reset to force reload of settings menu via triggering click on refresh button (later on)
-                    data.sidePanelTabs.firstLoad = true;
-                }
-
-                // Use Anthracite CSS
-                eventHandlers.anthraciteCSS(true);
-
-                // Set attributes to be used by CSS
-                data.body.setAttribute("data-edit-window-style", "default");
-                data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
-                data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
-
-
-
-
-
-
-            },
-            dashboard: function(){
-                if(data.mode == "dashboard"){
-                    return false;
-                } else {
-                    console.log("DASHBOARD MODE >>>>>>>>>>>>>>>>>>");
-                    data.mode = "dashboard";
-                }
-
-                // Use Anthracite CSS
-                eventHandlers.anthraciteCSS(true);
-
-                // Set attributes to be used by CSS
-                data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no");
-                data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
-
-            },
-            studio: function(){
-                if(data.mode == "studio"){
-                    return false;
-                } else {
-                    console.log("STUDIO MODE >>>>>>>>>>>>>>>>>>");
-                    data.mode = "studio";
-                }
-
-                // Dont use Anthracite CSS
-                eventHandlers.anthraciteCSS(false);
-
-                // Set attributes to be used by CSS
-                data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
-                data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
-
-            },
-            contribute: function(){
-                if(data.mode == "contribute"){
-                    return false;
-                } else {
-                    console.log("CONTRIBUTE MODE >>>>>>>>>>>>>>>>>>");
-                    data.mode = "contribute";
-                }
-
-                // Use Anthracite CSS
-                eventHandlers.anthraciteCSS(true);
-
-                // Set attributes to be used by CSS
-                data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
-                data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
-
-            }
-        },
-
-        // User has changed modes
-        changedMode: function(mode){
-            mode.split(" ").forEach(function(cl) {
-                if (cl.indexOf("x-viewport") == 0) {
-
-                    switch (cl) {
-                        case "x-viewport-editmode":
-                            eventHandlers.load.edit();
-
-                            break;
-                        case "x-viewport-adminmode":
-                            eventHandlers.load.admin();
-
-                            break;
-                        case "x-viewport-dashboardmode":
-                            eventHandlers.load.dashboard();
-
-                            break;
-                        case "x-viewport-studiomode":
-                            eventHandlers.load.studio();
-
-                            break;
-                        case "x-viewport-contributemode":
-                            eventHandlers.load.contribute();
-
-                            break;
-                    }
-
-                }
-            })
-
-        },
-
-
-
-        // Edit Engine Controller
-        imagePreview: function(state){
-            switch(state){
-                case "open":
-                    data.body.setAttribute("data-INDIGO-IMAGE-PREVIEW", "open");
-
-                    // Attribute used to display the friendly name in edit panel
-                    $(".engine-panel > div.x-panel-header .x-panel-header-text").attr("data-friendly-name", "nodeDisplayName");
-                    break;
-
-                case "close":
-                    data.body.setAttribute("data-INDIGO-IMAGE-PREVIEW", "");
-                    break;
-            }
-        },
-
-        editEngine: function(state){
-            var nodeDisplayName = data.body.getAttribute("data-singleselection-node-displayname");
-
-            switch(state){
-                case "open":
-                    data.body.setAttribute("data-INDIGO-EDIT-ENGINE", "open");
-
-                    // Attribute used to display the friendly name in edit panel
-                    $(".engine-panel > div.x-panel-header .x-panel-header-text").attr("data-friendly-name", nodeDisplayName);
-                    break;
-
-                case "close":
-                    data.body.setAttribute("data-INDIGO-EDIT-ENGINE", "");
-                    break;
-            }
-        },
-
-        // Picker Controller
-        picker: function(state){
-            switch(state){
-                case "open":
-
-                    data.body.setAttribute("data-INDIGO-PICKER-SEARCH", "");
-                    data.body.setAttribute("data-INDIGO-PICKER", "open");
-                    data.body.setAttribute("indigo-PICKER-DISPLAY", "thumbs");
-                    break;
-
-                case "close":
-                    data.body.setAttribute("data-INDIGO-PICKER", "");
-                    break;
-            }
-        },
-
-
-
-        updateEditTopBar: function(){
-            var pageTitle,
-                multiselect = "off";
-
-            // Presumably in Edit Mode or Contribute Mode, in which case we need to set the page title
-            switch(data.multiselection.count){
-                case 0:
-                    pageTitle = data.currentPage.displayname;
-                    break;
-
-                case 1:
-                    pageTitle = "1 selected item";
-                    pageTitle = data.body.getAttribute("data-singleselection-node-displayname");
-                    multiselect = "on";
-
-
-                    break;
-
-                default:
-                    pageTitle = data.multiselection.count + " selected items";
-                    multiselect = "on";
-                    break;
-            }
-
-            // Set multiselect status in body attribute...
-            data.body.setAttribute("data-multiselect", multiselect);
-
-
-
-            // Page Title in Edit Made
-            $(".x-current-page-path").attr("data-PAGE-NAME",pageTitle);
-
-            // Page Title in Contribute Made
-            $(".x-viewport-contributemode .toolbar-itemsgroup-languageswitcher").attr("data-PAGE-NAME",pageTitle);
-
-            // Page Titles need centering
-            eventHandlers.updatePageMenuPositions();
-
-            // Remove Mutation Observer used in Settings pages (if attached)
-            if(data.panelMenu.observer){
-                data.panelMenu.observer.disconnect();
-                data.panelMenu.observer = null;
-
-            }
-        },
-
-
-        publicationStatusChanged: function(status){
-            // Publication status of the current page has changed (in edit or contribute mode). Update status accordingly.
-            data.body().setAttribute("data-PAGE-PUBLICATION-STATUS", status);
-
-        },
-
-        updatePageMenuPositions: function(){
-            // Center title to page and move surrounding menus to right and left.
-            // Ask Thomas for a body attribute to distinguish EDIT and CONTRIBUTE modes.
-
-            // EDIT MODE page title positions
-            var editMode = {};
-            editMode.pageNameLeft = parseInt($(data.temp.selectors.editModePageName).position().left);
-            editMode.pageNameWidth = Math.floor($(data.temp.selectors.editModePageName).width()) - 1;
-            editMode.pageNameRight = editMode.pageNameLeft + editMode.pageNameWidth;
-
-            // Preview Menu
-            $(".edit-menu-view").css({
-                "left": (editMode.pageNameRight + 76) + "px",
-                "opacity": 1
-            });
-
-            // Publication Menu
-            $(".edit-menu-publication").css({
-                "left": (editMode.pageNameRight + 65) + "px",
-                "opacity": 1
-            });
-
-            // More Info Menu (previously labeled as Edit )
-            $(data.temp.selectors.editModeMoreInfo).css({
-                "left": (editMode.pageNameLeft + 92) + "px",
-                "opacity": 1
-            });
-
-            // More Language Menu (previously labeled as Edit )
-            $(data.temp.selectors.editModeLanguageSelector).attr("style", "left: " + (editMode.pageNameLeft + 92) + "px !important; opacity: 1");
-
-            // CONTRIBUTE MODE page title positions
-            var contributeMode = {};
-            contributeMode.pageNameWidth = function(){
-                /* Because the Page Title is an ::after we can not access it via Jquery, have to get the computed width of the pseudo element ... */
-                var pageNameElement = document.querySelector('.x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div'),
-                    returnValue = 0;
-
-                if(pageNameElement){
-                    returnValue = parseInt(window.getComputedStyle(pageNameElement, '::after').getPropertyValue('width'));
-                }
-
-                return returnValue;
-            }();
-            contributeMode.windowWidth = parseInt($("body").width());
-            contributeMode.pageNameLeft = (contributeMode.windowWidth / 2) - (contributeMode.pageNameWidth / 2);
-            contributeMode.pageNameRight = (contributeMode.windowWidth / 2) + (contributeMode.pageNameWidth / 2) + 20;
-
-            // Language Selector
-            $(data.temp.selectors.contributeModeLanguageSelector).css({
-                "margin-left": "-" + (contributeMode.pageNameWidth / 2) + "px"
-            });
-
-
-            // Publication Menu
-            $(".contribute-menu-publication").css({
-                left: contributeMode.pageNameRight + "px"
-            });
-
-            // Preview Menu
-            $(".contribute-menu-view").css({
-                left: (contributeMode.pageNameRight + 10) + "px"
-            });
-
-            // Edit Button
-            $(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(4) > table").css({
-                left: (contributeMode.pageNameRight) + "px"
-            });
-        },
-
-        // Button listeners
-        toggleThemeMode: function(e){
-            // Toggle the UI Theme by changing the body attribute accordingly.
-
-            /* The button firing this event is actually a pseudo element atached to a table.
-            // The tables CSS has been set to ignore all pointer events EXCEPT the pseudo element who accepts pointer events.
-            // This allows us to capture a click on the pseudo element, but we have to check that it a child of the table want the one that was clicked */
-
-            if($(e.target).hasClass("x-toolbar-ct")){
-                $("body").attr("data-INDIGO-UI", function(index, attr){
-                    return (attr == "light") ? "dark" : "light";
-                });
-
-            }
-        },
-        openManagerMenu: function(){
-            // Close the side panel if it is open.
-
-        },
-        closeManagerMenu: function(){
-            // Manager Menu has been closed by clicking on the X.
-            // Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
-            $(".menu-editmode-managers-menu").fadeOut();
-        },
-        toggleSidePanelDocking: function(e){
-            console.log("AM I USED ????????????");
-            // This listener has a dual purpose depending on where it was called from.
-            // If called from the Edit Mode then it toggles the Side Panel Menu as PINNED and FLOATING
-            // If it is called from the settings window then it acts as a close button, closing the settings and returning to the Edit Mode.
-
-            var windowStyle = data.body.getAttribute("data-edit-window-style");
-
-            switch(windowStyle){
-                case "settings":
-                    // SETTINGS MODE: Button acts as a button that closed the Settings Overlay Page
-
-                    data.body.setAttribute("data-edit-window-style", "default");
-                    eventHandlers.closeSidePanel()
-
-                    // Load the last page displayed in the Edit Mode. Technically this should never be NULL. However, need to assign a value on first window load as it is currently only assigned when a user clicks a page in the Page Tree.
-                    if(data.lastOpenedPage){
-                        data.lastOpenedPage.trigger("mousedown");
-
-                    } else {
-                        // Could not find a page in the history so select the first page in the tree.
-                        // Note that this probably will never work, because by default the tree is collapsed and item #2 is not yet loaded, so a trigger click wont work as it is not there.
-                        // Also, we can not click the first element in the tree because it isnt actually a clickable page.
-                        // To solve this problem, if there isnt a nth-child(2), then the first child first needs expanding (clicking).
-                        $("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)").trigger("mousedown");
-                    }
-
-                    break;
-                default:
-                    // EDIT MODE: Button acts as a toggle for the side panel
-                    $("body").attr("data-INDIGO-GWT-FULLSCREEN", function(index, attr){
-                        return (attr == "on") ? "" : "on";
-                    })
-                    break;
-            }
-
-
-
-        },
-        clickSidePanelSettingsTab: function(forceClick){
-			// User has clicked the Settings Tab Button.
-            // console.log("OPENED SETTINGS ", forceClick);
-			// if(data.currentPage.displayname != "settings" && (data.body.getAttribute("data-sitesettings") == "false" || forceClick)){
-			// 	data.body.setAttribute("data-edit-window-style", "settings");
-            //
-			// 	eventHandlers.openSidePanel()
-            //
-			// 	if(data.lastSettingsPage){
-			// 		// Found settings page in history so open it
-			// 		data.lastSettingsPage.trigger("click");
-			// 	} else {
-			// 		// Trigger click on first list item WHEN it has loaded...
-			// 		if ($("#JahiaGxtSettingsTab .x-grid3-row")[0]) {
-			// 			var firstInList = $("#JahiaGxtSettingsTab .x-grid3-row")[0]  ;
-			// 			mouse.trigger(firstInList, "mousedown");
-			// 			mouse.trigger(firstInList, "click");
-			// 		} else {
-			// 			Dex("#JahiaGxtSettingsTab").onceTreeChange(function(nodes){
-			// 				var firstInList = nodes[0];
-			// 				mouse.trigger(firstInList, "mousedown");
-			// 				mouse.trigger(firstInList, "click");
-			// 			});
-			// 		}
-            //
-			// 	}
-			// }
+                app.data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no");
+                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+			},
+			onClose: function(){},
+
+			// Controls
 
 		},
-        clickSidePanelTab: function(){
-            // User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
-            var clickedTabID = $(this).attr("id");
+		edit: {
+			// Data
+			data: {
+				history: {
+					settingspage: null,
+					editpage: null,
+				}
+			},
+			// Event Handlers
+			onOpen: function(){
+				console.log("::: APP ::: EDIT ::: OPENED");
 
-            data.body.setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
+				// Reset History
+				app.edit.history.reset();
 
-            // Menus for the Tabs that call this listener require a normal side panel display
-            // data.body.setAttribute("data-edit-window-style", "default");
+				// Reset to force reload of settings menu via triggering click on refresh button (later on)
+				app.edit.sidepanel.data.firstRun = true;
 
-            var tabMenuActive = $(this).hasClass("x-tab-strip-active"),
-                sidePanelOpen = data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open";
+				app.edit.topbar.build();
 
-            if(tabMenuActive && sidePanelOpen){
-                // CLOSE SIDE PANEL: Already open for current Tab Menu
-                eventHandlers.closeSidePanel()
-            } else {
-                // OPEN SIDE PANEL.
-                eventHandlers.openSidePanel()
+				// Use Anthracite CSS
+				app.theme.on();
 
-            }
+                // Set attributes to be used by CSS
+                app.data.body.setAttribute("data-edit-window-style", "default");
+                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
+                app.data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+			},
+			onClose: function(){},
 
+			onNav: function(){
 
+				if(app.edit.settings.data.opened){
+					// CLicked on a settings page
+					app.edit.sidepanel.data.firstRun = false;
 
-        },
-        closeSidePanel: function(){
+					app.edit.history.add("settingspage", this);
+				} else {
+					app.edit.history.add("editpage", this);
 
-            if(data.body.getAttribute("data-edit-window-style") !== "settings" && data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
-                data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
+				}
 
-                // Revert iframes body style attribute to what it was originally
-                $(".window-iframe").contents().find("body").attr("style", data.sidePanelTabs.iframeBodyStyle);
+			},
 
-            }
+			// Controls
+			history: {
+				data: {},
+				add: function(type, node){
+					app.edit.history.data[type] = node;
 
-			eventHandlers.updatePageMenuPositions()
+				},
+				get: function(type){
+					return app.edit.history.data[type];
 
-        },
-        addPageToHistory: function(){
+				},
+				reset: function(){
+					app.edit.history.data = {
+						settingspage: null,
+						editpage: null,
+					};
+				},
+			},
 
+			topbar: {
+				build: function(){
+					console.log("::: APP ::: EDIT ::: TOPBAR ::: BUILD");
+					var pageTitle,
+						multiselect = "off";
 
+					// Presumably in Edit Mode or Contribute Mode, in which case we need to set the page title
+					switch(app.iframe.data.selectionCount){
+						case 0:
+							pageTitle = app.iframe.data.displayName;
+							break;
 
-            var windowStyle;
-
-            if(data.mode == "edit"){
-                // In Edit Mode so remember clicks
-
-                windowStyle = data.body.getAttribute("data-edit-window-style");
-
-                if(windowStyle == "settings"){
-                    // CLicked on a settings page
-                    data.history.settings = this;
-                } else {
-                    data.history.editor = this;
-
-                }
-
-            }
-
-            if(data.body.getAttribute("data-sitesettings") !== "true" && data.body.getAttribute("data-main-node-displayname") !== "settings"){
-                var openedPage = $(this).closest("#JahiaGxtPagesTab").length > 0,
-                    openedSettings = $(this).closest("#JahiaGxtSettingsTab").length > 0;
-
-                if(openedPage){
-                    data.lastOpenedPage = $(this);
-                } else if(openedSettings){
-                    data.lastSettingsPage = $(this);
-                }
-
-            }
-
-
-        },
-        openSidePanel: function(){
-            data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
-
-            // GWT has problems populating the site page tree when the side panel is hidden.
-            // Solution: When the side panel is opened for the FIRST TIME ONLY, the refresh button is triggered and the sites page tree is populated correctly.
-            if(data.body.getAttribute("data-sitesettings") == "false"){
-                if(data.sidePanelTabs.firstLoad){
-                    $(".window-side-panel #JahiaGxtRefreshSidePanelButton").trigger("click");
-                    data.sidePanelTabs.firstLoad = false;
-                }
-
-                eventHandlers.disableIframeClick();
-            }
+						case 1:
+							pageTitle = "1 selected item";
+							pageTitle = app.data.body.getAttribute("data-singleselection-node-displayname");
+							multiselect = "on";
 
 
-        },
-        disableIframeClick: function(){
-            if(data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && data.body.getAttribute("data-sitesettings") == "false"){
-                // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
-                var iframeBody = $(".window-iframe").contents().find("body");
-                data.sidePanelTabs.iframeBodyStyle = iframeBody.attr("style") || "";
+							break;
 
-                // Remove pointer events from the iframes body, which means that once a user clicks on the iframe to exit the side panel, the content is not automatically selected.
-                iframeBody.attr("style", data.sidePanelTabs.iframeBodyStyle + " pointer-events: none !important");
-            }
+						default:
+							pageTitle = app.iframe.data.selectionCount + " selected items";
+							multiselect = "on";
+							break;
+					}
 
-        },
-        mouseEnterSidePanelTab: function(){
-            // Trigger click on Side Panel Tabs on hover
-            $(this).trigger("click");
-        },
-        mouseEnterSiteSelector: function(){
-            // Mouseover Site Selector
-            // Problem: The Site Selector is displayed as if it is part of the side panel. Only Problem is that it is not a child of Side Panel, so
-            //			When the user hovers it the Side Panel is effectivly mouseout-ed.
-            // Fix:		Reopen the side panel as soon as the Site Selector is hovered.
+					// Set multiselect status in body attribute...
+					app.data.body.setAttribute("data-multiselect", multiselect);
 
-            eventHandlers.openSidePanel()
-        },
-        mouseOverSidePanelTab: function(){
-            // Mouseover Side Panel tabs, so open it.
-            if(data.body.getAttribute("data-selection-count") == "0"){
-                eventHandlers.openSidePanel()
+					// Page Title in Edit Made
+					$(".x-current-page-path").attr("data-PAGE-NAME",pageTitle);
 
-            }
-        },
-        mouseLeaveSidePanelTabs: function(e){
-            // CHECK if the user has actually left the Side Panel OR if they have just opened a context menu, in which case keep the Side Panel Open.
-            // Note that this only applies when the Side Panel is activated on mouse over.
-
-            if($("body > div.x-menu").length > 0){
-                // A Context Menu has been found, so do not close the Side Panel.
-
-            } else {
-                // No Context menu found, so assume that the Side Panel has really been mouseout-ed - close it.
-
-                eventHandlers.closeSidePanel()
-
-                // Set flag and timer to remove after 100ms.
-                data.sidePanelTabs.justBeenClosed = true;
-            }
-
-        },
-        clickMoreOptionsButton: function(e, matchClass){
-            // Open Context Menu when clicking "More" button.
-            // if matchClass is passed, then the click is ONLY accepted if the clicked element has that class.
-            // if matchClass is not passed then it is accepted.
-
-            var acceptClick = (matchClass) ? $(e.target).hasClass(matchClass) : true,
-                eV;
-
-            if(acceptClick){
-                $(e.target).trigger({
-                    type: 'mousedown',
-                    button: 2,
-                    which:3,
-                    clientX: e.pageX,
-                    clientY: e.pageY
-                }).trigger({
-                    type:"contextmenu",
-                    clientX: e.pageX,
-                    clientY: e.pageY
-                });
-            }
-
-        },
-        mouseOverImagePickerRow: function(e){
-            data.filePicker.currentItem = $(this)[0];
-            data.filePicker.title = $(this).find(".x-grid3-col-name").html();
-
-            if($(this).hasClass("x-grid3-row-selected")){
-                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
-
-            } else {
-                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "unselected");
-
-            }
-
-            $(".toolbar-item-filepreview").attr("indigo-preview-button", "show");
-        },
-        mouseOverImagePickerThumb: function(e){
-            data.filePicker.currentItem = $(this)[0];
-            data.filePicker.title = $(this).attr("id");
-
-            if($(this).hasClass("x-view-item-sel")){
-                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
-
-            } else {
-                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "unselected");
-
-            }
-
-            $(".toolbar-item-filepreview").attr("indigo-preview-button", "show");
-
-        },
-        mouseOverFilePreviewButton: function(){
-            $(data.filePicker.currentItem)
-                .addClass("x-view-over")
-                .addClass("x-grid3-row-over");
-        },
-        mouseOutFilePreviewButton: function(){
-            $(data.filePicker.currentItem)
-                .removeClass("x-view-over")
-                .removeClass("x-grid3-row-over");
-        },
-        mouseClickFilePreviewButton: function(e, secondClick){
-            mouse.trigger(data.filePicker.currentItem, "mousedown");
-            mouse.trigger(data.filePicker.currentItem, "mouseup");
-
-            if(!secondClick){
-                $("#JahiaGxtImagePopup").remove(); // remove OLD preview
-                $(this).trigger("click", [true]); // Reopen with new preview
-                $("#JahiaGxtImagePopup .x-window-bwrap").attr("data-file-name", data.filePicker.title);
-
-            }
-
-            $(".toolbar-item-filepreview").attr("indigo-preview-button", "hide");
-
-        },
-        mouseOverTreeRow: function(e){
-            // Position the preview button next to the file whilst hovering
-            eventHandlers.repositionFilePreviewButton(e, {
-                left: -58,
-                top: 0
-            });
-
-        },
-        mouseOverTreeThumb: function(e){
-            // Position the preview button next to the file whilst hovering
-            eventHandlers.repositionFilePreviewButton(e, {
-                left: -52,
-                top: 0
-            });
+					// Page Titles need centering
+					app.edit.topbar.reposition();
 
 
-        }
+				},
+				reposition: function(e){
+					console.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION");
+					// Center title to page and move surrounding menus to right and left.
 
-    };
+					if($(".mainmodule-head-container .toolbar-left-container").length > 0){
+
+			            var editMode = {};
+			            editMode.pageNameLeft = parseInt($(".mainmodule-head-container .toolbar-left-container").position().left);
+			            editMode.pageNameWidth = Math.floor($(".mainmodule-head-container .toolbar-left-container").width()) - 1;
+			            editMode.pageNameRight = editMode.pageNameLeft + editMode.pageNameWidth;
+
+			            // Preview Menu
+			            $(".edit-menu-view").css({
+			                "left": (editMode.pageNameRight + 76) + "px",
+			                "opacity": 1
+			            });
+
+			            // Publication Menu
+			            $(".edit-menu-publication").css({
+			                "left": (editMode.pageNameRight + 65) + "px",
+			                "opacity": 1
+			            });
+
+			            // More Info Menu (previously labeled as Edit )
+			            $("body[data-selection-count='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)").css({
+			                "left": (editMode.pageNameLeft + 92) + "px",
+			                "opacity": 1
+			            });
+
+			            // More Language Menu (previously labeled as Edit )
+			            $(".mainmodule-head-container .toolbar-itemsgroup-languageswitcher").attr("style", "left: " + (editMode.pageNameLeft + 92) + "px !important; opacity: 1");
+
+					}
+
+
+
+				}
+			},
+
+			sidepanel: {
+				data: {
+					firstRun: true,
+					firstRunPages: true,
+					firstRunSettings: true,
+					open: false
+				},
+				onStartDrag: function(){
+					console.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTARTDRAG");
+					app.edit.sidepanel.close();
+
+				},
+				onStopDrag: function(){
+					console.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTOPDRAG");
+
+				},
+				open: function(isSettings){
+					console.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN", isSettings);
+
+
+					console.log("mmmmmmmmmmmm: ", app.edit.sidepanel.data.firstRunSettings);
+
+
+					app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+					app.edit.sidepanel.data.open = true;
+
+					// GWT has problems populating the site page tree when the side panel is hidden.
+					// Solution: When the side panel is opened for the FIRST TIME ONLY, the refresh button is triggered and the sites page tree is populated correctly.
+					if(app.data.body.getAttribute("data-sitesettings") == "false"){
+
+						if(isSettings){
+							if(app.edit.sidepanel.data.firstRunSettings){
+								mouse.trigger(document.getElementById("JahiaGxtRefreshSidePanelButton"), "click");
+
+								app.edit.sidepanel.data.firstRunSettings = false;
+
+								mouse.trigger($(".tab_siteSettings .x-grid3-row:nth-child(1)")[0], "mousedown");
+								mouse.trigger($(".tab_siteSettings .x-grid3-row:nth-child(1)")[0], "click");
+							}
+						} else {
+							if(app.edit.sidepanel.data.firstRunPages){
+								mouse.trigger(document.getElementById("JahiaGxtRefreshSidePanelButton"), "click");
+								app.edit.sidepanel.data.firstRunPages = false;
+							}
+						}
+
+
+
+						app.iframe.disableClicks();
+					}
+				},
+				close: function(){
+					console.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
+					if(app.data.body.getAttribute("data-edit-window-style") !== "settings" && app.data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
+		                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
+
+		                // Revert iframes body style attribute to what it was originally
+		                $(".window-iframe").contents().find("body").attr("style", app.iframe.data.bodyStyle);
+
+		            }
+
+					app.edit.topbar.reposition();
+				},
+
+				isOpen: function(){
+					return app.edit.sidepanel.data.open;
+				},
+
+				tab: {
+					onClick: function(e){
+						console.log("APP ::: EDIT ::: SIDEPANEL ::: ONCLICK");
+
+
+
+
+
+						// User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
+			            var clickedTabID = $(this).attr("id");
+
+			            app.data.body.setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
+
+			            // Menus for the Tabs that call this listener require a normal side panel display
+			            // app.data.body.setAttribute("data-edit-window-style", "default");
+
+			            var tabMenuActive = $(this).hasClass("x-tab-strip-active"),
+			                sidePanelOpen = app.data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open";
+
+			            if(tabMenuActive && sidePanelOpen){
+			                // CLOSE SIDE PANEL: Already open for current Tab Menu
+			                app.edit.sidepanel.close()
+			            } else {
+			                // OPEN SIDE PANEL.
+							app.edit.sidepanel.open(false);
+
+			            }
+					},
+				},
+				row: {
+					onContext: function(e){
+						// Open Context Menu when clicking "More" button.
+			            var acceptClick = $(e.target).hasClass("x-grid3-td-displayName");
+
+			            if(acceptClick){
+			                $(e.target).trigger({
+			                    type: 'mousedown',
+			                    button: 2,
+			                    which:3,
+			                    clientX: e.pageX,
+			                    clientY: e.pageY
+			                }).trigger({
+			                    type:"contextmenu",
+			                    clientX: e.pageX,
+			                    clientY: e.pageY
+			                });
+			            }
+					}
+				}
+			},
+
+			settings: {
+				data: {
+					opened: false
+				},
+				onChange: function(value){
+
+					if(value == "true"){
+						console.log("HERE");
+
+						if(app.data.currentApp == "edit"){
+							app.edit.settings.open();
+
+						}
+
+
+					} else {
+						// alert("YO");
+						// app.edit.settings.close();
+
+					}
+				},
+				open: function(){
+					console.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
+
+					console.log("////////// app.edit.sidepanel.data.firstRunSettings: ", app.edit.sidepanel.data.firstRunSettings);
+
+
+
+					$(".window-iframe").contents().find("head").prepend("<style>.well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}</style>");
+
+					if(app.edit.settings.data.opened){
+						return false;
+					}
+
+
+
+					app.edit.settings.data.opened = true;
+					app.data.body.setAttribute("data-edit-window-style", "settings");
+
+		            app.edit.sidepanel.open(true);
+
+		            if(!app.edit.history.get("editpage")){
+		                // Need to store the button of the current edit page so we can revert later
+						app.edit.history.add("editpage", document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row")[1]);
+
+		            }
+
+		            if(app.edit.history.get("settingspage")){
+		                // Trigger click on last viewed settings page
+		                mouse.trigger(app.edit.history.get("settingspage"), "click");
+
+		            } else {
+		                // Wait until the menu has been loaded, then click on the first available menu button
+		                Dex("#JahiaGxtSettingsTab").onceTreeChange(function(tree){
+							console.log("MENUHASBEENLOADED");
+		                    var branch,
+		                        nodeJoint,
+		                        firstClickableBranch;
+
+		                    for (n = 0;  n < tree.length; n++){
+
+		    					branch = tree[n];
+		    					nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
+
+		    					// If node jint has no background then it opens a page
+		    					if(	nodeJoint &&
+		                            nodeJoint.style &&
+		    						!nodeJoint.style.backgroundImage){
+
+		    						// Branch has no children, so it opens a page
+		                            firstClickableBranch = branch;
+
+		                            break;
+		    					}
+
+		                    }
+
+		                    mouse.trigger(firstClickableBranch, "mousedown");
+		                    mouse.trigger(firstClickableBranch, "click");
+		                });
+
+		            }
+
+
+
+				},
+				close: function(){
+					console.log("::: APP ::: EDIT ::: SETTINGS ::: CLOSE");
+
+					var previousEditPage = app.edit.history.get("editpage");
+
+					app.edit.settings.data.opened = false;
+					app.data.body.setAttribute("data-edit-window-style", "default");
+
+		            app.edit.sidepanel.close();
+
+		            if(previousEditPage){
+		                // Trigger click on last viewed settings page
+		                mouse.trigger(previousEditPage, "mousedown");
+		                mouse.trigger(previousEditPage, "mouseup");
+		            } else {
+						// Trigger Click on Second page (first row is not an actual page)
+		                mouse.trigger(document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")[0], "mousedown");
+
+		            }
+				}
+			}
+
+		},
+		dashboard: {
+			// Event Handlers
+			onOpen: function(){
+				console.log("::: APP ::: DASHBOARD ::: OPENED");
+
+				// Use Anthracite CSS
+				app.theme.on();
+
+                // Set attributes to be used by CSS
+                app.data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no");
+                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+			},
+			onClose: function(){},
+
+			// Controls
+
+		},
+		studio: {
+			// Event Handlers
+			onOpen: function(){
+				console.log("::: APP ::: STUDIO ::: OPENED");
+
+				// Dont use Anthracite CSS
+				app.theme.off();
+
+                // Set attributes to be used by CSS
+                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
+                app.data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+			},
+			onClose: function(){},
+
+			// Controls
+
+		},
+		contribute: {
+			// Event Handlers
+			onOpen: function(){
+				console.log("::: APP ::: CONTRIBUTE ::: OPENED");
+
+				// Use Anthracite CSS
+				app.theme.on();
+
+				app.contribute.topbar.build();
+
+
+                // Set attributes to be used by CSS
+                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
+                app.data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+			},
+			onClose: function(){},
+
+			// Controls
+			topbar: {
+				build: function(){
+					console.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: BUILD");
+					var pageTitle,
+						multiselect = "off";
+
+					// Presumably in Edit Mode or Contribute Mode, in which case we need to set the page title
+					switch(app.iframe.data.selectionCount){
+						case 0:
+							pageTitle = app.iframe.data.displayName;
+							break;
+
+						case 1:
+							pageTitle = "1 selected item";
+							pageTitle = app.data.body.getAttribute("data-singleselection-node-displayname");
+							multiselect = "on";
+
+
+							break;
+
+						default:
+							pageTitle = app.iframe.data.selectionCount + " selected items";
+							multiselect = "on";
+							break;
+					}
+
+					// Set multiselect status in body attribute...
+					app.data.body.setAttribute("data-multiselect", multiselect);
+
+					// Page Title in Contribute Made
+					$(".x-viewport-contributemode .toolbar-itemsgroup-languageswitcher").attr("data-PAGE-NAME",pageTitle);
+
+					// Page Titles need centering
+					app.contribute.topbar.reposition();
+
+
+				},
+				reposition: function(e){
+					console.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: REPOSITION");
+					// Center title to page and move surrounding menus to right and left.
+
+					var contributeMode = {};
+					contributeMode.pageNameWidth = function(){
+					    /* Because the Page Title is an ::after we can not access it via Jquery, have to get the computed width of the pseudo element ... */
+					    var pageNameElement = document.querySelector('.x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div'),
+					        returnValue = 0;
+
+					    if(pageNameElement){
+					        returnValue = parseInt(window.getComputedStyle(pageNameElement, '::after').getPropertyValue('width'));
+					    }
+
+					    return returnValue;
+					}();
+					contributeMode.windowWidth = parseInt($("body").width());
+					contributeMode.pageNameLeft = (contributeMode.windowWidth / 2) - (contributeMode.pageNameWidth / 2);
+					contributeMode.pageNameRight = (contributeMode.windowWidth / 2) + (contributeMode.pageNameWidth / 2) + 20;
+
+					// Language Selector
+					$(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div input").css({
+					    "margin-left": "-" + (contributeMode.pageNameWidth / 2) + "px"
+					});
+
+
+					// Publication Menu
+					$(".contribute-menu-publication").css({
+					    left: contributeMode.pageNameRight + "px"
+					});
+
+					// Preview Menu
+					$(".contribute-menu-view").css({
+					    left: (contributeMode.pageNameRight + 10) + "px"
+					});
+
+					// Edit Button
+					$(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(4) > table").css({
+					    left: (contributeMode.pageNameRight) + "px"
+					});
+				}
+			}
+
+		}
+	}
+
 
 
     // EVENT LISTENERS
@@ -1338,190 +1359,99 @@ Dex.dumpQueue();
 
             });
 
-            Dex("#JahiaGxtPagesTab").onTreeChange(eventHandlers.pageTreeUpdate);
 
-            Dex("#JahiaGxtContentPickerWindow").onOpen(eventHandlers.pickerOpened);
+            Dex("#JahiaGxtContentPickerWindow").onOpen(app.picker.onOpen);
 
-            Dex("#JahiaGxtEnginePanel").onOpen(eventHandlers.enginePanelOpened);
+            Dex("#JahiaGxtEnginePanel").onOpen(app.engine.onOpen);
 
-            Dex("#JahiaGxtImagePopup").onOpen(eventHandlers.imagePopupOpened);
+            Dex("#JahiaGxtImagePopup").onOpen(app.imagePreview.onOpen);
 
-            Dex(".menu-edit-menu-mode").onOpen(eventHandlers.modeMenuOpened);
 
-            Dex(".x-dd-drag-proxy").onOpen(eventHandlers.startDrag);
+            Dex(".x-dd-drag-proxy").onOpen(app.edit.sidepanel.onStartDrag);
 
-            Dex(".x-dd-drag-proxy").onClose(eventHandlers.stopDrag);
+            Dex(".x-dd-drag-proxy").onClose(app.edit.sidepanel.onStopDrag);
 
-            Dex("body").onAttr("data-selection-count", eventHandlers.selectionOnChange);
+            Dex("body").onAttr("data-selection-count", app.iframe.onSelect);
 
-            Dex("body").onAttr("data-main-node-displayname", eventHandlers.pageOnChange);
+            Dex("body").onAttr("data-main-node-displayname", app.iframe.onChange);
 
-            Dex(".window-iframe").onAttr("src", eventHandlers.pageOnChangeSRC);
+            Dex(".window-iframe").onAttr("src", app.iframe.onChangeSRC);
 
-            Dex(".x-jahia-root").onAttr("class", eventHandlers.changedMode);
+            Dex(".x-jahia-root").onAttr("class", app.onChange);
 
-            Dex("body").onAttr("data-sitesettings", eventHandlers.settingsChanged);
+            Dex("body").onAttr("data-sitesettings", app.edit.settings.onChange);
 
-            Dex("#JahiaGxtContentPickerWindow").onClose(eventHandlers.closedPicker);
+            Dex("#JahiaGxtContentPickerWindow").onClose(app.picker.onClose);
 
-            Dex("#JahiaGxtEnginePanel").onClose(eventHandlers.closedEditEngine);
+            Dex("#JahiaGxtEnginePanel").onClose(app.engine.onClose);
 
-            Dex("#JahiaGxtImagePopup").onClose(eventHandlers.closedImagePopup);
+            Dex("#JahiaGxtImagePopup").onClose(app.imagePreview.onClose);
 
-            Dex(".workflow-dashboard-engine").onOpen(eventHandlers.workflowDashboardOpened)
+            Dex(".workflow-dashboard-engine").onOpen(app.workflow.dashboard.onOpen)
 
             // BROWSER LISTENERS
-            window.onresize = eventHandlers.windowResize;
+            window.onresize = app.onResize;
 
             // JQUERY EVENT LISTENERS
-            $(window).on("blur", eventHandlers.windowBlur);
+            $(window).on("blur", app.onBlur);
 
             $("body")
 				.on("mousedown", ".x-tree3-node-joint", function(){
 					$(this).closest(".x-grid3-row").toggleClass("indigo-opened");
 				})
-                .on("click", ".app-container", eventHandlers.clickAppContainer)
-                .on("click", ".toolbar-item-filepreview", eventHandlers.mouseClickFilePreviewButton)
-                .on("mouseenter", ".toolbar-item-filepreview", eventHandlers.mouseOverFilePreviewButton)
-                .on("mouseleave", ".toolbar-item-filepreview", eventHandlers.mouseOutFilePreviewButton)
-                .on("mouseenter", ".thumb-wrap", eventHandlers.mouseOverImagePickerThumb)
-                .on("mouseenter", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", eventHandlers.mouseOverImagePickerRow)
-                .on("click", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", eventHandlers.selectPickerFile)
-                .on("click", ".x-grid3-row .x-grid3-td-size", eventHandlers.clickMoreOptionsButton) // File Picker > Search > Results List
-                .on("click", ".x-grid3-row .x-tree3-el", function(e){
-                    // Side Panel > Trees
+                .on("click", ".app-container", app.onClick)
+                .on("click", ".toolbar-item-filepreview", app.picker.previewButton.onClick)
+                .on("mouseenter", ".toolbar-item-filepreview", app.picker.previewButton.onMouseOver)
+                .on("mouseleave", ".toolbar-item-filepreview", app.picker.previewButton.onMouseOut)
+                .on("click", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", app.picker.row.onClick)
+				.on("click", ".x-viewport-adminmode .x-grid3 .x-grid3-row", function(){
+					console.log("CLICKED HERE");
 
-                    eventHandlers.clickMoreOptionsButton(e, "x-tree3-el");
-                })
-                .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", eventHandlers.clickMoreOptionsButton) // File Picker > Thumb View
-                .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap", eventHandlers.selectPickerFile)
-                .on("click", ".x-viewport-editmode .x-toolbar-first > table", eventHandlers.toggleThemeMode)
-                .on("click", ".editmode-managers-menu", eventHandlers.openManagerMenu)
-                .on("click", ".menu-editmode-managers-menu", eventHandlers.closeManagerMenu)
-                .on("mousedown", ".menu-edit-menu-mode, .menu-edit-menu-user", eventHandlers.closeManagerMenu)
-                .on("click", "#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", eventHandlers.closeSettings)
-                .on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", function(e){
-                    eventHandlers.clickMoreOptionsButton(e, "x-grid3-td-displayName");
-                })
-                .on("click", "#JahiaGxtContentPickerWindow", eventHandlers.closeSourcePicker)
-                .on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", eventHandlers.listView)
-                .on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", eventHandlers.thumbView)
-                // .on("click", "#JahiaGxtFileImagesBrowseTab .thumb-wrap > div:nth-child(1) > div:nth-child(2) div:nth-child(1) b", eventHandlers.clickMoreOptionsButton) // NOT IN USE
-                .on("click", ".x-current-page-path", eventHandlers.clearMultiSelection)
-                .on("click", "#JahiaGxtSidePanelTabs .x-grid3-row", eventHandlers.addPageToHistory)
-                .on("mousedown", "#JahiaGxtManagerLeftTree__CRTbrowseTabItem", eventHandlers.closeSearchPanel)
-                .on("mousedown", "#JahiaGxtManagerLeftTree__CRTsearchTabItem", eventHandlers.openSearchPanel)
-                .on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", eventHandlers.changePickerSource)
-                .on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", eventHandlers.togglePickerSourceCombo)
-                .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", eventHandlers.mouseOverPickerSourceTrigger)
-                .on("mouseleave", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", eventHandlers.mouseOutPickerSourceTrigger)
-                .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", eventHandlers.mouseOverTreeRow)
-                .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", eventHandlers.mouseOverTreeThumb)
-                .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", eventHandlers.clickSidePanelTab)
-                .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", eventHandlers.openSettings);
+					$(".x-viewport-adminmode .x-grid3 .x-grid3-row.x-grid3-row-selected").removeClass("x-grid3-row-selected");
+
+					$(this).addClass("x-grid3-row-selected");
+				})
+                .on("click", ".x-grid3-row .x-grid3-td-size", app.picker.search.onContext) // File Picker > Search > Results List
+                .on("click", ".x-grid3-row .x-tree3-el", app.picker.row.onContext)
+                .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", app.picker.thumb.onContext) // File Picker > Thumb View
+                .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick)
+                .on("click", ".x-viewport-editmode .x-toolbar-first > table", app.theme.onToggle)
+                .on("click", ".editmode-managers-menu", app.contextMenus.managerMenu.onOpen)
+                .on("click", ".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose)
+                .on("mousedown", ".menu-edit-menu-mode, .menu-edit-menu-user", app.contextMenus.managerMenu.onClose)
+                .on("click", "#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", app.edit.settings.close)
+                .on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", app.edit.sidepanel.row.onContext)
+                .on("click", "#JahiaGxtContentPickerWindow", app.picker.onClick)
+                .on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView)
+                .on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView)
+                .on("click", ".x-current-page-path", app.iframe.clearSelection)
+                .on("click", ".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
+                .on("mousedown", "#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close)
+                .on("mousedown", "#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open)
+                .on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close)
+                .on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle)
+                .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver)
+                .on("mouseleave", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOut)
+                .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", app.picker.row.onMouseOver)
+                .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onMouseOver)
+                .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick)
+                .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", function(){
+					console.log(">>>>>>>>>>>>>>>");
+					app.edit.settings.open(true);
+				});
         }
     }
 
 
     // DATA
-    var data = {
-        history: {
-            settings: null,
-            editor: null
-        },
-        css: {
-            storedCSS: null,
-            active: true
-        },
-        sidePanelTabs: {
-            mouseOutTimer: null,
-            justBeenClosed: false,
-            firstLoad: true
-        },
-        panelMenu: {
-            openedJoint: null,
-            mouseOutTimer: null,
-            mouseOutTimeValue: 200,
-            allowClickToCloseSubMenu: false,
-            autoHideOnMouseOut: true,
-            observer: null
-        },
-        publication: null,
-        multiselection: {
-            count: 0
-        },
-        currentPage: {
-            displayname: null
-        },
-        iframeLoaded: null,
-        iframeObserver: null,
-        user: {},
-        filePicker: {
-            currentItem: null
-        },
-        temp: {
-            selectors: { // Ask Thomas for classes where possible
-                editModePageName: ".mainmodule-head-container .toolbar-left-container",
-                editModeMoreInfo: "body[data-selection-count='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)",
-                contributeModeLanguageSelector: ".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div input",
-                editModeLanguageSelector: ".mainmodule-head-container .toolbar-itemsgroup-languageswitcher",
-                closeSidePanelCapture: "[data-INDIGO-GWT-SIDE-PANEL='open'] .x-panel-body.x-border-layout-ct > div:nth-child(1) > div:nth-child(2) > div:nth-child(2)",
-                closeSidePanelCapture: "[data-INDIGO-GWT-SIDE-PANEL='open'] .gwt-body-edit"
-            }
-        }
-    }
-
-    // DEV NOTE: DX is NOT IN USE YET.
-    var DX = {
-
-        closeSourcePicker: function(){},
-        listView: function(){},
-        thumbView: function(){},
-        closeSearchPanel: function(){},
-        openSearchPanel: function(){},
-        changePickerSource: function(){},
-        togglePickerSourceCombo: function(){},
-        mouseOverPickerSourceTrigger: function(){},
-        mouseOutPickerSourceTrigger: function(){},
-        repositionFilePreviewButton: function(){},
-        selectPickerFile: function(){},
-        changedMode: function(){},
-        imagePreview: function(){},
-        editEngine: function(){},
-        picker: function(){},
-        clearMultiSelection: function(){},
-        displaynameChanged: function(){},
-        countChanged: function(){},
-        publicationStatusChanged: function(){},
-        updatePageMenuPositions: function(){},
-        toggleThemeMode: function(){},
-        openManagerMenu: function(){},
-        closeManagerMenu: function(){},
-        toggleSidePanelDocking: function(){},
-        clickSidePanelSettingsTab: function(){},
-        clickSidePanelTab: function(){},
-        closeSidePanel: function(){},
-        addPageToHistory: function(){},
-        openSidePanel: function(){},
-        mouseEnterSidePanelTab: function(){},
-        mouseEnterSiteSelector: function(){},
-        mouseOverSidePanelTab: function(){},
-        mouseLeaveSidePanelTabs: function(){},
-        clickMoreOptionsButton: function(){},
-        mouseOverImagePickerRow: function(){},
-        mouseOverImagePickerThumb: function(){},
-        mouseOverFilePreviewButton: function(){},
-        mouseOutFilePreviewButton: function(){},
-        mouseClickFilePreviewButton: function(){}
-    }
-
+    var data = {}
 
     // INITIALISE
     var init = function(){
         // Copy Anthracite CSS to remove / add when dropping in and out of STUDIO mode
-        data.css.storedCSS = $('link[rel=stylesheet][href$="edit_en.css"]').clone();
+        app.theme.data.storedCSS = $('link[rel=stylesheet][href$="edit_en.css"]').clone();
 
-        data.body = window.document.body;
+		app.data.body = window.document.body;
 
         // Initialise Dex Observer
         Dex.init();
@@ -1536,7 +1466,7 @@ Dex.dumpQueue();
 
     // EXPOSED
     if(exposeAs){
-        window[exposeAs] = DX;
+        window[exposeAs] = app;
     }
 
 })("DX");

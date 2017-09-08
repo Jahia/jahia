@@ -63,6 +63,7 @@ import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.SpringContextSingleton;
@@ -1025,9 +1026,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                                 String packageId = moduleVersionNode.getParent().getName();
                                 ModuleVersion moduleVersion = new ModuleVersion(moduleVersionNode.getName());
 
-                                SortedMap<ModuleVersion, JahiaTemplatesPackage> availableVersions = templatePackageRegistry.getAllModuleVersions().get(packageId);
-
-                                if (availableVersions == null || !availableVersions.containsKey(moduleVersion)) {
+                                if (BundleUtils.getBundle(packageId, moduleVersion.toString()) == null) {
                                     // no module found for this version, clean module nodes
                                     try {
                                         templatePackageDeployer.clearModuleNodes(packageId, moduleVersion);

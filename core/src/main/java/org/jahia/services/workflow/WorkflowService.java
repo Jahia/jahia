@@ -1000,8 +1000,9 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
             JCRNodeWrapper rootNode = objectNode.getSession().getNode("/");
             JahiaAccessManager accessControlManager = (JahiaAccessManager) rootNode.getRealNode().getSession().getAccessControlManager();
-            if (objectNode.getAclEntries() != null) {
-                for (List<String[]> list : objectNode.getAclEntries().values()) {
+            final Map<String,List<String[]>> aclEntries = objectNode.getAclEntries() ;
+            if (aclEntries != null) {
+                for (List<String[]> list : aclEntries.values()) {
                     for (String[] strings : list) {
                         for (Privilege privilege : accessControlManager.getPermissionsInRole(strings[2])) {
                             if (!perms.containsKey(strings[0])) {

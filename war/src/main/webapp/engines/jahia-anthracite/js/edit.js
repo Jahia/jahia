@@ -347,9 +347,9 @@
             }
 		},
 		onClick: function(e){
-			console.log("CLICKED THE APP");
 			var inSidePanel = $(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
-            if(inSidePanel.length == 0){
+
+	        if(inSidePanel.length == 0){
                 app.edit.sidepanel.close();
             }
 		},
@@ -360,8 +360,6 @@
 			}
 
 			app.data.currentApp = appID;
-
-			data.mode = appID;
 
 			app[appID].onOpen();
 
@@ -702,6 +700,7 @@
 		},
 		iframe: {
 			data: {
+				previousUrl: -1,
 				currentUrl: null,
 				displayName: null,
 				selectionCount: 0,
@@ -709,7 +708,9 @@
 			},
 			// Event Handlers
 			onChangeSRC: function(value){
-				console.log("::: APP ::: IFRAME ::: ONCHANGESRC", value);
+				console.log("::: APP ::: IFRAME ::: ONCHANGESRC");
+
+				app.iframe.data.previousUrl = app.iframe.data.currentUrl;
 				app.iframe.data.currentUrl = value;
 
 			},
@@ -874,7 +875,19 @@
 
 				},
 				get: function(type){
-					return app.edit.history.data[type];
+
+					var returnResult = null,
+						stillInVisibleDOM;
+
+					if(app.edit.history.data[type]){
+						stillInVisibleDOM = document.body.contains(app.edit.history.data[type]);
+
+						if(stillInVisibleDOM){
+							returnResult = app.edit.history.data[type];
+						}
+					}
+
+					return returnResult;
 
 				},
 				reset: function(){
@@ -980,10 +993,6 @@
 				open: function(isSettings){
 					console.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN", isSettings);
 
-
-					console.log("mmmmmmmmmmmm: ", app.edit.sidepanel.data.firstRunSettings);
-
-
 					app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
 					app.edit.sidepanel.data.open = true;
 
@@ -1087,8 +1096,6 @@
 				onChange: function(value){
 
 					if(value == "true"){
-						console.log("HERE");
-
 						if(app.data.currentApp == "edit"){
 							app.edit.settings.open();
 
@@ -1103,10 +1110,6 @@
 				},
 				open: function(){
 					console.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
-
-					console.log("////////// app.edit.sidepanel.data.firstRunSettings: ", app.edit.sidepanel.data.firstRunSettings);
-
-
 
 					$(".window-iframe").contents().find("head").prepend("<style>.well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}</style>");
 
@@ -1170,6 +1173,8 @@
 					console.log("::: APP ::: EDIT ::: SETTINGS ::: CLOSE");
 
 					var previousEditPage = app.edit.history.get("editpage");
+
+					console.log("OPEN THIS PAGE:::::::: ", previousEditPage);
 
 					app.edit.settings.data.opened = false;
 					app.data.body.setAttribute("data-edit-window-style", "default");
@@ -1407,15 +1412,13 @@
                 .on("mouseleave", ".toolbar-item-filepreview", app.picker.previewButton.onMouseOut)
                 .on("click", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", app.picker.row.onClick)
 				.on("click", ".x-viewport-adminmode .x-grid3 .x-grid3-row", function(){
-					console.log("CLICKED HERE");
-
 					$(".x-viewport-adminmode .x-grid3 .x-grid3-row.x-grid3-row-selected").removeClass("x-grid3-row-selected");
 
 					$(this).addClass("x-grid3-row-selected");
 				})
-                .on("click", ".x-grid3-row .x-grid3-td-size", app.picker.search.onContext) // File Picker > Search > Results List
+                .on("click", ".x-grid3-row .x-grid3-td-size", app.picker.search.onContext)
                 .on("click", ".x-grid3-row .x-tree3-el", app.picker.row.onContext)
-                .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", app.picker.thumb.onContext) // File Picker > Thumb View
+                .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", app.picker.thumb.onContext)
                 .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick)
                 .on("click", ".x-viewport-editmode .x-toolbar-first > table", app.theme.onToggle)
                 .on("click", ".editmode-managers-menu", app.contextMenus.managerMenu.onOpen)
@@ -1438,15 +1441,12 @@
                 .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onMouseOver)
                 .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick)
                 .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", function(){
-					console.log(">>>>>>>>>>>>>>>");
 					app.edit.settings.open(true);
 				});
         }
     }
 
 
-    // DATA
-    var data = {}
 
     // INITIALISE
     var init = function(){

@@ -323,15 +323,14 @@ public class PropertiesEditor extends FormPanel {
                 FormData fd = new FormData("98%");
                 fd.setMargins(new Margins(0));
                 if (remoteField != null) {
-                    int propertyIndex = 1;
-                    // iterate other properties until find the one that set the remote field
+                    int remoteFieldIndex = 0;
                     for (Component component : fieldSet.getItems()) {
                         if (component.equals(remoteField)) {
-                            fieldSet.insert(adapterField, propertyIndex + itemIndex, fd);
                             break;
                         }
-                        propertyIndex++;
+                        remoteFieldIndex++;
                     }
+                    fieldSet.insert(adapterField, remoteFieldIndex + itemIndex + 1, fd);
                 }   else {
                     fieldSet.add(adapterField, fd);
                 }

@@ -242,15 +242,6 @@ public class PropertiesEditor extends FormPanel {
         }
     }
 
-
-    /**
-     * Add item
-     *
-     * @param nodeType
-     * @param items
-     * @param optional
-     * @param fieldSetGrouping
-     */
     private void addItems(final GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items,
                           boolean optional, boolean fieldSetGrouping, Field<?> remoteField) {
 
@@ -331,7 +322,7 @@ public class PropertiesEditor extends FormPanel {
                         remoteFieldIndex++;
                     }
                     fieldSet.insert(adapterField, remoteFieldIndex + itemIndex + 1, fd);
-                }   else {
+                } else {
                     fieldSet.add(adapterField, fd);
                 }
                 fieldSet.layout();
@@ -426,10 +417,6 @@ public class PropertiesEditor extends FormPanel {
         }
     }
 
-    /**
-     * Set template
-     *
-     */
     @SuppressWarnings("unchecked")
     private void setExternalMixin(PropertyAdapterField c, boolean b) {
         String addMixin = null;
@@ -582,16 +569,15 @@ public class PropertiesEditor extends FormPanel {
             fld = ((PropertyAdapterField)field).getField();
         }
         if (itemDef.isNode()) {
-            // case of a new link node
             if (fld instanceof ContentPickerField) {
+                // case of a new link node
                 ContentPickerField pck = (ContentPickerField) fld;
                 List<GWTJahiaNode> selection = pck.getValue();
                 for (GWTJahiaNode node : selection) {
                     values.add(new GWTJahiaNodePropertyValue(node, GWTJahiaNodePropertyType.PAGE_LINK));
                 }
-            }
-            // case of a file upload
-            else {
+            } else {
+                // case of a file upload
                 Object value = fld.getValue();
                 if (value != null) {
                     values.add(new GWTJahiaNodePropertyValue(value.toString(), GWTJahiaNodePropertyType.ASYNC_UPLOAD));
@@ -599,8 +585,8 @@ public class PropertiesEditor extends FormPanel {
             }
         } else {
             GWTJahiaPropertyDefinition propDef = (GWTJahiaPropertyDefinition) itemDef;
-            // case of a list property
             if (fld instanceof DualListField) {
+                // case of a list property
                 @SuppressWarnings("unchecked") List<GWTJahiaValueDisplayBean> selection =
                         ((DualListField<GWTJahiaValueDisplayBean>) fld).getToList().getStore().getModels();
                 for (GWTJahiaValueDisplayBean valueDisplayBean : selection) {
@@ -610,9 +596,8 @@ public class PropertiesEditor extends FormPanel {
                         values.add(propertyValue);
                     }
                 }
-            }
-            // case of a reference
-            else if (fld instanceof ContentPickerField) {
+            } else if (fld instanceof ContentPickerField) {
+                // case of a reference
                 ContentPickerField pck = (ContentPickerField) fld;
                 List<GWTJahiaNode> selection = pck.getValue();
                 for (GWTJahiaNode node : selection) {

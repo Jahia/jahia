@@ -77,10 +77,10 @@ body {
 	background: $APP--BG--COLOUR;
 	transition: all 0.3s ease-in 0s;
 
-    &[data-multiselect="on"] {
-		/* Multiselect */
-		background: $APP--BG--COLOUR---MULTISELECTION;
-    }
+    // &[data-multiselect="on"] {
+	// 	/* Multiselect */
+	// 	background: $APP--BG--COLOUR---MULTISELECTION;
+    // }
 
 	&[data-main-node-displayname] {
 		&::before {
@@ -215,22 +215,22 @@ body {
 	}
 
 	.x-panel-toolbar {
-		&:nth-child(1) {
-			margin-top: 10px;
-	        display: inline-block;
-	        float: none !important;
-		}
+		// &:nth-child(1) {
+		// 	margin-top: 10px;
+	    //     display: inline-block;
+	    //     float: none !important;
+		// }
 
-		&:nth-child(2) {
-			/* Page Actions Menu */
-	        float: none !important;
-	        margin-top: 0;
-	        margin-left: 4px;
-	        margin-right: 17px;
-	        z-index: $ZINDEX--MAINMODULE--ACTIONS_MENU;
-	        position: relative;
-	        display: inline-block;
-	    }
+		// &:nth-child(2) {
+		// 	/* Page Actions Menu */
+	    //     float: none !important;
+	    //     margin-top: 0;
+	    //     margin-left: 4px;
+	    //     margin-right: 17px;
+	    //     z-index: $ZINDEX--MAINMODULE--ACTIONS_MENU;
+	    //     position: relative;
+	    //     display: inline-block;
+	    // }
 	}
 
 	.node-path-title {
@@ -246,11 +246,16 @@ body {
 
 	.x-current-page-path {
 	    display: block;
+        position: fixed;
+        top: 20px;
+        left: 250px;
+        line-height: 22px;
 
-	    > span {
-			display: none;
+        body[data-multiselect="on"] & {
+            top: $TOPBAR--MULTISELECT--1---TOP;
 
-	    }
+        }
+
 
 	    &::before {
 	        content: attr(data-page-name);
@@ -258,62 +263,79 @@ body {
 	        @extend %document_title !optional;
 
 	        display: block;
-			margin: 6px 0 0 55px;
 
-	        body[data-multiselect="on"] & {
-				@extend %multiselect_title !optional;
-
-				background: url("./images/icons/icon-close-white@X2.png") no-repeat left center;
-				background-size: 12px 12px;
-				padding-left: 20px!important;
-				margin-left: 15px!important;
-
-				max-width: 200px;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-
-				margin: 6px 0 0 35px;
-	        }
 	    }
 
 	}
+
+    .node-path-text-inner {
+        display: none;
+        position: fixed;
+        top: -18px;
+        text-align: center;
+        /* width: 100%; */
+        font-style: italic;
+        background: red;
+        height: 16px;
+        left: 0;
+        top: 9px;
+        @include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+        body[data-multiselect="on"] & {
+            display: block;
+        }
+
+        &::after {
+            content: " ...";
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+
+    }
 
 
 
 
 	.edit-menu-edit {
 		/* More Info Button */
-		display: inline-block;
-		margin-top: 0;
-		top: -3px;
-		position: relative;
-		margin-left: 55px;
+		display: block;
+		top: 20px;
+        left: 550px;
+		position: fixed;
+        width: 20px;
+    	height: 20px;
+    	background: url(./images/icon-more-options-white@X2.png) no-repeat center center red;
+        background-size: 10px 2px;
 
+        body[data-multiselect="on"] & {
+            top: $TOPBAR--MULTISELECT--1---TOP;
+        }
 
-		> tbody {
-			/* Create Curver Border */
-			display: block;
-			width: 20px;
-			height: 20px;
-			border-radius: 0 100% 100% 0;
-			background-size: 10px 2px;
-			background-repeat: no-repeat;
-			background-position: center left 3px;
-			background-color: rgba($COLOUR--BLACK_CLOUDS, 0.2);
-			background-image: url(./images/icon-more-options-white@X2.png);
-
-			body[data-multiselect="on"] & {
-				background-color: $COLOUR--BLACK_CLOUDS;
-			}
-
-
+		// > tbody {
+		// 	/* Create Curver Border */
+		// 	display: block;
+		// 	width: 20px;
+		// 	height: 20px;
+		// 	border-radius: 0 100% 100% 0;
+		// 	background-size: 10px 2px;
+		// 	background-repeat: no-repeat;
+		// 	background-position: center left 3px;
+		// 	background-color: rgba($COLOUR--BLACK_CLOUDS, 0.2);
+		// 	background-image: url(./images/icon-more-options-white@X2.png);
+        //
+		// 	body[data-multiselect="on"] & {
+		// 		background-color: $COLOUR--BLACK_CLOUDS;
+		// 	}
+        //
+        //
 			td {
 				/* Hide All the Junk from the old button */
 				display: none;
 			}
-
-		}
+        //
+		// }
 
 	}
 
@@ -321,8 +343,23 @@ body {
 		display: none;
 	}
 
-	.x-tool-refresh {
-		display: none;
+	.window-actions-refresh {
+        pointer-events: all;
+		background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center;
+		background: url(./images/tabs-publish-white@X2.png) no-repeat center;
+		left: 301px;
+		position: fixed;
+		top: 20px;
+		border-radius: 100%;
+	    background-size: 30px;
+
+		height: 20px;
+		width: 20px;
+
+        body[data-multiselect="on"] & {
+            // top: $TOPBAR--MULTISELECT--1---TOP;
+            display: none;
+        }
 	}
 
 	.toolbar-item-publicationstatuswithtext {
@@ -330,51 +367,82 @@ body {
 	}
 
 	.toolbar-itemsgroup-languageswitcher {
-		pointer-events: all;
+
+        position: fixed;
+        right: 20px;
+        left: auto !important;
+        top: 17px !important;
+        background: no-repeat left 5px center #6a6e71;
+        background-size: 22px;
+
+        pointer-events: all;
 		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
-		position: fixed;
-		top: 18px!important;
-		opacity: 0;
 
-		width: 25px !important;
-		height: 14px;
-
-
-		body[data-multiselect="on"] & {
-			/* Hide When Multiselect is on */
-			display: none;
-		}
-
-
-		input {
-			/* Input used to display flag instead of text input */
-			border: none;
-			text-indent: -50000px;
-			height: 15px !important;
-			width: 100% !important;
-			padding: 0 !important;
-			background-color: transparent;
-			background-repeat: no-repeat;
-			background-position: center center;
-			background-size: 23px 14px;
-
-			body[data-lang="en"] & {
-				background-image: url(./images/flags@X2/united-kingdom@X2.png);
-			}
-			body[data-lang="fr"] & {
-				background-image: url(./images/flags@X2/france@X2.png);
-			}
-			body[data-lang="de"] & {
-				background-image: url(./images/flags@X2/germany@X2.png);
-			}
+        body[data-lang="en"] & {
+			background-image: url(./images/flags@X2/united-kingdom@X2.png);
 
 		}
 
 
-		.x-form-trigger {
-			/* Combo Arrow */
-			display: none;
-		}
+
+
+        input {
+            padding: 7px 20px 6px 32px !important;
+            color: #f1f1f1;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        img {
+            height: 30px!important;
+        }
+
+
+
+		// position: fixed;
+		// top: 18px!important;
+		// opacity: 0;
+        //
+		// width: 25px !important;
+		// height: 14px;
+        //
+        //
+		// body[data-multiselect="on"] & {
+		// 	/* Hide When Multiselect is on */
+		// 	display: none;
+		// }
+        //
+        //
+		// input {
+		// 	/* Input used to display flag instead of text input */
+		// 	border: none;
+		// 	text-indent: -50000px;
+		// 	height: 15px !important;
+		// 	width: 100% !important;
+		// 	padding: 0 !important;
+		// 	background-color: transparent;
+		// 	background-repeat: no-repeat;
+		// 	background-position: center center;
+		// 	background-size: 23px 14px;
+        //
+		// 	body[data-lang="en"] & {
+		// 		background-image: url(./images/flags@X2/united-kingdom@X2.png);
+		// 	}
+		// 	body[data-lang="fr"] & {
+		// 		background-image: url(./images/flags@X2/france@X2.png);
+		// 	}
+		// 	body[data-lang="de"] & {
+		// 		background-image: url(./images/flags@X2/germany@X2.png);
+		// 	}
+        //
+		// }
+        //
+        //
+		// .x-form-trigger {
+		// 	/* Combo Arrow */
+		// 	display: none;
+		// }
 	}
 
 

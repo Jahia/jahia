@@ -343,7 +343,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(app.data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                app.edit.sidepanel.close();
+                // app.edit.sidepanel.close();
             }
 		},
 		onClick: function(e){
@@ -936,36 +936,93 @@
 
 				},
 				reposition: function(e){
-					console.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION");
+					console.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION", document.getElementsByClassName("x-current-page-path")[0].getAttribute("data-page-name"));
 					// Center title to page and move surrounding menus to right and left.
 
-					if($(".mainmodule-head-container .toolbar-left-container").length > 0){
+					if(document.getElementsByClassName("x-current-page-path").length > 0){
 
-			            var editMode = {};
-			            editMode.pageNameLeft = parseInt($(".mainmodule-head-container .toolbar-left-container").position().left);
-			            editMode.pageNameWidth = Math.floor($(".mainmodule-head-container .toolbar-left-container").width()) - 1;
-			            editMode.pageNameRight = editMode.pageNameLeft + editMode.pageNameWidth;
 
-			            // Preview Menu
-			            $(".edit-menu-view").css({
-			                "left": (editMode.pageNameRight + 76) + "px",
-			                "opacity": 1
-			            });
+                        if(document.getElementsByClassName("x-current-page-path")[0].getAttribute("data-page-name") != null){
+                            console.log("FOUND PAGE TITLE, SO SET UP POSITIONING ...");
+                            document.getElementsByClassName("edit-menu-publication")[0].style.display = "block"
 
-			            // Publication Menu
-			            $(".edit-menu-publication").css({
-			                "left": (editMode.pageNameRight + 65) + "px",
-			                "opacity": 1
-			            });
+                            var elements = {
+                                    body: document.getElementsByTagName("body")[0],
+                                    title: document.getElementsByClassName("x-current-page-path")[0],
+                                    innerTitle: document.getElementsByClassName("node-path-text-inner")[0],
+                                    publishButton: document.getElementsByClassName("edit-menu-publication")[0],
+                                    refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
+                                    previewButton: document.getElementsByClassName("edit-menu-view")[0],
+                                    moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
+                                },
 
-			            // More Info Menu (previously labeled as Edit )
-			            $("body[data-selection-count='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)").css({
-			                "left": (editMode.pageNameLeft + 92) + "px",
-			                "opacity": 1
-			            });
+                                boxes = {
+                                    body: elements.body.getBoundingClientRect(),
+                                    title: elements.title.getBoundingClientRect(),
+                                };
+
+
+                                // Center Page Title
+                                elements.title.style.left = ((boxes.body.width / 2) - (boxes.title.width / 2)) + "px";
+                                elements.innerTitle.style.left = (boxes.body.width / 2) + "px";
+
+
+                                // Refresh bounding box for title as it has moved
+                                boxes.title = elements.title.getBoundingClientRect();
+
+
+                                if(app.iframe.data.selectionCount > 0){
+                                    // Multiselect, so display differently
+                                    elements.publishButton.style.left = (boxes.title.left - 20) + "px";
+                                    // elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
+                                    elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
+                                    elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 40) + "px";
+                                } else {
+                                    // No Select
+                                    elements.publishButton.style.left = (boxes.title.left - 20) + "px";
+                                    elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
+                                    elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 40) + "px";
+                                    elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 70) + "px";
+                                }
+
+
+
+
+                        } else {
+                            document.getElementsByClassName("edit-menu-publication")[0].style.display = "none"
+                        }
+
+
+
+
+
+                        //
+
+			            // var editMode = {};
+			            // editMode.pageNameLeft = parseInt($(".mainmodule-head-container .toolbar-left-container").position().left);
+			            // editMode.pageNameWidth = Math.floor($(".mainmodule-head-container .toolbar-left-container").width()) - 1;
+			            // editMode.pageNameRight = editMode.pageNameLeft + editMode.pageNameWidth;
+                        //
+			            // // Preview Menu
+			            // $(".edit-menu-view").css({
+			            //     "left": (editMode.pageNameRight + 76) + "px",
+			            //     "opacity": 1
+			            // });
+                        //
+			            // // Publication Menu
+			            // $(".edit-menu-publication").css({
+			            //     "left": (editMode.pageNameRight + 65) + "px",
+			            //     "opacity": 1
+			            // });
+                        //
+			            // // More Info Menu (previously labeled as Edit )
+			            // $("body[data-selection-count='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)").css({
+			            //     "left": (editMode.pageNameLeft + 92) + "px",
+			            //     "opacity": 1
+			            // });
 
 			            // More Language Menu (previously labeled as Edit )
-			            $(".mainmodule-head-container .toolbar-itemsgroup-languageswitcher").attr("style", "left: " + (editMode.pageNameLeft + 92) + "px !important; opacity: 1");
+			            // $(".mainmodule-head-container .toolbar-itemsgroup-languageswitcher").attr("style", "left: " + (editMode.pageNameLeft + 92) + "px !important; opacity: 1");
 
 					}
 

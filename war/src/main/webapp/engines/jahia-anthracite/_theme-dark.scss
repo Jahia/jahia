@@ -680,7 +680,7 @@
 /////////////////////////////////////////////////
 
     %document_title {
-        @include text(16px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
+        @include text(18px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
     }
 
     %multiselect_title {
@@ -1501,9 +1501,9 @@
 			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--PUBLICATION {
 				content: $text_context_menu_publication_page;
 
-				body[data-multiselect="on"] & {
-					content: $text_context_menu_publication_selection;
-				}
+				// body[data-multiselect="on"] & {
+				// 	content: $text_context_menu_publication_selection;
+				// }
 			}
 			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--PUBLICATION {}
 			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--PUBLICATION {}
@@ -1514,9 +1514,9 @@
 			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--PREVIEW {
 				content: $text_context_menu_preview_page;
 
-				body[data-multiselect="on"] & {
-					content: $text_context_menu_preview_selection;
-				}
+				// body[data-multiselect="on"] & {
+				// 	content: $text_context_menu_preview_selection;
+				// }
 
 			}
 			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--PREVIEW {}
@@ -1528,9 +1528,9 @@
 			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--MORE_INFO {
 				content: $text_context_menu_more_info_page;
 
-				body[data-multiselect="on"] & {
-					content: $text_context_menu_more_info_selection;
-				}
+				// body[data-multiselect="on"] & {
+				// 	content: $text_context_menu_more_info_selection;
+				// }
 			}
 			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--MORE_INFO {}
 			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--MORE_INFO {}

@@ -52,6 +52,7 @@ import org.jahia.utils.Patterns;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import javax.jcr.nodetype.InvalidNodeTypeDefinitionException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.OnParentVersionAction;
 import java.io.*;
@@ -217,7 +218,7 @@ public class JahiaCndReaderLegacy {
         for (ExtendedNodeType type : nodeTypesList) {
             try {
                 type.validate();
-            } catch (NoSuchNodeTypeException e) {
+            } catch (NoSuchNodeTypeException | InvalidNodeTypeDefinitionException e) {
                 throw new ParseException("Cannot validate supertypes for : "+type.getName(),e,0,0,filename);
             }
         }

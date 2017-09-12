@@ -156,14 +156,13 @@
                 position: fixed;
                 left: 350px;
                 opacity: 0;
-                background: url(./images/tabs-browse-white@X2.png) no-repeat center center;
+                background: url(./images/tabs-browse-white@X2.png) no-repeat center center red;
                 top: 20px!important;
                 background-size: 23px 23px;
                 height: 20px;
                 width: 20px;
                 display: block;
                 opacity: 1;
-                border-radius: 100%;
 
                 body[data-multiselect="on"] & {
                     top: $TOPBAR--MULTISELECT--1---TOP;
@@ -311,7 +310,7 @@
             .edit-menu-publication {
                 position: fixed;
                 opacity: 0;
-                background: url(./images/icons/icon-check-white@X2.png) no-repeat center red;
+                background: url(./images/icons/icon-check-white@X2.png) no-repeat center grey;
                 top: 20px!important;
                 background-size: 18px 18px;
                 height: 20px;
@@ -320,8 +319,133 @@
                 opacity: 1;
                 border-radius: 100%;
 
+
+                &[data-publication-status="conflict"] {
+    				/* Conflict */
+    				background-color: $PUBLICATION--COLOUR---CONFLICT;
+
+    			}
+
+
+    			&[data-publication-status="deleted"] {
+    				/* Deleted */
+    				background-color: $PUBLICATION--COLOUR---DELETED;
+
+    			}
+
+
+    			&[data-publication-status="livemodified"] {
+    				/* Live Modified */
+    				background-color: $PUBLICATION--COLOUR---LIVE_MODIFIED;
+
+    			}
+
+
+    			&[data-publication-status="liveonly"] {
+    				/* Live Only */
+    				background-color: $PUBLICATION--COLOUR---LIVE_ONLY;
+
+    			}
+
+
+    			&[data-publication-status="locked"] {
+    				/* Locked */
+    				background-color: $PUBLICATION--COLOUR---LOCKED;
+
+    			}
+
+
+    			&[data-publication-status="mandatorylanguageunpublishable"] {
+    				/* Mandatory Language Unpublishable */
+    				background-color: $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_UNPUBLISHABLE;
+
+    			}
+
+
+    			&[data-publication-status="mandatorylanguagevalid"] {
+    				/* Mandatory Language Valid */
+    				background-color: $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_VALID;
+
+    			}
+
+
+    			&[data-publication-status="markedfordeletion"] {
+    				/* Marked FOr Deletion */
+    				background-color: $PUBLICATION--COLOUR---MARKED_FOR_DELETION;
+
+    			}
+
+
+    			&[data-publication-status="modified"] {
+    				/* Modified */
+    				background-color: $PUBLICATION--COLOUR---MODIFIED;
+
+    			}
+
+
+    			&[data-publication-status="multipleWF"] {
+    				/* Multiple WF */
+    				background-color: $PUBLICATION--COLOUR---MULTIPLE_WORK_FLOW;
+
+    			}
+
+
+    			&[data-publication-status="notpublished"] {
+    				/* Not Published */
+    				background-color: $PUBLICATION--COLOUR---NOT_PUBLISHED;
+
+    			}
+
+
+    			&[data-publication-status="oneWF"] {
+    				/* One WF */
+    				background-color: $PUBLICATION--COLOUR---SINGLE_WORK_FLOW;
+
+    			}
+
+
+    			&[data-publication-status="published"] {
+    				/* Published */
+    				background-color: $PUBLICATION--COLOUR---PUBLISHED;
+
+    			}
+
+
+    			&[data-publication-status="unpublished"] {
+    				/* Unpublished */
+    				background-color: $PUBLICATION--COLOUR---UNPUBLISHED;
+
+    			}
+
+
+    			&[data-publication-status="waiting"] {
+    				/* Waiting */
+    				background-color: $PUBLICATION--COLOUR---WAITING;
+
+    			}
+
+
+    			&[data-publication-status="workinprogress"] {
+    				/* Work In Progress */
+    				background-color: $PUBLICATION--COLOUR---WORK_IN_PROGRESS;
+
+    			}
+
                 body[data-multiselect="on"] & {
                     top: $TOPBAR--MULTISELECT--1---TOP;
+
+
+                }
+
+                body[data-select-type="multiple"] & {
+                    background-color: white;
+
+                }
+
+                body[data-multiselect="on"][data-selection-count="1"] & {
+                    top: $TOPBAR--MULTISELECT--1---TOP;
+
+
                 }
 
                 .x-btn-mc {

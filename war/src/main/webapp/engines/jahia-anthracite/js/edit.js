@@ -343,7 +343,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(app.data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                // app.edit.sidepanel.close();
+                app.edit.sidepanel.close();
             }
 		},
 		onClick: function(e){
@@ -713,6 +713,29 @@
 				app.iframe.data.previousUrl = app.iframe.data.currentUrl;
 				app.iframe.data.currentUrl = value;
 
+                // TEMP BLIND
+                // $(".window-iframe").hide();
+
+                var elements = {
+                    iframe: document.getElementsByClassName("window-iframe")[0],
+                    title: document.getElementsByClassName("x-current-page-path")[0],
+                    publishButton: document.getElementsByClassName("edit-menu-publication")[0],
+                    refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
+                    previewButton: document.getElementsByClassName("edit-menu-view")[0],
+                    moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
+                };
+
+                elements.iframe.style.opacity = 0;
+                elements.title.style.opacity = 0;
+                elements.publishButton.style.opacity = 0;
+                elements.refreshButton.style.opacity = 0;
+                elements.previewButton.style.opacity = 0;
+                elements.moreInfo.style.opacity = 0;
+
+
+
+
+
 			},
 			onChange: function(value){
 				console.log("::: APP ::: IFRAME ::: ONCHANGE", value);
@@ -750,7 +773,7 @@
 				// Multiple Items have been selected (in Edit Mode) or removed
 				// Check if value is different
 				if(app.iframe.data.selectionCount == count){
-					return false;
+					// return false;
 
 				}
 
@@ -901,19 +924,54 @@
 			topbar: {
 				build: function(){
 					console.log("::: APP ::: EDIT ::: TOPBAR ::: BUILD");
+
+                    // TEMP BLIND
+                    // $(".window-iframe").fadeIn("fast");
+
+                    var elements = {
+                        iframe: document.getElementsByClassName("window-iframe")[0],
+                        title: document.getElementsByClassName("x-current-page-path")[0],
+                        publishButton: document.getElementsByClassName("edit-menu-publication")[0],
+                        refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
+                        previewButton: document.getElementsByClassName("edit-menu-view")[0],
+                        moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
+                    };
+
+
+
+                    elements.iframe.style.opacity = 1;
+                    elements.title.style.opacity = 1;
+                    elements.publishButton.style.opacity = 1;
+                    elements.refreshButton.style.opacity = 1;
+                    elements.previewButton.style.opacity = 1;
+                    elements.moreInfo.style.opacity = 1;
+
 					var pageTitle,
-						multiselect = "off";
+                        selectType = "none",
+						multiselect = "off",
+                        publicationStatus = document.querySelectorAll(".toolbar-item-publicationstatuswithtext .gwt-Image")[0],
+
+                        extractStatus = function(url){
+                            var urlSplit = url.split("/"),
+                                fileName = urlSplit[urlSplit.length-1],
+                                statusSplit = fileName.split(".png"),
+                                status = statusSplit[0];
+
+                            return status
+                        };
 
 					// Presumably in Edit Mode or Contribute Mode, in which case we need to set the page title
 					switch(app.iframe.data.selectionCount){
 						case 0:
 							pageTitle = app.iframe.data.displayName;
+                            selectType = "none";
 							break;
 
 						case 1:
 							pageTitle = "1 selected item";
 							pageTitle = app.data.body.getAttribute("data-singleselection-node-displayname");
 							multiselect = "on";
+                            selectType = "single";
 
 
 							break;
@@ -921,14 +979,32 @@
 						default:
 							pageTitle = app.iframe.data.selectionCount + " selected items";
 							multiselect = "on";
+                            selectType = "multiple";
 							break;
 					}
 
 					// Set multiselect status in body attribute...
-					app.data.body.setAttribute("data-multiselect", multiselect);
+                    app.data.body.setAttribute("data-multiselect", multiselect);
+                    app.data.body.setAttribute("data-select-type", selectType);
 
 					// Page Title in Edit Made
 					$(".x-current-page-path").attr("data-PAGE-NAME",pageTitle);
+                    $(".node-path-text-inner").html(app.iframe.data.displayName);
+
+                    // Determine publication status
+                    if(publicationStatus){
+                        app.iframe.data.publication = {
+                            status: extractStatus(publicationStatus.getAttribute("src")),
+                            label: publicationStatus.getAttribute("title")
+                        };
+                    } else {
+                        app.iframe.data.publication = {
+                            status: null,
+                            label: null
+                        };
+                    }
+
+                    console.log("::: app.iframe.data.publication.status ", app.iframe.data.publication.status);
 
 					// Page Titles need centering
 					app.edit.topbar.reposition();
@@ -936,7 +1012,7 @@
 
 				},
 				reposition: function(e){
-					console.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION", document.getElementsByClassName("x-current-page-path")[0].getAttribute("data-page-name"));
+					console.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION");
 					// Center title to page and move surrounding menus to right and left.
 
 					if(document.getElementsByClassName("x-current-page-path").length > 0){
@@ -958,18 +1034,21 @@
 
                                 boxes = {
                                     body: elements.body.getBoundingClientRect(),
-                                    title: elements.title.getBoundingClientRect(),
+                                    title: elements.title.getBoundingClientRect()
                                 };
 
 
                                 // Center Page Title
                                 elements.title.style.left = ((boxes.body.width / 2) - (boxes.title.width / 2)) + "px";
-                                elements.innerTitle.style.left = (boxes.body.width / 2) + "px";
 
+                                // Get Inner title bunding box
+                                boxes.innerTitle = elements.innerTitle.getBoundingClientRect();
+
+                                // Center Inner title bounding box
+                                elements.innerTitle.style.left = ((boxes.body.width / 2) - (boxes.innerTitle.width / 2)) + 25 + "px";
 
                                 // Refresh bounding box for title as it has moved
                                 boxes.title = elements.title.getBoundingClientRect();
-
 
                                 if(app.iframe.data.selectionCount > 0){
                                     // Multiselect, so display differently
@@ -984,6 +1063,9 @@
                                     elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 40) + "px";
                                     elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 70) + "px";
                                 }
+
+                                // Make sure correct class is added to publication button
+                                elements.publishButton.setAttribute("data-publication-status", app.iframe.data.publication.status)
 
 
 

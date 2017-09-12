@@ -275,7 +275,9 @@ body {
         text-align: center;
         /* width: 100%; */
         font-style: italic;
-        background: red;
+        background: url(./images/icons/icon-page-white@X2.png) no-repeat left center;
+        background-size: 11px;
+        padding-left: 13px;
         height: 16px;
         left: 0;
         top: 9px;
@@ -285,9 +287,7 @@ body {
             display: block;
         }
 
-        &::after {
-            content: " ...";
-        }
+
 
         &:hover {
             cursor: pointer;
@@ -345,12 +345,10 @@ body {
 
 	.window-actions-refresh {
         pointer-events: all;
-		background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center;
-		background: url(./images/tabs-publish-white@X2.png) no-repeat center;
+		background: url(./images/tabs-publish-white@X2.png) no-repeat center red;
 		left: 301px;
 		position: fixed;
 		top: 20px;
-		border-radius: 100%;
 	    background-size: 30px;
 
 		height: 20px;
@@ -730,7 +728,22 @@ body {
 
 
 
+.x-current-page-path,
+.edit-menu-publication,
+.window-actions-refresh,
+.edit-menu-view,
+.edit-menu-edit {
+    transition: opacity 0.3s ease-in 0s;
+}
 
+.window-iframe {
+    transition: opacity 0.1s ease-in 0s;
+}
+
+.x-masked object,.x-masked embed{visibility:visible!important}
+.x-masked{overflow:visible!important}
+.x-masked-relative{position:absolute!important}
+.x-masked select,.x-masked object,.x-masked embed{visibility:visible!important}
 
 
 

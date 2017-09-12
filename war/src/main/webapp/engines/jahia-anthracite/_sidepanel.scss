@@ -20,8 +20,20 @@
         pointer-events: all;
 		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
 
+		body[data-indigo-gwt-side-panel="open"] & {
+			top: 62px!important;
+		    left: 70px!important;
 
 
+		}
+
+
+		.x-form-field-wrap {
+			body[data-indigo-gwt-side-panel="open"] & {
+
+				width: 237px!important
+			}
+		}
 
 
 

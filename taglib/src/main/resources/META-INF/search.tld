@@ -196,7 +196,14 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>        
+        </attribute>
+        <attribute>
+            <description>The base page path search, no search outside of this path will be allowed</description>
+            <name>basePagePath</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
 
     <tag>
@@ -341,8 +348,12 @@
         <path>/META-INF/tags/search/suggestedSearchUrl.tag</path>
         <!--
             Import-Package:
+<<<<<<< HEAD
                 org.jahia.taglibs.search,
                 org.jahia.services.search
+=======
+                org.jahia.taglibs.search
+>>>>>>> JAHIA-7-1-X-X-BRANCH
         -->
     </tag-file>
     <tag-file>

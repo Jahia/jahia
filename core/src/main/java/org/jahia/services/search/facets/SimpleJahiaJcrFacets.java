@@ -369,7 +369,7 @@ public class SimpleJahiaJcrFacets {
           // Always use filters for booleans... we know the number of values is very small.
           enumMethod = true;
         }
-        boolean multiToken = epd.isMultiple();
+        boolean multiToken = epd.isMultiple() || epd.isHierarchical();
 // --> added by jahia as we don't use the UnInvertedField class yet due to not using SolrIndexSearcher        
        enumMethod = enumMethod || multiToken;
 //        if (TrieField.getMainValuePrefix(ft) != null) {

@@ -313,6 +313,8 @@ body {
             top: $TOPBAR--MULTISELECT--1---TOP;
         }
 
+        @include tooltip($text_tooltip_more_options, "BOTTOM");
+
 		// > tbody {
 		// 	/* Create Curver Border */
 		// 	display: block;
@@ -351,6 +353,8 @@ body {
 		top: 20px;
 	    background-size: 30px;
 
+        overflow: visible;
+
 		height: 20px;
 		width: 20px;
 
@@ -358,6 +362,8 @@ body {
             // top: $TOPBAR--MULTISELECT--1---TOP;
             display: none;
         }
+
+        @include tooltip($text_tooltip_refresh_page, "BOTTOM");
 	}
 
 	.toolbar-item-publicationstatuswithtext {

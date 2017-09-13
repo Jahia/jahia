@@ -1103,7 +1103,6 @@
 							break;
 
 						case 1:
-							pageTitle = "1 selected item";
 							pageTitle = app.data.body.getAttribute("data-singleselection-node-displayname");
 							multiselect = "on";
                             selectType = "single";

@@ -164,6 +164,8 @@
                 display: block;
                 opacity: 1;
 
+                margin-bottom: 0!important;
+
                 body[data-multiselect="on"] & {
                     top: $TOPBAR--MULTISELECT--1---TOP;
                 }
@@ -171,6 +173,9 @@
                 .x-btn-mc {
                     width: 100%!important;
                 }
+
+
+                @include tooltip($text_tooltip_preview, "BOTTOM");
             }
 
             .edit-menu-mode {
@@ -302,6 +307,7 @@
                     display: none;
                 }
 
+
 				// body[data-multiselect="on"] & {
 				// 	pointer-events: none;
 				// }
@@ -318,6 +324,8 @@
                 display: block;
                 opacity: 1;
                 border-radius: 100%;
+
+                @include tooltip($text_tooltip_publish, "BOTTOM");
 
 
                 &[data-publication-status="conflict"] {

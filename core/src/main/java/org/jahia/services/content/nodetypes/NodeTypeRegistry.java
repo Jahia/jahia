@@ -228,22 +228,33 @@ public class NodeTypeRegistry implements NodeTypeManager {
                         type.setDeclaredSupertypes(newTypes);
                         type.validate();
                     }
-                } catch (NoSuchNodeTypeException | InvalidNodeTypeDefinitionException e) {
+                } catch (NoSuchNodeTypeException e) {
                     logger.error("Cannot validate type", e);
-
-                    // Restoring previous state
-                    for (ExtendedNodeType addedType : nodeTypesList) {
-                        removeNodeType(addedType.getNameObject());
-                    }
-                    for (ExtendedNodeType previousType : previousTypes) {
-                        nodetypes.put(previousType.getNameObject(), previousType);
-                    }
-
+                    handleError(nodeTypesList, previousTypes);
+                    throw e;
+                }
+            }
+            for (ExtendedNodeType type : nodeTypesList) {
+                try {
+                    type.checkConflicts();
+                } catch (InvalidNodeTypeDefinitionException e) {
+                    logger.error("Cannot validate type", e);
+                    handleError(nodeTypesList, previousTypes);
                     throw e;
                 }
             }
         } finally {
             writeLock.unlock();
+        }
+    }
+
+    private void handleError(List<ExtendedNodeType> nodeTypesList, List<ExtendedNodeType> previousTypes){
+        // Restoring previous state
+        for (ExtendedNodeType addedType : nodeTypesList) {
+            removeNodeType(addedType.getNameObject());
+        }
+        for (ExtendedNodeType previousType : previousTypes) {
+            nodetypes.put(previousType.getNameObject(), previousType);
         }
     }
 

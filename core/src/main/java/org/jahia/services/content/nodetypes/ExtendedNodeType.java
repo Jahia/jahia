@@ -265,10 +265,9 @@ public class ExtendedNodeType implements NodeType {
     }
 
 
-    public void validate() throws NoSuchNodeTypeException, InvalidNodeTypeDefinitionException {
+    public void validate() throws NoSuchNodeTypeException {
         this.declaredSupertypes = new ExtendedNodeType[declaredSupertypeNames.length];
         int mixIndex = 0;
-        Map<String, ExtendedItemDefinition> definitionMap = new HashMap<>();
 
         for (int i = 0; i < declaredSupertypeNames.length; i++) {
             final ExtendedNodeType nodeType = registry.getNodeType(declaredSupertypeNames[i]);
@@ -279,7 +278,6 @@ public class ExtendedNodeType implements NodeType {
             } else {
                 this.declaredSupertypes[i] = nodeType;
             }
-            checkConflict(definitionMap, nodeType);
             nodeType.addSubType(this);
         }
 
@@ -290,6 +288,13 @@ public class ExtendedNodeType implements NodeType {
             if (itemDefinition.getItemType() != null) {
                 registry.addTypedItem(itemDefinition);
             }
+        }
+    }
+
+    public void checkConflicts() throws InvalidNodeTypeDefinitionException{
+        Map<String, ExtendedItemDefinition> definitionMap = new HashMap<>();
+        for (ExtendedNodeType type : getDeclaredSupertypes()) {
+            checkConflict(definitionMap, type);
         }
     }
 

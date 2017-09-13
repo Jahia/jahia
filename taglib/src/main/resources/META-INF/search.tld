@@ -348,12 +348,7 @@
         <path>/META-INF/tags/search/suggestedSearchUrl.tag</path>
         <!--
             Import-Package:
-<<<<<<< HEAD
                 org.jahia.taglibs.search,
-                org.jahia.services.search
-=======
-                org.jahia.taglibs.search
->>>>>>> JAHIA-7-1-X-X-BRANCH
         -->
     </tag-file>
     <tag-file>

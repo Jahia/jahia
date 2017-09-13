@@ -121,6 +121,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
     private Map<String, Boolean> hasPropertyCache = new HashMap<String, Boolean>();
+    private ExtendedNodeType[] originalMixins = null;
 
     private static boolean doCopy(JCRNodeWrapper source, JCRNodeWrapper dest, String name,
                                   boolean allowsExternalSharedNodes, Map<String, List<String>> references, List<String> ignoreNodeTypes,
@@ -1067,12 +1068,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return l != null ? l.toArray(new ExtendedNodeType[l.size()]) : EMPTY_EXTENDED_NODE_TYPE_ARRAY;
     }
 
+    public ExtendedNodeType[] getOriginalMixinNodeTypes() throws RepositoryException {
+        if (originalMixins == null) {
+            originalMixins = getMixinNodeTypes();
+        }
+        return originalMixins;
+    }
+
     /**
      * {@inheritDoc}
      */
     public void addMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         checkLock();
         try {
+            getOriginalMixinNodeTypes();
             objectNode.addMixin(s);
         } finally {
             applicablePropertyDefinition.clear();
@@ -1092,6 +1101,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         try {
 
+            getOriginalMixinNodeTypes();
             objectNode.removeMixin(s);
 
             // Removing a mixin also causes removal of any child nodes defined by the mixin.

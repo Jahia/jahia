@@ -677,7 +677,21 @@ public class ConflictResolver {
                     targetNode.checkout();
                 }
 
-                if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
+                boolean isMixin = propertyName.equals(Constants.JCR_MIXINTYPES);
+                if (targetNode.hasProperty("j:liveProperties")) {
+                    if (propertyName.equals("j:liveProperties") || (isMixin && oldValue.getString().equals("jmix:liveProperties"))) {
+                        // Do not remove j:liveProperties property or jmix:liveProperties mixin
+                        return true;
+                    }
+                    for (JCRValueWrapper value : targetNode.getProperty("j:liveProperties").getValues()) {
+                        String name = isMixin ? (Constants.JCR_MIXINTYPES + "=" + oldValue.getString()) : propertyName;
+                        if (name.equals(value.getString())) {
+                            return true;
+                        }
+                    }
+                }
+
+                if (isMixin) {
                     targetNode.removeMixin(oldValue.getString());
                 } else {
                     List<? extends Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getRealValues());
@@ -740,6 +754,13 @@ public class ConflictResolver {
             JCRNodeWrapper targetNode = getParentTarget(ConflictResolver.this.targetNode, propertyPath);
             String propertyName = getTargetName(propertyPath);
 
+            if (targetNode.hasProperty("j:liveProperties")) {
+                for (JCRValueWrapper value : targetNode.getProperty("j:liveProperties").getValues()) {
+                    if (propertyName.equals(value.getString())) {
+                        return true;
+                    }
+                }
+            }
             if (!targetNode.isCheckedOut()) {
                 targetNode.checkout();
             }

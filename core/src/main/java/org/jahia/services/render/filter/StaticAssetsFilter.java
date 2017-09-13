@@ -90,6 +90,7 @@ import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.regex.Pattern;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 
 /**
  * Render filter that "injects" the static assets into the HEAD section of the
@@ -702,7 +703,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         filePath = StringUtils.substringAfter(filePath, "/");
 
         if (key.startsWith("/modules/")) {
-            r = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId).getResource(filePath);
+            final JahiaTemplatesPackage jahiaTemplatesPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId);
+            if (jahiaTemplatesPackage != null) {
+                r = jahiaTemplatesPackage.getResource(filePath);
+            }
         } else if (key.startsWith("/files/")) {
             r = getResourceFromFile(moduleId, "/" + filePath);
         }

@@ -343,7 +343,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(app.data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                // app.edit.sidepanel.close();
+                app.edit.sidepanel.close();
             }
 		},
 		onClick: function(e){

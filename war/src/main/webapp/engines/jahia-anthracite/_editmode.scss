@@ -533,13 +533,10 @@
             }
 
             &:nth-child(4) {} &:nth-child(5) {
-                background: url(./images/tabs-workflow-black@X2.png) no-repeat top 3px center;
+                background: url(./images/tabs-workflow-white@X2.png) no-repeat top 3px center;
                 background-size: 23px 23px;
 
-                body[data-selection-count="0"] & {
-                    background: url(./images/tabs-workflow-white@X2.png) no-repeat top 3px center;
-                    background-size: 23px 23px;
-                }
+
 
                 > table:nth-child(1)::after {
                     content: $text_workflow;
@@ -562,14 +559,11 @@
             }
 
             &:nth-child(8) {
-                background: url(./images/tabs-placeholder-black@X2.png) no-repeat top center;
+                background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
                 background-size: 23px 23px;
 								opacity: 0.8;
 
-                body[data-selection-count="0"] & {
-                    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
-                    background-size: 23px 23px;
-                }
+
 
                 &:hover {
                     opacity: 1;
@@ -581,14 +575,11 @@
             }
 
             &:nth-child(9) {
-                background: url(./images/tabs-trash-black@X2.png) no-repeat top center;
+                background: url(./images/tabs-trash-white@X2.png) no-repeat top center;
                 background-size: 23px 23px;
 								opacity: 0.8;
 
-                body[data-selection-count="0"] & {
-                    background: url(./images/tabs-trash-white@X2.png) no-repeat top center;
-                    background-size: 23px 23px;
-                }
+
 
                 &:hover {
                     opacity: 1;
@@ -600,14 +591,10 @@
             }
 
             &:nth-child(10) {
-                background: url(./images/tabs-placeholder-black@X2.png) no-repeat top center;
+                background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
                 background-size: 23px 23px;
 								opacity: 0.8;
 
-                body[data-selection-count="0"] & {
-                    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
-                    background-size: 23px 23px;
-                }
 
                 &:hover {
                     opacity: 1;

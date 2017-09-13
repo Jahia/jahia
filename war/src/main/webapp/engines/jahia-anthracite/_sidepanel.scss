@@ -46,10 +46,23 @@
             text-transform: uppercase;
             font-size: 11px;
             font-weight: 500;
+
+			body[data-indigo-gwt-side-panel="open"] & {
+				background: #e8e8e8;
+				color: $COLOUR--RAIN_CLOUDS;
+				transition: none;
+			}
         }
 
         img {
             height: 30px!important;
+
+			body[data-indigo-gwt-side-panel="open"] & {
+				background-image: url($ICON--ARROW_DOWN---GREY);
+				background-color: rgb(222, 222, 222) !important
+			}
+
+
 
 			// Sticky override ...
 			html.ext-strict body.ext-gecko & {

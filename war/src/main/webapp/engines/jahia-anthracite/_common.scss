@@ -75,6 +75,7 @@ html {
 
 body {
 	background: $APP--BG--COLOUR;
+    background: radial-gradient(ellipse at bottom right, rgb(76, 80, 82) 0%, rgb(92, 97, 100) 70%);
 	transition: all 0.3s ease-in 0s;
 
     // &[data-multiselect="on"] {

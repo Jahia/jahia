@@ -46,6 +46,7 @@ package org.jahia.services.seo.jcr;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -105,13 +106,7 @@ public class VanityUrlMapper {
                     siteKey = lookupSiteKeyByServerName(uri.getHost());
                     if (siteKey != null) {
                         contextToCheck = uri.getPath();
-                        StringBuffer sb = new StringBuffer()
-                                .append(uri.getScheme()).append("://")
-                                .append(uri.getHost());
-                        if (uri.getPort() != -1) {
-                            sb.append(':').append(uri.getPort());
-                        }
-                        serverName = sb.toString();
+                        serverName = Url.getServer(uri.getScheme(), uri.getHost(), uri.getPort());
                     }
                 } catch (URISyntaxException e) {
                     // simply continue as siteKey will be determined later
@@ -133,7 +128,7 @@ public class VanityUrlMapper {
                     path = URLDecoder.decode(path, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     // shouldn't happen
-                    throw new RuntimeException(e);
+                    throw new JahiaRuntimeException(e);
                 }
                 URLResolver urlResolver = urlResolverFactory.createURLResolver(path, hsRequest.getServerName(), hsRequest);
                 try {
@@ -150,11 +145,13 @@ public class VanityUrlMapper {
                                         urlResolver.getLocale(), siteKey);
                         if (vanityUrl != null && vanityUrl.isActive()) {
                             //for macros some parameters added (like ##requestParameters## for languageswitcher)
-                            String macroExtension = "";
+                            String extension = "";
                             if (fullUrl.matches("(.?)*##[a-zA-Z]*##$")) {
-                                macroExtension = "##" + StringUtils.substringBetween(fullUrl, "##") + "##";
+                                extension = "##" + StringUtils.substringBetween(fullUrl, "##") + "##";
+                            } else if (queryIndex >= 0) {
+                                extension = outboundUrl.substring(queryIndex);
                             }
-                            hsRequest.setAttribute(VANITY_KEY, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl() + macroExtension);
+                            hsRequest.setAttribute(VANITY_KEY, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl() + extension);
                             if (serverName != null) {
                                 hsRequest.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK, serverName);
                             }

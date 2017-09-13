@@ -343,7 +343,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(app.data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                app.edit.sidepanel.close();
+                // app.edit.sidepanel.close();
             }
 		},
 		onClick: function(e){
@@ -395,7 +395,38 @@
 
             },
 			managerMenu: {
-				onOpen: function(){},
+				onOpen: function(contextmenu){
+                    var returnText;
+
+                    console.log("app.data.currentApp: ", app.data.currentApp);
+
+                    switch(app.data.currentApp){
+                        case "edit":
+                            returnText = "Continue editing " + app.iframe.data.displayName;
+                            break;
+
+                        case "admin":
+                            returnText = "Return to Administration";
+                            break;
+
+                        case "dashboard":
+                            returnText = "Return to Home";
+                            break;
+
+                        case "contribute":
+                            returnText = "Continue Contributing to " + app.iframe.data.displayName;
+                            break;
+
+                        default:
+                            returnText = "Return";
+
+                            break;
+                    }
+                    contextmenu.setAttribute("data-indigo-title", returnText);
+
+                    // console.log("Set back button to ", app.data.currentApp, contextMenu);
+
+                },
 				onClose: function(){
 					// Manager Menu has been closed by clicking on the X.
 		            // Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
@@ -1650,6 +1681,7 @@
 
             Dex(".editModeContextMenu").onOpen(app.contextMenus.moreInfoMenu.onOpen);
 
+            Dex(".menu-editmode-managers-menu").onOpen(app.contextMenus.managerMenu.onOpen);
 
 
             Dex("#JahiaGxtContentPickerWindow").onOpen(app.picker.onOpen);
@@ -1706,7 +1738,6 @@
                 .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", app.picker.thumb.onContext)
                 .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick)
                 .on("click", ".x-viewport-editmode .x-toolbar-first > table", app.theme.onToggle)
-                .on("click", ".editmode-managers-menu", app.contextMenus.managerMenu.onOpen)
                 .on("click", ".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose)
                 .on("mousedown", ".menu-edit-menu-mode, .menu-edit-menu-user", app.contextMenus.managerMenu.onClose)
                 .on("click", "#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", app.edit.settings.close)

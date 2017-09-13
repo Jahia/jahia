@@ -26,6 +26,10 @@
 			top: 62px!important;
 		    left: 70px!important;
 
+			background: radial-gradient(ellipse at bottom right, rgba(38, 38, 38, 0.11) 0%, rgba(38, 38, 38, 0.05) 70%);
+
+
+
 
 		}
 
@@ -50,16 +54,27 @@
 				background: #e8e8e8;
 				color: $COLOUR--RAIN_CLOUDS;
 				transition: none;
+
+				&:hover {
+					background: rgba(38, 38, 38, 0.11)!important;
+				}
 			}
         }
 
         img {
             height: 30px!important;
+			width: 27px!important;
 			background-color: transparent!important;
 
 			body[data-indigo-gwt-side-panel="open"] & {
 				background-image: url($ICON--ARROW_DOWN---GREY);
-				background-color: rgb(222, 222, 222) !important
+				opacity: 0.7;
+
+				&:hover {
+					background-color: rgba($COLOUR--GREY_CLOUDS, 0.3)!important;
+					opacity: 1;
+				}
+				// background-color: rgb(222, 222, 222) !important
 			}
 
 

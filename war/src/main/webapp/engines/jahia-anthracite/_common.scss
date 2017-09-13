@@ -125,7 +125,7 @@ body {
 	&[data-sitesettings="true"] {
 		&::before {
 			/* Set Page Title Content for Settings */
-			content: $text_dxm_settings;
+			// content: $text_dxm_settings;
 
 		}
 	}
@@ -133,9 +133,9 @@ body {
 	&[data-main-node-displayname="root"] {
 		&::before {
 			/* Set Page Title Content for Settings */
-			content: $text_dxm_settings;
-			background: url(./images/dx_logo_solid.png) no-repeat left 3px top 11px;
-		    background-size: 32px 32px;
+			// content: $text_dxm_settings;
+			// background: url(./images/dx_logo_solid.png) no-repeat left 3px top 11px;
+		    // background-size: 32px 32px;
 		}
 	}
 
@@ -520,16 +520,17 @@ body {
 
     &::after {
 		/* Close Icon */
-        content: $text_close;
+        content: attr(data-indigo-title);
         display: block;
         position: fixed;
         top: 20px;
         left: 20px;
-        background: url(./images/icon-close-white@X2.png) no-repeat center center / 20px 20px;
-        text-indent: -50000px;
-        width: 20px;
+        background: url($ICON--BACK--WHITE) no-repeat left center / 20px 20px;
         height: 20px;
         z-index: $ZINDEX--HAMBURGER---TITLE;
+
+        @include text(16px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+        padding-left: 25px;
     }
 
 

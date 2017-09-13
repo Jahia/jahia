@@ -196,7 +196,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
      *
      * @throws NoSuchNodeTypeException if one of the supertype/mixin extend cannot be found
      */
-    private void registerNodeTypes(List<ExtendedNodeType> nodeTypesList) throws NoSuchNodeTypeException {
+    private void registerNodeTypes(List<ExtendedNodeType> nodeTypesList) throws NoSuchNodeTypeException , InvalidNodeTypeDefinitionException{
         writeLock.lock();
         try {
             // Replaces types,
@@ -228,8 +228,8 @@ public class NodeTypeRegistry implements NodeTypeManager {
                         type.setDeclaredSupertypes(newTypes);
                         type.validate();
                     }
-                } catch (NoSuchNodeTypeException e) {
-                    logger.error("Cannot find parent type when registering new types", e);
+                } catch (NoSuchNodeTypeException | InvalidNodeTypeDefinitionException e) {
+                    logger.error("Cannot validate type", e);
 
                     // Restoring previous state
                     for (ExtendedNodeType addedType : nodeTypesList) {

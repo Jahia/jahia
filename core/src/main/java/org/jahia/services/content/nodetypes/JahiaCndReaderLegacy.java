@@ -218,7 +218,7 @@ public class JahiaCndReaderLegacy {
         for (ExtendedNodeType type : nodeTypesList) {
             try {
                 type.validate();
-            } catch (NoSuchNodeTypeException | InvalidNodeTypeDefinitionException e) {
+            } catch (NoSuchNodeTypeException e) {
                 throw new ParseException("Cannot validate supertypes for : "+type.getName(),e,0,0,filename);
             }
         }

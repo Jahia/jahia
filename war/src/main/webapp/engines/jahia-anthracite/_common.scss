@@ -376,30 +376,38 @@ body {
         right: 20px;
         left: auto !important;
         top: 17px !important;
-        background: no-repeat left 5px center #6a6e71;
-        background-size: 22px;
+        background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%,rgba(255, 255, 255, 0) 70%);
+
+        transition: all 0.3s ease-in 0s;
 
         pointer-events: all;
 		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
 
         body[data-lang="en"] & {
-			background-image: url(./images/flags@X2/united-kingdom@X2.png);
+            background-image: url(./images/flags@X2/united-kingdom@X2.png), radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 70%);
+            background-size: 22px, auto;
+            background-repeat: no-repeat;
+            background-position: left 7px center;
 
 		}
 
-
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.07);
+        }
 
 
         input {
-            padding: 7px 20px 6px 32px !important;
+            padding: 7px 20px 6px 34px !important;
             color: #f1f1f1;
             text-transform: uppercase;
             font-size: 11px;
             font-weight: 500;
+            background-color: transparent;
         }
 
         img {
             height: 30px!important;
+            background-color: transparent!important;
 
 
         }

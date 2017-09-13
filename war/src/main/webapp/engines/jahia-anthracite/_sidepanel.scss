@@ -17,8 +17,7 @@
 		position: fixed;
         left: 60px;
         top: 17px !important;
-        background: no-repeat left 5px center #6a6e71;
-        background-size: 22px;
+        background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%,rgba(255, 255, 255, 0) 70%);
 
         pointer-events: all;
 		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
@@ -56,6 +55,7 @@
 
         img {
             height: 30px!important;
+			background-color: transparent!important;
 
 			body[data-indigo-gwt-side-panel="open"] & {
 				background-image: url($ICON--ARROW_DOWN---GREY);

@@ -1499,7 +1499,7 @@
 		// Menus available in Edit Mode
 			// Publication
 			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--PUBLICATION {
-				content: $text_context_menu_publication_page;
+                content: attr(data-indigo-title);
 
 				// body[data-multiselect="on"] & {
 				// 	content: $text_context_menu_publication_selection;
@@ -1512,7 +1512,7 @@
 
 			// Preview
 			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--PREVIEW {
-				content: $text_context_menu_preview_page;
+                content: attr(data-indigo-title);
 
 				// body[data-multiselect="on"] & {
 				// 	content: $text_context_menu_preview_selection;
@@ -1526,7 +1526,7 @@
 
 			// More Info (old Edit button)
 			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--MORE_INFO {
-				content: $text_context_menu_more_info_page;
+                content: attr(data-indigo-title);
 
 				// body[data-multiselect="on"] & {
 				// 	content: $text_context_menu_more_info_selection;
@@ -1539,7 +1539,7 @@
 
 			// Mode View
 			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--MODE_VIEW {
-				//content: $text_context_menu_mode_view;
+                content: attr(data-indigo-title);
 			}
 			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--MODE_VIEW {}
 			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--MODE_VIEW {}
@@ -1580,7 +1580,7 @@
 
 			// Page Edit Context
 			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--PAGE_CONTEXT {
-				content: attr(data-selected-name)
+                content: attr(data-indigo-title);
 			}
 			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--PAGE_CONTEXT {}
 			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--PAGE_CONTEXT {}

@@ -365,6 +365,35 @@
 
 		},
 		contextMenus: {
+            setTitle: function(contextmenu, params){
+                var contextMenuList = contextmenu.getElementsByClassName("x-menu-list")[0],
+                    contextMenuTitle;
+
+                if(contextMenuList){
+                    switch(app.iframe.data.selectionCount){
+                        case 0:
+                            // Page
+                            contextMenuTitle = params.noSelection;
+                            break;
+
+                        case 1:
+                            // Selected Item
+                            contextMenuTitle = params.singleSelection.replace("{{node}}", app.data.body.getAttribute("data-singleselection-node-displayname"));
+                            break;
+
+                        default:
+                            // Multiple selection
+                            contextMenuTitle = params.multipleSelection;
+                            break;
+                    }
+
+                    contextMenuList.setAttribute("data-indigo-title", contextMenuTitle)
+                }
+
+
+
+
+            },
 			managerMenu: {
 				onOpen: function(){},
 				onClose: function(){
@@ -372,7 +401,37 @@
 		            // Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
 		            $(".menu-editmode-managers-menu").fadeOut();
 				}
-			}
+			},
+            previewMenu: {
+                onOpen: function(contextmenu){
+                    app.contextMenus.setTitle(contextmenu, {
+                        noSelection: "Page Preview",
+                        singleSelection: "Preview {{node}}",
+                        multipleSelection: "Preview selection"
+                    });
+
+                }
+            },
+            publicationMenu: {
+                onOpen: function(contextmenu){
+                    app.contextMenus.setTitle(contextmenu, {
+                        noSelection: "Publish Page",
+                        singleSelection: "Publish {{node}}",
+                        multipleSelection: "Publish selection"
+                    });
+
+                }
+            },
+            moreInfoMenu: {
+                onOpen: function(contextmenu){
+                    app.contextMenus.setTitle(contextmenu, {
+                        noSelection: "Page Options",
+                        singleSelection: "{{node}} Options",
+                        multipleSelection: "Selection Options"
+                    });
+
+                }
+            }
 		},
 		theme: {
 			data: {
@@ -1583,6 +1642,15 @@
 				}
 
             });
+
+            Dex(".menu-edit-menu-view").onOpen(app.contextMenus.previewMenu.onOpen);
+
+            Dex(".menu-edit-menu-publication").onOpen(app.contextMenus.publicationMenu.onOpen);
+
+            Dex(".menu-edit-menu-edit").onOpen(app.contextMenus.moreInfoMenu.onOpen);
+
+            Dex(".editModeContextMenu").onOpen(app.contextMenus.moreInfoMenu.onOpen);
+
 
 
             Dex("#JahiaGxtContentPickerWindow").onOpen(app.picker.onOpen);

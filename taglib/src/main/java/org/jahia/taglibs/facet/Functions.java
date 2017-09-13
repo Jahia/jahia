@@ -59,6 +59,7 @@ import org.jahia.services.query.QueryResultWrapper;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.PropertyDefinition;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -108,22 +109,16 @@ public class Functions {
     }
 
     /**
-     * Check whether a facet is currently exclusively applied to the query, so that no other value can be selected
+     * Check whether a facet is currently applied to the query
      *
      * @param facetName     the facet name to check
      * @param appliedFacets variable retrieved from {@link Functions#getAppliedFacetFilters(String)}
      * @param propDef       property definition if facet is a field/date facet
-     * @return true if facet is applied exclusively (no other value possible) otherwise false
+     * @return true if facet is applied otherwise false
      */
     public static boolean isFacetApplied(String facetName, Map<String, List<KeyValue>> appliedFacets,
-                                         ExtendedPropertyDefinition propDef) {
-        boolean facetApplied = false;
-        if (appliedFacets != null && appliedFacets.containsKey(facetName)) {
-            if (propDef == null || !(propDef.isMultiple() || propDef.isHierarchical())) {
-                facetApplied = true;
-            }
-        }
-        return facetApplied;
+                                         PropertyDefinition propDef) {
+        return appliedFacets != null && appliedFacets.containsKey(facetName);
     }
 
     /**

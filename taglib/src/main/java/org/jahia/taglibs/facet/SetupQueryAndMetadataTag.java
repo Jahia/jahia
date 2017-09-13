@@ -210,11 +210,12 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                     facetValueLabels.put(metadataKey, facet.getPropertyAsString("valueLabel"));
                 }
 
-                // is the current facet applied?
+                // should current facet be evaluated? (logic: evaluate only if not already applied or it is a multiple valued or hierarchical facet)
                 final ExtendedPropertyDefinition propDef = nodeType != null ? nodeType.getPropertyDefinition(facetPropertyName) : null;
-                final boolean isFacetApplied = Functions.isFacetApplied(metadataKey, activeFacets, propDef);
+                final boolean isFacetToBuild = !Functions.isFacetApplied(metadataKey, activeFacets, propDef)
+                        || propDef != null && (propDef.isMultiple() || propDef.isHierarchical());
 
-                if (nodeType != null && StringUtils.isNotEmpty(facetPropertyName) && !isFacetApplied) {
+                if (nodeType != null && StringUtils.isNotEmpty(facetPropertyName) && isFacetToBuild) {
                     StringBuilder extraBuilder = new StringBuilder();
 
                     // deal with facets with labelRenderers, currently only jnt:dateFacet or jnt:rangeFacet
@@ -255,12 +256,12 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
 
                 }
 
-                if (isQuery && !isFacetApplied) {
+                if (isQuery && isFacetToBuild) {
                     extra = "&facet.query=" + queryProperty;
                 }
 
                 // only add a column if the facet isn't already applied
-                if (!isFacetApplied) {
+                if (isFacetToBuild) {
                     // key used in the solr query string
                     final String key = isQuery ? facet.getName() : facetPropertyName;
                     String query = buildQueryString(facetNodeTypeName, key, minCount, extra);

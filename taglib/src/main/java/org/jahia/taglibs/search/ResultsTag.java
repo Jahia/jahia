@@ -49,6 +49,7 @@ import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteriaFactory;
 import org.jahia.services.search.SearchResponse;
+import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
@@ -57,7 +58,7 @@ import java.util.List;
 
 /**
  * Performs the content search and exposes search results for being displayed.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ResultsTag extends AbstractJahiaTag {
@@ -65,8 +66,8 @@ public class ResultsTag extends AbstractJahiaTag {
     private static final long serialVersionUID = 2848686280888802590L;
 
     private String countVar;
-    
-    private String approxCountVar;    
+
+    private String approxCountVar;
 
     private SearchResponse searchResponse;
     private List<Hit<?>> hits;
@@ -79,6 +80,8 @@ public class ResultsTag extends AbstractJahiaTag {
 
     private String var;
 
+    private String basePagePath = SettingsBean.getInstance().getPropertiesFile().getProperty("search.basePathPath", "/sites/");;
+
     private boolean allowEmptySearchTerm = false;
 
     private long limit = -1;
@@ -88,7 +91,7 @@ public class ResultsTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         pageContext.removeAttribute(getVar(), PageContext.PAGE_SCOPE);
         pageContext.removeAttribute(getCountVar(), PageContext.PAGE_SCOPE);
-        pageContext.removeAttribute(getApproxCountVar(), PageContext.PAGE_SCOPE);        
+        pageContext.removeAttribute(getApproxCountVar(), PageContext.PAGE_SCOPE);
         pageContext.removeAttribute(getSearchCriteriaVar(), PageContext.PAGE_SCOPE);
         pageContext.removeAttribute(getTermVar(), PageContext.PAGE_SCOPE);
         resetState();
@@ -110,7 +113,7 @@ public class ResultsTag extends AbstractJahiaTag {
 
         return result < 0 ? SKIP_BODY : EVAL_BODY_INCLUDE;
     }
-    
+
     protected int searchAndSetAttributes(SearchCriteria criteria, RenderContext renderContext) {
         criteria.setLimit(limit);
         criteria.setOffset(offset);
@@ -143,7 +146,7 @@ public class ResultsTag extends AbstractJahiaTag {
     /**
      * Returns the default name of the <code>countVar</code> variable if not
      * provided.
-     * 
+     *
      * @return the default name of the <code>countVar</code> variable if not
      *         provided
      */
@@ -154,22 +157,22 @@ public class ResultsTag extends AbstractJahiaTag {
     /**
      * Returns the default name of the <code>approxCountVar</code> variable if not
      * provided.
-     * 
+     *
      * @return the default name of the <code>approxCountVar</code> variable if not
      *         provided
      */
     private String getApproxCountVar() {
         return approxCountVar != null ? approxCountVar : getDefaultApproxCountVarName();
-    }    
-    
+    }
+
     protected String getDefaultCountVarName() {
         return "count";
     }
 
     protected String getDefaultApproxCountVarName() {
         return "approxCount";
-    }    
-    
+    }
+
     protected String getDefaultSearchCriteriaVarName() {
         return "searchCriteria";
     }
@@ -181,7 +184,7 @@ public class ResultsTag extends AbstractJahiaTag {
     /**
      * Returns the default name of the <code>var</code> variable if not
      * provided.
-     * 
+     *
      * @return the default name of the <code>var</code> variable if not provided
      */
     protected String getDefaultVarName() {
@@ -190,7 +193,7 @@ public class ResultsTag extends AbstractJahiaTag {
 
     /**
      * Returns a list of {@link Hit} objects that are results of the query.
-     * 
+     *
      * @return a list of {@link Hit} objects that are results of the query
      */
     public List<Hit<?>> getHits() {
@@ -199,21 +202,33 @@ public class ResultsTag extends AbstractJahiaTag {
 
     /**
      * Obtains the {@link SearchCriteria} bean to execute the search with.
-     * 
+     *
      * @param ctx current rendering context
      * @return the {@link SearchCriteria} bean to execute the search with
      */
     protected SearchCriteria getSearchCriteria(RenderContext ctx) {
-        return searchCriteriaBeanName != null ? (SearchCriteria) pageContext.getAttribute(searchCriteriaBeanName)
+        SearchCriteria criteria = searchCriteriaBeanName != null ? (SearchCriteria) pageContext.getAttribute(searchCriteriaBeanName)
                 : SearchCriteriaFactory.getInstance(ctx);
+
+        String[] values = criteria.getPagePath().getValues();
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                String value = values[i];
+                if (!value.startsWith(basePagePath)) {
+                    values[i] = basePagePath;
+                }
+            }
+        }
+
+        return criteria;
     }
 
     protected String getSearchCriteriaVar() {
-    	return searchCriteriaVar != null ? searchCriteriaVar : getDefaultSearchCriteriaVarName();
+        return searchCriteriaVar != null ? searchCriteriaVar : getDefaultSearchCriteriaVarName();
     }
 
     private String getTermVar() {
-    	return termVar != null ? termVar : getDefaultTermVarName();
+        return termVar != null ? termVar : getDefaultTermVarName();
     }
 
     private String getVar() {
@@ -232,27 +247,28 @@ public class ResultsTag extends AbstractJahiaTag {
         allowEmptySearchTerm = false;
         limit = -1;
         offset = 0;
+        basePagePath = SettingsBean.getInstance().getPropertiesFile().getProperty("search.basePathPath", "/sites/");
         super.resetState();
     }
 
     public void setCountVar(String countVar) {
         this.countVar = countVar;
     }
-    
+
     public void setApproxCountVar(String approxCountVar) {
         this.approxCountVar = approxCountVar;
-    }    
+    }
 
     public void setSearchCriteriaBeanName(String searchCriteriaBeanName) {
         this.searchCriteriaBeanName = searchCriteriaBeanName;
     }
 
     public void setSearchCriteriaVar(String searchCriteriaVar) {
-    	this.searchCriteriaVar = searchCriteriaVar;
+        this.searchCriteriaVar = searchCriteriaVar;
     }
 
     public void setTermVar(String termVar) {
-    	this.termVar = termVar;
+        this.termVar = termVar;
     }
 
     public void setLimit(int limit) {
@@ -269,5 +285,9 @@ public class ResultsTag extends AbstractJahiaTag {
 
     public void setAllowEmptySearchTerm(boolean allowEmptySearchTerm) {
         this.allowEmptySearchTerm = allowEmptySearchTerm;
+    }
+
+    public void setBasePagePath(String basePagePath) {
+        this.basePagePath = basePagePath;
     }
 }

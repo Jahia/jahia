@@ -457,13 +457,14 @@
 					}
 
 					.x-viewport-adminmode & {
-						content: "DX Admin" !important;
+						content: $text_administration !important;
+						letter-spacing: -1px;
 
 					    padding-left: 39px;
 					}
 
 					.x-viewport-dashboardmode & {
-						content: "DX Home" !important;
+						content: $text_home !important;
 
 					    padding-left: 39px;
 					}

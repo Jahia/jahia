@@ -10,6 +10,9 @@
 	.edit-menu-sites {
 		/* Site Selector */
 
+		body[data-sitesettings="true"] & {
+			display: none
+		}
 
 		position: fixed;
         left: 60px;
@@ -47,6 +50,16 @@
 
         img {
             height: 30px!important;
+
+			// Sticky override ...
+			html.ext-strict body.ext-gecko & {
+
+				&.x-form-trigger {
+					height: 30px!important;
+
+				}
+
+            }
         }
 		// width: 250px!important;
 		// display:none;

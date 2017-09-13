@@ -725,12 +725,43 @@
                     moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
                 };
 
-                elements.iframe.style.opacity = 0;
-                elements.title.style.opacity = 0;
-                elements.publishButton.style.opacity = 0;
-                elements.refreshButton.style.opacity = 0;
-                elements.previewButton.style.opacity = 0;
-                elements.moreInfo.style.opacity = 0;
+                if( elements.iframe &&
+                    elements.iframe.style){
+                        elements.iframe.style.opacity = 0;
+
+                }
+
+                if( elements.title &&
+                    elements.title.style){
+                        elements.title.style.opacity = 0;
+
+                }
+
+                if( elements.publishButton &&
+                    elements.publishButton.style){
+                        elements.publishButton.style.opacity = 0;
+
+                }
+
+                if( elements.refreshButton &&
+                    elements.refreshButton.style){
+                        elements.refreshButton.style.opacity = 0;
+
+                }
+
+                if( elements.previewButton &&
+                    elements.previewButton.style){
+                        elements.previewButton.style.opacity = 0;
+
+                }
+
+                if( elements.moreInfo &&
+                    elements.moreInfo.style){
+                        elements.moreInfo.style.opacity = 0;
+
+                }
+
+
 
 
 
@@ -819,16 +850,22 @@
                 if(systemSettingsTabs){
                     if(window.getComputedStyle(systemSettingsTabs).display == "none"){
                         // System Settings Tabs have not been loaded, so trigger click to open them
-                        mouse.trigger(document.querySelectorAll("#JahiaGxtSidePanelTabs li")[0], "click");
+                        mouse.trigger(document.querySelectorAll("#JahiaGxtSidePanelTabs li")[1], "click");
                     }
+
+                } else {
+                    mouse.trigger(document.querySelectorAll("#JahiaGxtSidePanelTabs li")[1], "click");
 
                 }
 
                 if(serverSettingsTabs){
                     if(window.getComputedStyle(serverSettingsTabs).display == "none"){
                         // Server Settings Tabs have not been loaded, so trigger click to open them
-                        mouse.trigger(document.querySelectorAll("#JahiaGxtSidePanelTabs li")[1], "click");
+                        mouse.trigger(document.querySelectorAll("#JahiaGxtSidePanelTabs li")[0], "click");
                     }
+
+                } else {
+                    mouse.trigger(document.querySelectorAll("#JahiaGxtSidePanelTabs li")[0], "click");
 
                 }
 
@@ -882,7 +919,14 @@
 					// CLicked on a settings page
 					app.edit.sidepanel.data.firstRun = false;
 
-					app.edit.history.add("settingspage", this);
+                    console.log("ONNAV ::: ", this);
+                    if(this.classList.contains("unselectable-row")){
+                        console.log("DO NOT REMEMBER THIS PAGE IN HISTORY AS IT IS A FOLDER");
+                    } else {
+                        app.edit.history.add("settingspage", this);
+
+                    }
+
 				} else {
 					app.edit.history.add("editpage", this);
 
@@ -894,6 +938,7 @@
 			history: {
 				data: {},
 				add: function(type, node){
+                    console.log("\t\t\t\tHISTORY PAGE ADDED ::: ", type, node);
 					app.edit.history.data[type] = node;
 
 				},
@@ -938,13 +983,44 @@
                     };
 
 
+                    if( elements.iframe &&
+                        elements.iframe.style){
+                            elements.iframe.style.opacity = 1;
 
-                    elements.iframe.style.opacity = 1;
-                    elements.title.style.opacity = 1;
-                    elements.publishButton.style.opacity = 1;
-                    elements.refreshButton.style.opacity = 1;
-                    elements.previewButton.style.opacity = 1;
-                    elements.moreInfo.style.opacity = 1;
+                    }
+
+                    if( elements.title &&
+                        elements.title.style){
+                            elements.title.style.opacity = 1;
+
+                    }
+
+                    if( elements.publishButton &&
+                        elements.publishButton.style){
+                            elements.publishButton.style.opacity = 1;
+
+                    }
+
+                    if( elements.refreshButton &&
+                        elements.refreshButton.style){
+                            elements.refreshButton.style.opacity = 1;
+
+                    }
+
+                    if( elements.previewButton &&
+                        elements.previewButton.style){
+                            elements.previewButton.style.opacity = 1;
+
+                    }
+
+                    if( elements.moreInfo &&
+                        elements.moreInfo.style){
+                            elements.moreInfo.style.opacity = 1;
+
+                    }
+
+
+
 
 					var pageTitle,
                         selectType = "none",
@@ -1041,11 +1117,14 @@
                                 // Center Page Title
                                 elements.title.style.left = ((boxes.body.width / 2) - (boxes.title.width / 2)) + "px";
 
-                                // Get Inner title bunding box
-                                boxes.innerTitle = elements.innerTitle.getBoundingClientRect();
+                                if(elements.innerTitle){
+                                    // Get Inner title bunding box
+                                    boxes.innerTitle = elements.innerTitle.getBoundingClientRect();
 
-                                // Center Inner title bounding box
-                                elements.innerTitle.style.left = ((boxes.body.width / 2) - (boxes.innerTitle.width / 2)) + 25 + "px";
+                                    // Center Inner title bounding box
+                                    elements.innerTitle.style.left = ((boxes.body.width / 2) - (boxes.innerTitle.width / 2)) + 25 + "px";
+                                }
+
 
                                 // Refresh bounding box for title as it has moved
                                 boxes.title = elements.title.getBoundingClientRect();

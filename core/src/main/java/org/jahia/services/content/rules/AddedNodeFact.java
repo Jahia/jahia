@@ -73,9 +73,9 @@ import java.util.List;
  * Date: 20 déc. 2007
  * Time: 11:53:45
  */
-public class AddedNodeFact extends AbstractNodeFact implements Updateable {
-    private static Logger logger = LoggerFactory.getLogger(AddedNodeFact.class);
-    
+public class AddedNodeFact extends AbstractNodeFact implements Updateable, ModifiedNodeFact {
+    private static final Logger logger = LoggerFactory.getLogger(AddedNodeFact.class);
+
     static boolean isLocked(JCRNodeWrapper node) throws AccessDeniedException, UnsupportedRepositoryOperationException,
             LockException, RepositoryException {
         boolean locked = node.isLocked();
@@ -124,6 +124,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         }
     }
 
+    @Override
     public void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates) throws RepositoryException {
         try {
             JCRNodeWrapper node = s.getNode(parentNodePath);
@@ -139,6 +140,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         }
     }
 
+    @Override
     public String getPath() throws RepositoryException {
         if (node != null) {
             return node.getPath();
@@ -148,6 +150,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         return null;
     }
 
+    @Override
     public String getName() throws RepositoryException {
         if (node != null) {
             return node.getName();
@@ -157,6 +160,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         return null;
     }
 
+    @Override
     public List<ChangedPropertyFact> getProperties() throws RepositoryException {
         List<ChangedPropertyFact> results = new ArrayList<ChangedPropertyFact>();
         PropertyIterator it = node.getProperties();
@@ -167,6 +171,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         return results;
     }
 
+    @Override
     public ChangedPropertyFact getProperty(String propertyName) throws RepositoryException {
         return new ChangedPropertyFact(this, node.getProperty(propertyName));
     }
@@ -199,6 +204,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         //        drools.update(this);
     }
 
+    @Override
     public AddedNodeFact getAncestor(String type) throws RepositoryException {
         AddedNodeFact ancestor = this;
         try {
@@ -212,6 +218,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         return null;
     }
 
+    @Override
     public String toString() {
         return node.getPath();
     }
@@ -249,8 +256,18 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         return result;
     }
 
+    @Override
     public String getIdentifier() throws RepositoryException {
         return node != null ? node.getIdentifier() : null;
     }
 
+    @Override
+    public String getNodeIdentifier() throws RepositoryException {
+        return getIdentifier();
+    }
+
+    @Override
+    public String getNodeType() throws RepositoryException {
+        return getNode().getPrimaryNodeTypeName();
+    }
 }

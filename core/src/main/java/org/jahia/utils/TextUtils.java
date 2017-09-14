@@ -325,6 +325,9 @@ public class TextUtils {
                 // if we already have matched this in between prefix, find the previous unmatched one
                 while (matches.matchExists(inBetweenPrefix)) {
                     inBetweenPrefix = initialString.lastIndexOf(prefix, inBetweenPrefix - 1);
+                    if (inBetweenPrefix == -1) {
+                        return false;
+                    }
                 }
 
                 if (inBetweenPrefix == prefixIndex) {

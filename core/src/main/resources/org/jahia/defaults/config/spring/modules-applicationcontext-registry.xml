@@ -25,6 +25,7 @@
         <property name="searchService" ref="SearchService"/>
         <property name="gwtResourceConfig" ref="GWTResourceConfig"/>
         <property name="passwordService" ref="PasswordService"/>
+        <property name="publicationService" ref="jcrPublicationService"/>
     </bean>
 
     <bean id="modulePlaceholderConfig"
@@ -34,7 +35,7 @@
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="localOverride" value="true"/>
     </bean>
-    
+
     <util:list id="modulePlaceholderConfigLocations" value-type="java.lang.String">
         <value>osgibundle:jahia-modules-*.properties</value>
         <value>osgibundle:jahia/jahia-modules-*.properties</value>
@@ -85,7 +86,7 @@
     </bean>
 
     <bean id="springTypeConversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" lazy-init="true"/>
-    
+
     <bean id="JahiaFlowConversionService" class="org.jahia.services.render.webflow.JahiaFlowConversionService" lazy-init="true">
         <constructor-arg ref="springTypeConversionService"/>
     </bean>

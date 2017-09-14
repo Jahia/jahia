@@ -47,7 +47,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
 
-public class MovedNodeFact extends AbstractNodeFact {
+public class MovedNodeFact extends AbstractNodeFact implements ModifiedNodeFact {
 
     private String originalPath;
 
@@ -61,8 +61,18 @@ public class MovedNodeFact extends AbstractNodeFact {
         return originalPath;
     }
 
+    @Override
     public String toString() {
         return "moved "+node.getPath();
     }
 
+    @Override
+    public String getNodeIdentifier() throws RepositoryException {
+        return getIdentifier();
+    }
+
+    @Override
+    public String getNodeType() throws RepositoryException {
+        return getNode().getPrimaryNodeTypeName();
+    }
 }

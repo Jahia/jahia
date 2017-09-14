@@ -50,6 +50,7 @@ import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteriaFactory;
 import org.jahia.services.search.SearchResponse;
+import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
@@ -81,6 +82,8 @@ public class ResultsTag extends AbstractJahiaTag {
     private String termVar;
 
     private String var;
+
+    private String basePagePath = SettingsBean.getInstance().getPropertiesFile().getProperty("search.basePathPath", "/sites/");;
 
     private boolean allowEmptySearchTerm = false;
 
@@ -210,8 +213,20 @@ public class ResultsTag extends AbstractJahiaTag {
      * @return the {@link SearchCriteria} bean to execute the search with
      */
     protected SearchCriteria getSearchCriteria(RenderContext ctx) {
-        return searchCriteriaBeanName != null ? (SearchCriteria) pageContext.getAttribute(searchCriteriaBeanName)
+        SearchCriteria criteria = searchCriteriaBeanName != null ? (SearchCriteria) pageContext.getAttribute(searchCriteriaBeanName)
                 : SearchCriteriaFactory.getInstance(ctx);
+
+        String[] values = (criteria != null && criteria.getPagePath() != null) ? criteria.getPagePath().getValues() : null;
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                String value = values[i];
+                if (!value.startsWith(basePagePath)) {
+                    values[i] = basePagePath;
+                }
+            }
+        }
+
+        return criteria;
     }
 
     protected String getSearchCriteriaVar() {
@@ -238,6 +253,7 @@ public class ResultsTag extends AbstractJahiaTag {
         allowEmptySearchTerm = false;
         limit = -1;
         offset = 0;
+        basePagePath = SettingsBean.getInstance().getPropertiesFile().getProperty("search.basePathPath", "/sites/");
         super.resetState();
     }
 
@@ -283,5 +299,9 @@ public class ResultsTag extends AbstractJahiaTag {
 
     public void setSearchResponseVar(String searchResponseVar) {
         this.searchResponseVar = searchResponseVar;
+    }
+
+    public void setBasePagePath(String basePagePath) {
+        this.basePagePath = basePagePath;
     }
 }

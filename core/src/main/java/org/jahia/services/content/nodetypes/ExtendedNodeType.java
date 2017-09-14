@@ -268,6 +268,7 @@ public class ExtendedNodeType implements NodeType {
     public void validate() throws NoSuchNodeTypeException {
         this.declaredSupertypes = new ExtendedNodeType[declaredSupertypeNames.length];
         int mixIndex = 0;
+
         for (int i = 0; i < declaredSupertypeNames.length; i++) {
             final ExtendedNodeType nodeType = registry.getNodeType(declaredSupertypeNames[i]);
             if (!nodeType.isMixin && i>0) {
@@ -287,6 +288,46 @@ public class ExtendedNodeType implements NodeType {
             if (itemDefinition.getItemType() != null) {
                 registry.addTypedItem(itemDefinition);
             }
+        }
+    }
+
+    public void checkConflicts() throws InvalidNodeTypeDefinitionException{
+        Map<String, ExtendedItemDefinition> definitionMap = new HashMap<>();
+        for (ExtendedNodeType type : getDeclaredSupertypes()) {
+            checkConflict(definitionMap, type);
+        }
+    }
+
+    private void checkConflict(Map<String, ExtendedItemDefinition> definitionMap, ExtendedNodeType nodeType) throws InvalidNodeTypeDefinitionException {
+        for (ExtendedItemDefinition def : nodeType.getItems()) {
+            ExtendedItemDefinition existingDef = definitionMap.get(def.getName());
+            if (existingDef != null && !existingDef.equals(def) && !def.isUnstructured()) {
+                if (def.isAutoCreated() || existingDef.isAutoCreated()) {
+                    // conflict
+                    String msg = "The item definition for '" + def.getName() + "' in node type '" + def.getDeclaringNodeType() + "' conflicts with node type '" + existingDef.getDeclaringNodeType() + "': name collision with auto-create definition";
+                    throw new InvalidNodeTypeDefinitionException(msg);
+                }
+                // check ambiguous definitions
+                if (def.isNode() == existingDef.isNode()) {
+                    if (!def.isNode()) {
+                        // property definition
+                        ExtendedPropertyDefinition pd = (ExtendedPropertyDefinition) def;
+                        ExtendedPropertyDefinition epd = (ExtendedPropertyDefinition) existingDef;
+                        // compare type & multiValued flag
+                        if (pd.getRequiredType() == epd.getRequiredType()
+                                && pd.isMultiple() == epd.isMultiple()) {
+                            // conflict
+                            String msg = "The property definition for '" + def.getName() + "' in node type '" + def.getDeclaringNodeType() + "' conflicts with node type '" + existingDef.getDeclaringNodeType() + "': ambiguous property definition";
+                            throw new InvalidNodeTypeDefinitionException(msg);
+                        }
+                    } else {
+                        // child node definition
+                        String msg = "The child node definition for '" + def.getName() + "' in node type '" + def.getDeclaringNodeType() + "' conflicts with node type '" + existingDef.getDeclaringNodeType() + "': ambiguous child node definition";
+                        throw new InvalidNodeTypeDefinitionException(msg);
+                    }
+                }
+            }
+            definitionMap.put(def.getName(), def);
         }
     }
 

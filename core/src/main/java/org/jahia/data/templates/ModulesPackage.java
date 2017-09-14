@@ -45,6 +45,8 @@ package org.jahia.data.templates;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.felix.utils.manifest.Clause;
+import org.apache.felix.utils.manifest.Parser;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.codehaus.plexus.util.dag.DAG;
 import org.codehaus.plexus.util.dag.TopologicalSorter;
@@ -91,6 +93,26 @@ public class ModulesPackage {
         return new ModulesPackage(jarFile);
     }
 
+    /**
+     * Parses the corresponding manifest attribute and extracts package names.
+     * 
+     * @param module the module package to retrieve manifest attribute
+     * @param attributeName the name of the manifest attribute to parse its value
+     * @return the set of package names, parsed from the requested manifest attribute; an empty set is returned if no requested attribute is
+     *         found in manifest
+     */
+    private static Collection<String> getPackageNames(PackagedModule module, String attributeName) {
+        String attributeValue = module.getManifestAttributes().getValue(attributeName);
+        if (StringUtils.isEmpty(attributeValue)) {
+            return Collections.emptySet();
+        }
+        Set<String> packageNames = new LinkedHashSet<>();
+        for (Clause clause : Parser.parseHeader(attributeValue)) {
+            packageNames.add(clause.getName());
+        }
+        return packageNames;
+    }
+
     private static Set<String> parseDependencies(Attributes manifestAttributes) {
         Set<String> dependencies = Collections.emptySet();
         String dependsValue = manifestAttributes.getValue(Constants.ATTR_NAME_JAHIA_DEPENDS);
@@ -102,7 +124,7 @@ public class ModulesPackage {
         return dependencies;
     }
 
-    private static void sortByDependencies(Map<String, PackagedModule> modules) throws CycleDetectedException {
+    protected static void sortByDependencies(Map<String, PackagedModule> modules) throws CycleDetectedException {
         if (modules.size() <= 1) {
             return;
         }
@@ -110,31 +132,33 @@ public class ModulesPackage {
 
         // we build a Directed Acyclic Graph of dependencies (only those, which are present in the package)
         DAG dag = new DAG();
+        
         Map<String, String> exports = new HashMap<>();
+        // collect the exported package names, exported by all provided modules
         for (PackagedModule module : modules.values()) {
-            String exportPackagesString = module.getManifestAttributes().getValue(org.osgi.framework.Constants.EXPORT_PACKAGE);
-            if (exportPackagesString != null) {
-                String[] exportPackages = exportPackagesString.replaceAll("\"[^\"]*\"", "").split(",");
-                for (String exportPackage : exportPackages) {
-                    exports.put(StringUtils.substringBefore(exportPackage, ";"), module.getName());
-                }
+            Collection<String> exportPackages = getPackageNames(module, org.osgi.framework.Constants.EXPORT_PACKAGE);
+            for (String exportPackage : exportPackages) {
+                exports.put(exportPackage, module.getName());
             }
         }
+
+        // iterate on all modules in the package
         for (PackagedModule module : modules.values()) {
-            dag.addVertex(module.getName());
+            String moduleName = module.getName();
+            dag.addVertex(moduleName);
             for (String dependency : module.getDepends()) {
                 if (modules.containsKey(dependency)) {
-                    dag.addEdge(module.getName(), dependency);
+                    // add a graph edge for module and its dependency
+                    dag.addEdge(moduleName, dependency);
                 }
             }
-            String importPackagesString = module.getManifestAttributes().getValue(org.osgi.framework.Constants.IMPORT_PACKAGE);
-            if (importPackagesString != null) {
-                String[] importPackages = importPackagesString.replaceAll("\"[^\"]*\"", "").split(",");
-                for (String importPackage : importPackages) {
-                    String importPackageName = StringUtils.substringBefore(importPackage, ";");
-                    if (exports.containsKey(importPackageName) && !exports.get(importPackageName).equals(module.getName()) && !dag.hasEdge(module.getName(), exports.get(importPackageName))) {
-                        dag.addEdge(module.getName(), exports.get(importPackageName));
-                    }
+            Collection<String> importPackages = getPackageNames(module, org.osgi.framework.Constants.IMPORT_PACKAGE);
+            for (String importPackageName : importPackages) {
+                // if the imported package is exported by another module (not same one) and we do not have an edge in the graph, we add the
+                // edge from this module to the module, which exports that package
+                if (exports.containsKey(importPackageName) && !exports.get(importPackageName).equals(moduleName)
+                        && !dag.hasEdge(moduleName, exports.get(importPackageName))) {
+                    dag.addEdge(moduleName, exports.get(importPackageName));
                 }
             }
         }
@@ -213,13 +237,13 @@ public class ModulesPackage {
         return version;
     }
 
-    public class PackagedModule {
+    public static class PackagedModule {
         private final Attributes manifestAttributes;
         private final File moduleFile;
         private final String name;
         private final Set<String> depends;
 
-        public PackagedModule(String name, Attributes manifestAttributes, File moduleFile) {
+        protected PackagedModule(String name, Attributes manifestAttributes, File moduleFile) {
             this.name = name;
             this.manifestAttributes = manifestAttributes;
             this.moduleFile = moduleFile;

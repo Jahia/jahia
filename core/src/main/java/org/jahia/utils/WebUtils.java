@@ -167,6 +167,18 @@ public final class WebUtils {
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 295075800000L);
     }
+
+    /**
+     * Sets proper response headers in case of file download using the provided file name.
+     * 
+     * @param response
+     *            current response
+     * @param fileName
+     *            the file name to use in the response header
+     */
+    public static void setFileDownloadHeaders(HttpServletResponse response, String fileName) {
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+    }
     
     /**
      * Decodes a <code>application/x-www-form-urlencoded</code> string using the character encoding, configured in jahia.properties.

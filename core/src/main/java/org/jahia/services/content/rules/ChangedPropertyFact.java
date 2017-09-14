@@ -68,8 +68,8 @@ import java.util.Map;
  * User: toto
  */
 
-public class ChangedPropertyFact implements Updateable {
-    private static Logger logger = LoggerFactory.getLogger(ChangedPropertyFact.class);
+public class ChangedPropertyFact implements Updateable, ModifiedPropertyFact {
+    private static final Logger logger = LoggerFactory.getLogger(ChangedPropertyFact.class);
 
     private String path;
     private JCRPropertyWrapper property;
@@ -107,7 +107,7 @@ public class ChangedPropertyFact implements Updateable {
 
         if (node == null || AddedNodeFact.isLocked(node)) {
             logger.debug("Node is locked, delay property update to later");
-            List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
+            @SuppressWarnings("unchecked") List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
             list.add(this);
         } else {
             setProperty(node, name, o, overrideIfExisting);
@@ -115,6 +115,7 @@ public class ChangedPropertyFact implements Updateable {
         operationType = nodeWrapper.getOperationType();
     }
 
+    @Override
     public void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates) throws RepositoryException {
         try {
             JCRNodeWrapper node = s.getNode(nodePath);
@@ -216,9 +217,7 @@ public class ChangedPropertyFact implements Updateable {
                     }
                 }
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Property set " + nodePath + " / " + name);
-                }
+                logger.debug("Property set " + nodePath + " / " + name);
                 if (property != null) {
                     path = property.getPath();
                 }
@@ -245,6 +244,7 @@ public class ChangedPropertyFact implements Updateable {
         }
     }
 
+    @Override
     public String getName() throws RepositoryException {
         if (property != null) {
             return property.getName();
@@ -336,6 +336,7 @@ public class ChangedPropertyFact implements Updateable {
         return null;
     }
 
+    @Override
     public AddedNodeFact getNode() {
         return nodeWrapper;
     }
@@ -344,6 +345,7 @@ public class ChangedPropertyFact implements Updateable {
         return property;
     }
 
+    @Override
     public String toString() {
         return path;
     }
@@ -361,5 +363,25 @@ public class ChangedPropertyFact implements Updateable {
 
     public List<String> getInstalledModules() {
         return nodeWrapper.getInstalledModules();
+    }
+
+    @Override
+    public String getWorkspace() throws RepositoryException {
+        return getNode().getWorkspace();
+    }
+
+    @Override
+    public JCRSessionWrapper getSession() throws RepositoryException {
+        return getNode().getSession();
+    }
+
+    @Override
+    public String getNodeIdentifier() throws RepositoryException {
+        return getNode().getIdentifier();
+    }
+
+    @Override
+    public String getNodeType() throws RepositoryException {
+        return getNode().getNodeType();
     }
 }

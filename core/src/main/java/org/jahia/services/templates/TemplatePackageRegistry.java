@@ -718,6 +718,8 @@ public class TemplatePackageRegistry {
 
         private PasswordService passwordService;
 
+        private JCRPublicationService publicationService;
+
         @Override
         public void onApplicationEvent(ApplicationContextEvent event) {
             if ((event instanceof ContextClosedEvent || event instanceof ContextRefreshedEvent) && flushCaches) {
@@ -893,6 +895,9 @@ public class TemplatePackageRegistry {
                 passwordService.unregisterDigester(((PasswordDigester) bean).getId());
             }
 
+            if (bean instanceof PublicationEventListener) {
+                publicationService.unregisterListener((PublicationEventListener) bean);
+            }
         }
 
         @Override
@@ -1103,6 +1108,9 @@ public class TemplatePackageRegistry {
                 passwordService.registerDigester((PasswordDigester) bean);
             }
 
+            if (bean instanceof PublicationEventListener) {
+                publicationService.registerListener((PublicationEventListener) bean);
+            }
 
             return bean;
         }
@@ -1164,6 +1172,10 @@ public class TemplatePackageRegistry {
 
         public void setPasswordService(PasswordService passwordService) {
             this.passwordService = passwordService;
+        }
+
+        public void setPublicationService(JCRPublicationService publicationService) {
+            this.publicationService = publicationService;
         }
 
         public void osgiBind(Object bean) throws BeansException {

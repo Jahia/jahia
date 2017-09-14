@@ -196,7 +196,7 @@ public class NodeTypeRegistry implements NodeTypeManager {
      *
      * @throws NoSuchNodeTypeException if one of the supertype/mixin extend cannot be found
      */
-    private void registerNodeTypes(List<ExtendedNodeType> nodeTypesList) throws NoSuchNodeTypeException {
+    private void registerNodeTypes(List<ExtendedNodeType> nodeTypesList) throws NoSuchNodeTypeException , InvalidNodeTypeDefinitionException{
         writeLock.lock();
         try {
             // Replaces types,
@@ -229,21 +229,32 @@ public class NodeTypeRegistry implements NodeTypeManager {
                         type.validate();
                     }
                 } catch (NoSuchNodeTypeException e) {
-                    logger.error("Cannot find parent type when registering new types", e);
-
-                    // Restoring previous state
-                    for (ExtendedNodeType addedType : nodeTypesList) {
-                        removeNodeType(addedType.getNameObject());
-                    }
-                    for (ExtendedNodeType previousType : previousTypes) {
-                        nodetypes.put(previousType.getNameObject(), previousType);
-                    }
-
+                    logger.error("Cannot validate type", e);
+                    handleError(nodeTypesList, previousTypes);
+                    throw e;
+                }
+            }
+            for (ExtendedNodeType type : nodeTypesList) {
+                try {
+                    type.checkConflicts();
+                } catch (InvalidNodeTypeDefinitionException e) {
+                    logger.error("Cannot validate type", e);
+                    handleError(nodeTypesList, previousTypes);
                     throw e;
                 }
             }
         } finally {
             writeLock.unlock();
+        }
+    }
+
+    private void handleError(List<ExtendedNodeType> nodeTypesList, List<ExtendedNodeType> previousTypes){
+        // Restoring previous state
+        for (ExtendedNodeType addedType : nodeTypesList) {
+            removeNodeType(addedType.getNameObject());
+        }
+        for (ExtendedNodeType previousType : previousTypes) {
+            nodetypes.put(previousType.getNameObject(), previousType);
         }
     }
 

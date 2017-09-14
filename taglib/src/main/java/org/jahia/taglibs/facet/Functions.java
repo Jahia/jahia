@@ -118,13 +118,7 @@ public class Functions {
      */
     public static boolean isFacetApplied(String facetName, Map<String, List<KeyValue>> appliedFacets,
                                          PropertyDefinition propDef) {
-        boolean facetApplied = false;
-        if (appliedFacets != null && appliedFacets.containsKey(facetName)) {
-            if (propDef == null || (propDef != null && !propDef.isMultiple())) {
-                facetApplied = true;
-            }
-        }
-        return facetApplied;
+        return appliedFacets != null && appliedFacets.containsKey(facetName);
     }
 
     /**

@@ -102,9 +102,11 @@ public class ClipboardActionItem extends BaseActionItem {
             } else {
                 final List<GWTJahiaNode> copiedNodes = instance.copiedStuff.get(0);
                 final Menu menu = new Menu();
+                menu.addStyleName("clipboard-info-menu");
                 b.setMenu(menu);
                 for (List<GWTJahiaNode> c : instance.copiedStuff) {
                     MenuItem m = new MenuItem();
+                    m.addStyleName("clipboard-info-menu-item");
                     if (copiedNodes.size() > 1) {
                         m.setText(copiedNodes.size() + " "+Messages.get("label.items", " Items"));
                     } else {

@@ -12,28 +12,27 @@
                 <property name="layout" value="button-label"/>
                 <property name="items">
                     <list>
-                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Mode">
-
-                            <property name="titleKey" value="label.mode"/>
-                            <property name="items">
-                                <list>
-                                    <ref bean="Toolbar.Item.Live"/>
-                                    <ref bean="Toolbar.Item.Preview"/>
-                                    <ref bean="Toolbar.Item.Contribute"/>
-                                </list>
-                            </property>
-                        </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.View">
                             <property name="titleKey" value="label.view"/>
                             <!-- <property name="icon" value="preview"/> -->
                             <property name="items">
                                 <list>
+                                    <ref bean="Toolbar.Item.Live"/>
+                                    <ref bean="Toolbar.Item.Preview"/>
                                     <ref bean="Toolbar.Item.PreviewAsGuest"/>
                                     <ref bean="Toolbar.Item.ShowCompareEngine"/>
                                     <ref bean="Toolbar.Item.ShowVersionEngine"/>
                                     <ref bean="Toolbar.Item.ShowConsultPreviousVersionEngine"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Status">
+                            <property name="titleKey" value="label.status"/>
+                            <!-- <property name="icon" value="preview"/> -->
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.ViewPublicationIconStatus"/>
                                     <ref bean="Toolbar.Item.ViewACLStatus"/>
-                                    <!--<ref bean="Toolbar.Item.ViewPublicationIconStatus"/>-->
                                     <ref bean="Toolbar.Item.ViewVisibilityStatus"/>
                                 </list>
                             </property>
@@ -89,12 +88,11 @@
                             <property name="titleKey" value="label.managers"/>
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.Start"/>
                                     <ref bean="Toolbar.Item.Logout"/>
-                                    <ref bean="Toolbar.Item.Edit"/>
-                                    <ref bean="Toolbar.Item.Contribute"/>
+                                    <ref bean="Toolbar.Item.Start"/>
                                     <ref bean="Toolbar.Item.Studio"/>
                                     <ref bean="Toolbar.Item.Admin"/>
+                                    <ref bean="Toolbar.Item.Contribute"/>
                                     <ref bean="Toolbar.Item.EditorialContentManager"/>
                                     <ref bean="Toolbar.Item.FileManager"/>
                                     <ref bean="Toolbar.Item.PortletManager"/>

@@ -31,12 +31,11 @@
                             <property name="titleKey" value="label.managers"/>
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.Start"/>
                                     <ref bean="Toolbar.Item.Logout"/>
-                                    <ref bean="Toolbar.Item.Edit"/>
-                                    <ref bean="Toolbar.Item.Contribute"/>
                                     <ref bean="Toolbar.Item.Studio"/>
                                     <ref bean="Toolbar.Item.Admin"/>
+                                    <ref bean="Toolbar.Item.Edit"/>
+                                    <ref bean="Toolbar.Item.Contribute"/>
                                     <ref bean="Toolbar.Item.EditorialContentManager"/>
                                     <ref bean="Toolbar.Item.FileManager"/>
                                     <ref bean="Toolbar.Item.PortletManager"/>

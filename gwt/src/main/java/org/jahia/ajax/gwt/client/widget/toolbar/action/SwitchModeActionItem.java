@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 /**
@@ -64,7 +65,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
  * Time: 2:09:40 PM
  *
  */
-public class SwitchModeActionItem extends BaseActionItem {
+public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
 
     public void handleNewLinkerSelection() {
         Menu m = new Menu();
@@ -103,6 +104,9 @@ public class SwitchModeActionItem extends BaseActionItem {
                 setEnabled(true);
             }
         }
+
+        final LinkerSelectionContext lh = linker.getSelectionContext();
+        setVisible(lh.getSingleSelection() != null && isNodeTypeAllowed(lh.getSingleSelection()));
     }
 
     @Override

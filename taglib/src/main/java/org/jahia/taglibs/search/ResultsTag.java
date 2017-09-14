@@ -216,7 +216,7 @@ public class ResultsTag extends AbstractJahiaTag {
         SearchCriteria criteria = searchCriteriaBeanName != null ? (SearchCriteria) pageContext.getAttribute(searchCriteriaBeanName)
                 : SearchCriteriaFactory.getInstance(ctx);
 
-        String[] values = criteria.getPagePath().getValues();
+        String[] values = (criteria != null && criteria.getPagePath() != null) ? criteria.getPagePath().getValues() : null;
         if (values != null) {
             for (int i = 0; i < values.length; i++) {
                 String value = values[i];

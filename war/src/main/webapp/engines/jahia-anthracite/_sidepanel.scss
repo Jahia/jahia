@@ -843,6 +843,10 @@ $side_panel__tab_buttons: (
 					right: 6px;
 					bottom: 0;
 
+					.x-viewport-dashboardmode & {
+						display: none!important;
+					}
+
 
 				}
 

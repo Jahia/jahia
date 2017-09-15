@@ -649,6 +649,10 @@
                 left: 60px !important;
                 z-index: $ZINDEX--IFRAME--CONTAINER;
                 overflow: visible !important;
+
+                body[data-indigo-infoBar="true"] & {
+                    height: calc(100% - 50px)!important;
+                }
             }
         }
     }
@@ -666,7 +670,7 @@
 
         > iframe:nth-child(1) {
             width: 100% !important;
-            box-shadow: 0 10px 30px 1px rgba(0, 0, 0, 0.8) !important;
+            box-shadow: 0 5px 10px 1px rgba(49, 49, 49, 0.5)!important;
             margin-top: 8px !important;
 
             body[data-edit-window-style="settings"] & {
@@ -674,9 +678,145 @@
 
             }
 
-            body[data-selection-count="0"] & {
-                box-shadow: 0 5px 10px 1px rgba(49, 49, 49, 0.5)!important;
-            }
+
         }
     }
+}
+
+.indigo-info-block {
+
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 60px;
+    height: 60px;
+    z-index: 99;
+
+
+
+    ul {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 60px;
+        width: calc(100% - 123px);
+        list-style: none;
+        text-align: center;
+
+        body[data-indigo-infoBar="true"] & {
+            display: block;
+        }
+    }
+
+    li {
+        display: inline-block;
+        padding: 11px;
+        border-left: 1px solid #434647;
+
+        &:first-child {
+            border-left: none;
+        }
+
+        span {
+            @include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---NORMAL);
+        }
+
+        button {
+            margin-left: 5px;
+            border: none;
+            padding: 3px 7px 2px;
+            background-color: $COLOUR--WHITE_CLOUDS;
+            text-transform: uppercase;
+            @include text(10px, $COLOUR--RAIN_CLOUDS, $FONT--WEIGHT---EXTRABOLD);
+
+            &:hover {
+                cursor: pointer;
+            }
+
+        }
+
+
+
+    }
+
+    // Buttons
+    // Toggle Info Bar
+    .indigo-info-toggle {
+        background: url($ICON--INFO--WHITE) no-repeat top center;
+        background-size: 23px 23px;
+        border: none;
+        position: fixed;
+        bottom: 10px;
+        left: 5px;
+        padding-top: 27px;
+        width: 50px;
+        text-transform: uppercase;
+        opacity: 0.8;
+        @include text(8px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---NORMAL);
+
+        &[data-info-count="0"] {
+            &::after{
+                display: none;
+            }
+        }
+
+        &:hover {
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        &::before {
+            content: $text_infobar_toggle_off;
+
+            body[data-indigo-infoBar="true"] & {
+                content: $text_infobar_toggle_on;
+            }
+        }
+
+        &::after {
+            content: attr(data-info-count);
+            position: absolute;
+            top: -9px;
+            right: 5px;
+            background: red;
+            border-radius: 100%;
+            width: 19px;
+            height: 19px;
+            font-size: 11px;
+            line-height: 21px;
+            box-shadow: 2px 2px 10px 0px black;
+        }
+
+    }
+
+    // Open Tasks
+    .indigo-info-openTasks {
+
+        &.indigo-hide {
+            display: none;
+        }
+
+        &::before {
+            content: $text_infobar_view_workflow_dashboard;
+        }
+    }
+
+    // Open background jobs
+    .indigo-info-openJobs::before {
+        content: $text_infobar_view_background_jobs;
+    }
+
+    .indigo-info-publicationStatus {
+        // background: url(./images/icons/icon-page-white@X2.png) no-repeat left top 10px;
+        // background-size: 14px;
+        // padding-left: 20px;
+        // opacity: 0.8;
+    }
+
+    .indigo-info-jobs {
+        .indigo-no-jobs::before {
+            content: $text_infobar_no_background_jobs;
+        }
+    }
+
 }

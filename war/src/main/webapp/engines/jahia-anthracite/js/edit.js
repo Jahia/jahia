@@ -1172,6 +1172,12 @@
 			// Event Handlers
 			onOpen: function(){
 				console.log("::: APP ::: EDIT ::: OPENED");
+                console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+
+                // Build HTML for the info bar
+                $("body").append('<div class="indigo-info-block"><button type="button" class="indigo-info-toggle" data-info-count="1"></button><ul class="indigo-info-list"><li class="indigo-info-publicationStatus"><span></span></button></li><li class="indigo-info-tasks"><span>Information block </span><button type="button" class="indigo-info-openTasks"></button></li><li class="indigo-info-jobs"><span></span></button></li></ul></div>');
 
 				// Reset History
 				app.edit.history.reset();
@@ -1213,6 +1219,94 @@
 				}
 
 			},
+
+			infoBar: {
+                data: {
+                    on: false,
+                    taskCount: 0,
+                    runningBackgroundJob: 0
+                },
+                toggle: function(){
+                    app.edit.infoBar.data.on = !app.edit.infoBar.data.on;
+
+                    app.data.body.setAttribute("data-indigo-infoBar", app.edit.infoBar.data.on);
+
+                },
+                getNotificationCount: function(){
+                    return app.edit.infoBar.data.taskCount + app.edit.infoBar.data.runningBackgroundJob
+                },
+                tasks: {
+                    onChange: function(classes){
+                        var taskButton = Dex(".edit-menu-tasks button"),
+                            taskString;
+
+
+                        if(taskButton.exists()){
+                            taskString = taskButton.getHTML();
+
+                            var regexp = /\(([^)]+)\)/,
+                                result = taskString.match(regexp);
+
+                            if(result){
+                                app.edit.infoBar.data.taskCount = parseInt(result[1]);
+                                Dex(".indigo-info-openTasks").removeClass("indigo-hide");
+
+                            } else {
+                                app.edit.infoBar.data.taskCount = 0;
+                                Dex(".indigo-info-openTasks").addClass("indigo-hide");
+                            }
+
+                            Dex(".indigo-info-toggle").setAttribute("data-info-count", app.edit.infoBar.getNotificationCount());
+                            Dex(".indigo-info-tasks span").setHTML(taskString);
+
+                        }
+                    },
+                    open: function(){
+                        // Open Workflow Window
+                        console.log("TRIGGER THE CLICK");
+                        Dex(".edit-menu-workflow").trigger("click");
+                        Dex(".toolbar-item-workflowdashboard").trigger("click");
+
+                    }
+                },
+                jobs: {
+                    onChange: function(classes){
+
+                        var jobButton = document.querySelectorAll(".toolbar-item-workinprogressadmin button")[0],
+                            jobStringSplit,
+                            jobString,
+                            jobIcon;
+
+                        if(jobButton){
+                            jobStringSplit = jobButton.innerHTML.split("<");
+                            jobString = jobStringSplit[0];
+                            jobIcon = jobButton.querySelectorAll("img")[0];
+
+                            if(jobIcon.getAttribute("src") !== "/icons/workInProgress.png"){
+                                // A job is active
+                                app.edit.infoBar.data.runningBackgroundJob = 1;
+                                Dex(".indigo-info-jobs span").setHTML(jobString);
+                                document.querySelectorAll(".indigo-info-jobs span")[0].classList.remove("indigo-no-jobs");
+                            } else {
+                                // No Jobs active
+                                app.edit.infoBar.data.runningBackgroundJob = 0;
+                                Dex(".indigo-info-jobs span").setHTML("");
+                                document.querySelectorAll(".indigo-info-jobs span")[0].classList.add("indigo-no-jobs");
+
+                            }
+
+                            document.getElementsByClassName("indigo-info-toggle")[0].setAttribute("data-info-count", app.edit.infoBar.getNotificationCount());
+
+                        }
+
+                    }
+                },
+                publicationStatus: {
+                    onChange: function(){
+                        Dex(".indigo-info-publicationStatus span").setHTML(app.iframe.data.publication.label + " (" + app.iframe.data.displayName + ")");
+                    }
+                }
+            },
 
 			// Controls
 			history: {
@@ -1841,6 +1935,10 @@
 
             Dex("#JahiaGxtImagePopup").onOpen(app.imagePreview.onOpen);
 
+			Dex(".edit-menu-tasks").onAttr("class", app.edit.infoBar.tasks.onChange);
+
+            Dex(".toolbar-item-workinprogressadmin").onAttr("class", app.edit.infoBar.jobs.onChange);
+
 
             Dex(".x-dd-drag-proxy").onOpen(app.edit.sidepanel.onStartDrag);
 
@@ -1871,6 +1969,8 @@
             $(window).on("blur", app.onBlur);
 
             $("body")
+				.on("click", ".indigo-info-toggle", app.edit.infoBar.toggle)
+				.on("click", ".indigo-info-openTasks", app.edit.infoBar.tasks.open)
 				.on("mousedown", ".x-tree3-node-joint", function(){
 					$(this).closest(".x-grid3-row").toggleClass("indigo-opened");
 				})

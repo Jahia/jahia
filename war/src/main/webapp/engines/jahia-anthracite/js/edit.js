@@ -1,18 +1,24 @@
 (function(exposeAs){
-
-    var Dex = function(selector){
+    var Dex = function(selector, nodes){
 
         // Return Dex object
-        return new Dex.fn.init(selector);
+        return new Dex.fn.init(selector, nodes);
 
     };
 
     Dex.fn = Dex.prototype = {
-        init: function(selector){
+		init: function(selector, nodes){
             this.selector = selector;
+
+			if(nodes){
+				this.nodes = nodes;
+			} else {
+				this.nodes = document.querySelectorAll(selector);
+			}
 
             return this;
         }
+
 
     };
 
@@ -38,7 +44,7 @@
                 if (removedNode.getAttribute) {
                     for (removedID in queue["close"]) {
                         if (matches[removedID](removedNode)) {
-                            Dex(removedID).trigger({
+                            Dex(removedID).triggerObserverCallBack({
                                 eventType: "close",
                                 nodes: removedNode
                             });
@@ -54,7 +60,7 @@
                 if (addedNode.getAttribute) {
                     for (selector in queue["open"]) {
                         if (matches[selector](addedNode)) {
-                            Dex(selector).trigger({
+                            Dex(selector).triggerObserverCallBack({
                                 eventType: "open",
                                 nodes: addedNode
                             });
@@ -69,7 +75,7 @@
                             var treeNode = addedNode;
                             while ((treeNode = treeNode.parentElement) && !matches[selector](treeNode)) ;
                             if (treeNode) {
-                                Dex(selector).trigger({
+                                Dex(selector).triggerObserverCallBack({
                                     eventType: "treechange",
                                     nodes: mutation.addedNodes
                                 });
@@ -86,7 +92,7 @@
                         // Matched selector
                         for(var n = 0; n < queue["attribute"][selector].length; n++){
                             if(queue["attribute"][selector][n].attribute === mutation.attributeName){
-                                Dex(selector).trigger({
+                                Dex(selector).triggerObserverCallBack({
                                     eventType: "attribute",
                                     attribute: {
                                         name: queue["attribute"][selector][n].attribute,
@@ -102,6 +108,149 @@
 
     // EXPOSED SELECTOR FUNCTIONS
     Dex.fn.init.prototype = {
+
+		first: function(){
+			this.nodes = this.nodes[0];
+
+			return this;
+		},
+
+		index: function(index){
+			this.nodes = this.nodes[index];
+
+			return this;
+		},
+
+		getNode: function(index){
+			return this.nodes[index];
+		},
+
+
+
+        exists: function(){
+            return this.nodes[0] != null;
+        },
+
+		filter: function(selector){
+			// Only filters on first node
+			this.nodes = this.nodes[0].querySelectorAll(selector);
+
+			return this;
+
+		},
+
+        // DOM modification
+        setHTML: function(value){
+            var n;
+
+            for(n = 0; n < this.nodes.length; n++){
+                this.nodes[n].innerHTML = value;
+            }
+
+			return this;
+        },
+
+        getHTML: function(value){
+            return this.nodes[0].innerHTML;
+        },
+
+		css: function(styles){
+
+			var style,
+				n;
+
+			for(n = 0; n < this.nodes.length; n++){
+
+				for(style in styles){
+
+					this.nodes[n].style[style] = styles[style];
+
+				}
+
+			}
+
+			return this;
+
+
+
+		},
+
+		setAttribute: function(key, value){
+            var n;
+
+            for(n = 0; n < this.nodes.length; n++){
+                this.nodes[n].setAttribute(key, value);
+            }
+
+			return this;
+        },
+
+		getAttribute: function(key){
+            return this.nodes[0].getAttribute(key);
+        },
+
+		// Classes
+        addClass: function(classname){
+            var n;
+
+            for(n = 0; n < this.nodes.length; n++){
+                this.nodes[n].classList.add(classname);
+            }
+
+			return this;
+        },
+
+        removeClass: function(classname){
+            var n;
+
+            for(n = 0; n < this.nodes.length; n++){
+                this.nodes[n].classList.remove(classname);
+            }
+			return this;
+        },
+
+		hasClass: function(classname){
+
+			var result = false;
+
+			if(this.nodes[0]){
+				result = this.nodes[0].classList.contains(classname);
+			}
+
+			return result;
+
+		},
+
+		toggleClass: function(classname){
+			var n;
+
+            for(n = 0; n < this.nodes.length; n++){
+                this.nodes[n].classList.toggle(classname);
+            }
+
+			return this;
+		},
+
+		replaceClass: function(old_classname, new_classname){
+			var n;
+
+            for(n = 0; n < this.nodes.length; n++){
+                this.nodes[n].classList.replace(old_classname, new_classname);
+            }
+
+			return this;
+		},
+
+        trigger: function(eventType){
+            if(this.nodes[0]){
+                var clickEvent = document.createEvent("MouseEvents");
+
+                clickEvent.initEvent(eventType, true, true);
+                this.nodes[0].dispatchEvent(clickEvent);
+            }
+
+			return this;
+        },
 
         // Attach Observer
         attach: function(callback){
@@ -237,7 +386,7 @@
 
             return this;
         },
-        trigger: function(params){
+        triggerObserverCallBack: function(params){
             var eventType = params.eventType,
                 nodes = params.nodes,
                 attribute = params.attribute,
@@ -275,6 +424,43 @@
     Dex.init = function(){
         Dex("body").attach(mutationObserverCallback);
     };
+
+
+	Dex.tag = function(tag){
+		var nodes = document.getElementsByTagName(tag);
+
+		return Dex(tag, nodes);
+
+	}
+
+	Dex.class = function(classname){
+		var nodes = document.getElementsByClassName(classname);
+
+		return Dex("." + classname, nodes);
+
+	}
+
+	Dex.id = function(id){
+		var nodes = document.getElementById(id);
+
+		return Dex("#" + id, nodes);
+
+	}
+
+	Dex.node = function(node){
+		return Dex("node", [node]);
+
+	}
+
+	Dex.collection = function(nodeCollection){
+		var nodes = [];
+
+		for(n = 0; n < nodeCollection.length; n++){
+			nodes.push(nodeCollection[n]);
+		}
+
+		return Dex("node", nodes)
+	}
 
     if(exposeAs){
         window[exposeAs] = Dex;
@@ -476,15 +662,15 @@
 	            /* The button firing this event is actually a pseudo element atached to a table.
 	            // The tables CSS has been set to ignore all pointer events EXCEPT the pseudo element who accepts pointer events.
 	            // This allows us to capture a click on the pseudo element, but we have to check that it a child of the table want the one that was clicked */
-	            if($(e.target).hasClass("x-toolbar-ct")){
-
+				if(Dex.node(e.target).hasClass("x-toolbar-ct")){
+					console.log("CLICKED THEME BUTTON");
 					if(app.theme.data.skin == "dark"){
 						app.theme.data.skin = "light";
 					} else {
 						app.theme.data.skin = "dark";
 					}
 
-					$("body").attr("data-INDIGO-UI", app.theme.data.skin);
+					Dex.tag("body").setAttribute("data-INDIGO-UI", app.theme.data.skin);
 
 	            }
 			},
@@ -536,7 +722,7 @@
 			},
 			row: {
 				onClick: function(){
-					$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 				},
 				onMouseOver: function(e){
@@ -546,24 +732,24 @@
 		                top: 0
 		            });
 
-					app.picker.data.currentItem = $(this)[0];
-		            app.picker.data.title = $(this).find(".x-grid3-col-name").html();
+					app.picker.data.currentItem = Dex.node(this).getNode(0);
+					app.picker.data.title = Dex.node(this).filter(".x-grid3-col-name").getHTML();
 
-		            if($(this).hasClass("x-grid3-row-selected")){
-		                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+					if(Dex.node(this).hasClass("x-grid3-row-selected")){
+						Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 		            } else {
-		                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "unselected");
+						Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "unselected");
 
 		            }
 
-		            $(".toolbar-item-filepreview").attr("indigo-preview-button", "show");
+					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
 				},
 				onContext: function(e){
 					// Open Context Menu when clicking "More" button.
 					// if matchClass is passed, then the click is ONLY accepted if the clicked element has that class.
 					// if matchClass is not passed then it is accepted.
-					var acceptClick = $(e.target).hasClass("x-tree3-el");
+					var acceptClick = Dex.node(e.target).hasClass("x-tree3-el");
 
 					if(acceptClick){
 						$(e.target).trigger({
@@ -582,7 +768,7 @@
 			},
 			thumb: {
 				onClick: function(){
-					$(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 				},
 				onMouseOver: function(e){
@@ -592,18 +778,18 @@
 		                top: 0
 		            });
 
-					app.picker.data.currentItem = $(this)[0];
-		            app.picker.data.title = $(this).attr("id");
+					app.picker.data.currentItem = Dex.node(this).getNode(0);
+		            app.picker.data.title = Dex.node(this).getAttribute("id");
 
-		            if($(this).hasClass("x-view-item-sel")){
-		                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "selected");
+		            if(Dex.node(this).hasClass("x-view-item-sel")){
+		                Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 		            } else {
-		                $(".toolbar-item-filepreview").attr("indigo-preview-button-state", "unselected");
+		                Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "unselected");
 
 		            }
 
-		            $(".toolbar-item-filepreview").attr("indigo-preview-button", "show");
+		            Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
 				},
 				onContext: function(e){
 					// Open Context Menu when clicking "More" button.
@@ -624,45 +810,48 @@
 			},
 			previewButton: {
 				onMouseOver: function(){
-					$(app.picker.data.currentItem)
+					Dex.node(app.picker.data.currentItem)
 		                .addClass("x-view-over")
 		                .addClass("x-grid3-row-over");
 				},
 				onMouseOut: function(){
-					$(app.picker.data.currentItem)
+					Dex.node(app.picker.data.currentItem)
 		                .removeClass("x-view-over")
 		                .removeClass("x-grid3-row-over");
 				},
 				onClick: function(e, secondClick){
-					mouse.trigger(app.picker.data.currentItem, "mousedown");
-		            mouse.trigger(app.picker.data.currentItem, "mouseup");
+					Dex.node(app.picker.data.currentItem)
+						.trigger("mousedown")
+						.trigger("mouseup");
 
 		            if(!secondClick){
 		                $("#JahiaGxtImagePopup").remove(); // remove OLD preview
 		                $(this).trigger("click", [true]); // Reopen with new preview
-		                $("#JahiaGxtImagePopup .x-window-bwrap").attr("data-file-name", app.picker.data.title);
+		                Dex("#JahiaGxtImagePopup .x-window-bwrap").setAttribute("data-file-name", app.picker.data.title);
 
 		            }
 
-		            $(".toolbar-item-filepreview").attr("indigo-preview-button", "hide");
+		            Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "hide");
 				},
 				reposition: function(e, offset){
 					var offset = offset || {
 		                    left: 0,
 		                    top: 0
 		                },
-		                file = $(e.currentTarget),
-		                box = file[0].getBoundingClientRect(),
+		                file = Dex.node(e.currentTarget),
+		                box = file.getNode(0).getBoundingClientRect(),
 		                left = box.left,
 		                top = box.top,
 		                width = box.width;
 
-		            $("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
+
+		            Dex("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
 		                .css({
 		                    top: (top + (offset.top)) + "px",
 		                    left: ((left + width) + offset.left) + "px"
 		                })
 		                .addClass("indigo-show-button");
+
 				},
 			},
 
@@ -671,12 +860,12 @@
 				onMouseOver: function(){
 					// USER HAS ROLLED OVER THE COMBO TRIGGER
 		            if(app.data.body.getAttribute("data-indigo-picker-source-panel") != "open"){
-		                $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
+		                Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
 		            }
 				},
 				onMouseOut: function(){
 					// USER HAS ROLLED OUT OF THE COMBO TRIGGER
-		            $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+		            Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 				},
 				close: function(){
 					// CHANGE SOURCE
@@ -688,7 +877,7 @@
 					// USER HAS CLICKED THE COMBO TRIGGER
 		            e.stopPropagation();
 
-		            $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+		            Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 
 		            /// Toggle the attribute in body tag
 		            $("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", function(id, label){
@@ -708,10 +897,10 @@
 		            app.data.body.setAttribute("data-INDIGO-PICKER-SEARCH", "open");
 
 		            // Put the results in LIST mode
-		            $("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
+		            Dex("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
 
 		            // Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
-		            $("#CRTbrowseTabItem").addClass("x-hide-display");
+		            Dex.id("CRTbrowseTabItem").addClass("x-hide-display");
 
 
 		            // Remove the directory listing ( gives the search panel an empty start)
@@ -726,13 +915,14 @@
 		            app.data.body.setAttribute("data-INDIGO-PICKER-SEARCH", "");
 
 		            // Display the BROWSE panels
-		            $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
+		            Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
 
 		            // Get the refresh button
 		            var refreshButton = $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel").not(".x-panel-collapsed").find(".x-tool-refresh")[0];
 
 		            // CLick on the refresh button to reload the content of the directory
-		            mouse.trigger(refreshButton, "click");
+					Dex.node(refreshButton).trigger("click");
+
 				},
 
 				onContext: function(e){
@@ -756,7 +946,7 @@
 				app.data.body.setAttribute("data-INDIGO-IMAGE-PREVIEW", "open");
 
 				// Attribute used to display the friendly name in edit panel
-				$(".engine-panel > div.x-panel-header .x-panel-header-text").attr("data-friendly-name", "nodeDisplayName");
+				Dex(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", "nodeDisplayName");
 			},
 			onClose: function(){
 				app.data.body.setAttribute("data-INDIGO-IMAGE-PREVIEW", "");
@@ -771,7 +961,7 @@
 				app.data.body.setAttribute("data-INDIGO-EDIT-ENGINE", "open");
 
 				// Attribute used to display the friendly name in edit panel
-				$(".engine-panel > div.x-panel-header .x-panel-header-text").attr("data-friendly-name", nodeDisplayName);
+				Dex(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
 			},
 			onClose: function(){
 				console.log("::: APP ::: ENGINE ::: CLOSE");
@@ -783,7 +973,7 @@
 		workflow: {
 			dashboard: {
 				onOpen: function(){
-					mouse.trigger($(".workflow-dashboard-engine .x-tool-maximize")[0],"click")
+					Dex(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
 
 				}
 			}
@@ -912,7 +1102,7 @@
 			clearSelection: function(){
 				console.log("::: APP ::: IFRAME ::: CLEARSELECTION");
 
-				mouse.trigger(document.getElementsByClassName("window-iframe")[0], "click");
+				Dex.class("window-iframe").trigger("click");
 
 			},
 
@@ -1153,8 +1343,8 @@
                     app.data.body.setAttribute("data-select-type", selectType);
 
 					// Page Title in Edit Made
-					$(".x-current-page-path").attr("data-PAGE-NAME",pageTitle);
-                    $(".node-path-text-inner").html(app.iframe.data.displayName);
+					Dex.class("x-current-page-path").setAttribute("data-PAGE-NAME",pageTitle);
+                    Dex.class("node-path-text-inner").setHTML(app.iframe.data.displayName);
 
                     // Determine publication status
                     if(publicationStatus){
@@ -1182,10 +1372,8 @@
 
 					if(document.getElementsByClassName("x-current-page-path").length > 0){
 
-
-                        if(document.getElementsByClassName("x-current-page-path")[0].getAttribute("data-page-name") != null){
-                            console.log("FOUND PAGE TITLE, SO SET UP POSITIONING ...");
-                            document.getElementsByClassName("edit-menu-publication")[0].style.display = "block"
+						if(Dex.class("x-current-page-path").getAttribute("data-page-name") != null){
+                            document.getElementsByClassName("edit-menu-publication")[0].style.display = "block";
 
                             var elements = {
                                     body: document.getElementsByTagName("body")[0],
@@ -1241,38 +1429,6 @@
                         } else {
                             document.getElementsByClassName("edit-menu-publication")[0].style.display = "none"
                         }
-
-
-
-
-
-                        //
-
-			            // var editMode = {};
-			            // editMode.pageNameLeft = parseInt($(".mainmodule-head-container .toolbar-left-container").position().left);
-			            // editMode.pageNameWidth = Math.floor($(".mainmodule-head-container .toolbar-left-container").width()) - 1;
-			            // editMode.pageNameRight = editMode.pageNameLeft + editMode.pageNameWidth;
-                        //
-			            // // Preview Menu
-			            // $(".edit-menu-view").css({
-			            //     "left": (editMode.pageNameRight + 76) + "px",
-			            //     "opacity": 1
-			            // });
-                        //
-			            // // Publication Menu
-			            // $(".edit-menu-publication").css({
-			            //     "left": (editMode.pageNameRight + 65) + "px",
-			            //     "opacity": 1
-			            // });
-                        //
-			            // // More Info Menu (previously labeled as Edit )
-			            // $("body[data-selection-count='0'] .x-panel-body.x-border-layout-ct > div:nth-child(2) .x-panel-header > div:nth-child(2) > table > tbody > tr > td > div > table > tbody > tr > td:nth-child(5)").css({
-			            //     "left": (editMode.pageNameLeft + 92) + "px",
-			            //     "opacity": 1
-			            // });
-
-			            // More Language Menu (previously labeled as Edit )
-			            // $(".mainmodule-head-container .toolbar-itemsgroup-languageswitcher").attr("style", "left: " + (editMode.pageNameLeft + 92) + "px !important; opacity: 1");
 
 					}
 
@@ -1349,19 +1505,15 @@
 					onClick: function(e){
 						console.log("APP ::: EDIT ::: SIDEPANEL ::: ONCLICK");
 
-
-
-
-
 						// User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
-			            var clickedTabID = $(this).attr("id");
+			            var clickedTabID = Dex.node(this).getAttribute("id");
 
 			            app.data.body.setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
 
 			            // Menus for the Tabs that call this listener require a normal side panel display
 			            // app.data.body.setAttribute("data-edit-window-style", "default");
 
-			            var tabMenuActive = $(this).hasClass("x-tab-strip-active"),
+			            var tabMenuActive = Dex.node(this).hasClass("x-tab-strip-active"),
 			                sidePanelOpen = app.data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open";
 
 			            if(tabMenuActive && sidePanelOpen){
@@ -1377,7 +1529,7 @@
 				row: {
 					onContext: function(e){
 						// Open Context Menu when clicking "More" button.
-			            var acceptClick = $(e.target).hasClass("x-grid3-td-displayName");
+			            var acceptClick = Dex.node(e.target).hasClass("x-grid3-td-displayName");
 
 			            if(acceptClick){
 			                $(e.target).trigger({
@@ -1444,7 +1596,6 @@
 		            } else {
 		                // Wait until the menu has been loaded, then click on the first available menu button
 		                Dex("#JahiaGxtSettingsTab").onceTreeChange(function(tree){
-							console.log("MENUHASBEENLOADED");
 		                    var branch,
 		                        nodeJoint,
 		                        firstClickableBranch;
@@ -1583,7 +1734,7 @@
 					app.data.body.setAttribute("data-multiselect", multiselect);
 
 					// Page Title in Contribute Made
-					$(".x-viewport-contributemode .toolbar-itemsgroup-languageswitcher").attr("data-PAGE-NAME",pageTitle);
+					Dex(".x-viewport-contributemode .toolbar-itemsgroup-languageswitcher").setAttribute("data-PAGE-NAME",pageTitle);
 
 					// Page Titles need centering
 					app.contribute.topbar.reposition();
@@ -1611,23 +1762,23 @@
 					contributeMode.pageNameRight = (contributeMode.windowWidth / 2) + (contributeMode.pageNameWidth / 2) + 20;
 
 					// Language Selector
-					$(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div input").css({
+					Dex(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) div input").css({
 					    "margin-left": "-" + (contributeMode.pageNameWidth / 2) + "px"
 					});
 
 
 					// Publication Menu
-					$(".contribute-menu-publication").css({
+					Dex.class("contribute-menu-publication").css({
 					    left: contributeMode.pageNameRight + "px"
 					});
 
 					// Preview Menu
-					$(".contribute-menu-view").css({
+					Dex.class("contribute-menu-view").css({
 					    left: (contributeMode.pageNameRight + 10) + "px"
 					});
 
 					// Edit Button
-					$(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(4) > table").css({
+					Dex(".x-viewport-contributemode .x-toolbar-first > table:nth-child(1) > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(4) > table").css({
 					    left: (contributeMode.pageNameRight) + "px"
 					});
 				}

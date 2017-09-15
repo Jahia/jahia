@@ -55,7 +55,6 @@ import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
-import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 /**
@@ -82,11 +81,12 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
 
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         if ((linker instanceof EditLinker && ((EditLinker) linker).isInSettingsPage()) ||
-                !hasPermission(linker.getSelectionContext().getMainNode())) {
+                !hasPermission(linker.getSelectionContext().getMainNode()) ||
+                !isNodeTypeAllowed(linker.getSelectionContext().getMainNode())) {
             setEnabled(false);
         } else {
-            final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
             if (workspace.equalsIgnoreCase("live")) {
+                final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
                 if (node == null) {
                     setEnabled(false);
                 } else {
@@ -97,11 +97,11 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
                             ||  publicationInfo.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                         setEnabled(false);
                     } else {
-                        setEnabled(isNodeTypeAllowed(node));
+                        setEnabled(true);
                     }
                 }
             } else {
-                setEnabled(node != null && isNodeTypeAllowed(node));
+                setEnabled(true);
             }
         }
     }

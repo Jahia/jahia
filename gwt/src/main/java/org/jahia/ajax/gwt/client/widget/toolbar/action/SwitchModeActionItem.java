@@ -82,7 +82,8 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
 
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         if ((linker instanceof EditLinker && ((EditLinker) linker).isInSettingsPage()) ||
-                !hasPermission(linker.getSelectionContext().getMainNode())) {
+                !hasPermission(linker.getSelectionContext().getMainNode()) ||
+                !isNodeTypeAllowed(linker.getSelectionContext().getMainNode())) {
             setEnabled(false);
         } else {
             if (workspace.equalsIgnoreCase("live")) {
@@ -104,9 +105,6 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
                 setEnabled(true);
             }
         }
-
-        final LinkerSelectionContext lh = linker.getSelectionContext();
-        setVisible(lh.getSingleSelection() != null && isNodeTypeAllowed(lh.getSingleSelection()));
     }
 
     @Override

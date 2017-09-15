@@ -86,8 +86,8 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
                 !isNodeTypeAllowed(linker.getSelectionContext().getMainNode())) {
             setEnabled(false);
         } else {
+            final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
             if (workspace.equalsIgnoreCase("live")) {
-                final GWTJahiaNode node = linker.getSelectionContext().getMainNode();
                 if (node == null) {
                     setEnabled(false);
                 } else {
@@ -98,11 +98,11 @@ public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
                             ||  publicationInfo.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                         setEnabled(false);
                     } else {
-                        setEnabled(true);
+                        setEnabled(isNodeTypeAllowed(node));
                     }
                 }
             } else {
-                setEnabled(true);
+                setEnabled(node != null && isNodeTypeAllowed(node));
             }
         }
     }

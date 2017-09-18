@@ -189,7 +189,7 @@ public class URLResolver {
                         }
                     }
                 } catch (PathNotFoundException e) {
-                    logger.debug("Path not found : " + urlPathInfo);
+                    logger.debug("Path not found : {}", urlPathInfo);
                 } catch (AccessDeniedException e) {
                     logger.debug("User has no access to the resource, so there will not be a redirection");
                 } catch (RepositoryException e) {
@@ -269,7 +269,7 @@ public class URLResolver {
             }
             return new Date(msLong);
         } catch (NumberFormatException nfe) {
-            logger.warn("Invalid version date found in URL " + msString);
+            logger.warn("Invalid version date found in URL {}", msString);
             return null;
         }
     }
@@ -315,7 +315,7 @@ public class URLResolver {
                 String tempWorkspace = verifyWorkspace(StringUtils.substringBefore(getPath(), "/"));
                 tempPath = StringUtils.substringAfter(getPath(), "/");
                 VanityUrl resolvedVanityUrl = null;
-                logger.debug("Trying to resolve vanity url for tempPath = " + tempPath);
+                logger.debug("Trying to resolve vanity url for tempPath = {}", tempPath);
                 boolean doNotMatchesCrossSitesPattern = !crossSitesURLPattern.matcher(tempPath).matches();
                 if (!StringUtils.isEmpty(getSiteKey()) && doNotMatchesCrossSitesPattern) {
                     List<VanityUrl> vanityUrls = getVanityUrlService()
@@ -463,7 +463,7 @@ public class URLResolver {
      */
     protected JCRNodeWrapper resolveNode(final String workspace,
                                          final Locale locale, final String path) throws RepositoryException {
-        logger.debug("Resolving node for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
+        logger.debug("Resolving node for workspace '{}' locale '{}' and path '{}'", new Object[] {workspace, locale, path});
         final String cacheKey = getCacheKey(workspace, locale, path);
         if (resolvedNodes.containsKey(cacheKey)) {
             return resolvedNodes.get(cacheKey);
@@ -495,7 +495,7 @@ public class URLResolver {
                                     session.setFallbackLocale(LanguageCodeConverters.getLocaleFromCode(siteInfo.getDefaultLanguage()));
                                 }
                             }
-                            logger.debug(cacheKey + " has not been found in the cache, still looking for node " + nodePath);
+                            logger.debug("{} has not been found in the cache, still looking for node {}", cacheKey, nodePath);
                             JCRNodeWrapper node = null;
                             while (true) {
                                 try {
@@ -569,7 +569,7 @@ public class URLResolver {
      */
     protected Resource resolveResource(final String workspace, final Locale locale, final String path)
             throws RepositoryException {
-        logger.debug("Resolving resource for workspace '" + workspace + "' locale '" + locale + "' and path '" + path + "'");
+        logger.debug("Resolving resource for workspace '{}' locale '{}' and path '{}'", new Object[] {workspace, locale, path});
         if (locale == null) {
             throw new JahiaBadRequestException("Unknown locale");
         }
@@ -660,9 +660,7 @@ public class URLResolver {
                         }
 
                         Resource r = new Resource(node, ext, tpl, Resource.CONFIGURATION_PAGE);
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Resolved resource: " + r);
-                        }
+                        logger.debug("Resolved resource: {}", r);
                         return r;
                     }
                 });

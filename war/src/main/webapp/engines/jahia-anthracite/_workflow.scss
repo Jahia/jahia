@@ -361,6 +361,18 @@
 
 		}
 
+		.x-grid3-row-selected .x-panel-fbar {
+
+			.x-toolbar-cell:first-child .x-btn.x-btn-noicon button {
+				background: #f26d4f !important
+			}
+
+			.x-btn.x-btn-noicon button {
+				background: #a3a3a3 !important;
+			}
+
+		}
+
 		.x-panel-fbar {
 
 			.x-toolbar-ct {
@@ -368,11 +380,11 @@
 			}
 
 			.x-btn.x-btn-noicon button {
-			    background: #717578 !important;
-			    padding: 0;
-			    font-size: 14px;
-			    margin-right: 16px;
-			    font-weight: 400;
+				background: transparent !important;
+				padding: 0;
+				font-size: 14px;
+				margin-right: 16px;
+				font-weight: 400;
 			}
 
 		}

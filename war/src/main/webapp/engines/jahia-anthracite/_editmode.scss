@@ -303,15 +303,45 @@
 
             .edit-menu-workflow {
                 margin-top: 50px;
+				position: relative;
+
                 body[data-sitesettings="true"] & {
                     display: none;
                 }
+
+				&[data-info-count="0"] {
+		            &::before{
+		                display: none;
+		            }
+		        }
+
+				&::before {
+					content: attr(data-info-count);
+				    position: absolute;
+					top: -2px;
+					right: -1px;
+				    background: red;
+				    border-radius: 100%;
+				    width: 19px;
+				    height: 19px;
+				    font-size: 11px;
+					line-height: 18px;
+				    box-shadow: 2px 2px 10px 0px black;
+					@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---NORMAL);
+					text-align: center;
+
+					content: attr(data-info-count);
+
+
+				}
 
 
 				// body[data-multiselect="on"] & {
 				// 	pointer-events: none;
 				// }
             }
+
+
 
             .edit-menu-publication {
                 position: fixed;
@@ -819,4 +849,30 @@
         }
     }
 
+}
+
+.toolbar-item-workflowdashboard {
+
+	// &[data-task-count="0"] {
+	// 	&::before {
+	// 		content: "Open Dashboard";
+	// 	}
+	//
+	// 	&::after {
+	// 		display: none;
+	// 	}
+	// }
+	//
+	// &::before {
+	// 	content: "Dashboard";
+	// }
+	//
+	// &::after {
+	// 	content: attr(data-task-count);
+	// }
+}
+
+.menu-edit-menu-workflow {
+	left: auto!important;
+	right: 5px;
 }

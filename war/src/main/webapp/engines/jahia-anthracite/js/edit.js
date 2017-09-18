@@ -26,7 +26,8 @@
     var UNDEFINED = "undefined";
 
     // HIDDEN VARIABLES
-    var observers = {},
+    var cachedSelections = {},
+		observers = {},
         matches = {},
         queue = {},
         observerConfig = {
@@ -110,29 +111,36 @@
     Dex.fn.init.prototype = {
 
 		first: function(){
-			this.nodes = this.nodes[0];
+			/* Remove all nodes except first from node list */
+
+			this.nodes = [this.nodes[0]];
 
 			return this;
 		},
 
 		index: function(index){
-			this.nodes = this.nodes[index];
+			/* Remove all nodes except requested index */
+
+			this.nodes = [this.nodes[index]];
 
 			return this;
 		},
 
 		getNode: function(index){
+			/* Return DOM node */
+
 			return this.nodes[index];
 		},
 
-
-
         exists: function(){
+			/* See if the node list contains at least one node */
+
             return this.nodes[0] != null;
         },
 
 		filter: function(selector){
-			// Only filters on first node
+			/* Filter then current node list - note: only filters on the first node in list */
+
 			this.nodes = this.nodes[0].querySelectorAll(selector);
 
 			return this;
@@ -141,6 +149,8 @@
 
         // DOM modification
         setHTML: function(value){
+			/* Set innerHTML of all nodes in nodelist */
+
             var n;
 
             for(n = 0; n < this.nodes.length; n++){
@@ -151,10 +161,13 @@
         },
 
         getHTML: function(value){
+			/* Get innerHTML of all first node in nodelist */
+
             return this.nodes[0].innerHTML;
         },
 
 		css: function(styles){
+			/* Set CSS of all nodes in nodelist */
 
 			var style,
 				n;
@@ -176,6 +189,8 @@
 		},
 
 		setAttribute: function(key, value){
+			/* Set attribute of all nodes in nodelist */
+
             var n;
 
             for(n = 0; n < this.nodes.length; n++){
@@ -186,11 +201,21 @@
         },
 
 		getAttribute: function(key){
+			/* Get attribute of first node in nodelist */
+
             return this.nodes[0].getAttribute(key);
         },
 
+		cache: function(cacheID){
+			/* Cache node list with cacheID as ID */
+
+			cachedSelections[cacheID] = this;
+		},
+
 		// Classes
         addClass: function(classname){
+			/* Add class to all nodes in nodelist */
+
             var n;
 
             for(n = 0; n < this.nodes.length; n++){
@@ -201,6 +226,8 @@
         },
 
         removeClass: function(classname){
+			/* Remove class from all nodes in nodelist */
+
             var n;
 
             for(n = 0; n < this.nodes.length; n++){
@@ -210,6 +237,7 @@
         },
 
 		hasClass: function(classname){
+			/* Check whether first node in list contains a classname */
 
 			var result = false;
 
@@ -222,6 +250,8 @@
 		},
 
 		toggleClass: function(classname){
+			/* Toggle classnames on all nodes in nodelist */
+
 			var n;
 
             for(n = 0; n < this.nodes.length; n++){
@@ -232,6 +262,8 @@
 		},
 
 		replaceClass: function(old_classname, new_classname){
+			/* Replace old_classname with new_classname on all nodes in nodelist */
+
 			var n;
 
             for(n = 0; n < this.nodes.length; n++){
@@ -242,6 +274,8 @@
 		},
 
         trigger: function(eventType){
+			/* Trigger eventType (click, mouseover, etc, ...) on all nodes in nodelist */
+
             if(this.nodes[0]){
                 var clickEvent = document.createEvent("MouseEvents");
 
@@ -425,8 +459,18 @@
         Dex("body").attach(mutationObserverCallback);
     };
 
+	Dex.getCached = function(cacheID){
+		return cachedSelections[cacheID];
+	}
+
+	Dex.clearCache = function(cacheID){
+		delete cachedSelections[cacheID];
+
+	}
 
 	Dex.tag = function(tag){
+		/* Use Tag() to select nodes using the getElementsByTagName */
+
 		var nodes = document.getElementsByTagName(tag);
 
 		return Dex(tag, nodes);
@@ -434,6 +478,8 @@
 	}
 
 	Dex.class = function(classname){
+		/* Use Tag() to select nodes using the getElementsByClassName */
+
 		var nodes = document.getElementsByClassName(classname);
 
 		return Dex("." + classname, nodes);
@@ -441,18 +487,24 @@
 	}
 
 	Dex.id = function(id){
-		var nodes = document.getElementById(id);
+		/* Use Tag() to select nodes using the getElementById */
+
+		var nodes = [document.getElementById(id)];
 
 		return Dex("#" + id, nodes);
 
 	}
 
 	Dex.node = function(node){
+		/* Use Node to create a Dex object with a DOM node directly */
+
 		return Dex("node", [node]);
 
 	}
 
 	Dex.collection = function(nodeCollection){
+		/* Use Node to create a Dex object with an HTML Node Collection  directly */
+
 		var nodes = [];
 
 		for(n = 0; n < nodeCollection.length; n++){
@@ -484,9 +536,18 @@
 
 	var app = {
 		data: {
-			currentApp: null
+			currentApp: null,
+			previousModeClass: null
 		},
 		onChange: function(mode){
+
+			if(app.data.previousModeClass == mode){
+				return false;
+			}
+
+			app.data.previousModeClass = mode;
+
+			console.log("::: APP ::: ONCHANGE");
 			mode.split(" ").forEach(function(cl) {
                 if (cl.indexOf("x-viewport") == 0) {
 
@@ -517,6 +578,7 @@
             })
 		},
 		onResize: function(){
+			console.log("::: APP ::: ONRESIZE");
 			if(app.data.currentApp == "edit"){
 				app.edit.topbar.reposition();
 			}
@@ -526,25 +588,32 @@
 			}
 		},
 		onBlur: function(){
+			console.log("::: APP ::: ONBLUR");
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
-            if(app.data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+            if(Dex.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
                 app.edit.sidepanel.close();
             }
 		},
 		onClick: function(e){
-			var inSidePanel = $(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
 
-	        if(inSidePanel.length == 0){
-                app.edit.sidepanel.close();
-            }
+			if(Dex.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+				var inSidePanel = $(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
+
+		        if(inSidePanel.length == 0){
+					console.log("::: APP ::: ONCLICK");
+	                app.edit.sidepanel.close();
+	            }
+			}
+
+
 		},
 		switch: function(appID){
 			if(app.data.currentApp == appID){
 				return false;
 
 			}
-
+			console.log("::: APP ::: SWITCH", appID);
 			app.data.currentApp = appID;
 
 			app[appID].onOpen();
@@ -552,6 +621,7 @@
 		},
 		contextMenus: {
             setTitle: function(contextmenu, params){
+				console.log("::: APP ::: CONTEXTMENUS ::: SETTITLE");
                 var contextMenuList = contextmenu.getElementsByClassName("x-menu-list")[0],
                     contextMenuTitle;
 
@@ -564,7 +634,7 @@
 
                         case 1:
                             // Selected Item
-                            contextMenuTitle = params.singleSelection.replace("{{node}}", app.data.body.getAttribute("data-singleselection-node-displayname"));
+                            contextMenuTitle = params.singleSelection.replace("{{node}}", Dex.getCached("body").getAttribute("data-singleselection-node-displayname"));
                             break;
 
                         default:
@@ -582,6 +652,7 @@
             },
 			managerMenu: {
 				onOpen: function(contextmenu){
+					console.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONOPEN");
                     var returnText;
 
                     console.log("app.data.currentApp: ", app.data.currentApp);
@@ -614,6 +685,7 @@
 
                 },
 				onClose: function(){
+					console.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONCLOSE");
 					// Manager Menu has been closed by clicking on the X.
 		            // Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
 		            $(".menu-editmode-managers-menu").fadeOut();
@@ -621,6 +693,7 @@
 			},
             previewMenu: {
                 onOpen: function(contextmenu){
+					console.log("::: APP ::: CONTEXTMENUS ::: PREVIEWMENU ::: ONOPEN");
                     app.contextMenus.setTitle(contextmenu, {
                         noSelection: "Page Preview",
                         singleSelection: "Preview {{node}}",
@@ -631,6 +704,7 @@
             },
             publicationMenu: {
                 onOpen: function(contextmenu){
+					console.log("::: APP ::: CONTEXTMENUS ::: PUBLICATIONMENU ::: ONOPEN");
                     app.contextMenus.setTitle(contextmenu, {
                         noSelection: "Publish Page",
                         singleSelection: "Publish {{node}}",
@@ -641,6 +715,7 @@
             },
             moreInfoMenu: {
                 onOpen: function(contextmenu){
+					console.log("::: APP ::: CONTEXTMENUS ::: MOREINFOMENU ::: ONOPEN");
                     app.contextMenus.setTitle(contextmenu, {
                         noSelection: "Page Options",
                         singleSelection: "{{node}} Options",
@@ -657,6 +732,7 @@
 				storedCSS: null
 			},
 			onToggle: function(e){
+				console.log("::: APP ::: THEME ::: ONTOGGLE");
 				// Toggle the UI Theme by changing the body attribute accordingly.
 
 	            /* The button firing this event is actually a pseudo element atached to a table.
@@ -675,6 +751,7 @@
 	            }
 			},
 			on: function(changeSkin){
+				console.log("::: APP ::: THEME ::: ON");
 				if(changeSkin){
 					app.theme.data.skin = changeSkin;
 				}
@@ -685,6 +762,7 @@
 				}
 			},
 			off: function(){
+				console.log("::: APP ::: THEME ::: OFF");
 				if(app.theme.data.enabled){
 					// Remove Anthracite CSS style sheet
 	               $('link[rel=stylesheet][href$="edit_en.css"]').remove();
@@ -700,32 +778,40 @@
 				title: null
 			},
 			onOpen: function(){
-				app.data.body.setAttribute("data-INDIGO-PICKER-SEARCH", "");
-				app.data.body.setAttribute("data-INDIGO-PICKER", "open");
-				app.data.body.setAttribute("indigo-PICKER-DISPLAY", "thumbs");
+				console.log("::: APP ::: PICKER ::: ONOPEN");
+				Dex.getCached("body")
+					.setAttribute("data-INDIGO-PICKER-SEARCH", "")
+					.setAttribute("data-INDIGO-PICKER", "open")
+					.setAttribute("indigo-PICKER-DISPLAY", "thumbs");
 			},
 			onClose: function(){
-				app.data.body.setAttribute("data-INDIGO-PICKER", "");
+				console.log("::: APP ::: PICKER ::: ONCLOSE");
+				Dex.getCached("body").setAttribute("data-INDIGO-PICKER", "");
 
 			},
 			onClick: function(){
-				app.data.body.setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
+				console.log("::: APP ::: PICKER ::: ONCLICK");
+				Dex.getCached("body").setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
 
 			},
 			onListView: function(){
-				app.data.body.setAttribute("indigo-PICKER-DISPLAY", "list");
+				console.log("::: APP ::: PICKER ::: ONLISTVIEW");
+				Dex.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "list");
 
 			},
 			onThumbView: function(){
-				app.data.body.setAttribute("indigo-PICKER-DISPLAY", "thumbs");
+				console.log("::: APP ::: PICKER ::: ONTHUMBVIEW");
+				Dex.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "thumbs");
 
 			},
 			row: {
 				onClick: function(){
+					console.log("::: APP ::: PICKER ::: ROW ::: ONCLICK");
 					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 				},
 				onMouseOver: function(e){
+					console.log("::: APP ::: PICKER ::: ROW ::: ONMOUSEOVER");
 					// Position the preview button next to the file whilst hovering
 		            app.picker.previewButton.reposition(e, {
 		                left: -58,
@@ -746,6 +832,7 @@
 					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
 				},
 				onContext: function(e){
+					console.log("::: APP ::: PICKER ::: ROW ::: ONCONTEXT");
 					// Open Context Menu when clicking "More" button.
 					// if matchClass is passed, then the click is ONLY accepted if the clicked element has that class.
 					// if matchClass is not passed then it is accepted.
@@ -768,10 +855,12 @@
 			},
 			thumb: {
 				onClick: function(){
+					console.log("::: APP ::: PICKER ::: THUMB ::: ONCLICK");
 					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 				},
 				onMouseOver: function(e){
+					console.log("::: APP ::: PICKER ::: THUMB ::: ONMOUSEOVER");
 					// Position the preview button next to the file whilst hovering
 		            app.picker.previewButton.reposition(e, {
 		                left: -52,
@@ -792,6 +881,7 @@
 		            Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
 				},
 				onContext: function(e){
+					console.log("::: APP ::: PICKER ::: THUMB ::: ONCONTEXT");
 					// Open Context Menu when clicking "More" button.
 					$(e.target).trigger({
 						type: 'mousedown',
@@ -810,16 +900,19 @@
 			},
 			previewButton: {
 				onMouseOver: function(){
+					console.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOVER");
 					Dex.node(app.picker.data.currentItem)
 		                .addClass("x-view-over")
 		                .addClass("x-grid3-row-over");
 				},
 				onMouseOut: function(){
+					console.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOUT");
 					Dex.node(app.picker.data.currentItem)
 		                .removeClass("x-view-over")
 		                .removeClass("x-grid3-row-over");
 				},
 				onClick: function(e, secondClick){
+					console.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONCLICK");
 					Dex.node(app.picker.data.currentItem)
 						.trigger("mousedown")
 						.trigger("mouseup");
@@ -834,6 +927,7 @@
 		            Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "hide");
 				},
 				reposition: function(e, offset){
+					console.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: REPOSITION");
 					var offset = offset || {
 		                    left: 0,
 		                    top: 0
@@ -858,22 +952,26 @@
 			source: {
 				onChange: function(){},
 				onMouseOver: function(){
+					console.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOVER");
 					// USER HAS ROLLED OVER THE COMBO TRIGGER
-		            if(app.data.body.getAttribute("data-indigo-picker-source-panel") != "open"){
+		            if(Dex.getCached("body").getAttribute("data-indigo-picker-source-panel") != "open"){
 		                Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
 		            }
 				},
 				onMouseOut: function(){
+					console.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOUT");
 					// USER HAS ROLLED OUT OF THE COMBO TRIGGER
 		            Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 				},
 				close: function(){
+					console.log("::: APP ::: PICKER ::: SOURCE ::: CLOSE");
 					// CHANGE SOURCE
 		            // The user has changed SOURCE, so we just need to hide the combo...
-		            app.data.body.setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
+		            Dex.getCached("body").setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
 				},
 				open: function(){},
 				toggle: function(e){
+					console.log("::: APP ::: PICKER ::: SOURCE ::: TOGGLE");
 					// USER HAS CLICKED THE COMBO TRIGGER
 		            e.stopPropagation();
 
@@ -887,6 +985,7 @@
 			},
 			search: {
 				open: function(){
+					console.log("::: APP ::: PICKER ::: SEARCH ::: OPEN");
 					// OPEN SEARCH PANEL
 
 		            // Close source picker if open
@@ -894,7 +993,7 @@
 
 
 		            // Display the search panel
-		            app.data.body.setAttribute("data-INDIGO-PICKER-SEARCH", "open");
+		            Dex.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "open");
 
 		            // Put the results in LIST mode
 		            Dex("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
@@ -909,10 +1008,11 @@
 		            }, 250);
 				},
 				close: function(){
+					console.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE");
 					// CLOSE SEARCH PANEL
 
 		            // Hide the search panel
-		            app.data.body.setAttribute("data-INDIGO-PICKER-SEARCH", "");
+		            Dex.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "");
 
 		            // Display the BROWSE panels
 		            Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
@@ -926,6 +1026,7 @@
 				},
 
 				onContext: function(e){
+					console.log("::: APP ::: PICKER ::: SEARCH ::: ONCONTEXT");
 					// Open Context Menu when clicking "More" button.
 					$(e.target).trigger({
 						type: 'mousedown',
@@ -943,36 +1044,39 @@
 		},
 		imagePreview: {
 			onOpen: function(){
-				app.data.body.setAttribute("data-INDIGO-IMAGE-PREVIEW", "open");
+				console.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONOPEN");
+				Dex.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "open");
 
 				// Attribute used to display the friendly name in edit panel
 				Dex(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", "nodeDisplayName");
 			},
 			onClose: function(){
-				app.data.body.setAttribute("data-INDIGO-IMAGE-PREVIEW", "");
+				console.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONCLOSE");
+				Dex.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "");
 
 			}
 		},
 		engine: {
 			onOpen: function(){
-				console.log("::: APP ::: ENGINE ::: OPEN");
-				var nodeDisplayName = app.data.body.getAttribute("data-singleselection-node-displayname");
+				console.log("::: APP ::: ENGINE ::: ONOPEN");
+				var nodeDisplayName = Dex.getCached("body").getAttribute("data-singleselection-node-displayname");
 
-				app.data.body.setAttribute("data-INDIGO-EDIT-ENGINE", "open");
+				Dex.getCached("body").setAttribute("data-INDIGO-EDIT-ENGINE", "open");
 
 				// Attribute used to display the friendly name in edit panel
 				Dex(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
 			},
 			onClose: function(){
-				console.log("::: APP ::: ENGINE ::: CLOSE");
+				console.log("::: APP ::: ENGINE ::: ONCLOSE");
 				app.iframe.clearSelection();
-				app.data.body.setAttribute("data-INDIGO-EDIT-ENGINE", "");
+				Dex.getCached("body").setAttribute("data-INDIGO-EDIT-ENGINE", "");
 
 			},
 		},
 		workflow: {
 			dashboard: {
 				onOpen: function(){
+					console.log("::: APP ::: WORKFLOW ::: DASHBOARD ::: ONOPEN");
 					Dex(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
 
 				}
@@ -988,58 +1092,62 @@
 			},
 			// Event Handlers
 			onChangeSRC: function(value){
-				console.log("::: APP ::: IFRAME ::: ONCHANGESRC");
+				console.log("::: APP ::: IFRAME ::: ONCHANGESRC", value);
 
 				app.iframe.data.previousUrl = app.iframe.data.currentUrl;
 				app.iframe.data.currentUrl = value;
 
-                // TEMP BLIND
-                // $(".window-iframe").hide();
+				if(app.data.currentApp == "edit" || app.data.currentApp == "contribute"){
+					// TEMP BLIND
+	                // $(".window-iframe").hide();
 
-                var elements = {
-                    iframe: document.getElementsByClassName("window-iframe")[0],
-                    title: document.getElementsByClassName("x-current-page-path")[0],
-                    publishButton: document.getElementsByClassName("edit-menu-publication")[0],
-                    refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
-                    previewButton: document.getElementsByClassName("edit-menu-view")[0],
-                    moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
-                };
+	                var elements = {
+	                    iframe: document.getElementsByClassName("window-iframe")[0],
+	                    title: document.getElementsByClassName("x-current-page-path")[0],
+	                    publishButton: document.getElementsByClassName("edit-menu-publication")[0],
+	                    refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
+	                    previewButton: document.getElementsByClassName("edit-menu-view")[0],
+	                    moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
+	                };
 
-                if( elements.iframe &&
-                    elements.iframe.style){
-                        elements.iframe.style.opacity = 0;
+	                if( elements.iframe &&
+	                    elements.iframe.style){
+	                        elements.iframe.style.opacity = 0;
 
-                }
+	                }
 
-                if( elements.title &&
-                    elements.title.style){
-                        elements.title.style.opacity = 0;
+	                if( elements.title &&
+	                    elements.title.style){
+	                        elements.title.style.opacity = 0;
 
-                }
+	                }
 
-                if( elements.publishButton &&
-                    elements.publishButton.style){
-                        elements.publishButton.style.opacity = 0;
+	                if( elements.publishButton &&
+	                    elements.publishButton.style){
+	                        elements.publishButton.style.opacity = 0;
 
-                }
+	                }
 
-                if( elements.refreshButton &&
-                    elements.refreshButton.style){
-                        elements.refreshButton.style.opacity = 0;
+	                if( elements.refreshButton &&
+	                    elements.refreshButton.style){
+	                        elements.refreshButton.style.opacity = 0;
 
-                }
+	                }
 
-                if( elements.previewButton &&
-                    elements.previewButton.style){
-                        elements.previewButton.style.opacity = 0;
+	                if( elements.previewButton &&
+	                    elements.previewButton.style){
+	                        elements.previewButton.style.opacity = 0;
 
-                }
+	                }
 
-                if( elements.moreInfo &&
-                    elements.moreInfo.style){
-                        elements.moreInfo.style.opacity = 0;
+	                if( elements.moreInfo &&
+	                    elements.moreInfo.style){
+	                        elements.moreInfo.style.opacity = 0;
 
-                }
+	                }
+				}
+
+
 
 
 
@@ -1049,11 +1157,13 @@
 
 			},
 			onChange: function(value){
-				console.log("::: APP ::: IFRAME ::: ONCHANGE", value);
 
-				if(app.iframe.data.displayName == value){
+
+
+				if(app.iframe.data.displayName == value || app.data.currentApp == "studio"){
 					return false;
 				}
+				console.log("::: APP ::: IFRAME ::: ONCHANGE:", app.data.currentApp, ":");
 
 				app.iframe.data.displayName = value;
 
@@ -1078,24 +1188,36 @@
 
 			},
 			onSelect: function(value){
-				console.log("::: APP ::: IFRAME ::: ONSELECT");
 				var count = parseInt(value);
 
-				// Multiple Items have been selected (in Edit Mode) or removed
-				// Check if value is different
-				if(app.iframe.data.selectionCount == count){
-					// return false;
-
-				}
-
-				app.iframe.data.selectionCount = count;
 
 				// Refresh the title of the page accordingly
-				app.edit.topbar.build();
+				switch(app.data.currentApp){
+					case "edit":
+						console.log("::: APP ::: IFRAME ::: ONSELECT", value);
+						app.iframe.data.selectionCount = count;
+						// Need to update the header bar
+						app.edit.topbar.build();
+
+						if(app.edit.sidepanel.isOpen()){
+							app.iframe.disableClicks();
+						}
+
+						break;
+
+					case "contribute":
+						console.log("::: APP ::: IFRAME ::: ONSELECT", value);
+						app.iframe.data.selectionCount = count;
+						// Need to update the header bar
+						app.contribute.topbar.build();
+
+						break;
+				}
+
 
 				// MOVE TO A DEX LISTENER ON MENU ITEM
 				// setTimeout(function(){
-				// 	$(".editModeContextMenu .x-menu-list").attr("data-selected-name", app.data.body.getAttribute("data-singleselection-node-displayname"));
+				// 	$(".editModeContextMenu .x-menu-list").attr("data-selected-name", Dex.getCached("body").getAttribute("data-singleselection-node-displayname"));
 				// }, 50);
 			},
 
@@ -1109,7 +1231,7 @@
 			disableClicks: function(){
 				console.log("::: APP ::: IFRAME ::: DISABLECLICKS");
 
-				if(app.data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && app.data.body.getAttribute("data-sitesettings") == "false"){
+				if(Dex.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && Dex.getCached("body").getAttribute("data-sitesettings") == "false"){
 	                // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
 	                var iframeBody = $(".window-iframe").contents().find("body");
 	                app.iframe.data.bodyStyle = iframeBody.attr("style") || "";
@@ -1153,8 +1275,9 @@
 				app.theme.on();
 
                 // Set attributes to be used by CSS
-                app.data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no");
-                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+                Dex.getCached("body")
+					.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no")
+                	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
 			},
 			onClose: function(){},
 
@@ -1171,13 +1294,7 @@
 			},
 			// Event Handlers
 			onOpen: function(){
-				console.log("::: APP ::: EDIT ::: OPENED");
-                console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-                console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-                console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-
-                // Build HTML for the info bar
-                $("body").append('<div class="indigo-info-block"><button type="button" class="indigo-info-toggle" data-info-count="1"></button><ul class="indigo-info-list"><li class="indigo-info-publicationStatus"><span></span></button></li><li class="indigo-info-tasks"><span>Information block </span><button type="button" class="indigo-info-openTasks"></button></li><li class="indigo-info-jobs"><span></span></button></li></ul></div>');
+				console.log("::: APP ::: EDIT ::: ONOPEN");
 
 				// Reset History
 				app.edit.history.reset();
@@ -1193,13 +1310,15 @@
 				app.theme.on();
 
                 // Set attributes to be used by CSS
-                app.data.body.setAttribute("data-edit-window-style", "default");
-                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
-                app.data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+                Dex.getCached("body")
+					.setAttribute("data-edit-window-style", "default")
+                	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "")
+                	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
 			},
 			onClose: function(){},
 
 			onNav: function(){
+				console.log("::: APP ::: EDIT ::: ONNAV");
 
 				if(app.edit.settings.data.opened){
 					// CLicked on a settings page
@@ -1223,79 +1342,123 @@
 			infoBar: {
                 data: {
                     on: false,
-                    taskCount: 0,
-                    runningBackgroundJob: 0
+                    taskCount: 0
                 },
                 toggle: function(){
+					console.log("::: APP ::: EDIT ::: INFOBAR ::: TOGGLE");
                     app.edit.infoBar.data.on = !app.edit.infoBar.data.on;
 
-                    app.data.body.setAttribute("data-indigo-infoBar", app.edit.infoBar.data.on);
+                    Dex.getCached("body").setAttribute("data-indigo-infoBar", app.edit.infoBar.data.on);
 
                 },
-                getNotificationCount: function(){
-                    return app.edit.infoBar.data.taskCount + app.edit.infoBar.data.runningBackgroundJob
-                },
                 tasks: {
+					data: {
+						classes: null,
+						taskCount: 0,
+						dashboardButtonLabel: null
+					},
                     onChange: function(classes){
-                        var taskButton = Dex(".edit-menu-tasks button"),
-                            taskString;
+
+						if(app.edit.infoBar.tasks.data.classes == classes){
+							return false;
+						}
+
+						app.edit.infoBar.tasks.data.classes = classes;
+
+						console.log("::: APP ::: EDIT ::: INFOBAR ::: TASKS ::: ONCHANGE");
+                        var taskButton = Dex(".edit-menu-tasks button");
 
 
                         if(taskButton.exists()){
-                            taskString = taskButton.getHTML();
-
-                            var regexp = /\(([^)]+)\)/,
-                                result = taskString.match(regexp);
+                            var taskString = taskButton.getHTML(),
+                            	regexp = /\(([^)]+)\)/,
+                                result = taskString.match(regexp),
+								taskCount,
+								workflowButtonLabel,
+								dashboardButtonLabel;
 
                             if(result){
-                                app.edit.infoBar.data.taskCount = parseInt(result[1]);
-                                Dex(".indigo-info-openTasks").removeClass("indigo-hide");
+								taskCount = parseInt(result[1]);
 
                             } else {
-                                app.edit.infoBar.data.taskCount = 0;
-                                Dex(".indigo-info-openTasks").addClass("indigo-hide");
+                                taskCount = 0;
                             }
 
-                            Dex(".indigo-info-toggle").setAttribute("data-info-count", app.edit.infoBar.getNotificationCount());
-                            Dex(".indigo-info-tasks span").setHTML(taskString);
+							switch(taskCount){
+								case 0:
+									dashboardButtonLabel = "Open Dashboard";
+
+									break;
+								case 1:
+									dashboardButtonLabel = "Dashboard (" + taskCount + " task)";
+
+									break;
+								default:
+									dashboardButtonLabel = "Dashboard (" + taskCount + " tasks)";
+
+									break;
+							}
+
+							if(taskCount > 9){
+								workflowButtonLabel = "+9";
+
+							} else {
+								workflowButtonLabel = taskCount;
+							}
+
+							Dex(".edit-menu-workflow").setAttribute("data-info-count", workflowButtonLabel);
+
+							app.edit.infoBar.data.taskCount = taskCount;
+							app.edit.infoBar.data.workflowButtonLabel = workflowButtonLabel;
+							app.edit.infoBar.data.dashboardButtonLabel = dashboardButtonLabel;
 
                         }
                     },
-                    open: function(){
-                        // Open Workflow Window
-                        console.log("TRIGGER THE CLICK");
-                        Dex(".edit-menu-workflow").trigger("click");
-                        Dex(".toolbar-item-workflowdashboard").trigger("click");
+					updateMenuLabel: function(node){
+						Dex.node(node)
+							.filter(".toolbar-item-workflowdashboard")
+								.setHTML(app.edit.infoBar.data.dashboardButtonLabel);
 
-                    }
+					}
                 },
                 jobs: {
+					data: {
+						classes: null,
+						jobString: null
+					},
                     onChange: function(classes){
+						// if(app.edit.infoBar.jobs.data.classes == classes){
+						// 	console.log("No change in job classes - ignore");
+						// 	return false;
+						// }
 
-                        var jobButton = document.querySelectorAll(".toolbar-item-workinprogressadmin button")[0],
-                            jobStringSplit,
-                            jobString,
-                            jobIcon;
+						app.edit.infoBar.jobs.data.classes = classes;
 
-                        if(jobButton){
-                            jobStringSplit = jobButton.innerHTML.split("<");
-                            jobString = jobStringSplit[0];
-                            jobIcon = jobButton.querySelectorAll("img")[0];
+						console.log("::: APP ::: EDIT ::: INFOBAR ::: JOBS ::: ONCHANGE");
+
+                        var jobButton = Dex(".toolbar-item-workinprogressadmin button");
+
+                        if(jobButton.exists()){
+                            var jobStringSplit = jobButton.getHTML().split("<");
+                            	jobString = jobStringSplit[0];
+                            	jobIcon = jobButton.filter("img"),
+								activeJob;
 
                             if(jobIcon.getAttribute("src") !== "/icons/workInProgress.png"){
                                 // A job is active
-                                app.edit.infoBar.data.runningBackgroundJob = 1;
-                                Dex(".indigo-info-jobs span").setHTML(jobString);
-                                document.querySelectorAll(".indigo-info-jobs span")[0].classList.remove("indigo-no-jobs");
+								activeJob = true;
+								Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").addClass("indigo-job-running");
+
                             } else {
                                 // No Jobs active
-                                app.edit.infoBar.data.runningBackgroundJob = 0;
-                                Dex(".indigo-info-jobs span").setHTML("");
-                                document.querySelectorAll(".indigo-info-jobs span")[0].classList.add("indigo-no-jobs");
+								activeJob = false;
+								Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").removeClass("indigo-job-running");
 
                             }
 
-                            document.getElementsByClassName("indigo-info-toggle")[0].setAttribute("data-info-count", app.edit.infoBar.getNotificationCount());
+							app.edit.infoBar.jobs.data.jobString = jobString;
+							app.edit.infoBar.jobs.data.activeJob = activeJob;
+
 
                         }
 
@@ -1303,7 +1466,7 @@
                 },
                 publicationStatus: {
                     onChange: function(){
-                        Dex(".indigo-info-publicationStatus span").setHTML(app.iframe.data.publication.label + " (" + app.iframe.data.displayName + ")");
+						console.log("::: APP ::: EDIT ::: INFOBAR ::: PUVLICATIONSTATUS ::: ONCHANGE");
                     }
                 }
             },
@@ -1312,11 +1475,12 @@
 			history: {
 				data: {},
 				add: function(type, node){
-                    console.log("\t\t\t\tHISTORY PAGE ADDED ::: ", type, node);
+					console.log("::: APP ::: EDIT ::: HISTORY ::: ADD");
 					app.edit.history.data[type] = node;
 
 				},
 				get: function(type){
+					console.log("::: APP ::: EDIT ::: HISTORY ::: GET");
 
 					var returnResult = null,
 						stillInVisibleDOM;
@@ -1333,6 +1497,7 @@
 
 				},
 				reset: function(){
+					console.log("::: APP ::: EDIT ::: HISTORY ::: RESET");
 					app.edit.history.data = {
 						settingspage: null,
 						editpage: null,
@@ -1346,117 +1511,121 @@
 
                     // TEMP BLIND
                     // $(".window-iframe").fadeIn("fast");
-
-                    var elements = {
-                        iframe: document.getElementsByClassName("window-iframe")[0],
-                        title: document.getElementsByClassName("x-current-page-path")[0],
-                        publishButton: document.getElementsByClassName("edit-menu-publication")[0],
-                        refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
-                        previewButton: document.getElementsByClassName("edit-menu-view")[0],
-                        moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
-                    };
-
-
-                    if( elements.iframe &&
-                        elements.iframe.style){
-                            elements.iframe.style.opacity = 1;
-
-                    }
-
-                    if( elements.title &&
-                        elements.title.style){
-                            elements.title.style.opacity = 1;
-
-                    }
-
-                    if( elements.publishButton &&
-                        elements.publishButton.style){
-                            elements.publishButton.style.opacity = 1;
-
-                    }
-
-                    if( elements.refreshButton &&
-                        elements.refreshButton.style){
-                            elements.refreshButton.style.opacity = 1;
-
-                    }
-
-                    if( elements.previewButton &&
-                        elements.previewButton.style){
-                            elements.previewButton.style.opacity = 1;
-
-                    }
-
-                    if( elements.moreInfo &&
-                        elements.moreInfo.style){
-                            elements.moreInfo.style.opacity = 1;
-
-                    }
+					if(app.data.currentApp == "edit" || app.data.currentApp == "contribute"){
+						var elements = {
+	                        iframe: document.getElementsByClassName("window-iframe")[0],
+	                        title: document.getElementsByClassName("x-current-page-path")[0],
+	                        publishButton: document.getElementsByClassName("edit-menu-publication")[0],
+	                        refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
+	                        previewButton: document.getElementsByClassName("edit-menu-view")[0],
+	                        moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
+	                    };
 
 
+	                    if( elements.iframe &&
+	                        elements.iframe.style){
+	                            elements.iframe.style.opacity = 1;
+
+	                    }
+
+	                    if( elements.title &&
+	                        elements.title.style){
+	                            elements.title.style.opacity = 1;
+
+	                    }
+
+	                    if( elements.publishButton &&
+	                        elements.publishButton.style){
+	                            elements.publishButton.style.opacity = 1;
+
+	                    }
+
+	                    if( elements.refreshButton &&
+	                        elements.refreshButton.style){
+	                            elements.refreshButton.style.opacity = 1;
+
+	                    }
+
+	                    if( elements.previewButton &&
+	                        elements.previewButton.style){
+	                            elements.previewButton.style.opacity = 1;
+
+	                    }
+
+	                    if( elements.moreInfo &&
+	                        elements.moreInfo.style){
+	                            elements.moreInfo.style.opacity = 1;
+
+	                    }
 
 
-					var pageTitle,
-                        selectType = "none",
-						multiselect = "off",
-                        publicationStatus = document.querySelectorAll(".toolbar-item-publicationstatuswithtext .gwt-Image")[0],
-
-                        extractStatus = function(url){
-                            var urlSplit = url.split("/"),
-                                fileName = urlSplit[urlSplit.length-1],
-                                statusSplit = fileName.split(".png"),
-                                status = statusSplit[0];
-
-                            return status
-                        };
-
-					// Presumably in Edit Mode or Contribute Mode, in which case we need to set the page title
-					switch(app.iframe.data.selectionCount){
-						case 0:
-							pageTitle = app.iframe.data.displayName;
-                            selectType = "none";
-							break;
-
-						case 1:
-							pageTitle = app.data.body.getAttribute("data-singleselection-node-displayname");
-							multiselect = "on";
-                            selectType = "single";
 
 
-							break;
+						var pageTitle,
+	                        selectType = "none",
+							multiselect = "off",
+	                        publicationStatus = document.querySelectorAll(".toolbar-item-publicationstatuswithtext .gwt-Image")[0],
 
-						default:
-							pageTitle = app.iframe.data.selectionCount + " selected items";
-							multiselect = "on";
-                            selectType = "multiple";
-							break;
+	                        extractStatus = function(url){
+	                            var urlSplit = url.split("/"),
+	                                fileName = urlSplit[urlSplit.length-1],
+	                                statusSplit = fileName.split(".png"),
+	                                status = statusSplit[0];
+
+	                            return status
+	                        };
+
+						// Presumably in Edit Mode or Contribute Mode, in which case we need to set the page title
+						switch(app.iframe.data.selectionCount){
+							case 0:
+								pageTitle = app.iframe.data.displayName;
+	                            selectType = "none";
+								break;
+
+							case 1:
+								pageTitle = Dex.getCached("body").getAttribute("data-singleselection-node-displayname");
+								multiselect = "on";
+	                            selectType = "single";
+
+
+								break;
+
+							default:
+								pageTitle = app.iframe.data.selectionCount + " selected items";
+								multiselect = "on";
+	                            selectType = "multiple";
+								break;
+						}
+
+						// Set multiselect status in body attribute...
+	                    Dex.getCached("body")
+							.setAttribute("data-multiselect", multiselect)
+	                    	.setAttribute("data-select-type", selectType);
+
+						// Page Title in Edit Made
+						Dex.class("x-current-page-path").setAttribute("data-PAGE-NAME",pageTitle);
+	                    Dex.class("node-path-text-inner").setHTML(app.iframe.data.displayName);
+
+	                    // Determine publication status
+	                    if(publicationStatus){
+	                        app.iframe.data.publication = {
+	                            status: extractStatus(publicationStatus.getAttribute("src")),
+	                            label: publicationStatus.getAttribute("title")
+	                        };
+	                    } else {
+	                        app.iframe.data.publication = {
+	                            status: null,
+	                            label: null
+	                        };
+	                    }
+
+	                    console.log("::: app.iframe.data.publication.status ", app.iframe.data.publication.status);
+
+						// Page Titles need centering
+						app.edit.topbar.reposition();
 					}
 
-					// Set multiselect status in body attribute...
-                    app.data.body.setAttribute("data-multiselect", multiselect);
-                    app.data.body.setAttribute("data-select-type", selectType);
 
-					// Page Title in Edit Made
-					Dex.class("x-current-page-path").setAttribute("data-PAGE-NAME",pageTitle);
-                    Dex.class("node-path-text-inner").setHTML(app.iframe.data.displayName);
-
-                    // Determine publication status
-                    if(publicationStatus){
-                        app.iframe.data.publication = {
-                            status: extractStatus(publicationStatus.getAttribute("src")),
-                            label: publicationStatus.getAttribute("title")
-                        };
-                    } else {
-                        app.iframe.data.publication = {
-                            status: null,
-                            label: null
-                        };
-                    }
-
-                    console.log("::: app.iframe.data.publication.status ", app.iframe.data.publication.status);
-
-					// Page Titles need centering
-					app.edit.topbar.reposition();
 
 
 				},
@@ -1550,12 +1719,12 @@
 				open: function(isSettings){
 					console.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN", isSettings);
 
-					app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+					Dex.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
 					app.edit.sidepanel.data.open = true;
 
 					// GWT has problems populating the site page tree when the side panel is hidden.
 					// Solution: When the side panel is opened for the FIRST TIME ONLY, the refresh button is triggered and the sites page tree is populated correctly.
-					if(app.data.body.getAttribute("data-sitesettings") == "false"){
+					if(Dex.getCached("body").getAttribute("data-sitesettings") == "false"){
 
 						if(isSettings){
 							if(app.edit.sidepanel.data.firstRunSettings){
@@ -1579,16 +1748,16 @@
 					}
 				},
 				close: function(){
-					console.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
-					if(app.data.body.getAttribute("data-edit-window-style") !== "settings" && app.data.body.getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
-		                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
+					if(Dex.getCached("body").getAttribute("data-edit-window-style") !== "settings" && Dex.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && Dex.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
+						console.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
+		                Dex.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
 
 		                // Revert iframes body style attribute to what it was originally
 		                $(".window-iframe").contents().find("body").attr("style", app.iframe.data.bodyStyle);
 
 		            }
 
-					app.edit.topbar.reposition();
+					// app.edit.topbar.reposition();
 				},
 
 				isOpen: function(){
@@ -1597,18 +1766,18 @@
 
 				tab: {
 					onClick: function(e){
-						console.log("APP ::: EDIT ::: SIDEPANEL ::: ONCLICK");
+						console.log("APP ::: EDIT ::: SIDEPANEL ::: TAB ::: ONCLICK");
 
 						// User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
 			            var clickedTabID = Dex.node(this).getAttribute("id");
 
-			            app.data.body.setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
+			            Dex.getCached("body").setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
 
 			            // Menus for the Tabs that call this listener require a normal side panel display
-			            // app.data.body.setAttribute("data-edit-window-style", "default");
+			            // Dex.getCached("body").setAttribute("data-edit-window-style", "default");
 
 			            var tabMenuActive = Dex.node(this).hasClass("x-tab-strip-active"),
-			                sidePanelOpen = app.data.body.getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open";
+			                sidePanelOpen = Dex.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open";
 
 			            if(tabMenuActive && sidePanelOpen){
 			                // CLOSE SIDE PANEL: Already open for current Tab Menu
@@ -1622,6 +1791,7 @@
 				},
 				row: {
 					onContext: function(e){
+						console.log("APP ::: EDIT ::: SIDEPANEL ::: ROW ::: ONCONTEXT");
 						// Open Context Menu when clicking "More" button.
 			            var acceptClick = Dex.node(e.target).hasClass("x-grid3-td-displayName");
 
@@ -1650,6 +1820,7 @@
 
 					if(value == "true"){
 						if(app.data.currentApp == "edit"){
+							console.log("APP ::: EDIT ::: SETTINGS ::: ONCHANGE");
 							app.edit.settings.open();
 
 						}
@@ -1673,7 +1844,7 @@
 
 
 					app.edit.settings.data.opened = true;
-					app.data.body.setAttribute("data-edit-window-style", "settings");
+					Dex.getCached("body").setAttribute("data-edit-window-style", "settings");
 
 		            app.edit.sidepanel.open(true);
 
@@ -1726,10 +1897,8 @@
 
 					var previousEditPage = app.edit.history.get("editpage");
 
-					console.log("OPEN THIS PAGE:::::::: ", previousEditPage);
-
 					app.edit.settings.data.opened = false;
-					app.data.body.setAttribute("data-edit-window-style", "default");
+					Dex.getCached("body").setAttribute("data-edit-window-style", "default");
 
 		            app.edit.sidepanel.close();
 
@@ -1755,8 +1924,9 @@
 				app.theme.on();
 
                 // Set attributes to be used by CSS
-                app.data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no");
-                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+                Dex.getCached("body")
+					.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no")
+                	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
 			},
 			onClose: function(){},
 
@@ -1772,8 +1942,9 @@
 				app.theme.off();
 
                 // Set attributes to be used by CSS
-                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
-                app.data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+                Dex.getCached("body")
+					.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "")
+                	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
 			},
 			onClose: function(){},
 
@@ -1792,8 +1963,9 @@
 
 
                 // Set attributes to be used by CSS
-                app.data.body.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
-                app.data.body.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+                Dex.getCached("body")
+					.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "")
+                	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
 			},
 			onClose: function(){},
 
@@ -1812,7 +1984,7 @@
 
 						case 1:
 							pageTitle = "1 selected item";
-							pageTitle = app.data.body.getAttribute("data-singleselection-node-displayname");
+							pageTitle = Dex.getCached("body").getAttribute("data-singleselection-node-displayname");
 							multiselect = "on";
 
 
@@ -1825,7 +1997,7 @@
 					}
 
 					// Set multiselect status in body attribute...
-					app.data.body.setAttribute("data-multiselect", multiselect);
+					Dex.getCached("body").setAttribute("data-multiselect", multiselect);
 
 					// Page Title in Contribute Made
 					Dex(".x-viewport-contributemode .toolbar-itemsgroup-languageswitcher").setAttribute("data-PAGE-NAME",pageTitle);
@@ -1890,7 +2062,7 @@
             // Set up INDIGO listeners (listening to changes in DOM)
 
             Dex("#JahiaGxtSettingsTab").onTreeChange(function(tree){
-
+				console.log("HERE");
 				var firstBranch = tree[0],
 					parentBranch = firstBranch.previousSibling,
 					branch,
@@ -1918,7 +2090,9 @@
 
             });
 
-            Dex(".menu-edit-menu-view").onOpen(app.contextMenus.previewMenu.onOpen);
+			Dex(".menu-edit-menu-workflow").onOpen(app.edit.infoBar.tasks.updateMenuLabel);
+
+			Dex(".menu-edit-menu-view").onOpen(app.contextMenus.previewMenu.onOpen);
 
             Dex(".menu-edit-menu-publication").onOpen(app.contextMenus.publicationMenu.onOpen);
 
@@ -1969,8 +2143,6 @@
             $(window).on("blur", app.onBlur);
 
             $("body")
-				.on("click", ".indigo-info-toggle", app.edit.infoBar.toggle)
-				.on("click", ".indigo-info-openTasks", app.edit.infoBar.tasks.open)
 				.on("mousedown", ".x-tree3-node-joint", function(){
 					$(this).closest(".x-grid3-row").toggleClass("indigo-opened");
 				})
@@ -1988,7 +2160,7 @@
                 .on("click", ".x-grid3-row .x-tree3-el", app.picker.row.onContext)
                 .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", app.picker.thumb.onContext)
                 .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick)
-                .on("click", ".x-viewport-editmode .x-toolbar-first > table", app.theme.onToggle)
+                // .on("click", ".x-viewport-editmode .x-toolbar-first > table", app.theme.onToggle)
                 .on("click", ".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose)
                 .on("mousedown", ".menu-edit-menu-mode, .menu-edit-menu-user", app.contextMenus.managerMenu.onClose)
                 .on("click", "#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", app.edit.settings.close)
@@ -2010,6 +2182,7 @@
                 .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", function(){
 					app.edit.settings.open(true);
 				});
+				// app.theme.off();
         }
     }
 
@@ -2020,10 +2193,19 @@
         // Copy Anthracite CSS to remove / add when dropping in and out of STUDIO mode
         app.theme.data.storedCSS = $('link[rel=stylesheet][href$="edit_en.css"]').clone();
 
-		app.data.body = window.document.body;
+		// use Dex to cache an Dex Object
+		Dex("body").cache("body");
+
+		// Carry out operations on cached Dex Object
+		Dex.getCached("body").addClass("this-is-from-chached");
+
+		// Clear Cached Object
+		// Dex.clearCache("body");
 
         // Initialise Dex Observer
         Dex.init();
+
+
 
         eventListeners.attach();
     }

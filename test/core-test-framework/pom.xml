@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia.test</groupId>
         <artifactId>jahia-test-parent</artifactId>
-        <version>7.2.1.1-indigo_41-SNAPSHOT</version>
+        <version>7.2.1.1-SNAPSHOT</version>
     </parent>
     <artifactId>core-test-framework</artifactId>
     <name>Jahia Core Test Framework</name>

@@ -1,0 +1,1696 @@
+////
+//// PLACE HOLDERS
+////
+//// These placeholders allow more control over the styling of the majority of
+//// elements in the DX Application.
+//// Please just be aware that changing the SIZE of elements may have undesired effects
+//// on other elements :)
+////
+//// The placeholders are categorised as follows:
+////     APPLICATION
+////     FORMS
+////     COMBO MENUS
+////     COMBO MENU ::: MODE SELECTOR
+////     LIST BOX
+////     CONTEXT MENU
+////     CONTEXT MENU ::: HAMBURGER
+////     CONTEXT MENU ::: PUBLICATION
+////     CONTEXT MENU ::: PREVIEW
+////     CONTEXT MENU ::: MORE INFO
+////     CONTEXT MENU ::: MODE VIEW (EDIT MODE)
+////     CONTEXT MENU ::: MODE VIEW (ADMIN MODE)
+////     CONTEXT MENU ::: MODE VIEW (DASHBOARD MODE)
+////     CONTEXT MENU ::: USER MENU (EDIT MODE)
+////     CONTEXT MENU ::: USER MENU (ADMIN MODE)
+////     CONTEXT MENU ::: USER MENU (DASHBOARD MODE)
+////     CONTEXT MENU ::: WORKFLOW
+////     CONTEXT MENU ::: CACHE
+////     CONTEXT MENU ::: PAGE EDIT CONTENT
+////     CONTEXT MENU ::: SIDE PANEL ::: PAGES
+////     CONTEXT MENU ::: SIDE PANEL ::: CONTENT ::: TREE
+////     CONTEXT MENU ::: SIDE PANEL ::: CONTENT ::: ITEM
+////     CONTEXT MENU ::: SIDE PANEL ::: FILE ::: TREE
+////     CONTEXT MENU ::: SIDE PANEL ::: FILE ::: ITEM
+////     CONTEXT MENU ::: SIDE PANEL ::: SEARCH
+////     CONTEXT MENU ::: SIDE PANEL ::: TAXONOMY
+////     BUTTONS ::: FORM
+////     BUTTONS ::: PANEL
+////     BUTTONS ::: FIELDSET
+////     BUTTONS ::: ACTION BAR
+////     BUTTONS ::: ACTION BAR ::: SUGGESTED
+
+
+
+/////////////////////////////////////////////////
+// APPLICATION //////////////////////////////////
+/////////////////////////////////////////////////
+
+    %document_title {
+        @include text(18px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
+    }
+
+    %multiselect_title {
+        color: $COLOUR--WHITE_CLOUDS;
+    }
+
+
+/////////////////////////////////////////////////
+// MORE INFO BUTTONS ////////////////////////////
+/////////////////////////////////////////////////
+	%CSS_BLOCK--MORE_INFO---UP {
+		background: url($TREE--MENU--ICON--MORE_OPTIONS---UP) no-repeat center center $TREE--MENU--BG--COLOUR---UP;
+		background-size: 10px 2px;
+	}
+
+	%CSS_BLOCK--MORE_INFO---SELECTED {
+		background: url($TREE--MENU--ICON--MORE_OPTIONS---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED !important;
+		background-size: 10px 2px!important;
+	}
+
+	// SEARCH
+	%CSS_BLOCK--MORE_INFO---UP\:SEARCH {
+		background: url($TREE--MENU--ICON--MORE_OPTIONS---UP\:SEARCH) no-repeat center center $TREE--MENU--BG--COLOUR---UP\:SEARCH;
+		background-size: 10px 2px;
+	}
+
+	%CSS_BLOCK--MORE_INFO---SELECTED\:SEARCH {
+		background: url($TREE--MENU--ICON--MORE_OPTIONS---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED !important;
+		background-size: 10px 2px!important;
+	}
+
+
+/////////////////////////////////////////////////
+// TOOLTIPS /////////////////////////////////////
+/////////////////////////////////////////////////
+    %CSS_BLOCK--TOOLTIP---BOTTOM {
+        &:hover {
+            &::before,
+            &::after {
+                opacity: 1;
+                transition: all 0.3s ease-in 0.5s;
+            }
+        }
+
+        &::before,
+        &::after {
+            opacity: 0;
+            position: absolute;
+            background: $COLOUR--WHITE_CLOUDS;
+            transition: all 0.3s ease-in 0s;
+            margin: 0!important;
+            pointer-events: none;
+
+        }
+
+        &::before {
+            content: "Loading ...";
+            bottom: -41px;
+            left: -10px;
+            padding: 7px 10px;
+            white-space: nowrap;
+            text-align: center;
+            z-index: 9;
+            border-radius: 2px;
+            box-shadow: 1px 2px 4px 0 rgba(40, 43, 45, 0.7);
+            text-transform: uppercase;
+
+            @include text(10px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRABOLD);
+        }
+
+        &::after {
+            width: 10px;
+            height: 10px;
+            transform: rotate(45deg);
+            content: "Arrow";
+            text-indent: -50000px;
+            bottom: -18px;
+            left: 5px;
+            z-index: 10;
+        }
+    }
+
+/////////////////////////////////////////////////
+// PREVIEW BUTTONS //////////////////////////////
+/////////////////////////////////////////////////
+	%CSS_BLOCK--PREVIEW_BUTTON---UP {
+		background: url($TREE--MENU--ICON--PREVIEW---UP) no-repeat center center $TREE--MENU--BG--COLOUR---UP;
+	}
+
+	%CSS_BLOCK--PREVIEW_BUTTON---UP\:SEARCH {
+		background: url($TREE--MENU--ICON--PREVIEW---UP\:SEARCH) no-repeat center center $TREE--MENU--BG--COLOUR---UP\:SEARCH;
+	}
+
+	%CSS_BLOCK--PREVIEW_BUTTON---SELECTED {
+		background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED;
+
+	}
+
+	%CSS_BLOCK--PREVIEW_BUTTON---SELECTED\:SEARCH {
+		background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED\:SEARCH;
+
+	}
+
+	%CSS_BLOCK--PREVIEW_BUTTON---HOVER {
+		// background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED;
+
+	}
+
+/////////////////////////////////////////////////
+// DATE PICKER //////////////////////////////////
+/////////////////////////////////////////////////
+
+	// PREVIOUS MONTH BUTTON
+	%CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH_BUTTON---UP {
+		background-image:url($DATE_PICKER--PREVIOUS_MONTH--ICON)!important;
+		background-size: 16px 16px;
+
+		opacity: 0.8;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH_BUTTON---HOVER {
+		opacity: 1;
+	}
+
+	// NEXT MONTH BUTTON
+	%CSS_BLOCK--DATE_PICKER--NEXT_MONTH_BUTTON---UP {
+		background-image:url($DATE_PICKER--NEXT_MONTH--ICON)!important;
+		background-size: 16px 16px;
+
+		opacity: 0.8;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--NEXT_MONTH_BUTTON---HOVER {
+		opacity: 1;
+	}
+
+	// "COMBO" FOR MONTH SELECTOR
+	%CSS_BLOCK--DATE_PICKER--COMBO---UP {
+		background: url($DATE_PICKER--COMBO--ICON) no-repeat right center;
+		padding-right: 15px;
+		text-transform: uppercase;
+		@include text(11px, $DATE_PICKER--COMBO--LABEL--COLOUR---UP, $FONT--WEIGHT---NORMAL)
+	}
+
+	%CSS_BLOCK--DATE_PICKER--COMBO---HOVER {
+		color: $DATE_PICKER--COMBO--LABEL--COLOUR---HOVER;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--TODAY_BUTTON---UP {
+		height: auto;
+		padding: 4px;
+		background: $DATE_PICKER--TODAY_BUTTON--LABEL--BG---UP;
+		@include text(11px, $DATE_PICKER--TODAY_BUTTON--LABEL--COLOUR---UP, $FONT--WEIGHT---LIGHT);
+	}
+
+	%CSS_BLOCK--DATE_PICKER--TODAY_BUTTON---HOVER {
+		background: $DATE_PICKER--TODAY_BUTTON--LABEL--BG---HOVER;
+		color: $DATE_PICKER--TODAY_BUTTON--LABEL--COLOUR---HOVER;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--DAY_OF_WEEK {
+		border:none;
+		@include text(10px, $DATE_PICKER--DAYS_OF_WEEK--LABEL--COLOUR, $FONT--WEIGHT---BOLD);
+	}
+
+	%CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH---UP {
+		background: $DATE_PICKER--DATE--PREVIOUS_MONTH--LABEL--BG---UP;
+		@include text(10px, $DATE_PICKER--DATE--PREVIOUS_MONTH--LABEL--COLOUR---UP, $FONT--WEIGHT---NORMAL);
+	}
+
+	%CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH---HOVER {
+		font-weight: $FONT--WEIGHT---EXTRALIGHT;
+		background: $DATE_PICKER--DATE--PREVIOUS_MONTH--LABEL--BG---HOVER !important;
+		color: $DATE_PICKER--DATE--PREVIOUS_MONTH--LABEL--COLOUR---HOVER;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--CURRENT_MONTH---UP {
+		background: $DATE_PICKER--DATE--CURRENT_MONTH--LABEL--BG---UP;
+		@include text(10px, $DATE_PICKER--DATE--CURRENT_MONTH--LABEL--COLOUR---UP, $FONT--WEIGHT---NORMAL);
+	}
+
+	%CSS_BLOCK--DATE_PICKER--CURRENT_MONTH---HOVER {
+		font-weight: $FONT--WEIGHT---EXTRALIGHT;
+		background: $DATE_PICKER--DATE--CURRENT_MONTH--LABEL--BG---HOVER !important;
+		color: $DATE_PICKER--DATE--CURRENT_MONTH--LABEL--COLOUR---HOVER;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--NEXT_MONTH---UP {
+		background: $DATE_PICKER--DATE--NEXT_MONTH--LABEL--BG---UP;
+		@include text(10px, $DATE_PICKER--DATE--NEXT_MONTH--LABEL--COLOUR---UP, $FONT--WEIGHT---NORMAL);
+	}
+
+	%CSS_BLOCK--DATE_PICKER--NEXT_MONTH---HOVER {
+		font-weight: $FONT--WEIGHT---EXTRALIGHT;
+		background: $DATE_PICKER--DATE--NEXT_MONTH--LABEL--BG---HOVER !important;
+		color: $DATE_PICKER--DATE--NEXT_MONTH--LABEL--COLOUR---HOVER;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--SELECTED_MONTH---UP {
+		background: $DATE_PICKER--DATE--SELECTED_MONTH--LABEL--BG---UP;
+		@include text(10px, $DATE_PICKER--DATE--SELECTED_MONTH--LABEL--COLOUR---UP, $FONT--WEIGHT---NORMAL);
+	}
+
+	%CSS_BLOCK--DATE_PICKER--SELECTED_MONTH---HOVER {
+		font-weight: $FONT--WEIGHT---EXTRALIGHT;
+		background: $DATE_PICKER--DATE--SELECTED_MONTH--LABEL--BG---HOVER !important;
+		color: $DATE_PICKER--DATE--SELECTED_MONTH--LABEL--COLOUR---HOVER;
+	}
+
+
+    %CSS_BLOCK--DATE_PICKER--MODAL--LABEL {
+        content: $DATE_PICKER--MONTH_PICKER--LABEL--TEXT;
+        line-height: 27px;
+
+        @include text(12px, $DATE_PICKER--MONTH_PICKER--LABEL--COLOUR, $FONT--WEIGHT---NORMAL);
+    }
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---UP {
+		@include text(11px, $DATE_PICKER--MONTH_PICKER--MONTH--LABEL--COLOUR---UP, $FONT--WEIGHT---NORMAL);
+		background: $DATE_PICKER--MONTH_PICKER--MONTH--BG--COLOUR---UP;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---HOVER {
+		color: $DATE_PICKER--MONTH_PICKER--MONTH--LABEL--COLOUR---HOVER;
+		background: $DATE_PICKER--MONTH_PICKER--MONTH--BG--COLOUR---HOVER;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---SELECTED {
+		color: $DATE_PICKER--MONTH_PICKER--MONTH--LABEL--COLOUR---SELECTED;
+		background: $DATE_PICKER--MONTH_PICKER--MONTH--BG--COLOUR---SELECTED;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---SELECTED_HOVER {
+		color: $DATE_PICKER--MONTH_PICKER--MONTH--LABEL--COLOUR---SELECTED_HOVER;
+		background: $DATE_PICKER--MONTH_PICKER--MONTH--BG--COLOUR---SELECTED_HOVER;
+	}
+
+
+
+
+
+
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---UP {
+		@include text(11px, $DATE_PICKER--MONTH_PICKER--YEAR--LABEL--COLOUR---UP, $FONT--WEIGHT---NORMAL);
+		background: $DATE_PICKER--MONTH_PICKER--YEAR--BG--COLOUR---UP;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---HOVER {
+		color: $DATE_PICKER--MONTH_PICKER--YEAR--LABEL--COLOUR---HOVER;
+		background: $DATE_PICKER--MONTH_PICKER--YEAR--BG--COLOUR---HOVER;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---SELECTED {
+		color: $DATE_PICKER--MONTH_PICKER--YEAR--LABEL--COLOUR---SELECTED;
+		background: $DATE_PICKER--MONTH_PICKER--YEAR--BG--COLOUR---SELECTED;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---SELECTED_HOVER {
+		color: $DATE_PICKER--MONTH_PICKER--YEAR--LABEL--COLOUR---SELECTED_HOVER;
+		background: $DATE_PICKER--MONTH_PICKER--YEAR--BG--COLOUR---SELECTED_HOVER;
+	}
+
+
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--PREVIOUS_YEAR---UP {
+		background: url($DATE_PICKER--MONTH_PICKER--PREVIOUS_YEAR--ICON) no-repeat center center $DATE_PICKER--MONTH_PICKER--PREVIOUS_YEAR--BG--COLOUR;
+		background-size: 14px 14px;
+		opacity: 0.8;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--PREVIOUS_YEAR---HOVER {
+		opacity: 1;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--NEXT_YEAR---UP {
+		background: url($DATE_PICKER--MONTH_PICKER--NEXT_YEAR--ICON) no-repeat center center $DATE_PICKER--MONTH_PICKER--NEXT_YEAR--BG--COLOUR;
+		background-size: 14px 14px;
+		opacity: 0.8;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--MODAL--NEXT_YEAR---HOVER {
+		opacity: 1;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--OK_BUTTON---UP {
+        height: 100%;
+        background-color: rgb(242,109,79);
+        opacity: 1;
+        width: 35px;
+        text-indent: 0;
+        float: right;
+        margin: 0;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--OK_BUTTON---HOVER {
+		opacity: 1;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--CANCEL_BUTTON---UP {
+		background: url($DATE_PICKER--CANCEL_BUTTON--ICON) no-repeat center center;
+        background-size: 10px 10px;
+        text-indent: -50000px;
+        width: 25px;
+        opacity: 0.8;
+        background-color: transparent;
+        position: absolute;
+        left: 5px;
+        height: 26px;
+	}
+
+	%CSS_BLOCK--DATE_PICKER--CANCEL_BUTTON---HOVER {
+		opacity: 1;
+	}
+
+
+
+/////////////////////////////////////////////////
+// FORMS ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+    // CHECKBOX
+    %CSS_BLOCK--CHECKBOX---UNCHECKED {
+        border: $FORM--CHECKBOX--BORDER---UNCHECKED;
+		background: $FORM--CHECKBOX--BG--COLOUR---UNCHECKED;
+		box-shadow: $FORM--CHECKBOX--SHADOW---UNCHECKED;
+    }
+
+    %CSS_BLOCK--CHECKBOX---CHECKED {
+        background: no-repeat center center;
+        background-image: url($FORM--CHECKBOX--ICON---CHECKED);
+        background-size: 15px 15px;
+        background-color: $FORM--CHECKBOX--BG--COLOUR---CHECKED;
+    }
+
+    // LEGENDS
+    %CSS_BLOCK--FORM--LEGEND---COLLAPSED {}
+
+	%CSS_BLOCK--FORM--LEGEND {
+    	padding: 0!important;
+        position: absolute;
+        top: 14px;
+        left: 30px;
+        text-transform: uppercase;
+
+    	@include text(11px, $FORM--LEGEND--FONT--COLOUR, $FONT--WEIGHT---SEMIBOLD);
+    }
+
+    // FIELDSET
+    %CSS_BLOCK--FIELDSET {
+        border: none !important;
+        padding: 43px 10px 20px 29px !important;
+        margin: 0 23px 10px 0 !important;
+        position: relative;
+        background: $FORM--FIELDSET--BG--COLOUR;
+        box-sizing: border-box;
+    }
+
+    // FIELDSET
+    %CSS_BLOCK--FIELDSET\:PICKER_SEARCH {
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        position: relative;
+        background: $FORM--FIELDSET--BG--COLOUR\:PICKER_SEARCH!important;
+    }
+
+    // LABELS
+	%CSS_BLOCK--FORM--LABEL {
+        padding: 0!important;
+        margin: 0!important;
+        text-transform: uppercase;
+        line-height: 24px;
+
+        @include text(10px, $FORM--LABEL--FONT--COLOUR, $FONT--WEIGHT---SEMIBOLD, $DEFAULT--FONT--FAMILY !important);
+    }
+
+    // TOGGLE
+    %CSS_BLOCK--FORM--TOGGLE--BG {
+        content: $FORM--TOGGLE--FONT--LOCALISED_STRING---OFF;
+        background: $FORM--TOGGLE--BG--COLOUR;
+        box-shadow: $FORM--TOGGLE--BG--SHADOW;
+        text-transform: uppercase;
+
+        @include text(10px, $FORM--TOGGLE--FONT--COLOUR---OFF, $FONT--WEIGHT---EXTRABOLD);
+    }
+
+    %CSS_BLOCK--FORM--TOGGLE--SHUTTLE---OFF {
+        content: " ";
+        background: $FORM--TOGGLE--SHUTTLE--COLOUR---OFF;
+    }
+
+    %CSS_BLOCK--FORM--TOGGLE--BG---ON {
+    	content: " ";
+    }
+
+    %CSS_BLOCK--FORM--TOGGLE--SHUTTLE---ON {
+        content: $FORM--TOGGLE--FONT--LOCALISED_STRING---ON;
+        color: $FORM--TOGGLE--FONT--COLOUR---ON;
+        background: $FORM--TOGGLE--SHUTTLE--COLOUR---ON;
+        color: $COLOUR--WHITE;
+        text-transform: uppercase;
+        font-size: 10px;
+        font-weight: $FONT--WEIGHT---EXTRABOLD;
+    }
+
+	// TEXT INPUT
+    %CSS_BLOCK--FORM--TEXT_INPUT {
+        background: $FORM--TEXT_INPUT--BG--COLOUR;
+        padding: $FORM--TEXT_INPUT--PADDING;
+        border: $FORM--TEXT_INPUT--BORDER;
+        transition: all 0.15s ease-in 0s;
+
+        @include text($FORM--TEXT_INPUT--FONT--SIZE, $FORM--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+    }
+
+	%CSS_BLOCK--FORM--TEXT_INPUT---HOVER {
+        background: $FORM--TEXT_INPUT--BG--COLOUR---HOVER;
+        color: $FORM--TEXT_INPUT--FONT--COLOUR---HOVER;
+    }
+
+	%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS {
+        background: $FORM--TEXT_INPUT--BG--COLOUR---FOCUS;
+		color: $FORM--TEXT_INPUT--FONT--COLOUR---FOCUS;
+    }
+
+    %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED {
+        background: $COLOUR--TRANSPARENT;
+        padding: 3px 40px 3px 5px;
+        padding-left: 0;
+        border: 1px solid $COLOUR--TRANSPARENT;
+        transition: $DEFAULT--TRANSITION;
+
+        @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--DUSTY_CLOUDS, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+    }
+
+	// EDIT ENGINES EXCEPTION
+        %CSS_BLOCK--FORM--TEXT_INPUT\:EDIT_ENGINE {
+            background: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR;
+
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
+        %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:EDIT_ENGINE {
+            background: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---HOVER;
+            color: $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---HOVER !important;
+        }
+
+    	%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:EDIT_ENGINE {
+            background: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---FOCUS;
+    		color: $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+        }
+
+        %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE {
+            background: transparent !important;
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
+	// SEARCH PANEL EXCEPTION
+        %CSS_BLOCK--FORM--TEXT_INPUT\:SEARCH_PANEL {
+            background: $SEARCH_PANEL--TEXT_INPUT--BG--COLOUR;
+
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
+        %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:SEARCH_PANEL {
+            background: $SEARCH_PANEL--TEXT_INPUT--BG--COLOUR---HOVER;
+            color: $SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR---HOVER !important;
+        }
+
+    	%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:SEARCH_PANEL {
+            background: $SEARCH_PANEL--TEXT_INPUT--BG--COLOUR---FOCUS;
+    		color: $SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+        }
+
+        %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:SEARCH_PANEL {
+            background: transparent !important;
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
+	// TEXT AREA
+    %CSS_BLOCK--FORM--TEXT_AREA {
+        background: $FORM--TEXT_AREA--BG--COLOUR !important;
+        padding: $FORM--TEXT_AREA--PADDING !important;
+        border: $FORM--TEXT_AREA--BORDER !important;
+        transition: none !important;
+
+        @include text($FORM--TEXT_AREA--FONT--SIZE, $FORM--TEXT_AREA--FONT--COLOUR, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+    }
+
+	%CSS_BLOCK--FORM--TEXT_AREA---HOVER {
+        background: $FORM--TEXT_AREA--BG--COLOUR---HOVER;
+        color: $FORM--TEXT_AREA--FONT--COLOUR---HOVER;
+    }
+
+	%CSS_BLOCK--FORM--TEXT_AREA---FOCUS {
+        background: $FORM--TEXT_AREA--BG--COLOUR---FOCUS;
+		color: $FORM--TEXT_AREA--FONT--COLOUR---FOCUS;
+    }
+
+    %CSS_BLOCK--FORM--TEXT_AREA---DISABLED {
+        background: $COLOUR--TRANSPARENT;
+        padding: 3px 40px 3px 5px;
+        padding-left: 0;
+        border: 1px solid $COLOUR--TRANSPARENT;
+        transition: $DEFAULT--TRANSITION;
+
+        @include text($FORM--TEXT_AREA--FONT--SIZE, $COLOUR--DUSTY_CLOUDS, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+    }
+
+	// EDIT ENGINES EXCEPTION
+		%CSS_BLOCK--FORM--TEXT_AREA\:EDIT_ENGINE {
+			background: $EDIT_ENGINE--TEXT_AREA--BG--COLOUR !important;
+
+			@include text($FORM--TEXT_AREA--FONT--SIZE, $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+		}
+
+		%CSS_BLOCK--FORM--TEXT_AREA---HOVER\:EDIT_ENGINE {
+			background: $EDIT_ENGINE--TEXT_AREA--BG--COLOUR---HOVER !important;
+			color: $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR---HOVER !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_AREA---FOCUS\:EDIT_ENGINE {
+			background: $EDIT_ENGINE--TEXT_AREA--BG--COLOUR---FOCUS !important;
+			color: $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR---FOCUS !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_AREA---DISABLED\:EDIT_ENGINE {
+			background: transparent !important;
+			@include text($FORM--TEXT_AREA--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+		}
+
+
+
+	// DUAL LIST
+        %CSS_BLOCK--FORM--TEXT_INPUT\:DUAL_LIST {
+            background: $DUAL_LIST--TEXT_INPUT--BG--COLOUR;
+
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $DUAL_LIST--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
+        %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:DUAL_LIST {
+            background: $DUAL_LIST--TEXT_INPUT--BG--COLOUR---HOVER;
+            color: $DUAL_LIST--TEXT_INPUT--FONT--COLOUR---HOVER !important;
+        }
+
+    	%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:DUAL_LIST {
+            background: $DUAL_LIST--TEXT_INPUT--BG--COLOUR---FOCUS !important;
+    		color: $DUAL_LIST--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+        }
+
+        %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:DUAL_LIST {
+            background: transparent !important;
+            @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+        }
+
+	// PICKER SEARCH
+		%CSS_BLOCK--FORM--TEXT_INPUT\:PICKER_FILTER {
+			// width: 120px!important;
+			background: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR;
+			background-image: url($ICON--SEARCH--SMALL_GREY);
+			background-repeat: no-repeat;
+			background-position: left 5px center;
+			background-size: 10px 10px;
+			padding: 1px 15px 2px 19px !important;
+
+			@include text($FORM--TEXT_INPUT--FONT--SIZE, $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_FILTER {
+			background-color: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---HOVER;
+			color: $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---HOVER !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:PICKER_FILTER {
+			background-image: url($ICON--SEARCH--SMALL_WHITE);
+			background-color: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---FOCUS !important;
+			color: $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:PICKER_FILTER {
+			background-color: transparent !important;
+			@include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+		}
+
+	// PICKER SORT
+		%CSS_BLOCK--FORM--TEXT_INPUT\:PICKER_SORT {
+			width: 120px!important;
+			background: $PICKER_SORT--TEXT_INPUT--BG--COLOUR;
+			padding: 1px 15px 2px 5px!important;
+
+			@include text($FORM--TEXT_INPUT--FONT--SIZE, $PICKER_SORT--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_SORT {
+			background: $PICKER_SORT--TEXT_INPUT--BG--COLOUR---HOVER;
+			color: $PICKER_SORT--TEXT_INPUT--FONT--COLOUR---HOVER !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:PICKER_SORT {
+			background: $PICKER_SORT--TEXT_INPUT--BG--COLOUR---FOCUS !important;
+			color: $PICKER_SORT--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+		}
+
+		%CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:PICKER_SORT {
+			background: transparent !important;
+			@include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--ASH_CLOUDS !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+		}
+
+
+    // CLEAR FORM BUTTON
+    %CSS_BLOCK--FORM--CLEAR_BUTTON---UP {
+        background: no-repeat center center;
+        background-color: $FORM--CLEAR_BUTTON--BG--COLOUR---UP !important;
+        background-image: url($FORM--CLEAR_BUTTON--ICON---UP);
+		background-size: 45%;
+    }
+
+    %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER {
+        background-color: $FORM--CLEAR_BUTTON--BG--COLOUR---HOVER !important;
+        background-image: url($FORM--CLEAR_BUTTON--ICON---HOVER);
+    }
+
+    %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS {
+        background-color: transparent !important;
+        opacity: 1!important;
+        background-image: url($FORM--CLEAR_BUTTON--ICON---HOVER);
+    }
+
+    // EDIT PANEL EXCEPTIONS
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:EDIT_ENGINE {
+            background-color: $COLOUR--TRANSPARENT !important;
+            opacity: 0.5;
+        }
+
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:EDIT_ENGINE {
+            background-color: $COLOUR--TRANSPARENT !important;
+            opacity: 1;
+        }
+
+	// DUAL LIST EXCEPTIONS
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:DUAL_LIST {
+            background-color: $COLOUR--ASH_CLOUDS !important;
+            opacity: 0.5;
+        }
+
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:DUAL_LIST {
+            background-color: $COLOUR--ASH_CLOUDS !important;
+            opacity: 1;
+        }
+
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS\:DUAL_LIST {
+            border:5px solid red;
+            background-color: transparent !important;
+            opacity: 1!important;
+            background-image: url($FORM--CLEAR_BUTTON--ICON---HOVER);
+        }
+
+	// PICKER FILTER EXCEPTIONS
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:PICKER_FILTER {
+			background-color: transparent !important;
+			background-image: url($ICON--CLOSE_LARGE---GREY) !important;
+			height: 21px!important;
+            opacity: 0.5;
+        }
+
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:PICKER_FILTER {
+            // background-color: $COLOUR--ASH_CLOUDS !important;
+            opacity: 1;
+        }
+
+
+
+/////////////////////////////////////////////////
+// COMBO MENUS //////////////////////////////////
+/////////////////////////////////////////////////
+
+    %CSS_BLOCK--FORM--COMBO--ARROW---UP {
+        background: no-repeat center center;
+        background-color: $FORM--COMBO--BG--COLOUR---UP !important;
+        background-image: url($FORM--COMBO--ICON---UP);
+        font-style:italic;
+    }
+
+    %CSS_BLOCK--FORM--COMBO--ARROW---HOVER {
+        background-color: $FORM--COMBO--BG--COLOUR---HOVER !important;
+        background-image: url($FORM--COMBO--ICON---HOVER);
+    }
+
+    %CSS_BLOCK--FORM--COMBO--ARROW---UP\:OPEN_PICKER {
+        background: no-repeat center center;
+        background-color: $FORM--COMBO--BG--COLOUR---UP\:OPEN_PICKER !important;
+        background-image: url($FORM--COMBO--ICON---UP\:OPEN_PICKER);
+        font-style:italic;
+    }
+
+    %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:OPEN_PICKER {
+        background-color: $FORM--COMBO--BG--COLOUR---HOVER\:OPEN_PICKER !important;
+        background-image: url($FORM--COMBO--ICON---HOVER\:OPEN_PICKER);
+    }
+
+    %CSS_BLOCK--FORM--COMBO--TEXT_INPUT {
+        padding: $FORM--TEXT_INPUT--PADDING !important;
+        border: $FORM--TEXT_INPUT--BORDER;
+		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
+		font-size: $FORM--TEXT_INPUT--FONT--SIZE;
+		font-weight: $FORM--TEXT_INPUT--FONT--WEIGHT;
+    }
+
+	// EDIT ENGINE EXEPTIONS
+        %CSS_BLOCK--FORM--COMBO--ARROW---UP\:EDIT_ENGINE {
+            background-color: $COLOUR--TRANSPARENT !important;
+            opacity: 0.5;
+        }
+
+        %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:EDIT_ENGINE {
+            background-color: $COLOUR--TRANSPARENT !important;
+            opacity: 1;
+        }
+
+        %CSS_BLOCK--FORM--COMBO--TEXT_INPUT\:EDIT_ENGINE {
+            padding: $FORM--TEXT_INPUT--PADDING !important;
+            border: $FORM--TEXT_INPUT--BORDER;
+    		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
+    		font-size: $FORM--TEXT_INPUT--FONT--SIZE;
+    		font-weight: $FORM--TEXT_INPUT--FONT--WEIGHT;
+        }
+
+	// PICKER FILTER EXEPTIONS
+        %CSS_BLOCK--FORM--COMBO--ARROW---UP\:PICKER_FILTER {
+            background-color: transparent !important;
+			background-image: url($ICON--ARROW_DOWN---GREY) !important;
+			height: 21px!important;
+
+            opacity: 0.5;
+        }
+
+        %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:PICKER_FILTER {
+            background-color: $COLOUR--TRANSPARENT !important;
+            opacity: 1;
+        }
+
+        %CSS_BLOCK--FORM--COMBO--TEXT_INPUT\:PICKER_FILTER {
+            padding: $FORM--TEXT_INPUT--PADDING !important;
+            border: $FORM--TEXT_INPUT--BORDER;
+    		font-family: $FORM--TEXT_INPUT--FONT--FAMILY;
+    		font-size: $FORM--TEXT_INPUT--FONT--SIZE;
+    		font-weight: $FORM--TEXT_INPUT--FONT--WEIGHT;
+        }
+
+
+
+/////////////////////////////////////////////////
+// COMBO ::: MODE SELECTOR //////////////////////
+/////////////////////////////////////////////////
+
+%CSS_BLOCK--FORM--MODE_COMBO--LABEL {
+    text-transform: uppercase;
+
+    @include text(14px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
+}
+
+%CSS_BLOCK--FORM--MODE_COMBO--LABEL---MULTI_SELECT {
+    background: url($ICON--DX---BLACK) no-repeat left 12px center / 20px 20px;
+}
+
+
+
+/////////////////////////////////////////////////
+// LIST BOX /////////////////////////////////////
+/////////////////////////////////////////////////
+
+        %CSS_BLOCK--FORM--LIST_BOX--HOLDER {
+            border: none;
+            box-shadow: none;
+        }
+
+        %CSS_BLOCK--FORM--LIST_BOX--ITEM {
+            text-align: left!important;
+            background: $FORM--LIST_BOX--BG--COLOUR---UP;
+            padding: 8px 9px !important;
+            border: none;
+            width: 100%;
+
+            @include text(11px, $FORM--LIST_BOX--FONT--COLOUR---UP, $FONT--WEIGHT---SEMILIGHT);
+        }
+
+        %CSS_BLOCK--FORM--LIST_BOX--ITEM---HOVER {
+            color: $FORM--LIST_BOX--FONT--COLOUR---HOVER;
+            background: $FORM--LIST_BOX--BG--COLOUR---HOVER;
+        }
+
+        %CSS_BLOCK--FORM--LIST_BOX--ITEM---SELECTED {
+            color: $FORM--LIST_BOX--FONT--COLOUR---SELECTED;
+            background: $FORM--LIST_BOX--BG--COLOUR---SELECTED;
+        }
+
+        %CSS_BLOCK--FORM--LIST_BOX--ITEM---DISABLED {
+            color: $FORM--LIST_BOX--FONT--COLOUR---DISABLED;
+            font-style: italic;
+            opacity: 1;
+            background: $FORM--LIST_BOX--BG--COLOUR---DISABLED;
+            display: none;
+        }
+
+
+
+/////////////////////////////////////////////////
+// CONTEXT MENU /////////////////////////////////
+/////////////////////////////////////////////////
+
+    %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER {
+        border: none;
+        box-shadow: 0 0 10px 0 rgba($COLOUR--DARK_CLOUDS, .3);
+    }
+
+    %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM {
+        text-align: left!important;
+        background: $FORM--CONTEXT_MENU--BG--COLOUR---UP;
+        padding: 8px 9px !important;
+        border: none;
+
+        @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---SEMILIGHT);
+    }
+
+    %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER {
+        color: $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER;
+        background: $FORM--CONTEXT_MENU--BG--COLOUR---HOVER;
+    }
+
+    %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED {
+        color: $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED;
+        font-style: italic;
+        opacity: 1;
+        background: $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED;
+        display: none;
+    }
+
+    // Personalised Context Menus
+	// You can use these placeholders to personalise each context menu.
+	// If left blank then they will assume the default style applied above.
+
+        // Menus available in ALL / MULTIPLE pages
+            // Hamburger menu
+            %CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:COMMON_HAMBURGER {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:COMMON_HAMBURGER {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:COMMON_HAMBURGER {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:COMMON_HAMBURGER {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:COMMON_HAMBURGER {}
+
+            // Language Selector
+            %CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:LANGUAGE_SELECTOR {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:LANGUAGE_SELECTOR {
+                // border: 10px solid orangered;
+                //
+                // // Need extra Selector Weight ...
+                // &.x-combo-list-inner {
+                //     width: auto!important;
+                //
+                // }
+            }
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:LANGUAGE_SELECTOR {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:LANGUAGE_SELECTOR {}
+            %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:LANGUAGE_SELECTOR {}
+
+		// Menus available in Edit Mode
+			// Publication
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--PUBLICATION {
+                content: attr(data-indigo-title);
+
+				// body[data-multiselect="on"] & {
+				// 	content: $text_context_menu_publication_selection;
+				// }
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--PUBLICATION {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--PUBLICATION {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--PUBLICATION {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--PUBLICATION {}
+
+			// Preview
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--PREVIEW {
+                content: attr(data-indigo-title);
+
+				// body[data-multiselect="on"] & {
+				// 	content: $text_context_menu_preview_selection;
+				// }
+
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--PREVIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--PREVIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--PREVIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--PREVIEW {}
+
+			// More Info (old Edit button)
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--MORE_INFO {
+                content: attr(data-indigo-title);
+
+				// body[data-multiselect="on"] & {
+				// 	content: $text_context_menu_more_info_selection;
+				// }
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--MORE_INFO {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--MORE_INFO {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--MORE_INFO {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--MORE_INFO {}
+
+			// Mode View
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--MODE_VIEW {
+                content: attr(data-indigo-title);
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--MODE_VIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--MODE_VIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--MODE_VIEW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--MODE_VIEW {}
+
+			// User Menu
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--USER_MENU {
+				//content: $text_context_menu_user_menu;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--USER_MENU {
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--USER_MENU {
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--USER_MENU {
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--USER_MENU {
+
+			}
+
+			// Workflow
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--WORKFLOW {
+				//content: $text_context_menu_workflow;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--WORKFLOW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--WORKFLOW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--WORKFLOW {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--WORKFLOW {}
+
+			// Cache
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--CACHE {
+				//content: $text_context_menu_cache;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--CACHE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--CACHE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--CACHE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--CACHE {}
+
+			// Page Edit Context
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--PAGE_CONTEXT {
+                content: attr(data-indigo-title);
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--PAGE_CONTEXT {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--PAGE_CONTEXT {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--PAGE_CONTEXT {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--PAGE_CONTEXT {}
+
+			// Side Panel > Pages
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--PAGES {
+				//content: $text_context_menu_side_panel_pages;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--PAGES {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--PAGES {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--PAGES {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--PAGES {}
+
+			// Side Panel > Content > Tree
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--CONTENT--TREE {
+				//content: $text_context_menu_side_panel_content_tree;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--CONTENT--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--CONTENT--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--CONTENT--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--CONTENT--TREE {}
+
+			// Side Panel > Content > Item
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--CONTENT--ITEM {
+				//content: $text_context_menu_side_panel_content_item;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--CONTENT--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--CONTENT--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--CONTENT--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--CONTENT--ITEM {}
+
+			// Side Panel > File > Tree
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--FILE--TREE {
+				//content: $text_context_menu_side_panel_file_tree;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--FILE--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--FILE--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--FILE--TREE {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--FILE--TREE {}
+
+			// Side Panel > File > Item
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--FILE--ITEM {
+				//content: $text_context_menu_side_panel_file_item;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--FILE--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--FILE--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--FILE--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--FILE--ITEM {}
+
+			// Side Panel > Search
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--SEARCH--ITEM {
+				//content: $text_context_menu_side_panel_search;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--SEARCH--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--SEARCH--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--SEARCH--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--SEARCH--ITEM {}
+
+			// Side Panel > Taxonomy
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:EDIT_MODE--SIDE_PANEL--TAXONOMY--ITEM {
+				//content: $text_context_menu_side_panel_taxonomy;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--SIDE_PANEL--TAXONOMY--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--SIDE_PANEL--TAXONOMY--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--SIDE_PANEL--TAXONOMY--ITEM {}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--SIDE_PANEL--TAXONOMY--ITEM {}
+
+		// Menus available in Admin Mode
+			// User Menu
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:ADMIN_MODE--USER_MENU {
+				content: $text_context_menu_admin_user_name;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:ADMIN_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:ADMIN_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:ADMIN_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:ADMIN_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
+			}
+
+			// Mode View
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:ADMIN_MODE--MODE_VIEW {
+				content: $text_context_menu_admin_mode_view;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:ADMIN_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:ADMIN_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:ADMIN_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:ADMIN_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:ADMIN_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:ADMIN_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:ADMIN_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:ADMIN_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
+			}
+
+
+
+		// Menus available in Dashboard Mode
+			// User Menu
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:DASHBOARD_MODE--USER_MENU {
+				content: $text_context_menu_dashboard_user_name;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:DASHBOARD_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:DASHBOARD_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:DASHBOARD_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:DASHBOARD_MODE--USER_MENU {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--USER_MENU !optional; // Apply same style as Edit Mode version
+			}
+
+		// Mode View
+			%CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:DASHBOARD_MODE--MODE_VIEW {
+				content: $text_context_menu_dashboard_mode_view;
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:DASHBOARD_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:EDIT_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:DASHBOARD_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:EDIT_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:DASHBOARD_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:EDIT_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
+			}
+			%CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:DASHBOARD_MODE--MODE_VIEW {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:EDIT_MODE--MODE_VIEW !optional; // Apply same style as Edit Mode version
+			}
+
+			// _common.scss uses this list to generate personalised menus according to placeholders above.
+			// If placeholders are empty then no classes are created.
+			// There is no need to edit this list.
+			// If you want to remove a personalised context menu then just empty the styling of the place holder above.
+
+			$personalised_context_menus: (
+				// COMMON MENUS
+				(".menu-editmode-managers-menu",    COMMON_HAMBURGER),
+                (".menu-toolbar-itemsgroup-languageswitcher", LANGUAGE_SELECTOR),
+
+				// EDIT MODE MENUS
+				(".menu-edit-menu-publication",     EDIT_MODE--PUBLICATION),
+				(".menu-edit-menu-view",      		EDIT_MODE--PREVIEW),
+				(".menu-edit-menu-edit",      		EDIT_MODE--MORE_INFO),
+				(".menu-edit-menu-mode",      		EDIT_MODE--MODE_VIEW),
+				(".menu-edit-menu-user",      		EDIT_MODE--USER_MENU),
+				(".menu-edit-menu-workflow",      	EDIT_MODE--WORKFLOW),
+				(".menu-edit-menu-cache",      		EDIT_MODE--CACHE),
+				(".editModeContextMenu",      		EDIT_MODE--PAGE_CONTEXT),
+				(".pagesContextMenu",      			EDIT_MODE--SIDE_PANEL--PAGES),
+				(".contentTreeContextMenu",      	EDIT_MODE--SIDE_PANEL--CONTENT_TREE),
+				(".contentTableContextMenu",      	EDIT_MODE--SIDE_PANEL--CONTENT_ITEM),
+				(".filesTreeContextMenu",      		EDIT_MODE--SIDE_PANEL--FILE_TREE),
+				(".filesTableContextMenu",      	EDIT_MODE--SIDE_PANEL--FILE_ITEM),
+				(".searchTableContextMenu",      	EDIT_MODE--SIDE_PANEL--SEARCH_ITEM),
+				(".categoriesTableContextMenu",     EDIT_MODE--SIDE_PANEL--TAXONOMY_ITEM),
+
+				//ADMIN MODE MENUS
+				(".menu-admin-menu-user",      		ADMIN_MODE--USER_MENU),
+				(".menu-admin-menu-mode",      		ADMIN_MODE--MODE_VIEW),
+
+				// DASHBOARD MENUS
+				(".menu-dashboard-menu-user",      	DASHBOARD_MODE--USER_MENU),
+				(".menu-dashboard-menu-mode",      	DASHBOARD_MODE--MODE_VIEW)
+			);
+
+
+
+/////////////////////////////////////////////////
+// BUTTONS //////////////////////////////////////
+/////////////////////////////////////////////////
+
+    // PICKER SEARCH BUTTON
+    %CSS_BLOCK--BUTTON--TEXT\:PICKER_SEARCH {
+        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--BUTTON--TEXT---HOVER\:PICKER_SEARCH {
+        background: $BUTTON--BG--COLOUR---HOVER\:PICKER_SEARCH;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:PICKER_SEARCH, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--BUTTON--ICON\:PICKER_SEARCH {
+        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH, $FONT--WEIGHT---EXTRALIGHT);
+
+        img {
+            left: 5px!important;
+            top: 7px!important;
+        }
+    }
+
+    // PICKER SEARCH BUTTON SUGGESTED
+    %CSS_BLOCK--BUTTON--TEXT\:PICKER_SEARCH---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH---SUGGESTED;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH---SUGGESTED, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--BUTTON--TEXT---HOVER\:PICKER_SEARCH---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---HOVER\:PICKER_SEARCH---SUGGESTED;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:PICKER_SEARCH---SUGGESTED, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--BUTTON--ICON\:PICKER_SEARCH---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH---SUGGESTED;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH---SUGGESTED, $FONT--WEIGHT---EXTRALIGHT);
+
+        img {
+            left: 5px!important;
+            top: 7px!important;
+        }
+    }
+
+    // FORM
+    %CSS_BLOCK--BUTTON--TEXT\:FORM {
+        background: $BUTTON--BG--COLOUR---UP\:FORM;
+        text-transform: uppercase;
+        padding: 4px 0 0;
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:FORM, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--BUTTON--TEXT---HOVER\:FORM {
+        background: $BUTTON--BG--COLOUR---HOVER\:FORM;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FORM, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--BUTTON--ICON\:FORM {
+        background: $BUTTON--BG--COLOUR---UP\:FORM;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, $BUTTON--FONT--COLOUR---UP\:FORM, $FONT--WEIGHT---EXTRALIGHT);
+
+        img {
+            left: 5px!important;
+            top: 7px!important;
+        }
+    }
+
+    %CSS_BLOCK--BUTTON--ICON---HOVER\:FORM {
+        background: $BUTTON--BG--COLOUR---HOVER\:FORM;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:FORM, $FONT--WEIGHT---EXTRALIGHT);
+
+        img {
+            left: 5px!important;
+        }
+    }
+
+    // SIDE PANEL
+	%CSS_BLOCK--BUTTON--TEXT\:SIDE_PANEL {
+        background: $BUTTON--BG--COLOUR---UP\:SIDE_PANEL !important;
+        color: $BUTTON--FONT--COLOUR---UP\:SIDE_PANEL !important;
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:SIDE_PANEL {
+		background: $BUTTON--BG--COLOUR---HOVER\:SIDE_PANEL !important;
+        color: $BUTTON--FONT--COLOUR---HOVER\:SIDE_PANEL !important;
+    }
+
+	%CSS_BLOCK--BUTTON--ICON\:SIDE_PANEL {
+        background: $BUTTON--BG--COLOUR---UP\:SIDE_PANEL !important;
+        color: $BUTTON--FONT--COLOUR---UP\:SIDE_PANEL !important;
+
+    }
+
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:SIDE_PANEL {
+        background: $BUTTON--BG--COLOUR---HOVER\:SIDE_PANEL !important;
+        color: $BUTTON--FONT--COLOUR---HOVER\:SIDE_PANEL !important;
+
+    }
+
+    // FIELDSET
+	%CSS_BLOCK--BUTTON--TEXT\:FIELDSET {
+        background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
+        text-transform: uppercase;
+        padding: 5px 10px;
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---NORMAL);
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT--HOVER_PARENT\:FIELDSET {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET!important;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---NORMAL);
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:FIELDSET {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---NORMAL);
+    }
+
+	%CSS_BLOCK--BUTTON--ICON\:FIELDSET {
+        background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---EXTRALIGHT);
+
+        img {
+            left: 5px!important;
+            top: 7px!important;
+        }
+    }
+
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:FIELDSET {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET !important;
+        padding: 5px 10px 5px 29px;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---EXTRALIGHT);
+
+        img {
+            left: 5px!important;
+        }
+    }
+
+	// ACTION BAR
+	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR {
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR !important;
+    	padding: 5px 10px;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR {
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR !important;
+    	padding: 5px 10px;
+    	@include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	%CSS_BLOCK--BUTTON--ICON\:ACTIONBAR {
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR !important;
+    	padding: 5px 10px 5px 29px;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR !important, $FONT--WEIGHT---EXTRALIGHT);
+
+    	img {
+    		left: 5px!important;
+    	}
+    }
+
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:ACTIONBAR {
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR !important;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	// INVERT
+	%CSS_BLOCK--BUTTON--TEXT\:TOGGLE_ASC {
+	    background: #a3a3a3 !important;
+	    background-image: url($ICON--ASC--WHITE)!important;
+	    text-indent: -50000px;
+	    width: 22px!important;
+	    background-position: center center!important;
+	    background-repeat: no-repeat!important;
+	    background-size: 11px!important;
+	    height: 21px!important;
+		opacity: 0.8;
+
+
+	}
+
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:TOGGLE_ASC {
+		opacity: 1;
+    }
+
+
+
+    // ACTION BAR ::: SUGGESTED
+	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	%CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+
+	// SEARCH PANEL SUGGESTED
+	%CSS_BLOCK--BUTTON--ICON\:SEARCH_PANEL---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:SEARCH_PANEL---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:SEARCH_PANEL---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED !important;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	// SEARCH PANEL NORMAL
+	%CSS_BLOCK--BUTTON--ICON\:SEARCH_PANEL {
+        background: $BUTTON--BG--COLOUR---UP\:SEARCH_PANEL !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:SEARCH_PANEL {
+        background: $BUTTON--BG--COLOUR---HOVER\:SEARCH_PANEL !important;
+        @include text(16px, $BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+
+
+	// ACTION BAR ::: SUGGESTED
+	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED {
+        background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+    	@include text(16px, $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+
+
+/////////////////////////////////////////////////
+// TREES ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+	// LABELS
+	%CSS_BLOCK--TREE--ROW--TEXT---UP {
+		@include text(12px, $TREE--ROW--FONT--COLOUR---UP, $FONT--WEIGHT---EXTRALIGHT);
+	}
+
+	%CSS_BLOCK--TREE--ROW--TEXT---HOVER {
+		color: $TREE--ROW--FONT--COLOUR---HOVER!important;
+
+		// Padding not dealt with in best manner ...
+		padding-right: 19px!important; // Make space for More options button
+
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
+			padding-right: 0!important; // Make space for More options button
+		}
+	}
+
+	%CSS_BLOCK--TREE--ROW--TEXT---SELECTED {
+		color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
+		padding-right: 19px!important; // Make space for More options button
+
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
+			padding-right: 0!important; // Make space for More options button
+		}
+
+	}
+
+	%CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER {
+		color: $TREE--ROW--FONT--COLOUR---SELECTED_HOVER!important;
+	}
+
+	// SMALL LABEL
+	%CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL {
+		line-height: 20px;
+		@include text(10px !important, $TREE--ROW--FONT--COLOUR---UP !important, $FONT--WEIGHT---EXTRALIGHT !important);
+	}
+
+	%CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL {
+		color: $TREE--ROW--FONT--COLOUR---HOVER!important;
+	}
+
+	%CSS_BLOCK--TREE--ROW--TEXT---SELECTED\:SMALL_LABEL {
+		color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
+		/*
+		padding-right: 19px!important; // Make space for More options button
+
+		.x-viewport-adminmode & {
+			padding-right: 0!important; // Make space for More options button
+		}*/
+
+	}
+
+	%CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER\:SMALL_LABEL {
+		//color: $TREE--ROW--FONT--COLOUR---SELECTED_HOVER!important;
+	}
+
+    // BACKGROUNDS
+    %CSS_BLOCK--TREE--ROW--BG---UP {
+		padding-left: 6px;
+        background: $TREE--ROW--BG--COLOUR---UP!important;
+    }
+
+    %CSS_BLOCK--TREE--ROW--BG---HOVER {
+        background: $TREE--ROW--BG--COLOUR---HOVER!important;
+    }
+
+    %CSS_BLOCK--TREE--ROW--BG---SELECTED {
+        background-color: $TREE--ROW--BG--COLOUR---SELECTED!important;
+    }
+
+    %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER {
+        background: $TREE--ROW--ICON---SELECTED_HOVER!important;
+    }
+
+
+
+    %CSS_BLOCK--TREE--ROW--BG---UP\:SETTINGS {
+		// padding: 4px 0 4px 10px;
+        background: $COLOUR--TRANSPARENT !important;
+        // border-left: 1px solid #c5c5c5!important;
+
+    }
+
+    %CSS_BLOCK--TREE--ROW--BG---HOVER\:SETTINGS {
+        background: $TREE--ROW--BG--COLOUR---HOVER!important;
+    }
+
+    %CSS_BLOCK--TREE--ROW--BG---SELECTED\:SETTINGS {
+        background-color: $COLOUR--TRANSPARENT !important;
+        // border-left: 3px solid #f26d4f!important;
+        // margin-left: -1px;
+    }
+
+    %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER\:SETTINGS {
+        background: $TREE--ROW--ICON---SELECTED_HOVER!important;
+    }
+
+	// Personalised Tree Icons
+	// You can use these placeholders to personalise each trees icons.
+	// If left blank then they will assume GWT original icons.
+
+	// Pages Tree Icons
+		%CSS_BLOCK--TREE--ICON---UP\:PAGES {
+			background-image: url($TREE--ROW--ICON---UP);
+			background-size: 23px 23px;
+			background-repeat: no-repeat;
+			padding-left: 23px;
+			width: 23px;
+			height: 23px;
+		}
+
+		%CSS_BLOCK--TREE--ICON---HOVER\:PAGES {
+			background-image: url($TREE--ROW--ICON---HOVER) !important;
+		}
+
+		%CSS_BLOCK--TREE--ICON---SELECTED\:PAGES {
+			background-image: url($TREE--ROW--ICON---SELECTED) !important;
+		}
+
+		%CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:PAGES {
+			background-image: url($TREE--ROW--ICON---SELECTED) !important;
+		}
+
+	// Create Tree Icons
+		%CSS_BLOCK--TREE--ICON---UP\:CREATE {}
+		%CSS_BLOCK--TREE--ICON---HOVER\:CREATE {}
+		%CSS_BLOCK--TREE--ICON---SELECTED\:CREATE {}
+		%CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:CREATE {}
+
+	// Content Tree Icons
+		%CSS_BLOCK--TREE--ICON---UP\:CONTENT {}
+		%CSS_BLOCK--TREE--ICON---HOVER\:CONTENT {}
+		%CSS_BLOCK--TREE--ICON---SELECTED\:CONTENT {}
+		%CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:CONTENT {}
+
+	// Files Tree Icons
+		%CSS_BLOCK--TREE--ICON---UP\:FILES {}
+		%CSS_BLOCK--TREE--ICON---HOVER\:FILES {}
+		%CSS_BLOCK--TREE--ICON---SELECTED\:FILES {}
+		%CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:FILES {}
+
+	// Taxonomy Tree Icons
+		%CSS_BLOCK--TREE--ICON---UP\:TAXONOMY {}
+		%CSS_BLOCK--TREE--ICON---HOVER\:TAXONOMY {}
+		%CSS_BLOCK--TREE--ICON---SELECTED\:TAXONOMY {}
+		%CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:TAXONOMY {}
+
+	$personalised_trees: (
+		("#JahiaGxtPagesTab",    			PAGES),
+		("#JahiaGxtCreateContentTab",    	CREATE),
+		("#JahiaGxtContentBrowseTab",    	CONTENT),
+		("#JahiaGxtFileImagesBrowseTab",    FILES),
+		("#JahiaGxtCategoryBrowseTab",    	TAXONOMY)
+	);
+
+
+
+/////////////////////////////////////////////////
+// THUMB WRAPS //////////////////////////////////
+/////////////////////////////////////////////////
+
+    %CSS_BLOCK--THUMB--LABEL {
+        background: $THUMB--FONT--BG--COLOUR;
+        text-align: center;
+        padding: 3px 10px;
+
+        @extend %ellipsis_overflow;
+        @include text(10px, $THUMB--FONT--COLOUR, $FONT--WEIGHT---BOLD);
+    }
+
+    %CSS_BLOCK--THUMB--BG---UP {
+        background: $THUMB--BG--COLOUR---UP;
+    }
+
+    %CSS_BLOCK--THUMB--BG---HOVER {
+        background: $THUMB--BG--COLOUR---HOVER;
+    }
+
+    %CSS_BLOCK--THUMB--BG---SELECTED {
+        background: $THUMB--BG--COLOUR---SELECTED;
+		background: $COLOUR--DIRTY_ORANGE;
+    }
+
+
+
+/////////////////////////////////////////////////
+// SIDE PANEL ///////////////////////////////////
+/////////////////////////////////////////////////
+
+    %CSS_BLOCK--SIDE_PANEL--CONTAINER {
+        background: $SIDE_PANEL--BG--COLOUR--CLOSED !important;
+    }
+
+    %CSS_BLOCK--SIDE_PANEL--CONTAINER---OPEN {
+        background: $SIDE_PANEL--BG--COLOUR---OPENED !important;
+        box-shadow: $SIDE_PANEL--BG--SHADOW;
+    }
+
+    %CSS_BLOCK--SIDE_PANEL--TITLE {
+        @include text(26px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+
+
+/////////////////////////////////////////////////
+// TOOL BUTTONS /////////////////////////////////
+/////////////////////////////////////////////////
+
+    %CSS_BLOCK--TOOL_BUTTON {
+        text-align: center;
+        text-transform: uppercase;
+
+        @include text(8px, $TOOL--BUTTON--FONT--COLOUR---NORMAL, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--TOOL_BUTTON---MULTI_SELECT {
+        color: $TOOL--BUTTON--FONT--COLOUR---OFF;
+    }
+
+    %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN {
+        color: $TOOL--BUTTON--FONT--COLOUR---OPEN;
+    }
+
+
+    %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN_SELECTED {
+        color: $TOOL--BUTTON--FONT--COLOUR---OPEN_SELECTED;
+    }
+
+
+
+/////////////////////////////////////////////////
+// EDIT ENGINE //////////////////////////////////
+/////////////////////////////////////////////////
+
+    // TITLE
+    %CSS_BLOCK--EDIT_ENGINE--TITLE {
+    	@include text(14px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+    // TAB BUTTONS
+    %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON {
+    	padding: 5px 0 5px 5px;
+
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+    %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---SELECTED {
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+    %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER {
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+    %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER_SELECTED {
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over + !important, $FONT--WEIGHT---EXTRALIGHT);
+    }

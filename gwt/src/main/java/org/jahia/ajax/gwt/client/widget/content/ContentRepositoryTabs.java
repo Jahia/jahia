@@ -72,7 +72,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
+ *
  *
  * @author rfelden
  * @version 19 juin 2008 - 15:57:08
@@ -109,7 +109,9 @@ public class ContentRepositoryTabs extends LeftComponent {
         m_component.setBorders(false);
 
         browseTabITem = new TabItem(Messages.get("browse.label", "Browse"));
+        browseTabITem.setId("CRTbrowseTabItem");
         searchTabITem = new TabItem(Messages.get("label.search", "Search"));
+        searchTabITem.setId("CRTsearchTabItem");
 
         ChangeAccordionListener<ComponentEvent> accordionListener = new ChangeAccordionListener<ComponentEvent>();
         // init main panel and add accordions
@@ -298,7 +300,7 @@ public class ContentRepositoryTabs extends LeftComponent {
 
     public Object getSelectedItem() {
         if (savedSearchPanel.isExpanded()) {
-                return queryList.getSelectionModel().getSelectedItem();
+            return queryList.getSelectionModel().getSelectedItem();
         } else {
             for (RepositoryTab tab : repositories) {
                 if (tab.isExpanded()) {

@@ -112,7 +112,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         });
         BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.NORTH, 150);
         data.setCollapsible(true);
-        data.setSplit(true);
+        data.setSplit(false);
         data.setFloatable(true);
 
         add(list, data);
@@ -150,10 +150,6 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         }
         list.getStore().add(data);
         cardsContainer.add(component);
-
-        String name = component.getClass().getName();
-        name = name.substring(name.lastIndexOf('.')+1).toLowerCase();
-        addStyleName(name+ "-ctn");
     }
 
     /**
@@ -191,7 +187,16 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         if (list.getSelectionModel().getSelectedItem() == null) {
             return;
         }
+        String name = components.get(i).getClass().getName();
+        name = name.substring(name.lastIndexOf('.')+1).toLowerCase();
+        removeStyleName(name+ "-ctn");
+        mainContainer.getPanel().removeStyleName(name + "-card");
         i = list.getStore().indexOf(list.getSelectionModel().getSelectedItem());
+
+        name = components.get(i).getClass().getName();
+        name = name.substring(name.lastIndexOf('.')+1).toLowerCase();
+        addStyleName(name+ "-ctn");
+        mainContainer.getPanel().addStyleName(name + "-card");
 
         ((CardLayout) cardsContainer.getLayout()).setActiveItem(components.get(i));
         mainContainer.getPanel().setHeadingHtml(headers.get(i));

@@ -1,0 +1,2942 @@
+/////////////////////////////////////////////////
+// DATE PICKER //////////////////////////////////
+/////////////////////////////////////////////////
+
+.x-form-field-wrap .x-form-date-trigger {
+	background: red;
+
+	&:hover {
+		background: pink;
+	}
+}
+
+.x-date-menu {
+	box-shadow: none;
+	background: transparent!important;
+
+
+
+	td {
+		transition: all 0.15s ease-in 0s;
+	}
+
+	// Another container
+	.x-menu-list {
+		padding: 5px 10px 10px;
+	    background: $DATE_PICKER--BG--COLOUR;
+		box-shadow: 0 0 10px 0 rgba($COLOUR--DARK_CLOUDS, .3);
+
+		body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] & {
+			margin-left: 67px;
+		}
+
+		// Yet another container
+		.x-menu-list-item {
+
+			// Last container
+			.x-date-picker {
+				background: transparent;
+
+				// Header and footer containers
+				> table {
+
+					// Month navigator container
+					&:nth-child(1) {
+
+						td {
+							background: transparent;
+							padding: 5px 5px 10px;
+
+
+							// Previous month button contaeinr
+							&.x-date-left {
+
+								// button (can not use the button() mixin here)
+								.x-date-left-icon {
+									@extend %CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH_BUTTON---UP !optional;
+
+									&:hover {
+										@extend %CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH_BUTTON---HOVER !optional;
+									}
+
+								}
+							}
+
+							// Month Combo Container (actually a button - do not use button() mixin)
+							&.x-date-middle {
+
+								// Button container, contains downward arrow
+								.x-btn-arrow {
+
+									background: none;
+									padding: 0;
+
+									// Actual button, contains label
+									button {
+										@extend %CSS_BLOCK--DATE_PICKER--COMBO---UP;
+
+										&:hover {
+											@extend %CSS_BLOCK--DATE_PICKER--COMBO---HOVER;
+										}
+									}
+								}
+
+							}
+
+							// Next month button contaeinr
+							&.x-date-right {
+
+								// button (can not use the button() mixin here)
+								.x-date-right-icon {
+									@extend %CSS_BLOCK--DATE_PICKER--NEXT_MONTH_BUTTON---UP !optional;
+
+									&:hover {
+										@extend %CSS_BLOCK--DATE_PICKER--NEXT_MONTH_BUTTON---HOVER !optional;
+									}
+
+
+								}
+							}
+						}
+
+					}
+
+
+					// Today Link button
+					&:nth-child(3) {
+						background: transparent;
+						// Today link container
+						.x-date-bottom {
+
+							background: transparent;
+							border:none;
+							padding: 9px 0 0 0;
+
+							.x-btn-text {
+								@extend %CSS_BLOCK--DATE_PICKER--TODAY_BUTTON---UP;
+
+								&:hover {
+									@extend %CSS_BLOCK--DATE_PICKER--TODAY_BUTTON---HOVER;
+								}
+							}
+
+
+						}
+
+					}
+				}
+
+				// Date grid container
+				> div {
+
+					// Header days of week
+					.x-date-days {
+
+						// Day of week container
+						td {
+							width: 25px;
+
+							@extend %CSS_BLOCK--DATE_PICKER--DAY_OF_WEEK;
+
+						}
+
+						// Day of week label
+						span {
+
+						}
+
+					}
+
+					// Days of month container
+					.x-date-inner {
+
+						// Day entry
+						td {
+
+							border: none;
+							width: 25px;
+							height: 25px;
+
+							// Day container
+							a {
+								text-align: center;
+							    height: 100%;
+							    line-height: 21px;
+
+								font-weight: inherit;
+								color: inherit;
+
+								border:none;
+								background: transparent;
+							}
+
+							// Day label
+							span {
+								font-weight: inherit;
+								color: inherit;
+							}
+
+							// Selected date
+							&.x-date-selected {
+								@extend %CSS_BLOCK--DATE_PICKER--SELECTED_MONTH---UP;
+
+								// Hover date
+								&.x-date-active-hover {
+									@extend %CSS_BLOCK--DATE_PICKER--SELECTED_MONTH---HOVER;
+
+								}
+
+
+							}
+
+							// Day belonging to previous month
+							&.x-date-prevday {
+								@extend %CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH---UP;
+							}
+
+							// Day belonging to current month
+							&.x-date-active {
+								@extend %CSS_BLOCK--DATE_PICKER--CURRENT_MONTH---UP;
+
+							}
+
+							// Day belonging to following month
+							&.x-date-nextday {
+								@extend %CSS_BLOCK--DATE_PICKER--NEXT_MONTH---UP;
+							}
+
+							// Hover date
+							&.x-date-active-hover {
+								@extend %CSS_BLOCK--DATE_PICKER--CURRENT_MONTH---HOVER;
+
+							}
+						}
+
+					}
+				}
+			}
+
+			// Drop down to change month / year
+			.x-date-mp {
+
+				width: calc(100% + 20px)!important;
+				top: -5px!important;
+				left: -10px!important;
+				height: calc(100% + 15px)!important;
+				background: $DATE_PICKER--MONTH_PICKER--BG--COLOUR;
+				padding-top: 33px;
+				box-sizing: border-box;
+
+				table,
+				tbody {
+					display: block;
+					width: 100%!important;
+					height: 100%!important;
+					box-sizing: border-box;
+				}
+
+				tbody {
+					padding: 5px 5px 0 5px;
+				}
+
+				tr {
+					display: block;
+					width: 100%;
+					height: 16.2%;
+					box-sizing: border-box;
+				}
+
+				td {
+					display: inline-block;
+					width: 25%;
+					height: 100%;
+					box-sizing: border-box;
+					line-height: 24px;
+					padding: 5px 0;
+				}
+
+				// Top Container
+				> table {
+
+					td {
+
+						// Actual button
+						a {
+
+							font-size: inherit;
+							font-weight: inherit;
+							font-family: inherit;
+							color: inherit;
+							height: 100%;
+							padding: 0;
+							border: none;
+							background: none;
+							line-height: inherit;
+
+						}
+
+						// Month button
+						&.x-date-mp-month {
+							@extend %CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---UP;
+
+							&:hover {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---HOVER;
+							}
+
+							// Selected button
+							&.x-date-mp-sel {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---SELECTED;
+
+								&:hover {
+									@extend %CSS_BLOCK--DATE_PICKER--MODAL--MONTH_BUTTON---SELECTED_HOVER;
+								}
+
+							}
+
+
+						}
+
+						// Year button
+						&.x-date-mp-year {
+							@extend %CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---UP;
+
+							&:hover {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---HOVER;
+							}
+
+							// Selected button
+							&.x-date-mp-sel {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---SELECTED;
+
+								&:hover {
+									@extend %CSS_BLOCK--DATE_PICKER--MODAL--YEAR_BUTTON---SELECTED_HOVER;
+								}
+
+							}
+						}
+
+
+
+						// Year naviagtion button
+						&.x-date-mp-ybtn {
+
+							padding: 0!important;
+
+							a {
+								width: 100%;
+							}
+
+							// Previous year block button
+							.x-date-mp-prev {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--PREVIOUS_YEAR---UP;
+
+								&:hover {
+									@extend %CSS_BLOCK--DATE_PICKER--MODAL--PREVIOUS_YEAR---HOVER;
+								}
+							}
+
+							// Following year block button
+							.x-date-mp-next {
+								@extend %CSS_BLOCK--DATE_PICKER--MODAL--NEXT_YEAR---UP;
+
+								&:hover {
+									@extend %CSS_BLOCK--DATE_PICKER--MODAL--NEXT_YEAR---HOVER;
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+				// Seperator dividing Months / Years
+				.x-date-mp-sep {
+					border:none;
+				}
+
+				// OK, Cancel buttons container
+				.x-date-mp-btns {
+
+					height: 16%;
+				    background: none;
+				    position: absolute;
+				    top: 0;
+				    left: 0;
+
+					td {
+						width: 100%;
+						padding: 5px;
+						box-sizing: border-box;
+						border: none;
+
+						&:before {
+							@extend %CSS_BLOCK--DATE_PICKER--MODAL--LABEL;
+						}
+					}
+
+					// OK button
+					.x-date-mp-ok {
+
+						@extend %CSS_BLOCK--DATE_PICKER--OK_BUTTON---UP;
+
+						&:hover {
+							@extend %CSS_BLOCK--DATE_PICKER--OK_BUTTON---HOVER;
+						}
+
+					}
+
+					// Cancel button
+					.x-date-mp-cancel {
+						@extend %CSS_BLOCK--DATE_PICKER--CANCEL_BUTTON---UP;
+
+						&:hover {
+							@extend %CSS_BLOCK--DATE_PICKER--CANCEL_BUTTON---HOVER;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+
+
+/////////////////////////////////////////////////
+// COMBOS ///////////////////////////////////////
+/////////////////////////////////////////////////
+
+.x-combo-list {
+	/* Combo Outer Container */
+	// width: auto !important;
+	background: transparent;
+    overflow: visible;
+    z-index: $ZINDEX--COMBO_LIST;
+
+	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER !optional;
+
+}
+
+/* Combo Inner Container */
+.x-combo-list-inner {
+	width: auto!important;
+	background: transparent;
+
+	/* Combo List Items that have Thumbs, ie. Channel Combo */
+	.thumb-wrap {
+
+
+		img {
+			/* Actual thumb */
+			display: none!important;
+		}
+
+
+		.x-editable {
+			/* List item when normal Thumbed Combo
+			   Actual Label of Combo Item */
+			@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM !optional;
+
+		}
+
+
+		&.x-combo-selected {
+			/* Selected / Hovered */
+			border:none!important;
+
+
+			.x-editable {
+				/* List item when normal Thumbed Combo */
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER !optional;
+			}
+		}
+
+	}
+}
+
+/* List item when normal Combo */
+.x-combo-list-item {
+	border:none;
+	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM !optional;
+
+
+
+	&.x-view-highlightrow {
+		/* Selected / Hovered */
+		border:none!important;
+		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER !optional;
+
+	}
+}
+
+/////////////////////////////////////////////////
+// LIST BOX /////////////////////////////////////
+/////////////////////////////////////////////////
+
+.x-form-list {
+	border: none;
+	background: $COLOUR--WHITE_CLOUDS;
+	height: 200px!important;
+
+
+	.x-combo-list {
+		/* Combo Outer Container */
+		width: auto !important;
+		height: 100% !important;
+		background: transparent!important;
+	    overflow: scroll!important;
+	    z-index: $ZINDEX--COMBO_LIST;
+		position: relative;
+
+		@extend %CSS_BLOCK--FORM--LIST_BOX--HOLDER !optional;
+
+	}
+
+	.x-combo-list-item {
+		border:none;
+		box-sizing: border-box;
+		@extend %CSS_BLOCK--FORM--LIST_BOX--ITEM !optional;
+
+
+
+		&.x-combo-over {
+			/* Selected / Hovered */
+			border:none!important;
+			@extend %CSS_BLOCK--FORM--LIST_BOX--ITEM---HOVER !optional;
+
+		}
+
+		&.x-view-highlightrow {
+			/* Selected / Hovered */
+			border:none!important;
+			@extend %CSS_BLOCK--FORM--LIST_BOX--ITEM---SELECTED !optional;
+
+		}
+	}
+}
+
+
+
+
+
+/////////////////////////////////////////////////
+// CONTEXT MENUS ////////////////////////////////
+/////////////////////////////////////////////////
+
+
+// Add Personalised styling to specified context menus from values stored in $personalised_context_menus in theme SASS
+	@each $context_menu in $personalised_context_menus {
+		$_context_menu_class: #{nth($context_menu,1)};
+		$_placeholder: #{nth($context_menu,2)};
+
+		#{$_context_menu_class} {
+			@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:#{$_placeholder} !optional;
+
+			.x-menu-list::before {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:#{$_placeholder} !optional;
+
+			}
+
+			.x-menu-item {
+				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:#{$_placeholder} !optional;
+
+			}
+
+			.x-item-disabled {
+				.x-menu-item {
+					@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:#{$_placeholder} !optional;
+
+				}
+
+			}
+
+			.x-menu-item-active {
+				.x-menu-item {
+					@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:#{$_placeholder} !optional;
+
+				}
+			}
+
+		}
+	}
+
+/* Context Menus */
+
+.x-menu {
+	width: auto !important;
+	background: transparent;
+    overflow: visible;
+    z-index: $ZINDEX--CONTEXT_MENU;
+
+	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER !optional;
+}
+
+.x-menu-list {
+	height: auto!important;
+
+	&::before {
+		background: #008ec9;
+	    width: 100%;
+	    display: block;
+	    padding: 3px 8px;
+	    font-family: "Nunito Sans";
+	    font-size: 8px;
+	    color: darken($COLOUR--JAHIA_BLUE, 25%);
+	    font-style: italic;
+	    text-transform: uppercase;
+	    font-weight: 600;
+	    z-index: $ZINDEX--CONTEXT_MENU---TITLE;
+	}
+}
+
+.x-menu-list-item {}
+
+.x-menu-item {
+	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM !optional;
+
+	.x-item-disabled & {
+		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED !optional;
+
+
+
+	}
+
+	.x-menu-item-active & {
+		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER !optional;
+	}
+
+}
+
+.x-item-disabled {
+	opacity: 1;
+}
+
+.x-menu-item-icon {
+	display: none;
+}
+
+/* Combo List Seperator line */
+.x-menu-sep-li {
+    display: none;
+}
+
+/* Context Menu Drop Shadow */
+.x-shadow {
+    display: none !important;
+}
+
+/* Used for scrolling Context menus when they dont fit on screen */
+.x-menu-scroller {
+    background: rgba(245, 245, 245, 1);
+}
+
+.x-menu-scroller-top {
+    background-image: url(./images/menu-scroll-up.png);
+}
+
+.x-menu-scroller-bottom {
+    background-image: url(./images/menu-scroll-down.png);
+}
+
+
+
+
+/////////////////////////////////////////////////
+// THUMB WRAPS //////////////////////////////////
+/////////////////////////////////////////////////
+
+/* Thumb wraps
+   Used to create a thumb in List View, ie. in Files */
+
+.x-combo-list-inner {
+	.thumb-wrap {
+		display: block;
+		width: 100%!important;
+		margin: 0!important;
+		height: auto;
+
+		.thumb {
+			display: none;
+
+		}
+
+		.x-editable {
+			display: block;
+		}
+	}
+
+
+}
+
+
+.thumb-wrap {
+	border: none!important;
+	padding: 0!important;
+	width: 48%!important; /* Sets Actual Width Of Thumb */
+	margin: 1% 0 1% 1% !important;
+	display: inline-block;
+	float: none!important;
+	height: 86px;
+	max-height: 86px;
+	position: relative;
+	background: none;
+
+
+	> div {
+		/* Some Thumbs have extra divs containing more Meta Data, so hide them */
+		display: none;
+
+		&:first-child {
+			/* Just show the first Div which contains the file name */
+			display: block;
+		}
+	}
+
+	.thumb {
+		/* Image */
+		height: auto!important;
+		padding: 5px!important;
+		box-sizing: border-box;
+
+		@extend %CSS_BLOCK--THUMB--BG---UP !optional;
+
+		#JahiaGxtFileImagesBrowseTab & {
+			width: 100%!important;
+
+		}
+
+	}
+
+
+	.thumbDetails {
+		/* Meta Data */
+		position: absolute;
+	    top: 5px;
+	    left: 5px;
+	    z-index: $ZINDEX--THUMB---DETAILS;
+	    margin: 0 !important;
+	    width: calc(100% - 10px);
+	    display: none;
+
+
+		div {
+			/* Hide ALL */
+			display: none;
+
+
+			&:first-child {
+				/* Just Show the File Name Meta Container */
+				display: block;
+
+				@extend %CSS_BLOCK--THUMB--LABEL !optional;
+
+				b {
+					/* Hide Label */
+					display: none;
+				}
+
+			}
+		}
+
+	}
+
+
+	&.x-view-over {
+		.thumbDetails {
+			/* Hover State */
+			display: block;
+
+		}
+
+		.thumb {
+			@extend %CSS_BLOCK--THUMB--BG---HOVER !optional;
+
+		}
+
+	}
+
+
+	&.x-view-item-sel {
+		.thumbDetails {
+			/* Selected State */
+			display: none;
+
+		}
+
+		.thumb {
+			@extend %CSS_BLOCK--THUMB--BG---SELECTED !optional;
+
+		}
+
+	}
+}
+
+/////////////////////////////////////////////////
+// FORMS ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+
+
+/* Global Form */
+form {
+	padding: 0!important;
+	width: auto!important;
+}
+
+input {
+	// Text input
+}
+
+legend {
+	padding: 0!important;
+
+	.x-fieldset-header-text {
+		// Wahoo, the label text !!
+		@extend %CSS_BLOCK--FORM--LEGEND;
+
+		.x-panel-collapsed & {
+			@extend %CSS_BLOCK--FORM--LEGEND---COLLAPSED !optional;
+		}
+
+	}
+
+
+}
+
+
+input[type="checkbox"] {
+	// UNCHECKED STATE
+	position: relative!important;
+	width: 15px!important;
+	height: 15px!important;
+	margin-right: 3px;
+
+
+	// AS SWITCHER
+	legend & {
+		position: absolute !important;
+		width: 46px !important;
+		height: 17px!important;
+		top: 13px;
+		right: 22px;
+
+		&:hover {
+			cursor: pointer;
+		}
+	}
+
+
+	&:before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		box-sizing: border-box;
+
+		@extend %CSS_BLOCK--CHECKBOX---UNCHECKED;
+
+		// AS SWITCHER
+		legend & {
+		    width: 100%;
+		    height: 100%;
+		    width: 46px;
+		    border: none;
+		    text-align: right;
+		    padding-right: 4px;
+		    line-height: 17px;
+
+			@extend %CSS_BLOCK--FORM--TOGGLE--BG;
+		}
+	}
+	&:after {
+		content: " ";
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+
+		// AS SWITCHER
+		legend & {
+			right: auto;
+			left: 2px;
+			top: 2px;
+			width: 15px;
+			height: 13px;
+
+			@extend %CSS_BLOCK--FORM--TOGGLE--SHUTTLE---OFF;
+		}
+	}
+
+	// CHECKED STATE
+		&:checked:before {
+
+			// AS SWITCHER
+			legend & {
+				@extend %CSS_BLOCK--FORM--TOGGLE--BG---ON;
+			}
+		}
+		&:checked:after {
+			@extend %CSS_BLOCK--CHECKBOX---CHECKED;
+
+			// AS SWITCHER
+			legend & {
+				right: 2px;
+				left: auto;
+				text-align: center;
+				padding: 0 5px;
+
+				@extend %CSS_BLOCK--FORM--TOGGLE--SHUTTLE---ON;
+			}
+		}
+
+	// FOCUS
+	&.x-form-checkbox:focus {
+		// Need extra weight to over ride GXT selector
+		outline: none!important;
+	}
+
+
+
+}
+
+
+fieldset {
+
+	@extend %CSS_BLOCK--FIELDSET;
+
+}
+
+label {
+	// See .x-form-item-label
+
+	@extend %CSS_BLOCK--FORM--LABEL !optional;
+}
+
+/* Form item Outer Container ... */
+.x-form-item {
+	margin:0;
+}
+
+/* Form Item Mid container */
+.x-form-element {
+	padding: 0!important;
+
+}
+
+/* Form Item Inner Container */
+.x-form-field-wrap {
+	left: 0!important;
+	top: 0!important;
+	width: auto!important;
+}
+
+
+/* Form Label */
+.x-form-item-label {
+	width: auto!important;
+	float: none!important;
+	clear: both!important;
+	display: inline-block!important;
+
+	@extend %CSS_BLOCK--FORM--LABEL !optional;
+}
+
+/* Text Area */
+.x-form-textarea {
+	border: none;
+	height: 180px!important;
+	@extend %CSS_BLOCK--FORM--TEXT_AREA !optional;
+
+	// Exceptions ...
+	.engine-panel & {
+		@extend %CSS_BLOCK--FORM--TEXT_AREA\:EDIT_ENGINE !optional;
+
+	}
+
+	&:hover {
+		@extend %CSS_BLOCK--FORM--TEXT_AREA---HOVER !optional;
+
+		// Exceptions ...
+		.engine-panel & {
+			@extend %CSS_BLOCK--FORM--TEXT_AREA---HOVER\:EDIT_ENGINE !optional;
+
+		}
+
+	}
+
+	&:focus {
+		@extend %CSS_BLOCK--FORM--TEXT_AREA---FOCUS !optional;
+
+		// Exceptions ...
+		.engine-panel & {
+			@extend %CSS_BLOCK--FORM--TEXT_AREA---FOCUS\:EDIT_ENGINE !optional;
+
+		}
+
+	}
+
+	&[disabled] {
+		@extend %CSS_BLOCK--FORM--TEXT_AREA---DISABLED !optional;
+
+	}
+}
+
+
+
+
+/* Text Field Input */
+.x-form-text {
+	@extend %CSS_BLOCK--FORM--TEXT_INPUT !optional;
+
+	width: 100%!important;
+	box-sizing: border-box;
+    display: inline-block;
+    height: auto!important;
+
+	&:only-child {
+		padding-right: 5px;
+		display: block;
+	}
+
+	&:hover {
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER !optional;
+	}
+
+	&:focus {
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS !optional;
+	}
+
+	&[disabled] {
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED !optional;
+
+	}
+
+
+}
+
+div[role="combobox"] {
+	.x-form-text {
+		@extend %CSS_BLOCK--FORM--COMBO--TEXT_INPUT !optional;
+
+
+
+		width: 100%!important;
+
+		box-sizing: border-box;
+	    display: inline-block;
+	    height: auto!important;
+	}
+}
+
+/* DUAL LIST */
+
+
+/* Action Buttons for Text Input */
+.x-form-trigger {
+	/* Generic CSS for an Action Button */
+	display: block;
+	position: absolute!important;
+    border: none !important;
+    vertical-align: middle;
+    right: 0px;
+	height: 24px!important;
+
+	.x-triggerfield-noedit + & {
+	}
+
+	.x-form-twin-triggers & {
+		/* Button is in a container, because there are multiple buttons */
+		display: inline-block;
+		position: relative;
+		border: none !important;
+		vertical-align: middle;
+		right: auto;
+		top: auto;
+
+		&.x-form-clear-trigger {
+			/* Clear button */
+			left: 0px!important;
+			right: auto!important;
+
+
+		}
+	}
+
+	&.x-form-clear-trigger {
+		/* Clear button */
+		position: absolute!important;
+		// left: 0px!important;
+		right: 0px!important;
+
+
+	}
+
+
+
+	&.x-form-trigger-arrow {
+		/* Combo Down Arrow Button */
+		right: 0;
+
+		@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP !optional;
+
+		.x-triggerfield-noedit + .x-form-twin-triggers  & {
+			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:OPEN_PICKER !optional;
+		}
+
+		.engine-panel & {
+			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:EDIT_ENGINE !optional;
+
+		}
+
+		#JahiaGxtManagerTobTable & {
+			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:PICKER_FILTER !optional;
+
+		}
+
+		&.x-form-trigger-over {
+			@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER !optional;
+
+			.x-triggerfield-noedit + .x-form-twin-triggers  & {
+				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:OPEN_PICKER !optional;
+			}
+
+			.engine-panel & {
+				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:EDIT_ENGINE !optional;
+
+			}
+
+			#JahiaGxtManagerTobTable & {
+				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:PICKER_FILTER !optional;
+
+			}
+		}
+	}
+
+
+
+	&.x-form-clear-trigger {
+
+
+
+		/* Combo X Button */
+		@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP !optional;
+
+		// Text adjacent field is in FOCUS
+		.x-form-text:focus + & {
+			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS !optional;
+		}
+
+		.engine-panel & {
+			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:EDIT_ENGINE !optional;
+
+		}
+
+		#JahiaGxtManagerTobTable & {
+			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:PICKER_FILTER !optional;
+
+		}
+
+		&.x-form-trigger-over {
+			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER !optional;
+
+			.engine-panel & {
+				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:EDIT_ENGINE !optional;
+
+			}
+
+			#JahiaGxtManagerTobTable & {
+				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:PICKER_FILTER !optional;
+
+			}
+		}
+
+
+	}
+}
+
+/* Action Button Container (when multiple buttons exist) */
+.x-form-twin-triggers {
+	/* Container used when more than one button */
+	display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+	width: 34px;
+}
+
+
+/* Checkbox Container */
+.x-form-check-wrap {
+	height: auto!important;
+	margin-right: 10px;
+}
+
+/* Checkbox Radio Button */
+.x-form-radio {
+	left: auto!important;
+	top: auto!important;
+}
+
+/* Checkbox Label */
+.x-form-cb-label {
+	margin: 0 0 0 5px;
+	padding: 0!important;
+	left: auto!important;
+	top: auto!important;
+
+	@extend %CSS_BLOCK--FORM--LABEL !optional;
+}
+
+// Form Buttons
+form,
+.edit-content-engine { // CHANGE THIS AFTER TO BE INCLUDING GENERAL STYLING AND THEN PERSONALISE ...
+	@include button("FORM");
+
+}
+
+/* Button Bars at the end of Panels, ie OK, Save, Cancel, ... */
+.x-panel-btns {
+	padding: 0;
+}
+
+// FOoter bar buttons, ie. SAVE, CANCEL, ...
+.x-panel-fbar {
+	/* Button Bar Container ... */
+	padding: 0;
+	left: auto;
+	top: auto;
+
+	.x-toolbar-ct {
+		/* Yet Another Container */
+		display: block;
+		width: auto;
+	}
+
+	@include button("ACTIONBAR", "remove-icons");
+
+
+}
+
+/* Button Bar, regular button bar */
+.x-panel-btns {
+	@include button("SIDE_PANEL", "remove-icons");
+
+}
+
+/* Button Bar, pagination */
+.x-panel-bbar {
+	width: 100%;
+
+	.x-toolbar {
+		border:none;
+		width: auto!important;
+		padding: 0;
+		margin: 0;
+		background: transparent!important;
+	}
+}
+
+
+
+/////////////////////////////////////////////////
+// TREES ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+@each $tree in $personalised_trees {
+	$_tree_id: #{nth($tree,1)};
+	$_placeholder: #{nth($tree,2)};
+
+	#{$_tree_id} {
+		.x-tree3-node-icon,
+		.gwt-Image {
+			// List Item Icon
+			@extend %CSS_BLOCK--TREE--ICON---UP\:#{$_placeholder} !optional;
+		}
+
+		.x-grid3-row-over {
+			.x-tree3-node-icon,
+			.gwt-Image {
+				// Personalised Icon
+				@extend %CSS_BLOCK--TREE--ICON---HOVER\:#{$_placeholder} !optional;
+
+			}
+
+		}
+
+		.x-grid3-row-selected {
+			.x-tree3-node-icon,
+			.gwt-Image {
+				// Personalised Icon: Selected
+				@extend %CSS_BLOCK--TREE--ICON---SELECTED\:#{$_placeholder} !optional;
+
+			}
+
+			&.x-grid3-row-over {
+				.x-tree3-node-icon,
+				.gwt-Image {
+					// Personalised Icon: Selected > Hover
+					@extend %CSS_BLOCK--TREE--ICON---SELECTED_HOVER\:#{$_placeholder} !optional;
+
+				}
+			}
+		}
+
+	}
+}
+
+.x-grid3 {
+	/* Container */
+	width: 100%!important;
+	height: 100%!important;
+	background: transparent;
+
+	.x-grid3-td-publicationInfo {
+		width: 3px!important;
+		height: 25px;
+		overflow: hidden;
+
+		position: absolute;
+		left: 0;
+
+		.x-grid3-col-publicationInfo {
+			padding: 0!important;
+
+		}
+
+		.x-component,
+		table {
+			height: 100%
+		}
+
+		img {
+			overflow: hidden;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			position: relative;
+
+			padding-left: 5px;
+			width: 5px;
+			height: 100%;
+
+
+			&[src="/icons/publication/conflict.png"] {
+				/* Conflict */
+				background: $PUBLICATION--COLOUR---CONFLICT!important;
+
+			}
+
+
+			&[src="/icons/publication/deleted.png"] {
+				/* Deleted */
+				background: $PUBLICATION--COLOUR---DELETED!important;
+
+			}
+
+
+			&[src="/icons/publication/livemodified.png"] {
+				/* Live Modified */
+				background: $PUBLICATION--COLOUR---LIVE_MODIFIED!important;
+
+			}
+
+
+			&[src="/icons/publication/liveonly.png"] {
+				/* Live Only */
+				background: $PUBLICATION--COLOUR---LIVE_ONLY!important;
+
+			}
+
+
+			&[src="/icons/publication/locked.png"] {
+				/* Locked */
+				background: $PUBLICATION--COLOUR---LOCKED!important;
+
+			}
+
+
+			&[src="/icons/publication/mandatorylanguageunpublishable.png"] {
+				/* Mandatory Language Unpublishable */
+				background: $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_UNPUBLISHABLE!important;
+
+			}
+
+
+			&[src="/icons/publication/mandatorylanguagevalid.png"] {
+				/* Mandatory Language Valid */
+				background: $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_VALID!important;
+
+			}
+
+
+			&[src="/icons/publication/markedfordeletion.png"] {
+				/* Marked FOr Deletion */
+				background: $PUBLICATION--COLOUR---MARKED_FOR_DELETION!important;
+
+			}
+
+
+			&[src="/icons/publication/modified.png"] {
+				/* Modified */
+				background: $PUBLICATION--COLOUR---MODIFIED!important;
+
+			}
+
+
+			&[src="/icons/publication/multipleWF.png"] {
+				/* Multiple WF */
+				background: $PUBLICATION--COLOUR---MULTIPLE_WORK_FLOW!important;
+
+			}
+
+
+			&[src="/icons/publication/notpublished.png"] {
+				/* Not Published */
+				background: $PUBLICATION--COLOUR---NOT_PUBLISHED!important;
+
+			}
+
+
+			&[src="/icons/publication/oneWF.png"] {
+				/* One WF */
+				background: $PUBLICATION--COLOUR---SINGLE_WORK_FLOW!important;
+
+			}
+
+
+			&[src="/icons/publication/published.png"] {
+				/* Published */
+				background: $PUBLICATION--COLOUR---PUBLISHED!important;
+
+			}
+
+
+			&[src="/icons/publication/unpublished.png"] {
+				/* Unpublished */
+				background: $PUBLICATION--COLOUR---UNPUBLISHED!important;
+
+			}
+
+
+			&[src="/icons/publication/waiting.gif"] {
+				/* Waiting */
+				background: $PUBLICATION--COLOUR---WAITING!important;
+
+			}
+
+
+			&[src="/icons/publication/workinprogress.png"] {
+				/* Work In Progress */
+				background: $PUBLICATION--COLOUR---WORK_IN_PROGRESS!important;
+
+			}
+		}
+	}
+
+	.x-grid3-header {
+		/* Header bar (contains column names) */
+		display: none;
+	}
+
+	.x-grid3-body {
+		/* Contains the Actual List !! */
+		height: 100%!important;
+	}
+
+	.x-grid3-scroller {
+		/* Another List Container */
+		height: 100%!important;
+		width: 100%!important;
+
+		body[data-edit-window-style="settings"] &,
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
+			padding-left: 1px;
+		}
+	}
+
+	.x-grid3-viewport {
+		/* Another container */
+		height: 100%!important;
+	}
+
+	.x-tree3-el-jnt,
+	.x-tree3-node-joint {
+		pointer-events: all;
+	}
+
+
+	.x-grid3-row {
+		/* List Item */
+		height: 25px!important;
+		width: 100%!important;
+		border: none;
+
+		@extend %CSS_BLOCK--TREE--ROW--BG---UP !optional;
+
+		body[data-edit-window-style="settings"] &,
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
+			@extend %CSS_BLOCK--TREE--ROW--BG---UP\:SETTINGS !optional;
+
+			img {
+				// display: none!important;
+			}
+		}
+
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			background-color: $TREE--ROW--BG--COLOUR---UP\:SEARCH_RESULT!important;
+		}
+
+
+		&.x-grid3-row-over {
+			/* Line Over */
+			@extend %CSS_BLOCK--TREE--ROW--BG---HOVER !optional;
+
+			body[data-INDIGO-PICKER-SEARCH="open"] & {
+				background-color: $TREE--ROW--BG--COLOUR---HOVER\:SEARCH_RESULT!important;
+			}
+
+			.x-tree3-node-icon {
+				@extend %tree_line_icon_hover !optional;
+
+			}
+
+			.x-grid3-td-displayName,
+			.gwt-content-label,
+			.x-grid3-col-name {
+				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER !optional;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+				}
+
+				&::after {
+					background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);
+					opacity: 1;
+
+				}
+
+			}
+
+			.x-grid3-col-size {
+				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL !optional;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+				}
+
+			}
+
+
+		}
+
+
+		&.x-grid3-row-selected {
+			/* Line Selected */
+			@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED !optional;
+
+			body[data-edit-window-style="settings"] &,
+			.x-viewport-adminmode &,
+			.x-viewport-dashboardmode & {
+				@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED\:SETTINGS !optional;
+			}
+
+			body[data-INDIGO-PICKER-SEARCH="open"] & {
+				background-color: $TREE--ROW--BG--COLOUR---SELECTED\:SEARCH_RESULT!important;
+			}
+
+			#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div & {
+				// background-color: rgb(242, 109, 79) !important;
+			}
+
+			.x-tree3-node-icon {
+				@extend %tree_line_icon_selected !optional;
+
+			}
+
+			.x-grid3-td-displayName,
+			.gwt-content-label,
+			.x-grid3-col-name,
+			.x-tree3-node-text {
+				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED !optional;
+
+
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					color: $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT!important;
+				}
+
+				body[data-edit-window-style="settings"] &,
+				.x-viewport-adminmode & {
+					@include text(14px !important, #313131 !important, $FONT--WEIGHT---NORMAL !important);
+				}
+
+				&::after {
+					background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
+					opacity: 1;
+
+				}
+			}
+
+			.x-grid3-col-size {
+				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED\:SMALL_LABEL !optional;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					color: $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT!important;
+				}
+
+			}
+
+
+			&.x-grid3-row-over {
+				/* Line Hover on Selected */
+				@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER !optional;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					background-color: $TREE--ROW--BG--COLOUR---SELECTED_HOVER\:SEARCH_RESULT!important;
+				}
+
+				.x-tree3-node-icon {
+					@extend %tree_line_icon_selected_hover !optional;
+
+				}
+
+				.x-grid3-col-size {
+					@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
+
+					body[data-INDIGO-PICKER-SEARCH="open"] & {
+						color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+					}
+
+				}
+
+				.x-grid3-td-displayName,
+				.gwt-content-label,
+				.x-grid3-col-name,
+				.x-tree3-node-text {
+					@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER !optional;
+
+					body[data-INDIGO-PICKER-SEARCH="open"] & {
+						color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+					}
+
+					&::after {
+						background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED_HOVER);
+
+					}
+				}
+			}
+		}
+	}
+
+	.x-grid3-td-displayName,
+	.gwt-content-label {
+		/* List Item Text Label */
+		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP !optional;
+
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			color: $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT!important;
+		}
+
+
+		pointer-events: none;
+
+		&::after {
+			position: fixed;
+			pointer-events: all;
+			margin-top: -26px;
+			background-image: url($TREE--MORE_OPTIONS--ICON---UP);
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-size: 10px 2px;
+			text-indent: -50000px;
+			display: block;
+			width: 28px;
+			height: 25px;
+			opacity: 0;
+		}
+	}
+
+	.x-tree3-node-text,
+	.x-grid3-col-name {
+		/* List Item Text Label */
+		// @extend %CSS_BLOCK--TREE--ROW--TEXT---UP !optional;
+
+		@include text(12px !important, $TREE--ROW--FONT--COLOUR---UP !important, $FONT--WEIGHT---EXTRALIGHT !important);
+
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			@include text(12px !important, $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT !important, $FONT--WEIGHT---EXTRALIGHT !important);
+
+		}
+
+		body[data-edit-window-style="settings"] &,
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
+			@include text(14px !important, $TREE--ROW--FONT--COLOUR---UP !important, $FONT--WEIGHT---EXTRALIGHT !important);
+		}
+
+
+
+	}
+
+	.x-grid3-col-size {
+		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
+
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			color: $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT!important;
+		}
+
+	}
+
+	.x-tree3-node-text {
+		top: -1px;
+	}
+
+	/*.x-grid3-td-displayName {
+		&::after {
+			left: 270px;
+		}
+	}
+
+	.x-grid3-td-displayName {
+		&::after {
+			left: 270px;
+			background: red;
+		}
+	}*/
+
+
+
+	.x-tree3-node-icon,
+	.gwt-Image {
+		/* List Item Icon */
+
+
+		overflow: hidden;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		position: relative;
+	}
+
+	// List Structure
+	.x-grid3-row-table {
+		// Table containing actual List Item
+		height: 100%;
+		display: block;
+
+		.x-grid3-cell {
+			/* Cell Containing the List Item */
+			padding: 0;
+
+			&.x-grid3-td-locked {
+				width: 25px;
+				display: none;
+			}
+
+			.x-grid3-cell-inner {
+				// Yet another container ...
+				height:100%!important;
+
+				.x-tree3-node {
+					// Oooh, another container !!
+					height: 100%!important;
+
+					.x-tree3-el {
+						// At last, the actual element !!
+						height: 100%;
+						width: auto!important;
+						padding: 2px 0 0px;
+
+						> img,
+						> span {
+							display: inline-block;
+							vertical-align: middle;
+
+							font-family: inherit;
+						    color: inherit;
+						    font-weight: inherit;
+						    padding: inherit;
+						    font-size: inherit;
+						}
+
+						td > .x-tree3-node-icon {
+							// NOT NECCESSARY IN THIS TAB SET
+							display: none;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.x-panel .x-grid3 .x-grid3-row-table .x-grid3-cell.x-grid3-td-displayName {    // make sure selector works everywhere it needs to.
+	width: 100% !important;
+}
+
+.x-panel .x-grid3 .x-grid3-row-table {    // Changed to fix table bug on workflow modal.
+	width: 100% !important;
+}
+
+///////////// RICH TEXT MENU
+
+
+// CKEDITOR errors
+
+.app-container .wcag-panel .x-panel-header {
+    position: initial !important;
+    padding-top: 20px;
+    left: 0;
+}
+
+.wcag-panel {
+
+	.x-grid3 {
+		background: #6b7074;
+
+		.x-grid3-header {
+			display: table-cell;
+			background: #848a8e;
+			border-left-color: #848a8e;
+			border-right-color: #848a8e;
+			color: $COLOUR--WHITE_CLOUDS;
+		}
+
+	}
+
+	.x-panel-header {
+		display: block !important;
+		width: 100%;
+		color: #f1f1f1;
+
+		.x-panel-toolbar {
+			margin-right: 24px;
+		}
+
+	}
+
+	.x-panel-bwrap {
+		margin-right: 24px;
+	}
+
+	.x-panel-body {
+		overflow: hidden !important;
+	}
+
+}
+
+.wcag-warning-grid {
+
+	.x-grid3 {
+
+		.x-grid3-body {
+			overflow-y: scroll !important;
+			overflow-x: hidden;
+			max-height: 84px !important;
+		}
+
+		.x-grid3-viewport {
+			height: auto !important;
+		}
+
+		.x-grid3-row {
+			background: #6b7074 !important;
+			margin-top: 5px;
+
+			td.x-grid3-cell {
+				border-right-color: #6b7074 !important;
+				line-height: 19px;
+				color: #dddcdc;
+
+				.x-grid3-col-message {
+					padding-top: 5px;
+				}
+
+				.x-grid3-col-example a {
+					color: $COLOUR--WHITE_CLOUDS;
+					text-decoration: none;
+					background: $COLOUR--RAIN_CLOUDS;
+					padding: 6px;
+					margin-left: 6px;
+				}
+
+			}
+
+			.x-grid3-td-numberer {
+				background: #6b7074;
+			}
+
+		}
+
+		.x-grid3-cell-inner.x-grid3-col-numberer {
+			color: #fff;
+			text-align: center;
+			padding: 3px 0 !important;
+			border-radius: 42px;
+			font-weight: 600;
+		}
+
+		.x-grid3-col-type img {
+			background: none !important;
+			background-image: url(./images/icons/ic_warning@2x.png) !important;
+			background-size: contain !important;
+		}
+
+		.x-grid3-col-context img,
+		.x-grid3-col-code img {
+			background: none !important;
+			background-image: url(./images/icons/ic_info_outline@2x.png) !important;
+			background-size: contain !important;
+		}
+
+		td.x-grid3-hd-over .x-grid3-hd-inner,
+		td.x-grid3-hd-menu-open .x-grid3-hd-inner {
+			background: #8e9194 !important;
+		}
+
+		.x-grid3-scroller {
+			overflow-x: hidden !important;
+		}
+
+	}
+
+}
+
+
+.cke {
+	// CKE Rich Text Editor
+
+	background: transparent!important;
+    border: none!important;
+    box-shadow: none!important;
+
+	// Need to override with weight as well as importance
+	span.cke_toolgroup a {
+		.cke_button_icon {
+			background-image: url($RICH_TEXT_EDITOR--ICON_SET) !important;
+
+		}
+
+		&.cke_button_on {
+			background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED !important;
+			border-radius: 0;
+			box-shadow: none;
+
+			&:hover,
+			&:focus,
+			&:active {
+				background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED !important;
+			    border-radius: 0;
+			    box-shadow: none;
+
+
+			}
+		}
+
+		&.cke_button_off,
+		&.cke_button_disabled {
+			&:hover {
+				background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER !important;
+			    border-radius: 0;
+			    box-shadow: none;
+
+
+			}
+
+			&:focus,
+			&:active {
+				background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER !important;
+			    border-radius: 0;
+			    box-shadow: none;
+
+
+			}
+		}
+	}
+
+}
+
+.cke_inner {
+	// CKE container
+	background: transparent!important;
+}
+
+.cke_top {
+	// CKE Toolbar Container
+	width: 100%!important;
+	box-sizing: border-box!important;
+	background: #616669 !important;
+    border: none!important;
+    box-shadow: none!important;
+	padding: 10px 0 4px!important;
+}
+
+.cke_toolbox {
+	// CKE Toolbox Container
+
+}
+
+.cke_toolbar {
+	// CKE Tool Group Container
+
+}
+
+
+
+.cke_toolgroup {
+	// CKE Tool Group
+	border: none!important;
+	background: $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--UP!important;
+	box-shadow: none!important;
+	border-radius: 0!important;
+	padding: 4px 10px!important;
+
+	transition: all 0.2s ease-in 0s!important;
+
+	&:hover {
+		background: $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--HOVER !important;
+	}
+}
+
+
+
+.cke_combo {
+	// CKE Combo Container
+}
+
+.cke_panel {
+	background: $COLOUR--WHITE !important;
+	border: 6px solid #6b7074 !important;
+	border-radius: 0 !important;
+	margin-top: 8px !important;
+}
+
+.cke_combopanel,
+.cke_menu_panel {
+	border-width: 1px !important;
+	border-color: #dddcdc !important;
+	margin-top: 4px !important;
+}
+
+.cke_combo_label {
+	// CKE Combo Label
+	text-shadow: none!important;
+
+}
+
+.cke_combo_button {
+	// CKE Combo Button
+	border: none!important;
+	background: $RICH_TEXT_EDITOR--COMBO--BG--COLOUR !important;
+	box-shadow: none!important;
+	border-radius: 0!important;
+	padding: 4px!important;
+}
+
+.cke_combo_text,
+.cke_button_label {
+	// CKE Combo Label
+	text-shadow: none!important;
+}
+
+.cke_button_label {
+	color:$RICH_TEXT_EDITOR--LABEL--FONT--COLOUR !important;
+}
+
+
+
+
+
+.cke_contents {
+	// CKE Content Container
+}
+
+.cke_wysiwyg_frame {
+	// CKE Content (in iframe)
+
+}
+
+.cke_bottom {
+	// CKE Footer Container
+	border: none!important;
+    background: $RICH_TEXT_EDITOR--PATH--BG--COLOUR !important;
+}
+
+.cke_resizer {
+	// CKE Resizer button
+	display: none!important;
+
+}
+
+.cke_path {
+	// CKE Path Selector
+
+	a {
+		// CKE Path Item
+		text-shadow: none;
+		@include text(12px, $RICH_TEXT_EDITOR--PATH--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
+	}
+}
+
+.cke_toolbar_break {
+	// clear: none!important;
+}
+
+.cke_dialog_ui_checkbox {
+	label {
+		@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+	}
+}
+
+// CKEditor Dialogues
+
+// Modal Mask
+.cke_dialog_background_cover {
+	background: $MODAL--BG--COLOUR !important;
+	opacity: 1!important;
+	z-index: $ZINDEX--MODAL---MASK\:CKE_EDITOR !important;
+}
+
+// Dialogue Container
+.cke_dialog {
+	background: $RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR!important;
+	padding: 20px!important;
+	display: block;
+
+	.cke_dialog_ui_text input {
+		padding: 3px 4px !important;	// Fix for Image Properties modal inputs
+	}
+
+	.FlashPreviewBox,
+	.ImagePreviewBox {
+		border: none!important;
+		padding: 0!important;
+		background: $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR!important;
+	}
+
+	.cke_btn_locked,
+	.cke_btn_reset {
+		background-color: $RICH_TEXT_EDITOR--DIALOGUE--BUTTON_ICON--BG--COLOUR!important;
+		padding: 3px 2px !important;
+		background-position: center!important;
+	}
+
+	.cke_dialog_ui_hbox_last {
+	}
+
+	.cke_dark_background {
+		@include text(28px, $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR !important, $FONT--WEIGHT---EXTRALIGHT);
+		border:none!important;
+	}
+
+	// ANother Dialigue Container
+	.cke_dialog_body {
+		background: transparent;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+
+		// Dialogue CLose button
+		.cke_dialog_close_button {
+			// right: 0;
+			// top: 0;
+			// background: blue;
+			display: none!important;
+
+			// Button Label
+			.cke_label {
+				display: none;
+			}
+		}
+	}
+
+	// Dialogue Title Bar
+	.cke_dialog_title {
+		text-shadow: none;
+		border: none;
+		padding: 0;
+		border-radius: 0;
+		background: transparent;
+		box-shadow: none;
+		margin-bottom: 10px;
+		pointer-events: none!important; // disables the drag feature of popup
+
+		@include text(36px, $RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+
+
+	}
+
+	// Tabs
+	.cke_dialog_tabs {
+		position: relative;
+		left: 0;
+		background: transparent;
+		height: auto;
+		// background: $FORM--FIELDSET--BG--COLOUR;
+		margin: 0;
+		// padding: 15px 20px 0;
+		box-sizing: border-box;
+		display: block;
+		width: 100%;
+		margin-bottom: 10px;
+
+		a {
+			height: auto;
+			line-height: normal;
+			padding: 0;
+			border: none;
+			border-radius: 0;
+			background: transparent;
+			margin-right: 10px;
+			text-transform: uppercase;
+
+			@include text(11px, $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
+
+			&.cke_dialog_tab_selected {
+				color: $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED;
+				border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED!important;
+			}
+
+			&:hover {
+				color: $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED!important;
+				background: inherit!important;
+				border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---HOVER;
+
+				&.cke_dialog_tab_selected {
+					border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED;
+
+				}
+			}
+
+		}
+	}
+
+	// LABEL
+	.cke_dialog_ui_labeled_label {
+		@extend %CSS_BLOCK--FORM--LABEL;
+	}
+
+	.cke_dialog_ui_input_select {
+		display: block!important;
+	}
+
+	// SELECT / COMBO CONTAINER
+	.cke_dialog_ui_select {
+
+
+		// SELECT
+		select {
+
+			width: 100%;
+			border: none;
+			line-height: normal;
+			background: transparent;
+			border-radius: 0;
+			box-shadow: none;
+
+			appearance: none;
+			-moz-appearance: none;
+			-webkit-appearance: none;
+
+			background: url($ICON--ARROW_DOWN---WHITE) no-repeat right 5px center;
+			background-color: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR;
+			padding: 3px 5px !important;
+			@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+
+			&:focus {
+				border:none;
+			}
+
+			option {
+
+			}
+		}
+
+	}
+
+	// TEXT INPUT CONTAINER
+	.cke_dialog_ui_text {
+		input {
+			// @extend %CSS_BLOCK--FORM--TEXT_INPUT;
+			// @extend %CSS_BLOCK--FORM--TEXT_INPUT\:EDIT_ENGINE;
+
+			border-radius: 0;
+			box-shadow: none;
+			border:none;
+
+			@include text_input("EDIT_ENGINE");
+		}
+	}
+
+	// Dialogue Body / Footer container
+	.cke_dialog_contents {
+		padding: 0;
+		margin: 0;
+		background: transparent;
+		border: none;
+		border-radius: 0;
+
+		display: block;
+	    box-sizing: border-box;
+	    width: 100%;
+
+		// table,
+		// tbody,
+		// tr {
+		// 	display: block;
+		// }
+
+		tr {
+			margin-bottom: 1px;
+		}
+	}
+
+	// Dialogue Body Container
+	.cke_dialog_contents_body {
+		margin: 0;
+		height: auto!important;
+
+		// background: $FORM--FIELDSET--BG--COLOUR;
+	    // padding: 20px 20px 25px;
+		padding: 0;
+	    // width: 100%!important;
+	    box-sizing: border-box;
+	}
+
+	iframe.cke_pasteframe {
+		background: $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR!important;
+		border-radius: 0!important;
+		border: none!important;
+	}
+
+	.cke_dialog_page_contents {
+
+		> table {
+			> tbody {
+				> tr {
+					margin-bottom: 20px;
+				}
+			}
+		}
+
+		fieldset {
+			padding: 0!important;
+			margin-top: 10px!important;
+
+			legend {
+				@extend %CSS_BLOCK--FORM--LABEL;
+			}
+		}
+
+		p,
+		.cke_dialog_ui_html {
+			margin: 0 0 10px 0;
+
+			@include text(14px, $RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
+
+			strong {
+				font-weight: $FONT--WEIGHT---BOLD;
+				color: lighten($RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR, 5%);
+				font-size: inherit;
+				font-family: inherit;
+			}
+		}
+
+		a {
+			@include text(14px, $RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR !important, $FONT--WEIGHT---NORMAL);
+
+		}
+
+		.cke_dialog_ui_button {
+			padding: 0;
+			margin: 0;
+			border: none;
+			border-radius: 0;
+			box-shadow: none;
+			background: transparent;
+			display: block;
+
+			// Normal Button
+			span {
+				// padding: 5px 10px!important;
+				background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
+		    	@include text(12px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important);
+				text-shadow: none;
+				padding: 4px;
+				text-align: center;
+
+				&:hover {
+					background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+			    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+				}
+			}
+
+		}
+
+	}
+
+	.cke_dialog_ui_vbox {}
+	.cke_dialog_ui_vbox_child {
+		padding: 0!important;
+		display: block;
+		margin-bottom: 5px;
+	}
+
+	.cke_dialog_footer {
+		border: 0;
+		outline: 0;
+		box-shadow: none;
+		border-radius: 0;
+		background: transparent;
+		text-align: left;
+
+		margin-top: 50px;
+	    display: block;
+	}
+
+	.cke_dialog_ui_hbox {
+		// margin-bottom: 10px!important;
+	}
+
+	.cke_dialog_footer_buttons {
+		display: inline-block;
+		margin: 0;
+
+		tbody,
+		tr,
+		td {
+			display: inline-block;
+		}
+
+		// Reverse buttons so that OK comes first
+		td {
+			float: right;
+			margin-right: 5px;
+		}
+
+		.cke_dialog_ui_button {
+			padding: 0;
+			margin: 0;
+			border: none;
+			border-radius: 0;
+			box-shadow: none;
+			background: transparent;
+			display: block;
+
+			// Normal Button
+			span {
+				padding: 5px 10px!important;
+				background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
+		    	@include text(16px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important);
+				text-shadow: none;
+
+				&:hover {
+					background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+			    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+				}
+			}
+
+			// Cancel Button
+			&.cke_dialog_ui_button_cancel {
+
+
+				span {
+					padding: 5px 10px!important;
+					@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR;
+
+					&:hover {
+						@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR;
+
+					}
+
+
+				}
+			}
+		}
+	}
+
+	a {
+		&:active,
+		&:focus {
+			border: none!important;
+			padding: 0!important;
+		}
+	}
+
+
+
+
+	// CKE About POP UP Specific
+	.cke_about_container {
+		padding: 0;
+		margin: 0;
+
+		.cke_about_logo {
+			// height: 81px;
+			// background-color: transparent;
+			// background-image: url(http://localhost:8080/modules/ckeditor/javascript/plugins/about/dialogs/logo_ckeditor.png);
+			// background-position: center;
+			// background-repeat: no-repeat;
+			// margin: 0;
+			display: none;
+		}
+
+
+	}
+
+	// CKE Template List
+	.cke_tpl_list {
+		border: none;
+		background: transparent;
+		margin: 5px 0;
+
+		a {
+			display: block;
+			margin: 1px 0;
+
+			.cke_tpl_item {
+				margin:0;
+				padding: 0;
+				border: none;
+				padding: 5px 16px;
+				background-color: $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR;
+			}
+
+			&:hover,
+			&:focus,
+			&:active {
+				box-shadow: inset -35px 0 $RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON--BG--COLOUR---SELECTED;
+				background-color: $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR---SELECTED;
+
+				.cke_tpl_item {
+					border: none;
+					background: url($RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON---SELECTED) no-repeat right 7px center;
+					background-size: 20px 20px;
+				}
+			}
+		}
+	}
+
+	.cke_dialog_ui_checkbox {
+		display: block;
+		margin-top: 10px;
+		vertical-align: middle;
+
+		input {
+			vertical-align: middle;
+		}
+	}
+
+	.cke_tpl_preview {
+		width: 100%!important;
+
+		td {
+			padding: 0;
+
+			br {
+				display: none;
+			}
+
+			span {
+				@include  text(14px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---NORMAL);
+			}
+
+			.cke_tpl_title {
+				display: none;
+			}
+
+		}
+	}
+
+	.cke_dialog_footer_buttons {
+	}
+
+
+
+}
+
+
+
+
+
+
+
+
+.x-form-invalid {
+	border:none!important;
+	background:none!important;
+
+	// INLINE ERROR DETAILS
+	> div:nth-child(1) {
+		// display: none;
+	}
+}
+
+/* BROWSER FIXES ( Actually over rides of GXT fixes ) */
+.ext-strict .ext-gecko .x-small-editor .x-form-text,
+.ext-strict .ext-webkit .x-small-editor .x-form-text {
+	height: auto!important;
+}
+
+.ext-strict .ext-gecko .x-small-editor .x-form-field-wrap .x-form-trigger {
+	height: 24px!important;
+}
+
+/* Modal Mask */
+.x-modal {
+    background: $MODAL--BG--COLOUR;
+    opacity: 1;
+    z-index: $ZINDEX--MODAL---MASK;
+    position: fixed !important;
+
+	body[data-INDIGO-IMAGE-PREVIEW="open"] & {
+		z-index: $ZINDEX--MODAL---MASK\:IMAGE_PREVIEW;
+	}
+
+	body[data-INDIGO-EDIT-ENGINE="open"] & {
+		// z-index: $ZINDEX--MODAL---MASK\:EDIT_ENGINE;
+	}
+}
+
+/* Loading Loader */
+.x-masked {
+    > div {
+        opacity: 0;
+    }
+    &::before {
+        content: $text_loading;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: url(./images/loader-animated.gif) no-repeat center center;
+    }
+
+}
+
+/* All Dialogues, popups, etc, etc ... */
+	// BASIC STRUCTURE RESET
+	.x-window-tl,
+	.x-window-tr,
+	.x-window-tc,
+	.x-window-ml,
+	.x-window-mr,
+	.x-window-mc,
+	.x-window-body,
+	.x-window-bl,
+	.x-window-br,
+	.x-window-bc,
+	.x-window-footer {
+		border:none!important;
+		background: none!important;
+		padding: 0!important;
+	}
+
+	.x-window-header {
+		padding: 0!important;
+		pointer-events: none; // Remove the draggable feature of dialogue
+		margin-bottom: 5px;
+
+	}
+
+	.x-window-draggable {
+		.x-window-header-text {
+			cursor: auto!important;
+			pointer-events: none!important;
+
+		}
+	}
+
+
+/* Specific to Dialogues (ie. alert windows ) */
+	.x-window-dlg {
+
+		margin-top: -32px; // Trying to offset the increase in height of dialogue due to extra large title.
+
+		.x-window-header-text {
+			@include text($DIALOGUE--TITLE--FONT--SIZE, $DIALOGUE--TITLE--FONT--COLOUR, $DIALOGUE--TITLE--FONT--WEIGHT, $DIALOGUE--TITLE--FONT--FAMILY);
+		}
+
+		// ICONS
+		.ext-mb-warning,
+		.ext-mb-question,
+		.ext-mb-info {
+			display: none;
+		}
+
+		// CONTENT
+		.ext-mb-text {
+			@include text($DIALOGUE--BODY--FONT--SIZE, $DIALOGUE--BODY--FONT--COLOUR, $DIALOGUE--BODY--FONT--WEIGHT);
+
+		}
+
+		// ACTION BAR
+		.x-panel-btns {
+			margin-top: 20px;
+		}
+
+		// Have to use an x-clear DIV to act as the modal mask.
+		&.x-window-plain {
+			.x-window-tl,
+			.x-window-ml {
+				position: relative;
+				z-index: $ZINDEX--EDIT_ENGINE--DIALOGUE;
+			}
+
+			.x-panel-btns {
+				.x-panel-fbar {
+					position: relative;
+					z-index: $ZINDEX--EDIT_ENGINE--DIALOGUE;
+				}
+
+				.x-clear {
+					background: $MODAL--BG--COLOUR;
+					position: fixed;
+					left: 0;
+					top: 0;
+					width: 100%;
+					height: 100%;
+					z-index: $ZINDEX--MODAL---MASK\:EDIT_ENGINE;
+				}
+			}
+		}
+
+	}
+
+	// Popup image preview (used in pickers)
+	#JahiaGxtImagePopup {
+
+		margin-top: -112px; // Offset the title
+
+		.x-resizable-handle {
+			display: none;
+		}
+
+		&:before {
+			content: "Preview";
+			display: block;
+			width: 100%;
+			/* text-align: center; */
+			pointer-events: none;
+			margin-left: -2px;
+
+			@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
+		}
+
+		.x-window-bwrap {
+			&:before {
+				content: attr(data-file-name);
+				display: block;
+				width: 100%;
+				/* text-align: center; */
+				@include text(16px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
+				pointer-events: none;
+				margin-bottom: 9px;
+			}
+		}
+
+
+
+		.x-window-tl {
+			position: absolute;
+			bottom: -47px; // Negate the offset added to main container of popup
+			left: -3px;
+		}
+
+		// Image Container
+		.x-window-ml {
+			// z-index: 9999;
+			// position: fixed;
+		}
+
+		.x-window-header {
+
+			.x-panel-toolbar {
+				> table {
+					// top: -18px;
+				    // position: absolute;
+				    // left: 0;
+				    // width: 100%;
+				}
+			}
+
+
+
+			.x-tool-refresh {
+				display: none;
+			}
+
+			.x-tool-close {
+				width: auto!important;
+				height: auto!important;
+				font-size: 1px;
+				// position: absolute!important;
+    			// right: 18px;
+				pointer-events: all;
+
+				&::after {
+					content: "Cancel";
+					display: block;
+					width: 100%;
+					height: 100%;
+					box-sizing: border-box;
+
+					@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR;
+
+					&:hover {
+						@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR;
+
+					}
+
+				}
+
+			}
+
+			.x-btn-text {
+				width: auto!important;
+				height: auto!important;
+				font-size: 1px;
+				// position: absolute!important;
+    			// right: 18px;
+				pointer-events: all;
+
+				&::after {
+					content: "Save";
+					display: block;
+					width: 100%;
+					height: 100%;
+					box-sizing: border-box;
+					margin-top: -1px;
+					padding: 5px 10px;
+
+					@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED;
+
+					&:hover {
+						@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED;
+
+					}
+
+				}
+
+				// REMOVE IMAGE
+				img {
+					display: none;
+				}
+			}
+		}
+
+		// Use as modal mask
+		.x-window-bc .x-window-footer {
+			// position: fixed;
+		    // background: red!important;
+		    // width: 100%;
+		    // height: 100%;
+		    // left: 0;
+		    // top: 0;
+		    // z-index: 9;
+		}
+	}
+
+
+
+/* Sliders */
+.x-slider-horz, .x-slider-horz .x-slider-end, .x-slider-horz .x-slider-inner {
+	background: none!important;
+}
+.x-slider-horz .x-slider-thumb {
+	background: $COLOUR--ASH_CLOUDS;
+    border-radius: 100%;
+    width: 12px;
+    height: 12px;
+    top: 5px;
+
+	&:hover {
+		background: $COLOUR--GREY_CLOUDS;
+
+	}
+}
+
+.x-slider-end::before {
+    content: "Slider";
+    text-indent: -50000px;
+    display: block;
+    height: 3px;
+    background: $COLOUR--DUSTY_CLOUDS;
+    position: absolute;
+    top: 10px;
+    width: 100%;
+}
+
+/* SHOULD SIMPLIFY ALOT OF CODE WHEN REDOING edit-modes, etc ... */
+
+.x-panel-body {
+	border: none !important;
+	background: transparent !important;
+}
+
+.x-border-layout-ct {
+	background: none;
+}
+
+
+.x-border-panel {
+	width: 100%!important;
+	height: 100%!important;
+	border: none!important;
+}
+
+.x-panel-tl,
+.x-panel-bl {
+	display: none;
+}
+
+.x-panel-ml,
+.x-panel-mr,
+.x-panel-mc {
+	background: none;
+	border: none;
+	padding: 0;
+}
+
+.x-form-focus, textarea.x-form-focus {
+	border:none;
+}
+
+.arrow-double-right,
+.arrow-double-left,
+.arrow-right,
+.arrow-left {
+	background: no-repeat center center!important;
+	background-size: 12px 12px!important;
+	opacity: 0.8;
+	padding: 3px 0;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.arrow-double-right {
+	background-image:url(./images/icons/icon_arrow_right_double_white@X2.png)!important;
+}
+
+.arrow-right {
+	background-image:url(./images/icons/icon_arrow_right_single_white@X2.png)!important;
+}
+
+.arrow-double-left {
+	background-image:url(./images/icons/icon_arrow_left_double_white@X2.png)!important;
+}
+
+.arrow-left {
+	background-image:url(./images/icons/icon_arrow_left_single_white@X2.png)!important;
+}

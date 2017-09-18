@@ -1,0 +1,1248 @@
+$PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
+
+#JahiaGxtManagerLeftTree .x-component.x-panel .x-panel-header {
+	position: absolute!important;
+	top: 0;
+}
+
+#JahiaGxtManagerLeftTree .x-component.x-panel.x-panel-collapsed .x-panel-header {
+	position: relative!important;
+}
+
+body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div > div {
+	padding-top: 24px;
+}
+
+// Move context menu up and to the left to hide the other image menu otions
+.x-menu.imagepickerContextMenu .x-menu-list {
+	margin-top: -30px;
+	margin-left: -50px;
+}
+
+#JahiaGxtContentPickerWindow {
+	// Reset global position of picker as whole page
+	width: 100%!important;
+	height: 100%!important;
+	left: 0!important;
+	top: 10px!important;
+
+	// Fix problem with Firefox
+	body.ext-gecko & {
+		top: 0px!important;
+	}
+
+	z-index: $ZINDEX--PICKER_WINDOW;
+
+	background: $PICKER--BG--COLOUR;
+
+	body[data-INDIGO-PICKER-SEARCH="open"] & {
+		background: $COLOUR--RAIN_CLOUDS;
+
+	}
+
+	.x-tool-refresh {
+		background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center;
+		background-color: $COLOUR--RAIN_CLOUDS;
+	    height: 20px;
+	    width: 20px;
+	    border-radius: 100%;
+	    position: fixed;
+	    right: 107px;
+	    top: 41px;
+	    background-size: 14px 11px;
+
+		&:hover {
+			background-color: lighten($COLOUR--RAIN_CLOUDS, 9%);
+		}
+	}
+
+	/////////// STRUCTURE
+
+	// HEADER HEIGHT
+	.x-window-tl {
+		height: 74px;
+		// background: blue;
+	}
+
+	// BODY WRAPPER
+	.x-window-bwrap {
+		height: calc(100% - 74px);
+		// background: green;
+		padding: 0 47px;
+
+	}
+
+	// BODY CONTAINERS
+	.x-window-ml,
+	.x-window-mr,
+	.x-window-mc,
+	.x-window-body,
+	.x-window-body > div,
+	.x-panel-bwrap,
+	.x-panel-body,
+	.x-panel-body > .x-view,
+	#JahiaGxtManagerMain,
+	.x-grid-panel,
+	#images-view {
+		height: 100%!important;
+		width: 100%!important;
+	}
+
+
+
+
+	// BODY TOOL BAR
+	.x-panel-tbar {
+		background: transparent;
+	    width: 100%!important;
+	    height: 100%;
+	    top: 0;
+	    left: 0;
+	    position: fixed;
+	    z-index: 99;
+	    pointer-events: none;
+
+		// TOOLBAR CONTAINER
+		.x-toolbar {
+			border:none;
+			padding: 0;
+			background: none;
+		}
+
+		// SEPERATOR
+		.xtb-sep {
+			display: none;
+		}
+
+		.action-bar-tool-item {
+			// Hide all toolbar options
+			display: none;
+
+			// PREVIEW BUTTON STUFF
+			&.toolbar-item-filepreview {
+				position: fixed;
+				pointer-events: all;
+				right: auto;
+
+				width: 25px;
+				height: 25px;
+
+				@extend %CSS_BLOCK--PREVIEW_BUTTON---UP;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					@extend %CSS_BLOCK--PREVIEW_BUTTON---UP\:SEARCH;
+				}
+
+				&:hover {
+					// @extend %CSS_BLOCK--PREVIEW_BUTTON---HOVER;
+				}
+
+
+				display: none;
+
+				img {
+					display: none;
+				}
+
+				&[indigo-preview-button="show"] {
+					display: block;
+				}
+
+				&[indigo-preview-button-state="selected"] {
+					@extend %CSS_BLOCK--PREVIEW_BUTTON---SELECTED;
+
+					body[data-INDIGO-PICKER-SEARCH="open"] & {
+						@extend %CSS_BLOCK--PREVIEW_BUTTON---SELECTED\:SEARCH;
+					}
+
+				}
+
+			}
+
+
+			&.x-item-disabled {
+				display: none!important;
+			}
+
+			// VIEW BUTTONS
+			&.toolbar-item-listview,
+			&.toolbar-item-thumbsview,
+			&.toolbar-item-detailedview {
+				display: block;
+				pointer-events: all;
+				width: 25px;
+				height: 25px;
+
+				opacity: 0.3;
+
+				img {
+					display: none;
+				}
+
+				&:hover {
+					opacity: 1;
+				}
+			}
+
+			// LIST VIEW
+			&.toolbar-item-listview {
+				background: url($ICON--DISPLAY--LIST--GREY) no-repeat center center;
+
+				body[indigo-PICKER-DISPLAY="list"] & {
+					opacity: 0.8;
+				}
+			}
+
+			// THUMBS VIEW
+			&.toolbar-item-thumbsview {
+				background: url($ICON--DISPLAY--THUMBS--GREY) no-repeat center center;
+
+				body[indigo-PICKER-DISPLAY="thumbs"] & {
+					opacity: 0.8;
+				}
+			}
+
+			// DETAILED VIEW
+			&.toolbar-item-detailedview {
+				background: url($ICON--DISPLAY--DETAILS--GREY) no-repeat center center;
+				display: none;
+
+				body[indigo-PICKER-DISPLAY="details"] & {
+					opacity: 0.8;
+				}
+			}
+		}
+
+		// FILE OPERATIONS
+		.x-toolbar-left {
+
+		}
+
+		// DISPLAY OPTIONS
+		#JahiaGxtManagerToolbar .x-toolbar-right {
+		    position: fixed;
+			right: 52px;
+			top: 38px;
+
+			body[data-INDIGO-PICKER-SEARCH="open"] & {
+				display: none;
+			}
+		}
+
+
+
+
+	}
+
+	/////////// STYLING
+
+	// PICKER TITLE
+	.x-window-header {
+		margin: 0;
+
+		.x-panel-toolbar {
+			float:none!important;
+		}
+	}
+	.x-window-header-text {
+		pointer-events: all;
+		margin: 27px 0 0 44px;
+		display: block;
+		@include text(36px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
+	}
+
+
+
+	// TREE
+	#JahiaGxtManagerLeftTree {
+		height: calc(100% - 120px)!important; // Make room for save, close buttons
+		width: 320px !important;
+	    vertical-align: top;
+	    display: inline-block;
+	    position: relative!important;
+		margin-right: 20px;
+
+		.x-grid3-row {
+
+			.x-tree3-el {
+
+				pointer-events: none;
+				width: 100%!important;
+
+				&::after {
+					pointer-events: all;
+					content: "Hey";
+					text-indent: -50000px;
+					background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
+					background-size: 10px 2px;
+					width: 28px;
+					height: 25px;
+					position: absolute;
+					right: -11px;
+					top: 0;
+					cursor: pointer;
+					z-index: 99999999999;
+					opacity: 0;
+
+
+				}
+
+			}
+
+			&.x-grid3-row-over .x-tree3-el::after {
+				opacity: 1;
+			}
+
+			&.x-grid3-row-selected .x-tree3-el::after {
+				background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+				background-size: 10px 2px;
+			}
+
+		}
+
+		// SEARCH TAB
+		form {
+			fieldset {
+				@extend %CSS_BLOCK--FIELDSET\:PICKER_SEARCH;
+			}
+		}
+
+		// SAVED SEARCH ROWS
+		.x-panel-body {
+			> .x-view {
+				background: transparent;
+
+				.x-view-item {
+					border: none!important;
+
+					@extend %CSS_BLOCK--TREE--ROW--TEXT---UP;
+					@extend %CSS_BLOCK--TREE--ROW--BG---UP;
+
+					&.x-view-item-over {
+						@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER;
+						@extend %CSS_BLOCK--TREE--ROW--BG---HOVER;
+
+						&.x-view-item-sel {
+							@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER;
+							@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER;
+						}
+
+					}
+
+					&.x-view-item-sel {
+						@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED;
+						@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED;
+
+
+					}
+				}
+			}
+		}
+
+
+
+		// Browse / Search Tabs
+		.x-tab-panel-header {
+			width: 100%!important;
+			height: 0!important;
+			border:none!important;
+			padding:0!important;
+			background: transparent;
+
+			// HIJACK TO USE AS TRIGGER FOR COMBO BOX
+			.x-tab-strip-spacer {
+				position: fixed;
+				top: 74px;
+				left: 47px;
+				width: 320px;
+				height: 32px;
+				background: red;
+				z-index: 999;
+				opacity: 0;
+
+				body.ext-gecko & {
+					top: 81px;
+				}
+
+				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+					// display: none;
+				}
+			}
+
+			.x-tab-strip-wrap {
+				.x-tab-strip {
+					border:none;
+					background: none;
+					padding: 0;
+					margin: 0;
+
+					li {
+						// BROWSE TAB
+						&:nth-child(1) {
+							margin: 0;
+							position: fixed;
+							z-index: 99999;
+							// background-image: url($ICON--CLOSE_LARGE---GREY);
+							width: 20px;
+							height: 20px;
+
+							text-indent: -50000px;
+
+							top: 41px;
+						    left: 26px;
+							pointer-events: none;
+
+							// left: -50000px;
+							//
+							// body[data-INDIGO-PICKER-SEARCH="open"] & {
+							// 	left: 31px;
+							// }
+
+							a {
+								background: none!important;
+								padding: 0;
+
+								&.x-tab-right {
+									width: 100%;
+									height: 100%;
+								}
+							}
+
+							em {
+								background: none!important;
+								padding: 0!important;
+								width: 100%;
+								height: 100%;
+							}
+							span {
+								background: none!important;
+								padding:none!important;
+								width: 100%;
+								height: 100%;
+
+								span {
+									display: none;
+									background-image: url($ICON--BACK--GREY) !important;
+									background-size: 20px 20px !important;
+									background-repeat: no-repeat !important;
+									width: 100%;
+									height: 100%;
+
+									body[data-INDIGO-PICKER-SEARCH="open"] & {
+										display: block;
+										pointer-events: all;
+									}
+								}
+
+							}
+						}
+
+						// SEARCH TAB
+						&:nth-child(2) {
+							margin: 0;
+							position: fixed;
+							top: 0px;
+							left:260px;
+							z-index: 9999999999999;
+
+
+
+							// LABEL
+							&::after {
+								content: " ";
+								display: block;
+								width: 30px;
+								height: 30px;
+								text-align: center;
+								background: url($ICON--SEARCH--SMALL_GREY) no-repeat center center;
+								background-color: lighten($COLOUR--DUSTY_CLOUDS, 10%);
+								border-radius: 100%;
+								margin-top: 13px;
+								margin-left: 10px;
+								z-index: 9999999999999;
+								pointer-events: all;
+								position: relative;
+
+								body[data-indigo-picker-search="open"] & {
+									opacity: 0;
+									pointer-events: none;
+								}
+
+
+							}
+
+							&:hover::after {
+								cursor: pointer;
+								background-color: lighten($COLOUR--DUSTY_CLOUDS, 9%);
+							}
+
+							// ICON
+							img {
+								background-size: 23px 23px;
+							    background-repeat: no-repeat;
+								background-image: url($ICON--SETTINGS---GREY);
+							    padding-left: 23px;
+							    width: 23px;
+							    height: 23px;
+							    overflow: hidden;
+							    -moz-box-sizing: border-box;
+							    box-sizing: border-box;
+							    display: block;
+							    position: relative;
+
+								margin: 0 auto;
+
+								left: 0;
+								top: 0;
+
+								visibility: hidden;
+							}
+
+							// ANCHORS
+							a {
+								display: none;
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+
+		// Tree Container
+		.x-tab-panel-body {
+			// Container
+			width: 100%!important;
+			height: 100%!important;
+			background: transparent;
+
+			> div {
+				height: 100%!important;
+
+				// BROWSE TAB CONTAINER
+				&:nth-child(1) {
+					// background: aqua;
+					display: block!important;
+
+					&.x-hide-display + div.x-component {
+						// SEARCH TAB IS OPEN
+						display: block;
+					    position: fixed;
+					    width: 367px !important;
+					    top: 0;
+					    box-shadow: 5px 0px 34px $COLOUR--BLACK_CLOUDS;
+					    padding: 30px;
+					    box-sizing: border-box;
+					    background: $COLOUR--WHITE_CLOUDS !important;
+
+
+						.x-form-text {
+							@include text_input("SIDE_PANEL");
+
+						}
+
+						&:before {
+							content: "Search";
+
+							margin-left: 21px;
+
+							@include text(36px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
+						}
+
+						&:after {
+							content: "Results";
+						    position: fixed;
+						    top: 30px;
+						    font-size: 26px;
+						    left: 384px;
+						    font-weight: 200;
+						    font-family: Nunito Sans;
+						    color: $COLOUR--WHITE_CLOUDS;
+						}
+					}
+
+					+ div {
+						// SEARCH TAB
+						display: none;
+					}
+				}
+
+				// SEARCH TAB CONTAINER
+				&:nth-child(2) {
+					position: absolute;
+				    top: 0;
+				    width: 100%!important;
+				    left: 0;
+					// background: $PICKER--BG--COLOUR!important;
+					z-index: 9999;
+
+					// FIX CONTAINER HEIGHTS
+					> .x-panel,
+					.x-panel-bwrap,
+					.x-panel-ml,
+					.x-panel-mr,
+					.x-panel-mc,
+					form,
+					fieldset {
+						width: 100%!important;
+						height: 100%!important;
+						position: relative;
+					}
+
+					.x-panel-tl {
+						display: none;
+					}
+
+					.x-panel-bwrap {
+						padding-top: 0;
+						left: 0!important;
+					}
+					.x-panel-header {
+						background: transparent!important;
+					}
+
+
+
+					.x-panel-body {
+						// Fix width of form
+						overflow-y: scroll!important;
+						> div {
+						    width: 100%!important;
+						    box-sizing: border-box;
+						    margin: 0!important;
+
+							// Contains search text input AND save / search buttons
+							&:nth-child(1) {
+								> table {
+									width: 100%;
+								    position: absolute;
+								    bottom: 40px;
+								}
+
+								.x-btn-mc {
+									text-align: left;
+								}
+
+								td {
+									// SEARCH TEXT INPUT CONTAINER
+									&:nth-child(1) {
+										position: fixed;
+										width: 100%;
+										display: block;
+										/* height: 85px; */
+										background: $COLOUR--WHITE_CLOUDS;
+										z-index: 999999;
+										/* display: none; */
+										top: 72px;
+										width: 305px;
+									}
+
+									// SEARCH BUTTON CONTAINER
+									&:nth-child(2) {
+										// MOVE BUTTON TO POSITION
+										display: inline-block;
+										table {
+
+
+											// STYLE BUTTON
+											.x-btn-text {
+												width: auto!important;
+												height: auto!important;
+												font-size: 1px;
+												display: inline-block;
+												&::after {
+													content: "Search";
+													display: block;
+													width: 100%;
+													height: 100%;
+													box-sizing: border-box;
+													padding: 5px 10px 5px 10px;
+
+													@extend %CSS_BLOCK--BUTTON--ICON\:SEARCH_PANEL---SUGGESTED;
+
+													&:hover {
+														@extend %CSS_BLOCK--BUTTON--ICON---HOVER\:SEARCH_PANEL---SUGGESTED;
+
+													}
+
+												}
+
+												// REMOVE IMAGE
+												img {
+													display: none;
+												}
+											}
+										}
+
+
+
+									}
+
+									// SAVE SEARCH CONTAINER
+									&:nth-child(3) {
+										display: inline-block;
+										table {
+
+
+											// STYLE BUTTON
+											.x-btn-text {
+												width: auto!important;
+												height: auto!important;
+												font-size: 1px;
+
+												display: inline-block;
+												&::after {
+													content: "Save search";
+													display: block;
+													box-sizing: border-box;
+
+													padding: 5px 10px 5px 10px;
+
+													// position: fixed;
+													// top: 0;
+													// right: 0;
+
+
+													@extend %CSS_BLOCK--BUTTON--ICON\:SEARCH_PANEL;
+
+													&:hover {
+														@extend %CSS_BLOCK--BUTTON--ICON---HOVER\:SEARCH_PANEL;
+
+													}
+
+												}
+
+												// REMOVE IMAGE
+												img {
+													display: none;
+												}
+											}
+										}
+
+
+									}
+								}
+							}
+						}
+					}
+
+					fieldset {
+						background: transparent!important;
+
+						// Messing up width of form
+						.x-form-label-left {
+							width: 100%!important;
+						}
+					}
+
+
+
+
+				}
+
+				width: 100%!important;
+
+				// Another Container
+				> div {
+					width: 100%!important;
+					padding-top: 57px;
+					box-sizing: border-box;
+
+					// Site Groups
+					> div {
+						width: 100%!important;
+
+
+					}
+				}
+			}
+		}
+
+		// Tree Site Panel Header
+
+		// UNSELECTED PANEL TAB
+
+		.x-panel {
+			.x-panel-header {
+				// pointer-events: none; // STOP CLICKING ON CURRENT OPENED SITE TAB, AS IT HIDES IT !!
+			}
+
+		}
+
+		.x-panel-collapsed {
+			.x-panel-header {
+
+				display: none;
+
+
+				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+					display: block;
+
+					.x-panel-header-text {
+						@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM;
+
+						&:hover {
+							@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER;
+						}
+					}
+				}
+
+				// HIDE TOOLBAR
+				.x-panel-toolbar {
+					display: none;
+
+
+				}
+
+				pointer-events: all!important;
+
+
+			}
+
+
+		}
+
+
+
+
+
+		.x-panel-header {
+
+		    width: 100%!important;
+		    text-align: left;
+		    padding: 0;
+		    position: relative;
+		    z-index: 9;
+
+			box-sizing: border-box;
+			box-shadow: inset -18px 0px $FORM--COMBO--BG--COLOUR---UP;
+
+			body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+				box-shadow: none;
+
+			}
+
+			// ICON
+			img {
+				display: none!important;
+			}
+
+			// TOOLBAR (Refresh, minimise)
+			.x-panel-toolbar {
+				float: none!important;
+			    position: fixed!important;
+			    top: 0!important;
+			    right: 0!important;
+				display: block;
+				pointer-events: all;
+				z-index: 9999;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					display: none;
+				}
+			}
+
+			// TITLE
+			.x-panel-header-text {
+				display: block;
+
+				background-repeat: no-repeat;
+				background-position: right center;
+		        background-image: url($FORM--COMBO--ICON---UP);
+
+				@extend %CSS_BLOCK--FORM--TEXT_INPUT;
+
+				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+					@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS;
+
+				}
+
+			}
+
+			&.indigo-hover {
+				box-shadow: inset -18px 0px $FORM--COMBO--BG--COLOUR---HOVER;
+
+				.x-panel-header-text {
+					// background-color: $FORM--TEXT_AREA--BG--COLOUR---FOCUS;
+					background-repeat: no-repeat;
+					background-position: right center;
+					background-image: url($FORM--COMBO--ICON---HOVER);
+
+
+					@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER;
+
+				}
+
+			}
+
+		}
+
+		// TREES (1 per Site)
+		.x-panel-bwrap {
+			position: absolute;
+			right: 0;
+			width: 100% !important;
+			left: 2px !important;
+			box-sizing: border-box;
+			padding-top: 50px;
+		}
+	}
+
+	// TREE CONTENT CONTAINER
+	#JahiaGxtManagerLeftTree + div {
+		width: calc(100% - 340px) !important;
+	    // background: orange;
+	    left: auto!important;
+	    position: relative!important;
+	    display: inline-block;
+	    vertical-align: top;
+		margin-top: 6px;
+    	height: calc(100% - 6px)!important;
+
+		// Make room for save / cancel button when in search mode
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			height: calc(100% - 100px)!important;
+		}
+
+		.x-grid3-row {
+
+			.x-grid3-td-size {
+
+				pointer-events: none;
+				width: 100%!important;
+
+				&::after {
+
+					@extend %CSS_BLOCK--MORE_INFO---UP;
+
+					pointer-events: all;
+					content: "Hey";
+					text-indent: -50000px;
+
+					width: 28px;
+					height: 25px;
+
+					position: absolute;
+					right: 0;
+					cursor: pointer;
+					margin-top: -26px;
+					z-index: 99999999999;
+					opacity: 0;
+
+					body[data-indigo-picker-search="open"] & {
+						@extend %CSS_BLOCK--MORE_INFO---UP\:SEARCH;
+
+					}
+
+				}
+
+			}
+
+			&.x-grid3-row-over .x-grid3-td-size::after,
+			&:hover .x-grid3-td-size::after {
+				opacity: 1;
+			}
+
+			&.x-grid3-row-selected .x-grid3-td-size::after {
+				@extend %CSS_BLOCK--MORE_INFO---SELECTED;
+			}
+
+		}
+
+		#images-view {
+			// Toolbar for thumb view
+			background: transparent;
+			padding-top: 33px;
+			box-sizing: border-box;
+
+			.x-toolbar {
+				pointer-events: all;
+			    width: calc(100% - 437px) !important;
+			    left: auto;
+			    right: 52px;
+			    position: absolute;
+			    top: 74px;
+			    padding-bottom: 7px;
+			    box-sizing: border-box;
+
+
+				.xtb-text {
+					// LABELS
+					margin-right: 5px!important;
+
+					@extend %CSS_BLOCK--FORM--LABEL;
+				}
+
+
+
+
+				// FILTER CONTAINER
+				.x-toolbar-left {
+					width: 375px;
+
+					.x-toolbar-cell {
+						// SEARCH LABEL
+						&:nth-child(1) {
+							display: none;
+						}
+
+						// SEARCH FIELD
+						&:nth-child(2) {
+							.x-form-text {
+								@include text_input("PICKER_FILTER");
+							}
+						}
+
+						// SORT COMBO
+						&:nth-child(5) {
+							.x-form-text {
+								@include text_input("PICKER_SORT");
+							}
+						}
+
+						// INVERT BUTTON
+						&:nth-child(6) {
+							margin-left: 5px;
+							@include button("TOGGLE_ASC");
+
+
+
+							> table {
+								> tbody {
+									display: inline-block;
+									vertical-align: middle;
+									margin-left: 5px;
+
+								}
+
+								&.x-btn-pressed {
+									&:before {
+										content: $text_descending;
+									}
+								}
+
+								&:before {
+									content: $text_ascending;
+								    display: inline-block;
+								    vertical-align: middle;
+
+									@extend %CSS_BLOCK--FORM--LABEL;
+
+
+
+								}
+							}
+
+							.x-btn-pressed {
+								&.x-btn.x-btn-noicon button {
+									background-image: url($ICON--DESC--WHITE)!important;
+
+								}
+							}
+
+						}
+
+						display: inline-block;
+					}
+
+					.xtb-sep {
+						background: transparent;
+						width: 10px;
+						display: block;
+					}
+				}
+
+				// ZOOM CONTAINER
+				.x-toolbar-right {
+
+				}
+			}
+
+			// THUMB CONTAINER
+			.x-view {
+				width: 100%!important;
+				height: 100%!important;
+				background: transparent;
+
+				body[data-INDIGO-PICKER-SEARCH="open"] & {
+					height: calc(100% - 110px) !important;
+				}
+			}
+
+			.x-view-over {
+				background: none!important;
+
+				.thumb {
+					background: $COLOUR--CREAM_CLOUDS;
+				}
+
+				&.x-view-item-sel {
+					.thumb {
+						background: $COLOUR--DIRTY_ORANGE;
+					}
+				}
+
+			}
+
+
+
+			.thumb-wrap {
+				height: initial!important;
+				max-height: initial!important;
+				width: initial!important;
+				margin: 0!important;
+				min-width: 100px;
+
+				&.x-view-over {
+					span {
+						background: $COLOUR--CREAM_CLOUDS;
+						color: $COLOUR--RAIN_CLOUDS;
+					}
+				}
+
+				&.x-view-item-sel {
+					background: $COLOUR--DIRTY_ORANGE;
+
+					span {
+						background: $COLOUR--DIRTY_ORANGE!important;
+						color: $COLOUR--WHITE_CLOUDS;
+					}
+				}
+
+				// TITLE / FILE SIZE
+				span {
+					background: transparent;
+					text-align: center;
+					@include text(11px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---NORMAL);
+
+					&:last-child {
+						padding-bottom: 10px;
+					}
+				}
+
+				.thumb {
+					padding: 10px!important;
+
+					pointer-events: none;
+					width: 100%!important;
+
+					&::after {
+						@extend %CSS_BLOCK--MORE_INFO---UP;
+
+						pointer-events: all;
+						content: "Hey";
+						text-indent: -50000px;
+						width: 28px;
+						height: 25px;
+						position: absolute;
+						right: 0;
+						cursor: pointer;
+						margin-top: -26px;
+						z-index: 99999999999;
+						opacity: 0;
+						top: 26px;
+
+						body[data-indigo-picker-search="open"] & {
+							@extend %CSS_BLOCK--MORE_INFO---UP\:SEARCH;
+						}
+
+					}
+
+				}
+
+				&.x-view-over .thumb::after,
+				&:hover .thumb::after {
+					opacity: 1;
+				}
+
+				&.x-view-item-sel .thumb::after {
+					@extend %CSS_BLOCK--MORE_INFO---SELECTED;
+
+					body[data-indigo-picker-search="open"] & {
+						@extend %CSS_BLOCK--MORE_INFO---SELECTED\:SEARCH;
+					}
+				}
+			}
+
+		}
+	}
+
+	// TREE CONTENT CONTAINER
+	#JahiaGxtManagerTobTable {
+
+		// SEEMS UNUSED ...
+		> .x-panel-header {
+			display: none;
+		}
+	}
+
+	// ACTION BAR (Save, Cancel)
+	.x-window-bbar {
+		// background: pink;
+	    width: 300px !important;
+	    position: absolute;
+	    bottom: 0;
+	    height: 90px;
+	    box-sizing: border-box;
+
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			left: 387px;
+			height: 70px;
+
+		}
+
+		.x-panel-fbar {
+			width: 100%!important;
+
+			.x-toolbar-cell {
+
+				&:nth-child(1) {
+					/* Save */
+
+					// Make suggested colour
+					@include button("ACTIONBAR---SUGGESTED");
+				}
+			}
+
+		}
+	}
+
+
+
+
+
+
+
+
+
+	// STOP RESIZE ISSUES WHEN BEING LOADED FOR FIRST TIME( GWT ADDS AN ANIMATION )
+	.x-grid3-viewport,
+	.x-grid3-body {
+		width: 100%!important;
+	}
+
+
+
+
+
+
+
+
+	// REMOVE UNNECCESSARY STUFF
+	.x-resizable-handle,
+	.x-tool-restore,
+	.x-tool-toggle,
+	.x-tool-maximize,
+	.x-tool-close {
+		display: none!important;
+	}
+
+	.x-accordion-hd {
+		background: transparent;
+	}
+
+	.x-fieldset-bwrap {
+		transition: 0!important;
+	}
+}

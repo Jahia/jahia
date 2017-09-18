@@ -234,7 +234,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         config.add(column);
 
         column = new ColumnConfig("nodeWrapper", Messages.get("label.workflow.start.node", "Workflow Starting Node"),
-                150);
+                200);
         column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
 
             /**
@@ -274,6 +274,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                         "default", locale, false, new BaseAsyncCallback<String>() {
                                             public void onSuccess(String url) {
                                                 Window window = new Window();
+                                                window.addStyleName("content-preview");
                                                 window.setMaximizable(true);
                                                 window.setSize(800, 600);
                                                 window.setUrl(url);
@@ -296,6 +297,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                         "default", locale, true, new BaseAsyncCallback<String>() {
                                             public void onSuccess(String url) {
                                                 Window window = new Window();
+                                                window.addStyleName("content-incontext-preview");
                                                 window.setMaximizable(true);
                                                 window.setSize(1000, 750);
                                                 window.setUrl(url);
@@ -394,6 +396,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         tree.setAutoExpandColumn("displayName");
         tree.getTreeView().setRowHeight(25);
         tree.setTrackMouseOver(false);
+        tree.setAutoExpandMax(5000);
         add(tree);
 
         listener = new Poller.PollListener<TaskEvent>() {

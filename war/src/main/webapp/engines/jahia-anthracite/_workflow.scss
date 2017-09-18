@@ -1,0 +1,589 @@
+
+/***********************************************/
+/* WORKFLOW DASHBOARD **************************/
+/***********************************************/
+
+
+.workflow-dashboard-engine {
+	background:  lighten($EDIT_ENGINE--BASE--COLOUR, 2%) !important;
+
+	.x-panel-toolbar .x-tool-restore {
+		display: none;
+	}
+
+	.x-window-header {
+		height: 64px !important;
+		line-height: 64px;
+		padding-left: 16px !important;
+		margin-top: 5px;
+
+		.x-panel-toolbar > table {
+			pointer-events: all;
+		}
+
+		.x-window-header-text {
+			text-shadow: none;
+			border: none;
+			padding: 0;
+			border-radius: 0;
+			background: $COLOUR--TRANSPARENT;
+			box-shadow: none;
+			margin-bottom: 10px;
+			pointer-events: none !important;
+			font-family: $FONT--FAMILY---RALEWAY;
+			font-size: 36px;
+			color: $COLOUR--WHITE_CLOUDS;
+			font-weight: $FONT--WEIGHT---EXTRALIGHT;
+		}
+
+		> .x-component:first-child {
+			margin-top: 22px;
+			margin-right: 16px;
+
+			table tbody tr td .x-tool-close {
+				height: 22px;
+				width: 22px;
+				background-image: url(./images/icon-close-large.png);
+				background-position: initial !important;
+			}
+
+		}
+
+	}
+
+	.x-grid3 {
+
+		.x-grid3-header {
+			display: table-cell;
+			background: #818588;
+			color: $COLOUR--WHITE_CLOUDS;
+		}
+
+		.x-grid3-scroller {
+			background: #818588;
+		}
+
+		.x-grid3-row.x-grid3-row-selected {
+			background: rgb(239, 239, 239) !important;
+			color: rgb(99, 99, 99) !important;
+
+			.x-grid3-td-displayName {
+				padding-right: 0 !important;
+			}
+
+		}
+
+		.x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {
+			line-height: 33px;
+		}
+
+		.x-grid3-row {
+			background: rgb(239, 239, 239) !important;
+			color: rgb(99, 99, 99) !important;
+			height: 38px !important;
+			box-sizing: border-box;
+
+			.x-grid3-td-displayName table.x-btn-noicon {
+				position: absolute;
+				top: 3px;
+				height: 28px;
+				padding: 2px 6px;
+				padding-top: 4px;
+				pointer-events: all;
+				background: #a3a3a3;
+
+				button {
+					font-family: $FONT--FAMILY---NUNITO;
+					font-size: 13px;
+					color: $COLOUR--WHITE_CLOUDS !important;
+					font-weight: $FONT--WEIGHT---EXTRALIGHT;
+					margin-top: -1px;
+				}
+
+			}
+
+			.x-grid3-cell-last.x-grid3-td-operation {
+				padding-left: 8px;
+			}
+
+		}
+
+		.x-grid3-row-table {
+
+			.x-grid3-cell .x-grid3-cell-inner label {
+				line-height: 32px;
+				color: #818588;
+			}
+
+			.x-btn-text-icon .x-btn-icon-small-left .x-btn-text {
+				background: #F44336;
+				margin-top: 4px;
+				height: 24px;
+				padding: 0 4px;
+				color: rgb(239, 239, 239);
+
+				img {
+					display: none !important;
+				}
+
+			}
+
+			.x-grid3-cell {
+				overflow: hidden;
+				display: inline-block;
+			}
+
+		}
+
+	}
+
+	.x-grid3-hd-row {
+
+		.x-grid3-hd {
+			border-left-color: #818588;
+			border-right-color: #b0b2b3;
+		}
+
+		.x-grid3-hd.x-grid3-hd-over div,
+		.x-grid3-hd.x-grid3-hd-menu-open div {
+			background: rgb(142, 145, 148) !important;
+		}
+
+	}
+
+	.x-grid3-col-displayName table {
+		height: 36px;
+	}
+
+	.x-grid3-td-locale img {
+		margin-top: 8px;
+	}
+
+	.x-grid3-td-nodeWrapper button {
+		font-size: 13px !important;
+	}
+
+}
+
+
+
+/***********************************************/
+/* PREVIEW & IN-CONTEXT MODAL *********************/
+/***********************************************/
+
+
+.content-preview,
+.content-incontext-preview {
+    background: $COLOUR--RAIN_CLOUDS;
+    padding: 8px;
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    box-sizing: border-box;
+
+	.x-window-header {
+		height: 33px;
+
+		.x-panel-toolbar {
+			pointer-events: all;
+
+			.x-tool-close {
+				height: 22px;
+				width: 22px;
+				background-image: url(./images/icon-close-large.png);
+				background-position: initial;
+				margin-top: 4px;
+				margin-right: 4px;
+			}
+
+			.x-tool-maximize {
+				display: none;
+			}
+
+		}
+
+	}
+
+	.x-window-body {
+		position: fixed;
+		width: calc(100% - 16px ) !important;
+		height: calc(100% - 54px ) !important;
+	}
+
+}
+
+
+/***********************************************/
+/* PUBLICATION DASHBOARD ***********************/
+/***********************************************/
+
+// TO-DO: add sass variables.
+
+
+.workflowactiondialog-card.engine-panel {
+
+	.workflow-action-dialog {
+		border-top: 1px solid #717578;
+		width: 100% !important;
+		padding-top: 16px;
+		margin-top: 8px;
+	}
+
+	> div.x-panel-header .x-panel-header-text {
+	    color: #a3a3a3;
+	    display: inline-block;
+	    position: fixed;
+	    width: 100%;
+	    left: 70px;
+	    top: 96px;
+
+			&:before {
+			    display: none;
+			}
+	}
+
+	> .x-panel-bwrap {
+	    margin-top: 16px;
+
+			.x-panel-body.x-panel-body-noborder {
+			    overflow: hidden !important;
+			}
+
+	}
+
+	&:before {
+		content: "Publication dashboard" !important;
+		width: 380px !important;
+	}
+
+	.x-tab-panel .x-tab-panel-body {
+		overflow: auto;
+		overflow-x: hidden;
+
+		&:nth-child(2) {
+			overflow-y: hidden;
+		}
+
+	}
+
+
+	/* Footer buttons bar */
+
+	> .x-panel-bwrap > .x-panel-bbar {
+	    background: #474a4c;
+	    width: 100% !important;
+	    position: fixed;
+	    height: 82px;
+
+			.x-panel-fbar .x-toolbar-cell {
+
+				&:nth-child(1) {
+				    position: relative;
+				    top: 0;
+				    padding-bottom: 20px;
+				    padding-top: 20px;
+
+						.x-btn.x-btn-noicon button {
+						    background: #f26d4f !important;
+						}
+
+				}
+
+				&:nth-child(2) {
+				    padding-top: 20px;
+
+						.x-btn.x-btn-noicon button {
+						    background: #a3a3a3 !important;
+						}
+
+				}
+
+				&:nth-child(3) {
+				    padding-top: 20px;
+				}
+
+			}
+
+	}
+
+}
+
+.workflowactiondialog-ctn {
+    width: calc(100% - 144px) !important;
+
+		> .x-border-panel:first-child {
+		    height: 150px !important;
+		    width: 100% !important;
+		}
+
+		.x-border-panel > .x-panel-bwrap {
+			width: calc(100% - 162px) !important;
+		}
+
+		.x-grid3-body {
+			padding: 0 72px;
+		}
+
+		.workflow-action-dialog {
+
+			> div {
+				width: 100%!important;
+			}
+
+			.x-border-panel img.gwt-Image {
+				background: #f26d4f;
+				position: relative;
+				overflow: hidden;
+				width: 11px;
+				height: 11px;
+				padding: 11px 11px 0 0;
+				box-sizing: border-box;
+				border-radius: 50%;
+				margin-left: 4px;
+				margin-right: 4px;
+				margin-top: 1px;
+			}
+
+		}
+
+		.x-grid3 .x-grid3-row-table .x-grid3-cell {
+
+			.x-grid3-cell-inner {
+					line-height: 21px;
+					color: #dddcdc;
+					font-family: "Nunito Sans", sans-serif;
+			}
+
+			&:last-child {
+			    width: 340px !important;
+			}
+
+		}
+
+		.x-grid3-row-selected .x-panel-fbar {
+
+			.x-toolbar-cell:first-child .x-btn.x-btn-noicon button {
+				background: #f26d4f !important
+			}
+
+			.x-btn.x-btn-noicon button {
+				background: #a3a3a3 !important;
+			}
+
+		}
+
+		.x-panel-fbar {
+
+			.x-toolbar-ct {
+					float: right;
+			}
+
+			.x-btn.x-btn-noicon button {
+				background: transparent !important;
+				padding: 0;
+				font-size: 14px;
+				margin-right: 16px;
+				font-weight: 400;
+			}
+
+		}
+
+		.x-border-layout-ct:nth-child(1) > .x-border-panel {
+			//height: 24px !important;
+			margin-top: 14px;
+			color: #eaeaea;
+		}
+
+		.x-tab-panel-body {
+			border-color: #5c6164;
+
+			.x-grid3-body {
+			    padding-right: 160px;
+			    padding-left: 0;
+			}
+
+			.x-grid3-scroller .x-grid3-body {
+				overflow-x: hidden;
+				overflow-y: scroll;
+				width: calc(100% - 160px);
+				padding-right: 0;
+			}
+
+			.x-panel-fbar .x-btn.x-btn-noicon button {
+				background: rgba(113, 117, 120, 0) !important;
+				color: #f1f1f1 !important;
+			}
+
+			.x-grid-group-hd {
+		    border-bottom-color: #989898;
+		    border-width: 1px;
+		    border-bottom-style: dashed;
+		    padding: 4px 0;
+		    padding-top: 8px;
+
+				.x-grid-group-div {
+					color: #cacbcc;
+					font-weight: 500;
+					font-size: 14px;
+					font-family: "Nunito Sans", sans-serif;
+					padding-left: 22px;
+					background-image: url(./images/icons/ic_arrow_up@2x.png);
+					background-size: 18px;
+					background-position: left;
+				}
+
+			}
+
+			.x-grid-group-collapsed .x-grid-group-hd .x-grid-group-div {
+				background-image: url(./images/icons/ic_down_@2x.png);
+				background-size: 18px;
+				background-position: left;
+			}
+
+			.x-grid3 .x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {
+				color: #b7b7b7;
+			}
+
+		}
+
+		.x-border-layout-ct:nth-child(2) > .x-border-panel {
+			position: initial !important;
+
+			&:first-child {
+				background: #616669;
+				width: calc(100% - 162px) !important;
+				margin-bottom: 30px;
+				margin-top: 8px;
+				max-height: 200px;
+
+				&:empty {
+					margin-bottom: 0;
+				}
+
+				> .x-component {
+					background: #616669 !important;
+					padding: 4px 8px;
+					color: #dddbdb;
+					border-bottom: 1px solid #717578 !important;
+				}
+
+				&:empty:before {
+					content: "No comments";
+					text-align: center;
+					width: calc(100% - 162px);
+					position: absolute;
+					margin-top: 54px;
+					color: #9ea0a2;
+					font-size: 12px;
+					height: 16px;
+					font-family: "Raleway", sans-serif;
+				}
+
+			}
+
+		}
+
+		.x-border-layout-ct:nth-child(2) {
+			height: auto !important;
+
+			form button.x-btn-text {
+				background: #b9bbbc;
+				padding: 8px 16px;
+				margin-top: 8px;
+				position: absolute !important;
+				bottom: 0;
+				width: fit-content !important;
+			}
+
+			> .x-border-panel form.x-form-label-left {
+				height: 152px !important;
+			}
+
+			> .x-border-panel .x-form-element .x-form-field-wrap.x-component {
+				overflow-y: scroll;
+				overflow-x: hidden;
+				height: 87px !important;
+			}
+
+		}
+
+
+		/* Content review from workflow dashboard. */
+
+		&.x-panel.engine-panel {
+
+			&:before {
+				content: "Workflow" !important;
+			}
+
+			> div.x-panel-header .x-panel-header-text {
+		    color: #a3a3a3;
+		    display: inline-block;
+		    position: fixed;
+		    width: 100%;
+		    left: 70px;
+		    top: 96px;
+
+				&:before {
+					content: "" !important;
+				}
+
+			}
+
+			> .x-panel-bwrap {
+		    margin-top: 16px;
+
+				> .x-panel-bbar {
+					background: #474a4c;
+					width: 100% !important;
+					position: fixed;
+					height: 82px;
+
+					.x-toolbar-ct {
+						float: none;
+					}
+
+					.x-panel-fbar .x-toolbar-cell {
+						padding-top: 20px;
+
+						&:nth-child(1) {
+							position: relative;
+							top: 0;
+							padding-bottom: 20px;
+						}
+
+					}
+
+					.x-btn.x-btn-noicon button {
+						padding: 5px 10px;
+						font-weight: 100;
+						background: #a3a3a3 !important;
+						font-size: 16px;
+					}
+
+				}
+
+			}
+
+			.x-tab-panel .x-tab-panel-body {
+				overflow-y: auto;
+				height: calc(100% - 102px) !important;
+
+				.x-form-label-left > .x-form-item:nth-child(2) {
+					margin-top: 24px;
+				}
+
+				.x-form-label-left > .x-form-item .cke {
+					width: 100% !important;
+				}
+
+				> div:nth-child(1) {
+					overflow: hidden;
+				}
+
+			}
+
+		}
+
+}

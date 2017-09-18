@@ -62,6 +62,7 @@ public class OpenHTMLWindowActionItem extends BaseActionItem {
         final GWTJahiaProperty htmlProperty = (GWTJahiaProperty) preferences.get(Constants.HTML);
         if (htmlProperty != null && htmlProperty.getValue() != null) {
             Window window = new Window();
+            window.addStyleName("open-html-modal");
             if (getGwtToolbarItem().getTitle() != null) {
                 String title = getGwtToolbarItem().getTitle().replaceAll(" ", "_");
                 window.setTitle(title);

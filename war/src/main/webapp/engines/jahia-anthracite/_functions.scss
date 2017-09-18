@@ -1,0 +1,183 @@
+@mixin tooltip($_tooltip_text, $_position: "BOTTOM"){
+	@extend %CSS_BLOCK--TOOLTIP---#{$_position} !optional;
+
+	&::before {
+		content: $_tooltip_text;
+	}
+
+}
+
+
+@mixin text_input($_input_id, $_extra: "none"){
+	@extend %CSS_BLOCK--FORM--TEXT_INPUT !optional;
+	@extend %CSS_BLOCK--FORM--TEXT_INPUT\:#{$_input_id} !optional;
+
+
+	&:hover {
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER !optional;
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:#{$_input_id} !optional;
+
+	}
+
+	&:focus {
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS !optional;
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:#{$_input_id} !optional;
+
+	}
+
+	&[disabled] {
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED !optional;
+		@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:#{$_input_id} !optional;
+
+	}
+
+}
+
+@mixin text($_size, $_color, $_weight, $_family:$DEFAULT--FONT--FAMILY){
+    font-family: $_family;
+    font-size: $_size;
+    color: $_color;
+    font-weight: $_weight;
+}
+
+@mixin button($_button_id, $_extra: "none"){
+
+    .x-btn {
+		width: auto!important;
+
+        button {
+            width: 100%!important;
+            height: auto!important;
+        }
+
+		&.x-btn-noicon {
+			// Button has icon
+			button {
+				@extend %CSS_BLOCK--BUTTON--TEXT\:#{$_button_id} !optional;
+
+			}
+		}
+
+		&.x-btn-text-icon {
+			// Button has icon
+
+			button {
+                @extend %CSS_BLOCK--BUTTON--ICON\:#{$_button_id} !optional;
+
+                @if($_extra == "remove-icons"){
+                    padding-left: 10px;
+
+                    img {
+                        display: none;
+
+                    }
+                }
+
+			}
+		}
+
+		&.x-btn-over {
+			// Over states
+
+			&.x-btn-noicon {
+				// Button has icon
+				button {
+                    @extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:#{$_button_id} !optional;
+
+				}
+			}
+
+			&.x-btn-text-icon {
+				// Button has icon
+				button {
+                    @extend %CSS_BLOCK--BUTTON--ICON---HOVER\:#{$_button_id} !optional;
+
+				}
+			}
+
+		}
+	}
+}
+
+@mixin dual_list($_id: "DUAL_LIST"){
+    .x-form-group {
+        /* Yet another container */
+        height: auto!important;
+        width: 100%!important;
+        background: $COLOUR--TRANSPARENT;
+
+        > table {
+            display: block;
+
+            > tbody > tr > td {
+                // SOURCE LIST
+                &:nth-child(1) {
+
+                    .x-form-list {
+                        padding-top: 35px;
+
+                    }
+
+                    // INPUT FILTER
+                    > div > table > tbody > tr:nth-child(1) {
+                        position: absolute;
+                        top: 29px;
+                        width: calc(50% - 37px);
+                        left: 5px;
+
+
+                    }
+                }
+
+                // BUTTONS
+                &:nth-child(2) {
+                    > div {
+                        margin-top: 73px!important;
+                    }
+                }
+
+                // SELECTION LIST
+                &:nth-child(3) {
+                    .x-form-list {
+                        height: 235px!important;
+                    }
+                }
+            }
+        }
+
+        .x-form-clear-trigger {
+            @extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:#{$_id} !optional;
+
+            &:hover {
+                @extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:#{$_id} !optional;
+            }
+        }
+
+        .x-form-text {
+            @extend %CSS_BLOCK--FORM--TEXT_INPUT\:#{$_id} !optional;
+
+            &:hover {
+                @extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:#{$_id} !optional;
+            }
+
+            &:focus {
+                @extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:#{$_id} !optional;
+            }
+        }
+
+        // FILTER CONTAINER
+        .x-form-field-wrap {
+            width: 100%!important;
+        }
+
+        .x-table-layout-cell {
+            width: 100%!important;
+            display: inline-block;
+        }
+    }
+
+    // Text adjacent field is in FOCUS
+    .x-form-group .x-form-text:focus + .x-form-clear-trigger {
+        @extend %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS\:#{$_id} !optional;
+    }
+}

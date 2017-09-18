@@ -1,0 +1,423 @@
+/***********************************************/
+/* CONTRIBUTE MODE *****************************/
+/***********************************************/
+
+.x-viewport-contributemode {
+    .x-toolbar-first {
+        background-size: 32px 32px;
+        border: none !important;
+        display: block;
+        top: 0;
+        height: 40px !important;
+        right: 2px;
+        left: auto;
+        pointer-events: all;
+        padding: 5px;
+        width: 100%;
+        z-index: $ZINDEX--TOOLBAR--CONTAINER;
+        overflow: visible !important;
+        position: fixed;
+        background: transparent !important;
+
+        > table {
+            opacity: 0;
+            width: 100%;
+            display: block;
+            position: relative;
+        }
+
+        &:hover {
+            width: 100%;
+            z-index: $ZINDEX--TOOLBAR--CONTAINER;
+            overflow: visible !important;
+            position: fixed;
+        }
+
+        > table,
+        &:hover > table {
+            opacity: 1;
+            z-index: $ZINDEX--TOOLBAR--CONTAINER_SUB;
+            pointer-events: all;
+        }
+
+        .x-toolbar-cell {
+            display: inline-block;
+            opacity: 1;
+
+            &:hover > table:nth-child(1)::after {
+                color: $COLOUR--WHITE_CLOUDS;
+            }
+
+            .x-item-disabled {
+                display: none;
+            }
+
+            em {
+                background: transparent !important;
+            }
+
+            button {
+                width: 50px !important;
+                height: 35px !important;
+                padding: 0 !important;
+                background: transparent !important;
+                text-indent: -50000px;
+            }
+        }
+
+        > table:nth-child(1) {
+            table table {
+                &::after {
+                    font-family: $DEFAULT--FONT--FAMILY;
+                    font-size: 8px;
+                    text-transform: uppercase;
+                    font-weight: $FONT--WEIGHT---NORMAL;
+                    width: 100%;
+                    display: block;
+                    text-align: center;
+                    margin-bottom: 10px;
+                    color: $COLOUR--BLACK_CLOUDS;
+
+                    body[data-selection-count="0"] & {
+                        color: rgba(238, 238, 238, 0.9);
+                    }
+                }
+            }
+
+            td.x-btn-mc {
+                display: block;
+                width: 50px;
+                height: 23px;
+                background: red;
+                margin-bottom: 2px;
+                background: transparent !important;
+            }
+
+            > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(6),
+            > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(14),
+						> tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(7) {
+                display: none;
+            }
+
+            .contribute-menu-mode {
+                position: fixed;
+                right: 75px;
+                top: 0;
+                margin-top: 0;
+                z-index: $ZINDEX--CONTEXT_MENU--MODE_MENU;
+                width: 169px;
+                height: 24px;
+                opacity: 0.9;
+
+                &::after {
+                    content: $text_contribute_mode;
+                    font-size: 14px;
+                    text-transform: uppercase;
+                    font-weight: $FONT--WEIGHT---SEMILIGHT;
+                    margin-top: 0;
+                    padding-left: 35px;
+                    background: url(./images/dx_logo_solid-black.png) no-repeat left 12px center / 20px 20px;
+                    padding-right: 2px;
+                    text-align: left;
+                    position: absolute;
+                    z-index: $ZINDEX--CONTEXT_MENU--MODE_MENU---LABEL;
+                    font-family: $DEFAULT--FONT--FAMILY;
+                    width: calc(100% - 20px);
+                    display: block;
+                    height: 20px;
+                    padding-top: 5px;
+                    top: 13px;
+
+                    body[data-selection-count="0"] & {
+                        background: url(./images/dx_logo_solid.png) no-repeat left 12px center / 20px 20px, url(./images/combo-arrow.png) no-repeat right center;
+                    }
+                }
+            }
+
+            .contribute-menu-contributesite {
+                background: url(./images/tabs-placeholder-black@X2.png) no-repeat top 3px center;
+                background-size: 23px 23px;
+                position: fixed;
+                left: 50px;
+                top: 6px;
+                opacity: 1;
+
+                body[data-selection-count="0"] & {
+                    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
+                    background-size: 23px 23px;
+                    opacity: 0.3;
+                }
+
+                &::after {
+                    content: $text_site;
+                }
+            }
+
+            > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(4) > table {
+                position: fixed!important;
+                left: 0;
+                top: 15px;
+                display: inline-block;
+                margin-top: 0;
+                position: relative;
+                margin-left: 55px;
+
+                > tbody {
+                    display: block;
+                    background: url(./images/tabs-create-white@X2.png) no-repeat center left -3px $COLOUR--BLACK_CLOUDS;
+                    background-size: 18px 17px;
+                    width: 20px;
+                    height: 20px;
+                    display: block;
+                    border-radius: 0 100% 100% 0;
+
+                    body[data-selection-count="0"] & {
+                        background: url(./images/tabs-create-white@X2.png) no-repeat center left -3px #545657;
+                        background-size: 18px 17px;
+                    }
+                }
+
+                > tbody > tr {
+                    display: none;
+                }
+            }
+
+            .contribute-menu-view {
+                position: fixed;
+                left: 0;
+                opacity: 1;
+                background: url(./images/tabs-browse-white@X2.png) no-repeat center right 5px $COLOUR--BLACK_CLOUDS;
+                top: 15px;
+                background-size: 23px 23px;
+                border-radius: 0;
+                height: 20px;
+                display: block;
+                width: 45px;
+
+                body[data-selection-count="0"] & {
+                    background: url(./images/tabs-browse-white@X2.png) no-repeat center right 5px #545657;
+                    background-size: 23px 23px;
+                }
+
+                body[data-selection-count="1"] & {
+                    background: url(./images/tabs-browse-white@X2.png) no-repeat center right 5px $COLOUR--BLACK_CLOUDS;
+                    background-size: 23px 23px;
+                    border-radius: 0;
+                }
+
+                td.x-btn-mc {
+                    width: 25px!important;
+                }
+
+                body[data-sitesettings="true"] & {
+                    display: none;
+                }
+            }
+
+            .contribute-menu-publication {
+                position: fixed;
+                left: 0;
+                opacity: 1;
+                background: url(./images/tabs-publish-white@X2.png) no-repeat top -1px left 3px $COLOUR--BLACK_CLOUDS;
+                top: 15px;
+                background-size: 23px 23px;
+                border-radius: 100%;
+                height: 20px;
+                width: 20px;
+                display: block;
+
+                body[data-selection-count="0"] & {
+                    background: url(./images/tabs-publish-white@X2.png) no-repeat top -1px left 3px #545657;
+                }
+
+                body[data-PAGE-PUBLICATION-STATUS="published"][data-selection-count="0"] & {
+                    background: url(./images/tabs-publish-published@X2.png) no-repeat top -1px left 3px #545657;
+                    background-size: 23px 23px;
+                }
+
+                body[data-PAGE-PUBLICATION-STATUS="modified"][data-selection-count="0"] & {
+                    background: url(./images/tabs-publish-modified@X2.png) no-repeat top -1px left 3px #545657;
+                    background-size: 23px 23px;
+                }
+
+                td.x-btn-mc {
+                    width: 25px !important;
+                }
+            }
+
+            .contribute-menu-workflow {
+                background: url(./images/tabs-placeholder-black@X2.png) no-repeat top 3px center;
+                background-size: 23px 23px;
+                position: fixed;
+                left: 100px;
+                top: 6px;
+                opacity: 1;
+
+                body[data-selection-count="0"] & {
+                    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
+                    background-size: 23px 23px;
+                    opacity: 0.3;
+                }
+
+                &::after {
+                    content: $text_workflow;
+                }
+            }
+
+            > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(10) > table {
+                background: url(./images/tabs-placeholder.png) no-repeat top 3px center;
+
+                &::after {
+                    content: $text_tasks;
+                }
+            }
+
+            .editmode-managers-menu {
+                position: fixed;
+                top: 10px;
+                left: 5px;
+                z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
+                display: block;
+                background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+                margin-top: 0;
+                opacity: 1;
+                background-size: 32px 32px;
+
+                body[data-selection-count="0"] & {
+                    background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+                    background-size: 32px 32px;
+                }
+
+                &::after {
+                    content: "";
+                }
+
+                body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+                    background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+                    background-size: 32px 32px;
+                }
+
+                .x-btn-mc {
+                    height: 40px !important;
+                }
+            }
+
+            > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(12) > table {
+                background: url(./images/tabs-placeholder-black@X2.png) no-repeat top center;
+                background-size: 23px 23px;
+                position: fixed;
+                left: 150px;
+                top: 6px;
+                opacity: 1;
+
+                body[data-selection-count="0"] & {
+                    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
+                    background-size: 23px 23px;
+                    opacity: 0.3;
+                }
+
+                &::after {
+                    content: $text_trash;
+                }
+            }
+
+            > tbody > tr > td:nth-child(1) > table > tbody > tr > td:nth-child(16) {
+                position: fixed;
+                width: 100% !important;
+                left: 0;
+                text-align: center;
+                top: 0;
+                pointer-events: none;
+
+                div {
+                    width: 25px !important;
+                    margin: 13px auto 0 !important;
+                    position: relative;
+
+                    &::after {
+                        content: attr(data-page-name);
+                        position: relative;
+                        color: $COLOUR--WHITE;
+                        font-family: $DEFAULT--FONT--FAMILY;
+                        font-weight: $FONT--WEIGHT---LIGHT;
+                        font-size: 16px;
+                        display: inline-block;
+                        vertical-align: middle;
+                        margin: 2px 0 0 4px;
+                    }
+
+                    input {
+                        background: transparent;
+                        color: rgba(238, 238, 238, 0.6);
+                        font-family: $DEFAULT--FONT--FAMILY;
+                        font-size: 10px;
+                        font-weight: $FONT--WEIGHT---LIGHT;
+                        border: none;
+                        text-indent: -50000px;
+                        width: 100% !important;
+                        padding: 0 !important;
+                        height: 15px !important;
+                        pointer-events: all;
+
+                        body[data-LANG="en"] & {
+                            background: url(./images/flags@X2/united-kingdom@X2.png) no-repeat center center/23px 14px
+                        }
+                    }
+
+                    img {
+                        display: none;
+                    }
+                }
+            }
+
+            .toolbar-item-clipboard {
+                background: url(./images/tabs-placeholder.png) no-repeat top 3px center;
+
+                &::after {
+                    content: $text_clipboard;
+                }
+            }
+
+            .contribute-menu-user {
+                position: fixed;
+                top: 10px;
+                background: url(./images/tabs-usermenu-black@X2.png) no-repeat left 14px top 6px;
+                height: 40px;
+                margin-top: 0;
+                background-size: 23px 23px;
+                right: 10px;
+
+                body[data-selection-count="0"] & {
+                    background: url(./images/tabs-usermenu-white@X2.png) no-repeat left 14px top 6px;
+                    background-size: 23px 23px;
+                }
+
+                body[data-sitesettings="true"] & {
+                    display: none;
+                }
+            }
+        }
+
+        .x-btn-arrow {
+            display: none;
+        }
+    }
+
+    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) {
+        height: 50px;
+        pointer-events: none;
+    }
+
+    > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) {
+        z-index: $ZINDEX--ACTION_BAR--CONTAINER;
+        height: 60px;
+        display: block;
+        position: absolute !important;
+    }
+
+    .x-toolbar-left > table {
+        float: right;
+        position: fixed;
+        right: 52px;
+    }
+}

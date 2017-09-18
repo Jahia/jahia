@@ -95,6 +95,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
     @Override
     public void onComponentSelection() {
         final Window window = new Window();
+        window.addStyleName("customized-preview");
         window.setSize(500, 430);
         window.setPlain(true);
         window.setModal(true);

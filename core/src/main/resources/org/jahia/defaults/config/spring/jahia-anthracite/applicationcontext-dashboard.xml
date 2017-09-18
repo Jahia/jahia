@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="dashboardmode-jahia-anthracite" parent="dashboardmode">
+        <property name="topToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="layout" value="button-label"/>
+                <property name="items">
+                    <list>
+                        <!--<bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Dashboard.Menu.Mode">-->
+                            <!--<property name="titleKey" value="label.mode"/>-->
+                            <!--<property name="items">-->
+                                <!--<list>-->
+                                    <!--<ref bean="Toolbar.Item.Edit"/>-->
+                                    <!--<ref bean="Toolbar.Item.Contribute"/>-->
+                                    <!--<ref bean="Toolbar.Item.Studio"/>-->
+                                    <!--<ref bean="Toolbar.Item.Admin"/>-->
+                                <!--</list>-->
+                            <!--</property>-->
+                        <!--</bean>-->
+                        <bean id="editmode.managers.menu" class="org.jahia.services.uicomponents.bean.toolbar.Menu" >
+                            <property name="visibility">
+                                <bean class="org.jahia.services.uicomponents.bean.Visibility">
+                                    <property name="needAuthentication" value="true"/>
+                                </bean>
+                            </property>
+                            <property name="titleKey" value="label.managers"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Logout"/>
+                                    <ref bean="Toolbar.Item.Studio"/>
+                                    <ref bean="Toolbar.Item.Admin"/>
+                                    <ref bean="Toolbar.Item.Edit"/>
+                                    <ref bean="Toolbar.Item.Contribute"/>
+                                    <ref bean="Toolbar.Item.EditorialContentManager"/>
+                                    <ref bean="Toolbar.Item.FileManager"/>
+                                    <ref bean="Toolbar.Item.PortletManager"/>
+                                    <ref bean="Toolbar.Item.RepositoryExplorer"/>
+                                    <ref bean="Toolbar.Item.CategoryManager"/>
+                                    <ref bean="Toolbar.Item.SiteManager"/>
+                                </list>
+                            </property>
+                        </bean>
+                        <ref bean="Toolbar.Item.Separator"/>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Dashboard.Menu.User">
+                            <property name="icon" value="start"/>
+                            <property name="titleKey" value="label.user.loggedAs"/>
+                            <property name="items">
+                                <list>
+                                    <ref bean="Toolbar.Item.Logout"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="sidePanelToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="mainModuleToolbar">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="contextMenu">
+            <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
+                <property name="items">
+                    <list>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
+        <!-- tabs-->
+        <property name="tabs">
+            <list value-type="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                <bean id="sidePanelTab.dashboardModules" class="org.jahia.services.uicomponents.bean.editmode.SidePanelTab">
+                    <property name="key" value="dashboardModules"/>
+                    <property name="icon" value="start"/>
+                    <property name="treeColumns">
+                        <list>
+                            <value>displayName,*,label.title</value>
+                        </list>
+                    </property>
+                    <property name="tabItem">
+                        <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.SettingsTabItem">
+                            <property name="settingsTemplateRoot" value="dashboard-modules-base"/>
+                            <property name="label" value="userDashboardSettings.tab.title"/>
+                            <property name="settingPath" value="$user"/>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+</beans>

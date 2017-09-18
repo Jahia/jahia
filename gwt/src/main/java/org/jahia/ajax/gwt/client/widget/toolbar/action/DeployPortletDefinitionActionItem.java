@@ -74,6 +74,7 @@ public class DeployPortletDefinitionActionItem extends BaseActionItem {
                 GWTJahiaNode parent = lh.getSingleSelection();
                 if (parent != null) {
                     final com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
+                    w.addStyleName("deploy-portlet-definition-modal");
                     w.setHeadingHtml(Messages.get("label.deployNewPortlet", "New portlets"));
                     w.setModal(true);
                     w.setResizable(false);

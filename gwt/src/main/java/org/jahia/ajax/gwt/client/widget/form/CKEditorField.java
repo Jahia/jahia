@@ -392,7 +392,7 @@ public class CKEditorField extends Field<String> {
         wcagPanel.getHeader().addTool(ignore);
         wcagPanel.setBorders(true);
         wcagPanel.add(getWarningGrid(wcagResult));
-
+        wcagPanel.addStyleName("wcag-panel");
         parent.insert(wcagPanel, parent.indexOf(this));
         parent.layout();
     }
@@ -525,7 +525,7 @@ public class CKEditorField extends Field<String> {
         grid.setColumnLines(true);
         grid.setColumnReordering(true);
         grid.addPlugin(rowNumberer);
-
+        grid.addStyleName("wcag-warning-grid");
         return grid;
     }
 

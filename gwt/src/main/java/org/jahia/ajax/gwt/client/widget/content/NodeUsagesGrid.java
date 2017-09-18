@@ -134,6 +134,7 @@ public class NodeUsagesGrid {
                                 public void onSuccess(GWTRenderResult result) {
                                     HTML html = new HTML(result.getResult());
                                     Window w = new Window();
+                                    w.addStyleName("node-usage-dblclick-preview");
                                     w.setScrollMode(Style.Scroll.AUTO);
                                     w.setModal(true);
                                     w.setClosable(true);

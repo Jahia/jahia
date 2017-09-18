@@ -1,1 +1,266 @@
-$color-background:#5c6164
+/////////////////////////////////////////////////
+// COLOURS //////////////////////////////////////
+/////////////////////////////////////////////////
+
+	$COLOUR--JAHIA_BLUE: 						rgb(0,160,227);
+	$COLOUR--WHITE_CLOUDS: 						rgb(241,241,241);
+	$COLOUR--CREAM_CLOUDS: 						rgb(228,229,230);
+	$COLOUR--DUSTY_CLOUDS: 						rgb(209,209,209);
+	$COLOUR--ASH_CLOUDS: 						rgb(163,163,163);
+	$COLOUR--GREY_CLOUDS: 						rgb(122,126,128);
+	$COLOUR--LEAD_CLOUDS: 						rgb(115,115,115);
+	$COLOUR--RAIN_CLOUDS: 						rgb(92,97,100);
+	$COLOUR--DARK_CLOUDS: 						rgb(40,43,45);
+	$COLOUR--BLACK_CLOUDS: 						rgb(29,29,29);
+	$COLOUR--WHITE: 							rgb(255,255,255);
+	$COLOUR--VIVID_GRASS: 						rgb(4,189,4);
+
+	$COLOUR--DIRTY_ORANGE: 						rgb(242,109,79);
+
+	$COLOUR--TRANSPARENT: 						rgba(0,0,0,0);
+
+	$COLOUR--TEST-1: 								red;
+	$COLOUR--TEST-2:								yellow;
+
+	$COLOUR--TEST-3: 								brown;
+	$COLOUR--TEST-4:								orange;
+
+
+
+/////////////////////////////////////////////////
+// ICONS ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+	// INFORMATION
+	$ICON--INFO--WHITE: 						"./images/icons/ic_info_outline@2x.png";
+
+	// DISPLAY
+	$ICON--DISPLAY--THUMBS--GREY: 				"./images/icons/icon_thumbs_grey_small.png";
+	$ICON--DISPLAY--DETAILS--GREY: 				"./images/icons/icon_display_details_grey@X2.png";
+	$ICON--DISPLAY--LIST--GREY: 				"./images/icons/icon_list_grey_small.png";
+
+	$ICON--DISPLAY--THUMBS--WHITE: 				"./images/icons/icon_display_thumb_white_small.png";
+	$ICON--DISPLAY--DETAILS--WHITE: 			"./images/icons/icon_display_details_grey@X2.png";
+	$ICON--DISPLAY--LIST--WHITE: 				"./images/icons/icon_list_white_small.png";
+
+	// REFRESH
+	$ICON--REFRESH--SMALL_WHITE: 				"./images/icons/icon-publication-launcher.png";
+	$ICON--REFRESH--SMALL_GREY: 				"./images/icons/icon-publication-launcher-grey.png";
+
+	// PREVIEW
+	$ICON--PREVIEW--SMALL_WHITE: 				"./images/icons/icon_preview_small_white.png";
+	$ICON--PREVIEW--SMALL_GREY: 				"./images/icons/icon_preview_small_grey.png";
+
+	// RICH TEXT EDITOR ICON SET
+	$ICON--RICH_TEXT--TOOLBUTTONS: 				"./images/icons/icons-cke.png";
+
+	// MORE OPTIONS
+	$ICON--TICK---WHITE:     					"./images/icons/icon-check-white@X2.png";
+
+	// SEARCH ICONS
+	$ICON--SEARCH--SMALL_GREY: 					"./images/icons/icon-magnifying-glass--small-hover.png";
+	$ICON--SEARCH--SMALL_WHITE: 				"./images/icons/icon-magnifying-glass--small-white.png";
+
+	// SORT ICONS
+	$ICON--ASC--WHITE: 							"./images/icons/icon_arrow_asc_white@X2.png";
+	$ICON--DESC--WHITE: 						"./images/icons/icon_arrow_desc_white@X2.png";
+
+	// MORE OPTIONS
+	$ICON--MORE_OPTIONS---WHITE:     			"./images/icon-more-options-light.png";
+	$ICON--MORE_OPTIONS---GREY:     			"./images/icon-more-options-dark-50@X2.png";
+
+	// COMBOS
+	$ICON--ARROW_DOWN---WHITE:     				"./images/icons/combo-arrow.png";
+	$ICON--ARROW_DOWN---GREY:     				"./images/icons/combo-arrow-grey.png";
+
+	$ICON--ARROW_EXPAND---GREY:   				"./images/icons/icon-expand-side-bar.png";
+	$ICON--ARROW_COLLAPSE---GREY:   			"./images/icons/icon-combo-expand-white.png";
+
+
+
+	// CLOSE ICONS
+	$ICON--CLOSE_SMALL---GREY:     				"./images/icons/icon-close-small-light.png";
+	$ICON--CLOSE_SMALL---WHITE:     			"./images/icons/icon-close-white@X2.png";
+	$ICON--CLOSE_LARGE---WHITE:     			"./images/icons/icon-close-white@X2.png";
+	$ICON--CLOSE_LARGE---GREY:     				"./images/icons/icon-close-grey@X2.png";
+
+	// NAV ICONS
+	$ICON--BACK--WHITE: 						"./images/icons/icon_arrow_left_single_white@X2.png";
+	$ICON--BACK--GREY: 							"./images/icons/icon-back-grey@X2.png";
+	$ICON--NEXT--WHITE: 						"./images/icons/icon-next-white@X2.png";
+	$ICON--NEXT--GREY: 							"./images/icons/icon-next-grey@X2.png";
+
+	// FOLDER ICONS
+	$ICON--FOLDER--SMALL---GREY: 				"./images/icons/small-folder@x2.png";
+	$ICON--FOLDER_OPEN--SMALL---GREY: 			"./images/icons/small-folder-open@x2.png";
+
+
+
+	// DEVICES
+	$ICON--DEVICE---GENERIC: 					"./images/devices/devices-generic-large.png";
+	$ICON--DEVICE---IPHONE: 					"./images/devices/devices-iphone-small.png";
+	$ICON--DEVICE---GALAXY_S4: 					"./images/devices/devices-galaxy-s4-small.png";
+	$ICON--DEVICE---GALAXY_TAB7: 				"./images/devices/devices-galaxy-tab-3-small.png";
+	$ICON--DEVICE---ANDROID: 					"./images/devices/devices-android-small.png";
+	$ICON--DEVICE---BLACKBERRY: 				"./images/devices/devices-blackberry-storm-small.png";
+	$ICON--DEVICE---GALAXY_NOTE: 				"./images/devices/devices-galaxy-note-3-small.png";
+	$ICON--DEVICE---KINDLE: 					"./images/devices/devices-kindle-fire-small.png";
+	$ICON--DEVICE---IPAD: 						"./images/devices/devices-apple-ipad-small.png";
+	$ICON--DEVICE---GALAXY_TAB_SMALL: 			"./images/devices/devices-galaxy-tab-3-small.png";
+	// PAGES
+	$ICON--PAGES---WHITE:     					"./images/tabs-pages-white@X2.png";
+	$ICON--PAGES---GREY:      					"./images/tabs-pages-dark@X2.png";
+	$ICON--PAGES---BLUE:       					"./images/tabs-pages-blue@X2.png";
+	$ICON--PAGES---BLACK:     					"./images/tabs-pages-black@X2.png";
+
+	// CREATE
+	$ICON--CREATE---WHITE:    					"./images/tabs-create-white@X2.png";
+	$ICON--CREATE---GREY:     					"./images/tabs-create-dark@X2.png";
+	$ICON--CREATE---BLUE:      					"./images/tabs-create-blue@X2.png";
+	$ICON--CREATE---BLACK:    					"./images/tabs-create-black@X2.png";
+
+	// CONTENT
+	$ICON--CONTENT---WHITE:   					"./images/tabs-content-white@X2.png";
+	$ICON--CONTENT---GREY:    					"./images/tabs-content-dark@X2.png";
+	$ICON--CONTENT---BLUE:     					"./images/tabs-content-blue@X2.png";
+	$ICON--CONTENT---BLACK:   					"./images/tabs-content-black@X2.png";
+
+	// FILE
+	$ICON--FILES---WHITE:     					"./images/tabs-files@X2.png";
+	$ICON--FILES---GREY:      					"./images/tabs-files-dark@X2.png";
+	$ICON--FILES---BLUE:       					"./images/tabs-files-blue@X2.png";
+	$ICON--FILES---BLACK:     					"./images/tabs-files-black@X2.png";
+
+	// SEARCH
+	$ICON--SEARCH---WHITE:    					"./images/tabs-search-white@X2.png";
+	$ICON--SEARCH---GREY:     					"./images/tabs-search-dark@X2.png";
+	$ICON--SEARCH---BLUE:      					"./images/tabs-search-blue@X2.png";
+	$ICON--SEARCH---BLACK:    					"./images/tabs-search-black@X2.png";
+
+	// TAXONOMY
+	$ICON--TAXONOMY---WHITE:  					"./images/tabs-taxonomy-white@X2.png";
+	$ICON--TAXONOMY---GREY:   					"./images/tabs-taxonomy-dark@X2.png";
+	$ICON--TAXONOMY---BLUE:    					"./images/tabs-taxonomy-blue@X2.png";
+	$ICON--TAXONOMY---BLACK:  					"./images/tabs-taxonomy-black@X2.png";
+
+	// DEVICES
+	$ICON--DEVICES---WHITE:   					"./images/tabs-devices-white@X2.png";
+	$ICON--DEVICES---GREY:    					"./images/tabs-devices-dark@X2.png";
+	$ICON--DEVICES---BLUE:     					"./images/tabs-devices-blue@X2.png";
+	$ICON--DEVICES---BLACK:   					"./images/tabs-devices-black@X2.png";
+
+	// SETTINGS
+	$ICON--SETTINGS---WHITE:  					"./images/tabs-settings-white@X2.png";
+	$ICON--SETTINGS---GREY:   					"./images/tabs-settings-dark@X2.png";
+	$ICON--SETTINGS---BLUE:    					"./images/tabs-settings-blue@X2.png";
+	$ICON--SETTINGS---BLACK:  					"./images/tabs-settings-black@X2.png";
+
+	// APPS
+	$ICON--CONTENT_MANAGER---WHITE: 			"./images/dx_logo_inverted.png";
+	$ICON--FILE_MANAGER---WHITE: 				"./images/dx_logo_inverted.png";
+	$ICON--PORTLET_MANAGER---WHITE: 			"./images/dx_logo_inverted.png";
+	$ICON--REPO_EXPLORER---WHITE: 				"./images/dx_logo_inverted.png";
+	$ICON--CATEGORY_MANAGER---WHITE: 			"./images/dx_logo_inverted.png";
+	$ICON--SITE_MANAGER---WHITE: 				"./images/dx_logo_inverted.png";
+	$ICON--DX---WHITE: 							"./images/dx_logo_inverted.png";
+
+	$ICON--DX---BLACK: 							"./images/dx_logo_solid-black.png";
+
+
+
+/////////////////////////////////////////////////
+// FONT FAMILIES ////////////////////////////////
+/////////////////////////////////////////////////
+
+	$FONT--FAMILY---NUNITO: 					"Nunito Sans", sans-serif;
+	$FONT--FAMILY---RALEWAY: 					"Raleway", sans-serif;
+
+
+
+/////////////////////////////////////////////////
+// TRANSITIONS //////////////////////////////////
+/////////////////////////////////////////////////
+
+	// QUICK
+	$TRANSITION--QUICK---ALL:          			all 0.15s ease-in 0s;
+
+/////////////////////////////////////////////////
+// FONT WEIGHTS /////////////////////////////////
+/////////////////////////////////////////////////
+
+	$FONT--WEIGHT---EXTRALIGHT: 				100;
+	$FONT--WEIGHT---SEMILIGHT: 					200;
+	$FONT--WEIGHT---LIGHT: 						300;
+	$FONT--WEIGHT---NORMAL: 					400;
+	$FONT--WEIGHT---SEMIBOLD: 					500;
+	$FONT--WEIGHT---BOLD: 						700;
+	$FONT--WEIGHT---EXTRABOLD: 					800;
+
+
+
+/////////////////////////////////////////////////
+// Z INDEXES ////////////////////////////////////
+/////////////////////////////////////////////////
+
+	// MAIN MODULE
+	$ZINDEX--MAINMODULE:                     	30;
+	$ZINDEX--MAINMODULE--HEADER:              	90 !important;
+	$ZINDEX--MAINMODULE--ACTIONS_MENU:        	100;
+	$ZINDEX--MAINMODULE--PATH_CONTAINER:      	30 !important;
+	$ZINDEX--MAINMODULE--LANGUAGE_SWITCHER:   	90;
+
+	// COMBO LISTS
+	$ZINDEX--COMBO_LIST:                     	1100 !important;
+
+	// CONTEXT MENUS
+	$ZINDEX--CONTEXT_MENU:                   	1100 !important;
+	$ZINDEX--CONTEXT_MENU---TITLE:             	140;
+	$ZINDEX--CONTEXT_MENU--MODE_MENU: 			60;
+	$ZINDEX--CONTEXT_MENU--MODE_MENU---LABEL: 	1 !important;
+
+	// THUMBS
+	$ZINDEX--THUMB---DETAILS:                  	10;
+
+	// PICKER WINDOW
+	$ZINDEX--PICKER_WINDOW:                  	1030 !important;
+
+	// HAMBURGER MENU
+	$ZINDEX--HAMBURGER---TITLE:                	30;
+
+	// SIDE PANEL
+	$ZINDEX--SIDE_PANEL:              			50 !important;
+	$ZINDEX--SIDE_PANEL--HEADER:       			50 !important;
+	$ZINDEX--SIDE_PANEL--BODY:       			30;
+	$ZINDEX--SIDE_PANEL--CONTAINER:    			20;
+	$ZINDEX--SIDE_PANEL--CONTAINER_SUB:    		60;
+	$ZINDEX--SIDE_PANEL--CLOSE_CAPTURE_MASK:    20;
+	$ZINDEX--SIDE_PANEL--SEARCH_TAB---ACTIONS:  30;
+	$ZINDEX--SIDE_PANEL--EDIT_ENGINE:           200 !important;
+
+	// EDIT ENGINE
+	$ZINDEX--EDIT_ENGINE--DIALOGUE: 			99;
+
+	// CKE EDITOR
+	$ZINDEX--CKE_EDITOR--DIALOGUE: 				200;
+
+	// MODAL
+	$ZINDEX--MODAL---MASK:                     	100 !important;
+	$ZINDEX--MODAL---MASK\:IMAGE_PREVIEW:      	1040 !important;
+	$ZINDEX--MODAL---MASK\:EDIT_ENGINE:      	9 !important;
+	$ZINDEX--MODAL---MASK\:CKE_EDITOR:      	100 !important;
+
+	// TOOLBAR
+	$ZINDEX--TOOLBAR--CONTAINER: 				60 !important;
+	$ZINDEX--TOOLBAR--CONTAINER_SUB:			60;
+
+	// HAMBURGER MENU
+	$ZINDEX--HAMBURGER_MENU---BUTTON: 			90;
+
+	// ACTION BAR
+	$ZINDEX--ACTION_BAR--CONTAINER: 			60 !important;
+
+	// IFRAME
+	$ZINDEX--IFRAME--CONTAINER: 				40;
+
+
+	$TOPBAR--MULTISELECT--1---TOP: 				27px!important;

@@ -1,0 +1,674 @@
+/////////////////////////////////////////////////
+// EDIT ENGINE //////////////////////////////////
+/////////////////////////////////////////////////
+
+/*body {
+
+	&:before {
+		content: attr(data-singleselection-node-displayname);
+	    display: block;
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    z-index: 9999;
+	    left: 314px!important;
+	    top: 47px!important;
+	    font-size: 18px!important;
+	}
+
+}*/
+
+
+
+
+
+.engine-panel,
+.engine-window {
+	z-index: $ZINDEX--SIDE_PANEL--EDIT_ENGINE;
+	background: $EDIT_ENGINE--BG--COLOUR;
+    position: fixed!important;
+    top: 0!important;
+    left: 0!important;
+    width: 100%!important;
+    height: 100%;
+
+	.x-tab-panel {
+		// Edit Engine COntent Container
+		width: 100%!important;
+		height: 100%!important;
+		border: none!important;
+
+		.x-tab-panel-header {
+			// Tab list menu
+			width: 387px !important;
+			display: inline-block;
+			box-sizing: border-box;
+			vertical-align: top;
+			border: none;
+			height: 100%;
+			background: none;
+			padding: 0 0 0 73px;
+
+			.x-tab-strip-wrap {
+				// Menu Container
+				width: 100%;
+				height: 100%;
+				padding-left: -1px;
+
+				.x-tab-strip {
+					// At last, the final container
+					width: 100%;
+					height: auto;
+					border:none;
+					border-left: 1px solid #4b4b4b;
+					background: none;
+					padding: 0 0 0 5px;
+					margin: 0;
+
+					li {
+						// Tab entry
+						float: none;
+						margin-left: 0;
+						display: block;
+
+						&.x-tab-strip-active {
+							border-left: 3px solid #eaeaea;
+							left: -7px;
+							padding-left: 4px;
+						}
+
+						.x-tab-right {
+							// Button container
+							background: none;
+							padding: 0;
+							margin: 0;
+
+							.x-tab-left {
+								// ANother button container
+								background: none;
+								padding: 0;
+
+								.x-tab-strip-inner {
+									// Yet another button container
+									background: none;
+
+
+								}
+							}
+						}
+					}
+				}
+			}
+
+			.x-tab-strip-spacer {
+				// Dont kjnow what this does yet
+
+			}
+
+		}
+
+		.x-tab-panel-body {
+			// Tab content container
+
+			display: inline-block;
+			width: calc(100% - 456px) !important;
+			box-sizing: border-box;
+			vertical-align: top;
+			height: 100% !important;
+			background: none;
+
+			> .x-panel-mc {
+				// Default tab content window
+				height: 100%!important;
+				width: 100%!important;
+				background: $COLOUR--TRANSPARENT;
+				border:none!important;
+				padding:0;
+
+				> .x-grid-panel {
+					top: 0!important;
+					width: 100%!important;
+					height: 100%!important;
+				}
+
+				> .x-panel {
+					// Tab content container
+					border:none!important;
+					height: 100%;
+					width: 100%!important;
+
+					.x-panel-header {
+						// Seems to be unused
+						display: none;
+
+					}
+
+					.x-panel-bwrap {
+						// Tab COntent Container
+						height:100%;
+
+						.x-panel-body {
+							// Form container
+
+
+						}
+
+						.x-panel-footer {
+							// Unused
+							display: none;
+						}
+					}
+
+				}
+			}
+
+
+		}
+	}
+
+
+	.x-form-text {
+		@include text_input("EDIT_ENGINE");
+	}
+
+
+	// Modal Mask
+	.ext-el-mask {
+		display: none!important;
+	}
+
+	// Override mask all when Modal Mask is on
+	.x-masked {
+		&:before {
+			content: "";
+		}
+
+		> div {
+			opacity: 1;
+		}
+	}
+
+	// Remove Loading Animation when Panel is open
+	.ext-el-mask-msg.x-mask-loading {
+		display: none!important;
+	}
+
+
+
+	.x-form-element {
+		> div {
+			> div:only-child {
+				width: calc(100% - 150px)!important;
+			}
+		}
+	}
+
+	&:before {
+		content: "DX Edit Mode";
+	    font-size: 36px;
+	    display: inline-block;
+	    color: #dddcdc;
+	    margin-left: -2px;
+	    margin-right: 65px;
+	    margin-top: 15px;
+	    position: fixed;
+	    width: 250px;
+	    left: 72px;
+	    top: 40px;
+		font-family: $DEFAULT--TITLE_FONT--FAMILY;
+		font-weight: 100;
+	}
+
+	fieldset {
+		width: 100%!important;
+
+		.x-form-item-label {
+			float:left!important;
+			margin-top: 0!important;
+			width: 150px!important;
+		}
+
+		.x-form-text:only-child {
+			display: inline-block;
+		}
+
+		.x-form-field-wrap {
+			float: left;
+			width: calc(100% - 297px) !important;
+			height: auto!important;
+		}
+
+		@include button("FIELDSET");
+
+		.x-form-item:hover {
+			//@include button("FIELDSET");
+
+		}
+
+		.x-btn-text  {
+			color: #c5c4c4;
+		}
+
+
+		// Fix information block in content tab
+		> .x-form-label-left {
+			// Seems to be a holder for the information sections, need to double check !!
+			> table {
+				// Information table
+				width: 100%!important;
+				display: block;
+
+				tbody, tr, td {
+					display: block;
+				}
+
+				td {
+					&:nth-child(1) {
+						// Seems to be blank all the time, so getting rid of it. Double Check !!
+						display: none;
+					}
+
+					&:nth-child(2) {
+
+					}
+				}
+
+				.gwt-HTML {
+					@include text(12px, #dddcdc, $FONT--WEIGHT---SEMILIGHT);
+
+					b {
+						width: 150px;
+						display: inline-block;
+
+						@extend %CSS_BLOCK--FORM--LABEL !optional;
+					}
+				}
+			}
+		}
+
+
+	}
+
+
+	form {
+		height: auto!important;
+	}
+
+	.x-form-readonly {
+		 .x-form-text {
+			@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE !optional;
+
+		}
+	}
+
+	.x-box-layout-ct,
+	.x-box-inner {
+		width: 100%!important;
+	}
+
+
+
+
+
+	////////// TABS
+	.x-tab-strip .x-tab-strip-text {
+		// At last the button label !!
+		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON;
+
+	}
+
+	////////// TAB OVER
+	.x-tab-strip-over .x-tab-strip-text {
+		// At last the button label !!
+		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER;
+
+	}
+
+	////////// TAB SELECTED
+	.x-tab-strip-active .x-tab-strip-text {
+		// At last the button label !!
+		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---SELECTED;
+
+	}
+
+	////////// TAB SELECTED & HOVER
+	.x-tab-strip-active.x-tab-strip-over .x-tab-strip-text {
+		// At last the button label !!
+		@extend %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER_SELECTED;
+
+	}
+
+
+
+
+	////////// PERSONALISED TABS
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-content {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-layout {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-metadata {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-seo {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-categories {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-options {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-liveroles {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-editroles {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-usages {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-history {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-visibility {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-workflow {}
+	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-channels {}
+
+	// Personalised COntent Window
+	#JahiaGxtEditEnginePanel-content,
+	#JahiaGxtEditEnginePanel-metadata {
+		/* left floating forms */
+
+	}
+
+	#JahiaGxtEditEnginePanel-contributeMode {
+		.x-form-item {
+
+			// Editable in content mode checkbox
+			&:nth-child(1) {
+				// Get rid of first label as it is duplicated
+				> label {
+					display: none!important;
+				}
+
+				// Fix position of checkbox
+				input[type="checkbox"] {
+					left: 0!important;
+				}
+			}
+
+			// Select dual list
+			&:nth-child(2) {
+
+				// Add a bit of space with previous block
+				margin-top: 20px;
+
+				// Fix width of label
+				> label {
+					width: 100%!important;
+				}
+
+			}
+
+		}
+
+		@include dual_list();
+
+	}
+
+
+
+	#JahiaGxtEditEnginePanel-content{
+		// Fix problem with non floating form element.
+		#Title {
+			// Contains sytems name / title
+			.x-form-item:nth-child(1) {
+				// System Name
+				.x-form-element {
+					width: calc(100% - 150px);
+					float: left;
+				}
+
+				.x-box-inner {
+					width: 100%!important;
+				}
+
+				.x-form-field-wrap {
+					width: calc(100% - 319px) !important;
+				}
+
+				.x-form-check-wrap {
+					left: calc(100% - 29px)!important;
+				    top: 4px!important;
+				}
+
+				label {
+					left: calc(100% - 310px)!important;
+					top: 4px!important;
+				}
+			}
+		}
+
+
+	}
+
+
+
+	#JahiaGxtEditEnginePanel-channels {
+		/* Fix for the channel double list selecor */
+
+		.x-form-item {
+			&:nth-child(2) {
+				margin-top: 20px;
+
+				// EXCLUDE / INCLUDE COMBO
+				label {
+					// The label is already in the combo - waste of time having both
+					display: none!important;
+				}
+
+				// MAKE THE COMBO TAKE FULL WIDTH OF FIELDSET
+				> div {
+					> div {
+						width: 100%!important;
+
+						> div {
+							width: 100%!important;
+						}
+					}
+				}
+			}
+		}
+
+		@include dual_list();
+	}
+
+	#JahiaGxtEditEnginePanel-layout {
+		/* Preview window */
+
+		> .x-component {
+
+			&:nth-child(1){
+				/* Form */
+				height: auto!important;
+				width: 100%!important;
+
+				> div {
+					width: 100%!important;
+
+				}
+
+				.x-panel-bwrap {
+					width: 100%!important;
+
+				}
+			}
+
+			&:nth-child(2){
+				/* Preview sections */
+				height: auto!important;
+				width: 100%!important;
+
+				> div {
+					/* Preview Holders */
+					height: 100%!important;
+					width: 100%!important;
+					background: transparent!important;
+
+					> div {
+						/* Another preview container */
+						height: 100%!important;
+						width: 100%!important;
+						background: transparent!important;
+
+						.gwt-HTML {
+							/* Preview container */
+							height: 100%!important;
+							width: 100%!important;
+							background: transparent!important;
+						}
+
+					}
+
+
+
+
+				}
+
+
+			}
+
+
+		}
+
+
+	}
+
+
+	// EDIT ENGINE - STRUCTURE
+
+	// HEADER
+	> div.x-window-tl .x-window-header,
+	> div.x-panel-header {
+
+		left: 0 !important;
+	    top: 0 !important;
+	    position: fixed !important;
+	    height: 130px !important;
+	    // z-index: 10; DELETE ?
+	    width: 100%;
+	    box-sizing: border-box;
+
+		> div {
+			// Language Selector
+			margin-right: 24px;
+		    position: absolute;
+		    right: 46px;
+		    top: 67px;
+
+		}
+
+		.x-window-header-text,
+		.x-panel-header-text {
+			// Element Title
+			position: absolute;
+		    top: 77px;
+		    left: 385px;
+			width: 100%;
+    		pointer-events: none;
+
+			@extend %CSS_BLOCK--EDIT_ENGINE--TITLE;
+
+			&::before {
+				content: attr(data-friendly-name);
+			    display: block;
+			    position: absolute;
+			    top: -18px;
+			    left: 0px;
+
+				@include text(18px !important, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT)
+			}
+
+		}
+	}
+
+	// BODY
+	> .x-window-bwrap,
+	> .x-panel-bwrap {
+
+		height: calc(100% - 130px);
+		position: fixed;
+		width: 100%;
+		top: 130px;
+
+		.x-panel-tbar {
+			// Top action bar
+			display: block;
+			width: 100%!important;
+			height: 50px;
+
+			.x-toolbar {
+				width: 100%!important;
+			}
+
+		}
+
+		.x-window-body,
+		.x-panel-body {
+			// Container for body
+			width: 100%!important;
+			height: 100%!important;
+			overflow: scroll;
+
+			> div {
+				width: 100%!important;
+				height: 100%!important;
+			}
+
+		}
+
+		.x-window-bbar,
+		> .x-panel-bbar {
+			// Footer action bar
+			display: block;
+			width: 292px!important;
+			height: 120px;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			padding: 10px 0 0 75px;
+
+			.x-panel-fbar {
+				width: 100%!important;
+				height: 100%;
+
+				.x-toolbar-cell {
+
+					&:nth-child(1) {
+						/* Save as work in progress */
+						position: absolute;
+						top: 43px;
+					}
+
+					&:nth-child(2) {
+						/* Save */
+						padding-bottom: 20px;
+
+						// Make suggested colour
+						@include button("ACTIONBAR---SUGGESTED");
+
+
+					}
+
+					&:nth-child(3) {
+						/* Cancel */
+						padding-bottom: 20px;
+
+
+						// VERY DIRTY !!! INSTALL LATEST VERSION OF SASS COMPILER TO USE selector-append()
+						@at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3){
+							@include button("ACTIONBAR---SUGGESTED");
+
+						}
+					}
+
+					&:nth-child(4) {
+						/* Cancel */
+						padding-bottom: 20px;
+					}
+				}
+			}
+
+
+
+		}
+
+		> .x-panel-footer {
+			// BLANK DIV
+			display: none;
+		}
+
+	}
+}

@@ -72,6 +72,7 @@ public class CommitModuleActionItem extends BaseActionItem {
 
     @Override public void onComponentSelection() {
         final Window wnd = new Window();
+        wnd.addStyleName("commit-modal");
         wnd.setWidth(450);
         wnd.setHeight(200);
         wnd.setModal(true);

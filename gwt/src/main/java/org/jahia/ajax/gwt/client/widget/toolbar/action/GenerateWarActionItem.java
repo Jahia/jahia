@@ -64,6 +64,7 @@ public class GenerateWarActionItem extends BaseActionItem {
             public void onSuccess(GWTJahiaNode result) {
                 linker.loaded();
                 final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
+                dl.addStyleName("generate-war-modal");
                 dl.setModal(true);
                 dl.setHeadingHtml(Messages.get("label.export"));
                 dl.setLayout(new FlowLayout());

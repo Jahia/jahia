@@ -1,0 +1,1048 @@
+/////////////////////////////////////////////////
+// SIDE PANEL ///////////////////////////////////
+/////////////////////////////////////////////////
+
+.window-side-panel {
+	z-index: $ZINDEX--SIDE_PANEL;
+	height: 100%;
+	pointer-events: none;
+
+	.edit-menu-sites {
+		/* Site Selector */
+
+		body[data-sitesettings="true"] & {
+			display: none
+		}
+
+		position: fixed;
+        left: 60px;
+        top: 17px !important;
+        background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%,rgba(255, 255, 255, 0) 70%);
+
+        pointer-events: all;
+		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
+
+		body[data-indigo-gwt-side-panel="open"] & {
+			top: 62px!important;
+		    left: 70px!important;
+
+			background: radial-gradient(ellipse at bottom right, rgba(38, 38, 38, 0.11) 0%, rgba(38, 38, 38, 0.05) 70%);
+
+
+
+
+		}
+
+
+		.x-form-field-wrap {
+			body[data-indigo-gwt-side-panel="open"] & {
+
+				width: 237px!important
+			}
+		}
+
+
+
+        input {
+            padding: 7px 20px 6px 10px !important;
+            color: #f1f1f1;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 500;
+
+			body[data-indigo-gwt-side-panel="open"] & {
+				background: #e8e8e8;
+				color: $COLOUR--RAIN_CLOUDS;
+				transition: none;
+
+				&:hover {
+					background: rgba(38, 38, 38, 0.11)!important;
+				}
+			}
+        }
+
+        img {
+            height: 30px!important;
+			width: 27px!important;
+			background-color: transparent!important;
+
+			body[data-indigo-gwt-side-panel="open"] & {
+				background-image: url($ICON--ARROW_DOWN---GREY);
+				opacity: 0.7;
+
+				&:hover {
+					background-color: rgba($COLOUR--GREY_CLOUDS, 0.3)!important;
+					opacity: 1;
+				}
+				// background-color: rgb(222, 222, 222) !important
+			}
+
+
+
+			// Sticky override ...
+			html.ext-strict body.ext-gecko & {
+
+				&.x-form-trigger {
+					height: 30px!important;
+
+				}
+
+            }
+        }
+		// width: 250px!important;
+		// display:none;
+		//
+		// > table {
+		// 	width: 100%!important;
+		// }
+		//
+		// .x-form-field-wrap {
+		// 	width:auto!important;
+		//
+		// }
+		//
+		// body[data-INDIGO-GWT-PANEL-TAB="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
+		// 	display: block;
+		// }
+	}
+
+	#JahiaGxtRefreshSidePanelButton {
+		/* Refresh side panel button */
+		pointer-events: all;
+		background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center;
+		background: url(./images/tabs-publish-white@X2.png) no-repeat center;
+		left: 301px;
+		position: fixed;
+		top: 290px;
+		border-radius: 100%;
+	    background-size: 30px;
+
+		height: 20px;
+		width: 20px;
+
+		body[data-edit-window-style="settings"] &,
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
+			top: 62px;
+		}
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+
+	.x-panel-header-text {
+		display: none;
+	}
+
+	.x-panel-header {
+		/* Contains Site Selector and Side Panel Refresh Button */
+		// position: absolute !important;
+	    // top: 35px!important;
+		// left: 71px !important;
+	    // z-index: $ZINDEX--SIDE_PANEL--HEADER;
+	    // opacity: 1;
+	    // width: auto !important;
+	    // pointer-events: none;
+	    // background: transparent !important;
+		// display: none;
+		//
+		// body[data-INDIGO-GWT-FULLSCREEN="on"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
+		// 	display: block;
+		// }
+		//
+		// .x-tool-left {
+		// 	/* Expand Collaspe Side Bar */
+		// 	display: none;
+		// }
+		//
+		// .x-panel-toolbar {
+		// 	float:none!important;
+		// }
+		//
+		// body[data-INDIGO-GWT-SIDE-PANEL="open"][data-edit-window-style="default"] & {
+		// 	display: block;
+		// }
+		//
+		// // body[data-edit-window-style="settings"] & {
+		// // 	> div:nth-child(2) {
+		// // 		display: none;
+		// // 	}
+		// // }
+
+
+	}
+
+	.x-panel-body {
+		// width: 100% !important;
+		overflow: visible;
+		z-index: $ZINDEX--SIDE_PANEL--BODY;
+		position: relative;
+		height: calc(100% + 4px) !important;
+
+	}
+
+
+	> .x-panel-bwrap {
+		/* Left Panel Tab Button Container */
+		margin-top: 0px;
+		width: 60px;
+		overflow: visible;
+		height: 100% !important;
+		z-index: $ZINDEX--SIDE_PANEL--CONTAINER;
+		position: relative;
+		pointer-events: all;
+
+		> div:nth-child(2) {
+			&.x-panel-footer {
+
+				display: none;
+
+				/*
+				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
+					// USED AS MASK FOR CAPUTURING CLICK TO CLOSE SIDE PANELS
+					// Need to swap to a div that measures the height of the iframe so that scrolling can still be done
+					top: 0;
+					left: 0;
+					width: 100%!important;
+					height: 100%!important;
+					z-index: $ZINDEX--SIDE_PANEL--CLOSE_CAPTURE_MASK;
+					position: fixed;
+					background: $COLOUR--TRANSPARENT;
+					display: block;
+				}
+				*/
+
+			}
+		}
+
+
+	}
+
+	#JahiaGxtSidePanelTabs {
+		@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER;
+
+		body[data-indigo-gwt-side-panel="open"] &,
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
+			@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER---OPEN;
+
+		}
+
+
+
+		position: fixed;
+	    width: 60px !important;
+	    top: 0;
+	    height: 100%;
+	    padding-top: 60px;
+
+
+		li {
+			/* Side Panel Buttons */
+			float: none;
+            width: 50px;
+            height: 40px;
+            margin-bottom: 10px;
+            margin-left: 0;
+            opacity: 0.8;
+            display: block;
+            pointer-events: all;
+
+			// body[data-multiselect="on"] & {
+			// 	pointer-events: none!important;
+			// }
+
+			body[data-sitesettings="true"] &,
+			.x-viewport-adminmode & {
+				display: none!important;
+			}
+
+			img {
+				background-size: 23px 23px;
+	            background-repeat: no-repeat;
+	            padding-left: 23px;
+	            width: 23px;
+	            height: 23px;
+	            overflow: hidden;
+	            -moz-box-sizing: border-box;
+	            box-sizing: border-box;
+	            display: block;
+	            left: 14px;
+	            position: relative;
+			}
+
+			a {
+				display: none;
+			}
+
+			&::after {
+	            display: block;
+	            margin-top: 5px;
+
+				@extend %CSS_BLOCK--TOOL_BUTTON;
+
+				// body[data-multiselect="on"] & {
+				// 	@extend %CSS_BLOCK--TOOL_BUTTON---MULTI_SELECT;
+				// }
+
+				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+					@extend %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN;
+				}
+
+			}
+
+			&.x-tab-strip-active::after {
+				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+					@extend %CSS_BLOCK--TOOL_BUTTON---SIDE_PANEL_OPEN_SELECTED;
+
+				}
+			}
+
+		}
+
+		.x-grid-panel {
+			height:100%!important;
+			display: none;
+			width: auto!important;
+			top: 0!important;
+
+			// .x-viewport-adminmode &,
+			// .x-viewport-dashboardmode & {
+			// 	display: block;
+			// }
+		}
+
+		[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+			width: auto!important;
+
+			.x-grid-panel {
+				display: block;
+			}
+		}
+
+		.x-tab-panel-header {
+			// Contains the Side Panel Tab Buttons
+			width: 60px!important;
+			border:none;
+			padding: 0;
+			background-color: transparent!important;
+			display: inline-block;
+			vertical-align: top;
+			position: relative;
+			z-index: $ZINDEX--SIDE_PANEL--CONTAINER_SUB;
+
+			// .x-viewport-adminmode &,
+			// .x-viewport-dashboardmode & {
+			// 	display: none;
+			// 	display: block;
+			// }
+
+			ul.x-tab-strip-top {
+				// List for Tab Buttons
+				background-color: transparent!important;
+				border:none;
+				padding: 0;
+				margin: 0 0 0 5px;
+
+				body[data-edit-window-style="settings"] &,
+				.x-viewport-adminmode &,
+				.x-viewport-dashboardmode & {
+					/* Hide when settings menu open - need to keep the elements there for GWT so just slide them out ofview */
+					position: absolute;
+					left: -90px;
+
+				}
+
+
+			}
+
+			body[data-edit-window-style="settings"] & {
+
+				.x-tab-strip-spacer {
+					/* Close settings Button */
+					left: 68px;
+				    bottom: 40px;
+				    // background: url(./images/icons/icon-close-large.png) no-repeat center center !important;
+				    width: 50px;
+				    height: 50px;
+				    // position: absolute;
+				    position: fixed;
+
+					.x-viewport-adminmode &,
+					.x-viewport-dashboardmode & {
+						display: none!important;
+					}
+
+					&::before {
+						content: $text_done;
+						@include text(16px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+						// font-family: Raleway;
+						// font-size: 16px;
+						/* text-transform: uppercase; */
+						font-weight: 100;
+						background: $COLOUR--DIRTY_ORANGE;
+						padding: 6px 9px;
+						// color: white;
+
+
+					}
+
+					&:hover {
+						cursor: pointer;
+					}
+				}
+			}
+		}
+
+		.x-tab-panel-body {
+			// Contains the Side Panel Tabs Content
+			display: inline-block;
+			box-sizing: border-box;
+
+			width: calc(100% - 71px) !important;
+
+
+
+			height: 100%!important;
+			vertical-align: top;
+			background: transparent;
+			margin-top: 60px;
+			// margin-left: 11px;
+
+			body[data-INDIGO-GWT-PANEL-TAB="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
+				margin-top: 52px;
+			}
+
+			> .x-component {
+				// Common for ALL Side Panel Contents
+				height:calc(100% - 90px) !important;
+				box-sizing: border-box;
+				display: none;
+
+				position: relative;
+				left:-9px;
+
+				.x-viewport-editmode & {
+
+				}
+
+				body[data-indigo-gwt-side-panel="open"] &,
+				.x-viewport-adminmode &,
+				.x-viewport-dashboardmode & {
+					display: block;
+					height:auto !important; // DEV TEMP
+
+
+
+					&.tab_serverSettings {
+
+						&.x-hide-display {
+							display: block!important;
+						}
+
+						> .x-component {
+							&::before {
+								content: $text_server_settings;
+								margin: 0 0 4px 19px;
+
+								text-transform: uppercase;
+								@include text(10px, $COLOUR--ASH_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
+							}
+						}
+					}
+
+					&.tab_systemSiteSettings {
+
+						&.x-hide-display {
+							display: block!important;
+						}
+
+						> .x-component {
+							margin-top: 20px;
+							&::before {
+								content: $text_system_settings;
+								margin: 0 0 4px 19px;
+
+								text-transform: uppercase;
+								@include text(10px, $COLOUR--ASH_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
+							}
+						}
+
+					}
+				}
+
+
+				&::before {
+					content: "Title Here";
+					@extend %CSS_BLOCK--SIDE_PANEL--TITLE;
+				    display: block;
+
+				    position: fixed;
+				    top: 23px;
+					left: 70px;
+
+					/* DEV TEMP */
+
+
+
+					body[data-edit-window-style="settings"] &,
+					.x-viewport-adminmode &,
+					.x-viewport-dashboardmode & {
+						top:50px;
+						left: 70px;
+
+						font-size: 36px;
+						font-weight: 100;
+					}
+
+					.x-viewport-adminmode & {
+						content: $text_administration !important;
+						letter-spacing: -1px;
+
+					    padding-left: 39px;
+					}
+
+					.x-viewport-dashboardmode & {
+						content: $text_home !important;
+
+					    padding-left: 39px;
+					}
+
+					/* END TEMP */
+				}
+
+				> .x-border-layout-ct {
+					/* Intermediary Container in CREATE tabs */
+					height: 100%!important;
+					width: 100%!important;
+
+					> .x-form-field-wrap {
+						/* Contains CREATE Search input */
+						position: fixed!important;
+						bottom: 10px;
+						top:auto!important;
+						height: auto!important;
+						width: auto!important;
+					}
+
+				}
+
+				.x-box-inner {
+					height: 100%!important;
+					width: 100%!important;
+
+					.x-box-item {
+						/* Used in COntent Tabs, 2 x-box-items side by side contain list and results window */
+						height: 100%!important;
+						display: inline-block;
+						position: relative!important;
+						width: 50%!important;
+						top: 0!important;
+						background: transparent!important;
+
+						&:nth-child(1) {
+							padding-right: 20px;
+							box-sizing: border-box;
+
+						}
+
+						> .x-component {
+							/* Container for List View */
+							width: 100%!important;
+							background: transparent!important;
+							height: calc(100% - 81px)!important;
+						}
+					}
+				}
+
+			}
+
+		}
+
+	}
+
+	// Corrections
+	#JahiaGxtSearchTab {
+		> .x-panel-mc {
+			/* Search Tab doesnt use the typical x-box-inner, so write special rule for its equivalent */
+			/* Equivalent of .box-inner */
+			width: 100%!important;
+			height: calc(100% - 6px)!important;
+			background: transparent;
+
+			> .x-panel {
+				width: 50%!important;
+				display: inline-block;
+				height: 100%;
+				vertical-align: top;
+			}
+		}
+
+		.x-panel-bwrap {
+			/* Results Container */
+			height: 100%;
+			position: relative;
+
+			.x-panel-body {}
+
+			.x-grid-panel {
+				height: 100%!important;
+			}
+
+			.x-panel-bbar,
+			.x-panel-footer {
+				/* Footer Action Bars (Search & Paginator) */
+				position: absolute;
+				bottom: 20px;
+				z-index: $ZINDEX--SIDE_PANEL--SEARCH_TAB---ACTIONS;
+			}
+
+
+		}
+	}
+
+	#JahiaGxtChannelsTab {
+
+		.gwt-Image {
+			overflow: hidden;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			position: relative;
+
+			background-size: 150px 150px;
+			background-repeat: no-repeat;
+			padding-left: 150px;
+			width: 150px;
+			height: 150px;
+
+			&[src='/engines/images/devices/generic-small.png'] {
+				background-image: url($ICON--DEVICE---GENERIC);
+			}
+
+			&[src='/modules/channels/images/devices/iphone-small.png'] {
+				background-image: url($ICON--DEVICE---IPHONE);
+			}
+
+			&[src='/modules/channels/images/devices/samsunggalaxys4-small.png'] {
+				background-image: url($ICON--DEVICE---GALAXY_S4);
+			}
+
+			&[src='/modules/channels/images/devices/samsunggalaxytab7-small.png'] {
+				background-image: url($ICON--DEVICE---GALAXY_TAB7);
+			}
+
+			&[src='/modules/channels/images/devices/android-small.png'] {
+				background-image: url($ICON--DEVICE---ANDROID);
+			}
+
+			&[src='/modules/channels/images/devices/bbstorm-small.png'] {
+				background-image: url($ICON--DEVICE---BLACKBERRY);
+			}
+
+			&[src='/modules/channels/images/devices/samsunggalaxynote3-small.png'] {
+				background-image: url($ICON--DEVICE---GALAXY_NOTE);
+			}
+
+			&[src='/modules/channels/images/devices/kindlefire-small.png'] {
+				background-image: url($ICON--DEVICE---KINDLE);
+			}
+
+			&[src='/modules/channels/images/devices/ipad-small.png'] {
+				background-image: url($ICON--DEVICE---IPAD);
+			}
+
+			&[src='/modules/channels/images/devices/samsunggalaxytab10.1-small.png'] {
+				background-image: url($ICON--DEVICE---GALAXY_TAB_SMALL);
+			}
+		}
+
+		&.tab_channel.x-component { // Excessive Selector is to over rule hard to crush !important already on the element
+			.x-box-inner {
+				.x-box-item {
+					/* Need to correct the layout of Left/Right to UP/Down on boxes */
+					width: 100%!important;
+					height: calc(100% - 287px) !important;
+					padding-right:0!important;
+
+					&:nth-child(1) {
+						height: 287px!important;
+					}
+
+					&:nth-child(2) {
+						&::before {
+							content: "Device Details";
+							display: block;
+							margin-bottom: 5px;
+							margin-top: 20px;
+
+							@include text(17px, $FORM--TABLE--TITLE--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
+						}
+					}
+
+					.x-grid3-col-displayName {
+						@include text(11px, $FORM--TABLE--LABEL--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
+					}
+
+					.x-grid3-col-value {
+						@include text(11px, $FORM--TABLE--VALUE--COLOUR, $FONT--WEIGHT---LIGHT);
+					}
+
+				}
+			}
+
+
+
+		}
+	}
+
+
+	// Highlight item when menu is open (PAGES tab)
+
+	.x-grid3 .x-grid3-row.context-menu-open {
+		background: $COLOUR--CREAM_CLOUDS !important;
+	}
+
+	.x-grid3 .x-grid3-row.x-grid3-row-selected.context-menu-open {
+		background: rgba($COLOUR--GREY_CLOUDS, 0.7) !important;
+	}
+
+
+}
+
+
+
+/////////////////////////////////////////////////
+// PERSONALISED WIDTHS & LABELS /////////////////
+/////////////////////////////////////////////////
+
+$side_panel__tab_buttons: (
+	// Tab ID							// Tab Label		// Tab Width	// Tree Options		// Content Options
+	("#JahiaGxtPagesTab",      			$text_pages,    	270,			292,				"none"),
+	("#JahiaGxtCreateContentTab",   	$text_create,    	270,			"none",				"none"),
+	("#JahiaGxtContentBrowseTab",   	$text_content,    	550,			287,				572),
+	("#JahiaGxtFileImagesBrowseTab",   	$text_files,    	550,			287,				"none"),
+	("#JahiaGxtSearchTab",   			$text_search,    	550,			"none",				572),
+	("#JahiaGxtCategoryBrowseTab",   	$text_taxonomy,    	550,			"none",				572),
+	("#JahiaGxtChannelsTab",   			$text_devices,    	270,			"none",				"none"),
+	("#JahiaGxtSettingsTab",   			$text_site_settings,    	260,			"none",				"none")
+);
+
+@each $tab_button in $side_panel__tab_buttons {
+	$_tab_ID: #{nth($tab_button,1)};
+	$_text: "#{nth($tab_button,2)}";
+	$_tab_width: #{nth($tab_button,3)};
+	$_line_options_button_tree: #{nth($tab_button,4)};
+	$_line_options_button_content: #{nth($tab_button,5)};
+
+	#{$_tab_ID} {
+
+		width: #{$_tab_width}px!important;
+
+		body[data-indigo-gwt-side-panel=""] & {
+			display: none!important;
+		}
+
+
+
+		&::before {
+			/* Tab Content Header Label */
+			content: "#{$_text}"!important;
+		}
+
+		@if ($_line_options_button_tree != "none") {
+			.x-grid3-td-displayName {
+				&::after {
+					/* MORE Options button for TREE */
+					left: #{$_line_options_button_tree}px!important;
+					content: "More";
+				}
+
+			}
+		}
+
+		@if ($_line_options_button_content != "none") {
+			.x-box-item:nth-child(2) .x-grid3-td-displayName {
+				&::after {
+					/* MORE Options button for CONTENT */
+					left: #{$_line_options_button_content}px!important;
+					content: "More";
+				}
+
+			}
+
+			@if ($_tab_ID == "#JahiaGxtSearchTab") {
+				.x-grid3-td-displayName {
+					&::after {
+						/* Exception for Search results */
+						left: #{$_line_options_button_content}px!important;
+						content: "More";
+					}
+				}
+			}
+		}
+
+
+	}
+}
+
+#JahiaGxtSettingsTab {
+	> .x-component {
+		width: 100%!important;
+
+		.x-panel-body {
+			> .x-component {
+				height: auto!important;
+			}
+		}
+	}
+}
+
+#JahiaGxtSettingsTab {
+	padding-right: 0!important;
+}
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////
+// BUTTONS //////////////////////////////////////
+/////////////////////////////////////////////////
+
+    // MENUS
+        $side_panel__tabs: (
+            ("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab",                $text_pages,        $SIDE_PANEL--ICON--PAGES---CLOSED,        $SIDE_PANEL--ICON--SETTINGS---OPEN,        $SIDE_PANEL--ICON--PAGES---SELECTED,        $SIDE_PANEL--ICON--PAGES---OFF),
+            ("#JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab",        $text_create,       $SIDE_PANEL--ICON--CREATE---CLOSED,       $SIDE_PANEL--ICON--CREATE---OPEN,       $SIDE_PANEL--ICON--CREATE---SELECTED,       $SIDE_PANEL--ICON--CREATE---OFF),
+            ("#JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab",        $text_content,      $SIDE_PANEL--ICON--CONTENT---CLOSED,      $SIDE_PANEL--ICON--CONTENT---OPEN,      $SIDE_PANEL--ICON--CONTENT---SELECTED,      $SIDE_PANEL--ICON--CONTENT---OFF),
+            ("#JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab",     $text_files,        $SIDE_PANEL--ICON--FILES---CLOSED,        $SIDE_PANEL--ICON--FILES---OPEN,        $SIDE_PANEL--ICON--FILES---SELECTED,        $SIDE_PANEL--ICON--FILES---OFF),
+            ("#JahiaGxtSidePanelTabs__JahiaGxtSearchTab",               $text_search,       $SIDE_PANEL--ICON--SEARCH---CLOSED,       $SIDE_PANEL--ICON--SEARCH---OPEN,       $SIDE_PANEL--ICON--SEARCH---SELECTED,       $SIDE_PANEL--ICON--SEARCH---OFF),
+            ("#JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab",       $text_taxonomy,     $SIDE_PANEL--ICON--TAXONOMY---CLOSED,     $SIDE_PANEL--ICON--TAXONOMY---OPEN,     $SIDE_PANEL--ICON--TAXONOMY---SELECTED,     $SIDE_PANEL--ICON--TAXONOMY---OFF),
+            ("#JahiaGxtSidePanelTabs__JahiaGxtChannelsTab",             $text_devices,      $SIDE_PANEL--ICON--DEVICES---CLOSED,      $SIDE_PANEL--ICON--DEVICES---OPEN,      $SIDE_PANEL--ICON--DEVICES---SELECTED,      $SIDE_PANEL--ICON--DEVICES---OFF),
+            ("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab",             $text_settings,     $SIDE_PANEL--ICON--SETTINGS---CLOSED,     $SIDE_PANEL--ICON--SETTINGS---OPEN,     $SIDE_PANEL--ICON--SETTINGS---SELECTED,     $SIDE_PANEL--ICON--SETTINGS---OFF)
+        );
+
+
+        /* Specificities for: PAGES, CREATE, CONTENT, FILES, SEARCH, TAXONOMY, DEVICES, SETTINGS */
+        @each $tab in $side_panel__tabs {
+			$_tab_ID: #{nth($tab,1)};
+			$_text: "#{nth($tab,2)}";
+			$_icon_closed: #{nth($tab,3)};
+			$_icon_open: #{nth($tab,4)};
+			$_icon_selected: #{nth($tab,5)};
+			$_icon_off: #{nth($tab,6)};
+
+            #{$_tab_ID} {
+				@if ($_tab_ID == "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab") {
+					position: fixed;
+					right: 6px;
+					bottom: 0;
+
+					.x-viewport-dashboardmode & {
+						display: none!important;
+					}
+
+
+				}
+
+                img {
+					background-image: url($_icon_closed);
+
+                    // body[data-multiselect="on"] & {
+					// 	background-image: url($_icon_off);
+                    // }
+
+                    body[data-INDIGO-GWT-SIDE-PANEL="open"] &,
+					.x-viewport-adminmode &,
+					.x-viewport-dashboardmode & {
+						@if ($_tab_ID == '#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
+							background-image: url($_icon_closed);
+
+						} @else {
+							background-image: url($_icon_open);
+
+						}
+                    }
+
+
+                }
+
+                &.x-tab-strip-active img {
+					body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+                        background-image: url($_icon_selected);
+                    }
+
+                }
+
+                &::after {
+                    content:$_text;
+
+					@if ($_tab_ID == '#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
+						body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+							//color: rgba(238, 238, 238, 0.9)!important;
+						}
+					}
+                }
+            }
+        }
+
+
+		#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab:nth-child(2) {
+			bottom: 50px;
+
+			&.x-tab-strip-active {
+				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+					img {
+			            background-image: url(./images/tabs-settings-blue@X2.png);
+			        }
+				}
+
+			}
+
+			img {
+				background-image: url(./images/tabs-settings-white@X2.png);
+
+		        // body[data-multiselect="on"] & {
+				// 	background-image: url(./images/tabs-settings-black@X2.png);
+		        // }
+
+				body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+					background-image: url(./images/tabs-settings-dark@X2.png);
+				}
+
+		    }
+
+			&::after {
+		        content: $text_sites;
+		    }
+		}
+
+
+
+
+.x-viewport-adminmode,
+.x-viewport-dashboardmode,
+body[data-edit-window-style="settings"] {
+
+	#JahiaGxtSidePanelTabs .x-tab-panel-body {
+		height: calc(100% - 230px)!important;
+		overflow-y: scroll;
+	}
+
+	.x-grid3 {
+		.x-grid3-body {
+			// padding-left: 4px;
+		}
+
+		.x-grid3-row {
+			padding-left: 0!important;
+			height: 30px!important;
+			position: relative;
+
+			table,
+			tbody,
+			tr,
+			td {
+				display: block!important;
+				height: 100%!important;
+			}
+
+			&:hover {
+				cursor: pointer;
+			}
+
+			.x-tree3-node-icon,
+			.x-tree3-node-joint {
+				display: none!important;
+			}
+
+			// PAGE
+			.x-tree3-node-text {
+				margin-left: 31px;
+				line-height: 30px;
+
+				&::before {
+					content: ">";
+				    display: block;
+				    width: 5px;
+				    height: 5px;
+				    background: $COLOUR--DUSTY_CLOUDS;
+				    text-indent: -50000px;
+				    border-radius: 100%;
+				    display: inline-block;
+				    top: 12px;
+					left: -8px;
+				    position: relative;
+				}
+			}
+
+			// PAGE [SELECTED]
+			&.x-grid3-row-selected .x-tree3-node-text {
+				color: $COLOUR--JAHIA_BLUE!important;
+
+				&::before {
+					background: $COLOUR--JAHIA_BLUE;
+				}
+
+			}
+
+			// FOLDER
+			&.unselectable-row {
+				pointer-events: none;
+				padding-left: 15px!important;
+
+				.x-tree3-node-joint {
+					width: 100%!important;
+					display: inline-block!important;
+					opacity: 0;
+					position: absolute!important;
+
+					&:hover {
+						cursor: pointer;
+					}
+				}
+
+				// FOLDER LABEL
+				span.x-tree3-node-text {
+					color: #7a7e80 !important;
+					margin-left: 0;
+
+					&::before {
+						content: ">";
+					    margin-right: 5px;
+					    display: block;
+					    width: 17px;
+					    height: 17px;
+					    background: $COLOUR--DUSTY_CLOUDS;
+					    text-indent: -50000px;
+					    display: inline-block;
+					    top: 5px;
+						left: 2px;
+					    position: relative;
+					    background: url($ICON--FOLDER--SMALL---GREY) no-repeat center center;
+					    background-size: 16px;
+					}
+
+
+				}
+			}
+
+			// FOLDER [OPENED]
+			&.unselectable-row.indigo-opened {
+				.x-tree3-node-text {
+					font-style: italic;
+
+					&::before {
+					    background-image: url($ICON--FOLDER_OPEN--SMALL---GREY);
+					}
+				}
+			}
+		}
+	}
+
+}

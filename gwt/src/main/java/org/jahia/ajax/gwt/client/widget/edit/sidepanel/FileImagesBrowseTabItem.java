@@ -152,6 +152,8 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
         listView.addListener(Events.DoubleClick, new Listener<ListViewEvent<GWTJahiaNode>>() {
             public void handleEvent(ListViewEvent<GWTJahiaNode> be) {
                 Window w = new Window();
+                w.addStyleName("fileimage-browse-preview");
+
                 GWTJahiaNode node = listView.getSelectionModel().getSelectedItem();
 
                 final String text = "Preview of " + node.getDisplayName();

@@ -491,6 +491,19 @@
 				background: #b9bbbc;
 				padding: 8px 16px;
 				margin-top: 8px;
+				position: absolute !important;
+				bottom: 0;
+				width: fit-content !important;
+			}
+
+			> .x-border-panel form.x-form-label-left {
+				height: 152px !important;
+			}
+
+			> .x-border-panel .x-form-element .x-form-field-wrap.x-component {
+				overflow-y: scroll;
+				overflow-x: hidden;
+				height: 87px !important;
 			}
 
 		}

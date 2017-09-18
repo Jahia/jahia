@@ -31,7 +31,8 @@
                             <!-- <property name="icon" value="preview"/> -->
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.ViewPublicationIconStatus"/>
+                                    <ref bean="Toolbar.Item.ViewPublishStatus"/>
+                                    <!--<ref bean="Toolbar.Item.ViewPublicationIconStatus"/>-->
                                     <ref bean="Toolbar.Item.ViewACLStatus"/>
                                     <ref bean="Toolbar.Item.ViewVisibilityStatus"/>
                                 </list>
@@ -50,7 +51,6 @@
                                     <ref bean="Toolbar.Item.PublishSite"/>
                                     <ref bean="Toolbar.Item.PublishSiteInAllLanguages"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
-                                    <ref bean="Toolbar.Item.ViewPublishStatus"/>
                                     <ref bean="Toolbar.Item.PublicationManager"/>
                                 </list>
                             </property>

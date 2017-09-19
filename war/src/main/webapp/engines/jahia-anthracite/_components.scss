@@ -2940,3 +2940,28 @@ form,
 .arrow-left {
 	background-image:url(./images/icons/icon_arrow_left_single_white@X2.png)!important;
 }
+
+
+
+/////////////////////////////////////////////////
+// CONTENT SELECTOR /////////////////////////////
+/////////////////////////////////////////////////
+
+
+.x-window.content-type-window {
+    background: #616669;
+
+		.x-window-header {
+		    display: none;
+		}
+
+		.x-treegrid.x-component {
+		    margin-top: 15px;
+
+				.gwt-content-label {
+				    color: #f1f1f1;
+				}
+
+		}
+
+}

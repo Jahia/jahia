@@ -236,7 +236,42 @@ body {
 	}
 
 	.node-path-title {
-	    display: none;
+        width: 20px;
+        height: 20px;
+        background: url(./images/icons/tabs-pages-white@X2.png) no-repeat center center;
+        background-size: 23px;
+        text-indent: -50000px;
+        position: absolute;
+        left: 425px;
+
+        top: 21px;
+
+        body[data-multiselect="on"] & {
+            display: block;
+            top: 28px;
+            background: url(./images/icons/icon-close-white@X2.png) no-repeat center center;
+            background-size: 10px !important;
+            background-color: rgba(238,238,238,0.2);
+            border-radius: 100%;
+            // @include tooltip($text_clear_selection, "BOTTOM");
+
+            &::before {
+                content: $text_clear_selection!important;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background-color: rgba(238,238,238,0.3);
+            }
+        }
+
+
+
+
+
+        @include tooltip(attr(data-indigo-file-path), "BOTTOM");
+
+
 	}
 
 	.node-path-container {
@@ -252,6 +287,7 @@ body {
         top: 20px;
         left: 250px;
         line-height: 22px;
+
 
         body[data-multiselect="on"] & {
             top: $TOPBAR--MULTISELECT--1---TOP;
@@ -283,6 +319,7 @@ body {
         height: 16px;
         left: 0;
         top: 9px;
+        pointer-events: none;
         @include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
 
         body[data-multiselect="on"] & {
@@ -290,10 +327,6 @@ body {
         }
 
 
-
-        &:hover {
-            cursor: pointer;
-        }
 
     }
 
@@ -359,6 +392,8 @@ body {
 
 		height: 20px;
 		width: 20px;
+
+        display: none;
 
         body[data-multiselect="on"] & {
             // top: $TOPBAR--MULTISELECT--1---TOP;

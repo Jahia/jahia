@@ -1104,8 +1104,8 @@
 	                var elements = {
 	                    iframe: document.getElementsByClassName("window-iframe")[0],
 	                    title: document.getElementsByClassName("x-current-page-path")[0],
-	                    publishButton: document.getElementsByClassName("edit-menu-publication")[0],
-	                    refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
+	                    // publishButton: document.getElementsByClassName("edit-menu-publication")[0],
+	                    // refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
 	                    previewButton: document.getElementsByClassName("edit-menu-view")[0],
 	                    moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
 	                };
@@ -1122,17 +1122,17 @@
 
 	                }
 
-	                if( elements.publishButton &&
-	                    elements.publishButton.style){
-	                        elements.publishButton.style.opacity = 0;
+	                // if( elements.publishButton &&
+	                //     elements.publishButton.style){
+	                //         elements.publishButton.style.opacity = 0;
+                    //
+	                // }
 
-	                }
-
-	                if( elements.refreshButton &&
-	                    elements.refreshButton.style){
-	                        elements.refreshButton.style.opacity = 0;
-
-	                }
+	                // if( elements.refreshButton &&
+	                //     elements.refreshButton.style){
+	                //         elements.refreshButton.style.opacity = 0;
+                    //
+	                // }
 
 	                if( elements.previewButton &&
 	                    elements.previewButton.style){
@@ -1528,8 +1528,9 @@
 						var elements = {
 	                        iframe: document.getElementsByClassName("window-iframe")[0],
 	                        title: document.getElementsByClassName("x-current-page-path")[0],
-	                        publishButton: document.getElementsByClassName("edit-menu-publication")[0],
-	                        refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
+	                        // publishButton: document.getElementsByClassName("edit-menu-publication")[0],
+	                        // refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
+                            // nodePathTitle: document.getElementsByClassName("node-path-title")[0],
 	                        previewButton: document.getElementsByClassName("edit-menu-view")[0],
 	                        moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
 	                    };
@@ -1547,17 +1548,23 @@
 
 	                    }
 
-	                    if( elements.publishButton &&
-	                        elements.publishButton.style){
-	                            elements.publishButton.style.opacity = 1;
+                        // if( elements.publishButton &&
+	                    //     elements.publishButton.style){
+	                    //         elements.publishButton.style.opacity = 1;
+                        //
+	                    // }
 
-	                    }
+                        // if( elements.nodePathTitle &&
+	                    //     elements.nodePathTitle.style){
+	                    //         elements.nodePathTitle.style.opacity = 1;
+                        //
+	                    // }
 
-	                    if( elements.refreshButton &&
-	                        elements.refreshButton.style){
-	                            elements.refreshButton.style.opacity = 1;
-
-	                    }
+	                    // if( elements.refreshButton &&
+	                    //     elements.refreshButton.style){
+	                    //         elements.refreshButton.style.opacity = 1;
+                        //
+	                    // }
 
 	                    if( elements.previewButton &&
 	                        elements.previewButton.style){
@@ -1634,6 +1641,8 @@
 
 	                    console.log("::: app.iframe.data.publication.status ", app.iframe.data.publication.status);
 
+                        app.iframe.data.pageTitle = pageTitle;
+
 						// Page Titles need centering
 						app.edit.topbar.reposition();
 					}
@@ -1656,7 +1665,8 @@
                                     title: document.getElementsByClassName("x-current-page-path")[0],
                                     innerTitle: document.getElementsByClassName("node-path-text-inner")[0],
                                     publishButton: document.getElementsByClassName("edit-menu-publication")[0],
-                                    refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
+                                    // refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
+                                    nodePathTitle: document.getElementsByClassName("node-path-title")[0],
                                     previewButton: document.getElementsByClassName("edit-menu-view")[0],
                                     moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
                                 },
@@ -1675,7 +1685,7 @@
                                     boxes.innerTitle = elements.innerTitle.getBoundingClientRect();
 
                                     // Center Inner title bounding box
-                                    elements.innerTitle.style.left = ((boxes.body.width / 2) - (boxes.innerTitle.width / 2)) + 25 + "px";
+                                    elements.innerTitle.style.left = ((boxes.body.width / 2) - (boxes.innerTitle.width / 2)) + 5 + "px";
                                 }
 
 
@@ -1684,16 +1694,22 @@
 
                                 if(app.iframe.data.selectionCount > 0){
                                     // Multiselect, so display differently
-                                    elements.publishButton.style.left = (boxes.title.left - 20) + "px";
+                                    // elements.publishButton.style.left = (boxes.title.left - 20) + "px";
                                     // elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
                                     elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
                                     elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 30) + "px";
+                                    elements.nodePathTitle.style.left = (boxes.title.left - 82) + "px";
+                                    Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(4)").setAttribute("data-publication-label", app.iframe.data.pageTitle);
                                 } else {
                                     // No Select
-                                    elements.publishButton.style.left = (boxes.title.left - 20) + "px";
-                                    elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
-                                    elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 36) + "px";
-                                    elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 60) + "px";
+                                    // elements.publishButton.style.left = (boxes.title.left - 20) + "px";
+                                    // elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
+                                    elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 9) + "px";
+                                    elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 33) + "px";
+                                    elements.nodePathTitle.style.left = (boxes.title.left - 80) + "px";
+
+                                    elements.nodePathTitle.setAttribute("data-indigo-file-path", Dex.getCached("body").getAttribute("data-main-node-path"));
+                                    Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(4)").setAttribute("data-publication-label", app.iframe.data.publication.label);
                                 }
 
                                 // Make sure correct class is added to publication button
@@ -2181,7 +2197,7 @@
                 .on("click", "#JahiaGxtContentPickerWindow", app.picker.onClick)
                 .on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView)
                 .on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView)
-                .on("click", ".x-current-page-path", app.iframe.clearSelection)
+                .on("click", ".node-path-title", app.iframe.clearSelection)
                 .on("click", ".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
                 .on("mousedown", "#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close)
                 .on("mousedown", "#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open)

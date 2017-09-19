@@ -300,8 +300,8 @@
             }
 
             .edit-menu-workflow {
-                margin-top: 50px;
-				position: relative;
+
+                position: relative;
 
                 body[data-sitesettings="true"] & {
                     display: none;
@@ -316,12 +316,12 @@
 				&::before {
 					content: attr(data-info-count);
 				    position: absolute;
-					top: -2px;
-					right: -1px;
+					top: -6px;
+					right: 5px;
 				    background: red;
 				    border-radius: 100%;
-				    width: 19px;
-				    height: 19px;
+				    width: 17px;
+				    height: 17px;
 				    font-size: 11px;
 					line-height: 18px;
 				    box-shadow: 2px 2px 7px 0px rgba(38,38,38,0.7);
@@ -339,9 +339,174 @@
 				// }
             }
 
-
-
             .edit-menu-publication {
+                position: relative;
+                opacity: 1;
+
+
+
+                &[data-publication-status="conflict"] {
+    				/* Conflict */
+                    &::before {
+                        background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---CONFLICT top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="deleted"] {
+    				/* Deleted */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---DELETED top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="livemodified"] {
+    				/* Live Modified */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---LIVE_MODIFIED top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="liveonly"] {
+    				/* Live Only */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---LIVE_ONLY top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="locked"] {
+    				/* Locked */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---LOCKED top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="mandatorylanguageunpublishable"] {
+    				/* Mandatory Language Unpublishable */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_UNPUBLISHABLE top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="mandatorylanguagevalid"] {
+    				/* Mandatory Language Valid */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_VALID top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="markedfordeletion"] {
+    				/* Marked FOr Deletion */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---MARKED_FOR_DELETION top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="modified"] {
+    				/* Modified */
+                    &::before {
+                        background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---MODIFIED top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="multipleWF"] {
+    				/* Multiple WF */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---MULTIPLE_WORK_FLOW top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="notpublished"] {
+    				/* Not Published */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---NOT_PUBLISHED top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="oneWF"] {
+    				/* One WF */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---SINGLE_WORK_FLOW top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="published"] {
+    				/* Published */
+                    &::before {
+        				background:url("./images/icons/icon-check-white@X2.png") no-repeat $PUBLICATION--COLOUR---PUBLISHED top left / 18px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="unpublished"] {
+    				/* Unpublished */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---UNPUBLISHED top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="waiting"] {
+    				/* Waiting */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---WAITING top 1px center / 13px;
+                    }
+
+    			}
+
+
+    			&[data-publication-status="workinprogress"] {
+    				/* Work In Progress */
+                    &::before {
+        				background:url("./images/icons/ic_warning@2x.png") no-repeat $PUBLICATION--COLOUR---WORK_IN_PROGRESS top 1px center / 13px;
+                    }
+
+    			}
+
+                &::before {
+                    content: "Y";
+                    position: absolute;
+                    top: -9px;
+                    right: 5px;
+                    background: tranparent;
+                    width: 17px;
+                    height: 17px;
+                    text-indent: -50000px;
+                    border-radius: 100%;
+                    box-shadow: 0px 3px 8px 0px rgba(38,38,38,0.5);
+
+                    body[data-multiselect="on"] & {
+                        display: none;
+                    }
+                }
+            }
+
+            .edit-menu-publicationXXX {
                 position: fixed;
                 opacity: 0;
                 background: url(./images/icons/icon-check-white@X2.png) no-repeat center grey;
@@ -519,6 +684,7 @@
             margin-top: 10px;
             opacity: 1;
             pointer-events: all;
+            // opacity: 0.8;
 
             button {
                 width: 50px !important;
@@ -538,6 +704,7 @@
 
             &:hover {
                 cursor: pointer;
+                opacity: 1;
                 > table:nth-child(1)::after {
                     color: $COLOUR--WHITE_CLOUDS;
                 }
@@ -564,12 +731,46 @@
                 display: none;
             }
 
-            &:nth-child(2) {} &:nth-child(3) {
+            &:nth-child(2) {
+                background: url(./images/tabs-placeholder-white@X2.png) no-repeat top 3px center;
+                background-size: 23px 23px;
+                margin-top: 50px;
+
+                > table:nth-child(1)::after {
+                    content: $text_status;
+                }
+            }
+
+            &:nth-child(3) {
                 display: none;
             }
 
-            &:nth-child(4) {} &:nth-child(5) {
-                background: url(./images/tabs-workflow-white@X2.png) no-repeat top 3px center;
+            &:nth-child(4) {
+
+                position: relative;
+
+                background: url(./images/tabs-pages-white@X2.png) no-repeat top center;
+                background-size: 23px 23px;
+
+                body[data-multiselect="on"] & {
+                    background: url(./images/icons/multiple_selection@2x.png) no-repeat top -2px center;
+                    background-size: 23px 23px;
+
+
+
+                }
+
+
+
+                > table:nth-child(1)::after {
+                    content: $text_publish;
+                }
+
+                @include tooltip(attr(data-publication-label), "PUBLICATION");
+            }
+
+            &:nth-child(5) {
+                background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
                 background-size: 23px 23px;
 
 

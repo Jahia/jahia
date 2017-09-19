@@ -111,6 +111,7 @@
 			border-radius: 2px;
 			box-shadow: 1px 2px 4px 0 rgba(40, 43, 45, 0.7);
 			text-transform: uppercase;
+            text-indent: 0;
 
 			@include text(10px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRABOLD);
 		}
@@ -139,7 +140,7 @@
 
 
 
-	%CSS_BLOCK--TOOLTIP---LEFT {
+    %CSS_BLOCK--TOOLTIP---LEFT {
 		&::before {
 			bottom: 39px;
 			right: 48px;
@@ -147,6 +148,18 @@
 
 		&::after {
 			bottom: 48px;
+		    left: -5px;
+		}
+	}
+
+    %CSS_BLOCK--TOOLTIP---PUBLICATION {
+		&::before {
+			bottom: 6px;
+			right: 48px;
+		}
+
+		&::after {
+			bottom: 15px;
 		    left: -5px;
 		}
 	}

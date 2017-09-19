@@ -18,6 +18,7 @@
         z-index: $ZINDEX--TOOLBAR--CONTAINER;
         overflow: visible !important;
         position: fixed;
+		pointer-events: none;
 
 		body[data-sitesettings="true"] & {
 			display:none!important;
@@ -51,29 +52,24 @@
             pointer-events: none;
 
             &::after {
-                content: $text_dark_ui;
-                position: fixed;
-				bottom:61px;
-                right: 6px;
-                display: block;
-                width: 50px;
-                background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
-                background-size: 23px 23px;
-                text-align: center;
-                padding-top: 23px;
-                font-weight: $FONT--WEIGHT---NORMAL;
-                font-family: $DEFAULT--FONT--FAMILY;
-                color: rgba(238, 238, 238, 0.9);
-                font-size: 8px;
-                text-transform: uppercase;
-                opacity: 0.8;
-                pointer-events: all;
+                // content: $text_dark_ui;
+                // position: fixed;
+				// bottom:61px;
+                // right: 6px;
+                // display: block;
+                // width: 50px;
+                // background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
+                // background-size: 23px 23px;
+                // text-align: center;
+                // padding-top: 23px;
+                // font-weight: $FONT--WEIGHT---NORMAL;
+                // font-family: $DEFAULT--FONT--FAMILY;
+                // color: rgba(238, 238, 238, 0.9);
+                // font-size: 8px;
+                // text-transform: uppercase;
+                // opacity: 0.8;
+                // pointer-events: all;
 
-				// body[data-multiselect="on"] & {
-				// 	color: $TOOL--BUTTON--FONT--COLOUR---OFF;
-				// 	background: url(./images/tabs-placeholder-black@X2.png) no-repeat top center;
-				// 	background-size: 23px 23px;
-				// }
 
 
 
@@ -156,8 +152,8 @@
                 position: fixed;
                 left: 350px;
                 opacity: 0;
-                background: url(./images/tabs-browse-white@X2.png) no-repeat center center red;
-                top: 20px!important;
+                background: url(./images/tabs-browse-white@X2.png) no-repeat center center;
+                top: 22px!important;
                 background-size: 23px 23px;
                 height: 20px;
                 width: 20px;
@@ -167,7 +163,7 @@
                 margin-bottom: 0!important;
 
                 body[data-multiselect="on"] & {
-                    top: $TOPBAR--MULTISELECT--1---TOP;
+                    top: 29px !important;
                 }
 
                 .x-btn-mc {
@@ -262,6 +258,8 @@
 				// }
             }
 
+
+
             .editmode-managers-menu {
                 position: fixed;
                 top: 10px;
@@ -326,7 +324,7 @@
 				    height: 19px;
 				    font-size: 11px;
 					line-height: 18px;
-				    box-shadow: 2px 2px 10px 0px black;
+				    box-shadow: 2px 2px 7px 0px rgba(38,38,38,0.7);
 					@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---NORMAL);
 					text-align: center;
 
@@ -874,5 +872,10 @@
 
 .menu-edit-menu-workflow {
 	left: auto!important;
-	right: 5px;
+	right: 8px;
+}
+
+
+.x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10) {
+	@include tooltip(attr(data-indigo-label), "LEFT");
 }

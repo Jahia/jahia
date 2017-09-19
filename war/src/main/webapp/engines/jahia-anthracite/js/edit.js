@@ -1375,7 +1375,8 @@
                                 result = taskString.match(regexp),
 								taskCount,
 								workflowButtonLabel,
-								dashboardButtonLabel;
+								dashboardButtonLabel,
+								dashboardButton = Dex.class("menu-edit-menu-workflow");
 
                             if(result){
 								taskCount = parseInt(result[1]);
@@ -1408,9 +1409,15 @@
 
 							Dex(".edit-menu-workflow").setAttribute("data-info-count", workflowButtonLabel);
 
+							if(dashboardButton.exists()){
+								dashboardButton.filter(".toolbar-item-workflowdashboard").setHTML(dashboardButtonLabel);
+							}
+
 							app.edit.infoBar.data.taskCount = taskCount;
 							app.edit.infoBar.data.workflowButtonLabel = workflowButtonLabel;
 							app.edit.infoBar.data.dashboardButtonLabel = dashboardButtonLabel;
+
+
 
                         }
                     },
@@ -1439,19 +1446,24 @@
                         var jobButton = Dex(".toolbar-item-workinprogressadmin button");
 
                         if(jobButton.exists()){
-                            var jobStringSplit = jobButton.getHTML().split("<");
-                            	jobString = jobStringSplit[0];
+                            var jobStringSplit = jobButton.getHTML().split("<"),
+                            	jobString = jobStringSplit[0],
                             	jobIcon = jobButton.filter("img"),
-								activeJob;
+								activeJob,
+								buttonParent = Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)"),
+								jobTooltip;
+
 
                             if(jobIcon.getAttribute("src") !== "/icons/workInProgress.png"){
                                 // A job is active
 								activeJob = true;
+								jobTooltip = jobString,
 								Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").addClass("indigo-job-running");
 
                             } else {
                                 // No Jobs active
 								activeJob = false;
+								jobTooltip = "No Jobs running",
 								Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").removeClass("indigo-job-running");
 
                             }
@@ -1459,6 +1471,7 @@
 							app.edit.infoBar.jobs.data.jobString = jobString;
 							app.edit.infoBar.jobs.data.activeJob = activeJob;
 
+							buttonParent.setAttribute("data-indigo-label", jobTooltip);
 
                         }
 
@@ -1674,13 +1687,13 @@
                                     elements.publishButton.style.left = (boxes.title.left - 20) + "px";
                                     // elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
                                     elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
-                                    elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 40) + "px";
+                                    elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 30) + "px";
                                 } else {
                                     // No Select
                                     elements.publishButton.style.left = (boxes.title.left - 20) + "px";
                                     elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
-                                    elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 40) + "px";
-                                    elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 70) + "px";
+                                    elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 36) + "px";
+                                    elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 60) + "px";
                                 }
 
                                 // Make sure correct class is added to publication button

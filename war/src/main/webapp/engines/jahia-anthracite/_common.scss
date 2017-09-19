@@ -303,16 +303,16 @@ body {
 	.edit-menu-edit {
 		/* More Info Button */
 		display: block;
-		top: 20px;
+		top: 21px;
         left: 550px;
 		position: fixed;
         width: 20px;
     	height: 20px;
-    	background: url(./images/icon-more-options-white@X2.png) no-repeat center center red;
+    	background: url(./images/icon-more-options-white@X2.png) no-repeat center center;
         background-size: 10px 2px;
 
         body[data-multiselect="on"] & {
-            top: $TOPBAR--MULTISELECT--1---TOP;
+            top: 29px!important;
         }
 
         @include tooltip($text_tooltip_more_options, "BOTTOM");
@@ -349,11 +349,11 @@ body {
 
 	.window-actions-refresh {
         pointer-events: all;
-		background: url(./images/tabs-publish-white@X2.png) no-repeat center red;
+		background: url(./images/tabs-publish-white@X2.png) no-repeat center;
 		left: 301px;
 		position: fixed;
-		top: 20px;
-	    background-size: 30px;
+		top: 22px;
+	    background-size: 23px 23px;
 
         overflow: visible;
 
@@ -408,8 +408,10 @@ body {
         }
 
         img {
-            height: 30px!important;
+			height: 30px!important;
+            width: 27px!important;
             background-color: transparent!important;
+			pointer-events: none;
 
 
         }

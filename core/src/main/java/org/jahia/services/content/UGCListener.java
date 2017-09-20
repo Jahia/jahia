@@ -43,6 +43,7 @@
  */
 package org.jahia.services.content;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -84,13 +85,14 @@ public class UGCListener extends DefaultEventListener {
         try {
             while (events.hasNext()) {
                 Event event = events.nextEvent();
-                JCRPropertyWrapper property = (JCRPropertyWrapper) eventSession.getItem(event.getPath());
-                JCRNodeWrapper node = property.getParent();
+                String nodePath = StringUtils.substringBeforeLast(event.getPath(), "/");
+                String propertyName = StringUtils.substringAfterLast(event.getPath(), "/");
+                JCRNodeWrapper node = eventSession.getNode(nodePath);
                 if (node.hasProperty("j:originWS") && node.getProperty("j:originWS").getString().equals("default")) {
                     if (!propertiesByNode.containsKey(node.getIdentifier())) {
                         propertiesByNode.put(node.getIdentifier(), new HashSet<String>());
                     }
-                    if (property.getName().equals(Constants.JCR_MIXINTYPES)) {
+                    if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
                         if (node instanceof JCRNodeDecorator) {
                             node = ((JCRNodeDecorator) node).getDecoratedNode();
                         }
@@ -98,11 +100,11 @@ public class UGCListener extends DefaultEventListener {
                             List<ExtendedNodeType> newMixins = new ArrayList<>(Arrays.asList(node.getMixinNodeTypes()));
                             newMixins.removeAll(Arrays.asList(((JCRNodeWrapperImpl) node).getOriginalMixinNodeTypes()));
                             for (ExtendedNodeType newMixin : newMixins) {
-                                propertiesByNode.get(node.getIdentifier()).add(property.getName() + "=" + newMixin.getName());
+                                propertiesByNode.get(node.getIdentifier()).add(propertyName + "=" + newMixin.getName());
                             }
                         }
                     } else {
-                        propertiesByNode.get(node.getIdentifier()).add(property.getName());
+                        propertiesByNode.get(node.getIdentifier()).add(propertyName);
                     }
                 }
             }
@@ -112,18 +114,18 @@ public class UGCListener extends DefaultEventListener {
                     public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                         Set<Session> sessions = new HashSet<>();
                         for (Map.Entry<String, Set<String>> entry : propertiesByNode.entrySet()) {
-                            JCRNodeWrapper name = s.getNodeByIdentifier(entry.getKey());
-                            if (!name.isNodeType("jmix:liveProperties")) {
-                                name.addMixin("jmix:liveProperties");
+                            JCRNodeWrapper node = s.getNodeByIdentifier(entry.getKey());
+                            if (!node.isNodeType("jmix:liveProperties")) {
+                                node.addMixin("jmix:liveProperties");
                             }
-                            JCRPropertyWrapper property = name.hasProperty("j:liveProperties") ? name.getProperty("j:liveProperties") : name.setProperty("j:liveProperties", new Value[0]);
+                            JCRPropertyWrapper property = node.hasProperty("j:liveProperties") ? node.getProperty("j:liveProperties") : node.setProperty("j:liveProperties", new Value[0]);
                             for (JCRValueWrapper valueWrapper : property.getValues()) {
                                 entry.getValue().remove(valueWrapper.getString());
                             }
                             for (String value : entry.getValue()) {
                                 property.addValue(value);
                             }
-                            sessions.add(name.getRealNode().getSession());
+                            sessions.add(node.getRealNode().getSession());
                         }
 
                         for (Session session : sessions) {

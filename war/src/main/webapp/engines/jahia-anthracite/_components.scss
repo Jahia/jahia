@@ -3012,3 +3012,35 @@ form,
 		}
 
 }
+
+
+// Content Selector on side panel.
+
+#JahiaGxtSidePanelTabs .x-tab-panel-body > .x-component.tab_createContent {
+    height: calc(100% - 132px) !important;
+
+		.x-grid3 {
+
+			.x-grid3-scroller {
+				margin-top: 20px;
+			}
+
+			.x-grid3-body {
+			    margin-left: 8px;
+			}
+
+			.x-grid3-row.x-grid3-row-selected .gwt-content-label,
+			.x-grid3-row .gwt-content-label {
+			    padding-right: 0 !important;
+			}
+
+		}
+
+		> .x-border-layout-ct > .x-form-field-wrap {
+		    top: 108px !important;
+		    height: 26px !important;
+		    left: 70px !important;
+		    width: 238px !important;
+		}
+
+}

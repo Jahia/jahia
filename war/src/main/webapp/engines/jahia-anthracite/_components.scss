@@ -2591,7 +2591,7 @@ form,
 
 /* Modal Mask */
 .x-modal {
-    background: $MODAL--BG--COLOUR;
+    background: rgba(92, 97, 100, 0.94);  // check on other modals.
     opacity: 1;
     z-index: $ZINDEX--MODAL---MASK;
     position: fixed !important;
@@ -2949,10 +2949,36 @@ form,
 
 
 .x-window.content-type-window {
-    background: #616669;
+    background: #5c6164;
 
 		.x-window-header {
 		    display: none;
+		}
+
+		.x-window-body > .x-border-layout-ct {
+			overflow: hidden !important;
+		}
+
+		.x-grid3 {
+
+			.x-tree3-node-text {
+				padding-right: 0 !important;
+			}
+
+			.x-grid3-row-over .gwt-content-label {
+				color: #f1f1f1 !important;
+			}
+
+			.x-grid3-row.x-grid3-row-selected {
+				background: #868889 !important;
+			}
+
+		}
+
+		.x-window-bbar {
+			padding: 8px;
+			margin-top: 8px;
+			background: #474a4c;
 		}
 
 		.x-treegrid.x-component {

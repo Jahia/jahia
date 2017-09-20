@@ -75,6 +75,9 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.jahia.api.Constants.JCR_LASTMODIFIED;
+import static org.jahia.api.Constants.JCR_LASTMODIFIEDBY;
+
 /**
  * JCR listener that automatically populates node properties with default values (in case of dynamic values or i18n properties) and creates
  * mandatory sub-nodes.
@@ -93,7 +96,7 @@ public class DefaultValueListener extends DefaultEventListener {
             // todo : may need to move the dynamic default values generation to JahiaNodeTypeInstanceHandler
             JCRSessionWrapper eventSession = ((JCREventIterator)eventIterator).getSession();
             final Locale sessionLocale = eventSession.getLocale();
-            JahiaUser user = eventSession.getUser();
+            final JahiaUser user = eventSession.getUser();
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                     Set<Session> sessions = null;
@@ -139,7 +142,10 @@ public class DefaultValueListener extends DefaultEventListener {
                                         ExtendedNodeDefinition[] nodes = ent.getChildNodeDefinitions();
                                         for (ExtendedNodeDefinition definition : nodes) {
                                             if (definition.isAutoCreated() && !n.hasNode(definition.getName())) {
-                                                n.addNode(definition.getName(), definition.getDefaultPrimaryTypeName());
+                                                Node autoCreated = n.addNode(definition.getName(), definition.getDefaultPrimaryTypeName());
+                                                if (autoCreated.isNodeType("jmix:originWS")) {
+                                                    autoCreated.setProperty("j:originWS", workspace);
+                                                }
                                                 anythingChanged = true;
                                             }
                                         }

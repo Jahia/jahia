@@ -1091,13 +1091,13 @@
 				bodyStyle: null
 			},
 			// Event Handlers
-			onChangeSRC: function(value){
-				console.log("::: APP ::: IFRAME ::: ONCHANGESRC", value);
+			onChangeSRC: function(url){
+				console.log("::: APP ::: IFRAME ::: ONCHANGESRC", url);
 
 				app.iframe.data.previousUrl = app.iframe.data.currentUrl;
-				app.iframe.data.currentUrl = value;
+				app.iframe.data.currentUrl = url;
 
-				if(app.data.currentApp == "edit" || app.data.currentApp == "contribute"){
+				if(app.data.currentApp == "edit"){
 					// TEMP BLIND
 	                // $(".window-iframe").hide();
 
@@ -1145,7 +1145,11 @@
 	                        elements.moreInfo.style.opacity = 0;
 
 	                }
-				}
+				} else if(app.data.currentApp == "contribute"){
+
+
+
+                }
 
 
 
@@ -1157,6 +1161,8 @@
 
 			},
 			onChange: function(value){
+
+
 
 
 
@@ -1994,6 +2000,9 @@
 		},
 		contribute: {
 			// Event Handlers
+            data: {
+                mode: null
+            },
 			onOpen: function(){
 				console.log("::: APP ::: CONTRIBUTE ::: OPENED");
 
@@ -2010,10 +2019,65 @@
 			},
 			onClose: function(){},
 
+            onChangeMode: function(nodePath){
+
+                if(app.data.currentApp != "contribute"){
+                    return false;
+
+                }
+
+
+                var nodePathSplit = nodePath.split("/"),
+                    modePath = nodePathSplit[3],
+                    mode,
+
+                    iframeSRC = Dex.class("window-iframe").getAttribute("src"),
+                    displayingNode = iframeSRC.indexOf("viewContent.html") > -1;
+
+                switch(modePath){
+                    case "files":
+                        mode = "files";
+                        break;
+
+                    case "contents":
+                        mode = "content";
+
+                        break;
+
+                    default:
+                        mode = "site";
+
+                        break;
+                }
+
+                app.contribute.data.mode = mode;
+
+                Dex.getCached("body").setAttribute("data-contribute-mode", app.contribute.data.mode);
+
+                console.log("????????????????????????????????????");
+                console.log("CHANGED nodePath: ", nodePath);
+                console.log("CHANGED section: ", nodePathSplit[3]);
+                console.log("displayingNode: ", displayingNode);
+                console.log("????????????????????????????????????");
+
+
+
+                app.contribute.data.displayingNode = displayingNode;
+
+                Dex.getCached("body").setAttribute("data-contribute-displaying-node", app.contribute.data.displayingNode);
+            },
+
 			// Controls
 			topbar: {
 				build: function(){
-					console.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: BUILD");
+
+                    if(!app.contribute.data.mode){
+                        console.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: BUILD ( CAN NOT YET BUILD)");
+                        return false;
+
+                    }
+
+                    console.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: BUILD (MODE: " + app.contribute.data.mode + ")");
 
                     // TEMP BLIND
                     // $(".window-iframe").fadeIn("fast");
@@ -2223,7 +2287,7 @@
                             // elements.nodePathTitle.style.left = (boxes.title.left - 80) + "px";
 
                             // elements.nodePathTitle.setAttribute("data-indigo-file-path", Dex.getCached("body").getAttribute("data-main-node-path"));
-                            Dex(".edit-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.publication.label);
+                            Dex(".contribute-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.publication.label);
 
 
                             // Make sure correct class is added to publication button
@@ -2380,6 +2444,8 @@
             Dex("body").onAttr("data-selection-count", app.iframe.onSelect);
 
             Dex("body").onAttr("data-main-node-displayname", app.iframe.onChange);
+
+            Dex("body").onAttr("data-main-node-path", app.contribute.onChangeMode);
 
             Dex(".window-iframe").onAttr("src", app.iframe.onChangeSRC);
 

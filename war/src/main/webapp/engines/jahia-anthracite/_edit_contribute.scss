@@ -42,6 +42,7 @@
 
         .x-viewport-contributemode & {
             display: inline-block;
+            margin-top: 7px;
 
             &:nth-child(5) table {
                 @extend %CSS_BLOCK--CONTRIBUTE--EDIT--BUTTON;
@@ -99,6 +100,10 @@
                 display: block;
                 text-align: center;
                 margin-bottom: 10px;
+
+                .x-viewport-contributemode & {
+                    margin-bottom: 0;
+                }
                 @extend %CSS_BLOCK--TOOL_BUTTON;
             }
         }
@@ -224,7 +229,46 @@
 }
 
 // Publication Button
-.edit-menu-publication {
+
+.contribute-menu-publication {
+    position: fixed!important;
+    right: 322px;
+    top: 21px;
+
+    body[data-contribute-mode="content"] &,
+    body[data-contribute-mode="files"] & {
+        background: url($ICON--FOLDER--SMALL---WHITE) no-repeat top 5px center / 16px;
+        background-position: top 3px left!important;
+    }
+
+    body[data-contribute-mode="content"][data-contribute-displaying-node="true"]  & {
+        background: url($ICON--DISPLAY--THUMBS--WHITE) no-repeat top 5px center / 14px;
+        background-position: top 3px left!important;
+
+    }
+
+    background-position: top left!important;
+    padding-left: 32px;
+
+    > tbody {
+        display: none;
+    }
+
+    &::before {
+        top: -4px !important;
+        left: 12px !important;
+    }
+
+    &::after {
+        line-height: 23px;
+        font-size: 11px !important;
+        opacity: 1!important;
+    }
+}
+
+
+.edit-menu-publication,
+.contribute-menu-publication {
     position: relative;
     background: url(./images/tabs-pages-white@X2.png) no-repeat top center / 23px 23px;
 
@@ -237,7 +281,13 @@
     }
 
     .x-btn-mc {
-        @include tooltip(attr(data-publication-label), "LEFT");
+        .x-viewport-contributemode & {
+            @include tooltip(attr(data-publication-label), "BOTTOM");
+        }
+
+        .x-viewport-editmode & {
+            @include tooltip(attr(data-publication-label), "LEFT");
+        }
     }
 
     &::before {
@@ -388,6 +438,31 @@
 }
 
 // Workflow Button
+.contribute-menu-workflow {
+    position: fixed!important;
+    right: 211px;
+    top: 21px;
+
+    background-position: top left!important;
+    padding-left: 32px;
+
+    > tbody {
+        display: none;
+    }
+
+    &::before {
+        top: -4px !important;
+        left: 12px !important;
+    }
+
+    &::after {
+        line-height: 23px;
+        font-size: 11px !important;
+        opacity: 1!important;
+    }
+
+}
+
 .edit-menu-workflow,
 .contribute-menu-workflow {
     background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center / 23px 23px;
@@ -473,12 +548,17 @@
 
 // Trash Button
 .toolbar-item-showtrashboard {
-    background: url(./images/tabs-trash-white@X2.png) no-repeat top center;
-    background-size: 23px 23px;
-
-    &::after {
-        content: $text_trash;
-    }
+    display: none;
+    // background: url(./images/tabs-trash-white@X2.png) no-repeat top center;
+    // background-size: 23px 23px;
+    //
+    // position: fixed;
+    // right: 210px;
+    // top: 15px;
+    //
+    // &::after {
+    //     content: $text_trash;
+    // }
 }
 
 // Background Jobs Button
@@ -727,6 +807,8 @@
 // Language Switcher
 .toolbar-itemsgroup-languageswitcher {
 
+
+
     position: fixed;
     right: 20px;
     left: auto !important;
@@ -753,14 +835,22 @@
 
     input {
         padding: 7px 20px 6px 34px !important;
-        color: #f1f1f1;
         text-transform: uppercase;
         font-size: 11px;
-        font-weight: 500;
         background-color: transparent;
+
+        color: #f1f1f1;
+        font-weight: 400!important;
+        font-size: 11px!important;
+        opacity: 0.8;
+
+        &:hover {
+            color: #f1f1f1;
+            opacity: 1;
+        }
     }
 
-    img {
+    img.x-form-trigger.x-form-trigger-arrow {
         height: 30px!important;
         width: 27px!important;
         background-color: transparent!important;
@@ -891,8 +981,8 @@
 %CSS_BLOCK--CONTRIBUTE--EDIT--BUTTON {
     width: 20px;
     height: 20px;
-    background: url(./images/icon-more-options-white@X2.png) no-repeat center center;
-    background-size: 10px 2px;
+    background: url($ICON--INFO--WHITE) no-repeat center center;
+    background-size: 23px 23px;
 
     top: 21px;
 
@@ -906,67 +996,123 @@
 
 // New Page
 %CSS_BLOCK--CONTRIBUTE--NEWPAGE--BUTTON {
-    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top 3px center;
-    background-size: 23px 23px;
+    background: url($ICON--ADD--WHITE) no-repeat top 3px left;
+    background-size: 21px;
+    padding-left: 20px;
+    margin-left: 10px;
+    margin-top: 4px;
+
+    > tbody {
+        display: none;
+    }
 
     &::after {
-        content: "New";
+        content: "Create Page";
+        line-height: 29px;
+        font-size: 11px;
+        opacity: 1;
     }
 }
 
+%CSS_BLOCK--CONTRIBUTE--MODE_SWITCH---SELECTED {
+    background: #f7f8fa;
+    color: #5c6164!important;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px 0px rgba(38,38,38,0.8);
+    padding: 5px 10px;
+}
 
+.toolbar-item-sitehome,
+.toolbar-item-sitecontent,
+.toolbar-item-sitefiels {
+    background: #4d5154;
+    padding: 2px 0px;
+    margin-top: 3px;
+
+    &:hover {
+        &::after {
+            color: rgba(216, 217, 220, 0.8)!important;
+        }
+    }
+
+    &::after {
+        padding: 5px;
+        box-sizing: border-box;
+        font-size: 11px!important;
+        opacity: 1!important;
+        color: rgba(216, 217, 220, 0.44)!important;
+
+
+    }
+
+    > tbody {
+        display: none;
+    }
+}
 
 // Home page
 .toolbar-item-sitehome {
-    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top 3px center;
-    background-size: 23px 23px;
     margin-left: 60px;
+    border-radius: 10px 0 0 10px;
+
+
+    body[data-contribute-mode="site"] & {
+        // background-color: #f7f8fa;
+    }
 
     &::after {
-        content: "Homepage";
+        content: "Site";
+
+        padding-left: 10px;
+
+        body[data-contribute-mode="site"] & {
+            @extend %CSS_BLOCK--CONTRIBUTE--MODE_SWITCH---SELECTED;
+        }
     }
+
+
 }
 
 // Content
 .toolbar-item-sitecontent {
-    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top 3px center;
-    background-size: 23px 23px;
+
+    body[data-contribute-mode="content"] & {
+        // background-color: #f7f8fa;
+    }
 
     &::after {
         content: "Content";
+
+        body[data-contribute-mode="content"] & {
+            @extend %CSS_BLOCK--CONTRIBUTE--MODE_SWITCH---SELECTED;
+        }
     }
+
+
 }
 
 // Files and images
 .toolbar-item-sitefiels {
-    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top 3px center;
-    background-size: 23px 23px;
+    border-radius: 0 10px 10px 0;
+
+    body[data-contribute-mode="files"] & {
+        // background-color: #f7f8fa;
+    }
 
     &::after {
         content: "Files";
+
+        padding-right: 10px;
+
+        body[data-contribute-mode="files"] & {
+            @extend %CSS_BLOCK--CONTRIBUTE--MODE_SWITCH---SELECTED;
+        }
     }
+
+
 }
 
 // Publication
-.contribute-menu-publication {
-    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top 3px center;
-    background-size: 23px 23px;
-
-    &::after {
-        content: "Publish";
-    }
-}
-
-// Workflow
-.contribute-menu-workflowXXX {
-    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top 3px center;
-    background-size: 23px 23px;
-
-    &::after {
-        content: "Workflow";
-    }
-}
-
 // Used to display page name
 .toolbar-item-publicationstatus {
     position: absolute;
@@ -976,6 +1122,24 @@
     &::before {
         content: attr(data-PAGE-NAME);
         background: url(./images/icons/tabs-pages-white@X2.png) no-repeat left center;
+
+        body[data-contribute-mode="files"] & {
+            background: url($ICON--FOLDER--SMALL---WHITE) no-repeat left center;
+
+        }
+
+        body[data-contribute-mode="content"] & {
+            background: url($ICON--FOLDER--SMALL---WHITE) no-repeat left center;
+
+        }
+
+        body[data-contribute-mode="content"][data-contribute-displaying-node="true"] & {
+            background: url($ICON--DISPLAY--THUMBS--WHITE) no-repeat left center;
+
+        }
+
+
+
         background-size: 23px;
         padding-left: 25px;
         @extend %document_title !optional;

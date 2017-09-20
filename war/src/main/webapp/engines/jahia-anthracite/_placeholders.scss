@@ -142,27 +142,16 @@
 
     %CSS_BLOCK--TOOLTIP---LEFT {
 		&::before {
-			bottom: 39px;
+			top: 3px;
 			right: 48px;
 		}
 
 		&::after {
-			bottom: 48px;
+			top: 13px;
 		    left: -5px;
 		}
 	}
 
-    %CSS_BLOCK--TOOLTIP---PUBLICATION {
-		&::before {
-			bottom: 6px;
-			right: 48px;
-		}
-
-		&::after {
-			bottom: 15px;
-		    left: -5px;
-		}
-	}
 
 /////////////////////////////////////////////////
 // PREVIEW BUTTONS //////////////////////////////

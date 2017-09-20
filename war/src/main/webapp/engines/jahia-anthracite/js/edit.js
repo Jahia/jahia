@@ -1369,7 +1369,10 @@
 						app.edit.infoBar.tasks.data.classes = classes;
 
 						console.log("::: APP ::: EDIT ::: INFOBAR ::: TASKS ::: ONCHANGE");
-                        var taskButton = Dex(".edit-menu-tasks button");
+
+                        var taskButton = Dex("." + app.data.currentApp + "-menu-tasks button");;
+
+
 
 
                         if(taskButton.exists()){
@@ -1410,7 +1413,10 @@
 								workflowButtonLabel = taskCount;
 							}
 
-							Dex(".edit-menu-workflow").setAttribute("data-info-count", workflowButtonLabel);
+                            Dex(".edit-menu-workflow").setAttribute("data-info-count", workflowButtonLabel);
+							Dex(".contribute-menu-workflow").setAttribute("data-info-count", workflowButtonLabel);
+
+
 
 							if(dashboardButton.exists()){
 								dashboardButton.filter(".toolbar-item-workflowdashboard").setHTML(dashboardButtonLabel);
@@ -2340,7 +2346,8 @@
 
             });
 
-			Dex(".menu-edit-menu-workflow").onOpen(app.edit.infoBar.tasks.updateMenuLabel);
+            Dex(".menu-edit-menu-workflow").onOpen(app.edit.infoBar.tasks.updateMenuLabel);
+			Dex(".menu-contribute-menu-workflow").onOpen(app.edit.infoBar.tasks.updateMenuLabel);
 
 			Dex(".menu-edit-menu-view").onOpen(app.contextMenus.previewMenu.onOpen);
 
@@ -2359,7 +2366,9 @@
 
             Dex("#JahiaGxtImagePopup").onOpen(app.imagePreview.onOpen);
 
-			Dex(".edit-menu-tasks").onAttr("class", app.edit.infoBar.tasks.onChange);
+            Dex(".edit-menu-tasks").onAttr("class", app.edit.infoBar.tasks.onChange);
+
+			Dex(".contribute-menu-tasks").onAttr("class", app.edit.infoBar.tasks.onChange);
 
             Dex(".toolbar-item-workinprogressadmin").onAttr("class", app.edit.infoBar.jobs.onChange);
 

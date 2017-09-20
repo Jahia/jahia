@@ -765,8 +765,8 @@ public class ConflictResolver {
                         // Do not remove j:liveProperties property or jmix:liveProperties mixin
                         return true;
                     }
+                    String name = isMixin ? (Constants.JCR_MIXINTYPES + "=" + oldValue.getString()) : propertyName;
                     for (JCRValueWrapper value : targetNode.getProperty("j:liveProperties").getValues()) {
-                        String name = isMixin ? (Constants.JCR_MIXINTYPES + "=" + oldValue.getString()) : propertyName;
                         if (name.equals(value.getString())) {
                             return true;
                         }

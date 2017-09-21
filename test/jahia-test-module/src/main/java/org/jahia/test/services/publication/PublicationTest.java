@@ -204,12 +204,13 @@ public class PublicationTest {
         JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
         jcrService.unpublish(Lists.newArrayList(editTextNode1.getIdentifier()));
 
+        String testHomeEditPath = testHomeEdit.getPath();
         // Need to add this, as otherwise the unpublished node will still be served from cache
         JCRSessionFactory.getInstance().closeAllSessions();
         englishEditSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+        testHomeEdit = englishEditSession.getNode(testHomeEditPath);
 
-        // englishLiveSession = jcrService.getSessionFactory().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, LanguageCodeConverters.languageCodeToLocale(defaultLanguage));
         testNodeNotInWorkspace(englishLiveSession, testHomeEdit.getPath() + "/contentList1/contentList1_text1", "Text node 1 was unpublished, should not be available in the live workspace anymore !");
 
         // Case 4 : now let's publish the parent node once again, and check if it is published properly.

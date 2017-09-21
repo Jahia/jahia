@@ -129,7 +129,7 @@
 			top: 62px;
 		}
 
-		body[data-indigo-gwt-side-panel="open"] & {
+		body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode & {
 			display: block;
 		}
 

@@ -518,12 +518,19 @@
 
         &::before {
             left: -4px;
+
+            .x-viewport-adminmode &,
+            .x-viewport-dashboardmode & {
+                width: 13px;
+                left: 53px;
+
+            }
         }
     }
 
     &::before {
         content: "y";
-        background: url(./images/icons/small-hamburger.png) no-repeat center center;
+        background: url($ICON--HAMBURGER--SMALL---WHITE) no-repeat center center;
         background-size: 15px 15px;
         position: fixed;
         left: -10px;
@@ -532,6 +539,16 @@
         height: 15px;
         text-indent: -50000px;
         transition: all 0.1s ease-in 0s;
+
+        .x-viewport-adminmode &,
+        .x-viewport-dashboardmode & {
+            background: url($ICON--HAMBURGER--SMALL---GREY) no-repeat center center;
+            left: 61px;
+            top: 66px;
+            width: 5px;
+            height: 15px;
+
+        }
     }
 
     &::after {

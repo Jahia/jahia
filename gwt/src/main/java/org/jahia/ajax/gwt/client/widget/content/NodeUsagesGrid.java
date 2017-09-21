@@ -110,7 +110,7 @@ public class NodeUsagesGrid {
                 new RpcProxy<List<GWTJahiaNodeUsage>>() {
                     @Override
                     protected void load(Object loadConfig, final AsyncCallback<List<GWTJahiaNodeUsage>> asyncCallback) {
-                        List<String> paths = new ArrayList<>();
+                        List<String> paths = new ArrayList<String>();
                         for (GWTJahiaNode selectedNode : nodes) {
                             paths.add(selectedNode.getPath());
                         }

@@ -3012,12 +3012,8 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		.x-grid3 {
 
-			.x-grid3-scroller {
-				margin-top: 20px;
-			}
-
 			.x-grid3-body {
-				margin-left: 8px;
+				margin-left: 12px;
 			}
 
 			.x-grid3-row.x-grid3-row-selected {
@@ -3032,7 +3028,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		> .x-border-layout-ct > .x-form-field-wrap {
-			top: 108px !important;
+			bottom: 12px !important;
 			height: 26px !important;
 			left: 70px !important;
 			width: 238px !important;

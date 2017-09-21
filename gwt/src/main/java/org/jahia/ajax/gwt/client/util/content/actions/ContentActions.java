@@ -66,7 +66,7 @@ import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 import java.util.*;
 
 /**
- * 
+ *
  *
  * @author rfelden
  * @version 7 juil. 2008 - 14:45:03
@@ -83,12 +83,15 @@ public class ContentActions {
         if (m != null) {
             linker.loading(Messages.get("statusbar.pastingref.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            JahiaContentManagementService.App.getInstance().pasteReferences(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedNodes()), m.getPath(), null, new BaseAsyncCallback() {
+            JahiaContentManagementService.App.getInstance().pasteReferences(JCRClientUtils.getPathesList(copyPasteEngine.getCopiedNodes()), m.getPath(), null, new BaseAsyncCallback<Object>() {
+
+                @Override
                 public void onApplicationFailure(Throwable throwable) {
                     Window.alert(Messages.get("failure.pasteref.label") + "\n" + throwable.getLocalizedMessage());
                     linker.loaded();
                 }
 
+                @Override
                 public void onSuccess(Object o) {
                     boolean refresh = false;
                     for (GWTJahiaNode n : copyPasteEngine.getCopiedNodes()) {
@@ -120,12 +123,15 @@ public class ContentActions {
      * @param target
      */
     public static void move(final Linker linker, final List<GWTJahiaNode> sources, GWTJahiaNode target) {
-        JahiaContentManagementService.App.getInstance().paste(JCRClientUtils.getPathesList(sources), target.getPath(), null, true, null, new BaseAsyncCallback() {
+        JahiaContentManagementService.App.getInstance().paste(JCRClientUtils.getPathesList(sources), target.getPath(), null, true, null, new BaseAsyncCallback<Object>() {
+
+            @Override
             public void onApplicationFailure(Throwable throwable) {
                 Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
                 linker.loaded();
             }
 
+            @Override
             public void onSuccess(Object o) {
                 boolean refresh = false;
                 for (GWTJahiaNode n : sources) {
@@ -201,11 +207,14 @@ public class ContentActions {
             } else if (newFolder != null && newFolder.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createFolder(parent.getPath(), newFolder, new BaseAsyncCallback<GWTJahiaNode>() {
+
+                    @Override
                     public void onApplicationFailure(Throwable throwable) {
                         Window.alert(Messages.get("failure.newDir.label") + "\n" + throwable.getLocalizedMessage());
                         linker.loaded();
                     }
 
+                    @Override
                     public void onSuccess(GWTJahiaNode node) {
                         linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         linker.loaded();
@@ -229,14 +238,14 @@ public class ContentActions {
      * @param windowHeader
      * @param nodeType
      * @param mixins
-     * @param nodeProperties 
+     * @param nodeProperties
      * @param useMainNode
      */
     public static void createNode(final String nodeName, final Linker linker, final String windowHeader, final String nodeType, List<String> mixins, List<GWTJahiaNodeProperty> nodeProperties, boolean useMainNode) {
         GWTJahiaNode parent;
         if (useMainNode) {
             parent = linker.getSelectionContext().getMainNode();
-        }   else {
+        } else {
             parent = linker.getSelectionContext().getSingleSelection();
         }
         if (parent != null) {
@@ -246,6 +255,8 @@ public class ContentActions {
             if (name != null && name.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createNode(parent.getPath(), name, nodeType, mixins, null, nodeProperties, null, null, null, !isNodeNameProvided, new BaseAsyncCallback<GWTJahiaNode>() {
+
+                    @Override
                     public void onSuccess(GWTJahiaNode node) {
                         linker.setSelectPathAfterDataUpdate(Arrays.asList(node.getPath()));
                         linker.loaded();
@@ -257,6 +268,7 @@ public class ContentActions {
                         linker.refresh(data);
                     }
 
+                    @Override
                     public void onApplicationFailure(Throwable throwable) {
                         Log.error("Unable to create [" + nodeType + "]", throwable);
                         linker.loaded();
@@ -302,7 +314,7 @@ public class ContentActions {
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, String name, boolean includeSubTypes) {
         showContentWizard(linker, nodeTypes, parent, name, includeSubTypes, null);
     }
-    
+
     public static void showContentWizard(final Linker linker, final String nodeTypes, final GWTJahiaNode parent, String name, boolean includeSubTypes, Set<String> displayedNodeTypes) {
         if (parent != null) {
             ContentTypeWindow.createContent(linker, name, nodeTypes != null ? Arrays.asList(nodeTypes.split(" ")) : null, new HashMap<String, GWTJahiaNodeProperty>(), parent, includeSubTypes, false, displayedNodeTypes);
@@ -321,7 +333,9 @@ public class ContentActions {
             boolean continueOperation = true;
             if (continueOperation && !selectedPaths.isEmpty()) {
                 linker.loading(lock ? Messages.get("statusbar.locking.label") : Messages.get("statusbar.unlocking.label"));
-                JahiaContentManagementService.App.getInstance().setLock(selectedPaths, lock, new BaseAsyncCallback() {
+                JahiaContentManagementService.App.getInstance().setLock(selectedPaths, lock, new BaseAsyncCallback<Object>() {
+
+                    @Override
                     public void onApplicationFailure(Throwable throwable) {
                         MessageBox.alert(Messages.get("label.error", "Error"), throwable.getLocalizedMessage(), null);
                         linker.loaded();
@@ -330,6 +344,7 @@ public class ContentActions {
                         linker.refresh(data);
                     }
 
+                    @Override
                     public void onSuccess(Object o) {
                         linker.loaded();
                         Map<String, Object> data = new HashMap<String, Object>();

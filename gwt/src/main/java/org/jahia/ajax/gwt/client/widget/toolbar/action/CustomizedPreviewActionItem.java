@@ -111,9 +111,9 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
             @Override
             protected void load(Object pageLoaderConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
                 if (userSearchField != null) {
-                    String newSearch = userSearchField.getText().trim().replace("'","''");
+                    String newSearch = userSearchField.getText().trim().replace("'", "''");
 
-                    String query = "select * from [jnt:user] as u where (isdescendantnode(u,'/users/') or isdescendantnode(u,'/sites/"+JahiaGWTParameters.getSiteKey().replace("'","''")+"/users/'))";
+                    String query = "select * from [jnt:user] as u where (isdescendantnode(u,'/users/') or isdescendantnode(u,'/sites/" + JahiaGWTParameters.getSiteKey().replace("'", "''") + "/users/'))";
                     if (newSearch.length() > 0) {
                         query += " and (CONTAINS(u.*,'*" + newSearch + "*') OR LOWER(u.[j:nodename]) LIKE '*" + newSearch.toLowerCase() + "*') ";
                     }
@@ -123,7 +123,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                     int offset = lastUserSearchValue != null && lastUserSearchValue.equals(newSearch) ? ((PagingLoadConfig) pageLoaderConfig).getOffset() : 0;
 
                     final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
-                    
+
                     service.searchSQL(query, ((PagingLoadConfig) pageLoaderConfig).getLimit(), offset, null, GWTJahiaNode.DEFAULT_USER_FIELDS, false, callback);
 
                     // remember last searched value
@@ -134,10 +134,13 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         final BasePagingLoader<PagingLoadResult<GWTJahiaNode>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNode>>(
                 proxy);
         userSearchField = new SearchField(Messages.get("label.search", "Search: "), false) {
+
+            @Override
             public void onFieldValidation(String value) {
                 loader.load();
             }
 
+            @Override
             public void onSaveButtonClicked(String value) {
 
             }
@@ -178,7 +181,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         panel = new HorizontalPanel();
         panel.setTableHeight("30px");
         panel.setVerticalAlign(Style.VerticalAlignment.BOTTOM);
-        Label label = new Label("&nbsp;&nbsp;&nbsp;&nbsp;"+Messages.get("label.preview.window.date", "Pick a date for the preview")+"&nbsp;&nbsp;&nbsp;");
+        Label label = new Label("&nbsp;&nbsp;&nbsp;&nbsp;" + Messages.get("label.preview.window.date", "Pick a date for the preview") + "&nbsp;&nbsp;&nbsp;");
         label.setWidth(200);
         label.setLabelFor("previewDate");
         final Date date = new Date();
@@ -192,11 +195,11 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         panel = new HorizontalPanel();
         panel.setTableHeight("30px");
         panel.setVerticalAlign(Style.VerticalAlignment.BOTTOM);
-        label = new Label("&nbsp;&nbsp;&nbsp;&nbsp;"+Messages.get("label.preview.window.channel", "Channel")+"&nbsp;&nbsp;&nbsp;");
+        label = new Label("&nbsp;&nbsp;&nbsp;&nbsp;" + Messages.get("label.preview.window.channel", "Channel") + "&nbsp;&nbsp;&nbsp;");
         label.setLabelFor("previewChannel");
 
         // we will setup the right elements now because we will need to reference them in the event listener
-        final Label orientationLabel = new Label("&nbsp;&nbsp;&nbsp;&nbsp;"+Messages.get("label.preview.window.channelOrientation", "Orientation")+"&nbsp;&nbsp;&nbsp;");
+        final Label orientationLabel = new Label("&nbsp;&nbsp;&nbsp;&nbsp;" + Messages.get("label.preview.window.channelOrientation", "Orientation") + "&nbsp;&nbsp;&nbsp;");
         orientationLabel.setLabelFor("previewChannelOrientation");
         orientationLabel.hide();
         final ListStore<GWTJahiaBasicDataBean> orientations = new ListStore<GWTJahiaBasicDataBean>();
@@ -228,7 +231,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaChannel> event) {
                 GWTJahiaChannel selectedChannel = event.getSelectedItem();
-                Map<String,String> capabilities = selectedChannel.getCapabilities();
+                Map<String, String> capabilities = selectedChannel.getCapabilities();
                 if (capabilities != null && capabilities.containsKey("variants")) {
                     String[] variants = capabilities.get("variants").split(",");
                     String[] displayNames = null;
@@ -257,7 +260,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         verticalPanel.add(panel);
         window.add(verticalPanel);
 
-        Button ok = new Button(Messages.get("label.preview.window.confirm","Show customized preview"));
+        Button ok = new Button(Messages.get("label.preview.window.confirm", "Show customized preview"));
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -267,24 +270,26 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                     String locale = JahiaGWTParameters.getLanguage();
                     JahiaContentManagementService.App.getInstance().getNodeURL(null, path, null, null, "default",
                             locale, false, new BaseAsyncCallback<String>() {
+
+                        @Override
                         public void onSuccess(String url) {
                             GWTJahiaNode selectedItem = userGrid.getSelectionModel().getSelectedItem();
                             String alias = null;
                             List<String> urlParameters = new ArrayList<String>();
-                            if(selectedItem!=null) {
-                                alias = "alias="+selectedItem.getName();
+                            if (selectedItem != null) {
+                                alias = "alias=" + selectedItem.getName();
                                 urlParameters.add(alias);
                             }
-                            String previewDate= null;
-                            if(calendarField.getValue().after(date)) {
-                                previewDate = "prevdate="+calendarField.getValue().getTime();
+                            String previewDate = null;
+                            if (calendarField.getValue().after(date)) {
+                                previewDate = "prevdate=" + calendarField.getValue().getTime();
                                 urlParameters.add(previewDate);
                             }
                             GWTJahiaChannel channel = combo.getValue();
                             String windowFeatures = null;
                             if ((channel != null) && (!"default".equals(channel.getValue()))) {
                                 urlParameters.add("channel=" + channel.getValue());
-                                Map<String,String> capabilities = channel.getCapabilities();
+                                Map<String, String> capabilities = channel.getCapabilities();
                                 if (capabilities != null && capabilities.containsKey("variants")) {
                                     int variantIndex = 0;
                                     String[] variants = capabilities.get("variants").split(",");
@@ -302,8 +307,8 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                                 }
                             }
                             StringBuilder urlParams = new StringBuilder();
-                            for (int i=0; i < urlParameters.size(); i++) {
-                                if (i==0) {
+                            for (int i = 0; i < urlParameters.size(); i++) {
+                                if (i == 0) {
                                     urlParams.append("?");
                                 }
                                 urlParams.append(urlParameters.get(i));

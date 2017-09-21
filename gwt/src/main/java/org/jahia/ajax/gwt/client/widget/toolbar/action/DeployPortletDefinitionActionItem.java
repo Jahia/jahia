@@ -57,18 +57,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ *
 * User: toto
 * Date: Sep 25, 2009
 * Time: 6:58:35 PM
-* 
+*
 */
 public class DeployPortletDefinitionActionItem extends BaseActionItem {
     public void onComponentSelection() {
         GWT.runAsync(new RunAsyncCallback() {
+
+            @Override
             public void onFailure(Throwable reason) {
             }
 
+            @Override
             public void onSuccess() {
                 LinkerSelectionContext lh = linker.getSelectionContext();
                 GWTJahiaNode parent = lh.getSingleSelection();
@@ -102,6 +105,7 @@ public class DeployPortletDefinitionActionItem extends BaseActionItem {
 
     }
 
+    @Override
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSelectionPermissions()) && PermissionsUtils.isPermitted("jcr:write", lh.getSelectionPermissions()));

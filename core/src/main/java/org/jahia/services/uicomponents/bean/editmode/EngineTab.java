@@ -63,9 +63,9 @@ import java.util.*;
  * Time: 12:37:29 PM
  */
 public class EngineTab implements Serializable, Comparable<EngineTab>, InitializingBean, DisposableBean, ApplicationContextAware {
-    
+
     private static final long serialVersionUID = -5995531303789738603L;
-    
+
     private String id;
     private String title;
     private String titleKey;
@@ -86,12 +86,12 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     public EngineTab() {
         super();
     }
-    
+
     public EngineTab(String id) {
         this();
         setId(id);
     }
-    
+
     public String getId() {
         return id;
     }
@@ -156,13 +156,15 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
         this.requiredPermission = requiredPermission;
     }
 
+    @Override
     public int compareTo(EngineTab o) {
         return getOrder() - o.getOrder();
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         if (parent instanceof List) {
-            for (Object o : (List) parent) {
+            for (Object o : (List<?>) parent) {
                 addTab(getEngineTabs(o));
             }
         } else {
@@ -177,12 +179,13 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
         this.applicationContext = applicationContext;
     }
 
+    @Override
     public void destroy() throws Exception {
         if (!JahiaContextLoaderListener.isRunning()) {
             return;
         }
         if (parent instanceof List) {
-            for (Object o : (List) parent) {
+            for (Object o : (List<?>) parent) {
                 removeTab(getEngineTabs(o), getId());
             }
         } else {
@@ -226,11 +229,11 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     }
 
     protected static void removeTab(List<List<EngineTab>> tabs, String tabId) {
-        if (!tabs.isEmpty() && tabId != null && tabId.length() > 0) {
+        if (!tabs.isEmpty() && tabId != null && !tabId.isEmpty()) {
             for (List<EngineTab> t : tabs) {
                 for (Iterator<EngineTab> iterator = t.iterator(); iterator.hasNext();) {
                     EngineTab tab = iterator.next();
-                    if (tab.getId() != null && tab.getId().equals(tabId)) {
+                    if (tabId.equals(tab.getId())) {
                         iterator.remove();
                     }
                 }

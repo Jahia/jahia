@@ -78,15 +78,19 @@ public class NewViewActionItem extends BaseActionItem  {
 
     private transient GWTJahiaNodeType fileNodeType;
 
+    @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
         parentTypesAsList = Arrays.asList("jnt:moduleVersionFolder", "jnt:nodeTypeFolder", "jnt:templateTypeFolder");
     }
 
+    @Override
     public void onComponentSelection() {
         if (fileNodeType == null) {
             linker.loading(Messages.get("label.loading", "Loading"));
             JahiaContentManagementService.App.getInstance().getNodeType("jnt:viewFile", new BaseAsyncCallback<GWTJahiaNodeType>() {
+
+                @Override
                 public void onSuccess(GWTJahiaNodeType result) {
                     fileNodeType = result;
                     newView(linker, true);
@@ -97,6 +101,7 @@ public class NewViewActionItem extends BaseActionItem  {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void newView(final Linker linker, boolean isLoading) {
         final GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
 
@@ -119,6 +124,8 @@ public class NewViewActionItem extends BaseActionItem  {
             }
             JahiaContentManagementService.App.getInstance().getContentTypesAsTree(Arrays.asList("nt:base"), null, true,
                     new BaseAsyncCallback<List<GWTJahiaNodeType>>() {
+
+                        @Override
                         public void onSuccess(List<GWTJahiaNodeType> result) {
                             linker.loaded();
                             final com.extjs.gxt.ui.client.widget.Window popup = new com.extjs.gxt.ui.client.widget.Window();
@@ -130,7 +137,7 @@ public class NewViewActionItem extends BaseActionItem  {
                             popup.setLayout(new FillLayout());
                             ContentTypeTree contentTypeTree = new ContentTypeTree();
                             contentTypeTree.fillStore(result);
-                            TreeGrid treeGrid = contentTypeTree.getTreeGrid();
+                            TreeGrid<?> treeGrid = contentTypeTree.getTreeGrid();
                             treeGrid.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK);
                             treeGrid.addListener(Events.OnDoubleClick, new Listener<TreeGridEvent<GWTJahiaNodeType>>() {
                                 public void handleEvent(TreeGridEvent<GWTJahiaNodeType> baseEvent) {
@@ -159,16 +166,17 @@ public class NewViewActionItem extends BaseActionItem  {
             if (isLoading) {
                 linker.loaded();
             }
-            createEngine(fileNodeType,selectedNode,findNodeType(selectedNode));
+            createEngine(fileNodeType, selectedNode, findNodeType(selectedNode));
         }
     }
 
     private void createEngine(GWTJahiaNodeType nodeType, GWTJahiaNode selectedNode, String targetName) {
         HashMap<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>();
-        props.put("nodeTypeName", new GWTJahiaNodeProperty("nodeTypeName",targetName));
+        props.put("nodeTypeName", new GWTJahiaNodeProperty("nodeTypeName", targetName));
         EngineLoader.showCreateEngine(linker, selectedNode, nodeType, props, targetName.replaceAll(":", "_"), false, null);
     }
 
+    @Override
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         GWTJahiaNode n = lh.getSingleSelection();
@@ -200,11 +208,11 @@ public class NewViewActionItem extends BaseActionItem  {
 
         String[] splittedPath = n.getPath().split("/");
         if (n.isNodeType("jnt:nodeTypeFolder")) {
-            return n.getName().replace("_",":");
+            return n.getName().replace("_", ":");
         } else if (splittedPath.length > TEMPLATE_TYPE_FOLDER_TOKEN && n.isNodeType("jnt:templateTypeFolder")) {
-            return  splittedPath[splittedPath.length - TEMPLATE_TYPE_FOLDER_TOKEN].replace("_",":");
+            return  splittedPath[splittedPath.length - TEMPLATE_TYPE_FOLDER_TOKEN].replace("_", ":");
         }else if (splittedPath.length > VIEW_FILE_FOLDER_TOKEN  && n.isNodeType("jnt:viewFile")) {
-            return splittedPath[splittedPath.length - VIEW_FILE_FOLDER_TOKEN].replace("_",":");
+            return splittedPath[splittedPath.length - VIEW_FILE_FOLDER_TOKEN].replace("_", ":");
         } else if (n.isNodeType("jnt:nodeType")) {
             return n.getName();
         }

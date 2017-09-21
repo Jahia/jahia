@@ -55,11 +55,11 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
- * 
+ *
  * User: toto
  * Date: Dec 11, 2008
  * Time: 5:27:32 PM
- * 
+ *
  */
 public class PortletDefinitionField extends TriggerField<String> {
     @Override
@@ -75,7 +75,9 @@ public class PortletDefinitionField extends TriggerField<String> {
         w.setModal(true);
         w.setSize(600, 400);
         ButtonBar bar = new ButtonBar();
-        Button ok = new Button(Messages.get("org.jahia.engines.PortletsManager.wizard.ok.label","OK"), new SelectionListener<ButtonEvent>() {
+        Button ok = new Button(Messages.get("org.jahia.engines.PortletsManager.wizard.ok.label", "OK"), new SelectionListener<ButtonEvent>() {
+
+            @Override
             public void componentSelected(ButtonEvent event) {
                 GWTJahiaPortletDefinition def = card.getSelectedPortletDefinition();
                 setRawValue(def.getDefinitionName());
@@ -85,6 +87,6 @@ public class PortletDefinitionField extends TriggerField<String> {
         bar.add(ok);
         w.setTopComponent(bar);
         w.add(card);
-        w.show();        
+        w.show();
     }
 }

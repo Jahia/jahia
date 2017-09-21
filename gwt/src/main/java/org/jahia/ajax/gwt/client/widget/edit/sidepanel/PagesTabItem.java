@@ -51,7 +51,6 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
@@ -94,6 +93,7 @@ public class PagesTabItem extends SidePanelTabItem {
     protected transient String path;
     protected transient SelectMainNodeTreeLoadListener selectMainNodeTreeLoadListener;
 
+    @Override
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
         tab.setLayout(new FitLayout());
@@ -128,7 +128,9 @@ public class PagesTabItem extends SidePanelTabItem {
         pageTree.setHeight("100%");
         pageTree.setIconProvider(ContentModelIconProvider.getInstance());
         pageTree.getTreeStore().setStoreSorter(new StoreSorter<GWTJahiaNode>() {
-            @Override public int compare(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode m1, GWTJahiaNode m2,
+
+            @Override
+            public int compare(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode m1, GWTJahiaNode m2,
                                          String property) {
                 if (!m1.getInheritedNodeTypes().contains("jmix:navMenuItem") && m2.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
                     return 1;
@@ -142,7 +144,9 @@ public class PagesTabItem extends SidePanelTabItem {
         final TreeGridClickSelectionModel selectionModel = new TreeGridClickSelectionModel();
         pageTree.setSelectionModel(selectionModel);
         this.pageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 final GWTJahiaNode node = se.getSelectedItem();
                 if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
                     !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
@@ -311,12 +315,15 @@ public class PagesTabItem extends SidePanelTabItem {
 
         public AsyncCallback<Map<String, Object>> getCallback() {
             AsyncCallback<Map<String, Object>> callback = new BaseAsyncCallback<Map<String, Object>>() {
+
+                @Override
                 public void onSuccess(Map<String, Object> data) {
                     editLinker.refresh(data);
                 }
 
+                @Override
                 public void onApplicationFailure(Throwable throwable) {
-                    Window.alert("Failed : "+throwable);
+                    Window.alert("Failed : " + throwable);
                 }
             };
             return callback;

@@ -112,12 +112,12 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
             Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height", PERMISSIONS, LOCKS_INFO, PUBLICATION_INFO, SUBNODES_CONSTRAINTS_INFO);
 
     public static final List<String> DEFAULT_REFERENCE_FIELDS =
-            Arrays.asList(ICON, COUNT, CHILDREN_INFO,NAME,DISPLAY_NAME);
+            Arrays.asList(ICON, COUNT, CHILDREN_INFO, NAME, DISPLAY_NAME);
 
     public static final String HOMEPAGE_PATH = "homepage-path";
 
     public static final List<String> DEFAULT_SITE_FIELDS =
-            Arrays.asList("j:moduleType", "j:installedModules", "j:templatesSet", "j:dependencies","j:languages", "j:defaultLanguage", HOMEPAGE_PATH, SITE_LANGUAGES, "j:versionInfo", PERMISSIONS, LOCKS_INFO,"j:resolvedDependencies");
+            Arrays.asList("j:moduleType", "j:installedModules", "j:templatesSet", "j:dependencies", "j:languages", "j:defaultLanguage", HOMEPAGE_PATH, SITE_LANGUAGES, "j:versionInfo", PERMISSIONS, LOCKS_INFO, "j:resolvedDependencies");
 
     public static final List<String> DEFAULT_USER_FIELDS =
             Arrays.asList("j:firstName", "j:lastName");
@@ -129,9 +129,9 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final List<String> RESERVED_FIELDS =
             Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, PERMISSIONS, DELETEABLE, UUID, DISPLAY_NAME, FILE,
                     SIZE, NODE_TYPES, INHERITED_NODE_TYPES, PROVIDER_KEY, PREVIEW, THUMBNAILS, SITE_UUID,
-                    CURRENT_VERSION, VERSIONS, CHILDREN_INFO, COUNT, AVAILABLE_WORKKFLOWS,DEFAULT_LANGUAGE,HOMEPAGE_PATH,
+                    CURRENT_VERSION, VERSIONS, CHILDREN_INFO, COUNT, AVAILABLE_WORKKFLOWS, DEFAULT_LANGUAGE, HOMEPAGE_PATH,
                     LOCKS_INFO, VISIBILITY_INFO, PUBLICATION_INFO, PUBLICATION_INFOS, QUICK_PUBLICATION_INFO, WORKFLOW_INFO, WORKFLOW_INFOS, PRIMARY_TYPE_LABEL,
-                    SITE_LANGUAGES, SUBNODES_CONSTRAINTS_INFO, "j:versionInfo", RESOURCE_BUNDLE,"j:resolvedDependencies", "j:isDynamicMountPoint",
+                    SITE_LANGUAGES, SUBNODES_CONSTRAINTS_INFO, "j:versionInfo", RESOURCE_BUNDLE, "j:resolvedDependencies", "j:isDynamicMountPoint",
                     "index",
                     "j:view", "j:width", "j:height");
 
@@ -141,13 +141,12 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private String url;
     private boolean hasChildren = false;
     private boolean versioned = false;
-    private SortInfo sortInfo = new SortInfo(DISPLAY_NAME,SortDir.ASC);
+    private SortInfo sortInfo = new SortInfo(DISPLAY_NAME, SortDir.ASC);
     private List<GWTJahiaNodeVersion> versions;
     private String selectedVersion;
     private String languageCode;
     private boolean expandOnLoad = false;
     private boolean selectedOnLoad = false;
-    private Map<String, Boolean> languageLocked = new HashMap<String, Boolean>();
     private GWTJahiaNode referencedNode;
     private GWTJahiaWorkflowInfo workflowInfo;
     private GWTBitSet permissions;
@@ -207,18 +206,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return get(LOCKED) != null ? (Boolean) get(LOCKED) : false;
     }
 
-//    public void setLanguageLocked(String language, Boolean locked) {
-//        languageLocked.put(language, locked);
-//    }
-//
-//    public Map<String, Boolean> getLanguageLocked() {
-//        return languageLocked;
-//    }
-//
-//    public Boolean isLanguageLocked(String language) {
-//        return languageLocked.containsKey(language) && languageLocked.get(language);
-//    }
-//
     public Map<String, List<String>> getLockInfos() {
         return get("lockInfos");
     }
@@ -258,11 +245,11 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public String getName() {
         return get(NAME);
     }
-    
+
     public void setEscapedName(String escapedName) {
         set(ESCAPED_NAME, escapedName);
-    }    
-    
+    }
+
     public String getEscapedName() {
         String escapedName = get(ESCAPED_NAME);
         return escapedName != null ? escapedName : (String)get(NAME);
@@ -390,11 +377,11 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return get(SITE_KEY);
     }
 
-    public void setVisibilityInfo(Map<GWTJahiaNode,ModelData> visible) {
+    public void setVisibilityInfo(Map<GWTJahiaNode, ModelData> visible) {
         set(VISIBILITY_INFO, visible);
     }
 
-    public Map<GWTJahiaNode,ModelData> getVisibilityInfo() {
+    public Map<GWTJahiaNode, ModelData> getVisibilityInfo() {
         return get(VISIBILITY_INFO);
     }
 
@@ -422,6 +409,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         this.matchFilters = matchFilters;
     }
 
+    @Override
     public int compareTo(GWTJahiaNode o) {
         if (isFile()) {
             if (o.isFile()) {
@@ -438,27 +426,32 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         }
     }
 
-
+    @Override
     public SortDir getSortDir() {
         return sortInfo.getSortDir();
     }
 
+    @Override
     public String getSortField() {
         return sortInfo.getSortField();
     }
 
+    @Override
     public SortInfo getSortInfo() {
         return sortInfo;
     }
 
+    @Override
     public void setSortDir(SortDir sortDir) {
         sortInfo.setSortDir(sortDir);
     }
 
+    @Override
     public void setSortField(String s) {
         sortInfo.setSortField(s);
     }
 
+    @Override
     public void setSortInfo(SortInfo sortInfo) {
         this.sortInfo = sortInfo;
     }
@@ -562,6 +555,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         this.quickPublicationInfo = quickPublicationInfo;
     }
 
+    @Override
     public String toString() {
         return getPath();
     }
@@ -613,12 +607,12 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return fullPublicationInfos;
     }
 
-	public boolean isReference() {
-    	return reference;
+    public boolean isReference() {
+        return reference;
     }
 
-	public void setReference(boolean reference) {
-    	this.reference = reference;
+    public void setReference(boolean reference) {
+        this.reference = reference;
     }
 
     public void setHasAcl(Boolean deleteable) {
@@ -628,7 +622,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public Boolean isHasAcl() {
         return get(ACL);
     }
-    
+
     public boolean isWCAGComplianceCheckEnabled() {
         return wcagCompliance;
     }
@@ -643,16 +637,16 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public boolean isNodeType(Collection<String> nodeTypes) {
         for (String nodeType : nodeTypes) {
-            if(isNodeType(nodeType)) {
+            if (isNodeType(nodeType)) {
                 return true;
             }
         }
         return false;
     }
-    
+
     public void setCanMarkForDeletion(boolean canMarkForDeletion) {
         set("canMarkForDeletion", Boolean.valueOf(canMarkForDeletion));
-    } 
+    }
 
     public boolean canMarkForDeletion() {
         return (Boolean) get("canMarkForDeletion");

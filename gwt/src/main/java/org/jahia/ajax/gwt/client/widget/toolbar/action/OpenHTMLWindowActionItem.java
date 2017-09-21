@@ -58,8 +58,8 @@ public class OpenHTMLWindowActionItem extends BaseActionItem {
 
     @Override
     public void onComponentSelection() {
-        Map preferences = getGwtToolbarItem().getProperties();
-        final GWTJahiaProperty htmlProperty = (GWTJahiaProperty) preferences.get(Constants.HTML);
+        Map<String, GWTJahiaProperty> preferences = getGwtToolbarItem().getProperties();
+        final GWTJahiaProperty htmlProperty = preferences.get(Constants.HTML);
         if (htmlProperty != null && htmlProperty.getValue() != null) {
             Window window = new Window();
             window.addStyleName("open-html-modal");

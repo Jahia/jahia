@@ -76,6 +76,8 @@ public class NodeUsagesGrid {
 
         ColumnConfig col = new ColumnConfig("pagePath", Messages.get("label.pageUrl", "Page URL"), 300);
         col.setRenderer(new GridCellRenderer<GWTJahiaNodeUsage>() {
+
+            @Override
             public Object render(
                     GWTJahiaNodeUsage gwtJahiaNodeUsage,
                     String s,
@@ -86,14 +88,14 @@ public class NodeUsagesGrid {
                     com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeUsage> gwtJahiaNodeUsageGrid) {
                 if (gwtJahiaNodeUsage.getLanguage() == null) {
                 return
-                        "<a href=\"" + JahiaGWTParameters.getBaseUrl()+
+                        "<a href=\"" + JahiaGWTParameters.getBaseUrl() +
                                 gwtJahiaNodeUsage.getPagePath() + ".html\" target=\"_blank\">" +
-                                gwtJahiaNodeUsage.getPageTitle()+"<a>";
+                                gwtJahiaNodeUsage.getPageTitle() + "<a>";
                 } else {
                     return
-                            "<a href=\"" + JahiaGWTParameters.getBaseUrl()+ "/../"+gwtJahiaNodeUsage.getLanguage() +
+                            "<a href=\"" + JahiaGWTParameters.getBaseUrl() + "/../" + gwtJahiaNodeUsage.getLanguage() +
                                     gwtJahiaNodeUsage.getPagePath() + ".html\" target=\"_blank\">" +
-                                    gwtJahiaNodeUsage.getPageTitle()+" ("+gwtJahiaNodeUsage.getLanguage()+")<a>";
+                                    gwtJahiaNodeUsage.getPageTitle() + " (" + gwtJahiaNodeUsage.getLanguage() + ")<a>";
 
                 }
             }
@@ -105,32 +107,39 @@ public class NodeUsagesGrid {
         columns.add(col);
         ColumnModel cm = new ColumnModel(columns);
         final ListStore<GWTJahiaNodeUsage> usageStore = new ListStore<GWTJahiaNodeUsage>(new BaseListLoader(
-                new RpcProxy() {
+                new RpcProxy<List<GWTJahiaNodeUsage>>() {
                     @Override
-                    protected void load(Object loadConfig, final AsyncCallback asyncCallback) {
-                    	List<String> paths = new ArrayList();
+                    protected void load(Object loadConfig, final AsyncCallback<List<GWTJahiaNodeUsage>> asyncCallback) {
+                        List<String> paths = new ArrayList<>();
                         for (GWTJahiaNode selectedNode : nodes) {
                             paths.add(selectedNode.getPath());
                         }
                         instance.getUsages(paths, new BaseAsyncCallback<List<GWTJahiaNodeUsage>>() {
+
+                            @Override
                             public void onApplicationFailure(Throwable throwable) {
                                 Log.debug("Cannot retrieve usages", throwable);
                             }
 
+                            @Override
                             public void onSuccess(List<GWTJahiaNodeUsage> gwtJahiaNodeUsages) {
                                 asyncCallback.onSuccess(gwtJahiaNodeUsages);
                             }
-                        });                        
+                        });
                     }
                 }));
         final Grid<GWTJahiaNodeUsage> tbl = new Grid<GWTJahiaNodeUsage>(usageStore, cm);
 
-        tbl.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
-            public void handleEvent(GridEvent tableEvent) {
+        tbl.addListener(Events.RowDoubleClick, new Listener<GridEvent<?>>() {
+
+            @Override
+            public void handleEvent(GridEvent<?> tableEvent) {
                 Object url = tableEvent.getModel().get("path");
                 if (url != null && url instanceof String) {
                     instance.getRenderedContent((String) url, null, JahiaGWTParameters.getUILanguage(), null,
                             "module", null, false, null, null, null, new BaseAsyncCallback<GWTRenderResult>() {
+
+                                @Override
                                 public void onSuccess(GWTRenderResult result) {
                                     HTML html = new HTML(result.getResult());
                                     Window w = new Window();

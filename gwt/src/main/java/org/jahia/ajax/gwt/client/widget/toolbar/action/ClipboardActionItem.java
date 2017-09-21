@@ -65,11 +65,12 @@ public class ClipboardActionItem extends BaseActionItem {
     private static ClipboardActionItem instance;
 
     private transient List<List<GWTJahiaNode>> copiedStuff = new ArrayList<List<GWTJahiaNode>>();
-    private transient MenuItem clearAll;
 
-    protected ClipboardActionItem() {}
+    protected ClipboardActionItem() {
+    }
 
-    @Override public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+    @Override
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
         instance = this;
     }
@@ -80,7 +81,9 @@ public class ClipboardActionItem extends BaseActionItem {
     }
 
     public static void setCopied(List<GWTJahiaNode> copiedNodes) {
-        if (instance == null) instance = new ClipboardActionItem();
+        if (instance == null) {
+            instance = new ClipboardActionItem();
+        }
 
         // todo handle history, keeps old items
         instance.copiedStuff.clear();
@@ -93,7 +96,9 @@ public class ClipboardActionItem extends BaseActionItem {
     }
 
     private static void refreshView() {
-        if (instance == null) instance = new ClipboardActionItem();
+        if (instance == null) {
+            instance = new ClipboardActionItem();
+        }
         if (instance.linker != null ) {
             Button b = (Button) instance.getTextToolItem();
             if (instance.copiedStuff.isEmpty()) {
@@ -108,7 +113,7 @@ public class ClipboardActionItem extends BaseActionItem {
                     MenuItem m = new MenuItem();
                     m.addStyleName("clipboard-info-menu-item");
                     if (copiedNodes.size() > 1) {
-                        m.setText(copiedNodes.size() + " "+Messages.get("label.items", " Items"));
+                        m.setText(copiedNodes.size() + " " + Messages.get("label.items", " Items"));
                     } else {
                         m.setText(copiedNodes.get(0).getDisplayName());
                     }
@@ -121,10 +126,11 @@ public class ClipboardActionItem extends BaseActionItem {
     }
 
 
-    @Override public Component createNewToolItem() {
+    @Override
+    public Component createNewToolItem() {
         Button b = (Button) super.createNewToolItem();
         b.setEnabled(false);
-        b.setText(Messages.get("label.clipboard","Clipboard"));
+        b.setText(Messages.get("label.clipboard", "Clipboard"));
         return b;
     }
 }

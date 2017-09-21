@@ -70,7 +70,8 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class CommitModuleActionItem extends BaseActionItem {
 
-    @Override public void onComponentSelection() {
+    @Override
+    public void onComponentSelection() {
         final Window wnd = new Window();
         wnd.addStyleName("commit-modal");
         wnd.setWidth(450);
@@ -94,23 +95,28 @@ public class CommitModuleActionItem extends BaseActionItem {
         form.add(message);
 
         Button btnSubmit = new Button(Messages.get("label.save", "Save"), new SelectionListener<ButtonEvent>() {
+
+            @Override
             public void componentSelected(ButtonEvent event) {
                 wnd.hide();
                 linker.loading(Messages.get("message.moduleSaving", "Saving module..."));
                 JahiaContentManagementService.App.getInstance().saveModule(JahiaGWTParameters.getSiteKey(), message.getValue(), new BaseAsyncCallback<Object>() {
+
+                    @Override
                     public void onSuccess(Object result) {
                         linker.loaded();
                         Info.display(Messages.get("label.information", "Information"), Messages.get("message.moduleSaved", "Module saved"));
                         Map<String, Object> data = new HashMap<String, Object>();
-                        data.put("event","commit");
+                        data.put("event", "commit");
                         linker.refresh(data);
                     }
 
+                    @Override
                     public void onApplicationFailure(Throwable caught) {
                         linker.loaded();
                         MessageBox.alert(Messages.get("label.error", "Error"), caught.getMessage(), null);
                         Map<String, Object> data = new HashMap<String, Object>();
-                        data.put("event","commit");
+                        data.put("event", "commit");
                         linker.refresh(data);
                     }
                 });
@@ -119,6 +125,8 @@ public class CommitModuleActionItem extends BaseActionItem {
         form.addButton(btnSubmit);
 
         Button btnCancel = new Button(Messages.get("label.cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
+
+            @Override
             public void componentSelected(ButtonEvent event) {
                 wnd.hide();
             }

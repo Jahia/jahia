@@ -81,7 +81,6 @@ import org.jahia.utils.Url;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import javax.jcr.RepositoryException;
@@ -852,9 +851,7 @@ public class UIConfigHelper {
         if (key == null || key.length() == 0) {
             return key;
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Resources key: " + key);
-        }
+        logger.debug("Resources key: {}", key);
         String baseName = null;
         String value = null;
         if (key.contains("@")) {
@@ -866,9 +863,7 @@ public class UIConfigHelper {
         if (value == null || value.length() == 0) {
             value = Messages.getInternal(key, locale);
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Resources value: " + value);
-        }
+        logger.debug("Resources value: {}", value);
         if (value.contains("${")) {
             try {
                 ScriptEngine scriptEngine = scriptEngineUtils.getEngineByName("velocity");
@@ -897,7 +892,7 @@ public class UIConfigHelper {
         String theme = (String) request.getSession().getAttribute("jahia.ui.theme");
         if (theme != null) {
             try {
-                config = SpringContextSingleton.getBean(name+"-"+theme);
+                config = SpringContextSingleton.getBean(name + "-" + theme);
             } catch (NoSuchBeanDefinitionException e) {
                 // Ignore
             }
@@ -905,15 +900,6 @@ public class UIConfigHelper {
         return config;
     }
 
-    /**
-     * Return tru
-     *
-     *
-     *
-     * @param contextNode
-     * @param visibility
-     * @return
-     */
     private boolean checkVisibility(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request, Visibility visibility) {
         return visibility == null || visibility.getRealValue(contextNode, jahiaUser, locale, request);
     }

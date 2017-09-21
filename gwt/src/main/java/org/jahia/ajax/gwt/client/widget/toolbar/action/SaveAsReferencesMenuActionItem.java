@@ -79,6 +79,7 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
     private GWTJahiaProperty targetName;
     private GWTJahiaProperty allowedNodeType;
 
+    @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
         setEnabled(false);
@@ -90,6 +91,8 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
     public void onComponentSelection() {
         JahiaContentManagementService.App.getInstance().getPortalNodes(targetName.getValue(),
                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
+
+                    @Override
                     public void onSuccess(List<GWTJahiaNode> result) {
                         if (result == null || result.size() == 0) {
                             MessageBox.alert(Messages.get("label.saveAsPortalComponent"), Messages.get("label.saveAsPortalComponent.portalComponents.nonedeclared", "There is no Portal Components folder declared. The component can not be saved"), null);
@@ -150,6 +153,7 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                         }
                     }
 
+                    @Override
                     public void onApplicationFailure(Throwable caught) {
                         Info.display(Messages.get("label.saveAsPortalComponent"),
                                 Messages.get("label.saveAsPortalComponent.cannotGetPortalNodes"));
@@ -157,6 +161,7 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                 });
     }
 
+    @Override
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
         setEnabled(lh.getSingleSelection() != null && hasPermission(lh.getSingleSelection()) && lh.getSingleSelection().getInheritedNodeTypes().contains(allowedNodeType.getValue()));
@@ -169,12 +174,15 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
             if (target != null) {
                 JahiaContentManagementService.App.getInstance().pasteReferences(
                         Arrays.asList(target.getPath()), portalNode.getPath(), null,
-                        new BaseAsyncCallback() {
+                        new BaseAsyncCallback<Object>() {
+
+                            @Override
                             public void onApplicationFailure(Throwable caught) {
                                 Info.display(Messages.get("label.saveAsPortalComponent"),
                                         Messages.get("label.saveAsPortalComponent.failure"));
                             }
 
+                            @Override
                             public void onSuccess(Object result) {
                                 com.google.gwt.user.client.Window.alert(Messages.getWithArgs("label.saveAsPortalComponent.success",
                                         "Component saved in {0}. It will be available for My Portal users only after publication. To proceed, go in the Content Tab to the selected Portal Components folder, select the component you want to publish in the lower tab then publish it (use right click).",

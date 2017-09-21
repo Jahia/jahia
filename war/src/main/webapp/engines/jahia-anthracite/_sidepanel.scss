@@ -7,6 +7,17 @@
 	height: 100%;
 	pointer-events: none;
 
+	.x-panel-header {
+		border:none;
+		background: transparent;
+	}
+
+	// MOCHE
+	.x-nodrag.x-tool-left.x-tool.x-component {
+		// Collapse side bar button
+		display: none;
+	}
+
 	.edit-menu-sites {
 		/* Site Selector */
 

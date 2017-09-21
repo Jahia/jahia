@@ -270,7 +270,7 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
                 ((ManagerConfiguration) parent).setEngineTabs(tabs);
             }
 
-            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(EditConfiguration.class).entrySet()) {
+            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(ManagerConfiguration.class).entrySet()) {
                 if (entry.getKey().startsWith(((ManagerConfiguration) parent).getName() + "-")) {
                     results.addAll(getEngineTabs(entry.getValue()));
                 }

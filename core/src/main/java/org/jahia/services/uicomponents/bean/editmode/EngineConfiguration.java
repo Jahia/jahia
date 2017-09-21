@@ -203,7 +203,7 @@ public class EngineConfiguration implements Serializable, InitializingBean, Disp
         } else if (parent instanceof ManagerConfiguration) {
             results.add(((ManagerConfiguration) parent).getEngineConfigurations());
 
-            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(EditConfiguration.class).entrySet()) {
+            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(ManagerConfiguration.class).entrySet()) {
                 if (entry.getKey().startsWith(((ManagerConfiguration) parent).getName() + "-")) {
                     results.addAll(getParentConfigurationMap(entry.getValue()));
                 }

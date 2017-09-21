@@ -3020,9 +3020,13 @@ body[data-indigo-gwt-side-panel="open"] {
 				margin-left: 8px;
 			}
 
-			.x-grid3-row.x-grid3-row-selected .gwt-content-label,
-			.x-grid3-row .gwt-content-label {
-				padding-right: 0 !important;
+			.x-grid3-row.x-grid3-row-selected {
+
+				.gwt-content-label,
+				.x-tree3-node-text {
+					padding-right: 0 !important;
+				}
+
 			}
 
 		}

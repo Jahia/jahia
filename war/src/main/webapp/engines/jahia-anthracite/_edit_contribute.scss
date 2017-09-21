@@ -540,6 +540,11 @@
         text-indent: -50000px;
         transition: all 0.1s ease-in 0s;
 
+        body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+            background: url($ICON--HAMBURGER--SMALL---GREY) no-repeat center center;
+
+        }
+
         .x-viewport-adminmode &,
         .x-viewport-dashboardmode & {
             background: url($ICON--HAMBURGER--SMALL---GREY) no-repeat center center;

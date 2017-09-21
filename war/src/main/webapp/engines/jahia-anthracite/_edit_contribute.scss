@@ -835,32 +835,47 @@
     left: 0!important;
     width: 100%!important;
     height: 100%!important;
-    background: $COLOUR--JAHIA_BLUE;
+    background: radial-gradient(ellipse at bottom right, rgba(76, 80, 82, 1) 0%, rgba(92, 97, 100, 1) 70%);
+	background: #f1f1f1;
 
     &::before {
-        content: "Digital Experience Manager";
-        display: block;
-        position: fixed;
-        left: 15vw;
-        top: 70px;
-        z-index: 99;
-        pointer-events: none;
-
-        @include text(46px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+		content: "Digital Experience Manager";
+	    display: block;
+	    position: fixed;
+	    left: 0;
+	    top: calc(16vh - 61px);
+	    z-index: 99;
+	    pointer-events: none;
+	    font-family: "Raleway", sans-serif;
+	    font-size: 40px;
+	    color: #00a0e3;
+	    font-weight: 100;
+	    width: 100%;
+	    text-align: center;
     }
 
+	&::after {
+		content: "Y";
+	    display: none;
+	    width: calc(100% + 40px);
+	    position: fixed;
+	    bottom: -10px;
+	    left: -20px;
+	    background: #444748;
+	    z-index: 999;
+	    /* border-top: 1px solid #45494a; */
+	    height: 45px;
+	    box-shadow: inset 0px 6px 15px #3c3e3f;
+	}
+
     .x-menu-list {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100% !important;
-        padding: 145px 15vw 0 15vw!important;
-        box-sizing: border-box;
-        // display: flex;
-        // flex-flow: row wrap; /* Shorthand – you could use ‘flex-direction: column’ and ‘flex-wrap: wrap’ instead */
-        // justify-content: flex-start;
-        // align-items: flex-start;
+		position: fixed;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100% !important;
+	    padding: 15vh 15vw 0 15vw !important;
+	    box-sizing: border-box;
     }
 
     .x-menu-list-item {
@@ -874,10 +889,11 @@
     }
 
     .x-menu-item {
-        box-shadow: inset -2px 2px #00a0e3;
-        background: $COLOUR--WHITE_CLOUDS;
+        box-shadow: inset -2px 2px #f1f1f1;
+        background: #00a0e3;
+		background: radial-gradient(ellipse at bottom right, #00a0e3 0%, #00a0e3 70%);
 
-        color: #6b6b6b;
+        color: #e7e7e7;
         font-weight: 100;
 
         transition: all 0.3s ease-in 0s;
@@ -885,8 +901,12 @@
         z-index: 99;
 
         &:hover {
-            background: #fbfbfb;
-            box-shadow: inset -2px 2px #00a0e3, 2px 4px 20px 0px #4b4b4b;
+			color: $COLOUR--WHITE_CLOUDS;
+			background: radial-gradient(ellipse at bottom right, #04b4fd 0%, $COLOUR--JAHIA_BLUE 70%);
+            // background: #01a6eb;
+			// box-shadow: inset 1px 1px #0286bd, inset -1px -1px #0286bd, 2px 4px 20px 0px rgba(75, 75, 75, 0.44);
+            // box-shadow: inset -2px -2px $COLOUR--WHITE_CLOUDS, 2px 4px 20px 0px rgba(75, 75, 75, 0.44);
+			box-shadow: inset -1px 1px #f1f1f1, 2px 4px 20px 0px rgba(75, 75, 75, 0.44);
 
             z-index: 999;
         }
@@ -895,17 +915,20 @@
 
 //logout
 .toolbar-item-logout {
-    background: url($ICON--DISPLAY--DETAILS--GREY) no-repeat center center!important;
-    background-size: 23px 23px!important;
-    text-indent: -50000px;
-    width: 23px;
-    height: 23px;
+	position: fixed!important;
+    right: 10px;
+    top: 10px;
+    background: radial-gradient(ellipse at bottom right, #e0e0e0 0%, #e0e0e0 70%) !important;
+    box-shadow: none!important;
+    padding: 7px 20px!important;
+    color: #787d7f!important;
 
-    position: fixed!important;
-    top: 77px;
-    right: 70px;
+	transition: all 0.1s ease-in 0s !important;
 
-    z-index: 99;
+	&:hover {
+		background: radial-gradient(ellipse at bottom right, #04b4fd 0%, $COLOUR--JAHIA_BLUE 70%) !important;
+		color: $COLOUR--WHITE_CLOUDS!important;
+	}
 }
 
 //dashboard
@@ -921,6 +944,8 @@
     right: 100px;
 
     z-index: 99;
+
+	display: none;
 }
 
 //studio
@@ -928,19 +953,18 @@
 .toolbar-item-admin,
 .toolbar-item-edit,
 .toolbar-item-contribute {
-    // position: fixed;
-    // width: 75px;
-    // height: 75px;
-    // background: red;
-    width: 23vw;
-    height: 23vw;
-    background: white;
+	width: 23vw;
+	height: 18vw;
+	background: white;
+	font-size: 22px;
+	color: black;
+	padding-top: 15vw !important;
+	padding-left: 13px !important;
+	box-sizing: border-box;
 
-    font-size: 22px;
-    color: black;
-    padding-top: 20vw !important;
-    padding-left: 20px!important;
-    box-sizing: border-box;
+	&:hover {
+		font-size: 23px;
+	}
 }
 
 .toolbar-item-editorialcontentmanager,
@@ -949,135 +973,23 @@
 .toolbar-item-repositoryexplorer,
 .toolbar-item-categorymanager,
 .toolbar-item-sitemanager {
-    width: 11.5vw;
-    height: 11.5vw;
+	width: 11.5vw;
+    height: 9vw;
     background: white;
-
-    font-size: 13px;
+    font-size: 10px;
     color: black;
-    padding-top: 9vw !important;
-    padding-left: 17px!important;
+    padding-top: 7vw !important;
     box-sizing: border-box;
+    font-weight: 400 !important;
+    /* white-space: pre-line!important; */
+    padding-right: 14px !important;
 
-    font-weight: 400!important;
+	&:hover {
+		font-size: 11px;
+	}
 }
 
 
-
-
-
-
-.menu-editmode-managers-menuOLD {
-    position: absolute;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    background: $HAMBURGER--BG--COLOUR;
-
-    &::after {
-		/* Close Icon */
-        content: attr(data-indigo-title);
-        display: block;
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        background: url($ICON--BACK--WHITE) no-repeat left center / 20px 20px;
-        height: 20px;
-        z-index: $ZINDEX--HAMBURGER---TITLE;
-
-        @include text(16px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
-        padding-left: 25px;
-    }
-
-
-    .x-menu-list {
-		/* Menu Container */
-		background: transparent;
-        display: block;
-        overflow: visible;
-        width: 576px;
-        margin: 100px auto;
-        pointer-events: all;
-
-        &::before {
-			/* Menu Title */
-			@include text(46px, $HAMBURGER--TITLE--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
-
-            content: $text_dxm;
-		    display: block;
-		    text-align: center;
-		    margin-bottom: 10px;
-		    background: none;
-		    box-shadow: none;
-		    text-transform: none;
-		    font-style: normal;
-        }
-
-
-
-    }
-
-	$side_panel__tab_buttons: (
-		// App ID
-		(".toolbar-item-editorialcontentmanager",     	$HAMBURGER--ICON--CONTENT_MANAGER),
-		(".toolbar-item-filemanager",     				$HAMBURGER--ICON--FILE_MANAGER),
-		(".toolbar-item-portletmanager",     			$HAMBURGER--ICON--PORTLET_MANAGER),
-		(".toolbar-item-repositoryexplorer",     		$HAMBURGER--ICON--REPO_EXPLORER),
-		(".toolbar-item-categorymanager",     			$HAMBURGER--ICON--CATEGORY_MANAGER),
-		(".toolbar-item-sitemanager",     				$HAMBURGER--ICON--SITE_MANAGER)
-	);
-
-    .x-menu-list-item {
-		/* App Icon */
-        margin: 10px;
-        float: left;
-        position: relative;
-
-		&.x-menu-item-active {
-			/* Hover States */
-			background: none;
-
-			.x-menu-item {
-				color: $HAMBURGER--BUTTON--COLOUR---HOVER;
-				opacity: 1;
-			}
-		}
-
-
-		.x-menu-item {
-			/* App Icon - Generic */
-			width: 170px;
-	        margin: 1px;
-	        position: relative;
-	        padding: 120px 0 0 0!important;
-	        text-align: center!important;
-
-			background-size: 50%;
-			background-repeat: no-repeat;
-			background-position: top 16px center;
-			background-color: $COLOUR--TRANSPARENT;
-			opacity: 0.8;
-
-			@include text(11px, $HAMBURGER--BUTTON--COLOUR---UP, $FONT--WEIGHT---EXTRALIGHT);
-
-		}
-
-
-		@each $tab_button in $side_panel__tab_buttons {
-			$_app_UID: #{nth($tab_button,1)};
-			$_icon: "#{nth($tab_button,2)}";
-
-			#{$_app_UID} {
-				background-image: url($_icon);
-			}
-
-		}
-
-
-
-    }
-}
 
 // Language Switcher
 .toolbar-itemsgroup-languageswitcher {

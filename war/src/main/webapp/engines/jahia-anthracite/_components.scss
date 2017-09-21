@@ -568,15 +568,13 @@
 .x-menu {
 	width: auto !important;
 	background: transparent;
-    overflow: visible;
-    z-index: $ZINDEX--CONTEXT_MENU;
+	overflow: visible;
+	z-index: $ZINDEX--CONTEXT_MENU;
 	border: none;
-
 }
 
 .x-menu-list {
 	height: auto!important;
-
 
 	&::before {
 		background: #008ec9;
@@ -600,8 +598,6 @@
 
 	.x-item-disabled & {
 		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED !optional;
-
-
 
 	}
 
@@ -2559,15 +2555,7 @@ form,
 	.cke_dialog_footer_buttons {
 	}
 
-
-
 }
-
-
-
-
-
-
 
 
 .x-form-invalid {
@@ -2592,7 +2580,7 @@ form,
 
 /* Modal Mask */
 .x-modal {
-    background: $MODAL--BG--COLOUR;
+    background: rgba(92, 97, 100, 0.94);  // check on other modals.
     opacity: 1;
     z-index: $ZINDEX--MODAL---MASK;
     position: fixed !important;
@@ -2940,4 +2928,108 @@ form,
 
 .arrow-left {
 	background-image:url(./images/icons/icon_arrow_left_single_white@X2.png)!important;
+}
+
+
+
+/////////////////////////////////////////////////
+// CONTENT SELECTOR /////////////////////////////
+/////////////////////////////////////////////////
+
+
+.x-window.content-type-window {
+    background: $COLOUR--RAIN_CLOUDS;
+
+		.x-window-header {
+		    display: none;
+		}
+
+		.x-window-body {
+
+			> .x-border-layout-ct {
+				overflow: hidden !important;
+			}
+
+			.x-form-field.x-form-text {
+				padding-left: 28px !important;
+				background: #717578;
+				background-image: url(./images/icons/tabs-search-white@X2.png);
+				background-repeat: no-repeat;
+				background-size: contain;
+			}
+
+		}
+
+		.x-grid3 {
+
+			.x-tree3-node-text {
+				padding-right: 0 !important;
+			}
+
+			.x-grid3-row-over .gwt-content-label {
+				color: $COLOUR--WHITE_CLOUDS !important;
+			}
+
+			.x-grid3-row.x-grid3-row-selected {
+				background: #868889 !important;
+			}
+
+		}
+
+		.x-window-bbar {
+			padding: 8px;
+			margin-top: 8px;
+			background: #474a4c;
+		}
+
+		.x-form-field-wrap.x-component.x-border-panel {
+			background: #a3a3a3;
+			height: 24px !important;
+		}
+
+		.x-treegrid.x-component {
+		    margin-top: 15px;
+
+				.gwt-content-label {
+				    color: $COLOUR--WHITE_CLOUDS;
+				}
+
+		}
+
+		.x-panel-fbar .x-toolbar-cell:first-child .x-btn.x-btn-text-icon button {
+			background: $COLOUR--DIRTY_ORANGE !important;
+		}
+
+}
+
+
+// Content Selector on side panel.
+
+#JahiaGxtSidePanelTabs .x-tab-panel-body > .x-component.tab_createContent {
+    height: calc(100% - 132px) !important;
+
+		.x-grid3 {
+
+			.x-grid3-scroller {
+				margin-top: 20px;
+			}
+
+			.x-grid3-body {
+			    margin-left: 8px;
+			}
+
+			.x-grid3-row.x-grid3-row-selected .gwt-content-label,
+			.x-grid3-row .gwt-content-label {
+			    padding-right: 0 !important;
+			}
+
+		}
+
+		> .x-border-layout-ct > .x-form-field-wrap {
+		    top: 108px !important;
+		    height: 26px !important;
+		    left: 70px !important;
+		    width: 238px !important;
+		}
+
 }

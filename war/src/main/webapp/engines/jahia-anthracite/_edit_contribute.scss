@@ -511,10 +511,27 @@
     background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
     background-size: 32px 32px;
     margin-top: 0;
-    opacity: 0.9;
+    opacity: 0.99!important;
 
     &:hover {
-        opacity: 1;
+        opacity: 1!important;
+
+        &::before {
+            left: -4px;
+        }
+    }
+
+    &::before {
+        content: "y";
+        background: url(./images/icons/small-hamburger.png) no-repeat center center;
+        background-size: 15px 15px;
+        position: fixed;
+        left: -10px;
+        top: 20px;
+        width: 15px;
+        height: 15px;
+        text-indent: -50000px;
+        transition: all 0.1s ease-in 0s;
     }
 
     &::after {

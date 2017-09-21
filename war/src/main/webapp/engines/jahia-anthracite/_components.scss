@@ -1733,7 +1733,11 @@ form,
 
 			&.x-grid3-td-locked {
 				width: 25px;
-				display: none;
+				// display: none;
+				right: 32px;
+				top: 3px;
+				position: relative;
+
 			}
 
 			.x-grid3-cell-inner {

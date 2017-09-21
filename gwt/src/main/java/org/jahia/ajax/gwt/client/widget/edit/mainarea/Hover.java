@@ -46,6 +46,7 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
 
@@ -249,7 +250,8 @@ public class Hover {
 
             onShow();
 
-            setPosition(WindowUtil.getAbsoluteLeft(ctn.getElement()), WindowUtil.getAbsoluteTop(ctn.getElement()), ctn.getWidth(), ctn.getHeight());
+            Element element = ctn.getElement();
+            setPosition(WindowUtil.getAbsoluteLeft(element), WindowUtil.getAbsoluteTop(element), ctn.getWidth(), ctn.getHeight());
         }
 
         public void hide() {

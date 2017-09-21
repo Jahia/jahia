@@ -46,6 +46,7 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
 
@@ -140,7 +141,8 @@ public class Selection extends LayoutContainer {
 
         onShow();
         if (currentContainer != null) {
-            setPosition(WindowUtil.getAbsoluteLeft(currentContainer.getElement()), WindowUtil.getAbsoluteTop(currentContainer.getElement()), currentContainer.getWidth(), currentContainer.getHeight());
+            Element element = currentContainer.getElement();
+            setPosition(WindowUtil.getAbsoluteLeft(element), WindowUtil.getAbsoluteTop(element), currentContainer.getWidth(), currentContainer.getHeight());
         }
     }
 

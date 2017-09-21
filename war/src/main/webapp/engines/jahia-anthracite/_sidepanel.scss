@@ -109,21 +109,28 @@
 	#JahiaGxtRefreshSidePanelButton {
 		/* Refresh side panel button */
 		pointer-events: all;
-		background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center;
-		background: url(./images/tabs-publish-white@X2.png) no-repeat center;
-		left: 301px;
+		background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center $COLOUR--WHITE_CLOUDS;
+		left: 282px;
 		position: fixed;
-		top: 290px;
+		top: 29px;
 		border-radius: 100%;
-	    background-size: 30px;
+	    background-size: 18px;
 
-		height: 20px;
-		width: 20px;
+		height: 25px;
+		width: 25px;
+
+		opacity: 0.7;
+
+		display: none;
 
 		body[data-edit-window-style="settings"] &,
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
 			top: 62px;
+		}
+
+		body[data-indigo-gwt-side-panel="open"] & {
+			display: block;
 		}
 
 		&:hover {

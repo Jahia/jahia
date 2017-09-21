@@ -1390,6 +1390,7 @@
 								dashboardButtonLabel,
 								dashboardButton = Dex.class("menu-edit-menu-workflow");
 
+
                             if(result){
 								taskCount = parseInt(result[1]);
 
@@ -1465,7 +1466,7 @@
                             	jobString = jobStringSplit[0],
                             	jobIcon = jobButton.filter("img"),
 								activeJob,
-								buttonParent = Dex(".toolbar-item-workinprogressadmin .x-btn-mc"),
+								buttonParent = Dex.class("toolbar-item-workinprogressadmin"),
 								jobTooltip;
 
 
@@ -1478,7 +1479,7 @@
                             } else {
                                 // No Jobs active
 								activeJob = false;
-								jobTooltip = "No Jobs running",
+								jobTooltip = "Jobs",
 								Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").removeClass("indigo-job-running");
 
                             }
@@ -1487,6 +1488,8 @@
 							app.edit.infoBar.jobs.data.activeJob = activeJob;
 
 							buttonParent.setAttribute("data-indigo-label", jobTooltip);
+
+                            console.log("jobTooltipjobTooltipjobTooltipjobTooltipjobTooltipjobTooltipjobTooltip:", jobTooltip);
 
                         }
 

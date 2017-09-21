@@ -180,7 +180,6 @@
     display: none;
 
     body[data-multiselect="on"] & {
-        // top: $TOPBAR--MULTISELECT--1---TOP;
         display: none;
     }
 
@@ -548,17 +547,23 @@
 
 // Trash Button
 .toolbar-item-showtrashboard {
-    display: none;
-    // background: url(./images/tabs-trash-white@X2.png) no-repeat top center;
-    // background-size: 23px 23px;
-    //
-    // position: fixed;
-    // right: 210px;
-    // top: 15px;
-    //
-    // &::after {
-    //     content: $text_trash;
-    // }
+    background: url(./images/tabs-trash-white@X2.png) no-repeat top center;
+    background-size: 23px 23px;
+
+
+
+    &::after {
+        content: $text_trash;
+    }
+
+    .x-viewport-contributemode & {
+        display: none;
+
+        position: fixed;
+        right: 210px;
+        top: 15px;
+
+    }
 }
 
 // Background Jobs Button
@@ -567,12 +572,9 @@
     background-size: 23px 23px;
 
     &::after {
-        content: $text_jobs;
+        content: attr(data-indigo-label);
     }
 
-    .x-btn-mc {
-        @include tooltip(attr(data-indigo-label), "LEFT");
-    }
 }
 
 // Clipboard Button
@@ -591,9 +593,7 @@
 	top: -46px;
 	left: 0;
 	width: 100% !important;
-	// .xtb-sep {
-	// 	display: none;
-	// }
+
 }
 
 .node-path-title {
@@ -614,7 +614,6 @@
         background-size: 10px !important;
         background-color: rgba(238,238,238,0.2);
         border-radius: 100%;
-        // @include tooltip($text_clear_selection, "BOTTOM");
 
         &::before {
             content: $text_clear_selection!important;
@@ -1007,7 +1006,7 @@
     }
 
     &::after {
-        content: "Create Page";
+        content: $text_create_page;
         line-height: 29px;
         font-size: 11px;
         opacity: 1;
@@ -1056,13 +1055,8 @@
     margin-left: 60px;
     border-radius: 10px 0 0 10px;
 
-
-    body[data-contribute-mode="site"] & {
-        // background-color: #f7f8fa;
-    }
-
     &::after {
-        content: "Site";
+        content: $text_site;
 
         padding-left: 10px;
 
@@ -1077,12 +1071,8 @@
 // Content
 .toolbar-item-sitecontent {
 
-    body[data-contribute-mode="content"] & {
-        // background-color: #f7f8fa;
-    }
-
     &::after {
-        content: "Content";
+        content: $text_content;
 
         body[data-contribute-mode="content"] & {
             @extend %CSS_BLOCK--CONTRIBUTE--MODE_SWITCH---SELECTED;
@@ -1096,12 +1086,8 @@
 .toolbar-item-sitefiels {
     border-radius: 0 10px 10px 0;
 
-    body[data-contribute-mode="files"] & {
-        // background-color: #f7f8fa;
-    }
-
     &::after {
-        content: "Files";
+        content: $text_files;
 
         padding-right: 10px;
 
@@ -1158,7 +1144,8 @@
 .menu-edit-menu-workflow,
 .menu-edit-menu-publication,
 .menu-edit-menu-status,
-.menu-edit-menu-cache {
+.menu-edit-menu-cache,
+.clipboard-info-menu {
     .x-menu-list {
         box-shadow: -1px 2px 3px 0 rgba($COLOUR--DARK_CLOUDS, .3);
 
@@ -1182,7 +1169,7 @@
     }
 }
 
-// Small positional fix for publication context menu
+// Small positional fix for publication menu
 .menu-edit-menu-publication {
     .x-menu-list {
         top: -38px;
@@ -1191,6 +1178,21 @@
     &::before {
         top: -27px;
     }
+}
+
+// Small positional fix for clipboard "menu"
+.clipboard-info-menu {
+    .x-menu-list {
+        top: -46px;
+    }
+
+    .x-item-disabled {
+        display: block!important;
+        color: $COLOUR--WHITE_CLOUDS!important;
+        font-style: normal;
+    }
+
+
 }
 
 // Information stuff

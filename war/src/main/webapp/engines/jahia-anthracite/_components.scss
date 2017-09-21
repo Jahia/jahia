@@ -2559,18 +2559,15 @@ form,
 	.cke_dialog_footer_buttons {
 	}
 
-}
-
-
-.x-form-invalid {
-	border:none!important;
-	background:none!important;
-
-	// INLINE ERROR DETAILS
-	> div:nth-child(1) {
-		// display: none;
+	.x-form-invalid {
+		border:none!important;
+		background:none!important;
 	}
+
 }
+
+
+
 
 /* BROWSER FIXES ( Actually over rides of GXT fixes ) */
 .ext-strict .ext-gecko .x-small-editor .x-form-text,

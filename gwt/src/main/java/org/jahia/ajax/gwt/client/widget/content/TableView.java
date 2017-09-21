@@ -69,6 +69,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
@@ -288,7 +289,7 @@ public class TableView extends AbstractView {
                 if (feedback == DND.Feedback.INSERT) {
                     int height = row.getOffsetHeight();
                     int quarter = height / 4;
-                    int top = row.getAbsoluteTop();
+                    int top = WindowUtil.getAbsoluteTop(row);
                     int y = event.getClientY();
 
                     before = y < (top + quarter);

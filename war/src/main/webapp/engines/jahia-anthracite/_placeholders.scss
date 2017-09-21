@@ -143,12 +143,12 @@
     %CSS_BLOCK--TOOLTIP---LEFT {
 		&::before {
 			top: 3px;
-			right: 48px;
+			right: 53px;
 		}
 
 		&::after {
-			top: 13px;
-		    left: -5px;
+            top: 12px;
+            left: -9px;
 		}
 	}
 
@@ -882,10 +882,6 @@
 // CONTEXT MENU /////////////////////////////////
 /////////////////////////////////////////////////
 
-    %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER {
-        border: none;
-        box-shadow: 0 0 10px 0 rgba($COLOUR--DARK_CLOUDS, .3);
-    }
 
     %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM {
         text-align: left!important;
@@ -893,7 +889,7 @@
         padding: 8px 9px !important;
         border: none;
 
-        @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---SEMILIGHT);
+        @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---LIGHT);
     }
 
     %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER {

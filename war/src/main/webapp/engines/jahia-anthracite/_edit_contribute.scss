@@ -1153,10 +1153,43 @@
 
 
 
-// Small fix for the Workflow menu (have to reposition because the contents of the button are changed and so it is no onger aligned properly to the side f the page)
-.menu-edit-menu-workflow {
-	left: auto!important;
-	right: 8px;
+// Move right hand side menus in so that they dont obscure the other menu items:
+.menu-edit-menu-workflow,
+.menu-edit-menu-publication,
+.menu-edit-menu-status,
+.menu-edit-menu-cache {
+    .x-menu-list {
+        box-shadow: -1px 2px 3px 0 rgba($COLOUR--DARK_CLOUDS, .3);
+
+        position: absolute;
+        top: -48px;
+        right: 3px;
+
+        // Small fix for publication
+
+    }
+    &::before {
+        content: "Y";
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background: #00a0e3;
+        text-indent: -50000px;
+        transform: rotate(45deg);
+        right: -1px;
+        top: -37px;
+    }
+}
+
+// Small positional fix for publication context menu
+.menu-edit-menu-publication {
+    .x-menu-list {
+        top: -38px;
+    }
+
+    &::before {
+        top: -27px;
+    }
 }
 
 // Information stuff

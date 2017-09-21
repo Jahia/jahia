@@ -1015,11 +1015,12 @@
 }
 
 %CSS_BLOCK--CONTRIBUTE--MODE_SWITCH---SELECTED {
-    background: #f7f8fa;
-    color: #5c6164!important;
+    background: $COLOUR--JAHIA_BLUE;
+    color: $COLOUR--WHITE_CLOUDS!important;
     border-radius: 10px;
     box-shadow: 1px 1px 3px 0px rgba(38,38,38,0.8);
     padding: 5px 10px;
+    font-weight: 600;
 }
 
 .toolbar-item-sitehome,

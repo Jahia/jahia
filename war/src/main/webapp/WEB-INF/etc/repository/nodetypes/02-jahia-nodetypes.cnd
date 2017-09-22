@@ -60,6 +60,9 @@
 [jmix:originWS] mixin
   - j:originWS (string) protected nofulltext hidden
 
+[jmix:liveProperties] mixin
+  - j:liveProperties (string) multiple
+
 [jmix:deletedChildren] mixin
   - j:deletedChildren (string) multiple hidden indexed=no
 

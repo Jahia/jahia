@@ -25,7 +25,7 @@
     overflow: visible !important;
     position: fixed;
 
-    body[data-sitesettings="true"] & {
+    body[data-sitesettings="true"] .x-viewport-editmode & {
         display:none!important;
     }
 

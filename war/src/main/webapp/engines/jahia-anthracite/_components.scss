@@ -1448,7 +1448,12 @@ form,
 	.x-grid3-scroller {
 		/* Another List Container */
 		height: 100%!important;
-		width: 100%!important;
+		width: calc(100% - 10px)!important;
+
+		body[data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] &,
+		body[data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] & {
+			width: calc(100% - 25px) !important;
+		}
 
 		body[data-edit-window-style="settings"] &,
 		.x-viewport-adminmode &,
@@ -1645,9 +1650,9 @@ form,
 		pointer-events: none;
 
 		&::after {
-			position: fixed;
+			position: absolute;
 			pointer-events: all;
-			margin-top: -26px;
+			margin-top: -23px;
 			background-image: url($TREE--MORE_OPTIONS--ICON---UP);
 			background-repeat: no-repeat;
 			background-position: center center;
@@ -1657,6 +1662,20 @@ form,
 			width: 28px;
 			height: 25px;
 			opacity: 0;
+			right: 0;
+			content: "More";
+
+			#JahiaGxtPagesTab & {
+				margin-top: -26px;
+
+			}
+
+			#JahiaGxtContentBrowseTab .x-box-item:nth-child(2) &,
+			#JahiaGxtCategoryBrowseTab .x-box-item:nth-child(2) &,
+			.JahiaGxtSearchTab-results & {
+				margin-top: -21px;
+
+			}
 		}
 	}
 

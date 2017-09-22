@@ -1465,7 +1465,7 @@
 		color: $TREE--ROW--FONT--COLOUR---HOVER!important;
 
 		// Padding not dealt with in best manner ...
-		padding-right: 19px!important; // Make space for More options button
+		// padding-right: 19px!important; // Make space for More options button
 
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
@@ -1475,7 +1475,7 @@
 
 	%CSS_BLOCK--TREE--ROW--TEXT---SELECTED {
 		color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
-		padding-right: 19px!important; // Make space for More options button
+		// padding-right: 19px!important; // Make space for More options button
 
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
@@ -1515,7 +1515,7 @@
 
     // BACKGROUNDS
     %CSS_BLOCK--TREE--ROW--BG---UP {
-		padding-left: 6px;
+		// padding-left: 6px;
         background: $TREE--ROW--BG--COLOUR---UP!important;
     }
 
@@ -1714,3 +1714,25 @@
     %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER_SELECTED {
     	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over + !important, $FONT--WEIGHT---EXTRALIGHT);
     }
+
+
+
+
+
+%CSS_BLOCK--SIDE_PANEL--TAB--CONTENTS {
+	left: 0;
+    width: 300px!important;
+	height:calc(100% - 116px) !important;
+	box-sizing: border-box;
+	display: none;
+
+	position: relative;
+
+	padding-left: 11px;
+
+	body[data-indigo-gwt-side-panel="open"] & {
+		display: block;
+	}
+
+	transition: all 0.2s ease-in 0s;
+}

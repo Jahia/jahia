@@ -1237,17 +1237,14 @@
 			disableClicks: function(){
 
 				if(Dex.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && Dex.getCached("body").getAttribute("data-sitesettings") == "false"){
+					console.log("::: APP ::: IFRAME ::: DISABLECLICKS");
 	                // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
 	                var iframeBody = $(".window-iframe").contents().find("body");
 	                app.iframe.data.bodyStyle = iframeBody.attr("style") || "";
 
 	                // Remove pointer events from the iframes body, which means that once a user clicks on the iframe to exit the side panel, the content is not automatically selected.
 	                iframeBody.attr("style", app.iframe.data.bodyStyle + " pointer-events: none !important");
-                    console.log("::: APP ::: IFRAME ::: DISABLECLICKS", iframeBody);
-	            } else {
-                    console.log("::: APP ::: IFRAME ::: DISABLECLICKS (failed)");
-
-                }
+	            }
 			}
 		},
 		admin: {
@@ -1755,7 +1752,8 @@
 					firstRun: true,
 					firstRunPages: true,
 					firstRunSettings: true,
-					open: false
+					open: false,
+					currentTab: null
 				},
 				onStartDrag: function(){
 					console.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTARTDRAG");
@@ -1820,6 +1818,10 @@
 
 						// User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
 			            var clickedTabID = Dex.node(this).getAttribute("id");
+
+						app.edit.sidepanel.data.currentTab = clickedTabID;
+
+						console.log("app.edit.sidepanel.data.currentTab: ", app.edit.sidepanel.data.currentTab);
 
 			            Dex.getCached("body").setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
 
@@ -2384,8 +2386,91 @@
             // HOME BREW EVENT LISTENERS
             // Set up INDIGO listeners (listening to changes in DOM)
 
+			Dex("#JahiaGxtContentBrowseTab").onOpen(function(element){
+				Dex.node(element).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
+			});
+
+			Dex("#JahiaGxtFileImagesBrowseTab").onOpen(function(element){
+				Dex.node(element).filter("#images-view > div").addClass("results-column");
+			});
+
+			Dex("#JahiaGxtCategoryBrowseTab").onOpen(function(element){
+				Dex.node(element).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
+			});
+
+			Dex("#JahiaGxtSearchTab").onOpen(function(element){
+				Dex.node(element).filter(".JahiaGxtSearchTab-results .x-grid3-body").addClass("results-column");
+			});
+
+
+
+			Dex(".x-grid-empty").onOpen(function(value){
+				if(app.edit.sidepanel.data.open){
+					var isTreeEntry = $(value).parent().hasClass("results-column");
+
+					if(isTreeEntry){
+						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
+							Dex.id("JahiaGxtCategoryBrowseTab").removeClass("show-results");
+
+						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
+							Dex.id("JahiaGxtContentBrowseTab").removeClass("show-results");
+
+						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
+							Dex.id("JahiaGxtSearchTab").removeClass("show-results");
+
+						}
+						Dex.getCached("body").removeClass("show-results");
+					}
+				}
+
+			});
+
+			Dex(".x-grid3-row").onOpen(function(value){
+				if(app.edit.sidepanel.data.open){
+					var isTreeEntry = $(value).parent().hasClass("results-column");
+
+					if(isTreeEntry){
+						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
+							Dex.id("JahiaGxtCategoryBrowseTab").addClass("show-results");
+
+						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
+							Dex.id("JahiaGxtContentBrowseTab").addClass("show-results");
+
+						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
+							Dex.id("JahiaGxtSearchTab").addClass("show-results");
+
+						}
+						Dex.getCached("body").addClass("show-results");
+					}
+				}
+
+			});
+
+			Dex(".x-clear").onOpen(function(value){
+				if(app.edit.sidepanel.data.open){
+					var isTreeEntry = $(value).parent().hasClass("results-column");
+
+					if(isTreeEntry){
+						Dex.id("JahiaGxtFileImagesBrowseTab").removeClass("show-results");
+						Dex.getCached("body").removeClass("show-results");
+					}
+				}
+
+			});
+
+			Dex(".thumb-wrap").onOpen(function(value){
+				if(app.edit.sidepanel.data.open){
+					var isTreeEntry = $(value).parent().hasClass("results-column");
+
+					if(isTreeEntry){
+						Dex.id("JahiaGxtFileImagesBrowseTab").addClass("show-results");
+						Dex.getCached("body").addClass("show-results");
+					}
+				}
+
+			});
+
             Dex("#JahiaGxtSettingsTab").onTreeChange(function(tree){
-				console.log("HERE");
 				var firstBranch = tree[0],
 					parentBranch = firstBranch.previousSibling,
 					branch,

@@ -534,10 +534,21 @@
         }
     };
 
+
 	var app = {
 		data: {
 			currentApp: null,
 			previousModeClass: null
+		},
+		dev: {
+			data: {
+				on: false
+			},
+			log: function(message, save){
+				if(app.dev.data.on){
+					console.log(message);
+				}
+			}
 		},
 		onChange: function(mode){
 
@@ -547,7 +558,7 @@
 
 			app.data.previousModeClass = mode;
 
-			console.log("::: APP ::: ONCHANGE");
+			app.dev.log("::: APP ::: ONCHANGE");
 			mode.split(" ").forEach(function(cl) {
                 if (cl.indexOf("x-viewport") == 0) {
 
@@ -578,7 +589,7 @@
             })
 		},
 		onResize: function(){
-			console.log("::: APP ::: ONRESIZE");
+			app.dev.log("::: APP ::: ONRESIZE");
 			if(app.data.currentApp == "edit"){
 				app.edit.topbar.reposition();
 			}
@@ -588,7 +599,7 @@
 			}
 		},
 		onBlur: function(){
-			console.log("::: APP ::: ONBLUR");
+			app.dev.log("::: APP ::: ONBLUR");
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(Dex.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
@@ -601,7 +612,7 @@
 				var inSidePanel = $(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
 
 		        if(inSidePanel.length == 0){
-					console.log("::: APP ::: ONCLICK");
+					app.dev.log("::: APP ::: ONCLICK");
 	                app.edit.sidepanel.close();
 	            }
 			}
@@ -613,7 +624,7 @@
 				return false;
 
 			}
-			console.log("::: APP ::: SWITCH", appID);
+			app.dev.log("::: APP ::: SWITCH: " + appID);
 			app.data.currentApp = appID;
 
 			app[appID].onOpen();
@@ -621,7 +632,7 @@
 		},
 		contextMenus: {
             setTitle: function(contextmenu, params){
-				console.log("::: APP ::: CONTEXTMENUS ::: SETTITLE");
+				app.dev.log("::: APP ::: CONTEXTMENUS ::: SETTITLE");
                 var contextMenuList = contextmenu.getElementsByClassName("x-menu-list")[0],
                     contextMenuTitle;
 
@@ -652,10 +663,10 @@
             },
 			managerMenu: {
 				onOpen: function(contextmenu){
-					console.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONOPEN");
+					app.dev.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONOPEN");
                     var returnText;
 
-                    console.log("app.data.currentApp: ", app.data.currentApp);
+                    app.dev.log("app.data.currentApp: " + app.data.currentApp);
 
                     switch(app.data.currentApp){
                         case "edit":
@@ -681,11 +692,10 @@
                     }
                     contextmenu.setAttribute("data-indigo-title", returnText);
 
-                    // console.log("Set back button to ", app.data.currentApp, contextMenu);
 
                 },
 				onClose: function(){
-					console.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONCLOSE");
+					app.dev.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONCLOSE");
 					// Manager Menu has been closed by clicking on the X.
 		            // Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
 		            $(".menu-editmode-managers-menu").fadeOut();
@@ -693,7 +703,7 @@
 			},
             previewMenu: {
                 onOpen: function(contextmenu){
-					console.log("::: APP ::: CONTEXTMENUS ::: PREVIEWMENU ::: ONOPEN");
+					app.dev.log("::: APP ::: CONTEXTMENUS ::: PREVIEWMENU ::: ONOPEN");
                     app.contextMenus.setTitle(contextmenu, {
                         noSelection: "Page Preview",
                         singleSelection: "Preview {{node}}",
@@ -704,7 +714,7 @@
             },
             publicationMenu: {
                 onOpen: function(contextmenu){
-					console.log("::: APP ::: CONTEXTMENUS ::: PUBLICATIONMENU ::: ONOPEN");
+					app.dev.log("::: APP ::: CONTEXTMENUS ::: PUBLICATIONMENU ::: ONOPEN");
                     app.contextMenus.setTitle(contextmenu, {
                         noSelection: "Publish Page",
                         singleSelection: "Publish {{node}}",
@@ -715,7 +725,7 @@
             },
             moreInfoMenu: {
                 onOpen: function(contextmenu){
-					console.log("::: APP ::: CONTEXTMENUS ::: MOREINFOMENU ::: ONOPEN");
+					app.dev.log("::: APP ::: CONTEXTMENUS ::: MOREINFOMENU ::: ONOPEN");
                     app.contextMenus.setTitle(contextmenu, {
                         noSelection: "Page Options",
                         singleSelection: "{{node}} Options",
@@ -732,14 +742,14 @@
 				storedCSS: null
 			},
 			onToggle: function(e){
-				console.log("::: APP ::: THEME ::: ONTOGGLE");
+				app.dev.log("::: APP ::: THEME ::: ONTOGGLE");
 				// Toggle the UI Theme by changing the body attribute accordingly.
 
 	            /* The button firing this event is actually a pseudo element atached to a table.
 	            // The tables CSS has been set to ignore all pointer events EXCEPT the pseudo element who accepts pointer events.
 	            // This allows us to capture a click on the pseudo element, but we have to check that it a child of the table want the one that was clicked */
 				if(Dex.node(e.target).hasClass("x-toolbar-ct")){
-					console.log("CLICKED THEME BUTTON");
+					app.dev.log("CLICKED THEME BUTTON");
 					if(app.theme.data.skin == "dark"){
 						app.theme.data.skin = "light";
 					} else {
@@ -751,7 +761,7 @@
 	            }
 			},
 			on: function(changeSkin){
-				console.log("::: APP ::: THEME ::: ON");
+				app.dev.log("::: APP ::: THEME ::: ON");
 				if(changeSkin){
 					app.theme.data.skin = changeSkin;
 				}
@@ -759,17 +769,21 @@
 				if(!app.theme.data.enabled){
 					// Anthracite CSS has been removed, so plug it back in
                     $("head").append(app.theme.data.storedCSS);
+
+					app.theme.data.enabled = true;
 				}
 			},
 			off: function(){
-				console.log("::: APP ::: THEME ::: OFF");
+				app.dev.log("::: APP ::: THEME ::: OFF");
 				if(app.theme.data.enabled){
 					// Remove Anthracite CSS style sheet
 	               $('link[rel=stylesheet][href$="edit_en.css"]').remove();
 
 	               // Register the fact that it has been removed
 	               app.theme.data.enabled = false;
-				}
+			   } else {
+				   app.dev.log("DO NOT REMOVE");
+			   }
 			},
 		},
 		picker: {
@@ -778,40 +792,40 @@
 				title: null
 			},
 			onOpen: function(){
-				console.log("::: APP ::: PICKER ::: ONOPEN");
+				app.dev.log("::: APP ::: PICKER ::: ONOPEN");
 				Dex.getCached("body")
 					.setAttribute("data-INDIGO-PICKER-SEARCH", "")
 					.setAttribute("data-INDIGO-PICKER", "open")
 					.setAttribute("indigo-PICKER-DISPLAY", "thumbs");
 			},
 			onClose: function(){
-				console.log("::: APP ::: PICKER ::: ONCLOSE");
+				app.dev.log("::: APP ::: PICKER ::: ONCLOSE");
 				Dex.getCached("body").setAttribute("data-INDIGO-PICKER", "");
 
 			},
 			onClick: function(){
-				console.log("::: APP ::: PICKER ::: ONCLICK");
+				app.dev.log("::: APP ::: PICKER ::: ONCLICK");
 				Dex.getCached("body").setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
 
 			},
 			onListView: function(){
-				console.log("::: APP ::: PICKER ::: ONLISTVIEW");
+				app.dev.log("::: APP ::: PICKER ::: ONLISTVIEW");
 				Dex.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "list");
 
 			},
 			onThumbView: function(){
-				console.log("::: APP ::: PICKER ::: ONTHUMBVIEW");
+				app.dev.log("::: APP ::: PICKER ::: ONTHUMBVIEW");
 				Dex.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "thumbs");
 
 			},
 			row: {
 				onClick: function(){
-					console.log("::: APP ::: PICKER ::: ROW ::: ONCLICK");
+					app.dev.log("::: APP ::: PICKER ::: ROW ::: ONCLICK");
 					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 				},
 				onMouseOver: function(e){
-					console.log("::: APP ::: PICKER ::: ROW ::: ONMOUSEOVER");
+					app.dev.log("::: APP ::: PICKER ::: ROW ::: ONMOUSEOVER");
 					// Position the preview button next to the file whilst hovering
 		            app.picker.previewButton.reposition(e, {
 		                left: -58,
@@ -832,7 +846,7 @@
 					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
 				},
 				onContext: function(e){
-					console.log("::: APP ::: PICKER ::: ROW ::: ONCONTEXT");
+					app.dev.log("::: APP ::: PICKER ::: ROW ::: ONCONTEXT");
 					// Open Context Menu when clicking "More" button.
 					// if matchClass is passed, then the click is ONLY accepted if the clicked element has that class.
 					// if matchClass is not passed then it is accepted.
@@ -855,12 +869,12 @@
 			},
 			thumb: {
 				onClick: function(){
-					console.log("::: APP ::: PICKER ::: THUMB ::: ONCLICK");
+					app.dev.log("::: APP ::: PICKER ::: THUMB ::: ONCLICK");
 					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 				},
 				onMouseOver: function(e){
-					console.log("::: APP ::: PICKER ::: THUMB ::: ONMOUSEOVER");
+					app.dev.log("::: APP ::: PICKER ::: THUMB ::: ONMOUSEOVER");
 					// Position the preview button next to the file whilst hovering
 		            app.picker.previewButton.reposition(e, {
 		                left: -52,
@@ -881,7 +895,7 @@
 		            Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
 				},
 				onContext: function(e){
-					console.log("::: APP ::: PICKER ::: THUMB ::: ONCONTEXT");
+					app.dev.log("::: APP ::: PICKER ::: THUMB ::: ONCONTEXT");
 					// Open Context Menu when clicking "More" button.
 					$(e.target).trigger({
 						type: 'mousedown',
@@ -900,19 +914,19 @@
 			},
 			previewButton: {
 				onMouseOver: function(){
-					console.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOVER");
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOVER");
 					Dex.node(app.picker.data.currentItem)
 		                .addClass("x-view-over")
 		                .addClass("x-grid3-row-over");
 				},
 				onMouseOut: function(){
-					console.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOUT");
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOUT");
 					Dex.node(app.picker.data.currentItem)
 		                .removeClass("x-view-over")
 		                .removeClass("x-grid3-row-over");
 				},
 				onClick: function(e, secondClick){
-					console.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONCLICK");
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONCLICK");
 					Dex.node(app.picker.data.currentItem)
 						.trigger("mousedown")
 						.trigger("mouseup");
@@ -927,7 +941,7 @@
 		            Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "hide");
 				},
 				reposition: function(e, offset){
-					console.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: REPOSITION");
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: REPOSITION");
 					var offset = offset || {
 		                    left: 0,
 		                    top: 0
@@ -952,26 +966,26 @@
 			source: {
 				onChange: function(){},
 				onMouseOver: function(){
-					console.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOVER");
+					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOVER");
 					// USER HAS ROLLED OVER THE COMBO TRIGGER
 		            if(Dex.getCached("body").getAttribute("data-indigo-picker-source-panel") != "open"){
 		                Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
 		            }
 				},
 				onMouseOut: function(){
-					console.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOUT");
+					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOUT");
 					// USER HAS ROLLED OUT OF THE COMBO TRIGGER
 		            Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 				},
 				close: function(){
-					console.log("::: APP ::: PICKER ::: SOURCE ::: CLOSE");
+					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: CLOSE");
 					// CHANGE SOURCE
 		            // The user has changed SOURCE, so we just need to hide the combo...
 		            Dex.getCached("body").setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
 				},
 				open: function(){},
 				toggle: function(e){
-					console.log("::: APP ::: PICKER ::: SOURCE ::: TOGGLE");
+					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: TOGGLE");
 					// USER HAS CLICKED THE COMBO TRIGGER
 		            e.stopPropagation();
 
@@ -985,7 +999,7 @@
 			},
 			search: {
 				open: function(){
-					console.log("::: APP ::: PICKER ::: SEARCH ::: OPEN");
+					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: OPEN");
 					// OPEN SEARCH PANEL
 
 		            // Close source picker if open
@@ -1008,7 +1022,7 @@
 		            }, 250);
 				},
 				close: function(){
-					console.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE");
+					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE");
 					// CLOSE SEARCH PANEL
 
 		            // Hide the search panel
@@ -1026,7 +1040,7 @@
 				},
 
 				onContext: function(e){
-					console.log("::: APP ::: PICKER ::: SEARCH ::: ONCONTEXT");
+					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: ONCONTEXT");
 					// Open Context Menu when clicking "More" button.
 					$(e.target).trigger({
 						type: 'mousedown',
@@ -1044,21 +1058,21 @@
 		},
 		imagePreview: {
 			onOpen: function(){
-				console.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONOPEN");
+				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONOPEN");
 				Dex.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "open");
 
 				// Attribute used to display the friendly name in edit panel
 				Dex(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", "nodeDisplayName");
 			},
 			onClose: function(){
-				console.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONCLOSE");
+				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONCLOSE");
 				Dex.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "");
 
 			}
 		},
 		engine: {
 			onOpen: function(){
-				console.log("::: APP ::: ENGINE ::: ONOPEN");
+				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
 				var nodeDisplayName = Dex.getCached("body").getAttribute("data-singleselection-node-displayname");
 
 				Dex.getCached("body").setAttribute("data-INDIGO-EDIT-ENGINE", "open");
@@ -1067,7 +1081,7 @@
 				Dex(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
 			},
 			onClose: function(){
-				console.log("::: APP ::: ENGINE ::: ONCLOSE");
+				app.dev.log("::: APP ::: ENGINE ::: ONCLOSE");
 				app.iframe.clearSelection();
 				Dex.getCached("body").setAttribute("data-INDIGO-EDIT-ENGINE", "");
 
@@ -1076,7 +1090,7 @@
 		workflow: {
 			dashboard: {
 				onOpen: function(){
-					console.log("::: APP ::: WORKFLOW ::: DASHBOARD ::: ONOPEN");
+					app.dev.log("::: APP ::: WORKFLOW ::: DASHBOARD ::: ONOPEN");
 					Dex(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
 
 				}
@@ -1092,7 +1106,7 @@
 			},
 			// Event Handlers
 			onChangeSRC: function(url){
-				console.log("::: APP ::: IFRAME ::: ONCHANGESRC", url, app.data.currentApp);
+				app.dev.log("::: APP ::: IFRAME ::: ONCHANGESRC [src='" + url + "' ::: currentApp='" + app.data.currentApp + "']");
 
 				app.iframe.data.previousUrl = app.iframe.data.currentUrl;
 				app.iframe.data.currentUrl = url;
@@ -1169,7 +1183,7 @@
 				if(app.iframe.data.displayName == value || app.data.currentApp == "studio"){
 					return false;
 				}
-				console.log("::: APP ::: IFRAME ::: ONCHANGE:", app.data.currentApp, ":");
+				app.dev.log("::: APP ::: IFRAME ::: ONCHANGE: " + app.data.currentApp);
 
 				app.iframe.data.displayName = value;
 
@@ -1196,11 +1210,11 @@
 			onSelect: function(value){
 				var count = parseInt(value);
 
+				app.dev.log("::: APP ::: IFRAME ::: ONSELECT [value='" + value + "']");
 
 				// Refresh the title of the page accordingly
 				switch(app.data.currentApp){
 					case "edit":
-						console.log("::: APP ::: IFRAME ::: ONSELECT", value);
 						app.iframe.data.selectionCount = count;
 						// Need to update the header bar
 						app.edit.topbar.build();
@@ -1212,7 +1226,6 @@
 						break;
 
 					case "contribute":
-						console.log("::: APP ::: IFRAME ::: ONSELECT", value);
 						app.iframe.data.selectionCount = count;
 						// Need to update the header bar
 						app.contribute.topbar.build();
@@ -1228,7 +1241,7 @@
 			},
 
 			clearSelection: function(){
-				console.log("::: APP ::: IFRAME ::: CLEARSELECTION");
+				app.dev.log("::: APP ::: IFRAME ::: CLEARSELECTION");
 
 				Dex.class("window-iframe").trigger("click");
 
@@ -1237,7 +1250,7 @@
 			disableClicks: function(){
 
 				if(Dex.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && Dex.getCached("body").getAttribute("data-sitesettings") == "false"){
-					console.log("::: APP ::: IFRAME ::: DISABLECLICKS");
+					app.dev.log("::: APP ::: IFRAME ::: DISABLECLICKS");
 	                // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
 	                var iframeBody = $(".window-iframe").contents().find("body");
 	                app.iframe.data.bodyStyle = iframeBody.attr("style") || "";
@@ -1250,7 +1263,7 @@
 		admin: {
 			// Event Handlers
 			onOpen: function(){
-				console.log("::: APP ::: ADMIN ::: OPENED");
+				app.dev.log("::: APP ::: ADMIN ::: OPENED");
 
 				var systemSettingsTabs = document.querySelectorAll(".tab_systemSiteSettings")[0],
                     serverSettingsTabs = document.querySelectorAll(".tab_serverSettings")[0];
@@ -1300,7 +1313,7 @@
 			},
 			// Event Handlers
 			onOpen: function(){
-				console.log("::: APP ::: EDIT ::: ONOPEN");
+				app.dev.log("::: APP ::: EDIT ::: ONOPEN");
 
 				// Reset History
 				app.edit.history.reset();
@@ -1324,15 +1337,15 @@
 			onClose: function(){},
 
 			onNav: function(){
-				console.log("::: APP ::: EDIT ::: ONNAV");
+				app.dev.log("::: APP ::: EDIT ::: ONNAV");
 
 				if(app.edit.settings.data.opened){
 					// CLicked on a settings page
 					app.edit.sidepanel.data.firstRun = false;
 
-                    console.log("ONNAV ::: ", this);
+                    app.dev.log(["ONNAV ::: ", this]);
                     if(this.classList.contains("unselectable-row")){
-                        console.log("DO NOT REMEMBER THIS PAGE IN HISTORY AS IT IS A FOLDER");
+                        app.dev.log("DO NOT REMEMBER THIS PAGE IN HISTORY AS IT IS A FOLDER");
                     } else {
                         app.edit.history.add("settingspage", this);
 
@@ -1351,7 +1364,7 @@
                     taskCount: 0
                 },
                 toggle: function(){
-					console.log("::: APP ::: EDIT ::: INFOBAR ::: TOGGLE");
+					app.dev.log("::: APP ::: EDIT ::: INFOBAR ::: TOGGLE");
                     app.edit.infoBar.data.on = !app.edit.infoBar.data.on;
 
                     Dex.getCached("body").setAttribute("data-indigo-infoBar", app.edit.infoBar.data.on);
@@ -1371,7 +1384,7 @@
 
 						app.edit.infoBar.tasks.data.classes = classes;
 
-						console.log("::: APP ::: EDIT ::: INFOBAR ::: TASKS ::: ONCHANGE");
+						app.dev.log("::: APP ::: EDIT ::: INFOBAR ::: TASKS ::: ONCHANGE");
 
                         var taskButton = Dex("." + app.data.currentApp + "-menu-tasks button");;
 
@@ -1448,13 +1461,13 @@
 					},
                     onChange: function(classes){
 						// if(app.edit.infoBar.jobs.data.classes == classes){
-						// 	console.log("No change in job classes - ignore");
+						// 	app.dev.log("No change in job classes - ignore");
 						// 	return false;
 						// }
 
 						app.edit.infoBar.jobs.data.classes = classes;
 
-						console.log("::: APP ::: EDIT ::: INFOBAR ::: JOBS ::: ONCHANGE");
+						app.dev.log("::: APP ::: EDIT ::: INFOBAR ::: JOBS ::: ONCHANGE");
 
                         var jobButton = Dex(".toolbar-item-workinprogressadmin button");
 
@@ -1486,7 +1499,6 @@
 
 							buttonParent.setAttribute("data-indigo-label", jobTooltip);
 
-                            console.log("jobTooltipjobTooltipjobTooltipjobTooltipjobTooltipjobTooltipjobTooltip:", jobTooltip);
 
                         }
 
@@ -1494,7 +1506,7 @@
                 },
                 publicationStatus: {
                     onChange: function(){
-						console.log("::: APP ::: EDIT ::: INFOBAR ::: PUVLICATIONSTATUS ::: ONCHANGE");
+						app.dev.log("::: APP ::: EDIT ::: INFOBAR ::: PUVLICATIONSTATUS ::: ONCHANGE");
                     }
                 }
             },
@@ -1503,12 +1515,12 @@
 			history: {
 				data: {},
 				add: function(type, node){
-					console.log("::: APP ::: EDIT ::: HISTORY ::: ADD");
+					app.dev.log("::: APP ::: EDIT ::: HISTORY ::: ADD");
 					app.edit.history.data[type] = node;
 
 				},
 				get: function(type){
-					console.log("::: APP ::: EDIT ::: HISTORY ::: GET");
+					app.dev.log("::: APP ::: EDIT ::: HISTORY ::: GET");
 
 					var returnResult = null,
 						stillInVisibleDOM;
@@ -1525,7 +1537,7 @@
 
 				},
 				reset: function(){
-					console.log("::: APP ::: EDIT ::: HISTORY ::: RESET");
+					app.dev.log("::: APP ::: EDIT ::: HISTORY ::: RESET");
 					app.edit.history.data = {
 						settingspage: null,
 						editpage: null,
@@ -1535,7 +1547,7 @@
 
 			topbar: {
 				build: function(){
-					console.log("::: APP ::: EDIT ::: TOPBAR ::: BUILD");
+					app.dev.log("::: APP ::: EDIT ::: TOPBAR ::: BUILD");
 
                     // TEMP BLIND
                     // $(".window-iframe").fadeIn("fast");
@@ -1657,7 +1669,7 @@
 	                        };
 	                    }
 
-	                    console.log("::: app.iframe.data.publication.status ", app.iframe.data.publication.status);
+	                    app.dev.log("::: app.iframe.data.publication.status ['" + app.iframe.data.publication.status + "']");
 
                         app.iframe.data.pageTitle = pageTitle;
 
@@ -1670,7 +1682,7 @@
 
 				},
 				reposition: function(e){
-					console.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION");
+					app.dev.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION");
 					// Center title to page and move surrounding menus to right and left.
 
 					if(document.getElementsByClassName("x-current-page-path").length > 0){
@@ -1756,16 +1768,16 @@
 					currentTab: null
 				},
 				onStartDrag: function(){
-					console.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTARTDRAG");
+					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTARTDRAG");
 					app.edit.sidepanel.close();
 
 				},
 				onStopDrag: function(){
-					console.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTOPDRAG");
+					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTOPDRAG");
 
 				},
 				open: function(isSettings){
-					console.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN", isSettings);
+					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN [isSettings='" + isSettings + "']");
 
 					Dex.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
 					app.edit.sidepanel.data.open = true;
@@ -1797,7 +1809,7 @@
 				},
 				close: function(){
 					if(Dex.getCached("body").getAttribute("data-edit-window-style") !== "settings" && Dex.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && Dex.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
-						console.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
+						app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
 		                Dex.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
 
 		                // Revert iframes body style attribute to what it was originally
@@ -1814,14 +1826,14 @@
 
 				tab: {
 					onClick: function(e){
-						console.log("APP ::: EDIT ::: SIDEPANEL ::: TAB ::: ONCLICK");
+						app.dev.log("APP ::: EDIT ::: SIDEPANEL ::: TAB ::: ONCLICK");
 
 						// User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
 			            var clickedTabID = Dex.node(this).getAttribute("id");
 
 						app.edit.sidepanel.data.currentTab = clickedTabID;
 
-						console.log("app.edit.sidepanel.data.currentTab: ", app.edit.sidepanel.data.currentTab);
+						app.dev.log("app.edit.sidepanel.data.currentTab: " + app.edit.sidepanel.data.currentTab);
 
 			            Dex.getCached("body").setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
 
@@ -1843,7 +1855,7 @@
 				},
 				row: {
 					onContext: function(e){
-						console.log("APP ::: EDIT ::: SIDEPANEL ::: ROW ::: ONCONTEXT");
+						app.dev.log("APP ::: EDIT ::: SIDEPANEL ::: ROW ::: ONCONTEXT");
 						// Open Context Menu when clicking "More" button.
 			            var acceptClick = Dex.node(e.target).hasClass("x-grid3-td-displayName");
 
@@ -1872,7 +1884,7 @@
 
 					if(value == "true"){
 						if(app.data.currentApp == "edit"){
-							console.log("APP ::: EDIT ::: SETTINGS ::: ONCHANGE");
+							app.dev.log("APP ::: EDIT ::: SETTINGS ::: ONCHANGE");
 							app.edit.settings.open();
 
 						}
@@ -1885,7 +1897,7 @@
 					}
 				},
 				open: function(){
-					console.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
+					app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
 
 					$(".window-iframe").contents().find("head").prepend("<style>.well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}</style>");
 
@@ -1945,7 +1957,7 @@
 
 				},
 				close: function(){
-					console.log("::: APP ::: EDIT ::: SETTINGS ::: CLOSE");
+					app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: CLOSE");
 
 					var previousEditPage = app.edit.history.get("editpage");
 
@@ -1970,7 +1982,7 @@
 		dashboard: {
 			// Event Handlers
 			onOpen: function(){
-				console.log("::: APP ::: DASHBOARD ::: OPENED");
+				app.dev.log("::: APP ::: DASHBOARD ::: OPENED");
 
 				// Use Anthracite CSS
 				app.theme.on();
@@ -1988,7 +2000,7 @@
 		studio: {
 			// Event Handlers
 			onOpen: function(){
-				console.log("::: APP ::: STUDIO ::: OPENED");
+				app.dev.log("::: APP ::: STUDIO ::: OPENED");
 
 				// Dont use Anthracite CSS
 				app.theme.off();
@@ -2009,7 +2021,7 @@
                 mode: null
             },
 			onOpen: function(){
-				console.log("::: APP ::: CONTRIBUTE ::: OPENED");
+				app.dev.log("::: APP ::: CONTRIBUTE ::: OPENED");
 
 				// Use Anthracite CSS
 				app.theme.on();
@@ -2059,11 +2071,11 @@
 
                 Dex.getCached("body").setAttribute("data-contribute-mode", app.contribute.data.mode);
 
-                console.log("????????????????????????????????????");
-                console.log("CHANGED nodePath: ", nodePath);
-                console.log("CHANGED section: ", nodePathSplit[3]);
-                console.log("displayingNode: ", displayingNode);
-                console.log("????????????????????????????????????");
+                app.dev.log("????????????????????????????????????");
+                app.dev.log("CHANGED nodePath: " + nodePath);
+                app.dev.log("CHANGED section: " + nodePathSplit[3]);
+                app.dev.log("displayingNode: " + displayingNode);
+                app.dev.log("????????????????????????????????????");
 
 
 
@@ -2077,12 +2089,12 @@
 				build: function(){
 
                     if(!app.contribute.data.mode){
-                        console.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: BUILD ( CAN NOT YET BUILD)");
+                        app.dev.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: BUILD ( CAN NOT YET BUILD)");
                         return false;
 
                     }
 
-                    console.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: BUILD (MODE: " + app.contribute.data.mode + ")");
+                    app.dev.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: BUILD (MODE: " + app.contribute.data.mode + ")");
 
                     // TEMP BLIND
                     // $(".window-iframe").fadeIn("fast");
@@ -2168,7 +2180,7 @@
 
                     elements.title.setAttribute("data-PAGE-NAME", pageTitle);
 
-                    console.log("app.iframe.data.publication:", app.iframe.data.publication);
+                    app.dev.log("app.iframe.data.publication:" + app.iframe.data.publication);
                 	app.contribute.topbar.reposition();
 
                     //
@@ -2236,7 +2248,7 @@
 	                //         };
 	                //     }
                     //
-	                //     console.log("::: app.iframe.data.publication.status ", app.iframe.data.publication.status);
+	                //     app.dev.log("::: app.iframe.data.publication.status ", app.iframe.data.publication.status);
                     //
                     //     app.iframe.data.pageTitle = pageTitle;
                     //
@@ -2249,7 +2261,7 @@
 
 				},
 				reposition: function(e){
-					console.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: REPOSITION");
+					app.dev.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: REPOSITION");
 
                     if(Dex.class("toolbar-item-publicationstatus").getAttribute("data-page-name") != null){
                             var elements = {
@@ -2386,20 +2398,24 @@
             // HOME BREW EVENT LISTENERS
             // Set up INDIGO listeners (listening to changes in DOM)
 
-			Dex("#JahiaGxtContentBrowseTab").onOpen(function(element){
+			Dex("#JahiaGxtContentBrowseTab").onceOpen(function(element){
 				Dex.node(element).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
 			});
 
-			Dex("#JahiaGxtFileImagesBrowseTab").onOpen(function(element){
+			Dex("#JahiaGxtFileImagesBrowseTab").onceOpen(function(element){
 				Dex.node(element).filter("#images-view > div").addClass("results-column");
 			});
 
-			Dex("#JahiaGxtCategoryBrowseTab").onOpen(function(element){
+			Dex("#JahiaGxtCategoryBrowseTab").onceOpen(function(element){
 				Dex.node(element).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
 			});
 
-			Dex("#JahiaGxtSearchTab").onOpen(function(element){
+			Dex("#JahiaGxtSearchTab").onceOpen(function(element){
 				Dex.node(element).filter(".JahiaGxtSearchTab-results .x-grid3-body").addClass("results-column");
+			});
+
+			Dex("#JahiaGxtCreateContentTab").onceOpen(function(value){
+				Dex.node(value).filter("input.x-form-text").setAttribute("placeholder", "Filter Content ...")
 			});
 
 

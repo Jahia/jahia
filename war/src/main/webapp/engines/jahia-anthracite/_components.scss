@@ -1459,6 +1459,7 @@ form,
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
 			padding-left: 1px;
+			overflow: hidden;
 		}
 	}
 
@@ -1675,6 +1676,11 @@ form,
 			.JahiaGxtSearchTab-results & {
 				margin-top: -21px;
 
+			}
+
+			.x-viewport-dashboardmode &,
+			.x-viewport-adminmode & {
+				display: none;
 			}
 		}
 	}
@@ -3061,10 +3067,10 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		> .x-border-layout-ct > .x-form-field-wrap {
-			bottom: 12px !important;
-			height: 26px !important;
-			left: 70px !important;
-			width: 238px !important;
+			top: 62px !important;
+		    height: 26px !important;
+		    left: 70px !important;
+		    width: 262px !important;
 		}
 
 	}

@@ -66,6 +66,11 @@
 				background: #e8e8e8;
 				color: $COLOUR--RAIN_CLOUDS;
 				transition: none;
+				padding: 3px 40px 3px 5px !important;
+				text-transform: none;
+				color: #7b7f81!important;
+				font-size: 12px!important;
+				font-weight: 200!important;
 
 				&:hover {
 					background: rgba(38, 38, 38, 0.11)!important;
@@ -81,6 +86,8 @@
 			body[data-indigo-gwt-side-panel="open"] & {
 				background-image: url($ICON--ARROW_DOWN---GREY);
 				opacity: 0.7;
+				height: 23px!important;
+				width: 17px!important;
 
 				&:hover {
 					background-color: rgba($COLOUR--GREY_CLOUDS, 0.3)!important;
@@ -348,8 +355,13 @@
 			// }
 		}
 
-		[data-INDIGO-GWT-SIDE-PANEL="open"] & {
+		body[data-sitesettings="false"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
 			width: auto!important;
+
+
+		}
+
+		[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 
 			.x-grid-panel {
 				display: block;
@@ -451,9 +463,28 @@
 
 			}
 
-			body[data-INDIGO-GWT-PANEL-TAB="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
-				// margin-top: 52px;
+			body[data-INDIGO-GWT-PANEL-TAB="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] & {
+				margin-top: 50px;
 			}
+
+			body[data-sitesettings="true"] .x-viewport-editmode & ,
+			.x-viewport-adminmode & {
+				margin-top: 52px;
+				height: calc(100% - 150px)!important;
+
+			}
+
+			.x-viewport-adminmode & {
+				margin-top: 62px!important;
+
+			}
+
+			.x-viewport-dashboardmode & {
+				margin-top: 42px;
+				height: calc(100% - 150px)!important;
+
+			}
+
 
 
 
@@ -1465,7 +1496,7 @@ $side_panel__tab_buttons: (
 body[data-edit-window-style="settings"] {
 
 	#JahiaGxtSidePanelTabs .x-tab-panel-body {
-		height: calc(100% - 230px)!important;
+		// height: calc(100% - 230px)!important;
 		overflow-y: scroll;
 	}
 
@@ -1644,7 +1675,7 @@ body[data-edit-window-style="settings"] {
 
 
 	&::before {
-		content: "Title Here";
+		content: $text_site_settings;
 		@extend %CSS_BLOCK--SIDE_PANEL--TITLE;
 		display: block;
 

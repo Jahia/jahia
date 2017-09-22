@@ -43,6 +43,9 @@
  */
 package org.jahia.services.content;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Sets;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
@@ -70,6 +73,10 @@ import java.util.*;
 public class UGCListener extends DefaultEventListener {
     private static Logger logger = LoggerFactory.getLogger(UGCListener.class);
 
+    /**
+     * List of properties that do not need to be checked by the UGCListener even if there are create in live.
+     */
+    private Set<String> excludePropertiesFromUGCCheck;
 
     public int getEventTypes() {
         return Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED;
@@ -87,6 +94,11 @@ public class UGCListener extends DefaultEventListener {
                 Event event = events.nextEvent();
                 String nodePath = StringUtils.substringBeforeLast(event.getPath(), "/");
                 String propertyName = StringUtils.substringAfterLast(event.getPath(), "/");
+
+                if (CollectionUtils.isNotEmpty(excludePropertiesFromUGCCheck) && excludePropertiesFromUGCCheck.contains(propertyName)) {
+                    continue;
+                }
+
                 JCRNodeWrapper node = eventSession.getNode(nodePath);
                 if (node.hasProperty("j:originWS") && node.getProperty("j:originWS").getString().equals("default")) {
                     if (!propertiesByNode.containsKey(node.getIdentifier())) {
@@ -140,6 +152,16 @@ public class UGCListener extends DefaultEventListener {
             }
         } catch (RepositoryException e) {
             logger.error("Cannot store live properties changes",e);
+        }
+    }
+
+    public Set<String> getExcludePropertiesFromUGCCheck() {
+        return excludePropertiesFromUGCCheck;
+    }
+
+    public void setExcludePropertiesFromUGCCheck(String excludePropertiesFromUGCCheck) {
+        if (StringUtils.isNotEmpty(excludePropertiesFromUGCCheck)) {
+            this.excludePropertiesFromUGCCheck = Sets.newHashSet(Splitter.on(",").trimResults().omitEmptyStrings().split(excludePropertiesFromUGCCheck));
         }
     }
 }

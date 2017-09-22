@@ -1092,7 +1092,7 @@
 			},
 			// Event Handlers
 			onChangeSRC: function(url){
-				console.log("::: APP ::: IFRAME ::: ONCHANGESRC", url);
+				console.log("::: APP ::: IFRAME ::: ONCHANGESRC", url, app.data.currentApp);
 
 				app.iframe.data.previousUrl = app.iframe.data.currentUrl;
 				app.iframe.data.currentUrl = url;
@@ -1147,9 +1147,9 @@
 	                }
 				} else if(app.data.currentApp == "contribute"){
 
+                } else if(app.data.currentApp == "admin" || app.data.currentApp == "dashboard"){
 
-
-                }
+				}
 
 
 

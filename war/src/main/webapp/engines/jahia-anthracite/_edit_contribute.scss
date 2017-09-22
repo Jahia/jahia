@@ -1153,7 +1153,9 @@
         box-shadow: 0 5px 10px 1px rgba(49, 49, 49, 0.5)!important;
         margin-top: 8px !important;
 
-        body[data-edit-window-style="settings"] & {
+        body[data-edit-window-style="settings"] &,
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
             margin-top: 0px !important;
 
         }

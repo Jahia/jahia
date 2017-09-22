@@ -285,7 +285,7 @@
 				    padding-top: 20px;
 
 						.x-btn.x-btn-noicon button {
-						    background: #f26d4f !important;
+						    //background: #f26d4f !important;
 						}
 
 				}
@@ -361,14 +361,21 @@
 
 		}
 
-		.x-grid3-row-selected .x-panel-fbar {
+		> .x-grid-panel.x-component.x-border-panel .x-grid3-row-selected .x-panel-fbar {
 
 			.x-toolbar-cell:first-child .x-btn.x-btn-noicon button {
-				background: #f26d4f !important
+				background: #474a4c !important;
+				padding: 2px 4px;
+				right: 8px;
 			}
 
 			.x-btn.x-btn-noicon button {
-				background: #a3a3a3 !important;
+				padding: 2px 4px;
+				right: 4px;
+			}
+
+			.x-grid3 .x-grid3-row.x-grid3-row-selected {
+				height: 30px !important;
 			}
 
 		}

@@ -374,10 +374,10 @@
 				right: 4px;
 			}
 
-			.x-grid3 .x-grid3-row.x-grid3-row-selected {
-				height: 30px !important;
-			}
+		}
 
+		> .x-grid-panel.x-component.x-border-panel .x-grid3 .x-grid3-row {
+			height: 30px !important;
 		}
 
 		.x-panel-fbar {
@@ -558,6 +558,10 @@
 							position: relative;
 							top: 0;
 							padding-bottom: 20px;
+						}
+
+						&:nth-child(2) .x-btn.x-btn-text-icon button {
+							background: #a3a3a3 !important;
 						}
 
 					}

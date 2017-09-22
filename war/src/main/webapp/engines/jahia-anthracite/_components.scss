@@ -2957,6 +2957,19 @@ form,
 				background-image: url(./images/icons/tabs-search-white@X2.png);
 				background-repeat: no-repeat;
 				background-size: contain;
+				color: #f1f1f1 !important;																							// <======= Last changes starts here
+
+				&:focus {
+					background-color: #f1f1f1 !important;
+					color: #717578 !important;
+					background-image: url(./images/icons/tabs-search-dark@X2.png);
+				}
+
+			}
+
+			.x-form-text:focus + .x-form-trigger.x-form-clear-trigger {
+				background-color: #7a7e80 !important;
+				padding-bottom: 1px;																										// <======= ...and ends here.
 			}
 
 		}

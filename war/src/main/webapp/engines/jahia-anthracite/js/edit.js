@@ -659,23 +659,23 @@
 
                     switch(app.data.currentApp){
                         case "edit":
-                            returnText = "Continue editing " + app.iframe.data.displayName;
+                            returnText = "Edit (" + app.iframe.data.displayName + ")";
                             break;
 
                         case "admin":
-                            returnText = "Return to Administration";
+                            returnText = "Administration";
                             break;
 
                         case "dashboard":
-                            returnText = "Return to Home";
+                            returnText = "My Dashboard";
                             break;
 
                         case "contribute":
-                            returnText = "Continue Contributing to " + app.iframe.data.displayName;
+						returnText = "Contribute (" + app.iframe.data.displayName + ")";
                             break;
 
                         default:
-                            returnText = "Return";
+                            returnText = "Back";
 
                             break;
                     }

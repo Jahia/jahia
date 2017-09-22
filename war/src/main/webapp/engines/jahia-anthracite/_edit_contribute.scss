@@ -730,105 +730,6 @@
 }
 
 // Hamburger
-
-// .menu-editmode-managers-menu {
-//     position: absolute;
-//     top: 0!important;
-//     left: 0!important;
-//     width: 100%!important;
-//     height: 100%!important;
-//     background: $COLOUR--JAHIA_BLUE;
-//
-//     &::before {
-//         content: "Digital Experience Manager";
-//         display: block;
-//         position: fixed;
-//         left: 85px;
-//         top: 70px;
-//         z-index: 99;
-//         pointer-events: none;
-//
-//         @include text(46px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
-//     }
-//
-//     .x-menu-list {
-//         position: fixed;
-//         top: 0;
-//         left: 0;
-//         width: 100%;
-//         height: 100% !important;
-//         padding: 150px 85px 50px;
-//         box-sizing: border-box;
-//     }
-//
-//     .x-menu-list-item {
-//         display: inline-block;
-//
-//
-//     }
-//
-//     .x-menu-scroller {
-//         display: none;
-//     }
-// }
-//
-// //logout
-// .toolbar-item-logout {
-//     background: url($ICON--DISPLAY--DETAILS--GREY) no-repeat center center;
-//     background-size: 23px 23px;
-//     text-indent: -50000px;
-//     width: 23px;
-//     height: 23px;
-//
-//     position: fixed!important;
-//     top: 77px;
-//     right: 70px;
-//
-//     z-index: 99;
-// }
-//
-// //dashboard
-// .toolbar-item-start {
-//     background: url($ICON--USERMENU--WHITE) no-repeat center center;
-//     background-size: 23px 23px;
-//     text-indent: -50000px;
-//     width: 23px;
-//     height: 23px;
-//
-//     position: fixed!important;
-//     top: 77px;
-//     right: 100px;
-//
-//     z-index: 99;
-// }
-//
-// //studio
-// .toolbar-item-studio,
-// .toolbar-item-admin,
-// .toolbar-item-edit,
-// .toolbar-item-contribute {
-//     // position: fixed;
-//     // width: 75px;
-//     // height: 75px;
-//     // background: red;
-//     width: 278px;
-//     height: 276px;
-//     margin:5px;
-//     background: white;
-// }
-//
-// .toolbar-item-editorialcontentmanager,
-// .toolbar-item-filemanager,
-// .toolbar-item-portletmanager,
-// .toolbar-item-repositoryexplorer,
-// .toolbar-item-categorymanager,
-// .toolbar-item-sitemanager {
-//     width: 125px;
-//     height: 125px;
-//     margin:5px;
-//     background: white;
-// }
-
 .menu-editmode-managers-menu {
     position: absolute;
     top: 0!important;
@@ -837,9 +738,14 @@
     height: 100%!important;
     background: radial-gradient(ellipse at bottom right, rgba(76, 80, 82, 1) 0%, rgba(92, 97, 100, 1) 70%);
 	background: #f1f1f1;
+	pointer-events: none;
+
+	&:hover {
+		cursor: pointer;
+	}
 
     &::before {
-		content: "Digital Experience Manager";
+		content: $text_dxm;
 	    display: block;
 	    position: fixed;
 	    left: 0;
@@ -855,17 +761,20 @@
     }
 
 	&::after {
-		content: "Y";
-	    display: none;
-	    width: calc(100% + 40px);
+		content: attr(data-indigo-title);
 	    position: fixed;
-	    bottom: -10px;
-	    left: -20px;
-	    background: #444748;
+	    top: 20px;
+	    left: 20px;
 	    z-index: 999;
-	    /* border-top: 1px solid #45494a; */
-	    height: 45px;
-	    box-shadow: inset 0px 6px 15px #3c3e3f;
+
+		background: url($ICON--BACK--GREY) no-repeat left top 1px;
+		background-size: 15px;
+
+		padding-left: 18px;
+
+		@include text(13px, $COLOUR--LEAD_CLOUDS, $FONT--WEIGHT---LIGHT);
+
+		pointer-events: all;
 	}
 
     .x-menu-list {
@@ -900,6 +809,8 @@
 
         z-index: 99;
 
+		pointer-events: all;
+
         &:hover {
 			color: $COLOUR--WHITE_CLOUDS;
 			background: radial-gradient(ellipse at bottom right, #04b4fd 0%, $COLOUR--JAHIA_BLUE 70%);
@@ -915,44 +826,28 @@
 
 //logout
 .toolbar-item-logout {
-	position: fixed!important;
-    right: 10px;
-    top: 10px;
-    background: radial-gradient(ellipse at bottom right, #e0e0e0 0%, #e0e0e0 70%) !important;
-    box-shadow: none!important;
-    padding: 7px 20px!important;
-    color: #787d7f!important;
+	position: fixed !important;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    background: url($ICON--CLOSE_LARGE---GREY) no-repeat left top 10px !important;
+    background-size: 11px !important;
+    padding-left: 16px!important;
 
-	transition: all 0.1s ease-in 0s !important;
+	@include text(13px, $COLOUR--LEAD_CLOUDS!important, $FONT--WEIGHT---LIGHT!important);
 
 	&:hover {
-		background: radial-gradient(ellipse at bottom right, #04b4fd 0%, $COLOUR--JAHIA_BLUE 70%) !important;
-		color: $COLOUR--WHITE_CLOUDS!important;
+		box-shadow: none!important;
+		color: $COLOUR--JAHIA_BLUE!important;
 	}
 }
 
-//dashboard
-.toolbar-item-start {
-    background: url($ICON--USERMENU--WHITE) no-repeat center center!important;
-    background-size: 23px 23px!important;
-    text-indent: -50000px;
-    width: 23px;
-    height: 23px;
-
-    position: fixed!important;
-    top: 77px;
-    right: 100px;
-
-    z-index: 99;
-
-	display: none;
-}
-
-//studio
+//Big Buttons (Apps)
 .toolbar-item-studio,
 .toolbar-item-admin,
 .toolbar-item-edit,
-.toolbar-item-contribute {
+.toolbar-item-contribute,
+.toolbar-item-start {
 	width: 23vw;
 	height: 18vw;
 	background: white;
@@ -967,6 +862,7 @@
 	}
 }
 
+// Small Buttons (Managers)
 .toolbar-item-editorialcontentmanager,
 .toolbar-item-filemanager,
 .toolbar-item-portletmanager,
@@ -989,13 +885,8 @@
 	}
 }
 
-
-
 // Language Switcher
 .toolbar-itemsgroup-languageswitcher {
-
-
-
     position: fixed;
     right: 20px;
     left: auto !important;
@@ -1018,7 +909,6 @@
     &:hover {
         background-color: rgba(255, 255, 255, 0.07);
     }
-
 
     input {
         padding: 7px 20px 6px 34px !important;

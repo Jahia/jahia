@@ -218,6 +218,7 @@
                     <list>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
                         <bean class="org.jahia.services.content.UGCListener">
+                            <property name="excludePropertiesFromUGCCheck" value="${jahia.ugc.excludePropertiesFromUGCCheck:j:published}"/>
                         </bean>
                         <bean class="org.jahia.services.content.NodenameListener">
                             <property name="availableDuringPublish" value="true"/>

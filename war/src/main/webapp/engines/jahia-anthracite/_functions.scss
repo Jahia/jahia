@@ -93,6 +93,15 @@
 				button {
                     @extend %CSS_BLOCK--BUTTON--ICON---HOVER\:#{$_button_id} !optional;
 
+					@if($_extra == "remove-icons"){
+	                    padding-left: 10px;
+
+	                    img {
+	                        display: none;
+
+	                    }
+	                }
+
 				}
 			}
 

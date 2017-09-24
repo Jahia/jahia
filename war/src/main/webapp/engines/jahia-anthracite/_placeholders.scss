@@ -1344,6 +1344,47 @@
         }
     }
 
+	// FORM
+	%CSS_BLOCK--BUTTON--TEXT\:FORM_SMALL {
+        background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
+        text-transform: uppercase;
+        padding: 5px 10px;
+		text-transform: uppercase;
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT--HOVER_PARENT\:FORM_SMALL {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET!important;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:FORM_SMALL {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+    }
+
+	%CSS_BLOCK--BUTTON--ICON\:FORM_SMALL {
+        background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
+        padding: 5px 10px 5px 29px;
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+		text-transform: uppercase;
+
+        img {
+            left: 5px!important;
+            top: 7px!important;
+        }
+    }
+
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:FORM_SMALL {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET !important;
+        padding: 5px 10px 5px 29px;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+
+        img {
+            left: 5px!important;
+        }
+    }
+
 	// ACTION BAR
 	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR {
         background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR !important;

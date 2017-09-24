@@ -357,6 +357,124 @@
 	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-channels {}
 
 	// Personalised COntent Window
+	#JahiaGxtEditEnginePanel-categories {
+		height: auto!important;
+		background: #616669;
+		box-sizing: border-box;
+		padding-bottom: 1px;
+
+		.x-grid3-header {
+			display: none;
+		}
+
+		.x-panel-header {
+			display: block;
+			background: transparent!important;
+			border:none!important;
+			padding: 14px 0 0 25px!important;
+
+			.x-panel-header-text {
+				text-transform: uppercase;
+
+				@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
+			}
+
+		}
+		.x-form-check-wrap {
+			pointer-events: all;
+		}
+
+		> div {
+
+
+			&:nth-child(1) {
+				// Selected categories
+				position: relative!important;
+    			height: auto!important;
+
+				.x-column {
+					margin: 0 5px 5px 0;
+				}
+
+				.x-column-inner {
+					> :only-child {
+						height: 30px;
+
+						&:before {
+							content: $text_select_category_from_list;
+						    display: block;
+						    position: relative;
+						    padding-top: 5px;
+						    font-style: italic;
+
+							@include text(12px, #ff5151, $FONT--WEIGHT---NORMAL);
+						}
+					}
+				}
+
+				.x-panel-bwrap {
+					padding: 20px 30px 20px 26px !important;
+				}
+
+
+				button {
+					@include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---NORMAL);
+
+					padding: 5px 25px 5px 10px;
+					background: $COLOUR--WHITE_CLOUDS;
+
+					img {
+						right: 0!important;
+						left: auto!important;
+					    top: 2px!important;
+
+						background: url($ICON--CLOSE_LARGE---GREY) no-repeat center center!important;
+						background-size: 12px 12px!important;
+						box-sizing: border-box;
+						width: 23px!important;
+						height: 23px!important;
+					}
+
+				}
+
+			}
+
+			&:nth-child(2) {
+				// All Categories
+				&::before {
+					content: $text_available_categories;
+					display: block;
+
+					@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+				}
+
+				position: relative !important;
+			    top: auto !important;
+			    background: #6b7074 !important;
+			    width: calc(100% - 20px)!important;
+			    margin: 10px!important;
+			    padding: 15px 20px 20px 20px;
+			    box-sizing: border-box;
+
+				.x-grid3-scroller {
+					width: auto!important;
+				    overflow: hidden;
+				}
+
+				.x-grid3-td-displayName::after {
+					display: none;
+				}
+
+				.x-grid3-row-selected,
+				.x-grid3-row-over {
+					background-color: inherit!important;
+				}
+
+			}
+		}
+	}
+
+
 	#JahiaGxtEditEnginePanel-metadata {
 		/* left floating forms */
 

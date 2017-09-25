@@ -777,7 +777,7 @@
 				app.dev.log("::: APP ::: THEME ::: OFF");
 				if(app.theme.data.enabled){
 					// Remove Anthracite CSS style sheet
-	               $('link[rel=stylesheet][href$="edit_en.css"]').remove();
+					$('link[rel=stylesheet][href$="' + app.theme.data.cssReference + '"]').remove();
 
 	               // Register the fact that it has been removed
 	               app.theme.data.enabled = false;
@@ -2620,7 +2620,19 @@
     // INITIALISE
     var init = function(){
         // Copy Anthracite CSS to remove / add when dropping in and out of STUDIO mode
-        app.theme.data.storedCSS = $('link[rel=stylesheet][href$="edit_en.css"]').clone();
+
+		var anthraciteCSS_EN = $('link[rel=stylesheet][href$="edit_en.css"]'),
+			anthraciteCSS_FR = $('link[rel=stylesheet][href$="edit_fr.css"]');
+
+		if(anthraciteCSS_EN.length > 0){
+			app.theme.data.cssReference = "edit_en.css";
+			app.theme.data.storedCSS = anthraciteCSS_EN.clone();
+
+		} else if(anthraciteCSS_FR.length > 0){
+			app.theme.data.cssReference = "edit_fr.css";
+			app.theme.data.storedCSS = anthraciteCSS_FR.clone();
+
+		}
 
 		// use Dex to cache an Dex Object
 		Dex("body").cache("body");

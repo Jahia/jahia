@@ -3122,8 +3122,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		    padding-top: 12px;
 		    background: #eee;
 		    height: 302px;
-				overflow-x: hidden;
-				overflow-y: scroll;
+		    overflow: hidden;
 
 				.x-form-textarea {
 						margin-top: 8px;

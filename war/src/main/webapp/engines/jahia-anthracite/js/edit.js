@@ -538,7 +538,8 @@
 	var app = {
 		data: {
 			currentApp: null,
-			previousModeClass: null
+			previousModeClass: null,
+			UILanguage: null
 		},
 		dev: {
 			data: {
@@ -1479,17 +1480,24 @@
 								buttonParent = Dex.class("toolbar-item-workinprogressadmin"),
 								jobTooltip;
 
-
-                            if(jobIcon.getAttribute("src") !== "/icons/workInProgress.png"){
+                            if(jobIcon.getAttribute("src").indexOf("workInProgress.png") == -1){
                                 // A job is active
 								activeJob = true;
-								jobTooltip = jobString,
+								jobTooltip = jobString;
 								Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").addClass("indigo-job-running");
 
                             } else {
                                 // No Jobs active
 								activeJob = false;
-								jobTooltip = "Jobs",
+
+								if(app.data.UILanguage == "FR"){
+									jobTooltip = "Processus";
+
+								} else {
+									jobTooltip = "Jobs";
+
+
+								}
 								Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").removeClass("indigo-job-running");
 
                             }
@@ -2625,10 +2633,12 @@
 			anthraciteCSS_FR = $('link[rel=stylesheet][href$="edit_fr.css"]');
 
 		if(anthraciteCSS_EN.length > 0){
+			app.data.UILanguage = "EN";
 			app.theme.data.cssReference = "edit_en.css";
 			app.theme.data.storedCSS = anthraciteCSS_EN.clone();
 
 		} else if(anthraciteCSS_FR.length > 0){
+			app.data.UILanguage = "FR";
 			app.theme.data.cssReference = "edit_fr.css";
 			app.theme.data.storedCSS = anthraciteCSS_FR.clone();
 

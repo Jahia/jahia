@@ -616,6 +616,10 @@
     background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
     background-size: 23px 23px;
 
+	width: 51px!important;
+	white-space: pre-line;
+	text-align: center;
+
     &::after {
         content: attr(data-indigo-label);
     }

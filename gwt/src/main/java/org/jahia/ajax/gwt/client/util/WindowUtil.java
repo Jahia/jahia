@@ -43,6 +43,8 @@
  */
 package org.jahia.ajax.gwt.client.util;
 
+import com.google.gwt.user.client.Element;
+
 /**
  * User: rfelden
  * Date: 1 oct. 2008 - 11:25:07
@@ -51,6 +53,40 @@ public class WindowUtil {
 
     public static native void close()/*-{
         $wnd.close();
+    }-*/;
+
+    /**
+     * This method has been implemented to fix the bug related to QA-9793
+     * It is a copy of the jQuery method to get the absolute position of an element
+     * @param elem  Element
+     * @return      the absolute top position of the element
+     */
+    public static native int getAbsoluteTop(Element elem) /*-{
+        if (!elem.getClientRects().length) {
+            return 0;
+        }
+
+        rect = elem.getBoundingClientRect();
+        win = elem.ownerDocument.defaultView;
+
+        return rect.top + win.pageYOffset;
+    }-*/;
+
+    /**
+     * This method has been implemented to fix the bug related to QA-9793
+     * It is a copy of the jQuery method to get the absolute position of an element
+     * @param elem  Element
+     * @return      the absolute left position of the element
+     */
+    public static native int getAbsoluteLeft(Element elem) /*-{
+        if (!elem.getClientRects().length) {
+            return 0;
+        }
+
+        rect = elem.getBoundingClientRect();
+        win = elem.ownerDocument.defaultView;
+
+        return rect.left + win.pageXOffset;
     }-*/;
 
 }

@@ -64,7 +64,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
  * Time: 2:09:40 PM
  *
  */
-public class SwitchModeActionItem extends BaseActionItem {
+public class SwitchModeActionItem extends NodeTypeAwareBaseActionItem {
 
     public void handleNewLinkerSelection() {
         Menu m = new Menu();
@@ -81,7 +81,8 @@ public class SwitchModeActionItem extends BaseActionItem {
 
         final String workspace = getPropertyValue(getGwtToolbarItem(), "workspace");
         if ((linker instanceof EditLinker && ((EditLinker) linker).isInSettingsPage()) ||
-                !hasPermission(linker.getSelectionContext().getMainNode())) {
+                !hasPermission(linker.getSelectionContext().getMainNode()) ||
+                !isNodeTypeAllowed(linker.getSelectionContext().getMainNode())) {
             setEnabled(false);
         } else {
             if (workspace.equalsIgnoreCase("live")) {

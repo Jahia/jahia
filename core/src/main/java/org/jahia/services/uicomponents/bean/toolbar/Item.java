@@ -70,7 +70,7 @@ import java.util.Map;
  */
 public class Item implements Serializable, BeanNameAware, InitializingBean, DisposableBean, ApplicationContextAware {
     private static final long serialVersionUID = -5120594370234680709L;
-	private String id;
+    private String id;
     private String icon;
     private String title;
     private String titleKey;
@@ -98,7 +98,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
         this();
         setId(id);
     }
-	
+
     public String getId() {
         return id;
     }
@@ -175,6 +175,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
         this.properties.add(property);
     }
 
+    @Override
     public void setBeanName(String name) {
         this.id = name;
     }
@@ -220,21 +221,22 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
     }
 
     public void setParent(Object parent) {
-    	this.parent = parent;
+        this.parent = parent;
     }
 
     public void setParentMenu(Menu menu) {
-    	setParent(menu);
+        setParent(menu);
     }
 
     public void setParentToolbar(Toolbar toolbar) {
-    	setParent(toolbar);
+        setParent(toolbar);
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         if (parent != null) {
             if (parent instanceof List) {
-                for (Object o : (List) parent) {
+                for (Object o : (List<?>) parent) {
                     addToParent(o);
                 }
             } else {

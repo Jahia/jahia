@@ -179,12 +179,13 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                     ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
                                     Grid<GWTJahiaWorkflowHistoryItem> grid) {
                 if (dashboard && historyItem instanceof GWTJahiaWorkflowHistoryTask) {
-                    final GWTJahiaWorkflowHistoryProcess parent = (GWTJahiaWorkflowHistoryProcess) ((TreeGrid) grid).getTreeStore().getParent(
+                    final GWTJahiaWorkflowHistoryProcess parent = (GWTJahiaWorkflowHistoryProcess) ((TreeGrid<GWTJahiaWorkflowHistoryItem>) grid).getTreeStore().getParent(
                             historyItem);
                     for (final GWTJahiaWorkflowTask task : parent.getAvailableTasks()) {
                         if (task.getId().equals(historyItem.getId())) {
                             Button b = new Button(historyItem.<String>get("displayName"));
                             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                                @Override
                                 public void componentSelected(ButtonEvent ce) {
                                     EnginePanel container = new EnginePanel();
                                     // Keep previsous selection to restore it once the engine will be processed.
@@ -198,6 +199,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                             parent.getRunningWorkflow().getCustomWorkflowInfo(), container, selectedNodes);
                                     container.showEngine();
                                     container.addListener(Events.Close, new Listener<BaseEvent>() {
+                                        @Override
                                         public void handleEvent(BaseEvent be) {
                                             engine.show();
                                             init();
@@ -216,9 +218,9 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         });
         config.add(column);
         column = new ColumnConfig("locale", 40);
-        column.setRenderer(new GridCellRenderer() {
+        column.setRenderer(new GridCellRenderer<ModelData>() {
             @Override
-            public Object render(ModelData historyItem, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+            public Object render(ModelData historyItem, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ModelData> store, Grid<ModelData> grid) {
                 if (dashboard && historyItem.get("workflow") instanceof GWTJahiaWorkflow) {
                     String lang = ((GWTJahiaWorkflow) historyItem.get("workflow")).get("locale");
                     if (lang != null && JahiaGWTParameters.getLanguage(lang) != null) {
@@ -249,6 +251,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
              * @param grid     the grid
              * @return the cell HTML or Component instance
              */
+            @Override
             public Object render(GWTJahiaWorkflowHistoryItem model, String property, ColumnData config,
                                  int rowIndex, int colIndex,
                                  ListStore<GWTJahiaWorkflowHistoryItem> store,
@@ -272,6 +275,8 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                 String locale = JahiaGWTParameters.getLanguage();
                                 JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
                                         "default", locale, false, new BaseAsyncCallback<String>() {
+
+                                            @Override
                                             public void onSuccess(String url) {
                                                 Window window = new Window();
                                                 window.addStyleName("content-preview");
@@ -286,7 +291,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             }
                         });
                         buttonBar.add(previewButton);
-                        
+
                         Button inContextButton = new Button(Messages.get("label.preview.context"));
                         inContextButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                             @Override
@@ -295,6 +300,8 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                 String locale = JahiaGWTParameters.getLanguage();
                                 JahiaContentManagementService.App.getInstance().getNodeURL("render", path, null, null,
                                         "default", locale, true, new BaseAsyncCallback<String>() {
+
+                                            @Override
                                             public void onSuccess(String url) {
                                                 Window window = new Window();
                                                 window.addStyleName("content-incontext-preview");
@@ -330,6 +337,8 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         column = new ColumnConfig("duration", Messages.get("org.jahia.engines.processDisplay.column.duration",
                 "Duration"), 60);
         column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
+
+            @Override
             public Object render(GWTJahiaWorkflowHistoryItem historyItem, String property, ColumnData config,
                                  int rowIndex, int colIndex, ListStore<GWTJahiaWorkflowHistoryItem> store,
                                  Grid<GWTJahiaWorkflowHistoryItem> grid) {
@@ -358,6 +367,8 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         if (PermissionsUtils.isPermitted("viewWorkflowTab", JahiaGWTParameters.getSiteNode().getPermissions())) {
             column = new ColumnConfig("operation", Messages.get("label.operation", "Operation"), 100);
             column.setRenderer(new GridCellRenderer<GWTJahiaWorkflowHistoryItem>() {
+
+                @Override
                 public Object render(final GWTJahiaWorkflowHistoryItem model, String property, ColumnData config,
                                      int rowIndex, int colIndex,
                                      ListStore<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemListStore,
@@ -368,6 +379,8 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             @Override
                             public void componentSelected(ButtonEvent ce) {
                                 JahiaContentManagementService.App.getInstance().abortWorkflow(model.getId(), model.getProvider(), new BaseAsyncCallback<String>() {
+
+                                    @Override
                                     public void onSuccess(String url) {
                                         store.removeAll();
                                         loader.load();
@@ -427,6 +440,8 @@ public class WorkflowHistoryPanel extends LayoutContainer {
 
         if (engine != null) {
             engine.addListener(Events.Hide, new Listener<BaseEvent>() {
+
+                @Override
                 public void handleEvent(BaseEvent be) {
                     if (listener != null) {
                         Poller.getInstance().unregisterListener(listener, TaskEvent.class);

@@ -488,6 +488,11 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         }
         return true;
     }
+    
+    private boolean isFieldSearch(SearchFields searchFields) {
+        return searchFields.isTags() || searchFields.isFileContent() || searchFields.isDescription() || searchFields.isTitle()
+                || searchFields.isKeywords() || searchFields.isFilename();
+    }
 
     private boolean isSiteSearch(SearchCriteria params) {
         for (Term term : params.getTerms()) {
@@ -773,81 +778,95 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         }
     }
 
-    private void addTermConstraints(SearchCriteria params,
-                                    StringBuilder constraints, boolean xpath) {
-
+    private void addTermConstraints(SearchCriteria params, StringBuilder constraints, boolean xpath) {
         for (Term textSearch : params.getTerms()) {
+            if (textSearch.isEmpty()) {
+                continue;
+            }
 
-            if (!textSearch.isEmpty()) {
+            StringBuilder textSearchConstraints = new StringBuilder(256);
+            if (textSearch.getFields().isSiteContent() || !isFieldSearch(textSearch.getFields())) {
+                addConstraint(textSearchConstraints, OR, getSearchExpression(xpath ? "." : "n", textSearch.getTerm(), textSearch.getMatch(),
+                        textSearch.isApplyFilter(), xpath));
+            }
+            if (textSearch.getFields().isFileContent()) {
+                addConstraint(textSearchConstraints, OR,
+                        getSearchExpression(xpath ? Constants.JCR_CONTENT : getPropertyName(Constants.JCR_CONTENT, false),
+                                textSearch.getTerm(), textSearch.getMatch(), textSearch.isApplyFilter(), xpath));
+            }
+            if (textSearchConstraints.length() == 0 || !isWithoutTermContraintInFulltextQuery(textSearch)) {
+                addTermConstraintsOnFields(params, textSearch, textSearch.getFields(), textSearchConstraints, xpath);
+            }
+            if (textSearchConstraints.length() > 0) {
+                addConstraint(constraints, AND, "(" + textSearchConstraints.toString() + ")");
+            }
+        }
+    }
+    private void addTermConstraintsOnFields(SearchCriteria params, Term textSearch, SearchFields searchFields, StringBuilder textSearchConstraints, boolean xpath) {
+        if (searchFields.isDescription()) {
+            addConstraint(textSearchConstraints, OR, getSearchExpression(getPropertyName(Constants.JCR_DESCRIPTION, xpath),
+                    textSearch.getTerm(), textSearch.getMatch(), textSearch.isApplyFilter(), xpath));
+        }
+        if (searchFields.isTitle()) {
+            addConstraint(textSearchConstraints, OR, getSearchExpression(getPropertyName(Constants.JCR_TITLE, xpath), textSearch.getTerm(),
+                    textSearch.getMatch(), textSearch.isApplyFilter(), xpath));
+        }
+        if (searchFields.isKeywords()) {
+            addConstraint(textSearchConstraints, OR, getSearchExpression(getPropertyName(Constants.KEYWORDS, xpath), textSearch.getTerm(),
+                    textSearch.getMatch(), textSearch.isApplyFilter(), xpath));
+        }
 
-                SearchFields searchFields = textSearch.getFields();
-                StringBuilder textSearchConstraints = new StringBuilder(256);
-                if (searchFields.isSiteContent() || (!searchFields.isTags() && !searchFields.isFileContent() && !searchFields.isDescription() && !searchFields.isTitle() && !searchFields.isKeywords() && !searchFields.isFilename())) {
-                    if (xpath) {
-                        addConstraint(textSearchConstraints, OR, getSearchExpression(".", textSearch.getTerm(), textSearch.getMatch(), textSearch.isApplyFilter(), true));
-                    } else {
-                        addConstraint(textSearchConstraints, OR, getSearchExpression("n", textSearch.getTerm(), textSearch.getMatch(), textSearch.isApplyFilter(), false));
-                    }
+        String[] terms = null;
+        String constraint = OR;
+        if (searchFields.isFilename() || searchFields.isTags()) {
+            if (textSearch.getMatch() == MatchType.ANY_WORD || textSearch.getMatch() == MatchType.ALL_WORDS
+                    || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
+                terms = Patterns.SPACE.split(cleanMultipleWhiteSpaces(textSearch.getTerm()));
+                if (textSearch.getMatch() == MatchType.ALL_WORDS || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
+                    constraint = AND;
                 }
-                if (searchFields.isFileContent()) {
-                    if (xpath) {
-                        addConstraint(textSearchConstraints, OR, getSearchExpression(Constants.JCR_CONTENT, textSearch.getTerm(), textSearch.getMatch(), textSearch.isApplyFilter(), true));
-                    } else {
-                        addConstraint(textSearchConstraints, OR, getSearchExpression(getPropertyName(Constants.JCR_CONTENT, false), textSearch.getTerm(), textSearch.getMatch(), textSearch.isApplyFilter(), false));
-                    }
+            } else {
+                terms = new String[]{textSearch.getTerm()};
+            }
+        }
+        if (searchFields.isFilename()) {
+            String nameSearchConstraints = createFilenameConstraints(textSearch, terms, constraint, xpath);
+            if (!nameSearchConstraints.isEmpty()) {
+                addConstraint(textSearchConstraints, OR, "(" + nameSearchConstraints + ")");
+            }
+        }
+        if (searchFields.isTags() && getTaggingService() != null
+                && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)
+                && !StringUtils.containsAny(textSearch.getTerm(), "?*")) {
+            for (String term : terms) {
+                String tag = taggingService.getTagHandler().execute(term);
+                if (!StringUtils.isEmpty(tag)) {
+                    addConstraint(textSearchConstraints, OR, getPropertyName("j:tagList", xpath) + "=" + stringToJCRSearchExp(tag));
                 }
-                if (searchFields.isDescription()) {
-                    addConstraint(textSearchConstraints, OR, getSearchExpression(getPropertyName(Constants.JCR_DESCRIPTION, xpath), textSearch.getTerm(), textSearch.getMatch(), textSearch.isApplyFilter(), xpath));
-                }
-                if (searchFields.isTitle()) {
-                    addConstraint(textSearchConstraints, OR, getSearchExpression(getPropertyName(Constants.JCR_TITLE, xpath), textSearch.getTerm(), textSearch.getMatch(), textSearch.isApplyFilter(), xpath));
-                }
-                if (searchFields.isKeywords()) {
-                    addConstraint(textSearchConstraints, OR, getSearchExpression(getPropertyName(Constants.KEYWORDS, xpath), textSearch.getTerm(), textSearch.getMatch(), textSearch.isApplyFilter(), xpath));
-                }
-
-                String[] terms = null;
-                String constraint = OR;
-                if (searchFields.isFilename() || searchFields.isTags()) {
-                    if (textSearch.getMatch() == MatchType.ANY_WORD || textSearch.getMatch() == MatchType.ALL_WORDS || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
-                        terms = Patterns.SPACE.split(cleanMultipleWhiteSpaces(textSearch.getTerm()));
-                        if (textSearch.getMatch() == MatchType.ALL_WORDS || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
-                            constraint = AND;
-                        }
-                    } else {
-                        terms = new String[]{textSearch.getTerm()};
-                    }
-                }
-                if (searchFields.isFilename()) {
-                    String nameSearchConstraints = createFilenameConstraints(textSearch, terms, constraint, xpath);
-                    if (!nameSearchConstraints.isEmpty()) {
-                        addConstraint(textSearchConstraints, OR, "(" + nameSearchConstraints + ")");
-                    }
-                }
-                if (searchFields.isTags() && getTaggingService() != null
-                        && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)
-                        && !StringUtils.containsAny(textSearch.getTerm(), "?*")) {
-                    for (String term : terms) {
-                        String tag = taggingService.getTagHandler().execute(term);
-                        if (!StringUtils.isEmpty(tag)) {
-                            addConstraint(textSearchConstraints, OR, getPropertyName("j:tagList", xpath) + "=" + stringToJCRSearchExp(tag));
-                        }
-                    }
-                    if (terms.length > 1) {
-                        String tag = taggingService.getTagHandler().execute(textSearch.getTerm());
-                        if (!StringUtils.isEmpty(tag)) {
-                            addConstraint(textSearchConstraints, OR, getPropertyName("j:tagList", xpath) + "=" + stringToJCRSearchExp(tag));
-                        }
-                    }
-                }
-                if (textSearchConstraints.length() > 0) {
-                    addConstraint(constraints, AND, "("
-                            + textSearchConstraints.toString() + ")");
+            }
+            if (terms.length > 1) {
+                String tag = taggingService.getTagHandler().execute(textSearch.getTerm());
+                if (!StringUtils.isEmpty(tag)) {
+                    addConstraint(textSearchConstraints, OR, getPropertyName("j:tagList", xpath) + "=" + stringToJCRSearchExp(tag));
                 }
             }
         }
     }
 
+
+    private boolean isWithoutTermContraintInFulltextQuery(Term textSearch) {
+        boolean withoutTermContraint = textSearch.getMatch() == MatchType.WITHOUT_WORDS;
+        if (textSearch.getMatch() == MatchType.AS_IS) {
+            Matcher matcher = QUOTED_OR_PLAIN_TERMS_WITH_OPTIONAL_NEGATION_PATTERN.matcher(textSearch.getTerm());
+            while (!withoutTermContraint && matcher.find()) {
+                if (matcher.group(1) != null ? matcher.group().startsWith("-") : matcher.group(2).startsWith("-")) {
+                    withoutTermContraint = true;
+                }
+            }
+        }
+        return withoutTermContraint;
+    }
+    
     private String createFilenameConstraints(Term textSearch, String[] terms, String constraint, boolean xpath) {
         StringBuilder nameSearchConstraints = new StringBuilder(256);
 

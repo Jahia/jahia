@@ -50,11 +50,11 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.WorkflowHistoryPanel;
 
 /**
- * 
+ *
  * User: ktlili
  * Date: Apr 28, 2010
  * Time: 4:32:33 PM
- * 
+ *
  */
 public class WorkflowDashboardEngine extends Window {
     private final Linker linker;
@@ -73,7 +73,7 @@ public class WorkflowDashboardEngine extends Window {
         setLayout(new FitLayout());
         setSize(950, 600);
         setMaximizable(true);
-        add(new WorkflowHistoryPanel(this,linker));
+        add(new WorkflowHistoryPanel(this, linker));
     }
 
 }

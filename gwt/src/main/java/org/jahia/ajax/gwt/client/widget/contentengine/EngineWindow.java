@@ -49,7 +49,9 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.Element;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
@@ -94,7 +96,8 @@ public class EngineWindow extends Window implements EngineContainer {
                 // resize to fit main module area
                 MainModule main = editLinker.getMainModule();
                 setSize(main.getOffsetWidth(), main.getOffsetHeight());
-                setPosition(main.getAbsoluteLeft(), main.getAbsoluteTop());
+                Element element = main.getElement();
+                setPosition(WindowUtil.getAbsoluteLeft(element), WindowUtil.getAbsoluteTop(element));
                 setBorders(false);
             } else if (editLinker.getMainAreaComponent() != null) {
                 setContainer(editLinker.getMainAreaComponent().getElement());

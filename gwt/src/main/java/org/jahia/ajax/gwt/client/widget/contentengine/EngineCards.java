@@ -92,9 +92,9 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         ColumnConfig lang = new ColumnConfig("lang", 50);
         ColumnConfig title = new ColumnConfig("header", 800);
         ColumnConfig actions = new ColumnConfig("action", 200);
-        actions.setRenderer(new GridCellRenderer() {
+        actions.setRenderer(new GridCellRenderer<ModelData>() {
             @Override
-            public Object render(final ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+            public Object render(final ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<ModelData> store, Grid<ModelData> grid) {
                 return model.get("action");
             }
         });
@@ -126,6 +126,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         mainContainer.setEngine(this, "", bar, null, linker);
     }
 
+    @Override
     public ContentPanel getPanel() {
         return mainContainer.getPanel();
     }
@@ -138,6 +139,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
      * @param language if not null will be displayed in the language column
      * @param linker the current linker from GWT
      */
+    @Override
     public void setEngine(Component component, String header, ButtonBar buttonsBar, GWTJahiaLanguage language, Linker linker) {
         components.add(component);
         bars.add(buttonsBar);
@@ -155,6 +157,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
     /**
      * show the first engine in the main area
      */
+    @Override
     public void showEngine() {
         for (ButtonBar buttonBar : bars) {
             barItems.add(new ArrayList<Component>(buttonBar.getItems()));
@@ -166,6 +169,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
     /**
      * Close the current engine
      */
+    @Override
     public void closeEngine() {
         components.remove(i);
         headers.remove(i);
@@ -188,14 +192,14 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
             return;
         }
         String name = components.get(i).getClass().getName();
-        name = name.substring(name.lastIndexOf('.')+1).toLowerCase();
-        removeStyleName(name+ "-ctn");
+        name = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
+        removeStyleName(name + "-ctn");
         mainContainer.getPanel().removeStyleName(name + "-card");
         i = list.getStore().indexOf(list.getSelectionModel().getSelectedItem());
 
         name = components.get(i).getClass().getName();
-        name = name.substring(name.lastIndexOf('.')+1).toLowerCase();
-        addStyleName(name+ "-ctn");
+        name = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
+        addStyleName(name + "-ctn");
         mainContainer.getPanel().addStyleName(name + "-card");
 
         ((CardLayout) cardsContainer.getLayout()).setActiveItem(components.get(i));

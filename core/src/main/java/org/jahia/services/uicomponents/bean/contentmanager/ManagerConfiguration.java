@@ -94,7 +94,7 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
 
     private boolean expandRoot = false;
-    
+
     private boolean allowRootNodeEditing;
 
     private boolean displaySearch = true;
@@ -105,7 +105,7 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     private boolean displaySearchInContent = true;
     private boolean displaySearchInDateMeta = true;
     private boolean searchInFile = true;
-    private boolean searchInContent = true;    
+    private boolean searchInContent = true;
     private boolean searchInCurrentSiteOnly = false;
     private String searchBasePath = null;
 
@@ -115,7 +115,7 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     private boolean editableGrid;
 
     private List<String> componentsPaths = Arrays.asList("$site/components/*");
-    
+
     private String titleKey = null;
 
     private boolean suppressPublicationInfo;
@@ -133,6 +133,7 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
         return name;
     }
 
+    @Override
     public void setBeanName(String name) {
         this.name = name;
     }
@@ -436,15 +437,15 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     public void setComponentsPaths(List<String> componentsPaths) {
         this.componentsPaths = componentsPaths;
     }
- 
+
     public String getTitleKey() {
         return titleKey;
     }
 
     public void setTitleKey(String titleKey) {
         this.titleKey = titleKey;
-    }    
-    
+    }
+
 
     public boolean isSuppressPublicationInfo() {
         return suppressPublicationInfo;

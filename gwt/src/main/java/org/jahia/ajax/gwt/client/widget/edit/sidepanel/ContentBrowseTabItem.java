@@ -89,6 +89,8 @@ class ContentBrowseTabItem extends BrowseTabItem {
     protected transient Grid<GWTJahiaNode> grid;
     protected transient ThumbsListView  listView;
     private List<String> displayGridForTypes;
+
+    @Override
     public TabItem create(final GWTSidePanelTab config) {
         super.create(config);
 
@@ -109,9 +111,9 @@ class ContentBrowseTabItem extends BrowseTabItem {
                     String path = ((GWTJahiaNode) gwtJahiaFolder).getPath();
                     Log.debug("retrieving children of " + path);
                     List<String> tableColumnKeys = new ArrayList<String> (config.getTableColumnKeys());
-                    tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.ICON,GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
+                    tableColumnKeys.addAll(Arrays.asList(GWTJahiaNode.PERMISSIONS, GWTJahiaNode.ICON, GWTJahiaNode.LOCKABLE, GWTJahiaNode.LOCKED, GWTJahiaNode.LOCKS_INFO));
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad(path, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null,false, false, listAsyncCallback);
+                            .lsLoad(path, loadedNodeTypes, null, null, tableColumnKeys, false, -1, -1, false, null, null, false, false, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }
@@ -130,11 +132,13 @@ class ContentBrowseTabItem extends BrowseTabItem {
 
         contentStore = new ListStore<GWTJahiaNode>(listLoader);
         contentStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+
+            @Override
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof String && o2 instanceof String) {
                     String s1 = (String) o1;
                     String s2 = (String) o2;
-                    return Collator.getInstance().localeCompare(s1,s2);
+                    return Collator.getInstance().localeCompare(s1, s2);
                 } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
                     return ((Comparable) o1).compareTo(o2);
                 }
@@ -168,7 +172,8 @@ class ContentBrowseTabItem extends BrowseTabItem {
                             (PermissionsUtils.isPermitted("editModeAccess", JahiaGWTParameters.getSiteNode()) || PermissionsUtils.isPermitted("studioModeAccess", JahiaGWTParameters.getSiteNode()))
                             ) {
                         MainModule.staticGoTo(node.getPath(), null);
-                    }                } else {
+                    }
+                } else {
                     contentStore.removeAll();
                 }
             }
@@ -186,6 +191,8 @@ class ContentBrowseTabItem extends BrowseTabItem {
             listView.setStore(contentStore);
             contentStore.setSortField("display");
             listView.addListener(Events.DoubleClick, new Listener<ListViewEvent<GWTJahiaNode>>() {
+
+                @Override
                 public void handleEvent(ListViewEvent<GWTJahiaNode> be) {
                     Window w = new Window();
                     w.addStyleName("content-browse-preview");
@@ -209,7 +216,7 @@ class ContentBrowseTabItem extends BrowseTabItem {
             listView.setContextMenu(createContextMenu(config.getTableContextMenu(), listView.getSelectionModel()));
             contentContainer.add(listView);
 
-        }  else {
+        } else {
             NodeColumnConfigList displayColumns = new NodeColumnConfigList(config.getTableColumns(), true);
             grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
             grid.setAutoExpandColumn(displayColumns.getAutoExpand());

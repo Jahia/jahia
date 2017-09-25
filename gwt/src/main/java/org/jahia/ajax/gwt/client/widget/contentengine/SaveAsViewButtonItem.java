@@ -81,11 +81,14 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
     public static final int INDEX_OF_TEMPLATE_TYPE = 9;
     public static final String VIEWS_SOURCE_PATH = "/sources/src/main/resources";
 
+    @Override
     public BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.saveAs", "Save as ..."));
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+            @Override
             public void componentSelected(ButtonEvent event) {
                 GWTJahiaNode node = engine.getNode();
                 if (node == null) {
@@ -262,10 +265,13 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
         }
 
         JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
+
+            @Override
             public void onFailure(Throwable throwable) {
                 MessageBox.alert(Messages.get("label.error.processingRequestError", "An error occurred while processing your request"), throwable.getMessage(), null).getDialog().addStyleName("engine-save-error");
             }
 
+            @Override
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                 Linker linker = engine.getLinker();
                 engine.close();
@@ -289,6 +295,6 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
 
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, boolean closeAfterSave) {
-        //Nothing to do here
+        // Nothing to do here
     }
 }

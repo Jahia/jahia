@@ -71,7 +71,8 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class UpdateModuleActionItem extends BaseActionItem {
 
-    @Override public void onComponentSelection() {
+    @Override
+    public void onComponentSelection() {
 
         GWTJahiaNode siteNode = JahiaGWTParameters.getSiteNode();
         String s = siteNode.get("j:versionInfo");
@@ -80,20 +81,23 @@ public class UpdateModuleActionItem extends BaseActionItem {
             if (s.endsWith("-SNAPSHOT") && siteNode.get("j:scmURI") != null) {
                 linker.loading(Messages.get("label.sourceControl.update.module", "Updating module..."));
                 JahiaContentManagementService.App.getInstance().updateModule(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<String>() {
+
+                    @Override
                     public void onSuccess(String result) {
                         linker.loaded();
-                        showUpdateResult(result, false);                        
+                        showUpdateResult(result, false);
                         Map<String, Object> data = new HashMap<String, Object>();
-                        data.put("event","update");
-                        data.put(Linker.REFRESH_ALL,"true");
+                        data.put("event", "update");
+                        data.put(Linker.REFRESH_ALL, "true");
                         linker.refresh(data);
                     }
 
+                    @Override
                     public void onApplicationFailure(Throwable caught) {
                         linker.loaded();
-                        showUpdateResult(caught.getMessage(), true);                        
+                        showUpdateResult(caught.getMessage(), true);
                         Map<String, Object> data = new HashMap<String, Object>();
-                        data.put("event","update");
+                        data.put("event", "update");
                         linker.refresh(data);
                     }
                 });
@@ -102,7 +106,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                 dialog.addCallback(new Listener<WindowEvent>() {
                     @Override
                     public void handleEvent(WindowEvent be) {
-                        linker.loading(Messages.get("label.sourceControl.sending.sources","Sending sources..."));
+                        linker.loading(Messages.get("label.sourceControl.sending.sources", "Sending sources..."));
                         JahiaContentManagementService.App.getInstance().sendToSourceControl(JahiaGWTParameters.getSiteKey(), dialog.getUri(), dialog.getScmType(), new BaseAsyncCallback<GWTJahiaNode>() {
                             @Override
                             public void onSuccess(GWTJahiaNode result) {
@@ -112,6 +116,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                                 linker.loaded();
                             }
 
+                            @Override
                             public void onApplicationFailure(Throwable caught) {
                                 linker.loaded();
                                 MessageBox.alert(Messages.get("label.error", "Error"), caught.getMessage(), null);
@@ -130,7 +135,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                     value = value.substring(4);
                     String type = value.substring(0, value.indexOf(":"));
                     dialog.setScmType(type);
-                    value = value.substring(value.indexOf(":")+1);
+                    value = value.substring(value.indexOf(":") + 1);
                 }
                 dialog.setUri(value);
             }
@@ -140,6 +145,8 @@ public class UpdateModuleActionItem extends BaseActionItem {
                     linker.loading(Messages.get("label.sourceControl.getting.sources", "Getting sources..."));
 
                     JahiaContentManagementService.App.getInstance().checkoutModule(JahiaGWTParameters.getSiteKey(), dialog.getUri(), dialog.getScmType(), dialog.getBranchOrTag(), null, new BaseAsyncCallback<GWTJahiaNode>() {
+
+                        @Override
                         public void onSuccess(GWTJahiaNode result) {
                             linker.loaded();
                             JahiaGWTParameters.getSitesMap().put(result.getUUID(), result);
@@ -154,6 +161,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                             Info.display(Messages.get("label.information", "Information"), Messages.get("label.sourceControl.source.downloaded", "Sources downloaded"));
                         }
 
+                        @Override
                         public void onApplicationFailure(Throwable caught) {
                             linker.loaded();
                             MessageBox.alert(Messages.get("label.error", "Error"), caught.getMessage(), null);
@@ -185,7 +193,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
             setEnabled(false);
         }
     }
-    
+
     private void showUpdateResult(String output, boolean isError) {
         final Window wnd = new Window();
         wnd.addStyleName("update-results-modal");
@@ -215,6 +223,8 @@ public class UpdateModuleActionItem extends BaseActionItem {
         form.add(message);
 
         Button btnClose = new Button(Messages.get("label.close", "Close"), new SelectionListener<ButtonEvent>() {
+
+            @Override
             public void componentSelected(ButtonEvent event) {
                 wnd.hide();
             }
@@ -227,6 +237,6 @@ public class UpdateModuleActionItem extends BaseActionItem {
         wnd.setFocusWidget(message);
 
         wnd.show();
-        
+
     }
  }

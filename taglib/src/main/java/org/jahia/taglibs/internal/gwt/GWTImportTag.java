@@ -71,6 +71,7 @@ public class GWTImportTag extends AbstractJahiaTag {
 
     private String module;
 
+    @Override
     public int doStartTag() {
         try {
             pageContext.getRequest().setAttribute("jahia.engines.gwtModuleIncluded", Boolean.TRUE);
@@ -103,7 +104,7 @@ public class GWTImportTag extends AbstractJahiaTag {
                 String base = "/engines/" + theme + "/";
                 if (pageContext.getServletContext().getResource(base + module + "_" + uiLocale.getLanguage() + ".css") != null) {
                     pageContext.setAttribute("themeLocale", "_" + uiLocale.toLanguageTag());
-                } else if (pageContext.getServletContext().getResource(base + module + "_en.css") != null){
+                } else if (pageContext.getServletContext().getResource(base + module + "_en.css") != null) {
                     pageContext.setAttribute("themeLocale", "_en");
                 } else {
                     pageContext.setAttribute("themeLocale", "");

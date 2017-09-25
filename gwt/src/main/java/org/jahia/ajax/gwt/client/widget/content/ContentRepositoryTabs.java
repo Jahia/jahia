@@ -94,7 +94,6 @@ public class ContentRepositoryTabs extends LeftComponent {
     // my search
     private ContentPanel savedSearchPanel;
     private ListView<GWTJahiaNode> queryList;
-    private GWTManagerConfiguration config;
     private boolean tabExpanded;
 
     /**
@@ -103,7 +102,6 @@ public class ContentRepositoryTabs extends LeftComponent {
      * @param config the configuration to use (generated in ManagerConfigurationFactory)
      */
     public ContentRepositoryTabs(GWTManagerConfiguration config, final List<String> selectedPaths) {
-        this.config = config;
         m_component = new TabPanel();
         m_component.setBodyBorder(false);
         m_component.setBorders(false);
@@ -155,7 +153,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         queryList.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         queryList.setStore(new ListStore<GWTJahiaNode>());
         queryList.setDisplayProperty("displayName");
-        savedSearchPanel.add(queryList,new VBoxLayoutData(new Margins(0, 0, 5, 0)));
+        savedSearchPanel.add(queryList, new VBoxLayoutData(new Margins(0, 0, 5, 0)));
         queryList.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
@@ -164,16 +162,21 @@ public class ContentRepositoryTabs extends LeftComponent {
         });
         Menu queryMenu = new Menu();
         final MenuItem removeQuery = new MenuItem(Messages.get("label.remove"), new SelectionListener<MenuEvent>() {
+
+            @Override
             public void componentSelected(MenuEvent event) {
                 final GWTJahiaNode item = queryList.getSelectionModel().getSelectedItem();
                 if (item != null) {
                     List<String> queryNode = new ArrayList<String>();
                     queryNode.add(item.getPath());
-                    service.deletePaths(queryNode, new BaseAsyncCallback() {
+                    service.deletePaths(queryNode, new BaseAsyncCallback<Object>() {
+
+                        @Override
                         public void onApplicationFailure(Throwable throwable) {
                             Window.alert("Query deletion failed\n\n" + throwable.getLocalizedMessage());
                         }
 
+                        @Override
                         public void onSuccess(Object o) {
                             queryList.getStore().remove(item);
                             retrieveSavedSearch();
@@ -184,6 +187,8 @@ public class ContentRepositoryTabs extends LeftComponent {
         });
 
         final MenuItem renameQuery = new MenuItem(Messages.get("label.rename"), new SelectionListener<MenuEvent>() {
+
+            @Override
             public void componentSelected(MenuEvent event) {
                 final GWTJahiaNode item = queryList.getSelectionModel().getSelectedItem();
                 if (item != null) {
@@ -193,6 +198,8 @@ public class ContentRepositoryTabs extends LeftComponent {
         });
 
         queryMenu.addListener(Events.BeforeShow, new Listener<MenuEvent>() {
+
+            @Override
             public void handleEvent(MenuEvent baseEvent) {
                 removeQuery.setEnabled(queryList.getSelectionModel().getSelectedItem() != null);
             }
@@ -201,6 +208,8 @@ public class ContentRepositoryTabs extends LeftComponent {
         queryMenu.add(renameQuery);
         queryList.setContextMenu(queryMenu);
         savedSearchPanel.getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+
+            @Override
             public void componentSelected(IconButtonEvent event) {
                 retrieveSavedSearch();
             }
@@ -220,6 +229,8 @@ public class ContentRepositoryTabs extends LeftComponent {
         savedSearchPanel.addListener(Events.Expand, accordionListener);
 
         m_component.addListener(Events.ContextMenu, new Listener<ComponentEvent>() {
+
+            @Override
             public void handleEvent(ComponentEvent be) {
                 getLinker().getSelectionContext().refresh(LinkerSelectionContext.MAIN_NODE_ONLY);
             }
@@ -240,10 +251,13 @@ public class ContentRepositoryTabs extends LeftComponent {
             String newName = Window.prompt("Enter the new name for " + (selection.isFile().booleanValue() ? "file " : "folder ") + selection.getName(), selection.getName());
             if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
                 service.rename(selection.getPath(), newName, new BaseAsyncCallback<GWTJahiaNode>() {
+
+                    @Override
                     public void onApplicationFailure(Throwable throwable) {
                         Window.alert("Rename failed\n\n" + throwable.getLocalizedMessage());
                     }
 
+                    @Override
                     public void onSuccess(GWTJahiaNode o) {
                         retrieveSavedSearch();
                     }
@@ -259,6 +273,8 @@ public class ContentRepositoryTabs extends LeftComponent {
      * @param <T>
      */
     private class ChangeAccordionListener<T extends ComponentEvent> implements Listener<T> {
+
+        @Override
         public void handleEvent(T t) {
             if (savedSearchPanel.isExpanded()) {
                 retrieveSavedSearch();
@@ -267,6 +283,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         }
     }
 
+    @Override
     public void initWithLinker(ManagerLinker linker) {
         super.initWithLinker(linker);
         for (RepositoryTab tab : repositories) {
@@ -275,6 +292,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         contentSearchForm.initWithLinker(linker);
     }
 
+    @Override
     public void openAndSelectItem(Object item) {
         if (item != null) {
             for (RepositoryTab tab : repositories) {
@@ -283,6 +301,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         }
     }
 
+    @Override
     public void refresh(Map<String, Object> data) {
         for (RepositoryTab tab : repositories) {
             tab.refresh(data);
@@ -292,12 +311,15 @@ public class ContentRepositoryTabs extends LeftComponent {
     private void retrieveSavedSearch() {
         queryList.getStore().removeAll();
         service.getSavedSearch(new BaseAsyncCallback<List<GWTJahiaNode>>() {
+
+            @Override
             public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                 queryList.getStore().add(gwtJahiaNodes);
             }
         });
     }
 
+    @Override
     public Object getSelectedItem() {
         if (savedSearchPanel.isExpanded()) {
             return queryList.getSelectionModel().getSelectedItem();
@@ -322,6 +344,7 @@ public class ContentRepositoryTabs extends LeftComponent {
         }
     }
 
+    @Override
     public Component getComponent() {
         return m_component;
     }

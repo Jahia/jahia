@@ -82,6 +82,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
     protected transient ImageDragSource dragSource;
     protected transient ThumbsListView listView;
 
+    @Override
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
 
@@ -99,7 +100,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
                     String path = ((GWTJahiaNode) gwtJahiaFolder).getPath();
                     Log.debug("retrieving children of " + path);
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad(path, JCRClientUtils.FILE_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS, "j:width", "j:height"), false, -1, -1, false, null, null, false, false, listAsyncCallback);
+                            .lsLoad(path, JCRClientUtils.FILE_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.PERMISSIONS, GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS, "j:width", "j:height"), false, -1, -1, false, null, null, false, false, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }
@@ -118,11 +119,13 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
 
         contentStore = new ListStore<GWTJahiaNode>(listLoader);
         contentStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+
+            @Override
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof String && o2 instanceof String) {
                     String s1 = (String) o1;
                     String s2 = (String) o2;
-                    return Collator.getInstance().localeCompare(s1,s2);
+                    return Collator.getInstance().localeCompare(s1, s2);
                 } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
                     return ((Comparable) o1).compareTo(o2);
                 }
@@ -132,7 +135,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
         tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                contentContainer.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+                contentContainer.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
                 listLoader.load(event.getSelectedItem());
             }
         });
@@ -150,6 +153,8 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
         tab.add(contentContainer, contentVBoxData);
 
         listView.addListener(Events.DoubleClick, new Listener<ListViewEvent<GWTJahiaNode>>() {
+
+            @Override
             public void handleEvent(ListViewEvent<GWTJahiaNode> be) {
                 Window w = new Window();
                 w.addStyleName("fileimage-browse-preview");

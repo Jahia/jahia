@@ -139,7 +139,7 @@ public class CKEditorField extends Field<String> {
         super();
         ckeditor = new CKEditor(config, this);
         html = new Html();
-        html.setStyleAttribute("overflow","scroll");
+        html.setStyleAttribute("overflow", "scroll");
     }
 
     public Component getComponent() {
@@ -287,6 +287,8 @@ public class CKEditorField extends Field<String> {
 
             // needed to prevent flickering
             DeferredCommand.addCommand(new Command() {
+
+                @Override
                 public void execute() {
                     if (errorIcon.isAttached()) {
                         errorIcon.show();
@@ -382,6 +384,8 @@ public class CKEditorField extends Field<String> {
         wcagPanel.getHeader().setIcon(GXT.IMAGES.field_invalid());
         final CheckMenuItem ignore = new CheckMenuItem(userTriggered ? Messages.get("label.close", "Close") : Messages.get("label.wcag.ignore", "Ignore errors"));
         ignore.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+            @Override
             public void handleEvent(BaseEvent be) {
                 ignore.setChecked(true, true);
                 ignoreWcagWarnings = !userTriggered;
@@ -444,6 +448,8 @@ public class CKEditorField extends Field<String> {
         column.setId("message");
         column.setHeaderHtml(Messages.get("label.description", "Description"));
         column.setRenderer(new GridCellRenderer<WCAGViolation>() {
+
+            @Override
             public Object render(WCAGViolation model, String property, ColumnData config,
                                  int rowIndex, int colIndex, ListStore<WCAGViolation> store,
                                  Grid<WCAGViolation> grid) {
@@ -461,6 +467,8 @@ public class CKEditorField extends Field<String> {
         column.setWidth(60);
         column.setAlignment(HorizontalAlignment.CENTER);
         column.setRenderer(new GridCellRenderer<WCAGViolation>() {
+
+            @Override
             public Object render(WCAGViolation model, String property, ColumnData config,
                                  int rowIndex, int colIndex, ListStore<WCAGViolation> store,
                                  Grid<WCAGViolation> grid) {
@@ -485,6 +493,8 @@ public class CKEditorField extends Field<String> {
         column.setWidth(60);
         column.setAlignment(HorizontalAlignment.CENTER);
         column.setRenderer(new GridCellRenderer<WCAGViolation>() {
+
+            @Override
             public Object render(WCAGViolation model, String property, ColumnData config,
                                  int rowIndex, int colIndex, ListStore<WCAGViolation> store,
                                  Grid<WCAGViolation> grid) {
@@ -552,6 +562,8 @@ public class CKEditorField extends Field<String> {
         toValidate.put("text", text);
         JahiaContentManagementService.App.getInstance().validateWCAG(toValidate,
                 new BaseAsyncCallback<Map<String, WCAGValidationResult>>() {
+
+                    @Override
                     public void onSuccess(Map<String, WCAGValidationResult> result) {
                         WCAGValidationResult validationResult = result.get("text");
                         if (validationResult.isEmpty()) {

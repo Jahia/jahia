@@ -57,10 +57,14 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
  * Action item to export and download the current templates set as a war
  */
 public class GenerateWarActionItem extends BaseActionItem {
-    @Override public void onComponentSelection() {
-        linker.loading(Messages.get("label.generate.war","Generating JAR file..."));
+
+    @Override
+    public void onComponentSelection() {
+        linker.loading(Messages.get("label.generate.war", "Generating JAR file..."));
 
         JahiaContentManagementService.App.getInstance().generateWar(JahiaGWTParameters.getSiteKey(), new BaseAsyncCallback<GWTJahiaNode>() {
+
+            @Override
             public void onSuccess(GWTJahiaNode result) {
                 linker.loaded();
                 final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
@@ -77,9 +81,10 @@ public class GenerateWarActionItem extends BaseActionItem {
                 dl.layout();
             }
 
+            @Override
             public void onApplicationFailure(Throwable caught) {
                 linker.loaded();
-                Info.display(Messages.get("label.generate.war.failed","JAR file creation failed"),caught.getMessage());
+                Info.display(Messages.get("label.generate.war.failed", "JAR file creation failed"), caught.getMessage());
             }
         });
     }

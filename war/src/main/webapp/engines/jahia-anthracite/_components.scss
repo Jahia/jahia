@@ -1513,6 +1513,12 @@ form,
 
 			}
 
+			.x-grid3-td-locked {
+				background: rgb(228, 229, 229) !important;
+				// background: #f1f1f1;
+
+			}
+
 			.x-grid3-td-displayName,
 			.gwt-content-label,
 			.x-grid3-col-name {
@@ -1525,6 +1531,7 @@ form,
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);
 					opacity: 1;
+					background-color: #e4e5e5 !important;
 
 				}
 
@@ -1566,6 +1573,12 @@ form,
 
 			}
 
+			.x-grid3-td-locked {
+				background: #9ea0a2!important;
+				// background: #f1f1f1;
+
+			}
+
 			.x-grid3-td-displayName,
 			.gwt-content-label,
 			.x-grid3-col-name,
@@ -1586,6 +1599,7 @@ form,
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
 					opacity: 1;
+					background-color: #9ea0a2!important;
 
 				}
 			}
@@ -1657,7 +1671,7 @@ form,
 			position: absolute;
 			pointer-events: all;
 			margin-top: -23px;
-			background-image: url($TREE--MORE_OPTIONS--ICON---UP);
+			background-image: none;
 			background-repeat: no-repeat;
 			background-position: center center;
 			background-size: 10px 2px;
@@ -1665,22 +1679,25 @@ form,
 			display: block;
 			width: 28px;
 			height: 25px;
-			opacity: 0;
+			opacity: 1;
 			right: 0;
 			content: "More";
+			top: 23px;
+			background-color: #f1f1f1!important;
 
 			#JahiaGxtPagesTab & {
+				top: 26px;
 				margin-top: -26px;
-
 			}
 
 			#JahiaGxtContentBrowseTab .x-box-item:nth-child(2) &,
 			#JahiaGxtCategoryBrowseTab .x-box-item:nth-child(2) &,
 			.JahiaGxtSearchTab-results & {
-				margin-top: -21px;
+				margin-top: -23px;
 
 			}
 
+			.content-type-window &,
 			.x-viewport-dashboardmode &,
 			.x-viewport-adminmode & {
 				display: none;
@@ -1755,16 +1772,28 @@ form,
 		height: 100%;
 		display: block;
 
+		> tbody {
+			display: block;
+
+			> tr {
+				display: block;
+				position: relative;
+
+			}
+		}
+
 		.x-grid3-cell {
 			/* Cell Containing the List Item */
 			padding: 0;
 
 			&.x-grid3-td-locked {
-				width: 25px;
-				// display: none;
-				right: 32px;
+				width: 25px!important;
+				display: block;
+				right: 25px;
 				top: 3px;
-				position: relative;
+				position: absolute!important;
+				// background: #9ea0a2;
+				background: #f1f1f1;
 
 			}
 

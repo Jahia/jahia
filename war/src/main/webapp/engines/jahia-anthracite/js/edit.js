@@ -957,7 +957,7 @@
 		            Dex("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
 		                .css({
 		                    top: (top + (offset.top)) + "px",
-		                    left: ((left + width) + offset.left) + "px"
+		                    left: ((left + width) + offset.left + 5) + "px"
 		                })
 		                .addClass("indigo-show-button");
 

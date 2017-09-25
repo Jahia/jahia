@@ -46,20 +46,19 @@ package org.jahia.services.uicomponents.bean.toolbar;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +67,7 @@ import java.util.Map;
  * Date: 7 avr. 2008
  * Time: 09:05:20
  */
-public class Item implements Serializable, BeanNameAware, InitializingBean, DisposableBean, ApplicationContextAware {
+public class Item implements Serializable, BeanNameAware, InitializingBean, DisposableBean {
     private static final long serialVersionUID = -5120594370234680709L;
     private String id;
     private String icon;
@@ -88,7 +87,6 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
     private int position = -1;
     private String positionAfter;
     private String positionBefore;
-    private ApplicationContext applicationContext;
 
     public Item() {
         super();
@@ -237,10 +235,10 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
         if (parent != null) {
             if (parent instanceof List) {
                 for (Object o : (List<?>) parent) {
-                    addToParent(o);
+                    addItem(getItems(o));
                 }
             } else {
-                addToParent(parent);
+                addItem(getItems(parent));
             }
 
             // clean the reference
@@ -248,95 +246,110 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
         }
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    private void addItem(List<List<Item>> items) {
+        if (!items.isEmpty()) {
+            removeItem(items, getId());
+            for (List<Item> it : items) {
+                int index = -1;
+                if (position >= 0) {
+                    index = position;
+                } else if (positionBefore != null) {
+                    index = it.indexOf(new Item(positionBefore));
+                } else if (positionAfter != null) {
+                    index = it.indexOf(new Item(positionAfter));
+                    if (index != -1) {
+                        index++;
+                    }
+                    if (index >= it.size()) {
+                        index = -1;
+                    }
+                }
+                if (index != -1) {
+                    it.add(index, this);
+                } else {
+                    it.add(this);
+                }
+            }
+        }
     }
 
     @Override
     public void destroy() throws Exception {
-        // todo remove item
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
+        if (parent instanceof List) {
+            for (Object o : (List<?>) parent) {
+                removeItem(getItems(o), getId());
+            }
+        } else {
+            removeItem(getItems(parent), getId());
+        }
     }
 
-    private void addToParent(Object o) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        if (o instanceof String) {
-            String parentPath = (String) o;
+    private void removeItem(List<List<Item>> items, String itemId) {
+        if (!items.isEmpty() && itemId != null && !itemId.isEmpty()) {
+            for (List<Item> it : items) {
+                for (Iterator<Item> iterator = it.iterator(); iterator.hasNext();) {
+                    Item tab = iterator.next();
+                    if (itemId.equals(tab.getId())) {
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+    }
+
+    private List<List<Item>> getItems(Object parent) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        List<List<Item>> results = new ArrayList<>();
+        if (parent == null) {
+            return results;
+        }
+        if (parent instanceof String) {
+            String parentPath = (String) parent;
             String beanId = StringUtils.substringBefore(parentPath, ".");
             Object bean = SpringContextSingleton.getBean(beanId);
             String propertyPath = StringUtils.substringAfter(parentPath, ".");
             if (bean instanceof EditConfiguration || bean instanceof ManagerConfiguration) {
-                for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(bean.getClass()).entrySet()) {
+                for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(bean.getClass()).entrySet()) {
                     if (entry.getKey().startsWith(beanId + "-")) {
-                        addToParent(entry.getKey() + "." + propertyPath);
+                        results.addAll(getItems(resolveProperty(parentPath, entry.getValue(), propertyPath)));
                     }
                 }
             }
 
-            if (propertyPath.length() > 0) {
-                bean = PropertyUtils.getNestedProperty(bean, propertyPath);
-            }
-            if (bean == null) {
-                throw new IllegalArgumentException("Unable to find target for parent path: "
-                        + parentPath);
-            }
-            if (!(bean instanceof Menu || bean instanceof Toolbar)) {
-                throw new IllegalArgumentException("Target bean for path '" + parentPath
-                        + "' is not of type Menu or Toolbar. Unable to handle beans of type '"
-                        + bean.getClass().getName() + "'");
-            }
-            o = bean;
+            parent = resolveProperty(parentPath, bean, propertyPath);
         }
-        if (o instanceof Menu) {
-            Menu parentMenu = (Menu) o;
-            parentMenu.removeItem(getId());
-            int index = -1;
-            if (position >= 0) {
-                index = position;
-            } else if (positionBefore != null) {
-                index = parentMenu.getItems().indexOf(new Item(positionBefore));
-            } else if (positionAfter != null) {
-                index = parentMenu.getItems().indexOf(new Item(positionAfter));
-                if (index != -1) {
-                    index++;
-                }
-                if (index >= parentMenu.getItems().size()) {
-                    index = -1;
-                }
-            }
-            if (index != -1) {
-                parentMenu.addItem(index, this);
-            } else {
-                parentMenu.addItem(this);
-            }
-        } else if (o instanceof Toolbar) {
-            Toolbar parentToolbar = (Toolbar) o;
-            parentToolbar.removeItem(getId());
-            int index = -1;
-            if (position >= 0) {
-                index = position;
-            } else if (positionBefore != null) {
-                index = parentToolbar.getItems().indexOf(new Item(positionBefore));
-            } else if (positionAfter != null) {
-                index = parentToolbar.getItems().indexOf(new Item(positionAfter));
-                if (index != -1) {
-                    index++;
-                }
-                if (index >= parentToolbar.getItems().size()) {
-                    index = -1;
-                }
-            }
-            if (index != -1) {
-                parentToolbar.addItem(index, this);
-            } else {
-                parentToolbar.addItem(this);
-            }
+        if (parent instanceof Menu) {
+            Menu parentMenu = (Menu) parent;
+            results.add(parentMenu.getItems());
+        } else if (parent instanceof Toolbar) {
+            Toolbar parentToolbar = (Toolbar) parent;
+            results.add(parentToolbar.getItems());
         } else {
             throw new IllegalArgumentException(
                     "Unknown parent type '"
-                            + o.getClass().getName()
+                            + parent.getClass().getName()
                             + "'. Can accept Menu, Toolbar or"
                             + " a String value with a bean-compliant path to the corresponding menu/toobar bean");
         }
+        return results;
+    }
+
+    private Object resolveProperty(String parentPath, Object bean, String propertyPath) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        if (propertyPath.length() > 0) {
+            bean = PropertyUtils.getNestedProperty(bean, propertyPath);
+        }
+        if (bean == null) {
+            throw new IllegalArgumentException("Unable to find target for parent path: "
+                    + parentPath);
+        }
+        if (!(bean instanceof Menu || bean instanceof Toolbar)) {
+            throw new IllegalArgumentException("Target bean for path '" + parentPath
+                    + "' is not of type Menu or Toolbar. Unable to handle beans of type '"
+                    + bean.getClass().getName() + "'");
+        }
+        return bean;
     }
 
     @Override

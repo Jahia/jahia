@@ -3076,3 +3076,76 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 }
+
+
+
+/////////////////////////////////////////////////
+// DELETE CONFIRMATION MODAL/////////////////////
+/////////////////////////////////////////////////
+
+
+.x-window.delete-item-window {
+    background: transparent;
+    height: 370px;
+
+		.x-panel-toolbar {
+		    display: none;
+		}
+
+		.x-window-header {
+		    padding: 8px 0 !important;
+		    font-family: $FONT--FAMILY---RALEWAY;
+		    font-size: 32px;
+		    color: $COLOUR--WHITE_CLOUDS;
+		    font-weight: $FONT--WEIGHT---EXTRALIGHT;
+		}
+
+		.x-window-bwrap {
+		    padding: 0 8px;
+		    color: rgba(0, 0, 0, 0.84);
+		    padding-top: 12px;
+		    background: #eee;
+		    height: 302px;
+
+				.x-form-textarea {
+						margin-top: 8px;
+						color: rgb(0, 0, 0);
+						width: 100% !important;
+
+						&:focus {
+								background: $COLOUR--WHITE !important;
+						}
+
+				}
+
+				.x-panel-body {
+
+					form .x-component {
+
+						&:nth-child(1) {
+								font-size: 13px;
+								padding-bottom: 4px;
+								color: #565656;
+								font-weight: $FONT--WEIGHT---SEMIBOLD;
+						}
+
+						&:nth-child(2) {
+								text-transform: uppercase;
+								font-family: $FONT--FAMILY---NUNITO;
+								font-size: 11px;
+								color: #a3a3a3;
+								font-weight: $FONT--WEIGHT---SEMIBOLD;
+						}
+
+					}
+
+					.x-form-field-wrap {
+							height: fit-content !important;
+							padding-bottom: 16px;
+					}
+
+				}
+
+		}
+
+}

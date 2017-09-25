@@ -3162,4 +3162,13 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		}
 
+		.x-toolbar-left-row .x-toolbar-cell:first-child .x-btn-text {
+			background: #00a0e3 !important;
+			color: #f1f1f1 !important;
+		}
+
+		.x-toolbar-left-row .x-toolbar-cell:nth-child(2) .x-btn-text {
+			background: #dedede !important;
+		}
+
 }

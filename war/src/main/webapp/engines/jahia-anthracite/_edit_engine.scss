@@ -886,11 +886,13 @@
 						padding-bottom: 20px;
 
 
+
+
 						// // VERY DIRTY !!! INSTALL LATEST VERSION OF SASS COMPILER TO USE selector-append()
-						// @at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3){
-						// 	@include button("ACTIONBAR---SUGGESTED");
-						//
-						// }
+						@at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3){
+							@include button("ACTIONBAR---SUGGESTED");
+
+						}
 					}
 
 					&:nth-child(4) {

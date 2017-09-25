@@ -756,6 +756,10 @@
 
 	.JahiaGxtSearchTab-form {
 		width: 273px!important;
+
+		.x-toolbar-right {
+			@include button("ACTIONBAR---SUGGESTED", "remove-icons");
+		}
 	}
 
  	.JahiaGxtSearchTab-results {

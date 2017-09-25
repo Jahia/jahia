@@ -271,10 +271,10 @@
 	/* Footer buttons bar */
 
 	> .x-panel-bwrap > .x-panel-bbar {
-	    background: #474a4c;
-	    width: 100% !important;
-	    position: fixed;
-	    height: 82px;
+	    // background: #474a4c;
+	    // width: 100% !important;
+	    // position: fixed;
+	    // height: 82px;
 
 			.x-panel-fbar .x-toolbar-cell {
 
@@ -542,36 +542,33 @@
 		    margin-top: 16px;
 
 				> .x-panel-bbar {
-					background: #474a4c;
-					width: 100% !important;
-					position: fixed;
-					height: 82px;
+					// background: #474a4c;
+					// width: 100% !important;
+					// position: fixed;
+					// height: 82px;
+					padding-bottom: 20px;
 
 					.x-toolbar-ct {
 						float: none;
 					}
 
 					.x-panel-fbar .x-toolbar-cell {
-						padding-top: 20px;
+						padding-bottom: 0!important;
+
+						@include button("ACTIONBAR", "remove-icons");
 
 						&:nth-child(1) {
-							position: relative;
-							top: 0;
-							padding-bottom: 20px;
-						}
 
-						&:nth-child(2) .x-btn.x-btn-text-icon button {
-							background: #a3a3a3 !important;
+							// @include button("ACTIONBAR---SUGGESTED");
 						}
-
 					}
 
-					.x-btn.x-btn-noicon button {
-						padding: 5px 10px;
-						font-weight: 100;
-						background: #a3a3a3 !important;
-						font-size: 16px;
-					}
+					// .x-btn.x-btn-noicon button {
+					// 	padding: 5px 10px;
+					// 	font-weight: 100;
+					// 	background: #a3a3a3 !important;
+					// 	font-size: 16px;
+					// }
 
 				}
 

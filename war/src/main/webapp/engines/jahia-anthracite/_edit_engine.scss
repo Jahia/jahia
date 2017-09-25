@@ -114,7 +114,7 @@
 			width: calc(100% - 456px) !important;
 			box-sizing: border-box;
 			vertical-align: top;
-			height: 100% !important;
+			height: calc(100% - 61px)!important;
 			background: none;
 
 			> .x-panel-mc {
@@ -830,12 +830,20 @@
 		> .x-panel-bbar {
 			// Footer action bar
 			display: block;
-			width: 292px!important;
-			height: 120px;
+			// width: 292px!important;
+			// height: 120px;
 			position: fixed;
 			bottom: 0;
 			left: 0;
-			padding: 10px 0 0 75px;
+			// padding: 10px 0 0 75px;
+
+			background: #4a4d50;
+		    width: 100%!important;
+		    border-top: 1px solid #353739;
+		    box-shadow: inset 0px 13px 40px 0px rgba(38, 38, 38, 0.5);
+		    padding: 20px 0 0 20px;
+		    box-sizing: border-box;
+		    height: auto;
 
 			.x-panel-fbar {
 				width: 100%!important;
@@ -845,8 +853,22 @@
 
 					&:nth-child(1) {
 						/* Save as work in progress */
-						position: absolute;
-						top: 43px;
+						// position: absolute;
+						// top: 43px;
+
+						// position: fixed!important;
+					    // right: 20px;
+					    // bottom: 26px;
+					    // z-index: 99999999;
+					    // left: auto!important;
+					    // top: auto;
+
+						> div {
+							// Not a button, but its a checkbox for the edit engine
+							position: fixed!important;
+							right: 20px;
+							bottom: 26px;
+						}
 					}
 
 					&:nth-child(2) {
@@ -864,11 +886,11 @@
 						padding-bottom: 20px;
 
 
-						// VERY DIRTY !!! INSTALL LATEST VERSION OF SASS COMPILER TO USE selector-append()
-						@at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3){
-							@include button("ACTIONBAR---SUGGESTED");
-
-						}
+						// // VERY DIRTY !!! INSTALL LATEST VERSION OF SASS COMPILER TO USE selector-append()
+						// @at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3){
+						// 	@include button("ACTIONBAR---SUGGESTED");
+						//
+						// }
 					}
 
 					&:nth-child(4) {

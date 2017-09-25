@@ -61,7 +61,7 @@
     <scm>
         <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/branches/JAHIA_7_1_0_1_RC</connection>
         <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/branches/JAHIA_7_1_0_1_RC</developerConnection>
-      <tag>HEAD</tag>
+      <tag>JAHIA_7_1_2_6_RC</tag>
   </scm>
 
     <repositories>

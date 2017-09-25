@@ -275,32 +275,16 @@
 	    // width: 100% !important;
 	    // position: fixed;
 	    // height: 82px;
+		padding-bottom: 20px;
 
 			.x-panel-fbar .x-toolbar-cell {
 
-				&:nth-child(1) {
-				    position: relative;
-				    top: 0;
-				    padding-bottom: 20px;
-				    padding-top: 20px;
+				padding-bottom: 0!important;
 
-						.x-btn.x-btn-noicon button {
-						    //background: #f26d4f !important;
-						}
-
-				}
+				@include button("ACTIONBAR", "remove-icons");
 
 				&:nth-child(2) {
-				    padding-top: 20px;
-
-						.x-btn.x-btn-noicon button {
-						    background: #a3a3a3 !important;
-						}
-
-				}
-
-				&:nth-child(3) {
-				    padding-top: 20px;
+					@include button("ACTIONBAR", "remove-icons");
 				}
 
 			}

@@ -5,6 +5,7 @@
 @import "functions";
 @import "variables";
 @import "theme-dark";
+@import "customisation";
 @import "placeholders";
 @import "components";
 @import "edit_engine";
@@ -361,6 +362,31 @@ body {
 
 .jahia-template-gxt {
     margin-bottom: 0!important;
+}
+
+/////////////////////////////////////////////////
+// CUSTOMISATION  ///////////////////////////////
+/////////////////////////////////////////////////
+
+
+
+
+
+// Add company logo to bottom left of screen in Edit Mode
+.x-viewport-editmode {
+	@if $COMPANY_LOGO_LIGHT {
+		&::before {
+			@extend %CSS_BLOCK--CUSTOMER--LOGO---LIGHT\:BOTTOM_LEFT;
+		}
+	}
+}
+
+.menu-editmode-managers-menu .x-menu-list {
+	@if $COMPANY_LOGO_DARK {
+		&::after {
+			@extend %CSS_BLOCK--CUSTOMER--LOGO---DARK\:BOTTOM_LEFT;
+		}
+	}
 }
 
 

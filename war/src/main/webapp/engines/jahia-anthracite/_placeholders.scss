@@ -1777,3 +1777,33 @@
 
 	transition: all 0.2s ease-in 0s;
 }
+
+
+
+%CSS_BLOCK--CUSTOMER--LOGO---LIGHT\:BOTTOM_LEFT {
+	content: "Customer Logo";
+	position: fixed;
+	bottom: 10px;
+	left: 10px;
+	width: 40px;
+	height: 40px;
+	background: red;
+	text-indent: -50000px;
+	background: url($COMPANY_LOGO_LIGHT) no-repeat center center;
+	background-size: 40px 40px;
+	opacity: 0.2;
+}
+
+%CSS_BLOCK--CUSTOMER--LOGO---DARK\:BOTTOM_LEFT {
+	content: "Customer Logo";
+	position: fixed;
+	bottom: 10px;
+	left: 10px;
+	width: 40px;
+	height: 40px;
+	background: red;
+	text-indent: -50000px;
+	background: url($COMPANY_LOGO_DARK) no-repeat center center;
+	background-size: 40px 40px;
+	opacity: 0.2;
+}

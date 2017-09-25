@@ -904,20 +904,20 @@
     pointer-events: all;
     z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
 
-    body[data-lang="en"] & {
-        background-image: url(./images/flags@X2/united-kingdom@X2.png), radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 70%);
-        background-size: 22px, auto;
-        background-repeat: no-repeat;
-        background-position: left 7px center;
-
-    }
+    // body[data-lang="en"] & {
+    //     background-image: url(./images/flags@X2/united-kingdom@X2.png), radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 70%);
+    //     background-size: 22px, auto;
+    //     background-repeat: no-repeat;
+    //     background-position: left 7px center;
+	//
+    // }
 
     &:hover {
         background-color: rgba(255, 255, 255, 0.07);
     }
 
     input {
-        padding: 7px 20px 6px 34px !important;
+        padding: 7px 20px 6px 10px !important;
         text-transform: uppercase;
         font-size: 11px;
         background-color: transparent;

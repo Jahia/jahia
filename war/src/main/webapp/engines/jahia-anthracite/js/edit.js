@@ -534,6 +534,21 @@
         }
     };
 
+	var localisedStrings = {
+		"EN": {
+			jobs: "Jobs",
+			zeroTasks: "Open Dashboard",
+			singleTask: "Dashboard (%n% task)",
+			multipleTasks: "Dashboard (%n% tasks)"
+		},
+		"FR": {
+			jobs: "Processus",
+			zeroTasks: "Tableau de bord",
+			singleTask: "Tableau de bord (%n% Tâche)",
+			multipleTasks: "Tableau de bord (%n% Tâches)"
+		}
+	}
+
 
 	var app = {
 		data: {
@@ -1411,15 +1426,15 @@
 
 							switch(taskCount){
 								case 0:
-									dashboardButtonLabel = "Open Dashboard";
+									dashboardButtonLabel = localisedStrings[app.data.UILanguage].zeroTasks;
 
 									break;
 								case 1:
-									dashboardButtonLabel = "Dashboard (" + taskCount + " task)";
+									dashboardButtonLabel = localisedStrings[app.data.UILanguage].singleTask.replace("%n%", taskCount);
 
 									break;
 								default:
-									dashboardButtonLabel = "Dashboard (" + taskCount + " tasks)";
+									dashboardButtonLabel = localisedStrings[app.data.UILanguage].multipleTasks.replace("%n%", taskCount);
 
 									break;
 							}
@@ -1489,15 +1504,8 @@
                             } else {
                                 // No Jobs active
 								activeJob = false;
+								jobTooltip = localisedStrings[app.data.UILanguage].jobs;
 
-								if(app.data.UILanguage == "FR"){
-									jobTooltip = "Processus";
-
-								} else {
-									jobTooltip = "Jobs";
-
-
-								}
 								Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").removeClass("indigo-job-running");
 
                             }

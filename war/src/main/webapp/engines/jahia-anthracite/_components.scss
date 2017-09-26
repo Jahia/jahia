@@ -1699,7 +1699,8 @@ form,
 
 			.content-type-window &,
 			.x-viewport-dashboardmode &,
-			.x-viewport-adminmode & {
+			.x-viewport-adminmode &,
+			.workflow-dashboard-engine & {
 				display: none;
 			}
 		}

@@ -1697,12 +1697,10 @@ form,
 
 			}
 
-			// WOuld be better to have the button DISABLED by default, the reactivated when required ...
 			.content-type-window &,
 			.x-viewport-dashboardmode &,
 			.x-viewport-adminmode &,
-			.workflow-dashboard-engine &,
-			#JahiaGxtEditEnginePanel-liveroles & {
+			.workflow-dashboard-engine & {
 				display: none;
 			}
 		}

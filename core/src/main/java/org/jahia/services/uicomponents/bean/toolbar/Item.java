@@ -51,9 +51,12 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -67,7 +70,7 @@ import java.util.Map;
  * Date: 7 avr. 2008
  * Time: 09:05:20
  */
-public class Item implements Serializable, BeanNameAware, InitializingBean, DisposableBean {
+public class Item implements Serializable, BeanNameAware, InitializingBean, DisposableBean, ApplicationContextAware {
     private static final long serialVersionUID = -5120594370234680709L;
     private String id;
     private String icon;
@@ -87,6 +90,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
     private int position = -1;
     private String positionAfter;
     private String positionBefore;
+    private ApplicationContext applicationContext;
 
     public Item() {
         super();
@@ -231,6 +235,11 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
     }
 
     @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
     public void afterPropertiesSet() throws Exception {
         if (parent != null) {
             if (parent instanceof List) {
@@ -311,7 +320,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
             Object bean = SpringContextSingleton.getBean(beanId);
             String propertyPath = StringUtils.substringAfter(parentPath, ".");
             if (bean instanceof EditConfiguration || bean instanceof ManagerConfiguration) {
-                for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(bean.getClass()).entrySet()) {
+                for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, bean.getClass()).entrySet()) {
                     if (entry.getKey().startsWith(beanId + "-")) {
                         results.addAll(getItems(resolveProperty(parentPath, entry.getValue(), propertyPath)));
                     }

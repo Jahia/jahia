@@ -52,6 +52,8 @@ import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.io.Serializable;
 import java.util.*;
@@ -62,7 +64,7 @@ import java.util.*;
  * Date: Apr 14, 2010
  * Time: 12:30:01 PM
  */
-public class SidePanelTab implements Serializable, BeanNameAware, InitializingBean, DisposableBean {
+public class SidePanelTab implements Serializable, BeanNameAware, InitializingBean, DisposableBean, ApplicationContextAware {
     
     private static final long serialVersionUID = -4170052202882342097L;
     
@@ -82,6 +84,8 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
     private int position = -1;
     private String positionAfter;
     private String positionBefore;
+
+    private ApplicationContext applicationContext;
 
     public SidePanelTab() {
         super();
@@ -201,7 +205,12 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
     public void setPositionBefore(String positionBefore) {
         this.positionBefore = positionBefore;
     }
-    
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
@@ -310,7 +319,7 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
                 ((EditConfiguration) parent).setTabs(tabs);
             }
 
-            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(EditConfiguration.class).entrySet()) {
+            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, EditConfiguration.class).entrySet()) {
                 if (entry.getKey().startsWith(((EditConfiguration) parent).getName() + "-")) {
                     results.addAll(getSidePanelTabs(entry.getValue()));
                 }

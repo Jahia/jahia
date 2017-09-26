@@ -1,4 +1,5 @@
 @mixin tooltip($_tooltip_text, $_position: "BOTTOM"){
+	@extend %CSS_BLOCK--TOOLTIP !optional;
 	@extend %CSS_BLOCK--TOOLTIP---#{$_position} !optional;
 
 	&::before {
@@ -91,6 +92,15 @@
 				// Button has icon
 				button {
                     @extend %CSS_BLOCK--BUTTON--ICON---HOVER\:#{$_button_id} !optional;
+
+					@if($_extra == "remove-icons"){
+	                    padding-left: 10px;
+
+	                    img {
+	                        display: none;
+
+	                    }
+	                }
 
 				}
 			}

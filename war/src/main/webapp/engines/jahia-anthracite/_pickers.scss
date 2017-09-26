@@ -126,6 +126,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 				width: 25px;
 				height: 25px;
+				opacity: 1!important;
 
 				@extend %CSS_BLOCK--PREVIEW_BUTTON---UP;
 
@@ -150,6 +151,9 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 				&[indigo-preview-button-state="selected"] {
 					@extend %CSS_BLOCK--PREVIEW_BUTTON---SELECTED;
+
+					background-color: $COLOUR--JAHIA_BLUE!important;
+					opacity: 1!important;
 
 					body[data-INDIGO-PICKER-SEARCH="open"] & {
 						@extend %CSS_BLOCK--PREVIEW_BUTTON---SELECTED\:SEARCH;
@@ -278,7 +282,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 					width: 28px;
 					height: 25px;
 					position: absolute;
-					right: -11px;
+					right: -1px;
 					top: 0;
 					cursor: pointer;
 					z-index: 99999999999;
@@ -946,6 +950,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 			&.x-grid3-row-selected .x-grid3-td-size::after {
 				@extend %CSS_BLOCK--MORE_INFO---SELECTED;
+				background-color: $COLOUR--JAHIA_BLUE!important;
 			}
 
 		}
@@ -1079,7 +1084,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 				&.x-view-item-sel {
 					.thumb {
-						background: $COLOUR--DIRTY_ORANGE;
+						background: $COLOUR--JAHIA_BLUE;
 					}
 				}
 
@@ -1102,10 +1107,10 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				}
 
 				&.x-view-item-sel {
-					background: $COLOUR--DIRTY_ORANGE;
+					background: $COLOUR--JAHIA_BLUE;
 
 					span {
-						background: $COLOUR--DIRTY_ORANGE!important;
+						background: $COLOUR--JAHIA_BLUE!important;
 						color: $COLOUR--WHITE_CLOUDS;
 					}
 				}
@@ -1143,6 +1148,8 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 						opacity: 0;
 						top: 26px;
 
+
+
 						body[data-indigo-picker-search="open"] & {
 							@extend %CSS_BLOCK--MORE_INFO---UP\:SEARCH;
 						}
@@ -1158,6 +1165,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 				&.x-view-item-sel .thumb::after {
 					@extend %CSS_BLOCK--MORE_INFO---SELECTED;
+					background-color:$COLOUR--JAHIA_BLUE!important;
 
 					body[data-indigo-picker-search="open"] & {
 						@extend %CSS_BLOCK--MORE_INFO---SELECTED\:SEARCH;

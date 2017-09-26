@@ -194,6 +194,23 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         return found;
     }
 
+    /**
+     * Returns a map with beans of the specified type
+     * If applicationContext is root context, only look in this context
+     * Otherwise, lookup in all modules context.
+     *
+     * @param clazz the bean type to search for
+     * @return a map with beans of the specified type
+     * @throws BeansException in case of a lookup error
+     */
+    public static <T> Map<String, T> getBeansOfType(ApplicationContext applicationContext, Class<T> clazz) {
+        if (applicationContext.getParent() == null) {
+            return applicationContext.getBeansOfType(clazz);
+        } else {
+            return SpringContextSingleton.getBeansOfType(clazz);
+        }
+    }
+
     public static SpringContextSingleton getInstance() {
         return ourInstance;
     }

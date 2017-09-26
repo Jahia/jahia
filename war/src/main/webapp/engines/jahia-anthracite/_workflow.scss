@@ -271,36 +271,20 @@
 	/* Footer buttons bar */
 
 	> .x-panel-bwrap > .x-panel-bbar {
-	    background: #474a4c;
-	    width: 100% !important;
-	    position: fixed;
-	    height: 82px;
+	    // background: #474a4c;
+	    // width: 100% !important;
+	    // position: fixed;
+	    // height: 82px;
+		padding-bottom: 20px;
 
 			.x-panel-fbar .x-toolbar-cell {
 
-				&:nth-child(1) {
-				    position: relative;
-				    top: 0;
-				    padding-bottom: 20px;
-				    padding-top: 20px;
+				padding-bottom: 0!important;
 
-						.x-btn.x-btn-noicon button {
-						    background: #f26d4f !important;
-						}
-
-				}
+				@include button("ACTIONBAR", "remove-icons");
 
 				&:nth-child(2) {
-				    padding-top: 20px;
-
-						.x-btn.x-btn-noicon button {
-						    background: #a3a3a3 !important;
-						}
-
-				}
-
-				&:nth-child(3) {
-				    padding-top: 20px;
+					@include button("ACTIONBAR", "remove-icons");
 				}
 
 			}
@@ -361,16 +345,24 @@
 
 		}
 
-		.x-grid3-row-selected .x-panel-fbar {
+		> .x-grid-panel.x-component.x-border-panel .x-grid3-row-selected .x-panel-fbar {
 
 			.x-toolbar-cell:first-child .x-btn.x-btn-noicon button {
-				background: #f26d4f !important
+				background: #474a4c !important;
+				padding: 2px 4px;
+				right: 8px;
 			}
 
 			.x-btn.x-btn-noicon button {
-				background: #a3a3a3 !important;
+				padding: 2px 4px;
+				right: 4px;
+				color: #eee !important;
 			}
 
+		}
+
+		> .x-grid-panel.x-component.x-border-panel .x-grid3 .x-grid3-row {
+			height: 30px !important;
 		}
 
 		.x-panel-fbar {
@@ -535,32 +527,33 @@
 		    margin-top: 16px;
 
 				> .x-panel-bbar {
-					background: #474a4c;
-					width: 100% !important;
-					position: fixed;
-					height: 82px;
+					// background: #474a4c;
+					// width: 100% !important;
+					// position: fixed;
+					// height: 82px;
+					padding-bottom: 20px;
 
 					.x-toolbar-ct {
 						float: none;
 					}
 
 					.x-panel-fbar .x-toolbar-cell {
-						padding-top: 20px;
+						padding-bottom: 0!important;
+
+						@include button("ACTIONBAR", "remove-icons");
 
 						&:nth-child(1) {
-							position: relative;
-							top: 0;
-							padding-bottom: 20px;
+
+							// @include button("ACTIONBAR---SUGGESTED");
 						}
-
 					}
 
-					.x-btn.x-btn-noicon button {
-						padding: 5px 10px;
-						font-weight: 100;
-						background: #a3a3a3 !important;
-						font-size: 16px;
-					}
+					// .x-btn.x-btn-noicon button {
+					// 	padding: 5px 10px;
+					// 	font-weight: 100;
+					// 	background: #a3a3a3 !important;
+					// 	font-size: 16px;
+					// }
 
 				}
 

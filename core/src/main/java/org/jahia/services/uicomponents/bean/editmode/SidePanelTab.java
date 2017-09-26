@@ -52,13 +52,11 @@ import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represents a single tab in the edit mode side panel.
@@ -66,7 +64,7 @@ import java.util.Map;
  * Date: Apr 14, 2010
  * Time: 12:30:01 PM
  */
-public class SidePanelTab implements Serializable, BeanNameAware, InitializingBean, DisposableBean {
+public class SidePanelTab implements Serializable, BeanNameAware, InitializingBean, DisposableBean, ApplicationContextAware {
     
     private static final long serialVersionUID = -4170052202882342097L;
     
@@ -86,7 +84,9 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
     private int position = -1;
     private String positionAfter;
     private String positionBefore;
-    
+
+    private ApplicationContext applicationContext;
+
     public SidePanelTab() {
         super();
         tableColumns = new ArrayList<Column>();
@@ -205,7 +205,12 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
     public void setPositionBefore(String positionBefore) {
         this.positionBefore = positionBefore;
     }
-    
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj)) {
@@ -225,48 +230,48 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
         return key != null ? key.hashCode() : 0;
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         if (parent != null) {
             if (parent instanceof List) {
                 for (Object o : (List) parent) {
-                    addToParent(o);
+                    addTab(getSidePanelTabs(o));
                 }
             } else {
-                addToParent(parent);
+                addTab(getSidePanelTabs(parent));
             }
         }
     }
 
-    private void addToParent(Object o) {
-        if (o instanceof String) {
-            o = SpringContextSingleton.getBean((String) o);
-        }
-        if (o instanceof EditConfiguration) {
-            EditConfiguration cfg = (EditConfiguration) o;
-            cfg.removeTab(getKey());
-            int index = -1;
-            if (position >= 0) {
-                index = position;
-            } else if (positionBefore != null) {
-                index = cfg.getTabs().indexOf(new SidePanelTab(positionBefore));
-            } else if (positionAfter != null) {
-                index = cfg.getTabs().indexOf(new SidePanelTab(positionAfter));
+    private void addTab(List<List<SidePanelTab>> tabs) {
+        if (!tabs.isEmpty()) {
+            removeTab(tabs, getKey());
+            for (List<SidePanelTab> t : tabs) {
+                int index = -1;
+                if (position >= 0) {
+                    index = position;
+                } else if (positionBefore != null) {
+                    index = t.indexOf(new SidePanelTab(positionBefore));
+                } else if (positionAfter != null) {
+                    index = t.indexOf(new SidePanelTab(positionAfter));
+                    if (index != -1) {
+                        index++;
+                    }
+                    if (index >= t.size()) {
+                        index = -1;
+                    }
+                }
                 if (index != -1) {
-                    index++;
-                }
-                if (index >= cfg.getTabs().size()) {
-                    index = -1;
+                    t.add(index, this);
+                } else {
+                    t.add(this);
                 }
             }
-            if (index != -1) {
-                cfg.addTab(index, this);
-            } else {
-                cfg.addTab(this);
-            }
-        } else {
+        } else if (this.parent != null) {
             throw new IllegalArgumentException("Unknown parent type '"
-                    + o.getClass().getName() + "'. Can accept EditConfiguration or"
+                    + this.parent.getClass().getName() + "'. Can accept EditConfiguration or"
                     + " a String value with a beanId of the EditConfiguration bean");
+
         }
     }
 
@@ -284,32 +289,43 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
         }
     }
 
-    private void removeTab(List<SidePanelTab> tabs, String tabKey) {
-        if (tabs != null && tabKey != null && tabKey.length() > 0) {
-            for (Iterator<SidePanelTab> iterator = tabs.iterator(); iterator.hasNext();) {
-                SidePanelTab tab = iterator.next();
-                if (tab.getKey() != null && tab.getKey().equals(tabKey)) {
-                    iterator.remove();
+    private void removeTab(List<List<SidePanelTab>> tabs, String tabKey) {
+        if (!tabs.isEmpty() && tabKey != null && !tabKey.isEmpty()) {
+            for (List<SidePanelTab> t : tabs) {
+                for (Iterator<SidePanelTab> iterator = t.iterator(); iterator.hasNext();) {
+                    SidePanelTab tab = iterator.next();
+                    if (tabKey.equals(tab.getKey())) {
+                        iterator.remove();
+                    }
                 }
             }
         }
     }
 
-    private List<SidePanelTab> getSidePanelTabs(Object parent) {
+    private List<List<SidePanelTab>> getSidePanelTabs(Object parent) {
+        List<List<SidePanelTab>> results = new ArrayList<>();
         if (parent == null) {
-            return null;
+            return results;
         }
         if (parent instanceof String) {
             parent = SpringContextSingleton.getBean((String) parent);
         }
         List<SidePanelTab> tabs = null;
+
         if (parent instanceof EditConfiguration) {
             tabs = ((EditConfiguration) parent).getTabs();
             if (tabs == null) {
                 tabs = new LinkedList<>();
                 ((EditConfiguration) parent).setTabs(tabs);
             }
+
+            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, EditConfiguration.class).entrySet()) {
+                if (entry.getKey().startsWith(((EditConfiguration) parent).getName() + "-")) {
+                    results.addAll(getSidePanelTabs(entry.getValue()));
+                }
+            }
         }
-        return tabs;
+        results.add(tabs);
+        return results;
     }
 }

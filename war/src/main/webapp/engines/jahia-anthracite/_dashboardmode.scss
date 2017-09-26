@@ -112,26 +112,7 @@
 			}
 
 		   .dashboard-menu-user {
-			   &.x-hide-display {
-   					display: block!important;
-   				}
-	           position: fixed;
-	           top: 10px;
-	           background: url(./images/tabs-usermenu-black@X2.png) no-repeat left 14px top 6px;
-	           height: 40px;
-	           margin-top: 0;
-	           background-size: 23px 23px;
-	           opacity: 0.8;
-	           &:hover {
-	               opacity: 1;
-	           }
-	           body[data-selection-count="0"] & {
-	               background: url(./images/tabs-usermenu-white@X2.png) no-repeat left 14px top 6px;
-	               background-size: 23px 23px;
-	           }
-	           body[data-sitesettings="true"] & {
-	               display: none;
-	           }
+			   display: none!important;
 	       }
 
 		   .dashboard-menu-mode {

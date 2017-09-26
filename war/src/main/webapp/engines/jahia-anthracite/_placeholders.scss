@@ -82,52 +82,76 @@
 /////////////////////////////////////////////////
 // TOOLTIPS /////////////////////////////////////
 /////////////////////////////////////////////////
-    %CSS_BLOCK--TOOLTIP---BOTTOM {
-        &:hover {
-            &::before,
-            &::after {
-                opacity: 1;
-                transition: all 0.3s ease-in 0.5s;
-            }
-        }
+	%CSS_BLOCK--TOOLTIP {
+		&:hover {
+			&::before,
+			&::after {
+				opacity: 1;
+				transition: all 0.3s ease-in 0.5s;
+			}
+		}
 
-        &::before,
-        &::after {
-            opacity: 0;
-            position: absolute;
-            background: $COLOUR--WHITE_CLOUDS;
-            transition: all 0.3s ease-in 0s;
-            margin: 0!important;
-            pointer-events: none;
+		&::before,
+		&::after {
+			opacity: 0;
+			position: absolute;
+			background: $COLOUR--WHITE_CLOUDS;
+			transition: all 0.3s ease-in 0s;
+			margin: 0!important;
+			pointer-events: none;
 
-        }
+		}
 
-        &::before {
-            content: "Loading ...";
-            bottom: -41px;
-            left: -10px;
-            padding: 7px 10px;
-            white-space: nowrap;
-            text-align: center;
-            z-index: 9;
-            border-radius: 2px;
-            box-shadow: 1px 2px 4px 0 rgba(40, 43, 45, 0.7);
-            text-transform: uppercase;
+		&::before {
+			content: "Loading ...";
+			padding: 7px 10px;
+			white-space: nowrap;
+			text-align: center;
+			z-index: 9;
+			border-radius: 2px;
+			box-shadow: 1px 2px 4px 0 rgba(40, 43, 45, 0.7);
+			text-transform: uppercase;
+            text-indent: 0;
 
-            @include text(10px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRABOLD);
-        }
+			@include text(10px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRABOLD);
+		}
 
-        &::after {
-            width: 10px;
-            height: 10px;
-            transform: rotate(45deg);
-            content: "Arrow";
-            text-indent: -50000px;
-            bottom: -18px;
-            left: 5px;
-            z-index: 10;
-        }
-    }
+		&::after {
+			width: 10px;
+			height: 10px;
+			transform: rotate(45deg);
+			content: "Arrow";
+			text-indent: -50000px;
+			z-index: 10;
+		}
+	}
+
+	%CSS_BLOCK--TOOLTIP---BOTTOM {
+		&::before {
+			bottom: -41px;
+			left: -10px;
+		}
+
+		&::after {
+			bottom: -18px;
+			left: 5px;
+		}
+	}
+
+
+
+    %CSS_BLOCK--TOOLTIP---LEFT {
+		&::before {
+			top: 3px;
+			right: 53px;
+		}
+
+		&::after {
+            top: 12px;
+            left: -9px;
+		}
+	}
+
 
 /////////////////////////////////////////////////
 // PREVIEW BUTTONS //////////////////////////////
@@ -858,10 +882,6 @@
 // CONTEXT MENU /////////////////////////////////
 /////////////////////////////////////////////////
 
-    %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER {
-        border: none;
-        box-shadow: 0 0 10px 0 rgba($COLOUR--DARK_CLOUDS, .3);
-    }
 
     %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM {
         text-align: left!important;
@@ -869,7 +889,7 @@
         padding: 8px 9px !important;
         border: none;
 
-        @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---SEMILIGHT);
+        @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---LIGHT);
     }
 
     %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER {
@@ -1324,6 +1344,47 @@
         }
     }
 
+	// FORM
+	%CSS_BLOCK--BUTTON--TEXT\:FORM_SMALL {
+        background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
+        text-transform: uppercase;
+        padding: 5px 10px;
+		text-transform: uppercase;
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT--HOVER_PARENT\:FORM_SMALL {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET!important;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:FORM_SMALL {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+    }
+
+	%CSS_BLOCK--BUTTON--ICON\:FORM_SMALL {
+        background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
+        padding: 5px 10px 5px 29px;
+        @include text(10px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+		text-transform: uppercase;
+
+        img {
+            left: 5px!important;
+            top: 7px!important;
+        }
+    }
+
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:FORM_SMALL {
+        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET !important;
+        padding: 5px 10px 5px 29px;
+        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+
+        img {
+            left: 5px!important;
+        }
+    }
+
 	// ACTION BAR
 	%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR {
         background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR !important;
@@ -1445,7 +1506,7 @@
 		color: $TREE--ROW--FONT--COLOUR---HOVER!important;
 
 		// Padding not dealt with in best manner ...
-		padding-right: 19px!important; // Make space for More options button
+		// padding-right: 19px!important; // Make space for More options button
 
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
@@ -1455,7 +1516,7 @@
 
 	%CSS_BLOCK--TREE--ROW--TEXT---SELECTED {
 		color: $TREE--ROW--FONT--COLOUR---SELECTED!important;
-		padding-right: 19px!important; // Make space for More options button
+		// padding-right: 19px!important; // Make space for More options button
 
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
@@ -1495,7 +1556,7 @@
 
     // BACKGROUNDS
     %CSS_BLOCK--TREE--ROW--BG---UP {
-		padding-left: 6px;
+		// padding-left: 6px;
         background: $TREE--ROW--BG--COLOUR---UP!important;
     }
 
@@ -1617,7 +1678,6 @@
 
     %CSS_BLOCK--THUMB--BG---SELECTED {
         background: $THUMB--BG--COLOUR---SELECTED;
-		background: $COLOUR--DIRTY_ORANGE;
     }
 
 
@@ -1694,3 +1754,55 @@
     %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER_SELECTED {
     	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over + !important, $FONT--WEIGHT---EXTRALIGHT);
     }
+
+
+
+
+
+%CSS_BLOCK--SIDE_PANEL--TAB--CONTENTS {
+	left: 0;
+    width: 300px!important;
+	height:calc(100% - 116px) !important;
+	box-sizing: border-box;
+	display: none;
+
+	position: relative;
+
+	padding-left: 11px;
+
+	body[data-indigo-gwt-side-panel="open"] & {
+		display: block;
+	}
+
+	transition: all 0.2s ease-in 0s;
+}
+
+
+
+%CSS_BLOCK--CUSTOMER--LOGO---LIGHT\:BOTTOM_LEFT {
+	content: "Customer Logo";
+	position: fixed;
+	bottom: 10px;
+	left: 10px;
+	width: 40px;
+	height: 40px;
+	background: red;
+	text-indent: -50000px;
+	background: url($COMPANY_LOGO_LIGHT) no-repeat center center;
+	background-size: 40px 40px;
+	opacity: 0.2;
+}
+
+%CSS_BLOCK--CUSTOMER--LOGO---DARK\:BOTTOM_LEFT {
+	content: "Customer Logo";
+	position: fixed;
+	bottom: 10px;
+	left: 10px;
+	width: 40px;
+	height: 40px;
+	background: red;
+	text-indent: -50000px;
+	background: url($COMPANY_LOGO_DARK) no-repeat center center;
+	background-size: 40px 40px;
+	opacity: 0.2;
+}

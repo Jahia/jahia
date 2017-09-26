@@ -258,7 +258,7 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
                 ((EditConfiguration) parent).getDefaultEditConfiguration().setEngineTabs(tabs);
             }
 
-            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(EditConfiguration.class).entrySet()) {
+            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext,EditConfiguration.class).entrySet()) {
                 if (entry.getKey().startsWith(((EditConfiguration) parent).getName() + "-")) {
                     results.addAll(getEngineTabs(entry.getValue()));
                 }
@@ -270,7 +270,7 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
                 ((ManagerConfiguration) parent).setEngineTabs(tabs);
             }
 
-            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(ManagerConfiguration.class).entrySet()) {
+            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext,ManagerConfiguration.class).entrySet()) {
                 if (entry.getKey().startsWith(((ManagerConfiguration) parent).getName() + "-")) {
                     results.addAll(getEngineTabs(entry.getValue()));
                 }
@@ -326,4 +326,6 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
+
 }

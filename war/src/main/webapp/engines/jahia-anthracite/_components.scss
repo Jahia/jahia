@@ -568,10 +568,9 @@
 .x-menu {
 	width: auto !important;
 	background: transparent;
-    overflow: visible;
-    z-index: $ZINDEX--CONTEXT_MENU;
-
-	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER !optional;
+	overflow: visible;
+	z-index: $ZINDEX--CONTEXT_MENU;
+	border: none;
 }
 
 .x-menu-list {
@@ -599,8 +598,6 @@
 
 	.x-item-disabled & {
 		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED !optional;
-
-
 
 	}
 
@@ -1451,12 +1448,21 @@ form,
 	.x-grid3-scroller {
 		/* Another List Container */
 		height: 100%!important;
-		width: 100%!important;
+		width: calc(100% - 10px)!important;
+
+		body[data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
+			width: calc(100% - 25px) !important;
+		}
+
+		body[data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab"] & {
+			width: 100% !important;
+		}
 
 		body[data-edit-window-style="settings"] &,
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
 			padding-left: 1px;
+			overflow: hidden;
 		}
 	}
 
@@ -1507,6 +1513,12 @@ form,
 
 			}
 
+			.x-grid3-td-locked {
+				background: rgb(228, 229, 229) !important;
+				// background: #f1f1f1;
+
+			}
+
 			.x-grid3-td-displayName,
 			.gwt-content-label,
 			.x-grid3-col-name {
@@ -1519,6 +1531,7 @@ form,
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);
 					opacity: 1;
+					background-color: #e4e5e5 !important;
 
 				}
 
@@ -1560,6 +1573,12 @@ form,
 
 			}
 
+			.x-grid3-td-locked {
+				background: #9ea0a2!important;
+				// background: #f1f1f1;
+
+			}
+
 			.x-grid3-td-displayName,
 			.gwt-content-label,
 			.x-grid3-col-name,
@@ -1580,6 +1599,7 @@ form,
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
 					opacity: 1;
+					background-color: #9ea0a2!important;
 
 				}
 			}
@@ -1648,10 +1668,10 @@ form,
 		pointer-events: none;
 
 		&::after {
-			position: fixed;
+			position: absolute;
 			pointer-events: all;
-			margin-top: -26px;
-			background-image: url($TREE--MORE_OPTIONS--ICON---UP);
+			margin-top: -23px;
+			background-image: none;
 			background-repeat: no-repeat;
 			background-position: center center;
 			background-size: 10px 2px;
@@ -1659,7 +1679,30 @@ form,
 			display: block;
 			width: 28px;
 			height: 25px;
-			opacity: 0;
+			opacity: 1;
+			right: 0;
+			content: "More";
+			top: 23px;
+			background-color: #f1f1f1!important;
+
+			#JahiaGxtPagesTab & {
+				top: 26px;
+				margin-top: -26px;
+			}
+
+			#JahiaGxtContentBrowseTab .x-box-item:nth-child(2) &,
+			#JahiaGxtCategoryBrowseTab .x-box-item:nth-child(2) &,
+			.JahiaGxtSearchTab-results & {
+				margin-top: -23px;
+
+			}
+
+			.content-type-window &,
+			.x-viewport-dashboardmode &,
+			.x-viewport-adminmode &,
+			.workflow-dashboard-engine & {
+				display: none;
+			}
 		}
 	}
 
@@ -1730,13 +1773,29 @@ form,
 		height: 100%;
 		display: block;
 
+		> tbody {
+			display: block;
+
+			> tr {
+				display: block;
+				position: relative;
+
+			}
+		}
+
 		.x-grid3-cell {
 			/* Cell Containing the List Item */
 			padding: 0;
 
 			&.x-grid3-td-locked {
-				width: 25px;
-				display: none;
+				width: 25px!important;
+				display: block;
+				right: 25px;
+				top: 3px;
+				position: absolute!important;
+				// background: #9ea0a2;
+				background: #f1f1f1;
+
 			}
 
 			.x-grid3-cell-inner {
@@ -2558,26 +2617,15 @@ form,
 	.cke_dialog_footer_buttons {
 	}
 
-
-
-}
-
-
-
-
-
-
-
-
-.x-form-invalid {
-	border:none!important;
-	background:none!important;
-
-	// INLINE ERROR DETAILS
-	> div:nth-child(1) {
-		// display: none;
+	.x-form-invalid {
+		border:none!important;
+		background:none!important;
 	}
+
 }
+
+
+
 
 /* BROWSER FIXES ( Actually over rides of GXT fixes ) */
 .ext-strict .ext-gecko .x-small-editor .x-form-text,
@@ -2591,7 +2639,7 @@ form,
 
 /* Modal Mask */
 .x-modal {
-    background: $MODAL--BG--COLOUR;
+    background: rgba(92, 97, 100, 0.94);  // check on other modals.
     opacity: 1;
     z-index: $ZINDEX--MODAL---MASK;
     position: fixed !important;
@@ -2939,4 +2987,226 @@ form,
 
 .arrow-left {
 	background-image:url(./images/icons/icon_arrow_left_single_white@X2.png)!important;
+}
+
+
+
+/////////////////////////////////////////////////
+// CONTENT SELECTOR /////////////////////////////
+/////////////////////////////////////////////////
+
+
+.x-window.content-type-window {
+    background: #eee;
+
+		.x-window-header {
+		    display: none;
+		}
+
+		.x-window-body {
+
+			&.x-window-body-noborder {
+				padding: 8px !important;
+			}
+
+			> .x-border-layout-ct {
+				overflow: hidden !important;
+			}
+
+			.x-form-field.x-form-text {
+				padding-left: 28px !important;
+				background: #d5d6d6;
+				background-image: url(./images/icons/tabs-search-dark@X2.png);
+				background-repeat: no-repeat;
+				background-size: contain;
+				color: #717578 !important;
+
+				&:focus {
+					background-color: #9ea0a2 !important;
+					color: #f1f1f1 !important;
+					background-image: url(./images/icons/tabs-search-white@X2.png);
+				}
+
+			}
+
+			.x-form-text:focus + .x-form-trigger.x-form-clear-trigger {
+				background-color: #7a7e80 !important;
+				padding-bottom: 1px;
+			}
+
+		}
+
+		.x-grid3 {
+
+			.x-tree3-node-text {
+				padding-right: 0 !important;
+			}
+
+			.x-grid3-row-over .gwt-content-label {
+				color: $COLOUR--WHITE_CLOUDS !important;
+			}
+
+			.x-grid3-row.x-grid3-row-selected {
+				background: #dedede !important;
+			}
+
+			.x-grid3-scroller {
+				width: 100% !important;
+			}
+
+		}
+
+		.x-window-bbar {
+			padding: 8px;
+	    margin-top: 8px;
+	    background: #eeeeee;
+		}
+
+		.x-form-field-wrap.x-component.x-border-panel {
+			background: #a3a3a3;
+			height: 24px !important;
+		}
+
+		.x-treegrid.x-component {
+			margin-top: 15px;
+
+			.gwt-content-label {
+				color: #474a4c !important;
+
+				&:after {
+					background: none !important;
+				}
+
+			}
+
+		}
+
+		.x-panel-fbar .x-toolbar-cell:first-child .x-btn.x-btn-text-icon button {
+			background: #00a0e3 !important;
+			color: #f1f1f1 !important;
+		}
+
+		.x-panel-fbar .x-toolbar-cell:nth-child(2) .x-btn.x-btn-text-icon button {
+			background: #dedede !important;
+		}
+
+}
+
+
+// Content Selector on side panel.
+
+body[data-indigo-gwt-side-panel="open"] {
+
+	#JahiaGxtSidePanelTabs .x-tab-panel-body.x-tab-panel-body-top > .x-component.tab_createContent {
+		height: calc(100% - 168px) !important;
+
+		.x-grid3 {
+
+			.x-grid3-body {
+				margin-left: 12px;
+			}
+
+			.x-grid3-row.x-grid3-row-selected {
+
+				.gwt-content-label,
+				.x-tree3-node-text {
+					padding-right: 0 !important;
+				}
+
+			}
+
+		}
+
+		> .x-border-layout-ct > .x-form-field-wrap {
+			top: 62px !important;
+			height: 26px !important;
+			left: 70px !important;
+			width: 262px !important;
+		}
+
+	}
+
+}
+
+
+
+/////////////////////////////////////////////////
+// DELETE CONFIRMATION MODAL/////////////////////
+/////////////////////////////////////////////////
+
+
+.x-window.delete-item-window {
+    background: transparent;
+    height: 370px;
+
+		.x-panel-toolbar {
+		    display: none;
+		}
+
+		.x-window-header {
+		    padding: 8px 0 !important;
+		    font-family: $FONT--FAMILY---RALEWAY;
+		    font-size: 32px;
+		    color: $COLOUR--WHITE_CLOUDS;
+		    font-weight: $FONT--WEIGHT---EXTRALIGHT;
+		}
+
+		.x-window-bwrap {
+		    padding: 0 8px;
+		    color: rgba(0, 0, 0, 0.84);
+		    padding-top: 12px;
+		    background: #eee;
+		    height: 302px;
+		    overflow: hidden;
+
+				.x-form-textarea {
+						margin-top: 8px;
+						color: rgb(0, 0, 0);
+						width: 100% !important;
+
+						&:focus {
+								background: $COLOUR--WHITE !important;
+						}
+
+				}
+
+				.x-panel-body {
+
+					form .x-component {
+
+						&:nth-child(1) {
+								font-size: 13px;
+								padding-bottom: 4px;
+								color: #565656;
+								font-weight: $FONT--WEIGHT---SEMIBOLD;
+						}
+
+						&:nth-child(2) {
+								text-transform: uppercase;
+								font-family: $FONT--FAMILY---NUNITO;
+								font-size: 11px;
+								color: #a3a3a3;
+								font-weight: $FONT--WEIGHT---SEMIBOLD;
+						}
+
+					}
+
+					.x-form-field-wrap {
+						height: 196px !important;
+						padding-bottom: 16px;
+					}
+
+				}
+
+		}
+
+		.x-toolbar-left-row .x-toolbar-cell:first-child .x-btn-text {
+			background: #00a0e3 !important;
+			color: #f1f1f1 !important;
+		}
+
+		.x-toolbar-left-row .x-toolbar-cell:nth-child(2) .x-btn-text {
+			background: #dedede !important;
+		}
+
 }

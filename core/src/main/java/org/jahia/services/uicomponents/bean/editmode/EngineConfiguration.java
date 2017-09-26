@@ -45,6 +45,7 @@ package org.jahia.services.uicomponents.bean.editmode;
 
 import org.jahia.ajax.gwt.client.widget.contentengine.ButtonItem;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
@@ -195,7 +196,7 @@ public class EngineConfiguration implements Serializable, InitializingBean, Disp
         if (parent instanceof EditConfiguration) {
             results.add(((EditConfiguration) parent).getEngineConfigurations());
 
-            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(EditConfiguration.class).entrySet()) {
+            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, EditConfiguration.class).entrySet()) {
                 if (entry.getKey().startsWith(((EditConfiguration) parent).getName() + "-")) {
                     results.addAll(getParentConfigurationMap(entry.getValue()));
                 }
@@ -203,7 +204,7 @@ public class EngineConfiguration implements Serializable, InitializingBean, Disp
         } else if (parent instanceof ManagerConfiguration) {
             results.add(((ManagerConfiguration) parent).getEngineConfigurations());
 
-            for (Map.Entry<String, ?> entry : applicationContext.getBeansOfType(ManagerConfiguration.class).entrySet()) {
+            for (Map.Entry<String, ?> entry : SpringContextSingleton.getBeansOfType(applicationContext, ManagerConfiguration.class).entrySet()) {
                 if (entry.getKey().startsWith(((ManagerConfiguration) parent).getName() + "-")) {
                     results.addAll(getParentConfigurationMap(entry.getValue()));
                 }

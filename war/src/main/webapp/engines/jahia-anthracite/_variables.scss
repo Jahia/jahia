@@ -1,4 +1,12 @@
 /////////////////////////////////////////////////
+// CUSTOMISATION  ///////////////////////////////
+/////////////////////////////////////////////////
+
+	$COMPANY_LOGO_DARK: 								null; // Can be over written in company customisation to add user logo to site.
+	$COMPANY_LOGO_LIGHT: 								null; // Can be over written in company customisation to add user logo to site.
+
+
+/////////////////////////////////////////////////
 // COLOURS //////////////////////////////////////
 /////////////////////////////////////////////////
 
@@ -33,6 +41,21 @@
 
 	// INFORMATION
 	$ICON--INFO--WHITE: 						"./images/icons/ic_info_outline@2x.png";
+	$ICON--WARNING--WHITE: 						"./images/icons/ic_warning@2x.png";
+
+	// EDIT
+	$ICON--INFO--WHITE: 						"./images/icons/tabs-edit.png";
+	$ICON--ADD--WHITE: 							"./images/icons/add-icon.png";
+
+	// LOCKED
+	$ICON--LOCK--YELLOW: 						"./images/icons/icon-locked@X2.png";
+
+	// HAMBURGER
+	$ICON--HAMBURGER--SMALL---WHITE: 			"./images/icons/small-hamburger.png";
+	$ICON--HAMBURGER--SMALL---GREY: 			"./images/icons/small-hamburger-grey.png";
+	$ICON--USERMENU--WHITE: 					"./images/icons/tabs-usermenu-white@X2.png";
+
+
 
 	// DISPLAY
 	$ICON--DISPLAY--THUMBS--GREY: 				"./images/icons/icon_thumbs_grey_small.png";
@@ -85,14 +108,17 @@
 	$ICON--CLOSE_LARGE---GREY:     				"./images/icons/icon-close-grey@X2.png";
 
 	// NAV ICONS
+	$ICON--FIRST--WHITE: 						"./images/icons/icon_arrow_left_double_white@X2.png";
 	$ICON--BACK--WHITE: 						"./images/icons/icon_arrow_left_single_white@X2.png";
 	$ICON--BACK--GREY: 							"./images/icons/icon-back-grey@X2.png";
 	$ICON--NEXT--WHITE: 						"./images/icons/icon-next-white@X2.png";
+	$ICON--LAST--WHITE: 						"./images/icons/icon_arrow_right_double_white@X2.png";
 	$ICON--NEXT--GREY: 							"./images/icons/icon-next-grey@X2.png";
 
 	// FOLDER ICONS
 	$ICON--FOLDER--SMALL---GREY: 				"./images/icons/small-folder@x2.png";
 	$ICON--FOLDER_OPEN--SMALL---GREY: 			"./images/icons/small-folder-open@x2.png";
+	$ICON--FOLDER--SMALL---WHITE: 				"./images/icons/icon-folder-small-closed.png";
 
 
 

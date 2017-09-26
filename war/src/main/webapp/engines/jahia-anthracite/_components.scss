@@ -3017,16 +3017,16 @@ form,
 
 			.x-form-field.x-form-text {
 				padding-left: 28px !important;
-				background: #717578;
-				background-image: url(./images/icons/tabs-search-white@X2.png);
+				background: #d5d6d6;
+				background-image: url(./images/icons/tabs-search-dark@X2.png);
 				background-repeat: no-repeat;
 				background-size: contain;
-				color: #f1f1f1 !important;
+				color: #717578 !important;
 
 				&:focus {
-					background-color: #dedede !important;
-					color: #717578 !important;
-					background-image: url(./images/icons/tabs-search-dark@X2.png);
+					background-color: #9ea0a2 !important;
+					color: #f1f1f1 !important;
+					background-image: url(./images/icons/tabs-search-white@X2.png);
 				}
 
 			}
@@ -3070,11 +3070,16 @@ form,
 		}
 
 		.x-treegrid.x-component {
-		    margin-top: 15px;
+			margin-top: 15px;
 
-				.gwt-content-label {
-				    color: #474a4c !important;
+			.gwt-content-label {
+				color: #474a4c !important;
+
+				&:after {
+					background: none !important;
 				}
+
+			}
 
 		}
 

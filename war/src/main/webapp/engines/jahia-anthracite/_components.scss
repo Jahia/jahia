@@ -3246,11 +3246,18 @@ body[data-indigo-gwt-side-panel="open"] {
 			font-weight: $FONT--WEIGHT---EXTRALIGHT;
 		}
 
-		> .x-component:first-child table tbody tr td .x-tool-close {
-			height: 22px;
-			width: 22px;
-			background-image: url(./images/icon-close-large.png);
-			background-position: initial !important;
+		> .x-component:first-child {
+			margin-top: 22px;
+			margin-right: 16px;
+			pointer-events: all;
+
+			table tbody tr td .x-tool-close {
+				height: 22px;
+				width: 22px;
+				background-image: url(./images/icon-close-large.png);
+				background-position: initial !important;
+			}
+
 		}
 
 	}
@@ -3264,18 +3271,54 @@ body[data-indigo-gwt-side-panel="open"] {
 		border-left: 1px dashed #a0a0a0 !important;
 	}
 
-	.x-window-bbar.x-window-bbar-noborder {
-		display: block;
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		background: #4a4d50;
-		width: 100% !important;
-		border-top: 1px solid #353739;
-		box-shadow: inset 0px 13px 40px 0px rgba(38, 38, 38, 0.5);
-		padding: 20px 0 0 20px;
-		box-sizing: border-box;
-		height: auto;
+	.x-window-bbar {
+
+		&.x-window-bbar-noborder {
+			display: block;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			background: #4a4d50;
+			width: 100% !important;
+			border-top: 1px solid #353739;
+			box-shadow: inset 0px 13px 40px 0px rgba(38, 38, 38, 0.5);
+			padding: 20px 0 0 20px;
+			box-sizing: border-box;
+			height: 72px;
+		}
+
+		.x-form-check-wrap {
+			position: fixed !important;
+			right: 20px;
+			bottom: 26px;
+		}
+
+		.x-toolbar-left td.x-toolbar-cell:nth-child(2) button.x-btn-text {
+			background: #00a0e3 !important;
+			color: #f1f1f1 !important;
+		}
+
+	}
+
+	.x-component.x-border-panel.x-border-layout-ct > .x-component.x-border-panel > .x-component > table tbody td:first-child {
+		position: absolute;
+		left: 26px;
+		top: 8px !important;
+		background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 70%);
+	}
+
+	.x-component.x-border-panel.x-border-layout-ct > .x-component.x-border-panel > .x-component > table tbody td:nth-child(2) {
+		background: #eee;
+		position: absolute;
+		left: 120px;
+		height: 30px;
+		top: 4px;
+	}
+
+	.x-form-trigger.x-form-trigger-arrow {
+		height: 30px !important;
+		width: 27px !important;
+		background-color: transparent !important;
 	}
 
 }

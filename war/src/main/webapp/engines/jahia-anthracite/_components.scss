@@ -3210,3 +3210,69 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 }
+
+
+
+/////////////////////////////////////////////////
+// TRANSLATION ENGINE ///////////////////////////
+/////////////////////////////////////////////////
+
+
+.translate-content-engine {
+	background: #616669 !important;
+	height: 100% !important;
+	width: 100% !important;
+	top: 0 !important;
+	left: 0 !important;
+
+	.mypanel.x-component .x-component {
+		background: $COLOUR--WHITE_CLOUDS;
+		width: 50% !important;
+	}
+
+	.x-window-header {
+		height: 64px !important;
+		line-height: 64px;
+		padding-left: 16px !important;
+
+		.x-window-header-text {
+			font-size: 36px;
+			color: #dddcdc;
+			width: 250px;
+			font-family: $FONT--FAMILY---RALEWAY;
+			font-weight: $FONT--WEIGHT---EXTRALIGHT;
+		}
+
+		> .x-component:first-child table tbody tr td .x-tool-close {
+			height: 22px;
+			width: 22px;
+			background-image: url(./images/icon-close-large.png);
+			background-position: initial !important;
+		}
+
+	}
+
+	.x-panel-toolbar .x-tool-maximize {
+		display: none;
+	}
+
+	.x-border-panel.x-border-layout-ct {
+		height: calc(100% - 64px) !important;
+		border-left: 1px dashed #a0a0a0 !important;
+	}
+
+	.x-window-bbar.x-window-bbar-noborder {
+		display: block;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		background: #4a4d50;
+		width: 100% !important;
+		border-top: 1px solid #353739;
+		box-shadow: inset 0px 13px 40px 0px rgba(38, 38, 38, 0.5);
+		padding: 20px 0 0 20px;
+		box-sizing: border-box;
+		height: auto;
+	}
+
+}

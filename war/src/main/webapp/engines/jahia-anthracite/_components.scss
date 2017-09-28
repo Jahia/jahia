@@ -3268,7 +3268,6 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	.x-border-panel.x-border-layout-ct {
 		height: calc(100% - 64px) !important;
-		border-left: 1px dashed #a0a0a0 !important;
 	}
 
 	.x-window-bbar {
@@ -3309,16 +3308,29 @@ body[data-indigo-gwt-side-panel="open"] {
 			background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 70%);
 		}
 
-		> .x-component.x-border-panel > .x-component > table tbody td:nth-child(2) {
-			background: #eee;
+		> .x-component.x-border-panel > .x-component > table tbody td.x-btn-mc:nth-child(2) {
+			background: #6b7074;
 			position: absolute;
-			left: 120px;
+			left: 200px;
 			height: 30px;
-			top: 4px;
+			top: 9px;
+
+			button {
+				margin-top: 7px;
+				color: #dddcdc;
+				padding: 0 8px;
+				width: auto !important;
+			}
+
 		}
 
 		.x-component.x-border-panel:nth-child(2) {
-			margin-top: 16px;
+			margin-top: 28px;
+			border-top: 1px dashed #8a8e91 !important;
+		}
+
+		&:nth-child(2) .x-panel-noborder.x-panel.x-component > .x-panel-bwrap {
+			border-left: 1px dashed #8a8e91 !important;
 		}
 
 	}

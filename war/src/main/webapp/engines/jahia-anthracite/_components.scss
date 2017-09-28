@@ -3306,6 +3306,15 @@ body[data-indigo-gwt-side-panel="open"] {
 			left: 26px;
 			top: 8px !important;
 			background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 70%);
+
+			&:hover {
+				background-color: rgba(255, 255, 255, 0.07);
+			}
+
+			.x-trigger-wrap-focus {
+				background-color: rgba(255, 255, 255, 0.07);
+			}
+
 		}
 
 		> .x-component.x-border-panel > .x-component > table tbody td.x-btn-mc:nth-child(2) {
@@ -3320,6 +3329,10 @@ body[data-indigo-gwt-side-panel="open"] {
 				color: #dddcdc;
 				padding: 0 8px;
 				width: auto !important;
+			}
+
+			&:hover {
+				background: #798084 !important;
 			}
 
 		}

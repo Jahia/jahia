@@ -3222,7 +3222,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 .translate-content-engine {
-	background: #616669 !important;
+	background: #5c6164 !important;
 	height: 100% !important;
 	width: 100% !important;
 	top: 0 !important;
@@ -3352,6 +3352,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			input.x-form-field {
 				background: #6b7074 !important;
 				color: $COLOUR--WHITE;
+				max-height: 54px !important;
 
 				&:hover {
 					background: #707679 !important;
@@ -3360,6 +3361,20 @@ body[data-indigo-gwt-side-panel="open"] {
 				&:focus {
 					background: $COLOUR--WHITE !important;
 					color: black !important;
+				}
+
+			}
+
+			.x-form-readonly .x-form-field {
+				background: #616669 !important;
+				padding-left: 0 !important;
+				width: 100% !important;
+
+				&:hover,
+				&:focus {
+					cursor: default;
+					background: #616669 !important;
+					color: $COLOUR--WHITE !important;
 				}
 
 			}
@@ -3381,6 +3396,10 @@ body[data-indigo-gwt-side-panel="open"] {
 		font-size: 11px;
 		font-weight: 500;
 		background: transparent;
+	}
+
+	fieldset:last-child {
+		margin-bottom: 0 !important;
 	}
 
 }

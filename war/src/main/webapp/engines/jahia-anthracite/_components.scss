@@ -3346,6 +3346,26 @@ body[data-indigo-gwt-side-panel="open"] {
 			border-left: 1px dashed #8a8e91 !important;
 		}
 
+		.x-component.x-border-panel {
+
+			textarea.x-form-field,
+			input.x-form-field {
+				background: #6b7074 !important;
+				color: $COLOUR--WHITE;
+
+				&:hover {
+					background: #707679 !important;
+				}
+
+				&:focus {
+					background: $COLOUR--WHITE !important;
+					color: black !important;
+				}
+
+			}
+
+		}
+
 	}
 
 	.x-form-trigger.x-form-trigger-arrow {
@@ -3361,22 +3381,6 @@ body[data-indigo-gwt-side-panel="open"] {
 		font-size: 11px;
 		font-weight: 500;
 		background: transparent;
-	}
-
-	textarea.x-form-field,
-	input.x-form-field {
-		background: #6b7074 !important;
-		color: $COLOUR--WHITE;
-
-		&:hover {
-			background: #707679 !important;
-		}
-
-		&:focus {
-			background: $COLOUR--WHITE !important;
-			color: black !important;
-		}
-
 	}
 
 }

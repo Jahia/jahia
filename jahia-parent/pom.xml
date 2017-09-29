@@ -114,7 +114,7 @@
         <driver.mssql.version>4.2.6420.100</driver.mssql.version>
         <driver.mysql.version>5.1.42</driver.mysql.version>
         <driver.oracle.version>12.1.0.2</driver.oracle.version>
-        <driver.postgresql.version>42.1.1.jre7</driver.postgresql.version>
+        <driver.postgresql.version>42.1.4</driver.postgresql.version>
 
         <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>
         <hibernateDialect.mssql>org.hibernate.dialect.SQLServer2008Dialect</hibernateDialect.mssql>
@@ -175,7 +175,7 @@
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.6</jahia.commons.version>
-        <jahia.plugin.version>5.1</jahia.plugin.version>
+        <jahia.plugin.version>5.2-SNAPSHOT</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
         <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>

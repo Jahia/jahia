@@ -3343,10 +3343,10 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		&:nth-child(2) .x-panel-noborder.x-panel.x-component > .x-panel-bwrap {
-			border-left: 1px dashed #8a8e91 !important;
+			border-left: 10px solid #5c6164 !important;
 		}
 
-		.x-component.x-border-panel {
+		.x-panel-noborder.x-panel.x-component > .x-panel-bwrap {
 
 			textarea.x-form-field,
 			input.x-form-field {

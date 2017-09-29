@@ -96,7 +96,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                 for (Iterator<GWTJahiaNode> it = value.iterator(); it.hasNext(); ) {
                     GWTJahiaNode currentNode = it.next();
                     if (currentNode.get("j:url") != null) {
-                        s.append(currentNode.get("j:url"));
+                        s.append((Object)currentNode.get("j:url"));
                     } else {
                         s.append(currentNode.getName());
                     }

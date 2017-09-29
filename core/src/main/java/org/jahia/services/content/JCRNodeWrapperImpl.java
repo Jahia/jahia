@@ -2338,6 +2338,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        getParent().checkLock();
         getSession().unregisterNewNode(this);
         if (!this.hasNodes()) {
             getSession().removeFromCache(this);

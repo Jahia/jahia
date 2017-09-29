@@ -3363,4 +3363,20 @@ body[data-indigo-gwt-side-panel="open"] {
 		background: transparent;
 	}
 
+	textarea.x-form-field,
+	input.x-form-field {
+		background: #6b7074 !important;
+		color: $COLOUR--WHITE;
+
+		&:hover {
+			background: #707679 !important;
+		}
+
+		&:focus {
+			background: $COLOUR--WHITE !important;
+			color: black !important;
+		}
+
+	}
+
 }

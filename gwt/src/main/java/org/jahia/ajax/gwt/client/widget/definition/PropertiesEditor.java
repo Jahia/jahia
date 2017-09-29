@@ -310,6 +310,10 @@ public class PropertiesEditor extends FormPanel {
                 final PropertyAdapterField adapterField = new PropertyAdapterField(field, definition, gwtJahiaNodeProperty);
                 adapterField.setWidth("98%");
                 adapterField.setStyleAttribute("padding-left", "0");
+                if (definition.isInternationalized()) {
+                    adapterField.addStyleName("field-i18n");
+                }
+
                 fields.put(field.getName(), adapterField);
                 FormData fd = new FormData("98%");
                 fd.setMargins(new Margins(0));

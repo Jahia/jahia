@@ -48,6 +48,7 @@ import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.List;
 
@@ -73,23 +74,25 @@ class TreeGridClickSelectionModel extends TreeGridSelectionModel<GWTJahiaNode> {
     }
 
     @Override protected void handleMouseDown(GridEvent<GWTJahiaNode> e) {
-        if (!e.isRightClick()) {
-            super.handleMouseDown(e);           
-        } else {
-            if (!tree.getTreeView().isSelectableTarget(e.getModel(), e.getTarget())) {
-                return;
-            }
-            if (selectionMode != Style.SelectionMode.SINGLE && isSelected(listStore.getAt(e.getRowIndex()))) {
-                return;
-            }
-            if (e.isRightClick()) {
-                rightClickSelectionModel.select(e.getModel(), false);
+        if (!MainModule.isGlobalSelectionDisabled()) {
+            if (!e.isRightClick()) {
+                super.handleMouseDown(e);
+            } else {
+                if (!tree.getTreeView().isSelectableTarget(e.getModel(), e.getTarget())) {
+                    return;
+                }
+                if (selectionMode != Style.SelectionMode.SINGLE && isSelected(listStore.getAt(e.getRowIndex()))) {
+                    return;
+                }
+                if (e.isRightClick()) {
+                    rightClickSelectionModel.select(e.getModel(), false);
+                }
             }
         }
     }
 
     @Override protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
-        if (!e.isRightClick()) {
+        if (!e.isRightClick() && !MainModule.isGlobalSelectionDisabled()) {
             super.handleMouseClick(e);
         }
     }

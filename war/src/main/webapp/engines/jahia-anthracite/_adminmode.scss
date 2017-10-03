@@ -229,17 +229,17 @@
 // License error message.
 // Make sure it doesn't break something elsewhere.
 
-/*.x-ignore.x-menu.x-component:not(.menu-editmode-managers-menu) {
+[class=" x-ignore x-menu x-component"]:not(.menu-editmode-managers-menu) {
 	bottom: 12px !important;
 	left: 44px !important;
 	top: unset !important;
 }
 
-.x-ignore.x-menu.x-component:not(.menu-editmode-managers-menu) span.x-menu-item {
+[class=" x-ignore x-menu x-component"]:not(.menu-editmode-managers-menu) > div > div > span.x-menu-item {
 	background: #f3665b;
 	padding: 9px 12px !important;
 	font-weight: 600;
 	border-bottom-right-radius: 50px;
 	border-top-right-radius: 50px;
 	padding-left: 16px !important;
-}*/
+}

@@ -95,7 +95,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private static final int UPDATE_DELAY_FOR_LOCKED_NODE = 2000;
     private Set<String> ruleFiles;
-    private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
+    private static ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
 
     private List<Resource> dslFiles;
     private Map<String, Object> globalObjects;
@@ -755,5 +755,9 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public Map<String, String> getModulePackageNameMap() {
         return modulePackageNameMap;
+    }
+
+    static void resetIsInRule() {
+        inRules.set(null);
     }
 }

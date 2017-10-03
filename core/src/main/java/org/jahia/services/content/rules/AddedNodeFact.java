@@ -90,14 +90,20 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
     private String parentNodePath;
     private String name;
     private String type;
+    private boolean insert = false;
 
     public AddedNodeFact(JCRNodeWrapper node) throws RepositoryException {
         super(node);
     }
 
     public AddedNodeFact(AddedNodeFact parentNodeWrapper, String name, String type, KnowledgeHelper drools) throws RepositoryException {
+        this(parentNodeWrapper, name, type, drools, false);
+    }
+
+    public AddedNodeFact(AddedNodeFact parentNodeWrapper, String name, String type, KnowledgeHelper drools, boolean insert) throws RepositoryException {
         super(null);
         this.parentNode = parentNodeWrapper;
+        this.insert = insert;
         workspace = parentNode.getNode().getSession().getWorkspace().getName();
 
         JCRNodeWrapper node = (JCRNodeWrapper) parentNode.getNode();
@@ -121,6 +127,9 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
                 node.checkout();
             }
             this.node = node.addNode(JCRContentUtils.findAvailableNodeName(node, name), type);
+            if (insert) {
+                drools.insert(name);
+            }
         }
     }
 
@@ -132,6 +141,12 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
                 logger.debug("Node is still locked, delay subnode creation to later");
                 delayedUpdates.add(this);
             } else {
+                if (insert) {
+                    // reset isInRule Flag, this way the current node operation will be track by RuleListener
+                    // we need this to insert this operation, this is the only solution to react on the Added node because
+                    // we do not have access to drools KnowledgeHelper in delayed updates.
+                    RulesListener.resetIsInRule();
+                }
                 node.addNode(name, type);
             }
         } catch (PathNotFoundException e) {

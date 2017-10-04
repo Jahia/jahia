@@ -753,6 +753,43 @@
 	}
 
 
+	#JahiaGxtEditEnginePanel-usages {
+
+		.x-grid3-row.x-unselectable-single {
+			background: #6b7074 !important;
+			color: #919496;
+			padding-top: 7px;
+
+			a {
+				color: #dddcdc;
+				text-decoration: none;
+			}
+
+		}
+
+		.x-grid-panel.x-component {
+			border-top: 1px dashed #8a8e91 !important;
+			padding-top: 16px !important;
+		}
+
+		.x-btn.x-component {
+			margin-bottom: 18px !important;
+
+			.x-btn-small.x-btn-icon-small-left {
+				background: #6b7074;
+
+				button {
+					color: #dddcdc;
+					padding: 8px 8px;
+				}
+
+			}
+
+		}
+
+	}
+
+
 	#JahiaGxtEditEnginePanel-content{
 		// Fix problem with non floating form element.
 		#Title {

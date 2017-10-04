@@ -227,17 +227,14 @@
 
 
 // License error message.
-// Make sure it doesn't break something elsewhere.
 
-[class=" x-ignore x-menu x-component"]:not(.menu-editmode-managers-menu),
-[class=" x-ignore x-menu x-component "]:not(.menu-editmode-managers-menu) {
+.toolbar-warning-messages {
 	bottom: 12px !important;
 	left: 44px !important;
 	top: unset !important;
 }
 
-[class=" x-ignore x-menu x-component"]:not(.menu-editmode-managers-menu) > div > div > span.x-menu-item,
-[class=" x-ignore x-menu x-component "]:not(.menu-editmode-managers-menu) > div > div > span.x-menu-item {
+.toolbar-warning-messages > div > div > span.x-menu-item {
 	background: #f3665b;
 	padding: 9px 12px !important;
 	font-weight: 600;

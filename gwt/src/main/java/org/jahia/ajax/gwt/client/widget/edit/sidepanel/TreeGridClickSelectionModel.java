@@ -53,12 +53,12 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import java.util.List;
 
 /**
-* 
-* User: toto
-* Date: Oct 27, 2010
-* Time: 2:09:55 PM
-* 
-*/
+ *
+ * User: toto
+ * Date: Oct 27, 2010
+ * Time: 2:09:55 PM
+ *
+ */
 class TreeGridClickSelectionModel extends TreeGridSelectionModel<GWTJahiaNode> {
     private TreeGridSelectionModel<GWTJahiaNode> rightClickSelectionModel;
 
@@ -73,11 +73,12 @@ class TreeGridClickSelectionModel extends TreeGridSelectionModel<GWTJahiaNode> {
         rightClickSelectionModel.setSelectionMode(Style.SelectionMode.SINGLE);
     }
 
-    @Override protected void handleMouseDown(GridEvent<GWTJahiaNode> e) {
-        if (!MainModule.isGlobalSelectionDisabled()) {
-            if (!e.isRightClick()) {
-                super.handleMouseDown(e);
-            } else {
+    @Override
+    protected void handleMouseDown(GridEvent<GWTJahiaNode> e) {
+        if (!e.isRightClick()) {
+            super.handleMouseDown(e);
+        } else {
+            if (!MainModule.isGlobalSelectionDisabled()) {
                 if (!tree.getTreeView().isSelectableTarget(e.getModel(), e.getTarget())) {
                     return;
                 }
@@ -92,7 +93,7 @@ class TreeGridClickSelectionModel extends TreeGridSelectionModel<GWTJahiaNode> {
     }
 
     @Override protected void handleMouseClick(GridEvent<GWTJahiaNode> e) {
-        if (!e.isRightClick() && !MainModule.isGlobalSelectionDisabled()) {
+        if (!e.isRightClick()) {
             super.handleMouseClick(e);
         }
     }

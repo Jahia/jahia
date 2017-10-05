@@ -1,524 +1,946 @@
 (function(exposeAs){
-    var Dex = function(selector, nodes){
+        var Dex = function(selector, nodes){
 
-        // Return Dex object
-        return new Dex.fn.init(selector, nodes);
+            // Return Dex object
+            return new Dex.fn.init(selector, nodes);
 
-    };
-
-    Dex.fn = Dex.prototype = {
-		init: function(selector, nodes){
-            this.selector = selector;
-
-			if(nodes){
-				this.nodes = nodes;
-			} else {
-				this.nodes = document.querySelectorAll(selector);
-			}
-
-            return this;
-        }
-
-
-    };
-
-    // CONSTANTS
-    var UNDEFINED = "undefined";
-
-    // HIDDEN VARIABLES
-    var cachedSelections = {},
-		observers = {},
-        matches = {},
-        queue = {},
-        observerConfig = {
-            attributes: true,
-            childList: true,
-            characterData: false,
-            subtree: true
-        },
-        mutationObserverCallback = function(mutation){
-
-            // check for onClose
-            if (mutation.removedNodes.length > 0) {
-                var removedNode = mutation.removedNodes[0];
-                // Skip text nodes, check if getAttribute is present
-                if (removedNode.getAttribute) {
-                    for (removedID in queue["close"]) {
-                        if (matches[removedID](removedNode)) {
-                            Dex(removedID).triggerObserverCallBack({
-                                eventType: "close",
-                                nodes: removedNode
-                            });
-                        }
-                    }
-                }
-            }
-
-            // check for onOpen
-            if (mutation.addedNodes.length > 0) {
-                var addedNode = mutation.addedNodes[0];
-                // Skip text nodes, check if getAttribute is present
-                if (addedNode.getAttribute) {
-                    for (selector in queue["open"]) {
-                        if (matches[selector](addedNode)) {
-                            Dex(selector).triggerObserverCallBack({
-                                eventType: "open",
-                                nodes: addedNode
-                            });
-                        }
-                    }
-
-                    // Handle tree change
-                    if (addedNode.classList.contains("x-grid3-row")) {
-                        for (selector in queue["treechange"]) {
-
-                            // Find matching ancestor
-                            var treeNode = addedNode;
-                            while ((treeNode = treeNode.parentElement) && !matches[selector](treeNode)) ;
-                            if (treeNode) {
-                                Dex(selector).triggerObserverCallBack({
-                                    eventType: "treechange",
-                                    nodes: mutation.addedNodes
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Check for onAttr
-            if(mutation.attributeName) {
-                for(selector in queue["attribute"]){
-                    if (matches[selector](mutation.target)) {
-                        // Matched selector
-                        for(var n = 0; n < queue["attribute"][selector].length; n++){
-                            if(queue["attribute"][selector][n].attribute === mutation.attributeName){
-                                Dex(selector).triggerObserverCallBack({
-                                    eventType: "attribute",
-                                    attribute: {
-                                        name: queue["attribute"][selector][n].attribute,
-                                        value: mutation.target.attributes[mutation.attributeName].value
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }
-            }
         };
 
-    // EXPOSED SELECTOR FUNCTIONS
-    Dex.fn.init.prototype = {
-
-		first: function(){
-			/* Remove all nodes except first from node list */
-
-			this.nodes = [this.nodes[0]];
-
-			return this;
-		},
-
-		index: function(index){
-			/* Remove all nodes except requested index */
-
-			this.nodes = [this.nodes[index]];
-
-			return this;
-		},
-
-		getNode: function(index){
-			/* Return DOM node */
-
-			return this.nodes[index];
-		},
-
-        exists: function(){
-			/* See if the node list contains at least one node */
-
-            return this.nodes[0] != null;
-        },
-
-		filter: function(selector){
-			/* Filter then current node list - note: only filters on the first node in list */
-
-			this.nodes = this.nodes[0].querySelectorAll(selector);
-
-			return this;
-
-		},
-
-        // DOM modification
-        setHTML: function(value){
-			/* Set innerHTML of all nodes in nodelist */
-
-            var n;
-
-            for(n = 0; n < this.nodes.length; n++){
-                this.nodes[n].innerHTML = value;
-            }
-
-			return this;
-        },
-
-        getHTML: function(value){
-			/* Get innerHTML of all first node in nodelist */
-
-            return this.nodes[0].innerHTML;
-        },
-
-		css: function(styles){
-			/* Set CSS of all nodes in nodelist */
-
-			var style,
-				n;
-
-			for(n = 0; n < this.nodes.length; n++){
-
-				for(style in styles){
-
-					this.nodes[n].style[style] = styles[style];
-
-				}
-
-			}
-
-			return this;
-
-
-
-		},
-
-		setAttribute: function(key, value){
-			/* Set attribute of all nodes in nodelist */
-
-            var n;
-
-            for(n = 0; n < this.nodes.length; n++){
-                this.nodes[n].setAttribute(key, value);
-            }
-
-			return this;
-        },
-
-		getAttribute: function(key){
-			/* Get attribute of first node in nodelist */
-
-            return this.nodes[0].getAttribute(key);
-        },
-
-		cache: function(cacheID){
-			/* Cache node list with cacheID as ID */
-
-			cachedSelections[cacheID] = this;
-		},
-
-		// Classes
-        addClass: function(classname){
-			/* Add class to all nodes in nodelist */
-
-            var n;
-
-            for(n = 0; n < this.nodes.length; n++){
-                this.nodes[n].classList.add(classname);
-            }
-
-			return this;
-        },
-
-        removeClass: function(classname){
-			/* Remove class from all nodes in nodelist */
-
-            var n;
-
-            for(n = 0; n < this.nodes.length; n++){
-                this.nodes[n].classList.remove(classname);
-            }
-			return this;
-        },
-
-		hasClass: function(classname){
-			/* Check whether first node in list contains a classname */
-
-			var result = false;
-
-			if(this.nodes[0]){
-				result = this.nodes[0].classList.contains(classname);
-			}
-
-			return result;
-
-		},
-
-		toggleClass: function(classname){
-			/* Toggle classnames on all nodes in nodelist */
-
-			var n;
-
-            for(n = 0; n < this.nodes.length; n++){
-                this.nodes[n].classList.toggle(classname);
-            }
-
-			return this;
-		},
-
-		replaceClass: function(old_classname, new_classname){
-			/* Replace old_classname with new_classname on all nodes in nodelist */
-
-			var n;
-
-            for(n = 0; n < this.nodes.length; n++){
-                this.nodes[n].classList.replace(old_classname, new_classname);
-            }
-
-			return this;
-		},
-
-        trigger: function(eventType){
-			/* Trigger eventType (click, mouseover, etc, ...) on all nodes in nodelist */
-
-            if(this.nodes[0]){
-                var clickEvent = document.createEvent("MouseEvents");
-
-                clickEvent.initEvent(eventType, true, true);
-                this.nodes[0].dispatchEvent(clickEvent);
-            }
-
-			return this;
-        },
-
-        // Attach Observer
-        attach: function(callback){
-            // See if array exists for this selector, if not add
-            if(!observers[this.selector]){
-                observers[this.selector] = [];
-            }
-
-            // Get last position in array
-            var index = observers[this.selector].length,
-                target = $(this.selector)[0];
-
-            // Create new Mutation Observer
-            observers[this.selector][index] = new MutationObserver(function(mutations){
-                mutations.forEach(callback);
-            });
-
-
-            // Start Observer
-            observers[this.selector][index].observe(target, observerConfig);
-        },
-
-        // SHORT HAND CALLS
-
-        onceTreeChange: function(callback){
-            this.on({
-                eventType: "treechange",
-                callback: callback,
-                persistant: false
-            });
-        },
-        onTreeChange: function(callback){
-            this.on({
-                eventType: "treechange",
-                callback: callback
-            })
-
-        },
-
-        onceOpen: function(callback){
-            this.on({
-                eventType: "open",
-                callback: callback,
-                persistant: false
-            })
-        },
-        onOpen: function(callback){
-            this.on({
-                eventType: "open",
-                callback: callback
-            })
-
-        },
-
-        onClose: function(callback){
-            this.on({
-                eventType: "close",
-                callback: callback
-            })
-
-        },
-        onceClose: function(callback){
-            this.on({
-                eventType: "close",
-                callback: callback,
-                persistant: false
-            })
-
-        },
-
-        onceAttr: function(attribute, callback){
-            this.on({
-                eventType: "attribute",
-                attribute: attribute,
-                callback: callback,
-                persistant: false
-            })
-
-        },
-        onAttr: function(attribute, callback){
-            this.on({
-                eventType: "attribute",
-                attribute: attribute,
-                callback: callback
-            })
-
-        },
-
-
-        on: function(params){
-            var eventType = params.eventType,
-                attribute = params.attribute,
-                callback = params.callback,
-                persistant = params.persistant;
-
-            if (typeof persistant == UNDEFINED) {
-                persistant = true;
-            }
-
-            if (!matches[this.selector]) {
-                if (this.selector.indexOf("#")===0) {
-                    var id = this.selector.substring(1);
-                    matches[this.selector] = function(target) {
-                        return target.getAttribute("id") === id
-                    }
-                } else if (this.selector.indexOf(".")===0) {
-                    var cl = this.selector.substring(1)
-                    matches[this.selector] = function(target) {
-                        return target.classList.contains(cl);
-                    }
+        Dex.fn = Dex.prototype = {
+            init: function(selector, nodes){
+                this.selector = selector;
+
+                if(nodes){
+                    this.nodes = nodes;
                 } else {
-                    var tagName = this.selector.toUpperCase();
-                    matches[this.selector] = function(target) {
-                        return target.tagName === tagName;
-                    }
+                    this.nodes = document.querySelectorAll(selector);
                 }
+
+                return this;
             }
 
-            if(!queue[eventType]){
-                // No eventType for this selector, add entry
-                queue[eventType] = {}
-            }
 
-            if(!queue[eventType][this.selector]){
-                queue[eventType][this.selector] = []
-            }
+        };
 
-            queue[eventType][this.selector].push({
-                callback: callback,
-                persistant: persistant,
-                attribute: attribute
-            })
+        // CONSTANTS
+        var UNDEFINED = "undefined";
 
-            return this;
-        },
-        triggerObserverCallBack: function(params){
-            var eventType = params.eventType,
-                nodes = params.nodes,
-                attribute = params.attribute,
-                persistantFunctions = [];
+        // HIDDEN VARIABLES
+        var cachedSelections = {},
+            delegatedEventListeners = {},
+            mutationObservers = {},
+            DOMMutationCallback = function(mutations, selector, parentNodes){
+                var n, x, y,
+                    mutationRecord,
+                    addedNode,
+                    removedNode,
+                    modifiedNodeAttribute,
+                    callbacks,
+                    modifiedSelector,
+                    _target,
+                    executeCallbacks = function(queue, node, arg1, arg2){
+                        var n = 0;
 
-            if(	queue[eventType] &&
-                queue[eventType][this.selector]){
+                        while(queue[n]){
+                            // Call callback function
+                            queue[n].callback.call(node, arg1, arg2);
 
-                // FOUND ENTRY IN QUEUE ...
-                while(queue[eventType][this.selector].length > 0){
-                    queueEntry = queue[eventType][this.selector].pop();
+                            if(!queue[n].persistant){
+                                queue.splice(n, 1);
+                            }
 
-                    if(attribute){
-                        if(queueEntry.attribute === attribute.name){
-                            queueEntry.callback(attribute.value, nodes);
+                            n++;
+
                         }
-                    } else {
-                        queueEntry.callback(nodes);
+                    },
+                    executeAttributecallbacks = function(queue, node, attrKey, attrValue){
+                        y = 0;
+
+                        while(queue[y]){
+                            // Call callback function
+                            if(queue[y].attrKey == attrKey){
+                                queue[y].callback.call(node, attrKey, attrValue);
+
+                                if(!queue[y].persistant){
+                                    queue.splice(y, 1);
+
+                                }
+
+                            }
+
+                            y++;
+                        }
+                    };
+
+
+                // Loop through mutation records
+                for(n = 0; n < mutations.length; n++){
+                    mutationRecord = mutations[n];
+
+                    // Loop through added nodes
+                    if(mutationRecord.addedNodes.length > 0){
+                        callbacks = mutationObservers[selector].callbacks.onOpen;
+
+                        if(callbacks){
+                            for(x = 0; x < mutationRecord.addedNodes.length; x++){
+                                addedNode = mutationRecord.addedNodes[x];
+
+                                // Check if node type is valid
+                                if(addedNode.nodeType == 1){
+
+                                    // Loop through callbacks
+                                    for(_target in callbacks){
+                                        modifiedSelector = callbacks[_target].matchType.modifiedSelector;
+
+                                        // See if addedNode matches the _target of the callback
+                                        switch(callbacks[_target].matchType.type){
+                                            case "tag":
+                                                if(addedNode.tagName.toUpperCase() == modifiedSelector){
+                                                    // Loop through all callbacks
+                                                    executeCallbacks(callbacks[_target].queue, addedNode);
+
+                                                }
+                                                break;
+                                            case "id":
+                                                if(addedNode.id == modifiedSelector){
+                                                    // Loop through all callbacks
+                                                    executeCallbacks(callbacks[_target].queue, addedNode);
+
+                                                }
+                                                break;
+                                            case "classname":
+                                                if(addedNode.classList.contains(modifiedSelector)){
+                                                    // Loop through all callbacks
+                                                    executeCallbacks(callbacks[_target].queue, addedNode, mutationRecord.addedNodes);
+
+                                                }
+                                                break;
+                                            case "complex":
+                                                if(addedNode.matches(modifiedSelector)){
+                                                    // Loop through all callbacks
+                                                    executeCallbacks(callbacks[_target].queue, addedNode);
+
+                                                }
+                                                break;
+
+                                        }
+
+                                    }
+                                }
+
+                            }
+                        }
                     }
 
-                    if(queueEntry.persistant){
-                        persistantFunctions.push(queueEntry);
+                    if(mutationRecord.removedNodes.length > 0){
+                        callbacks = mutationObservers[selector].callbacks.onClose;
+
+                        if(callbacks){
+                            // Loop through removed nodes
+                            for(x = 0; x < mutationRecord.removedNodes.length; x++){
+                                removedNode = mutationRecord.removedNodes[x];
+
+                                // Check if node type is valid
+                                if(removedNode.nodeType == 1){
+
+                                    // Loop through callbacks
+                                    for(_target in callbacks){
+
+                                        modifiedSelector = callbacks[_target].matchType.modifiedSelector;
+
+                                        // See if removedNode matches the _target of the callback
+                                        switch(callbacks[_target].matchType.type){
+                                            case "tag":
+                                                if(removedNode.tagName.toUpperCase() == modifiedSelector){
+                                                    // Loop through all callbacks
+                                                    executeCallbacks(callbacks[_target].queue, removedNode);
+
+                                                }
+                                                break;
+                                            case "id":
+                                                if(removedNode.id == modifiedSelector){
+                                                    // Loop through all callbacks
+                                                    executeCallbacks(callbacks[_target].queue, removedNode);
+
+                                                }
+                                                break;
+                                            case "classname":
+                                                if(removedNode.classList.contains(modifiedSelector)){
+                                                    // Loop through all callbacks
+                                                    executeCallbacks(callbacks[_target].queue, removedNode);
+
+                                                }
+                                                break;
+                                            case "complex":
+                                                if(removedNode.matches(modifiedSelector)){
+                                                    // Loop through all callbacks
+                                                    executeCallbacks(callbacks[_target].queue, removedNode);
+
+                                                }
+                                                break;
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+                        }
+                    }
+
+                    if(mutationRecord.attributeName){
+                        callbacks = mutationObservers[selector].callbacks.onAttribute;
+
+                        if(callbacks){
+                            // Loop through modified attributes
+                            modifiedNodeAttribute = mutationRecord.target;
+
+                            // Loop through callbacks
+                            for(_target in callbacks){
+                                modifiedSelector = callbacks[_target].matchType.modifiedSelector;
+
+                                // See if modifiedNodeAttribute matches the _target of the callback
+                                switch(callbacks[_target].matchType.type){
+                                    case "tag":
+                                        if(modifiedNodeAttribute.tagName.toUpperCase() == modifiedSelector){
+                                            // Loop through all callbacks
+                                            if(mutationRecord.target.attributes[mutationRecord.attributeName]){ // Its a live list, so check it hasnt been removed
+                                                executeAttributecallbacks(callbacks[_target].queue, modifiedNodeAttribute, mutationRecord.attributeName, mutationRecord.target.attributes[mutationRecord.attributeName].value);
+
+                                            }
+
+                                        }
+                                        break;
+                                    case "id":
+                                        if(modifiedNodeAttribute.id == modifiedSelector){
+                                            // Loop through all callbacks
+                                            if(mutationRecord.target.attributes[mutationRecord.attributeName]){ // Its a live list, so check it hasnt been removed
+                                                executeAttributecallbacks(callbacks[_target].queue, modifiedNodeAttribute, mutationRecord.attributeName, mutationRecord.target.attributes[mutationRecord.attributeName].value);
+
+                                            }
+                                        }
+                                        break;
+                                    case "classname":
+                                        if(modifiedNodeAttribute.classList.contains(modifiedSelector)){
+                                            // Loop through all callbacks
+                                            if(mutationRecord.target.attributes[mutationRecord.attributeName]){ // Its a live list, so check it hasnt been removed
+                                                executeAttributecallbacks(callbacks[_target].queue, modifiedNodeAttribute, mutationRecord.attributeName, mutationRecord.target.attributes[mutationRecord.attributeName].value);
+
+                                            }
+                                        }
+                                        break;
+                                    case "complex":
+                                        if(modifiedNodeAttribute.matches(modifiedSelector)){
+                                            // Loop through all callbacks
+                                            if(mutationRecord.target.attributes[mutationRecord.attributeName]){ // Its a live list, so check it hasnt been removed
+                                                executeAttributecallbacks(callbacks[_target].queue, modifiedNodeAttribute, mutationRecord.attributeName, mutationRecord.target.attributes[mutationRecord.attributeName].value);
+
+                                            }
+                                        }
+                                        break;
+                                }
+
+                            }
+                        }
+                    }
+
+                }
+
+            },
+            createEventListener = function(dexObject, eventType, selector, target, callback, persistant){
+                // Check that the event type exists in queue
+                if(!delegatedEventListeners[eventType]){
+                    delegatedEventListeners[eventType] = {};
+                }
+
+                // Check that this selector is registered
+                if(!delegatedEventListeners[eventType][selector]){
+                    delegatedEventListeners[eventType][selector] = {};
+
+                    // Setup listener
+
+                    attachEventListeners(eventType, dexObject);
+                }
+
+                // Check that this target is registered
+                if(!delegatedEventListeners[eventType][selector][target]){
+                    delegatedEventListeners[eventType][selector][target] = [];
+                }
+
+                // register delegated event listener
+                delegatedEventListeners[eventType][selector][target].push({
+                    callback: callback,
+                    persistant: persistant
+                });
+
+
+            },
+            attachEventListeners = function(eventType, dexObject){
+
+                var n,
+                    selector = {
+                        string: dexObject.selector
+                    };
+
+                for(n = 0; n < dexObject.nodes.length; n++){
+                    selector.node = dexObject.nodes[n];
+
+                    selector.node.addEventListener(eventType, function(e){
+                        var eventHandlers = delegatedEventListeners[eventType][selector.string];
+
+                        for(handlerSelector in eventHandlers){
+
+                            clickedNode = e.target;
+
+
+                            while(	clickedNode &&
+                                    clickedNode !== document &&
+                                    clickedNode !== selector.node) { // Stop looking when we hit the node that contains the event listener
+
+                                if (clickedNode.matches(handlerSelector)) {
+
+                                    var handlerIndex = 0;
+
+                                    while (eventHandlers[handlerSelector][handlerIndex]){
+                                        eventHandlers[handlerSelector][handlerIndex].callback.call(clickedNode, e);
+
+                                        if(!eventHandlers[handlerSelector][handlerIndex].persistant){
+                                            eventHandlers[handlerSelector].splice(handlerIndex, 1);
+                                        }
+
+                                        handlerIndex++;
+                                    }
+
+                                }
+
+                                clickedNode = clickedNode.parentNode;
+
+                            }
+                        }
+
+                    });
+                }
+
+
+            };
+
+        // EXPOSED SELECTOR FUNCTIONS
+        Dex.fn.init.prototype = {
+
+            first: function(){
+                /* Remove all nodes except first from node list */
+
+                this.nodes = [this.nodes[0]];
+
+                return this;
+            },
+
+            index: function(index){
+                /* Remove all nodes except requested index */
+
+                this.nodes = [this.nodes[index]];
+
+                return this;
+            },
+
+            getNode: function(index){
+                /* Return DOM node */
+
+                return this.nodes[index];
+            },
+
+            exists: function(){
+                /* See if the node list contains at least one node */
+
+                return this.nodes[0] != null;
+            },
+
+            appendClone: function(node){
+
+                var n;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    this.nodes[n].appendChild(node.cloneNode(true));
+                }
+
+                return this;
+
+            },
+
+            append: function(node){
+
+                var n;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    this.nodes[n].appendChild(node);
+                }
+
+                return this;
+
+            },
+
+            remove: function(){
+
+                var n;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    this.nodes[n];
+
+                    if (this.nodes[n].parentNode) {
+                        this.nodes[n].parentNode.removeChild(this.nodes[n]);
                     }
                 }
 
-                queue[eventType][this.selector] = queue[eventType][this.selector].concat(persistantFunctions);
+                return this;
 
-            } else {
-                // NO ENTRIES
-            }
+            },
+
+            clone: function(){
+                var n,
+                    clonedNodes = [];
+
+                for(n = 0; n < this.nodes.length; n++){
+                    clonedNodes.push(this.nodes[n].cloneNode(true));
+                }
+
+                this.nodes = clonedNodes;
+
+                return this;
+            },
+
+            parent: function(){
+
+                this.nodes = [this.nodes[0].parentNode];
+
+                return this;
+
+            },
+
+            closest: function(matchSelector){
+
+                var closest = [];
+
+                node = this.nodes[0];
+
+                // Go through parents
+                while(node && node !== document) {
+                    if (node.matches(matchSelector)) {
+
+                        closest = [node];
+                        break;
+
+                    }
+
+                    node = node.parentNode;
+
+                }
+
+                this.nodes = closest;
+
+                return this;
+
+            },
+
+            filter: function(selector){
+                /* Filter then current node list - note: only filters on the first node in list */
+
+                this.nodes = this.nodes[0].querySelectorAll(selector);
+
+                return this;
+
+            },
+
+            // DOM modification
+            setHTML: function(value){
+                /* Set innerHTML of all nodes in nodelist */
+
+                var n;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    this.nodes[n].innerHTML = value;
+                }
+
+                return this;
+            },
+
+            getHTML: function(value){
+                /* Get innerHTML of all first node in nodelist */
+
+                return this.nodes[0].innerHTML;
+            },
+
+            css: function(styles){
+                /* Set CSS of all nodes in nodelist */
+
+                var style,
+                    n;
+
+                for(n = 0; n < this.nodes.length; n++){
+
+                    for(style in styles){
+
+                        this.nodes[n].style[style] = styles[style];
+
+                    }
+
+                }
+
+                return this;
+
+
+
+            },
+
+            setAttribute: function(key, value){
+                /* Set attribute of all nodes in nodelist */
+
+                var n;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    this.nodes[n].setAttribute(key, value);
+                }
+
+                return this;
+            },
+
+            getAttribute: function(key){
+                /* Get attribute of first node in nodelist */
+
+                return this.nodes[0].getAttribute(key);
+            },
+
+            toggleAttribute: function(key, value){
+                /* Get attribute of first node in nodelist */
+
+                var n,
+                    attrValue;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    attrValue = this.nodes[n].getAttribute(key);
+
+                    if(attrValue == value[0]){
+                        this.nodes[n].setAttribute(key, value[1]);
+                    } else {
+                        this.nodes[n].setAttribute(key, value[0]);
+                    }
+                }
+
+                return this;
+            },
+
+            cache: function(cacheID){
+                /* Cache node list with cacheID as ID */
+
+                cachedSelections[cacheID] = this;
+            },
+
+            // Classes
+            addClass: function(classname){
+                /* Add class to all nodes in nodelist */
+
+
+                var n;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    this.nodes[n].classList.add(classname);
+                }
+
+                return this;
+            },
+
+            removeClass: function(classname){
+                /* Remove class from all nodes in nodelist */
+
+                var n;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    this.nodes[n].classList.remove(classname);
+                }
+                return this;
+            },
+
+            hasClass: function(classname){
+                /* Check whether first node in list contains a classname */
+
+                var result = false;
+
+                if(this.nodes[0]){
+                    result = this.nodes[0].classList.contains(classname);
+                }
+
+                return result;
+
+            },
+
+            toggleClass: function(classname){
+                /* Toggle classnames on all nodes in nodelist */
+
+                var n;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    this.nodes[n].classList.toggle(classname);
+                }
+
+                return this;
+            },
+
+            replaceClass: function(old_classname, new_classname){
+                /* Replace old_classname with new_classname on all nodes in nodelist */
+
+                var n;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    this.nodes[n].classList.replace(old_classname, new_classname);
+                }
+
+                return this;
+            },
+
+            trigger: function(eventType){
+                /* Trigger eventType (click, mouseover, etc, ...) on all nodes in nodelist */
+
+                if(this.nodes[0]){
+                    var clickEvent = document.createEvent("MouseEvents");
+
+                    clickEvent.initEvent(eventType, true, true);
+                    this.nodes[0].dispatchEvent(clickEvent);
+                }
+
+                return this;
+            },
+
+            onOpen: function(target, callback){
+                this.onMutation("onOpen", target, callback, {
+                    children: false,
+                    persistant: true
+                });
+
+                return this;
+            },
+
+            onceOpen: function(target, callback){
+                this.onMutation("onOpen", target, callback, {
+                    children: false,
+                    persistant: false
+                });
+
+                return this;
+            },
+
+            onClose: function(target, callback){
+
+                this.onMutation("onClose", target, callback, {
+                    children: false,
+                    persistant: true
+                });
+
+                return this;
+            },
+
+            onceClose: function(target, callback){
+
+                this.onMutation("onClose", target, callback, {
+                    children: false,
+                    persistant: false
+                });
+
+                return this;
+            },
+
+            onAttribute: function(target, attrKey, callback){
+                this.onMutation("onAttribute", target, callback, {
+                    attrKey: attrKey,
+                    persistant: true
+                });
+
+                return this;
+            },
+
+            onceAttribute: function(target, attrKey, callback){
+                this.onMutation("onAttribute", target, callback, {
+                    attrKey: attrKey,
+                    persistant: false
+                });
+
+                return this;
+            },
+
+            onMutation: function(mutationType, target, callback, parameters){
+                var selector = this.selector,
+                    parentNodes = this.nodes,
+                    matchType = function(target){
+                        // This needs updating to cater for complex selectors.
+
+                        var result;
+
+                        if(target[0] == "."){
+                            result = {
+                                type: "classname",
+                                modifiedSelector: target.slice(1)
+                            }
+
+
+                        } else if(target[0] == "#"){
+                            result = {
+                                type: "id",
+                                modifiedSelector: target.slice(1)
+                            }
+
+                        } else if(target[0] == "["){
+                            result = {
+                                type: "complex",
+                                modifiedSelector: target
+                            }
+
+                        } else {
+                            result = {
+                                type: "tag",
+                                modifiedSelector: target.toUpperCase()
+                            }
+                        }
+
+                        return result;
+
+                    }(target),
+                    n,
+                    parameters = parameters || {};
+
+
+                // See if we need to attach a mutation observer
+
+
+                if(!mutationObservers[this.selector]){
+                    mutationObservers[this.selector] = {
+                        observer: new MutationObserver(function(mutations){
+                            DOMMutationCallback(mutations, selector, parentNodes);
+                        }),
+                        callbacks: {}
+                    }
+
+                    // Attach observer to all matches nodes
+                    for(n = 0; n < this.nodes.length; n++){
+                        mutationObservers[this.selector].observer.observe(this.nodes[n], {
+                            attributes: true,
+                            childList: true,
+                            characterData: false,
+                            subtree: true
+                        });
+                    }
+                }
+
+
+
+                // See if there are already callbacks for mutationType
+                if(!mutationObservers[this.selector].callbacks[mutationType]){
+                    mutationObservers[this.selector].callbacks[mutationType] = {}
+                }
+
+                // See if there are already calbacks for this target
+                if(!mutationObservers[this.selector].callbacks[mutationType][target]){
+                    // mutationObservers[this.selector][childtree].callbacks[mutationType][target] = []
+                    mutationObservers[this.selector].callbacks[mutationType][target] = {
+                        matchType: matchType,
+                        queue: []
+                    }
+                }
+
+                // Save callback
+                mutationObservers[this.selector].callbacks[mutationType][target].queue.push({
+                    callback: callback,
+                    attrKey: parameters.attrKey,
+                    persistant: parameters.persistant
+                });
+            },
+
+
+            onClick: function(target, callback){
+                createEventListener(this, "click", this.selector, target, callback, true);
+
+                return this;
+
+            },
+
+            oneClick: function(target, callback){
+                createEventListener(this, "click", this.selector, target, callback, false);
+
+                return this;
+
+            },
+
+            onMouseUp: function(target, callback){
+                createEventListener(this, "mouseup", this.selector, target, callback, true);
+
+                return this;
+
+            },
+
+            oneMouseUp: function(target, callback){
+                createEventListener(this, "mouseup", this.selector, target, callback, false);
+
+                return this;
+
+            },
+
+            onMouseDown: function(target, callback){
+                createEventListener(this, "mousedown", this.selector, target, callback, true);
+
+                return this;
+
+            },
+
+            oneMouseDown: function(target, callback){
+                createEventListener(this, "mousedown", this.selector, target, callback, false);
+
+                return this;
+
+            },
+
+            onMouseEnter: function(target, callback){
+                createEventListener(this, "mouseenter", this.selector, target, callback, true);
+
+                return this;
+
+            },
+
+            oneMouseEnter: function(target, callback){
+                createEventListener(this, "mouseenter", this.selector, target, callback, false);
+
+                return this;
+
+            },
+
+            onMouseLeave: function(target, callback){
+                createEventListener(this, "mouseleave", this.selector, target, callback, true);
+
+                return this;
+
+            },
+
+            oneMouseLeave: function(target, callback){
+                createEventListener(this, "mouseleave", this.selector, target, callback, false);
+
+                return this;
+
+            },
+
+            onMouseOver: function(target, callback){
+                createEventListener(this, "mouseover", this.selector, target, callback, true);
+
+                return this;
+
+            },
+
+            oneMouseOver: function(target, callback){
+                createEventListener(this, "mouseover", this.selector, target, callback, false);
+
+                return this;
+
+            },
+
+            onMouseOut: function(target, callback){
+                createEventListener(this, "mouseout", this.selector, target, callback, true);
+
+                return this;
+
+            },
+
+            oneMouseOut: function(target, callback){
+                createEventListener(this, "mouseout", this.selector, target, callback, false);
+
+                return this;
+
+            },
+
+
         }
-    };
 
-    // EXPOSED BASE FUNCTIONS
-    Dex.init = function(){
-        Dex("body").attach(mutationObserverCallback);
-    };
+        Dex.appendCSS = function(url){
+            var head = document.head,
+                link = document.createElement('link');
 
-	Dex.getCached = function(cacheID){
-		return cachedSelections[cacheID];
-	}
+              link.type = "text/css";
+              link.rel = "stylesheet";
+              link.href = url;
 
-	Dex.clearCache = function(cacheID){
-		delete cachedSelections[cacheID];
+              head.appendChild(link);
 
-	}
+              return link;
+        }
 
-	Dex.tag = function(tag){
-		/* Use Tag() to select nodes using the getElementsByTagName */
+        Dex.getCached = function(cacheID){
+            return cachedSelections[cacheID];
+        }
 
-		var nodes = document.getElementsByTagName(tag);
+        Dex.clearCache = function(cacheID){
+            delete cachedSelections[cacheID];
 
-		return Dex(tag, nodes);
+        }
 
-	}
+        Dex.tag = function(tag){
+            /* Use Tag() to select nodes using the getElementsByTagName */
 
-	Dex.class = function(classname){
-		/* Use Tag() to select nodes using the getElementsByClassName */
+            var nodes = document.getElementsByTagName(tag);
 
-		var nodes = document.getElementsByClassName(classname);
+            return Dex(tag, nodes);
 
-		return Dex("." + classname, nodes);
+        }
 
-	}
+        Dex.class = function(classname){
+            /* Use Tag() to select nodes using the getElementsByClassName */
 
-	Dex.id = function(id){
-		/* Use Tag() to select nodes using the getElementById */
+            var nodeCollection = document.getElementsByClassName(classname),
+                nodes = Array.prototype.slice.call(nodeCollection);
 
-		var nodes = [document.getElementById(id)];
+            return Dex("." + classname, nodes);
 
-		return Dex("#" + id, nodes);
+        }
 
-	}
+        Dex.iframe = function(selector){
 
-	Dex.node = function(node){
-		/* Use Node to create a Dex object with a DOM node directly */
+            var iframe = document.querySelectorAll(selector)[0];
 
-		return Dex("node", [node]);
+            return Dex.node(iframe.contentDocument || iframe.contentWindow.document);
 
-	}
+        }
 
-	Dex.collection = function(nodeCollection){
-		/* Use Node to create a Dex object with an HTML Node Collection  directly */
+        Dex.id = function(id){
+            /* Use Tag() to select nodes using the getElementById */
 
-		var nodes = [];
+            var nodes = [document.getElementById(id)];
 
-		for(n = 0; n < nodeCollection.length; n++){
-			nodes.push(nodeCollection[n]);
-		}
+            return Dex("#" + id, nodes);
 
-		return Dex("node", nodes)
-	}
+        }
 
-    if(exposeAs){
-        window[exposeAs] = Dex;
-    }
+        Dex.node = function(node){
+            /* Use Node to create a Dex object with a DOM node directly */
 
-})("Dex");
+            return Dex("node", [node]);
+
+        }
+
+        Dex.collection = function(nodeCollection){
+            /* Use Node to create a Dex object with an HTML Node Collection  directly */
+
+            var nodes = [];
+
+            for(n = 0; n < nodeCollection.length; n++){
+                nodes.push(nodeCollection[n]);
+            }
+
+            return Dex("node", nodes)
+        }
+
+        Dex.dump = function(object){
+            console.log(mutationObservers);
+        };
+
+        if(exposeAs){
+            window[exposeAs] = Dex;
+        }
+
+    })("DexV2");
 
 (function(exposeAs){
 
@@ -560,14 +982,54 @@
 			data: {
 				on: false
 			},
-			log: function(message, save){
-				if(app.dev.data.on){
+			log: function(message, force){
+				if(app.dev.data.on || force){
 					console.log(message);
 				}
 			}
 		},
-		onChange: function(mode){
+        onChange: function(attrKey, attrValue){
 
+            if(app.data.previousModeClass == attrValue){
+                return false;
+            }
+
+            app.data.previousModeClass = attrValue;
+
+            app.dev.log("::: APP ::: ONCHANGE");
+
+            attrValue.split(" ").forEach(function(cl) {
+                if (cl.indexOf("x-viewport") == 0) {
+
+                    switch (cl) {
+                        case "x-viewport-editmode":
+                            app.switch("edit");
+
+                            break;
+                        case "x-viewport-adminmode":
+                            app.switch("admin");
+
+                            break;
+                        case "x-viewport-dashboardmode":
+                            app.switch("dashboard");
+
+                            break;
+                        case "x-viewport-studiomode":
+                            app.switch("studio");
+
+                            break;
+                        case "x-viewport-contributemode":
+                            app.switch("contribute");
+
+                            break;
+                    }
+
+                }
+            })
+
+
+		},
+        onChange2: function(mode, arg1, arg2){
 			if(app.data.previousModeClass == mode){
 				return false;
 			}
@@ -618,20 +1080,22 @@
 			app.dev.log("::: APP ::: ONBLUR");
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
-            if(Dex.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+            if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
                 app.edit.sidepanel.close();
             }
 		},
 		onClick: function(e){
+            app.dev.log("CLICKED APP");
+			if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
+                var inSidePanel = DexV2.node(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
 
-			if(Dex.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-				var inSidePanel = $(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
-
-		        if(inSidePanel.length == 0){
+		        if(inSidePanel.nodes.length == 0){
 					app.dev.log("::: APP ::: ONCLICK");
 	                app.edit.sidepanel.close();
 	            }
+
 			}
+
 
 
 		},
@@ -661,7 +1125,7 @@
 
                         case 1:
                             // Selected Item
-                            contextMenuTitle = params.singleSelection.replace("{{node}}", Dex.getCached("body").getAttribute("data-singleselection-node-displayname"));
+                            contextMenuTitle = params.singleSelection.replace("{{node}}", DexV2.getCached("body").getAttribute("data-singleselection-node-displayname"));
                             break;
 
                         default:
@@ -706,7 +1170,7 @@
 
                             break;
                     }
-                    contextmenu.setAttribute("data-indigo-title", returnText);
+                    DexV2.node(this).setAttribute("data-indigo-title", returnText);
 
 
                 },
@@ -714,13 +1178,15 @@
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONCLOSE");
 					// Manager Menu has been closed by clicking on the X.
 		            // Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
-		            $(".menu-editmode-managers-menu").fadeOut();
+		            DexV2(".menu-editmode-managers-menu").css({
+                        "display": "none"
+                    });
 				}
 			},
             previewMenu: {
-                onOpen: function(contextmenu){
+                onOpen: function(){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: PREVIEWMENU ::: ONOPEN");
-                    app.contextMenus.setTitle(contextmenu, {
+                    app.contextMenus.setTitle(this, {
                         noSelection: "Page Preview",
                         singleSelection: "Preview {{node}}",
                         multipleSelection: "Preview selection"
@@ -731,7 +1197,7 @@
             publicationMenu: {
                 onOpen: function(contextmenu){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: PUBLICATIONMENU ::: ONOPEN");
-                    app.contextMenus.setTitle(contextmenu, {
+                    app.contextMenus.setTitle(this, {
                         noSelection: "Publish Page",
                         singleSelection: "Publish {{node}}",
                         multipleSelection: "Publish selection"
@@ -740,9 +1206,9 @@
                 }
             },
             moreInfoMenu: {
-                onOpen: function(contextmenu){
+                onOpen: function(){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: MOREINFOMENU ::: ONOPEN");
-                    app.contextMenus.setTitle(contextmenu, {
+                    app.contextMenus.setTitle(this, {
                         noSelection: "Page Options",
                         singleSelection: "{{node}} Options",
                         multipleSelection: "Selection Options"
@@ -755,7 +1221,7 @@
 			data: {
 				skin: "dark",
 				enabled: true,
-				storedCSS: null
+				anthraciteCSSNode: null
 			},
 			onToggle: function(e){
 				app.dev.log("::: APP ::: THEME ::: ONTOGGLE");
@@ -764,7 +1230,7 @@
 	            /* The button firing this event is actually a pseudo element atached to a table.
 	            // The tables CSS has been set to ignore all pointer events EXCEPT the pseudo element who accepts pointer events.
 	            // This allows us to capture a click on the pseudo element, but we have to check that it a child of the table want the one that was clicked */
-				if(Dex.node(e.target).hasClass("x-toolbar-ct")){
+				if(DexV2.node(e.target).hasClass("x-toolbar-ct")){
 					app.dev.log("CLICKED THEME BUTTON");
 					if(app.theme.data.skin == "dark"){
 						app.theme.data.skin = "light";
@@ -772,19 +1238,16 @@
 						app.theme.data.skin = "dark";
 					}
 
-					Dex.tag("body").setAttribute("data-INDIGO-UI", app.theme.data.skin);
+					DexV2.tag("body").setAttribute("data-INDIGO-UI", app.theme.data.skin);
 
 	            }
 			},
-			on: function(changeSkin){
+			on: function(){
 				app.dev.log("::: APP ::: THEME ::: ON");
-				if(changeSkin){
-					app.theme.data.skin = changeSkin;
-				}
 
 				if(!app.theme.data.enabled){
 					// Anthracite CSS has been removed, so plug it back in
-                    $("head").append(app.theme.data.storedCSS);
+                    DexV2.tag("head").append(app.theme.data.anthraciteCSSNode);
 
 					app.theme.data.enabled = true;
 				}
@@ -793,12 +1256,10 @@
 				app.dev.log("::: APP ::: THEME ::: OFF");
 				if(app.theme.data.enabled){
 					// Remove Anthracite CSS style sheet
-					$('link[rel=stylesheet][href$="' + app.theme.data.cssReference + '"]').remove();
+                    DexV2.node(app.theme.data.anthraciteCSSNode).remove();
 
 	               // Register the fact that it has been removed
 	               app.theme.data.enabled = false;
-			   } else {
-				   app.dev.log("DO NOT REMOVE");
 			   }
 			},
 		},
@@ -809,35 +1270,35 @@
 			},
 			onOpen: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONOPEN");
-				Dex.getCached("body")
+				DexV2.getCached("body")
 					.setAttribute("data-INDIGO-PICKER-SEARCH", "")
 					.setAttribute("data-INDIGO-PICKER", "open")
 					.setAttribute("indigo-PICKER-DISPLAY", "thumbs");
 			},
 			onClose: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONCLOSE");
-				Dex.getCached("body").setAttribute("data-INDIGO-PICKER", "");
+				DexV2.getCached("body").setAttribute("data-INDIGO-PICKER", "");
 
 			},
 			onClick: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONCLICK");
-				Dex.getCached("body").setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
+				DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
 
 			},
 			onListView: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONLISTVIEW");
-				Dex.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "list");
+				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "list");
 
 			},
 			onThumbView: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONTHUMBVIEW");
-				Dex.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "thumbs");
+				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "thumbs");
 
 			},
 			row: {
 				onClick: function(){
 					app.dev.log("::: APP ::: PICKER ::: ROW ::: ONCLICK");
-					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
+					DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 				},
 				onMouseOver: function(e){
@@ -848,25 +1309,25 @@
 		                top: 0
 		            });
 
-					app.picker.data.currentItem = Dex.node(this).getNode(0);
-					app.picker.data.title = Dex.node(this).filter(".x-grid3-col-name").getHTML();
+					app.picker.data.currentItem = DexV2.node(this).getNode(0);
+					app.picker.data.title = DexV2.node(this).filter(".x-grid3-col-name").getHTML();
 
-					if(Dex.node(this).hasClass("x-grid3-row-selected")){
-						Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
+					if(DexV2.node(this).hasClass("x-grid3-row-selected")){
+						DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 		            } else {
-						Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "unselected");
+						DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "unselected");
 
 		            }
 
-					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
+					DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
 				},
 				onContext: function(e){
 					app.dev.log("::: APP ::: PICKER ::: ROW ::: ONCONTEXT");
 					// Open Context Menu when clicking "More" button.
 					// if matchClass is passed, then the click is ONLY accepted if the clicked element has that class.
 					// if matchClass is not passed then it is accepted.
-					var acceptClick = Dex.node(e.target).hasClass("x-tree3-el");
+					var acceptClick = DexV2.node(e.target).hasClass("x-tree3-el");
 
 					if(acceptClick){
 						$(e.target).trigger({
@@ -886,29 +1347,29 @@
 			thumb: {
 				onClick: function(){
 					app.dev.log("::: APP ::: PICKER ::: THUMB ::: ONCLICK");
-					Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
+					DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 				},
 				onMouseOver: function(e){
-					app.dev.log("::: APP ::: PICKER ::: THUMB ::: ONMOUSEOVER");
+					app.dev.log("::: APP ::: PICKER ::: THUMB ::: ONMOUSEOVER", e, this);
 					// Position the preview button next to the file whilst hovering
 		            app.picker.previewButton.reposition(e, {
 		                left: -52,
 		                top: 0
 		            });
 
-					app.picker.data.currentItem = Dex.node(this).getNode(0);
-		            app.picker.data.title = Dex.node(this).getAttribute("id");
+					app.picker.data.currentItem = DexV2.node(this).getNode(0);
+		            app.picker.data.title = DexV2.node(this).getAttribute("id");
 
-		            if(Dex.node(this).hasClass("x-view-item-sel")){
-		                Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
+		            if(DexV2.node(this).hasClass("x-view-item-sel")){
+		                DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 		            } else {
-		                Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "unselected");
+		                DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "unselected");
 
 		            }
 
-		            Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
+		            DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
 				},
 				onContext: function(e){
 					app.dev.log("::: APP ::: PICKER ::: THUMB ::: ONCONTEXT");
@@ -931,30 +1392,30 @@
 			previewButton: {
 				onMouseOver: function(){
 					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOVER");
-					Dex.node(app.picker.data.currentItem)
+					DexV2.node(app.picker.data.currentItem)
 		                .addClass("x-view-over")
 		                .addClass("x-grid3-row-over");
 				},
 				onMouseOut: function(){
 					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOUT");
-					Dex.node(app.picker.data.currentItem)
+					DexV2.node(app.picker.data.currentItem)
 		                .removeClass("x-view-over")
 		                .removeClass("x-grid3-row-over");
 				},
 				onClick: function(e, secondClick){
 					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONCLICK");
-					Dex.node(app.picker.data.currentItem)
+					DexV2.node(app.picker.data.currentItem)
 						.trigger("mousedown")
 						.trigger("mouseup");
 
 		            if(!secondClick){
-		                $("#JahiaGxtImagePopup").remove(); // remove OLD preview
+		                DexV2.id("JahiaGxtImagePopup").remove(); // remove OLD preview
 		                $(this).trigger("click", [true]); // Reopen with new preview
-		                Dex("#JahiaGxtImagePopup .x-window-bwrap").setAttribute("data-file-name", app.picker.data.title);
+		                DexV2("#JahiaGxtImagePopup .x-window-bwrap").setAttribute("data-file-name", app.picker.data.title);
 
 		            }
 
-		            Dex.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "hide");
+		            DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "hide");
 				},
 				reposition: function(e, offset){
 					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: REPOSITION");
@@ -962,14 +1423,13 @@
 		                    left: 0,
 		                    top: 0
 		                },
-		                file = Dex.node(e.currentTarget),
-		                box = file.getNode(0).getBoundingClientRect(),
+		                file = e.target,
+		                box = file.getBoundingClientRect(),
 		                left = box.left,
 		                top = box.top,
 		                width = box.width;
 
-
-		            Dex("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
+		            DexV2("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
 		                .css({
 		                    top: (top + (offset.top)) + "px",
 		                    left: ((left + width) + offset.left + 5) + "px"
@@ -984,20 +1444,20 @@
 				onMouseOver: function(){
 					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOVER");
 					// USER HAS ROLLED OVER THE COMBO TRIGGER
-		            if(Dex.getCached("body").getAttribute("data-indigo-picker-source-panel") != "open"){
-		                Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
+		            if(DexV2.getCached("body").getAttribute("data-indigo-picker-source-panel") != "open"){
+		                DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
 		            }
 				},
 				onMouseOut: function(){
 					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOUT");
 					// USER HAS ROLLED OUT OF THE COMBO TRIGGER
-		            Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+		            DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 				},
 				close: function(){
 					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: CLOSE");
 					// CHANGE SOURCE
 		            // The user has changed SOURCE, so we just need to hide the combo...
-		            Dex.getCached("body").setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
+		            DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SOURCE-PANEL", "");
 				},
 				open: function(){},
 				toggle: function(e){
@@ -1005,12 +1465,10 @@
 					// USER HAS CLICKED THE COMBO TRIGGER
 		            e.stopPropagation();
 
-		            Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+		            DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 
-		            /// Toggle the attribute in body tag
-		            $("body").attr("data-INDIGO-PICKER-SOURCE-PANEL", function(id, label){
-		                return (label == "open") ? "" : "open";
-		            });
+                    DexV2.getCached("body").toggleAttribute("data-INDIGO-PICKER-SOURCE-PANEL", ["open", ""]);
+
 				}
 			},
 			search: {
@@ -1023,18 +1481,18 @@
 
 
 		            // Display the search panel
-		            Dex.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "open");
+		            DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "open");
 
 		            // Put the results in LIST mode
-		            Dex("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
+		            DexV2("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
 
 		            // Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
-		            Dex.id("CRTbrowseTabItem").addClass("x-hide-display");
+		            DexV2.id("CRTbrowseTabItem").addClass("x-hide-display");
 
 
 		            // Remove the directory listing ( gives the search panel an empty start)
 		            setTimeout(function(){
-		                $("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
+		                DexV2("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
 		            }, 250);
 				},
 				close: function(){
@@ -1042,16 +1500,16 @@
 					// CLOSE SEARCH PANEL
 
 		            // Hide the search panel
-		            Dex.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "");
+		            DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "");
 
 		            // Display the BROWSE panels
-		            Dex("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
+		            DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
 
 		            // Get the refresh button
 		            var refreshButton = $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel").not(".x-panel-collapsed").find(".x-tool-refresh")[0];
 
 		            // CLick on the refresh button to reload the content of the directory
-					Dex.node(refreshButton).trigger("click");
+					DexV2.node(refreshButton).trigger("click");
 
 				},
 
@@ -1075,31 +1533,33 @@
 		imagePreview: {
 			onOpen: function(){
 				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONOPEN");
-				Dex.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "open");
+				DexV2.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "open");
 
 				// Attribute used to display the friendly name in edit panel
-				Dex(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", "nodeDisplayName");
+				DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", "nodeDisplayName");
 			},
 			onClose: function(){
 				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONCLOSE");
-				Dex.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "");
+				DexV2.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "");
 
 			}
 		},
 		engine: {
 			onOpen: function(){
 				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
-				var nodeDisplayName = Dex.getCached("body").getAttribute("data-singleselection-node-displayname");
+				var nodeDisplayName = DexV2.getCached("body").getAttribute("data-singleselection-node-displayname");
 
-				Dex.getCached("body").setAttribute("data-INDIGO-EDIT-ENGINE", "open");
+				DexV2.getCached("body").setAttribute("data-INDIGO-EDIT-ENGINE", "open");
 
 				// Attribute used to display the friendly name in edit panel
-				Dex(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
+				DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
 			},
 			onClose: function(){
 				app.dev.log("::: APP ::: ENGINE ::: ONCLOSE");
 				app.iframe.clearSelection();
-				Dex.getCached("body").setAttribute("data-INDIGO-EDIT-ENGINE", "");
+				DexV2.getCached("body")
+                    .setAttribute("data-INDIGO-EDIT-ENGINE", "")
+                    .setAttribute("data-INDIGO-PICKER-SEARCH", "");
 
 			},
 		},
@@ -1107,7 +1567,7 @@
 			dashboard: {
 				onOpen: function(){
 					app.dev.log("::: APP ::: WORKFLOW ::: DASHBOARD ::: ONOPEN");
-					Dex(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
+					DexV2(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
 
 				}
 			}
@@ -1121,15 +1581,14 @@
 				bodyStyle: null
 			},
 			// Event Handlers
-			onChangeSRC: function(url){
-				app.dev.log("::: APP ::: IFRAME ::: ONCHANGESRC [src='" + url + "' ::: currentApp='" + app.data.currentApp + "']");
+			onChangeSRC: function(attrKey, attrValue){
+				app.dev.log("::: APP ::: IFRAME ::: ONCHANGESRC [src='" + attrValue + "' ::: currentApp='" + app.data.currentApp + "']");
 
 				app.iframe.data.previousUrl = app.iframe.data.currentUrl;
-				app.iframe.data.currentUrl = url;
+				app.iframe.data.currentUrl = attrValue;
 
 				if(app.data.currentApp == "edit"){
 					// TEMP BLIND
-	                // $(".window-iframe").hide();
 
 	                var elements = {
 	                    iframe: document.getElementsByClassName("window-iframe")[0],
@@ -1190,18 +1649,15 @@
 
 
 			},
-			onChange: function(value){
+			onChange: function(attrKey, attrValue){
 
-
-
-
-
-				if(app.iframe.data.displayName == value || app.data.currentApp == "studio"){
+				if(app.iframe.data.displayName == attrValue || app.data.currentApp == "studio"){
 					return false;
 				}
+
 				app.dev.log("::: APP ::: IFRAME ::: ONCHANGE: " + app.data.currentApp);
 
-				app.iframe.data.displayName = value;
+				app.iframe.data.displayName = attrValue;
 
 				switch(app.data.currentApp){
 					case "edit":
@@ -1223,10 +1679,10 @@
 
 
 			},
-			onSelect: function(value){
-				var count = parseInt(value);
+			onSelect: function(attrKey, attrValue){
+                app.dev.log("::: APP ::: IFRAME ::: ONSELECT [attrValue='" + attrValue + "']");
 
-				app.dev.log("::: APP ::: IFRAME ::: ONSELECT [value='" + value + "']");
+				var count = parseInt(attrValue);
 
 				// Refresh the title of the page accordingly
 				switch(app.data.currentApp){
@@ -1250,30 +1706,32 @@
 				}
 
 
-				// MOVE TO A DEX LISTENER ON MENU ITEM
-				// setTimeout(function(){
-				// 	$(".editModeContextMenu .x-menu-list").attr("data-selected-name", Dex.getCached("body").getAttribute("data-singleselection-node-displayname"));
-				// }, 50);
+
 			},
 
 			clearSelection: function(){
 				app.dev.log("::: APP ::: IFRAME ::: CLEARSELECTION");
 
-				Dex.class("window-iframe").trigger("click");
+				DexV2.class("window-iframe").trigger("click");
 
 			},
 
 			disableClicks: function(){
+                app.dev.log("::: APP ::: IFRAME ::: DISABLECLICKS");
 
-				if(Dex.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && Dex.getCached("body").getAttribute("data-sitesettings") == "false"){
-					app.dev.log("::: APP ::: IFRAME ::: DISABLECLICKS");
+                if( DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" &&
+                    DexV2.getCached("body").getAttribute("data-sitesettings") == "false"){
+
 	                // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
-	                var iframeBody = $(".window-iframe").contents().find("body");
-	                app.iframe.data.bodyStyle = iframeBody.attr("style") || "";
+	                var iframeBody = DexV2.iframe(".window-iframe").filter("body");
+
+	                app.iframe.data.bodyStyle = iframeBody.getAttribute("style") || "";
 
 	                // Remove pointer events from the iframes body, which means that once a user clicks on the iframe to exit the side panel, the content is not automatically selected.
-	                iframeBody.attr("style", app.iframe.data.bodyStyle + " pointer-events: none !important");
+	                iframeBody.setAttribute("style", app.iframe.data.bodyStyle + " pointer-events: none !important");
 	            }
+
+
 			}
 		},
 		admin: {
@@ -1310,7 +1768,7 @@
 				app.theme.on();
 
                 // Set attributes to be used by CSS
-                Dex.getCached("body")
+                DexV2.getCached("body")
 					.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no")
                 	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
 			},
@@ -1345,7 +1803,7 @@
 				app.theme.on();
 
                 // Set attributes to be used by CSS
-                Dex.getCached("body")
+                DexV2.getCached("body")
 					.setAttribute("data-edit-window-style", "default")
                 	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "")
                 	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
@@ -1367,10 +1825,11 @@
 
                     }
 
-				} else {
+				} else if(DexV2.getCached("body").getAttribute("data-indigo-gwt-panel-tab") == "JahiaGxtSidePanelTabs__JahiaGxtPagesTab"){
 					app.edit.history.add("editpage", this);
 
 				}
+
 
 			},
 
@@ -1383,7 +1842,7 @@
 					app.dev.log("::: APP ::: EDIT ::: INFOBAR ::: TOGGLE");
                     app.edit.infoBar.data.on = !app.edit.infoBar.data.on;
 
-                    Dex.getCached("body").setAttribute("data-indigo-infoBar", app.edit.infoBar.data.on);
+                    DexV2.getCached("body").setAttribute("data-indigo-infoBar", app.edit.infoBar.data.on);
 
                 },
                 tasks: {
@@ -1392,17 +1851,17 @@
 						taskCount: 0,
 						dashboardButtonLabel: null
 					},
-                    onChange: function(classes){
+                    onChange: function(attrKey, attrValue){
 
-						if(app.edit.infoBar.tasks.data.classes == classes){
+						if(app.edit.infoBar.tasks.data.classes == attrValue){
 							return false;
 						}
 
-						app.edit.infoBar.tasks.data.classes = classes;
+						app.edit.infoBar.tasks.data.classes = attrValue;
 
 						app.dev.log("::: APP ::: EDIT ::: INFOBAR ::: TASKS ::: ONCHANGE");
 
-                        var taskButton = Dex("." + app.data.currentApp + "-menu-tasks button");;
+                        var taskButton = DexV2("." + app.data.currentApp + "-menu-tasks button");;
 
 
 
@@ -1414,7 +1873,7 @@
 								taskCount,
 								workflowButtonLabel,
 								dashboardButtonLabel,
-								dashboardButton = Dex.class("menu-edit-menu-workflow");
+								dashboardButton = DexV2.class("menu-edit-menu-workflow");
 
 
                             if(result){
@@ -1446,8 +1905,8 @@
 								workflowButtonLabel = taskCount;
 							}
 
-                            Dex(".edit-menu-workflow").setAttribute("data-info-count", workflowButtonLabel);
-							Dex(".contribute-menu-workflow").setAttribute("data-info-count", workflowButtonLabel);
+                            DexV2(".edit-menu-workflow").setAttribute("data-info-count", workflowButtonLabel);
+							DexV2(".contribute-menu-workflow").setAttribute("data-info-count", workflowButtonLabel);
 
 
 
@@ -1464,7 +1923,7 @@
                         }
                     },
 					updateMenuLabel: function(node){
-						Dex.node(node)
+						DexV2.node(this)
 							.filter(".toolbar-item-workflowdashboard")
 								.setHTML(app.edit.infoBar.data.dashboardButtonLabel);
 
@@ -1475,38 +1934,38 @@
 						classes: null,
 						jobString: null
 					},
-                    onChange: function(classes){
+                    onChange: function(attrKey, attrValue){
 						// if(app.edit.infoBar.jobs.data.classes == classes){
 						// 	app.dev.log("No change in job classes - ignore");
 						// 	return false;
 						// }
 
-						app.edit.infoBar.jobs.data.classes = classes;
+						app.edit.infoBar.jobs.data.classes = attrValue;
 
 						app.dev.log("::: APP ::: EDIT ::: INFOBAR ::: JOBS ::: ONCHANGE");
 
-                        var jobButton = Dex(".toolbar-item-workinprogressadmin button");
+                        var jobButton = DexV2(".toolbar-item-workinprogressadmin button");
 
                         if(jobButton.exists()){
                             var jobStringSplit = jobButton.getHTML().split("<"),
                             	jobString = jobStringSplit[0],
                             	jobIcon = jobButton.filter("img"),
 								activeJob,
-								buttonParent = Dex.class("toolbar-item-workinprogressadmin"),
+								buttonParent = DexV2.class("toolbar-item-workinprogressadmin"),
 								jobTooltip;
 
                             if(jobIcon.getAttribute("src").indexOf("workInProgress.png") == -1){
                                 // A job is active
 								activeJob = true;
 								jobTooltip = jobString;
-								Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").addClass("indigo-job-running");
+								DexV2(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").addClass("indigo-job-running");
 
                             } else {
                                 // No Jobs active
 								activeJob = false;
 								jobTooltip = localisedStrings[app.data.UILanguage].jobs;
 
-								Dex(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").removeClass("indigo-job-running");
+								DexV2(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").removeClass("indigo-job-running");
 
                             }
 
@@ -1566,7 +2025,6 @@
 					app.dev.log("::: APP ::: EDIT ::: TOPBAR ::: BUILD");
 
                     // TEMP BLIND
-                    // $(".window-iframe").fadeIn("fast");
 					if(app.data.currentApp == "edit" || app.data.currentApp == "contribute"){
 						var elements = {
 	                        iframe: document.getElementsByClassName("window-iframe")[0],
@@ -1646,7 +2104,7 @@
 								break;
 
 							case 1:
-								pageTitle = Dex.getCached("body").getAttribute("data-singleselection-node-displayname");
+								pageTitle = DexV2.getCached("body").getAttribute("data-singleselection-node-displayname");
 								multiselect = "on";
 	                            selectType = "single";
 
@@ -1661,16 +2119,16 @@
 						}
 
 						// Set multiselect status in body attribute...
-	                    Dex.getCached("body")
+	                    DexV2.getCached("body")
 							.setAttribute("data-multiselect", multiselect)
 	                    	.setAttribute("data-select-type", selectType);
 
 						// Page Title in Edit Made
                         if(pageTitle){
-                            Dex.class("x-current-page-path").setAttribute("data-PAGE-NAME",pageTitle);
+                            DexV2.class("x-current-page-path").setAttribute("data-PAGE-NAME",pageTitle);
 
                         }
-	                    Dex.class("node-path-text-inner").setHTML(app.iframe.data.displayName);
+	                    DexV2.class("node-path-text-inner").setHTML(app.iframe.data.displayName);
 
 	                    // Determine publication status
 	                    if(publicationStatus){
@@ -1703,7 +2161,7 @@
 
 					if(document.getElementsByClassName("x-current-page-path").length > 0){
 
-						if(Dex.class("x-current-page-path").getAttribute("data-page-name") != null){
+						if(DexV2.class("x-current-page-path").getAttribute("data-page-name") != null){
                             document.getElementsByClassName("edit-menu-publication")[0].style.display = "block";
 
                             var elements = {
@@ -1745,7 +2203,7 @@
                                     elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
                                     elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 30) + "px";
                                     elements.nodePathTitle.style.left = (boxes.title.left - 82) + "px";
-                                    Dex(".edit-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.pageTitle);
+                                    DexV2(".edit-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.pageTitle);
                                 } else {
                                     // No Select
                                     // elements.publishButton.style.left = (boxes.title.left - 20) + "px";
@@ -1754,8 +2212,8 @@
                                     elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 33) + "px";
                                     elements.nodePathTitle.style.left = (boxes.title.left - 80) + "px";
 
-                                    elements.nodePathTitle.setAttribute("data-indigo-file-path", Dex.getCached("body").getAttribute("data-main-node-path"));
-                                    Dex(".edit-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.publication.label);
+                                    elements.nodePathTitle.setAttribute("data-indigo-file-path", DexV2.getCached("body").getAttribute("data-main-node-path"));
+                                    DexV2(".edit-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.publication.label);
                                 }
 
                                 // Make sure correct class is added to publication button
@@ -1795,12 +2253,12 @@
 				open: function(isSettings){
 					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN [isSettings='" + isSettings + "']");
 
-					Dex.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
+					DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
 					app.edit.sidepanel.data.open = true;
 
 					// GWT has problems populating the site page tree when the side panel is hidden.
 					// Solution: When the side panel is opened for the FIRST TIME ONLY, the refresh button is triggered and the sites page tree is populated correctly.
-					if(Dex.getCached("body").getAttribute("data-sitesettings") == "false"){
+					if(DexV2.getCached("body").getAttribute("data-sitesettings") == "false"){
 
 						if(isSettings){
 							if(app.edit.sidepanel.data.firstRunSettings){
@@ -1824,12 +2282,13 @@
 					}
 				},
 				close: function(){
-					if(Dex.getCached("body").getAttribute("data-edit-window-style") !== "settings" && Dex.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && Dex.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
+					if(DexV2.getCached("body").getAttribute("data-edit-window-style") !== "settings" && DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
 						app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
-		                Dex.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
+		                DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
 
 		                // Revert iframes body style attribute to what it was originally
-		                $(".window-iframe").contents().find("body").attr("style", app.iframe.data.bodyStyle);
+		                // $(".window-iframe").contents().find("body").attr("style", app.iframe.data.bodyStyle);
+                        DexV2.iframe(".window-iframe").filter("body").setAttribute("style", app.iframe.data.bodyStyle);
 
 		            }
 
@@ -1842,22 +2301,22 @@
 
 				tab: {
 					onClick: function(e){
-						app.dev.log("APP ::: EDIT ::: SIDEPANEL ::: TAB ::: ONCLICK");
+                        app.dev.log("APP ::: EDIT ::: SIDEPANEL ::: TAB ::: ONCLICK");
 
 						// User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
-			            var clickedTabID = Dex.node(this).getAttribute("id");
+			            var clickedTabID = DexV2.node(this).getAttribute("id");
 
 						app.edit.sidepanel.data.currentTab = clickedTabID;
 
 						app.dev.log("app.edit.sidepanel.data.currentTab: " + app.edit.sidepanel.data.currentTab);
 
-			            Dex.getCached("body").setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
+			            DexV2.getCached("body").setAttribute("data-INDIGO-GWT-PANEL-TAB", clickedTabID);
 
 			            // Menus for the Tabs that call this listener require a normal side panel display
-			            // Dex.getCached("body").setAttribute("data-edit-window-style", "default");
+			            // DexV2.getCached("body").setAttribute("data-edit-window-style", "default");
 
-			            var tabMenuActive = Dex.node(this).hasClass("x-tab-strip-active"),
-			                sidePanelOpen = Dex.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open";
+			            var tabMenuActive = DexV2.node(this).hasClass("x-tab-strip-active"),
+			                sidePanelOpen = DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open";
 
 			            if(tabMenuActive && sidePanelOpen){
 			                // CLOSE SIDE PANEL: Already open for current Tab Menu
@@ -1873,7 +2332,7 @@
 					onContext: function(e){
 						app.dev.log("APP ::: EDIT ::: SIDEPANEL ::: ROW ::: ONCONTEXT");
 						// Open Context Menu when clicking "More" button.
-			            var acceptClick = Dex.node(e.target).hasClass("x-grid3-td-displayName");
+			            var acceptClick = DexV2.node(e.target).hasClass("x-grid3-td-displayName");
 
 			            if(acceptClick){
 			                $(e.target).trigger({
@@ -1894,11 +2353,70 @@
 
 			settings: {
 				data: {
-					opened: false
+					opened: false,
+                    iframeCSSOverRide: ".well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}"
 				},
-				onChange: function(value){
+                onTreeLoad: function(nodeGroup, arg1, arg2){
+                    var branch,
+                        nodeJoint,
+                        firstClickableBranch;
 
-					if(value == "true"){
+                    for (n = 0;  n < nodeGroup.length; n++){
+
+                        branch = nodeGroup[n];
+                        nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
+
+                        // If node jint has no background then it opens a page
+                        if(	nodeJoint &&
+                            nodeJoint.style &&
+                            !nodeJoint.style.backgroundImage){
+
+                            // Branch has no children, so it opens a page
+                            firstClickableBranch = branch;
+
+                            break;
+                        }
+
+                    }
+
+                    mouse.trigger(firstClickableBranch, "mousedown");
+                    mouse.trigger(firstClickableBranch, "click");
+                },
+                onTreeChange: function(nodeGroup, arg1, arg2){
+                    var JahiaGxtSettingsTab = DexV2.node(this).closest("#JahiaGxtSettingsTab").nodes.length > 0;
+
+                    if(JahiaGxtSettingsTab){
+                        var firstBranch = nodeGroup[0],
+        					parentBranch = firstBranch.previousSibling,
+        					branch,
+        					nodeJoint;
+
+                        for (n = 0;  n < nodeGroup.length; n++){
+
+        					branch = nodeGroup[n],
+        					nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
+
+        					// See if Node joint is activated ( activation is assumed when a background image is assigned to the button )
+        					if(	nodeJoint &&
+                                nodeJoint.style &&
+        						nodeJoint.style.backgroundImage){
+
+        						// Branch has children, so disable clicks by adding class name "unselectable-row"
+        						branch.classList.add("unselectable-row");
+        					}
+
+                        }
+
+        				if(parentBranch){
+        					parentBranch.classList.add("indigo-opened");
+        				}
+                    }
+
+
+                },
+				onChange: function(attrKey, attrValue){
+
+					if(attrValue == "true"){
 						if(app.data.currentApp == "edit"){
 							app.dev.log("APP ::: EDIT ::: SETTINGS ::: ONCHANGE");
 							app.edit.settings.open();
@@ -1915,16 +2433,19 @@
 				open: function(){
 					app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
 
-					$(".window-iframe").contents().find("head").prepend("<style>.well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}</style>");
+                    var cssStyle = document.createElement("style");
+
+                    cssStyle.type = "text/css";
+                    cssStyle.appendChild(document.createTextNode(app.edit.settings.data.iframeCSSOverRide));
+
+                    DexV2.iframe(".window-iframe").filter("head").append(cssStyle);
 
 					if(app.edit.settings.data.opened){
 						return false;
 					}
 
-
-
 					app.edit.settings.data.opened = true;
-					Dex.getCached("body").setAttribute("data-edit-window-style", "settings");
+					DexV2.getCached("body").setAttribute("data-edit-window-style", "settings");
 
 		            app.edit.sidepanel.open(true);
 
@@ -1940,32 +2461,8 @@
 
 		            } else {
 		                // Wait until the menu has been loaded, then click on the first available menu button
-		                Dex("#JahiaGxtSettingsTab").onceTreeChange(function(tree){
-		                    var branch,
-		                        nodeJoint,
-		                        firstClickableBranch;
+                        DexV2("body").onceOpen(".x-grid3-row", app.edit.settings.onTreeLoad); // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
 
-		                    for (n = 0;  n < tree.length; n++){
-
-		    					branch = tree[n];
-		    					nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
-
-		    					// If node jint has no background then it opens a page
-		    					if(	nodeJoint &&
-		                            nodeJoint.style &&
-		    						!nodeJoint.style.backgroundImage){
-
-		    						// Branch has no children, so it opens a page
-		                            firstClickableBranch = branch;
-
-		                            break;
-		    					}
-
-		                    }
-
-		                    mouse.trigger(firstClickableBranch, "mousedown");
-		                    mouse.trigger(firstClickableBranch, "click");
-		                });
 
 		            }
 
@@ -1973,21 +2470,22 @@
 
 				},
 				close: function(){
-					app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: CLOSE");
-
 					var previousEditPage = app.edit.history.get("editpage");
 
 					app.edit.settings.data.opened = false;
-					Dex.getCached("body").setAttribute("data-edit-window-style", "default");
+					DexV2.getCached("body").setAttribute("data-edit-window-style", "default");
 
 		            app.edit.sidepanel.close();
 
 		            if(previousEditPage){
+                        // $(previousEditPage).trigger("mousedown");
+                        // $(previousEditPage).trigger("mouseup");
 		                // Trigger click on last viewed settings page
 		                mouse.trigger(previousEditPage, "mousedown");
 		                mouse.trigger(previousEditPage, "mouseup");
 		            } else {
 						// Trigger Click on Second page (first row is not an actual page)
+                        // $(document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")[0]).trigger("mousedown");
 		                mouse.trigger(document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")[0], "mousedown");
 
 		            }
@@ -2004,7 +2502,7 @@
 				app.theme.on();
 
                 // Set attributes to be used by CSS
-                Dex.getCached("body")
+                DexV2.getCached("body")
 					.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no")
                 	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
 			},
@@ -2022,7 +2520,7 @@
 				app.theme.off();
 
                 // Set attributes to be used by CSS
-                Dex.getCached("body")
+                DexV2.getCached("body")
 					.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "")
                 	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
 			},
@@ -2046,25 +2544,23 @@
 
 
                 // Set attributes to be used by CSS
-                Dex.getCached("body")
+                DexV2.getCached("body")
 					.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "")
                 	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
 			},
 			onClose: function(){},
 
-            onChangeMode: function(nodePath){
+            onChangeMode: function(attrKey, attrValue){
 
                 if(app.data.currentApp != "contribute"){
                     return false;
-
                 }
 
-
-                var nodePathSplit = nodePath.split("/"),
+                var nodePathSplit = attrValue.split("/"),
                     modePath = nodePathSplit[3],
                     mode,
 
-                    iframeSRC = Dex.class("window-iframe").getAttribute("src"),
+                    iframeSRC = DexV2.class("window-iframe").getAttribute("src"),
                     displayingNode = iframeSRC.indexOf("viewContent.html") > -1;
 
                 switch(modePath){
@@ -2085,10 +2581,10 @@
 
                 app.contribute.data.mode = mode;
 
-                Dex.getCached("body").setAttribute("data-contribute-mode", app.contribute.data.mode);
+                DexV2.getCached("body").setAttribute("data-contribute-mode", app.contribute.data.mode);
 
                 app.dev.log("????????????????????????????????????");
-                app.dev.log("CHANGED nodePath: " + nodePath);
+                app.dev.log("CHANGED nodePath: " + attrValue);
                 app.dev.log("CHANGED section: " + nodePathSplit[3]);
                 app.dev.log("displayingNode: " + displayingNode);
                 app.dev.log("????????????????????????????????????");
@@ -2097,7 +2593,7 @@
 
                 app.contribute.data.displayingNode = displayingNode;
 
-                Dex.getCached("body").setAttribute("data-contribute-displaying-node", app.contribute.data.displayingNode);
+                DexV2.getCached("body").setAttribute("data-contribute-displaying-node", app.contribute.data.displayingNode);
             },
 
 			// Controls
@@ -2225,7 +2721,7 @@
 					// 			break;
                     //
 					// 		case 1:
-					// 			pageTitle = Dex.getCached("body").getAttribute("data-singleselection-node-displayname");
+					// 			pageTitle = DexV2.getCached("body").getAttribute("data-singleselection-node-displayname");
 					// 			multiselect = "on";
 	                //             selectType = "single";
                     //
@@ -2240,7 +2736,7 @@
 					// 	}
                     //
 					// 	// Set multiselect status in body attribute...
-	                //     Dex.getCached("body")
+	                //     DexV2.getCached("body")
 					// 		.setAttribute("data-multiselect", multiselect)
 	                //     	.setAttribute("data-select-type", selectType);
                     //
@@ -2279,7 +2775,7 @@
 				reposition: function(e){
 					app.dev.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: REPOSITION");
 
-                    if(Dex.class("toolbar-item-publicationstatus").getAttribute("data-page-name") != null){
+                    if(DexV2.class("toolbar-item-publicationstatus").getAttribute("data-page-name") != null){
                             var elements = {
                                 body: document.getElementsByTagName("body")[0],
                                 title: document.getElementsByClassName("toolbar-item-publicationstatus")[0],
@@ -2288,7 +2784,7 @@
                                 // refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
                                 // nodePathTitle: document.getElementsByClassName("node-path-title")[0],
                                 previewButton: document.getElementsByClassName("edit-menu-view")[0],
-                                editPage: Dex(".x-toolbar-first .x-toolbar-cell:nth-child(5) table").getNode(0),
+                                editPage: DexV2(".x-toolbar-first .x-toolbar-cell:nth-child(5) table").getNode(0),
                             },
 
                             boxes = {
@@ -2319,86 +2815,13 @@
                             elements.editPage.style.left = (boxes.title.left + boxes.title.width + 33) + "px";
                             // elements.nodePathTitle.style.left = (boxes.title.left - 80) + "px";
 
-                            // elements.nodePathTitle.setAttribute("data-indigo-file-path", Dex.getCached("body").getAttribute("data-main-node-path"));
-                            Dex(".contribute-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.publication.label);
+                            // elements.nodePathTitle.setAttribute("data-indigo-file-path", DexV2.getCached("body").getAttribute("data-main-node-path"));
+                            DexV2(".contribute-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.publication.label);
 
 
                             // Make sure correct class is added to publication button
                             elements.publishButton.setAttribute("data-publication-status", app.iframe.data.publication.status)
                     }
-
-					// Center title to page and move surrounding menus to right and left.
-
-					// if(document.getElementsByClassName("x-current-page-path").length > 0){
-                    //
-					// 	if(Dex.class("x-current-page-path").getAttribute("data-page-name") != null){
-                    //         document.getElementsByClassName("edit-menu-publication")[0].style.display = "block";
-                    //
-                    //         var elements = {
-                    //                 body: document.getElementsByTagName("body")[0],
-                    //                 title: document.getElementsByClassName("x-current-page-path")[0],
-                    //                 innerTitle: document.getElementsByClassName("node-path-text-inner")[0],
-                    //                 publishButton: document.getElementsByClassName("edit-menu-publication")[0],
-                    //                 // refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
-                    //                 nodePathTitle: document.getElementsByClassName("node-path-title")[0],
-                    //                 previewButton: document.getElementsByClassName("edit-menu-view")[0],
-                    //                 moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
-                    //             },
-                    //
-                    //             boxes = {
-                    //                 body: elements.body.getBoundingClientRect(),
-                    //                 title: elements.title.getBoundingClientRect()
-                    //             };
-                    //
-                    //
-                    //             // Center Page Title
-                    //             elements.title.style.left = ((boxes.body.width / 2) - (boxes.title.width / 2)) + "px";
-                    //
-                    //             if(elements.innerTitle){
-                    //                 // Get Inner title bunding box
-                    //                 boxes.innerTitle = elements.innerTitle.getBoundingClientRect();
-                    //
-                    //                 // Center Inner title bounding box
-                    //                 elements.innerTitle.style.left = ((boxes.body.width / 2) - (boxes.innerTitle.width / 2)) + 5 + "px";
-                    //             }
-                    //
-                    //
-                    //             // Refresh bounding box for title as it has moved
-                    //             boxes.title = elements.title.getBoundingClientRect();
-                    //
-                    //             if(app.iframe.data.selectionCount > 0){
-                    //                 // Multiselect, so display differently
-                    //                 // elements.publishButton.style.left = (boxes.title.left - 20) + "px";
-                    //                 // elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
-                    //                 elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
-                    //                 elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 30) + "px";
-                    //                 elements.nodePathTitle.style.left = (boxes.title.left - 82) + "px";
-                    //                 Dex(".edit-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.pageTitle);
-                    //             } else {
-                    //                 // No Select
-                    //                 // elements.publishButton.style.left = (boxes.title.left - 20) + "px";
-                    //                 // elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
-                    //                 elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 9) + "px";
-                    //                 elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 33) + "px";
-                    //                 elements.nodePathTitle.style.left = (boxes.title.left - 80) + "px";
-                    //
-                    //                 elements.nodePathTitle.setAttribute("data-indigo-file-path", Dex.getCached("body").getAttribute("data-main-node-path"));
-                    //                 Dex(".edit-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.publication.label);
-                    //             }
-                    //
-                    //             // Make sure correct class is added to publication button
-                    //             elements.publishButton.setAttribute("data-publication-status", app.iframe.data.publication.status)
-                    //
-                    //
-                    //
-                    //
-                    //     } else {
-                    //         document.getElementsByClassName("edit-menu-publication")[0].style.display = "none"
-                    //     }
-                    //
-					// }
-
-
 
 				}
 			}
@@ -2406,228 +2829,200 @@
 		}
 	}
 
-
-
     // EVENT LISTENERS
     var eventListeners = {
         attach: function(){
-            // HOME BREW EVENT LISTENERS
-            // Set up INDIGO listeners (listening to changes in DOM)
-
-			Dex("#JahiaGxtContentBrowseTab").onceOpen(function(element){
-				Dex.node(element).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
+			DexV2("body").onceOpen("#JahiaGxtContentBrowseTab", function(){
+				DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
 			});
 
-			Dex("#JahiaGxtFileImagesBrowseTab").onceOpen(function(element){
-				Dex.node(element).filter("#images-view > div").addClass("results-column");
+			DexV2("body").onceOpen("#JahiaGxtFileImagesBrowseTab", function(){
+				DexV2.node(this).filter("#images-view > div").addClass("results-column");
 			});
 
-			Dex("#JahiaGxtCategoryBrowseTab").onceOpen(function(element){
-				Dex.node(element).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
+			DexV2("body").onceOpen("#JahiaGxtCategoryBrowseTab", function(){
+				DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
 			});
 
-			Dex("#JahiaGxtSearchTab").onceOpen(function(element){
-				Dex.node(element).filter(".JahiaGxtSearchTab-results .x-grid3-body").addClass("results-column");
+			DexV2("body").onceOpen("#JahiaGxtSearchTab", function(){
+				DexV2.node(this).filter(".JahiaGxtSearchTab-results .x-grid3-body").addClass("results-column");
 			});
 
-			Dex("#JahiaGxtCreateContentTab").onceOpen(function(value){
-				Dex.node(value).filter("input.x-form-text").setAttribute("placeholder", "Filter Content ...")
+			DexV2("body").onceOpen("#JahiaGxtCreateContentTab", function(){
+				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", "Filter Content ...")
 			});
 
+            DexV2("body").onOpen(".x-grid3-row", app.edit.settings.onTreeChange); // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
 
-
-			Dex(".x-grid-empty").onOpen(function(value){
+			DexV2("body").onOpen(".x-grid-empty", function(value){
 				if(app.edit.sidepanel.data.open){
-					var isTreeEntry = $(value).parent().hasClass("results-column");
+                    var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 
 					if(isTreeEntry){
 						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
-							Dex.id("JahiaGxtCategoryBrowseTab").removeClass("show-results");
+							DexV2.id("JahiaGxtCategoryBrowseTab").removeClass("show-results");
 
 						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
-							Dex.id("JahiaGxtContentBrowseTab").removeClass("show-results");
+							DexV2.id("JahiaGxtContentBrowseTab").removeClass("show-results");
 
 						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
-							Dex.id("JahiaGxtSearchTab").removeClass("show-results");
+							DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
 
 						}
-						Dex.getCached("body").removeClass("show-results");
+						DexV2.getCached("body").removeClass("show-results");
 					}
 				}
 
 			});
 
-			Dex(".x-grid3-row").onOpen(function(value){
+			DexV2("body").onOpen(".x-grid3-row", function(value){
 				if(app.edit.sidepanel.data.open){
-					var isTreeEntry = $(value).parent().hasClass("results-column");
+                    var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 
 					if(isTreeEntry){
 						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
-							Dex.id("JahiaGxtCategoryBrowseTab").addClass("show-results");
+							DexV2.id("JahiaGxtCategoryBrowseTab").addClass("show-results");
 
 						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
-							Dex.id("JahiaGxtContentBrowseTab").addClass("show-results");
+							DexV2.id("JahiaGxtContentBrowseTab").addClass("show-results");
 
 						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
-							Dex.id("JahiaGxtSearchTab").addClass("show-results");
+							DexV2.id("JahiaGxtSearchTab").addClass("show-results");
 
 						}
-						Dex.getCached("body").addClass("show-results");
+						DexV2.getCached("body").addClass("show-results");
 					}
 				}
 
 			});
 
-			Dex(".x-clear").onOpen(function(value){
+			DexV2("body").onOpen(".x-clear", function(value){
 				if(app.edit.sidepanel.data.open){
-					var isTreeEntry = $(value).parent().hasClass("results-column");
+                    var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 
 					if(isTreeEntry){
-						Dex.id("JahiaGxtFileImagesBrowseTab").removeClass("show-results");
-						Dex.getCached("body").removeClass("show-results");
+						DexV2.id("JahiaGxtFileImagesBrowseTab").removeClass("show-results");
+						DexV2.getCached("body").removeClass("show-results");
 					}
 				}
 
 			});
 
-			Dex(".thumb-wrap").onOpen(function(value){
+			DexV2("body").onOpen(".thumb-wrap", function(value){
 				if(app.edit.sidepanel.data.open){
-					var isTreeEntry = $(value).parent().hasClass("results-column");
+                    var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 
 					if(isTreeEntry){
-						Dex.id("JahiaGxtFileImagesBrowseTab").addClass("show-results");
-						Dex.getCached("body").addClass("show-results");
+						DexV2.id("JahiaGxtFileImagesBrowseTab").addClass("show-results");
+						DexV2.getCached("body").addClass("show-results");
 					}
 				}
 
 			});
 
-            Dex("#JahiaGxtSettingsTab").onTreeChange(function(tree){
-				var firstBranch = tree[0],
-					parentBranch = firstBranch.previousSibling,
-					branch,
-					nodeJoint;
+            DexV2("body").onOpen(".menu-edit-menu-workflow", app.edit.infoBar.tasks.updateMenuLabel);
 
-                for (n = 0;  n < tree.length; n++){
+			DexV2("body").onOpen(".menu-contribute-menu-workflow", app.edit.infoBar.tasks.updateMenuLabel);
 
-					branch = tree[n],
-					nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
+			DexV2("body").onOpen(".menu-edit-menu-view", app.contextMenus.previewMenu.onOpen);
 
-					// See if Node joint is activated ( activation is assumed when a background image is assigned to the button )
-					if(	nodeJoint &&
-                        nodeJoint.style &&
-						nodeJoint.style.backgroundImage){
+            DexV2("body").onOpen(".menu-edit-menu-publication", app.contextMenus.publicationMenu.onOpen);
 
-						// Branch has children, so disable clicks by adding class name "unselectable-row"
-						branch.classList.add("unselectable-row");
-					}
+            DexV2("body").onOpen(".menu-edit-menu-edit", app.contextMenus.moreInfoMenu.onOpen);
 
-                }
+            DexV2("body").onOpen(".editModeContextMenu", app.contextMenus.moreInfoMenu.onOpen);
 
-				if(parentBranch){
-					parentBranch.classList.add("indigo-opened");
-				}
+            DexV2("body").onOpen(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onOpen);
+
+            DexV2("body").onOpen("#JahiaGxtContentPickerWindow", app.picker.onOpen);
+
+            DexV2("body").onOpen("#JahiaGxtEnginePanel", app.engine.onOpen);
+
+            DexV2("body").onOpen("#JahiaGxtImagePopup", app.imagePreview.onOpen);
+
+            DexV2("body").onAttribute(".edit-menu-tasks", "class", app.edit.infoBar.tasks.onChange);
+
+            DexV2("body").onAttribute(".contribute-menu-tasks", "class", app.edit.infoBar.tasks.onChange);
+
+            DexV2("body").onAttribute(".toolbar-item-workinprogressadmin", "class", app.edit.infoBar.jobs.onChange);
+
+            DexV2("body").onOpen(".x-dd-drag-proxy", app.edit.sidepanel.onStartDrag);
+
+            DexV2("body").onClose(".x-dd-drag-proxy", app.edit.sidepanel.onStopDrag);
+
+            DexV2("body").onAttribute("body", "data-sitesettings", app.edit.settings.onChange);
+
+            DexV2("body").onAttribute("body", "data-selection-count", app.iframe.onSelect);
+
+            DexV2("body").onAttribute("body", "data-main-node-displayname", app.iframe.onChange);
+
+            DexV2("body").onAttribute("body", "data-main-node-path", app.contribute.onChangeMode);
+
+            DexV2("body").onAttribute(".window-iframe", "src", app.iframe.onChangeSRC);
+
+            DexV2("body").onAttribute(".x-jahia-root", "class", app.onChange);
+
+            DexV2("body").onClose("#JahiaGxtContentPickerWindow", app.picker.onClose);
+
+            DexV2("body").onClose("#JahiaGxtEnginePanel", app.engine.onClose);
+
+            DexV2("body").onClose("#JahiaGxtImagePopup", app.imagePreview.onClose);
+
+            DexV2("body").onOpen(".workflow-dashboard-engine", app.workflow.dashboard.onOpen)
+
+
+
+
+            DexV2("body").onClick(".app-container", app.onClick);
+
+            DexV2("body").onClick(".toolbar-item-filepreview", app.picker.previewButton.onClick);
+
+            DexV2("body").onClick("#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", app.picker.row.onClick);
+            DexV2("body").onClick(".x-viewport-adminmode .x-grid3 .x-grid3-row", function(){
+                DexV2(".x-viewport-adminmode .x-grid3 .x-grid3-row.x-grid3-row-selected").removeClass("x-grid3-row-selected");
+                DexV2.node(this).addClass("x-grid3-row-selected");
 
             });
+            DexV2("body").onClick(".x-grid3-row .x-grid3-td-size", app.picker.search.onContext);
+            DexV2("body").onClick(".x-grid3-row .x-tree3-el", app.picker.row.onContext);
+            DexV2("body").onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", app.picker.thumb.onContext);
+            DexV2("body").onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick);
+            // DexV2(".x-viewport-editmode .x-toolbar-first > table").onClick(app.theme.onToggle);
+            DexV2("body").onClick(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose);
+            DexV2("body").onClick("#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", app.edit.settings.close);
+            DexV2("body").onMouseOver(".toolbar-item-filepreview", app.picker.previewButton.onMouseOver);
+            DexV2("body").onMouseOut(".toolbar-item-filepreview", app.picker.previewButton.onMouseOut);
+            DexV2("body").onMouseDown(".x-tree3-node-joint", function(){
+                DexV2.node(this).closest(".x-grid3-row").toggleClass("indigo-opened");
+            });
+            DexV2("body").onMouseDown(".menu-edit-menu-mode, .menu-edit-menu-user", app.contextMenus.managerMenu.onClose);
+            DexV2("body").onClick("#JahiaGxtSidePanelTabs .x-grid3-td-displayName", app.edit.sidepanel.row.onContext);
+            DexV2("body").onClick("#JahiaGxtContentPickerWindow", app.picker.onClick);
+            DexV2("body").onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView);
+            DexV2("body").onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView);
+            DexV2("body").onClick(".node-path-title", app.iframe.clearSelection);
+            DexV2("body").onClick(".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav);
 
-            Dex(".menu-edit-menu-workflow").onOpen(app.edit.infoBar.tasks.updateMenuLabel);
-			Dex(".menu-contribute-menu-workflow").onOpen(app.edit.infoBar.tasks.updateMenuLabel);
+            DexV2("body").onMouseDown("#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close);
+            DexV2("body").onMouseDown("#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open);
 
-			Dex(".menu-edit-menu-view").onOpen(app.contextMenus.previewMenu.onOpen);
+            DexV2("body").onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close);
+            DexV2("body").onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle);
 
-            Dex(".menu-edit-menu-publication").onOpen(app.contextMenus.publicationMenu.onOpen);
+            DexV2("body").onMouseEnter("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver);
 
-            Dex(".menu-edit-menu-edit").onOpen(app.contextMenus.moreInfoMenu.onOpen);
+            DexV2("body").onMouseLeave("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOut);
 
-            Dex(".editModeContextMenu").onOpen(app.contextMenus.moreInfoMenu.onOpen);
+            DexV2("body").onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", app.picker.row.onMouseOver);
+            DexV2("body").onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onMouseOver);
 
-            Dex(".menu-editmode-managers-menu").onOpen(app.contextMenus.managerMenu.onOpen);
+            DexV2("body").onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick)
 
+            DexV2("body").onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.settings.open);
 
-            Dex("#JahiaGxtContentPickerWindow").onOpen(app.picker.onOpen);
-
-            Dex("#JahiaGxtEnginePanel").onOpen(app.engine.onOpen);
-
-            Dex("#JahiaGxtImagePopup").onOpen(app.imagePreview.onOpen);
-
-            Dex(".edit-menu-tasks").onAttr("class", app.edit.infoBar.tasks.onChange);
-
-			Dex(".contribute-menu-tasks").onAttr("class", app.edit.infoBar.tasks.onChange);
-
-            Dex(".toolbar-item-workinprogressadmin").onAttr("class", app.edit.infoBar.jobs.onChange);
-
-
-            Dex(".x-dd-drag-proxy").onOpen(app.edit.sidepanel.onStartDrag);
-
-            Dex(".x-dd-drag-proxy").onClose(app.edit.sidepanel.onStopDrag);
-
-            Dex("body").onAttr("data-selection-count", app.iframe.onSelect);
-
-            Dex("body").onAttr("data-main-node-displayname", app.iframe.onChange);
-
-            Dex("body").onAttr("data-main-node-path", app.contribute.onChangeMode);
-
-            Dex(".window-iframe").onAttr("src", app.iframe.onChangeSRC);
-
-            Dex(".x-jahia-root").onAttr("class", app.onChange);
-
-            Dex("body").onAttr("data-sitesettings", app.edit.settings.onChange);
-
-            Dex("#JahiaGxtContentPickerWindow").onClose(app.picker.onClose);
-
-            Dex("#JahiaGxtEnginePanel").onClose(app.engine.onClose);
-
-            Dex("#JahiaGxtImagePopup").onClose(app.imagePreview.onClose);
-
-            Dex(".workflow-dashboard-engine").onOpen(app.workflow.dashboard.onOpen)
-
-            // BROWSER LISTENERS
-            window.onresize = app.onResize;
-
-            // JQUERY EVENT LISTENERS
-            $(window).on("blur", app.onBlur);
-
-            $("body")
-				.on("mousedown", ".x-tree3-node-joint", function(){
-					$(this).closest(".x-grid3-row").toggleClass("indigo-opened");
-				})
-                .on("click", ".app-container", app.onClick)
-                .on("click", ".toolbar-item-filepreview", app.picker.previewButton.onClick)
-                .on("mouseenter", ".toolbar-item-filepreview", app.picker.previewButton.onMouseOver)
-                .on("mouseleave", ".toolbar-item-filepreview", app.picker.previewButton.onMouseOut)
-                .on("click", "#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", app.picker.row.onClick)
-				.on("click", ".x-viewport-adminmode .x-grid3 .x-grid3-row", function(){
-					$(".x-viewport-adminmode .x-grid3 .x-grid3-row.x-grid3-row-selected").removeClass("x-grid3-row-selected");
-
-					$(this).addClass("x-grid3-row-selected");
-				})
-                .on("click", ".x-grid3-row .x-grid3-td-size", app.picker.search.onContext)
-                .on("click", ".x-grid3-row .x-tree3-el", app.picker.row.onContext)
-                .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", app.picker.thumb.onContext)
-                .on("click", "#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick)
-                // .on("click", ".x-viewport-editmode .x-toolbar-first > table", app.theme.onToggle)
-                .on("click", ".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose)
-                .on("mousedown", ".menu-edit-menu-mode, .menu-edit-menu-user", app.contextMenus.managerMenu.onClose)
-                .on("click", "#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", app.edit.settings.close)
-                .on("click", "#JahiaGxtSidePanelTabs .x-grid3-td-displayName", app.edit.sidepanel.row.onContext)
-                .on("click", "#JahiaGxtContentPickerWindow", app.picker.onClick)
-                .on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView)
-                .on("click", "#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView)
-                .on("click", ".node-path-title", app.iframe.clearSelection)
-                .on("click", ".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
-                .on("mousedown", "#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close)
-                .on("mousedown", "#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open)
-                .on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close)
-                .on("click", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle)
-                .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver)
-                .on("mouseleave", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOut)
-                .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", app.picker.row.onMouseOver)
-                .on("mouseenter", "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onMouseOver)
-                .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick)
-                .on("mouseup", "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", function(){
-					app.edit.settings.open(true);
-				});
-				// app.theme.off();
+            // WINDOW LISTENERS
+            window.onresize = app.onResize; // Use some kind of timer to reduce repaints / DOM manipulations
+            window.addEventListener("blur", app.onBlur);
         }
     }
 
@@ -2637,44 +3032,37 @@
     var init = function(){
         // Copy Anthracite CSS to remove / add when dropping in and out of STUDIO mode
 
-		var anthraciteCSS_EN = $('link[rel=stylesheet][href$="edit_en.css"]'),
-			anthraciteCSS_FR = $('link[rel=stylesheet][href$="edit_fr.css"]');
+		var anthraciteCSS_EN = DexV2("link[rel=stylesheet][href$='edit_en.css']").getNode(0),
+			anthraciteCSS_FR = DexV2("link[rel=stylesheet][href$='edit_fr.css']").getNode(0);
 
-		if(anthraciteCSS_EN.length > 0){
+		if(anthraciteCSS_EN){
 			app.data.UILanguage = "EN";
 			app.theme.data.cssReference = "edit_en.css";
-			app.theme.data.storedCSS = anthraciteCSS_EN.clone();
+			app.theme.data.anthraciteCSSNode = anthraciteCSS_EN;
 
-		} else if(anthraciteCSS_FR.length > 0){
+		} else if(anthraciteCSS_FR){
 			app.data.UILanguage = "FR";
 			app.theme.data.cssReference = "edit_fr.css";
-			app.theme.data.storedCSS = anthraciteCSS_FR.clone();
+			app.theme.data.anthraciteCSSNode = anthraciteCSS_FR;
 
 		}
 
 		// use Dex to cache an Dex Object
-		Dex("body").cache("body");
+		DexV2("body").cache("body");
 
-		// Carry out operations on cached Dex Object
-		Dex.getCached("body").addClass("this-is-from-chached");
-
-		// Clear Cached Object
-		// Dex.clearCache("body");
-
-        // Initialise Dex Observer
-        Dex.init();
-
-
-
+        // Attach event listeners
         eventListeners.attach();
     }
 
-    $(document).ready(function(){
+
+
+
+    // Start when DOM is ready
+    document.addEventListener("DOMContentLoaded", function(event) {
         init();
     });
 
-
-    // EXPOSED
+    // Expose DX to window
     if(exposeAs){
         window[exposeAs] = app;
     }

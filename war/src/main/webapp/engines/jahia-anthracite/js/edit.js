@@ -2287,7 +2287,6 @@
 		                DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
 
 		                // Revert iframes body style attribute to what it was originally
-		                // $(".window-iframe").contents().find("body").attr("style", app.iframe.data.bodyStyle);
                         DexV2.iframe(".window-iframe").filter("body").setAttribute("style", app.iframe.data.bodyStyle);
 
 		            }
@@ -2478,14 +2477,11 @@
 		            app.edit.sidepanel.close();
 
 		            if(previousEditPage){
-                        // $(previousEditPage).trigger("mousedown");
-                        // $(previousEditPage).trigger("mouseup");
 		                // Trigger click on last viewed settings page
 		                mouse.trigger(previousEditPage, "mousedown");
 		                mouse.trigger(previousEditPage, "mouseup");
 		            } else {
 						// Trigger Click on Second page (first row is not an actual page)
-                        // $(document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")[0]).trigger("mousedown");
 		                mouse.trigger(document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")[0], "mousedown");
 
 		            }
@@ -2609,7 +2605,6 @@
                     app.dev.log("::: APP ::: CONTRIBUTE ::: TOPBAR ::: BUILD (MODE: " + app.contribute.data.mode + ")");
 
                     // TEMP BLIND
-                    // $(".window-iframe").fadeIn("fast");
 					if(app.data.currentApp == "edit" || app.data.currentApp == "contribute"){
 						var elements = {
 	                        iframe: document.getElementsByClassName("window-iframe")[0],
@@ -2832,193 +2827,146 @@
     // EVENT LISTENERS
     var eventListeners = {
         attach: function(){
-			DexV2("body").onceOpen("#JahiaGxtContentBrowseTab", function(){
-				DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
-			});
+			DexV2("body")
+                .onceOpen("#JahiaGxtContentBrowseTab", function(){
+                    DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
+                })
+    			.onceOpen("#JahiaGxtFileImagesBrowseTab", function(){
+    				DexV2.node(this).filter("#images-view > div").addClass("results-column");
+    			})
+    			.onceOpen("#JahiaGxtCategoryBrowseTab", function(){
+    				DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
+    			})
+    			.onceOpen("#JahiaGxtSearchTab", function(){
+    				DexV2.node(this).filter(".JahiaGxtSearchTab-results .x-grid3-body").addClass("results-column");
+    			})
+    			.onceOpen("#JahiaGxtCreateContentTab", function(){
+    				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", "Filter Content ...")
+    			})
+                .onOpen(".x-grid3-row", app.edit.settings.onTreeChange) // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
+    			.onOpen(".x-grid-empty", function(value){
+    				if(app.edit.sidepanel.data.open){
+                        var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 
-			DexV2("body").onceOpen("#JahiaGxtFileImagesBrowseTab", function(){
-				DexV2.node(this).filter("#images-view > div").addClass("results-column");
-			});
+    					if(isTreeEntry){
+    						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
+    							DexV2.id("JahiaGxtCategoryBrowseTab").removeClass("show-results");
 
-			DexV2("body").onceOpen("#JahiaGxtCategoryBrowseTab", function(){
-				DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
-			});
+    						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
+    							DexV2.id("JahiaGxtContentBrowseTab").removeClass("show-results");
 
-			DexV2("body").onceOpen("#JahiaGxtSearchTab", function(){
-				DexV2.node(this).filter(".JahiaGxtSearchTab-results .x-grid3-body").addClass("results-column");
-			});
+    						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
+    							DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
 
-			DexV2("body").onceOpen("#JahiaGxtCreateContentTab", function(){
-				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", "Filter Content ...")
-			});
+    						}
+    						DexV2.getCached("body").removeClass("show-results");
+    					}
+    				}
 
-            DexV2("body").onOpen(".x-grid3-row", app.edit.settings.onTreeChange); // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
+    			})
+    			.onOpen(".x-grid3-row", function(value){
+    				if(app.edit.sidepanel.data.open){
+                        var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 
-			DexV2("body").onOpen(".x-grid-empty", function(value){
-				if(app.edit.sidepanel.data.open){
-                    var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
+    					if(isTreeEntry){
+    						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
+    							DexV2.id("JahiaGxtCategoryBrowseTab").addClass("show-results");
 
-					if(isTreeEntry){
-						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
-							DexV2.id("JahiaGxtCategoryBrowseTab").removeClass("show-results");
+    						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
+    							DexV2.id("JahiaGxtContentBrowseTab").addClass("show-results");
 
-						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
-							DexV2.id("JahiaGxtContentBrowseTab").removeClass("show-results");
+    						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
+    							DexV2.id("JahiaGxtSearchTab").addClass("show-results");
 
-						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
-							DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
+    						}
+    						DexV2.getCached("body").addClass("show-results");
+    					}
+    				}
 
-						}
-						DexV2.getCached("body").removeClass("show-results");
-					}
-				}
+    			})
+    			.onOpen(".x-clear", function(value){
+    				if(app.edit.sidepanel.data.open){
+                        var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 
-			});
+    					if(isTreeEntry){
+    						DexV2.id("JahiaGxtFileImagesBrowseTab").removeClass("show-results");
+    						DexV2.getCached("body").removeClass("show-results");
+    					}
+    				}
 
-			DexV2("body").onOpen(".x-grid3-row", function(value){
-				if(app.edit.sidepanel.data.open){
-                    var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
+    			})
+    			.onOpen(".thumb-wrap", function(value){
+    				if(app.edit.sidepanel.data.open){
+                        var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 
-					if(isTreeEntry){
-						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
-							DexV2.id("JahiaGxtCategoryBrowseTab").addClass("show-results");
+    					if(isTreeEntry){
+    						DexV2.id("JahiaGxtFileImagesBrowseTab").addClass("show-results");
+    						DexV2.getCached("body").addClass("show-results");
+    					}
+    				}
 
-						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
-							DexV2.id("JahiaGxtContentBrowseTab").addClass("show-results");
-
-						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
-							DexV2.id("JahiaGxtSearchTab").addClass("show-results");
-
-						}
-						DexV2.getCached("body").addClass("show-results");
-					}
-				}
-
-			});
-
-			DexV2("body").onOpen(".x-clear", function(value){
-				if(app.edit.sidepanel.data.open){
-                    var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
-
-					if(isTreeEntry){
-						DexV2.id("JahiaGxtFileImagesBrowseTab").removeClass("show-results");
-						DexV2.getCached("body").removeClass("show-results");
-					}
-				}
-
-			});
-
-			DexV2("body").onOpen(".thumb-wrap", function(value){
-				if(app.edit.sidepanel.data.open){
-                    var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
-
-					if(isTreeEntry){
-						DexV2.id("JahiaGxtFileImagesBrowseTab").addClass("show-results");
-						DexV2.getCached("body").addClass("show-results");
-					}
-				}
-
-			});
-
-            DexV2("body").onOpen(".menu-edit-menu-workflow", app.edit.infoBar.tasks.updateMenuLabel);
-
-			DexV2("body").onOpen(".menu-contribute-menu-workflow", app.edit.infoBar.tasks.updateMenuLabel);
-
-			DexV2("body").onOpen(".menu-edit-menu-view", app.contextMenus.previewMenu.onOpen);
-
-            DexV2("body").onOpen(".menu-edit-menu-publication", app.contextMenus.publicationMenu.onOpen);
-
-            DexV2("body").onOpen(".menu-edit-menu-edit", app.contextMenus.moreInfoMenu.onOpen);
-
-            DexV2("body").onOpen(".editModeContextMenu", app.contextMenus.moreInfoMenu.onOpen);
-
-            DexV2("body").onOpen(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onOpen);
-
-            DexV2("body").onOpen("#JahiaGxtContentPickerWindow", app.picker.onOpen);
-
-            DexV2("body").onOpen("#JahiaGxtEnginePanel", app.engine.onOpen);
-
-            DexV2("body").onOpen("#JahiaGxtImagePopup", app.imagePreview.onOpen);
-
-            DexV2("body").onAttribute(".edit-menu-tasks", "class", app.edit.infoBar.tasks.onChange);
-
-            DexV2("body").onAttribute(".contribute-menu-tasks", "class", app.edit.infoBar.tasks.onChange);
-
-            DexV2("body").onAttribute(".toolbar-item-workinprogressadmin", "class", app.edit.infoBar.jobs.onChange);
-
-            DexV2("body").onOpen(".x-dd-drag-proxy", app.edit.sidepanel.onStartDrag);
-
-            DexV2("body").onClose(".x-dd-drag-proxy", app.edit.sidepanel.onStopDrag);
-
-            DexV2("body").onAttribute("body", "data-sitesettings", app.edit.settings.onChange);
-
-            DexV2("body").onAttribute("body", "data-selection-count", app.iframe.onSelect);
-
-            DexV2("body").onAttribute("body", "data-main-node-displayname", app.iframe.onChange);
-
-            DexV2("body").onAttribute("body", "data-main-node-path", app.contribute.onChangeMode);
-
-            DexV2("body").onAttribute(".window-iframe", "src", app.iframe.onChangeSRC);
-
-            DexV2("body").onAttribute(".x-jahia-root", "class", app.onChange);
-
-            DexV2("body").onClose("#JahiaGxtContentPickerWindow", app.picker.onClose);
-
-            DexV2("body").onClose("#JahiaGxtEnginePanel", app.engine.onClose);
-
-            DexV2("body").onClose("#JahiaGxtImagePopup", app.imagePreview.onClose);
-
-            DexV2("body").onOpen(".workflow-dashboard-engine", app.workflow.dashboard.onOpen)
-
-
-
-
-            DexV2("body").onClick(".app-container", app.onClick);
-
-            DexV2("body").onClick(".toolbar-item-filepreview", app.picker.previewButton.onClick);
-
-            DexV2("body").onClick("#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", app.picker.row.onClick);
-            DexV2("body").onClick(".x-viewport-adminmode .x-grid3 .x-grid3-row", function(){
-                DexV2(".x-viewport-adminmode .x-grid3 .x-grid3-row.x-grid3-row-selected").removeClass("x-grid3-row-selected");
-                DexV2.node(this).addClass("x-grid3-row-selected");
-
-            });
-            DexV2("body").onClick(".x-grid3-row .x-grid3-td-size", app.picker.search.onContext);
-            DexV2("body").onClick(".x-grid3-row .x-tree3-el", app.picker.row.onContext);
-            DexV2("body").onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", app.picker.thumb.onContext);
-            DexV2("body").onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick);
-            // DexV2(".x-viewport-editmode .x-toolbar-first > table").onClick(app.theme.onToggle);
-            DexV2("body").onClick(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose);
-            DexV2("body").onClick("#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", app.edit.settings.close);
-            DexV2("body").onMouseOver(".toolbar-item-filepreview", app.picker.previewButton.onMouseOver);
-            DexV2("body").onMouseOut(".toolbar-item-filepreview", app.picker.previewButton.onMouseOut);
-            DexV2("body").onMouseDown(".x-tree3-node-joint", function(){
-                DexV2.node(this).closest(".x-grid3-row").toggleClass("indigo-opened");
-            });
-            DexV2("body").onMouseDown(".menu-edit-menu-mode, .menu-edit-menu-user", app.contextMenus.managerMenu.onClose);
-            DexV2("body").onClick("#JahiaGxtSidePanelTabs .x-grid3-td-displayName", app.edit.sidepanel.row.onContext);
-            DexV2("body").onClick("#JahiaGxtContentPickerWindow", app.picker.onClick);
-            DexV2("body").onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView);
-            DexV2("body").onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView);
-            DexV2("body").onClick(".node-path-title", app.iframe.clearSelection);
-            DexV2("body").onClick(".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav);
-
-            DexV2("body").onMouseDown("#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close);
-            DexV2("body").onMouseDown("#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open);
-
-            DexV2("body").onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close);
-            DexV2("body").onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle);
-
-            DexV2("body").onMouseEnter("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver);
-
-            DexV2("body").onMouseLeave("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOut);
-
-            DexV2("body").onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", app.picker.row.onMouseOver);
-            DexV2("body").onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onMouseOver);
-
-            DexV2("body").onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick)
-
-            DexV2("body").onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.settings.open);
+    			})
+                .onOpen(".menu-edit-menu-workflow", app.edit.infoBar.tasks.updateMenuLabel)
+    			.onOpen(".menu-contribute-menu-workflow", app.edit.infoBar.tasks.updateMenuLabel)
+    			.onOpen(".menu-edit-menu-view", app.contextMenus.previewMenu.onOpen)
+                .onOpen(".menu-edit-menu-publication", app.contextMenus.publicationMenu.onOpen)
+                .onOpen(".menu-edit-menu-edit", app.contextMenus.moreInfoMenu.onOpen)
+                .onOpen(".editModeContextMenu", app.contextMenus.moreInfoMenu.onOpen)
+                .onOpen(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onOpen)
+                .onOpen("#JahiaGxtContentPickerWindow", app.picker.onOpen)
+                .onOpen("#JahiaGxtEnginePanel", app.engine.onOpen)
+                .onOpen("#JahiaGxtImagePopup", app.imagePreview.onOpen)
+                .onAttribute(".edit-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
+                .onAttribute(".contribute-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
+                .onAttribute(".toolbar-item-workinprogressadmin", "class", app.edit.infoBar.jobs.onChange)
+                .onOpen(".x-dd-drag-proxy", app.edit.sidepanel.onStartDrag)
+                .onClose(".x-dd-drag-proxy", app.edit.sidepanel.onStopDrag)
+                .onAttribute("body", "data-sitesettings", app.edit.settings.onChange)
+                .onAttribute("body", "data-selection-count", app.iframe.onSelect)
+                .onAttribute("body", "data-main-node-displayname", app.iframe.onChange)
+                .onAttribute("body", "data-main-node-path", app.contribute.onChangeMode)
+                .onAttribute(".window-iframe", "src", app.iframe.onChangeSRC)
+                .onAttribute(".x-jahia-root", "class", app.onChange)
+                .onClose("#JahiaGxtContentPickerWindow", app.picker.onClose)
+                .onClose("#JahiaGxtEnginePanel", app.engine.onClose)
+                .onClose("#JahiaGxtImagePopup", app.imagePreview.onClose)
+                .onOpen(".workflow-dashboard-engine", app.workflow.dashboard.onOpen)
+                .onClick(".app-container", app.onClick)
+                .onClick(".toolbar-item-filepreview", app.picker.previewButton.onClick)
+                .onClick("#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", app.picker.row.onClick)
+                .onClick(".x-viewport-adminmode .x-grid3 .x-grid3-row", function(){
+                    DexV2(".x-viewport-adminmode .x-grid3 .x-grid3-row.x-grid3-row-selected").removeClass("x-grid3-row-selected");
+                    DexV2.node(this).addClass("x-grid3-row-selected");
+                })
+                .onClick(".x-grid3-row .x-grid3-td-size", app.picker.search.onContext)
+                .onClick(".x-grid3-row .x-tree3-el", app.picker.row.onContext)
+                .onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", app.picker.thumb.onContext)
+                .onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick)
+                // DexV2(".x-viewport-editmode .x-toolbar-first > table").onClick(app.theme.onToggle)
+                .onClick(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose)
+                .onClick("#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", app.edit.settings.close)
+                .onMouseOver(".toolbar-item-filepreview", app.picker.previewButton.onMouseOver)
+                .onMouseOut(".toolbar-item-filepreview", app.picker.previewButton.onMouseOut)
+                .onMouseDown(".x-tree3-node-joint", function(){
+                    DexV2.node(this).closest(".x-grid3-row").toggleClass("indigo-opened");
+                })
+                .onMouseDown(".menu-edit-menu-mode, .menu-edit-menu-user", app.contextMenus.managerMenu.onClose)
+                .onClick("#JahiaGxtSidePanelTabs .x-grid3-td-displayName", app.edit.sidepanel.row.onContext)
+                .onClick("#JahiaGxtContentPickerWindow", app.picker.onClick)
+                .onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView)
+                .onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView)
+                .onClick(".node-path-title", app.iframe.clearSelection)
+                .onClick(".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
+                .onMouseDown("#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close)
+                .onMouseDown("#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open)
+                .onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close)
+                .onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle)
+                .onMouseEnter("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver)
+                .onMouseLeave("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOut)
+                .onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", app.picker.row.onMouseOver)
+                .onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onMouseOver)
+                .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick)
+                .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.settings.open)
 
             // WINDOW LISTENERS
             window.onresize = app.onResize; // Use some kind of timer to reduce repaints / DOM manipulations

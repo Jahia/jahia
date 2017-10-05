@@ -777,6 +777,10 @@
 		.x-btn.x-component {
 			margin-bottom: 18px !important;
 
+			&.x-btn-over .x-btn-small.x-btn-icon-small-left button {
+				background: #798084 !important;
+			}
+
 			.x-btn-small.x-btn-icon-small-left {
 				background: #6b7074;
 

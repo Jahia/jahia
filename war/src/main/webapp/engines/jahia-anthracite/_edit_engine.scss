@@ -1090,3 +1090,132 @@
 
 	}
 }
+
+
+// Group Selector
+#JahiaGxtUserGroupSelect {
+	left: 0!important;
+    top: 0!important;
+    width: 100% !important;
+    height: 100% !important;
+    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);
+
+	// Top modal bar ( used for dragging and contains close button )
+	.x-window-tl {
+		display: none;
+	}
+
+	// Resize handles
+	.x-resizable-handle-north,
+	.x-resizable-handle-south,
+	.x-resizable-handle-east,
+	.x-resizable-handle-west,
+	.x-resizable-handle-northeast,
+	.x-resizable-handle-northwest,
+	.x-resizable-handle-southeast,
+	.x-resizable-handle-southwest {
+		display: none;
+	}
+
+	// Contains main window
+	.x-window-bwrap {
+		width: 100%!important;
+		height: 100%!important;
+
+		// Footer
+		.x-window-bl {
+			height: 130px!important;
+			padding-left: 190px!important;
+			width: calc(100% - 190px)!important;
+
+			.x-toolbar-cell {
+				// Save button
+				&:nth-child(1) {
+					@include button("ACTIONBAR---SUGGESTED")
+				}
+			}
+		}
+
+		// Main Window Container
+		.x-window-ml {
+			height: calc(100% - 130px)!important;
+
+			.x-window-mr,
+			.x-window-mc,
+			.x-window-body {
+				width: 100%!important;
+				height: 100%!important;
+			}
+
+			.x-window-body {
+				> .x-panel {
+					width: 100%!important;
+					height: 100%!important;
+
+					.x-panel-header {
+						width: 100%!important;
+						height: 130px!important;
+						padding: 0;
+						border: none;
+						background: none;
+
+						.x-panel-header-text {
+						    padding: 80px 0 0 190px;
+						    display: block;
+
+							@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+						}
+					}
+
+					.x-panel-bwrap {
+						width: calc(100% - 380px)!important;
+						height: calc(100% - 130px)!important;
+						padding: 50px 0 0 190px;
+
+						.x-panel-tbar {
+							width: 100%!important;
+
+							> .x-component {
+								width: 100%!important;
+
+								// Filter field
+								> table {
+									position: fixed;
+									top: 94px;
+									right: 190px;
+								}
+							}
+						}
+
+						.x-panel-body {
+							width: 100%!important;
+							height: calc(100% - 30px)!important;
+
+							.x-grid-panel {
+								width: 100%!important;
+								height: 100%!important;
+
+								.x-grid3-cell {
+									width: 25%!important;
+									display: inline-block;
+
+									> div {
+										color: $COLOUR--WHITE_CLOUDS!important;
+									}
+								}
+							}
+						}
+
+						// Pagination
+						.x-panel-bbar {
+							width: 100%!important;
+							height: 30px!important;
+						}
+					}
+				}
+
+
+			}
+		}
+	}
+}

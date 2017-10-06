@@ -1102,7 +1102,7 @@
     top: 0!important;
     width: 100% !important;
     height: 100% !important;
-    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);
+    background: radial-gradient(ellipse at bottom right, #e2e2e2 0%, #f1f1f1 70%);
 
 	// Top modal bar ( used for dragging and contains close button )
 	.x-window-tl {
@@ -1121,6 +1121,8 @@
 		display: none;
 	}
 
+
+
 	// Contains main window
 	.x-window-bwrap {
 		width: 100%!important;
@@ -1128,9 +1130,9 @@
 
 		// Footer
 		.x-window-bl {
-			height: 130px!important;
-			padding-left: 190px!important;
-			width: calc(100% - 190px)!important;
+			height: 80px !important;
+		    padding-left: 44px !important;
+		    width: calc(100% - 44px) !important;
 
 			.x-toolbar-cell {
 				// Save button
@@ -1142,7 +1144,7 @@
 
 		// Main Window Container
 		.x-window-ml {
-			height: calc(100% - 130px)!important;
+			height: calc(100% - 80px) !important;
 
 			.x-window-mr,
 			.x-window-mc,
@@ -1157,24 +1159,25 @@
 					height: 100%!important;
 
 					.x-panel-header {
-						width: 100%!important;
-						height: 130px!important;
-						padding: 0;
-						border: none;
 						background: none;
+						width: 100% !important;
+					    height: 70px !important;
+					    padding: 0;
+					    border: none;
 
 						.x-panel-header-text {
-						    padding: 80px 0 0 190px;
+						    padding: 27px 0 0 44px;
 						    display: block;
 
-							@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+							@include text(36px, #7a7e80, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
 						}
 					}
 
 					.x-panel-bwrap {
-						width: calc(100% - 380px)!important;
-						height: calc(100% - 130px)!important;
-						padding: 50px 0 0 190px;
+						width: 100%;
+					    height: calc(100% - 70px) !important;
+					    padding: 50px 34px 0 44px;
+					    box-sizing: border-box;
 
 						.x-panel-tbar {
 							width: 100%!important;
@@ -1185,8 +1188,67 @@
 								// Filter field
 								> table {
 									position: fixed;
-									top: 94px;
-									right: 190px;
+									top: 38px;
+									right: 44px;
+
+									.xtb-text {
+										display: none;
+
+									}
+
+									.x-toolbar-left {
+										> table {
+											width: 100%
+										}
+									}
+
+									input {
+										background-image: url($ICON--SEARCH--SMALL_GREY);
+
+										&:active,
+										&:focus {
+											background-image: url($ICON--SEARCH--SMALL_WHITE);
+
+										}
+										background-repeat: no-repeat;
+										background-position: left 7px top 7px;
+										background-size: 12px;
+										padding: 4px 5px 5px 23px!important;
+										font-size: 12px;
+										font-family: $FONT--FAMILY---NUNITO;
+
+									}
+
+									.x-btn-icon {
+										display: block;
+										height: 27px;
+										padding: 0 4px;
+										background: $COLOUR--JAHIA_BLUE;
+
+										&:before {
+											content: $text_search;
+											display: block;
+											top: 6px;
+											position: relative;
+											text-align: center;
+
+											@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+										}
+
+										img {
+											display: none;
+
+										}
+									}
+
+									.x-toolbar {
+										border:none;
+										padding: 0;
+										background: none;
+									}
+
+
 								}
 							}
 						}
@@ -1199,12 +1261,39 @@
 								width: 100%!important;
 								height: 100%!important;
 
+								.x-grid-empty {
+									&::before {
+										content: "No results";
+										@include text(12px, #7a7e80, $FONT--WEIGHT---EXTRALIGHT);
+
+									}
+								}
+
+								.x-grid3-row {
+
+									&.x-grid3-row-selected {
+										pointer-events: none; // Basically disables the double click
+
+										.x-grid3-cell {
+											> div {
+												color: $COLOUR--WHITE_CLOUDS!important;
+											}
+										}
+
+									}
+								}
+
 								.x-grid3-cell {
 									width: 25%!important;
 									display: inline-block;
 
+									&::after {
+										display: none;
+									}
+
 									> div {
-										color: $COLOUR--WHITE_CLOUDS!important;
+										// color: $COLOUR--WHITE_CLOUDS!important;
+										@include text(12px, #7a7e80, $FONT--WEIGHT---EXTRALIGHT);
 									}
 								}
 							}
@@ -1212,8 +1301,148 @@
 
 						// Pagination
 						.x-panel-bbar {
-							width: 100%!important;
-							height: 30px!important;
+							// width: 100%!important;
+							// height: 30px!important;
+						}
+
+						// Pagination
+						.x-panel-bbar {
+							position: relative;
+						    bottom: 52px;
+						    z-index: 9999999;
+						    background: transparent;
+						    left: -10px;
+							width: calc(100% + 10px)!important;
+							height: 51px;
+
+							> div {
+								padding: 0 10px;
+								height: 100%;
+							}
+
+							.x-toolbar-left,
+							.x-toolbar-right {
+								display: block;
+
+								table,
+								tbody,
+								tr,
+								td {
+									display: block;
+
+								}
+							}
+
+							.x-toolbar-right {
+								position: relative;
+								top: 6px;
+
+								display: none;
+							}
+
+							.x-toolbar-left {
+
+								position: fixed;
+							    right: 44px;
+							    bottom: 47px;
+
+
+								.x-toolbar-cell {
+									display: inline-block!important;
+
+									opacity: 0.8;
+
+
+
+									tbody {
+										// display: none;
+
+									}
+
+									.x-btn-mc img {
+										display: none;
+										// width: 25px;
+										// height: 25px;
+									}
+
+									// First page
+									&:nth-child(1) {
+										background: url($ICON--FIRST--GREY) no-repeat center center / 16px 16px;
+										margin-left: 0px;
+
+										&:hover {
+											opacity: 1;
+											cursor: pointer;
+										}
+
+									}
+
+									// Previous page
+									&:nth-child(2) {
+										background: url($ICON--BACK--GREY) no-repeat center center / 16px 16px;
+										margin-left: 5px;
+
+										&:hover {
+											opacity: 1;
+											cursor: pointer;
+										}
+									}
+
+									// Label: "Page"
+									&:nth-child(4) {
+
+									}
+
+									// Skip to page input
+									&:nth-child(5) {
+										&:hover {
+											opacity: 1;
+										}
+									}
+
+									// Label: "Of #"
+									&:nth-child(6) {
+
+									}
+
+									// Next Page
+									&:nth-child(8) {
+										background: url($ICON--NEXT--GREY) no-repeat center center / 16px 16px;
+										margin-right: 5px;
+
+										&:hover {
+											opacity: 1;
+											cursor: pointer;
+										}
+									}
+
+									// Last page
+									&:nth-child(9) {
+										background: url($ICON--LAST--GREY) no-repeat center center / 16px 16px;
+										margin-right: 5px;
+
+										&:hover {
+											opacity: 1;
+											cursor: pointer;
+										}
+
+									}
+
+									// Refresh results
+									&:nth-child(11) {
+										background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center / 18px 14px;
+
+										&:hover {
+											opacity: 1;
+											cursor: pointer;
+										}
+									}
+
+								}
+
+							}
+
+
 						}
 					}
 				}

@@ -45,6 +45,7 @@ package org.apache.jackrabbit.core.security;
 
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.jackrabbit.core.security.authentication.CredentialsCallback;
 import org.apache.jackrabbit.core.security.principal.AdminPrincipal;
 import org.jahia.jaas.JahiaPrincipal;
@@ -279,7 +280,7 @@ public class JahiaLoginModule implements LoginModule {
     }
 
     public static Credentials getGuestCredentials() {
-        return new SimpleCredentials(JahiaLoginModule.GUEST, new char[0]);
+        return new SimpleCredentials(JahiaLoginModule.GUEST, ArrayUtils.EMPTY_CHAR_ARRAY);
     }
 
     /**
@@ -305,7 +306,7 @@ public class JahiaLoginModule implements LoginModule {
     }
 
     public static Credentials getCredentials(String username, String realm, List<String> deniedPathes) {
-        String userID = username;
+        String userID = username != null && JahiaUserManagerService.GUEST_USERNAME.equals(username) ? GUEST : username;
         SimpleCredentials credentials = new SimpleCredentials(userID, getSystemPass(userID, deniedPathes).toCharArray());
         credentials.setAttribute(REALM_ATTRIBUTE, realm);
         return credentials;

@@ -2676,6 +2676,12 @@ form,
 
 }
 
+// Change loader when loading a tree.
+.x-treegrid.x-masked:before {
+    background-color: transparent !important;
+    position: initial !important;
+}
+
 /* All Dialogues, popups, etc, etc ... */
 	// BASIC STRUCTURE RESET
 	.x-window-tl,

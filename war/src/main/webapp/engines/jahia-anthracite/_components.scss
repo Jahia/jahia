@@ -3306,6 +3306,22 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	}
 
+	.x-window.file-uploader .x-window-body table > tbody > tr {
+
+		> td div.x-form-field {
+			font-size: 11px;
+			font-weight: 600;
+			color: rgba(0, 0, 0, 0.40);
+			max-width: 152px;
+			padding-right: 8px;
+		}
+
+		input {
+			padding-right: 8px !important;
+		}
+
+	}
+
 }
 
 

@@ -3230,7 +3230,8 @@ body[data-indigo-gwt-side-panel="open"] {
 /////////////////////////////////////////////////
 
 
-.x-window.file-uploader {
+.x-window.file-uploader,
+.x-window.content-import {
 	background: transparent;
 
 	.x-window-bwrap {

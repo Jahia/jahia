@@ -868,6 +868,37 @@
 
 	}
 
+	#JahiaGxtEditEnginePanel-versioning {
+		@include button("FIELDSET");
+
+		.x-grid3-cell {
+			display: inline-block!important;
+
+			&:nth-child(1) {
+				margin-left: -4px;
+			}
+		}
+
+		.x-grid3-cell-inner {
+			padding: 0!important;
+
+		}
+
+		.x-grid3-col-label {
+			padding: 5px 10px 5px 4px!important;
+			@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+		}
+
+		.x-grid3-row.x-grid3-row-selected {
+			background-color: transparent!important;
+		}
+
+		.x-grid3-row-over {
+			background-color: transparent!important;
+		}
+
+	}
+
 
 
 	#JahiaGxtEditEnginePanel-channels {

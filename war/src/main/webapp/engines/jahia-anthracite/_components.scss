@@ -3226,6 +3226,91 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 /////////////////////////////////////////////////
+// FILE UPLOAD MODAL ////////////////////////////
+/////////////////////////////////////////////////
+
+
+.x-window.file-uploader {
+	background: transparent;
+
+	.x-window-bwrap {
+		padding: 12px 8px 8px 8px;
+		color: rgba(0, 0, 0, 0.84);
+		background: #eee;
+	}
+
+	.x-window-header {
+		padding: 8px 0 !important;
+		font-family: $FONT--FAMILY---RALEWAY;
+		font-size: 32px;
+		color: $COLOUR--WHITE_CLOUDS;
+		font-weight: $FONT--WEIGHT---EXTRALIGHT;
+
+		.x-panel-toolbar {
+			display: none;
+		}
+
+	}
+
+	.x-panel-body.x-panel-body-noheader.x-panel-body-noborder .x-form-item {
+		height: 22px;
+		margin-bottom: 16px;
+		border-bottom: 1px dashed #BDBDBD;
+		padding-bottom: 10px;
+
+		label {
+			position: absolute;
+			left: 22px;
+		}
+
+		div.x-form-element {
+			position: absolute;
+			top: 3px;
+		}
+
+	}
+
+	.x-toolbar-left-row .x-toolbar-cell:first-child .x-btn-text {
+		background: #00a0e3 !important;
+		color: #f1f1f1 !important;
+	}
+
+	.x-toolbar-left-row .x-toolbar-cell:nth-child(2) .x-btn-text {
+		background: #dedede !important;
+	}
+
+	.x-panel-body.x-panel-body-noheader.x-panel-body-noborder table {
+		margin-bottom: 4px;
+		width: 100%;
+
+		tr td:first-child {
+			width: 28px;
+		}
+
+		.x-btn-mc button.x-btn-text {
+			width: 16px !important;
+			height: 16px !important;
+			margin-left: 4px;
+			margin-top: 3px;
+
+			img.x-btn-image {
+				background: url(./images/icons/remove_circle.png) !important;
+				background-size: 16px 16px !important;
+				background-repeat: no-repeat !important;
+				left: 0 !important;
+				top: 0 !important;
+				opacity: .64;
+			}
+
+		}
+
+	}
+
+}
+
+
+
+/////////////////////////////////////////////////
 // TRANSLATION ENGINE ///////////////////////////
 /////////////////////////////////////////////////
 

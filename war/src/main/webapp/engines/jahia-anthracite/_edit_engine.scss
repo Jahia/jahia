@@ -506,7 +506,10 @@
 
 						img.x-form-clear-trigger {
 							background-image: url($ICON--CLOSE_LARGE---GREY)!important;
+							background-size: 8px 8px!important;
+							background-position: center top 8px!important;
 							opacity: 1;
+							width: 25px;
 
 						}
 					}
@@ -545,9 +548,14 @@
 									background: $COLOUR--WHITE_CLOUDS !important;
 									color: $COLOUR--DARK_CLOUDS;
 
+									.x-component {
+										@include text(12px, #282b2d !important, $FONT--WEIGHT---SEMILIGHT);
+
+									}
+
 									button {
-										background: url($ICON--CLOSE_LARGE---GREY) no-repeat center center;
-										background-size: 12px 12px;
+										background: url($ICON--CLOSE_LARGE---GREY) no-repeat center top 8px;
+										background-size: 8px 8px;
 										padding-left: 23px;
 										box-sizing: border-box;
 										width: 23px!important;
@@ -563,9 +571,39 @@
 
 							// Add Tag
 							&:nth-child(2) {
+								.x-component {
+									width: 100%!important;
+
+									> table {
+										width: 100%;
+										display: block;
+
+										> tbody {
+											width: 100%;
+											display: block;
+
+											> tr {
+												width: 100%;
+												display: block;
+
+												> td {
+													display: inline-block;
+
+												}
+
+											}
+										}
+									}
+								}
+
+
 								// Add Tag
 								.x-form-field-wrap {
-									width: 100%!important;
+									width: 250px!important;
+
+									input {
+										padding-right: 5px!important;
+									}
 								}
 
 								@include button("FORM_SMALL", "remove-icons");

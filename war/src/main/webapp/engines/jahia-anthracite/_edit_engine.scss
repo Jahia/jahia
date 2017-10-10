@@ -476,6 +476,8 @@
 
 	#JahiaGxtEditEnginePanel-visibility {
 		// Deals with status of visibility and publication
+		@include dual_list();
+
 		img {
 			width: 20px;
 			height: 20px;
@@ -793,7 +795,7 @@
 						@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
 					}
 
-					width: 400px!important;
+					width: 460px!important;
 					margin: 0 auto;
 
 					fieldset {
@@ -1862,12 +1864,14 @@
 	}
 }
 
-body[data-indigo-add-visibility-condition="new"] .x-combo-list {
-	background: transparent!important;
+body[data-indigo-add-visibility-condition="new"] {
+	> .x-combo-list {
+		background: transparent!important;
 
-	> div {
-		margin-left: 89px;
-	    margin-top: 51px;
-		width: calc(100% + 43px)!important;
+		> div {
+			margin-left: 89px;
+		    margin-top: 51px;
+			width: calc(100% + 43px)!important;
+		}
 	}
 }

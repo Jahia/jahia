@@ -2967,14 +2967,10 @@
     				}
 
     			})
-    			.onOpen(".x-clear", function(value){
+    			.onClose(".thumb-wrap", function(value){
     				if(app.edit.sidepanel.data.open){
-                        var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
-
-    					if(isTreeEntry){
-    						DexV2.id("JahiaGxtFileImagesBrowseTab").removeClass("show-results");
-    						DexV2.getCached("body").removeClass("show-results");
-    					}
+                        DexV2.id("JahiaGxtFileImagesBrowseTab").removeClass("show-results");
+                        DexV2.getCached("body").removeClass("show-results");
     				}
 
     			})

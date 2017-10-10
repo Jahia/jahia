@@ -50,8 +50,8 @@ import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.poller.Poller;
 import org.jahia.ajax.gwt.client.widget.job.JobListWindow;
+import org.jahia.ajax.gwt.client.widget.poller.Poller;
 import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 
 import java.util.ArrayList;
@@ -140,6 +140,7 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
                             refreshData.put("publishedNodes", endedJob.getTargetPaths());
                         }
                         refreshData.put("event", "publicationSuccess");
+                        refreshData.put(Linker.EXTERNAL_REFRESH, Boolean.TRUE);
                     }
                 }
             }

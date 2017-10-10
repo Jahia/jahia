@@ -64,6 +64,8 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     private String defaultLocation;
     private boolean useFullPublicationInfoInMainAreaModules;
     private boolean supportChannelsDisplay;
+    // if true, perform UI refresh automatically on external events (like publication)
+    private boolean enableRefreshOnExternalEvent = true;
 
     private List<GWTSidePanelTab> tabs;
 
@@ -116,6 +118,14 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
 
     public void setEnableDragAndDrop(boolean enableDragAndDrop) {
         this.enableDragAndDrop = enableDragAndDrop;
+    }
+
+    public boolean isEnableRefreshOnExternalEvent() {
+        return enableRefreshOnExternalEvent;
+    }
+
+    public void setEnableRefreshOnExternalEvent(boolean enableRefreshOnExternalEvent) {
+        this.enableRefreshOnExternalEvent = enableRefreshOnExternalEvent;
     }
 
     public String getDefaultUrlMapping() {

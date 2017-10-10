@@ -47,6 +47,8 @@ package org.jahia.ajax.gwt.client.widget.edit;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.Widget;
@@ -55,6 +57,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
@@ -64,6 +67,7 @@ import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanel;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -91,6 +95,8 @@ public class EditLinker implements Linker {
     private GWTJahiaChannel activeChannel;
     private String activeChannelVariant = null;
     private boolean isInSettingsPage = true;
+
+    private long currentTime = 0;
 
     /**
      * Initializes an instance of this class.
@@ -286,7 +292,23 @@ public class EditLinker implements Linker {
      * @param data
      *            the refresh data
      */
-    public void refresh(Map<String, Object> data) {
+    public void refresh(final Map<String, Object> data) {
+
+        if (!config.isEnableRefreshOnExternalEvent() && (data.get(Linker.EXTERNAL_REFRESH) != null && (Boolean) data.get(Linker.EXTERNAL_REFRESH))) {
+            long time = new Date().getTime();
+
+            InfoConfig infoConfig = new InfoConfig(Messages.get("label.atmosphere.editorial.content.update", "a content has been updated."), Messages.get
+                    ("label.refresh.modify", "Click refresh to see updated content"));
+            // check that infoConfig.display (=2500) milliseconds haven't been spent since the last time the info has been displayed
+            if (time - currentTime > infoConfig.display) {
+                Info.display(infoConfig);
+                if (sidePanel != null) {
+                    sidePanel.markForManualRefresh(data);
+                }
+                currentTime = time;
+            }
+            return;
+        }
         mainModule.refresh(data);
         if (sidePanel != null) {
             sidePanel.refresh(data);

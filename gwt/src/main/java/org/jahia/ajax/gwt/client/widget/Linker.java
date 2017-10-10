@@ -58,6 +58,7 @@ import java.util.Map;
 public interface Linker {
     String REFRESH_ALL = "refreshAll";
     String REFRESH_MAIN = "refreshMain";
+    String EXTERNAL_REFRESH = "externalRefresh";
 
     void loaded();
 

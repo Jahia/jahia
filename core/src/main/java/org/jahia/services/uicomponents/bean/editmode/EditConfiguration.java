@@ -78,6 +78,8 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String forcedSite;
 
     private boolean enableDragAndDrop = true;
+    // if true, perform UI refresh automatically on external events (like publication)
+    private boolean enableRefreshOnExternalEvent = true;
 
     private String requiredPermission;
     private String nodeCheckPermission;
@@ -203,6 +205,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setEnableDragAndDrop(boolean enableDragAndDrop) {
         this.enableDragAndDrop = enableDragAndDrop;
+    }
+
+    public boolean isEnableRefreshOnExternalEvent() {
+        return enableRefreshOnExternalEvent;
+    }
+
+    public void setEnableRefreshOnExternalEvent(boolean enableRefreshOnExternalEvent) {
+        this.enableRefreshOnExternalEvent = enableRefreshOnExternalEvent;
     }
 
     public String getRequiredPermission() {

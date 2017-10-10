@@ -3226,7 +3226,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 /////////////////////////////////////////////////
-// FILE UPLOAD MODAL ////////////////////////////
+// FILE UPLOAD & IMPORT/EXPORT MODAL ////////////
 /////////////////////////////////////////////////
 
 
@@ -3321,6 +3321,17 @@ body[data-indigo-gwt-side-panel="open"] {
 			padding-right: 8px !important;
 		}
 
+	}
+
+}
+
+.x-window.content-import .x-window-body {
+	min-height: 100px !important;
+
+	.x-btn-noicon .x-btn-small .x-btn-text {
+		padding: 6px 8px;
+		background: #F44336;
+		color: #efefef;
 	}
 
 }

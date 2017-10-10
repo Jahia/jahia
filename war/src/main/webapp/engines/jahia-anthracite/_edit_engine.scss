@@ -359,7 +359,7 @@
 	// Personalised COntent Window
 	#JahiaGxtEditEnginePanel-categories {
 		height: auto!important;
-		background: #616669;
+		background: $FORM--FIELDSET--BG--COLOUR;
 		box-sizing: border-box;
 		padding-bottom: 1px;
 
@@ -473,6 +473,346 @@
 			}
 		}
 	}
+
+	#JahiaGxtEditEnginePanel-visibility {
+		// Deals with status of visibility and publication
+		img {
+			width: 20px;
+			height: 20px;
+			padding-left: 20px;
+			overflow: hidden;
+			box-sizing: border-box;
+
+			&[src="/icons/visibilityStatusRed.png"] {
+				background: $VISIBILITY--COLOUR---HIDDEN;
+			}
+
+			&[src="/icons/visibilityStatusUnknown.png"] {
+				background: $VISIBILITY--COLOUR---UNKNOWN;
+			}
+
+			&[src="/icons/visibilityStatusGreen.png"] {
+				background: $VISIBILITY--COLOUR---VISIBLE;
+			}
+
+			&[src="/icons/publication/notpublished.png"] {
+				background: $PUBLICATION--COLOUR---NOT_PUBLISHED;
+			}
+
+			&[src="/icons/publication/modified.png"] {
+				background: $PUBLICATION--COLOUR---MODIFIED;
+			}
+
+			&[src="/icons/publication/published.png"] {
+				background: $PUBLICATION--COLOUR---PUBLISHED;
+			}
+		}
+
+		> .x-component {
+			// Header Zone
+			&:nth-child(1) {
+				background: $FORM--FIELDSET--BG--COLOUR;
+				padding: 43px 10px 20px 29px;
+				box-sizing: border-box;
+				height: auto!important;
+				position: relative;
+				width: 100%!important;
+				margin: 95px 0 10px 0!important;
+			    overflow: visible!important;
+
+				.gwt-HTML {
+					@include text(12px, $COLOUR--DUSTY_CLOUDS !important, $FONT--WEIGHT---EXTRALIGHT)
+				}
+
+				&:before {
+					content: $text_visibility_visibility;
+					@extend %CSS_BLOCK--FORM--LEGEND;
+				}
+
+				> .x-component {
+					&:nth-child(1) {
+						> table > tbody > tr > td {
+							// Publication status label
+							&:nth-child(5) {
+								position: fixed;
+							    top: 175px;
+							    left: 408px;
+							    z-index: 99;
+							}
+
+							// Publication icon
+							&:nth-child(6) {
+								position: fixed;
+								top: 173px;
+								left: 517px;
+								z-index: 99;
+							}
+
+							// Publish conditions on save ( also used to create a fake fieldset )
+							&:nth-child(7) {
+								position: absolute;
+								background: $FORM--FIELDSET--BG--COLOUR;
+								width: 100%;
+								left: 0;
+								top: -95px;
+								padding: 43px 10px 20px 29px;
+								box-sizing: border-box;
+								height: 85px!important;
+
+								// Actual label
+								> div {
+									position: absolute;
+									top: 15px;
+								    right: 40px;
+								}
+
+								&:before {
+									content: $text_visibility_publication;
+									@extend %CSS_BLOCK--FORM--LEGEND;
+								}
+							}
+
+							// Save on publication checkbox
+							&:nth-child(8) {
+								position: absolute;
+							    right: 10px;
+							    top: -79px;
+							}
+						}
+					}
+					&:nth-child(2) {
+
+						> table > tbody > tr > td {
+							// All conditions should match label
+							&:nth-child(1) {
+								position: fixed;
+							    top: 331px;
+							    right: 114px;
+							    z-index: 99;
+
+								div {
+									@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT)
+								}
+
+							}
+
+							// All conditions should match checkbox
+							&:nth-child(2) {
+								position: fixed;
+							    right: 85px;
+							    top: 331px;
+							    z-index: 99;
+							}
+
+							// Add New Condition Label
+							&:nth-child(3) {
+								display: none;
+							}
+
+							// Selector
+							&:nth-child(4) {
+								// Arrow
+
+								input {
+									display: none;
+								}
+
+								img.x-form-trigger {
+									background: url($ICON--ADD--GREY) no-repeat center center !important;
+									width: 15px!important;
+									height: 15px !important;
+									position: fixed !important;
+									top: 327px;
+									left: 490px;
+									z-index: 99;
+									background-size: 14px!important;
+									background-color: $COLOUR--CREAM_CLOUDS!important;
+									opacity: 1;
+									padding-left: 15px;
+
+								}
+							}
+
+							// Add button
+							&:nth-child(5) {
+								display: none;
+							}
+						}
+
+					}
+				}
+			}
+
+			// Conditions List
+			&:nth-child(2) {
+				.x-grid-empty {
+					padding: 0;
+					&:before {
+						content: $text_visibility_no_conditions;
+						display: block;
+						@include text(12px, $COLOUR--ASH_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+					}
+				}
+
+				background: $FORM--FIELDSET--BG--COLOUR;
+				padding: 43px 10px 20px 29px;
+				box-sizing: border-box;
+				height: auto!important;
+
+				&:before {
+					content: $text_visibility_conditions;
+					@extend %CSS_BLOCK--FORM--LEGEND;
+				}
+
+				.x-grid3 {
+					height:auto!important;
+				}
+
+				.x-grid3-scroller {
+					overflow: hidden;
+				}
+
+				.x-grid3-row {
+					background: none!important;
+					pointer-events: none;
+				}
+
+				.x-grid3-col-status {
+					position: absolute;
+				    left: -3px;
+				    top: -2px;
+
+					img {
+						width: 3px!important;
+						padding-left: 3px!important;
+					}
+				}
+
+				.x-grid-cell {
+					line-height: normal;
+				}
+
+				.x-grid3-col-name {
+					color: $COLOUR--WHITE_CLOUDS!important;
+					padding: 5px 10px 5px 13px;
+				}
+
+
+
+
+				.x-grid3-td-remove {
+					width: 55px!important;
+				    position: absolute;
+				    right: 0;
+				    top: 0;
+					pointer-events: all;
+					background: url($ICON--INFO--WHITE) right 5px center no-repeat!important;
+					background-size: 16px 16px!important;
+					opacity: 0.8;
+
+					&:hover {
+						opacity: 1;
+						cursor: pointer;
+					}
+				}
+
+				.x-grid3-col-remove {
+					width: 20px;
+					height: 20px !important;
+					background: transparent;
+					background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center top 10px;
+					background-size: 8px 8px;
+
+					> table {
+						width: 100%;
+						height: 100%;
+						display: block;
+
+						> tbody {
+							display: none;
+						}
+					}
+
+				}
+			}
+
+			// Condition settings
+			&:nth-child(3) {
+				height: 100% !important;
+			    position: fixed;
+			    top: 0;
+			    left: 0;
+			    width: 100%!important;
+			    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);
+			    z-index: 999;
+				display: none;
+
+				&.indigo-show {
+					display: block;
+				}
+
+				.x-panel-footer {
+					menu {
+						padding: 0;
+
+						button {
+							border:none;
+							display: inline-block;
+							padding: 5px 10px;
+							opacity: 0.9;
+
+							&:hover {
+								opacity: 1;
+								cursor: pointer;
+							}
+
+							&.save-new-condition,
+							&.done-with-condition {
+								background: $COLOUR--JAHIA_BLUE;
+								margin-right: 3px;
+								@include text(16px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+							}
+
+							&.cancel-new-condition {
+								background: $COLOUR--WHITE_CLOUDS;
+								@include text(16px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+							}
+						}
+					}
+				}
+
+				> .x-panel {
+					&:before {
+						content: $text_visibility_edit_condition;
+						body[data-indigo-add-visibility-condition="new"] & {
+							content: $text_visibility_new_condition;
+						}
+					    display: block;
+					    margin-top: 150px;
+					    margin-bottom: 10px;
+						@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+					}
+
+					width: 400px!important;
+					margin: 0 auto;
+
+					fieldset {
+						padding: 43px 10px 20px 19px !important;
+						background: $FORM--FIELDSET--BG--COLOUR;
+
+						legend  {
+							.x-fieldset-header-text {
+								left: 19px;
+							}
+						}
+					}
+
+				}
+
+			}
+		}
+	}
+
 
 
 	#JahiaGxtEditEnginePanel-metadata {
@@ -1519,5 +1859,15 @@
 
 			}
 		}
+	}
+}
+
+body[data-indigo-add-visibility-condition="new"] .x-combo-list {
+	background: transparent!important;
+
+	> div {
+		margin-left: 89px;
+	    margin-top: 51px;
+		width: calc(100% + 43px)!important;
 	}
 }

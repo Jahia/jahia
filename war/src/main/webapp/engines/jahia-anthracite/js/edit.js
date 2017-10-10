@@ -303,11 +303,11 @@
                                     var handlerIndex = 0;
 
                                     while (eventHandlers[handlerSelector][handlerIndex]){
-                                        eventHandlers[handlerSelector][handlerIndex].callback.call(clickedNode, e);
+										eventHandlers[handlerSelector][handlerIndex].callback.call(clickedNode, e);
 
-                                        if(!eventHandlers[handlerSelector][handlerIndex].persistant){
-                                            eventHandlers[handlerSelector].splice(handlerIndex, 1);
-                                        }
+										if(!eventHandlers[handlerSelector][handlerIndex].persistant){
+											eventHandlers[handlerSelector].splice(handlerIndex, 1);
+										}
 
                                         handlerIndex++;
                                     }
@@ -597,7 +597,7 @@
                 return this;
             },
 
-            trigger: function(eventType){
+			trigger: function(eventType){
                 /* Trigger eventType (click, mouseover, etc, ...) on all nodes in nodelist */
 
                 if(this.nodes[0]){
@@ -671,34 +671,43 @@
                     parentNodes = this.nodes,
                     matchType = function(target){
                         // This needs updating to cater for complex selectors.
+                        var result,
+                            regexpressions = {
+                                id: /^#[a-z]*$/gi,
+                                classname: /^\.[a-z]*$/gi,
+                                tagname: /^[a-z]*$/gi
+                            };
 
-                        var result;
+                            if(target.match(regexpressions.id)){
+                                // Its a simple ID tag
+                                result = {
+                                    type: "id",
+                                    modifiedSelector: target.slice(1)
+                                };
 
-                        if(target[0] == "."){
-                            result = {
-                                type: "classname",
-                                modifiedSelector: target.slice(1)
+
+                            } else if(target.match(regexpressions.classname)){
+                                // Its a simple ID tag
+                                result = {
+                                    type: "classname",
+                                    modifiedSelector: target.slice(1)
+                                }
+
+                            } else if(target.match(regexpressions.tagname)){
+                                // Its a simple ID tag
+                                result = {
+                                    type: "tag",
+                                    modifiedSelector: target.toUpperCase()
+                                }
+
+                            } else {
+                                // Its a simple ID tag
+                                result = {
+                                    type: "complex",
+                                    modifiedSelector: target
+                                }
+
                             }
-
-
-                        } else if(target[0] == "#"){
-                            result = {
-                                type: "id",
-                                modifiedSelector: target.slice(1)
-                            }
-
-                        } else if(target[0] == "["){
-                            result = {
-                                type: "complex",
-                                modifiedSelector: target
-                            }
-
-                        } else {
-                            result = {
-                                type: "tag",
-                                modifiedSelector: target.toUpperCase()
-                            }
-                        }
 
                         return result;
 
@@ -933,7 +942,8 @@
         }
 
         Dex.dump = function(object){
-            console.log(mutationObservers);
+			console.log(mutationObservers);
+            console.log(delegatedEventListeners);
         };
 
         if(exposeAs){
@@ -1562,6 +1572,79 @@
                     .setAttribute("data-INDIGO-PICKER-SEARCH", "");
 
 			},
+            closeConditionEditor: function(){
+                DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)").removeClass("indigo-show");
+            },
+            editCondition: function(){
+                DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)").addClass("indigo-show");
+                DexV2("body").setAttribute("data-indigo-add-visibility-condition", "");
+
+                // Create menu ...
+                var newMenu = document.createElement("menu"),
+                    doneButton = document.createElement("button"),
+                    doneButtonLabel = document.createTextNode("Done");
+
+                DexV2.node(doneButton).addClass("done-with-condition");
+
+                doneButton.appendChild(doneButtonLabel);
+                newMenu.appendChild(doneButton);
+
+                DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer")
+                    .setHTML("")
+                    .append(newMenu);
+
+
+            },
+            addCondition: function(){
+                DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)").addClass("indigo-show");
+
+                DexV2("body").onceOpen("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer", function(){
+                    var newMenu = document.createElement("menu"),
+                        saveButton = document.createElement("button"),
+                        saveButtonLabel = document.createTextNode("Create"),
+                        closeButton = document.createElement("button"),
+                        closeButtonLabel = document.createTextNode("Cancel");
+
+                    DexV2.node(saveButton).addClass("save-new-condition");
+                    DexV2.node(closeButton).addClass("cancel-new-condition");
+
+                    closeButton.appendChild(closeButtonLabel);
+                    saveButton.appendChild(saveButtonLabel);
+                    newMenu.appendChild(saveButton);
+                    newMenu.appendChild(closeButton);
+
+                    DexV2("body").oneClick("#JahiaGxtEditEnginePanel-visibility .cancel-new-condition", function(){
+
+                        // DEV NOTE ::: Get rid of this timeout
+                        setTimeout(function(){
+                            DexV2.id("JahiaGxtEditEnginePanel-visibility").filter(".x-grid3-row.x-grid3-row-selected .x-grid3-col-remove > table .x-btn-small").trigger("click");
+                        }, 5);
+
+                    });
+
+                    DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer")
+                        .setHTML("")
+                        .append(newMenu);
+
+                });
+
+            },
+            openConditionsMenu: function(){
+                DexV2("body").onceOpen(".x-combo-list", function(nodes){
+
+                    DexV2("body").setAttribute("data-indigo-add-visibility-condition", "new");
+
+                    DexV2("body").oneMouseDown(".x-combo-list-item", function(){
+
+                        // DEV NOTE ::: Get rid of this timeout
+                        setTimeout(function(){
+                            DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(1) > .x-component:nth-child(2) > table > tbody > tr > td:nth-child(5) > table").trigger("click");
+                        }, 5);
+
+                    })
+
+                })
+            }
 		},
 		workflow: {
 			dashboard: {
@@ -2938,6 +3021,10 @@
                     DexV2(".x-viewport-adminmode .x-grid3 .x-grid3-row.x-grid3-row-selected").removeClass("x-grid3-row-selected");
                     DexV2.node(this).addClass("x-grid3-row-selected");
                 })
+				.onClick("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer", app.engine.closeConditionEditor)
+				.onClick("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(2) .x-grid3-row", app.engine.editCondition)
+				.onClick("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(1) > .x-component:nth-child(2) td:nth-child(5) > table", app.engine.addCondition)
+				.onMouseDown("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(1) img.x-form-trigger", app.engine.openConditionsMenu)
                 .onClick(".x-grid3-row .x-grid3-td-size", app.picker.search.onContext)
                 .onClick(".x-grid3-row .x-tree3-el", app.picker.row.onContext)
                 .onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", app.picker.thumb.onContext)
@@ -2950,7 +3037,8 @@
                 .onMouseDown(".x-tree3-node-joint", function(){
                     DexV2.node(this).closest(".x-grid3-row").toggleClass("indigo-opened");
                 })
-                .onMouseDown(".menu-edit-menu-mode, .menu-edit-menu-user", app.contextMenus.managerMenu.onClose)
+				.onMouseDown(".menu-edit-menu-mode", app.contextMenus.managerMenu.onClose)
+                .onMouseDown(".menu-edit-menu-user", app.contextMenus.managerMenu.onClose)
                 .onClick("#JahiaGxtSidePanelTabs .x-grid3-td-displayName", app.edit.sidepanel.row.onContext)
                 .onClick("#JahiaGxtContentPickerWindow", app.picker.onClick)
                 .onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView)

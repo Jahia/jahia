@@ -3437,7 +3437,8 @@ body[data-indigo-gwt-side-panel="open"] {
 		display: none;
 	}
 
-	.x-panel-header, .x-window.compare-engine .x-toolbar {
+	.x-panel-header,
+	.x-toolbar {
 		background: #818588;
 		border: 1px solid #818588;
 		color: #eee;

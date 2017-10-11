@@ -3389,6 +3389,95 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 /////////////////////////////////////////////////
+// COMPARE PANEL ////////////////////////////////
+/////////////////////////////////////////////////
+
+
+.x-window.compare-engine {
+	background: #616669 !important;
+
+	.x-window-header {
+		height: 64px !important;
+		line-height: 64px;
+		padding-left: 16px !important;
+		margin-top: 5px;
+
+		> .x-component:first-child {
+			margin-top: 22px;
+			margin-right: 16px;
+			pointer-events: all;
+
+			table tbody tr td .x-tool-close {
+				height: 22px;
+				width: 22px;
+				background-image: url(./images/icon-close-large.png);
+				background-position: initial !important;
+			}
+
+		}
+
+		.x-window-header-text {
+			text-shadow: none;
+			border: none;
+			padding: 0;
+			border-radius: 0;
+			background: transparent;
+			box-shadow: none;
+			margin-bottom: 10px;
+			pointer-events: none !important;
+			font-family: "Raleway", sans-serif;
+			font-size: 24px;
+			color: #f1f1f1;
+			font-weight: 100;
+		}
+
+	}
+
+	.x-panel-toolbar .x-tool-restore {
+		display: none;
+	}
+
+	.x-panel-header, .x-window.compare-engine .x-toolbar {
+		background: #818588;
+		border: 1px solid #818588;
+		color: #eee;
+	}
+
+	.x-panel-bwrap {
+
+		button {
+			margin-left: 10px;
+			margin-bottom: 1px;
+
+			img {
+				background: url(./images/icons/ic_refresh.png) !important;
+				background-size: 18px 18px !important;
+				background-repeat: no-repeat !important;
+				left: 0 !important;
+				top: 0 !important;
+				opacity: .64;
+			}
+
+		}
+
+		.x-btn-mc button.x-btn-text {
+			text-transform: uppercase;
+			padding: 0 4px !important;
+			font-weight: 500;
+			color: #424242;
+		}
+
+		table.x-btn-pressed .x-btn-mc button.x-btn-text {
+			color: #FFEB3B;
+		}
+
+	}
+
+}
+
+
+
+/////////////////////////////////////////////////
 // TRANSLATION ENGINE ///////////////////////////
 /////////////////////////////////////////////////
 

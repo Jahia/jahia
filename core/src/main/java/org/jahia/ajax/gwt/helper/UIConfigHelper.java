@@ -674,7 +674,7 @@ public class UIConfigHelper {
                 gwtConfig.setEngineConfigurations(createGWTEngineConfigurations(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineConfigurations()));
                 gwtConfig.setSitesLocation(config.getSitesLocation());
                 gwtConfig.setEnableDragAndDrop(config.isEnableDragAndDrop());
-                gwtConfig.setEnableRefreshOnExternalEvent(config.isEnableRefreshOnExternalEvent());
+                gwtConfig.setRefreshOnExternalModification(config.getRefreshOnExternalModification());
                 gwtConfig.setDefaultUrlMapping(config.getDefaultUrlMapping());
                 gwtConfig.setComponentsPaths(config.getComponentsPaths());
                 gwtConfig.setEditableTypes(config.getEditableTypes());

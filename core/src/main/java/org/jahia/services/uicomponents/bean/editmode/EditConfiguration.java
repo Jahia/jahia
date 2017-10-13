@@ -58,11 +58,11 @@ import java.util.*;
  * Time: 12:26:47 PM
  */
 public class EditConfiguration implements Serializable, BeanNameAware {
-    
+
     private static final long serialVersionUID = -5469841056796249203L;
 
     private String name;
-    
+
     private Toolbar topToolbar;
     private Toolbar sidePanelToolbar;
     private Toolbar mainModuleToolbar;
@@ -78,8 +78,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String forcedSite;
 
     private boolean enableDragAndDrop = true;
-    // if true, perform UI refresh automatically on external events (like publication)
-    private boolean enableRefreshOnExternalEvent = true;
+    private boolean refreshOnExternalModification = true;
 
     private String requiredPermission;
     private String nodeCheckPermission;
@@ -108,11 +107,11 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
     }
-    
+
     public void addTab(int index, SidePanelTab tab) {
         tabs.add(index, tab);
     }
-    
+
     public void setBeanName(String name) {
         this.name = name;
     }
@@ -207,12 +206,12 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.enableDragAndDrop = enableDragAndDrop;
     }
 
-    public boolean isEnableRefreshOnExternalEvent() {
-        return enableRefreshOnExternalEvent;
+    public boolean getRefreshOnExternalModification() {
+        return refreshOnExternalModification;
     }
 
-    public void setEnableRefreshOnExternalEvent(boolean enableRefreshOnExternalEvent) {
-        this.enableRefreshOnExternalEvent = enableRefreshOnExternalEvent;
+    public void setRefreshOnExternalModification(boolean refreshOnExternalModification) {
+        this.refreshOnExternalModification = refreshOnExternalModification;
     }
 
     public String getRequiredPermission() {

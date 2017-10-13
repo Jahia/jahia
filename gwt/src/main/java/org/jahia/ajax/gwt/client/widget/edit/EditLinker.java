@@ -66,13 +66,12 @@ import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanel;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 
 /**
- * Helper object that contains edit mode context information. 
+ * Helper object that contains edit mode context information.
  *
  * @author rincevent
  */
@@ -95,12 +94,11 @@ public class EditLinker implements Linker {
     private GWTJahiaChannel activeChannel;
     private String activeChannelVariant = null;
     private boolean isInSettingsPage = true;
-
-    private long currentTime = 0;
+    private long lastRefreshInfoDisplayTime;
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param mainModule
      *            the current main module
      * @param sidePanel
@@ -124,7 +122,7 @@ public class EditLinker implements Linker {
 
     /**
      * Returns a side panel object.
-     * 
+     *
      * @return a side panel object
      */
     public SidePanel getSidePanel() {
@@ -133,7 +131,7 @@ public class EditLinker implements Linker {
 
     /**
      * Sets the site panel reference.
-     * 
+     *
      * @param sidePanel
      *            the site panel reference
      */
@@ -150,7 +148,7 @@ public class EditLinker implements Linker {
 
     /**
      * Returns main module object.
-     * 
+     *
      * @return main module object
      */
     public MainModule getMainModule() {
@@ -159,7 +157,7 @@ public class EditLinker implements Linker {
 
     /**
      * Returns edit mode configuration settings.
-     * 
+     *
      * @return edit mode configuration settings
      */
     public GWTEditConfiguration getConfig() {
@@ -204,7 +202,7 @@ public class EditLinker implements Linker {
 
     /**
      * Returns edit mode drag&drop listener instance.
-     * 
+     *
      * @return edit mode drag&drop listener instance
      */
     public EditModeDNDListener getDndListener() {
@@ -213,7 +211,7 @@ public class EditLinker implements Linker {
 
     /**
      * Returns current content locale.
-     * 
+     *
      * @return current content locale
      */
     public String getLocale() {
@@ -222,7 +220,7 @@ public class EditLinker implements Linker {
 
     /**
      * Sets current content locale.
-     * 
+     *
      * @param locale
      *            current content locale
      */
@@ -245,7 +243,7 @@ public class EditLinker implements Linker {
 
     /**
      * Registers the module selection listener.
-     * 
+     *
      * @param selectionListener
      *            the module selection listener
      */
@@ -255,7 +253,7 @@ public class EditLinker implements Linker {
 
     /**
      * Callback for the module selection event.
-     * 
+     *
      * @param selection
      *            the currently selected module
      */
@@ -274,7 +272,7 @@ public class EditLinker implements Linker {
 
     /**
      * Callback for the main module selection.
-     * 
+     *
      * @param mainPath
      *            the main module path
      * @param template
@@ -288,30 +286,33 @@ public class EditLinker implements Linker {
 
     /**
      * Performs refresh of the main module and side panel using provided refresh data.
-     * 
+     *
      * @param data
      *            the refresh data
      */
-    public void refresh(final Map<String, Object> data) {
+    public void refresh(Map<String, Object> data) {
 
-        if (!config.isEnableRefreshOnExternalEvent() && (data.get(Linker.EXTERNAL_REFRESH) != null && (Boolean) data.get(Linker.EXTERNAL_REFRESH))) {
-            long time = new Date().getTime();
+        if (!config.getRefreshOnExternalModification() && Boolean.TRUE.equals(data.get(Linker.EXTERNAL_REFRESH))) {
+
+            if (sidePanel != null) {
+                sidePanel.markForManualRefresh(data);
+            }
+
+            long time = System.currentTimeMillis();
 
             InfoConfig infoConfig = new InfoConfig(Messages.get("label.atmosphere.editorial.content.update", "a content has been updated."), Messages.get
                     ("label.refresh.modify", "Click refresh to see updated content"));
-            // check that infoConfig.display (=2500) milliseconds haven't been spent since the last time the info has been displayed
-            if (time - currentTime > infoConfig.display) {
+
+            // Check that previously displayed box (if any) has already disappeared.
+            if (time - lastRefreshInfoDisplayTime > infoConfig.display) {
                 Info.display(infoConfig);
-                if (sidePanel != null) {
-                    sidePanel.markForManualRefresh(data);
-                }
-                currentTime = time;
+                lastRefreshInfoDisplayTime = time;
             }
-            return;
-        }
-        mainModule.refresh(data);
-        if (sidePanel != null) {
-            sidePanel.refresh(data);
+        } else {
+            mainModule.refresh(data);
+            if (sidePanel != null) {
+                sidePanel.refresh(data);
+            }
         }
     }
 
@@ -388,7 +389,7 @@ public class EditLinker implements Linker {
 
     /**
      * Performs the selection of the specified module.
-     * 
+     *
      * @param o
      *            the module object
      */
@@ -407,7 +408,7 @@ public class EditLinker implements Linker {
 
     /**
      * Masks the main module area and adds the specified message into the loading indicator.
-     * 
+     *
      * @param resource
      *            the message text to show in the loading indicator
      */
@@ -429,7 +430,7 @@ public class EditLinker implements Linker {
 
     /**
      * Returns the current selection context.
-     * 
+     *
      * @return the current selection context
      */
     public LinkerSelectionContext getSelectionContext() {
@@ -438,7 +439,7 @@ public class EditLinker implements Linker {
 
     /**
      * Performs the synchronization with the current selection as a result of (main) module change or main module node loaded event.
-     * 
+     *
      * @param context
      *            the type of the context; see {@link LinkerSelectionContext}
      */
@@ -457,7 +458,7 @@ public class EditLinker implements Linker {
 
     /**
      * Replaces the content of the main area with the specified widget (usually content edit engine).
-     * 
+     *
      * @param w
      *            the widget to replace the main module area with
      */
@@ -493,7 +494,7 @@ public class EditLinker implements Linker {
 
     /**
      * Indicates if we need to display hidden properties.
-     * 
+     *
      * @return <code>true</code> if teh hidden properties should be shown
      */
     public boolean isDisplayHiddenProperties() {
@@ -502,7 +503,7 @@ public class EditLinker implements Linker {
 
     /**
      * Returns an active channel instance.
-     * 
+     *
      * @return an active channel instance
      */
     public GWTJahiaChannel getActiveChannel() {
@@ -511,7 +512,7 @@ public class EditLinker implements Linker {
 
     /**
      * Sets currently active channel instance.
-     * 
+     *
      * @param activeChannel
      *            currently active channel instance
      */
@@ -521,7 +522,7 @@ public class EditLinker implements Linker {
 
     /**
      * Returns an identifier of the currently active channel instance if any.
-     * 
+     *
      * @return an identifier of the currently active channel instance if any; <code>null</code> if there is no currently active channel
      */
     public String getActiveChannelIdentifier() {
@@ -530,7 +531,7 @@ public class EditLinker implements Linker {
 
     /**
      * Returns active channel variant.
-     * 
+     *
      * @return active channel variant
      */
     public String getActiveChannelVariant() {
@@ -539,7 +540,7 @@ public class EditLinker implements Linker {
 
     /**
      * Sets active channel variant.
-     * 
+     *
      * @param activeChannelVariant
      *            active channel variant
      */
@@ -557,7 +558,7 @@ public class EditLinker implements Linker {
 
     /**
      * Returns an index of the currently active channel variant.
-     * 
+     *
      * @return an index of the currently active channel variant
      */
     public int getActiveChannelVariantIndex() {

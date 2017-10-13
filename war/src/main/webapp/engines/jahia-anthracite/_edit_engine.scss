@@ -1560,6 +1560,8 @@
 
 
 
+
+
 	// Contains main window
 	.x-window-bwrap {
 		width: 100%!important;
@@ -1615,6 +1617,8 @@
 					    height: calc(100% - 70px) !important;
 					    padding: 50px 34px 0 44px;
 					    box-sizing: border-box;
+
+
 
 						.x-panel-tbar {
 							width: 100%!important;
@@ -1698,6 +1702,91 @@
 								width: 100%!important;
 								height: 100%!important;
 
+								.x-grid3-header {
+									display: block;
+									background: none;
+									width: calc(100% - 10px); // compensates for scroll padding added to list
+
+									.x-grid3-header-inner {
+										width: 100%!important;
+
+										.x-grid3-header-offset {
+											width: 100%!important;
+										}
+
+										.x-grid3-hh {
+											width: 100%!important;
+
+											> table {
+												width: 100%!important;
+												display: block;
+
+												> tbody {
+													width: 100%!important;
+													display: block;
+
+													> tr {
+														display: block;
+													}
+
+													td {
+														width: 25%!important;
+														pointer-events: all;
+														border:none;
+
+														&.x-grid3-hd-over {
+															background: $COLOUR--CREAM_CLOUDS;
+
+															span {
+																color: $COLOUR--LEAD_CLOUDS!important;
+															}
+
+															img {
+																opacity: 1;
+															}
+
+
+														}
+
+														div {
+															width: 100%!important;
+															box-sizing: border-box;
+															height: auto!important;
+															background: none!important;
+															padding-left: 4px;
+
+															img {
+																position: relative;
+																top: -1px;
+																opacity: 0.6;
+															}
+
+															.x-grid3-hd-btn {
+																background: url($ICON--ARROW_DOWN---GREY) no-repeat center center!important;
+																width: 23px;
+																background-size: 13px!important;
+																opacity: 0.7;
+
+																&:hover {
+																	// background: url($ICON--ARROW_DOWN---WHITE) no-repeat center center!important;
+																	background-color: $COLOUR--DUSTY_CLOUDS!important;
+																	background-size: 13px!important;
+																	opacity: 1;
+																}
+															}
+
+															span {
+
+																@include text(12px, $COLOUR--ASH_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+
 								.x-grid-empty {
 									&::before {
 										content: "No results";
@@ -1780,12 +1869,13 @@
 							.x-toolbar-left {
 
 								position: fixed;
-							    right: 44px;
-							    bottom: 47px;
+							    left: 44px;
+							    bottom: 97px;
 
 
 								.x-toolbar-cell {
 									display: inline-block!important;
+									margin: 0 2px;
 
 									opacity: 0.8;
 
@@ -1794,6 +1884,17 @@
 									tbody {
 										// display: none;
 
+									}
+
+									.my-paging-text {
+										@include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+									}
+
+									.gwt-TextBox {
+										@include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+										background: #FFF;
+										padding: 3px;
+										border:none;
 									}
 
 									.x-btn-mc img {

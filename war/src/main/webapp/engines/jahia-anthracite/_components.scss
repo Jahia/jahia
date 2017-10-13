@@ -615,6 +615,17 @@
 	display: none;
 }
 
+.x-menu-check-item {
+	padding-left: 25px!important;
+
+	.x-menu-item-icon {
+		display: block;
+		top: 6px;
+		left:6px;
+
+	}
+}
+
 /* Combo List Seperator line */
 .x-menu-sep-li {
     display: none;

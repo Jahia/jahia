@@ -1213,11 +1213,33 @@
 	#JahiaGxtEditEnginePanel-versioning {
 		@include button("FIELDSET");
 
+
+		// COmpare button
+		.x-btn {
+			width: 46px!important;
+			height: 23px;
+			background: url($ICON--DIFF--WHITE) no-repeat center center;
+			background-size: 46px 23px;
+			opacity: 0.8;
+
+			&:hover {
+				opacity: 1;
+			}
+
+			.x-btn-mc {
+				display: none;
+			}
+		}
+
 		.x-grid3-cell {
 			display: inline-block!important;
 
 			&:nth-child(1) {
-				margin-left: -4px;
+				width: calc(100% - 46px)!important;
+			}
+
+			&:nth-child(2) {
+				width: 46px!important;
 			}
 		}
 
@@ -1237,6 +1259,10 @@
 
 		.x-grid3-row-over {
 			background-color: transparent!important;
+		}
+
+		.x-grid3-row {
+			margin-bottom: 3px;
 		}
 
 	}

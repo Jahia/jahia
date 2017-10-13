@@ -485,27 +485,27 @@
 			overflow: hidden;
 			box-sizing: border-box;
 
-			&[src="/icons/visibilityStatusRed.png"] {
+			&[src$="/visibilityStatusRed.png"] {
 				background: $VISIBILITY--COLOUR---HIDDEN;
 			}
 
-			&[src="/icons/visibilityStatusUnknown.png"] {
+			&[src$="/visibilityStatusUnknown.png"] {
 				background: $VISIBILITY--COLOUR---UNKNOWN;
 			}
 
-			&[src="/icons/visibilityStatusGreen.png"] {
+			&[src$="/visibilityStatusGreen.png"] {
 				background: $VISIBILITY--COLOUR---VISIBLE;
 			}
 
-			&[src="/icons/publication/notpublished.png"] {
+			&[src$="/publication/notpublished.png"] {
 				background: $PUBLICATION--COLOUR---NOT_PUBLISHED;
 			}
 
-			&[src="/icons/publication/modified.png"] {
+			&[src$="/publication/modified.png"] {
 				background: $PUBLICATION--COLOUR---MODIFIED;
 			}
 
-			&[src="/icons/publication/published.png"] {
+			&[src$="/publication/published.png"] {
 				background: $PUBLICATION--COLOUR---PUBLISHED;
 			}
 		}

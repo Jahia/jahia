@@ -141,7 +141,7 @@ public class EditLinker implements Linker {
             try {
                 sidePanel.initWithLinker(this);
             } catch (Exception e) {
-                Log.error("Error on init linker",e);
+                Log.error("Error on init linker", e);
             }
         }
     }
@@ -160,6 +160,7 @@ public class EditLinker implements Linker {
      *
      * @return edit mode configuration settings
      */
+    @Override
     public GWTEditConfiguration getConfig() {
         return config;
     }
@@ -178,7 +179,7 @@ public class EditLinker implements Linker {
         JahiaGWTParameters.setSiteNode(config.getSiteNode());
         JahiaGWTParameters.setSitesMap(config.getSitesMap());
         JahiaGWTParameters.setChannels(config.getChannels());
-        if(enforcedWorkspace!=null) {
+        if (enforcedWorkspace != null) {
             JahiaGWTParameters.setWorkspace(enforcedWorkspace);
         }
         PermissionsUtils.loadPermissions(config.getPermissions());
@@ -290,6 +291,7 @@ public class EditLinker implements Linker {
      * @param data
      *            the refresh data
      */
+    @Override
     public void refresh(Map<String, Object> data) {
 
         if (!config.getRefreshOnExternalModification() && Boolean.TRUE.equals(data.get(Linker.EXTERNAL_REFRESH))) {
@@ -333,7 +335,7 @@ public class EditLinker implements Linker {
      */
     public void handleNewMainSelection() {
         syncSelectionContext(LinkerSelectionContext.BOTH);
-        mainModule.handleNewMainSelection(mainPath,template);
+        mainModule.handleNewMainSelection(mainPath, template);
         mainModule.handleNewModuleSelection(null);
         if (sidePanel != null) {
             sidePanel.handleNewMainSelection(mainPath);
@@ -360,7 +362,7 @@ public class EditLinker implements Linker {
      * Set up linker (callback for each member).
      */
     protected void registerLinker() {
-        registerLinker(true,true,true);
+        registerLinker(true, true, true);
     }
 
     /**
@@ -371,21 +373,21 @@ public class EditLinker implements Linker {
             try {
                 mainModule.initWithLinker(this);
             } catch (Exception e) {
-                Log.error("Error on init linker",e);
+                Log.error("Error on init linker", e);
             }
         }
         if (sidePanel != null && doSidePanel) {
             try {
                 sidePanel.initWithLinker(this);
             } catch (Exception e) {
-                Log.error("Error on init linker",e);
+                Log.error("Error on init linker", e);
             }
         }
         if (toolbar != null && doToolbar) {
             try {
                 toolbar.initWithLinker(this);
             } catch (Exception e) {
-                Log.error("Error on init linker",e);
+                Log.error("Error on init linker", e);
             }
         }
     }
@@ -397,6 +399,7 @@ public class EditLinker implements Linker {
      * @param o
      *            the module object
      */
+    @Override
     public void select(Object o) {
         if (o == null || o instanceof Module) {
             onModuleSelection((Module) o);
@@ -406,6 +409,7 @@ public class EditLinker implements Linker {
     /**
      * Indicates that a processing action is finished and we can unmask the main module area.
      */
+    @Override
     public void loaded() {
         mainModule.unmask();
     }
@@ -416,6 +420,7 @@ public class EditLinker implements Linker {
      * @param resource
      *            the message text to show in the loading indicator
      */
+    @Override
     public void loading(String resource) {
         mainModule.mask(resource, "x-mask-loading");
 
@@ -428,6 +433,7 @@ public class EditLinker implements Linker {
      *            the updated items paths
      *
      */
+    @Override
     public void setSelectPathAfterDataUpdate(List<String> paths) {
         // no implementation so far
     }
@@ -437,6 +443,7 @@ public class EditLinker implements Linker {
      *
      * @return the current selection context
      */
+    @Override
     public LinkerSelectionContext getSelectionContext() {
         return selectionContext;
     }
@@ -447,6 +454,7 @@ public class EditLinker implements Linker {
      * @param context
      *            the type of the context; see {@link LinkerSelectionContext}
      */
+    @Override
     public void syncSelectionContext(int context) {
         selectionContext.setMainNode(getMainModule().getNode());
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
@@ -476,7 +484,7 @@ public class EditLinker implements Linker {
         if (mainAreaComponent == null) {
             m = (ContentPanel) mainModule.getParent();
             mainModule.saveCurrentFramePosition();
-            mainModule.setStyleAttribute("display","none");
+            mainModule.setStyleAttribute("display", "none");
         } else {
             m = (ContentPanel) mainAreaComponent.getParent();
             m.remove(mainAreaComponent);
@@ -495,7 +503,7 @@ public class EditLinker implements Linker {
             ContentPanel m = (ContentPanel) mainAreaComponent.getParent();
             m.remove(mainAreaComponent);
             mainAreaComponent = null;
-            mainModule.setStyleAttribute("display","block");
+            mainModule.setStyleAttribute("display", "block");
             m.layout();
         mainModule.moveToSavePosition();
         }
@@ -506,6 +514,7 @@ public class EditLinker implements Linker {
      *
      * @return <code>true</code> if teh hidden properties should be shown
      */
+    @Override
     public boolean isDisplayHiddenProperties() {
         return false;
     }

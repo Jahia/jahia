@@ -112,6 +112,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         tabs.add(index, tab);
     }
 
+    @Override
     public void setBeanName(String name) {
         this.name = name;
     }

@@ -22,7 +22,7 @@
         <property name="defaultLocation" value="$defaultSiteHome.html"/>
         <property name="defaultUrlMapping" value="/cms/edit"/>
         <property name="sitesLocation" value="/sites/*"/>
-        <property name="enableRefreshOnExternalEvent" value="${jahia.ui.enableRefreshOnExternalEvent:true}"/>
+        <property name="refreshOnExternalModification" value="${jahia.ui.refreshOnExternalModification:true}"/>
         <property name="nonEditableTypes">
             <set>
                 <value>jmix:studioOnly</value>
@@ -127,7 +127,7 @@
                         <ref bean="Toolbar.Item.ClipBoard"/>
 
                         <ref bean="Toolbar.Item.Separator"/>
-                        
+
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.User">
                             <property name="icon" value="start"/>
                             <property name="titleKey" value="label.user.loggedAs"/>
@@ -809,7 +809,7 @@
                     </list>
                 </property>
                 <property name="defaultAutoUpdate" value="${jahia.ui.contentTab.defaultSynchronizeNameWithTitle:true}"/>
-            </bean>            
+            </bean>
         </property>
     </bean>
 

@@ -2660,7 +2660,7 @@ form,
 
 /* Modal Mask */
 .x-modal {
-    background: rgba(92, 97, 100, 0.94);  // check on other modals.
+    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);  // check on other modals.
     opacity: 1;
     z-index: $ZINDEX--MODAL---MASK;
     position: fixed !important;
@@ -3167,75 +3167,181 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.delete-item-window {
     background: transparent;
     height: 370px;
+	width: 460px !important;
+	height: auto!important;
 
 		.x-panel-toolbar {
 		    display: none;
 		}
 
 		.x-window-header {
-		    padding: 8px 0 !important;
-		    font-family: $FONT--FAMILY---RALEWAY;
-		    font-size: 32px;
-		    color: $COLOUR--WHITE_CLOUDS;
-		    font-weight: $FONT--WEIGHT---EXTRALIGHT;
+		    padding: 0 !important;
+			margin-bottom: 10px;
+
+			@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+
+			img {
+				display: none;
+			}
+
+			.x-window-header-text {
+				display: none;
+			}
+
+			&:before {
+				content: $text_confirm_delete;
+			}
+		}
+
+		.x-window-body {
+			width: auto!important;
+			height: auto!important;
+
+			> .x-panel {
+				width: auto!important;
+			}
 		}
 
 		.x-window-bwrap {
-		    padding: 0 8px;
+		    padding: 0;
 		    color: rgba(0, 0, 0, 0.84);
-		    padding-top: 12px;
-		    background: #eee;
+		    padding-top: 0;
+		    background: transparent;
 		    height: 302px;
-		    overflow: hidden;
+		    overflow: visible;
 
-				.x-form-textarea {
-						margin-top: 8px;
-						color: rgb(0, 0, 0);
-						width: 100% !important;
+			.x-form-textarea {
+					margin-top: 8px;
+					color: rgb(0, 0, 0);
+					width: 100% !important;
 
-						&:focus {
-								background: $COLOUR--WHITE !important;
+					&:focus {
+						background: $COLOUR--WHITE !important;
+					}
+
+			}
+
+			.x-panel-body {
+				padding: 0;
+				width: auto!important;
+				height: auto!important;
+
+				overflow: visible;
+
+				form {
+					overflow: visible;
+					height: auto!important;
+
+					> div {
+
+						padding: 0 19px;
+						background: $FORM--FIELDSET--BG--COLOUR!important;
+
+						&:first-child {
+							padding-top: 19px;
 						}
+
+						&:nth-last-child(2) {
+							padding-bottom: 19px;
+						}
+
+						@include text(13px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+						&.x-panel-fbar {
+							background: transparent!important;
+							padding: 0!important;
+
+						}
+
+						.x-grid-panel {
+							max-height: 61px!important;
+							height: auto!important;
+							overflow-y: scroll;
+							margin-top: 10px;
+
+							.x-grid3-row {
+								background: rgba($COLOUR--GREY_CLOUDS, .6) !important;
+								padding: 3px;
+								box-sizing: border-box;
+
+								&.x-grid3-row-over {
+									background: rgba($COLOUR--GREY_CLOUDS, 1) !important;
+								}
+
+								.x-grid3-col-pagePath {
+									background: url(./images/tabs-pages-white@X2.png) no-repeat left center;
+									background-size: 23px;
+									padding-left: 25px;
+
+									a {
+										text-decoration: none;
+										@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+										&:hover {
+											text-decoration: underline;
+										}
+
+									}
+								}
+
+								.x-grid3-td-path {
+									@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+								}
+							}
+						}
+
+						textarea {
+							background: rgba($COLOUR--GREY_CLOUDS, .6) !important;
+							box-sizing: border-box;
+							margin: 0;
+							padding: 10px!important;
+							color: $COLOUR--WHITE_CLOUDS;
+							height: 75px!important;
+
+							transition: all 0.3s ease-in 0s!important;
+
+							&:hover {
+								background: rgba($COLOUR--GREY_CLOUDS, 1) !important;
+
+							}
+
+							&:focus {
+								background: $COLOUR--WHITE_CLOUDS!important;
+								color: $COLOUR--DARK_CLOUDS;
+							}
+						}
+
+						span[style='font-style:bold;color:red;'] {
+							display: block;
+						    font-weight: 500;
+						    position: relative;
+						    width: 100%;
+						    color: #fd8787!important;
+						    padding-bottom: 19px;
+						}
+					}
 
 				}
 
-				.x-panel-body {
-
-					form .x-component {
-
-						&:nth-child(1) {
-								font-size: 13px;
-								padding-bottom: 4px;
-								color: #565656;
-								font-weight: $FONT--WEIGHT---SEMIBOLD;
-						}
-
-						&:nth-child(2) {
-								text-transform: uppercase;
-								font-family: $FONT--FAMILY---NUNITO;
-								font-size: 11px;
-								color: #a3a3a3;
-								font-weight: $FONT--WEIGHT---SEMIBOLD;
-						}
-
-					}
-
-					.x-form-field-wrap {
-						height: 196px !important;
-						padding-bottom: 16px;
-					}
-
+				.x-form-field-wrap {
+					height: auto!important;
 				}
+
+				.x-panel-fbar {
+					margin-top: 20px;
+				}
+
+			}
 
 		}
 
 		.x-toolbar-left-row .x-toolbar-cell:first-child .x-btn-text {
-			background: #00a0e3 !important;
-			color: #f1f1f1 !important;
+			background: $COLOUR--JAHIA_BLUE !important;
+			color: $COLOUR--WHITE_CLOUDS !important;
 		}
 
 		.x-toolbar-left-row .x-toolbar-cell:nth-child(2) .x-btn-text {
-			background: #dedede !important;
+			background: $COLOUR--CREAM_CLOUDS !important;
 		}
 
 }

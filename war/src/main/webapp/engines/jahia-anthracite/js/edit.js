@@ -442,6 +442,17 @@
 
             },
 
+			each: function(callback){
+				var n;
+
+				for(n = 0; n < this.nodes.length; n++){
+					callback.call(this.nodes[n], Dex.node(this.nodes[n]), n);
+
+                }
+
+				return this;
+			},
+
             filter: function(selector){
                 /* Filter then current node list - note: only filters on the first node in list */
 
@@ -2339,12 +2350,22 @@
 				open: function(isSettings){
 					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN [isSettings='" + isSettings + "']");
 
+					var keepCheckingForEmpties = true;
+
 					// Set CSS to open side panel
 					DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
 					app.edit.sidepanel.data.open = true;
 
+					// Check if there are any empty rows, if so then refresh the panel
+					DexV2.id("JahiaGxtPagesTab").filter(".x-grid3-row").each(function(dexObject, index){
+						if(keepCheckingForEmpties){
+							if(dexObject.getHTML() == ""){
+								keepCheckingForEmpties = false;
+								DexV2.id("JahiaGxtRefreshSidePanelButton").trigger("click");
+							}
+						}
 
-
+					});
 
 				},
 				close: function(){
@@ -2872,7 +2893,7 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
-                .onceOpen("#JahiaGxtContentBrowseTab", function(){
+				.onceOpen("#JahiaGxtContentBrowseTab", function(){
                     DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
                 })
     			.onceOpen("#JahiaGxtFileImagesBrowseTab", function(){

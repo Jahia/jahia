@@ -3352,6 +3352,14 @@ body[data-indigo-gwt-side-panel="open"] {
 // Export
 .x-window.content-export {
 
+	width: 752px !important;
+	width: fit-content !important;
+
+	.x-small-editor.x-panel-btns-center.x-panel-fbar.x-component.x-toolbar-layout-ct {
+		width: 800px !important;
+		width: fit-content !important;
+	}
+
 	.x-window-ml table {
 		display: none;
 	}

@@ -1094,6 +1094,11 @@ div[role="combobox"] {
 
 		@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP !optional;
 
+		.x-trigger-wrap-focus & {
+			background-image: url($ICON--ARROW_DOWN---GREY);
+			opacity: 1;
+		}
+
 		.x-triggerfield-noedit + .x-form-twin-triggers  & {
 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:OPEN_PICKER !optional;
 		}

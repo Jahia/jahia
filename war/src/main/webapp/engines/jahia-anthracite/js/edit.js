@@ -597,18 +597,41 @@
                 return this;
             },
 
-			trigger: function(eventType){
+			trigger: function(eventType, xPos, yPos){
                 /* Trigger eventType (click, mouseover, etc, ...) on all nodes in nodelist */
+
+				var xPos = xPos || 0,
+					yPos = yPos || 0;
 
                 if(this.nodes[0]){
                     var clickEvent = document.createEvent("MouseEvents");
 
-                    clickEvent.initEvent(eventType, true, true);
+					if(eventType == "contextmenu"){
+					    clickEvent.initMouseEvent(eventType, true, false, window,0,0,0,xPos,yPos,false,false,false,false,2,null);
+					} else {
+						clickEvent.initEvent(eventType, true, true);
+
+					}
+
                     this.nodes[0].dispatchEvent(clickEvent);
                 }
 
                 return this;
             },
+
+			customTrigger: function(eventType, params){
+
+				var params = params || {};
+
+				if(this.nodes[0]){
+					var evt = new CustomEvent(eventType, {"bubbles":true, "cancelable":true, "detail": params});
+
+                    this.nodes[0].dispatchEvent(evt);
+                }
+
+				return this;
+
+			},
 
             onOpen: function(target, callback){
                 this.onMutation("onOpen", target, callback, {
@@ -763,7 +786,7 @@
             },
 
 
-            onClick: function(target, callback){
+			onClick: function(target, callback){
                 createEventListener(this, "click", this.selector, target, callback, true);
 
                 return this;
@@ -986,7 +1009,10 @@
 		data: {
 			currentApp: null,
 			previousModeClass: null,
-			UILanguage: null
+			UILanguage: null,
+			startedOnSettingsPage: false,
+			startedOnEditPage: true,
+			firstApp: null
 		},
 		dev: {
 			data: {
@@ -1340,17 +1366,8 @@
 					var acceptClick = DexV2.node(e.target).hasClass("x-tree3-el");
 
 					if(acceptClick){
-						$(e.target).trigger({
-							type: 'mousedown',
-							button: 2,
-							which:3,
-							clientX: e.pageX,
-							clientY: e.pageY
-						}).trigger({
-							type:"contextmenu",
-							clientX: e.pageX,
-							clientY: e.pageY
-						});
+						DexV2.node(e.target).trigger("contextmenu", e.pageX, e.pageY);
+
 					}
 				}
 			},
@@ -1384,17 +1401,8 @@
 				onContext: function(e){
 					app.dev.log("::: APP ::: PICKER ::: THUMB ::: ONCONTEXT");
 					// Open Context Menu when clicking "More" button.
-					$(e.target).trigger({
-						type: 'mousedown',
-						button: 2,
-						which:3,
-						clientX: e.pageX,
-						clientY: e.pageY
-					}).trigger({
-						type:"contextmenu",
-						clientX: e.pageX,
-						clientY: e.pageY
-					});
+					DexV2.node(e.target).trigger("contextmenu", e.pageX, e.pageY);
+
 
 				}
 
@@ -1412,18 +1420,25 @@
 		                .removeClass("x-view-over")
 		                .removeClass("x-grid3-row-over");
 				},
-				onClick: function(e, secondClick){
+				onClick: function(e){
 					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONCLICK");
-					DexV2.node(app.picker.data.currentItem)
-						.trigger("mousedown")
-						.trigger("mouseup");
 
-		            if(!secondClick){
-		                DexV2.id("JahiaGxtImagePopup").remove(); // remove OLD preview
-		                $(this).trigger("click", [true]); // Reopen with new preview
-		                DexV2("#JahiaGxtImagePopup .x-window-bwrap").setAttribute("data-file-name", app.picker.data.title);
+					if(e.detail.secondClick){
+						// Just set the good title
+						DexV2("#JahiaGxtImagePopup .x-window-bwrap").setAttribute("data-file-name", app.picker.data.title);
 
-		            }
+					} else {
+						// Need to select the currently hovered thumb first ...
+						DexV2.node(app.picker.data.currentItem)
+							.trigger("mousedown")
+							.trigger("mouseup");
+
+						// Now need to remove the preview ( just incase it is previewing a previously selected thumb)
+						DexV2.id("JahiaGxtImagePopup").remove(); // remove OLD preview
+
+						// Reclick on the preview button for the newly selected thumb
+						DexV2.node(this).customTrigger("click", {secondClick: true});
+					}
 
 		            DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "hide");
 				},
@@ -1506,7 +1521,7 @@
 		            }, 250);
 				},
 				close: function(){
-					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE");
+					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE", true);
 					// CLOSE SEARCH PANEL
 
 		            // Hide the search panel
@@ -1515,28 +1530,16 @@
 		            // Display the BROWSE panels
 		            DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
 
-		            // Get the refresh button
-		            var refreshButton = $("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel").not(".x-panel-collapsed").find(".x-tool-refresh")[0];
-
-		            // CLick on the refresh button to reload the content of the directory
-					DexV2.node(refreshButton).trigger("click");
+					// CLick on the refresh button to reload the content of the directory
+		            DexV2.id("JahiaGxtContentPickerWindow").filter("#JahiaGxtManagerLeftTree .x-panel:not(.x-panel-collapsed) .x-tool-refresh").trigger("click");
 
 				},
 
 				onContext: function(e){
 					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: ONCONTEXT");
 					// Open Context Menu when clicking "More" button.
-					$(e.target).trigger({
-						type: 'mousedown',
-						button: 2,
-						which:3,
-						clientX: e.pageX,
-						clientY: e.pageY
-					}).trigger({
-						type:"contextmenu",
-						clientX: e.pageX,
-						clientY: e.pageY
-					});
+					DexV2.node(e.target).trigger("contextmenu", e.pageX, e.pageY);
+
 				}
 			}
 		},
@@ -2336,33 +2339,13 @@
 				open: function(isSettings){
 					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN [isSettings='" + isSettings + "']");
 
+					// Set CSS to open side panel
 					DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
 					app.edit.sidepanel.data.open = true;
 
-					// GWT has problems populating the site page tree when the side panel is hidden.
-					// Solution: When the side panel is opened for the FIRST TIME ONLY, the refresh button is triggered and the sites page tree is populated correctly.
-					if(DexV2.getCached("body").getAttribute("data-sitesettings") == "false"){
-
-						if(isSettings){
-							if(app.edit.sidepanel.data.firstRunSettings){
-								mouse.trigger(document.getElementById("JahiaGxtRefreshSidePanelButton"), "click");
-
-								app.edit.sidepanel.data.firstRunSettings = false;
-
-								mouse.trigger($(".tab_siteSettings .x-grid3-row:nth-child(1)")[0], "mousedown");
-								mouse.trigger($(".tab_siteSettings .x-grid3-row:nth-child(1)")[0], "click");
-							}
-						} else {
-							if(app.edit.sidepanel.data.firstRunPages){
-								mouse.trigger(document.getElementById("JahiaGxtRefreshSidePanelButton"), "click");
-								app.edit.sidepanel.data.firstRunPages = false;
-							}
-						}
 
 
 
-						app.iframe.disableClicks();
-					}
 				},
 				close: function(){
 					if(DexV2.getCached("body").getAttribute("data-edit-window-style") !== "settings" && DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
@@ -2417,17 +2400,7 @@
 			            var acceptClick = DexV2.node(e.target).hasClass("x-grid3-td-displayName");
 
 			            if(acceptClick){
-			                $(e.target).trigger({
-			                    type: 'mousedown',
-			                    button: 2,
-			                    which:3,
-			                    clientX: e.pageX,
-			                    clientY: e.pageY
-			                }).trigger({
-			                    type:"contextmenu",
-			                    clientX: e.pageX,
-			                    clientY: e.pageY
-			                });
+							DexV2.node(e.target).trigger("contextmenu", e.pageX, e.pageY);
 			            }
 					}
 				}
@@ -2436,119 +2409,104 @@
 			settings: {
 				data: {
 					opened: false,
+					firstRun: true,
                     iframeCSSOverRide: ".well{border:none!important; box-shadow: none!important;} body{background-image: none!important; background-color:#f5f5f5!important}"
 				},
                 onTreeLoad: function(nodeGroup, arg1, arg2){
-                    var branch,
-                        nodeJoint,
-                        firstClickableBranch;
+					DexV2.node(this)
+						.trigger("mousedown")
+						.trigger("click");
 
-                    for (n = 0;  n < nodeGroup.length; n++){
-
-                        branch = nodeGroup[n];
-                        nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
-
-                        // If node jint has no background then it opens a page
-                        if(	nodeJoint &&
-                            nodeJoint.style &&
-                            !nodeJoint.style.backgroundImage){
-
-                            // Branch has no children, so it opens a page
-                            firstClickableBranch = branch;
-
-                            break;
-                        }
-
-                    }
-
-                    mouse.trigger(firstClickableBranch, "mousedown");
-                    mouse.trigger(firstClickableBranch, "click");
                 },
                 onTreeChange: function(nodeGroup, arg1, arg2){
-                    var JahiaGxtSettingsTab = DexV2.node(this).closest("#JahiaGxtSettingsTab").nodes.length > 0;
-
-                    if(JahiaGxtSettingsTab){
-                        var firstBranch = nodeGroup[0],
-        					parentBranch = firstBranch.previousSibling,
-        					branch,
-        					nodeJoint;
-
-                        for (n = 0;  n < nodeGroup.length; n++){
-
-        					branch = nodeGroup[n],
-        					nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
-
-        					// See if Node joint is activated ( activation is assumed when a background image is assigned to the button )
-        					if(	nodeJoint &&
-                                nodeJoint.style &&
-        						nodeJoint.style.backgroundImage){
-
-        						// Branch has children, so disable clicks by adding class name "unselectable-row"
-        						branch.classList.add("unselectable-row");
-        					}
-
-                        }
-
-        				if(parentBranch){
-        					parentBranch.classList.add("indigo-opened");
-        				}
-                    }
+                    // var JahiaGxtSettingsTab = DexV2.node(this).closest("#JahiaGxtSettingsTab").nodes.length > 0;
+					//
+                    // if(JahiaGxtSettingsTab){
+                    //     var firstBranch = nodeGroup[0],
+        			// 		parentBranch = firstBranch.previousSibling,
+        			// 		branch,
+        			// 		nodeJoint;
+					//
+                    //     for (n = 0;  n < nodeGroup.length; n++){
+					//
+        			// 		branch = nodeGroup[n],
+        			// 		nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
+					//
+        			// 		// See if Node joint is activated ( activation is assumed when a background image is assigned to the button )
+        			// 		if(	nodeJoint &&
+                    //             nodeJoint.style &&
+        			// 			nodeJoint.style.backgroundImage){
+					//
+        			// 			// Branch has children, so disable clicks by adding class name "unselectable-row"
+        			// 			branch.classList.add("unselectable-row");
+        			// 		}
+					//
+                    //     }
+					//
+        			// 	if(parentBranch){
+        			// 		parentBranch.classList.add("indigo-opened");
+        			// 	}
+                    // }
 
 
                 },
 				onChange: function(attrKey, attrValue){
 
-					if(attrValue == "true"){
+					if(attrKey == "data-sitesettings" && attrValue == "true"){
+						console.log("attrKey:", attrKey);
 						if(app.data.currentApp == "edit"){
-							app.dev.log("APP ::: EDIT ::: SETTINGS ::: ONCHANGE");
-							app.edit.settings.open();
+							app.edit.settings.open(null, "directAccess");
 
 						}
 
 
-					} else {
-						// alert("YO");
-						// app.edit.settings.close();
-
 					}
 				},
-				open: function(){
-					app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
+				open:function(e, directAccess){
 
-                    var cssStyle = document.createElement("style");
-
-                    cssStyle.type = "text/css";
-                    cssStyle.appendChild(document.createTextNode(app.edit.settings.data.iframeCSSOverRide));
-
-                    DexV2.iframe(".window-iframe").filter("head").append(cssStyle);
-
-					if(app.edit.settings.data.opened){
-						return false;
-					}
-
+					// Setup CSS to display page with settings style
 					app.edit.settings.data.opened = true;
+					app.edit.sidepanel.data.open = true;
 					DexV2.getCached("body").setAttribute("data-edit-window-style", "settings");
+					DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
 
-		            app.edit.sidepanel.open(true);
+					if(directAccess){
+						// Settings page was opened directly ( no passing via edit mode )
 
-		            if(!app.edit.history.get("editpage")){
-		                // Need to store the button of the current edit page so we can revert later
-						app.edit.history.add("editpage", document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row")[1]);
+						// Find the selected page in the tree by looking for the added class x-grid3-row-selected
+						DexV2.id("JahiaGxtSettingsTab").onAttribute(".x-grid3-row", "class", function(){
+							// DEV NOTE ::: Need to add a way of killing a listener when it is no longer needed
 
-		            }
+							if(!app.edit.history.get("settingspage")){
+								if(DexV2.node(this).hasClass("x-grid3-row-selected")) {
+									// Save this page as the currently selected settings page
+									app.edit.history.add("settingspage", this);
+								}
+							}
 
-		            if(app.edit.history.get("settingspage")){
-		                // Trigger click on last viewed settings page
-		                mouse.trigger(app.edit.history.get("settingspage"), "click");
+						});
 
-		            } else {
-		                // Wait until the menu has been loaded, then click on the first available menu button
-                        DexV2("body").onceOpen(".x-grid3-row", app.edit.settings.onTreeLoad); // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
+					} else {
+						// User has opened the settings from the edit mode
 
+						if(app.edit.history.get("settingspage")){
+							// There is already a settings page in the history, so select it
+							DexV2.node(app.edit.history.get("settingspage")).trigger("mousedown").trigger("click");
 
-		            }
+						} else {
+							// Could not find a previously selected settings page - this is a first run
 
+							// The settings tree will be empty, so we need to load it by clicking the refresh button
+							DexV2.id("JahiaGxtRefreshSidePanelButton").trigger("click");
 
+							// Listen for first settings page to be added to tree, select it then stop listening.
+							DexV2("#JahiaGxtSettingsTab").onceOpen(".x-grid3-row", function(){
+								DexV2.node(this)
+									.trigger("mousedown")
+									.trigger("click");
+							});
+						}
+					}
 
 				},
 				close: function(){
@@ -2561,8 +2519,11 @@
 
 		            if(previousEditPage){
 		                // Trigger click on last viewed settings page
-		                mouse.trigger(previousEditPage, "mousedown");
-		                mouse.trigger(previousEditPage, "mouseup");
+						DexV2.node(previousEditPage)
+							.trigger("mousedown")
+							.trigger("mouseup");
+		                // mouse.trigger(previousEditPage, "mousedown");
+		                // mouse.trigger(previousEditPage, "mouseup");
 		            } else {
 						// Trigger Click on Second page (first row is not an actual page)
 		                mouse.trigger(document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")[0], "mousedown");
@@ -2926,7 +2887,7 @@
     			.onceOpen("#JahiaGxtCreateContentTab", function(){
     				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", "Filter Content ...")
     			})
-                .onOpen(".x-grid3-row", app.edit.settings.onTreeChange) // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
+                .onOpen("#JahiaGxtSettingsTab .x-grid3-row", app.edit.settings.onTreeChange) // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
     			.onOpen(".x-grid-empty", function(value){
     				if(app.edit.sidepanel.data.open){
                         var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
@@ -3011,7 +2972,7 @@
                 .onClose("#JahiaGxtImagePopup", app.imagePreview.onClose)
                 .onOpen(".workflow-dashboard-engine", app.workflow.dashboard.onOpen)
                 .onClick(".app-container", app.onClick)
-                .onClick(".toolbar-item-filepreview", app.picker.previewButton.onClick)
+				.onClick(".toolbar-item-filepreview", app.picker.previewButton.onClick)
                 .onClick("#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", app.picker.row.onClick)
                 .onClick(".x-viewport-adminmode .x-grid3 .x-grid3-row", function(){
                     DexV2(".x-viewport-adminmode .x-grid3 .x-grid3-row.x-grid3-row-selected").removeClass("x-grid3-row-selected");
@@ -3047,7 +3008,7 @@
                 .onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle)
                 .onMouseEnter("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver)
                 .onMouseLeave("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOut)
-                .onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", app.picker.row.onMouseOver)
+				.onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", app.picker.row.onMouseOver)
                 .onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onMouseOver)
                 .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick)
                 .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.settings.open)
@@ -3076,6 +3037,14 @@
 			app.data.UILanguage = "FR";
 			app.theme.data.cssReference = "edit_fr.css";
 			app.theme.data.anthraciteCSSNode = anthraciteCSS_FR;
+
+		}
+		console.log(DexV2.id("editmode").getAttribute("template"));
+
+		if(DexV2.id("editmode").getAttribute("template") == "default"){
+			app.data.firstApp = "edit"; // edit or contribute
+		} else {
+			app.data.firstApp = "settings"; // settings / admin
 
 		}
 

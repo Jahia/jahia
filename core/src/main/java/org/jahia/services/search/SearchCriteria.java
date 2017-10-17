@@ -57,6 +57,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jahia.services.search.SearchCriteria.Term;
+import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.utils.DateUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -1151,4 +1153,37 @@ public class SearchCriteria implements Serializable {
                 .toString();
     }
 
+    /**
+     * Checks if this search criteria represents a file search.
+     * 
+     * @return <code>true</code> if this search criteria represents file search; <code>false</code> otherwise
+     */
+    public boolean isFileSearch() {
+        for (Term term : getTerms()) {
+            if (term.getFields() != null
+                    && (term.getFields().isSiteContent() || (!term.getFields().isDescription()
+                            && !term.getFields().isFileContent() && !term.getFields().isFilename()
+                            && !term.getFields().isKeywords() && !term.getFields().isTitle()))
+                    && !(term.getFields().isDescription() && term.getFields().isFileContent()
+                            && term.getFields().isFilename() && term.getFields().isKeywords()
+                            && term.getFields().isTitle())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if this search criteria represents a site content search.
+     * 
+     * @return <code>true</code> if this search criteria represents site search; <code>false</code> otherwise
+     */
+    public boolean isSiteSearch() {
+        for (Term term : getTerms()) {
+            if (term.getFields() != null && term.getFields().isSiteContent()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

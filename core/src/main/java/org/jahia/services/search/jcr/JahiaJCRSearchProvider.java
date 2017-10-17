@@ -371,9 +371,6 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                 }
                 query.delete(query.length() - 4, query.length());
             }
-            if (isSiteSearch(params)) {
-//                query.append("/*[@j:isHomePage='true' or fn:name() = 'files' or fn:name() = 'contents']");
-            }
             query.append(")");
         }
 
@@ -477,16 +474,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     }
 
     private boolean isFileSearch(SearchCriteria params) {
-        for (Term term : params.getTerms()) {
-            if (term.getFields() != null
-                    && (term.getFields().isSiteContent() || (!term.getFields().isDescription() && !term.getFields().isFileContent()
-                    && !term.getFields().isFilename() && !term.getFields().isKeywords() && !term.getFields().isTitle()))
-                    && !(term.getFields().isDescription() && term.getFields().isFileContent() && term.getFields().isFilename()
-                    && term.getFields().isKeywords() && term.getFields().isTitle())) {
-                return false;
-            }
-        }
-        return true;
+        return params.isFileSearch();
     }
     
     private boolean isFieldSearch(SearchFields searchFields) {
@@ -495,13 +483,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     }
 
     private boolean isSiteSearch(SearchCriteria params) {
-        for (Term term : params.getTerms()) {
-            if (term.getFields() != null
-                    && term.getFields().isSiteContent()) {
-                return true;
-            }
-        }
-        return false;
+        return params.isSiteSearch();
     }
 
     private String getNodeType(SearchCriteria params) {

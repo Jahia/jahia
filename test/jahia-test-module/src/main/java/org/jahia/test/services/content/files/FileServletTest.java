@@ -46,6 +46,7 @@ package org.jahia.test.services.content.files;
 import static org.junit.Assert.assertTrue;
 import static org.testng.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
@@ -303,7 +304,7 @@ public class FileServletTest extends JahiaTestCase {
         assertTrue(getAsText(PROTECTED_LARGE_TXT_URL).contains("bbbbb"));
     }
 
-    private void login() {
+    private void login() throws IOException {
         login(USERNAME, PASSWORD);
     }
 

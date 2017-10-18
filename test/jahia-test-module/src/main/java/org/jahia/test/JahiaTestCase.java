@@ -165,6 +165,8 @@ public class JahiaTestCase {
                     collectedResponseHeaders.put(header.getName(), header.getValue());
                 }
             }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
         } finally {
             getMethod.releaseConnection();
         }

@@ -79,6 +79,56 @@
 
                     // Loop through added nodes
                     if(mutationRecord.addedNodes.length > 0){
+                        groupedCallbacks = mutationObservers[selector].callbacks.onGroupOpen;
+
+                        if(groupedCallbacks){
+                            addedNode = mutationRecord.addedNodes[0];
+
+                            if(addedNode.nodeType == 1){
+                                for(_target in groupedCallbacks){
+
+                                    modifiedSelector = groupedCallbacks[_target].matchType.modifiedSelector;
+
+                                    // See if addedNode matches the _target of the callback
+                                    switch(groupedCallbacks[_target].matchType.type){
+                                        case "tag":
+                                            if(addedNode.tagName.toUpperCase() == modifiedSelector){
+                                                // Loop through all callbacks
+                                                executeCallbacks(groupedCallbacks[_target].queue, mutationRecord.addedNodes, addedNode);
+
+                                            }
+                                            break;
+                                        case "id":
+                                            if(addedNode.id == modifiedSelector){
+                                                // Loop through all callbacks
+                                                executeCallbacks(groupedCallbacks[_target].queue, mutationRecord.addedNodes, addedNode);
+
+                                            }
+                                            break;
+                                        case "classname":
+                                            if(addedNode.classList.contains(modifiedSelector)){
+                                                // Loop through all callbacks
+                                                executeCallbacks(groupedCallbacks[_target].queue, mutationRecord.addedNodes, addedNode);
+
+                                            }
+                                            break;
+                                        case "complex":
+                                            if(addedNode.matches(modifiedSelector)){
+                                                // Loop through all callbacks
+                                                executeCallbacks(groupedCallbacks[_target].queue, mutationRecord.addedNodes, addedNode);
+
+                                            }
+                                            break;
+
+                                    }
+
+                                }
+                            }
+
+
+                        }
+
+
                         callbacks = mutationObservers[selector].callbacks.onOpen;
 
                         if(callbacks){
@@ -684,6 +734,28 @@
                 return this;
             },
 
+            onGroupOpen: function(target, callback, mutation_id){
+                this.onMutation("onGroupOpen", target, callback, {
+                    children: false,
+                    persistant: true,
+                    mutation_id: mutation_id,
+                    groupNodes: true
+                });
+
+                return this;
+            },
+
+            onceGroupOpen: function(target, callback, mutation_id){
+                this.onMutation("onGroupOpen", target, callback, {
+                    children: false,
+                    persistant: false,
+                    mutation_id: mutation_id,
+                    groupNodes: true
+                });
+
+                return this;
+            },
+
             onClose: function(target, callback, mutation_id){
 
                 this.onMutation("onClose", target, callback, {
@@ -820,7 +892,8 @@
                 mutationObservers[this.selector].callbacks[mutationType][target].queue[parameters.mutation_id || generateListenerID()] = {
                     callback: callback,
                     attrKey: parameters.attrKey,
-                    persistant: parameters.persistant
+                    persistant: parameters.persistant,
+                    groupNodes: parameters.groupNodes
                 };
             },
 
@@ -2593,42 +2666,38 @@
 						.trigger("click");
 
                 },
-                onTreeChange: function(nodeGroup, arg1, arg2){
-                    // var JahiaGxtSettingsTab = DexV2.node(this).closest("#JahiaGxtSettingsTab").nodes.length > 0;
-					//
-                    // if(JahiaGxtSettingsTab){
-                    //     var firstBranch = nodeGroup[0],
-        			// 		parentBranch = firstBranch.previousSibling,
-        			// 		branch,
-        			// 		nodeJoint;
-					//
-                    //     for (n = 0;  n < nodeGroup.length; n++){
-					//
-        			// 		branch = nodeGroup[n],
-        			// 		nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
-					//
-        			// 		// See if Node joint is activated ( activation is assumed when a background image is assigned to the button )
-        			// 		if(	nodeJoint &&
-                    //             nodeJoint.style &&
-        			// 			nodeJoint.style.backgroundImage){
-					//
-        			// 			// Branch has children, so disable clicks by adding class name "unselectable-row"
-        			// 			branch.classList.add("unselectable-row");
-        			// 		}
-					//
-                    //     }
-					//
-        			// 	if(parentBranch){
-        			// 		parentBranch.classList.add("indigo-opened");
-        			// 	}
-                    // }
+                onTreeChange: function(firstNode, arg1, arg2){
+                    var nodeGroup = this,
+                        firstBranch = firstNode,
+                        parentBranch = firstBranch.previousSibling,
+                        branch,
+                        nodeJoint;
+
+                    for (n = 0;  n < nodeGroup.length; n++){
+
+                        branch = nodeGroup[n],
+                        nodeJoint = branch.querySelectorAll(".x-tree3-node-joint")[0];
+
+                        // See if Node joint is activated ( activation is assumed when a background image is assigned to the button )
+                        if(	nodeJoint &&
+                            nodeJoint.style &&
+                            nodeJoint.style.backgroundImage){
+
+                            // Branch has children, so disable clicks by adding class name "unselectable-row"
+                            branch.classList.add("unselectable-row");
+                        }
+
+                    }
+
+                    if(parentBranch){
+                        parentBranch.classList.add("indigo-opened");
+                    }
 
 
                 },
 				onChange: function(attrKey, attrValue){
                     app.dev.log("::: APP ::: SETTINGS ::: EDIT ::: SETTINGS ::: ONCHANGE");
 					if(attrKey == "data-sitesettings" && attrValue == "true"){
-						console.log("attrKey:", attrKey);
 						if(app.data.currentApp == "edit"){
 							app.edit.settings.open(null, "directAccess");
 
@@ -2639,6 +2708,7 @@
 				},
 				open:function(e, directAccess){
                     app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
+
 					// Setup CSS to display page with settings style
 					app.edit.settings.data.opened = true;
 					app.edit.sidepanel.data.open = true;
@@ -3065,8 +3135,8 @@
     			.onceOpen("#JahiaGxtCreateContentTab", function(){
     				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", "Filter Content ...")
     			})
-                .onOpen("#JahiaGxtSettingsTab .x-grid3-row", app.edit.settings.onTreeChange) // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
-    			.onOpen(".x-grid-empty", function(value){
+                .onGroupOpen("#JahiaGxtSettingsTab .x-grid3-row", app.edit.settings.onTreeChange) // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
+                .onOpen(".x-grid-empty", function(value){
     				if(app.edit.sidepanel.data.open){
                         var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 

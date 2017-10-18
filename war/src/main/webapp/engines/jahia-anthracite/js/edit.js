@@ -1072,7 +1072,8 @@
 			UILanguage: null,
 			startedOnSettingsPage: false,
 			startedOnEditPage: true,
-			firstApp: null
+			firstApp: null,
+            ckeditorVersion: CKEDITOR.version
 		},
 		dev: {
 			data: {
@@ -3214,7 +3215,6 @@
 			app.theme.data.anthraciteCSSNode = anthraciteCSS_FR;
 
 		}
-		console.log(DexV2.id("editmode").getAttribute("template"));
 
 		if(DexV2.id("editmode").getAttribute("template") == "default"){
 			app.data.firstApp = "edit"; // edit or contribute
@@ -3225,6 +3225,8 @@
 
 		// use Dex to cache an Dex Object
 		DexV2("body").cache("body");
+
+        DexV2.getCached("body").setAttribute("data-CKEDITOR-VERSION", app.data.ckeditorVersion);
 
         // Attach event listeners
         eventListeners.attach();

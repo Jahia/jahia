@@ -1999,7 +1999,12 @@ form,
 	// Need to override with weight as well as importance
 	span.cke_toolgroup a {
 		.cke_button_icon {
-			background-image: url($RICH_TEXT_EDITOR--ICON_SET) !important;
+			background-image: url($RICH_TEXT_EDITOR--ICON_SET---LEGACY) !important;
+
+			body[data-CKEDITOR-VERSION="4.7.1-jahia1"] & {
+				background-image: url($RICH_TEXT_EDITOR--ICON_SET) !important;
+
+			}
 
 		}
 

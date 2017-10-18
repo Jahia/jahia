@@ -1533,14 +1533,13 @@
 	}
 }
 
-
 // Group Selector
 #JahiaGxtUserGroupSelect {
 	left: 0!important;
     top: 0!important;
     width: 100% !important;
     height: 100% !important;
-    background: radial-gradient(ellipse at bottom right, #e2e2e2 0%, #f1f1f1 70%);
+    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);
 
 	// Top modal bar ( used for dragging and contains close button )
 	.x-window-tl {
@@ -1559,20 +1558,328 @@
 		display: none;
 	}
 
+	&.indigo-no-results {
+		.x-panel-bbar {
+			display: none;
+		}
+	}
+
+	// PAGINATION
+	.x-panel-bbar {
+		position: relative;
+		z-index: 9999999;
+		background: $FORM--FIELDSET--BG--COLOUR;
+		width: 100% !important;
+		padding: 2px 11px;
+		box-sizing: border-box;
+		margin-top: 2px;
+
+		> div {
+			padding: 0 10px;
+			height: 100%;
+		}
+
+		.x-toolbar-left,
+		.x-toolbar-right {
+			display: block;
+
+			table,
+			tbody,
+			tr,
+			td {
+				display: block;
+
+			}
+		}
+
+		.x-toolbar-right {
+			position: relative;
+			top: 6px;
+
+			display: none;
+		}
+
+		.x-toolbar-left {
+
+			.x-toolbar-cell {
+				display: inline-block!important;
+				margin: 0 2px;
+				opacity: 0.8;
+
+				.my-paging-text {
+					@include text(12px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---EXTRALIGHT);
+				}
+
+				.gwt-TextBox {
+					@include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+					background: rgba($COLOUR--WHITE_CLOUDS, .7);
+					padding: 3px;
+					border:none;
+				}
+
+				.x-btn-mc img {
+					display: none;
+				}
+
+				// First page
+				&:nth-child(1) {
+					background: url($ICON--FIRST--WHITE) no-repeat center center / 14px 14px;
+					margin-left: 0px;
+
+					&:hover {
+						opacity: 1;
+						cursor: pointer;
+					}
+
+				}
 
 
+
+				// Previous page
+				&:nth-child(2) {
+					background: url($ICON--BACK--WHITE) no-repeat center center / 14px 14px;
+					margin-left: 5px;
+
+					&:hover {
+						opacity: 1;
+						cursor: pointer;
+					}
+				}
+
+				// Skip to page input
+				&:nth-child(5) {
+					&:hover {
+						opacity: 1;
+					}
+				}
+
+				// Next Page
+				&:nth-child(8) {
+					background: url($ICON--NEXT--WHITE) no-repeat center center / 14px 14px;
+					margin-right: 5px;
+
+					&:hover {
+						opacity: 1;
+						cursor: pointer;
+					}
+				}
+
+				// Last page
+				&:nth-child(9) {
+					background: url($ICON--LAST--WHITE) no-repeat center center / 14px 14px;
+					margin-right: 5px;
+
+					&:hover {
+						opacity: 1;
+						cursor: pointer;
+					}
+
+				}
+
+				// Refresh results
+				&:nth-child(11) {
+					background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center / 16px 12px;
+
+					&:hover {
+						opacity: 1;
+						cursor: pointer;
+					}
+				}
+
+			}
+
+		}
+
+
+	}
+
+	.x-panel-tbar {
+		width: 100%!important;
+
+		> .x-component {
+			width: 100%!important;
+
+			// Filter field
+			> table {
+				position: absolute;
+				top: 38px;
+				right: 34px;
+
+				.xtb-text {
+					display: none;
+				}
+
+				.x-toolbar-left {
+					> table {
+						width: 100%
+					}
+				}
+
+				.x-toolbar {
+					border:none;
+					padding: 0;
+					background: none;
+				}
+
+			}
+		}
+	}
+
+	.x-panel-body {
+		width: 100%!important;
+		height: calc(100% - 30px)!important;
+		background: $FORM--FIELDSET--BG--COLOUR!important;
+	}
+
+	.x-grid-panel {
+		width: 100%!important;
+		height: 100%!important;
+		padding-bottom: 20px;
+
+		.x-grid3-viewport {
+			> .x-grid3-header {
+				display: block;
+				background: none;
+				width: calc(100% - 10px); // compensates for scroll padding added to list
+				padding: 13px 10px 0 20px;
+				box-sizing: border-box;
+
+				.x-grid3-header-inner {
+					width: 100% !important;
+
+					.x-grid3-header-offset {
+						width: 100%!important;
+					}
+
+					.x-grid3-hh {
+						width: 100%!important;
+
+						> table {
+							width: 100%!important;
+							display: block;
+
+							> tbody {
+								width: 100%!important;
+								display: block;
+
+								> tr {
+									display: block;
+								}
+
+								td {
+									width: calc(25% - 10px) !important;
+									pointer-events: all;
+									border: none;
+									background: none;
+									margin-right: 10px;
+
+									&.x-grid3-hd-over {
+										background: $COLOUR--CREAM_CLOUDS;
+
+										span {
+											color: $COLOUR--LEAD_CLOUDS!important;
+										}
+
+										img {
+											opacity: 1;
+										}
+
+									}
+
+									div {
+										width: 100%!important;
+										box-sizing: border-box;
+										height: auto!important;
+										background: none!important;
+										padding-left: 4px;
+
+										img {
+											position: relative;
+											top: -1px;
+											opacity: 0.6;
+										}
+
+										.x-grid3-hd-btn {
+											background: url($ICON--ARROW_DOWN---GREY) no-repeat center center!important;
+											width: 23px;
+											background-size: 13px!important;
+											opacity: 0.7;
+
+											&:hover {
+												// background: url($ICON--ARROW_DOWN---WHITE) no-repeat center center!important;
+												background-color: $COLOUR--DUSTY_CLOUDS!important;
+												background-size: 13px!important;
+												opacity: 1;
+											}
+										}
+
+										span {
+											text-transform: uppercase;
+											@include text(11px, #ebeced, $FONT--WEIGHT---SEMIBOLD);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.x-grid-empty {
+			&::before {
+				content: $text_no_results;
+				@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+			}
+		}
+
+		.x-grid3-scroller {
+			padding: 13px 10px 0 20px;
+			box-sizing: border-box;
+		}
+
+		.x-grid3-row {
+			padding-top: 4px;
+
+			&.x-grid3-row-selected {
+				pointer-events: none; // Basically disables the double click
+				background: rgba($COLOUR--WHITE_CLOUDS, .8) !important;
+
+				.x-grid3-cell {
+					> div {
+						color: $COLOUR--LEAD_CLOUDS!important;
+						font-weight: $FONT--WEIGHT---BOLD!important;
+					}
+				}
+
+			}
+		}
+
+		.x-grid3-cell {
+			width: 25%!important;
+			display: inline-block;
+
+			&::after {
+				display: none;
+			}
+
+			> div {
+				// color: $COLOUR--WHITE_CLOUDS!important;
+				@include text(12px, rgba($COLOUR--WHITE_CLOUDS, .6), $FONT--WEIGHT---EXTRALIGHT);
+			}
+		}
+	}
 
 
 	// Contains main window
 	.x-window-bwrap {
-		width: 100%!important;
-		height: 100%!important;
+		width: 750px !important;
+	    margin: 90px auto 0;
 
 		// Footer
 		.x-window-bl {
-			height: 80px !important;
-		    padding-left: 44px !important;
-		    width: calc(100% - 44px) !important;
+			padding-left: 44px !important;
+			margin-top: 20px;
 
 			.x-toolbar-cell {
 				// Save button
@@ -1609,387 +1916,150 @@
 						    padding: 27px 0 0 44px;
 						    display: block;
 
-							@include text(36px, #7a7e80, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+							@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
 						}
 					}
 
-					.x-panel-bwrap {
+					.x-panel-bwrap { // JUST ONE
 						width: 100%;
 					    height: calc(100% - 70px) !important;
-					    padding: 50px 34px 0 44px;
+					    padding: 10px 34px 0px 44px;
 					    box-sizing: border-box;
 
-
-
-						.x-panel-tbar {
-							width: 100%!important;
-
-							> .x-component {
-								width: 100%!important;
-
-								// Filter field
-								> table {
-									position: fixed;
-									top: 38px;
-									right: 44px;
-
-									.xtb-text {
-										display: none;
-
-									}
-
-									.x-toolbar-left {
-										> table {
-											width: 100%
-										}
-									}
-
-									input {
-										background-image: url($ICON--SEARCH--SMALL_GREY);
-
-										&:active,
-										&:focus {
-											background-image: url($ICON--SEARCH--SMALL_WHITE);
-
-										}
-										background-repeat: no-repeat;
-										background-position: left 7px top 7px;
-										background-size: 12px;
-										padding: 4px 5px 5px 23px!important;
-										font-size: 12px;
-										font-family: $FONT--FAMILY---NUNITO;
-
-									}
-
-									.x-btn-icon {
-										display: block;
-										height: 27px;
-										padding: 0 4px;
-										background: $COLOUR--JAHIA_BLUE;
-
-										&:before {
-											content: $text_search;
-											display: block;
-											top: 6px;
-											position: relative;
-											text-align: center;
-
-											@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
-
-										}
-
-										img {
-											display: none;
-
-										}
-									}
-
-									.x-toolbar {
-										border:none;
-										padding: 0;
-										background: none;
-									}
-
-
-								}
-							}
-						}
-
-						.x-panel-body {
-							width: 100%!important;
-							height: calc(100% - 30px)!important;
-
-							.x-grid-panel {
-								width: 100%!important;
-								height: 100%!important;
-
-								.x-grid3-header {
-									display: block;
-									background: none;
-									width: calc(100% - 10px); // compensates for scroll padding added to list
-
-									.x-grid3-header-inner {
-										width: 100%!important;
-
-										.x-grid3-header-offset {
-											width: 100%!important;
-										}
-
-										.x-grid3-hh {
-											width: 100%!important;
-
-											> table {
-												width: 100%!important;
-												display: block;
-
-												> tbody {
-													width: 100%!important;
-													display: block;
-
-													> tr {
-														display: block;
-													}
-
-													td {
-														width: 25%!important;
-														pointer-events: all;
-														border:none;
-
-														&.x-grid3-hd-over {
-															background: $COLOUR--CREAM_CLOUDS;
-
-															span {
-																color: $COLOUR--LEAD_CLOUDS!important;
-															}
-
-															img {
-																opacity: 1;
-															}
-
-
-														}
-
-														div {
-															width: 100%!important;
-															box-sizing: border-box;
-															height: auto!important;
-															background: none!important;
-															padding-left: 4px;
-
-															img {
-																position: relative;
-																top: -1px;
-																opacity: 0.6;
-															}
-
-															.x-grid3-hd-btn {
-																background: url($ICON--ARROW_DOWN---GREY) no-repeat center center!important;
-																width: 23px;
-																background-size: 13px!important;
-																opacity: 0.7;
-
-																&:hover {
-																	// background: url($ICON--ARROW_DOWN---WHITE) no-repeat center center!important;
-																	background-color: $COLOUR--DUSTY_CLOUDS!important;
-																	background-size: 13px!important;
-																	opacity: 1;
-																}
-															}
-
-															span {
-
-																@include text(12px, $COLOUR--ASH_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-
-								.x-grid-empty {
-									&::before {
-										content: "No results";
-										@include text(12px, #7a7e80, $FONT--WEIGHT---EXTRALIGHT);
-
-									}
-								}
-
-								.x-grid3-row {
-
-									&.x-grid3-row-selected {
-										pointer-events: none; // Basically disables the double click
-
-										.x-grid3-cell {
-											> div {
-												color: $COLOUR--WHITE_CLOUDS!important;
-											}
-										}
-
-									}
-								}
-
-								.x-grid3-cell {
-									width: 25%!important;
-									display: inline-block;
-
-									&::after {
-										display: none;
-									}
-
-									> div {
-										// color: $COLOUR--WHITE_CLOUDS!important;
-										@include text(12px, #7a7e80, $FONT--WEIGHT---EXTRALIGHT);
-									}
-								}
-							}
-						}
-
-						// Pagination
-						.x-panel-bbar {
-							// width: 100%!important;
-							// height: 30px!important;
-						}
-
-						// Pagination
-						.x-panel-bbar {
-							position: relative;
-						    bottom: 52px;
-						    z-index: 9999999;
-						    background: transparent;
-						    left: -10px;
-							width: calc(100% + 10px)!important;
-							height: 51px;
-
-							> div {
-								padding: 0 10px;
-								height: 100%;
-							}
-
-							.x-toolbar-left,
-							.x-toolbar-right {
-								display: block;
-
-								table,
-								tbody,
-								tr,
-								td {
-									display: block;
-
-								}
-							}
-
-							.x-toolbar-right {
-								position: relative;
-								top: 6px;
-
-								display: none;
-							}
-
-							.x-toolbar-left {
-
-								position: fixed;
-							    left: 44px;
-							    bottom: 97px;
-
-
-								.x-toolbar-cell {
-									display: inline-block!important;
-									margin: 0 2px;
-
-									opacity: 0.8;
-
-
-
-									tbody {
-										// display: none;
-
-									}
-
-									.my-paging-text {
-										@include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
-									}
-
-									.gwt-TextBox {
-										@include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
-										background: #FFF;
-										padding: 3px;
-										border:none;
-									}
-
-									.x-btn-mc img {
-										display: none;
-										// width: 25px;
-										// height: 25px;
-									}
-
-									// First page
-									&:nth-child(1) {
-										background: url($ICON--FIRST--GREY) no-repeat center center / 16px 16px;
-										margin-left: 0px;
-
-										&:hover {
-											opacity: 1;
-											cursor: pointer;
-										}
-
-									}
-
-									// Previous page
-									&:nth-child(2) {
-										background: url($ICON--BACK--GREY) no-repeat center center / 16px 16px;
-										margin-left: 5px;
-
-										&:hover {
-											opacity: 1;
-											cursor: pointer;
-										}
-									}
-
-									// Label: "Page"
-									&:nth-child(4) {
-
-									}
-
-									// Skip to page input
-									&:nth-child(5) {
-										&:hover {
-											opacity: 1;
-										}
-									}
-
-									// Label: "Of #"
-									&:nth-child(6) {
-
-									}
-
-									// Next Page
-									&:nth-child(8) {
-										background: url($ICON--NEXT--GREY) no-repeat center center / 16px 16px;
-										margin-right: 5px;
-
-										&:hover {
-											opacity: 1;
-											cursor: pointer;
-										}
-									}
-
-									// Last page
-									&:nth-child(9) {
-										background: url($ICON--LAST--GREY) no-repeat center center / 16px 16px;
-										margin-right: 5px;
-
-										&:hover {
-											opacity: 1;
-											cursor: pointer;
-										}
-
-									}
-
-									// Refresh results
-									&:nth-child(11) {
-										background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center / 18px 14px;
-
-										&:hover {
-											opacity: 1;
-											cursor: pointer;
-										}
-									}
-
-								}
-
-							}
-
-
-						}
 					}
 				}
-
 
 			}
 		}
 	}
+}
+
+.indigo-search-component {
+
+	&.indigo-show {
+		.x-toolbar-cell {
+			// Used as a cancel button
+			&:nth-child(1){
+				display: block;
+
+				&.indigo-empty-field {
+					display: none;
+				}
+			}
+
+			// Search input
+			&:nth-child(2) {
+				input {
+					background-image: url($ICON--SEARCH---GREY);
+					background-color: $COLOUR--WHITE_CLOUDS;
+					width: 100%!important;
+					padding: 4px 5px 5px 27px!important;
+					text-indent: 0;
+					color: $COLOUR--GREY_CLOUDS;
+					background-size: 23px;
+					opacity: 1;
+
+					&:hover {
+						cursor: auto;
+					}
+				}
+			}
+
+			// Used as a cancel button
+			&:nth-child(3){
+				display: block;
+			}
+		}
+	}
+
+
+	.x-toolbar-cell {
+		// Used as a cancel button
+		&:nth-child(1){
+			display: none;
+
+			background: url($ICON--CLOSE_LARGE---GREY) no-repeat center center;
+			background-size: 12px 12px;
+			width: 20px;
+			height: 20px;
+			text-indent: -50000px;
+			position: absolute;
+			right: 54px;
+			top: 4px;
+			z-index: 9999;
+
+			&:hover {
+				cursor: pointer;
+			}
+
+		}
+
+		// Text input
+		&:nth-child(2) {
+			input {
+				background-image: url($ICON--SEARCH---WHITE);
+				background-color: transparent;
+				float: right;
+				width: 40px!important;
+				opacity: 0.7;
+
+				&:hover {
+					cursor: pointer;
+					opacity: 1;
+				}
+
+				&:active,
+				&:focus {
+					background-image: url($ICON--SEARCH---GREY);
+					background-color: $COLOUR--WHITE_CLOUDS;
+					width: 100%!important;
+					padding: 4px 5px 5px 27px!important;
+					text-indent: 0;
+					color: $COLOUR--GREY_CLOUDS;
+					background-size: 23px;
+
+				}
+
+				background-repeat: no-repeat;
+				background-position: left center;
+				background-size: 32px;
+				padding: 4px 5px 5px 23px!important;
+				font-size: 12px;
+				font-family: $FONT--FAMILY---NUNITO;
+				text-indent: -50000px;
+
+			}
+		}
+
+		// Search button
+		&:nth-child(3) {
+			display: none;
+
+			.x-btn-icon {
+				display: block;
+				height: 27px;
+				padding: 0 4px;
+				background: $COLOUR--JAHIA_BLUE;
+
+				&:before {
+					content: $text_search;
+					display: block;
+					top: 6px;
+					position: relative;
+					text-align: center;
+
+					@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+				}
+
+				img {
+					display: none;
+
+				}
+			}
+		}
+	}
+
 }
 
 body[data-indigo-add-visibility-condition="new"] {

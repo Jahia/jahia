@@ -39,30 +39,30 @@
                     modifiedSelector,
                     _target,
                     executeCallbacks = function(queue, node, arg1, arg2){
-                        var n = 0;
+                        var mutation_id;
 
-                        while(queue[n]){
+                        for(mutation_id in queue){
                             // Call callback function
-                            queue[n].callback.call(node, arg1, arg2);
+                            queue[mutation_id].callback.call(node, arg1, arg2);
 
-                            if(!queue[n].persistant){
-                                queue.splice(n, 1);
+                            if(!queue[mutation_id].persistant){
+                                delete queue[mutation_id];
+                                // queue.splice(n, 1);
                             }
-
-                            n++;
 
                         }
                     },
                     executeAttributecallbacks = function(queue, node, attrKey, attrValue){
-                        y = 0;
+                        var mutation_id;
 
-                        while(queue[y]){
+                        for(mutation_id in queue){
                             // Call callback function
-                            if(queue[y].attrKey == attrKey){
-                                queue[y].callback.call(node, attrKey, attrValue);
+                            if(queue[mutation_id].attrKey == attrKey){
+                                queue[mutation_id].callback.call(node, attrKey, attrValue);
 
-                                if(!queue[y].persistant){
-                                    queue.splice(y, 1);
+                                if(!queue[mutation_id].persistant){
+                                    delete queue[mutation_id];
+                                    // queue.splice(y, 1);
 
                                 }
 
@@ -248,7 +248,19 @@
                 }
 
             },
-            createEventListener = function(dexObject, eventType, selector, target, callback, persistant){
+            eventListenerCounter = 0;
+            mutationCounter = 0,
+            generateMutationID = function(){
+                mutationCounter ++;
+
+                return "MUTATION_ID_" + mutationCounter;
+            },
+            generateListenerID = function(){
+                eventListenerCounter ++;
+
+                return "EVENT_ID_" + eventListenerCounter;
+            },
+            createEventListener = function(dexObject, eventType, selector, target, callback, persistant, event_id){
                 // Check that the event type exists in queue
                 if(!delegatedEventListeners[eventType]){
                     delegatedEventListeners[eventType] = {};
@@ -257,11 +269,10 @@
                 // Check that this selector is registered
                 if(!delegatedEventListeners[eventType][selector]){
                     delegatedEventListeners[eventType][selector] = {};
-
-                    // Setup listener
-
-                    attachEventListeners(eventType, dexObject);
                 }
+
+                // Setup listener
+                attachEventListeners(eventType, dexObject);
 
                 // Check that this target is registered
                 if(!delegatedEventListeners[eventType][selector][target]){
@@ -269,11 +280,10 @@
                 }
 
                 // register delegated event listener
-                delegatedEventListeners[eventType][selector][target].push({
+                delegatedEventListeners[eventType][selector][target][event_id || generateListenerID()] = {
                     callback: callback,
                     persistant: persistant
-                });
-
+                };
 
             },
             attachEventListeners = function(eventType, dexObject){
@@ -286,40 +296,50 @@
                 for(n = 0; n < dexObject.nodes.length; n++){
                     selector.node = dexObject.nodes[n];
 
-                    selector.node.addEventListener(eventType, function(e){
-                        var eventHandlers = delegatedEventListeners[eventType][selector.string];
+                    if(!selector.node.indigo){
+                        selector.node.indigo = {
+                            listeners: {}
+                        }
+                    }
 
-                        for(handlerSelector in eventHandlers){
+                    if(!selector.node.indigo.listeners[eventType]){
+                        // No event listener attached, attach now
+                        selector.node.indigo.listeners[eventType] = "on";
 
-                            clickedNode = e.target;
+                        selector.node.addEventListener(eventType, function (e){
+                            var eventHandlers = delegatedEventListeners[eventType][selector.string];
 
+                            for(handlerSelector in eventHandlers){
 
-                            while(	clickedNode &&
-                                    clickedNode !== document &&
-                                    clickedNode !== selector.node) { // Stop looking when we hit the node that contains the event listener
+                                clickedNode = e.target;
 
-                                if (clickedNode.matches(handlerSelector)) {
+                                while(	clickedNode &&
+                                        clickedNode !== document &&
+                                        clickedNode !== selector.node) { // Stop looking when we hit the node that contains the event listener
 
-                                    var handlerIndex = 0;
+                                    if (clickedNode.matches(handlerSelector)) {
 
-                                    while (eventHandlers[handlerSelector][handlerIndex]){
-										eventHandlers[handlerSelector][handlerIndex].callback.call(clickedNode, e);
+                                        for (handlerIndex in eventHandlers[handlerSelector]){
+                                            eventHandlers[handlerSelector][handlerIndex].callback.call(clickedNode, e);
 
-										if(!eventHandlers[handlerSelector][handlerIndex].persistant){
-											eventHandlers[handlerSelector].splice(handlerIndex, 1);
-										}
+                                            if(eventHandlers[handlerSelector] && eventHandlers[handlerSelector][handlerIndex] && !eventHandlers[handlerSelector][handlerIndex].persistant){
+                                                delete eventHandlers[handlerSelector][handlerIndex];
+                                            }
 
-                                        handlerIndex++;
+                                            handlerIndex++;
+                                        }
+
                                     }
 
+                                    clickedNode = clickedNode.parentNode;
+
                                 }
-
-                                clickedNode = clickedNode.parentNode;
-
                             }
-                        }
 
-                    });
+                        });
+                    }
+
+
                 }
 
 
@@ -644,57 +664,63 @@
 
 			},
 
-            onOpen: function(target, callback){
+            onOpen: function(target, callback, mutation_id){
                 this.onMutation("onOpen", target, callback, {
                     children: false,
-                    persistant: true
+                    persistant: true,
+                    mutation_id: mutation_id
                 });
 
                 return this;
             },
 
-            onceOpen: function(target, callback){
+            onceOpen: function(target, callback, mutation_id){
                 this.onMutation("onOpen", target, callback, {
                     children: false,
-                    persistant: false
+                    persistant: false,
+                    mutation_id: mutation_id
                 });
 
                 return this;
             },
 
-            onClose: function(target, callback){
+            onClose: function(target, callback, mutation_id){
 
                 this.onMutation("onClose", target, callback, {
                     children: false,
-                    persistant: true
+                    persistant: true,
+                    mutation_id: mutation_id
                 });
 
                 return this;
             },
 
-            onceClose: function(target, callback){
+            onceClose: function(target, callback, mutation_id){
 
                 this.onMutation("onClose", target, callback, {
                     children: false,
-                    persistant: false
+                    persistant: false,
+                    mutation_id: mutation_id
                 });
 
                 return this;
             },
 
-            onAttribute: function(target, attrKey, callback){
+            onAttribute: function(target, attrKey, callback, mutation_id){
                 this.onMutation("onAttribute", target, callback, {
                     attrKey: attrKey,
-                    persistant: true
+                    persistant: true,
+                    mutation_id: mutation_id
                 });
 
                 return this;
             },
 
-            onceAttribute: function(target, attrKey, callback){
+            onceAttribute: function(target, attrKey, callback, mutation_id){
                 this.onMutation("onAttribute", target, callback, {
                     attrKey: attrKey,
-                    persistant: false
+                    persistant: false,
+                    mutation_id: mutation_id
                 });
 
                 return this;
@@ -761,15 +787,17 @@
                         callbacks: {}
                     }
 
-                    // Attach observer to all matches nodes
-                    for(n = 0; n < this.nodes.length; n++){
-                        mutationObservers[this.selector].observer.observe(this.nodes[n], {
-                            attributes: true,
-                            childList: true,
-                            characterData: false,
-                            subtree: true
-                        });
-                    }
+
+                }
+
+                // Attach observer to all matches nodes
+                for(n = 0; n < this.nodes.length; n++){
+                    mutationObservers[this.selector].observer.observe(this.nodes[n], {
+                        attributes: true,
+                        childList: true,
+                        characterData: false,
+                        subtree: true
+                    });
                 }
 
 
@@ -789,107 +817,128 @@
                 }
 
                 // Save callback
-                mutationObservers[this.selector].callbacks[mutationType][target].queue.push({
+                mutationObservers[this.selector].callbacks[mutationType][target].queue[parameters.mutation_id || generateListenerID()] = {
                     callback: callback,
                     attrKey: parameters.attrKey,
                     persistant: parameters.persistant
-                });
+                };
             },
 
 
-			onClick: function(target, callback){
-                createEventListener(this, "click", this.selector, target, callback, true);
+            onInput: function(target, callback, event_id){
+                createEventListener(this, "input", this.selector, target, callback, true, event_id);
 
                 return this;
 
             },
 
-            oneClick: function(target, callback){
-                createEventListener(this, "click", this.selector, target, callback, false);
+            onFocus: function(target, callback, event_id){
+                createEventListener(this, "focusin", this.selector, target, callback, true, event_id);
 
                 return this;
 
             },
 
-            onMouseUp: function(target, callback){
-                createEventListener(this, "mouseup", this.selector, target, callback, true);
+            onBlur: function(target, callback, event_id){
+                createEventListener(this, "focusout", this.selector, target, callback, true, event_id);
 
                 return this;
 
             },
 
-            oneMouseUp: function(target, callback){
-                createEventListener(this, "mouseup", this.selector, target, callback, false);
+            onClick: function(target, callback, event_id){
+                createEventListener(this, "click", this.selector, target, callback, true, event_id);
 
                 return this;
 
             },
 
-            onMouseDown: function(target, callback){
-                createEventListener(this, "mousedown", this.selector, target, callback, true);
+            oneClick: function(target, callback, event_id){
+                createEventListener(this, "click", this.selector, target, callback, false, event_id);
 
                 return this;
 
             },
 
-            oneMouseDown: function(target, callback){
-                createEventListener(this, "mousedown", this.selector, target, callback, false);
+            onMouseUp: function(target, callback, event_id){
+                createEventListener(this, "mouseup", this.selector, target, callback, true, event_id);
 
                 return this;
 
             },
 
-            onMouseEnter: function(target, callback){
-                createEventListener(this, "mouseenter", this.selector, target, callback, true);
+            oneMouseUp: function(target, callback, event_id){
+                createEventListener(this, "mouseup", this.selector, target, callback, false, event_id);
 
                 return this;
 
             },
 
-            oneMouseEnter: function(target, callback){
-                createEventListener(this, "mouseenter", this.selector, target, callback, false);
+            onMouseDown: function(target, callback, event_id){
+                createEventListener(this, "mousedown", this.selector, target, callback, true, event_id);
 
                 return this;
 
             },
 
-            onMouseLeave: function(target, callback){
-                createEventListener(this, "mouseleave", this.selector, target, callback, true);
+            oneMouseDown: function(target, callback, event_id){
+                createEventListener(this, "mousedown", this.selector, target, callback, false, event_id);
 
                 return this;
 
             },
 
-            oneMouseLeave: function(target, callback){
-                createEventListener(this, "mouseleave", this.selector, target, callback, false);
+            onMouseEnter: function(target, callback, event_id){
+                createEventListener(this, "mouseenter", this.selector, target, callback, true, event_id);
 
                 return this;
 
             },
 
-            onMouseOver: function(target, callback){
-                createEventListener(this, "mouseover", this.selector, target, callback, true);
+            oneMouseEnter: function(target, callback, event_id){
+                createEventListener(this, "mouseenter", this.selector, target, callback, false, event_id);
 
                 return this;
 
             },
 
-            oneMouseOver: function(target, callback){
-                createEventListener(this, "mouseover", this.selector, target, callback, false);
+            onMouseLeave: function(target, callback, event_id){
+                createEventListener(this, "mouseleave", this.selector, target, callback, true, event_id);
 
                 return this;
 
             },
 
-            onMouseOut: function(target, callback){
-                createEventListener(this, "mouseout", this.selector, target, callback, true);
+            oneMouseLeave: function(target, callback, event_id){
+                createEventListener(this, "mouseleave", this.selector, target, callback, false, event_id);
 
                 return this;
 
             },
 
-            oneMouseOut: function(target, callback){
-                createEventListener(this, "mouseout", this.selector, target, callback, false);
+            onMouseOver: function(target, callback, event_id){
+                createEventListener(this, "mouseover", this.selector, target, callback, true, event_id);
+
+                return this;
+
+            },
+
+            oneMouseOver: function(target, callback, event_id){
+                createEventListener(this, "mouseover", this.selector, target, callback, false, event_id);
+
+                return this;
+
+            },
+
+            onMouseOut: function(target, callback, event_id){
+                createEventListener(this, "mouseout", this.selector, target, callback, true, event_id);
+
+                return this;
+
+            },
+
+            oneMouseOut: function(target, callback, event_id){
+                createEventListener(this, "mouseout", this.selector, target, callback, false, event_id);
 
                 return this;
 
@@ -1532,7 +1581,7 @@
 		            }, 250);
 				},
 				close: function(){
-					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE", true);
+					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE");
 					// CLOSE SEARCH PANEL
 
 		            // Hide the search panel
@@ -1762,7 +1811,8 @@
 						app.edit.topbar.build();
 
 						if(app.edit.sidepanel.isOpen()){
-							app.iframe.disableClicks();
+                            app.iframe.disableClicks();
+
 						}
 
 						break;
@@ -1816,17 +1866,16 @@
 			disableClicks: function(){
                 app.dev.log("::: APP ::: IFRAME ::: DISABLECLICKS");
 
-                if( DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" &&
+                if( DexV2.getCached("body").getAttribute("data-indigo-gwt-side-panel") == "open" &&
+                    DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" &&
                     DexV2.getCached("body").getAttribute("data-sitesettings") == "false"){
 
 	                // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
 	                var iframeBody = DexV2.iframe(".window-iframe").filter("body");
+                    console.log("DISABLING NOW ... on", iframeBody);
 
-	                app.iframe.data.bodyStyle = iframeBody.getAttribute("style") || "";
-
-	                // Remove pointer events from the iframes body, which means that once a user clicks on the iframe to exit the side panel, the content is not automatically selected.
-	                iframeBody.setAttribute("style", app.iframe.data.bodyStyle + " pointer-events: none !important");
-	            }
+                    iframeBody.nodes[0].style.pointerEvents = "none";
+                }
 
 
 			}
@@ -1874,6 +1923,106 @@
 			// Controls
 
 		},
+        pickers: {
+            users: {
+                data: {
+                    closeInterval: null
+                },
+                onInput: function(){
+                    // If search text field is empty, remove the clear button
+
+                    if(this.value == ""){
+                        DexV2.class("indigo-clear-button").addClass("indigo-empty-field");
+
+                    } else {
+                        DexV2.class("indigo-clear-button").removeClass("indigo-empty-field");
+                    }
+                },
+                onInputFocus: function(){
+                    // Expand the search field
+                    DexV2.class("indigo-search-component").addClass("indigo-show");
+
+                    // If the search input value is empty add the clear button
+                    if(this.value == ""){
+                        DexV2.class("indigo-clear-button").addClass("indigo-empty-field");
+
+                    }
+                },
+                onInputBlur: function(){
+                    // Close the search panel ( if the search input field is empty )
+                    var searchString = this.value;
+
+                    if(searchString == ""){
+                        // The value of the search input is empty, so close.
+                        // However, do not close immediately - because the user may actually be clicking the clear button, so...
+                        // Use an interval timer that closes the search panel after a split second. If the user clicks on the clear button
+                        //   before this time has passed , we can cancel the interval and therefore keep the panel open
+
+                        app.pickers.users.data.closeInterval = setInterval(function(){
+                            DexV2.class("indigo-search-component").removeClass("indigo-show");
+
+                            clearInterval(app.pickers.users.data.closeInterval);
+                        }, 150);
+
+                    } else {
+
+                    }
+
+                },
+                clearSearch: function(){
+                    // User has clicked the clear button
+
+                    // Clear the timer (if any ) that hides the search panel
+                    clearInterval(app.pickers.users.data.closeInterval);
+
+                    // Get elements
+                    var searchInput = DexV2.id("JahiaGxtUserGroupSelect").filter(".indigo-search-input").nodes[0],
+                        searchButton = DexV2.id("JahiaGxtUserGroupSelect").filter(".indigo-search-button > table");
+
+                    // Set classes for display
+                    DexV2.class("indigo-clear-button").addClass("indigo-empty-field");
+                    DexV2.class("indigo-search-component").addClass("indigo-show");
+
+                    // Set the value of the text field to empty string
+                    searchInput.value = "";
+
+                    // Trigger search on empty field to reset the results ( need to wait a split second )
+                    setTimeout(function(){
+                        searchButton.trigger("click");
+                        searchInput.focus();
+                    }, 100);
+
+
+                },
+                onOpen: function(){
+                    DexV2.node(this).filter(".x-panel-tbar .x-toolbar-left > table").addClass("indigo-search-component");
+
+                    DexV2.class("indigo-search-component").filter(".x-toolbar-cell:nth-child(1)").addClass("indigo-clear-button");
+                    DexV2.class("indigo-search-component").filter(".x-toolbar-cell:nth-child(2) input").addClass("indigo-search-input");
+                    DexV2.class("indigo-search-component").filter(".x-toolbar-cell:nth-child(3)").addClass("indigo-search-button");
+
+                    DexV2.class("indigo-search-component")
+                        .onInput(".indigo-search-input", app.pickers.users.onInput, "INDIGO-SEARCH-COMPONENT")
+                        .onClick(".indigo-clear-button", app.pickers.users.clearSearch, "INDIGO-SEARCH-COMPONENT")
+                        .onFocus(".indigo-search-input", app.pickers.users.onInputFocus, "INDIGO-SEARCH-COMPONENT")
+                        .onBlur(".indigo-search-input", app.pickers.users.onInputBlur, "INDIGO-SEARCH-COMPONENT");
+
+
+                    DexV2.id("JahiaGxtUserGroupSelect")
+                        .onOpen(".x-grid-empty", function(){
+
+                            DexV2.id("JahiaGxtUserGroupSelect").addClass("indigo-no-results");
+
+                        }, "INDIGO-SEARCH-COMPONENT")
+                        .onClose(".x-grid-empty", function(){
+
+                            DexV2.id("JahiaGxtUserGroupSelect").removeClass("indigo-no-results");
+
+                        }, "INDIGO-SEARCH-COMPONENT")
+
+                }
+            }
+        },
 		edit: {
 			// Data
 			data: {
@@ -2367,6 +2516,11 @@
 
 					});
 
+                    if(!isSettings){
+                        // Disable clicks
+                        app.iframe.disableClicks();
+                    }
+
 				},
 				close: function(){
 					if(DexV2.getCached("body").getAttribute("data-edit-window-style") !== "settings" && DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
@@ -2374,8 +2528,7 @@
 		                DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
 
 		                // Revert iframes body style attribute to what it was originally
-                        DexV2.iframe(".window-iframe").filter("body").setAttribute("style", app.iframe.data.bodyStyle);
-
+                        DexV2.iframe(".window-iframe").filter("body").nodes[0].style.pointerEvents = "all";
 		            }
 
 					// app.edit.topbar.reposition();
@@ -2893,6 +3046,7 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
+                .onOpen("#JahiaGxtUserGroupSelect", app.pickers.users.onOpen)
 				.onceOpen("#JahiaGxtContentBrowseTab", function(){
                     DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
                 })
@@ -3074,6 +3228,7 @@
 
         // Attach event listeners
         eventListeners.attach();
+
     }
 
 

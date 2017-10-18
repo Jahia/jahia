@@ -97,14 +97,14 @@
                                             case "tag":
                                                 if(addedNode.tagName.toUpperCase() == modifiedSelector){
                                                     // Loop through all callbacks
-                                                    executeCallbacks(callbacks[_target].queue, addedNode);
+                                                    executeCallbacks(callbacks[_target].queue, addedNode, mutationRecord.addedNodes);
 
                                                 }
                                                 break;
                                             case "id":
                                                 if(addedNode.id == modifiedSelector){
                                                     // Loop through all callbacks
-                                                    executeCallbacks(callbacks[_target].queue, addedNode);
+                                                    executeCallbacks(callbacks[_target].queue, addedNode, mutationRecord.addedNodes);
 
                                                 }
                                                 break;
@@ -118,7 +118,7 @@
                                             case "complex":
                                                 if(addedNode.matches(modifiedSelector)){
                                                     // Loop through all callbacks
-                                                    executeCallbacks(callbacks[_target].queue, addedNode);
+                                                    executeCallbacks(callbacks[_target].queue, addedNode, mutationRecord.addedNodes);
 
                                                 }
                                                 break;
@@ -2626,7 +2626,7 @@
 
                 },
 				onChange: function(attrKey, attrValue){
-
+                    app.dev.log("::: APP ::: SETTINGS ::: EDIT ::: SETTINGS ::: ONCHANGE");
 					if(attrKey == "data-sitesettings" && attrValue == "true"){
 						console.log("attrKey:", attrKey);
 						if(app.data.currentApp == "edit"){
@@ -2638,7 +2638,7 @@
 					}
 				},
 				open:function(e, directAccess){
-
+                    app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
 					// Setup CSS to display page with settings style
 					app.edit.settings.data.opened = true;
 					app.edit.sidepanel.data.open = true;
@@ -2663,19 +2663,21 @@
 
 					} else {
 						// User has opened the settings from the edit mode
-
 						if(app.edit.history.get("settingspage")){
 							// There is already a settings page in the history, so select it
 							DexV2.node(app.edit.history.get("settingspage")).trigger("mousedown").trigger("click");
 
 						} else {
-							// Could not find a previously selected settings page - this is a first run
+							// Could not find a previously selected settings page - this is a first run (or edit page has been changed)
 
-							// The settings tree will be empty, so we need to load it by clicking the refresh button
-							DexV2.id("JahiaGxtRefreshSidePanelButton").trigger("click");
+                            // DEV NOTE :: DONT LIKE HAVING TO WAIT ...
+                            setTimeout(function(){
+                                DexV2.id("JahiaGxtRefreshSidePanelButton").trigger("click");
+                            }, 50);
 
 							// Listen for first settings page to be added to tree, select it then stop listening.
-							DexV2("#JahiaGxtSettingsTab").onceOpen(".x-grid3-row", function(){
+							DexV2("#JahiaGxtSettingsTab").onceOpen(".x-grid3-row", function(nodeGroup){
+                                // DEV NOTE ::: May need to loop through nodeGroup to get first actual available PAGE (ie. not a folder)
 								DexV2.node(this)
 									.trigger("mousedown")
 									.trigger("click");

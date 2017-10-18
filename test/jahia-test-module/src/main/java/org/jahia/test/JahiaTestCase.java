@@ -46,12 +46,14 @@ package org.jahia.test;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -140,12 +142,29 @@ public class JahiaTestCase {
     }
 
     protected String getAsText(String relativeUrl, int expectedResponseCode) {
+        return getAsText(relativeUrl, null, expectedResponseCode, null);
+    }
+
+    protected String getAsText(String relativeUrl, Map<String, String> requestHeaders, int expectedResponseCode,
+            Map<String, String> collectedResponseHeaders) {
         String body = StringUtils.EMPTY;
-        GetMethod getMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath() + relativeUrl);
+        GetMethod getMethod = createGetMethod(relativeUrl);
+        if (requestHeaders != null && !requestHeaders.isEmpty()) {
+            for (Map.Entry<String, String> header : requestHeaders.entrySet()) {
+                getMethod.setRequestHeader(header.getKey(), header.getValue());
+            }
+        }
         try {
             int responseCode = getHttpClient().executeMethod(getMethod);
             assertEquals("Response code is not OK: " + responseCode, expectedResponseCode, responseCode);
-            body = getMethod.getResponseBodyAsString();
+            if (HttpServletResponse.SC_OK == responseCode) {
+                body = getMethod.getResponseBodyAsString();
+            }
+            if (collectedResponseHeaders != null) {
+                for (Header header : getMethod.getResponseHeaders()) {
+                    collectedResponseHeaders.put(header.getName(), header.getValue());
+                }
+            }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         } finally {
@@ -153,6 +172,10 @@ public class JahiaTestCase {
         }
 
         return body;
+    }
+
+    protected GetMethod createGetMethod(String relativeUrl) {
+        return new GetMethod(getBaseServerURL() + Jahia.getContextPath() + relativeUrl);
     }
 
     protected String getBaseServerURL() {

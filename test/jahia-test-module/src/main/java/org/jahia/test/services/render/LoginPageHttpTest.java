@@ -60,7 +60,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.visibility.VisibilityServiceTest;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -77,7 +76,7 @@ public class LoginPageHttpTest extends JahiaTestCase {
 
     private static String aboutUsPageUrl;
 
-    private static Logger logger = LoggerFactory.getLogger(VisibilityServiceTest.class);
+    private static Logger logger = LoggerFactory.getLogger(LoginPageHttpTest.class);
 
     private final static String PASSWORD = "password";
 

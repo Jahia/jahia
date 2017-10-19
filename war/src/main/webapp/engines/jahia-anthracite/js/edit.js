@@ -1127,13 +1127,17 @@
 			jobs: "Jobs",
 			zeroTasks: "Open Dashboard",
 			singleTask: "Dashboard (%n% task)",
-			multipleTasks: "Dashboard (%n% tasks)"
+			multipleTasks: "Dashboard (%n% tasks)",
+            workflowType: "%n% Workflow:",
+            chooseWorkflowType: "Choose a workflow for %n%:"
 		},
 		"FR": {
 			jobs: "Processus",
 			zeroTasks: "Tableau de bord",
 			singleTask: "Tableau de bord (%n% Tâche)",
-			multipleTasks: "Tableau de bord (%n% Tâches)"
+			multipleTasks: "Tableau de bord (%n% Tâches)",
+            workflowType: "%n% Workflow type",
+            chooseWorkflowType: "Choisir une workflow pour %n%:"
 		}
 	}
 
@@ -1709,6 +1713,25 @@
                     .setAttribute("data-INDIGO-PICKER-SEARCH", "");
 
 			},
+            onOpenWorkflow: function(){
+                // Used to prefix the labels with the name of the Selected workflows ...
+                DexV2.node(this).onClick(".x-grid3-row", function(){
+                    var label = DexV2.node(this).filter(".x-grid3-col-displayName").getHTML(),
+                        localisedLabel = localisedStrings[app.data.UILanguage].workflowType.replace("%n%", label),
+                        localisedChooseLabel = localisedStrings[app.data.UILanguage].chooseWorkflowType.replace("%n%", label);
+
+                    // Update labels
+                    DexV2("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) > .x-panel form > div:nth-child(1)").setAttribute("data-indigo-workflow-type", localisedLabel);
+                    DexV2("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) > .x-panel .x-form-field-wrap").setAttribute("data-indigo-workflow-type", localisedChooseLabel);
+
+                }, "CHANGE_WORKFLOW_TYPE");
+
+                // Init by clicking first worflow item
+                DexV2.node(this).onceOpen(".x-grid3-row", function(){
+                    DexV2.node(this).trigger("click");
+
+                })
+            },
             closeConditionEditor: function(){
                 DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)").removeClass("indigo-show");
             },
@@ -3119,6 +3142,7 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
+                .onOpen("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) .x-grid-panel", app.engine.onOpenWorkflow)
                 .onOpen("#JahiaGxtUserGroupSelect", app.pickers.users.onOpen)
 				.onceOpen("#JahiaGxtContentBrowseTab", function(){
                     DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");

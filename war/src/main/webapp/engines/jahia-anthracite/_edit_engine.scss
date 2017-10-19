@@ -356,6 +356,357 @@
 	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-workflow {}
 	#JahiaGxtEditEngineTabs__JahiaGxtEditEnginePanel-channels {}
 
+	#JahiaGxtEditEnginePanel-workflow {
+
+		// Main container
+		> div {
+			width: 100%!important;
+			height: 100%!important;
+
+			> div {
+				// Workflow settings block
+				&:nth-child(1) {
+					height: 250px!important;
+					position: relative!important;
+					top: auto!important;
+
+				    padding: 46px 10px 20px 29px !important;
+				    margin: 0 23px 10px 0 !important;
+				    position: relative;
+				    background: #616669;
+				    box-sizing: border-box;
+
+					// List of Workflow types
+					> .x-grid-panel {
+						// background: purple;
+						position: relative!important;
+						top: auto!important;
+						left: auto!important;
+						display: inline-block;
+						width: 250px!important;
+
+						// List
+						> .x-grid3 {
+							background: #6b7074 !important;
+						}
+
+						&:before {
+							content: "Workflow Settings";
+							text-transform: uppercase;
+							position: absolute;
+							top: -30px;
+							@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
+						}
+
+						.x-grid3-row-over {
+							// More info - not needed
+							background: rgba($COLOUR--WHITE_CLOUDS, .25)!important;
+
+							.x-grid3-row-selected {
+								background-color: rgba($COLOUR--WHITE_CLOUDS, .25)!important;
+
+							}
+
+							.x-grid3-td-displayName {
+								color: $COLOUR--WHITE_CLOUDS!important;
+
+							}
+						}
+
+
+
+						.x-grid3-row-selected {
+							background-color: rgba($COLOUR--WHITE_CLOUDS, .25)!important;
+							background-image: url(./images/icons/icon-next-white@X2.png)!important;
+							background-position: right 5px center!important;
+							background-repeat: no-repeat!important;
+							background-size: 13px!important;
+
+						}
+
+						.x-grid3-scroller {
+							width: 100%!important;
+						}
+
+						// More info buttons - not needed
+						.x-grid3-td-displayName {
+							color: rgba($COLOUR--WHITE_CLOUDS, .7);
+
+							&:hover {
+								color: $COLOUR--WHITE_CLOUDS!important;
+							}
+
+							&:after {
+								display: none;
+							}
+						}
+
+					}
+
+					// Settings for selected workflow type
+					> .x-panel {
+						// background: yellow;
+						position: relative!important;
+						top: auto!important;
+						left: auto!important;
+						display: inline-block;
+						width: calc(100% - 250px)!important;
+						vertical-align: top;
+
+
+
+						form {
+							> div.x-form-item  {
+								// Same as parent
+								&:nth-child(1) {
+									label {
+										width: auto!important;
+										margin-left: 20px!important;
+										float: left!important;
+										margin-right: 10px!important;
+
+										text-transform: none;
+
+										@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
+									}
+
+									.x-form-check-wrap {
+										width: auto!important;
+										margin-top: 9px;
+									}
+
+									&:before {
+										content: attr(data-indigo-workflow-type);
+										text-transform: uppercase;
+										margin-bottom: 5px;
+										margin-left: 19px;
+										display: block;
+
+										@include text(10px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---SEMIBOLD);
+									}
+								}
+
+								// Workflow selector
+								&:nth-child(2) {
+									label {
+										display: none!important;
+									}
+								}
+
+							}
+						}
+
+						.x-form-field-wrap {
+
+							&:before {
+								content: attr(data-indigo-workflow-type);
+								text-transform: uppercase;
+								margin-bottom: 5px;
+								margin-top: 20px;
+								margin-right: 12px;
+								display: block;
+
+								@include text(10px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---SEMIBOLD);
+							}
+
+							img {
+								top: 19px;
+							}
+
+							margin: 0 20px;
+
+							&.x-item-disabled {
+								display: none;
+
+								&:before {
+									display: none;
+								}
+							}
+						}
+					}
+				}
+
+				// Workflow history
+				&:nth-child(2) {
+					height: calc(100% - 250px)!important;
+					top: auto!important;
+					position: relative!important;
+
+					padding: 46px 10px 20px 29px !important;
+					margin: 0 23px 10px 0 !important;
+					background: #616669;
+					box-sizing: border-box;
+
+					&:before {
+						content: "Workflow History";
+						text-transform: uppercase;
+						position: absolute;
+						top: 17px;
+						@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
+					}
+
+					.x-grid3-scroller {
+						overflow-x: hidden;
+					}
+
+					.x-grid-empty {
+						&:before {
+							content: $text_no_results;
+							display: block;
+							@include text(12px, rgba($COLOUR--WHITE_CLOUDS, .6), $FONT--WEIGHT---EXTRALIGHT);
+						}
+					}
+
+
+
+
+					.x-grid-panel {
+						width: auto!important;
+						height: auto!important;
+
+						.x-grid3 {
+							width: auto!important;
+							height: auto!important;
+
+							.x-grid3-viewport {
+								width: auto!important;
+								height: auto!important;
+
+								> .x-grid3-header {
+									display: block;
+									width: calc(100% - 10px)!important;
+									background: transparent;
+
+									.x-grid3-header {
+										display: inline-block;
+									}
+
+									.x-grid3-header-inner {
+										width: 100%!important;
+
+										.x-grid3-header-offset {
+											padding-left: 0;
+											width: 100%!important;
+										}
+									}
+
+									.x-grid3-cell {
+
+										&.x-grid3-hd-over,
+										&.x-grid3-hd-menu-open {
+
+											div {
+												background: rgba($COLOUR--WHITE_CLOUDS, .3)!important;
+
+											}
+
+											a {
+												background: url($ICON--ARROW_DOWN---WHITE) no-repeat center center;
+											}
+										}
+
+										span {
+											text-transform: uppercase;
+											@include text(10px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---SEMIBOLD);
+										}
+
+										.sort-asc {
+											.x-grid3-sort-icon {
+												background: url($ICON--SORT--ASC---WHITE) no-repeat center center;
+											}
+										}
+
+										.sort-desc {
+											.x-grid3-sort-icon {
+												background: url($ICON--SORT--DESC---WHITE) no-repeat center center;
+											}
+										}
+
+										.x-grid3-sort-icon {
+											opacity: 0.5;
+										}
+
+									}
+
+
+
+									.x-grid3-hh {
+										width: auto!important;
+
+										> table {
+											display: block;
+											width: 100%!important;
+
+											> tbody {
+												width: 100%!important;
+												display: block;
+
+												> tr {
+													display: block;
+													width: 100%!important;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+
+					.x-grid3-cell {
+						width: calc(10% - 10px)!important;
+						margin-right: 10px;
+						display: inline-block;
+						border: none;
+						background: transparent;
+
+						> div {
+							width: 100%!important;
+						}
+
+						&.x-grid3-td-displayName {
+							width: calc(32% - 10px)!important;
+							pointer-events: all!important;
+
+							&:after {
+								display: none;
+							}
+
+						}
+
+						&.x-grid3-td-locale {
+							width: calc(5% - 10px)!important;
+
+						}
+
+						&.x-grid3-td-user {
+							width: calc(6% - 10px)!important;
+
+						}
+
+						&.x-grid3-td-duration {
+							width: calc(13% - 10px)!important;
+						}
+
+						&.x-grid3-td-startDate,
+						&.x-grid3-td-endDate {
+							width: calc(12% - 10px)!important;
+
+						}
+
+						.x-grid3-cell-inner,
+						.x-grid3-cell-inner label {
+							text-transform: none;
+							@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
+
+
+						}
+					}
+				}
+			}
+		}
+	}
+
 	// Personalised COntent Window
 	#JahiaGxtEditEnginePanel-categories {
 		height: auto!important;

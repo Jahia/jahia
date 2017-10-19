@@ -2665,7 +2665,8 @@ form,
 
 /* Modal Mask */
 .x-modal {
-    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);  // check on other modals.
+    // background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);  // check on other modals.
+	background: $MODAL--BG--COLOUR;
     opacity: 1;
     z-index: $ZINDEX--MODAL---MASK;
     position: fixed !important;

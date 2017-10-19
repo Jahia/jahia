@@ -326,7 +326,17 @@ public class RenderService {
             if (resource.getNode().isNodeType("jnt:page")) {
                 type = "jnt:pageTemplate";
             }
-            template = addTemplate(resource, renderContext, templateName, installedModules, type);
+
+            // Allows to override template by theme for server settings and site settings
+            if (resource.getNode().isNodeType("jnt:globalSettings") || resource.getNode().isNodeType("jnt:virtualsite")) {
+                String theme = (String) renderContext.getRequest().getSession().getAttribute("jahia.ui.theme");
+                if (theme != null) {
+                    template = addTemplate(resource, renderContext, templateName + "-" + theme, installedModules, type);
+                }
+            }
+            if (template == null) {
+                template = addTemplate(resource, renderContext, templateName, installedModules, type);
+            }
 
             if (template != null) {
                 // Add cascade of parent templates

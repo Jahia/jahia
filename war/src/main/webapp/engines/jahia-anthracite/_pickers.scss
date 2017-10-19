@@ -31,7 +31,9 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 		top: 0px!important;
 	}
 
-	z-index: $ZINDEX--PICKER_WINDOW;
+	/*z-index: $ZINDEX--PICKER_WINDOW;*/
+	// Removed to fix picker modal on translation engine.
+	// Doesn't affect anywhere else but further testing should be made.
 
 	background: $PICKER--BG--COLOUR;
 

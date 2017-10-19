@@ -26,6 +26,31 @@
 		overflow: visible !important;
 		position: fixed;
 
+		.toolbar-item-displaytoolbarwarningsactionitem .x-btn-mc button {
+			background: url(https://s1.postimg.org/8lkrhxj9in/ic_warning_2x.png) !important;
+			background-size: 20px 20px !important;
+			background-repeat: no-repeat !important;
+			background-color: #F44336 !important;
+			background-position: center !important;
+			height: 34px !important;
+			width: 34px !important;
+			border-radius: 50px;
+			background-position-y: 5px !important;
+			bottom: 12px !important;
+			left: 12px !important;
+			position: fixed !important;
+		}
+
+		.toolbar-item-displaytoolbarwarningsactionitem.x-btn-menu-active .x-btn-mc button {
+			background-color: #F44336 !important;
+			width: 100px !important;
+			background-position-x: 7px !important;
+		}
+
+		.x-toolbar-cell:hover > .toolbar-item-displaytoolbarwarningsactionitem.x-btn-menu-active {
+			opacity: 0.8 !important;
+		}
+
 		.x-btn-arrow {
 			display: none;
 		}
@@ -198,4 +223,22 @@
 		position: absolute !important;
 	}
 
+}
+
+
+// License error message.
+
+.toolbar-warning-messages {
+	bottom: 12px !important;
+	left: 44px !important;
+	top: unset !important;
+}
+
+.toolbar-warning-messages > div > div > span.x-menu-item {
+	background: #f3665b;
+	padding: 9px 12px !important;
+	font-weight: 600;
+	border-bottom-right-radius: 50px;
+	border-top-right-radius: 50px;
+	padding-left: 16px !important;
 }

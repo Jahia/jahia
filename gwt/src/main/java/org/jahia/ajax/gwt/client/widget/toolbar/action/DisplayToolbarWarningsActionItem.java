@@ -85,6 +85,7 @@ public class DisplayToolbarWarningsActionItem extends BaseActionItem implements 
                 if (toolbarWarnings != null &&  toolbarWarnings.length() > 0) {
                     String[] messagesTab = toolbarWarnings.split("\\|\\|");
                     final Menu menu = new Menu();
+                    menu.addStyleName("toolbar-warning-messages");
                     b.setMenu(menu);
                     for (String s : messagesTab) {
                         MenuItem m = new MenuItem();

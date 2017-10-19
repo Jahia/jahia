@@ -43,9 +43,13 @@
 	$ICON--INFO--WHITE: 						"./images/icons/ic_info_outline@2x.png";
 	$ICON--WARNING--WHITE: 						"./images/icons/ic_warning@2x.png";
 
+	// DIFF ICON
+	$ICON--DIFF--WHITE: 						"./images/icons/diff-icon.png";
+
 	// EDIT
 	$ICON--INFO--WHITE: 						"./images/icons/tabs-edit.png";
 	$ICON--ADD--WHITE: 							"./images/icons/add-icon.png";
+	$ICON--ADD--GREY: 							"./images/icons/add-icon-grey.png";
 
 	// LOCKED
 	$ICON--LOCK--YELLOW: 						"./images/icons/icon-locked@X2.png";
@@ -76,6 +80,7 @@
 
 	// RICH TEXT EDITOR ICON SET
 	$ICON--RICH_TEXT--TOOLBUTTONS: 				"./images/icons/icons-cke.png";
+	$ICON--RICH_TEXT--TOOLBUTTONS---LEGACY:		"./images/icons/icons-cke-legacy.png";
 
 	// MORE OPTIONS
 	$ICON--TICK---WHITE:     					"./images/icons/icon-check-white@X2.png";
@@ -99,6 +104,10 @@
 	$ICON--ARROW_EXPAND---GREY:   				"./images/icons/icon-expand-side-bar.png";
 	$ICON--ARROW_COLLAPSE---GREY:   			"./images/icons/icon-combo-expand-white.png";
 
+	// SORT
+	$ICON--SORT--ASC---WHITE: 					"./images/icons/icon-asc-white.png";
+	$ICON--SORT--DESC---WHITE: 					"./images/icons/icon-desc-white.png";
+
 
 
 	// CLOSE ICONS
@@ -108,12 +117,14 @@
 	$ICON--CLOSE_LARGE---GREY:     				"./images/icons/icon-close-grey@X2.png";
 
 	// NAV ICONS
+	$ICON--FIRST--GREY: 						"./images/icons/icon_arrow_left_double_grey@X2.png";
 	$ICON--FIRST--WHITE: 						"./images/icons/icon_arrow_left_double_white@X2.png";
 	$ICON--BACK--WHITE: 						"./images/icons/icon_arrow_left_single_white@X2.png";
 	$ICON--BACK--GREY: 							"./images/icons/icon-back-grey@X2.png";
 	$ICON--NEXT--WHITE: 						"./images/icons/icon-next-white@X2.png";
-	$ICON--LAST--WHITE: 						"./images/icons/icon_arrow_right_double_white@X2.png";
 	$ICON--NEXT--GREY: 							"./images/icons/icon-next-grey@X2.png";
+	$ICON--LAST--WHITE: 						"./images/icons/icon_arrow_right_double_white@X2.png";
+	$ICON--LAST--GREY: 							"./images/icons/icon_arrow_right_double_grey@X2.png";
 
 	// FOLDER ICONS
 	$ICON--FOLDER--SMALL---GREY: 				"./images/icons/small-folder@x2.png";

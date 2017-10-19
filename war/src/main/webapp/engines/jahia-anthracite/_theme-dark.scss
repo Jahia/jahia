@@ -67,6 +67,14 @@
 
 
 /////////////////////////////////////////////////
+// VISIBILITY COLOURS //////////////////////////
+/////////////////////////////////////////////////
+    $VISIBILITY--COLOUR---UNKNOWN:					                black;
+    $VISIBILITY--COLOUR---VISIBLE:					                green;
+    $VISIBILITY--COLOUR---HIDDEN:					                red;
+
+
+/////////////////////////////////////////////////
 // APPLICATION //////////////////////////////////
 /////////////////////////////////////////////////
 
@@ -424,6 +432,7 @@
 
     // ICONS
     $RICH_TEXT_EDITOR--ICON_SET:                                    $ICON--RICH_TEXT--TOOLBUTTONS;
+    $RICH_TEXT_EDITOR--ICON_SET---LEGACY:                           $ICON--RICH_TEXT--TOOLBUTTONS---LEGACY;
 
     // TOOL GROUP
     $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--UP:                   lighten($EDIT_ENGINE--BASE--COLOUR, 6%);

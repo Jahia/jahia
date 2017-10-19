@@ -903,6 +903,10 @@
         opacity: 1;
         background: $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED;
         display: none;
+
+		&.x-menu-check-item {
+			display: block;
+		}
     }
 
     // Personalised Context Menus

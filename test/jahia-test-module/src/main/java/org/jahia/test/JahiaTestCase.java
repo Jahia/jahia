@@ -157,9 +157,7 @@ public class JahiaTestCase {
         try {
             int responseCode = getHttpClient().executeMethod(getMethod);
             assertEquals("Response code is not OK: " + responseCode, expectedResponseCode, responseCode);
-            if (HttpServletResponse.SC_OK == responseCode) {
-                body = getMethod.getResponseBodyAsString();
-            }
+            body = getMethod.getResponseBodyAsString();
             if (collectedResponseHeaders != null) {
                 for (Header header : getMethod.getResponseHeaders()) {
                     collectedResponseHeaders.put(header.getName(), header.getValue());

@@ -237,7 +237,7 @@ public class PrincipalViewHelper implements Serializable {
         } else  if (p instanceof Principal) {
             if (p instanceof JahiaUser) {
                 firstName = ((JahiaUser) p).getProperty("j:firstName");
-                lastName = ((JahiaUser) p).getProperty("j:lastname");
+                lastName = ((JahiaUser) p).getProperty("j:lastName");
             } else {
                 firstName = ((Principal) p).getName();
             }

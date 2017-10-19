@@ -41,69 +41,47 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.search;
 
-import java.util.Objects;
+package org.apache.jackrabbit.core.security;
+
+import static org.junit.Assert.assertEquals;
+
+import javax.jcr.SimpleCredentials;
+
+import org.apache.commons.httpclient.HttpException;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.junit.Test;
 
 /**
- * A class providing details identifying a match from a {@link SearchProvider}.
- *
- * @author Christophe Laprun
+ * Unit test for the {@link JahiaLoginModule}.
+ * 
+ * @author Sergiy Shyrkov
  */
-public class MatchInfo {
-    private final String id;
-    private final String workspace;
-    private final String lang;
+public class JahiaLoginModuleTest {
 
-    public MatchInfo(String id, String workspace, String lang) {
-        this.id = id;
-        this.workspace = workspace;
-        this.lang = lang;
+    @Test
+    public void testGuestCredentials() throws HttpException {
+        assertEquals(JahiaLoginModule.GUEST, ((SimpleCredentials) JahiaLoginModule.getGuestCredentials()).getUserID());
+        assertEquals(JahiaLoginModule.GUEST, ((SimpleCredentials) JahiaLoginModule
+                .getCredentials(JahiaUserManagerService.GUEST_USERNAME, (String) null)).getUserID());
+        assertEquals(JahiaLoginModule.GUEST, ((SimpleCredentials) JahiaLoginModule
+                .getCredentials(JahiaUserManagerService.GUEST_USERNAME, null, null)).getUserID());
     }
 
-    /**
-     * Retrieves the identifier associated with the identified search result, usually the target node JCR identifier.
-     *
-     * @return the identifier associated with the identified search result
-     */
-    public String getId() {
-        return id;
+    @Test
+    public void testSystemCredentials() throws HttpException {
+        assertEquals(JahiaLoginModule.SYSTEM,
+                ((SimpleCredentials) JahiaLoginModule.getSystemCredentials()).getUserID());
+        assertEquals(JahiaLoginModule.SYSTEM,
+                ((SimpleCredentials) JahiaLoginModule.getSystemCredentials(null, (String) null)).getUserID());
+        assertEquals(JahiaLoginModule.SYSTEM,
+                ((SimpleCredentials) JahiaLoginModule.getSystemCredentials(null, null, null)).getUserID());
     }
 
-    /**
-     * Retrieves the JCR workspace associated with this match.
-     *
-     * @return the JCR workspace associated with this match
-     */
-    public String getWorkspace() {
-        return workspace;
-    }
-
-    /**
-     * Retrieves the language code associated with this match.
-     *
-     * @return the language code associated with this match
-     */
-    public String getLang() {
-        return lang;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getWorkspace(), getLang());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj instanceof MatchInfo) {
-            MatchInfo other = (MatchInfo) obj;
-            return Objects.equals(getId(), other.getId()) && Objects.equals(getWorkspace(), other.getWorkspace())
-                    && Objects.equals(getLang(), other.getLang());
-        } else {
-            return false;
-        }
+    @Test
+    public void testUserCredentials() throws HttpException {
+        String user = "user1";
+        assertEquals(user, ((SimpleCredentials) JahiaLoginModule.getCredentials(user, (String) null)).getUserID());
+        assertEquals(user, ((SimpleCredentials) JahiaLoginModule.getCredentials(user, null, null)).getUserID());
     }
 }

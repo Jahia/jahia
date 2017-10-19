@@ -58,9 +58,9 @@
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
 [consequence][]Remove the type {type}=node.removeType ( "{type}", drools );
 [consequence][]Break all ACL inheritance on the {node}=service.setAclInheritanceBreak({node},true);
-[consequence][]Create a new folder {nodename} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", "jnt:folder", drools);insert ({nodename});
-[consequence][]Create a new node {nodename} of type {type} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", "{type}", drools);insert ({nodename});
-[consequence][]Create a new node {nodename} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", null, drools);insert ({nodename});
+[consequence][]Create a new folder {nodename} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", "jnt:folder", drools, true);
+[consequence][]Create a new node {nodename} of type {type} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", "{type}", drools, true);
+[consequence][]Create a new node {nodename} under the {node}=AddedNodeFact {nodename} = new AddedNodeFact({node}, "{nodename}", null, drools, true);
 [consequence][]Create a square thumbnail on reference "{name}" of size {size}=imageService.addSquareThumbnail(property, "{name}",{size}, drools);
 [consequence][]Create a thumbnail on reference "{name}" of size {size}=imageService.addThumbnail(property, "{name}",{size}, drools);
 [consequence][]Create an image "{name}" of size {size}=imageService.addThumbnail(node, "{name}",{size}, drools);

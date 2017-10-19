@@ -50,7 +50,7 @@
     <artifactId>jahia-parent</artifactId>
     <name>Jahia Common Project Parent</name>
     <groupId>org.jahia</groupId>
-    <version>7.2.1.1-indigo_41-SNAPSHOT</version>
+    <version>7.2.2.0-indigo_41-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
     <!--
@@ -108,13 +108,13 @@
         <izpack.version>4.3.5-jahia10</izpack.version>
         <launch4j.version>3.4</launch4j.version>
         <log4j.version>1.2.17</log4j.version>
-        <jahia.tomcat.version>8.0.44</jahia.tomcat.version>
+        <jahia.tomcat.version>8.0.47</jahia.tomcat.version>
 
         <driver.derby.version>10.12.1.1</driver.derby.version>
         <driver.mssql.version>4.2.6420.100</driver.mssql.version>
-        <driver.mysql.version>5.1.42</driver.mysql.version>
-        <driver.oracle.version>12.1.0.2</driver.oracle.version>
-        <driver.postgresql.version>42.1.1.jre7</driver.postgresql.version>
+        <driver.mysql.version>5.1.44</driver.mysql.version>
+        <driver.oracle.version>12.2.0.1</driver.oracle.version>
+        <driver.postgresql.version>42.1.4</driver.postgresql.version>
 
         <hibernateDialect.derby>org.hibernate.dialect.DerbyTenSevenDialect</hibernateDialect.derby>
         <hibernateDialect.mssql>org.hibernate.dialect.SQLServer2008Dialect</hibernateDialect.mssql>
@@ -139,7 +139,7 @@
         <site.plugin.version>3.4</site.plugin.version>
         <war.plugin.version>2.5</war.plugin.version>
         <enforcer.plugin.version>1.1.1</enforcer.plugin.version>
-        <compiler.plugin.version>3.2</compiler.plugin.version>
+        <compiler.plugin.version>3.7.0</compiler.plugin.version>
         <buildnumber.plugin.version>1.0</buildnumber.plugin.version>
         <source.plugin.version>2.4</source.plugin.version>
         <release.plugin.version>2.5.3-jahia1</release.plugin.version>
@@ -175,7 +175,7 @@
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.6</jahia.commons.version>
-        <jahia.plugin.version>5.1</jahia.plugin.version>
+        <jahia.plugin.version>5.2-SNAPSHOT</jahia.plugin.version>
         <jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
         <jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>
@@ -986,7 +986,7 @@
                                     <version>[3.3.0,)</version>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <version>[1.7,)</version>
+                                    <version>[1.8,)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -998,8 +998,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler.plugin.version}</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>

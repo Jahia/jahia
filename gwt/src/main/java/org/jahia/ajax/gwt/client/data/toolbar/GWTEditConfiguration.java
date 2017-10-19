@@ -47,11 +47,11 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 
+ *
  * User: toto
  * Date: Mar 29, 2010
  * Time: 4:38:09 PM
- * 
+ *
  */
 public class GWTEditConfiguration extends GWTConfiguration implements Serializable {
 
@@ -64,6 +64,7 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     private String defaultLocation;
     private boolean useFullPublicationInfoInMainAreaModules;
     private boolean supportChannelsDisplay;
+    private boolean refreshOnExternalModification = true;
 
     private List<GWTSidePanelTab> tabs;
 
@@ -116,6 +117,14 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
 
     public void setEnableDragAndDrop(boolean enableDragAndDrop) {
         this.enableDragAndDrop = enableDragAndDrop;
+    }
+
+    public boolean getRefreshOnExternalModification() {
+        return refreshOnExternalModification;
+    }
+
+    public void setRefreshOnExternalModification(boolean refreshOnExternalModification) {
+        this.refreshOnExternalModification = refreshOnExternalModification;
     }
 
     public String getDefaultUrlMapping() {

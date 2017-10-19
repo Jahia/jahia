@@ -44,7 +44,10 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.storage.client.Storage;
@@ -197,7 +200,6 @@ public class SidePanel extends ContentPanel {
                 refreshButton.setToolTip(Messages.get("label.refresh.modify"));
                 refreshButton.removeStyleName("x-tool-refresh");
                 refreshButton.addStyleName("x-tool-refresh-red");
-                refreshButton.getToolTip().show();
             } else if (!needRefresh && refreshButton.getStyleName().contains("x-tool-refresh-red")) {
                 refreshButton.removeStyleName("x-tool-refresh-red");
                 refreshButton.addStyleName("x-tool-refresh");

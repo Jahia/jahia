@@ -48,16 +48,17 @@ import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.List;
 
 /**
-* 
-* User: toto
-* Date: Oct 27, 2010
-* Time: 2:09:55 PM
-* 
-*/
+ *
+ * User: toto
+ * Date: Oct 27, 2010
+ * Time: 2:09:55 PM
+ *
+ */
 class TreeGridClickSelectionModel extends TreeGridSelectionModel<GWTJahiaNode> {
     private TreeGridSelectionModel<GWTJahiaNode> rightClickSelectionModel;
 
@@ -72,18 +73,21 @@ class TreeGridClickSelectionModel extends TreeGridSelectionModel<GWTJahiaNode> {
         rightClickSelectionModel.setSelectionMode(Style.SelectionMode.SINGLE);
     }
 
-    @Override protected void handleMouseDown(GridEvent<GWTJahiaNode> e) {
+    @Override
+    protected void handleMouseDown(GridEvent<GWTJahiaNode> e) {
         if (!e.isRightClick()) {
-            super.handleMouseDown(e);           
+            super.handleMouseDown(e);
         } else {
-            if (!tree.getTreeView().isSelectableTarget(e.getModel(), e.getTarget())) {
-                return;
-            }
-            if (selectionMode != Style.SelectionMode.SINGLE && isSelected(listStore.getAt(e.getRowIndex()))) {
-                return;
-            }
-            if (e.isRightClick()) {
-                rightClickSelectionModel.select(e.getModel(), false);
+            if (!MainModule.isGlobalSelectionDisabled()) {
+                if (!tree.getTreeView().isSelectableTarget(e.getModel(), e.getTarget())) {
+                    return;
+                }
+                if (selectionMode != Style.SelectionMode.SINGLE && isSelected(listStore.getAt(e.getRowIndex()))) {
+                    return;
+                }
+                if (e.isRightClick()) {
+                    rightClickSelectionModel.select(e.getModel(), false);
+                }
             }
         }
     }

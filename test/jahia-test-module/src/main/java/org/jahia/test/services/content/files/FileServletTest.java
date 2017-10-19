@@ -166,13 +166,15 @@ public class FileServletTest extends JahiaTestCase {
         JCRNodeWrapper testFolder = filesNode.addNode(FOLDER_NAME, "jnt:folder");
         testFolder.uploadFile(SMALL_TXT, generateText('a', 1000), "text/plain");
         testFolder.uploadFile(LARGE_TXT, generateText('b', 64 * 1024 + 10), "text/plain");
-        testFolder.uploadFile(SWITCH_SMALL_TXT, generateText('a', 1000), "text/plain");
-        testFolder.uploadFile(SWITCH_LARGE_TXT, generateText('b', 64 * 1024 + 10), "text/plain");
         JCRNodeWrapper protectedFile = testFolder.uploadFile(PROTECTED_SMALL_TXT, generateText('a', 1000),
                 "text/plain");
         protectedFile.denyRoles("u:guest", ImmutableSet.of("reader"));
         protectedFile = testFolder.uploadFile(PROTECTED_LARGE_TXT, generateText('b', 64 * 1024 + 10), "text/plain");
         protectedFile.denyRoles("u:guest", ImmutableSet.of("reader"));
+        JCRNodeWrapper aclTestFile = testFolder.uploadFile(SWITCH_SMALL_TXT, generateText('a', 1000), "text/plain");
+        aclTestFile.grantRoles("u:" + USERNAME, ImmutableSet.of("reader"));
+        aclTestFile = testFolder.uploadFile(SWITCH_LARGE_TXT, generateText('b', 64 * 1024 + 10), "text/plain");
+        aclTestFile.grantRoles("u:" + USERNAME, ImmutableSet.of("reader"));
         session.save();
 
         // publish test folder
@@ -245,14 +247,6 @@ public class FileServletTest extends JahiaTestCase {
         // should have access
         testCached(SWITCH_SMALL_TXT_URL, "aaaaa");
         testCached(SWITCH_LARGE_TXT_URL, "bbbbb");
-
-        // revoke reader role from guest
-        changeRole(FOLDER_PATH + '/' + SWITCH_SMALL_TXT, false);
-        changeRole(FOLDER_PATH + '/' + SWITCH_LARGE_TXT, false);
-
-        // should not be accessible as guest
-        getAsText(SWITCH_SMALL_TXT_URL, HttpServletResponse.SC_NOT_FOUND);
-        getAsText(SWITCH_LARGE_TXT_URL, HttpServletResponse.SC_NOT_FOUND);
     }
 
     protected void testCached(String url, String testContent) throws Exception {

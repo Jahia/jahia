@@ -95,8 +95,9 @@ public class FileCacheListener extends DefaultEventListener {
                         "j:acl")) {
                     nodes.add(parentPath);
                 }
-                if ((event.getType() == Event.PROPERTY_ADDED || event.getType() == Event.PROPERTY_CHANGED) &&
-                    parentName.equals("j:acl")) {
+                if ((event.getType() == Event.PROPERTY_ADDED || event.getType() == Event.PROPERTY_CHANGED
+                        || event.getType() == Event.NODE_ADDED || event.getType() == Event.NODE_REMOVED)
+                        && parentName.equals("j:acl")) {
                     parentPath = parentPath.substring(0, parentPath.lastIndexOf('/'));
                     nodes.add(parentPath);
                 }
@@ -133,6 +134,10 @@ public class FileCacheListener extends DefaultEventListener {
             }
         }
         if (!nodes.isEmpty()) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Flushing file caches for {} node(s) in workspace {}: {}",
+                        new Object[] { nodes.size(), workspace, nodes });
+            }
             for (String s : nodes) {
                 cacheManager.invalidate(workspace, s);
             }
@@ -146,6 +151,7 @@ public class FileCacheListener extends DefaultEventListener {
     private void flushSubNodes(final String nodePath, final String srcAbsPath, final String destAbsPath) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                boolean debugEnabled = logger.isDebugEnabled();
                 try {
                     JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(nodePath);
                     NodeIterator nodeIterator = n.getNodes();
@@ -157,6 +163,10 @@ public class FileCacheListener extends DefaultEventListener {
                         String replace = path.replace(destAbsPath, srcAbsPath);
                         cacheManager.invalidate(workspace, replace);
                         moduleCacheProvider.invalidate(replace);
+                        if (debugEnabled) {
+                            logger.debug("Flushing file caches for nodes in workspace {}: {}, {}",
+                                    new Object[] { workspace, path, replace });
+                        }
                         flushSubNodes(path, srcAbsPath, destAbsPath);
                     }
                 } catch (Exception e) {
@@ -164,6 +174,10 @@ public class FileCacheListener extends DefaultEventListener {
                     cacheManager.invalidate(workspace, nodePath);
                     moduleCacheProvider.invalidate(nodePath);
                     moduleCacheProvider.invalidate(srcAbsPath);
+                    if (debugEnabled) {
+                        logger.debug("Flushing file caches for nodes in workspace {}: {}, {}",
+                                new Object[] { workspace, srcAbsPath, nodePath });
+                    }
                 }
                 return null;
             }

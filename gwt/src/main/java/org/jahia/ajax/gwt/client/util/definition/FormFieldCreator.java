@@ -69,7 +69,8 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.ckeditor.CKEditorConfig;
 import org.jahia.ajax.gwt.client.widget.content.*;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.form.*;
+import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
+import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
 import org.jahia.ajax.gwt.client.widget.form.tag.TagField;
 
@@ -99,6 +100,7 @@ public class FormFieldCreator {
                                        GWTChoiceListInitializer initializer, boolean displayHiddenProperty,
                                        GWTBitSet permissions, List<GWTJahiaNodePropertyValue> defaultValues) {
         Field<?> field = null;
+        String className = "";
         if (definition.isHidden() && !displayHiddenProperty) {
             return null;
         }
@@ -287,6 +289,7 @@ public class FormFieldCreator {
                         tostore.setSortDir(Style.SortDir.ASC);
                         tostore.setSortField("display");
                         field = lists;
+                        className = "list-store-field";
                     } else {
                         ComboBox<GWTJahiaValueDisplayBean> combo = new ComboBox<GWTJahiaValueDisplayBean>() {
                             @Override
@@ -307,6 +310,7 @@ public class FormFieldCreator {
                         combo.setForceSelection(true);
                         combo.setTemplate(getComboTemplate());
                         field = combo;
+                        className = "combo-box-field";
                     }
 
                     // if there is no values, the field is hidden
@@ -361,6 +365,10 @@ public class FormFieldCreator {
         }
         //field.setId("JahiaGxtField"+ "_" + field.getName().replace(":","_")+"_"+locale);
         field.getElement().setAttribute("dir","auto");
+
+        className = "".equals(className) ? field.getClass().getName().substring(field.getClass().getName().lastIndexOf(".") + 1) : className;
+        className = className.replaceAll("([a-z])([A-Z]+)", "$1-$2").toLowerCase();
+        field.addStyleName(className);
         return field;
     }
 

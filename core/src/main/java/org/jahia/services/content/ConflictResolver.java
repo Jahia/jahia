@@ -274,11 +274,17 @@ public class ConflictResolver {
         }
 
         if (inludeSubNodes) {
-            NodeIterator ni = targetNode.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper sub = (JCRNodeWrapper) ni.next();
-                if (sourceNode.hasNode(sub.getName()) && !sub.isVersioned() && !sourceNode.getNode(sub.getName()).isVersioned() && JCRPublicationService.supportsPublication(sub.getSession(), sub)) {
-                    diffs.addAll(compare(sourceNode.getNode(sub.getName()), sub, addPath(basePath, sub.getName())));
+            NodeIterator targetSubNodes = targetNode.getNodes();
+            while (targetSubNodes.hasNext()) {
+                JCRNodeWrapper targetSubNode = (JCRNodeWrapper) targetSubNodes.next();
+                if (sourceNode.hasNode(targetSubNode.getName())) {
+                    JCRNodeWrapper sourceSubNode = sourceNode.getNode(targetSubNode.getName());
+                    // the order of the check is important, as we will usually have less nodes of type jmix:publication than versioned nodes, so we fail-fast
+                    if (!targetSubNode.isNodeType(Constants.JAHIAMIX_PUBLICATION) && !sourceSubNode.isNodeType(Constants.JAHIAMIX_PUBLICATION) &&
+                            !targetSubNode.isVersioned() && !sourceSubNode.isVersioned() &&
+                            JCRPublicationService.supportsPublication(targetSubNode.getSession(), targetSubNode)) {
+                        diffs.addAll(compare(sourceSubNode, targetSubNode, addPath(basePath, targetSubNode.getName())));
+                    }
                 }
             }
         }

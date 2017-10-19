@@ -528,7 +528,8 @@
 
 				// Workflow history
 				&:nth-child(2) {
-					height: calc(100% - 250px)!important;
+					height: auto!important;
+					max-height: calc(100% - 250px)!important;
 					top: auto!important;
 					position: relative!important;
 

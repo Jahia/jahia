@@ -3653,6 +3653,14 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		}
 
+		.x-toolbar-right button img {
+			background: url(./images/icons/ic_more_vert_white_.png) !important;
+			background-size: 19px 19px !important;
+			background-repeat: no-repeat !important;
+			left: -6px !important;
+			top: -2px !important;
+		}
+
 		.x-btn-mc button.x-btn-text {
 			text-transform: uppercase;
 			padding: 0 4px !important;

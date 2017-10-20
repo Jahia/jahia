@@ -3361,8 +3361,8 @@ body[data-indigo-gwt-side-panel="open"] {
 
 .x-window.file-uploader,
 .x-window.content-import,
-.x-window.content-export,
-.x-window.customized-preview {
+.x-window.content-export/*,
+.x-window.customized-preview*/ {
 	background: transparent;
 
 	.x-window-bwrap {
@@ -3459,7 +3459,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 // Customized preview
 
-.x-window.customized-preview {
+/*.x-window.customized-preview {
 
 	.x-window-bwrap {
 		overflow: scroll;
@@ -3507,7 +3507,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		padding-left: 9px;
 	}
 
-}
+}*/
 
 
 // Import

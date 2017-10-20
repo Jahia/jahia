@@ -1803,7 +1803,13 @@
 
                     })
 
-                })
+                });
+
+				DexV2("body").onceClose(".x-combo-list", function(){
+					// Remove class that modifies the set up for this context menu
+					DexV2("body").setAttribute("data-indigo-add-visibility-condition", "");
+
+				});
             }
 		},
 		workflow: {

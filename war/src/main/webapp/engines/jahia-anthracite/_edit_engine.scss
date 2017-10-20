@@ -2289,47 +2289,13 @@
 
 .indigo-search-component {
 
-	&.indigo-show {
-		.x-toolbar-cell {
-			// Used as a cancel button
-			&:nth-child(1){
-				display: block;
 
-				&.indigo-empty-field {
-					display: none;
-				}
-			}
-
-			// Search input
-			&:nth-child(2) {
-				input {
-					background-image: url($ICON--SEARCH---GREY);
-					background-color: $COLOUR--WHITE_CLOUDS;
-					width: 100%!important;
-					padding: 4px 5px 5px 27px!important;
-					text-indent: 0;
-					color: $COLOUR--GREY_CLOUDS;
-					background-size: 23px;
-					opacity: 1;
-
-					&:hover {
-						cursor: auto;
-					}
-				}
-			}
-
-			// Used as a cancel button
-			&:nth-child(3){
-				display: block;
-			}
-		}
-	}
 
 
 	.x-toolbar-cell {
 		// Used as a cancel button
-		&:nth-child(1){
-			display: none;
+		&.indigo-clear-button {
+			display: block;
 
 			background: url($ICON--CLOSE_LARGE---GREY) no-repeat center center;
 			background-size: 12px 12px;
@@ -2345,48 +2311,37 @@
 				cursor: pointer;
 			}
 
+			&.indigo-empty-field {
+				display: none;
+			}
+
 		}
 
 		// Text input
 		&:nth-child(2) {
 			input {
-				background-image: url($ICON--SEARCH---WHITE);
-				background-color: transparent;
-				float: right;
-				width: 40px!important;
-				opacity: 0.7;
-
-				&:hover {
-					cursor: pointer;
-					opacity: 1;
-				}
-
-				&:active,
-				&:focus {
-					background-image: url($ICON--SEARCH---GREY);
-					background-color: $COLOUR--WHITE_CLOUDS;
-					width: 100%!important;
-					padding: 4px 5px 5px 27px!important;
-					text-indent: 0;
-					color: $COLOUR--GREY_CLOUDS;
-					background-size: 23px;
-
-				}
-
+				background-image: url($ICON--SEARCH---GREY);
+				background-color: $COLOUR--WHITE_CLOUDS;
 				background-repeat: no-repeat;
 				background-position: left center;
-				background-size: 32px;
-				padding: 4px 5px 5px 23px!important;
+				background-size: 23px;
+				width: 100%!important;
+				padding: 4px 5px 5px 27px!important;
 				font-size: 12px;
 				font-family: $FONT--FAMILY---NUNITO;
-				text-indent: -50000px;
+				color: $COLOUR--GREY_CLOUDS;
+				background-size: 23px;
+
+				&:hover {
+					opacity: 1;
+				}
 
 			}
 		}
 
 		// Search button
 		&:nth-child(3) {
-			display: none;
+			display: block;
 
 			.x-btn-icon {
 				display: block;

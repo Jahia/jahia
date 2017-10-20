@@ -2110,6 +2110,8 @@
                         .onFocus(".indigo-search-input", app.pickers.users.onInputFocus, "INDIGO-SEARCH-COMPONENT")
                         .onBlur(".indigo-search-input", app.pickers.users.onInputBlur, "INDIGO-SEARCH-COMPONENT");
 
+					// Remove the clear button on init
+					DexV2.class("indigo-clear-button").addClass("indigo-empty-field");
 
                     DexV2.id("JahiaGxtUserGroupSelect")
                         .onOpen(".x-grid-empty", function(){

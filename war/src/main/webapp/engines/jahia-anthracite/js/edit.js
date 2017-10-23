@@ -1145,6 +1145,7 @@
 	var app = {
 		data: {
 			currentApp: null,
+			currentSite: null,
 			previousModeClass: null,
 			UILanguage: null,
 			startedOnSettingsPage: false,
@@ -1161,6 +1162,23 @@
 					console.log(message);
 				}
 			}
+		},
+		onChangeNodePath: function(attrKey, attrValue){
+			var nodePathSplit = attrValue.split("/"),
+				site = nodePathSplit[2];
+
+			if(site && site != app.data.currentSite){
+				app.data.currentSite = site;
+				app.onChangeSite(site);
+			}
+
+		},
+		onChangeSite: function(site){
+			app.edit.history.reset();
+
+			// Switch to pages view (even though maybe hidden, so that the refresh button relates to pages list)
+			DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtPagesTab").trigger("click");
+
 		},
         onChange: function(attrKey, attrValue){
 
@@ -1202,43 +1220,6 @@
             })
 
 
-		},
-        onChange2: function(mode, arg1, arg2){
-			if(app.data.previousModeClass == mode){
-				return false;
-			}
-
-			app.data.previousModeClass = mode;
-
-			app.dev.log("::: APP ::: ONCHANGE");
-			mode.split(" ").forEach(function(cl) {
-                if (cl.indexOf("x-viewport") == 0) {
-
-                    switch (cl) {
-                        case "x-viewport-editmode":
-							app.switch("edit");
-
-                            break;
-                        case "x-viewport-adminmode":
-							app.switch("admin");
-
-                            break;
-                        case "x-viewport-dashboardmode":
-							app.switch("dashboard");
-
-                            break;
-                        case "x-viewport-studiomode":
-							app.switch("studio");
-
-                            break;
-                        case "x-viewport-contributemode":
-							app.switch("contribute");
-
-                            break;
-                    }
-
-                }
-            })
 		},
 		onResize: function(){
 			app.dev.log("::: APP ::: ONRESIZE");
@@ -1975,7 +1956,6 @@
 
 	                // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
 	                var iframeBody = DexV2.iframe(".window-iframe").filter("body");
-                    console.log("DISABLING NOW ... on", iframeBody);
 
                     iframeBody.nodes[0].style.pointerEvents = "none";
                 }
@@ -2178,9 +2158,7 @@
 
 				} else if(DexV2.getCached("body").getAttribute("data-indigo-gwt-panel-tab") == "JahiaGxtSidePanelTabs__JahiaGxtPagesTab"){
 					app.edit.history.add("editpage", this);
-
 				}
-
 
 			},
 
@@ -2740,6 +2718,11 @@
 				open:function(e, directAccess){
                     app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
 
+					if(directAccess){
+						// Need to set back to the settings tree list (the onChangeSite will have switched it back to pages)
+						DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("click");
+					}
+
 					// Setup CSS to display page with settings style
 					app.edit.settings.data.opened = true;
 					app.edit.sidepanel.data.open = true;
@@ -2795,16 +2778,19 @@
 
 		            app.edit.sidepanel.close();
 
-		            if(previousEditPage){
+		            if(previousEditPage && document.body.contains(previousEditPage)){
 		                // Trigger click on last viewed settings page
 						DexV2.node(previousEditPage)
 							.trigger("mousedown")
 							.trigger("mouseup");
-		                // mouse.trigger(previousEditPage, "mousedown");
-		                // mouse.trigger(previousEditPage, "mouseup");
 		            } else {
 						// Trigger Click on Second page (first row is not an actual page)
-		                mouse.trigger(document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")[0], "mousedown");
+						// Need to set side panel tab as pages to allow the capture of the click to save the page in history...
+						DexV2.getCached("body").setAttribute("data-indigo-gwt-panel-tab", "JahiaGxtSidePanelTabs__JahiaGxtPagesTab");
+
+						DexV2("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")
+							.trigger("mousedown")
+							.trigger("mouseup");
 
 		            }
 				}
@@ -3150,7 +3136,8 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
-                .onOpen("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) .x-grid-panel", app.engine.onOpenWorkflow)
+				.onAttribute("body", "data-singleselection-node-path", app.onChangeNodePath)
+				.onOpen("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) .x-grid-panel", app.engine.onOpenWorkflow)
                 .onOpen("#JahiaGxtUserGroupSelect", app.pickers.users.onOpen)
 				.onceOpen("#JahiaGxtContentBrowseTab", function(){
                     DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
@@ -3281,7 +3268,7 @@
                 .onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView)
                 .onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView)
                 .onClick(".node-path-title", app.iframe.clearSelection)
-                .onClick(".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
+                .onMouseDown(".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
                 .onMouseDown("#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close)
                 .onMouseDown("#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open)
                 .onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close)

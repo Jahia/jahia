@@ -289,7 +289,7 @@ public class ConflictResolver {
         for (Diff diff : new ArrayList<Diff>(diffs)) {
              if (diff instanceof PropertyRemovedDiff && ((PropertyRemovedDiff) diff).propertyPath.endsWith(Constants.JCR_MIXINTYPES)) {
                 diffs.remove(diff);
-                diffs.add(0,diff);
+                diffs.add(0, diff);
             }
         }
 

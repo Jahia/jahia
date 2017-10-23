@@ -300,8 +300,8 @@ public class ConflictResolver {
                 if (sourceNode.hasNode(targetSubNode.getName())) {
                     JCRNodeWrapper sourceSubNode = sourceNode.getNode(targetSubNode.getName());
                     // the order of the check is important, as we will usually have less nodes of type jmix:publication than versioned nodes, so we fail-fast
-                    if (!targetSubNode.isNodeType(Constants.JAHIAMIX_PUBLICATION) && !sourceSubNode.isNodeType(Constants.JAHIAMIX_PUBLICATION) &&
-                            !targetSubNode.isVersioned() && !sourceSubNode.isVersioned() &&
+                    if (!targetSubNode.isVersioned() && !sourceSubNode.isVersioned() &&
+                            !targetSubNode.isNodeType(Constants.JAHIAMIX_PUBLICATION) && !sourceSubNode.isNodeType(Constants.JAHIAMIX_PUBLICATION) &&
                             JCRPublicationService.supportsPublication(targetSubNode.getSession(), targetSubNode)) {
                         diffs.addAll(compare(sourceSubNode, targetSubNode, addPath(basePath, targetSubNode.getName())));
                     }

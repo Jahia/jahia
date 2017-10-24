@@ -3551,7 +3551,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		.x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td {
 
-			.x-grid3-hd-over span {
+			&.x-grid3-hd-over span {
 				color: #737373 !important;
 			}
 
@@ -3623,6 +3623,71 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 	}
+
+	// pager
+	.x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct {
+		position: relative;
+		z-index: 9999999;
+		background: #616669;
+		width: 100% !important;
+		padding: 2px 11px;
+		box-sizing: border-box;
+		margin-top: 2px;
+
+		.x-toolbar-left .x-toolbar-cell {
+			display: inline-block !important;
+			margin: 0 2px;
+			opacity: 0.8;
+
+			.x-btn-mc img {
+				display: none;
+			}
+
+			&:nth-child(1) {
+				background: url(./images/icons/icon_arrow_left_double_white@X2.png) no-repeat center center/14px 14px;
+				margin-left: 0px;
+			}
+
+			&:nth-child(2) {
+				background: url(./images/icons/icon_arrow_left_single_white@X2.png) no-repeat center center/14px 14px;
+				margin-left: 5px;
+			}
+
+			&:nth-child(8) {
+				background: url(./images/icons/icon-next-white@X2.png) no-repeat center center/14px 14px;
+				margin-right: 5px;
+			}
+
+			&:nth-child(9) {
+				background: url(./images/icons/icon_arrow_right_double_white@X2.png) no-repeat center center/14px 14px;
+				margin-right: 5px;
+			}
+
+			&:nth-child(11) {
+				background: url(./images/icons/icon-publication-launcher.png) no-repeat center center/16px 12px;
+			}
+
+			.my-paging-text {
+				font-family: "Nunito Sans", sans-serif;
+				font-size: 12px;
+				color: rgba(241, 241, 241, 0.7);
+				font-weight: 100;
+			}
+
+			.gwt-TextBox {
+				font-family: "Nunito Sans", sans-serif;
+				font-size: 12px;
+				color: #282b2d;
+				font-weight: 100;
+				background: rgba(241, 241, 241, 0.7);
+				padding: 3px;
+				border: none;
+			}
+
+		}
+
+	}
+
 
 }
 

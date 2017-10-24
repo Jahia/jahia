@@ -3463,6 +3463,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	.x-window-bwrap {
 		overflow: scroll;
+		background: #616669;
 
 		.x-window-body.x-window-body-noborder {
 			height: 380px !important;
@@ -3470,19 +3471,12 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	}
 
-	.x-grid3 .x-grid3-header {
-		display: table-cell !important;
-		background: #eeeeee !important;
-		border: none !important;
-		border-bottom: 0.5px solid #e2e3e3 !important;
-	}
-
 	.x-grid3 .x-grid3-td-displayName:after {
 		display: none;
 	}
 
 	.x-window-tbar .x-toolbar {
-		background: #eeeeee !important;
+		background: #616669!important;
 		padding-bottom: 12px;
 		border-bottom: none;
 	}
@@ -3511,7 +3505,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		display: block;
 		background: none;
 		width: calc(100% - 10px);
-		padding: 13px 10px 0 20px;
+		padding: 12px 10px 0 20px;
 		box-sizing: border-box;
 
 		.x-grid3-header-inner .x-grid3-hh > table > tbody > tr {

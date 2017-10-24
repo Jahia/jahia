@@ -3507,6 +3507,129 @@ body[data-indigo-gwt-side-panel="open"] {
 		padding-left: 9px;
 	}
 
+	.x-grid-panel .x-grid3-viewport > .x-grid3-header {
+		display: block;
+		background: none;
+		width: calc(100% - 10px);
+		padding: 13px 10px 0 20px;
+		box-sizing: border-box;
+
+		.x-grid3-header-inner .x-grid3-hh > table > tbody > tr {
+			display: block;
+		}
+
+		.x-grid3-header-inner .x-grid3-hh > table > tbody td {
+			width: calc(25% - 10px) !important;
+			pointer-events: all;
+			border: none;
+			background: none;
+			margin-right: 10px;
+
+			&.x-grid3-hd-over {
+				background: #e4e5e6;
+			}
+
+			div {
+				width: 100% !important;
+				box-sizing: border-box;
+				height: auto !important;
+				background: none !important;
+				padding-left: 4px;
+			}
+
+		}
+
+	}
+
+	.x-grid-panel .x-grid3-cell {
+		display: inline-block;
+
+		> div {
+			font-family: "Nunito Sans", sans-serif;
+			font-size: 12px;
+			color: rgba(241, 241, 241, 0.6);
+			font-weight: 100;
+		}
+
+	}
+
+	.x-grid-panel {
+
+		.x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td {
+
+			.x-grid3-hd-over span {
+				color: #737373 !important;
+			}
+
+			div {
+
+				.x-grid3-hd-btn {
+					background: url(./images/icons/combo-arrow-grey.png) no-repeat center center !important;
+					width: 23px;
+					background-size: 13px !important;
+					opacity: 0.7;
+				}
+
+				span {
+					text-transform: uppercase;
+					font-family: "Nunito Sans", sans-serif;
+					font-size: 11px;
+					color: #ebeced;
+					font-weight: 500;
+				}
+
+				.x-grid3-hd-btn:hover {
+					background-color: #d1d1d1 !important;
+					background-size: 13px !important;
+					opacity: 1;
+				}
+
+				img {
+					position: relative;
+					top: -1px;
+					opacity: 0.6;
+				}
+
+			}
+
+		}
+
+		.x-grid3-scroller {
+			padding: 13px 10px 0 20px;
+			box-sizing: border-box;
+		}
+
+		.x-grid3-row {
+			padding-top: 4px;
+
+			&.x-grid3-row-selected {
+				pointer-events: none;
+				background: rgba(241, 241, 241, 0.8) !important;
+
+				.x-grid3-cell > div {
+					color: #737373 !important;
+					font-weight: 700 !important;
+				}
+
+			}
+
+		}
+
+		.x-grid3-cell {
+			width: 25% !important;
+			display: inline-block;
+
+			> div {
+				font-family: "Nunito Sans", sans-serif;
+				font-size: 12px;
+				color: rgba(241, 241, 241, 0.6);
+				font-weight: 100;
+			}
+
+		}
+
+	}
+
 }
 
 

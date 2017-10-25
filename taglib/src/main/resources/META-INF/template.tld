@@ -116,7 +116,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Name of the exported pageContext variable to hold the value specified in the action.</description>
+            <description>Name of the exported pageContext variable to hold the value specified in the action (since DX 7.1.2.7).</description>
             <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

@@ -3466,6 +3466,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		width: 22px;
 		background-image: url(./images/icon-close-large.png);
 		background-position: initial !important;
+		margin-top: 8px;
 	}
 
 	.x-window-header .x-panel-toolbar {
@@ -3700,7 +3701,8 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	}
 
-	.x-toolbar-left-row .x-toolbar-cell .x-btn-text {
+	.x-toolbar-left-row .x-toolbar-cell:nth-child(1) .x-btn-text,
+	.x-toolbar-left-row .x-toolbar-cell:nth-child(2) .x-btn-text {
 		background: transparent !important;
 	}
 
@@ -3709,7 +3711,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-form-field-wrap .x-form-text {
-		background: rgba(122, 126, 128, 0.54);
+		background: rgba(122, 130, 134, 0.54);
 		color: #b2b4b5;
 
 		&.x-form-focus {
@@ -3721,6 +3723,51 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	label {
 		line-height: 22px;
+	}
+
+	.search-container .x-toolbar-cell {
+
+		&:nth-child(1) > div {
+			display: none;
+		}
+
+		&:nth-child(2) input {
+			background-image: url(./images/tabs-search-dark@X2.png) !important;
+			background-color: #f1f1f1 !important;
+			background-repeat: no-repeat !important;
+			background-position: left center !important;
+			background-size: 23px !important;
+			width: 100% !important;
+			padding: 4px 5px 5px 27px !important;
+			font-size: 12px;
+			font-family: "Nunito Sans", sans-serif;
+			color: #7a7e80;
+		}
+
+		:nth-child(3) .x-btn-icon {
+			height: 27px;
+			padding: 0 8px;
+			background: #00a0e3;
+			margin-left: -4px;
+
+			&:before {
+				content: "Search";
+				display: block;
+				top: 6px;
+				position: relative;
+				text-align: center;
+				font-family: "Nunito Sans", sans-serif;
+				font-size: 11px;
+				color: #f1f1f1;
+				font-weight: 100;
+			}
+
+			> tbody {
+				display: none;
+			}
+
+		}
+
 	}
 
 }

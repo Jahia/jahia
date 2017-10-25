@@ -3461,6 +3461,18 @@ body[data-indigo-gwt-side-panel="open"] {
 
 .x-window.customized-preview {
 
+	.x-window-header > .x-component:first-child table tbody tr td .x-tool-close {
+		height: 22px;
+		width: 22px;
+		background-image: url(./images/icon-close-large.png);
+		background-position: initial !important;
+	}
+
+	.x-window-header .x-panel-toolbar {
+		display: block;
+		pointer-events: all;
+	}
+
 	.x-window-bwrap {
 		background: #616669;
 		padding: 12px 0 8px 0;

@@ -3744,7 +3744,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			color: #7a7e80;
 		}
 
-		:nth-child(3) .x-btn-icon {
+		&:nth-child(3) .x-btn-icon {
 			height: 27px;
 			padding: 0 8px;
 			background: #00a0e3;

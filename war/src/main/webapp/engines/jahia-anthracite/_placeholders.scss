@@ -1713,7 +1713,7 @@
         text-align: center;
         text-transform: uppercase;
 
-        @include text(8px, $TOOL--BUTTON--FONT--COLOUR---NORMAL, $FONT--WEIGHT---NORMAL);
+        @include text(8px, $TOOL--BUTTON--FONT--COLOUR---NORMAL, $FONT--WEIGHT---BOLD);
     }
 
     %CSS_BLOCK--TOOL_BUTTON---MULTI_SELECT {

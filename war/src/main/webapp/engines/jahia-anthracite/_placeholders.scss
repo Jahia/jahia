@@ -1737,26 +1737,26 @@
 
     // TITLE
     %CSS_BLOCK--EDIT_ENGINE--TITLE {
-    	@include text(14px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+    	@include text(14px, #989b9c, $FONT--WEIGHT---LIGHT);
     }
 
     // TAB BUTTONS
     %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON {
     	padding: 5px 0 5px 5px;
 
-    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR, $FONT--WEIGHT---NORMAL);
     }
 
     %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---SELECTED {
-    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $FONT--WEIGHT---EXTRALIGHT);
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $FONT--WEIGHT---NORMAL);
     }
 
     %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER {
-    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $FONT--WEIGHT---EXTRALIGHT);
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED + !important, $FONT--WEIGHT---NORMAL);
     }
 
     %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER_SELECTED {
-    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over + !important, $FONT--WEIGHT---EXTRALIGHT);
+    	@include text(14px, $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over + !important, $FONT--WEIGHT---NORMAL);
     }
 
 

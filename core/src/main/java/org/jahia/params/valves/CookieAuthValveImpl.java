@@ -50,6 +50,7 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,17 +151,11 @@ public class CookieAuthValveImpl extends BaseAuthValve {
         if (jahiaUser == null) {
             valveContext.invokeNext(context);
         } else {
+            JahiaUser user = jahiaUser.getJahiaUser();
             if (authContext.getRequest().getSession(false) != null) {
                 authContext.getRequest().getSession().invalidate();
             }
-            authContext.getSessionFactory().setCurrentUser(jahiaUser.getJahiaUser());
-
-            try {
-                jahiaUser.setProperty(Constants.JCR_LASTLOGINDATE, String.valueOf(System.currentTimeMillis()));
-                jahiaUser.save();
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
+            authContext.getSessionFactory().setCurrentUser(user);
         }
     }
 

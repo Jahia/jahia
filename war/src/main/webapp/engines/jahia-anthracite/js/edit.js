@@ -1262,6 +1262,8 @@
 			app.dev.log("::: APP ::: SWITCH: " + appID);
 			app.data.currentApp = appID;
 
+            DexV2.getCached("body").setAttribute("data-INDIGO-APP", appID);
+
 			app[appID].onOpen();
 
 		},
@@ -1301,6 +1303,8 @@
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONOPEN");
                     var returnText;
 
+                    DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "open");
+
                     app.dev.log("app.data.currentApp: " + app.data.currentApp);
 
                     switch(app.data.currentApp){
@@ -1331,6 +1335,7 @@
                 },
 				onClose: function(){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONCLOSE");
+                    DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "");
 					// Manager Menu has been closed by clicking on the X.
 		            // Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
 		            DexV2(".menu-editmode-managers-menu").css({
@@ -1799,6 +1804,8 @@
 					app.dev.log("::: APP ::: WORKFLOW ::: DASHBOARD ::: ONOPEN");
 					DexV2(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
 
+
+
 				}
 			}
 		},
@@ -1880,7 +1887,6 @@
 
 			},
 			onChange: function(attrKey, attrValue){
-
 				if(app.iframe.data.displayName == attrValue || app.data.currentApp == "studio"){
 					return false;
 				}
@@ -1906,6 +1912,11 @@
 						app.contribute.topbar.build();
 
 						break;
+
+                    case "dashboard":
+                        app.dashboard.onChange();
+
+                        break;
 				}
 
 
@@ -2799,8 +2810,11 @@
 		},
 		dashboard: {
 			// Event Handlers
-			onOpen: function(){
-				app.dev.log("::: APP ::: DASHBOARD ::: OPENED");
+            data: {
+                beta: false
+            },
+            onOpen: function(){
+                app.dev.log("::: APP ::: DASHBOARD ::: OPENED");
 
 				// Use Anthracite CSS
 				app.theme.on();
@@ -2809,10 +2823,51 @@
                 DexV2.getCached("body")
 					.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no")
                 	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
-			},
-			onClose: function(){},
 
-			// Controls
+
+            },
+            onChange: function(){
+                if(app.dashboard.data.beta){
+                    DexV2.getCached("body").setAttribute("data-INDIGO-BETA", "true");
+                    app.dashboard.setBetaStyle();
+
+                } else {
+                    DexV2.getCached("body").setAttribute("data-INDIGO-BETA", "");
+
+                }
+
+            },
+            onClose: function(){},
+            setBetaStyle: function(){
+                DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "");
+
+                var iframeHead = DexV2.iframe(".window-iframe").filter("head"),
+                    iframeBody = DexV2.iframe(".window-iframe").filter("body");
+
+                $("body").append("<div id='dashboard_preview_window_holder'><iframe id='dashboard_preview_window' src='http://localhost:8080/cms/render/default/en/sites/digitall/home.html'></iframe></div>");
+
+
+                var newCSS = document.createElement('link');
+                    newCSS.rel = "stylesheet";
+                    newCSS.type = "text/css";
+                    newCSS.href = "/engines/jahia-anthracite/_dashboard-import.css";
+
+                iframeHead.append(newCSS);
+
+                iframeBody.onClick("#userSites_table tr", function(){
+                    var tr = this,
+                    siteInput = DexV2.node(tr).filter("td:nth-child(1) input"),
+                    siteName = siteInput.getAttribute("name"),
+
+                    previewAnchor = DexV2.node(tr).filter("td:nth-child(5) a"),
+                    url = previewAnchor.getAttribute("href");
+
+                    DexV2.node(this).parent().filter("tr").removeClass("indigo-selected");
+                    DexV2.node(this).addClass("indigo-selected");
+
+                    DexV2.id("dashboard_preview_window").setAttribute("src", url)
+                });
+            }
 
 		},
 		studio: {
@@ -3136,6 +3191,42 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
+				.onClick(".toolbar-item-newfolder", function(){
+					// Add new folder
+					var isDisabled = DexV2.node(this).hasClass("x-item-disabled");
+
+					if(isDisabled){
+						// User has clicked on the ADD FOLDER icon whilst in the RIGHT tree, so trigger click on the CONTEXT MENU OF THE LEFT TREE
+						DexV2("#CRTbrowseTabItem .x-grid3-row-selected").trigger("contextmenu");
+
+						// When context menu is opened click on the ADD FOLDER button
+						DexV2("body").onceOpen(".imagepickerContextMenu", function(){
+							DexV2(".imagepickerContextMenu .toolbar-item-newfolder").trigger("click");
+
+						})
+
+					} else {
+						console.log("Nothing to do ...");
+					}
+				})
+				.onClick(".toolbar-item-upload", function(){
+					// Add new folder
+					var isDisabled = DexV2.node(this).hasClass("x-item-disabled");
+
+					if(isDisabled){
+						// User has clicked on the ADD FOLDER icon whilst in the RIGHT tree, so trigger click on the CONTEXT MENU OF THE LEFT TREE
+						DexV2("#CRTbrowseTabItem .x-grid3-row-selected").trigger("contextmenu");
+
+						// When context menu is opened click on the ADD FOLDER button
+						DexV2("body").onceOpen(".imagepickerContextMenu", function(){
+							DexV2(".imagepickerContextMenu .toolbar-item-upload").trigger("click");
+
+						})
+
+					} else {
+						console.log("Nothing to do ...");
+					}
+				})
 				.onAttribute("body", "data-singleselection-node-path", app.onChangeNodePath)
 				.onOpen("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) .x-grid-panel", app.engine.onOpenWorkflow)
                 .onOpen("#JahiaGxtUserGroupSelect", app.pickers.users.onOpen)

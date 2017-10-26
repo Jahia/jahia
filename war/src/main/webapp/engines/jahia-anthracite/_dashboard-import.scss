@@ -1,0 +1,185 @@
+body {
+    background: #5c6164!important;
+}
+
+#userSites_table_wrapper {
+    margin-top: 170px;
+    width: 374px;
+    margin-left: 37px;
+}
+
+#userSites_table {
+
+    &:before {
+        color: #d9e8ef;
+        font-size: 16px;
+        font-family: Nunito Sans;
+        font-weight: 100;
+        content: "All Sites";
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    thead{
+        display: none;
+
+
+    }
+
+    td {
+        display: none;
+
+        &:nth-child(1) {
+            display: block;
+            background: transparent;
+            margin-bottom: 1px;
+            color: #c1cdd3;
+            font-size: 16px;
+            font-family: Nunito Sans;
+            font-weight: 100;
+            padding: 11px 15px;
+
+
+
+
+            input {
+                display: none;
+            }
+        }
+    }
+
+    tr.indigo-selected {
+
+        &:hover {
+            td {
+                &:nth-child(3) {
+                    background: url(/engines/jahia-anthracite/images/icons/tabs-create-white@X2.png) no-repeat center center;
+
+                    background-size: 19px;
+                    background-color: #f26d4f;
+                    opacity: 1;
+
+                }
+
+                &:nth-child(5) {
+                    background: url(/engines/jahia-anthracite/images/icons/icon_preview_small_white.png) no-repeat center center;
+                    background-color: rgb(242,109,79);
+
+                    background-size: 19px;
+                    background-color: #f26d4f;
+                    opacity: 1;
+
+                }
+            }
+        }
+        td {
+            background: #c1cdd3;
+            color: #5c6164;
+
+        }
+    }
+
+    tr {
+        position: relative;
+        display: block;
+
+        &:hover {
+            td {
+                &:nth-child(3) {
+                    display: block;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+
+                    background: url(/engines/jahia-anthracite/images/icons/tabs-create-white@X2.png) no-repeat center center;
+
+                    background-size: 19px;
+                    background-color: transparent;
+                    height: 22px;
+                    width: 22px;
+                    opacity: 0.8;
+
+                    &:hover {
+                        opacity: 1;
+                    }
+
+                    img {
+                        opacity: 0;
+                    }
+                }
+
+                &:nth-child(5) {
+                    display: block;
+                    position: absolute;
+                    right: 35px;
+                    top: 0;
+
+                    background: url(/engines/jahia-anthracite/images/icons/icon_preview_small_white.png) no-repeat center center;
+                    background-color: rgb(242,109,79);
+
+                    background-size: 19px;
+                    background-color: transparent;
+                    height: 22px;
+                    width: 22px;
+
+                    img {
+                        opacity: 0;
+                    }
+                }
+
+            }
+        }
+    }
+}
+
+#exportStagingButton,
+#exportLiveButton,
+#deleteSiteButton {
+    display: none;
+}
+
+#userSites_table_filter {
+    display: none;
+}
+
+#userSites_table_length {
+    display: none;
+}
+
+#userSites_table_info,
+.dataTables_paginate {
+    display: none;
+}
+
+.well {
+    background: none;
+    border:none;
+}
+
+table,
+tbody,
+tr,
+td {
+    border: none!important;
+}
+
+a[href="/cms/admin/default/en/settings.webProjectSettings.html"] {
+    position: fixed;
+    top: 223px;
+    left: 406px;
+    background: url(/engines/jahia-anthracite/images/icons/add-icon.png) no-repeat center center;
+    width: 30px;
+    height: 30px;
+    text-indent: -50000px;
+    border: none;
+    opacity: 0.5;
+
+
+    &:hover {
+        opacity: 1;
+        background-color: transparent;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+}

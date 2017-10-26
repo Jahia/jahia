@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -251,11 +252,12 @@ public class FileServletTest extends JahiaTestCase {
     }
 
     protected void testCached(String url, String testContent) throws Exception {
-        Map<String, String> responseHeaders = new HashMap<>();
+        Map<String, List<String>> responseHeaders = new HashMap<>();
         String content = getAsText(url, null, HttpServletResponse.SC_OK, responseHeaders);
         assertTrue("Body does not contain the file content", content.contains(testContent));
-        String eTag = responseHeaders.get("ETag");
-        String lastModified = responseHeaders.get("Last-Modified");
+        String eTag = responseHeaders.containsKey("Etag") ? responseHeaders.get("ETag").get(0) : null;
+        String lastModified = responseHeaders.containsKey("Last-Modified") ? responseHeaders.get("Last-Modified").get(0)
+                : null;
 
         assertNotNull("ETag response header is not found", eTag);
         assertNotNull("Last-Modified response header is not found", lastModified);

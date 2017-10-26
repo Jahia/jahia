@@ -171,7 +171,7 @@ public class PrincipalViewHelper implements Serializable {
             final Object[] args = {p, size};
             try {
                 authUserText.append(StringEscapeUtils.escapeXml((String) m.invoke(this, args)));
-                if(i<selectBoxFieldsMethod.size()-1) {
+                if (i < selectBoxFieldsMethod.size() - 1) {
                     authUserText.append("|");
                 }
             } catch (java.lang.reflect.InvocationTargetException ite) {
@@ -237,7 +237,7 @@ public class PrincipalViewHelper implements Serializable {
         } else  if (p instanceof Principal) {
             if (p instanceof JahiaUser) {
                 firstName = ((JahiaUser) p).getProperty("j:firstName");
-                lastName = ((JahiaUser) p).getProperty("j:lastname");
+                lastName = ((JahiaUser) p).getProperty("j:lastName");
             } else {
                 firstName = ((Principal) p).getName();
             }
@@ -497,7 +497,7 @@ public class PrincipalViewHelper implements Serializable {
             final StringBuilder members = new StringBuilder().append("(");
             if (grpMembers != null) {
                 for (JCRNodeWrapper member : grpMembers) {
-                    if (members.length()>1) {
+                    if (members.length() > 1) {
                         members.append(", ");
                     }
                     members.append(getDisplayName(member));
@@ -549,7 +549,7 @@ public class PrincipalViewHelper implements Serializable {
         JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         final Properties searchParameters = new Properties();
         long countLimit = SettingsBean.getInstance().getJahiaJCRUserCountLimit();
-        if(countLimit > 0) {
+        if (countLimit > 0) {
            logger.info("Just first {} users are returned from Jahia JCR repository...", countLimit);
            searchParameters.setProperty(JahiaUserManagerService.COUNT_LIMIT, String.valueOf(countLimit));
         }
@@ -571,7 +571,7 @@ public class PrincipalViewHelper implements Serializable {
             }
             if ("everywhere".equals(storedOn) || providers == null) {
                 return getSearchResult(siteKey, null, jahiaUserManagerService, searchParameters, includeGlobalUsers);
-            } else if ("providers".equals(storedOn)){
+            } else if ("providers".equals(storedOn)) {
                 return getSearchResult(siteKey, providers, jahiaUserManagerService, searchParameters, includeGlobalUsers);
             }
         }
@@ -647,7 +647,7 @@ public class PrincipalViewHelper implements Serializable {
             }
             if ("everywhere".equals(storedOn) || providers == null) {
                 return getGroupSearchResult(siteKey, null, jahiaGroupManagerService, searchParameters, includeGlobalUsers);
-            }else if ("providers".equals(storedOn)){
+            } else if ("providers".equals(storedOn)) {
                 return getGroupSearchResult(siteKey, providers, jahiaGroupManagerService, searchParameters, includeGlobalUsers);
             }
         }
@@ -728,13 +728,20 @@ public class PrincipalViewHelper implements Serializable {
         }
     }
 
-    private static class PrincipalComparator implements Comparator<JCRNodeWrapper>,Serializable {
+    private static class PrincipalComparator implements Comparator<JCRNodeWrapper>, Serializable {
         private static final long serialVersionUID = 7942666955260548143L;
 
+        @Override
         public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
-            if(o1 == o2) { return 0; }
-            if(o1 == null || o1.getName() == null) { return 1; }
-            if(o2 == null || o2.getName() == null) { return -1; }
+            if (o1 == o2) {
+                return 0;
+            }
+            if (o1 == null || o1.getName() == null) {
+                return 1;
+            }
+            if (o2 == null || o2.getName() == null) {
+                return -1;
+            }
 
             final int result = o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
             if (result == 0) {

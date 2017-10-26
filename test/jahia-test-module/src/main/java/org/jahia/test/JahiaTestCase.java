@@ -46,6 +46,8 @@ package org.jahia.test;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.RepositoryException;
@@ -146,12 +148,12 @@ public class JahiaTestCase {
     }
 
     protected String getAsText(String relativeUrl, Map<String, String> requestHeaders, int expectedResponseCode,
-            Map<String, String> collectedResponseHeaders) {
+            Map<String, List<String>> collectedResponseHeaders) {
         String body = StringUtils.EMPTY;
         GetMethod getMethod = createGetMethod(relativeUrl);
         if (requestHeaders != null && !requestHeaders.isEmpty()) {
             for (Map.Entry<String, String> header : requestHeaders.entrySet()) {
-                getMethod.setRequestHeader(header.getKey(), header.getValue());
+                getMethod.addRequestHeader(header.getKey(), header.getValue());
             }
         }
         try {
@@ -160,7 +162,11 @@ public class JahiaTestCase {
             body = getMethod.getResponseBodyAsString();
             if (collectedResponseHeaders != null) {
                 for (Header header : getMethod.getResponseHeaders()) {
-                    collectedResponseHeaders.put(header.getName(), header.getValue());
+                    String headerName = header.getName();
+                    if (!collectedResponseHeaders.containsKey(headerName)) {
+                        collectedResponseHeaders.put(headerName, new LinkedList<String>());
+                    }
+                    collectedResponseHeaders.get(headerName).add(header.getValue());
                 }
             }
         } catch (IOException e) {

@@ -328,9 +328,9 @@ public class RenderService {
             }
 
             // Allows to override template by theme for server settings and site settings
-            if (resource.getNode().isNodeType("jnt:globalSettings") || resource.getNode().isNodeType("jnt:virtualsite")) {
-                String theme = (String) renderContext.getRequest().getSession().getAttribute("jahia.ui.theme");
-                if (theme != null) {
+            String theme = (String) renderContext.getRequest().getSession().getAttribute("jahia.ui.theme");
+            if (theme != null) {
+                if (JCRContentUtils.isNodeType(resource.getNode(), "jnt:globalSettings", "jnt:virtualsite")) {
                     template = addTemplate(resource, renderContext, templateName + "-" + theme, installedModules, type);
                 }
             }

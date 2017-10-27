@@ -1293,6 +1293,30 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     /**
+     * Returns <code>true</code> if the provided node matches one of the specified node types.
+     *
+     * @param node  the node to be tested
+     * @param types an array of node types to be matched.
+     * @return <code>true</code> if the provided node matches one of the specified node types
+     * @throws RepositoryException in case of a JCR error
+     */
+    public static boolean isNodeType(JCRNodeWrapper node, String... types)
+            throws RepositoryException {
+        if (node == null || types == null) {
+            return false;
+        }
+        boolean matches = false;
+        for (String matchType : types) {
+            if (node.isNodeType(matchType)) {
+                matches = true;
+                break;
+            }
+        }
+
+        return matches;
+    }
+
+    /**
      * Returns <code>true</code> if the provided node matches the specified node type (multiple node types can be specified, separated by a
      * comma).
      *

@@ -824,3 +824,14 @@ button.button-disable:hover, div.button-disable:hover {
 .gwt-content-label {
 	margin-left: 5px;
 }
+
+.context-menu-open {
+    background-image: none !important;
+    background-color: #eaeaea !important;
+    border: 1px solid #297acc;
+}
+
+.context-menu-open .x-tree3-node-text {
+    color: blue;
+    font-weight: bold;
+}

@@ -1747,7 +1747,7 @@
 			width: 100%;
 			pointer-events: none;
 
-			max-width: 57%;
+			max-width: calc(100% - 680px);
 			overflow: inherit;
 			white-space: nowrap;
 			text-overflow: ellipsis;

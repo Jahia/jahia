@@ -255,7 +255,7 @@ public class FileServletTest extends JahiaTestCase {
         Map<String, List<String>> responseHeaders = new HashMap<>();
         String content = getAsText(url, null, HttpServletResponse.SC_OK, responseHeaders);
         assertTrue("Body does not contain the file content", content.contains(testContent));
-        String eTag = responseHeaders.containsKey("Etag") ? responseHeaders.get("ETag").get(0) : null;
+        String eTag = responseHeaders.containsKey("ETag") ? responseHeaders.get("ETag").get(0) : null;
         String lastModified = responseHeaders.containsKey("Last-Modified") ? responseHeaders.get("Last-Modified").get(0)
                 : null;
 

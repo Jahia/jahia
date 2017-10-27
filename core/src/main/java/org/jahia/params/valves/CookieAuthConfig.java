@@ -44,6 +44,7 @@
 package org.jahia.params.valves;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Cookie authentication valve configuration.
@@ -60,6 +61,7 @@ public class CookieAuthConfig implements Serializable {
     
     private boolean httpOnly = true;
 
+    @Deprecated
     private int idLength = 40;
 
     private int maxAgeInSeconds = 2592000;
@@ -74,6 +76,11 @@ public class CookieAuthConfig implements Serializable {
         return cookieName;
     }
 
+    /**
+     * @deprecated the mechanism to generate the cookie value is using now the {@link UUID} class, so this length parameter is no longer
+     *             effective.
+     */
+    @Deprecated
     public int getIdLength() {
         return idLength;
     }
@@ -114,6 +121,11 @@ public class CookieAuthConfig implements Serializable {
         this.httpOnly = httpOnly;
     }
 
+    /**
+     * @deprecated the mechanism to generate the cookie value is using now the {@link UUID} class, so this length parameter is no longer
+     *             effective.
+     */
+    @Deprecated
     public void setIdLength(int idLength) {
         this.idLength = idLength;
     }

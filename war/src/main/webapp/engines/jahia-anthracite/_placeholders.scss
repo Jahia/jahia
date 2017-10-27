@@ -889,7 +889,7 @@
         padding: 8px 9px !important;
         border: none;
 
-        @include text(11px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---LIGHT);
+        @include text(13px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---LIGHT);
     }
 
     %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER {

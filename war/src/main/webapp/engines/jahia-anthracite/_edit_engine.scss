@@ -1742,10 +1742,18 @@
 		.x-panel-header-text {
 			// Element Title
 			position: absolute;
-		    top: 77px;
-		    left: 385px;
+			top: 77px;
+			left: 385px;
 			width: 100%;
-    		pointer-events: none;
+			pointer-events: none;
+
+			max-width: 57%;
+			overflow: inherit;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			height: 64px !important;
+			line-height: 54px;
+			margin-top: -18px;
 
 			@extend %CSS_BLOCK--EDIT_ENGINE--TITLE;
 

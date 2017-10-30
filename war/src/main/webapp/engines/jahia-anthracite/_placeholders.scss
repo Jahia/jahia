@@ -630,25 +630,64 @@
 	// PICKER SEARCH
 		%CSS_BLOCK--FORM--TEXT_INPUT\:PICKER_FILTER {
 			// width: 120px!important;
-			background: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR;
+			// background: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR;
+			background-color: #d9dbdd;
 			background-image: url($ICON--SEARCH--SMALL_GREY);
 			background-repeat: no-repeat;
-			background-position: left 5px center;
+			background-position: left 5px top 6px;
 			background-size: 10px 10px;
 			padding: 1px 15px 2px 19px !important;
 
-			@include text($FORM--TEXT_INPUT--FONT--SIZE, $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+			&::-webkit-input-placeholder{
+				color: $COLOUR--GREY_CLOUDS;
+			}
+			&:-moz-placeholder{
+				color: $COLOUR--GREY_CLOUDS;
+			}
+			&::-moz-placeholder{
+				color: $COLOUR--GREY_CLOUDS;
+			}
+			&:-ms-input-placeholder {
+				color: $COLOUR--GREY_CLOUDS;
+			}
+
+			// @include text($FORM--TEXT_INPUT--FONT--SIZE, $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+			@include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--DARK_CLOUDS, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
 		}
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_FILTER {
-			background-color: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---HOVER;
+			background-image: url($ICON--SEARCH--SMALL_GREY);
+			background-repeat: no-repeat;
+			background-position: left 5px top 6px;
+			background-size: 10px 10px;
+			background-color: $COLOUR--WHITE_CLOUDS;
+
+
+
 			color: $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---HOVER !important;
 		}
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:PICKER_FILTER {
-			background-image: url($ICON--SEARCH--SMALL_WHITE);
-			background-color: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---FOCUS !important;
-			color: $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+			background-image: url($ICON--SEARCH--SMALL_GREY);
+			background-repeat: no-repeat;
+			background-position: left 5px top 6px;
+			background-size: 10px 10px;
+			background-color: $COLOUR--WHITE_CLOUDS;
+
+			&::-webkit-input-placeholder{
+				color: rgba($COLOUR--RAIN_CLOUDS, .5);
+			}
+			&:-moz-placeholder{
+				color: rgba($COLOUR--RAIN_CLOUDS, .5);
+			}
+			&::-moz-placeholder{
+				color: rgba($COLOUR--RAIN_CLOUDS, .5);
+			}
+			&:-ms-input-placeholder {
+				color: rgba($COLOUR--RAIN_CLOUDS, .5);
+			}
+
+			color: $COLOUR--DARK_CLOUDS !important;
 		}
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:PICKER_FILTER {
@@ -658,21 +697,36 @@
 
 	// PICKER SORT
 		%CSS_BLOCK--FORM--TEXT_INPUT\:PICKER_SORT {
-			width: 120px!important;
-			background: $PICKER_SORT--TEXT_INPUT--BG--COLOUR;
+			width: 80px!important;
+			// background: $PICKER_SORT--TEXT_INPUT--BG--COLOUR;
+			background-color: #d9dbdd;
 			padding: 1px 15px 2px 5px!important;
 
-			@include text($FORM--TEXT_INPUT--FONT--SIZE, $PICKER_SORT--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+			&::-webkit-input-placeholder{
+				color: $COLOUR--GREY_CLOUDS;
+			}
+			&:-moz-placeholder{
+				color: $COLOUR--GREY_CLOUDS;
+			}
+			&::-moz-placeholder{
+				color: $COLOUR--GREY_CLOUDS;
+			}
+			&:-ms-input-placeholder {
+				color: $COLOUR--GREY_CLOUDS;
+			}
+
+			// @include text($FORM--TEXT_INPUT--FONT--SIZE, $PICKER_SORT--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+			@include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--DARK_CLOUDS, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
 		}
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_SORT {
-			background: $PICKER_SORT--TEXT_INPUT--BG--COLOUR---HOVER;
-			color: $PICKER_SORT--TEXT_INPUT--FONT--COLOUR---HOVER !important;
+			background-color: $COLOUR--WHITE_CLOUDS;
+			color: $COLOUR--DARK_CLOUDS !important;
 		}
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:PICKER_SORT {
-			background: $PICKER_SORT--TEXT_INPUT--BG--COLOUR---FOCUS !important;
-			color: $PICKER_SORT--TEXT_INPUT--FONT--COLOUR---FOCUS !important;
+			background-color: $COLOUR--WHITE_CLOUDS !important;
+			color: $COLOUR--DARK_CLOUDS !important;
 		}
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:PICKER_SORT {
@@ -1419,21 +1473,23 @@
 
 	// INVERT
 	%CSS_BLOCK--BUTTON--TEXT\:TOGGLE_ASC {
-	    background: #a3a3a3 !important;
+	    background-color: transparent !important;
 	    background-image: url($ICON--ASC--WHITE)!important;
 	    text-indent: -50000px;
 	    width: 22px!important;
 	    background-position: center center!important;
 	    background-repeat: no-repeat!important;
-	    background-size: 11px!important;
+	    background-size: 15px!important;
 	    height: 21px!important;
 		opacity: 0.8;
+
 
 
 	}
 
 	%CSS_BLOCK--BUTTON--TEXT---HOVER\:TOGGLE_ASC {
 		opacity: 1;
+		background-color: #6a6e70 !important;
     }
 
 

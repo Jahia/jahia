@@ -1,4 +1,3 @@
-$PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
 
 #JahiaGxtManagerLeftTree .x-component.x-panel .x-panel-header {
 	position: absolute!important;
@@ -26,32 +25,257 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 	left: 0!important;
 	top: 10px!important;
 
+	// Side Panel has been collapsed
+	&.indigo-collapsed {
+
+		.x-window-bbar {
+			width: calc(100% - 20px)!important;
+		}
+
+		#JahiaGxtManagerTobTable {
+			left: 20px!important;
+			width: calc(100% - 20px)!important;
+		}
+
+		#toggle-picker-files {
+			left: 0;
+			background: url(./images/icons/expand-side-panel@X2.png) no-repeat center center;
+		}
+
+		#JahiaGxtManagerLeftTree {
+			display: none;
+		}
+
+		#JahiaGxtManagerLeftTree + div #images-view .x-toolbar {
+			left: 26px;
+		}
+
+	}
+
+	// Show More Info and Preview buttons ( whilst hovering image )
+	.x-grid3-row:hover,
+	.thumb-wrap:hover {
+		.more-info-button,
+		.preview-button {
+			display: block;
+		}
+	}
+
+	// Set background of More Info and Preview buttons ( selected image )
+	.x-grid3-row.x-grid3-row-selected,
+	.thumb-wrap.x-view-item-sel {
+		.more-info-button,
+		.preview-button {
+			background-color: #00a0e3;
+		}
+	}
+
+	// More info and Preview buttons used on Thumbs / Rows
+	.more-info-button,
+	.preview-button {
+		position: absolute;
+		top: -31px;
+		text-indent: -50000px;
+		width: 25px;
+	    height: 25px;
+		z-index: 99999;
+	    display: none;
+	    border: none;
+
+		body[indigo-picker-display="thumbs"] &,
+		body[indigo-picker-display="list"] &  {
+			top: 0;
+		}
+
+		&.indigo-show-button {
+			display: block;
+		}
+
+		&:hover {
+			cursor: pointer;
+		}
+		background: no-repeat center center #767b7e;
+	}
+
+	// More info button used on Thumbs / Rows
+	.more-info-button {
+	    right: 0;
+		background-image: url($ICON--MORE_OPTIONS---WHITE);
+		background-size: 10px 2px;
+	}
+
+	// Preview button used on Thumbs / Rows
+	.preview-button {
+	    right: 25px;
+		background-image:url(./images/icons/icon_preview_small_white.png);
+	}
+
+	// Thumb slider used to control the amount of columns in thumb view
+	#thumb-size-slider {
+		position: fixed;
+		top: 1px;
+		right: 90px;
+		z-index: 9999;
+		width: 50px;
+
+		// Hide when in list view
+		body[indigo-picker-display="list"] & {
+			display: none;
+		}
+
+		// Styling
+		-webkit-appearance: none;
+		margin: 18px 0;
+
+		body.ext-gecko & {
+			margin: 11px 0;
+		}
+
+		&:focus {
+		  outline: none;
+		}
+
+		&::-webkit-slider-runnable-track {
+			width: 100%;
+			height: 2px;
+			cursor: pointer;
+			background: #8a8e90;
+		}
+
+		&::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			height: 12px;
+			width: 12px;
+			border-radius: 100%;
+			background: #d9dbdd;
+			cursor: pointer;
+			margin-top: -5px;
+		}
+
+		&:focus::-webkit-slider-runnable-track {
+			background: #8a8e90;
+		}
+
+		&::-moz-range-track {
+			width: 100%;
+			height: 2px;
+			cursor: pointer;
+			background: #8a8e90;
+		}
+
+		&::-moz-range-thumb {
+			height: 12px;
+			width: 12px;
+			border-radius: 100%;
+			background: #d9dbdd;
+			cursor: pointer;
+		}
+	}
+
+
+
+
+	// Used to toggle the side panel
+	#toggle-picker-files {
+		position: fixed;
+		top: calc(50% - 45px);
+		left: 320px;
+		background: red;
+		color: white;
+		z-index: 99999;
+
+		text-indent: -50000px;
+		width: 20px;
+		height: 20px;
+
+		border: none;
+		opacity: 0.8;
+
+		background: url(./images/icons/collapse-side-panel@X2.png) no-repeat center center;
+
+		&:hover {
+			opacity: 1;
+			cursor: pointer;
+		}
+	}
+
+	// COMMON ICON REPLACEMENTS IN TREE
+	img[src$="/jnt_folder.png"],
+	img[src$="/jnt_virtualsite.png"],
+	img[src$="/jnt_mounts.png"] {
+		padding-left: 20px;
+		overflow: hidden;
+		display: inline-block;
+		box-sizing: border-box;
+		width: 20px;
+		height: 20px;
+		margin-right: 4px;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: 23px;
+		opacity: 0.5;
+	}
+
+	// FOLDER ICON
+	img[src$="/jnt_folder.png"] {
+		background-image: url(./images/icons/tabs-files-dark@X2.png);
+	}
+
+	// SITE ICON
+	img[src$="/jnt_virtualsite.png"] {
+		background-image: url(./images/icons/tabs-site-dark@X2.png);
+	}
+
+	// MOUNTS ICON
+	img[src$="/jnt_mounts.png"] {
+		background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+	}
+
+	.x-grid3-row-selected {
+		// COMMON ICON REPLACEMENTS
+		img[src$="/jnt_folder.png"],
+		img[src$="/jnt_virtualsite.png"],
+		img[src$="/jnt_mounts.png"] {
+			opacity: 1;
+		}
+
+		// FOLDER ICON --- SELECTED
+		img[src$="/jnt_folder.png"] {
+			background-image: url(./images/icons/icon-folder-small-closed.png);
+		}
+
+		// SITE ICON --- SELECTED
+		img[src$="/jnt_folder.png"] {
+			background-image: url(./images/icons/tabs-files@X2.png);
+		}
+
+		// SITE ICON --- MOUNTS
+		img[src$="/jnt_mounts.png"] {
+			background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+		}
+	}
+
 	// Fix problem with Firefox
 	body.ext-gecko & {
 		top: 0px!important;
 	}
 
-	/*z-index: $ZINDEX--PICKER_WINDOW;*/
-	// Removed to fix picker modal on translation engine.
-	// Doesn't affect anywhere else but further testing should be made.
-
-	background: $PICKER--BG--COLOUR;
+	background: $COLOUR--WHITE_CLOUDS;
 
 	body[data-INDIGO-PICKER-SEARCH="open"] & {
 		background: $COLOUR--RAIN_CLOUDS;
-
 	}
 
+	// Used to refresh the tree ( and the displayed images )
 	.x-tool-refresh {
 		background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center;
-		background-color: $COLOUR--RAIN_CLOUDS;
-	    height: 20px;
-	    width: 20px;
-	    border-radius: 100%;
-	    position: fixed;
-	    right: 107px;
-	    top: 41px;
-	    background-size: 14px 11px;
+		background-color: #b2b2b2;
+		height: 24px;
+		width: 25px;
+		position: fixed;
+		left: 276px;
+		top: 76px;
+		background-size: 12px 10px;
 
 		&:hover {
 			background-color: lighten($COLOUR--RAIN_CLOUDS, 9%);
@@ -62,15 +286,21 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 	// HEADER HEIGHT
 	.x-window-tl {
-		height: 74px;
-		// background: blue;
+		height: 76px;
+		padding: 0 30px!important;
+
+		pointer-events: none;
+
+		.x-window-tr {
+			position: absolute;
+			bottom: 10px;
+		}
 	}
 
 	// BODY WRAPPER
 	.x-window-bwrap {
-		height: calc(100% - 74px);
-		// background: green;
-		padding: 0 47px;
+		height: calc(100% - 76px);
+		padding: 0 31px;
 
 	}
 
@@ -90,8 +320,10 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 		width: 100%!important;
 	}
 
-
-
+	.x-panel-body {
+		overflow-x: hidden!important;
+		background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);
+	}
 
 	// BODY TOOL BAR
 	.x-panel-tbar {
@@ -120,68 +352,76 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 			// Hide all toolbar options
 			display: none;
 
-			// PREVIEW BUTTON STUFF
-			&.toolbar-item-filepreview {
+			// Common to both New Folder button and Upload button
+			&.toolbar-item-newfolder,
+			&.toolbar-item-upload {
 				position: fixed;
+				top: 6px;
 				pointer-events: all;
-				right: auto;
-
+				opacity: 1 !important;
+				display: block !important;
 				width: 25px;
-				height: 25px;
-				opacity: 1!important;
+			    height: 25px;
+				opacity: 0.8!important;
 
-				@extend %CSS_BLOCK--PREVIEW_BUTTON---UP;
-
-				body[data-INDIGO-PICKER-SEARCH="open"] & {
-					@extend %CSS_BLOCK--PREVIEW_BUTTON---UP\:SEARCH;
+				tbody {
+					display: none;
 				}
-
-				&:hover {
-					// @extend %CSS_BLOCK--PREVIEW_BUTTON---HOVER;
-				}
-
-
-				display: none;
 
 				img {
 					display: none;
 				}
 
-				&[indigo-preview-button="show"] {
-					display: block;
+				&.x-item-disabled {
+					display: block!important;
+
 				}
 
-				&[indigo-preview-button-state="selected"] {
-					@extend %CSS_BLOCK--PREVIEW_BUTTON---SELECTED;
-
-					background-color: $COLOUR--JAHIA_BLUE!important;
+				&:hover {
 					opacity: 1!important;
-
-					body[data-INDIGO-PICKER-SEARCH="open"] & {
-						@extend %CSS_BLOCK--PREVIEW_BUTTON---SELECTED\:SEARCH;
-					}
-
+					cursor: pointer;
 				}
-
 			}
 
-
-			&.x-item-disabled {
-				display: none!important;
+			// New Folder button
+			&.toolbar-item-newfolder {
+			    left: 348px;
+				opacity: 1 !important;
+			    background: url(./images/icons/add-folder@X2.png) no-repeat center center;
+			    background-size: 21px;
 			}
 
-			// VIEW BUTTONS
+			// Upload File icon
+			&.toolbar-item-upload {
+			    left: 381px;
+				background: url(./images/icons/add-media@X2.png) no-repeat top 0px center;
+				background-size: 23px;
+			}
+
+			// DISPLAY BUTTONS
 			&.toolbar-item-listview,
 			&.toolbar-item-thumbsview,
 			&.toolbar-item-detailedview {
-				display: block;
+				display: block!important;
 				pointer-events: all;
 				width: 25px;
 				height: 25px;
-
+				background-color: transparent;
+				background-position: center;
+				background-size: 10px;
+				background-repeat: no-repeat;
+				position: fixed;
+				top: 6px;
+				z-index: 999999;
+				margin: 0;
 				opacity: 0.3;
 
-				img {
+				button {
+					width: 25px!important;
+				}
+
+				img,
+				tbody {
 					display: none;
 				}
 
@@ -192,43 +432,59 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 			// LIST VIEW
 			&.toolbar-item-listview {
-				background: url($ICON--DISPLAY--LIST--GREY) no-repeat center center;
+				background-image: url($ICON--DISPLAY--LIST--WHITE);
+			    background-size: 11px 10px;
+				right: 8px;
 
 				body[indigo-PICKER-DISPLAY="list"] & {
-					opacity: 0.8;
+					background-image: url($ICON--DISPLAY--LIST--GREY);
+					opacity: 1;
+					background-color: #d9dbdd;
 				}
 			}
 
 			// THUMBS VIEW
 			&.toolbar-item-thumbsview {
-				background: url($ICON--DISPLAY--THUMBS--GREY) no-repeat center center;
+				background-image: url($ICON--DISPLAY--DETAILS--WHITE);
+				right: 32px;
 
 				body[indigo-PICKER-DISPLAY="thumbs"] & {
-					opacity: 0.8;
+					background-image: url($ICON--DISPLAY--DETAILS--GREY);
+					opacity: 1;
+					background-color: #d9dbdd;
 				}
 			}
 
 			// DETAILED VIEW
 			&.toolbar-item-detailedview {
-				background: url($ICON--DISPLAY--DETAILS--GREY) no-repeat center center;
-				display: none;
+				background-image: url($ICON--DISPLAY--THUMBS--WHITE);
+				right: 56px;
 
 				body[indigo-PICKER-DISPLAY="details"] & {
-					opacity: 0.8;
+					background-image: url($ICON--DISPLAY--THUMBS--GREY);
+					opacity: 1;
+					background-color: #d9dbdd;
 				}
+			}
+
+			&.x-item-disabled {
+				display: none!important;
 			}
 		}
 
-		// FILE OPERATIONS
-		.x-toolbar-left {
-
-		}
-
-		// DISPLAY OPTIONS
+		// Action Bar Holder ( ask for class )
 		#JahiaGxtManagerToolbar .x-toolbar-right {
 		    position: fixed;
 			right: 52px;
 			top: 38px;
+
+			.x-toolbar-right-row {
+				.x-toolbar-cell {
+					> table {
+						display: none;
+					}
+				}
+			}
 
 			body[data-INDIGO-PICKER-SEARCH="open"] & {
 				display: none;
@@ -252,59 +508,53 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 	}
 	.x-window-header-text {
 		pointer-events: all;
-		margin: 27px 0 0 44px;
 		display: block;
 		@include text(36px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
 	}
 
-
-
 	// TREE
 	#JahiaGxtManagerLeftTree {
-		height: calc(100% - 120px)!important; // Make room for save, close buttons
-		width: 320px !important;
+		height: 100%!important; // Make room for save, close buttons
+		width: 290px !important;
 	    vertical-align: top;
 	    display: inline-block;
 	    position: relative!important;
 		margin-right: 20px;
 
-		.x-grid3-row {
 
-			.x-tree3-el {
+		// More Options "button" ...
+		.x-grid3-row .x-tree3-el {
+			pointer-events: none;
+			width: 100%!important;
 
-				pointer-events: none;
-				width: 100%!important;
-
-				&::after {
-					pointer-events: all;
-					content: "Hey";
-					text-indent: -50000px;
-					background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
-					background-size: 10px 2px;
-					width: 28px;
-					height: 25px;
-					position: absolute;
-					right: -1px;
-					top: 0;
-					cursor: pointer;
-					z-index: 99999999999;
-					opacity: 0;
-
-
-				}
-
-			}
-
-			&.x-grid3-row-over .x-tree3-el::after {
-				opacity: 1;
-			}
-
-			&.x-grid3-row-selected .x-tree3-el::after {
-				background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+			&::after {
+				pointer-events: all;
+				content: "Hey";
+				text-indent: -50000px;
+				background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
 				background-size: 10px 2px;
+				width: 28px;
+				height: 25px;
+				position: absolute;
+				right: -1px;
+				top: 0;
+				cursor: pointer;
+				z-index: 99999999999;
+				opacity: 0;
 			}
-
 		}
+
+		// Show more options ( roll over )
+		.x-grid3-row-over .x-tree3-el::after {
+			opacity: 1;
+		}
+
+		// Set more options icon to selected
+		.x-grid3-row-selected .x-tree3-el::after {
+			background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+			background-size: 10px 2px;
+		}
+
 
 		// SEARCH TAB
 		form {
@@ -345,8 +595,6 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 			}
 		}
 
-
-
 		// Browse / Search Tabs
 		.x-tab-panel-header {
 			width: 100%!important;
@@ -358,21 +606,13 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 			// HIJACK TO USE AS TRIGGER FOR COMBO BOX
 			.x-tab-strip-spacer {
 				position: fixed;
-				top: 74px;
-				left: 47px;
-				width: 320px;
-				height: 32px;
+				top: 76px;
+				left: 31px;
+				width: 247px;
+				height: 24px;
 				background: red;
 				z-index: 999;
 				opacity: 0;
-
-				body.ext-gecko & {
-					top: 81px;
-				}
-
-				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
-					// display: none;
-				}
 			}
 
 			.x-tab-strip-wrap {
@@ -388,7 +628,6 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 							margin: 0;
 							position: fixed;
 							z-index: 99999;
-							// background-image: url($ICON--CLOSE_LARGE---GREY);
 							width: 20px;
 							height: 20px;
 
@@ -397,12 +636,6 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 							top: 41px;
 						    left: 26px;
 							pointer-events: none;
-
-							// left: -50000px;
-							//
-							// body[data-INDIGO-PICKER-SEARCH="open"] & {
-							// 	left: 31px;
-							// }
 
 							a {
 								background: none!important;
@@ -447,8 +680,8 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 						&:nth-child(2) {
 							margin: 0;
 							position: fixed;
-							top: 0px;
-							left:260px;
+							top: 11px;
+						    left: 246px;
 							z-index: 9999999999999;
 
 
@@ -463,8 +696,6 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 								background: url($ICON--SEARCH--SMALL_GREY) no-repeat center center;
 								background-color: lighten($COLOUR--DUSTY_CLOUDS, 10%);
 								border-radius: 100%;
-								margin-top: 13px;
-								margin-left: 10px;
 								z-index: 9999999999999;
 								pointer-events: all;
 								position: relative;
@@ -514,8 +745,6 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 			}
 		}
 
-
-
 		// Tree Container
 		.x-tab-panel-body {
 			// Container
@@ -528,7 +757,6 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 				// BROWSE TAB CONTAINER
 				&:nth-child(1) {
-					// background: aqua;
 					display: block!important;
 
 					&.x-hide-display + div.x-component {
@@ -580,7 +808,6 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				    top: 0;
 				    width: 100%!important;
 				    left: 0;
-					// background: $PICKER--BG--COLOUR!important;
 					z-index: 9999;
 
 					// FIX CONTAINER HEIGHTS
@@ -689,8 +916,6 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 									&:nth-child(3) {
 										display: inline-block;
 										table {
-
-
 											// STYLE BUTTON
 											.x-btn-text {
 												width: auto!important;
@@ -704,10 +929,6 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 													box-sizing: border-box;
 
 													padding: 5px 10px 5px 10px;
-
-													// position: fixed;
-													// top: 0;
-													// right: 0;
 
 
 													@extend %CSS_BLOCK--BUTTON--ICON\:SEARCH_PANEL;
@@ -769,12 +990,6 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 		// UNSELECTED PANEL TAB
 
-		.x-panel {
-			.x-panel-header {
-				// pointer-events: none; // STOP CLICKING ON CURRENT OPENED SITE TAB, AS IT HIDES IT !!
-			}
-
-		}
 
 		.x-panel-collapsed {
 			.x-panel-header {
@@ -815,14 +1030,13 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 		.x-panel-header {
 
-		    width: 100%!important;
+		    width: calc(100% - 8px) !important;
 		    text-align: left;
 		    padding: 0;
 		    position: relative;
 		    z-index: 9;
 
 			box-sizing: border-box;
-			box-shadow: inset -18px 0px $FORM--COMBO--BG--COLOUR---UP;
 
 			body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
 				box-shadow: none;
@@ -854,8 +1068,12 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				display: block;
 
 				background-repeat: no-repeat;
-				background-position: right center;
-		        background-image: url($FORM--COMBO--ICON---UP);
+				background-position: right 4px center;
+		        background-image: url($ICON--ARROW_DOWN---GREY);
+				background-color: #e8e8e8;
+
+				width: calc(100% - 35px);
+				box-sizing: border-box;
 
 				@extend %CSS_BLOCK--FORM--TEXT_INPUT;
 
@@ -870,7 +1088,6 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				box-shadow: inset -18px 0px $FORM--COMBO--BG--COLOUR---HOVER;
 
 				.x-panel-header-text {
-					// background-color: $FORM--TEXT_AREA--BG--COLOUR---FOCUS;
 					background-repeat: no-repeat;
 					background-position: right center;
 					background-image: url($FORM--COMBO--ICON---HOVER);
@@ -897,8 +1114,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 	// TREE CONTENT CONTAINER
 	#JahiaGxtManagerLeftTree + div {
-		width: calc(100% - 340px) !important;
-	    // background: orange;
+		width: calc(100% - 310px) !important;
 	    left: auto!important;
 	    position: relative!important;
 	    display: inline-block;
@@ -913,35 +1129,29 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 		.x-grid3-row {
 
+			position: relative;
+
+
+			&.x-grid3-row-selected,
+			&.x-grid3-row-selected.x-grid3-row-over {
+				background: $COLOUR--JAHIA_BLUE!important;
+			}
+
+			&.x-grid3-row-over {
+				background: #767b7e!important;
+			}
+
+			.x-grid3-col-name,
+			.x-grid3-col-size {
+				color: rgba(241, 241, 241, 0.7)!important;
+			}
+
 			.x-grid3-td-size {
 
 				pointer-events: none;
 				width: 100%!important;
 
-				&::after {
 
-					@extend %CSS_BLOCK--MORE_INFO---UP;
-
-					pointer-events: all;
-					content: "Hey";
-					text-indent: -50000px;
-
-					width: 28px;
-					height: 25px;
-
-					position: absolute;
-					right: 0;
-					cursor: pointer;
-					margin-top: -26px;
-					z-index: 99999999999;
-					opacity: 0;
-
-					body[data-indigo-picker-search="open"] & {
-						@extend %CSS_BLOCK--MORE_INFO---UP\:SEARCH;
-
-					}
-
-				}
 
 			}
 
@@ -960,16 +1170,15 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 		#images-view {
 			// Toolbar for thumb view
 			background: transparent;
-			padding-top: 33px;
 			box-sizing: border-box;
 
 			.x-toolbar {
 				pointer-events: all;
-			    width: calc(100% - 437px) !important;
-			    left: auto;
+			    width: 317px !important;
+			    left: 423px;
 			    right: 52px;
 			    position: absolute;
-			    top: 74px;
+			    top: 6px;
 			    padding-bottom: 7px;
 			    box-sizing: border-box;
 
@@ -996,24 +1205,48 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 						// SEARCH FIELD
 						&:nth-child(2) {
-							.x-form-text {
-								@include text_input("PICKER_FILTER");
+							.x-form-field-wrap {
+								margin-right: 5px!important;
+
+								.x-form-text {
+									@include text_input("PICKER_FILTER");
+									padding: 3px 15px 4px 19px!important;
+
+									width: 80px!important;
+								}
+
+								.x-form-trigger {
+									height: 25px!important;
+								}
 							}
+
+						}
+
+						// SORT LABEL
+						&:nth-child(4) {
+							display: none;
 						}
 
 						// SORT COMBO
 						&:nth-child(5) {
 							.x-form-text {
 								@include text_input("PICKER_SORT");
+								padding: 3px 15px 4px 9px!important;
+							}
+
+							.x-form-trigger {
+								height: 25px!important;
 							}
 						}
 
 						// INVERT BUTTON
 						&:nth-child(6) {
-							margin-left: 5px;
 							@include button("TOGGLE_ASC");
 
-
+							 .x-btn.x-btn-noicon button {
+								width: 25px!important;
+								height: 25px!important;
+							}
 
 							> table {
 								> tbody {
@@ -1023,27 +1256,19 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 								}
 
-								&.x-btn-pressed {
-									&:before {
-										content: $text_descending;
-									}
-								}
 
-								&:before {
-									content: $text_ascending;
-								    display: inline-block;
-								    vertical-align: middle;
-
-									@extend %CSS_BLOCK--FORM--LABEL;
-
-
-
-								}
 							}
 
 							.x-btn-pressed {
 								&.x-btn.x-btn-noicon button {
 									background-image: url($ICON--DESC--WHITE)!important;
+
+									&:hover {
+										background-color: #6a6e70 !important;
+
+									}
+
+
 
 								}
 							}
@@ -1063,14 +1288,81 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				// ZOOM CONTAINER
 				.x-toolbar-right {
 
+					// ZOOM SLIDER
+					.x-slider {
+						position: fixed;
+						top: 6px;
+					    right: 127px;
+						border:1px solid purple;
+
+						display: none;
+
+					}
 				}
 			}
 
 			// THUMB CONTAINER
 			.x-view {
 				width: 100%!important;
-				height: 100%!important;
+				height: auto !important;
+				min-height: 100%!important;
 				background: transparent;
+				box-shadow: -1px 1px 7px #37393a;
+				padding: 20px;
+				box-sizing: border-box;
+
+				border-top: 1px solid rgba(72, 74, 76, 0.26);
+
+				-webkit-column-count: 3;
+				-webkit-column-gap: 10px;
+				-webkit-column-fill: auto;
+				-moz-column-count: 3;
+				-moz-column-gap: 10px;
+				-moz-column-fill: auto;
+				column-count: 5;
+				column-gap: 20px;
+				column-fill: balance;
+
+				&[indigo-thumb-zoom="1"] {
+					column-count: 6;
+				}
+
+				&[indigo-thumb-zoom="2"] {
+					column-count: 5;
+				}
+
+				&[indigo-thumb-zoom="3"] {
+					column-count: 4;
+				}
+
+				&[indigo-thumb-zoom="4"] {
+					column-count: 3;
+				}
+
+				&[indigo-thumb-zoom="5"] {
+					column-count: 2;
+				}
+
+				&[indigo-thumb-zoom="6"] {
+					column-count: 1;
+				}
+
+				> div {
+					display: inline-block;
+					-webkit-column-break-inside: avoid;
+					-moz-column-break-inside: avoid;
+					column-break-inside: avoid;
+					opacity: 1;
+
+					-webkit-transition: all .2s ease;
+					-moz-transition: all .2s ease;
+					-o-transition: all .2s ease;
+					transition: all .2s ease;
+
+					img {
+						width: 100%!important;
+					}
+				}
 
 				body[data-INDIGO-PICKER-SEARCH="open"] & {
 					height: calc(100% - 110px) !important;
@@ -1081,7 +1373,7 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 				background: none!important;
 
 				.thumb {
-					background: $COLOUR--CREAM_CLOUDS;
+					background: #767b7e;
 				}
 
 				&.x-view-item-sel {
@@ -1097,15 +1389,44 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 			.thumb-wrap {
 				height: initial!important;
 				max-height: initial!important;
-				width: initial!important;
-				margin: 0!important;
-				min-width: 100px;
+				margin: 0 0 20px 0!important;
+				width: 100%!important;
 
-				&.x-view-over {
+
+
+				&:hover {
+					z-index: 999999999999999;
+				}
+
+				&.x-view-over,
+				&.indigo-force-open {
+
+
+
 					span {
-						background: $COLOUR--CREAM_CLOUDS;
-						color: $COLOUR--RAIN_CLOUDS;
+						background: #767b7e;
+						color: rgba($COLOUR--WHITE_CLOUDS, .9);
 					}
+
+					> div:last-child {
+						clear: left;
+						position: absolute;
+						top: -40px!important;
+						left: -10px;
+						width: calc(100% + 20px);
+						background: red;
+						z-index: 99;
+						display: block;
+						height: calc(100% + 50px)!important;
+						text-indent: -50000px;
+						background: radial-gradient(ellipse at bottom right, #6d7174 0%, #767b7e 70%);
+						box-shadow: 1px 4px 10px #3a3b3d;
+						box-sizing: border-box;
+					}
+
+
+
+
 				}
 
 				&.x-view-item-sel {
@@ -1113,15 +1434,92 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 					span {
 						background: $COLOUR--JAHIA_BLUE!important;
-						color: $COLOUR--WHITE_CLOUDS;
+						color: rgba($COLOUR--WHITE_CLOUDS, .9);
 					}
+
+					> div:last-child {
+						/* padding-left: 10px; */
+						/* padding-top: 10px; */
+						clear: left;
+						position: absolute;
+						top: 0px;
+						left: 0px;
+						width: 100%;
+						z-index: 9999;
+						display: block;
+						height: 100%;
+						text-indent: -50000px;
+						background: transparent;
+						box-sizing: border-box;
+						border: 5px solid #00a0e3;
+					}
+
+
+				}
+
+				&.x-view-item-sel.x-view-highlightrow {
+					background: $COLOUR--JAHIA_BLUE;
+
+					span {
+						background: $COLOUR--JAHIA_BLUE!important;
+						color: rgba($COLOUR--WHITE_CLOUDS, .9);
+					}
+
+					> div:last-child {
+						/* padding-left: 10px; */
+						/* padding-top: 10px; */
+						clear: left;
+						position: absolute;
+						top: -10px;
+						left: -10px;
+						width: calc(100% + 20px);
+						background: red;
+						z-index: 99;
+						display: block;
+						height: calc(100% + 20px);
+						text-indent: -50000px;
+						background: #00a0e3;
+						box-shadow: 1px 4px 10px #3a3b3d;
+						box-sizing: border-box;
+					}
+
+
+				}
+
+				&.x-view-item-sel.x-view-highlightrow.x-view-over {
+					background: $COLOUR--JAHIA_BLUE;
+
+					span {
+						background: $COLOUR--JAHIA_BLUE!important;
+						color: rgba($COLOUR--WHITE_CLOUDS, .9);
+					}
+
+					> div:last-child {
+						/* padding-left: 10px; */
+						/* padding-top: 10px; */
+						clear: left;
+						position: absolute;
+						top: -40px;
+						left: -10px;
+						width: calc(100% + 20px);
+						background: red;
+						z-index: 99;
+						display: block;
+						height: calc(100% + 50px);
+						text-indent: -50000px;
+						background: #00a0e3;
+						box-shadow: 1px 4px 10px #3a3b3d;
+						box-sizing: border-box;
+					}
+
+
 				}
 
 				// TITLE / FILE SIZE
 				span {
 					background: transparent;
 					text-align: center;
-					@include text(11px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---NORMAL);
+					@include text(11px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---NORMAL);
 
 					&:last-child {
 						padding-bottom: 10px;
@@ -1130,33 +1528,17 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 				.thumb {
 					padding: 10px!important;
-
-					pointer-events: none;
 					width: 100%!important;
 
-					&::after {
-						@extend %CSS_BLOCK--MORE_INFO---UP;
-
-						pointer-events: all;
-						content: "Hey";
-						text-indent: -50000px;
-						width: 28px;
-						height: 25px;
-						position: absolute;
-						right: 0;
-						cursor: pointer;
-						margin-top: -26px;
-						z-index: 99999999999;
-						opacity: 0;
-						top: 26px;
-
-
-
-						body[data-indigo-picker-search="open"] & {
-							@extend %CSS_BLOCK--MORE_INFO---UP\:SEARCH;
-						}
+					body[indigo-picker-display="details"] & {
+						padding: 0px!important;
 
 					}
+
+					overflow: visible;
+
+
+
 
 				}
 
@@ -1181,6 +1563,30 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 	// TREE CONTENT CONTAINER
 	#JahiaGxtManagerTobTable {
 
+		padding-top: 40px;
+
+		.x-grid3-scroller {
+			body[indigo-picker-display="list"] & {
+				width: 100%!important;
+			}
+		}
+
+		.x-grid3-body {
+			padding: 20px;
+			box-sizing: border-box;
+		}
+
+		border-width: 0px;
+		left: 334px!important;
+		top: 0;
+		width: 408px;
+		position: fixed!important;
+		width: calc(100% - 334px)!important;
+		height: calc(100% - 92px)!important;
+
+		background: #4c4f51;
+		box-shadow: inset 0px 37px 0px #606568, inset 0px 10px 0 0px #484a4c;
+
 		// SEEMS UNUSED ...
 		> .x-panel-header {
 			display: none;
@@ -1189,12 +1595,12 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 	// ACTION BAR (Save, Cancel)
 	.x-window-bbar {
-		// background: pink;
-	    width: 300px !important;
-	    position: absolute;
+		width: calc(100% - 334px) !important;
+	    position: fixed;
 	    bottom: 0;
-	    height: 90px;
 	    box-sizing: border-box;
+	    right: 0;
+	    background: #434547;
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
 			left: 387px;
@@ -1203,15 +1609,30 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 		}
 
 		.x-panel-fbar {
-			width: 100%!important;
+			width: calc(100% + 40px) !important;
+		    box-shadow: inset -1px 1px 7px #37393a;
+		    left: -48px;
+		    padding: 10px 4px;
+		    padding-right: 20px;
+
+			.x-toolbar-ct {
+				float: right;
+			}
 
 			.x-toolbar-cell {
+				margin-left: 5px;
 
 				&:nth-child(1) {
 					/* Save */
-
+					float: right;
 					// Make suggested colour
 					@include button("ACTIONBAR---SUGGESTED");
+				}
+
+				&:nth-child(2) {
+					/* Cancel */
+					float: left;
+					// Make suggested colour
 				}
 			}
 
@@ -1219,24 +1640,12 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 	}
 
 
-
-
-
-
-
-
-
 	// STOP RESIZE ISSUES WHEN BEING LOADED FOR FIRST TIME( GWT ADDS AN ANIMATION )
 	.x-grid3-viewport,
 	.x-grid3-body {
 		width: 100%!important;
+
 	}
-
-
-
-
-
-
 
 
 	// REMOVE UNNECCESSARY STUFF
@@ -1254,5 +1663,9 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 
 	.x-fieldset-bwrap {
 		transition: 0!important;
+	}
+
+	.x-vsplitbar {
+		display: none;
 	}
 }

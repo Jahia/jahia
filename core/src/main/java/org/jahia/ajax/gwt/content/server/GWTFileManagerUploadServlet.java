@@ -63,6 +63,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -120,146 +121,155 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         String location = null;
         String type = null;
         boolean unzip = false;
-        response.setContentType("text/plain; charset=" + settingsBean.getCharacterEncoding());
         final PrintWriter printWriter = response.getWriter();
+        LinkedHashSet<FileItem> fileItems = new LinkedHashSet<>();
         try {
-            FileItemIterator itemIterator = upload.getItemIterator(request);
-            FileSizeLimitExceededException sizeLimitExceededException = null;
-            while (itemIterator.hasNext()) {
-                final FileItemStream item = itemIterator.next();
+            try {
+                FileItemIterator itemIterator = upload.getItemIterator(request);
+                FileSizeLimitExceededException sizeLimitExceededException = null;
+                while (itemIterator.hasNext()) {
+                    final FileItemStream item = itemIterator.next();
+                    if (sizeLimitExceededException != null) {
+                        continue;
+                    }
+                    FileItem fileItem = factory.createItem(item.getFieldName(), item.getContentType(), item.isFormField(),
+                            item.getName());
+                    fileItems.add(fileItem);
+                    long contentLength = getContentLength(item.getHeaders());
+
+                    // If we have a content length in the header we can use it
+                    if (fileSizeLimit > 0 && contentLength != -1L && contentLength > fileSizeLimit) {
+                        throw new FileSizeLimitExceededException("The field " + item.getFieldName()
+                                + " exceeds its maximum permitted size of " + fileSizeLimit + " bytes.", contentLength,
+                                fileSizeLimit);
+                    }
+                    InputStream itemStream = item.openStream();
+
+                    InputStream limitedInputStream = null;
+                    try {
+                        limitedInputStream = fileSizeLimit > 0 ? new LimitedInputStream(itemStream, fileSizeLimit) {
+
+                            @Override
+                            protected void raiseError(long pSizeMax, long pCount) throws IOException {
+                                throw new FileUploadIOException(new FileSizeLimitExceededException("The field "
+                                        + item.getFieldName() + " exceeds its maximum permitted size of " + fileSizeLimit
+                                        + " bytes.", pCount, pSizeMax));
+                            }
+                        } : itemStream;
+
+                        Streams.copy(limitedInputStream, fileItem.getOutputStream(), true);
+                    } catch (FileUploadIOException e) {
+                        if (e.getCause() instanceof FileSizeLimitExceededException) {
+                            if (sizeLimitExceededException == null) {
+                                sizeLimitExceededException = (FileSizeLimitExceededException) e.getCause();
+                            }
+                        } else {
+                            throw e;
+                        }
+                    } finally {
+                        IOUtils.closeQuietly(limitedInputStream);
+                    }
+
+                    if ("unzip".equals(fileItem.getFieldName())) {
+                        unzip = true;
+                    } else if ("uploadLocation".equals(fileItem.getFieldName())) {
+                        location = fileItem.getString("UTF-8");
+                    } else if ("asyncupload".equals(fileItem.getFieldName())) {
+                        String name = fileItem.getName();
+                        if (name.trim().length() > 0) {
+                            uploads.put(extractFileName(name, uploads), fileItem);
+                        }
+                        type = "async";
+                    } else if (!fileItem.isFormField() && fileItem.getFieldName().startsWith("uploadedFile")) {
+                        String name = fileItem.getName();
+                        if (name.trim().length() > 0) {
+                            uploads.put(extractFileName(name, uploads), fileItem);
+                        }
+                        type = "sync";
+                    }
+                }
                 if (sizeLimitExceededException != null) {
-                    continue;
+                    throw sizeLimitExceededException;
                 }
-                FileItem fileItem = factory.createItem(item.getFieldName(), item.getContentType(), item.isFormField(),
-                        item.getName());
-                long contentLength = getContentLength(item.getHeaders());
-
-                // If we have a content length in the header we can use it
-                if (fileSizeLimit > 0 && contentLength != -1L && contentLength > fileSizeLimit) {
-                    throw new FileSizeLimitExceededException("The field " + item.getFieldName()
-                            + " exceeds its maximum permitted size of " + fileSizeLimit + " bytes.", contentLength,
-                            fileSizeLimit);
+            } catch (FileUploadBase.FileSizeLimitExceededException e) {
+                printWriter.write("UPLOAD-SIZE-ISSUE: " + getSizeLimitErrorMessage(fileSizeLimit, e, request) + "\n");
+                return;
+            } catch (FileUploadIOException e) {
+                if (e.getCause() != null && (e.getCause() instanceof FileSizeLimitExceededException)) {
+                    printWriter.write("UPLOAD-SIZE-ISSUE: " + getSizeLimitErrorMessage(fileSizeLimit, (FileSizeLimitExceededException) e.getCause(), request) + "\n");
+                } else {
+                    logger.error("UPLOAD-ISSUE", e);
+                    printWriter.write("UPLOAD-ISSUE: " + e.getLocalizedMessage() + "\n");
                 }
-                InputStream itemStream = item.openStream();
-
-                InputStream limitedInputStream = null;
-                try {
-                    limitedInputStream = fileSizeLimit > 0 ? new LimitedInputStream(itemStream, fileSizeLimit) {
-
-                        @Override
-                        protected void raiseError(long pSizeMax, long pCount) throws IOException {
-                            throw new FileUploadIOException(new FileSizeLimitExceededException("The field "
-                                    + item.getFieldName() + " exceeds its maximum permitted size of " + fileSizeLimit
-                                    + " bytes.", pCount, pSizeMax));
-                        }
-                    } : itemStream;
-
-                    Streams.copy(limitedInputStream, fileItem.getOutputStream(), true);
-                } catch (FileUploadIOException e) {
-                    if (e.getCause() instanceof FileSizeLimitExceededException) {
-                        if (sizeLimitExceededException == null) {
-                            sizeLimitExceededException = (FileSizeLimitExceededException) e.getCause();
-                        }
-                    } else {
-                        throw e;
-                    }
-                } finally {
-                    IOUtils.closeQuietly(limitedInputStream);
-                }
-
-                if ("unzip".equals(fileItem.getFieldName())) {
-                    unzip = true;
-                } else if ("uploadLocation".equals(fileItem.getFieldName())) {
-                    location = fileItem.getString("UTF-8");
-                } else if ("asyncupload".equals(fileItem.getFieldName())) {
-                    String name = fileItem.getName();
-                    if (name.trim().length() > 0) {
-                        uploads.put(extractFileName(name, uploads), fileItem);
-                    }
-                    type = "async";
-                } else if (!fileItem.isFormField() && fileItem.getFieldName().startsWith("uploadedFile")) {
-                    String name = fileItem.getName();
-                    if (name.trim().length() > 0) {
-                        uploads.put(extractFileName(name, uploads), fileItem);
-                    }
-                    type = "sync";
-                }
-            }
-            if (sizeLimitExceededException != null) {
-                throw sizeLimitExceededException;
-            }
-        } catch (FileUploadBase.FileSizeLimitExceededException e) {
-            printWriter.write("UPLOAD-SIZE-ISSUE: " + getSizeLimitErrorMessage(fileSizeLimit, e, request) + "\n");
-            return;
-        } catch (FileUploadIOException e) {
-            if (e.getCause() != null && (e.getCause() instanceof FileSizeLimitExceededException)) {
-                printWriter.write("UPLOAD-SIZE-ISSUE: " + getSizeLimitErrorMessage(fileSizeLimit, (FileSizeLimitExceededException) e.getCause(), request) + "\n");
-            } else {
+                return;
+            } catch (FileUploadException e) {
                 logger.error("UPLOAD-ISSUE", e);
                 printWriter.write("UPLOAD-ISSUE: " + e.getLocalizedMessage() + "\n");
+                return;
             }
-            return;
-        } catch (FileUploadException e) {
-            logger.error("UPLOAD-ISSUE", e);
-            printWriter.write("UPLOAD-ISSUE: " + e.getLocalizedMessage() + "\n");
-            return;
-        }
-
-        if (type == null || type.equals("sync")) {
-            response.setContentType("text/plain");
 
             final JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
 
-            final List<String> pathsToUnzip = new ArrayList<String>();
-            for (String fileName : uploads.keySet()) {
-                final FileItem fileItem = uploads.get(fileName);
-                try {
-                    StringBuilder name = new StringBuilder(fileName);
-                    final int saveResult = saveToJcr(user, fileItem, location, name);
-                    switch (saveResult) {
-                        case OK:
-                            if (unzip && fileName.toLowerCase().endsWith(".zip")) {
-                                pathsToUnzip.add(new StringBuilder(location).append("/").append(name.toString()).toString());
-                            }
-                            printWriter.write("OK: " + UriUtils.encode(name.toString()) + "\n");
-                            break;
-                        case EXISTS:
-                            storeUploadedFile(request.getSession().getId(), fileItem);
-                            printWriter.write("EXISTS: " + UriUtils.encode(fileItem.getFieldName()) + " " + UriUtils.encode(fileItem.getName()) + " " + UriUtils.encode(fileName) + "\n");
-                            break;
-                        case READONLY:
-                            printWriter.write("READONLY: " + UriUtils.encode(fileItem.getFieldName()) + "\n");
-                            break;
-                        default:
-                            printWriter.write("UPLOAD-FAILED: " + UriUtils.encode(fileItem.getFieldName()) + "\n");
-                            break;
-                    }
-                } catch (IOException e) {
-                    logger.error("Upload failed for file \n", e);
-                } finally {
-                    fileItem.delete();
-                }
-            }
+            if (type == null || type.equals("sync")) {
+                response.setContentType("text/plain");
 
-            // direct blocking unzip
-            if (unzip && pathsToUnzip.size() > 0) {
-                try {
-                    ZipHelper zip = ZipHelper.getInstance();
-                    //todo : in which workspace do we upload ?
-                    zip.unzip(pathsToUnzip, true, JCRSessionFactory.getInstance().getCurrentUserSession(), (Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE));
-                } catch (RepositoryException e) {
-                    logger.error("Auto-unzipping failed", e);
-                } catch (GWTJahiaServiceException e) {
-                    logger.error("Auto-unzipping failed", e);
+                final List<String> pathsToUnzip = new ArrayList<String>();
+                for (String fileName : uploads.keySet()) {
+                    final FileItem fileItem = uploads.get(fileName);
+                    try {
+                        StringBuilder name = new StringBuilder(fileName);
+                        final int saveResult = saveToJcr(user, fileItem, location, name);
+                        switch (saveResult) {
+                            case OK:
+                                if (unzip && fileName.toLowerCase().endsWith(".zip")) {
+                                    pathsToUnzip.add(new StringBuilder(location).append("/").append(name.toString()).toString());
+                                }
+                                printWriter.write("OK: " + UriUtils.encode(name.toString()) + "\n");
+                                break;
+                            case EXISTS:
+                                storeUploadedFile(request.getSession().getId(), fileItem);
+                                printWriter.write("EXISTS: " + UriUtils.encode(fileItem.getFieldName()) + " " + UriUtils.encode(fileItem.getName()) + " " + UriUtils.encode(fileName) + "\n");
+                                break;
+                            case READONLY:
+                                printWriter.write("READONLY: " + UriUtils.encode(fileItem.getFieldName()) + "\n");
+                                break;
+                            default:
+                                printWriter.write("UPLOAD-FAILED: " + UriUtils.encode(fileItem.getFieldName()) + "\n");
+                                break;
+                        }
+                    } catch (IOException e) {
+                        logger.error("Upload failed for file \n", e);
+                    }
+                }
+
+                // direct blocking unzip
+                if (unzip && pathsToUnzip.size() > 0) {
+                    try {
+                        ZipHelper zip = ZipHelper.getInstance();
+                        //todo : in which workspace do we upload ?
+                        zip.unzip(pathsToUnzip, true, JCRSessionFactory.getInstance().getCurrentUserSession(), (Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE));
+                    } catch (RepositoryException e) {
+                        logger.error("Auto-unzipping failed", e);
+                    } catch (GWTJahiaServiceException e) {
+                        logger.error("Auto-unzipping failed", e);
+                    }
+                }
+            } else {
+                if (user == null || user.getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)) {
+                    printWriter.write("READONLY\n");
+                    return;
+                }
+                response.setContentType("text/html");
+                for (FileItem fileItem : uploads.values()) {
+                    storeUploadedFile(request.getSession().getId(), fileItem);
+                    printWriter.write("<html><body>");
+                    printWriter.write("<div id=\"uploaded\" key=\"" + fileItem.getName() + "\" name=\"" + fileItem.getName() + "\"></div>\n");
+                    printWriter.write("</body></html>");
                 }
             }
-        } else {
-            response.setContentType("text/html");
-            for (FileItem fileItem : uploads.values()) {
-                storeUploadedFile(request.getSession().getId(), fileItem);
-                printWriter.write("<html><body>");
-                printWriter.write("<div id=\"uploaded\" key=\"" + fileItem.getName() + "\" name=\"" + fileItem.getName() + "\"></div>\n");
-                printWriter.write("</body></html>");
+        } finally {
+            for (FileItem fileItem : fileItems) {
+                fileItem.delete();
             }
         }
     }
@@ -363,7 +373,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         }
 
         if (!locationFolder.hasPermission("jcr:addChildNodes") || locationFolder.isLocked()) {
-            logger.debug("destination is not writable for user " + user.getName());
+            String userName = (user == null ? null : user.getName());
+            logger.debug("destination is not writable for user " + userName);
             return READONLY;
         }
         try {

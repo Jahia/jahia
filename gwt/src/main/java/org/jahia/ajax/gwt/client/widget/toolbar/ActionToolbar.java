@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarMenu;
@@ -117,7 +118,7 @@ public class ActionToolbar extends ToolBar implements ToolbarGroup {
             }
             menuToolItem.setMenu(menu);
             menuToolItem.addStyleName("action-bar-tool-item");
-            menuToolItem.addStyleName(gwtToolbarMenu.getClassName());
+            gwtToolbarItem.addClasses(menuToolItem);
             add(menuToolItem);
         } else {
             final ActionItem actionItem = gwtToolbarItem.getActionItem();

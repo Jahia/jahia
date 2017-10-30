@@ -43,6 +43,7 @@
  */
 package org.jahia.ajax.gwt.client.data.toolbar;
 
+import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
@@ -189,4 +190,16 @@ public class GWTJahiaToolbarItem implements Serializable {
         }
         return getId().toLowerCase().replace('.', '-');
     }
+
+    public void addClasses(Component component) {
+        component.addStyleName(getClassName());
+        GWTJahiaProperty p = getProperties().get("additional-classes");
+        if (p != null) {
+            for (String s : p.getValue().split(" ")) {
+                component.addStyleName(s);
+            }
+        }
+    }
+
+
 }

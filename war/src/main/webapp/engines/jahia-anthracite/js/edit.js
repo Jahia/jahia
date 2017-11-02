@@ -438,12 +438,24 @@
 
             },
 
-            append: function(node){
+			append: function(node){
 
                 var n;
 
                 for(n = 0; n < this.nodes.length; n++){
                     this.nodes[n].appendChild(node);
+                }
+
+                return this;
+
+            },
+
+			prepend: function(node){
+
+                var n;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    this.nodes[n].prepend(node);
                 }
 
                 return this;
@@ -898,8 +910,15 @@
             },
 
 
-            onInput: function(target, callback, event_id){
+			onInput: function(target, callback, event_id){
                 createEventListener(this, "input", this.selector, target, callback, true, event_id);
+
+                return this;
+
+            },
+
+			onChange: function(target, callback, event_id){
+                createEventListener(this, "change", this.selector, target, callback, true, event_id);
 
                 return this;
 
@@ -1131,7 +1150,19 @@
             workflowType: "%n% Workflow:",
             chooseWorkflowType: "Choose a workflow for %n%:",
             filterField: "Filter",
-            sortBy: "Sort By",
+			sortBy: "Sort By",
+			search: "What are you looking for ?",
+            languageField: "All Languages",
+			fromDate: "From ...",
+			toDate: "To ...",
+			dateRange: "Date Range",
+			dateAnyTime: "Any time",
+			dateCustom: "Time range",
+			dateCustomLabel: "Time range ...",
+			dateType: "By %n% date",
+			allMetadata: "All metadata",
+			ignoreMetadata: "Ignore metadata",
+			metaLabel: "Meta: %n%",
 		},
 		"FR": {
 			jobs: "Processus",
@@ -1141,7 +1172,19 @@
             workflowType: "%n% Workflow type",
             chooseWorkflowType: "Choisir une workflow pour %n%:",
             filterField: "Filtrer",
-            sortBy: "Triez par",
+			sortBy: "Sort By",
+			search: "What are you looking for ?",
+			languageField: "All Languages",
+			fromDate: "From ...",
+			toDate: "To ...",
+			dateRange: "Date Range ...",
+			dateAnyTime: "Any time",
+			dateCustom: "Time range",
+			dateCustomLabel: "Time range ...",
+			dateType: "Par %n%",
+			allMetadata: "All metadata",
+			ignoreMetadata: "Ignore metadata",
+			metaLabel: "Meta: %n%",
 		}
 	}
 
@@ -1432,6 +1475,7 @@
 				currentItem: null,
 				title: null,
 				displayType: null,
+				previousDisplayType: null,
 				zooms: {
 					thumbs: 3,
 					details: 3
@@ -1439,7 +1483,7 @@
 			},
 			onOpen: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONOPEN");
-				app.picker.data.displayType = "thumbs";
+				app.picker.data.displayType = "thumbsview";
 
 				$("#JahiaGxtContentPickerWindow").prepend("<input id='thumb-size-slider' type='range' value=4 min=1 max=6 />");
 
@@ -1450,7 +1494,9 @@
 				DexV2.getCached("body")
 					.setAttribute("data-INDIGO-PICKER-SEARCH", "")
 					.setAttribute("data-INDIGO-PICKER", "open")
-					.setAttribute("indigo-PICKER-DISPLAY", "thumbs");
+					.setAttribute("indigo-PICKER-DISPLAY", "thumbsview");
+
+				DexV2.id("JahiaGxtContentPickerWindow").removeClass("search-panel-opened");
 
 				DexV2.id("JahiaGxtContentPickerWindow").onClick("#toggle-picker-files", function(){
 					DexV2.id("JahiaGxtContentPickerWindow").toggleClass("indigo-collapsed");
@@ -1480,7 +1526,7 @@
                     sortBy = DexV2('#images-view .x-toolbar .x-toolbar-left .x-toolbar-cell:nth-child(5) .x-form-text');
 
                 filterField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterField);
-                sortBy.setAttribute("placeholder", localisedStrings[app.data.UILanguage].sortBy);
+				sortBy.setAttribute("placeholder", localisedStrings[app.data.UILanguage].sortBy);
 			},
 			onClose: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONCLOSE");
@@ -1494,23 +1540,23 @@
 			},
 			onListView: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONLISTVIEW");
-				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "list");
-				app.picker.data.displayType = "list";
+				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "listview");
+				app.picker.data.displayType = "listview";
 
 
 			},
 			onThumbView: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONTHUMBVIEW");
-				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "thumbs");
-				app.picker.data.displayType = "thumbs";
+				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "thumbsview");
+				app.picker.data.displayType = "thumbsview";
 				app.picker.setPlaceholders();
 				app.picker.updateZoomLevel();
 
 			},
 			onDetailView: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONDETAILVIEW");
-				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "details");
-				app.picker.data.displayType = "details";
+				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "detailedview");
+				app.picker.data.displayType = "detailedview";
 				app.picker.setPlaceholders();
 				app.picker.updateZoomLevel();
 
@@ -1600,9 +1646,9 @@
 
 					// DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
 
-					DexV2(".imagepickerContextMenu").css({
-						display: "none"
-					});
+					// DexV2(".imagepickerContextMenu").css({
+					// 	display: "none"
+					// });
 
 					if(!DexV2.node(this).hasClass("indigo-force-open")){
 						DexV2(".x-view-item-sel.indigo-force-open").removeClass("indigo-force-open");
@@ -1739,38 +1785,190 @@
 				}
 			},
 			search: {
+				setUpScreen: function(){
+					// Save the current display time see we can switch back when closing the search panel
+					app.picker.data.previousDisplayType = app.picker.data.displayType;
+
+					// Put the results in LIST mode
+					if(app.picker.data.displayType == "listview"){
+						// Directly remove the listing
+						DexV2("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
+
+					} else {
+						DexV2("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
+
+						// Switch to list view, then remove ...
+						DexV2("#JahiaGxtManagerTobTable").onceGroupOpen(".x-grid3 .x-grid3-row", function(){
+							DexV2.collection(this).remove();
+
+						});
+					}
+
+					// Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
+					DexV2.id("CRTbrowseTabItem").addClass("x-hide-display");
+					DexV2("#CRTsearchTabItem").removeClass("x-hide-display");
+
+					DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "open");
+					DexV2.id("JahiaGxtContentPickerWindow").addClass("search-panel-opened");
+
+					// Ask for class names ...
+					var searchField = DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(1) td:nth-child(1) input'),
+						languageField = DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(2) input'),
+						fromDate = DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(5) input'),
+						toDate = DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(6) input'),
+						dateRange = DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7) input');
+
+					searchField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].search);
+					// searchField.getNode(0).value = "";
+					languageField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].languageField);
+
+					fromDate.setAttribute("placeholder", localisedStrings[app.data.UILanguage].fromDate);
+					toDate.setAttribute("placeholder", localisedStrings[app.data.UILanguage].toDate);
+					dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateAnyTime);
+
+					// Callback when user opens Date Range context menu ...
+					DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7)').oneClick("img", function(){
+						var alreadyAddedButtons = DexV2(".x-combo-list").hasClass("indigo-buttons");
+
+						if(!alreadyAddedButtons){
+							var anyTimeButton = document.createElement("span"),
+								customRangeButton = document.createElement("span");
+
+							anyTimeButton.innerHTML = localisedStrings[app.data.UILanguage].dateAnyTime;
+							anyTimeButton.classList.add("search-anytime-button");
+							anyTimeButton.classList.add("x-combo-list-item");
+
+							customRangeButton.innerHTML = localisedStrings[app.data.UILanguage].dateCustomLabel;
+							customRangeButton.classList.add("search-custom-date-range-button");
+							customRangeButton.classList.add("x-combo-list-item");
+
+							DexV2(".x-combo-list")
+								// Add Two new buttons to the context menu ...
+								.prepend(anyTimeButton)
+								.append(customRangeButton)
+								.addClass("indigo-buttons");
+						}
+
+						DexV2(".x-combo-list")
+							// Clicked on a Normal Date Filter ( ie. 1 day, 2 days, etc )
+							.onMouseDown(".x-combo-list-item", function(){
+								DexV2.id("JahiaGxtContentPickerWindow").setAttribute("data-indigo-search-date", "simple");
+
+							}, "PREDEFINED_DATE_RANGE")
+
+							// Clicked on the custom date range button
+							.onMouseDown(".search-custom-date-range-button", function(){
+								DexV2.id("JahiaGxtContentPickerWindow").setAttribute("data-indigo-search-date", "custom");
+
+								dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateCustom);
+
+								// Close the context menu by trigger clicking the page
+								DexV2("#JahiaGxtContentPickerWindow").trigger("mousedown").trigger("mouseup");
+
+							}, "CUSTOM_DATE_RANGE")
+							.onMouseDown(".search-anytime-button", function(){
+								// Clicked on Any TIme ( removes times filter )
+
+								dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateAnyTime);
+								DexV2.id("JahiaGxtContentPickerWindow").setAttribute("data-indigo-search-date", "");
+
+								// Close the context menu by trigger clicking the page
+								DexV2("#JahiaGxtContentPickerWindow").trigger("mousedown").trigger("mouseup");
+							}, "ANY_TIME");
+
+
+
+
+					}, "SEARCH_PANEL_DATE_RANGE_BUTTON");
+
+					DexV2.id("JahiaGxtContentPickerWindow")
+						// Listen for changes to meta tags ...
+						.onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(3)", app.picker.search.updateMetaLabel, "CHANGE_META_FILTER")
+
+						// Listen for changes to modification type ...
+						.onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) .x-form-check-wrap", app.picker.search.updateModificationLabel, "CHANGE_MODIFICATION_FILTER")
+
+						// Toggle modification menu when clicking ...
+						.onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) > label", app.picker.search.toggleModificationMenu, "TOGGLE_MODIFICATION_FILTER");
+
+					// Trigger clicks to initiate the labels of Modification and Meta
+					DexV2.id("CRTsearchTabItem").filter(".x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(3)").trigger("click");
+					DexV2.id("CRTsearchTabItem").filter(".x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) input[type=radio]:checked").trigger("click");
+
+				},
 				open: function(){
-					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: OPEN");
 					// OPEN SEARCH PANEL
+					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: OPEN", true);
 
-		            // Close source picker if open
-		            app.picker.onClose();
+					var searchTabAvailable = DexV2.id("CRTsearchTabItem").exists();
 
+					if(searchTabAvailable){
+						app.picker.search.setUpScreen();
 
-		            // Display the search panel
-		            DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "open");
+					} else {
+						DexV2.tag("body").onOpen("#CRTsearchTabItem", app.picker.search.setUpScreen);
 
-		            // Put the results in LIST mode
-		            DexV2("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
+					}
 
-		            // Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
-		            DexV2.id("CRTbrowseTabItem").addClass("x-hide-display");
+				},
+				toggleModificationMenu: function(){
+					var menu = DexV2.node(this).parent();
 
+					menu.toggleClass("indigo-show-menu");
+				},
+				updateModificationLabel: function(){
+					var dateType = DexV2.node(this).filter("label").getHTML(),
+						label = localisedStrings[app.data.UILanguage].dateType.replace("%n%", dateType);
 
-		            // Remove the directory listing ( gives the search panel an empty start)
-		            setTimeout(function(){
-		                DexV2("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
-		            }, 250);
+					DexV2.node(this).closest(".x-form-item")
+						.removeClass("indigo-show-menu")
+						.setAttribute("data-indigo-modification-label", label);
+				},
+				updateMetaLabel: function(){
+					var checkboxes = DexV2.node(this).filter(".x-form-check-wrap:not(.x-hide-display) input[type='checkbox']"),
+						selMeta = [],
+						checkboxCount = checkboxes.nodes.length,
+						metaMenuLabel;
+
+					checkboxes.each(function(checkbox){
+						var checkboxLabel = this.nextSibling.innerHTML;
+
+						if(this.checked == true){
+							// Its checked, so add to string ...
+							selMeta.push(checkboxLabel);
+						}
+					});
+
+					if(selMeta.length == checkboxCount){
+						// ALL meta data
+						metaMenuLabel = localisedStrings[app.data.UILanguage].allMetadata;
+
+					} else if(selMeta.length == 0){
+						metaMenuLabel = localisedStrings[app.data.UILanguage].ignoreMetadata;
+					} else {
+						metaMenuLabel = localisedStrings[app.data.UILanguage].metaLabel.replace("%n%", selMeta.join(", "))
+
+					}
+
+					DexV2.node(this).setAttribute("data-indigo-meta-label", metaMenuLabel);
 				},
 				close: function(){
-					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE");
+					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE", true);
 					// CLOSE SEARCH PANEL
 
 		            // Hide the search panel
 		            DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "");
+					DexV2.id("JahiaGxtContentPickerWindow").removeClass("search-panel-opened");
+
+					DexV2.id("CRTsearchTabItem").addClass("x-hide-display");
+
 
 		            // Display the BROWSE panels
 		            DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
+
+					// // Put the results in previous mode
+					DexV2("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-" + app.picker.data.previousDisplayType).trigger("click");
+
 
 					// CLick on the refresh button to reload the content of the directory
 		            DexV2.id("JahiaGxtContentPickerWindow").filter("#JahiaGxtManagerLeftTree .x-panel:not(.x-panel-collapsed) .x-tool-refresh").trigger("click");
@@ -3482,7 +3680,7 @@
                 .onClick(".node-path-title", app.iframe.clearSelection)
                 .onMouseDown(".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
                 .onMouseDown("#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close)
-                .onMouseDown("#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open)
+                .onMouseUp("#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open)
                 .onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close)
                 .onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle)
                 .onMouseEnter("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver)

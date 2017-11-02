@@ -460,6 +460,7 @@
 /* List item when normal Combo */
 .x-combo-list-item {
 	border:none;
+	display: block;
 	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM !optional;
 
 	&:empty {
@@ -468,9 +469,11 @@
 
 
 
-	&.x-view-highlightrow {
+	&.x-view-highlightrow,
+	&:hover {
 		/* Selected / Hovered */
 		border:none!important;
+		cursor: pointer;
 		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER !optional;
 
 	}
@@ -573,7 +576,8 @@
 	width: auto !important;
 	background: transparent;
 	overflow: visible;
-	z-index: $ZINDEX--CONTEXT_MENU;
+	// z-index: $ZINDEX--CONTEXT_MENU;
+	z-index: 999999999999999!important;
 	border: none;
 }
 

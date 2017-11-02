@@ -57,6 +57,24 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	}
 
+	// Multi select picker ...
+	&.indigo-picker-multi-select {
+
+		div#JahiaGxtManagerTobTable {
+			height: calc(100% - 242px)!important;
+		}
+
+		.x-window-bbar {
+			box-shadow: none;
+		}
+
+
+
+
+
+
+	}
+
 	// Search panel is opened
 	&.search-panel-opened {
 
@@ -82,6 +100,11 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		#JahiaGxtManagerLeftTree {
 			left: -$PICKER_SIDEPANEL_WIDTH!important;
 
+		}
+
+		// MULTISELECT FILES
+		#JahiaGxtManagerBottomTabs {
+			width: 100%!important;
 		}
 
 		// TOOLBAR
@@ -155,6 +178,11 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			left: 45px!important;
 		}
 
+		// MULTISELECT FILES
+		#JahiaGxtManagerBottomTabs {
+			width: 100%!important;
+		}
+
 
 
 		.x-window-tl {
@@ -187,8 +215,16 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	}
 
 	// Fix GWT problem
-	.x-grid3-td-name {
+	.x-grid3-td-name,
+	.x-grid3-td-displayName {
 		pointer-events: none!important;
+		width: 68%!important
+	}
+
+	.x-grid3-td-primaryTypeLabel {
+		pointer-events: none!important;
+		width: 25%!important
+
 	}
 
 	// HEADER
@@ -245,8 +281,43 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	}
 
 	// TREE ICONS
+
+	// STYLE FOR UNHANDLED ICONS
+	.x-grid3-col-icon img, // RIGHT PANEL
+	.x-tree3-node-icon { // LEFT PANEL
+		background-color: rgba(239, 239, 239, 0.17);
+	    padding: 2px;
+	    border-radius: 15%;
+	}
+
+	// COMMON LARGE IMAGES
+	img[src$="/jnt_page_large.png"] {
+		padding-left: 46px;
+	    overflow: hidden;
+	    display: inline-block;
+	    box-sizing: border-box;
+	    width: 46px!important;
+	    height: 46px;
+	    margin-right: 4px;
+	    background-repeat: no-repeat;
+	    background-position: center;
+	    background-size: 46px;
+	    opacity: 0.5;
+	    background-color: transparent;
+
+	}
+
+	// BOOTSTRAP COLUMNS
+	img[src$="/jnt_page_large.png"] {
+		background-image: url(./images/tabs-pages-dark@X2.png);
+	}
+
 	// COMMON ICON REPLACEMENTS IN TREE
+	img[src$="/jnt_page.png"],
 	img[src$="/jnt_folder.png"],
+	img[src$="/jnt_contentList.png"],
+	img[src$="/bootstrap3nt_columns.png"],
+	img[src$="/jnt_contentFolder.png"],
 	img[src$="/jnt_virtualsite.png"],
 	img[src$="/jnt_mounts.png"],
 	img[src$="/jnt_file_img.png"] {
@@ -261,14 +332,54 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		background-position: center;
 		background-size: 23px;
 		opacity: 0.5;
+
+		// Remove unhandled styles
+		background-color: transparent;
+		padding: 0 0 0 20px;
+		border-radius: 0;
 	}
+
+	// BOOTSTRAP COLUMNS
+	img[src$="/bootstrap3nt_columns.png"] {
+		background-image: url(./images/icons/icon_display_thumbs_grey@X2.png);
+		background-size: 18px;
+	}
+
+	// CONTENT LIST
+	img[src$="/jnt_contentList.png"] {
+		background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+		background-size: 18px;
+	}
+
 
 	// IMAGE ICON
 	img[src$="/jnt_file_img.png"] {
 		background-image: url(./images/icons/icon-image-white@X2.png);
 	}
 
+	// PAGE ICON
+	img[src$="/jnt_page.png"] {
+		background-image: url(./images/tabs-pages-dark@X2.png);
+	}
+
+	// RIGHT TABLE ICONS ( basically light version )
+	#JahiaGxtManagerTobTable {
+		// PAGE ICON
+		img[src$="/jnt_page.png"] {
+			background-image: url(./images/tabs-pages-white@X2.png);
+			opacity: 0.8;
+		}
+
+		// FOLDER ICON
+		img[src$="/jnt_contentFolder.png"],
+		img[src$="/jnt_folder.png"] {
+			background-image: url(./images/icons/tabs-files@X2.png);
+			opacity: 0.8;
+		}
+	}
+
 	// FOLDER ICON
+	img[src$="/jnt_contentFolder.png"],
 	img[src$="/jnt_folder.png"] {
 		background-image: url(./images/icons/tabs-files-dark@X2.png);
 	}
@@ -284,9 +395,156 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	}
 
 
+	// MULTI SELECT PANEL
+	#JahiaGxtManagerBottomTabs {
+		position: fixed!important;
+	    bottom: 48px;
+		right: 0;
+	    left: auto!important;
+		width: calc(100% - #{$PICKER_SIDEPANEL_WIDTH})!important;
+	    background: #444548;
+	    height: 150px!important;
+	    top: auto!important;
+		padding: 15px;
+		box-sizing: border-box;
+		box-shadow: inset 0px 1px 7px #222;
+
+		&::before {
+		    content: "Multiple selection";
+		    font-size: 18px;
+		    color: #F1F1F1;
+		    font-weight: 100;
+		    font-family: Nunito Sans;
+		    display: block;
+		    margin-bottom: 10px;
+		}
+
+		.x-grid3 {
+			height: calc(100% - 23px)!important;
+		}
+
+		.x-grid-empty {
+			@include text(12px, #9c9ea0, $FONT--WEIGHT---EXTRALIGHT);
+			padding: 0;
+		}
+
+		// ADDED FILE CONTAINER
+		.x-grid-group {
+
+			width: 100px;
+			display: inline-block;
+			margin-right: 5px;
+
+			// FILE HEADER ( CONTAINS NAME )
+			.x-grid-group-hd {
+				display: none;
+			}
+
+			// CONTAINS FILE AND FILE INFO
+			.x-grid-group-body {
+
+				// ROW
+				.x-grid3-row {
+					height: auto!important;
+					background: rgb(0, 160, 227) !important;
+					padding: 5px 3px;
+				    box-sizing: border-box;
+
+					// THUMBNAIL
+					.x-grid3-td-preview {
+						width: 100%!important;
+
+						img {
+							width: 100%!important;
+
+						}
+					}
+
+					// CONTAINS GROUP OF DETAILS - MAYBE USE FOR HOVER TO SHOW INFO
+					.x-grid3-td-name {
+
+						display: none;
+
+						.details {
+
+							// LABEL
+							b {
+
+							}
+
+							// VALUE
+							span {
+
+							}
+						}
+					}
+
+					// NAME - HIDDEN BY DEFAULT - CAN I USE ???
+					.x-grid3-td-displayName {
+
+						display: block!important;
+						width: auto!important;
+
+						.x-grid3-col-displayName {
+							color: $COLOUR--WHITE_CLOUDS;
+							font-size: 10px;
+						}
+
+						&::after {
+							display: none;
+						}
+
+					}
+
+					// PATH - HIDDEN BY DEFAULT - CAN I USE IT ???
+					.x-grid3-td-path {
+
+						.x-grid3-col-path {
+
+						}
+					}
+
+					// REMOVE FROM LIST
+					.x-grid3-td-remove {
+
+						width: 25px!important;
+						height: 25px!important;
+						position: absolute;
+						top: -2px;
+						right: 1px;
+
+						.x-grid3-col-remove {
+
+							// BUTTON
+							> table {
+
+								width: 20px;
+								height: 20px;
+								background: url(./images/icons/icon-close-grey@X2.png) no-repeat center center #e9e9e9;
+								background-size: 10px;
+								border: 2px solid rgb(0, 160, 227)!important;
+
+
+								> tbody {
+									display: none;
+								}
+
+							}
+
+						}
+					}
+				}
+
+			}
+
+		}
+	}
+
 
 	// LEFT PANEL (contains browse / search)
 	#JahiaGxtManagerLeftTree {
+
+
 
 		height: 100% !important;
 	    width: $PICKER_SIDEPANEL_WIDTH !important;
@@ -298,6 +556,14 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	    padding-top: 80px;
 		box-shadow: 0px 1px 17px #222;
 		z-index: 9999;
+
+		// Fix GWT problem
+		.x-grid3-td-name,
+		.x-grid3-td-displayName {
+			pointer-events: none!important;
+			width: 100%!important;
+			display: block;
+		}
 
 		// Clean up uneeded GWT stuff ...
 		> .x-tab-panel-header {
@@ -1034,6 +1300,11 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			.x-grid3-body {
 				padding: 0 20px;
+
+				.x-grid-empty {
+					width: 100%!important;
+				}
+
 			}
 		}
 
@@ -1055,11 +1326,13 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				pointer-events: none; // Stop the event listener attached for displaying more info ...
 			}
 
-			.x-grid3-col-name {
+			.x-grid3-col-name,
+			.x-grid3-col-displayName {
 				color: rgba($COLOUR--WHITE_CLOUDS, .9)!important;
 			}
 
-			.x-grid3-col-size {
+			.x-grid3-col-size,
+			.x-grid3-col-primaryTypeLabel {
 				color: rgba($COLOUR--WHITE_CLOUDS, .7)!important;
 			}
 
@@ -1256,6 +1529,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			}
 
 			.x-toolbar-left {
+
+
 				td {
 					// Filter Label
 					&:nth-child(1) {
@@ -1558,8 +1833,19 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			background: none;
 		}
 
+		.action-bar-menu-item {
+			// Node type filtering ( used in the COntent Picker )
+			&.toolbar-itemsgroup-nodetypefiltering {
+				width: 150px!important;
+				right: 7px;
+				position: fixed;
+				top: 7px!important;
+				left: auto!important;
+			}
+		}
+
 		// BUTTON
-		.action-bar-tool-item {
+		.action-bar-tool-item{
 			display: none;
 
 			position: fixed;
@@ -1589,9 +1875,13 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				cursor: pointer;
 			}
 
+			// DELETE ???
 			&.x-item-disabled {
-				display: block!important;
+				// display: block!important;
 			}
+
+
+
 
 			// Add New Folder
 			&.toolbar-item-newfolder {

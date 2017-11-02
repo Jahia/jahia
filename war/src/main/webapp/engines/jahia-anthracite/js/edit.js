@@ -493,7 +493,12 @@
 
             parent: function(){
 
-                this.nodes = [this.nodes[0].parentNode];
+				if(this.nodes[0] && this.nodes[0].parentNode){
+					this.nodes = [this.nodes[0].parentNode];
+				} else {
+					this.nodes = [];
+				}
+
 
                 return this;
 
@@ -560,7 +565,7 @@
             getHTML: function(value){
                 /* Get innerHTML of all first node in nodelist */
 
-                return this.nodes[0].innerHTML;
+                return (this.nodes[0]) ? this.nodes[0].innerHTML : null;
             },
 
             css: function(styles){
@@ -600,7 +605,8 @@
             getAttribute: function(key){
                 /* Get attribute of first node in nodelist */
 
-                return this.nodes[0].getAttribute(key);
+
+                return (this.nodes[0]) ? this.nodes[0].getAttribute(key) : null;
             },
 
             toggleAttribute: function(key, value){
@@ -1283,7 +1289,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                app.edit.sidepanel.close();
+                // app.edit.sidepanel.close();
             }
 		},
 		onClick: function(e){
@@ -1476,6 +1482,7 @@
 				title: null,
 				displayType: null,
 				previousDisplayType: null,
+				hasPreview: null,
 				zooms: {
 					thumbs: 3,
 					details: 3
@@ -1485,7 +1492,6 @@
 				app.dev.log("::: APP ::: PICKER ::: ONOPEN");
 				app.picker.data.displayType = "thumbsview";
 
-				$("#JahiaGxtContentPickerWindow").prepend("<input id='thumb-size-slider' type='range' value=4 min=1 max=6 />");
 
 				$("#JahiaGxtContentPickerWindow").prepend("<button id='toggle-picker-files' type='button'>Toggle</button>");
 
@@ -1514,6 +1520,21 @@
 
 
 				}, "THUMB-SIZE-SLIDER");
+
+				DexV2.tag("body").onOpen("#JahiaGxtManagerBottomTabs", function(){
+					DexV2.id("JahiaGxtContentPickerWindow").addClass("indigo-picker-multi-select");
+
+				}, "CHECK_FOR_MULTISELECT");
+
+				var hasSlider = DexV2("#JahiaGxtContentPickerWindow .x-slider").nodes.length > 0;
+
+				if(hasSlider){
+					$("#JahiaGxtContentPickerWindow").prepend("<input id='thumb-size-slider' type='range' value=4 min=1 max=6 />");
+
+				}
+
+				app.picker.data.enablePreviews = DexV2("#JahiaGxtContentPickerWindow .toolbar-item-filepreview").nodes.length > 0;
+
 			},
 			updateZoomLevel: function(){
 
@@ -1570,19 +1591,16 @@
 				},
 				onMouseOver: function(e){
 					app.dev.log("::: APP ::: PICKER ::: ROW ::: MOUSEOVER");
-					// Position the preview button next to the file whilst hovering
-		            // app.picker.previewButton.reposition(this, {
-		            //     left: -58,
-		            //     top: 0
-		            // });
+
+					if(app.picker.data.enablePreviews){
+						if($(this).find(".preview-button").length == 0){
+							$(this).prepend("<button class='preview-button' type='button'>Preview</button>");
+
+						}
+					}
 
 					if($(this).find(".more-info-button").length == 0){
 						$(this).prepend("<button class='more-info-button' type='button'>More info</button>");
-
-					}
-
-					if($(this).find(".preview-button").length == 0){
-						$(this).prepend("<button class='preview-button' type='button'>Preview</button>");
 
 					}
 
@@ -1898,7 +1916,7 @@
 				},
 				open: function(){
 					// OPEN SEARCH PANEL
-					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: OPEN", true);
+					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: OPEN");
 
 					var searchTabAvailable = DexV2.id("CRTsearchTabItem").exists();
 
@@ -1953,7 +1971,7 @@
 					DexV2.node(this).setAttribute("data-indigo-meta-label", metaMenuLabel);
 				},
 				close: function(){
-					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE", true);
+					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE");
 					// CLOSE SEARCH PANEL
 
 		            // Hide the search panel
@@ -3685,11 +3703,13 @@
                 .onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle)
                 .onMouseEnter("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver)
                 .onMouseLeave("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOut)
-				.onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", app.picker.row.onMouseOver)
-				.onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onMouseOver)
+				.onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerTobTable .x-grid3-row", app.picker.row.onMouseOver)
+				.onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerTobTable .thumb-wrap", app.picker.thumb.onMouseOver)
                 // .onMouseEnter("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div #images-view .x-view", app.picker.thumb.onMouseOut)
                 .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick)
                 .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.settings.open)
+
+//
 
             // WINDOW LISTENERS
             window.onresize = app.onResize; // Use some kind of timer to reduce repaints / DOM manipulations

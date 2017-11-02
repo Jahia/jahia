@@ -1589,7 +1589,8 @@ form,
 
 			}
 
-			.x-grid3-col-size {
+			.x-grid3-col-size,
+			.x-grid3-col-primaryTypeLabel {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL !optional;
 
 				body[data-INDIGO-PICKER-SEARCH="open"] & {
@@ -1656,7 +1657,8 @@ form,
 				}
 			}
 
-			.x-grid3-col-size {
+			.x-grid3-col-size,
+			.x-grid3-col-primaryTypeLabel {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED\:SMALL_LABEL !optional;
 
 				body[data-INDIGO-PICKER-SEARCH="open"] & {
@@ -1679,7 +1681,8 @@ form,
 
 				}
 
-				.x-grid3-col-size {
+				.x-grid3-col-size,
+				.x-grid3-col-primaryTypeLabel {
 					@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
 
 					body[data-INDIGO-PICKER-SEARCH="open"] & {
@@ -1756,7 +1759,9 @@ form,
 			.workflow-dashboard-engine &,
 			#JahiaGxtEditEnginePanel-liveroles &,
 			#JahiaGxtEditEnginePanel-editroles &,
-			#JahiaGxtSettingsTab & {
+			#JahiaGxtSettingsTab &,
+			#JahiaGxtManagerLeftTree &,
+			#JahiaGxtManagerTobTable & {
 				display: none;
 			}
 		}
@@ -1784,7 +1789,8 @@ form,
 
 	}
 
-	.x-grid3-col-size {
+	.x-grid3-col-size,
+	.x-grid3-col-primaryTypeLabel {
 		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {

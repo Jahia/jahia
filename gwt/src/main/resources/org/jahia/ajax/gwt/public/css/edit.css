@@ -831,7 +831,8 @@ button.button-disable:hover, div.button-disable:hover {
     border: 1px solid #297acc;
 }
 
-.context-menu-open .x-tree3-node-text {
+.context-menu-open .x-tree3-node-text,
+.context-menu-open .x-tree3-node-text .notPublished {
     color: blue;
     font-weight: bold;
 }

@@ -2,8 +2,12 @@
 $PICKER_SIDEPANEL_WIDTH: 340px;
 
 
+// USed ONLY by full page stand alone picker
+
+
 // PICKER CONTAINER
-#JahiaGxtContentPickerWindow {
+#JahiaGxtContentPickerWindow,
+#contentpicker {
 	// Reset global position of picker as whole page
 	width: 100%!important;
 	height: 100%!important;
@@ -15,6 +19,18 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	body.ext-gecko & {
 		top: 0!important;
+	}
+
+	#pickerTitle {
+		display: block;
+		position: fixed;
+		top: 30px;
+		left: 30px;
+		z-index: 99999;
+		font-family: "Raleway", sans-serif;
+		font-size: 36px;
+		color: #7a7e80;
+		font-weight: 100;
 	}
 
 	&[data-indigo-search-date="custom"] {
@@ -77,6 +93,10 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	// Search panel is opened
 	&.search-panel-opened {
+
+		#pickerTitle {
+			display: none;
+		}
 
 		box-shadow: inset 0px 37px 0px #444548, inset 0px 67px 0px #515356, inset 0px 68px 1px #222;
 
@@ -429,9 +449,11 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			z-index: 99999;
 			background: transparent!important;
 			bottom: 0!important;
+			pointer-events: none;
 
 			.toggle-multiple-selection {
 				background-image: url(./images/icons/toggle-SN-white@X2.png);
+				pointer-events: all;
 			}
 		}
 
@@ -1734,7 +1756,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	}
 
 	// ACTION BAR (Save, cancel)
-	.x-window-bbar {
+	.x-window-bbar,
+	.x-panel-bbar { // for stand alone picker
 	    position: fixed;
 	    bottom: -8px;
 	    box-sizing: border-box;
@@ -1745,6 +1768,11 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	    height: 60px;
 	    width: calc(100% + 60px)!important;
 	    padding-right: 30px;
+
+		// Full page picker correction
+		> div {
+			width: 100%!important
+		}
 
 		// Push buttons to right of screen
 		.x-panel-fbar {

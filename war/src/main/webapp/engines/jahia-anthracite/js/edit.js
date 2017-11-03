@@ -1240,6 +1240,9 @@
 			allMetadata: "All metadata",
 			ignoreMetadata: "Ignore metadata",
 			metaLabel: "Meta: %n%",
+			pickerTitles: {
+				imagepicker: "Image Picker"
+			},
 		},
 		"FR": {
 			jobs: "Processus",
@@ -1262,6 +1265,9 @@
 			allMetadata: "All metadata",
 			ignoreMetadata: "Ignore metadata",
 			metaLabel: "Meta: %n%",
+			pickerTitles: {
+				imagepicker: "Image Picker"
+			},
 		}
 	}
 
@@ -1275,7 +1281,51 @@
 			startedOnSettingsPage: false,
 			startedOnEditPage: true,
 			firstApp: null,
-            ckeditorVersion: CKEDITOR.version
+            ckeditorVersion: CKEDITOR.version,
+			HTTP: function(){
+				var pathnameSplit = document.location.pathname.split("/"),
+					page = pathnameSplit[pathnameSplit.length - 1],
+					root = pathnameSplit[1],
+					queryString = document.location.href,
+					queryStringParameters = queryString.split("?"),
+					queryStringKeyValuePairs,
+					queryStringKeyValuePairsSplit,
+					n,
+					picker =  null,
+					QS = {};
+
+
+
+
+
+
+
+				if(queryStringParameters.length > 1){
+					// Found a query string ...
+					queryStringKeyValuePairs = queryStringParameters[1].split("&");
+
+					for(var n = 0; n < queryStringKeyValuePairs.length; n++){
+						queryStringKeyValuePairsSplit = queryStringKeyValuePairs[n].split("=");
+						QS[queryStringKeyValuePairsSplit[0]] = queryStringKeyValuePairsSplit[1];
+					}
+				}
+
+				if(root == "engines" && page == "contentpicker.jsp"){
+					app = "contentpicker";
+					picker = QS["type"];
+
+				} else if(root == "cms"){
+					app = pathnameSplit[2];
+				}
+
+				return {
+					page: page,
+					root: root,
+					picker: picker,
+					QS: QS,
+					app: app
+				};
+			}(),
 		},
 		dev: {
 			data: {
@@ -1305,7 +1355,6 @@
 
 		},
         onChange: function(attrKey, attrValue){
-
             if(app.data.previousModeClass == attrValue){
                 return false;
             }
@@ -1383,7 +1432,7 @@
 				return false;
 
 			}
-			app.dev.log("::: APP ::: SWITCH: " + appID);
+			app.dev.log("::: APP ::: SWITCH: " + appID, true);
 			app.data.currentApp = appID;
 
             DexV2.getCached("body").setAttribute("data-INDIGO-APP", appID);
@@ -1554,6 +1603,9 @@
 				pickerTitle: null,
 				displayType: null,
 				previousDisplayType: null,
+				ID: "JahiaGxtContentPickerWindow",
+				standaloneID: "contentpicker",
+				inpageID: "JahiaGxtContentPickerWindow",
 				hasPreview: null,
 				selectedFileCount: 0,
 				zooms: {
@@ -1564,11 +1616,25 @@
 			onOpen: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONOPEN");
 
+				if(app.picker.data.standalone){
+					// Set ID for picker ...
+					app.picker.data.ID = app.picker.data.standaloneID;
+
+					// Create title
+					var pickerH1 = document.createElement("h1"),
+						pickerH1Label = document.createTextNode(localisedStrings[app.data.UILanguage].pickerTitles[app.data.HTTP.picker]);
+
+					pickerH1.id = "pickerTitle";
+					pickerH1.appendChild(pickerH1Label);
+
+					// Add title to page
+					DexV2.id("contentpicker").prepend(pickerH1);
+				}
+
 				// Save current view (by default loads on thumbs)
 				app.picker.data.displayType = "thumbsview";
 
-				// Position Search button slightly to the right of the picker title
-				var pickerTitle = DexV2.id("JahiaGxtContentPickerWindow").filter(".x-window-tl .x-window-header-text"),
+				var pickerTitle = (app.picker.data.standalone) ? DexV2("#pickerTitle") : DexV2.id(app.picker.data.ID).filter(".x-window-tl .x-window-header-text"),
 					box = pickerTitle.getNode(0).getBoundingClientRect(),
 					left = box.left,
 					top = box.top,
@@ -1588,7 +1654,7 @@
 
 				toggleFilesButton.id = "toggle-picker-files";
 
-				DexV2.id("JahiaGxtContentPickerWindow").prepend(toggleFilesButton);
+				DexV2.id(app.picker.data.ID).prepend(toggleFilesButton);
 
 				// Add placeholders to form elements
 				app.picker.setPlaceholders();
@@ -1600,21 +1666,21 @@
 					.setAttribute("indigo-PICKER-DISPLAY", "thumbsview");
 
 				// Reset classes that may have been previously added
-				DexV2.id("JahiaGxtContentPickerWindow").removeClass("search-panel-opened");
+				DexV2.id(app.picker.data.ID).removeClass("search-panel-opened");
 
 				// Listen for clicks on toggle button
-				DexV2.id("JahiaGxtContentPickerWindow").onClick("#toggle-picker-files", function(){
-					DexV2.id("JahiaGxtContentPickerWindow").toggleClass("indigo-collapsed");
+				DexV2.id(app.picker.data.ID).onClick("#toggle-picker-files", function(){
+					DexV2.id(app.picker.data.ID).toggleClass("indigo-collapsed");
 				}, "TOGGLE-PICKER-FILES");
 
 				// Listen for changes in slider (input range)
-				DexV2.id("JahiaGxtContentPickerWindow").onInput("#thumb-size-slider", function(e){
+				DexV2.id(app.picker.data.ID).onInput("#thumb-size-slider", function(e){
 					var zoomSize = e.target.value;
 
 					// Save zoom level
 					app.picker.data.zooms[app.picker.data.displayType] = zoomSize;
 
-					DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div #images-view .x-view").setAttribute("indigo-thumb-zoom", zoomSize);
+					DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree + div #images-view .x-view").setAttribute("indigo-thumb-zoom", zoomSize);
 				}, "THUMB-SIZE-SLIDER");
 
 				// Fires if multiselect is possible in picker...
@@ -1630,7 +1696,7 @@
 					DexV2.id("JahiaGxtManagerBottomTabs").prepend(toggleButton);
 
 					// Add class for CSS
-					DexV2.id("JahiaGxtContentPickerWindow").addClass("indigo-picker-multi-select");
+					DexV2.id(app.picker.data.ID).addClass("indigo-picker-multi-select");
 
 					// Listen for files being added to the multiple selection
 					DexV2.id("JahiaGxtManagerBottomTabs").onGroupOpen(".x-grid-group", function(groupedNodes){
@@ -1653,7 +1719,7 @@
 				}, "CHECK_FOR_MULTISELECT");
 
 				// See if GWT has included a slider for thumb preview, if so then we can add ours ( which is a GWT replacement )
-				var hasSlider = DexV2("#JahiaGxtContentPickerWindow .x-slider").nodes.length > 0;
+				var hasSlider = DexV2("#" + app.picker.data.ID + " .x-slider").nodes.length > 0;
 
 				if(hasSlider){
 					var thumbSlider = document.createElement("input");
@@ -1664,12 +1730,12 @@
 					thumbSlider.min = 1;
 					thumbSlider.max = 6;
 
-					DexV2.id("JahiaGxtContentPickerWindow").prepend(thumbSlider);
+					DexV2.id(app.picker.data.ID).prepend(thumbSlider);
 
 				}
 
 				// See if GWT has enabled previews for files, if so then set the preview flag to true
-				app.picker.data.enablePreviews = DexV2("#JahiaGxtContentPickerWindow .toolbar-item-filepreview").nodes.length > 0;
+				app.picker.data.enablePreviews = DexV2("#" + app.picker.data.ID + " .toolbar-item-filepreview").nodes.length > 0;
 
 			},
 			updateMultipleCount: function(){
@@ -1679,7 +1745,7 @@
 			updateZoomLevel: function(){
 
 				DexV2.id("thumb-size-slider").nodes[0].value = app.picker.data.zooms[app.picker.data.displayType];
-				DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div #images-view .x-view").setAttribute("indigo-thumb-zoom", app.picker.data.zooms[app.picker.data.displayType]);
+				DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree + div #images-view .x-view").setAttribute("indigo-thumb-zoom", app.picker.data.zooms[app.picker.data.displayType]);
 
 			},
 			setPlaceholders: function(){
@@ -1925,13 +1991,13 @@
 					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOVER");
 					// USER HAS ROLLED OVER THE COMBO TRIGGER
 		            if(DexV2.getCached("body").getAttribute("data-indigo-picker-source-panel") != "open"){
-		                DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
+		                DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
 		            }
 				},
 				onMouseOut: function(){
 					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOUT");
 					// USER HAS ROLLED OUT OF THE COMBO TRIGGER
-		            DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+		            DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 				},
 				close: function(){
 					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: CLOSE");
@@ -1945,7 +2011,7 @@
 					// USER HAS CLICKED THE COMBO TRIGGER
 		            e.stopPropagation();
 
-		            DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+		            DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 
                     DexV2.getCached("body").toggleAttribute("data-INDIGO-PICKER-SOURCE-PANEL", ["open", ""]);
 
@@ -1962,7 +2028,7 @@
 						DexV2("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
 
 					} else {
-						DexV2("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
+						DexV2("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
 
 						// Switch to list view, then remove ...
 						DexV2("#JahiaGxtManagerTobTable").onceGroupOpen(".x-grid3 .x-grid3-row", function(){
@@ -1976,14 +2042,14 @@
 					DexV2("#CRTsearchTabItem").removeClass("x-hide-display");
 
 					DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "open");
-					DexV2.id("JahiaGxtContentPickerWindow").addClass("search-panel-opened");
+					DexV2.id(app.picker.data.ID).addClass("search-panel-opened");
 
 					// Ask for class names ...
-					var searchField = DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(1) td:nth-child(1) input'),
-						languageField = DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(2) input'),
-						fromDate = DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(5) input'),
-						toDate = DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(6) input'),
-						dateRange = DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7) input');
+					var searchField = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(1) td:nth-child(1) input'),
+						languageField = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(2) input'),
+						fromDate = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(5) input'),
+						toDate = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(6) input'),
+						dateRange = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7) input');
 
 					searchField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].search.replace("%n%", app.picker.data.pickerTitle));
 					// searchField.getNode(0).value = "";
@@ -1994,7 +2060,7 @@
 					dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateAnyTime);
 
 					// Callback when user opens Date Range context menu ...
-					DexV2('#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7)').oneClick("img", function(){
+					DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7)').oneClick("img", function(){
 						var alreadyAddedButtons = DexV2(".x-combo-list").hasClass("indigo-buttons");
 
 						if(!alreadyAddedButtons){
@@ -2019,28 +2085,28 @@
 						DexV2(".x-combo-list")
 							// Clicked on a Normal Date Filter ( ie. 1 day, 2 days, etc )
 							.onMouseDown(".x-combo-list-item", function(){
-								DexV2.id("JahiaGxtContentPickerWindow").setAttribute("data-indigo-search-date", "simple");
+								DexV2.id(app.picker.data.ID).setAttribute("data-indigo-search-date", "simple");
 
 							}, "PREDEFINED_DATE_RANGE")
 
 							// Clicked on the custom date range button
 							.onMouseDown(".search-custom-date-range-button", function(){
-								DexV2.id("JahiaGxtContentPickerWindow").setAttribute("data-indigo-search-date", "custom");
+								DexV2.id(app.picker.data.ID).setAttribute("data-indigo-search-date", "custom");
 
 								dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateCustom);
 
 								// Close the context menu by trigger clicking the page
-								DexV2("#JahiaGxtContentPickerWindow").trigger("mousedown").trigger("mouseup");
+								DexV2("#" + app.picker.data.ID).trigger("mousedown").trigger("mouseup");
 
 							}, "CUSTOM_DATE_RANGE")
 							.onMouseDown(".search-anytime-button", function(){
 								// Clicked on Any TIme ( removes times filter )
 
 								dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateAnyTime);
-								DexV2.id("JahiaGxtContentPickerWindow").setAttribute("data-indigo-search-date", "");
+								DexV2.id(app.picker.data.ID).setAttribute("data-indigo-search-date", "");
 
 								// Close the context menu by trigger clicking the page
-								DexV2("#JahiaGxtContentPickerWindow").trigger("mousedown").trigger("mouseup");
+								DexV2("#" + app.picker.data.ID).trigger("mousedown").trigger("mouseup");
 							}, "ANY_TIME");
 
 
@@ -2048,15 +2114,15 @@
 
 					}, "SEARCH_PANEL_DATE_RANGE_BUTTON");
 
-					DexV2.id("JahiaGxtContentPickerWindow")
+					DexV2.id(app.picker.data.ID)
 						// Listen for changes to meta tags ...
-						.onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(3)", app.picker.search.updateMetaLabel, "CHANGE_META_FILTER")
+						.onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(3)", app.picker.search.updateMetaLabel, "CHANGE_META_FILTER")
 
 						// Listen for changes to modification type ...
-						.onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) .x-form-check-wrap", app.picker.search.updateModificationLabel, "CHANGE_MODIFICATION_FILTER")
+						.onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) .x-form-check-wrap", app.picker.search.updateModificationLabel, "CHANGE_MODIFICATION_FILTER")
 
 						// Toggle modification menu when clicking ...
-						.onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) > label", app.picker.search.toggleModificationMenu, "TOGGLE_MODIFICATION_FILTER");
+						.onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) > label", app.picker.search.toggleModificationMenu, "TOGGLE_MODIFICATION_FILTER");
 
 					// Trigger clicks to initiate the labels of Modification and Meta
 					DexV2.id("CRTsearchTabItem").filter(".x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(3)").trigger("click");
@@ -2125,20 +2191,20 @@
 
 		            // Hide the search panel
 		            DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "");
-					DexV2.id("JahiaGxtContentPickerWindow").removeClass("search-panel-opened");
+					DexV2.id(app.picker.data.ID).removeClass("search-panel-opened");
 
 					DexV2.id("CRTsearchTabItem").addClass("x-hide-display");
 
 
 		            // Display the BROWSE panels
-		            DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
+		            DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
 
 					// // Put the results in previous mode
-					DexV2("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-" + app.picker.data.previousDisplayType).trigger("click");
+					DexV2("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-" + app.picker.data.previousDisplayType).trigger("click");
 
 
 					// CLick on the refresh button to reload the content of the directory
-		            DexV2.id("JahiaGxtContentPickerWindow").filter("#JahiaGxtManagerLeftTree .x-panel:not(.x-panel-collapsed) .x-tool-refresh").trigger("click");
+		            DexV2.id(app.picker.data.ID).filter("#JahiaGxtManagerLeftTree .x-panel:not(.x-panel-collapsed) .x-tool-refresh").trigger("click");
 
 				},
 
@@ -3794,7 +3860,7 @@
                 .onOpen(".menu-edit-menu-edit", app.contextMenus.moreInfoMenu.onOpen)
                 .onOpen(".editModeContextMenu", app.contextMenus.moreInfoMenu.onOpen)
                 .onOpen(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onOpen)
-                .onOpen("#JahiaGxtContentPickerWindow", app.picker.onOpen)
+                .onOpen("#" + app.picker.data.ID, app.picker.onOpen)
                 .onOpen("#JahiaGxtEnginePanel", app.engine.onOpen)
                 .onOpen("#JahiaGxtImagePopup", app.imagePreview.onOpen)
                 .onAttribute(".edit-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
@@ -3808,7 +3874,7 @@
                 .onAttribute("body", "data-main-node-path", app.contribute.onChangeMode)
                 .onAttribute(".window-iframe", "src", app.iframe.onChangeSRC)
                 .onAttribute(".x-jahia-root", "class", app.onChange)
-                .onClose("#JahiaGxtContentPickerWindow", app.picker.onClose)
+                .onClose("#" + app.picker.data.ID, app.picker.onClose)
                 .onClose("#JahiaGxtEnginePanel", app.engine.onClose)
                 .onClose("#JahiaGxtImagePopup", app.imagePreview.onClose)
                 .onOpen(".workflow-dashboard-engine", app.workflow.dashboard.onOpen)
@@ -3825,8 +3891,8 @@
 				.onMouseDown("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(1) img.x-form-trigger", app.engine.openConditionsMenu)
                 .onClick(".x-grid3-row .x-grid3-td-size", app.picker.search.onContext)
                 .onClick(".x-grid3-row .x-tree3-el", app.picker.row.onContext)
-				.onMouseDown("#JahiaGxtContentPickerWindow .more-info-button", app.picker.thumb.onContext)
-                .onMouseDown("#JahiaGxtContentPickerWindow .preview-button", app.picker.thumb.openPreview)
+				.onMouseDown("#" + app.picker.data.ID + " .more-info-button", app.picker.thumb.onContext)
+                .onMouseDown("#" + app.picker.data.ID + " .preview-button", app.picker.thumb.openPreview)
 
                 .onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick)
                 // DexV2(".x-viewport-editmode .x-toolbar-first > table").onClick(app.theme.onToggle)
@@ -3840,21 +3906,21 @@
 				.onMouseDown(".menu-edit-menu-mode", app.contextMenus.managerMenu.onClose)
                 .onMouseDown(".menu-edit-menu-user", app.contextMenus.managerMenu.onClose)
                 .onClick("#JahiaGxtSidePanelTabs .x-grid3-td-displayName", app.edit.sidepanel.row.onContext)
-                .onClick("#JahiaGxtContentPickerWindow", app.picker.onClick)
-                .onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView)
-				.onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView)
-                .onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-detailedview", app.picker.onDetailView)
+                .onClick("#" + app.picker.data.ID, app.picker.onClick)
+                .onClick("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView)
+				.onClick("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView)
+                .onClick("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-detailedview", app.picker.onDetailView)
                 .onClick(".node-path-title", app.iframe.clearSelection)
                 .onMouseDown(".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
                 .onMouseDown("#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close)
                 .onMouseUp("#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open)
-                .onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close)
-                .onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle)
-                .onMouseEnter("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver)
-                .onMouseLeave("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOut)
-				.onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerTobTable .x-grid3-row", app.picker.row.onMouseOver)
-				.onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerTobTable .thumb-wrap", app.picker.thumb.onMouseOver)
-                // .onMouseEnter("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div #images-view .x-view", app.picker.thumb.onMouseOut)
+                .onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close)
+                .onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle)
+                .onMouseEnter("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver)
+                .onMouseLeave("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOut)
+				.onMouseOver("#" + app.picker.data.ID + " #JahiaGxtManagerTobTable .x-grid3-row", app.picker.row.onMouseOver)
+				.onMouseOver("#" + app.picker.data.ID + " #JahiaGxtManagerTobTable .thumb-wrap", app.picker.thumb.onMouseOver)
+                // .onMouseEnter("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree + div #images-view .x-view", app.picker.thumb.onMouseOut)
                 .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick)
                 .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.settings.open)
 
@@ -3899,6 +3965,17 @@
 
         DexV2.getCached("body").setAttribute("data-CKEDITOR-VERSION", app.data.ckeditorVersion);
 
+		if(app.data.HTTP.app == "contentpicker"){
+			// This is a full page picker, not edit engine
+			app.picker.data.standalone = true;
+			app.picker.data.ID = app.picker.data.standaloneID;
+
+			// Need to "open" the picker manually ...
+			DexV2.tag("body").onOpen("#JahiaGxtContentPicker", function(){
+				app.picker.onOpen();
+			});
+		}
+
         // Attach event listeners
         eventListeners.attach();
 
@@ -3911,6 +3988,7 @@
     document.addEventListener("DOMContentLoaded", function(event) {
         init();
     });
+
 
     // Expose DX to window
     if(exposeAs){

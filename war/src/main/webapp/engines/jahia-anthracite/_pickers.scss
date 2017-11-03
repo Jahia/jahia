@@ -11,6 +11,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	top: 10px!important;
 	background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);
 	box-shadow: inset 0px 37px 0px #444548, inset 0px 38px 7px #222;
+	z-index: 1100!important;
 
 	body.ext-gecko & {
 		top: 0!important;
@@ -64,14 +65,13 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			height: calc(100% - 242px)!important;
 		}
 
+		#JahiaGxtManagerBottomTabs.indigo-collapsed + div#JahiaGxtManagerTobTable{
+			height: calc(100% - 92px)!important;
+		}
+
 		.x-window-bbar {
 			box-shadow: none;
 		}
-
-
-
-
-
 
 	}
 
@@ -157,6 +157,21 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			right: 16px;
 		}
 
+		&.indigo-picker-multi-select {
+
+			#JahiaGxtManagerBottomTabs {
+				&.indigo-collapsed {
+
+					&:before {
+						left: 130px;
+					    position: relative;
+					}
+
+				}
+			}
+
+		}
+
 	}
 
 
@@ -203,7 +218,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		// TOGGLE BUTTON
 		#toggle-picker-files {
 			left: 0;
-			background: url(./images/icons/expand-side-panel@X2.png) no-repeat center center;
+			background-image: url(./images/icons/toggle-WE-white@X2.png);
 		}
 
 		#JahiaGxtManagerLeftTree + div #images-view .x-toolbar {
@@ -409,15 +424,38 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		box-sizing: border-box;
 		box-shadow: inset 0px 1px 7px #222;
 
-		&::before {
-		    content: "Multiple selection";
+		&.indigo-collapsed {
+			height: 52px!important;
+			z-index: 99999;
+			background: transparent!important;
+			bottom: 0!important;
+
+			.toggle-multiple-selection {
+				background-image: url(./images/icons/toggle-SN-white@X2.png);
+			}
+		}
+
+		.toggle-multiple-selection {
+		    content: attr(data-indigo-multiselection-title);
 		    font-size: 18px;
 		    color: #F1F1F1;
 		    font-weight: 100;
 		    font-family: Nunito Sans;
-		    display: block;
+		    display: inline-block;
 		    margin-bottom: 10px;
+			padding: 0 0 0 19px;
+			background: url(./images/icons/toggle-NS-white@X2.png) no-repeat left center;
+			background-size: 15px;
+			opacity: 0.9;
+			border: none;
+
+			&:hover {
+				opacity: 1;
+				cursor: pointer;
+			}
 		}
+
+
 
 		.x-grid3 {
 			height: calc(100% - 23px)!important;
@@ -523,6 +561,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 								background: url(./images/icons/icon-close-grey@X2.png) no-repeat center center #e9e9e9;
 								background-size: 10px;
 								border: 2px solid rgb(0, 160, 227)!important;
+								pointer-events: all;
 
 
 								> tbody {
@@ -1803,7 +1842,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	#toggle-picker-files {
 		position: fixed;
 		top: calc(50% - 45px);
-		left: 320px;
+		left: $PICKER_SIDEPANEL_WIDTH - 23px;
 		background: red;
 		color: white;
 		z-index: 99999;
@@ -1815,7 +1854,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		border: none;
 		opacity: 0.8;
 
-		background: url(./images/icons/collapse-side-panel@X2.png) no-repeat center center;
+		background: url(./images/icons/toggle-EW@X2.png) no-repeat center center;
+		background-size: 15px;
 
 		&:hover {
 			opacity: 1;
@@ -1841,6 +1881,16 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				position: fixed;
 				top: 7px!important;
 				left: auto!important;
+
+				input {
+					padding: 3px 15px 4px 9px!important;
+					background-color: #d9dbdd;
+					@include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--DARK_CLOUDS, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+				}
+
+				.x-form-trigger {
+					height: 25px!important;
+				}
 			}
 		}
 

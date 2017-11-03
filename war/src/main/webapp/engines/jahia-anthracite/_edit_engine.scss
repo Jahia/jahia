@@ -25,6 +25,8 @@
 .engine-panel,
 .engine-window {
 	//z-index: $ZINDEX--SIDE_PANEL--EDIT_ENGINE;
+	z-index: 1050!important;
+
 	background: $EDIT_ENGINE--BG--COLOUR;
     position: fixed!important;
     top: 0!important;

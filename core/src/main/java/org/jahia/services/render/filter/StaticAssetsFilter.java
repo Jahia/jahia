@@ -62,6 +62,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -776,7 +777,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         String moduleId = StringUtils.substringBefore(filePath, "/");
         filePath = StringUtils.substringAfter(filePath, "/");
         if (key.startsWith("/modules/")) {
-            r = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId).getResource(filePath);
+            final JahiaTemplatesPackage jahiaTemplatesPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId);
+            if (jahiaTemplatesPackage != null) {
+                r = jahiaTemplatesPackage.getResource(filePath);
+            }
         } else if (key.startsWith("/files/")) {
             r = getResourceFromFile(moduleId, "/" + filePath);
         }

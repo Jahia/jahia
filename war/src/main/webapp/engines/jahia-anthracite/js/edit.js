@@ -1798,6 +1798,7 @@
 				onMouseOver: function(e){
 					app.dev.log("::: APP ::: PICKER ::: ROW ::: MOUSEOVER");
 
+
 					if(app.picker.data.enablePreviews){
 						if(DexV2.node(this).filter(".preview-button").nodes.length == 0){
 							var previewButton = document.createElement("button"),
@@ -1955,11 +1956,17 @@
 							.trigger("mousedown")
 							.trigger("mouseup");
 
-						// Now need to remove the preview ( just incase it is previewing a previously selected thumb)
-						DexV2.id("JahiaGxtImagePopup").remove(); // remove OLD preview
+						if(DexV2("#" + app.picker.data.ID + " .toolbar-item-filepreview").hasClass("x-item-disabled")){
+							alert("Preview unavailable");
+						} else {
+							// Now need to remove the preview ( just incase it is previewing a previously selected thumb)
+							DexV2.id("JahiaGxtImagePopup").remove(); // remove OLD preview
 
-						// Reclick on the preview button for the newly selected thumb
-						DexV2.node(this).customTrigger("click", {secondClick: true});
+							// Reclick on the preview button for the newly selected thumb
+							DexV2.node(this).customTrigger("click", {secondClick: true});
+						}
+
+
 					}
 
 		            DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "hide");

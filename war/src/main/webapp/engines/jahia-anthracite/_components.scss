@@ -2842,6 +2842,7 @@ form,
 		// margin-top: -112px; // Offset the title
 		margin-top: calc(-50vh + 170px);
 		z-index: 1110!important;
+		z-index: 999910 !important;
 
 		.x-resizable-handle {
 			display: none;

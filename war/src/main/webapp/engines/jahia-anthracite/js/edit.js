@@ -518,7 +518,7 @@
                 for(n = 0; n < this.nodes.length; n++){
                     this.nodes[n];
 
-                    if (this.nodes[n].parentNode) {
+                    if (this.nodes[n] && this.nodes[n].parentNode) {
                         this.nodes[n].parentNode.removeChild(this.nodes[n]);
                     }
                 }
@@ -1241,7 +1241,9 @@
 			ignoreMetadata: "Ignore metadata",
 			metaLabel: "Meta: %n%",
 			pickerTitles: {
-				imagepicker: "Image Picker"
+				default: "File Picker",
+				imagepicker: "Image Picker",
+				editoriallinkpicker: "Content picker",
 			},
 		},
 		"FR": {
@@ -1266,7 +1268,9 @@
 			ignoreMetadata: "Ignore metadata",
 			metaLabel: "Meta: %n%",
 			pickerTitles: {
-				imagepicker: "Image Picker"
+				default: "File Picker",
+				imagepicker: "Image Picker",
+				editoriallinkpicker: "Content picker",
 			},
 		}
 	}
@@ -1312,7 +1316,7 @@
 
 				if(root == "engines" && page == "contentpicker.jsp"){
 					app = "contentpicker";
-					picker = QS["type"];
+					picker = QS["type"] || "default";
 
 				} else if(root == "cms"){
 					app = pathnameSplit[2];
@@ -1744,7 +1748,11 @@
 			},
 			updateZoomLevel: function(){
 
-				DexV2.id("thumb-size-slider").nodes[0].value = app.picker.data.zooms[app.picker.data.displayType];
+				if(DexV2.id("thumb-size-slider").nodes[0]){
+					DexV2.id("thumb-size-slider").nodes[0].value = app.picker.data.zooms[app.picker.data.displayType];
+
+				}
+
 				DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree + div #images-view .x-view").setAttribute("indigo-thumb-zoom", app.picker.data.zooms[app.picker.data.displayType]);
 
 			},

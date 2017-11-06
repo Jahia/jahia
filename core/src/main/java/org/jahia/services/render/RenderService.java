@@ -75,6 +75,8 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
+import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -328,9 +330,12 @@ public class RenderService {
             }
 
             // Allows to override template by theme for server settings and site settings
-            if (JCRContentUtils.isNodeType(resource.getNode(), "jnt:globalSettings", "jnt:virtualsite")) {
-                String theme = (String) renderContext.getRequest().getSession().getAttribute("jahia.ui.theme");
-                if (theme != null) {
+            HttpSession httpSession = renderContext.getRequest() != null ? renderContext.getRequest().getSession(false)
+                    : null;
+            if (httpSession != null) {
+                String theme = (String) httpSession.getAttribute("jahia.ui.theme");
+                if (theme != null
+                        && JCRContentUtils.isNodeType(resource.getNode(), "jnt:globalSettings", "jnt:virtualsite")) {
                     template = addTemplate(resource, renderContext, templateName + "-" + theme, installedModules, type);
                 }
             }

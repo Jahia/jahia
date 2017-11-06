@@ -703,7 +703,10 @@
                 var n;
 
                 for(n = 0; n < this.nodes.length; n++){
-                    this.nodes[n].classList.remove(classname);
+					if(this.nodes[n]){
+						this.nodes[n].classList.remove(classname);
+
+					}
                 }
                 return this;
             },

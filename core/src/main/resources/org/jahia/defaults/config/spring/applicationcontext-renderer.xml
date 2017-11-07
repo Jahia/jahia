@@ -31,6 +31,7 @@
         <property name="channelService" ref="ChannelService"/>
         <property name="renderTimeMonitor" ref="RenderTimeMonitor"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="settingsBean" ref="settingsBean"/>
     </bean>
 
     <bean id="extensionObserverRegistry" class="org.jahia.osgi.ExtensionObserverRegistry" factory-method="getInstance"/>

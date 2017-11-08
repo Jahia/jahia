@@ -82,7 +82,7 @@ public class JCRObservationManager implements ObservationManager {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRObservationManager.class);
 
-    private static ThreadLocal<Boolean> eventListenersAvailableDuringPublishOnly = new ThreadLocal<Boolean>();
+    private static ThreadLocal<Integer> eventListenersAvailableDuringPublishOnly = new ThreadLocal<Integer>();
     private static ThreadLocal<Boolean> allEventListenersDisabled = new ThreadLocal<Boolean>();
     private static ThreadLocal<JCRSessionWrapper> currentSession = new ThreadLocal<JCRSessionWrapper>();
     private static ThreadLocal<Integer> lastOp = new ThreadLocal<Integer>();
@@ -208,8 +208,20 @@ public class JCRObservationManager implements ObservationManager {
         return null;
     }
 
-    public static void setEventListenersAvailableDuringPublishOnly(Boolean eventsDisabled) {
-        JCRObservationManager.eventListenersAvailableDuringPublishOnly.set(eventsDisabled);
+    public static void pushEventListenersAvailableDuringPublishOnly() {
+        Integer previous = JCRObservationManager.eventListenersAvailableDuringPublishOnly.get();
+        if (previous == null) {
+            previous = 0;
+        }
+        JCRObservationManager.eventListenersAvailableDuringPublishOnly.set(previous + 1);
+    }
+
+    public static void popEventListenersAvailableDuringPublishOnly() {
+        Integer previous = JCRObservationManager.eventListenersAvailableDuringPublishOnly.get();
+        if (previous == null || previous == 0) {
+            throw new RuntimeException("Cannot pop observer flag");
+        }
+        JCRObservationManager.eventListenersAvailableDuringPublishOnly.set(previous - 1);
     }
 
     public static void setAllEventListenersDisabled(Boolean eventsDisabled) {
@@ -308,7 +320,7 @@ public class JCRObservationManager implements ObservationManager {
             return;
         }
         String wspName = session.getWorkspace().getName();
-        boolean duringPublicationOnly = Boolean.TRUE.equals(eventListenersAvailableDuringPublishOnly.get());
+        boolean duringPublicationOnly = eventListenersAvailableDuringPublishOnly.get() != null && eventListenersAvailableDuringPublishOnly.get() > 0;
         for (EventConsumer consumer : listeners) {
             DefaultEventListener castListener = consumer.listener instanceof DefaultEventListener ? (DefaultEventListener) consumer.listener : null;
             // check if the required workspace condition is matched

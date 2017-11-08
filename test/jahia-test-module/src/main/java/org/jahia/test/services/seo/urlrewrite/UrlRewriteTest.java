@@ -197,6 +197,7 @@ public class UrlRewriteTest extends JahiaTestCase {
         rewrite(FILES_SERVLET + "/live/sites/urlRewriteSite/files/path/to/my/file.txt",
                 FILES_SERVLET + "/live/sites/urlRewriteSite/files/path/to/my/file.txt");
 
+        doSiteUsersTest(lang, rewrittenLang);
     }
 
     public void doLiveSiteServernameTest(String lang) throws Exception {
@@ -255,6 +256,26 @@ public class UrlRewriteTest extends JahiaTestCase {
         rewrite(FILES_SERVLET + "/live/sites/urlRewriteSite/files/path/to/my/file.txt",
                 FILES_SERVLET + "/live/sites/urlRewriteSite/files/path/to/my/file.txt");
 
+        doSiteUsersTest(lang, rewrittenLang);
+    }
+
+    private void doSiteUsersTest(String lang, String rewrittenLang)
+            throws IOException, ServletException, InvocationTargetException {
+        // site users (also for user registration: QA-9629) -> no rewrite of the user path should take place; also the language is preserved
+        rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/users/hh/ai/ie/sergiy.html",
+                '/' + lang + "/sites/urlRewriteSite/users/hh/ai/ie/sergiy.html");
+        rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/users/hh/ai/ie/sergiy.unauthenticatedChangePassword.do",
+                '/' + lang + "/sites/urlRewriteSite/users/hh/ai/ie/sergiy.unauthenticatedChangePassword.do");
+
+        // with localhost the /sites/<sitekey> part should not be removed from the URL
+        String prefix = "localhost".equals(request.getServerName()) ? "/sites/urlRewriteSite" : "";
+        // check similar page URLs
+        rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/userssearch",
+                rewrittenLang + prefix + "/userssearch");
+        rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/userssearch.html",
+                rewrittenLang + prefix + "/userssearch.html");
+        rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/userssearch/test.html",
+                rewrittenLang + prefix + "/userssearch/test.html");
     }
 
     protected void rewrite(String in, String expectedOut) throws IOException, ServletException,

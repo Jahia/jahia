@@ -86,16 +86,50 @@ public class VanityUrlService {
      * @param locale
      *            the locale to which the mapping should apply
      * @param siteKey
+     *            the key of the current site; if the content node's site does not match the specified one in <code>siteKey</code>,
+     *            <code>null</code> is returned by this method
      * @return the VanityUrl bean
      * @throws RepositoryException
      *             if there was an unexpected exception accessing the repository
      */
     public VanityUrl getVanityUrlForWorkspaceAndLocale(final JCRNodeWrapper contentNode,
                                                        String workspace, Locale locale, final String siteKey) throws RepositoryException {
+        if (siteKey == null) {
+            return null;
+        }
         return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, locale,
                 new JCRCallback<VanityUrl>() {
                     public VanityUrl doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         return vanityUrlManager.getVanityUrlForCurrentLocale(contentNode, siteKey, session);
+                    }
+                });
+    }
+
+    /**
+     * Gets a node's default vanity URL for the given locale and workspace. If none is default then take the first mapping for the locale.
+     * 
+     * @param contentNodePath
+     *            the content node path for which to return a mapping
+     * @param workspace
+     *            the workspace to look for mappings
+     * @param locale
+     *            the locale to which the mapping should apply
+     * @param siteKey
+     *            the key of the current site; if the content node's site does not match the specified one in <code>siteKey</code>,
+     *            <code>null</code> is returned by this method
+     * @return the VanityUrl bean
+     * @throws RepositoryException
+     *             if there was an unexpected exception accessing the repository
+     */
+    public VanityUrl getVanityUrlForWorkspaceAndLocale(final String contentNodePath,
+                                                       String workspace, Locale locale, final String siteKey) throws RepositoryException {
+        if (siteKey == null) {
+            return null;
+        }
+        return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, locale,
+                new JCRCallback<VanityUrl>() {
+                    public VanityUrl doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        return vanityUrlManager.getVanityUrlForCurrentLocale(session.getNode(contentNodePath), siteKey, session);
                     }
                 });
     }

@@ -133,7 +133,8 @@ public class VanityUrlManager {
      * then take the first mapping for the locale.
      *
      * @param contentNode the content node for which to return a mapping
-     * @param siteKey
+     * @param siteKey the key of the current site; if the content node's site does not match the specified one in <code>siteKey</code>,
+     *        <code>null</code> is returned by this method
      * @param session the JCR session holding the information about workspace and locale
      * @return the VanityUrl bean
      * @throws RepositoryException if there was an unexpected exception accessing the repository

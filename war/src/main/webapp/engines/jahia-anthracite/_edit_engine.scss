@@ -1179,51 +1179,42 @@
 	#JahiaGxtEditEnginePanel-metadata {
 		/* left floating forms */
 
-		#Keywords,
-		#Mots-clés {
-			label {
-				display: none!important;
-			}
 
-			.x-form-group {
-				width: 100%!important;
+		.multiple-text-field.x-form-group {
+			width: 100%!important;
 
-				> table {
-					width: 100%;
+			> table {
+				width: 100%;
 
-					.x-form-field-wrap {
-						width: auto!important;
-						float: none;
-						margin-bottom: 5px;
+				.x-form-field-wrap {
+					width: auto!important;
+					float: none;
+					margin-bottom: 5px;
 
-						input {
-							width: 100%!important;
-							background: $COLOUR--WHITE_CLOUDS!important;
-							color: $COLOUR--DARK_CLOUDS!important;
-						}
+					input {
+						width: 100%!important;
+						background: $COLOUR--WHITE_CLOUDS!important;
+						color: $COLOUR--DARK_CLOUDS!important;
+					}
 
-						button {
-							margin-top:20px;
-						}
+					button {
+						margin-top:20px;
+					}
 
-						img.x-form-clear-trigger {
-							background-image: url($ICON--CLOSE_LARGE---GREY)!important;
-							background-size: 8px 8px!important;
-							background-position: center top 8px!important;
-							opacity: 1;
-							width: 25px;
+					img.x-form-clear-trigger {
+						background-image: url($ICON--CLOSE_LARGE---GREY)!important;
+						background-size: 8px 8px!important;
+						background-position: center top 8px!important;
+						opacity: 1;
+						width: 25px;
 
-						}
 					}
 				}
 			}
 		}
 
-		#Tags {
-			label {
-				display: none!important;
-			}
-
+		.tag-field {
+			
 			.x-form-group {
 				width: 100%!important;
 

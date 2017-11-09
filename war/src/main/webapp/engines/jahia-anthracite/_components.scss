@@ -3,10 +3,16 @@
 /////////////////////////////////////////////////
 
 .x-form-field-wrap .x-form-date-trigger {
-	background: red;
+	background-color: #4f5354;
+	background-image: url(./images/icons/ic_date2x.png);
+	background-size: 16px;
+	background-repeat: no-repeat;
+	background-position-y: 4px;
+	background-position-x: 1px;
+	opacity: .3;
 
 	&:hover {
-		background: pink;
+		opacity: .5;
 	}
 }
 

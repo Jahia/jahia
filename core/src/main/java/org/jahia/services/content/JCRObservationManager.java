@@ -208,6 +208,15 @@ public class JCRObservationManager implements ObservationManager {
         return null;
     }
 
+    @Deprecated
+    public static void setEventListenersAvailableDuringPublishOnly(Boolean eventsDisabled) {
+        if (eventsDisabled != null && eventsDisabled) {
+            pushEventListenersAvailableDuringPublishOnly();
+        } else {
+            popEventListenersAvailableDuringPublishOnly();
+        }
+    }
+
     public static void pushEventListenersAvailableDuringPublishOnly() {
         Integer previous = JCRObservationManager.eventListenersAvailableDuringPublishOnly.get();
         if (previous == null) {

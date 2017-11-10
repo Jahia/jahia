@@ -1,0 +1,705 @@
+/****************************/
+/* FUNCTIONS  */
+/****************************/
+
+
+
+@function _property($variable, $context){
+	@return map-get($variable, $context);
+
+}
+
+/*
+  Usage example: _property()
+
+  input {
+  	color: _property($INPUT--COLOR, $EDIT-ENGINE);
+  }
+
+*/
+
+@function _theme-color($color-name, $color-variant: normal) {
+	$color_map: map-get($basic-colors, $color-name);
+	$color: map-get($color_map, $color-variant);
+
+	@return $color;
+
+}
+
+/*
+  Usage example: _theme-color()
+
+  input {
+    color: _theme-color(primary),
+  	background-color: _theme-color(secondary, b),
+  }
+
+*/
+
+
+
+
+
+
+/****************************/
+/* CONFIG  */
+/****************************/
+
+// DEFAULT
+$EDIT-ENGINE: 			LIGHT;
+$SIDE-PANEL: 			LIGHT;
+$APP: 					DARK;
+
+// INVERSED
+// $EDIT-ENGINE: 			DARK;
+// $SIDE-PANEL: 			DARK;
+// $APP: 					LIGHT;
+
+
+
+
+/****************************/
+/* BASE COLORS  */
+/****************************/
+
+// DEFAULT ANTRACITE GREY
+$color-primary:			rgb(92, 97, 100); 		// #5c6164 (GREY)
+$color-secondary:		rgb(250, 250, 250); 	// #FAFAFA (WHITE)
+$color-tertiary:		rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE)
+$color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE)
+$color-quinary:			rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE)
+$color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
+
+$color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
+$color-white:			rgb(255, 255, 255); 	// #FFFFFF (WHITE)
+
+
+
+
+// DEFAULT ANTRACITE BLACK
+// $color-primary:			rgb(50,50,55); 			// #323237 (DARK GREY)
+// $color-secondary:		rgb(238,238,238); 		// #eeeeee (CREAM WHITE)
+// $color-tertiary:		rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE)
+// $color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE)
+// $color-quinary:			rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE)		// Alternatives rgb(238,238,238)
+// $color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
+//
+// $color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
+// $color-white:			rgb(255, 255, 255); 	// #FFFFFF (WHITE)
+
+
+
+
+// DEFAULT JAHIA BLUE
+// $color-primary:			rgb(38,38,38); 			// #323237 (DARK GREY)
+// $color-secondary:		rgb(0, 160, 227); 		// #eeeeee (CREAM WHITE)
+// $color-tertiary:		rgb(238,238,238); 		// #00a0e3 (JAHIA BLUE)
+// $color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE)
+// $color-quinary:			rgb(38,38,38); 			// #00a0e3 (JAHIA BLUE)		// Alternatives rgb(238,238,238)
+// $color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
+//
+// $color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
+// $color-white:			rgb(255, 255, 255); 	// #FFFFFF (WHITE)
+
+
+
+
+
+
+
+/****************************/
+/* COLOR VARIATIONS  */
+/****************************/
+
+$basic-colors: (
+	primary: (
+		normal:	$color-primary,
+		a: 		lighten($color-primary, 2%),
+		b: 		lighten($color-primary, 6%),
+		c: 		lighten($color-primary, 10%),
+		d: 		lighten($color-primary, 25%),
+		e: 		lighten($color-primary, 35%),
+		f: 		darken($color-primary, 5%),
+		g: 		darken($color-primary, 10%),
+		h: 		rgba(darken($color-primary, 10%), .2)
+	),
+	secondary: (
+		normal:	$color-secondary,
+		a: 		darken($color-secondary, 5%),
+		b: 		darken($color-secondary, 7%),
+		c: 		darken($color-secondary, 10%),
+		d: 		darken($color-secondary, 20%),
+		e: 		darken($color-secondary, 35%)
+	),
+	tertiary: (
+		normal:	$color-tertiary,
+		a: 		lighten($color-tertiary, 2%)
+	),
+	quaternary: (
+		normal:	$color-quaternary,
+		a: 		lighten($color-quaternary, 4%)
+	),
+	quinary: (
+		normal:	$color-quinary,
+		a: 		lighten($color-quinary, 4%)
+	),
+	senary: (
+		normal:	$color-senary,
+		a: 		lighten($color-senary, 4%)
+	),
+	black: (
+		normal:	$color-black,
+		a: 		rgba($color-black, .2),
+		b: 		rgba($color-black, .4)
+	),
+	white: (
+		normal:	$color-white,
+		a: 		rgba($color-white, .4)
+	),
+	status: (
+		published: 		green,
+		unpublished: 	red,
+		neverpublished: black,
+		error: 			red
+	)
+);
+
+
+
+
+
+
+
+
+
+
+
+/****************************/
+/* IFRAME */
+/****************************/
+
+$IFRAME--SHADOW:(
+	LIGHT: 3px 0px 16px _theme-color(black, b),
+	DARK: 3px 0px 16px _theme-color(black, b),
+);
+
+
+
+
+
+/****************************/
+/* BACKGROUNDS */
+/****************************/
+
+$BODY--BG:(
+	LIGHT: radial-gradient(ellipse at bottom right, darken(_theme-color(secondary), 4%) 0%, _theme-color(secondary) 50%),
+	DARK: radial-gradient(ellipse at bottom right, darken(_theme-color(primary), 10%) 0%, _theme-color(primary) 70%),
+);
+
+$BODY--BG--SHADOW:(
+	LIGHT: 0 5px 10px 1px _theme-color(black, b),
+	DARK: 0 5px 10px 1px _theme-color(black, b),
+);
+
+
+
+
+
+/****************************/
+/* FOOTERS */
+/****************************/
+
+$FOOTER--BG:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary, g),
+);
+
+$FOOTER--SHADOW:(
+	LIGHT: inset 3px 0px 16px _theme-color(black, b),
+	DARK: inset 3px 0px 16px _theme-color(black, b),
+);
+
+
+
+
+
+/****************************/
+/* INPUT / TEXTAREA */
+/****************************/
+
+// UP
+$INPUT--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$INPUT--BG:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$INPUT--SHADOW:(
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+// HOVER
+$INPUT--COLOR---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$INPUT--BG---HOVER:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$INPUT--SHADOW---HOVER:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+// FOCUS
+$INPUT--COLOR---FOCUS:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$INPUT--BG---FOCUS:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$INPUT--SHADOW---FOCUS:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+
+
+
+
+/****************************/
+/* COMBO / CONTEXT / CONTEXTUAL MENUS */
+/****************************/
+
+// CLOSED UP
+$MENU-CLOSED--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+$MENU-CLOSED--BG:(
+	LIGHT: radial-gradient(ellipse at bottom right, _theme-color(secondary) 0%, _theme-color(white) 70%),
+	DARK: radial-gradient(ellipse at bottom right, _theme-color(primary, b) 0%, _theme-color(primary, a) 70%),
+);
+
+$MENU-CLOSED--SHADOW:(
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: transparent,
+);
+
+// CLOSED HOVER
+$MENU-CLOSED--COLOR---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+$MENU-CLOSED--BG---HOVER:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(primary, b),
+);
+
+$MENU-CLOSED--SHADOW---HOVER:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+// OPENED UP
+$MENU-OPENED--COLOR:(
+	LIGHT: _theme-color(senary),
+	DARK: _theme-color(senary)
+);
+
+$MENU-OPENED--BG:(
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(quinary),
+);
+
+// OPENED HOVER
+$MENU-OPENED--COLOR---HOVER:(
+	LIGHT: _theme-color(senary),
+	DARK: _theme-color(senary),
+);
+
+$MENU-OPENED--BG---HOVER:(
+	LIGHT: _theme-color(quinary, a),
+	DARK: _theme-color(quinary, a),
+);
+
+
+
+
+
+/****************************/
+/* TREE / ROWS */
+/****************************/
+
+// UP
+$ROW--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+$ROW--BG:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+// HOVER
+$ROW--COLOR---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+$ROW--BG---HOVER:(
+	LIGHT: _theme-color(primary, e),
+	DARK: _theme-color(primary, a),
+);
+
+// SELECTED
+$ROW--COLOR---SELECTED:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$ROW--BG---SELECTED:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(primary, e),
+);
+
+// SELECTED HOVER
+$ROW--COLOR---SELECTED-HOVER:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$ROW--BG---SELECTED-HOVER:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(primary, e),
+);
+
+
+
+
+
+/****************************/
+/* FIELDSET */
+/****************************/
+
+// TITLE COLOR
+$FIELDSET--TITLE-COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+// BACKGROUND COLOR
+$FIELDSET--BG:(
+	LIGHT: _theme-color(white, a),
+	DARK: _theme-color(primary, h),
+);
+
+// BORDER COLOR
+$FIELDSET--BORDER:(
+	LIGHT: 1px solid _theme-color(secondary, a),
+	DARK: 1px solid transparent,
+);
+
+// BACKGROUND HOVER COLOR
+$FIELDSET--BG---HOVER:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(primary, h),
+);
+
+
+
+
+
+/****************************/
+/* TITLE */
+/****************************/
+
+$TITLE--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+
+
+
+
+/****************************/
+/* SUBTITLE */
+/****************************/
+
+$SUBTITLE--COLOR:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(secondary, d),
+);
+
+
+
+
+
+/****************************/
+/* PARAGRAPH */
+/****************************/
+
+$PARAGRAPH--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+
+
+
+
+/****************************/
+/* LABEL */
+/****************************/
+
+$LABEL--COLOR:(
+	LIGHT: _theme-color(secondary, e),
+	DARK: _theme-color(primary, e),
+);
+
+
+
+
+
+/****************************/
+/* TOOL BUTTON (i.e Pages, Content, Devices, etc ...) */
+/****************************/
+
+// UP
+$TOOL-BUTTON--COLOR:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(white),
+);
+
+// HOVER
+$TOOL-BUTTON--COLOR---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(white),
+);
+
+// SELECTED
+$TOOL-BUTTON--COLOR---SELECTED:(
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(tertiary),
+);
+
+// SELECTED HOVER
+$TOOL-BUTTON--COLOR---SELECTED-HOVER:(
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(tertiary),
+);
+
+
+
+
+
+/****************************/
+/* REGULAR BUTTONS */
+/****************************/
+
+// UP
+$BUTTON--COLOR:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$BUTTON--BG:(
+	LIGHT: _theme-color(quaternary),
+	DARK: _theme-color(quaternary),
+);
+
+// HOVER
+$BUTTON--COLOR---HOVER:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$BUTTON--BG---HOVER:(
+	LIGHT: _theme-color(quaternary, a),
+	DARK: _theme-color(quaternary, a),
+);
+
+
+
+
+
+/****************************/
+/* ACTION BUTTONS */
+/****************************/
+
+// DEFAULT UP
+$ACTION-DEFAULT--COLOR:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(primary),
+);
+
+$ACTION-DEFAULT--BG:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary, a),
+);
+
+$ACTION-DEFAULT--SHADOW:(
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+// DEFAULT HOVER
+$ACTION-DEFAULT--COLOR---HOVER:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(primary),
+);
+
+$ACTION-DEFAULT--BG---HOVER:(
+	LIGHT: _theme-color(primary, a),
+	DARK: _theme-color(secondary),
+);
+
+$ACTION-DEFAULT--SHADOW---HOVER:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+// SUGGESTED UP
+$ACTION-SUGGESTED--COLOR:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$ACTION-SUGGESTED--BG:(
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(tertiary),
+);
+
+$ACTION-SUGGESTED--SHADOW:(
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+// SUGGESTED HOVER
+$ACTION-SUGGESTED--COLOR---HOVER:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$ACTION-SUGGESTED--BG---HOVER:(
+	LIGHT: _theme-color(tertiary, a),
+	DARK: _theme-color(tertiary, a),
+);
+
+$ACTION-SUGGESTED--SHADOW---HOVER:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+
+
+
+
+/****************************/
+/* TABS */
+/****************************/
+
+// UP
+$TAB--BAR:(
+	LIGHT: 1px solid _theme-color(secondary, d),
+	DARK: 1px solid _theme-color(primary, g),
+);
+
+$TAB--COLOR:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(primary, e),
+);
+
+// HOVER
+$TAB--BAR---HOVER:(
+	LIGHT: 1px solid _theme-color(tertiary),
+	DARK: 1px solid _theme-color(secondary),
+);
+
+$TAB--COLOR---HOVER:(
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(secondary),
+);
+
+// SELECTED
+$TAB--BAR---SELECTED:(
+	LIGHT: 3px solid _theme-color(tertiary),
+	DARK: 3px solid _theme-color(secondary),
+);
+
+$TAB--COLOR---SELECTED:(
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(secondary),
+);
+
+// SELECTED HOVER
+$TAB--BAR---SELECTED-HOVER:(
+	LIGHT: 3px solid _theme-color(tertiary),
+	DARK: 3px solid _theme-color(secondary),
+);
+
+$TAB--COLOR---SELECTED-HOVER:(
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(secondary),
+);
+
+
+
+
+
+/****************************/
+/* STILL TO DEFINE */
+/****************************/
+
+// HEADER - USED IN PICKERS
+$HEADER--BG:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$HEADER--SHADOW:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+// TOGGLE - USED IN EDIT ENGINE
+$TOGGLE--RAIL:(
+	LIGHT: pink,
+	DARK: pink,
+);
+
+$TOGGLE--LABEL---ON:(
+	LIGHT: pink,
+	DARK: pink,
+);
+
+$TOGGLE--SHUTTLE---ON:(
+	LIGHT: pink,
+	DARK: pink,
+);
+
+$TOGGLE--LABEL---OFF:(
+	LIGHT: pink,
+	DARK: pink,
+);
+
+$TOGGLE--SHUTTLE---OFF:(
+	LIGHT: pink,
+	DARK: pink,
+);

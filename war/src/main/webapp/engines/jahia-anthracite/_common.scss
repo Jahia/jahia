@@ -5,6 +5,7 @@
 @import "functions";
 @import "variables";
 @import "theme-dark";
+@import "new_theme";
 @import "customisation";
 @import "placeholders";
 @import "components";
@@ -76,15 +77,10 @@ html {
 }
 
 body {
-	background: $APP--BG--COLOUR;
-    background: radial-gradient(ellipse at bottom right, rgb(76, 80, 82) 0%, rgb(92, 97, 100) 70%);
+	background: _property($BODY--BG, $APP);
 	transition: all 0.3s ease-in 0s;
 
-    // &[data-multiselect="on"] {
-	// 	/* Multiselect */
-	// 	background: $APP--BG--COLOUR---MULTISELECTION;
-    // }
-
+	// DELETE START ::: Check if this can be deleted ...
 	&[data-main-node-displayname] {
 		&::before {
 			// Set Page Title Style
@@ -95,17 +91,16 @@ body {
 			height: 50px;
 			background-size: 35px 35px;
 			padding-left: 45px;
-			color: rgba(238, 238, 238, 0.9);
+
+			@include text(21px, _property($TITLE--COLOR, $APP), $FONT--WEIGHT---EXTRALIGHT);
 
 			padding-top: 10px;
 
-			font-family: $DEFAULT--FONT--FAMILY;
-		    font-size: 21px;
-		    font-weight: $FONT--WEIGHT---EXTRALIGHT;
 
 
 		}
 	}
+	// DELETE END
 
 	&[data-main-node-displayname="settings"] {
 		&::before {
@@ -124,51 +119,8 @@ body {
 		}
 	}
 
-	&[data-sitesettings="true"] {
-		&::before {
-			/* Set Page Title Content for Settings */
-			// content: $text_dxm_settings;
-
-		}
-	}
-
-	&[data-main-node-displayname="root"] {
-		&::before {
-			/* Set Page Title Content for Settings */
-			// content: $text_dxm_settings;
-			// background: url(./images/dx_logo_solid.png) no-repeat left 3px top 11px;
-		    // background-size: 32px 32px;
-		}
-	}
-
-	&[data-INDIGO-UI="light"] {
-		/* Set background to indigo light */
-		background: $COLOUR--WHITE;
-
-	}
 
 }
-
-
-/////////////////////////////////////////////////
-// WINDOW CONTAINER /////////////////////////////
-/////////////////////////////////////////////////
-
-
-
-/////////////////////////////////////////////////
-// APP CONTAINER ////////////////////////////////
-/////////////////////////////////////////////////
-
-
-
-
-/////////////////////////////////////////////////
-// MAIN MODULE //////////////////////////////////
-/////////////////////////////////////////////////
-
-
-
 
 
 // Separations
@@ -208,134 +160,6 @@ body {
 
     display: block;
 }
-
-
-
-
-
-
-
-
-
-/////////////////////////////////////////////////
-// HAMBURGER ////////////////////////////////////
-/////////////////////////////////////////////////
-
-
-
-
-// .selection-top-simple {
-//     border: 10px solid blue;
-// }
-
-
-
-
-// .x-viewport-adminmode > div:nth-child(1) {
-//     height: 100%;
-//     > div:nth-child(2) {
-//         height: 100%;
-//         > div:nth-child(2) > div {
-// 			> div:nth-child(2) {
-// 				// width: 100%!important;
-// 				xpointer-events: none;
-//
-// 				> div {
-// 					// width: 100%!important;
-//
-//
-// 					> iframe {
-// 						// margin-top: 8px;
-// 						// margin-left: 60px;
-// 						// width: calc(100% - 60px)!important;
-// 						pointer-events: all;
-// 					}
-//
-// 				}
-// 			}
-//             &:nth-child(1) {
-// 				// .window-side-panel
-//                 height: 100% !important;
-//                 position: absolute;
-//                 left: 0 !important;
-//                 z-index: $ZINDEX--SIDE_PANEL;
-//                 opacity: 1;
-//                 width: calc(100% - 60px) !important;
-//                 pointer-events: none;
-//                 background: transparent!important;
-//             }
-//             &:nth-child(2) {
-// 				// .mainmodule
-//                 height: 100% !important;
-//                 background: transparent!important;
-//                 position: absolute;
-//                 left: 0 !important;
-//                 width: calc(100% - 60px) !important;
-//                 z-index: $ZINDEX--MAINMODULE;
-//             }
-//             &:nth-child(1) > div:nth-child(1) {
-// 				// .window-side-panel .x-panel-header
-//                 position: absolute !important;
-//                 top: -46px;
-//                 left: 0;
-//                 width: 100% !important;
-//                 z-index: $ZINDEX--SIDE_PANEL--HEADER;
-//                 display: none;
-//             }
-//         }
-//     }
-// }
-
-// .x-viewport-dashboardmode > div:nth-child(1) {
-//     height: 100%;
-//     > div:nth-child(2) {
-//         height: 100%;
-//         > div:nth-child(2) > div {
-// 			> div:nth-child(2) {
-// 				width: 100%!important;
-// 				pointer-events: none;
-//
-// 				> div {
-// 					width: 100%!important;
-//
-// 					> iframe {
-// 						pointer-events: all;
-// 					}
-//
-// 				}
-// 			}
-//             &:nth-child(1) {
-// 				// .window-side-panel
-//                 height: 100% !important;
-//                 position: absolute;
-//                 left: 0 !important;
-// 				z-index: $ZINDEX--SIDE_PANEL;
-//                 opacity: 1;
-//                 width: calc(100% - 60px) !important;
-//                 pointer-events: none;
-//                 background: transparent!important;
-//             }
-//             &:nth-child(2) {
-// 				// .mainmodule
-//                 height: 100% !important;
-//                 background: transparent!important;
-//                 position: absolute;
-//                 left: 0 !important;
-//                 width: calc(100% - 60px) !important;
-// 				z-index: $ZINDEX--MAINMODULE;
-//             }
-//             &:nth-child(1) > div:nth-child(1) {
-// 				// .window-side-panel .x-panel-header
-//                 position: absolute !important;
-//                 top: -46px;
-//                 left: 0;
-//                 width: 100% !important;
-//                 z-index: $ZINDEX--SIDE_PANEL--HEADER;
-//                 display: none;
-//             }
-//         }
-//     }
-// }
 
 
 
@@ -396,16 +220,4 @@ body {
 
 .x-border {
     border: none;
-	/*z-index: 9999 !important;*/
 }
-
-
-
-
-////////// TEMP TESTING ////
-////////// TEMP TESTING ////
-////////// TEMP TESTING ////
-////////// TEMP TESTING ////
-////////// TEMP TESTING ////
-////////// TEMP TESTING ////
-////////// TEMP TESTING ////

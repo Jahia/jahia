@@ -208,6 +208,14 @@ public class JCRObservationManager implements ObservationManager {
         return null;
     }
 
+    /**
+     * Switches the scope of listeners for publication.
+     * 
+     * @param eventsDisabled <code>true</code> to enable event listeners targeted for publication only; <code>false</code> enables all the
+     *            listeners
+     * @deprecated use directly {@link #pushEventListenersAvailableDuringPublishOnly()} and
+     *             {@link #popEventListenersAvailableDuringPublishOnly()} methods as they consider the number of calls to this method
+     */
     @Deprecated
     public static void setEventListenersAvailableDuringPublishOnly(Boolean eventsDisabled) {
         if (eventsDisabled != null && eventsDisabled) {
@@ -217,6 +225,11 @@ public class JCRObservationManager implements ObservationManager {
         }
     }
 
+    /**
+     * Switches the scope of listeners for publication, that means that only listeners, targeted at publication stage, will be called,
+     * before the last call to {@link #popEventListenersAvailableDuringPublishOnly()} will be done (the last caller will call the pop
+     * method).
+     */
     public static void pushEventListenersAvailableDuringPublishOnly() {
         Integer previous = JCRObservationManager.eventListenersAvailableDuringPublishOnly.get();
         if (previous == null) {
@@ -225,6 +238,11 @@ public class JCRObservationManager implements ObservationManager {
         JCRObservationManager.eventListenersAvailableDuringPublishOnly.set(previous + 1);
     }
 
+    /**
+     * Switches the scope of listeners for publication to off. Note, please, a counter is maintained internally to check the number of
+     * callers to this method. After the last caller will execute the pop, the listener publication scope will be turned off, i.e. all
+     * listeners will be executed for next events.
+     */
     public static void popEventListenersAvailableDuringPublishOnly() {
         Integer previous = JCRObservationManager.eventListenersAvailableDuringPublishOnly.get();
         if (previous == null || previous == 0) {

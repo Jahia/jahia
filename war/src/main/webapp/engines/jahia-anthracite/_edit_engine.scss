@@ -886,27 +886,27 @@
 			box-sizing: border-box;
 
 			&[src$="/visibilityStatusRed.png"] {
-				background: $VISIBILITY--COLOUR---HIDDEN;
+				background: _theme-color(status, hidden);
 			}
 
 			&[src$="/visibilityStatusUnknown.png"] {
-				background: $VISIBILITY--COLOUR---UNKNOWN;
+				background: _theme-color(status, unknown);
 			}
 
 			&[src$="/visibilityStatusGreen.png"] {
-				background: $VISIBILITY--COLOUR---VISIBLE;
+				background: _theme-color(status, visible);
 			}
 
 			&[src$="/publication/notpublished.png"] {
-				background: $PUBLICATION--COLOUR---NOT_PUBLISHED;
+				background: _theme-color(status, notpublished);
 			}
 
 			&[src$="/publication/modified.png"] {
-				background: $PUBLICATION--COLOUR---MODIFIED;
+				background: _theme-color(status, modified);
 			}
 
 			&[src$="/publication/published.png"] {
-				background: $PUBLICATION--COLOUR---PUBLISHED;
+				background: _theme-color(status, published);
 			}
 		}
 
@@ -1255,8 +1255,6 @@
 
 					input {
 						width: 100%!important;
-						background: $COLOUR--WHITE_CLOUDS!important;
-						color: $COLOUR--DARK_CLOUDS!important;
 					}
 
 					button {
@@ -1546,10 +1544,10 @@
 	#JahiaGxtEditEnginePanel-usages {
 
 		.x-grid3-row.x-unselectable-single {
-			background: #6b7074 !important;
-			color: #919496;
+			background: #6b7074 !important; /* TO THEME */
+			color: #919496;/* TO THEME */
 			padding-top: 7px;
-			border-bottom: 2px solid #5c6164;
+			border-bottom: 2px solid #5c6164; /* TO THEME */
 
 			a {
 				color: #dddcdc;
@@ -1560,7 +1558,7 @@
 		}
 
 		.x-grid-panel.x-component {
-			border-top: 1px dashed #8a8e91 !important;
+			border-top: 1px dashed #8a8e91 !important; /* TO THEME */
 			padding-top: 16px !important;
 		}
 
@@ -1568,14 +1566,14 @@
 			margin-bottom: 18px !important;
 
 			&.x-btn-over .x-btn-small.x-btn-icon-small-left button {
-				background: #798084 !important;
+				background: #798084 !important; /* TO THEME */
 			}
 
 			.x-btn-small.x-btn-icon-small-left {
-				background: #6b7074;
+				background: #6b7074; /* TO THEME */
 
 				button {
-					color: #dddcdc;
+					color: #dddcdc; /* TO THEME */
 					padding: 8px 8px;
 				}
 
@@ -1971,7 +1969,7 @@
     top: 0!important;
     width: 100% !important;
     height: 100% !important;
-    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);
+    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%); /* TO THEME */
 	z-index: 9999!important;
 
 	// Top modal bar ( used for dragging and contains close button )
@@ -2001,7 +1999,7 @@
 	.x-panel-bbar {
 		position: relative;
 		z-index: 9999999;
-		background: $FORM--FIELDSET--BG--COLOUR;
+		background: $FORM--FIELDSET--BG--COLOUR; /* TO THEME */
 		width: 100% !important;
 		padding: 2px 11px;
 		box-sizing: border-box;
@@ -2045,7 +2043,7 @@
 
 				.gwt-TextBox {
 					@include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
-					background: rgba($COLOUR--WHITE_CLOUDS, .7);
+					background: rgba($COLOUR--WHITE_CLOUDS, .7); /* TO THEME */
 					padding: 3px;
 					border:none;
 				}
@@ -2207,10 +2205,10 @@
 									margin-right: 10px;
 
 									&.x-grid3-hd-over {
-										background: $COLOUR--CREAM_CLOUDS;
+										background: $COLOUR--CREAM_CLOUDS; /* TO THEME */
 
 										span {
-											color: $COLOUR--LEAD_CLOUDS!important;
+											color: $COLOUR--LEAD_CLOUDS!important; /* TO THEME */
 										}
 
 										img {
@@ -2240,7 +2238,7 @@
 
 											&:hover {
 												// background: url($ICON--ARROW_DOWN---WHITE) no-repeat center center!important;
-												background-color: $COLOUR--DUSTY_CLOUDS!important;
+												background-color: $COLOUR--DUSTY_CLOUDS!important; /* TO THEME */
 												background-size: 13px!important;
 												opacity: 1;
 											}
@@ -2276,11 +2274,11 @@
 
 			&.x-grid3-row-selected {
 				pointer-events: none; // Basically disables the double click
-				background: rgba($COLOUR--WHITE_CLOUDS, .8) !important;
+				background: rgba($COLOUR--WHITE_CLOUDS, .8) !important; /* TO THEME */
 
 				.x-grid3-cell {
 					> div {
-						color: $COLOUR--LEAD_CLOUDS!important;
+						color: $COLOUR--LEAD_CLOUDS!important; /* TO THEME */
 						font-weight: $FONT--WEIGHT---BOLD!important;
 					}
 				}
@@ -2401,7 +2399,7 @@
 		&:nth-child(2) {
 			input {
 				background-image: url($ICON--SEARCH---GREY);
-				background-color: $COLOUR--WHITE_CLOUDS;
+				background-color: $COLOUR--WHITE_CLOUDS; /* TO THEME */
 				background-repeat: no-repeat;
 				background-position: left center;
 				background-size: 23px;
@@ -2409,7 +2407,7 @@
 				padding: 4px 5px 5px 27px!important;
 				font-size: 12px;
 				font-family: $FONT--FAMILY---NUNITO;
-				color: $COLOUR--GREY_CLOUDS;
+				color: $COLOUR--GREY_CLOUDS; /* TO THEME */
 				background-size: 23px;
 
 				&:hover {
@@ -2427,7 +2425,7 @@
 				display: block;
 				height: 27px;
 				padding: 0 4px;
-				background: $COLOUR--JAHIA_BLUE;
+				background: $COLOUR--JAHIA_BLUE; /* TO THEME */
 
 				&:before {
 					content: $text_search;

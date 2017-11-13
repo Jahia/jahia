@@ -57,6 +57,8 @@ $PICKER-SEARCH:			DARK;
 $PICKER-HEADER-INPUT: 	LIGHT;
 $PICKER-SEARCH-HEADER: 	DARK;
 $PREVIEW:			 	DARK;
+$DASHBOARD:			 	LIGHT;
+$HAMBURGER:			 	LIGHT;
 // INVERSED
 // $EDIT-ENGINE: 			DARK;
 // $SIDE-PANEL: 			DARK;
@@ -139,7 +141,8 @@ $basic-colors: (
 		c: 		darken($color-secondary, 10%),
 		d: 		darken($color-secondary, 20%),
 		e: 		darken($color-secondary, 35%),
-		f: 		rgba($color-secondary, .2)
+		f: 		rgba($color-secondary, .2),
+		g: 		lighten($color-secondary, 10%),
 	),
 	tertiary: (
 		normal:	$color-tertiary,
@@ -190,7 +193,10 @@ $basic-colors: (
 		unpublished: 						grey,
 		waiting:							white,
 		workinprogress: 					orange,
-		error: 								red
+		error: 								red,
+		unknown:							black,
+		visible:							green,
+		hidden:								red
 	)
 );
 
@@ -199,7 +205,43 @@ $basic-colors: (
 
 
 
+$HAMBURGER--TITLE--COLOR: (
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(quinary),
+);
 
+$HAMBURGER--BUTTON--COLOR: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+
+
+$HAMBURGER--BUTTON--SHADOW: (
+	LIGHT: inset -2px 2px _theme-color(secondary),
+	DARK: inset -2px 2px _theme-color(secondary),
+);
+
+$HAMBURGER--BUTTON--SHADOW---HOVER: (
+	LIGHT: unquote("inset -1px 1px " + _theme-color(secondary) + ", 2px 4px 20px 0px " + _theme-color(black, b)),
+	DARK: unquote("inset -1px 1px " + _theme-color(secondary) + ", 2px 4px 20px 0px " + _theme-color(black, b)),
+);
+
+
+$HAMBURGER--BUTTON--COLOR---HOVER: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$HAMBURGER--BUTTON--BG: (
+	LIGHT: radial-gradient(ellipse at bottom right, _theme-color(quinary) 0%, _theme-color(quinary) 70%),
+	DARK: radial-gradient(ellipse at bottom right, _theme-color(quinary) 0%, _theme-color(quinary) 70%),
+);
+
+$HAMBURGER--BUTTON--BG---HOVER: (
+	LIGHT: radial-gradient(ellipse at bottom right, _theme-color(quinary, a) 0%, _theme-color(quinary) 70%),
+	DARK: radial-gradient(ellipse at bottom right, _theme-color(quinary, a) 0%, _theme-color(quinary) 70%),
+);
 
 
 
@@ -1334,6 +1376,49 @@ $HEADER--SHADOW:(
 	LIGHT: transparent,
 	DARK: transparent,
 );
+
+
+$SWITCH--RAIL: (
+	LIGHT: _theme-color(primary, g),
+	DARK: _theme-color(primary, g),
+);
+
+$SWITCH--COLOR--ON: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$SWITCH--BG--ON: (
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(quinary),
+);
+
+$SWITCH--SHADOW--ON: (
+	LIGHT: 1px 1px 3px 0px _theme-color(black, c),
+	DARK: 1px 1px 3px 0px _theme-color(black, c),
+);
+
+$SWITCH--COLOR--ON---HOVER: (
+	LIGHT: _theme-color(secondary, g),
+	DARK: _theme-color(secondary, g),
+);
+
+$SWITCH--BG--ON---HOVER: (
+	LIGHT: _theme-color(quinary, a),
+	DARK: _theme-color(quinary, a),
+);
+
+
+$SWITCH--COLOR--OFF: (
+	LIGHT: _theme-color(secondary, e),
+	DARK: _theme-color(secondary, e),
+);
+
+$SWITCH--COLOR--OFF---HOVER: (
+LIGHT: _theme-color(secondary, a),
+DARK: _theme-color(secondary, a),
+);
+
 
 //
 // TOGGLE - USED IN EDIT ENGINE

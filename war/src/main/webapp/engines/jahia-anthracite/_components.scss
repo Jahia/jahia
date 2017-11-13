@@ -1554,7 +1554,11 @@ form,
 			.x-tree3-node-text {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER !optional;
 
-
+				body[data-edit-window-style="settings"] &,
+				.x-viewport-adminmode &,
+				.x-viewport-dashboardmode & {
+					color: _theme-color(primary)!important;
+				}
 
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);

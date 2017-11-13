@@ -232,7 +232,7 @@
 	}
 
 	.workflow-action-dialog {
-		box-shadow: inset 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+		box-shadow: inset 0 1px 2px 1px _theme-color(black, a);
 
 		width: 100% !important;
 		padding-top: 16px;
@@ -241,7 +241,7 @@
 	}
 
 	> div.x-panel-header .x-panel-header-text {
-	    color: #a3a3a3;
+	    color: _property($SUBTITLE--COLOR, $EDIT-ENGINE);
 	    display: inline-block;
 	    position: fixed;
 	    width: 100%;

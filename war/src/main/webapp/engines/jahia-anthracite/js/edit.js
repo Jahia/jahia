@@ -3758,6 +3758,12 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
+				// .onClick(".workflowactiondialog-ctn .x-grid3-row", function(){
+				// 	DexV2.class("workflowactiondialog-card").addClass("indigo-opened");
+				// })
+				// .onClick(".workflow-action-dialog .x-tab-strip-spacer", function(){
+				// 	DexV2.class("workflowactiondialog-card").removeClass("indigo-opened");
+				// })
 				.onClick(".toolbar-item-newfolder", function(){
 					// Add new folder
 					var isDisabled = DexV2.node(this).hasClass("x-item-disabled");

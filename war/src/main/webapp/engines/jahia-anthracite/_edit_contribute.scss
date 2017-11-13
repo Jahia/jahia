@@ -901,7 +901,7 @@
     right: 20px;
     left: auto !important;
     top: 17px !important;
-    background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%,rgba(255, 255, 255, 0) 70%);
+    // background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%,rgba(255, 255, 255, 0) 70%);
 
     transition: all 0.3s ease-in 0s;
 
@@ -916,35 +916,35 @@
 	//
     // }
 
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.07);
-    }
+    // &:hover {
+    //     background-color: rgba(255, 255, 255, 0.07);
+    // }
 
-    input {
-        padding: 7px 20px 6px 10px !important;
-        text-transform: uppercase;
-        font-size: 11px;
-        background-color: transparent;
+    // input {
+    //     padding: 7px 20px 6px 10px !important;
+    //     text-transform: uppercase;
+    //     font-size: 11px;
+    //     background-color: transparent;
+	//
+    //     color: #f1f1f1;
+    //     font-weight: 400!important;
+    //     font-size: 11px!important;
+    //     opacity: 0.8;
+	//
+    //     &:hover {
+    //         color: #f1f1f1;
+    //         opacity: 1;
+    //     }
+    // }
 
-        color: #f1f1f1;
-        font-weight: 400!important;
-        font-size: 11px!important;
-        opacity: 0.8;
-
-        &:hover {
-            color: #f1f1f1;
-            opacity: 1;
-        }
-    }
-
-    img.x-form-trigger.x-form-trigger-arrow {
-        height: 30px!important;
-        width: 27px!important;
-        background-color: transparent!important;
-        pointer-events: none;
-
-
-    }
+    // img.x-form-trigger.x-form-trigger-arrow {
+    //     height: 30px!important;
+    //     width: 27px!important;
+    //     background-color: transparent!important;
+    //     pointer-events: none;
+	//
+	//
+    // }
 
 }
 

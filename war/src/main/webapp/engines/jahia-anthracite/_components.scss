@@ -3,17 +3,17 @@
 /////////////////////////////////////////////////
 
 .x-form-field-wrap .x-form-date-trigger {
-	background-color: #4f5354;
-	background-image: url(./images/icons/ic_date2x.png);
-	background-size: 16px;
-	background-repeat: no-repeat;
-	background-position-y: 4px;
-	background-position-x: 1px;
-	opacity: .3;
-
-	&:hover {
-		opacity: .5;
-	}
+	// background-color: #4f5354;
+	// background-image: url(./images/icons/ic_date2x.png);
+	// background-size: 16px;
+	// background-repeat: no-repeat;
+	// background-position-y: 4px;
+	// background-position-x: 1px;
+	// opacity: .3;
+	//
+	// &:hover {
+	// 	opacity: .5;
+	// }
 }
 
 .x-date-menu {
@@ -29,8 +29,8 @@
 	// Another container
 	.x-menu-list {
 		padding: 5px 10px 10px;
-	    background: $DATE_PICKER--BG--COLOUR;
-		box-shadow: 0 0 10px 0 rgba($COLOUR--DARK_CLOUDS, .3);
+	    background: _property($DATE-PICKER--BG, $DATE-PICKER);
+		box-shadow: _property($DATE-PICKER--SHADOW, $DATE-PICKER);
 
 		body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] & {
 			margin-left: 67px;
@@ -229,7 +229,7 @@
 				top: -5px!important;
 				left: -10px!important;
 				height: calc(100% + 15px)!important;
-				background: $DATE_PICKER--MONTH_PICKER--BG--COLOUR;
+				background: _property($DATE-PICKER--MODAL--BG, $DATE-PICKER);
 				padding-top: 33px;
 				box-sizing: border-box;
 
@@ -491,7 +491,7 @@
 
 .x-form-list {
 	border: none;
-	background: $COLOUR--WHITE_CLOUDS;
+	background: _property($LIST-BOX--BG, $EDIT-ENGINE);
 	height: 200px!important;
 
 
@@ -591,13 +591,13 @@
 	height: auto!important;
 
 	&::before {
-		background: #008ec9;
+		background: _property($MENU-TITLE--BG, $CONTEXT-MENU);
 	    width: 100%;
 	    display: block;
 	    padding: 3px 8px;
 	    font-family: "Nunito Sans";
 	    font-size: 9px;
-	    color: darken($COLOUR--JAHIA_BLUE, 25%);
+	    color: _property($MENU-TITLE--COLOR, $CONTEXT-MENU);
 	    text-transform: uppercase;
 	    font-weight: 600;
 	    z-index: $ZINDEX--CONTEXT_MENU---TITLE;
@@ -651,7 +651,7 @@
 
 /* Used for scrolling Context menus when they dont fit on screen */
 .x-menu-scroller {
-    background: rgba(245, 245, 245, 1);
+    background: _property($MENU-SCROLL--BG, $CONTEXT-MENU)
 }
 
 .x-menu-scroller-top {
@@ -696,15 +696,11 @@
 .thumb-wrap {
 	border: none!important;
 	padding: 0!important;
-	// width: 48%!important; /* Sets Actual Width Of Thumb */
-	// margin: 1% 0 1% 1% !important;
 	display: inline-block;
 	float: none!important;
 	height: 86px;
-	// max-height: 86px;
 	position: relative;
 	background: none;
-
 
 	> div {
 		/* Some Thumbs have extra divs containing more Meta Data, so hide them */
@@ -1041,188 +1037,182 @@ label {
 
 /* Text Field Input */
 .x-form-text {
-	@extend %CSS_BLOCK--FORM--TEXT_INPUT !optional;
+	// @include _input($APP);
 
-	width: 100%!important;
-	box-sizing: border-box;
-    display: inline-block;
-    height: auto!important;
-
-	&:only-child {
-		padding-right: 5px;
-		display: block;
-	}
-
-	&:hover {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER !optional;
-	}
-
-	&:focus {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS !optional;
-	}
-
-	&[disabled] {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED !optional;
+	.edit-engine & {
 
 	}
+
+	// @extend %CSS_BLOCK--FORM--TEXT_INPUT !optional;
+	//
+	// width: 100%!important;
+	// box-sizing: border-box;
+    // display: inline-block;
+    // height: auto!important;
+	//
+	// &:only-child {
+	// 	padding-right: 5px;
+	// 	display: block;
+	// }
+	//
+	// &:hover {
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER !optional;
+	// }
+	//
+	// &:focus {
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS !optional;
+	// }
+	//
+	// &[disabled] {
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED !optional;
+	//
+	// }
 
 
 }
 
-div[role="combobox"] {
-	.x-form-text {
-		@extend %CSS_BLOCK--FORM--COMBO--TEXT_INPUT !optional;
 
-
-
-		width: 100%!important;
-
-		box-sizing: border-box;
-	    display: inline-block;
-	    height: auto!important;
-	}
-}
 
 /* DUAL LIST */
 
 
 /* Action Buttons for Text Input */
-.x-form-trigger {
-	/* Generic CSS for an Action Button */
-	display: block;
-	position: absolute!important;
-    border: none !important;
-    vertical-align: middle;
-    right: 0px;
-	height: 24px!important;
-
-	.x-triggerfield-noedit + & {
-	}
-
-	.x-form-twin-triggers & {
-		/* Button is in a container, because there are multiple buttons */
-		display: inline-block;
-		position: relative;
-		border: none !important;
-		vertical-align: middle;
-		right: auto;
-		top: auto;
-
-		&.x-form-clear-trigger {
-			/* Clear button */
-			left: 0px!important;
-			right: auto!important;
-
-
-		}
-	}
-
-	&.x-form-clear-trigger {
-		/* Clear button */
-		position: absolute!important;
-		// left: 0px!important;
-		right: 0px!important;
-
-
-	}
-
-
-
-	&.x-form-trigger-arrow {
-		/* Combo Down Arrow Button */
-		right: 0;
-
-		@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP !optional;
-
-		.x-trigger-wrap-focus & {
-			background-image: url($ICON--ARROW_DOWN---GREY);
-			opacity: 1;
-		}
-
-		.x-triggerfield-noedit + .x-form-twin-triggers  & {
-			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:OPEN_PICKER !optional;
-		}
-
-		.engine-panel & {
-			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:EDIT_ENGINE !optional;
-
-		}
-
-		#JahiaGxtManagerTobTable & {
-			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:PICKER_FILTER !optional;
-
-		}
-
-		&.x-form-trigger-over {
-			@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER !optional;
-
-			.x-triggerfield-noedit + .x-form-twin-triggers  & {
-				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:OPEN_PICKER !optional;
-			}
-
-			.engine-panel & {
-				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:EDIT_ENGINE !optional;
-
-			}
-
-			#JahiaGxtManagerTobTable & {
-				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:PICKER_FILTER !optional;
-
-			}
-		}
-	}
-
-
-
-	&.x-form-clear-trigger {
-
-
-
-		/* Combo X Button */
-		@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP !optional;
-
-		// Text adjacent field is in FOCUS
-		.x-form-text:focus + & {
-			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS !optional;
-		}
-
-		.engine-panel & {
-			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:EDIT_ENGINE !optional;
-
-		}
-
-		#JahiaGxtManagerTobTable & {
-			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:PICKER_FILTER !optional;
-
-		}
-
-		&.x-form-trigger-over {
-			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER !optional;
-
-			.engine-panel & {
-				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:EDIT_ENGINE !optional;
-
-			}
-
-			#JahiaGxtManagerTobTable & {
-				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:PICKER_FILTER !optional;
-
-			}
-		}
-
-
-	}
-}
-
-/* Action Button Container (when multiple buttons exist) */
-.x-form-twin-triggers {
-	/* Container used when more than one button */
-	display: block;
-    position: absolute;
-    right: 0;
-    top: 0;
-	width: 34px;
-}
+// .x-form-trigger {
+// 	/* Generic CSS for an Action Button */
+// 	display: block;
+// 	position: absolute!important;
+//     border: none !important;
+//     vertical-align: middle;
+//     right: 0px;
+// 	height: 24px!important;
+//
+// 	.x-triggerfield-noedit + & {
+// 	}
+//
+// 	.x-form-twin-triggers & {
+// 		/* Button is in a container, because there are multiple buttons */
+// 		display: inline-block;
+// 		position: relative;
+// 		border: none !important;
+// 		vertical-align: middle;
+// 		right: auto;
+// 		top: auto;
+//
+// 		&.x-form-clear-trigger {
+// 			/* Clear button */
+// 			left: 0px!important;
+// 			right: auto!important;
+//
+//
+// 		}
+// 	}
+//
+// 	&.x-form-clear-trigger {
+// 		/* Clear button */
+// 		position: absolute!important;
+// 		// left: 0px!important;
+// 		right: 0px!important;
+//
+//
+// 	}
+//
+//
+//
+// 	&.x-form-trigger-arrow {
+// 		/* Combo Down Arrow Button */
+// 		right: 0;
+//
+// 		@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP !optional;
+//
+// 		.x-trigger-wrap-focus & {
+// 			background-image: url($ICON--ARROW_DOWN---GREY);
+// 			opacity: 1;
+// 		}
+//
+// 		.x-triggerfield-noedit + .x-form-twin-triggers  & {
+// 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:OPEN_PICKER !optional;
+// 		}
+//
+// 		.engine-panel & {
+// 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:EDIT_ENGINE !optional;
+//
+// 		}
+//
+// 		#JahiaGxtManagerTobTable & {
+// 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:PICKER_FILTER !optional;
+//
+// 		}
+//
+// 		&.x-form-trigger-over {
+// 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER !optional;
+//
+// 			.x-triggerfield-noedit + .x-form-twin-triggers  & {
+// 				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:OPEN_PICKER !optional;
+// 			}
+//
+// 			.engine-panel & {
+// 				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:EDIT_ENGINE !optional;
+//
+// 			}
+//
+// 			#JahiaGxtManagerTobTable & {
+// 				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:PICKER_FILTER !optional;
+//
+// 			}
+// 		}
+// 	}
+//
+//
+//
+// 	&.x-form-clear-trigger {
+//
+//
+//
+// 		/* Combo X Button */
+// 		@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP !optional;
+//
+// 		// Text adjacent field is in FOCUS
+// 		.x-form-text:focus + & {
+// 			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS !optional;
+// 		}
+//
+// 		.engine-panel & {
+// 			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:EDIT_ENGINE !optional;
+//
+// 		}
+//
+// 		#JahiaGxtManagerTobTable & {
+// 			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:PICKER_FILTER !optional;
+//
+// 		}
+//
+// 		&.x-form-trigger-over {
+// 			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER !optional;
+//
+// 			.engine-panel & {
+// 				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:EDIT_ENGINE !optional;
+//
+// 			}
+//
+// 			#JahiaGxtManagerTobTable & {
+// 				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:PICKER_FILTER !optional;
+//
+// 			}
+// 		}
+//
+//
+// 	}
+// }
+//
+// /* Action Button Container (when multiple buttons exist) */
+// .x-form-twin-triggers {
+// 	/* Container used when more than one button */
+// 	display: block;
+//     position: absolute;
+//     right: 0;
+//     top: 0;
+// 	width: 34px;
+// }
 
 
 /* Checkbox Container */
@@ -1574,22 +1564,24 @@ form,
 			.x-grid3-td-locked {
 				background: rgb(228, 229, 229) !important;
 				// background: #f1f1f1;
+				background: transparent!important;
 
 			}
 
 			.x-grid3-td-displayName,
 			.gwt-content-label,
-			.x-grid3-col-name {
+			.x-grid3-col-name,
+			.x-tree3-node-text {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER !optional;
 
-				body[data-INDIGO-PICKER-SEARCH="open"] & {
-					color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
-				}
+				// body[data-INDIGO-PICKER-SEARCH="open"] & {
+				// 	color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+				// }
 
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);
 					opacity: 1;
-					background-color: #e4e5e5 !important;
+					background-color: _property($ROW--BG---HOVER, $SIDE-PANEL) !important;
 
 				}
 
@@ -1599,9 +1591,9 @@ form,
 			.x-grid3-col-primaryTypeLabel {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL !optional;
 
-				body[data-INDIGO-PICKER-SEARCH="open"] & {
-					color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
-				}
+				// body[data-INDIGO-PICKER-SEARCH="open"] & {
+				// 	color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+				// }
 
 			}
 
@@ -1635,7 +1627,7 @@ form,
 			.x-grid3-td-locked {
 				background: #9ea0a2!important;
 				// background: #f1f1f1;
-
+				background: transparent!important;
 			}
 
 			.x-grid3-td-displayName,
@@ -1658,7 +1650,7 @@ form,
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
 					opacity: 1;
-					background-color: #9ea0a2!important;
+					background-color: _property($ROW--BG---SELECTED, $SIDE-PANEL)!important;
 
 				}
 			}
@@ -1709,7 +1701,7 @@ form,
 
 					&::after {
 						background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED_HOVER);
-
+						background-color: _property($ROW--BG---SELECTED-HOVER, $SIDE-PANEL)!important;
 					}
 				}
 			}
@@ -1744,7 +1736,7 @@ form,
 			right: 0;
 			content: "More";
 			top: 23px;
-			background-color: #f1f1f1!important;
+			background-color: transparent!important;
 
 			#JahiaGxtPagesTab & {
 				top: 26px;
@@ -1862,7 +1854,7 @@ form,
 				top: 3px;
 				position: absolute!important;
 				// background: #9ea0a2;
-				background: #f1f1f1;
+				background: transparent;
 
 			}
 
@@ -3940,8 +3932,6 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 }
-
-
 
 /////////////////////////////////////////////////
 // COMPARE PANEL ////////////////////////////////

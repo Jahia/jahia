@@ -49,7 +49,12 @@
 $EDIT-ENGINE: 			LIGHT;
 $SIDE-PANEL: 			LIGHT;
 $APP: 					DARK;
-
+$DATE-PICKER: 			DARK;
+$CONTEXT-MENU: 			DARK;
+$THUMBS: 				DARK;
+$PICKER: 				DARK;
+$PICKER-HEADER-INPUT: 	LIGHT;
+$PICKER-SEARCH-HEADER: 	DARK;
 // INVERSED
 // $EDIT-ENGINE: 			DARK;
 // $SIDE-PANEL: 			DARK;
@@ -72,6 +77,7 @@ $color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
 
 $color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
 $color-white:			rgb(255, 255, 255); 	// #FFFFFF (WHITE)
+$color-green: 			rgb(4,189,4);
 
 
 
@@ -121,7 +127,8 @@ $basic-colors: (
 		e: 		lighten($color-primary, 35%),
 		f: 		darken($color-primary, 5%),
 		g: 		darken($color-primary, 10%),
-		h: 		rgba(darken($color-primary, 10%), .2)
+		h: 		rgba(darken($color-primary, 10%), .2),
+		i: 		darken($color-primary, 35%),
 	),
 	secondary: (
 		normal:	$color-secondary,
@@ -129,7 +136,8 @@ $basic-colors: (
 		b: 		darken($color-secondary, 7%),
 		c: 		darken($color-secondary, 10%),
 		d: 		darken($color-secondary, 20%),
-		e: 		darken($color-secondary, 35%)
+		e: 		darken($color-secondary, 35%),
+		f: 		rgba($color-secondary, .2)
 	),
 	tertiary: (
 		normal:	$color-tertiary,
@@ -141,7 +149,9 @@ $basic-colors: (
 	),
 	quinary: (
 		normal:	$color-quinary,
-		a: 		lighten($color-quinary, 4%)
+		a: 		lighten($color-quinary, 4%),
+		b: 		darken($color-quinary, 5%),
+		c: 		darken($color-quinary, 25%)
 	),
 	senary: (
 		normal:	$color-senary,
@@ -150,10 +160,15 @@ $basic-colors: (
 	black: (
 		normal:	$color-black,
 		a: 		rgba($color-black, .2),
-		b: 		rgba($color-black, .4)
+		b: 		rgba($color-black, .4),
+		c: 		rgba($color-black, .6)
 	),
 	white: (
 		normal:	$color-white,
+		a: 		rgba($color-white, .4)
+	),
+	green: (
+		normal:	$color-green,
 		a: 		rgba($color-white, .4)
 	),
 	status: (
@@ -188,6 +203,18 @@ $IFRAME--SHADOW:(
 
 
 /****************************/
+/* SCROLL BARS */
+/****************************/
+
+$SCROLL--BG:(
+	LIGHT: red,
+	DARK: red,
+);
+
+
+
+
+/****************************/
 /* BACKGROUNDS */
 /****************************/
 
@@ -199,6 +226,22 @@ $BODY--BG:(
 $BODY--BG--SHADOW:(
 	LIGHT: 0 5px 10px 1px _theme-color(black, b),
 	DARK: 0 5px 10px 1px _theme-color(black, b),
+);
+
+$SIDE-PANEL--BG:(
+	LIGHT: radial-gradient(ellipse at bottom right, darken(_theme-color(primary), 10%) 0%, _theme-color(primary) 70%),
+	DARK: radial-gradient(ellipse at bottom right, darken(_theme-color(secondary), 4%) 0%, _theme-color(secondary) 50%),
+);
+
+$SIDE-PANEL--SHADOW:(
+	LIGHT: 0 5px 10px 1px _theme-color(black, b),
+	DARK: 0 5px 10px 1px _theme-color(black, b),
+);
+
+
+$MODAL-SOLID--BG:(
+	LIGHT: radial-gradient(ellipse at bottom right, darken(_theme-color(secondary), 4%) 0%, _theme-color(secondary) 50%),
+	DARK: radial-gradient(ellipse at bottom right, darken(_theme-color(primary), 10%) 0%, _theme-color(primary) 70%),
 );
 
 
@@ -220,6 +263,227 @@ $FOOTER--SHADOW:(
 );
 
 
+$DARK-FOOTER--BG:(
+	LIGHT: _theme-color(primary, g),
+	DARK: _theme-color(primary, g),
+);
+
+$DARK-FOOTER--SHADOW:(
+	LIGHT: inset 3px 0px 16px _theme-color(black, c),
+	DARK: inset 3px 0px 16px _theme-color(black, c),
+);
+
+
+
+
+/****************************/
+/* DATE PICKER */
+/****************************/
+// DATE-PICKER
+
+// Month Screen
+$DATE-PICKER--BG:(
+	LIGHT: red,
+	DARK: _theme-color(primary),
+);
+
+$DATE-PICKER--SHADOW:(
+	LIGHT: red,
+	DARK: 0px 1px 2px _theme-color(black, a)
+);
+
+$DATE-PICKER--MONTH-TITLE:(
+	LIGHT: red,
+	DARK: _theme-color(secondary),
+);
+
+$DATE-PICKER--MONTH-TITLE---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary, a),
+);
+
+$DATE-PICKER--ACTION-BUTTON--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary),
+);
+
+$DATE-PICKER--ACTION-BUTTON--BG:(
+	LIGHT: red,
+	DARK: _theme-color(quaternary),
+);
+
+$DATE-PICKER--ACTION-BUTTON--COLOR---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary),
+);
+
+$DATE-PICKER--ACTION-BUTTON--BG---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(quaternary, a),
+);
+
+// Other month ( previous, following )
+$DATE-PICKER--DAY-MUTED--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary, e)
+);
+
+$DATE-PICKER--DAY-MUTED--BG:(
+	LIGHT: red,
+	DARK: transparent,
+);
+
+$DATE-PICKER--DAY-MUTED--COLOR---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--DAY-MUTED--BG---HOVER:(
+	LIGHT: red,
+	DARK: transparent,
+);
+
+// Current month
+$DATE-PICKER--DAY--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--DAY--BG:(
+	LIGHT: red,
+	DARK: _theme-color(primary, c)
+);
+
+$DATE-PICKER--DAY--COLOR---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--DAY--BG---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(primary, d)
+);
+
+$DATE-PICKER--DAY--COLOR---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(primary, f)
+);
+
+$DATE-PICKER--DAY--BG---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+// Modal screen
+$DATE-PICKER--MODAL--BG:(
+	LIGHT: red,
+	DARK: _theme-color(primary, g)
+);
+
+$DATE-PICKER--MODAL-TITLE--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--YEAR-BG:(
+	LIGHT: red,
+	DARK: _theme-color(primary, f)
+);
+
+$DATE-PICKER--YEAR-TITLE:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--MONTH--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary, a)
+);
+
+$DATE-PICKER--MONTH--BG:(
+	LIGHT: red,
+	DARK: transparent,
+);
+
+$DATE-PICKER--MONTH--COLOR---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--MONTH--BG---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(primary)
+);
+
+$DATE-PICKER--MONTH--COLOR---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(primary, f)
+);
+
+$DATE-PICKER--MONTH--BG---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--YEAR--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary, a)
+);
+
+$DATE-PICKER--YEAR--BG:(
+	LIGHT: red,
+	DARK: _theme-color(primary, f)
+);
+
+$DATE-PICKER--YEAR--COLOR---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--YEAR--BG---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(primary)
+);
+
+$DATE-PICKER--YEAR--COLOR---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(primary, f)
+);
+
+$DATE-PICKER--YEAR--BG---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+
+
+
+
+
+/****************************/
+/* CHECKBOX */
+/****************************/
+$CHECKBOX--BG: (
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$CHECKBOX--BORDER: (
+	LIGHT: 1px solid _theme-color(secondary, c),
+	DARK: 1px solid _theme-color(secondary, c),
+);
+
+$CHECKBOX--SHADOW: (
+	LIGHT: inset 1px 1px 1px 0px _theme-color(black, a),
+	DARK: inset 1px 1px 1px 0px _theme-color(black, a),
+);
+
+$CHECKBOX--BG---CHECKED: (
+	LIGHT: _theme-color(green),
+	DARK: _theme-color(green),
+);
+
+
 
 
 
@@ -233,9 +497,19 @@ $INPUT--COLOR:(
 	DARK: _theme-color(primary),
 );
 
+$INPUT--PLACEHOLDER:(
+	LIGHT: _theme-color(secondary, d),
+	DARK: _theme-color(secondary, d),
+);
+
 $INPUT--BG:(
 	LIGHT: _theme-color(white),
 	DARK: _theme-color(white),
+);
+
+$INPUT--BORDER:(
+	LIGHT: transparent,
+	DARK: transparent,
 );
 
 $INPUT--SHADOW:(
@@ -254,6 +528,11 @@ $INPUT--BG---HOVER:(
 	DARK: _theme-color(white),
 );
 
+$INPUT--BORDER---HOVER:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
 $INPUT--SHADOW---HOVER:(
 	LIGHT: 0px 1px 2px _theme-color(black, b),
 	DARK: 0px 1px 2px _theme-color(black, b),
@@ -265,12 +544,43 @@ $INPUT--COLOR---FOCUS:(
 	DARK: _theme-color(primary),
 );
 
+$INPUT--PLACEHOLDER---FOCUS:(
+	LIGHT: _theme-color(secondary, e),
+	DARK: _theme-color(secondary, e),
+);
+
 $INPUT--BG---FOCUS:(
 	LIGHT: _theme-color(white),
 	DARK: _theme-color(white),
 );
 
+$INPUT--BORDER---FOCUS:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
 $INPUT--SHADOW---FOCUS:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+// DISABLED
+$INPUT--COLOR---DISABLED:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary)
+);
+
+$INPUT--BG---DISABLED:(
+	LIGHT: _theme-color(secondary, c),
+	DARK: _theme-color(secondary, c)
+);
+
+$INPUT--BORDER---DISABLED:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$INPUT--SHADOW---DISABLED:(
 	LIGHT: 0px 1px 2px _theme-color(black, b),
 	DARK: 0px 1px 2px _theme-color(black, b),
 );
@@ -280,8 +590,51 @@ $INPUT--SHADOW---FOCUS:(
 
 
 /****************************/
+/* THUMBS */
+/****************************/
+$THUMB--COLOR: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$THUMB--BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$THUMB--BG---HOVER: (
+	LIGHT: _theme-color(secondary, f),
+	DARK: _theme-color(secondary, f),
+);
+
+$THUMB--BG---SELECTED: (
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(quinary),
+);
+
+
+
+
+/****************************/
 /* COMBO / CONTEXT / CONTEXTUAL MENUS */
 /****************************/
+
+
+$MENU-SCROLL--BG:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+// TITLE
+$MENU-TITLE--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(quinary, c),
+);
+
+$MENU-TITLE--BG:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(quinary, b),
+);
 
 // CLOSED UP
 $MENU-CLOSED--COLOR:(
@@ -299,6 +652,49 @@ $MENU-CLOSED--SHADOW:(
 	DARK: transparent,
 );
 
+$MENU-CLOSED--ARROW: (
+	LIGHT: "./images/icons/combo-arrow-grey.png",
+	DARK: "./images/icons/combo-arrow.png",
+);
+
+$MENU-CLOSED--ARROW-BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--DATE: (
+	LIGHT: "./images/icons/ic_date2x.png",
+	DARK: "./images/icons/ic_date2x.png",
+);
+
+$MENU-CLOSED--DATE-BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--CLEAR: (
+	LIGHT: "./images/icons/icon-close-grey@X2.png",
+	DARK: "./images/icons/icon-close-white@X2.png",
+);
+
+$MENU-CLOSED--CLEAR-BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--OPTIONS: (
+	LIGHT: "./images/icon-more-options-dark-50@X2.png",
+	DARK: "./images/icon-more-options-light.png",
+);
+
+$MENU-CLOSED--OPTIONS-BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+
+
+
 // CLOSED HOVER
 $MENU-CLOSED--COLOR---HOVER:(
 	LIGHT: _theme-color(primary),
@@ -313,6 +709,46 @@ $MENU-CLOSED--BG---HOVER:(
 $MENU-CLOSED--SHADOW---HOVER:(
 	LIGHT: 0px 1px 2px _theme-color(black, b),
 	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+$MENU-CLOSED--ARROW---HOVER: (
+	LIGHT: "./images/icons/combo-arrow-grey.png",
+	DARK: "./images/icons/combo-arrow.png",
+);
+
+$MENU-CLOSED--ARROW-BG---HOVER: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--DATE---HOVER: (
+	LIGHT: "./images/icons/ic_date2x.png",
+	DARK: "./images/icons/ic_date2x.png",
+);
+
+$MENU-CLOSED--DATE-BG---HOVER: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--CLEAR---HOVER: (
+	LIGHT: "./images/icons/icon-close-grey@X2.png",
+	DARK: "./images/icons/icon-close-white@X2.png",
+);
+
+$MENU-CLOSED--CLEAR-BG---HOVER: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--OPTIONS---HOVER: (
+	LIGHT: "./images/icon-more-options-dark-50@X2.png",
+	DARK: "./images/icon-more-options-light.png",
+);
+
+$MENU-CLOSED--OPTIONS-BG---HOVER: (
+	LIGHT: transparent,
+	DARK: transparent,
 );
 
 // OPENED UP
@@ -337,6 +773,73 @@ $MENU-OPENED--BG---HOVER:(
 	DARK: _theme-color(quinary, a),
 );
 
+$MENU-OPENED--COLOR---DISABLED:(
+	LIGHT: _theme-color(senary),
+	DARK: white,
+);
+
+$MENU-OPENED--BG---DISABLED:(
+	LIGHT: _theme-color(quinary, a),
+	DARK: red,
+);
+
+
+
+
+/****************************/
+/* LIST BOXES */
+/****************************/
+
+$LIST-BOX--BG:(
+	LIGHT: _theme-color(secondary, a),
+	DARK: red,
+);
+
+// Row
+$LIST-BOX--ROW--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: red,
+);
+
+$LIST-BOX--ROW--BG:(
+	LIGHT: _theme-color(secondary, a),
+	DARK: red,
+);
+
+// Row hover
+$LIST-BOX--ROW--COLOR---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: red,
+);
+
+$LIST-BOX--ROW--BG---HOVER:(
+	LIGHT: _theme-color(primary, e),
+	DARK: red,
+);
+
+// Row selected
+$LIST-BOX--ROW--COLOR---SELECTED:(
+	LIGHT: _theme-color(secondary),
+	DARK: red,
+);
+
+$LIST-BOX--ROW--BG---SELECTED:(
+	LIGHT: _theme-color(primary, c),
+	DARK: red,
+);
+
+// Row disabled
+$LIST-BOX--ROW--COLOR---DISABLED:(
+	LIGHT: white,
+	DARK: red,
+);
+
+$LIST-BOX--ROW--BG---DISABLED:(
+	LIGHT: red,
+	DARK: red,
+);
+
+
 
 
 
@@ -358,8 +861,8 @@ $ROW--BG:(
 
 // HOVER
 $ROW--COLOR---HOVER:(
-	LIGHT: _theme-color(primary),
-	DARK: _theme-color(secondary),
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(primary),
 );
 
 $ROW--BG---HOVER:(
@@ -411,8 +914,8 @@ $FIELDSET--BG:(
 
 // BORDER COLOR
 $FIELDSET--BORDER:(
-	LIGHT: 1px solid _theme-color(secondary, a),
-	DARK: 1px solid transparent,
+	LIGHT: _theme-color(secondary, b),
+	DARK: transparent,
 );
 
 // BACKGROUND HOVER COLOR
@@ -432,6 +935,11 @@ $FIELDSET--BG---HOVER:(
 $TITLE--COLOR:(
 	LIGHT: _theme-color(primary),
 	DARK: _theme-color(secondary),
+);
+
+$SIDE-PANEL-TITLE--COLOR:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(primary),
 );
 
 
@@ -617,8 +1125,8 @@ $ACTION-SUGGESTED--SHADOW---HOVER:(
 
 // UP
 $TAB--BAR:(
-	LIGHT: 1px solid _theme-color(secondary, d),
-	DARK: 1px solid _theme-color(primary, g),
+	LIGHT: _theme-color(secondary, d),
+	DARK: _theme-color(primary, g),
 );
 
 $TAB--COLOR:(
@@ -628,8 +1136,8 @@ $TAB--COLOR:(
 
 // HOVER
 $TAB--BAR---HOVER:(
-	LIGHT: 1px solid _theme-color(tertiary),
-	DARK: 1px solid _theme-color(secondary),
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(secondary),
 );
 
 $TAB--COLOR---HOVER:(
@@ -639,8 +1147,8 @@ $TAB--COLOR---HOVER:(
 
 // SELECTED
 $TAB--BAR---SELECTED:(
-	LIGHT: 3px solid _theme-color(tertiary),
-	DARK: 3px solid _theme-color(secondary),
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(secondary),
 );
 
 $TAB--COLOR---SELECTED:(
@@ -650,8 +1158,8 @@ $TAB--COLOR---SELECTED:(
 
 // SELECTED HOVER
 $TAB--BAR---SELECTED-HOVER:(
-	LIGHT: 3px solid _theme-color(tertiary),
-	DARK: 3px solid _theme-color(secondary),
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(secondary),
 );
 
 $TAB--COLOR---SELECTED-HOVER:(
@@ -678,28 +1186,36 @@ $HEADER--SHADOW:(
 	DARK: transparent,
 );
 
+//
 // TOGGLE - USED IN EDIT ENGINE
+//
+
 $TOGGLE--RAIL:(
-	LIGHT: pink,
-	DARK: pink,
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary, f),
+);
+
+$TOGGLE--SHADOW:(
+	LIGHT: inset 1px 1px 2px 1px _theme-color(black, a),
+	DARK: inset 1px 1px 2px 1px _theme-color(black, a),
 );
 
 $TOGGLE--LABEL---ON:(
-	LIGHT: pink,
-	DARK: pink,
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
 );
 
 $TOGGLE--SHUTTLE---ON:(
-	LIGHT: pink,
-	DARK: pink,
+	LIGHT: _theme-color(green),
+	DARK: _theme-color(green),
 );
 
 $TOGGLE--LABEL---OFF:(
-	LIGHT: pink,
-	DARK: pink,
+	LIGHT: _theme-color(primary, d),
+	DARK: _theme-color(primary, i),
 );
 
 $TOGGLE--SHUTTLE---OFF:(
-	LIGHT: pink,
-	DARK: pink,
+	LIGHT: _theme-color(primary, d),
+	DARK: purple,
 );

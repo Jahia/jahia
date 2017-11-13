@@ -10,27 +10,27 @@
 
 
 @mixin text_input($_input_id, $_extra: "none"){
-	@extend %CSS_BLOCK--FORM--TEXT_INPUT !optional;
-	@extend %CSS_BLOCK--FORM--TEXT_INPUT\:#{$_input_id} !optional;
-
-
-	&:hover {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER !optional;
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:#{$_input_id} !optional;
-
-	}
-
-	&:focus {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS !optional;
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:#{$_input_id} !optional;
-
-	}
-
-	&[disabled] {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED !optional;
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:#{$_input_id} !optional;
-
-	}
+	// @extend %CSS_BLOCK--FORM--TEXT_INPUT !optional;
+	// @extend %CSS_BLOCK--FORM--TEXT_INPUT\:#{$_input_id} !optional;
+	//
+	//
+	// &:hover {
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER !optional;
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:#{$_input_id} !optional;
+	//
+	// }
+	//
+	// &:focus {
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS !optional;
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS\:#{$_input_id} !optional;
+	//
+	// }
+	//
+	// &[disabled] {
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED !optional;
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:#{$_input_id} !optional;
+	//
+	// }
 
 }
 

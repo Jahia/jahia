@@ -1376,27 +1376,27 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			.x-grid3-col-name,
 			.x-grid3-col-displayName {
-				color: rgba($COLOUR--WHITE_CLOUDS, .9)!important;
+				color: _property($ROW--COLOR, $PICKER)!important;
 			}
 
 			.x-grid3-col-size,
 			.x-grid3-col-primaryTypeLabel {
-				color: rgba($COLOUR--WHITE_CLOUDS, .7)!important;
+				color: _property($ROW--COLOR--DIMMED, $PICKER)!important;
 			}
 
 			// SELECTED ROW
 			&.x-grid3-row-selected {
-				background: $COLOUR--JAHIA_BLUE!important;
+				background: _property($ROW--BG---SELECTED, $PICKER)!important;
 			}
 
 			// OVER
 			&.x-grid3-row-over {
-				background: #767b7e!important;
+				background: _property($ROW--BG---HOVER, $PICKER)!important;
 			}
 
 			// SELECTED OVER
 			&.x-grid3-row-selected.x-grid3-row-over {
-				background: $COLOUR--JAHIA_BLUE!important;
+				background: _property($ROW--BG---SELECTED, $PICKER)!important;
 			}
 		}
 
@@ -1471,16 +1471,15 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 					// THUMB VIE DETAILS
 					display: none;
 
-					color: rgba($COLOUR--WHITE_CLOUDS, .9);
 					position: absolute;
 					width: 100%;
-					@include text(10px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+					@include text(10px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
 					z-index: 999;
 					margin-top: -2px;
 
 					// Filesize
 					&:nth-child(3) {
-						@include text(8px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---EXTRALIGHT);
+						@include text(8px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
 						margin-top: 0;
 					    z-index: 9;
 						padding-bottom: 10px;
@@ -1491,10 +1490,10 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				// Hover / force hover (used when the context menu is opened)
 				&.x-view-over,
 				&.indigo-force-open {
-					background: #767b7e;
+					background: _property($THUMB--BG---SELECTED, $PICKER);
 
 					span {
-						background: #767b7e;
+						background: _property($THUMB--BG---SELECTED, $PICKER);
 						display: block;
 					}
 
@@ -1502,18 +1501,18 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 				// Selected row
 				&.x-view-item-sel {
-					background: $COLOUR--JAHIA_BLUE;
+					background: _property($THUMB--BG---SELECTED, $PICKER);
 
 					span {
-						background: $COLOUR--JAHIA_BLUE!important;
+						background: _property($THUMB--BG---SELECTED, $PICKER)!important;
 					}
 
 					.thumb {
-						background: $COLOUR--JAHIA_BLUE!important;
+						background: _property($THUMB--BG---SELECTED, $PICKER)!important;
 					}
 
 					&.x-view-highlightrow {
-						background: $COLOUR--JAHIA_BLUE;
+						background: _property($THUMB--BG---SELECTED, $PICKER);
 					}
 
 
@@ -1538,7 +1537,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				box-sizing: border-box;
 
 				div {
-					@include text(10px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+					@include text(10px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
 
 					display: block!important;
 					overflow: hidden;
@@ -1547,7 +1546,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 					margin-bottom: 5px;
 
 					b {
-						@include text(8px, rgba($COLOUR--WHITE_CLOUDS, .6), $FONT--WEIGHT---EXTRALIGHT);
+						@include text(8px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
 						display: block;
 					    margin-right: 5px;
 						text-transform: uppercase;

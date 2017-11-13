@@ -53,8 +53,10 @@ $DATE-PICKER: 			DARK;
 $CONTEXT-MENU: 			DARK;
 $THUMBS: 				DARK;
 $PICKER: 				DARK;
+$PICKER-SEARCH:			DARK;
 $PICKER-HEADER-INPUT: 	LIGHT;
 $PICKER-SEARCH-HEADER: 	DARK;
+$PREVIEW:			 	DARK;
 // INVERSED
 // $EDIT-ENGINE: 			DARK;
 // $SIDE-PANEL: 			DARK;
@@ -172,10 +174,23 @@ $basic-colors: (
 		a: 		rgba($color-white, .4)
 	),
 	status: (
-		published: 		green,
-		unpublished: 	red,
-		neverpublished: black,
-		error: 			red
+		conflict:							yellow,
+		deleted:							black,
+		livemodified:						orange,
+		liveonly:							orange,
+		locked:								yellow,
+		mandatorylanguageunpublishable:		orange,
+		mandatorylanguagevalid:				green,
+		markedfordeletion:					red,
+		modified:							orange,
+		multipleWF:							orange,
+		notpublished:						orange,
+		oneWF:								orange,
+		published:							green,
+		unpublished: 						grey,
+		waiting:							white,
+		workinprogress: 					orange,
+		error: 								red
 	)
 );
 
@@ -206,9 +221,14 @@ $IFRAME--SHADOW:(
 /* SCROLL BARS */
 /****************************/
 
-$SCROLL--BG:(
-	LIGHT: red,
-	DARK: red,
+$SCROLL--SHUTTLE:(
+	LIGHT: _theme-color(primary, d),
+	DARK: _theme-color(primary, d),
+);
+
+$SCROLL--SHUTTLE---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
 );
 
 
@@ -242,6 +262,11 @@ $SIDE-PANEL--SHADOW:(
 $MODAL-SOLID--BG:(
 	LIGHT: radial-gradient(ellipse at bottom right, darken(_theme-color(secondary), 4%) 0%, _theme-color(secondary) 50%),
 	DARK: radial-gradient(ellipse at bottom right, darken(_theme-color(primary), 10%) 0%, _theme-color(primary) 70%),
+);
+
+$MODAL-SOLID--BG---LEGACY:(
+	LIGHT: rgba($COLOUR--RAIN_CLOUDS, .98),
+	DARK: rgba($COLOUR--RAIN_CLOUDS, .98),
 );
 
 
@@ -590,9 +615,128 @@ $INPUT--SHADOW---DISABLED:(
 
 
 /****************************/
+/* CKE */
+/****************************/
+
+$CKE--ICON-SET--DEFAULT: (
+	LIGHT: false,
+	DARK: $ICON--RICH_TEXT--TOOLBUTTONS,
+);
+
+$CKE--ICON-SET--LEGACY: (
+	LIGHT: false,
+	DARK: $ICON--RICH_TEXT--TOOLBUTTONS---LEGACY,
+);
+
+$CKE--PATH--COLOR: (
+	LIGHT: blue,
+	DARK: blue,
+);
+
+$CKE--PATH--BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+
+$CKE--TOOLBAR--BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$CKE--TOOLBAR--BORDER: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$CKE--TOOLGROUP--BG: (
+	LIGHT: _theme-color(secondary, a),
+	DARK: _theme-color(secondary, a),
+);
+
+$CKE--TOOLGROUP--BG---HOVER: (
+	LIGHT: _theme-color(secondary, a),
+	DARK: _theme-color(secondary, a),
+);
+
+$CKE--TOOL--BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$CKE--TOOL--BG---HOVER: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$CKE--CONTENTS--SHADOW: (
+	LIGHT: 2px 5px 10px _theme-color(black, a)!important,
+	DARK: 2px 5px 10px _theme-color(black, a)!important,
+);
+
+$CKE--CONTENTS--BORDER: (
+	LIGHT: _theme-color(secondary, c),
+	DARK: _theme-color(secondary, c),
+);
+
+
+
+$CKE--BUTTON-LABEL--COLOR: (
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$CKE--BUTTON-LABEL--COLOR---HOVER: (
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$CKE--COMBO--BG: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$CKE--COMBO--SHADOW: (
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+$CKE--COMBO--BG---HOVER: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$CKE--COMBO--SHADOW---HOVER: (
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+$CKE--TOOL--BG---SELECTED: (
+	LIGHT: _theme-color(quaternary),
+	DARK: _theme-color(quaternary),
+);
+
+
+
+/****************************/
 /* THUMBS */
 /****************************/
 $THUMB--COLOR: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$THUMB--COLOR---HOVER: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$THUMB--COLOR--DIMMED: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary, c),
+);
+
+$THUMB--COLOR--DIMMED---HOVER: (
 	LIGHT: _theme-color(secondary),
 	DARK: _theme-color(secondary),
 );
@@ -854,6 +998,11 @@ $ROW--COLOR:(
 	DARK: _theme-color(secondary),
 );
 
+$ROW--COLOR--DIMMED:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(secondary, c),
+);
+
 $ROW--BG:(
 	LIGHT: transparent,
 	DARK: transparent,
@@ -867,7 +1016,7 @@ $ROW--COLOR---HOVER:(
 
 $ROW--BG---HOVER:(
 	LIGHT: _theme-color(primary, e),
-	DARK: _theme-color(primary, a),
+	DARK: _theme-color(primary, c),
 );
 
 // SELECTED
@@ -878,7 +1027,7 @@ $ROW--COLOR---SELECTED:(
 
 $ROW--BG---SELECTED:(
 	LIGHT: _theme-color(primary, c),
-	DARK: _theme-color(primary, e),
+	DARK: _theme-color(quinary),
 );
 
 // SELECTED HOVER

@@ -29,7 +29,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-	background: #b9bbbc;
+	background: _property($SCROLL--SHUTTLE, $APP);
 	border: 0;
 }
 
@@ -38,7 +38,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: #a7a7a7;
+	background: _property($SCROLL--SHUTTLE---HOVER, $APP);
 }
 
 

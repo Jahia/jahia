@@ -289,7 +289,7 @@
 				}
 
 				.gwt-HTML {
-					@include text(12px, #dddcdc, $FONT--WEIGHT---SEMILIGHT);
+					@include text(12px, _property($PARAGRAPH--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
 
 					b {
 						width: 150px;

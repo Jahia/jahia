@@ -748,6 +748,12 @@
 
 	 }
 
+	//  form {
+	// 	 .x-form-item {
+	// 		 padding: 2px;
+	// 	 }
+	//  }
+
 	 > div {
  		overflow: visible!important;
 
@@ -1372,7 +1378,11 @@ $side_panel__tab_buttons: (
 	padding-right: 0!important;
 }
 
-
+#JahiaGxtChannelsTab {
+	label {
+		width: 100%!important
+	}
+}
 
 
 
@@ -1629,7 +1639,11 @@ body[data-edit-window-style="settings"] {
 #JahiaGxtSettingsTab, {
 	// Common for ALL Side Panel Contents
 
-
+	form {
+		.x-form-item {
+			padding: 2px;
+		}
+	}
 
 	.x-viewport-editmode & {
 		@extend %CSS_BLOCK--SIDE_PANEL--TAB--CONTENTS;

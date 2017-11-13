@@ -82,7 +82,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		}
 
 		#JahiaGxtManagerBottomTabs.indigo-collapsed + div#JahiaGxtManagerTobTable{
-			height: calc(100% - 92px)!important;
+			height: calc(100% - 119px)!important;
 		}
 
 		.x-window-bbar {
@@ -98,7 +98,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			display: none;
 		}
 
-		box-shadow: inset 0px 37px 0px #444548, inset 0px 67px 0px #515356, inset 0px 68px 1px #222;
+		box-shadow: inset 0px 41px 0px #444548, inset 0px 79px 0px #515356, inset 0px 80px 1px #222;
 
 		#toggle-picker-files {
 			display: none;
@@ -152,9 +152,9 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		// RIGHT PANEL
 		#JahiaGxtManagerTobTable {
 			left: 0px!important;
-			top: 68px!important;
+			top: 94px!important;
 			width: 100%!important;
-			height: calc(100% - 120px) !important;
+			height: calc(100% - 173px) !important;
 		}
 
 
@@ -179,12 +179,19 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 		&.indigo-picker-multi-select {
 
+			div#JahiaGxtManagerTobTable {
+				height: calc(100% - 293px) !important;
+
+
+			}
+
 			#JahiaGxtManagerBottomTabs {
 				&.indigo-collapsed {
 
-					&:before {
-						left: 130px;
-					    position: relative;
+					.toggle-multiple-selection {
+						position: relative;
+						left: 148px;
+
 					}
 
 				}
@@ -366,7 +373,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		background-repeat: no-repeat;
 		background-position: center;
 		background-size: 23px;
-		opacity: 0.5;
+		opacity: 1;
 
 		// Remove unhandled styles
 		background-color: transparent;
@@ -429,6 +436,30 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		background-image: url(./images/icons/tabs-placeholder-black@X2.png);
 	}
 
+	// SELECTED ICONS
+	.x-grid3-row-selected {
+		// FOLDER ICON
+		img[src$="/jnt_contentFolder.png"],
+		img[src$="/jnt_folder.png"] {
+			background-image: url(./images/icons/tabs-files@X2.png);
+		}
+
+		// SITE ICON
+		img[src$="/jnt_virtualsite.png"] {
+			background-image: url(./images/icons/tabs-site-white@X2.png);
+		}
+
+		// MOUNTS ICON
+		img[src$="/jnt_mounts.png"] {
+			background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+		}
+
+		// PAGE ICON
+		img[src$="/jnt_page.png"] {
+			background-image: url(./images/tabs-pages-white@X2.png);
+		}
+	}
+
 
 	// MULTI SELECT PANEL
 	#JahiaGxtManagerBottomTabs {
@@ -437,7 +468,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		right: 0;
 	    left: auto!important;
 		width: calc(100% - #{$PICKER_SIDEPANEL_WIDTH})!important;
-	    background: #444548;
+	    background: _property($DARK-FOOTER--BG, $PICKER);
 	    height: 150px!important;
 	    top: auto!important;
 		padding: 15px;
@@ -445,15 +476,17 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		box-shadow: inset 0px 1px 7px #222;
 
 		&.indigo-collapsed {
-			height: 52px!important;
+			height: 79px!important;
 			z-index: 99999;
 			background: transparent!important;
 			bottom: 0!important;
 			pointer-events: none;
+			padding-top: 28px;
 
 			.toggle-multiple-selection {
 				background-image: url(./images/icons/toggle-SN-white@X2.png);
 				pointer-events: all;
+				margin-bottom: 30px;
 			}
 		}
 
@@ -651,10 +684,10 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		.x-tab-strip-spacer {
 			position: fixed;
 		    top: 80px;
-		    left: 30px;
+		    left: 28px;
 		    background: yellow;
-		    width: calc(#{$PICKER_SIDEPANEL_WIDTH} - 85px);
-		    height: 24px;
+		    width: calc(#{$PICKER_SIDEPANEL_WIDTH} - 56px);
+		    height: 30px;
 		    opacity: 0;
 			z-index: 9999;
 		}
@@ -817,15 +850,15 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 									> table {
 										position: fixed;
 										top: 6px;
-										right: calc(50% - 225px);
+										right: calc(50% - 242px);
 										width: 25px;
 										height: 24px;
 
 									    background: #00a0e3;
-									    padding: 4px 10px;
+									    padding: 7px 10px;
 
 										body.ext-gecko & {
-											padding: 5px 10px;
+											padding: 8px 10px;
 
 										}
 
@@ -845,8 +878,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 								&:nth-child(3){
 									> table {
 										position: fixed;
-									    bottom: 11px;
-									    left: 12px;
+									    bottom: 25px;
+									    left: 24px;
 									    width: 25px;
 									    background: #dedede;
 									    padding: 6px 10px;
@@ -886,7 +919,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 							fieldset {
 
 								position: fixed;
-								top: 40px;
+								top: 45px;
 								left: 5px;
 								margin: 0!important;
 
@@ -1033,6 +1066,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 									// CREATION / MODIFICATION / PUBLICATION
 									&:nth-child(4) {
+										width: 150px!important;
 										position: fixed;
 										left: 606px;
 										display: none!important; // ONLY SHOW WHEN A DATE HAS BEEN SELECTED
@@ -1191,6 +1225,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 						padding: 0 30px;
 
 						width: 100%;
+						height: 30px;
 
 						// Icon - dont need
 						img {
@@ -1199,13 +1234,14 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 						// Refresh tool used to refresh the contents of current source
 						.x-tool-refresh {
-							background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center #b2b2b2;
-							height: 24px;
-							width: 25px;
+							background: url(./images/icons/icon-publication-launcher-grey.png) no-repeat center center transparent;
+							height: 30px;
+							width: 30px;
 							position: fixed;
-							left: calc(#{$PICKER_SIDEPANEL_WIDTH} - 57px);
+							left: calc(#{$PICKER_SIDEPANEL_WIDTH} - 83px);
 						    top: 80px;
 							background-size: 12px 10px;
+							z-index: 999999!important;
 
 							&:hover {
 								background-color: lighten($COLOUR--RAIN_CLOUDS, 9%);
@@ -1217,9 +1253,9 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 						}
 
 						.x-panel-header-text {
-							@include _drop-down-fake($PICKER);
+							@include _drop-down-fake(LIGHT);
 
-							width: calc(100% - 25px)!important;
+							width: 100%!important;
 
 							body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
 								width: 100%!important;
@@ -1276,7 +1312,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 							// display: none;
 							position: fixed;
 							top: 80px;
-							width: calc(#{$PICKER_SIDEPANEL_WIDTH - 25px});
+							width: $PICKER_SIDEPANEL_WIDTH;
 							pointer-events: none!important;
 						}
 					}
@@ -1330,7 +1366,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		position: fixed!important;
 	    left: $PICKER_SIDEPANEL_WIDTH!important;
 	    top: 40px!important;
-	    height: calc(100% - 92px) !important;
+	    height: calc(100% - 119px) !important;
 	    width: calc(100% - #{$PICKER_SIDEPANEL_WIDTH})!important;
 
 		#images-view {
@@ -1592,7 +1628,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 							.x-form-text {
 								@include _input-search($PICKER-HEADER-INPUT);
 
-								width: 80px!important;
+								// width: 80px!important;
 							}
 
 							.x-form-trigger {

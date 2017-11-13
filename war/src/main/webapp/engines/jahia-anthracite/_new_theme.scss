@@ -74,9 +74,9 @@ $HAMBURGER:			 	LIGHT;
 // DEFAULT ANTRACITE GREY
 $color-primary:			rgb(92, 97, 100); 		// #5c6164 (GREY)
 $color-secondary:		rgb(250, 250, 250); 	// #FAFAFA (WHITE)
-$color-tertiary:		rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE)
-$color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE)
-$color-quinary:			rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE)
+$color-tertiary:		rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE) - action colors
+$color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE) - secondary buttons
+$color-quinary:			rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE) - highlight color, menu color, hamburger
 $color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
 
 $color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
@@ -693,12 +693,12 @@ $CKE--TOOLBAR--BORDER: (
 
 $CKE--TOOLGROUP--BG: (
 	LIGHT: _theme-color(secondary, a),
-	DARK: _theme-color(secondary, a),
+	DARK: _theme-color(primary, a),
 );
 
 $CKE--TOOLGROUP--BG---HOVER: (
 	LIGHT: _theme-color(secondary, a),
-	DARK: _theme-color(secondary, a),
+	DARK: _theme-color(primary, b),
 );
 
 $CKE--TOOL--BG: (
@@ -708,7 +708,7 @@ $CKE--TOOL--BG: (
 
 $CKE--TOOL--BG---HOVER: (
 	LIGHT: _theme-color(secondary),
-	DARK: _theme-color(secondary),
+	DARK: _theme-color(primary, c),
 );
 
 $CKE--CONTENTS--SHADOW: (
@@ -725,17 +725,17 @@ $CKE--CONTENTS--BORDER: (
 
 $CKE--BUTTON-LABEL--COLOR: (
 	LIGHT: _theme-color(primary),
-	DARK: _theme-color(primary),
+	DARK: _theme-color(secondary),
 );
 
 $CKE--BUTTON-LABEL--COLOR---HOVER: (
 	LIGHT: _theme-color(primary),
-	DARK: _theme-color(primary),
+	DARK: _theme-color(secondary),
 );
 
 $CKE--COMBO--BG: (
 	LIGHT: _theme-color(secondary),
-	DARK: _theme-color(secondary),
+	DARK: _theme-color(primary, a),
 );
 
 $CKE--COMBO--SHADOW: (
@@ -745,7 +745,7 @@ $CKE--COMBO--SHADOW: (
 
 $CKE--COMBO--BG---HOVER: (
 	LIGHT: _theme-color(secondary),
-	DARK: _theme-color(secondary),
+	DARK: _theme-color(primary, b),
 );
 
 $CKE--COMBO--SHADOW---HOVER: (
@@ -1316,7 +1316,7 @@ $ACTION-SUGGESTED--SHADOW---HOVER:(
 
 // UP
 $TAB--BAR:(
-	LIGHT: _theme-color(secondary, d),
+	LIGHT: _theme-color(secondary, a),
 	DARK: _theme-color(primary, g),
 );
 
@@ -1327,34 +1327,34 @@ $TAB--COLOR:(
 
 // HOVER
 $TAB--BAR---HOVER:(
-	LIGHT: _theme-color(tertiary),
+	LIGHT: _theme-color(quinary),
 	DARK: _theme-color(secondary),
 );
 
 $TAB--COLOR---HOVER:(
-	LIGHT: _theme-color(tertiary),
+	LIGHT: _theme-color(quinary),
 	DARK: _theme-color(secondary),
 );
 
 // SELECTED
 $TAB--BAR---SELECTED:(
-	LIGHT: _theme-color(tertiary),
+	LIGHT: _theme-color(quinary),
 	DARK: _theme-color(secondary),
 );
 
 $TAB--COLOR---SELECTED:(
-	LIGHT: _theme-color(tertiary),
+	LIGHT: _theme-color(quinary),
 	DARK: _theme-color(secondary),
 );
 
 // SELECTED HOVER
 $TAB--BAR---SELECTED-HOVER:(
-	LIGHT: _theme-color(tertiary),
+	LIGHT: _theme-color(quinary),
 	DARK: _theme-color(secondary),
 );
 
 $TAB--COLOR---SELECTED-HOVER:(
-	LIGHT: _theme-color(tertiary),
+	LIGHT: _theme-color(quinary),
 	DARK: _theme-color(secondary),
 );
 
@@ -1426,7 +1426,7 @@ DARK: _theme-color(secondary, a),
 
 $TOGGLE--RAIL:(
 	LIGHT: _theme-color(primary),
-	DARK: _theme-color(primary, f),
+	DARK: _theme-color(primary, g),
 );
 
 $TOGGLE--SHADOW:(
@@ -1446,10 +1446,10 @@ $TOGGLE--SHUTTLE---ON:(
 
 $TOGGLE--LABEL---OFF:(
 	LIGHT: _theme-color(primary, d),
-	DARK: _theme-color(primary, i),
+	DARK: _theme-color(primary, d),
 );
 
 $TOGGLE--SHUTTLE---OFF:(
 	LIGHT: _theme-color(primary, d),
-	DARK: purple,
+	DARK: _theme-color(primary, d),
 );

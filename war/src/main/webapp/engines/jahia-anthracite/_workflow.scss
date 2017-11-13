@@ -330,6 +330,20 @@
 
 		.workflow-action-dialog {
 
+			.x-grid3 .x-grid3-row-table .x-grid3-cell {
+				width: 25%!important;
+				display: inline-block;
+			}
+
+			.x-grid3-row {
+				background: transparent!important;
+
+				&.x-grid3-row-selected.x-grid3-row-over {
+					background: transparent!important;
+
+				}
+			}
+
 			> div {
 				width: 100%!important;
 			}
@@ -350,11 +364,35 @@
 
 		}
 
+		.x-grid3-row {
+			.x-grid3-cell-inner {
+				color: _property($ROW--COLOR, $EDIT-ENGINE);
+			}
+
+			&.x-grid3-row-over {
+				.x-grid3-cell-inner {
+					color: _property($ROW--COLOR---HOVER, $EDIT-ENGINE);
+				}
+			}
+
+			&.x-grid3-row-selected {
+				.x-grid3-cell-inner {
+					color: _property($ROW--COLOR---SELECTED, $EDIT-ENGINE);
+				}
+
+				&.x-grid3-row-over {
+					.x-grid3-cell-inner {
+						color: _property($ROW--COLOR---SELECTED, $EDIT-ENGINE);
+					}
+				}
+
+			}
+		}
+
 		.x-grid3 .x-grid3-row-table .x-grid3-cell {
 
 			.x-grid3-cell-inner {
 					line-height: 21px;
-					color: #dddcdc;
 					font-family: "Nunito Sans", sans-serif;
 			}
 
@@ -392,7 +430,7 @@
 
 			.x-btn.x-btn-noicon button {
 				background: transparent !important;
-				padding: 0;
+				padding: 0!important;
 				font-size: 14px;
 				margin-right: 16px;
 				font-weight: 400;
@@ -403,7 +441,7 @@
 		.x-border-layout-ct:nth-child(1) > .x-border-panel {
 			//height: 24px !important;
 			margin-top: 14px;
-			color: #eaeaea;
+			color: _property($SUBTITLE--COLOR, $EDIT-ENGINE);
 		}
 
 		.x-tab-panel-body {
@@ -422,8 +460,8 @@
 			}
 
 			.x-panel-fbar .x-btn.x-btn-noicon button {
-				background: rgba(113, 117, 120, 0) !important;
-				color: #f1f1f1 !important;
+				background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
+				color: _property($BUTTON--COLOR, $EDIT-ENGINE) !important;
 			}
 
 			.x-grid-group-hd {
@@ -434,32 +472,34 @@
 		    padding-top: 8px;
 
 				.x-grid-group-div {
-					color: #cacbcc;
+					color: _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE);
 					font-weight: 500;
 					font-size: 14px;
 					font-family: "Nunito Sans", sans-serif;
-					padding-left: 22px;
-					background-image: url(./images/icons/ic_arrow_up@2x.png);
-					background-size: 18px;
+					padding-left: 11px;
+					background-image: url(./images/icons/icon-toggle-expanded-small-normal.png);
+					background-size: 7px 5px;
 					background-position: left;
 				}
 
 			}
 
 			.x-grid-group-collapsed .x-grid-group-hd .x-grid-group-div {
-				background-image: url(./images/icons/ic_down_@2x.png);
-				background-size: 18px;
+				background-image: url(./images/icons/expand-side-panel@X2.png);
+				background-size: 5px 7px;
 				background-position: left;
 			}
 
 			.x-grid3 .x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {
-				color: #b7b7b7;
+				color: _property($ROW--COLOR--DIMMED, $EDIT-ENGINE);
 			}
 
 		}
 
 		.x-border-layout-ct:nth-child(2) > .x-border-panel {
 			position: initial !important;
+
+
 
 			&:first-child {
 				background: #616669;
@@ -497,6 +537,8 @@
 
 		.x-border-layout-ct:nth-child(2) {
 			height: auto !important;
+
+
 
 			form button.x-btn-text {
 				background: #b9bbbc;

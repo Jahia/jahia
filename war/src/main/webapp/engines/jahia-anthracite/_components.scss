@@ -3050,42 +3050,85 @@ form,
 
 .x-window.content-type-window {
     background: #eee; /* TO THEME */
+	background: _property($BODY--BG, $MODAL-INPUT);
+	box-shadow: _property($BODY--BG--SHADOW, $MODAL-INPUT);
+	box-sizing: border-box;
+	height: 80%;
+	padding: 30px!important;
+	top: 10% !important;
+
+	> .x-window-bwrap {
+		height: 100%;
+		width: 100%!important;
+
+		.x-window-ml {
+			height: 100%;
+			width: 100%!important;
+
+			.x-window-mr {
+				height: 100%;
+				width: 100%!important;
+
+				.x-window-mc {
+					height: 100%;
+					width: 100%!important;
+
+					.x-window-body {
+						width: 100%!important;
+						height: calc(100% - 40px)!important;
+					    box-sizing: border-box;
+
+						> .x-border-layout-ct {
+							overflow: hidden !important;
+							height: 100%!important;
+							width: 100%!important;
+
+							.x-grid-panel {
+								height: calc(100% - 64px) !important;
+							    margin: 0 !important;
+							    top: 39px!important;
+							}
+						}
+
+						.x-form-field.x-form-text {
+
+							padding: 2px;
+
+							img {
+								top: 2px;
+							}
+
+							@include _input-search($MODAL-INPUT);
+
+
+						}
+
+
+					}
+
+					.x-window-bbar {
+
+
+						// > div {
+						// 	background: _property($FOOTER--BG, $MODAL-INPUT);
+						// 	box-shadow: _property($FOOTER--SHADOW, $MODAL-INPUT);
+						// }
+					}
+				}
+			}
+		}
+	}
+
+		// Disable resize ability
+		.x-resizable-handle {
+			display:none;
+		}
+
 		.x-window-header {
 		    display: none;
 		}
 
-		.x-window-body {
 
-			&.x-window-body-noborder {
-				padding: 8px !important;
-			}
-
-			> .x-border-layout-ct {
-				overflow: hidden !important;
-			}
-
-			.x-form-field.x-form-text {
-				padding-left: 28px !important;
-				background: #d5d6d6;  /* TO THEME */
-				background-image: url(./images/icons/tabs-search-dark@X2.png);
-				background-repeat: no-repeat;
-				background-size: contain;
-				color: #717578 !important;  /* TO THEME */
-
-				&:focus {
-					background-color: #9ea0a2 !important;  /* TO THEME */
-					color: #f1f1f1 !important;  /* TO THEME */
-					background-image: url(./images/icons/tabs-search-white@X2.png);
-				}
-
-			}
-
-			.x-form-text:focus + .x-form-trigger.x-form-clear-trigger {
-				background-color: #7a7e80 !important; /* TO THEME */
-				padding-bottom: 1px;
-			}
-
-		}
 
 		.x-grid3 {
 
@@ -3107,19 +3150,11 @@ form,
 
 		}
 
-		.x-window-bbar {
-			padding: 8px;
-	    margin-top: 8px;
-	    background: #eeeeee;
-		}
 
-		.x-form-field-wrap.x-component.x-border-panel {
-			background: #a3a3a3;  /* TO THEME */
-			height: 24px !important;
-		}
+
+
 
 		.x-treegrid.x-component {
-			margin-top: 15px;
 
 			.gwt-content-label {
 				color: #474a4c !important;  /* TO THEME */
@@ -3132,13 +3167,14 @@ form,
 
 		}
 
-		.x-panel-fbar .x-toolbar-cell:first-child .x-btn.x-btn-text-icon button {
-			background: #00a0e3 !important;  /* TO THEME */
-			color: #f1f1f1 !important;  /* TO THEME */
+		.x-panel-fbar .x-toolbar-cell:nth-child(1)  {
+			@include button("ACTIONBAR---SUGGESTED");
+			// background: #00a0e3 !important;  /* TO THEME */
+			// color: #f1f1f1 !important;  /* TO THEME */
 		}
 
 		.x-panel-fbar .x-toolbar-cell:nth-child(2) .x-btn.x-btn-text-icon button {
-			background: #dedede !important;  /* TO THEME */
+			@include button("ACTIONBAR");
 		}
 
 }

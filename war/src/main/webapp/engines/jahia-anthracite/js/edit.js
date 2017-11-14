@@ -3804,6 +3804,9 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
+				.onOpen(".content-type-window", function(){
+					DexV2(".content-type-window .x-form-field-wrap input").setAttribute("placeholder", "Filter Content");
+				})
 				// .onClick(".workflowactiondialog-ctn .x-grid3-row", function(){
 				// 	DexV2.class("workflowactiondialog-card").addClass("indigo-opened");
 				// })

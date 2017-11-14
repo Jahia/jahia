@@ -349,6 +349,42 @@
 		transition: $DEFAULT--TRANSITION;
 		color: _property($INPUT--COLOR---DISABLED, $type);
 	}
+
+	+ img {
+		width: 27px!important;
+		height: 27px!important;
+		right: 5px;
+
+		&.x-form-date-trigger {
+			background: url(_property($MENU-CLOSED--DATE, $type)) no-repeat center center;
+			background-size: 16px;
+
+			&:hover {
+				background-image: url(_property($MENU-CLOSED--DATE---HOVER, $type));
+				background-color: _property($MENU-CLOSED--DATE-BG---HOVER, $type);
+			}
+		}
+
+		&.x-form-clear-trigger {
+			background: url(_property($MENU-CLOSED--CLEAR, $type)) no-repeat center center;
+			background-size: 10px!important;
+
+			&:hover {
+				background-image: url(_property($MENU-CLOSED--CLEAR---HOVER, $type));
+				background-color: _property($MENU-CLOSED--CLEAR-BG---HOVER, $type);
+			}
+		}
+
+		&.x-form-trigger-arrow {
+			float: right;
+			background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat center center;
+
+			&:hover {
+				background-image: url(_property($MENU-CLOSED--ARROW---HOVER, $type));
+				background-color: _property($MENU-CLOSED--ARROW-BG---HOVER, $type);
+			}
+		}
+	}
 }
 
 

@@ -112,6 +112,13 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        final PrintWriter printWriter = response.getWriter();
+        final JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
+        if (user == null || user.getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)) {
+            printWriter.write("READONLY\n");
+            return;
+        }
+
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
         SettingsBean settingsBean = SettingsBean.getInstance();
@@ -121,7 +128,6 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         String location = null;
         String type = null;
         boolean unzip = false;
-        final PrintWriter printWriter = response.getWriter();
         LinkedHashSet<FileItem> fileItems = new LinkedHashSet<>();
         try {
             try {
@@ -208,8 +214,6 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                 return;
             }
 
-            final JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
-
             if (type == null || type.equals("sync")) {
                 response.setContentType("text/plain");
 
@@ -255,10 +259,6 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                     }
                 }
             } else {
-                if (user == null || user.getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)) {
-                    printWriter.write("READONLY\n");
-                    return;
-                }
                 response.setContentType("text/html");
                 for (FileItem fileItem : uploads.values()) {
                     storeUploadedFile(request.getSession().getId(), fileItem);

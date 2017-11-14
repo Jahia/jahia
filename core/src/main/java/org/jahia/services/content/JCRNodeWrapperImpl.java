@@ -113,6 +113,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     protected Map<Locale, Node> i18NobjectNodes = null;
 
+    protected Map<String, List<String[]>> aclEntries = null;
+    protected Boolean breakAcl = null;
+
     public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
     public static final Pattern EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN = Pattern.compile(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
 
@@ -223,56 +226,62 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     @Override
     public Map<String, List<String[]>> getAclEntries() {
         try {
-            Map<String, List<String[]>> results = new LinkedHashMap<String, List<String[]>>();
-
-            JCRNodeWrapper n = this;
-            try {
-                while (true) {
-                    if (n.hasNode("j:acl")) {
-                        Node acl = n.getNode("j:acl");
+            if (aclEntries == null) {
+                aclEntries = new LinkedHashMap<String, List<String[]>>();
+                breakAcl = false;
+                try {
+                    if (hasNode("j:acl")) {
+                        Node acl = getNode("j:acl");
                         NodeIterator aces = acl.getNodes();
                         while (aces.hasNext()) {
                             Node ace = aces.nextNode();
                             if (ace.isNodeType("jnt:ace")) {
-                                String principal = ace.getProperty("j:principal").getString();
-                                String type = ace.getProperty("j:aceType").getString();
                                 if (!ace.hasProperty(Constants.J_ROLES)) {
                                     continue;
                                 }
-                                Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
+                                String principal = ace.getProperty("j:principal").getString();
 
-                                if (!results.containsKey(principal)) {
-                                    results.put(principal, new ArrayList<String[]>());
+                                if (!aclEntries.containsKey(principal)) {
+                                    aclEntries.put(principal, new ArrayList<String[]>());
                                 }
+                                Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
                                 if (!ace.isNodeType("jnt:externalAce")) {
+                                    String type = ace.getProperty("j:aceType").getString();
                                     for (Value role : roles) {
-                                        results.get(principal).add(new String[]{n.getPath(), type, role.getString()});
+                                        aclEntries.get(principal).add(new String[]{getPath(), type, role.getString()});
                                     }
                                 } else {
                                     for (Value role : roles) {
-                                        results.get(principal).add(new String[]{n.getPath(), "EXTERNAL", role.getString() + "/" + ace.getProperty("j:externalPermissionsName").getString()});
+                                        aclEntries.get(principal).add(new String[]{getPath(), "EXTERNAL", role.getString() + "/" + ace.getProperty("j:externalPermissionsName").getString()});
                                     }
                                 }
                             }
                         }
-                        if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
-                            return results;
-                        }
+                        breakAcl = (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean());
                     }
-                    if (n.getPath().equals("/")) {
-                        return results;
+                } catch (ItemNotFoundException e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(e.getMessage(), e);
                     }
-
-                    n = n.getParent();
-                }
-            } catch (ItemNotFoundException e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(e.getMessage(), e);
                 }
             }
 
+            if (!getPath().equals("/") && !breakAcl) {
+                Map<String, List<String[]>> result = new HashMap<>();
+                for (Map.Entry<String, List<String[]>> entry : aclEntries.entrySet()) {
+                    result.put(entry.getKey(), new ArrayList<String[]>(entry.getValue()));
+                }
+                for (Map.Entry<String, List<String[]>> entry : getParent().getAclEntries().entrySet()) {
+                    if (result.containsKey(entry.getKey())) {
+                        result.get(entry.getKey()).addAll(entry.getValue());
+                    } else {
+                        result.put(entry.getKey(), entry.getValue());
+                    }
+                }
+                return result;
+            }
 
-            return results;
+            return aclEntries;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -553,7 +562,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         } else {
             aced.setProperty(Constants.J_ROLES, dens);
         }
-
+        this.aclEntries = null;
         return true;
     }
 

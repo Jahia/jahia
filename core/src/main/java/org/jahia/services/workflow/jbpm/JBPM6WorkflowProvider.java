@@ -122,6 +122,8 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     private ThreadLocal<Boolean> loop = new ThreadLocal<Boolean>();
     private volatile boolean isInitialized = false;
 
+    private Map<String,WorkflowDefinition> definitionMap = new HashMap<>();
+
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
     }
@@ -236,7 +238,11 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
 
     @Override
     public WorkflowDefinition getWorkflowDefinitionByKey(final String key, final Locale uiLocale) {
-        return executeCommand(new GetWorkflowDefinitionCommand(key, uiLocale));
+        String cachekey = key + uiLocale;
+        if (!definitionMap.containsKey(cachekey)) {
+            definitionMap.put(cachekey, executeCommand(new GetWorkflowDefinitionCommand(key, uiLocale)));
+        }
+        return definitionMap.get(cachekey);
     }
 
     @Override
@@ -376,12 +382,14 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     public void addResource(Resource kieResource) throws IOException {
         synchronized (workflowService) {
             kieFileSystem.write(kieServices.getResources().newUrlResource(kieResource.getURL()));
+            definitionMap.clear();
         }
     }
 
     public void removeResource(Resource kieResource) throws IOException {
         synchronized (workflowService) {
             kieFileSystem.delete(kieResource.getURL().getPath());
+            definitionMap.clear();
         }
     }
 

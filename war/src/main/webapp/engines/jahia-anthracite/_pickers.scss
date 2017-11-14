@@ -295,7 +295,15 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			top: 30px;
 			left: 30px;
 			z-index: 99999;
-			@include text(36px, _property($SIDE-PANEL-TITLE--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
+			@include text(36px, _property($SIDE-PANEL-TITLE--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+
+			/* DEV NOTE ::: QUICK N DIRTY */
+			body[data-uilang="fr"] & {
+				letter-spacing: -0.5px;
+			    font-size: 33px;
+			    top: 35px;
+
+			}
 		}
 	}
 
@@ -742,6 +750,12 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		    background-size: 20px;
 		    background-color: #e8e8e8;
 		    border-radius: 100%;
+
+			/* DEV NOTE ::: QUICK N DIRTY */
+			body[data-uilang="fr"] & {
+				top: 43px;
+
+			}
 
 			a,
 			img {

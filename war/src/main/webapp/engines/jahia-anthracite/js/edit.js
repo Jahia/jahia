@@ -2256,6 +2256,23 @@
 				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
 				var nodeDisplayName = DexV2.getCached("body").getAttribute("data-singleselection-node-displayname");
 
+				setTimeout(function(){
+					var nodeDetails = DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").getHTML();
+						regExp = /\[(.*?)\]/gi,
+						nodeStatus = nodeDetails.match(regExp),
+						isLocked = false;
+
+					if(nodeStatus){
+						isLocked = nodeStatus[0].indexOf("locked") > -1 || nodeStatus[0].indexOf("verrouillé") > -1
+						DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-indigo-locked", isLocked);
+					}
+
+
+					console.log("LOCKED:", isLocked);
+				}, 500);
+
+
+
 				DexV2.getCached("body").setAttribute("data-INDIGO-EDIT-ENGINE", "open");
 
                 // // Create menu ...

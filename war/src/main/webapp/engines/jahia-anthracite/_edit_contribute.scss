@@ -492,7 +492,7 @@
         @include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---NORMAL);
         text-align: center;
         content: attr(data-info-count);
-
+		background: _theme-color(status, attention);
     }
 
     &::after {

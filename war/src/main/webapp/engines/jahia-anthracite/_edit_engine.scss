@@ -267,6 +267,12 @@
 			float: left;
 			width: calc(100% - 297px) !important;
 			height: auto!important;
+
+			/* DEV NOTE ::: QUICK N DIRTY */
+			body[data-uilang="fr"] & {
+				width: calc(100% - 357px) !important;
+
+			}
 		}
 
 		@include button("FIELDSET");
@@ -1829,6 +1835,13 @@
 
 			@extend %CSS_BLOCK--EDIT_ENGINE--TITLE;
 
+			&[data-indigo-locked="true"] {
+				&::before {
+					background: url(./images/icons/icon-lock@X2.png) no-repeat left center;
+					background-size: 20px;
+					padding-left: 22px;
+				}
+			}
 
 			&::before {
 				content: attr(data-friendly-name);

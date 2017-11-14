@@ -336,7 +336,7 @@ public class RenderService {
             // Allows to override template by theme for server settings and site settings
             String theme = getSettingsPanelsTheme(renderContext.getRequest());
             if (theme != null
-                    && JCRContentUtils.isNodeType(resource.getNode(), "jnt:globalSettings", "jnt:virtualsite")) {
+                    && JCRContentUtils.isNodeType(resource.getNode(), "jnt:globalSettings", "jnt:virtualsite", "jnt:user")) {
                 template = addTemplate(resource, renderContext, templateName + "-" + theme, installedModules, type);
             }
             if (template == null) {

@@ -3049,7 +3049,6 @@ form,
 
 
 .x-window.content-type-window {
-    background: #eee; /* TO THEME */
 	background: _property($BODY--BG, $MODAL-INPUT);
 	box-shadow: _property($BODY--BG--SHADOW, $MODAL-INPUT);
 	box-sizing: border-box;
@@ -3109,10 +3108,6 @@ form,
 					.x-window-bbar {
 						width: 100%!important;
 
-						// > div {
-						// 	background: _property($FOOTER--BG, $MODAL-INPUT);
-						// 	box-shadow: _property($FOOTER--SHADOW, $MODAL-INPUT);
-						// }
 					}
 				}
 			}
@@ -3128,44 +3123,6 @@ form,
 		    display: none;
 		}
 
-
-
-		.x-grid3 {
-
-			.x-tree3-node-text {
-				padding-right: 0 !important;
-			}
-
-			.x-grid3-row-over .gwt-content-label {
-				color: $COLOUR--WHITE_CLOUDS !important;
-			}
-
-			.x-grid3-row.x-grid3-row-selected {
-				background: #dedede !important;
-			}
-
-			.x-grid3-scroller {
-				width: 100% !important;
-			}
-
-		}
-
-
-
-
-
-		.x-treegrid.x-component {
-
-			.gwt-content-label {
-				color: #474a4c !important;  /* TO THEME */
-
-				&:after {
-					background: none !important;
-				}
-
-			}
-
-		}
 
 		.x-panel-fbar .x-toolbar-cell:nth-child(1)  {
 			@include button("ACTIONBAR---SUGGESTED");

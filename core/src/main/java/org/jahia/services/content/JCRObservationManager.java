@@ -82,7 +82,7 @@ public class JCRObservationManager implements ObservationManager {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRObservationManager.class);
 
-    private static ThreadLocal<Boolean> eventListenersAvailableDuringPublishOnly = new ThreadLocal<Boolean>();
+    private static ThreadLocal<Integer> eventListenersAvailableDuringPublishOnly = new ThreadLocal<Integer>();
     private static ThreadLocal<Boolean> allEventListenersDisabled = new ThreadLocal<Boolean>();
     private static ThreadLocal<JCRSessionWrapper> currentSession = new ThreadLocal<JCRSessionWrapper>();
     private static ThreadLocal<Integer> lastOp = new ThreadLocal<Integer>();
@@ -208,8 +208,47 @@ public class JCRObservationManager implements ObservationManager {
         return null;
     }
 
+    /**
+     * Switches the scope of listeners for publication.
+     * 
+     * @param eventsDisabled <code>true</code> to enable event listeners targeted for publication only; <code>false</code> enables all the
+     *            listeners
+     * @deprecated use directly {@link #pushEventListenersAvailableDuringPublishOnly()} and
+     *             {@link #popEventListenersAvailableDuringPublishOnly()} methods as they consider the number of calls to this method
+     */
+    @Deprecated
     public static void setEventListenersAvailableDuringPublishOnly(Boolean eventsDisabled) {
-        JCRObservationManager.eventListenersAvailableDuringPublishOnly.set(eventsDisabled);
+        if (eventsDisabled != null && eventsDisabled) {
+            pushEventListenersAvailableDuringPublishOnly();
+        } else {
+            popEventListenersAvailableDuringPublishOnly();
+        }
+    }
+
+    /**
+     * Switches the scope of listeners for publication, that means that only listeners, targeted at publication stage, will be called,
+     * before the last call to {@link #popEventListenersAvailableDuringPublishOnly()} will be done (the last caller will call the pop
+     * method).
+     */
+    public static void pushEventListenersAvailableDuringPublishOnly() {
+        Integer previous = JCRObservationManager.eventListenersAvailableDuringPublishOnly.get();
+        if (previous == null) {
+            previous = 0;
+        }
+        JCRObservationManager.eventListenersAvailableDuringPublishOnly.set(previous + 1);
+    }
+
+    /**
+     * Switches the scope of listeners for publication to off. Note, please, a counter is maintained internally to check the number of
+     * callers to this method. After the last caller will execute the pop, the listener publication scope will be turned off, i.e. all
+     * listeners will be executed for next events.
+     */
+    public static void popEventListenersAvailableDuringPublishOnly() {
+        Integer previous = JCRObservationManager.eventListenersAvailableDuringPublishOnly.get();
+        if (previous == null || previous == 0) {
+            throw new RuntimeException("Cannot pop observer flag");
+        }
+        JCRObservationManager.eventListenersAvailableDuringPublishOnly.set(previous - 1);
     }
 
     public static void setAllEventListenersDisabled(Boolean eventsDisabled) {
@@ -308,7 +347,7 @@ public class JCRObservationManager implements ObservationManager {
             return;
         }
         String wspName = session.getWorkspace().getName();
-        boolean duringPublicationOnly = Boolean.TRUE.equals(eventListenersAvailableDuringPublishOnly.get());
+        boolean duringPublicationOnly = eventListenersAvailableDuringPublishOnly.get() != null && eventListenersAvailableDuringPublishOnly.get() > 0;
         for (EventConsumer consumer : listeners) {
             DefaultEventListener castListener = consumer.listener instanceof DefaultEventListener ? (DefaultEventListener) consumer.listener : null;
             // check if the required workspace condition is matched

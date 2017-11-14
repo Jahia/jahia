@@ -180,16 +180,19 @@ public class URLResolver {
             if (!Url.isLocalhost(serverName) && isMappable()
                     && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
                 try {
-                    if (siteKeyByServerName != null && siteKeyByServerName.equals(getNode().getResolveSite().getSiteKey()) ) {
-                        VanityUrl defaultVanityUrl = getVanityUrlService()
-                                .getVanityUrlForWorkspaceAndLocale(getNode(),
-                                        this.workspace, locale, siteKey);
-                        if (defaultVanityUrl != null && defaultVanityUrl.isActive()) {
-                            redirect(request, defaultVanityUrl);
+                    if (siteKeyByServerName != null) {
+                        JCRNodeWrapper targetNode = getNode();
+                        if (siteKeyByServerName.equals(targetNode.getResolveSite().getSiteKey()) ) {
+                            VanityUrl defaultVanityUrl = getVanityUrlService()
+                                    .getVanityUrlForWorkspaceAndLocale(targetNode,
+                                            this.workspace, locale, siteKey);
+                            if (defaultVanityUrl != null && defaultVanityUrl.isActive()) {
+                                redirect(request, defaultVanityUrl);
+                            }
                         }
                     }
                 } catch (PathNotFoundException e) {
-                    logger.debug("Path not found : {}", urlPathInfo);
+                    logger.debug("Path not found: {}", urlPathInfo);
                 } catch (AccessDeniedException e) {
                     logger.debug("User has no access to the resource, so there will not be a redirection");
                 } catch (RepositoryException e) {
@@ -348,15 +351,15 @@ public class URLResolver {
                             : LanguageCodeConverters
                             .languageCodeToLocale(resolvedVanityUrl
                                     .getLanguage());
-                    path = StringUtils.substringBefore(resolvedVanityUrl
-                            .getPath(), VANITY_URL_NODE_PATH_SEGMENT)
-                            + ".html";
+                    String nodePath = StringUtils.substringBefore(resolvedVanityUrl
+                            .getPath(), VANITY_URL_NODE_PATH_SEGMENT);
+                    path = nodePath + ".html";
                     setVanityUrl(resolvedVanityUrl.getUrl());
                     if (SettingsBean.getInstance()
                             .isPermanentMoveForVanityURL()
                             && !resolvedVanityUrl.isDefaultMapping()) {
                         VanityUrl defaultVanityUrl = getVanityUrlService()
-                                .getVanityUrlForWorkspaceAndLocale(getNode(),
+                                .getVanityUrlForWorkspaceAndLocale(nodePath,
                                         workspace, locale, siteKey);
                         if (defaultVanityUrl != null
                                 && defaultVanityUrl.isActive() && !resolvedVanityUrl.equals(defaultVanityUrl)) {

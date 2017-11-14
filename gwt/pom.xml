@@ -203,7 +203,7 @@
                                 <cssSourceFile>diff.css</cssSourceFile>
                             </cssSourceFiles>
                             <cssTargetDir>gwt/edit/css</cssTargetDir>
-                            <cssFinalFile>gwt-1.6.css</cssFinalFile>
+                            <cssFinalFile>gwt-1.7.css</cssFinalFile>
                         </configuration>
                     </execution>
                 </executions>

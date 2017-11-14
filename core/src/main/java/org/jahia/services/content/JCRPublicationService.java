@@ -406,7 +406,7 @@ public class JCRPublicationService extends JahiaService {
 
         Set<JCRNodeWrapper> toCheckpoint = new HashSet<JCRNodeWrapper>();
 
-        JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.TRUE);
+        JCRObservationManager.pushEventListenersAvailableDuringPublishOnly();
         try {
             List<String> toDelete = new ArrayList<String>();
             List<JCRNodeWrapper> toDeleteOnSource = new ArrayList<JCRNodeWrapper>();
@@ -496,7 +496,7 @@ public class JCRPublicationService extends JahiaService {
             }
             throw e;
         } finally {
-            JCRObservationManager.setEventListenersAvailableDuringPublishOnly(null);
+            JCRObservationManager.popEventListenersAvailableDuringPublishOnly();
         }
 
         boolean doLogging = loggingService.isEnabled();

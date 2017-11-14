@@ -7,11 +7,6 @@
     <bean id="cookieAuthConfig" class="org.jahia.params.valves.CookieAuthConfig">
 		<!-- Should we use cookie authentication for login? -->
 		<property name="activated" value="${auth.cookie.enabled}"/>
-   		<!-- 
-   			length of cookie identifier key for user. This is the actual value
-			stored in the cookie, so make sure it is long enough to improve security
-		 -->
-	    <property name="idLength" value="40"/>
 	    <!--
 	    	name of user property under which we store the cookie identifier key in Digital Experience Manager,
 	     	for matching with the value coming from the cookie.

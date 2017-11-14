@@ -65,6 +65,7 @@ import org.jahia.services.render.scripting.ScriptResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +76,9 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -146,6 +150,8 @@ public class RenderService {
         }
         return instance;
     }
+
+    private String settingsPanelTheme;
 
     private JahiaTemplateManagerService templateManagerService;
 
@@ -328,11 +334,10 @@ public class RenderService {
             }
 
             // Allows to override template by theme for server settings and site settings
-            if (resource.getNode().isNodeType("jnt:globalSettings") || resource.getNode().isNodeType("jnt:virtualsite")) {
-                String theme = (String) renderContext.getRequest().getSession().getAttribute("jahia.ui.theme");
-                if (theme != null) {
-                    template = addTemplate(resource, renderContext, templateName + "-" + theme, installedModules, type);
-                }
+            String theme = getSettingsPanelsTheme(renderContext.getRequest());
+            if (theme != null
+                    && JCRContentUtils.isNodeType(resource.getNode(), "jnt:globalSettings", "jnt:virtualsite", "jnt:user")) {
+                template = addTemplate(resource, renderContext, templateName + "-" + theme, installedModules, type);
             }
             if (template == null) {
                 template = addTemplate(resource, renderContext, templateName, installedModules, type);
@@ -584,4 +589,20 @@ public class RenderService {
         this.renderTimeMonitor = renderChainMonitor;
     }
 
+    public void setSettingsBean(SettingsBean settingsBean) {
+        this.settingsPanelTheme = settingsBean.getString("jahia.ui.settingsPanels.theme", null);
+    }
+
+    private String getSettingsPanelsTheme(HttpServletRequest request) {
+        String theme = null;
+        if (settingsPanelTheme != null) {
+            theme = settingsPanelTheme.equals("default") ? null : settingsPanelTheme;
+        } else if (request != null) {
+            HttpSession httpSession = request.getSession(false);
+            if (httpSession != null) {
+                theme = (String) httpSession.getAttribute("jahia.ui.theme");
+            }
+        }
+        return theme;
+    }
 }

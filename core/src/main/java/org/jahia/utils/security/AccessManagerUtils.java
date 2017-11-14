@@ -54,6 +54,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
@@ -530,11 +531,14 @@ public class AccessManagerUtils {
      * @throws RepositoryException
      */
     public static Set<String> getRoles(Node node, JahiaPrincipal jahiaPrincipal) throws PathNotFoundException, RepositoryException {
+        String site = resolveSite(node.getPath());
+
+        if (node instanceof JCRNodeWrapper) {
+             return getOptimizedRoles((JCRNodeWrapper) node, jahiaPrincipal, site);
+        }
 
         Set<String> grantedRoles = new HashSet<String>();
         Set<String> foundRoles = new HashSet<String>();
-
-        String site = resolveSite(node.getPath());
 
         try {
             while (true) {
@@ -579,6 +583,31 @@ public class AccessManagerUtils {
         } catch (ItemNotFoundException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug(e.getMessage(), e);
+            }
+        }
+
+        return grantedRoles;
+    }
+
+    private static Set<String> getOptimizedRoles(JCRNodeWrapper node, JahiaPrincipal jahiaPrincipal, String site) {
+        Set<String> grantedRoles = new HashSet<String>();
+        Set<String> foundRoles = new HashSet<String>();
+
+        Map<String, List<String[]>> acl = node.getAclEntries();
+
+        for (Map.Entry<String, List<String[]>> entry : acl.entrySet()) {
+            String principal = entry.getKey();
+            if (matchUser(principal, site, jahiaPrincipal)) {
+                for (String[] ace : entry.getValue()) {
+                    boolean granted = !ace[1].equals("DENY");
+                    String role = ace[2];
+                    if (!foundRoles.contains(principal + ":"+role)) {
+                        if (granted) {
+                            grantedRoles.add(role);
+                        }
+                        foundRoles.add(principal + ":"+role);
+                    }
+                }
             }
         }
         return grantedRoles;

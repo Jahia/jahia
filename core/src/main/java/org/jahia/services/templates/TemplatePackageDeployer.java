@@ -176,7 +176,7 @@ public class TemplatePackageDeployer {
         JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, "live", null, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
-                    JCRObservationManager.setEventListenersAvailableDuringPublishOnly(true);
+                    JCRObservationManager.pushEventListenersAvailableDuringPublishOnly();
                     if (!session.itemExists("/modules")) {
                         JahiaAccessManager.setDeniedPaths(Arrays.asList("/modules/" + pack.getIdWithVersion() + "/sources"));
                         session.getWorkspace().clone("default", "/modules", "/modules", true);
@@ -192,8 +192,8 @@ public class TemplatePackageDeployer {
                         session.getWorkspace().clone("default", "/modules/" + pack.getIdWithVersion(), "/modules/" + pack.getIdWithVersion(), true);
                     }
                 } finally {
-                    JCRObservationManager.setEventListenersAvailableDuringPublishOnly(false);
                     JahiaAccessManager.setDeniedPaths(null);
+                    JCRObservationManager.popEventListenersAvailableDuringPublishOnly();
                 }
                 return null;
             }

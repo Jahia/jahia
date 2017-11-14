@@ -50,6 +50,7 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +60,7 @@ import javax.servlet.http.HttpSession;
 import java.security.SecureRandom;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * <p>Title: </p>
@@ -131,7 +133,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                         }
 
                         if (cookieAuthConfig.isRenewalActivated()) {
-                            createAndSendCookie(authContext, jahiaUser, cookieAuthConfig);
+                            sendCookie(value, authContext, jahiaUser, cookieAuthConfig);
                         }
                     }
                 } else {
@@ -150,17 +152,11 @@ public class CookieAuthValveImpl extends BaseAuthValve {
         if (jahiaUser == null) {
             valveContext.invokeNext(context);
         } else {
+            JahiaUser user = jahiaUser.getJahiaUser();
             if (authContext.getRequest().getSession(false) != null) {
                 authContext.getRequest().getSession().invalidate();
             }
-            authContext.getSessionFactory().setCurrentUser(jahiaUser.getJahiaUser());
-
-            try {
-                jahiaUser.setProperty(Constants.JCR_LASTLOGINDATE, String.valueOf(System.currentTimeMillis()));
-                jahiaUser.save();
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
+            authContext.getSessionFactory().setCurrentUser(user);
         }
     }
 
@@ -174,6 +170,10 @@ public class CookieAuthValveImpl extends BaseAuthValve {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+        sendCookie(cookieUserKey, authContext, theUser, cookieAuthConfig);
+    }
+
+    protected static void sendCookie(String cookieUserKey, AuthValveContext authContext, JCRUserNode theUser, CookieAuthConfig cookieAuthConfig) {
         // now let's save the same identifier in the cookie.
         String realm = theUser.getRealm();
         Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey + (realm != null ? (":"+realm) : ""));
@@ -186,23 +186,17 @@ public class CookieAuthValveImpl extends BaseAuthValve {
     }
 
     public static String getAvailableCookieKey(CookieAuthConfig cookieAuthConfig) {
-        String cookieUserKey = null;
-        while (cookieUserKey == null) {
-            cookieUserKey = generateRandomString(cookieAuthConfig.getIdLength());
-            Properties searchCriterias = new Properties();
-            searchCriterias.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
-            Set<JCRUserNode> foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias);
-            if (foundUsers.size() > 0) {
-                cookieUserKey = null;
-            }
-        }
-        return cookieUserKey;
+        return UUID.randomUUID().toString();
     }
 
     public void setCookieAuthConfig(CookieAuthConfig config) {
         this.cookieAuthConfig = config;
     }
 
+    /**
+     * @deprecated the mechanism to generate a random string is now using the {@link UUID} class, so this method is of no use any more
+     */
+    @Deprecated
     public static String generateRandomString(int length) {
         SecureRandom randomGen = new SecureRandom();
         StringBuilder result = new StringBuilder();

@@ -31,6 +31,7 @@
         <property name="channelService" ref="ChannelService"/>
         <property name="renderTimeMonitor" ref="RenderTimeMonitor"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="settingsBean" ref="settingsBean"/>
     </bean>
 
     <bean id="extensionObserverRegistry" class="org.jahia.osgi.ExtensionObserverRegistry" factory-method="getInstance"/>
@@ -355,11 +356,11 @@
     <bean id="GWTResourceConfig" class="org.jahia.ajax.gwt.utils.GWTResourceConfig">
         <property name="cssStyles">
             <list>
-                <value>/gwt/resources/css/gwt-1.6.min.css</value>
+                <value>/gwt/resources/css/gwt-1.7.min.css</value>
                 <value>/modules/assets/javascript/codemirror/lib/codemirror.css</value>
                 <value>/modules/assets/css/codemirror/theme/elegant.css</value>
                 <!--
-                we compress those files into gwt-1.6.min.css
+                we compress those files into gwt-1.7.min.css
                 <value>/gwt/resources/css/jahia-ext-all.css</value>
                 <value>/gwt/resources/css/xtheme-jahia.css</value>
                 <value>/gwt/resources/css/edit.css</value>

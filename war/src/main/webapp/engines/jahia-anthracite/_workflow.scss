@@ -309,7 +309,6 @@
 
 
 .workflowactiondialog-ctn {
-    width: calc(100% - 144px) !important;
 
 
 
@@ -322,6 +321,17 @@
 
 		.x-border-panel > .x-panel-bwrap {
 			width: calc(100% - 162px) !important;
+			height: 100% !important;
+
+			&:only-child {
+				height: calc(100% - 15px) !important;
+			}
+
+			.x-panel-ml,
+			.x-panel-mr,
+			.x-panel-mc {
+				height: 100%;
+			}
 		}
 
 		.x-grid3-body {
@@ -332,7 +342,16 @@
 
 			.x-grid3 .x-grid3-row-table .x-grid3-cell {
 				width: 25%!important;
+				width: calc((100% - 204px)/ 3)!important;
 				display: inline-block;
+
+				&:nth-child(4) {
+					width: 204px!important;
+				}
+
+				&:nth-child(5) {
+					display: none;
+				}
 			}
 
 			.x-grid3-row {
@@ -496,39 +515,124 @@
 
 		}
 
-		.x-border-layout-ct:nth-child(2) > .x-border-panel {
-			position: initial !important;
+		.x-border-layout-ct:nth-child(2) {
+			width: 100%!important;
+
+			height: auto !important;
+			> .x-border-panel {
+				position: initial !important;
 
 
 
-			&:first-child {
-				background: #616669;
-				width: calc(100% - 162px) !important;
-				margin-bottom: 30px;
-				margin-top: 8px;
-				max-height: 200px;
+				&:first-child {
+					width: calc(100% - 162px) !important;
+				    width: 100% !important;
+				    margin-bottom: 30px;
+				    margin-top: 190px;
+				    height: auto !important;
+				    position: relative !important;
+				    z-index: 999;
 
-				&:empty {
-					margin-bottom: 0;
+					&:empty {
+						margin-bottom: 0;
+					}
+
+					> .x-component {
+						color: #dddbdb;
+						position: relative;
+						margin-bottom: 1px;
+						border: none!important;
+						background: url(./images/icons/speech-DARK@X2.png) no-repeat center left 10px _property($COMMENTS--BG, $EDIT-ENGINE) !important;
+						background-size: 29px!important;
+						padding: 7px 10px 7px 50px;
+					    box-sizing: border-box;
+						width: calc(100% - 7px)!important;
+
+						> table {
+							width: 100%;
+
+							> tbody > tr > td {
+
+								display: block;
+
+								&:nth-child(1) {
+									// Message
+									margin-top: 21px;
+
+									div {
+										@include text(14px, _property($COMMENTS--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+									}
+								}
+
+								&:nth-child(2) {
+									// Author / date
+									position: absolute;
+									top: 5px;
+
+									tr {
+										display: inline-block;
+
+										&:nth-child(1) {
+											// Date
+											div {
+												@include text(11px, _property($COMMENTS--COLOR--DATE, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+											}
+										}
+
+										&:nth-child(2) {
+											// Author
+											div {
+												@include text(11px, _property($COMMENTS--COLOR--AUTHOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+
+					&:empty:before {
+						content: "No comments";
+						text-align: center;
+						width: calc(100% - 162px);
+						position: absolute;
+						margin-top: 54px;
+						color: #9ea0a2;
+						font-size: 12px;
+						height: 16px;
+						font-family: "Raleway", sans-serif;
+					}
+
 				}
 
-				> .x-component {
-					background: #616669 !important;
-					padding: 4px 8px;
-					color: #dddbdb;
-					border-bottom: 1px solid #717578 !important;
-				}
+				&:nth-child(2) {
+					// background: pink;
+				    position: absolute !important;
+				    top: -189px !important;
+				    height: 184px !important;
 
-				&:empty:before {
-					content: "No comments";
-					text-align: center;
-					width: calc(100% - 162px);
-					position: absolute;
-					margin-top: 54px;
-					color: #9ea0a2;
-					font-size: 12px;
-					height: 16px;
-					font-family: "Raleway", sans-serif;
+					.x-panel-bwrap {
+						width: 100%!important
+					}
+
+					.x-form-item {
+						margin: 0!important;
+						padding-bottom: 50px!important;
+						@extend %CSS_BLOCK--FIELDSET;
+
+					}
+
+
+					label {
+						@extend %CSS_BLOCK--FORM--LEGEND;
+					}
+
+
+					textarea {
+						@include _input($EDIT-ENGINE);
+						height: 100%!important;
+					    width: 100%!important;
+					}
 				}
 
 			}
@@ -536,35 +640,82 @@
 		}
 
 		.x-border-layout-ct:nth-child(2) {
-			height: auto !important;
+
 
 
 
 			form button.x-btn-text {
-				background: #b9bbbc;
-				padding: 8px 16px;
-				margin-top: 8px;
-				position: absolute !important;
-				bottom: 0;
-				width: fit-content !important;
+				position: relative;
+			    top: -40px;
+			    left: 29px;
 			}
 
 			> .x-border-panel form.x-form-label-left {
-				height: 152px !important;
+				// height: 152px !important;
 			}
 
 			> .x-border-panel .x-form-element .x-form-field-wrap.x-component {
 				overflow-y: scroll;
 				overflow-x: hidden;
 				height: 87px !important;
+				padding: 2px;
 			}
 
 		}
 
 
+		&.engine-cards {
+			width: calc(100% - 144px) !important;
+
+
+			.x-border-layout-ct:nth-child(2) {
+				height: calc(100% - 190px)!important;
+			}
+
+
+			.x-border-layout-ct:nth-child(2) > .x-border-panel:first-child {
+				height: 100%!important;
+
+
+
+
+
+			}
+		}
+
+
 		/* Content review from workflow dashboard. */
 
+		&.x-panel.engine-panel.enginecards-ctn {
+			> .x-panel-bwrap {
+			    margin-top: 16px;
+				height: 100%!important;
+
+			}
+		}
+
 		&.x-panel.engine-panel {
+
+			> .x-panel-bwrap {
+
+				div.x-tab-panel-body {
+					height: calc(100% - 163px) !important;
+				}
+
+				.x-tab-strip.x-tab-strip-top {
+					margin-top: 20px!important;
+				}
+
+				margin-top: 96px;
+			}
+
+			.x-toolbar-left {
+				bottom: 19px!important;
+			}
+
+			.x-tab-strip {
+				margin-top: 90px !important;
+			}
 
 			&:before {
 				content: "Workflow" !important;
@@ -585,7 +736,6 @@
 			}
 
 			> .x-panel-bwrap {
-		    margin-top: 16px;
 
 				> .x-panel-bbar {
 					// background: #474a4c;
@@ -622,6 +772,7 @@
 
 			.x-tab-panel .x-tab-panel-body {
 				overflow-y: auto;
+				border:none!important;
 				height: calc(100% - 102px) !important;
 
 				.x-form-label-left > .x-form-item:nth-child(2) {
@@ -781,4 +932,8 @@
 		}
 	}
 
+}
+
+.workflowactiondialog-card > .x-panel-bwrap .x-panel-body.x-panel-body-noborder {
+	// overflow: hidden;
 }

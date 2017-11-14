@@ -34,6 +34,19 @@
     width: 100%!important;
     height: 100%;
 
+	.indigo-edit-engine-menu {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 999999999;
+		display: inline-block;
+		display: none;
+
+		button {
+			background: red;
+		}
+	}
+
 	.x-tab-panel {
 		// Edit Engine COntent Container
 		width: 100%!important;

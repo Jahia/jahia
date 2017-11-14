@@ -2249,17 +2249,63 @@
 			}
 		},
 		engine: {
+            data: {
+                returnToEditEngine: false
+            },
 			onOpen: function(){
 				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
 				var nodeDisplayName = DexV2.getCached("body").getAttribute("data-singleselection-node-displayname");
 
 				DexV2.getCached("body").setAttribute("data-INDIGO-EDIT-ENGINE", "open");
 
+                // // Create menu ...
+                // var newMenu = document.createElement("menu"),
+                //     editButton = document.createElement("button"),
+                //     editButtonLabel = document.createTextNode("Edit");
+                //
+                // DexV2.node(newMenu).addClass("indigo-edit-engine-menu");
+                // DexV2.node(editButton).addClass("indigo-edit-engine-menu--edit");
+                //
+                // editButton.appendChild(editButtonLabel);
+                // newMenu.appendChild(editButton);
+                //
+                // DexV2(".engine-panel")
+                //     .prepend(newMenu);
+                //
+                // DexV2.class("engine-panel").onClick(".indigo-edit-engine-menu--edit", function(){
+                //     console.log("CLICKED EDIT BUTTIN");
+                //     app.engine.data.returnToEditEngine = true;
+                //     // Save first
+                //     DexV2(".edit-menu-edit").trigger("click");
+                // }, "INDIGO-EDIT-ENGINE--EDIT");
+                //
+                //
+                // DexV2.tag("body").onMouseDown(".toolbar-item-publishone", function(){
+                //     console.log("Save it first");
+                //     DexV2(".engine-panel > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(2) .x-btn.x-btn-text-icon button").trigger("click");
+                // })
+
+
 				// Attribute used to display the friendly name in edit panel
 				DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
+
 			},
-			onClose: function(){
+			onClose: function(e){
 				app.dev.log("::: APP ::: ENGINE ::: ONCLOSE");
+                // var workflowEngine = DexV2.node(this).hasClass("workflowactiondialog-card");
+
+                // if(workflowEngine){
+                //     console.log("CLOSED PUBLICTION SCREEN");
+                //
+                //     if(app.engine.data.returnToEditEngine){
+                //         // DexV2(".edit-menu-edit").trigger("click");
+                //         // DexV2(".toolbar-item-editcontent").trigger("click");
+                //
+                //         app.engine.data.returnToEditEngine = false;
+                //     }
+                //
+                // }
+
 				app.iframe.clearSelection();
 				DexV2.getCached("body")
                     .setAttribute("data-INDIGO-EDIT-ENGINE", "")

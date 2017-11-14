@@ -1028,6 +1028,34 @@ $LIST-BOX--ROW--BG---DISABLED:(
 
 
 
+/****************************/
+/* COMMENTS */
+/****************************/
+
+// UP
+$COMMENTS--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$COMMENTS--COLOR--AUTHOR:(
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(quinary),
+);
+
+$COMMENTS--COLOR--DATE:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$COMMENTS--BG:(
+	LIGHT: _theme-color(secondary, c),
+	DARK: _theme-color(secondary, c),
+);
+
+
+
+
 
 
 /****************************/

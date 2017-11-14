@@ -45,8 +45,10 @@ package org.jahia.services.render.filter.cache;
 
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.DefaultEventListener;
+import org.jahia.services.content.ExternalEventListener;
 import org.jahia.services.render.RenderService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
@@ -61,11 +63,10 @@ import java.util.Set;
  * @since JAHIA 6.5
  *        Created : 12 janv. 2010
  */
-public class RenderServiceTemplateCacheEventListener extends DefaultEventListener {
+public class RenderServiceTemplateCacheEventListener extends DefaultEventListener implements ExternalEventListener {
     private static final int MODULES_LENGTH = "/modules/".length();
 
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(
-            RenderServiceTemplateCacheEventListener.class);
+    private transient static Logger logger = LoggerFactory.getLogger(RenderServiceTemplateCacheEventListener.class);
 
     private RenderService renderService;
 
@@ -112,6 +113,7 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
 
         }
         for (String s : modulesToFlush) {
+            logger.debug("Flushing " + RenderService.RENDER_SERVICE_TEMPLATES_CACHE + " entries for {}", s);
             renderService.flushCache(s);
         }
     }

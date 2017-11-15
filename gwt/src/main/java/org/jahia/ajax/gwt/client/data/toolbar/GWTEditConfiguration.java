@@ -59,7 +59,7 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     private GWTJahiaToolbar contextMenu;
     private GWTJahiaToolbar sidePanelToolbar;
     private GWTJahiaToolbar mainModuleToolbar;
-    private boolean enableDragAndDrop;
+    private String enableDragAndDrop;
     private String defaultUrlMapping;
     private String defaultLocation;
     private boolean useFullPublicationInfoInMainAreaModules;
@@ -111,11 +111,16 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
         this.tabs = tabs;
     }
 
+    // return always true for any values other than "false"
     public boolean isEnableDragAndDrop() {
+        return !"false".equals(enableDragAndDrop);
+    }
+
+    public String getEnableDragAndDrop() {
         return enableDragAndDrop;
     }
 
-    public void setEnableDragAndDrop(boolean enableDragAndDrop) {
+    public void setEnableDragAndDrop(String enableDragAndDrop) {
         this.enableDragAndDrop = enableDragAndDrop;
     }
 

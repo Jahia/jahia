@@ -43,7 +43,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
-import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Element;
@@ -138,6 +137,10 @@ public class Hover {
         }
         b.show();
         module.addStyleName("hover-module");
+        if ("dragZone".equals(mainModule.getDragType()) && module.isSelectable() && module instanceof SimpleModule &&
+                ((SimpleModule) module).hasDragDrop()) {
+            module.addStyleName("hover-draggable");
+        }
         boxes.put(module, b);
     }
 
@@ -147,6 +150,7 @@ public class Hover {
             b.hide();
             boxes.remove(module);
             module.removeStyleName("hover-module");
+            module.removeStyleName("hover-draggable");
         }
         if (boxes.isEmpty()) {
             mainModule.setSelectable(true);
@@ -156,8 +160,8 @@ public class Hover {
     public void removeAll() {
         for (Map.Entry<Module, Box> entry : boxes.entrySet()) {
             entry.getKey().removeStyleName("hover-module");
+            entry.getKey().removeStyleName("hover-draggable");
             entry.getValue().hide();
-
         }
         boxes.clear();
     }

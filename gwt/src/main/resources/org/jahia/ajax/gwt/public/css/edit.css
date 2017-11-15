@@ -233,6 +233,19 @@
     border-color: #297acc;
     color: #FFFFFF;
 }
+.hover-draggable:before {
+    background: url(../images/studiomodeDisableAreaContent-bg.png) no-repeat top left;
+    position: absolute;
+    z-index: 99999;
+    width: 20px;
+    height: 20px;
+    display: block;
+    text-indent: -50000px;
+    content: " ";
+    background-size: 20px;
+    background-color: #2e8ae5;
+}
+
 .x-panel-placeholder {
     margin-bottom: 10px;
 }

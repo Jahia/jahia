@@ -222,6 +222,10 @@ public class MainModule extends Module {
         return selections;
     }
 
+    public String getDragType() {
+        return config.getEnableDragAndDrop();
+    }
+
     public void initWithLinker(EditLinker linker) {
         this.editLinker = linker;
 

@@ -99,7 +99,7 @@ public class SimpleModule extends Module {
     public SimpleModule(String id, final String path, Element divElement, final MainModule mainModule, boolean header) {
         super(id, path, divElement, mainModule);
 
-        hasDragDrop = !"false".equals(DOM.getElementAttribute(divElement, "dragdrop"));
+        hasDragDrop = !"false".equals(DOM.getElementAttribute(divElement, "dragdrop")) && !"disabled".equals(MainModule.getInstance().getDragType());
         editable = !"false".equals(DOM.getElementAttribute(divElement, "editable"));
         bindable = "true".equals(DOM.getElementAttribute(divElement, "bindable"));
 
@@ -302,5 +302,9 @@ public class SimpleModule extends Module {
                 });
             }
         }
+    }
+
+    public boolean hasDragDrop() {
+        return hasDragDrop;
     }
 }

@@ -77,7 +77,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String sitesLocation;
     private String forcedSite;
 
-    private boolean enableDragAndDrop = true;
+    private String enableDragAndDrop;
     private boolean refreshOnExternalModification = true;
 
     private String requiredPermission;
@@ -199,11 +199,11 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.forcedSite = forcedSite;
     }
 
-    public boolean isEnableDragAndDrop() {
+    public String getEnableDragAndDrop() {
         return enableDragAndDrop;
     }
 
-    public void setEnableDragAndDrop(boolean enableDragAndDrop) {
+    public void setEnableDragAndDrop(String enableDragAndDrop) {
         this.enableDragAndDrop = enableDragAndDrop;
     }
 

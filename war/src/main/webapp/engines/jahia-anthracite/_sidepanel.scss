@@ -56,21 +56,20 @@
 
 
         input {
-            padding: 7px 20px 6px 10px !important;
-            color: #f1f1f1;
-            text-transform: uppercase;
-            font-size: 11px;
-            font-weight: 500;
+			// @extend %CSS_BLOCK--COMBO;
 
 			body[data-indigo-gwt-side-panel="open"] & {
-				background: #e8e8e8;
-				color: $COLOUR--RAIN_CLOUDS;
-				transition: none;
-				padding: 3px 40px 3px 5px !important;
-				text-transform: none;
-				color: #7b7f81!important;
-				font-size: 12px!important;
-				font-weight: 200!important;
+				// @extend %CSS_BLOCK--COMBO--SIDE-PANEL;
+
+
+				// background: #e8e8e8;
+				// color: $COLOUR--RAIN_CLOUDS;
+				// transition: none;
+				// padding: 3px 40px 3px 5px !important;
+				// text-transform: none;
+				// color: #7b7f81!important;
+				// font-size: 12px!important;
+				// font-weight: 200!important;
 
 				&:hover {
 					background: rgba(38, 38, 38, 0.11)!important;
@@ -79,22 +78,22 @@
         }
 
         img {
-            height: 30px!important;
-			width: 27px!important;
-			background-color: transparent!important;
+            // height: 30px!important;
+			// width: 27px!important;
+			// background-color: transparent!important;
 
-			body[data-indigo-gwt-side-panel="open"] & {
-				background-image: url($ICON--ARROW_DOWN---GREY);
-				opacity: 0.7;
-				height: 23px!important;
-				width: 17px!important;
-
-				&:hover {
-					background-color: rgba($COLOUR--GREY_CLOUDS, 0.3)!important;
-					opacity: 1;
-				}
-				// background-color: rgb(222, 222, 222) !important
-			}
+			// body[data-indigo-gwt-side-panel="open"] & {
+			// 	background-image: url($ICON--ARROW_DOWN---GREY);
+			// 	opacity: 0.7;
+			// 	height: 23px!important;
+			// 	width: 17px!important;
+			//
+			// 	&:hover {
+			// 		background-color: rgba($COLOUR--GREY_CLOUDS, 0.3)!important;
+			// 		opacity: 1;
+			// 	}
+			// 	// background-color: rgb(222, 222, 222) !important
+			// }
 
 
 
@@ -630,11 +629,11 @@
 	// Highlight item when menu is open (PAGES tab)
 
 	.x-grid3 .x-grid3-row.context-menu-open {
-		background: $COLOUR--CREAM_CLOUDS !important;
+		background: _property($ROW--BG---SELECTED, $SIDE-PANEL) !important;
 	}
 
 	.x-grid3 .x-grid3-row.x-grid3-row-selected.context-menu-open {
-		background: rgba($COLOUR--GREY_CLOUDS, 0.7) !important;
+		background: _property($ROW--BG---SELECTED, $SIDE-PANEL) !important;
 	}
 
 
@@ -748,6 +747,12 @@
 	     left: 71px;
 
 	 }
+
+	//  form {
+	// 	 .x-form-item {
+	// 		 padding: 2px;
+	// 	 }
+	//  }
 
 	 > div {
  		overflow: visible!important;
@@ -1373,7 +1378,11 @@ $side_panel__tab_buttons: (
 	padding-right: 0!important;
 }
 
-
+#JahiaGxtChannelsTab {
+	label {
+		width: 100%!important
+	}
+}
 
 
 
@@ -1630,7 +1639,11 @@ body[data-edit-window-style="settings"] {
 #JahiaGxtSettingsTab, {
 	// Common for ALL Side Panel Contents
 
-
+	form {
+		.x-form-item {
+			padding: 2px;
+		}
+	}
 
 	.x-viewport-editmode & {
 		@extend %CSS_BLOCK--SIDE_PANEL--TAB--CONTENTS;

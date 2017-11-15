@@ -69,6 +69,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.MalformedURLException;
 import java.util.*;
 
 /**
@@ -272,9 +273,21 @@ public class GWTInitializer {
     private static void addCss(StringBuilder buf, HttpServletRequest request, boolean frame) {
         String context = request.getContextPath();
 
+        String theme = (String) request.getSession().getAttribute("jahia.ui.theme");
+
         List<String> cssStyles = frame ? getConfig().getCssStylesForFrame() : getConfig().getCssStyles();
 
         for (String css : cssStyles) {
+            if (frame && css.startsWith("/gwt/resources/css") && theme != null) {
+                try {
+                    String themedCss = css.replaceFirst("/gwt/resources/css", "/gwt/resources/css/" + theme);
+                    if (request.getServletContext().getResource(themedCss) != null) {
+                        css = themedCss;
+                    }
+                } catch (MalformedURLException e) {
+                    logger.error("Invalid path",e);
+                }
+            }
             buf.append("<link type=\"text/css\" href=\"").append(context).append(css)
                     .append("\" rel=\"stylesheet\"/>\n");
         }

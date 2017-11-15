@@ -25,12 +25,27 @@
 .engine-panel,
 .engine-window {
 	//z-index: $ZINDEX--SIDE_PANEL--EDIT_ENGINE;
-	background: $EDIT_ENGINE--BG--COLOUR;
+	z-index: 1050!important;
+
+	background: _property($BODY--BG, $EDIT-ENGINE);
     position: fixed!important;
     top: 0!important;
     left: 0!important;
     width: 100%!important;
     height: 100%;
+
+	.indigo-edit-engine-menu {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 999999999;
+		display: inline-block;
+		display: none;
+
+		button {
+			background: red;
+		}
+	}
 
 	.x-tab-panel {
 		// Edit Engine COntent Container
@@ -60,10 +75,10 @@
 					width: 100%;
 					height: auto;
 					border:none;
-					border-left: 1px solid #4b4b4b;
+					border-left: 1px solid _property($TAB--BAR, $EDIT-ENGINE);
 					background: none;
 					padding: 0 0 0 5px;
-					margin: 0;
+					margin: 150px 0 0 0;
 
 					li {
 						// Tab entry
@@ -72,10 +87,20 @@
 						display: block;
 
 						&.x-tab-strip-active {
-							border-left: 3px solid #eaeaea;
+							border-left: 3px solid _property($TAB--BAR---SELECTED, $EDIT-ENGINE);
 							left: -7px;
 							padding-left: 4px;
+
+							&.x-tab-strip-over {
+								border-left-color: _property($TAB--BAR---SELECTED, $EDIT-ENGINE);
+							}
 						}
+
+						&.x-tab-strip-over {
+							border-left-color: _property($TAB--BAR---HOVER, $EDIT-ENGINE);
+						}
+
+
 
 						.x-tab-right {
 							// Button container
@@ -168,7 +193,8 @@
 
 
 	.x-form-text {
-		@include text_input("EDIT_ENGINE");
+		// @include text_input("EDIT_ENGINE");
+		@include text-input($EDIT-ENGINE);
 	}
 
 
@@ -201,13 +227,18 @@
 				width: calc(100% - 150px)!important;
 			}
 		}
+
+		.x-form-group.list-store-field {
+			margin-bottom: 36px !important;
+		}
+
 	}
 
 	&:before {
 		content: "DX Edit Mode";
 	    font-size: 36px;
 	    display: inline-block;
-	    color: #dddcdc;
+	    color: _property($TITLE--COLOR, $EDIT-ENGINE);
 	    margin-left: -2px;
 	    margin-right: 65px;
 	    margin-top: 15px;
@@ -236,18 +267,21 @@
 			float: left;
 			width: calc(100% - 297px) !important;
 			height: auto!important;
+
+			/* DEV NOTE ::: QUICK N DIRTY */
+			body[data-uilang="fr"] & {
+				width: calc(100% - 357px) !important;
+
+			}
 		}
 
 		@include button("FIELDSET");
 
-		.x-form-item:hover {
-			//@include button("FIELDSET");
 
-		}
 
-		.x-btn-text  {
-			color: #c5c4c4;
-		}
+		// .x-btn-text  {
+		// 	color: #c5c4c4;
+		// }
 
 
 		// Fix information block in content tab
@@ -274,7 +308,7 @@
 				}
 
 				.gwt-HTML {
-					@include text(12px, #dddcdc, $FONT--WEIGHT---SEMILIGHT);
+					@include text(12px, _property($PARAGRAPH--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
 
 					b {
 						width: 150px;
@@ -373,7 +407,8 @@
 				    padding: 46px 10px 20px 29px !important;
 				    margin: 0 23px 10px 0 !important;
 				    position: relative;
-				    background: #616669;
+				    background: _property($FIELDSET--BG, $EDIT-ENGINE);
+					border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 				    box-sizing: border-box;
 
 					// List of Workflow types
@@ -387,7 +422,7 @@
 
 						// List
 						> .x-grid3 {
-							background: #6b7074 !important;
+							background: _property($LIST-BOX--BG, $EDIT-ENGINE) !important;
 						}
 
 						&:before {
@@ -395,20 +430,23 @@
 							text-transform: uppercase;
 							position: absolute;
 							top: -30px;
-							@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
+							@include text(11px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
 						}
 
 						.x-grid3-row-over {
 							// More info - not needed
-							background: rgba($COLOUR--WHITE_CLOUDS, .25)!important;
+							background: _property($LIST-BOX--ROW--BG---HOVER, $EDIT-ENGINE) !important;
 
-							.x-grid3-row-selected {
-								background-color: rgba($COLOUR--WHITE_CLOUDS, .25)!important;
+							&.x-grid3-row-selected {
+								background-color: _property($LIST-BOX--ROW--BG---SELECTED, $EDIT-ENGINE) !important;
+								.x-grid3-td-displayName {
+									color: _property($LIST-BOX--ROW--COLOR---SELECTED, $EDIT-ENGINE)!important;
 
+								}
 							}
 
 							.x-grid3-td-displayName {
-								color: $COLOUR--WHITE_CLOUDS!important;
+								color: _property($LIST-BOX--ROW--COLOR---HOVER, $EDIT-ENGINE)!important;
 
 							}
 						}
@@ -416,11 +454,16 @@
 
 
 						.x-grid3-row-selected {
-							background-color: rgba($COLOUR--WHITE_CLOUDS, .25)!important;
+							background-color: _property($LIST-BOX--ROW--BG---SELECTED, $EDIT-ENGINE) !important;
 							background-image: url(./images/icons/icon-next-white@X2.png)!important;
 							background-position: right 5px center!important;
 							background-repeat: no-repeat!important;
 							background-size: 13px!important;
+
+							color: _property($LIST-BOX--ROW--COLOR---SELECTED, $EDIT-ENGINE)!important;
+
+
+
 
 						}
 
@@ -430,10 +473,10 @@
 
 						// More info buttons - not needed
 						.x-grid3-td-displayName {
-							color: rgba($COLOUR--WHITE_CLOUDS, .7);
+							color: _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE);
 
 							&:hover {
-								color: $COLOUR--WHITE_CLOUDS!important;
+								color: _property($LIST-BOX--ROW--COLOR---HOVER, $EDIT-ENGINE)!important;
 							}
 
 							&:after {
@@ -467,7 +510,7 @@
 
 										text-transform: none;
 
-										@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
+										@include text(12px, _property($LABEL--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
 									}
 
 									.x-form-check-wrap {
@@ -482,7 +525,7 @@
 										margin-left: 19px;
 										display: block;
 
-										@include text(10px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---SEMIBOLD);
+										@include text(10px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
 									}
 								}
 
@@ -506,7 +549,7 @@
 								margin-right: 12px;
 								display: block;
 
-								@include text(10px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---SEMIBOLD);
+								@include text(10px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
 							}
 
 							img {
@@ -535,7 +578,8 @@
 
 					padding: 46px 10px 20px 29px !important;
 					margin: 0 23px 10px 0 !important;
-					background: #616669;
+					background: _property($FIELDSET--BG, $EDIT-ENGINE);
+					border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 					box-sizing: border-box;
 
 					&:before {
@@ -543,7 +587,7 @@
 						text-transform: uppercase;
 						position: absolute;
 						top: 17px;
-						@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
+						@include text(11px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
 					}
 
 					.x-grid3-scroller {
@@ -554,7 +598,7 @@
 						&:before {
 							content: $text_no_results;
 							display: block;
-							@include text(12px, rgba($COLOUR--WHITE_CLOUDS, .6), $FONT--WEIGHT---EXTRALIGHT);
+							@include text(12px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
 						}
 					}
 
@@ -564,6 +608,14 @@
 					.x-grid-panel {
 						width: auto!important;
 						height: auto!important;
+
+						.x-grid3-row {
+
+							&.x-grid3-row-selected{
+								background: transparent!important;
+							}
+
+						}
 
 						.x-grid3 {
 							width: auto!important;
@@ -597,18 +649,24 @@
 										&.x-grid3-hd-menu-open {
 
 											div {
-												background: rgba($COLOUR--WHITE_CLOUDS, .3)!important;
+												background: _property($MENU-CLOSED--BG---HOVER, $APP)!important;
+												// box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $EDIT-ENGINE);
 
 											}
 
 											a {
-												background: url($ICON--ARROW_DOWN---WHITE) no-repeat center center;
+												background: url(_property($MENU-CLOSED--ARROW---HOVER, $APP)) no-repeat center center;
+											}
+
+											span {
+												text-transform: uppercase;
+												color: _property($MENU-CLOSED--COLOR---HOVER, $APP);
 											}
 										}
 
 										span {
 											text-transform: uppercase;
-											@include text(10px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---SEMIBOLD);
+											@include text(10px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
 										}
 
 										.sort-asc {
@@ -698,7 +756,7 @@
 						.x-grid3-cell-inner,
 						.x-grid3-cell-inner label {
 							text-transform: none;
-							@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
+							@include text(12px, _property($ROW--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
 
 
 						}
@@ -711,7 +769,8 @@
 	// Personalised COntent Window
 	#JahiaGxtEditEnginePanel-categories {
 		height: auto!important;
-		background: $FORM--FIELDSET--BG--COLOUR;
+		background: _property($FIELDSET--BG, $EDIT-ENGINE);
+		border:1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
 		box-sizing: border-box;
 		padding-bottom: 1px;
 
@@ -728,7 +787,7 @@
 			.x-panel-header-text {
 				text-transform: uppercase;
 
-				@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
+				@include text(11px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
 			}
 
 		}
@@ -759,7 +818,7 @@
 						    padding-top: 5px;
 						    font-style: italic;
 
-							@include text(12px, #ff5151, $FONT--WEIGHT---NORMAL);
+							@include text(12px, _property($TITLE--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---NORMAL);
 						}
 					}
 				}
@@ -769,19 +828,21 @@
 				}
 
 
-				button {
-					@include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---NORMAL);
 
+				button {
+					font-size: 12px;
+					// @include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---NORMAL);
+					//
 					padding: 5px 25px 5px 10px;
-					background: $COLOUR--WHITE_CLOUDS;
+					// background: $COLOUR--WHITE_CLOUDS;
 
 					img {
 						right: 0!important;
 						left: auto!important;
 					    top: 2px!important;
 
-						background: url($ICON--CLOSE_LARGE---GREY) no-repeat center center!important;
-						background-size: 12px 12px!important;
+						background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center center!important;
+						background-size: 10px!important;
 						box-sizing: border-box;
 						width: 23px!important;
 						height: 23px!important;
@@ -797,12 +858,12 @@
 					content: $text_available_categories;
 					display: block;
 
-					@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+					@include text(12px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
 				}
 
 				position: relative !important;
 			    top: auto !important;
-			    background: #6b7074 !important;
+			    background: _property($LIST-BOX--BG, $EDIT-ENGINE) !important;
 			    width: calc(100% - 20px)!important;
 			    margin: 10px!important;
 			    padding: 15px 20px 20px 20px;
@@ -813,8 +874,14 @@
 				    overflow: hidden;
 				}
 
-				.x-grid3-td-displayName::after {
-					display: none;
+				.x-grid3-td-displayName {
+					&::after {
+						display: none;
+					}
+
+					label {
+						color: _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE);
+					}
 				}
 
 				.x-grid3-row-selected,
@@ -838,34 +905,35 @@
 			box-sizing: border-box;
 
 			&[src$="/visibilityStatusRed.png"] {
-				background: $VISIBILITY--COLOUR---HIDDEN;
+				background: _theme-color(status, hidden);
 			}
 
 			&[src$="/visibilityStatusUnknown.png"] {
-				background: $VISIBILITY--COLOUR---UNKNOWN;
+				background: _theme-color(status, unknown);
 			}
 
 			&[src$="/visibilityStatusGreen.png"] {
-				background: $VISIBILITY--COLOUR---VISIBLE;
+				background: _theme-color(status, visible);
 			}
 
 			&[src$="/publication/notpublished.png"] {
-				background: $PUBLICATION--COLOUR---NOT_PUBLISHED;
+				background: _theme-color(status, notpublished);
 			}
 
 			&[src$="/publication/modified.png"] {
-				background: $PUBLICATION--COLOUR---MODIFIED;
+				background: _theme-color(status, modified);
 			}
 
 			&[src$="/publication/published.png"] {
-				background: $PUBLICATION--COLOUR---PUBLISHED;
+				background: _theme-color(status, published);
 			}
 		}
 
 		> .x-component {
 			// Header Zone
 			&:nth-child(1) {
-				background: $FORM--FIELDSET--BG--COLOUR;
+				background: _property($FIELDSET--BG, $EDIT-ENGINE);
+				border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 				padding: 43px 10px 20px 29px;
 				box-sizing: border-box;
 				height: auto!important;
@@ -875,7 +943,7 @@
 			    overflow: visible!important;
 
 				.gwt-HTML {
-					@include text(12px, $COLOUR--DUSTY_CLOUDS !important, $FONT--WEIGHT---EXTRALIGHT)
+					@include text(12px, _property($LABEL--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---EXTRALIGHT)
 				}
 
 				&:before {
@@ -889,7 +957,7 @@
 							// Publication status label
 							&:nth-child(5) {
 								position: fixed;
-							    top: 175px;
+							    top: 95px;
 							    left: 408px;
 							    z-index: 99;
 							}
@@ -897,7 +965,7 @@
 							// Publication icon
 							&:nth-child(6) {
 								position: fixed;
-								top: 173px;
+								top: 93px;
 								left: 517px;
 								z-index: 99;
 							}
@@ -905,7 +973,8 @@
 							// Publish conditions on save ( also used to create a fake fieldset )
 							&:nth-child(7) {
 								position: absolute;
-								background: $FORM--FIELDSET--BG--COLOUR;
+								background: _property($FIELDSET--BG, $EDIT-ENGINE);
+								border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 								width: 100%;
 								left: 0;
 								top: -95px;
@@ -940,12 +1009,12 @@
 							// All conditions should match label
 							&:nth-child(1) {
 								position: fixed;
-							    top: 331px;
+							    top: 251px;
 							    right: 114px;
 							    z-index: 99;
 
 								div {
-									@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT)
+									@include text(12px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---EXTRALIGHT)
 								}
 
 							}
@@ -954,7 +1023,7 @@
 							&:nth-child(2) {
 								position: fixed;
 							    right: 85px;
-							    top: 331px;
+							    top: 252px;
 							    z-index: 99;
 							}
 
@@ -972,17 +1041,18 @@
 								}
 
 								img.x-form-trigger {
-									background: url($ICON--ADD--GREY) no-repeat center center !important;
+									background: url($ICON--ADD--WHITE) no-repeat center center !important;
 									width: 15px!important;
 									height: 15px !important;
 									position: fixed !important;
-									top: 327px;
+									top: 250px;
 									left: 490px;
 									z-index: 99;
 									background-size: 14px!important;
-									background-color: $COLOUR--CREAM_CLOUDS!important;
+									background-color: _property($BUTTON--BG, $EDIT-ENGINE)!important;
 									opacity: 1;
 									padding-left: 15px;
+									border:none;
 
 								}
 							}
@@ -1004,11 +1074,12 @@
 					&:before {
 						content: $text_visibility_no_conditions;
 						display: block;
-						@include text(12px, $COLOUR--ASH_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+						@include text(12px, _property($LABEL--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
 					}
 				}
 
-				background: $FORM--FIELDSET--BG--COLOUR;
+				background: _property($FIELDSET--BG, $EDIT-ENGINE);
+				border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 				padding: 43px 10px 20px 29px;
 				box-sizing: border-box;
 				height: auto!important;
@@ -1029,6 +1100,7 @@
 				.x-grid3-row {
 					background: none!important;
 					pointer-events: none;
+
 				}
 
 				.x-grid3-col-status {
@@ -1047,7 +1119,7 @@
 				}
 
 				.x-grid3-col-name {
-					color: $COLOUR--WHITE_CLOUDS!important;
+					color: _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE)!important;
 					padding: 5px 10px 5px 13px;
 				}
 
@@ -1060,7 +1132,7 @@
 				    right: 0;
 				    top: 0;
 					pointer-events: all;
-					background: url($ICON--INFO--WHITE) right 5px center no-repeat!important;
+					background: url(./images/icons/tabs-edit-DARK.png) right 5px center no-repeat!important;
 					background-size: 16px 16px!important;
 					opacity: 0.8;
 
@@ -1074,7 +1146,7 @@
 					width: 20px;
 					height: 20px !important;
 					background: transparent;
-					background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center top 10px;
+					background: url($ICON--CLOSE_LARGE---GREY) no-repeat center top 10px;
 					background-size: 8px 8px;
 
 					> table {
@@ -1097,7 +1169,8 @@
 			    top: 0;
 			    left: 0;
 			    width: 100%!important;
-			    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);
+			    // background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);
+				background: _property($MODAL-SOLID--BG, $EDIT-ENGINE);
 			    z-index: 999;
 				display: none;
 
@@ -1113,23 +1186,35 @@
 							border:none;
 							display: inline-block;
 							padding: 5px 10px;
-							opacity: 0.9;
 
 							&:hover {
-								opacity: 1;
 								cursor: pointer;
 							}
 
 							&.save-new-condition,
 							&.done-with-condition {
-								background: $COLOUR--JAHIA_BLUE;
+								background: _property($ACTION-SUGGESTED--BG, $EDIT-ENGINE);
+								box-shadow: _property($ACTION-SUGGESTED--SHADOW, $EDIT-ENGINE);
 								margin-right: 3px;
-								@include text(16px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+								@include text(16px, _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+
+								&:hover {
+									background: _property($ACTION-SUGGESTED--BG---HOVER, $EDIT-ENGINE);
+									box-shadow: _property($ACTION-SUGGESTED--SHADOW---HOVER, $EDIT-ENGINE);
+									color: _property($ACTION-SUGGESTED--COLOR---HOVER, $EDIT-ENGINE);
+								}
 							}
 
 							&.cancel-new-condition {
-								background: $COLOUR--WHITE_CLOUDS;
-								@include text(16px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+								background: _property($ACTION-DEFAULT--BG, $EDIT-ENGINE);
+								box-shadow: _property($ACTION-DEFAULT--SHADOW, $EDIT-ENGINE);
+								@include text(16px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+
+								&:hover {
+									background: _property($ACTION-DEFAULT--BG---HOVER, $EDIT-ENGINE);
+									box-shadow: _property($ACTION-DEFAULT--SHADOW---HOVER, $EDIT-ENGINE);
+									color: _property($ACTION-DEFAULT--COLOR---HOVER, $EDIT-ENGINE);
+								}
 							}
 						}
 					}
@@ -1144,7 +1229,7 @@
 					    display: block;
 					    margin-top: 150px;
 					    margin-bottom: 10px;
-						@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+						@include text(36px, _property($TITLE--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
 					}
 
 					width: 460px!important;
@@ -1152,7 +1237,7 @@
 
 					fieldset {
 						padding: 43px 10px 20px 19px !important;
-						background: $FORM--FIELDSET--BG--COLOUR;
+						background: _property($FIELDSET--BG, $EDIT-ENGINE);
 
 						legend  {
 							.x-fieldset-header-text {
@@ -1172,52 +1257,45 @@
 	#JahiaGxtEditEnginePanel-metadata {
 		/* left floating forms */
 
-		#Keywords,
-		#Mots-clés {
-			label {
-				display: none!important;
-			}
+		label {
+			display: none!important;
+		}
 
-			.x-form-group {
-				width: 100%!important;
+		.multiple-text-field.x-form-group {
+			width: 100%!important;
 
-				> table {
-					width: 100%;
+			> table {
+				width: 100%;
 
-					.x-form-field-wrap {
-						width: auto!important;
-						float: none;
-						margin-bottom: 5px;
+				.x-form-field-wrap {
+					width: auto!important;
+					float: none;
+					margin-bottom: 5px;
 
-						input {
-							width: 100%!important;
-							background: $COLOUR--WHITE_CLOUDS!important;
-							color: $COLOUR--DARK_CLOUDS!important;
-						}
+					input {
+						width: 100%!important;
+					}
 
-						button {
-							margin-top:20px;
-						}
+					button {
+						margin-top:20px;
+					}
 
-						img.x-form-clear-trigger {
-							background-image: url($ICON--CLOSE_LARGE---GREY)!important;
-							background-size: 8px 8px!important;
-							background-position: center top 8px!important;
-							opacity: 1;
-							width: 25px;
+					img.x-form-clear-trigger {
+						background-image: url($ICON--CLOSE_LARGE---GREY)!important;
+						background-size: 8px 8px!important;
+						background-position: center top 8px!important;
+						opacity: 1;
+						width: 25px;
 
-						}
 					}
 				}
 			}
 		}
 
-		#Tags {
-			label {
-				display: none!important;
-			}
+		.tag-field {
 
-			.x-form-group {
+
+
 				width: 100%!important;
 
 				> table {
@@ -1240,16 +1318,15 @@
 
 								.x-column {
 									// Tag Element
-									background: $COLOUR--WHITE_CLOUDS !important;
-									color: $COLOUR--DARK_CLOUDS;
+									background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
 
 									.x-component {
-										@include text(12px, #282b2d !important, $FONT--WEIGHT---SEMILIGHT);
+										@include text(12px, _property($BUTTON--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
 
 									}
 
 									button {
-										background: url($ICON--CLOSE_LARGE---GREY) no-repeat center top 8px;
+										background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center top 8px;
 										background-size: 8px 8px;
 										padding-left: 23px;
 										box-sizing: border-box;
@@ -1306,7 +1383,6 @@
 						}
 					}
 				}
-			}
 		}
 
 	}
@@ -1373,27 +1449,27 @@
 		}
 
 		.x-grid3-row-selected {
-			background-color: rgba(122, 126, 128, 0.1) !important;
+			background-color: transparent !important;
 
 			.x-grid3-td-displayName,
 			.x-grid3-td-inheritedFrom {
-				color: $COLOUR--CREAM_CLOUDS!important;
+				color: _property($ROW--COLOR, $EDIT-ENGINE)!important;
 				opacity: 1;
 			}
 
 			&.x-grid3-row-over {
-				background-color: rgba(122, 126, 128, 0.1) !important;
+				background-color: _property($ROW--BG, $EDIT-ENGINE) !important;
 
 
 			}
 		}
 
 		.x-grid3-row-over {
-			background-color: rgba(122, 126, 128, 0.1) !important;
+			background-color: _property($ROW--BG, $EDIT-ENGINE) !important;
 
 			.x-grid3-td-displayName,
 			.x-grid3-td-inheritedFrom {
-				color: $COLOUR--CREAM_CLOUDS!important;
+				color: _property($ROW--COLOR, $EDIT-ENGINE)!important;
 				opacity: 1;
 			}
 		}
@@ -1416,8 +1492,7 @@
 		.x-grid3-td-displayName {
 			width: calc(50% - 28px - 28px)!important;
 			display: inline-block;
-			color: $COLOUR--CREAM_CLOUDS!important;
-			opacity: 0.8;
+			color: _property($ROW--COLOR, $EDIT-ENGINE)!important;
 
 		}
 
@@ -1460,9 +1535,8 @@
 			width: calc(50% - 28px - 28px)!important;
 			display: inline-block;
 
-			@include text(12px, $COLOUR--CREAM_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+			@include text(12px, _property($ROW--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
 
-			opacity: 0.8;
 
 		}
 
@@ -1489,10 +1563,10 @@
 	#JahiaGxtEditEnginePanel-usages {
 
 		.x-grid3-row.x-unselectable-single {
-			background: #6b7074 !important;
-			color: #919496;
+			background: #6b7074 !important; /* TO THEME */
+			color: #919496;/* TO THEME */
 			padding-top: 7px;
-			border-bottom: 2px solid #5c6164;
+			border-bottom: 2px solid #5c6164; /* TO THEME */
 
 			a {
 				color: #dddcdc;
@@ -1503,7 +1577,7 @@
 		}
 
 		.x-grid-panel.x-component {
-			border-top: 1px dashed #8a8e91 !important;
+			border-top: 1px dashed #8a8e91 !important; /* TO THEME */
 			padding-top: 16px !important;
 		}
 
@@ -1511,14 +1585,14 @@
 			margin-bottom: 18px !important;
 
 			&.x-btn-over .x-btn-small.x-btn-icon-small-left button {
-				background: #798084 !important;
+				background: #798084 !important; /* TO THEME */
 			}
 
 			.x-btn-small.x-btn-icon-small-left {
-				background: #6b7074;
+				background: #6b7074; /* TO THEME */
 
 				button {
-					color: #dddcdc;
+					color: #dddcdc; /* TO THEME */
 					padding: 8px 8px;
 				}
 
@@ -1653,7 +1727,9 @@
 
 	#JahiaGxtEditEnginePanel-layout {
 		/* Preview window */
-
+		fieldset.x-panel {
+			border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
+		}
 		> .x-component {
 
 			&:nth-child(1){
@@ -1676,6 +1752,8 @@
 				/* Preview sections */
 				height: auto!important;
 				width: 100%!important;
+
+
 
 				> div {
 					/* Preview Holders */
@@ -1720,43 +1798,62 @@
 	> div.x-panel-header {
 
 		left: 0 !important;
-	    top: 0 !important;
+	    top: 0px !important;
 	    position: fixed !important;
-	    height: 130px !important;
-	    // z-index: 10; DELETE ?
-	    width: 100%;
+	    height: 170px !important;
+	    width: 315px;
 	    box-sizing: border-box;
-		background: transparent;
-		border:none;
+	    background: transparent;
+	    border: none;
+		z-index: 9999;
 
 		> div {
 			// Language Selector
 			margin-right: 24px;
 		    position: absolute;
-		    right: 46px;
-		    top: 67px;
+		    left: 72px;
+		    top: 124px;
 
 		}
 
 		.x-window-header-text,
 		.x-panel-header-text {
 			// Element Title
-			position: absolute;
-		    top: 77px;
-		    left: 385px;
+			position: fixed;
+			top: 77px;
+			left: -50000px;
 			width: 100%;
-    		pointer-events: none;
+			pointer-events: none;
+
+			max-width: calc(100% - 680px);
+			overflow: inherit;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			height: 64px !important;
+			line-height: 54px;
+			margin-top: -18px;
 
 			@extend %CSS_BLOCK--EDIT_ENGINE--TITLE;
+
+			&[data-indigo-locked="true"] {
+				&::before {
+					background: url(./images/icons/icon-lock@X2.png) no-repeat left center;
+					background-size: 20px;
+					padding-left: 22px;
+				}
+			}
 
 			&::before {
 				content: attr(data-friendly-name);
 			    display: block;
-			    position: absolute;
-			    top: -18px;
-			    left: 0px;
+			    position: fixed;
+			    top: 80px;
+			    left: 72px;
+				width: 290px;
+				overflow: hidden;
+				text-overflow: ellipsis;
 
-				@include text(18px !important, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT)
+				@include text(18px !important, _theme-color(quinary), $FONT--WEIGHT---EXTRALIGHT)
 			}
 
 		}
@@ -1766,10 +1863,10 @@
 	> .x-window-bwrap,
 	> .x-panel-bwrap {
 
-		height: calc(100% - 130px);
-		position: fixed;
-		width: 100%;
-		top: 130px;
+		height: calc(100% - 56px);
+	    position: fixed;
+	    width: 100%;
+	    top: 50px;
 
 		.x-panel-tbar {
 			// Top action bar
@@ -1804,21 +1901,29 @@
 			// width: 292px!important;
 			// height: 120px;
 			position: fixed;
-			bottom: 0;
-			left: 0;
 			// padding: 10px 0 0 75px;
 
-			background: #4a4d50;
-		    width: 100%!important;
+			background: _property($FOOTER--BG, $EDIT-ENGINE);
 		    border-top: 1px solid #353739;
-		    box-shadow: inset 0px 13px 40px 0px rgba(38, 38, 38, 0.5);
-		    padding: 20px 0 0 20px;
+		    box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
 		    box-sizing: border-box;
 		    height: auto;
+
+			left: -30px;
+			width: calc(100% + 60px)!important;
+			bottom: -30px;
+			padding: 20px 0px 30px 50px;
+			height: 109px;
 
 			.x-panel-fbar {
 				width: 100%!important;
 				height: 100%;
+
+				.x-toolbar-left {
+					position: fixed;
+				    right: 20px;
+				    bottom: 0;
+				}
 
 				.x-toolbar-cell {
 
@@ -1837,14 +1942,16 @@
 						> div {
 							// Not a button, but its a checkbox for the edit engine
 							position: fixed!important;
-							right: 20px;
-							bottom: 26px;
+							left: 30px;
+						    bottom: 32px;
 						}
 					}
 
 					&:nth-child(2) {
 						/* Save */
 						padding-bottom: 20px;
+						float: right;
+						margin-left: 5px;
 
 						// Make suggested colour
 						@include button("ACTIONBAR---SUGGESTED");
@@ -1855,6 +1962,7 @@
 					&:nth-child(3) {
 						/* Cancel */
 						padding-bottom: 20px;
+						float:left;
 
 
 
@@ -1891,7 +1999,8 @@
     top: 0!important;
     width: 100% !important;
     height: 100% !important;
-    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);
+    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%); /* TO THEME */
+	z-index: 9999!important;
 
 	// Top modal bar ( used for dragging and contains close button )
 	.x-window-tl {
@@ -1920,7 +2029,7 @@
 	.x-panel-bbar {
 		position: relative;
 		z-index: 9999999;
-		background: $FORM--FIELDSET--BG--COLOUR;
+		background: $FORM--FIELDSET--BG--COLOUR; /* TO THEME */
 		width: 100% !important;
 		padding: 2px 11px;
 		box-sizing: border-box;
@@ -1964,7 +2073,7 @@
 
 				.gwt-TextBox {
 					@include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
-					background: rgba($COLOUR--WHITE_CLOUDS, .7);
+					background: rgba($COLOUR--WHITE_CLOUDS, .7); /* TO THEME */
 					padding: 3px;
 					border:none;
 				}
@@ -2126,10 +2235,10 @@
 									margin-right: 10px;
 
 									&.x-grid3-hd-over {
-										background: $COLOUR--CREAM_CLOUDS;
+										background: $COLOUR--CREAM_CLOUDS; /* TO THEME */
 
 										span {
-											color: $COLOUR--LEAD_CLOUDS!important;
+											color: $COLOUR--LEAD_CLOUDS!important; /* TO THEME */
 										}
 
 										img {
@@ -2159,7 +2268,7 @@
 
 											&:hover {
 												// background: url($ICON--ARROW_DOWN---WHITE) no-repeat center center!important;
-												background-color: $COLOUR--DUSTY_CLOUDS!important;
+												background-color: $COLOUR--DUSTY_CLOUDS!important; /* TO THEME */
 												background-size: 13px!important;
 												opacity: 1;
 											}
@@ -2195,11 +2304,11 @@
 
 			&.x-grid3-row-selected {
 				pointer-events: none; // Basically disables the double click
-				background: rgba($COLOUR--WHITE_CLOUDS, .8) !important;
+				background: rgba($COLOUR--WHITE_CLOUDS, .8) !important; /* TO THEME */
 
 				.x-grid3-cell {
 					> div {
-						color: $COLOUR--LEAD_CLOUDS!important;
+						color: $COLOUR--LEAD_CLOUDS!important; /* TO THEME */
 						font-weight: $FONT--WEIGHT---BOLD!important;
 					}
 				}
@@ -2288,47 +2397,13 @@
 
 .indigo-search-component {
 
-	&.indigo-show {
-		.x-toolbar-cell {
-			// Used as a cancel button
-			&:nth-child(1){
-				display: block;
 
-				&.indigo-empty-field {
-					display: none;
-				}
-			}
-
-			// Search input
-			&:nth-child(2) {
-				input {
-					background-image: url($ICON--SEARCH---GREY);
-					background-color: $COLOUR--WHITE_CLOUDS;
-					width: 100%!important;
-					padding: 4px 5px 5px 27px!important;
-					text-indent: 0;
-					color: $COLOUR--GREY_CLOUDS;
-					background-size: 23px;
-					opacity: 1;
-
-					&:hover {
-						cursor: auto;
-					}
-				}
-			}
-
-			// Used as a cancel button
-			&:nth-child(3){
-				display: block;
-			}
-		}
-	}
 
 
 	.x-toolbar-cell {
 		// Used as a cancel button
-		&:nth-child(1){
-			display: none;
+		&.indigo-clear-button {
+			display: block;
 
 			background: url($ICON--CLOSE_LARGE---GREY) no-repeat center center;
 			background-size: 12px 12px;
@@ -2344,54 +2419,43 @@
 				cursor: pointer;
 			}
 
+			&.indigo-empty-field {
+				display: none;
+			}
+
 		}
 
 		// Text input
 		&:nth-child(2) {
 			input {
-				background-image: url($ICON--SEARCH---WHITE);
-				background-color: transparent;
-				float: right;
-				width: 40px!important;
-				opacity: 0.7;
-
-				&:hover {
-					cursor: pointer;
-					opacity: 1;
-				}
-
-				&:active,
-				&:focus {
-					background-image: url($ICON--SEARCH---GREY);
-					background-color: $COLOUR--WHITE_CLOUDS;
-					width: 100%!important;
-					padding: 4px 5px 5px 27px!important;
-					text-indent: 0;
-					color: $COLOUR--GREY_CLOUDS;
-					background-size: 23px;
-
-				}
-
+				background-image: url($ICON--SEARCH---GREY);
+				background-color: $COLOUR--WHITE_CLOUDS; /* TO THEME */
 				background-repeat: no-repeat;
 				background-position: left center;
-				background-size: 32px;
-				padding: 4px 5px 5px 23px!important;
+				background-size: 23px;
+				width: 100%!important;
+				padding: 4px 5px 5px 27px!important;
 				font-size: 12px;
 				font-family: $FONT--FAMILY---NUNITO;
-				text-indent: -50000px;
+				color: $COLOUR--GREY_CLOUDS; /* TO THEME */
+				background-size: 23px;
+
+				&:hover {
+					opacity: 1;
+				}
 
 			}
 		}
 
 		// Search button
 		&:nth-child(3) {
-			display: none;
+			display: block;
 
 			.x-btn-icon {
 				display: block;
 				height: 27px;
 				padding: 0 4px;
-				background: $COLOUR--JAHIA_BLUE;
+				background: $COLOUR--JAHIA_BLUE; /* TO THEME */
 
 				&:before {
 					content: $text_search;

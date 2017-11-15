@@ -223,15 +223,25 @@
 
 .workflowactiondialog-card.engine-panel {
 
+	.x-toolbar-left {
+		bottom: 19px!important;
+	}
+
+	.x-tab-strip {
+		margin-top: 0!important;
+	}
+
 	.workflow-action-dialog {
-		border-top: 1px solid #717578;
+		box-shadow: inset 0 1px 2px 1px _theme-color(black, a);
+
 		width: 100% !important;
 		padding-top: 16px;
 		margin-top: 8px;
+		height: calc(100% - 341px)!important;
 	}
 
 	> div.x-panel-header .x-panel-header-text {
-	    color: #a3a3a3;
+	    color: _property($SUBTITLE--COLOR, $EDIT-ENGINE);
 	    display: inline-block;
 	    position: fixed;
 	    width: 100%;
@@ -244,7 +254,7 @@
 	}
 
 	> .x-panel-bwrap {
-	    margin-top: 16px;
+	    margin-top: 96px;
 
 			.x-panel-body.x-panel-body-noborder {
 			    overflow: hidden !important;
@@ -260,6 +270,7 @@
 	.x-tab-panel .x-tab-panel-body {
 		overflow: auto;
 		overflow-x: hidden;
+		border:none!important;
 
 		&:nth-child(2) {
 			overflow-y: hidden;
@@ -293,16 +304,34 @@
 
 }
 
-.workflowactiondialog-ctn {
-    width: calc(100% - 144px) !important;
 
-		> .x-border-panel:first-child {
-		    height: 150px !important;
-		    width: 100% !important;
-		}
+
+
+
+.workflowactiondialog-ctn {
+
+
+
+	> .x-border-panel:first-child {
+		height: 150px !important;
+		width: 100% !important;
+	}
+
+
 
 		.x-border-panel > .x-panel-bwrap {
 			width: calc(100% - 162px) !important;
+			height: 100% !important;
+
+			&:only-child {
+				height: calc(100% - 15px) !important;
+			}
+
+			.x-panel-ml,
+			.x-panel-mr,
+			.x-panel-mc {
+				height: 100%;
+			}
 		}
 
 		.x-grid3-body {
@@ -310,6 +339,29 @@
 		}
 
 		.workflow-action-dialog {
+
+			.x-grid3 .x-grid3-row-table .x-grid3-cell {
+				width: 25%!important;
+				width: calc((100% - 204px)/ 3)!important;
+				display: inline-block;
+
+				&:nth-child(4) {
+					width: 204px!important;
+				}
+
+				&:nth-child(5) {
+					display: none;
+				}
+			}
+
+			.x-grid3-row {
+				background: transparent!important;
+
+				&.x-grid3-row-selected.x-grid3-row-over {
+					background: transparent!important;
+
+				}
+			}
 
 			> div {
 				width: 100%!important;
@@ -331,11 +383,35 @@
 
 		}
 
+		.x-grid3-row {
+			.x-grid3-cell-inner {
+				color: _property($ROW--COLOR, $EDIT-ENGINE);
+			}
+
+			&.x-grid3-row-over {
+				.x-grid3-cell-inner {
+					color: _property($ROW--COLOR---HOVER, $EDIT-ENGINE);
+				}
+			}
+
+			&.x-grid3-row-selected {
+				.x-grid3-cell-inner {
+					color: _property($ROW--COLOR---SELECTED, $EDIT-ENGINE);
+				}
+
+				&.x-grid3-row-over {
+					.x-grid3-cell-inner {
+						color: _property($ROW--COLOR---SELECTED, $EDIT-ENGINE);
+					}
+				}
+
+			}
+		}
+
 		.x-grid3 .x-grid3-row-table .x-grid3-cell {
 
 			.x-grid3-cell-inner {
 					line-height: 21px;
-					color: #dddcdc;
 					font-family: "Nunito Sans", sans-serif;
 			}
 
@@ -345,18 +421,18 @@
 
 		}
 
-		> .x-grid-panel.x-component.x-border-panel .x-grid3-row-selected .x-panel-fbar {
+		> .x-grid-panel.x-component.x-border-panel .x-panel-fbar {
 
 			.x-toolbar-cell:first-child .x-btn.x-btn-noicon button {
-				background: #474a4c !important;
-				padding: 2px 4px;
-				right: 8px;
+				@include text(12px, _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---EXTRALIGHT);
+				background: _property($ACTION-SUGGESTED--BG, $EDIT-ENGINE)!important;
+				padding: 4px 5px!important;
 			}
 
 			.x-btn.x-btn-noicon button {
-				padding: 2px 4px;
-				right: 4px;
-				color: #eee !important;
+				@include text(12px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---EXTRALIGHT);
+				background: _property($ACTION-DEFAULT--BG, $EDIT-ENGINE)!important;
+				padding: 4px 5px!important;
 			}
 
 		}
@@ -373,7 +449,7 @@
 
 			.x-btn.x-btn-noicon button {
 				background: transparent !important;
-				padding: 0;
+				padding: 0!important;
 				font-size: 14px;
 				margin-right: 16px;
 				font-weight: 400;
@@ -384,7 +460,7 @@
 		.x-border-layout-ct:nth-child(1) > .x-border-panel {
 			//height: 24px !important;
 			margin-top: 14px;
-			color: #eaeaea;
+			color: _property($SUBTITLE--COLOR, $EDIT-ENGINE);
 		}
 
 		.x-tab-panel-body {
@@ -403,8 +479,8 @@
 			}
 
 			.x-panel-fbar .x-btn.x-btn-noicon button {
-				background: rgba(113, 117, 120, 0) !important;
-				color: #f1f1f1 !important;
+				background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
+				color: _property($BUTTON--COLOR, $EDIT-ENGINE) !important;
 			}
 
 			.x-grid-group-hd {
@@ -415,61 +491,148 @@
 		    padding-top: 8px;
 
 				.x-grid-group-div {
-					color: #cacbcc;
+					color: _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE);
 					font-weight: 500;
 					font-size: 14px;
 					font-family: "Nunito Sans", sans-serif;
-					padding-left: 22px;
-					background-image: url(./images/icons/ic_arrow_up@2x.png);
-					background-size: 18px;
+					padding-left: 11px;
+					background-image: url(./images/icons/icon-toggle-expanded-small-normal.png);
+					background-size: 7px 5px;
 					background-position: left;
 				}
 
 			}
 
 			.x-grid-group-collapsed .x-grid-group-hd .x-grid-group-div {
-				background-image: url(./images/icons/ic_down_@2x.png);
-				background-size: 18px;
+				background-image: url(./images/icons/expand-side-panel@X2.png);
+				background-size: 5px 7px;
 				background-position: left;
 			}
 
 			.x-grid3 .x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {
-				color: #b7b7b7;
+				color: _property($ROW--COLOR--DIMMED, $EDIT-ENGINE);
 			}
 
 		}
 
-		.x-border-layout-ct:nth-child(2) > .x-border-panel {
-			position: initial !important;
+		.x-border-layout-ct:nth-child(2) {
+			width: 100%!important;
 
-			&:first-child {
-				background: #616669;
-				width: calc(100% - 162px) !important;
-				margin-bottom: 30px;
-				margin-top: 8px;
-				max-height: 200px;
+			height: auto !important;
+			> .x-border-panel {
+				position: initial !important;
 
-				&:empty {
-					margin-bottom: 0;
+
+
+				&:first-child {
+					width: calc(100% - 162px) !important;
+				    width: 100% !important;
+				    margin-bottom: 30px;
+				    margin-top: 190px;
+				    height: auto !important;
+				    position: relative !important;
+				    z-index: 999;
+
+					&:empty {
+						margin-bottom: 0;
+					}
+
+					> .x-component {
+						color: #dddbdb;
+						position: relative;
+						margin-bottom: 1px;
+						border: none!important;
+						background: url(./images/icons/speech-DARK@X2.png) no-repeat center left 10px _property($COMMENTS--BG, $EDIT-ENGINE) !important;
+						background-size: 29px!important;
+						padding: 7px 10px 7px 50px;
+					    box-sizing: border-box;
+						width: calc(100% - 7px)!important;
+
+						> table {
+							width: 100%;
+
+							> tbody > tr > td {
+
+								display: block;
+
+								&:nth-child(1) {
+									// Message
+									margin-top: 21px;
+
+									div {
+										@include text(14px, _property($COMMENTS--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+									}
+								}
+
+								&:nth-child(2) {
+									// Author / date
+									position: absolute;
+									top: 5px;
+
+									tr {
+										display: inline-block;
+
+										&:nth-child(1) {
+											// Date
+											div {
+												@include text(11px, _property($COMMENTS--COLOR--DATE, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+											}
+										}
+
+										&:nth-child(2) {
+											// Author
+											div {
+												@include text(11px, _property($COMMENTS--COLOR--AUTHOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+
+					&:empty:before {
+						content: "No comments";
+						text-align: center;
+						width: calc(100% - 162px);
+						position: absolute;
+						margin-top: 54px;
+						color: #9ea0a2;
+						font-size: 12px;
+						height: 16px;
+						font-family: "Raleway", sans-serif;
+					}
+
 				}
 
-				> .x-component {
-					background: #616669 !important;
-					padding: 4px 8px;
-					color: #dddbdb;
-					border-bottom: 1px solid #717578 !important;
-				}
+				&:nth-child(2) {
+					// background: pink;
+				    position: absolute !important;
+				    top: -189px !important;
+				    height: 184px !important;
 
-				&:empty:before {
-					content: "No comments";
-					text-align: center;
-					width: calc(100% - 162px);
-					position: absolute;
-					margin-top: 54px;
-					color: #9ea0a2;
-					font-size: 12px;
-					height: 16px;
-					font-family: "Raleway", sans-serif;
+					.x-panel-bwrap {
+						width: 100%!important
+					}
+
+					.x-form-item {
+						margin: 0!important;
+						padding-bottom: 50px!important;
+						@extend %CSS_BLOCK--FIELDSET;
+
+					}
+
+
+					label {
+						@extend %CSS_BLOCK--FORM--LEGEND;
+					}
+
+
+					textarea {
+						@include _input($EDIT-ENGINE);
+						height: 100%!important;
+					    width: 100%!important;
+					}
 				}
 
 			}
@@ -477,33 +640,82 @@
 		}
 
 		.x-border-layout-ct:nth-child(2) {
-			height: auto !important;
+
+
+
 
 			form button.x-btn-text {
-				background: #b9bbbc;
-				padding: 8px 16px;
-				margin-top: 8px;
-				position: absolute !important;
-				bottom: 0;
-				width: fit-content !important;
+				position: relative;
+			    top: -40px;
+			    left: 29px;
 			}
 
 			> .x-border-panel form.x-form-label-left {
-				height: 152px !important;
+				// height: 152px !important;
 			}
 
 			> .x-border-panel .x-form-element .x-form-field-wrap.x-component {
 				overflow-y: scroll;
 				overflow-x: hidden;
 				height: 87px !important;
+				padding: 2px;
 			}
 
 		}
 
 
+		&.engine-cards {
+			width: calc(100% - 144px) !important;
+
+
+			.x-border-layout-ct:nth-child(2) {
+				height: calc(100% - 190px)!important;
+			}
+
+
+			.x-border-layout-ct:nth-child(2) > .x-border-panel:first-child {
+				height: 100%!important;
+
+
+
+
+
+			}
+		}
+
+
 		/* Content review from workflow dashboard. */
 
+		&.x-panel.engine-panel.enginecards-ctn {
+			> .x-panel-bwrap {
+			    margin-top: 16px;
+				height: 100%!important;
+
+			}
+		}
+
 		&.x-panel.engine-panel {
+
+			> .x-panel-bwrap {
+
+				div.x-tab-panel-body {
+					height: calc(100% - 163px) !important;
+				}
+
+				.x-tab-strip.x-tab-strip-top {
+					margin-top: 20px!important;
+				}
+
+				margin-top: 96px;
+			}
+
+			.x-toolbar-left {
+				bottom: 19px!important;
+			}
+
+			.x-tab-strip {
+				margin-top: 90px !important;
+			}
 
 			&:before {
 				content: "Workflow" !important;
@@ -524,7 +736,6 @@
 			}
 
 			> .x-panel-bwrap {
-		    margin-top: 16px;
 
 				> .x-panel-bbar {
 					// background: #474a4c;
@@ -561,6 +772,7 @@
 
 			.x-tab-panel .x-tab-panel-body {
 				overflow-y: auto;
+				border:none!important;
 				height: calc(100% - 102px) !important;
 
 				.x-form-label-left > .x-form-item:nth-child(2) {
@@ -579,4 +791,149 @@
 
 		}
 
+}
+
+
+
+
+.workflowactiondialog-card.engine-panel-TEST {
+
+
+
+	.x-grid3-row {
+		background: url(./images/icons/ic_info_outline-DARK-OPAQUE@2x.png) no-repeat right 5px center _theme-color(secondary, a)!important;
+		background-size: 18px!important;
+		padding-right: 20px;
+		margin-bottom: 1px;
+
+		.x-grid3-cell-inner {
+			color: _theme-color(primary) !important;
+		}
+
+		&.x-grid3-row-over,
+		&.x-grid3-row-selected.x-grid3-row-over {
+			background: url(./images/icons/ic_info_outline-DARK@2x.png) no-repeat right 5px center _theme-color(secondary, a)!important;
+			background-size: 18px!important;
+		}
+	}
+
+	&.indigo-opened {
+		.workflowactiondialog-ctn {
+			> .x-border-panel:nth-child(2) {
+				display: block;
+			}
+		}
+	}
+
+	.workflowactiondialog-ctn {
+
+		.x-grid-panel.x-component.x-border-panel .x-panel-fbar .x-toolbar-cell {
+			&:first-child{
+				.x-btn.x-btn-noicon button {
+					@include text(12px, _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---EXTRALIGHT);
+					background: _property($ACTION-SUGGESTED--BG, $EDIT-ENGINE)!important;
+					padding: 4px 5px!important;
+				}
+			}
+
+			.x-btn.x-btn-noicon button {
+				@include text(12px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---EXTRALIGHT);
+				background: _property($ACTION-DEFAULT--BG, $EDIT-ENGINE)!important;
+				padding: 4px 5px!important;
+			}
+		}
+
+
+		> .x-border-panel:nth-child(2) {
+			position: fixed!important;
+			background: _property($MODAL-SOLID--BG---LEGACY, $EDIT-ENGINE);
+			width: 100%!important;
+			left: 0!important;
+			height: 100%!important;
+			top: 0!important;
+			z-index: 99;
+
+			display: none;
+		}
+
+		.workflow-action-dialog {
+			width: calc(100% - 120px)!important;
+			background: _property($BODY--BG, $EDIT-ENGINE);
+			left: 60px;
+			position: relative;
+			top: 150px;
+			box-shadow: _property($BODY--BG--SHADOW, $EDIT-ENGINE);
+			height: auto!important;
+			padding-bottom: 30px;
+			border-top: none!important;
+
+			&:before {
+				content: "Publication Options";
+				font-size: 26px;
+				color: _property($TITLE--COLOR, $EDIT-ENGINE);;
+				font-weight: 100;
+				font-family: Nunito Sans;
+				margin-left: 40px;
+				display: block;
+				margin-top: 10px;
+				margin-bottom: 20px;
+			}
+
+			.x-tab-panel {
+				height: 300px!important;
+			}
+
+			.x-tab-panel-header {
+				padding: 0 0 0 41px!important;
+
+				.x-tab-strip-spacer {
+					&:after {
+						content: "Done";
+						display: inline-block;
+						font-size: 16px;
+						background: _property($ACTION-SUGGESTED--BG, $EDIT-ENGINE);
+						color: _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE);
+						position: absolute;
+						bottom: 30px;
+						left: 36px;
+						padding: 7px 10px;
+					}
+
+					&:hover{
+						&:after {
+							background: _property($ACTION-SUGGESTED--BG---HOVER, $EDIT-ENGINE);
+							color: _property($ACTION-SUGGESTED--COLOR---HOVER, $EDIT-ENGINE);
+							cursor: pointer;
+						}
+					}
+				}
+			}
+
+			.x-tab-panel-body {
+				height: 100%!important;
+				border: none!important;
+
+				> div {
+					width: 100%!important;
+					height: 100%!important;
+					> div{
+						height: auto!important;
+						&:nth-child(3)  {
+							width: 100%!important;
+							height: 100%!important;
+							.x-grid3-body {
+								width: 100%!important;
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+}
+
+.workflowactiondialog-card > .x-panel-bwrap .x-panel-body.x-panel-body-noborder {
+	// overflow: hidden;
 }

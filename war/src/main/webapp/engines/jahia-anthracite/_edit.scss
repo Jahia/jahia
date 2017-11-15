@@ -31,7 +31,7 @@
 			border:none!important;
 			background: #5c6164;
 
-			box-shadow: 0px 0px 52px rgba(40, 43, 45, 0.64)!important;
+			box-shadow: 2px 0 24px rgba(40, 43, 45, 0.52) !important;
 			padding-right: 36px;
 			width: 320px!important;
 		}
@@ -44,9 +44,9 @@
 		}
 
 		body[data-edit-window-style="settings"] .x-viewport-editmode > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div {
-			top: -43px!important;
+			top: -53px!important;
 
-			height: calc(100% + 55px) !important;
+			height: calc(100% + 63px) !important;
 		    width: calc(100% + 21px) !important;
 		}
 

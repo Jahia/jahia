@@ -2,14 +2,6 @@
 // DATE PICKER //////////////////////////////////
 /////////////////////////////////////////////////
 
-.x-form-field-wrap .x-form-date-trigger {
-	background: red;
-
-	&:hover {
-		background: pink;
-	}
-}
-
 .x-date-menu {
 	box-shadow: none;
 	background: transparent!important;
@@ -23,8 +15,8 @@
 	// Another container
 	.x-menu-list {
 		padding: 5px 10px 10px;
-	    background: $DATE_PICKER--BG--COLOUR;
-		box-shadow: 0 0 10px 0 rgba($COLOUR--DARK_CLOUDS, .3);
+	    background: _property($DATE-PICKER--BG, $DATE-PICKER);
+		box-shadow: _property($DATE-PICKER--SHADOW, $DATE-PICKER);
 
 		body[data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtSearchTab"] & {
 			margin-left: 67px;
@@ -223,7 +215,7 @@
 				top: -5px!important;
 				left: -10px!important;
 				height: calc(100% + 15px)!important;
-				background: $DATE_PICKER--MONTH_PICKER--BG--COLOUR;
+				background: _property($DATE-PICKER--MODAL--BG, $DATE-PICKER);
 				padding-top: 33px;
 				box-sizing: border-box;
 
@@ -460,13 +452,20 @@
 /* List item when normal Combo */
 .x-combo-list-item {
 	border:none;
+	display: block;
 	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM !optional;
 
+	&:empty {
+		display: none;
+	}
 
 
-	&.x-view-highlightrow {
+
+	&.x-view-highlightrow,
+	&:hover {
 		/* Selected / Hovered */
 		border:none!important;
+		cursor: pointer;
 		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER !optional;
 
 	}
@@ -478,7 +477,7 @@
 
 .x-form-list {
 	border: none;
-	background: $COLOUR--WHITE_CLOUDS;
+	background: _property($LIST-BOX--BG, $EDIT-ENGINE);
 	height: 200px!important;
 
 
@@ -569,7 +568,8 @@
 	width: auto !important;
 	background: transparent;
 	overflow: visible;
-	z-index: $ZINDEX--CONTEXT_MENU;
+	// z-index: $ZINDEX--CONTEXT_MENU;
+	z-index: 999999999999999!important;
 	border: none;
 }
 
@@ -577,14 +577,13 @@
 	height: auto!important;
 
 	&::before {
-		background: #008ec9;
+		background: _property($MENU-TITLE--BG, $CONTEXT-MENU);
 	    width: 100%;
 	    display: block;
 	    padding: 3px 8px;
 	    font-family: "Nunito Sans";
-	    font-size: 8px;
-	    color: darken($COLOUR--JAHIA_BLUE, 25%);
-	    font-style: italic;
+	    font-size: 9px;
+	    color: _property($MENU-TITLE--COLOR, $CONTEXT-MENU);
 	    text-transform: uppercase;
 	    font-weight: 600;
 	    z-index: $ZINDEX--CONTEXT_MENU---TITLE;
@@ -638,7 +637,7 @@
 
 /* Used for scrolling Context menus when they dont fit on screen */
 .x-menu-scroller {
-    background: rgba(245, 245, 245, 1);
+    background: _property($MENU-SCROLL--BG, $CONTEXT-MENU)
 }
 
 .x-menu-scroller-top {
@@ -683,15 +682,11 @@
 .thumb-wrap {
 	border: none!important;
 	padding: 0!important;
-	width: 48%!important; /* Sets Actual Width Of Thumb */
-	margin: 1% 0 1% 1% !important;
 	display: inline-block;
 	float: none!important;
 	height: 86px;
-	max-height: 86px;
 	position: relative;
 	background: none;
-
 
 	> div {
 		/* Some Thumbs have extra divs containing more Meta Data, so hide them */
@@ -708,6 +703,8 @@
 		height: auto!important;
 		padding: 5px!important;
 		box-sizing: border-box;
+		z-index: 9999;
+		position: relative;
 
 		@extend %CSS_BLOCK--THUMB--BG---UP !optional;
 
@@ -722,12 +719,13 @@
 	.thumbDetails {
 		/* Meta Data */
 		position: absolute;
-	    top: 5px;
-	    left: 5px;
+	    top: -27px;
+	    left: 1px;
 	    z-index: $ZINDEX--THUMB---DETAILS;
 	    margin: 0 !important;
-	    width: calc(100% - 10px);
+	    width: calc(100% - 50px);
 	    display: none;
+		z-index: 999;
 
 
 		div {
@@ -741,6 +739,11 @@
 
 				@extend %CSS_BLOCK--THUMB--LABEL !optional;
 
+				background: transparent;
+				color: #F1F1F1;
+				text-align: left;
+				padding: 0;
+
 				b {
 					/* Hide Label */
 					display: none;
@@ -752,22 +755,21 @@
 	}
 
 
-	&.x-view-over {
+	&.x-view-over,
+	&.indigo-force-open {
+		z-index: 999999999;
 		.thumbDetails {
 			/* Hover State */
-			display: block;
+			display: block!important;
 
 		}
 
-		.thumb {
-			@extend %CSS_BLOCK--THUMB--BG---HOVER !optional;
-
-		}
 
 	}
 
 
 	&.x-view-item-sel {
+		z-index: 99999999;
 		.thumbDetails {
 			/* Selected State */
 			display: none;
@@ -776,6 +778,22 @@
 
 		.thumb {
 			@extend %CSS_BLOCK--THUMB--BG---SELECTED !optional;
+
+		}
+
+	}
+
+	&.x-view-item-sel.x-view-over {
+		z-index: 99999999999;
+
+		.thumbDetails {
+			/* Selected State */
+			display: block;
+
+		}
+
+		.thumb {
+			@extend %CSS_BLOCK--THUMB--BG---HOVER !optional;
 
 		}
 
@@ -943,6 +961,8 @@ label {
 	left: 0!important;
 	top: 0!important;
 	width: auto!important;
+	padding-right: 5px;
+	box-sizing: border-box;
 }
 
 
@@ -1001,188 +1021,182 @@ label {
 
 /* Text Field Input */
 .x-form-text {
-	@extend %CSS_BLOCK--FORM--TEXT_INPUT !optional;
+	// @include _input($APP);
 
-	width: 100%!important;
-	box-sizing: border-box;
-    display: inline-block;
-    height: auto!important;
-
-	&:only-child {
-		padding-right: 5px;
-		display: block;
-	}
-
-	&:hover {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER !optional;
-	}
-
-	&:focus {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS !optional;
-	}
-
-	&[disabled] {
-		@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED !optional;
+	.edit-engine & {
 
 	}
+
+	// @extend %CSS_BLOCK--FORM--TEXT_INPUT !optional;
+	//
+	// width: 100%!important;
+	// box-sizing: border-box;
+    // display: inline-block;
+    // height: auto!important;
+	//
+	// &:only-child {
+	// 	padding-right: 5px;
+	// 	display: block;
+	// }
+	//
+	// &:hover {
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER !optional;
+	// }
+	//
+	// &:focus {
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS !optional;
+	// }
+	//
+	// &[disabled] {
+	// 	@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED !optional;
+	//
+	// }
 
 
 }
 
-div[role="combobox"] {
-	.x-form-text {
-		@extend %CSS_BLOCK--FORM--COMBO--TEXT_INPUT !optional;
 
-
-
-		width: 100%!important;
-
-		box-sizing: border-box;
-	    display: inline-block;
-	    height: auto!important;
-	}
-}
 
 /* DUAL LIST */
 
 
 /* Action Buttons for Text Input */
-.x-form-trigger {
-	/* Generic CSS for an Action Button */
-	display: block;
-	position: absolute!important;
-    border: none !important;
-    vertical-align: middle;
-    right: 0px;
-	height: 24px!important;
-
-	.x-triggerfield-noedit + & {
-	}
-
-	.x-form-twin-triggers & {
-		/* Button is in a container, because there are multiple buttons */
-		display: inline-block;
-		position: relative;
-		border: none !important;
-		vertical-align: middle;
-		right: auto;
-		top: auto;
-
-		&.x-form-clear-trigger {
-			/* Clear button */
-			left: 0px!important;
-			right: auto!important;
-
-
-		}
-	}
-
-	&.x-form-clear-trigger {
-		/* Clear button */
-		position: absolute!important;
-		// left: 0px!important;
-		right: 0px!important;
-
-
-	}
-
-
-
-	&.x-form-trigger-arrow {
-		/* Combo Down Arrow Button */
-		right: 0;
-
-		@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP !optional;
-
-		.x-trigger-wrap-focus & {
-			background-image: url($ICON--ARROW_DOWN---GREY);
-			opacity: 1;
-		}
-
-		.x-triggerfield-noedit + .x-form-twin-triggers  & {
-			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:OPEN_PICKER !optional;
-		}
-
-		.engine-panel & {
-			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:EDIT_ENGINE !optional;
-
-		}
-
-		#JahiaGxtManagerTobTable & {
-			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:PICKER_FILTER !optional;
-
-		}
-
-		&.x-form-trigger-over {
-			@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER !optional;
-
-			.x-triggerfield-noedit + .x-form-twin-triggers  & {
-				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:OPEN_PICKER !optional;
-			}
-
-			.engine-panel & {
-				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:EDIT_ENGINE !optional;
-
-			}
-
-			#JahiaGxtManagerTobTable & {
-				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:PICKER_FILTER !optional;
-
-			}
-		}
-	}
-
-
-
-	&.x-form-clear-trigger {
-
-
-
-		/* Combo X Button */
-		@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP !optional;
-
-		// Text adjacent field is in FOCUS
-		.x-form-text:focus + & {
-			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS !optional;
-		}
-
-		.engine-panel & {
-			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:EDIT_ENGINE !optional;
-
-		}
-
-		#JahiaGxtManagerTobTable & {
-			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:PICKER_FILTER !optional;
-
-		}
-
-		&.x-form-trigger-over {
-			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER !optional;
-
-			.engine-panel & {
-				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:EDIT_ENGINE !optional;
-
-			}
-
-			#JahiaGxtManagerTobTable & {
-				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:PICKER_FILTER !optional;
-
-			}
-		}
-
-
-	}
-}
-
-/* Action Button Container (when multiple buttons exist) */
-.x-form-twin-triggers {
-	/* Container used when more than one button */
-	display: block;
-    position: absolute;
-    right: 0;
-    top: 0;
-	width: 34px;
-}
+// .x-form-trigger {
+// 	/* Generic CSS for an Action Button */
+// 	display: block;
+// 	position: absolute!important;
+//     border: none !important;
+//     vertical-align: middle;
+//     right: 0px;
+// 	height: 24px!important;
+//
+// 	.x-triggerfield-noedit + & {
+// 	}
+//
+// 	.x-form-twin-triggers & {
+// 		/* Button is in a container, because there are multiple buttons */
+// 		display: inline-block;
+// 		position: relative;
+// 		border: none !important;
+// 		vertical-align: middle;
+// 		right: auto;
+// 		top: auto;
+//
+// 		&.x-form-clear-trigger {
+// 			/* Clear button */
+// 			left: 0px!important;
+// 			right: auto!important;
+//
+//
+// 		}
+// 	}
+//
+// 	&.x-form-clear-trigger {
+// 		/* Clear button */
+// 		position: absolute!important;
+// 		// left: 0px!important;
+// 		right: 0px!important;
+//
+//
+// 	}
+//
+//
+//
+// 	&.x-form-trigger-arrow {
+// 		/* Combo Down Arrow Button */
+// 		right: 0;
+//
+// 		@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP !optional;
+//
+// 		.x-trigger-wrap-focus & {
+// 			background-image: url($ICON--ARROW_DOWN---GREY);
+// 			opacity: 1;
+// 		}
+//
+// 		.x-triggerfield-noedit + .x-form-twin-triggers  & {
+// 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:OPEN_PICKER !optional;
+// 		}
+//
+// 		.engine-panel & {
+// 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:EDIT_ENGINE !optional;
+//
+// 		}
+//
+// 		#JahiaGxtManagerTobTable & {
+// 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---UP\:PICKER_FILTER !optional;
+//
+// 		}
+//
+// 		&.x-form-trigger-over {
+// 			@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER !optional;
+//
+// 			.x-triggerfield-noedit + .x-form-twin-triggers  & {
+// 				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:OPEN_PICKER !optional;
+// 			}
+//
+// 			.engine-panel & {
+// 				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:EDIT_ENGINE !optional;
+//
+// 			}
+//
+// 			#JahiaGxtManagerTobTable & {
+// 				@extend %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:PICKER_FILTER !optional;
+//
+// 			}
+// 		}
+// 	}
+//
+//
+//
+// 	&.x-form-clear-trigger {
+//
+//
+//
+// 		/* Combo X Button */
+// 		@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP !optional;
+//
+// 		// Text adjacent field is in FOCUS
+// 		.x-form-text:focus + & {
+// 			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS !optional;
+// 		}
+//
+// 		.engine-panel & {
+// 			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:EDIT_ENGINE !optional;
+//
+// 		}
+//
+// 		#JahiaGxtManagerTobTable & {
+// 			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:PICKER_FILTER !optional;
+//
+// 		}
+//
+// 		&.x-form-trigger-over {
+// 			@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER !optional;
+//
+// 			.engine-panel & {
+// 				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:EDIT_ENGINE !optional;
+//
+// 			}
+//
+// 			#JahiaGxtManagerTobTable & {
+// 				@extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:PICKER_FILTER !optional;
+//
+// 			}
+// 		}
+//
+//
+// 	}
+// }
+//
+// /* Action Button Container (when multiple buttons exist) */
+// .x-form-twin-triggers {
+// 	/* Container used when more than one button */
+// 	display: block;
+//     position: absolute;
+//     right: 0;
+//     top: 0;
+// 	width: 34px;
+// }
 
 
 /* Checkbox Container */
@@ -1317,6 +1331,7 @@ form,
 
 		position: absolute;
 		left: 0;
+		top: 0;
 
 		.x-grid3-col-publicationInfo {
 			padding: 0!important;
@@ -1341,112 +1356,112 @@ form,
 
 			&[src="/icons/publication/conflict.png"] {
 				/* Conflict */
-				background: $PUBLICATION--COLOUR---CONFLICT!important;
+				background: _theme-color(status, conflict)!important;
 
 			}
 
 
 			&[src="/icons/publication/deleted.png"] {
 				/* Deleted */
-				background: $PUBLICATION--COLOUR---DELETED!important;
+				background: _theme-color(status, deleted)!important;
 
 			}
 
 
 			&[src="/icons/publication/livemodified.png"] {
 				/* Live Modified */
-				background: $PUBLICATION--COLOUR---LIVE_MODIFIED!important;
+				background: _theme-color(status, livemodified)!important;
 
 			}
 
 
 			&[src="/icons/publication/liveonly.png"] {
 				/* Live Only */
-				background: $PUBLICATION--COLOUR---LIVE_ONLY!important;
+				background: _theme-color(status, liveonly)!important;
 
 			}
 
 
 			&[src="/icons/publication/locked.png"] {
 				/* Locked */
-				background: $PUBLICATION--COLOUR---LOCKED!important;
+				background: _theme-color(status, locked)!important;
 
 			}
 
 
 			&[src="/icons/publication/mandatorylanguageunpublishable.png"] {
 				/* Mandatory Language Unpublishable */
-				background: $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_UNPUBLISHABLE!important;
+				background: _theme-color(status, mandatorylanguageunpublishable)!important;
 
 			}
 
 
 			&[src="/icons/publication/mandatorylanguagevalid.png"] {
 				/* Mandatory Language Valid */
-				background: $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_VALID!important;
+				background: _theme-color(status, mandatorylanguagevalid)!important;
 
 			}
 
 
 			&[src="/icons/publication/markedfordeletion.png"] {
 				/* Marked FOr Deletion */
-				background: $PUBLICATION--COLOUR---MARKED_FOR_DELETION!important;
+				background: _theme-color(status, markedfordeletion)!important;
 
 			}
 
 
 			&[src="/icons/publication/modified.png"] {
 				/* Modified */
-				background: $PUBLICATION--COLOUR---MODIFIED!important;
+				background: _theme-color(status, modified)!important;
 
 			}
 
 
 			&[src="/icons/publication/multipleWF.png"] {
 				/* Multiple WF */
-				background: $PUBLICATION--COLOUR---MULTIPLE_WORK_FLOW!important;
+				background: _theme-color(status, multipleWF)!important;
 
 			}
 
 
 			&[src="/icons/publication/notpublished.png"] {
 				/* Not Published */
-				background: $PUBLICATION--COLOUR---NOT_PUBLISHED!important;
+				background: _theme-color(status, notpublished)!important;
 
 			}
 
 
 			&[src="/icons/publication/oneWF.png"] {
 				/* One WF */
-				background: $PUBLICATION--COLOUR---SINGLE_WORK_FLOW!important;
+				background: _theme-color(status, oneWF)!important;
 
 			}
 
 
 			&[src="/icons/publication/published.png"] {
 				/* Published */
-				background: $PUBLICATION--COLOUR---PUBLISHED!important;
+				background: _theme-color(status, published)!important;
 
 			}
 
 
 			&[src="/icons/publication/unpublished.png"] {
 				/* Unpublished */
-				background: $PUBLICATION--COLOUR---UNPUBLISHED!important;
+				background: _theme-color(status, unpublished)!important;
 
 			}
 
 
 			&[src="/icons/publication/waiting.gif"] {
 				/* Waiting */
-				background: $PUBLICATION--COLOUR---WAITING!important;
+				background: _theme-color(status, waiting)!important;
 
 			}
 
 
 			&[src="/icons/publication/workinprogress.png"] {
 				/* Work In Progress */
-				background: $PUBLICATION--COLOUR---WORK_IN_PROGRESS!important;
+				background: _theme-color(status, workinprogress)!important;
 
 			}
 		}
@@ -1513,7 +1528,7 @@ form,
 		}
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
-			background-color: $TREE--ROW--BG--COLOUR---UP\:SEARCH_RESULT!important;
+			background-color: _property($ROW--BG, $PICKER-SEARCH)!important;
 		}
 
 
@@ -1521,9 +1536,7 @@ form,
 			/* Line Over */
 			@extend %CSS_BLOCK--TREE--ROW--BG---HOVER !optional;
 
-			body[data-INDIGO-PICKER-SEARCH="open"] & {
-				background-color: $TREE--ROW--BG--COLOUR---HOVER\:SEARCH_RESULT!important;
-			}
+
 
 			.x-tree3-node-icon {
 				@extend %tree_line_icon_hover !optional;
@@ -1531,35 +1544,38 @@ form,
 			}
 
 			.x-grid3-td-locked {
-				background: rgb(228, 229, 229) !important;
-				// background: #f1f1f1;
+				background: transparent!important;
 
 			}
 
 			.x-grid3-td-displayName,
 			.gwt-content-label,
-			.x-grid3-col-name {
+			.x-grid3-col-name,
+			.x-tree3-node-text {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER !optional;
 
-				body[data-INDIGO-PICKER-SEARCH="open"] & {
-					color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+				body[data-edit-window-style="settings"] &,
+				.x-viewport-adminmode &,
+				.x-viewport-dashboardmode & {
+					color: _theme-color(primary)!important;
 				}
 
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---HOVER);
 					opacity: 1;
-					background-color: #e4e5e5 !important;
+					background-color: _property($ROW--BG---HOVER, $SIDE-PANEL) !important;
 
 				}
 
 			}
 
-			.x-grid3-col-size {
+			.x-grid3-col-size,
+			.x-grid3-col-primaryTypeLabel {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL !optional;
 
-				body[data-INDIGO-PICKER-SEARCH="open"] & {
-					color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
-				}
+				// body[data-INDIGO-PICKER-SEARCH="open"] & {
+				// 	color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
+				// }
 
 			}
 
@@ -1577,23 +1593,13 @@ form,
 				@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED\:SETTINGS !optional;
 			}
 
-			body[data-INDIGO-PICKER-SEARCH="open"] & {
-				background-color: $TREE--ROW--BG--COLOUR---SELECTED\:SEARCH_RESULT!important;
-			}
-
-			#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div & {
-				// background-color: rgb(242, 109, 79) !important;
-			}
-
 			.x-tree3-node-icon {
 				@extend %tree_line_icon_selected !optional;
 
 			}
 
 			.x-grid3-td-locked {
-				background: #9ea0a2!important;
-				// background: #f1f1f1;
-
+				background: transparent!important;
 			}
 
 			.x-grid3-td-displayName,
@@ -1616,17 +1622,14 @@ form,
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
 					opacity: 1;
-					background-color: #9ea0a2!important;
+					background-color: _property($ROW--BG---SELECTED, $SIDE-PANEL)!important;
 
 				}
 			}
 
-			.x-grid3-col-size {
+			.x-grid3-col-size,
+			.x-grid3-col-primaryTypeLabel {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED\:SMALL_LABEL !optional;
-
-				body[data-INDIGO-PICKER-SEARCH="open"] & {
-					color: $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT!important;
-				}
 
 			}
 
@@ -1635,22 +1638,14 @@ form,
 				/* Line Hover on Selected */
 				@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER !optional;
 
-				body[data-INDIGO-PICKER-SEARCH="open"] & {
-					background-color: $TREE--ROW--BG--COLOUR---SELECTED_HOVER\:SEARCH_RESULT!important;
-				}
-
 				.x-tree3-node-icon {
 					@extend %tree_line_icon_selected_hover !optional;
 
 				}
 
-				.x-grid3-col-size {
+				.x-grid3-col-size,
+				.x-grid3-col-primaryTypeLabel {
 					@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
-
-					body[data-INDIGO-PICKER-SEARCH="open"] & {
-						color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
-					}
-
 				}
 
 				.x-grid3-td-displayName,
@@ -1659,13 +1654,9 @@ form,
 				.x-tree3-node-text {
 					@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER !optional;
 
-					body[data-INDIGO-PICKER-SEARCH="open"] & {
-						color: $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT!important;
-					}
-
 					&::after {
 						background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED_HOVER);
-
+						background-color: _property($ROW--BG---SELECTED-HOVER, $SIDE-PANEL)!important;
 					}
 				}
 			}
@@ -1700,7 +1691,7 @@ form,
 			right: 0;
 			content: "More";
 			top: 23px;
-			background-color: #f1f1f1!important;
+			background-color: transparent!important;
 
 			#JahiaGxtPagesTab & {
 				top: 26px;
@@ -1721,7 +1712,9 @@ form,
 			.workflow-dashboard-engine &,
 			#JahiaGxtEditEnginePanel-liveroles &,
 			#JahiaGxtEditEnginePanel-editroles &,
-			#JahiaGxtSettingsTab & {
+			#JahiaGxtSettingsTab &,
+			#JahiaGxtManagerLeftTree &,
+			#JahiaGxtManagerTobTable & {
 				display: none;
 			}
 		}
@@ -1749,7 +1742,8 @@ form,
 
 	}
 
-	.x-grid3-col-size {
+	.x-grid3-col-size,
+	.x-grid3-col-primaryTypeLabel {
 		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
@@ -1761,21 +1755,6 @@ form,
 	.x-tree3-node-text {
 		top: -1px;
 	}
-
-	/*.x-grid3-td-displayName {
-		&::after {
-			left: 270px;
-		}
-	}
-
-	.x-grid3-td-displayName {
-		&::after {
-			left: 270px;
-			background: red;
-		}
-	}*/
-
-
 
 	.x-tree3-node-icon,
 	.gwt-Image {
@@ -1814,8 +1793,7 @@ form,
 				right: 25px;
 				top: 3px;
 				position: absolute!important;
-				// background: #9ea0a2;
-				background: #f1f1f1;
+				background: transparent;
 
 			}
 
@@ -1875,17 +1853,18 @@ form,
     left: 0;
 }
 
+
 .wcag-panel {
 
 	.x-grid3 {
-		background: #6b7074;
+		background: #6b7074; /* TO THEME */
 
 		.x-grid3-header {
 			display: table-cell;
-			background: #848a8e;
-			border-left-color: #848a8e;
-			border-right-color: #848a8e;
-			color: $COLOUR--WHITE_CLOUDS;
+			background: #848a8e; /* TO THEME */
+			border-left-color: #848a8e; /* TO THEME */
+			border-right-color: #848a8e; /* TO THEME */
+			color: $COLOUR--WHITE_CLOUDS; /* TO THEME */
 		}
 
 	}
@@ -1893,7 +1872,7 @@ form,
 	.x-panel-header {
 		display: block !important;
 		width: 100%;
-		color: #f1f1f1;
+		color: #f1f1f1; /* TO THEME */
 
 		.x-panel-toolbar {
 			margin-right: 24px;
@@ -1926,22 +1905,22 @@ form,
 		}
 
 		.x-grid3-row {
-			background: #6b7074 !important;
+			background: #6b7074 !important; /* TO THEME */
 			margin-top: 5px;
 
 			td.x-grid3-cell {
-				border-right-color: #6b7074 !important;
+				border-right-color: #6b7074 !important; /* TO THEME */
 				line-height: 19px;
-				color: #dddcdc;
+				color: #dddcdc; /* TO THEME */
 
 				.x-grid3-col-message {
 					padding-top: 5px;
 				}
 
 				.x-grid3-col-example a {
-					color: $COLOUR--WHITE_CLOUDS;
+					color: $COLOUR--WHITE_CLOUDS; /* TO THEME */
 					text-decoration: none;
-					background: $COLOUR--RAIN_CLOUDS;
+					background: $COLOUR--RAIN_CLOUDS; /* TO THEME */
 					padding: 6px;
 					margin-left: 6px;
 				}
@@ -1949,13 +1928,13 @@ form,
 			}
 
 			.x-grid3-td-numberer {
-				background: #6b7074;
+				background: #6b7074; /* TO THEME */
 			}
 
 		}
 
 		.x-grid3-cell-inner.x-grid3-col-numberer {
-			color: #fff;
+			color: #fff;/* TO THEME */
 			text-align: center;
 			padding: 3px 0 !important;
 			border-radius: 42px;
@@ -1977,7 +1956,7 @@ form,
 
 		td.x-grid3-hd-over .x-grid3-hd-inner,
 		td.x-grid3-hd-menu-open .x-grid3-hd-inner {
-			background: #8e9194 !important;
+			background: #8e9194 !important; /* TO THEME */
 		}
 
 		.x-grid3-scroller {
@@ -1999,24 +1978,29 @@ form,
 	// Need to override with weight as well as importance
 	span.cke_toolgroup a {
 		.cke_button_icon {
-			background-image: url($RICH_TEXT_EDITOR--ICON_SET---LEGACY) !important;
 
-			body[data-CKEDITOR-VERSION="4.7.1-jahia1"] & {
-				background-image: url($RICH_TEXT_EDITOR--ICON_SET) !important;
+			@if (_property($CKE--ICON-SET--LEGACY, $EDIT-ENGINE)){
+				background-image: url(_property($CKE--ICON-SET--LEGACY, $EDIT-ENGINE)) !important;
 
+				body[data-CKEDITOR-VERSION="4.7.1-jahia1"] & {
+					background-image: url(_property($CKE--ICON-SET--DEFAULT, $EDIT-ENGINE)) !important;
+
+				}
 			}
+
+
 
 		}
 
 		&.cke_button_on {
-			background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED !important;
+			background: _property($CKE--TOOL--BG---SELECTED, $EDIT-ENGINE) !important;
 			border-radius: 0;
 			box-shadow: none;
 
 			&:hover,
 			&:focus,
 			&:active {
-				background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED !important;
+				background: _property($CKE--TOOL--BG---SELECTED, $EDIT-ENGINE) !important;
 			    border-radius: 0;
 			    box-shadow: none;
 
@@ -2027,7 +2011,7 @@ form,
 		&.cke_button_off,
 		&.cke_button_disabled {
 			&:hover {
-				background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER !important;
+				background: _property($CKE--TOOL--BG---HOVER, $EDIT-ENGINE) !important;
 			    border-radius: 0;
 			    box-shadow: none;
 
@@ -2036,7 +2020,7 @@ form,
 
 			&:focus,
 			&:active {
-				background: $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER !important;
+				background: _property($CKE--TOOL--BG---HOVER, $EDIT-ENGINE) !important;
 			    border-radius: 0;
 			    box-shadow: none;
 
@@ -2056,10 +2040,11 @@ form,
 	// CKE Toolbar Container
 	width: 100%!important;
 	box-sizing: border-box!important;
-	background: #616669 !important;
+	background: _property($CKE--TOOLBAR--BG, $EDIT-ENGINE) !important;
     border: none!important;
+	border-bottom: 1px solid _property($CKE--TOOLBAR--BORDER, $EDIT-ENGINE)!important;
     box-shadow: none!important;
-	padding: 10px 0 4px!important;
+	padding: 0 0 0 2px!important;
 }
 
 .cke_toolbox {
@@ -2077,7 +2062,7 @@ form,
 .cke_toolgroup {
 	// CKE Tool Group
 	border: none!important;
-	background: $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--UP!important;
+	background: _property($CKE--TOOLGROUP--BG, $EDIT-ENGINE)!important;
 	box-shadow: none!important;
 	border-radius: 0!important;
 	padding: 4px 10px!important;
@@ -2085,7 +2070,7 @@ form,
 	transition: all 0.2s ease-in 0s!important;
 
 	&:hover {
-		background: $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--HOVER !important;
+		background: _property($CKE--TOOLGROUP--BG---HOVER, $EDIT-ENGINE)!important;
 	}
 }
 
@@ -2096,8 +2081,8 @@ form,
 }
 
 .cke_panel {
-	background: $COLOUR--WHITE !important;
-	border: 6px solid #6b7074 !important;
+	background: $COLOUR--WHITE !important; /* TO THEME */
+	border: 6px solid #6b7074 !important; /* TO THEME */
 	border-radius: 0 !important;
 	margin-top: 8px !important;
 }
@@ -2105,7 +2090,7 @@ form,
 .cke_combopanel,
 .cke_menu_panel {
 	border-width: 1px !important;
-	border-color: #dddcdc !important;
+	border-color: #dddcdc !important; /* TO THEME */
 	margin-top: 4px !important;
 }
 
@@ -2118,10 +2103,16 @@ form,
 .cke_combo_button {
 	// CKE Combo Button
 	border: none!important;
-	background: $RICH_TEXT_EDITOR--COMBO--BG--COLOUR !important;
-	box-shadow: none!important;
+	background: _property($CKE--COMBO--BG, $EDIT-ENGINE) !important;
+	box-shadow: _property($CKE--COMBO--SHADOW, $EDIT-ENGINE) !important;
 	border-radius: 0!important;
 	padding: 4px!important;
+
+	&:hover {
+		background: _property($CKE--COMBO--BG---HOVER, $EDIT-ENGINE) !important;
+		box-shadow: _property($CKE--COMBO--SHADOW---HOVER, $EDIT-ENGINE) !important;
+
+	}
 }
 
 .cke_combo_text,
@@ -2130,8 +2121,13 @@ form,
 	text-shadow: none!important;
 }
 
-.cke_button_label {
-	color:$RICH_TEXT_EDITOR--LABEL--FONT--COLOUR !important;
+.cke_button_label,
+.cke_combo_text {
+	color:_property($CKE--BUTTON-LABEL--COLOR, $EDIT-ENGINE) !important;
+
+	&:hover {
+		color:_property($CKE--BUTTON-LABEL--COLOR---HOVER, $EDIT-ENGINE) !important;
+	}
 }
 
 
@@ -2140,6 +2136,8 @@ form,
 
 .cke_contents {
 	// CKE Content Container
+	box-shadow: _property($CKE--CONTENTS--SHADOW, $EDIT-ENGINE);
+    border: 1px solid _property($CKE--CONTENTS--BORDER, $EDIT-ENGINE)!important;
 }
 
 .cke_wysiwyg_frame {
@@ -2150,7 +2148,7 @@ form,
 .cke_bottom {
 	// CKE Footer Container
 	border: none!important;
-    background: $RICH_TEXT_EDITOR--PATH--BG--COLOUR !important;
+    background: _property($CKE--PATH--BG, $EDIT-ENGINE) !important;
 }
 
 .cke_resizer {
@@ -2162,10 +2160,10 @@ form,
 .cke_path {
 	// CKE Path Selector
 
-	a {
+	a.cke-path-item {
 		// CKE Path Item
 		text-shadow: none;
-		@include text(12px, $RICH_TEXT_EDITOR--PATH--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
+		@include text(12px, _property($CKE--PATH--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---EXTRALIGHT);
 	}
 }
 
@@ -2183,14 +2181,14 @@ form,
 
 // Modal Mask
 .cke_dialog_background_cover {
-	background: $MODAL--BG--COLOUR !important;
+	background: $MODAL--BG--COLOUR !important; /* TO THEME */
 	opacity: 1!important;
 	z-index: $ZINDEX--MODAL---MASK\:CKE_EDITOR !important;
 }
 
 // Dialogue Container
 .cke_dialog {
-	background: $RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR!important;
+	background: $RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR!important; /* TO THEME */
 	padding: 20px!important;
 	display: block;
 
@@ -2202,12 +2200,12 @@ form,
 	.ImagePreviewBox {
 		border: none!important;
 		padding: 0!important;
-		background: $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR!important;
+		background: $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR!important; /* TO THEME */
 	}
 
 	.cke_btn_locked,
 	.cke_btn_reset {
-		background-color: $RICH_TEXT_EDITOR--DIALOGUE--BUTTON_ICON--BG--COLOUR!important;
+		background-color: $RICH_TEXT_EDITOR--DIALOGUE--BUTTON_ICON--BG--COLOUR!important; /* TO THEME */
 		padding: 3px 2px !important;
 		background-position: center!important;
 	}
@@ -2216,7 +2214,7 @@ form,
 	}
 
 	.cke_dark_background {
-		@include text(28px, $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR !important, $FONT--WEIGHT---EXTRALIGHT);
+		@include text(28px, $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR !important, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 		border:none!important;
 	}
 
@@ -2252,7 +2250,7 @@ form,
 		margin-bottom: 10px;
 		pointer-events: none!important; // disables the drag feature of popup
 
-		@include text(36px, $RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+		@include text(36px, $RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY); /* TO THEME */
 
 
 	}
@@ -2281,20 +2279,20 @@ form,
 			margin-right: 10px;
 			text-transform: uppercase;
 
-			@include text(11px, $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
+			@include text(11px, $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 
 			&.cke_dialog_tab_selected {
-				color: $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED;
-				border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED!important;
+				color: $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED; /* TO THEME */
+				border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED!important; /* TO THEME */
 			}
 
 			&:hover {
-				color: $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED!important;
+				color: $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED!important; /* TO THEME */
 				background: inherit!important;
-				border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---HOVER;
+				border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---HOVER; /* TO THEME */
 
 				&.cke_dialog_tab_selected {
-					border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED;
+					border-bottom: 3px solid $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED; /* TO THEME */
 
 				}
 			}
@@ -2304,7 +2302,7 @@ form,
 
 	// LABEL
 	.cke_dialog_ui_labeled_label {
-		@extend %CSS_BLOCK--FORM--LABEL;
+		@extend %CSS_BLOCK--FORM--LABEL; /* TO THEME */
 	}
 
 	.cke_dialog_ui_input_select {
@@ -2330,9 +2328,9 @@ form,
 			-webkit-appearance: none;
 
 			background: url($ICON--ARROW_DOWN---WHITE) no-repeat right 5px center;
-			background-color: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR;
+			background-color: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR; /* TO THEME */
 			padding: 3px 5px !important;
-			@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+			@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 
 
 			&:focus {
@@ -2356,7 +2354,7 @@ form,
 			box-shadow: none;
 			border:none;
 
-			@include text_input("EDIT_ENGINE");
+			@include text_input("EDIT_ENGINE");  /* TO THEME */
 		}
 	}
 
@@ -2387,16 +2385,12 @@ form,
 	.cke_dialog_contents_body {
 		margin: 0;
 		height: auto!important;
-
-		// background: $FORM--FIELDSET--BG--COLOUR;
-	    // padding: 20px 20px 25px;
 		padding: 0;
-	    // width: 100%!important;
 	    box-sizing: border-box;
 	}
 
 	iframe.cke_pasteframe {
-		background: $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR!important;
+		background: $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR!important; /* TO THEME */
 		border-radius: 0!important;
 		border: none!important;
 	}
@@ -2416,7 +2410,7 @@ form,
 			margin-top: 10px!important;
 
 			legend {
-				@extend %CSS_BLOCK--FORM--LABEL;
+				@extend %CSS_BLOCK--FORM--LABEL; /* TO THEME */
 			}
 		}
 
@@ -2424,18 +2418,18 @@ form,
 		.cke_dialog_ui_html {
 			margin: 0 0 10px 0;
 
-			@include text(14px, $RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT);
+			@include text(14px, $RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 
 			strong {
 				font-weight: $FONT--WEIGHT---BOLD;
-				color: lighten($RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR, 5%);
+				color: lighten($RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR, 5%); /* TO THEME */
 				font-size: inherit;
 				font-family: inherit;
 			}
 		}
 
 		a {
-			@include text(14px, $RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR !important, $FONT--WEIGHT---NORMAL);
+			@include text(14px, $RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR !important, $FONT--WEIGHT---NORMAL); /* TO THEME */
 
 		}
 
@@ -2451,15 +2445,15 @@ form,
 			// Normal Button
 			span {
 				// padding: 5px 10px!important;
-				background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
-		    	@include text(12px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important);
+				background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
+		    	@include text(12px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
 				text-shadow: none;
 				padding: 4px;
 				text-align: center;
 
 				&:hover {
-					background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
-			    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+					background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
+			    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
 				}
 			}
 
@@ -2518,13 +2512,13 @@ form,
 			// Normal Button
 			span {
 				padding: 5px 10px!important;
-				background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important;
-		    	@include text(16px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important);
+				background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
+		    	@include text(16px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
 				text-shadow: none;
 
 				&:hover {
-					background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
-			    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important;
+					background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
+			    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
 				}
 			}
 
@@ -2534,10 +2528,10 @@ form,
 
 				span {
 					padding: 5px 10px!important;
-					@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR;
+					@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR; /* TO THEME */
 
 					&:hover {
-						@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR;
+						@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR; /* TO THEME */
 
 					}
 
@@ -2564,12 +2558,6 @@ form,
 		margin: 0;
 
 		.cke_about_logo {
-			// height: 81px;
-			// background-color: transparent;
-			// background-image: url(http://localhost:8080/modules/ckeditor/javascript/plugins/about/dialogs/logo_ckeditor.png);
-			// background-position: center;
-			// background-repeat: no-repeat;
-			// margin: 0;
 			display: none;
 		}
 
@@ -2591,14 +2579,14 @@ form,
 				padding: 0;
 				border: none;
 				padding: 5px 16px;
-				background-color: $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR;
+				background-color: $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR; /* TO THEME */
 			}
 
 			&:hover,
 			&:focus,
 			&:active {
-				box-shadow: inset -35px 0 $RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON--BG--COLOUR---SELECTED;
-				background-color: $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR---SELECTED;
+				box-shadow: inset -35px 0 $RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON--BG--COLOUR---SELECTED; /* TO THEME */
+				background-color: $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR---SELECTED; /* TO THEME */
 
 				.cke_tpl_item {
 					border: none;
@@ -2630,7 +2618,7 @@ form,
 			}
 
 			span {
-				@include  text(14px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---NORMAL);
+				@include  text(14px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---NORMAL); /* TO THEME */
 			}
 
 			.cke_tpl_title {
@@ -2666,7 +2654,7 @@ form,
 /* Modal Mask */
 .x-modal {
     // background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);  // check on other modals.
-	background: $MODAL--BG--COLOUR;
+	background: _property($MODAL-SOLID--BG---LEGACY, $APP);
     opacity: 1;
     z-index: $ZINDEX--MODAL---MASK;
     position: fixed !important;
@@ -2695,7 +2683,7 @@ form,
 				height: 100%;
 				background: url(./images/loader.svg) no-repeat center center;
 				font-size: 0px;
-				background-color: rgba(0, 0, 0, 0.24);
+				background-color: _theme-color(black, a);
     }
 
 }
@@ -2746,7 +2734,7 @@ form,
 		margin-top: -32px; // Trying to offset the increase in height of dialogue due to extra large title.
 
 		.x-window-header-text {
-			@include text($DIALOGUE--TITLE--FONT--SIZE, $DIALOGUE--TITLE--FONT--COLOUR, $DIALOGUE--TITLE--FONT--WEIGHT, $DIALOGUE--TITLE--FONT--FAMILY);
+			@include text($DIALOGUE--TITLE--FONT--SIZE, $DIALOGUE--TITLE--FONT--COLOUR, $DIALOGUE--TITLE--FONT--WEIGHT, $DIALOGUE--TITLE--FONT--FAMILY); /* TO THEME */
 		}
 
 		// ICONS
@@ -2758,7 +2746,7 @@ form,
 
 		// CONTENT
 		.ext-mb-text {
-			@include text($DIALOGUE--BODY--FONT--SIZE, $DIALOGUE--BODY--FONT--COLOUR, $DIALOGUE--BODY--FONT--WEIGHT);
+			@include text($DIALOGUE--BODY--FONT--SIZE, $DIALOGUE--BODY--FONT--COLOUR, $DIALOGUE--BODY--FONT--WEIGHT); /* TO THEME */
 
 		}
 
@@ -2782,7 +2770,7 @@ form,
 				}
 
 				.x-clear {
-					background: $MODAL--BG--COLOUR;
+					background: _property($MODAL-SOLID--BG---LEGACY, $APP);
 					position: fixed;
 					left: 0;
 					top: 0;
@@ -2798,7 +2786,10 @@ form,
 	// Popup image preview (used in pickers)
 	#JahiaGxtImagePopup {
 
-		margin-top: -112px; // Offset the title
+		// margin-top: -112px; // Offset the title
+		margin-top: calc(-50vh + 170px);
+		z-index: 1110!important;
+		z-index: 999910 !important;
 
 		.x-resizable-handle {
 			display: none;
@@ -2811,19 +2802,26 @@ form,
 			/* text-align: center; */
 			pointer-events: none;
 			margin-left: -2px;
+			position: relative;
+			z-index: 99;
+			top: -50px;
 
-			@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
+			@include text(36px, _property($TITLE--COLOR, $PREVIEW), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
 		}
 
 		.x-window-bwrap {
+			margin-top: -50px;
+
 			&:before {
 				content: attr(data-file-name);
 				display: block;
 				width: 100%;
 				/* text-align: center; */
-				@include text(16px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
+				@include text(16px, _property($SUBTITLE--COLOR, $PREVIEW), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
 				pointer-events: none;
 				margin-bottom: 9px;
+				position: relative;
+				z-index: 999;
 			}
 		}
 
@@ -2833,12 +2831,31 @@ form,
 			position: absolute;
 			bottom: -47px; // Negate the offset added to main container of popup
 			left: -3px;
+			z-index: 99;
 		}
 
 		// Image Container
 		.x-window-ml {
 			// z-index: 9999;
 			// position: fixed;
+			position: relative;
+			z-index: 99;
+
+			img {
+				height: auto;
+			}
+		}
+
+		.x-window-bl {
+			// Used as modal mask
+			display: block;
+		    width: 100%;
+		    height: 100%;
+		    position: fixed;
+		    background: _property($BODY--BG, $PREVIEW)!important;
+		    top: 0;
+		    left: 0;
+		    z-index: 9;
 		}
 
 		.x-window-header {
@@ -2936,14 +2953,14 @@ form,
 	background: none!important;
 }
 .x-slider-horz .x-slider-thumb {
-	background: $COLOUR--ASH_CLOUDS;
+	background: $COLOUR--ASH_CLOUDS; /* TO THEME */
     border-radius: 100%;
     width: 12px;
     height: 12px;
     top: 5px;
 
 	&:hover {
-		background: $COLOUR--GREY_CLOUDS;
+		background: $COLOUR--GREY_CLOUDS; /* TO THEME */
 
 	}
 }
@@ -2953,7 +2970,7 @@ form,
     text-indent: -50000px;
     display: block;
     height: 3px;
-    background: $COLOUR--DUSTY_CLOUDS;
+    background: $COLOUR--DUSTY_CLOUDS; /* TO THEME */
     position: absolute;
     top: 10px;
     width: 100%;
@@ -3032,97 +3049,89 @@ form,
 
 
 .x-window.content-type-window {
-    background: #eee;
+	background: _property($BODY--BG, $MODAL-INPUT);
+	box-shadow: _property($BODY--BG--SHADOW, $MODAL-INPUT);
+	box-sizing: border-box;
+	height: 80%;
+	padding: 30px!important;
+	top: 10% !important;
+
+	> .x-window-bwrap {
+		height: 100%;
+		width: 100%!important;
+
+		.x-window-ml {
+			height: 100%;
+			width: 100%!important;
+
+			.x-window-mr {
+				height: 100%;
+				width: 100%!important;
+
+				.x-window-mc {
+					height: 100%;
+					width: 100%!important;
+
+					.x-window-body {
+						width: 100%!important;
+						height: calc(100% - 40px)!important;
+					    box-sizing: border-box;
+
+						> .x-border-layout-ct {
+							overflow: hidden !important;
+							height: 100%!important;
+							width: 100%!important;
+
+							.x-grid-panel {
+								height: calc(100% - 64px) !important;
+							    margin: 0 !important;
+							    top: 39px!important;
+							}
+						}
+
+						.x-form-field.x-form-text {
+
+							padding: 2px;
+
+							img {
+								top: 2px;
+							}
+
+							@include _input-search($MODAL-INPUT);
+
+
+						}
+
+
+					}
+
+					.x-window-bbar {
+						width: 100%!important;
+
+					}
+				}
+			}
+		}
+	}
+
+		// Disable resize ability
+		.x-resizable-handle {
+			display:none;
+		}
 
 		.x-window-header {
 		    display: none;
 		}
 
-		.x-window-body {
 
-			&.x-window-body-noborder {
-				padding: 8px !important;
-			}
-
-			> .x-border-layout-ct {
-				overflow: hidden !important;
-			}
-
-			.x-form-field.x-form-text {
-				padding-left: 28px !important;
-				background: #d5d6d6;
-				background-image: url(./images/icons/tabs-search-dark@X2.png);
-				background-repeat: no-repeat;
-				background-size: contain;
-				color: #717578 !important;
-
-				&:focus {
-					background-color: #9ea0a2 !important;
-					color: #f1f1f1 !important;
-					background-image: url(./images/icons/tabs-search-white@X2.png);
-				}
-
-			}
-
-			.x-form-text:focus + .x-form-trigger.x-form-clear-trigger {
-				background-color: #7a7e80 !important;
-				padding-bottom: 1px;
-			}
-
-		}
-
-		.x-grid3 {
-
-			.x-tree3-node-text {
-				padding-right: 0 !important;
-			}
-
-			.x-grid3-row-over .gwt-content-label {
-				color: $COLOUR--WHITE_CLOUDS !important;
-			}
-
-			.x-grid3-row.x-grid3-row-selected {
-				background: #dedede !important;
-			}
-
-			.x-grid3-scroller {
-				width: 100% !important;
-			}
-
-		}
-
-		.x-window-bbar {
-			padding: 8px;
-	    margin-top: 8px;
-	    background: #eeeeee;
-		}
-
-		.x-form-field-wrap.x-component.x-border-panel {
-			background: #a3a3a3;
-			height: 24px !important;
-		}
-
-		.x-treegrid.x-component {
-			margin-top: 15px;
-
-			.gwt-content-label {
-				color: #474a4c !important;
-
-				&:after {
-					background: none !important;
-				}
-
-			}
-
-		}
-
-		.x-panel-fbar .x-toolbar-cell:first-child .x-btn.x-btn-text-icon button {
-			background: #00a0e3 !important;
-			color: #f1f1f1 !important;
+		.x-panel-fbar .x-toolbar-cell:nth-child(1)  {
+			@include button("ACTIONBAR---SUGGESTED");
+			// background: #00a0e3 !important;  /* TO THEME */
+			// color: #f1f1f1 !important;  /* TO THEME */
 		}
 
 		.x-panel-fbar .x-toolbar-cell:nth-child(2) .x-btn.x-btn-text-icon button {
-			background: #dedede !important;
+			@include button("ACTIONBAR");
 		}
 
 }
@@ -3184,7 +3193,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		    padding: 0 !important;
 			margin-bottom: 10px;
 
-			@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+			@include text(36px, _property($TITLE--COLOR, $APP), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
 
 			img {
 				display: none;
@@ -3218,11 +3227,11 @@ body[data-indigo-gwt-side-panel="open"] {
 
 			.x-form-textarea {
 					margin-top: 8px;
-					color: rgb(0, 0, 0);
+					color: rgb(0, 0, 0); /* TO THEME */
 					width: 100% !important;
 
 					&:focus {
-						background: $COLOUR--WHITE !important;
+						background: $COLOUR--WHITE !important; /* TO THEME */
 					}
 
 			}
@@ -3241,7 +3250,7 @@ body[data-indigo-gwt-side-panel="open"] {
 					> div {
 
 						padding: 0 19px;
-						background: $FORM--FIELDSET--BG--COLOUR!important;
+						background: $FORM--FIELDSET--BG--COLOUR!important; /* TO THEME */
 
 						&:first-child {
 							padding-top: 19px;
@@ -3251,7 +3260,7 @@ body[data-indigo-gwt-side-panel="open"] {
 							padding-bottom: 19px;
 						}
 
-						@include text(13px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+						@include text(13px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 
 						&.x-panel-fbar {
 							background: transparent!important;
@@ -3266,12 +3275,12 @@ body[data-indigo-gwt-side-panel="open"] {
 							margin-top: 10px;
 
 							.x-grid3-row {
-								background: rgba($COLOUR--GREY_CLOUDS, .6) !important;
+								background: rgba($COLOUR--GREY_CLOUDS, .6) !important; /* TO THEME */
 								padding: 3px;
 								box-sizing: border-box;
 
 								&.x-grid3-row-over {
-									background: rgba($COLOUR--GREY_CLOUDS, 1) !important;
+									background: rgba($COLOUR--GREY_CLOUDS, 1) !important; /* TO THEME */
 								}
 
 								.x-grid3-col-pagePath {
@@ -3281,7 +3290,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 									a {
 										text-decoration: none;
-										@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+										@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 
 										&:hover {
 											text-decoration: underline;
@@ -3291,29 +3300,29 @@ body[data-indigo-gwt-side-panel="open"] {
 								}
 
 								.x-grid3-td-path {
-									@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+									@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 								}
 							}
 						}
 
 						textarea {
-							background: rgba($COLOUR--GREY_CLOUDS, .6) !important;
+							background: rgba($COLOUR--GREY_CLOUDS, .6) !important; /* TO THEME */
 							box-sizing: border-box;
 							margin: 0;
 							padding: 10px!important;
-							color: $COLOUR--WHITE_CLOUDS;
+							color: $COLOUR--WHITE_CLOUDS; /* TO THEME */
 							height: 75px!important;
 
 							transition: all 0.3s ease-in 0s!important;
 
 							&:hover {
-								background: rgba($COLOUR--GREY_CLOUDS, 1) !important;
+								background: rgba($COLOUR--GREY_CLOUDS, 1) !important; /* TO THEME */
 
 							}
 
 							&:focus {
-								background: $COLOUR--WHITE_CLOUDS!important;
-								color: $COLOUR--DARK_CLOUDS;
+								background: $COLOUR--WHITE_CLOUDS!important; /* TO THEME */
+								color: $COLOUR--DARK_CLOUDS; /* TO THEME */
 							}
 						}
 
@@ -3322,7 +3331,7 @@ body[data-indigo-gwt-side-panel="open"] {
 						    font-weight: 500;
 						    position: relative;
 						    width: 100%;
-						    color: #fd8787!important;
+						    color: #fd8787!important; /* TO THEME */
 						    padding-bottom: 19px;
 						}
 					}
@@ -3342,12 +3351,12 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		.x-toolbar-left-row .x-toolbar-cell:first-child .x-btn-text {
-			background: $COLOUR--JAHIA_BLUE !important;
-			color: $COLOUR--WHITE_CLOUDS !important;
+			background: $COLOUR--JAHIA_BLUE !important; /* TO THEME */
+			color: $COLOUR--WHITE_CLOUDS !important; /* TO THEME */
 		}
 
 		.x-toolbar-left-row .x-toolbar-cell:nth-child(2) .x-btn-text {
-			background: $COLOUR--CREAM_CLOUDS !important;
+			background: $COLOUR--CREAM_CLOUDS !important; /* TO THEME */
 		}
 
 }
@@ -3362,12 +3371,13 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.file-uploader,
 .x-window.content-import,
 .x-window.content-export,
-.x-window.customized-preview {
+.x-window.customized-preview,
+.x-window.publication-manager-engine {	// Added selector for publication manager!
 	background: transparent;
 
 	.x-window-bwrap {
 		padding: 12px 8px 8px 8px;
-		color: rgba(0, 0, 0, 0.84);
+		color: rgba(0, 0, 0, 0.84); /* TO THEME */
 		background: #eee;
 	}
 
@@ -3375,7 +3385,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		padding: 8px 0 !important;
 		font-family: $FONT--FAMILY---RALEWAY;
 		font-size: 32px;
-		color: $COLOUR--WHITE_CLOUDS;
+		color: $COLOUR--WHITE_CLOUDS; /* TO THEME */
 		font-weight: $FONT--WEIGHT---EXTRALIGHT;
 
 		.x-panel-toolbar {
@@ -3387,7 +3397,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	.x-panel-body.x-panel-body-noheader.x-panel-body-noborder .x-form-item {
 		height: 22px;
 		margin-bottom: 16px;
-		border-bottom: 1px dashed #BDBDBD;
+		border-bottom: 1px dashed #BDBDBD; /* TO THEME */
 		padding-bottom: 10px;
 
 		label {
@@ -3403,12 +3413,12 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-toolbar-left-row .x-toolbar-cell:first-child .x-btn-text {
-		background: #00a0e3 !important;
-		color: #f1f1f1 !important;
+		background: #00a0e3 !important; /* TO THEME */
+		color: #f1f1f1 !important; /* TO THEME */
 	}
 
 	.x-toolbar-left-row .x-toolbar-cell:nth-child(2) .x-btn-text {
-		background: #dedede !important;
+		background: #dedede !important; /* TO THEME */
 	}
 
 	.x-panel-body.x-panel-body-noheader.x-panel-body-noborder table {
@@ -3443,7 +3453,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		> td div.x-form-field {
 			font-size: 11px;
 			font-weight: 600;
-			color: rgba(0, 0, 0, 0.40);
+			color: rgba(0, 0, 0, 0.40); /* TO THEME */
 			max-width: 152px;
 			padding-right: 8px;
 		}
@@ -3456,14 +3466,331 @@ body[data-indigo-gwt-side-panel="open"] {
 
 }
 
+
+// Customized preview
+
+.x-window.customized-preview {
+
+	.x-window-header > .x-component:first-child table tbody tr td .x-tool-close {
+		height: 22px;
+		width: 22px;
+		background-image: url(./images/icon-close-large.png);
+		background-position: initial !important;
+		margin-top: 8px;
+	}
+
+	.x-window-header .x-panel-toolbar {
+		display: block;
+		pointer-events: all;
+	}
+
+	.x-window-bwrap {
+		background: #616669; /* TO THEME */
+		padding: 12px 0 8px 0;
+
+		.x-window-body.x-window-body-noborder {
+			height: 380px !important;
+		}
+
+	}
+
+	.x-grid3 .x-grid3-td-displayName:after {
+		display: none;
+	}
+
+	.x-window-tbar .x-toolbar {
+		background: #616669!important; /* TO THEME */
+		padding-bottom: 12px;
+		border-bottom: none;
+	}
+
+	.x-toolbar {
+		background: #eeeeee; /* TO THEME */
+
+		.my-paging-display {
+			text-transform: uppercase;
+			color: #b9babb; /* TO THEME */
+		}
+
+	}
+
+	.x-window-bbar .x-btn-mc button.x-btn-text {
+		background: #00a0e3 !important; /* TO THEME */
+		color: #fff; /* TO THEME */
+		height: 32px;
+	}
+
+	.x-grid3-cell-inner {
+		padding-left: 9px;
+	}
+
+	.x-grid-panel .x-grid3-viewport > .x-grid3-header {
+		display: block;
+		background: none;
+		width: calc(100% - 10px);
+		padding: 12px 10px 0 20px;
+		box-sizing: border-box;
+
+		.x-grid3-header-inner .x-grid3-hh > table > tbody > tr {
+			display: block;
+		}
+
+		.x-grid3-header-inner .x-grid3-hh > table > tbody td {
+			width: calc(25% - 10px) !important;
+			pointer-events: all;
+			border: none;
+			background: none;
+			margin-right: 10px;
+
+			&.x-grid3-hd-over {
+				background: #e4e5e6; /* TO THEME */
+			}
+
+			div {
+				width: 100% !important;
+				box-sizing: border-box;
+				height: auto !important;
+				background: none !important;
+				padding-left: 4px;
+			}
+
+		}
+
+	}
+
+	.x-grid-panel .x-grid3-cell {
+		display: inline-block;
+
+		> div {
+			font-family: "Nunito Sans", sans-serif;
+			font-size: 12px;
+			color: rgba(241, 241, 241, 0.6); /* TO THEME */
+			font-weight: 100;
+		}
+
+	}
+
+	.x-grid-panel {
+
+		.x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td {
+
+			&.x-grid3-hd-over span {
+				color: #737373 !important; /* TO THEME */
+			}
+
+			div {
+
+				.x-grid3-hd-btn {
+					background: url(./images/icons/combo-arrow-grey.png) no-repeat center center !important;
+					width: 23px;
+					background-size: 13px !important;
+					opacity: 0.7;
+				}
+
+				span {
+					text-transform: uppercase;
+					font-family: "Nunito Sans", sans-serif;
+					font-size: 11px;
+					color: #ebeced; /* TO THEME */
+					font-weight: 500;
+				}
+
+				.x-grid3-hd-btn:hover {
+					background-color: #d1d1d1 !important; /* TO THEME */
+					background-size: 13px !important;
+					opacity: 1;
+				}
+
+				img {
+					position: relative;
+					top: -1px;
+					opacity: 0.6;
+				}
+
+			}
+
+		}
+
+		.x-grid3-scroller {
+			padding: 13px 10px 0 20px;
+			box-sizing: border-box;
+		}
+
+		.x-grid3-row {
+			padding-top: 4px;
+
+			&.x-grid3-row-selected {
+				pointer-events: none;
+				background: rgba(241, 241, 241, 0.8) !important; /* TO THEME */
+
+				.x-grid3-cell > div {
+					color: #737373 !important; /* TO THEME */
+					font-weight: 700 !important;
+				}
+
+			}
+
+		}
+
+		.x-grid3-cell {
+			width: 25% !important;
+			display: inline-block;
+
+			> div {
+				font-family: "Nunito Sans", sans-serif;
+				font-size: 12px;
+				color: rgba(241, 241, 241, 0.6); /* TO THEME */
+				font-weight: 100;
+			}
+
+		}
+
+	}
+
+	// pager
+	.x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct {
+		position: relative;
+		z-index: 9999999;
+		background: #616669; /* TO THEME */
+		width: 100% !important;
+		padding: 2px 11px;
+		box-sizing: border-box;
+		margin-top: 2px;
+
+		.x-toolbar-left .x-toolbar-cell {
+			display: inline-block !important;
+			margin: 0 2px;
+			opacity: 0.8;
+
+			.x-btn-mc img {
+				display: none;
+			}
+
+			&:nth-child(1) {
+				background: url(./images/icons/icon_arrow_left_double_white@X2.png) no-repeat center center/14px 14px;
+				margin-left: 0px;
+			}
+
+			&:nth-child(2) {
+				background: url(./images/icons/icon_arrow_left_single_white@X2.png) no-repeat center center/14px 14px;
+				margin-left: 5px;
+			}
+
+			&:nth-child(8) {
+				background: url(./images/icons/icon-next-white@X2.png) no-repeat center center/14px 14px;
+				margin-right: 5px;
+			}
+
+			&:nth-child(9) {
+				background: url(./images/icons/icon_arrow_right_double_white@X2.png) no-repeat center center/14px 14px;
+				margin-right: 5px;
+			}
+
+			&:nth-child(11) {
+				background: url(./images/icons/icon-publication-launcher.png) no-repeat center center/16px 12px;
+			}
+
+			.my-paging-text {
+				font-family: "Nunito Sans", sans-serif;
+				font-size: 12px;
+				color: rgba(241, 241, 241, 0.7); /* TO THEME */
+				font-weight: 100;
+			}
+
+			.gwt-TextBox {
+				font-family: "Nunito Sans", sans-serif;
+				font-size: 12px;
+				color: #282b2d; /* TO THEME */
+				font-weight: 100;
+				background: rgba(241, 241, 241, 0.7); /* TO THEME */
+				padding: 3px;
+				border: none;
+			}
+
+		}
+
+	}
+
+	.x-toolbar-left-row .x-toolbar-cell:nth-child(1) .x-btn-text,
+	.x-toolbar-left-row .x-toolbar-cell:nth-child(2) .x-btn-text {
+		background: transparent !important;
+	}
+
+	.x-window-tbar .x-component table tbody tr td .x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct .x-toolbar-cell {
+		background: none !important;
+	}
+
+	.x-form-field-wrap .x-form-text {
+		background: rgba(122, 130, 134, 0.54); /* TO THEME */
+		color: #b2b4b5; /* TO THEME */
+
+		&.x-form-focus {
+			background: #fff;
+			color: rgba(0, 0, 0, 0.84);
+		}
+
+	}
+
+	label {
+		line-height: 22px;
+	}
+
+	.search-container .x-toolbar-cell {
+
+		&:nth-child(1) > div {
+			display: none;
+		}
+
+		&:nth-child(2) input {
+			background-image: url(./images/tabs-search-dark@X2.png) !important;
+			background-color: #f1f1f1 !important; /* TO THEME */
+			background-repeat: no-repeat !important;
+			background-position: left center !important;
+			background-size: 23px !important;
+			width: 100% !important;
+			padding: 4px 5px 5px 27px !important;
+			font-size: 12px;
+			font-family: "Nunito Sans", sans-serif;
+			color: #7a7e80; /* TO THEME */
+		}
+
+		&:nth-child(3) .x-btn-icon {
+			height: 27px;
+			padding: 0 8px;
+			background: #00a0e3; /* TO THEME */
+			margin-left: -4px;
+
+			&:before {
+				content: "Search";
+				display: block;
+				top: 6px;
+				position: relative;
+				text-align: center;
+				font-family: "Nunito Sans", sans-serif;
+				font-size: 11px;
+				color: #f1f1f1; /* TO THEME */
+				font-weight: 100;
+			}
+
+			> tbody {
+				display: none;
+			}
+
+		}
+
+	}
+
+}
+
+
 // Import
 .x-window.content-import .x-window-body {
 	min-height: 100px !important;
 
 	.x-btn-noicon .x-btn-small .x-btn-text {
 		padding: 6px 8px;
-		background: #F44336;
-		color: #efefef;
+		background: #F44336; /* TO THEME */
+		color: #efefef; /* TO THEME */
 	}
 
 }
@@ -3490,17 +3817,17 @@ body[data-indigo-gwt-side-panel="open"] {
 	.x-toolbar-left-row .x-toolbar-cell {
 
 		.x-btn-text {
-			background: #dedede !important;
+			background: #dedede !important; /* TO THEME */
 		}
 
 		&:last-child .x-btn-text {
-			background: #00a0e3 !important;
-			color: #f1f1f1 !important;
+			background: #00a0e3 !important; /* TO THEME */
+			color: #f1f1f1 !important; /* TO THEME */
 		}
 
 		&:first-child .x-btn-text {
-			background: #dedede !important;
-			color: #505457 !important;
+			background: #dedede !important; /* TO THEME */
+			color: #505457 !important; /* TO THEME */
 		}
 
 	}
@@ -3525,6 +3852,27 @@ body[data-indigo-gwt-side-panel="open"] {
 }
 
 
+// Publication manager
+
+.x-window.publication-manager-engine {
+
+	.x-window-header > .x-component:first-child table tbody tr td .x-tool-close {
+		height: 22px;
+		width: 22px;
+		background-image: url(./images/icon-close-large.png);
+		background-position: initial !important;
+		margin-top: 8px;
+	}
+
+	.x-grid3-scroller {
+		overflow: unset;
+	}
+
+	.x-window-header > img {
+		display: none;
+	}
+
+}
 
 /////////////////////////////////////////////////
 // COMPARE PANEL ////////////////////////////////
@@ -3532,7 +3880,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 .x-window.compare-engine {
-	background: #616669 !important;
+	background: #616669 !important; /* TO THEME */
 
 	.x-window-header {
 		height: 64px !important;
@@ -3565,7 +3913,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			pointer-events: none !important;
 			font-family: "Raleway", sans-serif;
 			font-size: 24px;
-			color: #f1f1f1;
+			color: #f1f1f1; /* TO THEME */
 			font-weight: 100;
 		}
 
@@ -3577,9 +3925,9 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	.x-panel-header,
 	.x-toolbar {
-		background: #818588;
-		border: 1px solid #818588;
-		color: #eee;
+		background: #818588; /* TO THEME */
+		border: 1px solid #818588; /* TO THEME */
+		color: #eee; /* TO THEME */
 	}
 
 	.x-panel-bwrap {
@@ -3599,25 +3947,33 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		}
 
+		.x-toolbar-right button img {
+			background: url(./images/icons/ic_more_vert_white_.png) !important;
+			background-size: 19px 19px !important;
+			background-repeat: no-repeat !important;
+			left: -6px !important;
+			top: -2px !important;
+		}
+
 		.x-btn-mc button.x-btn-text {
 			text-transform: uppercase;
 			padding: 0 4px !important;
 			font-weight: 500;
-			color: #424242;
+			color: #424242; /* TO THEME */
 		}
 
 		table.x-btn-pressed .x-btn-mc button.x-btn-text {
-			color: #FFEB3B;
+			color: #FFEB3B; /* TO THEME */
 		}
 
 	}
 
 	.x-panel:last-child {
-		border-left: 1px solid #818588;
+		border-left: 1px solid #818588; /* TO THEME */
 	}
 
 	.x-form-field-wrap.x-component {
-		background: #EEEEEE;
+		background: #EEEEEE; /* TO THEME */
 		margin-left: 12px;
 	}
 
@@ -3635,14 +3991,14 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 .translate-content-engine {
-	background: #5c6164 !important;
+	background: #5c6164 !important; /* TO THEME */
 	height: 100% !important;
 	width: 100% !important;
 	top: 0 !important;
 	left: 0 !important;
 
 	.mypanel.x-component .x-component {
-		background: $COLOUR--WHITE_CLOUDS;
+		background: $COLOUR--WHITE_CLOUDS; /* TO THEME */
 		width: 50% !important;
 	}
 
@@ -3653,7 +4009,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		.x-window-header-text {
 			font-size: 36px;
-			color: #dddcdc;
+			color: #dddcdc; /* TO THEME */
 			width: 250px;
 			font-family: $FONT--FAMILY---RALEWAY;
 			font-weight: $FONT--WEIGHT---EXTRALIGHT;
@@ -3690,10 +4046,10 @@ body[data-indigo-gwt-side-panel="open"] {
 			position: fixed;
 			bottom: 0;
 			left: 0;
-			background: #4a4d50;
+			background: #4a4d50; /* TO THEME */
 			width: 100% !important;
-			border-top: 1px solid #353739;
-			box-shadow: inset 0px 13px 40px 0px rgba(38, 38, 38, 0.5);
+			border-top: 1px solid #353739; /* TO THEME */
+			box-shadow: inset 0px 13px 40px 0px rgba(38, 38, 38, 0.5); /* TO THEME */
 			padding: 20px 0 0 20px;
 			box-sizing: border-box;
 			height: 72px;
@@ -3706,8 +4062,8 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		.x-toolbar-left td.x-toolbar-cell:nth-child(2) button.x-btn-text {
-			background: #00a0e3 !important;
-			color: #f1f1f1 !important;
+			background: #00a0e3 !important;/* TO THEME */
+			color: #f1f1f1 !important; /* TO THEME */
 		}
 
 	}
@@ -3718,20 +4074,20 @@ body[data-indigo-gwt-side-panel="open"] {
 			position: absolute;
 			left: 26px;
 			top: 8px !important;
-			background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 70%);
+			background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 70%);/* TO THEME */
 
 			&:hover {
-				background-color: rgba(255, 255, 255, 0.07);
+				background-color: rgba(255, 255, 255, 0.07);/* TO THEME */
 			}
 
 			.x-trigger-wrap-focus {
-				background-color: rgba(255, 255, 255, 0.07);
+				background-color: rgba(255, 255, 255, 0.07);/* TO THEME */
 			}
 
 		}
 
 		> .x-component.x-border-panel > .x-component > table tbody td.x-btn-mc:nth-child(2) {
-			background: #6b7074;
+			background: #6b7074;/* TO THEME */
 			position: absolute;
 			left: 200px;
 			height: 30px;
@@ -3739,24 +4095,24 @@ body[data-indigo-gwt-side-panel="open"] {
 
 			button {
 				margin-top: 7px;
-				color: #dddcdc;
+				color: #dddcdc;/* TO THEME */
 				padding: 0 8px;
 				width: auto !important;
 			}
 
 			&:hover {
-				background: #798084 !important;
+				background: #798084 !important;/* TO THEME */
 			}
 
 		}
 
 		.x-component.x-border-panel:nth-child(2) {
 			margin-top: 28px;
-			border-top: 1px dashed #8a8e91 !important;
+			border-top: 1px dashed #8a8e91 !important;/* TO THEME */
 		}
 
 		&:nth-child(2) .x-panel-noborder.x-panel.x-component > .x-panel-bwrap {
-			border-left: 10px solid #5c6164 !important;
+			border-left: 10px solid #5c6164 !important;/* TO THEME */
 		}
 
 		.x-panel-noborder.x-panel.x-component > .x-panel-bwrap {
@@ -3764,30 +4120,30 @@ body[data-indigo-gwt-side-panel="open"] {
 			textarea.x-form-field,
 			input.x-form-field {
 				background: #6b7074 !important;
-				color: $COLOUR--WHITE;
+				color: $COLOUR--WHITE;/* TO THEME */
 				max-height: 54px !important;
 
 				&:hover {
-					background: #707679 !important;
+					background: #707679 !important;/* TO THEME */
 				}
 
 				&:focus {
-					background: $COLOUR--WHITE !important;
-					color: black !important;
+					background: $COLOUR--WHITE !important;/* TO THEME */
+					color: black !important;/* TO THEME */
 				}
 
 			}
 
 			.x-form-readonly .x-form-field {
-				background: #616669 !important;
+				background: #616669 !important;/* TO THEME */
 				padding-left: 0 !important;
 				width: 100% !important;
 
 				&:hover,
 				&:focus {
 					cursor: default;
-					background: #616669 !important;
-					color: $COLOUR--WHITE !important;
+					background: #616669 !important;/* TO THEME */
+					color: $COLOUR--WHITE !important;/* TO THEME */
 				}
 
 			}
@@ -3804,7 +4160,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	div[role="combobox"] .x-form-text {
 		padding: 7px 20px 6px 10px !important;
-		color: #f1f1f1;
+		color: #f1f1f1;/* TO THEME */
 		text-transform: uppercase;
 		font-size: 11px;
 		font-weight: 500;

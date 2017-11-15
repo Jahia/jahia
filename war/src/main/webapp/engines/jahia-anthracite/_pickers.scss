@@ -1,80 +1,320 @@
-$PICKER--BG--COLOUR: 								$COLOUR--WHITE_CLOUDS;
+// NEW VERSION
+$PICKER_SIDEPANEL_WIDTH: 340px;
 
-#JahiaGxtManagerLeftTree .x-component.x-panel .x-panel-header {
-	position: absolute!important;
-	top: 0;
-}
 
-#JahiaGxtManagerLeftTree .x-component.x-panel.x-panel-collapsed .x-panel-header {
-	position: relative!important;
-}
+// USed ONLY by full page stand alone picker
 
-body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div > div {
-	padding-top: 24px;
-}
 
-// Move context menu up and to the left to hide the other image menu otions
-.x-menu.imagepickerContextMenu .x-menu-list {
-	margin-top: -30px;
-	margin-left: -50px;
-}
-
-#JahiaGxtContentPickerWindow {
+// PICKER CONTAINER
+#JahiaGxtContentPickerWindow,
+#contentpicker {
 	// Reset global position of picker as whole page
 	width: 100%!important;
 	height: 100%!important;
 	left: 0!important;
 	top: 10px!important;
+	background: _property($BODY--BG, $PICKER);
+	box-shadow: inset 0px 37px 0px #444548, inset 0px 38px 7px #222;
+	z-index: 1100!important;
 
-	// Fix problem with Firefox
 	body.ext-gecko & {
-		top: 0px!important;
+		top: 0!important;
 	}
 
-	/*z-index: $ZINDEX--PICKER_WINDOW;*/
-	// Removed to fix picker modal on translation engine.
-	// Doesn't affect anywhere else but further testing should be made.
-
-	background: $PICKER--BG--COLOUR;
-
-	body[data-INDIGO-PICKER-SEARCH="open"] & {
-		background: $COLOUR--RAIN_CLOUDS;
-
+	#pickerTitle {
+		display: block;
+		position: fixed;
+		top: 30px;
+		left: 30px;
+		z-index: 99999;
+		font-family: "Raleway", sans-serif;
+		font-size: 36px;
+		color: #7a7e80;
+		font-weight: 100;
 	}
 
-	.x-tool-refresh {
-		background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center;
-		background-color: $COLOUR--RAIN_CLOUDS;
-	    height: 20px;
-	    width: 20px;
-	    border-radius: 100%;
-	    position: fixed;
-	    right: 107px;
-	    top: 41px;
-	    background-size: 14px 11px;
+	&[data-indigo-search-date="custom"] {
 
-		&:hover {
-			background-color: lighten($COLOUR--RAIN_CLOUDS, 9%);
+		#JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset {
+			.x-form-item {
+
+				// MODIFICATION / CREATION / PUBLICATION
+				&:nth-child(4) {
+					display: inline-block!important;
+				}
+
+				// START DATE
+				&:nth-child(5) {
+					display: inline-block;
+				}
+
+				// END DATE
+				&:nth-child(6) {
+					display: inline-block;
+
+				}
+			}
 		}
+
 	}
 
-	/////////// STRUCTURE
+	&[data-indigo-search-date="simple"] {
 
-	// HEADER HEIGHT
+		#JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset {
+			.x-form-item {
+
+				// MODIFICATION / CREATION / PUBLICATION
+				&:nth-child(4) {
+					left: 410px;
+					display: inline-block!important;
+				}
+
+			}
+		}
+
+	}
+
+	// Multi select picker ...
+	&.indigo-picker-multi-select {
+
+		div#JahiaGxtManagerTobTable {
+			height: calc(100% - 242px)!important;
+		}
+
+		#JahiaGxtManagerBottomTabs.indigo-collapsed + div#JahiaGxtManagerTobTable{
+			height: calc(100% - 119px)!important;
+		}
+
+		.x-window-bbar {
+			box-shadow: none;
+		}
+
+	}
+
+	// Search panel is opened
+	&.search-panel-opened {
+
+		#pickerTitle {
+			display: none;
+		}
+
+		box-shadow: inset 0px 41px 0px #444548, inset 0px 79px 0px #515356, inset 0px 80px 1px #222;
+
+		#toggle-picker-files {
+			display: none;
+		}
+
+		// Hide the search button
+		#JahiaGxtManagerLeftTree__CRTsearchTabItem {
+			display: none!important;
+
+		}
+
+		// Turn on the button to return to browse mode
+		#JahiaGxtManagerLeftTree__CRTbrowseTabItem {
+			display: block!important;
+
+		}
+
+		// Get rid of side panel
+		#JahiaGxtManagerLeftTree {
+			left: -$PICKER_SIDEPANEL_WIDTH!important;
+
+		}
+
+		// MULTISELECT FILES
+		#JahiaGxtManagerBottomTabs {
+			width: 100%!important;
+		}
+
+		// TOOLBAR
+		#JahiaGxtManagerTobTable .x-panel-tbar {
+			left: 85px;
+			display: none;
+		}
+
+		#JahiaGxtManagerToolbar {
+			.action-bar-tool-item {
+				// NEW FOLDER
+				&.toolbar-item-newfolder {
+					display: none!important;
+				}
+
+				// UPLOAD FILE
+				&.toolbar-item-upload {
+					display: none!important;
+				}
+			}
+
+
+		}
+
+		// RIGHT PANEL
+		#JahiaGxtManagerTobTable {
+			left: 0px!important;
+			top: 94px!important;
+			width: 100%!important;
+			height: calc(100% - 173px) !important;
+		}
+
+
+
+		// PICKER TITLE
+		.x-window-tl {
+			display: none;
+		}
+
+		// SOURCE PANEL TRIGGER
+		.x-tab-strip-spacer {
+			display: none;
+		}
+
+		#JahiaGxtManagerToolbar {
+			display: none;
+		}
+
+		#thumb-size-slider {
+			right: 16px;
+		}
+
+		&.indigo-picker-multi-select {
+
+			div#JahiaGxtManagerTobTable {
+				height: calc(100% - 293px) !important;
+
+
+			}
+
+			#JahiaGxtManagerBottomTabs {
+				&.indigo-collapsed {
+
+					.toggle-multiple-selection {
+						position: relative;
+						left: 148px;
+
+					}
+
+				}
+			}
+
+		}
+
+	}
+
+
+	// Side Panel has been collapsed
+	&.indigo-collapsed {
+
+		// TOOLBAR
+		#JahiaGxtManagerTobTable .x-panel-tbar {
+			left: 85px;
+		}
+
+		// NEW FOLDER
+		.toolbar-item-newfolder {
+			left: 15px!important;
+		}
+
+		// UPLOAD FILE
+		.toolbar-item-upload {
+			left: 45px!important;
+		}
+
+		// MULTISELECT FILES
+		#JahiaGxtManagerBottomTabs {
+			width: 100%!important;
+		}
+
+
+
+		.x-window-tl {
+			display: none;
+		}
+
+		// LEFT PANEL
+		#JahiaGxtManagerLeftTree {
+			display: none;
+		}
+
+		// RIGHT PANEL
+		#JahiaGxtManagerTobTable {
+			left: 0px!important;
+			width: 100%!important;
+		}
+
+		// TOGGLE BUTTON
+		#toggle-picker-files {
+			left: 0;
+			background-image: url(./images/icons/toggle-WE-white@X2.png);
+		}
+
+		#JahiaGxtManagerLeftTree + div #images-view .x-toolbar {
+			// left: 26px;
+		}
+
+
+
+	}
+
+	// Fix GWT problem
+	.x-grid3-td-name,
+	.x-grid3-td-displayName {
+		pointer-events: none!important;
+		width: 68%!important
+	}
+
+	.x-grid3-td-primaryTypeLabel {
+		pointer-events: none!important;
+		width: 25%!important
+
+	}
+
+	// HEADER
 	.x-window-tl {
-		height: 74px;
-		// background: blue;
+		height: 76px;
+		padding: 0 30px!important;
+		z-index: 99999999;
+
+		pointer-events: none;
+
+		.x-window-tr {
+			position: absolute;
+			bottom: 10px;
+		}
+
+		// Full screen buttons - not in use
+		.x-panel-toolbar {
+			display: none;
+		}
+
+		// PICKER TYPE TITLE (ie Image Picker)
+		.x-window-header-text {
+			pointer-events: all;
+			display: block;
+			position: fixed;
+			top: 30px;
+			left: 30px;
+			z-index: 99999;
+			@include text(36px, _property($SIDE-PANEL-TITLE--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+
+			/* DEV NOTE ::: QUICK N DIRTY */
+			body[data-uilang="fr"] & {
+				letter-spacing: -0.5px;
+			    font-size: 33px;
+			    top: 35px;
+
+			}
+		}
 	}
 
 	// BODY WRAPPER
 	.x-window-bwrap {
-		height: calc(100% - 74px);
-		// background: green;
-		padding: 0 47px;
+		height: calc(100% - 76px);
+		padding: 0 31px;
 
 	}
 
-	// BODY CONTAINERS
+	// HEIGHT FIXES
 	.x-window-ml,
 	.x-window-mr,
 	.x-window-mc,
@@ -90,1169 +330,1738 @@ body[data-INDIGO-PICKER-SOURCE-PANEL="open"] #JahiaGxtContentPickerWindow #Jahia
 		width: 100%!important;
 	}
 
+	// TREE ICONS
+
+	// STYLE FOR UNHANDLED ICONS
+	.x-grid3-col-icon img, // RIGHT PANEL
+	.x-tree3-node-icon { // LEFT PANEL
+		background-color: rgba(239, 239, 239, 0.17);
+	    padding: 2px;
+	    border-radius: 15%;
+	}
+
+	// COMMON LARGE IMAGES
+	img[src$="/jnt_page_large.png"] {
+		padding-left: 46px;
+	    overflow: hidden;
+	    display: inline-block;
+	    box-sizing: border-box;
+	    width: 46px!important;
+	    height: 46px;
+	    margin-right: 4px;
+	    background-repeat: no-repeat;
+	    background-position: center;
+	    background-size: 46px;
+	    opacity: 0.5;
+	    background-color: transparent;
+
+	}
+
+	// BOOTSTRAP COLUMNS
+	img[src$="/jnt_page_large.png"] {
+		background-image: url(./images/tabs-pages-dark@X2.png);
+	}
+
+	// COMMON ICON REPLACEMENTS IN TREE
+	img[src$="/jnt_page.png"],
+	img[src$="/jnt_folder.png"],
+	img[src$="/jnt_contentList.png"],
+	img[src$="/bootstrap3nt_columns.png"],
+	img[src$="/jnt_contentFolder.png"],
+	img[src$="/jnt_virtualsite.png"],
+	img[src$="/jnt_mounts.png"],
+	img[src$="/jnt_file_img.png"] {
+		padding-left: 20px;
+		overflow: hidden;
+		display: inline-block;
+		box-sizing: border-box;
+		width: 20px;
+		height: 20px;
+		margin-right: 4px;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: 23px;
+		opacity: 1;
+
+		// Remove unhandled styles
+		background-color: transparent;
+		padding: 0 0 0 20px;
+		border-radius: 0;
+	}
+
+	// BOOTSTRAP COLUMNS
+	img[src$="/bootstrap3nt_columns.png"] {
+		background-image: url(./images/icons/icon_display_thumbs_grey@X2.png);
+		background-size: 18px;
+	}
+
+	// CONTENT LIST
+	img[src$="/jnt_contentList.png"] {
+		background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+		background-size: 18px;
+	}
+
+
+	// IMAGE ICON
+	img[src$="/jnt_file_img.png"] {
+		background-image: url(./images/icons/icon-image-white@X2.png);
+	}
+
+	// PAGE ICON
+	img[src$="/jnt_page.png"] {
+		background-image: url(./images/tabs-pages-dark@X2.png);
+	}
+
+	// RIGHT TABLE ICONS ( basically light version )
+	#JahiaGxtManagerTobTable {
+		// PAGE ICON
+		img[src$="/jnt_page.png"] {
+			background-image: url(./images/tabs-pages-white@X2.png);
+			opacity: 0.8;
+		}
+
+		// FOLDER ICON
+		img[src$="/jnt_contentFolder.png"],
+		img[src$="/jnt_folder.png"] {
+			background-image: url(./images/icons/tabs-files@X2.png);
+			opacity: 0.8;
+		}
+	}
+
+	// FOLDER ICON
+	img[src$="/jnt_contentFolder.png"],
+	img[src$="/jnt_folder.png"] {
+		background-image: url(./images/icons/tabs-files-dark@X2.png);
+	}
+
+	// SITE ICON
+	img[src$="/jnt_virtualsite.png"] {
+		background-image: url(./images/icons/tabs-site-dark@X2.png);
+	}
+
+	// MOUNTS ICON
+	img[src$="/jnt_mounts.png"] {
+		background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+	}
+
+	// SELECTED ICONS
+	.x-grid3-row-selected {
+		// FOLDER ICON
+		img[src$="/jnt_contentFolder.png"],
+		img[src$="/jnt_folder.png"] {
+			background-image: url(./images/icons/tabs-files@X2.png);
+		}
+
+		// SITE ICON
+		img[src$="/jnt_virtualsite.png"] {
+			background-image: url(./images/icons/tabs-site-white@X2.png);
+		}
+
+		// MOUNTS ICON
+		img[src$="/jnt_mounts.png"] {
+			background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+		}
+
+		// PAGE ICON
+		img[src$="/jnt_page.png"] {
+			background-image: url(./images/tabs-pages-white@X2.png);
+		}
+	}
+
+
+	// MULTI SELECT PANEL
+	#JahiaGxtManagerBottomTabs {
+		position: fixed!important;
+	    bottom: 48px;
+		right: 0;
+	    left: auto!important;
+		width: calc(100% - #{$PICKER_SIDEPANEL_WIDTH})!important;
+	    background: _property($DARK-FOOTER--BG, $PICKER);
+	    height: 150px!important;
+	    top: auto!important;
+		padding: 15px;
+		box-sizing: border-box;
+		box-shadow: inset 0px 1px 7px #222;
+
+		&.indigo-collapsed {
+			height: 79px!important;
+			z-index: 99999;
+			background: transparent!important;
+			bottom: 0!important;
+			pointer-events: none;
+			padding-top: 28px;
+
+			.toggle-multiple-selection {
+				background-image: url(./images/icons/toggle-SN-white@X2.png);
+				pointer-events: all;
+				margin-bottom: 30px;
+			}
+		}
+
+		.toggle-multiple-selection {
+		    content: attr(data-indigo-multiselection-title);
+		    font-size: 18px;
+		    color: #F1F1F1;
+		    font-weight: 100;
+		    font-family: Nunito Sans;
+		    display: inline-block;
+		    margin-bottom: 10px;
+			padding: 0 0 0 19px;
+			background: url(./images/icons/toggle-NS-white@X2.png) no-repeat left center;
+			background-size: 15px;
+			opacity: 0.9;
+			border: none;
+
+			&:hover {
+				opacity: 1;
+				cursor: pointer;
+			}
+		}
 
 
 
-	// BODY TOOL BAR
-	.x-panel-tbar {
-		background: transparent;
-	    width: 100%!important;
-	    height: 100%;
-	    top: 0;
-	    left: 0;
+		.x-grid3 {
+			height: calc(100% - 23px)!important;
+		}
+
+		.x-grid-empty {
+			@include text(12px, #9c9ea0, $FONT--WEIGHT---EXTRALIGHT);
+			padding: 0;
+		}
+
+		// ADDED FILE CONTAINER
+		.x-grid-group {
+
+			width: 100px;
+			display: inline-block;
+			margin-right: 5px;
+
+			// FILE HEADER ( CONTAINS NAME )
+			.x-grid-group-hd {
+				display: none;
+			}
+
+			// CONTAINS FILE AND FILE INFO
+			.x-grid-group-body {
+
+				// ROW
+				.x-grid3-row {
+					height: auto!important;
+					background: rgb(0, 160, 227) !important;
+					padding: 5px 3px;
+				    box-sizing: border-box;
+
+					// THUMBNAIL
+					.x-grid3-td-preview {
+						width: 100%!important;
+
+						img {
+							width: 100%!important;
+
+						}
+					}
+
+					// CONTAINS GROUP OF DETAILS - MAYBE USE FOR HOVER TO SHOW INFO
+					.x-grid3-td-name {
+
+						display: none;
+
+						.details {
+
+							// LABEL
+							b {
+
+							}
+
+							// VALUE
+							span {
+
+							}
+						}
+					}
+
+					// NAME - HIDDEN BY DEFAULT - CAN I USE ???
+					.x-grid3-td-displayName {
+
+						display: block!important;
+						width: auto!important;
+
+						.x-grid3-col-displayName {
+							color: $COLOUR--WHITE_CLOUDS;
+							font-size: 10px;
+						}
+
+						&::after {
+							display: none;
+						}
+
+					}
+
+					// PATH - HIDDEN BY DEFAULT - CAN I USE IT ???
+					.x-grid3-td-path {
+
+						.x-grid3-col-path {
+
+						}
+					}
+
+					// REMOVE FROM LIST
+					.x-grid3-td-remove {
+
+						width: 25px!important;
+						height: 25px!important;
+						position: absolute;
+						top: -2px;
+						right: 1px;
+
+						.x-grid3-col-remove {
+
+							// BUTTON
+							> table {
+
+								width: 20px;
+								height: 20px;
+								background: url(./images/icons/icon-close-grey@X2.png) no-repeat center center #e9e9e9;
+								background-size: 10px;
+								border: 2px solid rgb(0, 160, 227)!important;
+								pointer-events: all;
+
+
+								> tbody {
+									display: none;
+								}
+
+							}
+
+						}
+					}
+				}
+
+			}
+
+		}
+	}
+
+
+	// LEFT PANEL (contains browse / search)
+	#JahiaGxtManagerLeftTree {
+
+
+
+		height: 100% !important;
+	    width: $PICKER_SIDEPANEL_WIDTH !important;
+	    vertical-align: top;
+	    display: inline-block;
+	    position: fixed !important;
+	    margin-right: 20px;
+	    background: _property($SIDE-PANEL--BG, $PICKER);
+	    padding-top: 80px;
+		box-shadow: _property($SIDE-PANEL--SHADOW, $PICKER);
+		z-index: 9999;
+
+		// Fix GWT problem
+		.x-grid3-td-name,
+		.x-grid3-td-displayName {
+			pointer-events: none!important;
+			width: 100%!important;
+			display: block;
+		}
+
+		// Clean up uneeded GWT stuff ...
+		> .x-tab-panel-header {
+			border: none;
+			padding:0;
+			width: 100%!important;
+
+			ul {
+				border: none;
+				padding:0;
+				margin:0;
+
+			}
+		}
+
+		// Clean up uneeded GWT stuff ...
+		> .x-tab-panel-body {
+			width: 100%!important;
+			height: 100%!important;
+			background: transparent;
+		}
+
+		// Hijack for triggering the faked drop down on source list
+		.x-tab-strip-spacer {
+			position: fixed;
+		    top: 80px;
+		    left: 28px;
+		    background: yellow;
+		    width: calc(#{$PICKER_SIDEPANEL_WIDTH} - 56px);
+		    height: 30px;
+		    opacity: 0;
+			z-index: 9999;
+		}
+
+		body[data-INDIGO-PICKER-SEARCH="open"] & {
+			// left: -$PICKER_SIDEPANEL_WIDTH!important;
+		}
+
+		// MORE INFO "BUTTON"
+		// More Options "button" ...
+		.x-grid3-row .x-tree3-el {
+			pointer-events: none;
+			width: 100%!important;
+
+			&::after {
+				pointer-events: all;
+				content: " ";
+				text-indent: -50000px;
+				background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
+				background-size: 10px 2px;
+				width: 28px;
+				height: 25px;
+				position: absolute;
+				right: -1px;
+				top: 0;
+				cursor: pointer;
+				z-index: 99999999999;
+				opacity: 0;
+			}
+		}
+
+		// Show more options ( roll over )
+		.x-grid3-row-over .x-tree3-el::after {
+			opacity: 1;
+		}
+
+		// Set more options icon to selected
+		.x-grid3-row-selected .x-tree3-el::after {
+			background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
+			background-size: 10px 2px;
+		}
+
+		// SEARCH BUTTON
+		#JahiaGxtManagerLeftTree__CRTsearchTabItem {
+			background: url(./images/icons/tabs-search-black@X2.png) no-repeat center center transparent;
+		    width: 25px;
+		    height: 25px;
+		    position: fixed;
+		    top: 42px;
+		    left: 245px;
+		    display: block;
+		    background-size: 20px;
+		    background-color: #e8e8e8;
+		    border-radius: 100%;
+
+			/* DEV NOTE ::: QUICK N DIRTY */
+			body[data-uilang="fr"] & {
+				top: 43px;
+
+			}
+
+			a,
+			img {
+				display: none;
+			}
+
+			&:hover {
+				cursor: pointer;
+				background-color: #dfdfdf;
+			}
+
+
+		}
+
+		// BROWSE BUTTON (Displayed as an exit button when search is opened)
+		#JahiaGxtManagerLeftTree__CRTbrowseTabItem {
+			background: url($ICON--BACK--GREY) no-repeat left center;
+		    height: 25px;
+		    position: fixed;
+		    top: 6px;
+		    left: 6px;
+			padding-left: 9px;
+		    display: none;
+		    background-size: 13px;
+			opacity: 0.8;
+
+			a,
+			img {
+				display: none;
+			}
+
+			&::before {
+				content: $text_return_to_picker;
+			    padding: 6px;
+			    display: block;
+			    font-size: 12px;
+			    font-family: Nunito Sans;
+			    color: #bbbcbd;
+			}
+
+			&:hover {
+				opacity: 1;
+				cursor: pointer;
+			}
+
+
+		}
+
+		// SEARCH PANEL
+		#CRTsearchTabItem {
+
+			// GWT Cleanup ...
+			> .x-panel {
+				width: auto!important;
+
+				// Unused heading
+				> .x-panel-tl {
+					display: none;
+				}
+
+			}
+
+			.x-panel-mc {
+
+				> .x-panel-body {
+					background: red!important;
+				}
+
+				> .x-panel-body {
+
+					> .x-component {
+						&:nth-child(1) {
+							background: red!important;
+							width: 0;
+							height: 0;
+
+							td {
+								// Search input string
+								&:nth-child(1){
+									label {
+										display: none!important;
+									}
+
+									.x-form-field-wrap {
+										position: fixed;
+										top: 6px!important;
+										left: 0!important;
+										width: 100%!important;
+										pointer-events: none;
+
+									}
+
+									input {
+										width: 400px!important;
+
+										@include _input-search($PICKER);
+
+										margin: 0 auto;
+										pointer-events: all;
+									}
+
+								}
+
+								// Search button
+								&:nth-child(2){
+									> table {
+										position: fixed;
+										top: 6px;
+										right: calc(50% - 242px);
+										width: 25px;
+										height: 24px;
+
+									    background: #00a0e3;
+									    padding: 7px 10px;
+
+										body.ext-gecko & {
+											padding: 8px 10px;
+
+										}
+
+										@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+
+										> tbody {
+											display: none;
+										}
+
+										&::before {
+											content: $text_search;
+										}
+									}
+								}
+
+								// Save Search
+								&:nth-child(3){
+									> table {
+										position: fixed;
+									    bottom: 25px;
+									    left: 24px;
+									    width: 25px;
+									    background: #dedede;
+									    padding: 6px 10px;
+
+										> tbody {
+											display: none;
+										}
+
+										&::before {
+											content: $text_save_search_results;
+
+											@include text(12px, #444649, $FONT--WEIGHT---EXTRALIGHT);
+										}
+									}
+								}
+
+							}
+
+
+						}
+
+						// Search Criterium
+						&:nth-child(2) {
+							background: blue!important;
+
+							position: fixed;
+							left: 0;
+
+							visibility: hidden;
+
+							// Unused header ...
+							> .x-panel-header {
+								display: none!important;
+							}
+
+							// COntains search Criterium ...
+							fieldset {
+
+								position: fixed;
+								top: 45px;
+								left: 5px;
+								margin: 0!important;
+
+								width: 100%;
+								padding: 0!important;
+
+								> legend {
+									display: none!important;
+								}
+
+								// Entries ...
+								.x-form-item {
+									width: 130px!important;
+
+									margin-right: 5px;
+
+									.x-form-field.x-form-text,
+									&::before {
+										// @extend %CSS_BLOCK--COMBO;
+										// @extend %CSS_BLOCK--COMBO--PICKER--SEARCH;
+									}
+
+									&::before {
+										@include _drop-down-fake($PICKER);
+										// background-image: url("./images/icons/combo-arrow.png");
+										// background-position: right 5px center;
+										// background-repeat: no-repeat;
+										//
+										// display: block;
+
+									}
+
+									input {
+
+
+										// &::-webkit-input-placeholder{
+										// 	color: red;
+										// }
+										// &:-moz-placeholder{
+										// 	color: red;
+										// }
+										// &::-moz-placeholder{
+										// 	color: red;
+										// }
+										// &:-ms-input-placeholder {
+										// 	color: red;
+										// }
+									}
+
+									// .x-form-trigger-arrow {
+									// 	background-color: transparent!important;
+									// 	width: 100%;
+									// 	background-position: right 5px center;
+									// }
+
+									visibility: visible;
+
+									display: inline-block;
+									width: 150px;
+
+									// PAGE PICKER
+									&:nth-child(1) {
+
+									}
+
+									// LANGUAGE
+									&:nth-child(2) {
+										border-right: 1px solid #595e61;
+										border-right: 1px solid #595e61;
+
+										> label {
+											display: none!important;
+										}
+
+										input { // ADD A PLACEHOLDER VIA JS TO SAY "ANY LANGUAGE"
+
+										}
+
+									}
+
+									// META DATA
+									&:nth-child(3) {
+										border-right: 1px solid #595e61;
+
+										&::before {
+											content: attr(data-indigo-meta-label);
+
+
+										}
+
+										&:hover {
+											.x-form-element {
+												display: block;
+											}
+										}
+
+										> label {
+											display: none!important;
+										}
+
+										.x-form-element {
+											display: none;
+
+											table,
+											tbody,
+											tr,
+											td {
+												display: block;
+											}
+
+
+
+											td {
+												margin: 0;
+												padding: 0;
+											}
+
+											.x-component {
+											    position: fixed;
+												width: 130px!important;
+												background: #00a0e3;
+
+
+												.x-component {
+													width: 100%!important;
+													padding: 5px 11px 0;
+													box-sizing: border-box;
+
+													label {
+														text-transform: none;
+														@include text(12px, $COLOUR--WHITE_CLOUDS, 300);
+
+													}
+												}
+
+
+											}
+
+
+
+
+										}
+									}
+
+									// CREATION / MODIFICATION / PUBLICATION
+									&:nth-child(4) {
+										width: 150px!important;
+										position: fixed;
+										left: 606px;
+										display: none!important; // ONLY SHOW WHEN A DATE HAS BEEN SELECTED
+
+
+
+										> label {
+											position: absolute;
+										    top: 0;
+										    left: 0;
+										    width: 100%!important;
+										    text-indent: -50000px;
+										    opacity: 0;
+										}
+
+										&::before {
+											content: attr(data-indigo-modification-label);
+
+
+										}
+
+										&.indigo-show-menu {
+											.x-form-element {
+												display: block;
+											}
+										}
+
+
+
+										.x-form-element {
+
+											display: none;
+
+
+											input[type="radio"] {
+												opacity: 0;
+
+											}
+										}
+
+										td {
+											border:none;
+											display: block;
+											background: $FORM--CONTEXT_MENU--BG--COLOUR---UP;
+									        border: none;
+
+											padding: 5px 1px !important;
+
+											&:hover {
+												/* Selected / Hovered */
+												border:none!important;
+												color: $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER;
+										        background: $FORM--CONTEXT_MENU--BG--COLOUR---HOVER;
+
+											}
+
+											label {
+												width: 100%;
+												height: 100%;
+												display: block;
+												text-transform: none;
+												@include text(13px, $FORM--CONTEXT_MENU--FONT--COLOUR---UP, $FONT--WEIGHT---LIGHT);
+											}
+										}
+									}
+
+									// START DATE
+									&:nth-child(5) {
+										position: fixed;
+										left: 410px;
+										width: 93px!important;
+
+										display: none;
+
+										> label {
+											display: none!important;
+										}
+									}
+
+									// END DATE
+									&:nth-child(6) {
+										position: fixed;
+										left: 508px;
+										width: 93px!important;
+
+
+										display: none;
+
+										> label {
+											display: none!important;
+										}
+									}
+
+									// DATE RANGE
+									&:nth-child(7) {
+										> label {
+											display: none!important;
+										}
+									}
+
+									// ITEMS PER PAGE
+									&:nth-child(8) {
+										display: none!important;
+									}
+
+
+
+								}
+
+							}
+
+
+						}
+
+					}
+				}
+			}
+
+
+
+		}
+
+		// BROWSE PANEL
+		#CRTbrowseTabItem {
+
+			width: 100%!important;
+			height: calc(100% - 100px);
+
+			body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+				margin-top: 24px;
+			}
+
+			// Fix GWT size issues ...
+			> .x-component {
+				width: 100%!important;
+
+				> .x-panel {
+					width: 100%!important;
+					position: relative;
+
+				}
+			}
+
+			// Container
+			> div {
+
+				// Accordian Source Groups ( ie. Current Site, Sites, Extzrnal Repos)
+				> .x-panel {
+
+					// Header
+					.x-accordion-hd {
+						background: none;
+						box-sizing: border-box;
+						position: relative;
+						z-index: 999;
+						padding: 0 30px;
+
+						width: 100%;
+						height: 30px;
+
+						// Icon - dont need
+						img {
+							display: none;
+						}
+
+						// Refresh tool used to refresh the contents of current source
+						.x-tool-refresh {
+							background: url(./images/icons/icon-publication-launcher-grey.png) no-repeat center center transparent;
+							height: 30px;
+							width: 30px;
+							position: fixed;
+							left: calc(#{$PICKER_SIDEPANEL_WIDTH} - 83px);
+						    top: 80px;
+							background-size: 12px 10px;
+							z-index: 999999!important;
+
+							&:hover {
+								background-color: lighten($COLOUR--RAIN_CLOUDS, 9%);
+							}
+						}
+
+						.x-tool-toggle {
+							display: none;
+						}
+
+						.x-panel-header-text {
+							@include _drop-down-fake(LIGHT);
+
+							width: 100%!important;
+
+							body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+								width: 100%!important;
+							}
+
+						}
+					}
+
+					// Tree Holder
+					> .x-panel-bwrap {
+						position: fixed;
+						z-index: 99;
+						top: 120px !important;
+						width: calc(#{$PICKER_SIDEPANEL_WIDTH} + 8px) !important;
+						height: calc(100% - 150px) !important;
+						padding: 5px 27px 0 32px;
+						box-sizing: border-box;
+
+						// Saved search results styling ...
+						.x-view {
+							background: transparent;
+
+							// Row UP
+							.x-view-item {
+								border: none!important;
+
+								@include text(12px, #7a7e80 !important, $FONT--WEIGHT---EXTRALIGHT);
+
+							}
+
+							// Row OVER
+							.x-view-item-over {
+								background: rgba(122, 126, 128, 0.1) !important;
+							}
+
+							// Row SELECTED
+							.x-view-item-sel {
+								background: rgb(155, 157, 159) !important;
+								color: #f1f1f1 !important;
+
+								// Row SELECTED OVER
+								&.x-view-item-over {
+									background: rgb(155, 157, 159) !important;
+									color: #f1f1f1 !important;
+								}
+							}
+						}
+
+					}
+
+
+					body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+						.x-panel-header {
+							// display: none;
+							position: fixed;
+							top: 80px;
+							width: $PICKER_SIDEPANEL_WIDTH;
+							pointer-events: none!important;
+						}
+					}
+
+					// This accordian panel is not used, so hide it
+					&.x-panel-collapsed {
+						.x-panel-header {
+							display: none;
+							top: 0!important;
+
+							body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
+								display: block;
+								position: relative;
+
+								.x-panel-header-text {
+									pointer-events: all;
+									@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM;
+
+									&:hover {
+										@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER;
+									}
+								}
+							}
+
+							// HIDE TOOLBAR
+							.x-panel-toolbar {
+								display: none;
+							}
+
+							pointer-events: all!important;
+
+						}
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	// Fix GWT stuff ...
+	#JahiaGxtManagerLeftTree + div {
+
+	}
+
+	// RIGHT PANEL
+	#JahiaGxtManagerTobTable {
+
+		position: fixed!important;
+	    left: $PICKER_SIDEPANEL_WIDTH!important;
+	    top: 40px!important;
+	    height: calc(100% - 119px) !important;
+	    width: calc(100% - #{$PICKER_SIDEPANEL_WIDTH})!important;
+
+		#images-view {
+			background: transparent!important;
+
+			.x-panel-body {
+				background: transparent!important;
+
+			}
+		}
+
+		// Scroller is a pain ...
+		.x-grid3-scroller {
+			width: 100%!important;
+
+			.x-grid3-body {
+				padding: 0 20px;
+
+				.x-grid-empty {
+					width: 100%!important;
+				}
+
+			}
+		}
+
+		// ROW VIEW
+		.x-grid3-row {
+
+			.x-grid3-td-publicationInfo {
+				width: 3px !important;
+			    height: 24px;
+			    overflow: hidden;
+			    position: absolute;
+			    left: -4px;
+			    top: 1px;
+			}
+
+			position: relative;
+
+			.x-grid3-td-size {
+				pointer-events: none; // Stop the event listener attached for displaying more info ...
+			}
+
+			.x-grid3-col-name,
+			.x-grid3-col-displayName {
+				color: _property($ROW--COLOR, $PICKER)!important;
+			}
+
+			.x-grid3-col-size,
+			.x-grid3-col-primaryTypeLabel {
+				color: _property($ROW--COLOR--DIMMED, $PICKER)!important;
+			}
+
+			// SELECTED ROW
+			&.x-grid3-row-selected {
+				background: _property($ROW--BG---SELECTED, $PICKER)!important;
+			}
+
+			// OVER
+			&.x-grid3-row-over {
+				background: _property($ROW--BG---HOVER, $PICKER)!important;
+			}
+
+			// SELECTED OVER
+			&.x-grid3-row-selected.x-grid3-row-over {
+				background: _property($ROW--BG---SELECTED, $PICKER)!important;
+			}
+		}
+
+		// THUMBS / DETAILS VIEWS
+		.x-view {
+			background: transparent!important;
+			min-height: 100%!important;
+			height: auto!important;
+			padding: 20px;
+
+			-webkit-column-count: 3;
+			-webkit-column-gap: 5px;
+			-webkit-column-fill: balance;
+			-moz-column-count: 3;
+			-moz-column-gap: 5px;
+			-moz-column-fill: balance;
+			column-count: 3;
+			column-gap: 5px;
+			column-fill: balance;
+
+			box-sizing: border-box;
+
+
+
+			&[indigo-thumb-zoom="1"] {
+				column-count: 6;
+			}
+
+			&[indigo-thumb-zoom="2"] {
+				column-count: 5;
+			}
+
+			&[indigo-thumb-zoom="3"] {
+				column-count: 4;
+			}
+
+			&[indigo-thumb-zoom="4"] {
+				column-count: 3;
+			}
+
+			&[indigo-thumb-zoom="5"] {
+				column-count: 2;
+			}
+
+			&[indigo-thumb-zoom="6"] {
+				column-count: 1;
+			}
+
+			// FILES
+			.thumb-wrap {
+				display: inline-block;
+				-webkit-column-break-inside: avoid;
+				-moz-column-break-inside: avoid;
+				column-break-inside: avoid;
+				opacity: 1;
+
+				height: initial!important;
+				max-height: initial!important;
+				margin: 0 0 5px 0!important;
+				width: 100%!important;
+
+				img {
+					width: 100%!important;
+				}
+
+				// Make sure that which ever thumb is being hovered is pulled to the top
+				&:hover {
+					z-index: 999999999999999;
+				}
+
+				span {
+					// THUMB VIE DETAILS
+					display: none;
+
+					position: absolute;
+					width: 100%;
+					@include text(10px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+					z-index: 999;
+					margin-top: -2px;
+
+					// Filesize
+					&:nth-child(3) {
+						@include text(8px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+						margin-top: 0;
+					    z-index: 9;
+						padding-bottom: 10px;
+						padding-top: 14px;
+					}
+				}
+
+				// Hover / force hover (used when the context menu is opened)
+				&.x-view-over,
+				&.indigo-force-open {
+					background: _property($THUMB--BG---SELECTED, $PICKER);
+
+					span {
+						background: _property($THUMB--BG---SELECTED, $PICKER);
+						display: block;
+					}
+
+				}
+
+				// Selected row
+				&.x-view-item-sel {
+					background: _property($THUMB--BG---SELECTED, $PICKER);
+
+					span {
+						background: _property($THUMB--BG---SELECTED, $PICKER)!important;
+					}
+
+					.thumb {
+						background: _property($THUMB--BG---SELECTED, $PICKER)!important;
+					}
+
+					&.x-view-highlightrow {
+						background: _property($THUMB--BG---SELECTED, $PICKER);
+					}
+
+
+				}
+			}
+
+			.thumb {
+				padding: 10px!important;
+				width: 100%!important;
+				float: none!important;
+
+				overflow: visible;
+			}
+
+			.thumbDetails {
+				position: relative!important;
+				display: block!important;
+				top: 0;
+				left: 0;
+				padding: 0 10px 10px 10px;
+				width: 100%;
+				box-sizing: border-box;
+
+				div {
+					@include text(10px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+
+					display: block!important;
+					overflow: hidden;
+				    white-space: nowrap;
+				    text-overflow: ellipsis;
+					margin-bottom: 5px;
+
+					b {
+						@include text(8px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+						display: block;
+					    margin-right: 5px;
+						text-transform: uppercase;
+
+					}
+				}
+			}
+
+
+		}
+
+		> .x-panel-header {
+			display: none;
+		}
+
+		// Toolbar (filter, sort, etc, ...)
+		.x-panel-tbar {
+			position: fixed;
+			top: 6px;
+			left: calc(#{$PICKER_SIDEPANEL_WIDTH} + 90px);
+			width: auto!important;
+
+			> .x-toolbar {
+				background: transparent;
+				width: auto!important;
+				padding: 0;
+			}
+
+			.x-toolbar-left {
+
+
+				td {
+					// Filter Label
+					&:nth-child(1) {
+						display: none;
+					}
+
+					// Filter Input
+					&:nth-child(2) {
+						.x-form-field-wrap {
+							margin-right: 5px!important;
+
+							.x-form-text {
+								@include _input-search($PICKER-HEADER-INPUT);
+
+								// width: 80px!important;
+							}
+
+							.x-form-trigger {
+								// height: 25px!important;
+							}
+						}
+					}
+
+					// Unknown
+					&:nth-child(3) {
+						display: none;
+
+					}
+
+					// Sort Label
+					&:nth-child(4) {
+						display: none;
+
+					}
+
+					// Sort Combo
+					&:nth-child(5) {
+						.x-form-text {
+							@include text_input("PICKER_SORT");
+							// padding: 3px 15px 4px 9px!important;
+						}
+
+						.x-form-trigger {
+							// height: 25px!important;
+						}
+					}
+
+					// ASC / DESC
+					&:nth-child(6) {
+						@include button("TOGGLE_ASC");
+
+						 .x-btn.x-btn-noicon button {
+							width: 25px!important;
+							height: 25px!important;
+						}
+
+						> table {
+							> tbody {
+								display: inline-block;
+								vertical-align: middle;
+								margin-left: 5px;
+							}
+						}
+
+						.x-btn-pressed {
+							&.x-btn.x-btn-noicon button {
+								background-image: url($ICON--DESC--WHITE)!important;
+
+								&:hover {
+									background-color: #6a6e70 !important;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// GWT Zoom - not used
+			.x-toolbar-right {
+				display: none;
+			}
+
+
+		}
+
+		// More info / Preview buttons
+		.thumb-wrap,
+		.x-grid3-row {
+			// More info button UP
+			.more-info-button {
+				position: absolute;
+				top: 0;
+				right: 0;
+				text-indent: -50000px;
+				width: 25px;
+			    height: 25px;
+				z-index: 99999;
+			    display: none;
+			    border: none;
+
+				&.indigo-show-button {
+					display: block;
+				}
+
+				&:hover {
+					cursor: pointer;
+				}
+				background: no-repeat center center #767b7e;
+				background-image: url($ICON--MORE_OPTIONS---WHITE);
+				background-size: 10px 2px;
+			}
+
+			.preview-button {
+				position: absolute;
+				top: 0;
+				right: 25px;
+				text-indent: -50000px;
+				width: 25px;
+			    height: 25px;
+				z-index: 99999;
+			    display: none;
+			    border: none;
+
+				&.indigo-show-button {
+					display: block;
+				}
+
+				&:hover {
+					cursor: pointer;
+				}
+				background: no-repeat center center #767b7e;
+				background-image:url(./images/icons/icon_preview_small_white.png);
+			}
+
+			&.x-view-item-sel,
+			&.x-grid3-row-selected {
+				// More info button SELECTED
+				.more-info-button {
+					background-color: #00a0e3;
+				}
+
+				.preview-button {
+					background-color: #00a0e3;
+				}
+			}
+
+			&:hover {
+				// Just display button when row / thumb is hovered ...
+				.more-info-button {
+					display: block;
+				}
+
+				.preview-button {
+					display: block;
+				}
+			}
+
+		}
+
+
+	}
+
+	// ACTION BAR (Save, cancel)
+	.x-window-bbar,
+	.x-panel-bbar { // for stand alone picker
 	    position: fixed;
+	    bottom: -8px;
+	    box-sizing: border-box;
+	    right: -30px;
+	    background: _property($DARK-FOOTER--BG, $PICKER);
 	    z-index: 99;
-	    pointer-events: none;
+	    box-shadow: _property($DARK-FOOTER--SHADOW, $PICKER);
+	    height: 87px;
+	    width: calc(100% + 60px)!important;
+	    padding-right: 30px;
 
-		// TOOLBAR CONTAINER
-		.x-toolbar {
+		// Full page picker correction
+		> div {
+			width: 100%!important
+		}
+
+		// Push buttons to right of screen
+		.x-panel-fbar {
+			width: 100%!important;
+			padding: 20px 17px;
+			box-sizing: border-box;
+
+			.x-toolbar-ct {
+				float: right;
+			}
+		}
+
+
+		.x-toolbar-cell {
+			margin-left: 5px;
+
+			// SAVE
+			&:nth-child(1) {
+				float: right;
+
+				@include button("ACTIONBAR---SUGGESTED");
+			}
+
+			// CANCEL
+			&:nth-child(2) {
+				float: left;
+			}
+		}
+	}
+
+	// BUTTONS CREATED FOR RIGHT PANEL
+	// Thumb slider used to control the amount of columns in thumb view
+	#thumb-size-slider {
+		position: fixed;
+		top: 1px;
+		right: 90px;
+		z-index: 9999;
+		width: 50px;
+
+		// Hide when in list view
+		body[indigo-picker-display="listview"] & {
+			display: none;
+		}
+
+		// Styling
+		-webkit-appearance: none;
+		margin: 18px 0;
+
+		body.ext-gecko & {
+			margin: 11px 0;
+		}
+
+		&:focus {
+		  outline: none;
+		}
+
+		&::-webkit-slider-runnable-track {
+			width: 100%;
+			height: 2px;
+			cursor: pointer;
+			background: #8a8e90;
+		}
+
+		&::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			height: 12px;
+			width: 12px;
+			border-radius: 100%;
+			background: #d9dbdd;
+			cursor: pointer;
+			margin-top: -5px;
+		}
+
+		&:focus::-webkit-slider-runnable-track {
+			background: #8a8e90;
+		}
+
+		&::-moz-range-track {
+			width: 100%;
+			height: 2px;
+			cursor: pointer;
+			background: #8a8e90;
+		}
+
+		&::-moz-range-thumb {
+			height: 12px;
+			width: 12px;
+			border-radius: 100%;
+			background: #d9dbdd;
+			cursor: pointer;
+		}
+	}
+
+	// Used to toggle the side panel
+	#toggle-picker-files {
+		position: fixed;
+		top: calc(50% - 45px);
+		left: $PICKER_SIDEPANEL_WIDTH - 23px;
+		background: red;
+		color: white;
+		z-index: 99999;
+
+		text-indent: -50000px;
+		width: 20px;
+		height: 20px;
+
+		border: none;
+		opacity: 0.8;
+
+		background: url(./images/icons/toggle-EW@X2.png) no-repeat center center;
+		background-size: 15px;
+
+		&:hover {
+			opacity: 1;
+			cursor: pointer;
+		}
+	}
+
+	// TOOLBAR
+	#JahiaGxtManagerToolbar {
+
+		// Remove some GWT styles ...
+		> .x-toolbar {
 			border:none;
 			padding: 0;
 			background: none;
 		}
 
-		// SEPERATOR
-		.xtb-sep {
-			display: none;
+		.action-bar-menu-item {
+			// Node type filtering ( used in the COntent Picker )
+			&.toolbar-itemsgroup-nodetypefiltering {
+				width: 150px!important;
+				right: 7px;
+				position: fixed;
+				top: 7px!important;
+				left: auto!important;
+
+				input {
+					// padding: 3px 15px 4px 9px!important;
+					// background-color: #d9dbdd;
+					// @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--DARK_CLOUDS, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+				}
+
+				.x-form-trigger {
+					height: 25px!important;
+				}
+			}
 		}
 
-		.action-bar-tool-item {
-			// Hide all toolbar options
+		// BUTTON
+		.action-bar-tool-item{
 			display: none;
 
-			// PREVIEW BUTTON STUFF
-			&.toolbar-item-filepreview {
-				position: fixed;
-				pointer-events: all;
-				right: auto;
+			position: fixed;
+			top: 6px;
+			opacity: 0.8;
 
-				width: 25px;
-				height: 25px;
+			background-color: transparent;
+			background-position: center;
+			background-size: 10px;
+			background-repeat: no-repeat;
+
+			z-index: 999999;
+
+			width: 25px;
+			height: 25px;
+
+			button {
+				width: 25px!important;
+			}
+
+			tbody {
+				display: none;
+			}
+
+			&:hover {
 				opacity: 1!important;
-
-				@extend %CSS_BLOCK--PREVIEW_BUTTON---UP;
-
-				body[data-INDIGO-PICKER-SEARCH="open"] & {
-					@extend %CSS_BLOCK--PREVIEW_BUTTON---UP\:SEARCH;
-				}
-
-				&:hover {
-					// @extend %CSS_BLOCK--PREVIEW_BUTTON---HOVER;
-				}
-
-
-				display: none;
-
-				img {
-					display: none;
-				}
-
-				&[indigo-preview-button="show"] {
-					display: block;
-				}
-
-				&[indigo-preview-button-state="selected"] {
-					@extend %CSS_BLOCK--PREVIEW_BUTTON---SELECTED;
-
-					background-color: $COLOUR--JAHIA_BLUE!important;
-					opacity: 1!important;
-
-					body[data-INDIGO-PICKER-SEARCH="open"] & {
-						@extend %CSS_BLOCK--PREVIEW_BUTTON---SELECTED\:SEARCH;
-					}
-
-				}
-
+				cursor: pointer;
 			}
 
-
+			// DELETE ???
 			&.x-item-disabled {
-				display: none!important;
+				// display: block!important;
 			}
 
-			// VIEW BUTTONS
-			&.toolbar-item-listview,
-			&.toolbar-item-thumbsview,
-			&.toolbar-item-detailedview {
-				display: block;
-				pointer-events: all;
-				width: 25px;
-				height: 25px;
 
-				opacity: 0.3;
 
-				img {
-					display: none;
-				}
 
-				&:hover {
-					opacity: 1;
-				}
+			// Add New Folder
+			&.toolbar-item-newfolder {
+				display: block !important;
+				left: calc(#{$PICKER_SIDEPANEL_WIDTH} + 15px);
+				opacity: 1 !important;
+			    background: url(./images/icons/add-folder@X2.png) no-repeat center center;
+			    background-size: 21px;
 			}
 
-			// LIST VIEW
+			// Upload File
+			&.toolbar-item-upload {
+				display: block !important;
+				left: calc(#{$PICKER_SIDEPANEL_WIDTH} + 45px);
+				background: url(./images/icons/add-media@X2.png) no-repeat top 0px center;
+				background-size: 23px;
+			}
+
+			// List View
 			&.toolbar-item-listview {
-				background: url($ICON--DISPLAY--LIST--GREY) no-repeat center center;
-
-				body[indigo-PICKER-DISPLAY="list"] & {
-					opacity: 0.8;
-				}
-			}
-
-			// THUMBS VIEW
-			&.toolbar-item-thumbsview {
-				background: url($ICON--DISPLAY--THUMBS--GREY) no-repeat center center;
-
-				body[indigo-PICKER-DISPLAY="thumbs"] & {
-					opacity: 0.8;
-				}
-			}
-
-			// DETAILED VIEW
-			&.toolbar-item-detailedview {
-				background: url($ICON--DISPLAY--DETAILS--GREY) no-repeat center center;
-				display: none;
-
-				body[indigo-PICKER-DISPLAY="details"] & {
-					opacity: 0.8;
-				}
-			}
-		}
-
-		// FILE OPERATIONS
-		.x-toolbar-left {
-
-		}
-
-		// DISPLAY OPTIONS
-		#JahiaGxtManagerToolbar .x-toolbar-right {
-		    position: fixed;
-			right: 52px;
-			top: 38px;
-
-			body[data-INDIGO-PICKER-SEARCH="open"] & {
-				display: none;
-			}
-		}
-
-
-
-
-	}
-
-	/////////// STYLING
-
-	// PICKER TITLE
-	.x-window-header {
-		margin: 0;
-
-		.x-panel-toolbar {
-			float:none!important;
-		}
-	}
-	.x-window-header-text {
-		pointer-events: all;
-		margin: 27px 0 0 44px;
-		display: block;
-		@include text(36px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
-	}
-
-
-
-	// TREE
-	#JahiaGxtManagerLeftTree {
-		height: calc(100% - 120px)!important; // Make room for save, close buttons
-		width: 320px !important;
-	    vertical-align: top;
-	    display: inline-block;
-	    position: relative!important;
-		margin-right: 20px;
-
-		.x-grid3-row {
-
-			.x-tree3-el {
-
-				pointer-events: none;
-				width: 100%!important;
-
-				&::after {
-					pointer-events: all;
-					content: "Hey";
-					text-indent: -50000px;
-					background: url($ICON--MORE_OPTIONS---GREY) no-repeat center center;
-					background-size: 10px 2px;
-					width: 28px;
-					height: 25px;
-					position: absolute;
-					right: -1px;
-					top: 0;
-					cursor: pointer;
-					z-index: 99999999999;
-					opacity: 0;
-
-
-				}
-
-			}
-
-			&.x-grid3-row-over .x-tree3-el::after {
-				opacity: 1;
-			}
-
-			&.x-grid3-row-selected .x-tree3-el::after {
-				background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
-				background-size: 10px 2px;
-			}
-
-		}
-
-		// SEARCH TAB
-		form {
-			fieldset {
-				@extend %CSS_BLOCK--FIELDSET\:PICKER_SEARCH;
-			}
-		}
-
-		// SAVED SEARCH ROWS
-		.x-panel-body {
-			> .x-view {
-				background: transparent;
-
-				.x-view-item {
-					border: none!important;
-
-					@extend %CSS_BLOCK--TREE--ROW--TEXT---UP;
-					@extend %CSS_BLOCK--TREE--ROW--BG---UP;
-
-					&.x-view-item-over {
-						@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER;
-						@extend %CSS_BLOCK--TREE--ROW--BG---HOVER;
-
-						&.x-view-item-sel {
-							@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER;
-							@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER;
-						}
-
-					}
-
-					&.x-view-item-sel {
-						@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED;
-						@extend %CSS_BLOCK--TREE--ROW--BG---SELECTED;
-
-
-					}
-				}
-			}
-		}
-
-
-
-		// Browse / Search Tabs
-		.x-tab-panel-header {
-			width: 100%!important;
-			height: 0!important;
-			border:none!important;
-			padding:0!important;
-			background: transparent;
-
-			// HIJACK TO USE AS TRIGGER FOR COMBO BOX
-			.x-tab-strip-spacer {
-				position: fixed;
-				top: 74px;
-				left: 47px;
-				width: 320px;
-				height: 32px;
-				background: red;
-				z-index: 999;
-				opacity: 0;
-
-				body.ext-gecko & {
-					top: 81px;
-				}
-
-				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
-					// display: none;
-				}
-			}
-
-			.x-tab-strip-wrap {
-				.x-tab-strip {
-					border:none;
-					background: none;
-					padding: 0;
-					margin: 0;
-
-					li {
-						// BROWSE TAB
-						&:nth-child(1) {
-							margin: 0;
-							position: fixed;
-							z-index: 99999;
-							// background-image: url($ICON--CLOSE_LARGE---GREY);
-							width: 20px;
-							height: 20px;
-
-							text-indent: -50000px;
-
-							top: 41px;
-						    left: 26px;
-							pointer-events: none;
-
-							// left: -50000px;
-							//
-							// body[data-INDIGO-PICKER-SEARCH="open"] & {
-							// 	left: 31px;
-							// }
-
-							a {
-								background: none!important;
-								padding: 0;
-
-								&.x-tab-right {
-									width: 100%;
-									height: 100%;
-								}
-							}
-
-							em {
-								background: none!important;
-								padding: 0!important;
-								width: 100%;
-								height: 100%;
-							}
-							span {
-								background: none!important;
-								padding:none!important;
-								width: 100%;
-								height: 100%;
-
-								span {
-									display: none;
-									background-image: url($ICON--BACK--GREY) !important;
-									background-size: 20px 20px !important;
-									background-repeat: no-repeat !important;
-									width: 100%;
-									height: 100%;
-
-									body[data-INDIGO-PICKER-SEARCH="open"] & {
-										display: block;
-										pointer-events: all;
-									}
-								}
-
-							}
-						}
-
-						// SEARCH TAB
-						&:nth-child(2) {
-							margin: 0;
-							position: fixed;
-							top: 0px;
-							left:260px;
-							z-index: 9999999999999;
-
-
-
-							// LABEL
-							&::after {
-								content: " ";
-								display: block;
-								width: 30px;
-								height: 30px;
-								text-align: center;
-								background: url($ICON--SEARCH--SMALL_GREY) no-repeat center center;
-								background-color: lighten($COLOUR--DUSTY_CLOUDS, 10%);
-								border-radius: 100%;
-								margin-top: 13px;
-								margin-left: 10px;
-								z-index: 9999999999999;
-								pointer-events: all;
-								position: relative;
-
-								body[data-indigo-picker-search="open"] & {
-									opacity: 0;
-									pointer-events: none;
-								}
-
-
-							}
-
-							&:hover::after {
-								cursor: pointer;
-								background-color: lighten($COLOUR--DUSTY_CLOUDS, 9%);
-							}
-
-							// ICON
-							img {
-								background-size: 23px 23px;
-							    background-repeat: no-repeat;
-								background-image: url($ICON--SETTINGS---GREY);
-							    padding-left: 23px;
-							    width: 23px;
-							    height: 23px;
-							    overflow: hidden;
-							    -moz-box-sizing: border-box;
-							    box-sizing: border-box;
-							    display: block;
-							    position: relative;
-
-								margin: 0 auto;
-
-								left: 0;
-								top: 0;
-
-								visibility: hidden;
-							}
-
-							// ANCHORS
-							a {
-								display: none;
-							}
-						}
-					}
-				}
-			}
-		}
-
-
-
-		// Tree Container
-		.x-tab-panel-body {
-			// Container
-			width: 100%!important;
-			height: 100%!important;
-			background: transparent;
-
-			> div {
-				height: 100%!important;
-
-				// BROWSE TAB CONTAINER
-				&:nth-child(1) {
-					// background: aqua;
-					display: block!important;
-
-					&.x-hide-display + div.x-component {
-						// SEARCH TAB IS OPEN
-						display: block;
-					    position: fixed;
-					    width: 367px !important;
-					    top: 0;
-					    box-shadow: 5px 0px 34px $COLOUR--BLACK_CLOUDS;
-					    padding: 30px;
-					    box-sizing: border-box;
-					    background: $COLOUR--WHITE_CLOUDS !important;
-
-
-						.x-form-text {
-							@include text_input("SIDE_PANEL");
-
-						}
-
-						&:before {
-							content: "Search";
-
-							margin-left: 21px;
-
-							@include text(36px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY)
-						}
-
-						&:after {
-							content: "Results";
-						    position: fixed;
-						    top: 30px;
-						    font-size: 26px;
-						    left: 384px;
-						    font-weight: 200;
-						    font-family: Nunito Sans;
-						    color: $COLOUR--WHITE_CLOUDS;
-						}
-					}
-
-					+ div {
-						// SEARCH TAB
-						display: none;
-					}
-				}
-
-				// SEARCH TAB CONTAINER
-				&:nth-child(2) {
-					position: absolute;
-				    top: 0;
-				    width: 100%!important;
-				    left: 0;
-					// background: $PICKER--BG--COLOUR!important;
-					z-index: 9999;
-
-					// FIX CONTAINER HEIGHTS
-					> .x-panel,
-					.x-panel-bwrap,
-					.x-panel-ml,
-					.x-panel-mr,
-					.x-panel-mc,
-					form,
-					fieldset {
-						width: 100%!important;
-						height: 100%!important;
-						position: relative;
-					}
-
-					.x-panel-tl {
-						display: none;
-					}
-
-					.x-panel-bwrap {
-						padding-top: 0;
-						left: 0!important;
-					}
-					.x-panel-header {
-						background: transparent!important;
-					}
-
-
-
-					.x-panel-body {
-						// Fix width of form
-						overflow-y: scroll!important;
-						> div {
-						    width: 100%!important;
-						    box-sizing: border-box;
-						    margin: 0!important;
-
-							// Contains search text input AND save / search buttons
-							&:nth-child(1) {
-								> table {
-									width: 100%;
-								    position: absolute;
-								    bottom: 40px;
-								}
-
-								.x-btn-mc {
-									text-align: left;
-								}
-
-								td {
-									// SEARCH TEXT INPUT CONTAINER
-									&:nth-child(1) {
-										position: fixed;
-										width: 100%;
-										display: block;
-										/* height: 85px; */
-										background: $COLOUR--WHITE_CLOUDS;
-										z-index: 999999;
-										/* display: none; */
-										top: 72px;
-										width: 305px;
-									}
-
-									// SEARCH BUTTON CONTAINER
-									&:nth-child(2) {
-										// MOVE BUTTON TO POSITION
-										display: inline-block;
-										table {
-
-
-											// STYLE BUTTON
-											.x-btn-text {
-												width: auto!important;
-												height: auto!important;
-												font-size: 1px;
-												display: inline-block;
-												&::after {
-													content: "Search";
-													display: block;
-													width: 100%;
-													height: 100%;
-													box-sizing: border-box;
-													padding: 5px 10px 5px 10px;
-
-													@extend %CSS_BLOCK--BUTTON--ICON\:SEARCH_PANEL---SUGGESTED;
-
-													&:hover {
-														@extend %CSS_BLOCK--BUTTON--ICON---HOVER\:SEARCH_PANEL---SUGGESTED;
-
-													}
-
-												}
-
-												// REMOVE IMAGE
-												img {
-													display: none;
-												}
-											}
-										}
-
-
-
-									}
-
-									// SAVE SEARCH CONTAINER
-									&:nth-child(3) {
-										display: inline-block;
-										table {
-
-
-											// STYLE BUTTON
-											.x-btn-text {
-												width: auto!important;
-												height: auto!important;
-												font-size: 1px;
-
-												display: inline-block;
-												&::after {
-													content: "Save search";
-													display: block;
-													box-sizing: border-box;
-
-													padding: 5px 10px 5px 10px;
-
-													// position: fixed;
-													// top: 0;
-													// right: 0;
-
-
-													@extend %CSS_BLOCK--BUTTON--ICON\:SEARCH_PANEL;
-
-													&:hover {
-														@extend %CSS_BLOCK--BUTTON--ICON---HOVER\:SEARCH_PANEL;
-
-													}
-
-												}
-
-												// REMOVE IMAGE
-												img {
-													display: none;
-												}
-											}
-										}
-
-
-									}
-								}
-							}
-						}
-					}
-
-					fieldset {
-						background: transparent!important;
-
-						// Messing up width of form
-						.x-form-label-left {
-							width: 100%!important;
-						}
-					}
-
-
-
-
-				}
-
-				width: 100%!important;
-
-				// Another Container
-				> div {
-					width: 100%!important;
-					padding-top: 57px;
-					box-sizing: border-box;
-
-					// Site Groups
-					> div {
-						width: 100%!important;
-
-
-					}
-				}
-			}
-		}
-
-		// Tree Site Panel Header
-
-		// UNSELECTED PANEL TAB
-
-		.x-panel {
-			.x-panel-header {
-				// pointer-events: none; // STOP CLICKING ON CURRENT OPENED SITE TAB, AS IT HIDES IT !!
-			}
-
-		}
-
-		.x-panel-collapsed {
-			.x-panel-header {
-
-				display: none;
-
-
-				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
-					display: block;
-
-					.x-panel-header-text {
-						@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM;
-
-						&:hover {
-							@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER;
-						}
-					}
-				}
-
-				// HIDE TOOLBAR
-				.x-panel-toolbar {
-					display: none;
-
-
-				}
-
-				pointer-events: all!important;
-
-
-			}
-
-
-		}
-
-
-
-
-
-		.x-panel-header {
-
-		    width: 100%!important;
-		    text-align: left;
-		    padding: 0;
-		    position: relative;
-		    z-index: 9;
-
-			box-sizing: border-box;
-			box-shadow: inset -18px 0px $FORM--COMBO--BG--COLOUR---UP;
-
-			body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
-				box-shadow: none;
-
-			}
-
-			// ICON
-			img {
-				display: none!important;
-			}
-
-			// TOOLBAR (Refresh, minimise)
-			.x-panel-toolbar {
-				float: none!important;
-			    position: fixed!important;
-			    top: 0!important;
-			    right: 0!important;
-				display: block;
-				pointer-events: all;
-				z-index: 9999;
-
-				body[data-INDIGO-PICKER-SEARCH="open"] & {
-					display: none;
-				}
-			}
-
-			// TITLE
-			.x-panel-header-text {
-				display: block;
-
-				background-repeat: no-repeat;
-				background-position: right center;
-		        background-image: url($FORM--COMBO--ICON---UP);
-
-				@extend %CSS_BLOCK--FORM--TEXT_INPUT;
-
-				body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
-					@extend %CSS_BLOCK--FORM--TEXT_INPUT---FOCUS;
-
-				}
-
-			}
-
-			&.indigo-hover {
-				box-shadow: inset -18px 0px $FORM--COMBO--BG--COLOUR---HOVER;
-
-				.x-panel-header-text {
-					// background-color: $FORM--TEXT_AREA--BG--COLOUR---FOCUS;
-					background-repeat: no-repeat;
-					background-position: right center;
-					background-image: url($FORM--COMBO--ICON---HOVER);
-
-
-					@extend %CSS_BLOCK--FORM--TEXT_INPUT---HOVER;
-
-				}
-
-			}
-
-		}
-
-		// TREES (1 per Site)
-		.x-panel-bwrap {
-			position: absolute;
-			right: 0;
-			width: 100% !important;
-			left: 2px !important;
-			box-sizing: border-box;
-			padding-top: 50px;
-		}
-	}
-
-	// TREE CONTENT CONTAINER
-	#JahiaGxtManagerLeftTree + div {
-		width: calc(100% - 340px) !important;
-	    // background: orange;
-	    left: auto!important;
-	    position: relative!important;
-	    display: inline-block;
-	    vertical-align: top;
-		margin-top: 6px;
-    	height: calc(100% - 6px)!important;
-
-		// Make room for save / cancel button when in search mode
-		body[data-INDIGO-PICKER-SEARCH="open"] & {
-			height: calc(100% - 100px)!important;
-		}
-
-		.x-grid3-row {
-
-			.x-grid3-td-size {
-
-				pointer-events: none;
-				width: 100%!important;
-
-				&::after {
-
-					@extend %CSS_BLOCK--MORE_INFO---UP;
-
-					pointer-events: all;
-					content: "Hey";
-					text-indent: -50000px;
-
-					width: 28px;
-					height: 25px;
-
-					position: absolute;
-					right: 0;
-					cursor: pointer;
-					margin-top: -26px;
-					z-index: 99999999999;
-					opacity: 0;
-
-					body[data-indigo-picker-search="open"] & {
-						@extend %CSS_BLOCK--MORE_INFO---UP\:SEARCH;
-
-					}
-
-				}
-
-			}
-
-			&.x-grid3-row-over .x-grid3-td-size::after,
-			&:hover .x-grid3-td-size::after {
-				opacity: 1;
-			}
-
-			&.x-grid3-row-selected .x-grid3-td-size::after {
-				@extend %CSS_BLOCK--MORE_INFO---SELECTED;
-				background-color: $COLOUR--JAHIA_BLUE!important;
-			}
-
-		}
-
-		#images-view {
-			// Toolbar for thumb view
-			background: transparent;
-			padding-top: 33px;
-			box-sizing: border-box;
-
-			.x-toolbar {
-				pointer-events: all;
-			    width: calc(100% - 437px) !important;
-			    left: auto;
-			    right: 52px;
-			    position: absolute;
-			    top: 74px;
-			    padding-bottom: 7px;
-			    box-sizing: border-box;
-
-
-				.xtb-text {
-					// LABELS
-					margin-right: 5px!important;
-
-					@extend %CSS_BLOCK--FORM--LABEL;
-				}
-
-
-
-
-				// FILTER CONTAINER
-				.x-toolbar-left {
-					width: 375px;
-
-					.x-toolbar-cell {
-						// SEARCH LABEL
-						&:nth-child(1) {
-							display: none;
-						}
-
-						// SEARCH FIELD
-						&:nth-child(2) {
-							.x-form-text {
-								@include text_input("PICKER_FILTER");
-							}
-						}
-
-						// SORT COMBO
-						&:nth-child(5) {
-							.x-form-text {
-								@include text_input("PICKER_SORT");
-							}
-						}
-
-						// INVERT BUTTON
-						&:nth-child(6) {
-							margin-left: 5px;
-							@include button("TOGGLE_ASC");
-
-
-
-							> table {
-								> tbody {
-									display: inline-block;
-									vertical-align: middle;
-									margin-left: 5px;
-
-								}
-
-								&.x-btn-pressed {
-									&:before {
-										content: $text_descending;
-									}
-								}
-
-								&:before {
-									content: $text_ascending;
-								    display: inline-block;
-								    vertical-align: middle;
-
-									@extend %CSS_BLOCK--FORM--LABEL;
-
-
-
-								}
-							}
-
-							.x-btn-pressed {
-								&.x-btn.x-btn-noicon button {
-									background-image: url($ICON--DESC--WHITE)!important;
-
-								}
-							}
-
-						}
-
-						display: inline-block;
-					}
-
-					.xtb-sep {
-						background: transparent;
-						width: 10px;
-						display: block;
-					}
-				}
-
-				// ZOOM CONTAINER
-				.x-toolbar-right {
-
-				}
-			}
-
-			// THUMB CONTAINER
-			.x-view {
-				width: 100%!important;
-				height: 100%!important;
-				background: transparent;
-
-				body[data-INDIGO-PICKER-SEARCH="open"] & {
-					height: calc(100% - 110px) !important;
-				}
-			}
-
-			.x-view-over {
-				background: none!important;
-
-				.thumb {
-					background: $COLOUR--CREAM_CLOUDS;
-				}
-
-				&.x-view-item-sel {
-					.thumb {
-						background: $COLOUR--JAHIA_BLUE;
-					}
-				}
-
-			}
-
-
-
-			.thumb-wrap {
-				height: initial!important;
-				max-height: initial!important;
-				width: initial!important;
-				margin: 0!important;
-				min-width: 100px;
-
-				&.x-view-over {
-					span {
-						background: $COLOUR--CREAM_CLOUDS;
-						color: $COLOUR--RAIN_CLOUDS;
-					}
-				}
-
-				&.x-view-item-sel {
-					background: $COLOUR--JAHIA_BLUE;
-
-					span {
-						background: $COLOUR--JAHIA_BLUE!important;
-						color: $COLOUR--WHITE_CLOUDS;
-					}
-				}
-
-				// TITLE / FILE SIZE
-				span {
-					background: transparent;
-					text-align: center;
-					@include text(11px, $COLOUR--GREY_CLOUDS, $FONT--WEIGHT---NORMAL);
-
-					&:last-child {
-						padding-bottom: 10px;
-					}
-				}
-
-				.thumb {
-					padding: 10px!important;
-
-					pointer-events: none;
-					width: 100%!important;
-
-					&::after {
-						@extend %CSS_BLOCK--MORE_INFO---UP;
-
-						pointer-events: all;
-						content: "Hey";
-						text-indent: -50000px;
-						width: 28px;
-						height: 25px;
-						position: absolute;
-						right: 0;
-						cursor: pointer;
-						margin-top: -26px;
-						z-index: 99999999999;
-						opacity: 0;
-						top: 26px;
-
-
-
-						body[data-indigo-picker-search="open"] & {
-							@extend %CSS_BLOCK--MORE_INFO---UP\:SEARCH;
-						}
-
-					}
-
-				}
-
-				&.x-view-over .thumb::after,
-				&:hover .thumb::after {
+				display: block !important;
+				background-image: url($ICON--DISPLAY--LIST--WHITE);
+			    background-size: 11px 10px;
+				right: 8px;
+
+				body[indigo-PICKER-DISPLAY="listview"] & {
+					background-image: url($ICON--DISPLAY--LIST--GREY);
 					opacity: 1;
+					background-color: #d9dbdd;
 				}
+			}
 
-				&.x-view-item-sel .thumb::after {
-					@extend %CSS_BLOCK--MORE_INFO---SELECTED;
-					background-color:$COLOUR--JAHIA_BLUE!important;
+			// Thumbs View
+			&.toolbar-item-thumbsview {
+				display: block !important;
+				background-image: url($ICON--DISPLAY--THUMBS--WHITE);
+				right: 32px;
 
-					body[data-indigo-picker-search="open"] & {
-						@extend %CSS_BLOCK--MORE_INFO---SELECTED\:SEARCH;
-					}
+				body[indigo-PICKER-DISPLAY="thumbsview"] & {
+					background-image: url($ICON--DISPLAY--THUMBS--GREY);
+					opacity: 1;
+					background-color: #d9dbdd;
+				}
+			}
+
+			// Display View
+			&.toolbar-item-detailedview {
+				display: block !important;
+				background-image: url($ICON--DISPLAY--DETAILS--WHITE);
+				right: 56px;
+
+				body[indigo-PICKER-DISPLAY="detailedview"] & {
+					background-image: url($ICON--DISPLAY--DETAILS--GREY);
+					opacity: 1;
+					background-color: #d9dbdd;
 				}
 			}
 
 		}
-	}
 
-	// TREE CONTENT CONTAINER
-	#JahiaGxtManagerTobTable {
-
-		// SEEMS UNUSED ...
-		> .x-panel-header {
-			display: none;
-		}
-	}
-
-	// ACTION BAR (Save, Cancel)
-	.x-window-bbar {
-		// background: pink;
-	    width: 300px !important;
-	    position: absolute;
-	    bottom: 0;
-	    height: 90px;
-	    box-sizing: border-box;
-
-		body[data-INDIGO-PICKER-SEARCH="open"] & {
-			left: 387px;
-			height: 70px;
-
-		}
-
-		.x-panel-fbar {
-			width: 100%!important;
-
-			.x-toolbar-cell {
-
-				&:nth-child(1) {
-					/* Save */
-
-					// Make suggested colour
-					@include button("ACTIONBAR---SUGGESTED");
-				}
-			}
-
-		}
 	}
 
 
 
+	// Collapsed Side panel
+	&.indigo-collapsed {
 
-
-
-
-
-
-	// STOP RESIZE ISSUES WHEN BEING LOADED FOR FIRST TIME( GWT ADDS AN ANIMATION )
-	.x-grid3-viewport,
-	.x-grid3-body {
-		width: 100%!important;
 	}
 
-
-
-
-
-
-
-
-	// REMOVE UNNECCESSARY STUFF
-	.x-resizable-handle,
-	.x-tool-restore,
-	.x-tool-toggle,
-	.x-tool-maximize,
-	.x-tool-close {
-		display: none!important;
-	}
-
-	.x-accordion-hd {
-		background: transparent;
-	}
-
-	.x-fieldset-bwrap {
-		transition: 0!important;
-	}
 }

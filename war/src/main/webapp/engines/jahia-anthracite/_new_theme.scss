@@ -1,0 +1,1485 @@
+/****************************/
+/* FUNCTIONS  */
+/****************************/
+
+
+
+@function _property($variable, $context){
+	@return map-get($variable, $context);
+
+}
+
+/*
+  Usage example: _property()
+
+  input {
+  	color: _property($INPUT--COLOR, $EDIT-ENGINE);
+  }
+
+*/
+
+@function _theme-color($color-name, $color-variant: normal) {
+	$color_map: map-get($basic-colors, $color-name);
+	$color: map-get($color_map, $color-variant);
+
+	@return $color;
+
+}
+
+/*
+  Usage example: _theme-color()
+
+  input {
+    color: _theme-color(primary),
+  	background-color: _theme-color(secondary, b),
+  }
+
+*/
+
+
+
+
+
+
+/****************************/
+/* CONFIG  */
+/****************************/
+
+// DEFAULT
+$EDIT-ENGINE: 			LIGHT;
+$SIDE-PANEL: 			LIGHT;
+$APP: 					DARK;
+$DATE-PICKER: 			DARK;
+$CONTEXT-MENU: 			DARK;
+$THUMBS: 				DARK;
+$PICKER: 				DARK;
+$PICKER-SEARCH:			DARK;
+$PICKER-HEADER-INPUT: 	LIGHT;
+$PICKER-SEARCH-HEADER: 	DARK;
+$PREVIEW:			 	DARK;
+$DASHBOARD:			 	LIGHT;
+$HAMBURGER:			 	LIGHT;
+$MODAL-INPUT: 			LIGHT;
+// INVERSED
+// $EDIT-ENGINE: 			DARK;
+// $SIDE-PANEL: 			DARK;
+// $APP: 					LIGHT;
+
+
+
+
+/****************************/
+/* BASE COLORS  */
+/****************************/
+
+// DEFAULT ANTRACITE GREY
+$color-primary:			rgb(92, 97, 100); 		// #5c6164 (GREY)
+$color-secondary:		rgb(250, 250, 250); 	// #FAFAFA (WHITE)
+$color-tertiary:		rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE) - action colors
+$color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE) - secondary buttons
+$color-quinary:			rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE) - highlight color, menu color, hamburger
+$color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
+
+$color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
+$color-white:			rgb(255, 255, 255); 	// #FFFFFF (WHITE)
+$color-green: 			rgb(4,189,4);
+
+
+
+
+// DEFAULT ANTRACITE BLACK
+// $color-primary:			rgb(50,50,55); 			// #323237 (DARK GREY)
+// $color-secondary:		rgb(238,238,238); 		// #eeeeee (CREAM WHITE)
+// $color-tertiary:		rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE)
+// $color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE)
+// $color-quinary:			rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE)		// Alternatives rgb(238,238,238)
+// $color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
+//
+// $color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
+// $color-white:			rgb(255, 255, 255); 	// #FFFFFF (WHITE)
+
+
+
+
+// DEFAULT JAHIA BLUE
+// $color-primary:			rgb(38,38,38); 			// #323237 (DARK GREY)
+// $color-secondary:		rgb(0, 160, 227); 		// #eeeeee (CREAM WHITE)
+// $color-tertiary:		rgb(238,238,238); 		// #00a0e3 (JAHIA BLUE)
+// $color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE)
+// $color-quinary:			rgb(38,38,38); 			// #00a0e3 (JAHIA BLUE)		// Alternatives rgb(238,238,238)
+// $color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
+//
+// $color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
+// $color-white:			rgb(255, 255, 255); 	// #FFFFFF (WHITE)
+
+
+
+
+
+
+
+/****************************/
+/* COLOR VARIATIONS  */
+/****************************/
+
+$basic-colors: (
+	primary: (
+		normal:	$color-primary,
+		a: 		lighten($color-primary, 2%),
+		b: 		lighten($color-primary, 6%),
+		c: 		lighten($color-primary, 10%),
+		d: 		lighten($color-primary, 25%),
+		e: 		lighten($color-primary, 35%),
+		f: 		darken($color-primary, 5%),
+		g: 		darken($color-primary, 10%),
+		h: 		rgba(darken($color-primary, 10%), .2),
+		i: 		darken($color-primary, 35%),
+	),
+	secondary: (
+		normal:	$color-secondary,
+		a: 		darken($color-secondary, 5%),
+		b: 		darken($color-secondary, 7%),
+		c: 		darken($color-secondary, 10%),
+		d: 		darken($color-secondary, 20%),
+		e: 		darken($color-secondary, 35%),
+		f: 		rgba($color-secondary, .2),
+		g: 		lighten($color-secondary, 10%),
+	),
+	tertiary: (
+		normal:	$color-tertiary,
+		a: 		lighten($color-tertiary, 2%)
+	),
+	quaternary: (
+		normal:	$color-quaternary,
+		a: 		lighten($color-quaternary, 4%)
+	),
+	quinary: (
+		normal:	$color-quinary,
+		a: 		lighten($color-quinary, 4%),
+		b: 		darken($color-quinary, 5%),
+		c: 		darken($color-quinary, 25%)
+	),
+	senary: (
+		normal:	$color-senary,
+		a: 		lighten($color-senary, 4%)
+	),
+	black: (
+		normal:	$color-black,
+		a: 		rgba($color-black, .2),
+		b: 		rgba($color-black, .4),
+		c: 		rgba($color-black, .6)
+	),
+	white: (
+		normal:	$color-white,
+		a: 		rgba($color-white, .4)
+	),
+	green: (
+		normal:	$color-green,
+		a: 		rgba($color-white, .4)
+	),
+	status: (
+		conflict:							yellow,
+		deleted:							black,
+		livemodified:						orange,
+		liveonly:							orange,
+		locked:								yellow,
+		mandatorylanguageunpublishable:		orange,
+		mandatorylanguagevalid:				green,
+		markedfordeletion:					red,
+		modified:							orange,
+		multipleWF:							orange,
+		notpublished:						orange,
+		oneWF:								orange,
+		published:							green,
+		unpublished: 						grey,
+		waiting:							white,
+		workinprogress: 					orange,
+		error: 								red,
+		unknown:							black,
+		visible:							green,
+		hidden:								red,
+		attention:							red
+	)
+);
+
+
+
+
+
+
+$HAMBURGER--TITLE--COLOR: (
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(quinary),
+);
+
+$HAMBURGER--BUTTON--COLOR: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+
+
+$HAMBURGER--BUTTON--SHADOW: (
+	LIGHT: inset -2px 2px _theme-color(secondary),
+	DARK: inset -2px 2px _theme-color(secondary),
+);
+
+$HAMBURGER--BUTTON--SHADOW---HOVER: (
+	LIGHT: unquote("inset -1px 1px " + _theme-color(secondary) + ", 2px 4px 20px 0px " + _theme-color(black, b)),
+	DARK: unquote("inset -1px 1px " + _theme-color(secondary) + ", 2px 4px 20px 0px " + _theme-color(black, b)),
+);
+
+
+$HAMBURGER--BUTTON--COLOR---HOVER: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$HAMBURGER--BUTTON--BG: (
+	LIGHT: radial-gradient(ellipse at bottom right, _theme-color(quinary) 0%, _theme-color(quinary) 70%),
+	DARK: radial-gradient(ellipse at bottom right, _theme-color(quinary) 0%, _theme-color(quinary) 70%),
+);
+
+$HAMBURGER--BUTTON--BG---HOVER: (
+	LIGHT: radial-gradient(ellipse at bottom right, _theme-color(quinary, a) 0%, _theme-color(quinary) 70%),
+	DARK: radial-gradient(ellipse at bottom right, _theme-color(quinary, a) 0%, _theme-color(quinary) 70%),
+);
+
+
+
+
+/****************************/
+/* IFRAME */
+/****************************/
+
+$IFRAME--SHADOW:(
+	LIGHT: 3px 0px 16px _theme-color(black, b),
+	DARK: 3px 0px 16px _theme-color(black, b),
+);
+
+
+
+
+
+/****************************/
+/* SCROLL BARS */
+/****************************/
+
+$SCROLL--SHUTTLE:(
+	LIGHT: _theme-color(primary, d),
+	DARK: _theme-color(primary, d),
+);
+
+$SCROLL--SHUTTLE---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+
+
+
+/****************************/
+/* BACKGROUNDS */
+/****************************/
+
+$BODY--BG:(
+	LIGHT: radial-gradient(ellipse at bottom right, darken(_theme-color(secondary), 4%) 0%, _theme-color(secondary) 50%),
+	DARK: radial-gradient(ellipse at bottom right, darken(_theme-color(primary), 10%) 0%, _theme-color(primary) 70%),
+);
+
+$BODY--BG--SHADOW:(
+	LIGHT: 0 5px 10px 1px _theme-color(black, b),
+	DARK: 0 5px 10px 1px _theme-color(black, b),
+);
+
+$SIDE-PANEL--BG:(
+	LIGHT: radial-gradient(ellipse at bottom right, darken(_theme-color(primary), 10%) 0%, _theme-color(primary) 70%),
+	DARK: radial-gradient(ellipse at bottom right, darken(_theme-color(secondary), 4%) 0%, _theme-color(secondary) 50%),
+);
+
+$SIDE-PANEL--SHADOW:(
+	LIGHT: 0 5px 10px 1px _theme-color(black, b),
+	DARK: 0 5px 10px 1px _theme-color(black, b),
+);
+
+
+$MODAL-SOLID--BG:(
+	LIGHT: radial-gradient(ellipse at bottom right, darken(_theme-color(secondary), 4%) 0%, _theme-color(secondary) 50%),
+	DARK: radial-gradient(ellipse at bottom right, darken(_theme-color(primary), 10%) 0%, _theme-color(primary) 70%),
+);
+
+$MODAL-SOLID--BG---LEGACY:(
+	LIGHT: rgba($COLOUR--RAIN_CLOUDS, .98),
+	DARK: rgba($COLOUR--RAIN_CLOUDS, .98),
+);
+
+
+
+
+
+/****************************/
+/* FOOTERS */
+/****************************/
+
+$FOOTER--BG:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary, g),
+);
+
+$FOOTER--SHADOW:(
+	LIGHT: inset 3px 0px 16px _theme-color(black, b),
+	DARK: inset 3px 0px 16px _theme-color(black, b),
+);
+
+
+$DARK-FOOTER--BG:(
+	LIGHT: _theme-color(primary, g),
+	DARK: _theme-color(primary, g),
+);
+
+$DARK-FOOTER--SHADOW:(
+	LIGHT: inset 3px 0px 16px _theme-color(black, c),
+	DARK: inset 3px 0px 16px _theme-color(black, c),
+);
+
+
+
+
+/****************************/
+/* DATE PICKER */
+/****************************/
+// DATE-PICKER
+
+// Month Screen
+$DATE-PICKER--BG:(
+	LIGHT: red,
+	DARK: _theme-color(primary),
+);
+
+$DATE-PICKER--SHADOW:(
+	LIGHT: red,
+	DARK: 0px 1px 2px _theme-color(black, a)
+);
+
+$DATE-PICKER--MONTH-TITLE:(
+	LIGHT: red,
+	DARK: _theme-color(secondary),
+);
+
+$DATE-PICKER--MONTH-TITLE---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary, a),
+);
+
+$DATE-PICKER--ACTION-BUTTON--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary),
+);
+
+$DATE-PICKER--ACTION-BUTTON--BG:(
+	LIGHT: red,
+	DARK: _theme-color(quaternary),
+);
+
+$DATE-PICKER--ACTION-BUTTON--COLOR---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary),
+);
+
+$DATE-PICKER--ACTION-BUTTON--BG---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(quaternary, a),
+);
+
+// Other month ( previous, following )
+$DATE-PICKER--DAY-MUTED--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary, e)
+);
+
+$DATE-PICKER--DAY-MUTED--BG:(
+	LIGHT: red,
+	DARK: transparent,
+);
+
+$DATE-PICKER--DAY-MUTED--COLOR---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--DAY-MUTED--BG---HOVER:(
+	LIGHT: red,
+	DARK: transparent,
+);
+
+// Current month
+$DATE-PICKER--DAY--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--DAY--BG:(
+	LIGHT: red,
+	DARK: _theme-color(primary, c)
+);
+
+$DATE-PICKER--DAY--COLOR---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--DAY--BG---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(primary, d)
+);
+
+$DATE-PICKER--DAY--COLOR---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(primary, f)
+);
+
+$DATE-PICKER--DAY--BG---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+// Modal screen
+$DATE-PICKER--MODAL--BG:(
+	LIGHT: red,
+	DARK: _theme-color(primary, g)
+);
+
+$DATE-PICKER--MODAL-TITLE--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--YEAR-BG:(
+	LIGHT: red,
+	DARK: _theme-color(primary, f)
+);
+
+$DATE-PICKER--YEAR-TITLE:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--MONTH--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary, a)
+);
+
+$DATE-PICKER--MONTH--BG:(
+	LIGHT: red,
+	DARK: transparent,
+);
+
+$DATE-PICKER--MONTH--COLOR---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--MONTH--BG---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(primary)
+);
+
+$DATE-PICKER--MONTH--COLOR---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(primary, f)
+);
+
+$DATE-PICKER--MONTH--BG---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--YEAR--COLOR:(
+	LIGHT: red,
+	DARK: _theme-color(secondary, a)
+);
+
+$DATE-PICKER--YEAR--BG:(
+	LIGHT: red,
+	DARK: _theme-color(primary, f)
+);
+
+$DATE-PICKER--YEAR--COLOR---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+$DATE-PICKER--YEAR--BG---HOVER:(
+	LIGHT: red,
+	DARK: _theme-color(primary)
+);
+
+$DATE-PICKER--YEAR--COLOR---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(primary, f)
+);
+
+$DATE-PICKER--YEAR--BG---SELECTED:(
+	LIGHT: red,
+	DARK: _theme-color(secondary)
+);
+
+
+
+
+
+
+/****************************/
+/* CHECKBOX */
+/****************************/
+$CHECKBOX--BG: (
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$CHECKBOX--BORDER: (
+	LIGHT: 1px solid _theme-color(secondary, c),
+	DARK: 1px solid _theme-color(secondary, c),
+);
+
+$CHECKBOX--SHADOW: (
+	LIGHT: inset 1px 1px 1px 0px _theme-color(black, a),
+	DARK: inset 1px 1px 1px 0px _theme-color(black, a),
+);
+
+$CHECKBOX--BG---CHECKED: (
+	LIGHT: _theme-color(green),
+	DARK: _theme-color(green),
+);
+
+
+
+
+
+/****************************/
+/* INPUT / TEXTAREA */
+/****************************/
+
+// UP
+$INPUT--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$INPUT--PLACEHOLDER:(
+	LIGHT: _theme-color(secondary, d),
+	DARK: _theme-color(secondary, d),
+);
+
+$INPUT--BG:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$INPUT--BORDER:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$INPUT--SHADOW:(
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+// HOVER
+$INPUT--COLOR---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$INPUT--BG---HOVER:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$INPUT--BORDER---HOVER:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$INPUT--SHADOW---HOVER:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+// FOCUS
+$INPUT--COLOR---FOCUS:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$INPUT--PLACEHOLDER---FOCUS:(
+	LIGHT: _theme-color(secondary, e),
+	DARK: _theme-color(secondary, e),
+);
+
+$INPUT--BG---FOCUS:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$INPUT--BORDER---FOCUS:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$INPUT--SHADOW---FOCUS:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+// DISABLED
+$INPUT--COLOR---DISABLED:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary)
+);
+
+$INPUT--BG---DISABLED:(
+	LIGHT: _theme-color(secondary, c),
+	DARK: _theme-color(secondary, c)
+);
+
+$INPUT--BORDER---DISABLED:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$INPUT--SHADOW---DISABLED:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+
+
+
+
+/****************************/
+/* CKE */
+/****************************/
+
+$CKE--ICON-SET--DEFAULT: (
+	LIGHT: false,
+	DARK: $ICON--RICH_TEXT--TOOLBUTTONS,
+);
+
+$CKE--ICON-SET--LEGACY: (
+	LIGHT: false,
+	DARK: $ICON--RICH_TEXT--TOOLBUTTONS---LEGACY,
+);
+
+$CKE--PATH--COLOR: (
+	LIGHT: blue,
+	DARK: blue,
+);
+
+$CKE--PATH--BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+
+$CKE--TOOLBAR--BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$CKE--TOOLBAR--BORDER: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$CKE--TOOLGROUP--BG: (
+	LIGHT: _theme-color(secondary, a),
+	DARK: _theme-color(primary, a),
+);
+
+$CKE--TOOLGROUP--BG---HOVER: (
+	LIGHT: _theme-color(secondary, a),
+	DARK: _theme-color(primary, b),
+);
+
+$CKE--TOOL--BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$CKE--TOOL--BG---HOVER: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(primary, c),
+);
+
+$CKE--CONTENTS--SHADOW: (
+	LIGHT: 2px 5px 10px _theme-color(black, a)!important,
+	DARK: 2px 5px 10px _theme-color(black, a)!important,
+);
+
+$CKE--CONTENTS--BORDER: (
+	LIGHT: _theme-color(secondary, c),
+	DARK: _theme-color(secondary, c),
+);
+
+
+
+$CKE--BUTTON-LABEL--COLOR: (
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+$CKE--BUTTON-LABEL--COLOR---HOVER: (
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+$CKE--COMBO--BG: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(primary, a),
+);
+
+$CKE--COMBO--SHADOW: (
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+$CKE--COMBO--BG---HOVER: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(primary, b),
+);
+
+$CKE--COMBO--SHADOW---HOVER: (
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+$CKE--TOOL--BG---SELECTED: (
+	LIGHT: _theme-color(quaternary),
+	DARK: _theme-color(quaternary),
+);
+
+
+
+/****************************/
+/* THUMBS */
+/****************************/
+$THUMB--COLOR: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$THUMB--COLOR---HOVER: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$THUMB--COLOR--DIMMED: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary, c),
+);
+
+$THUMB--COLOR--DIMMED---HOVER: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$THUMB--BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$THUMB--BG---HOVER: (
+	LIGHT: _theme-color(secondary, f),
+	DARK: _theme-color(secondary, f),
+);
+
+$THUMB--BG---SELECTED: (
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(quinary),
+);
+
+
+
+
+/****************************/
+/* COMBO / CONTEXT / CONTEXTUAL MENUS */
+/****************************/
+
+
+$MENU-SCROLL--BG:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+// TITLE
+$MENU-TITLE--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(quinary, c),
+);
+
+$MENU-TITLE--BG:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(quinary, b),
+);
+
+// CLOSED UP
+$MENU-CLOSED--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+$MENU-CLOSED--BG:(
+	LIGHT: radial-gradient(ellipse at bottom right, _theme-color(secondary) 0%, _theme-color(white) 70%),
+	DARK: radial-gradient(ellipse at bottom right, _theme-color(primary, b) 0%, _theme-color(primary, a) 70%),
+);
+
+$MENU-CLOSED--SHADOW:(
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: transparent,
+);
+
+$MENU-CLOSED--ARROW: (
+	LIGHT: "./images/icons/combo-arrow-grey.png",
+	DARK: "./images/icons/combo-arrow.png",
+);
+
+$MENU-CLOSED--ARROW-BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--DATE: (
+	LIGHT: "./images/icons/ic_date2x.png",
+	DARK: "./images/icons/ic_date2x.png",
+);
+
+$MENU-CLOSED--DATE-BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--CLEAR: (
+	LIGHT: "./images/icons/icon-close-grey@X2.png",
+	DARK: "./images/icons/icon-close-white@X2.png",
+);
+
+$MENU-CLOSED--CLEAR-BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--OPTIONS: (
+	LIGHT: "./images/icon-more-options-dark-50@X2.png",
+	DARK: "./images/icon-more-options-light.png",
+);
+
+$MENU-CLOSED--OPTIONS-BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+
+
+
+// CLOSED HOVER
+$MENU-CLOSED--COLOR---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+$MENU-CLOSED--BG---HOVER:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(primary, b),
+);
+
+$MENU-CLOSED--SHADOW---HOVER:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+$MENU-CLOSED--ARROW---HOVER: (
+	LIGHT: "./images/icons/combo-arrow-grey.png",
+	DARK: "./images/icons/combo-arrow.png",
+);
+
+$MENU-CLOSED--ARROW-BG---HOVER: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--DATE---HOVER: (
+	LIGHT: "./images/icons/ic_date2x.png",
+	DARK: "./images/icons/ic_date2x.png",
+);
+
+$MENU-CLOSED--DATE-BG---HOVER: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--CLEAR---HOVER: (
+	LIGHT: "./images/icons/icon-close-grey@X2.png",
+	DARK: "./images/icons/icon-close-white@X2.png",
+);
+
+$MENU-CLOSED--CLEAR-BG---HOVER: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-CLOSED--OPTIONS---HOVER: (
+	LIGHT: "./images/icon-more-options-dark-50@X2.png",
+	DARK: "./images/icon-more-options-light.png",
+);
+
+$MENU-CLOSED--OPTIONS-BG---HOVER: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+// OPENED UP
+$MENU-OPENED--COLOR:(
+	LIGHT: _theme-color(senary),
+	DARK: _theme-color(senary)
+);
+
+$MENU-OPENED--BG:(
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(quinary),
+);
+
+// OPENED HOVER
+$MENU-OPENED--COLOR---HOVER:(
+	LIGHT: _theme-color(senary),
+	DARK: _theme-color(senary),
+);
+
+$MENU-OPENED--BG---HOVER:(
+	LIGHT: _theme-color(quinary, a),
+	DARK: _theme-color(quinary, a),
+);
+
+$MENU-OPENED--COLOR---DISABLED:(
+	LIGHT: _theme-color(senary),
+	DARK: white,
+);
+
+$MENU-OPENED--BG---DISABLED:(
+	LIGHT: _theme-color(quinary, a),
+	DARK: red,
+);
+
+
+
+
+/****************************/
+/* LIST BOXES */
+/****************************/
+
+$LIST-BOX--BG:(
+	LIGHT: _theme-color(secondary, a),
+	DARK: red,
+);
+
+// Row
+$LIST-BOX--ROW--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: red,
+);
+
+$LIST-BOX--ROW--BG:(
+	LIGHT: _theme-color(secondary, a),
+	DARK: red,
+);
+
+// Row hover
+$LIST-BOX--ROW--COLOR---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: red,
+);
+
+$LIST-BOX--ROW--BG---HOVER:(
+	LIGHT: _theme-color(primary, e),
+	DARK: red,
+);
+
+// Row selected
+$LIST-BOX--ROW--COLOR---SELECTED:(
+	LIGHT: _theme-color(secondary),
+	DARK: red,
+);
+
+$LIST-BOX--ROW--BG---SELECTED:(
+	LIGHT: _theme-color(primary, c),
+	DARK: red,
+);
+
+// Row disabled
+$LIST-BOX--ROW--COLOR---DISABLED:(
+	LIGHT: white,
+	DARK: red,
+);
+
+$LIST-BOX--ROW--BG---DISABLED:(
+	LIGHT: red,
+	DARK: red,
+);
+
+
+
+
+/****************************/
+/* COMMENTS */
+/****************************/
+
+// UP
+$COMMENTS--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$COMMENTS--COLOR--AUTHOR:(
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(quinary),
+);
+
+$COMMENTS--COLOR--DATE:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary),
+);
+
+$COMMENTS--BG:(
+	LIGHT: _theme-color(secondary, c),
+	DARK: _theme-color(secondary, c),
+);
+
+
+
+
+
+
+/****************************/
+/* TREE / ROWS */
+/****************************/
+
+// UP
+$ROW--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+$ROW--COLOR--DIMMED:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(secondary, c),
+);
+
+$ROW--BG:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+// HOVER
+$ROW--COLOR---HOVER:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(primary),
+);
+
+$ROW--BG---HOVER:(
+	LIGHT: _theme-color(primary, e),
+	DARK: _theme-color(primary, c),
+);
+
+// SELECTED
+$ROW--COLOR---SELECTED:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$ROW--BG---SELECTED:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(quinary),
+);
+
+// SELECTED HOVER
+$ROW--COLOR---SELECTED-HOVER:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$ROW--BG---SELECTED-HOVER:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(primary, e),
+);
+
+
+
+
+
+/****************************/
+/* FIELDSET */
+/****************************/
+
+// TITLE COLOR
+$FIELDSET--TITLE-COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+// BACKGROUND COLOR
+$FIELDSET--BG:(
+	LIGHT: _theme-color(white, a),
+	DARK: _theme-color(primary, h),
+);
+
+// BORDER COLOR
+$FIELDSET--BORDER:(
+	LIGHT: _theme-color(secondary, b),
+	DARK: transparent,
+);
+
+// BACKGROUND HOVER COLOR
+$FIELDSET--BG---HOVER:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(primary, h),
+);
+
+
+
+
+
+/****************************/
+/* TITLE */
+/****************************/
+
+$TITLE--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+$SIDE-PANEL-TITLE--COLOR:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(primary),
+);
+
+
+
+
+
+/****************************/
+/* SUBTITLE */
+/****************************/
+
+$SUBTITLE--COLOR:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(secondary, d),
+);
+
+
+
+
+
+/****************************/
+/* PARAGRAPH */
+/****************************/
+
+$PARAGRAPH--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+
+
+
+
+/****************************/
+/* LABEL */
+/****************************/
+
+$LABEL--COLOR:(
+	LIGHT: _theme-color(secondary, e),
+	DARK: _theme-color(primary, e),
+);
+
+
+
+
+
+/****************************/
+/* TOOL BUTTON (i.e Pages, Content, Devices, etc ...) */
+/****************************/
+
+// UP
+$TOOL-BUTTON--COLOR:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(white),
+);
+
+// HOVER
+$TOOL-BUTTON--COLOR---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(white),
+);
+
+// SELECTED
+$TOOL-BUTTON--COLOR---SELECTED:(
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(tertiary),
+);
+
+// SELECTED HOVER
+$TOOL-BUTTON--COLOR---SELECTED-HOVER:(
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(tertiary),
+);
+
+
+
+
+
+/****************************/
+/* REGULAR BUTTONS */
+/****************************/
+
+// UP
+$BUTTON--COLOR:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$BUTTON--BG:(
+	LIGHT: _theme-color(quaternary),
+	DARK: _theme-color(quaternary),
+);
+
+// HOVER
+$BUTTON--COLOR---HOVER:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(white),
+);
+
+$BUTTON--BG---HOVER:(
+	LIGHT: _theme-color(quaternary, a),
+	DARK: _theme-color(quaternary, a),
+);
+
+
+
+
+
+/****************************/
+/* ACTION BUTTONS */
+/****************************/
+
+// DEFAULT UP
+$ACTION-DEFAULT--COLOR:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(primary),
+);
+
+$ACTION-DEFAULT--BG:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary, a),
+);
+
+$ACTION-DEFAULT--SHADOW:(
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+// DEFAULT HOVER
+$ACTION-DEFAULT--COLOR---HOVER:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(primary),
+);
+
+$ACTION-DEFAULT--BG---HOVER:(
+	LIGHT: _theme-color(primary, a),
+	DARK: _theme-color(secondary),
+);
+
+$ACTION-DEFAULT--SHADOW---HOVER:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+// SUGGESTED UP
+$ACTION-SUGGESTED--COLOR:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$ACTION-SUGGESTED--BG:(
+	LIGHT: _theme-color(tertiary),
+	DARK: _theme-color(tertiary),
+);
+
+$ACTION-SUGGESTED--SHADOW:(
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+// SUGGESTED HOVER
+$ACTION-SUGGESTED--COLOR---HOVER:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$ACTION-SUGGESTED--BG---HOVER:(
+	LIGHT: _theme-color(tertiary, a),
+	DARK: _theme-color(tertiary, a),
+);
+
+$ACTION-SUGGESTED--SHADOW---HOVER:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, b),
+);
+
+
+
+
+
+/****************************/
+/* TABS */
+/****************************/
+
+// UP
+$TAB--BAR:(
+	LIGHT: _theme-color(secondary, a),
+	DARK: _theme-color(primary, g),
+);
+
+$TAB--COLOR:(
+	LIGHT: _theme-color(primary, c),
+	DARK: _theme-color(primary, e),
+);
+
+// HOVER
+$TAB--BAR---HOVER:(
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(secondary),
+);
+
+$TAB--COLOR---HOVER:(
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(secondary),
+);
+
+// SELECTED
+$TAB--BAR---SELECTED:(
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(secondary),
+);
+
+$TAB--COLOR---SELECTED:(
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(secondary),
+);
+
+// SELECTED HOVER
+$TAB--BAR---SELECTED-HOVER:(
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(secondary),
+);
+
+$TAB--COLOR---SELECTED-HOVER:(
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(secondary),
+);
+
+
+
+
+
+/****************************/
+/* STILL TO DEFINE */
+/****************************/
+
+// HEADER - USED IN PICKERS
+$HEADER--BG:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$HEADER--SHADOW:(
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+
+$SWITCH--RAIL: (
+	LIGHT: _theme-color(primary, g),
+	DARK: _theme-color(primary, g),
+);
+
+$SWITCH--COLOR--ON: (
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$SWITCH--BG--ON: (
+	LIGHT: _theme-color(quinary),
+	DARK: _theme-color(quinary),
+);
+
+$SWITCH--SHADOW--ON: (
+	LIGHT: 1px 1px 3px 0px _theme-color(black, c),
+	DARK: 1px 1px 3px 0px _theme-color(black, c),
+);
+
+$SWITCH--COLOR--ON---HOVER: (
+	LIGHT: _theme-color(secondary, g),
+	DARK: _theme-color(secondary, g),
+);
+
+$SWITCH--BG--ON---HOVER: (
+	LIGHT: _theme-color(quinary, a),
+	DARK: _theme-color(quinary, a),
+);
+
+
+$SWITCH--COLOR--OFF: (
+	LIGHT: _theme-color(secondary, e),
+	DARK: _theme-color(secondary, e),
+);
+
+$SWITCH--COLOR--OFF---HOVER: (
+LIGHT: _theme-color(secondary, a),
+DARK: _theme-color(secondary, a),
+);
+
+
+//
+// TOGGLE - USED IN EDIT ENGINE
+//
+
+$TOGGLE--RAIL:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(primary, g),
+);
+
+$TOGGLE--SHADOW:(
+	LIGHT: inset 1px 1px 2px 1px _theme-color(black, a),
+	DARK: inset 1px 1px 2px 1px _theme-color(black, a),
+);
+
+$TOGGLE--LABEL---ON:(
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
+);
+
+$TOGGLE--SHUTTLE---ON:(
+	LIGHT: _theme-color(green),
+	DARK: _theme-color(green),
+);
+
+$TOGGLE--LABEL---OFF:(
+	LIGHT: _theme-color(primary, d),
+	DARK: _theme-color(primary, d),
+);
+
+$TOGGLE--SHUTTLE---OFF:(
+	LIGHT: _theme-color(primary, d),
+	DARK: _theme-color(primary, d),
+);

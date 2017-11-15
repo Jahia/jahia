@@ -1,0 +1,540 @@
+
+// COMPONENT DEFINITIONS
+
+
+/********************************/
+/*** COMBO BOX                ***/
+/********************************/
+
+@mixin _combo($type: $APP) {
+	input.x-form-text {
+		// border:1px solid red!important;
+		width: 100%!important;
+		height: auto!important;
+		box-sizing: border-box;
+		display: block;
+		padding: 7px 37px 6px 10px !important;
+
+		background: _property($MENU-CLOSED--BG, $type);
+		box-shadow: _property($MENU-CLOSED--SHADOW, $type);
+
+		@include text(12px, _property($MENU-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+
+		&:hover {
+			color: _property($MENU-CLOSED--COLOR---HOVER, $type);
+			background: _property($MENU-CLOSED--BG---HOVER, $type);
+			box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
+		}
+	}
+
+	// Trigger
+	img {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 30px!important;
+		height: 100%!important;
+		border: none!important;
+
+		background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat center center _property($MENU-CLOSED--ARROW-BG, $type)!important;
+
+		&:hover {
+			background-image: _property($MENU-CLOSED--ARROW---HOVER, $type)!important;
+			background-color: _property($MENU-CLOSED--ARROW-BG---HOVER, $type)!important;
+		}
+	}
+}
+
+
+
+@mixin _combo-picker($type: $APP) {
+	input.x-form-text {
+		// border:1px solid brown!important;
+		width: 100%!important;
+		height: auto!important;
+		box-sizing: border-box;
+		display: block;
+		padding: 7px 20px 6px 10px !important;
+
+		background: _property($MENU-CLOSED--BG, $type);
+		box-shadow: _property($MENU-CLOSED--SHADOW, $type);
+
+		@include text(12px, _property($MENU-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+
+		&:hover {
+			color: _property($MENU-CLOSED--COLOR---HOVER, $type);
+			background: _property($MENU-CLOSED--BG---HOVER, $type);
+			box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
+		}
+	}
+
+	.x-form-twin-triggers {
+		display: block;
+		position: absolute;
+		right: 5px;
+		top: 0;
+		width: 57px;
+		height: 100%;
+
+		img {
+			display: inline-block;
+			position: relative;
+			width: 27px;
+			height: 100%;
+			border: none!important;
+
+			&.x-form-trigger-arrow {
+				background: url(_property($MENU-CLOSED--OPTIONS, $type)) no-repeat center center _property($MENU-CLOSED--OPTIONS-BG, $type)!important;
+				background-size: 10px!important;
+				float: right;
+
+				&:hover {
+					background-color: _property($MENU-CLOSED--OPTIONS-BG---HOVER, $type)!important;
+				}
+			}
+
+			&.x-form-clear-trigger {
+				background: url(_property($MENU-CLOSED--CLEAR, $type)) no-repeat center center _property($MENU-CLOSED--CLEAR-BG, $type)!important;
+				right: -3px;
+				position:relative;
+				background-size: 10px!important;
+
+				&:hover {
+					background-color: _property($MENU-CLOSED--CLEAR-BG---HOVER, $type)!important;
+				}
+			}
+		}
+	}
+}
+
+
+/********************************/
+/*** DROP DOWN                ***/
+/********************************/
+
+@mixin _drop-down-fake($type: $APP){
+	// border: 1px solid yellow!important;
+	width: 100%!important;
+	height: auto!important;
+	box-sizing: border-box;
+	display: block;
+	padding: 7px 20px 6px 10px !important;
+
+	background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat right 5px center, _property($MENU-CLOSED--BG, $type);
+	box-shadow: _property($MENU-CLOSED--SHADOW, $type);
+
+	&:hover {
+		box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
+
+	}
+
+	@include text(12px, _property($MENU-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+}
+
+@mixin _drop-down($type: $APP) {
+	input.x-form-text {
+		// border: 1px solid yellow!important;
+		width: 100%!important;
+		height: auto!important;
+		box-sizing: border-box;
+		display: block;
+		padding: 7px 20px 6px 10px !important;
+
+		pointer-events: none; // Force Drop Down style when neccessary
+
+		background: _property($MENU-CLOSED--BG, $type);
+		box-shadow: _property($MENU-CLOSED--SHADOW, $type);
+
+		@include text(12px, _property($MENU-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+
+		&::-webkit-input-placeholder{
+			color: _property($MENU-CLOSED--COLOR, $type);
+		}
+		&:-moz-placeholder{
+			color: _property($MENU-CLOSED--COLOR, $type);
+		}
+		&::-moz-placeholder{
+			color: _property($MENU-CLOSED--COLOR, $type);
+		}
+		&:-ms-input-placeholder {
+			color: _property($MENU-CLOSED--COLOR, $type);
+		}
+
+	}
+
+	// Trigger
+	img {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 100%!important;
+		height: 100%!important;
+		border: none!important;
+
+		background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat right 5px center !important;
+
+	}
+
+	&:hover {
+		input.x-form-text {
+			color: _property($MENU-CLOSED--COLOR---HOVER, $type);
+			background: _property($MENU-CLOSED--BG---HOVER, $type);
+			box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
+		}
+
+		img {
+			background-image: _property($MENU-CLOSED--ARROW---HOVER, $type);
+			background-color: transparent!important;
+		}
+	}
+
+}
+
+
+/********************************/
+/*** TEXT INPUT               ***/
+/********************************/
+
+@mixin _input($type: $APP) {
+	// border: 1px solid green!important;
+	background: _property($INPUT--BG, $type);
+	padding: 7px 10px 6px 10px !important;
+	border: _property($INPUT--BORDER, $type);
+	transition: all 0.15s ease-in 0s;
+	display: block;
+	height: auto!important;
+	width: 100%!important;
+	box-sizing: border-box;
+	box-shadow: _property($INPUT--SHADOW, $type);
+
+	@include text(12px, _property($INPUT--COLOR, $type), $FONT--WEIGHT---SEMILIGHT);
+
+	&:hover {
+		background: _property($INPUT--BG---HOVER, $type);
+        color: _property($INPUT--COLOR---HOVER, $type);
+		box-shadow: _property($INPUT--SHADOW---HOVER, $type);
+	}
+
+	&:focus {
+		background: _property($INPUT--BG---FOCUS, $type);
+		color: _property($INPUT--COLOR---FOCUS, $type);
+		box-shadow: _property($INPUT--SHADOW---FOCUS, $type);
+	}
+
+	&[disabled] {
+		background: _property($INPUT--BG---DISABLED, $type);
+		box-shadow: none!important;
+		border: 1px solid _property($INPUT--BORDER---DISABLED, $type);
+		transition: $DEFAULT--TRANSITION;
+		color: _property($INPUT--COLOR---DISABLED, $type) !important;
+	}
+
+	// Single trigger
+	+ img {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 27px!important;
+		height: 100%!important;
+		border: none!important;
+
+		&.x-form-date-trigger {
+			background: url(_property($MENU-CLOSED--DATE, $type)) no-repeat center center;
+			background-size: 16px;
+
+			&:hover {
+				background-image: _property($MENU-CLOSED--DATE---HOVER, $type);
+				background-color: _property($MENU-CLOSED--DATE-BG, $type);
+			}
+		}
+
+		&.x-form-clear-trigger {
+			background: url(_property($MENU-CLOSED--CLEAR, $type)) no-repeat center center;
+			background-size: 10px!important;
+
+			&:hover {
+				background-image: _property($MENU-CLOSED--CLEAR---HOVER, $type);
+				background-color: _property($MENU-CLOSED--CLEAR-BG, $type);
+			}
+		}
+
+		&.x-form-trigger-arrow {
+			background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat center center;
+
+			&:hover {
+				background-image: url(_property($MENU-CLOSED--ARROW---HOVER, $type));
+				background-color: _property($MENU-CLOSED--ARROW-BG, $type);
+			}
+		}
+	}
+
+	// Multiple triggers
+	+ .x-form-twin-triggers {
+		position: absolute;
+		right: 5px;
+		top: 0;
+		height: 100%;
+
+		img {
+			width: 27px;
+			height: 100%;
+
+			&.x-form-date-trigger {
+				background: url(_property($MENU-CLOSED--DATE, $type)) no-repeat center center;
+				background-size: 16px;
+
+				&:hover {
+					background-image: url(_property($MENU-CLOSED--DATE---HOVER, $type));
+					background-color: _property($MENU-CLOSED--DATE-BG---HOVER, $type);
+				}
+			}
+
+			&.x-form-clear-trigger {
+				background: url(_property($MENU-CLOSED--CLEAR, $type)) no-repeat center center;
+				background-size: 10px!important;
+
+				&:hover {
+					background-image: url(_property($MENU-CLOSED--CLEAR---HOVER, $type));
+					background-color: _property($MENU-CLOSED--CLEAR-BG---HOVER, $type);
+				}
+			}
+
+			&.x-form-trigger-arrow {
+				float: right;
+				background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat center center;
+
+				&:hover {
+					background-image: url(_property($MENU-CLOSED--ARROW---HOVER, $type));
+					background-color: _property($MENU-CLOSED--ARROW-BG---HOVER, $type);
+				}
+			}
+		}
+
+
+
+
+
+	}
+
+}
+
+@mixin _input-search($type: $APP) {
+	// border: 1px solid purple!important;
+	background: _property($INPUT--BG, $type);
+	background-image: url($ICON--SEARCH--SMALL_GREY);
+	background-repeat: no-repeat;
+	background-position: left 9px top 10px;
+	background-size: 10px 10px;
+	padding: 7px 10px 6px 25px !important;
+	display: block;
+
+	border: _property($INPUT--BORDER, $type);
+	transition: all 0.15s ease-in 0s;
+
+	@include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR, $type), $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+
+	&:hover {
+		background-color: _property($INPUT--BG---HOVER, $type);
+        color: _property($INPUT--COLOR---HOVER, $type);
+	}
+
+	&:focus {
+		background-color: _property($INPUT--BG---FOCUS, $type);
+		color: _property($INPUT--COLOR---FOCUS, $type);
+	}
+
+	&[disabled] {
+		background-color: _property($INPUT--BG---DISABLED, $type);
+		border: 1px solid _property($INPUT--BORDER---DISABLED, $type);
+		transition: $DEFAULT--TRANSITION;
+		color: _property($INPUT--COLOR---DISABLED, $type);
+	}
+
+	+ img {
+		width: 27px!important;
+		height: 27px!important;
+		right: 5px;
+
+		&.x-form-date-trigger {
+			background: url(_property($MENU-CLOSED--DATE, $type)) no-repeat center center;
+			background-size: 16px;
+
+			&:hover {
+				background-image: url(_property($MENU-CLOSED--DATE---HOVER, $type));
+				background-color: _property($MENU-CLOSED--DATE-BG---HOVER, $type);
+			}
+		}
+
+		&.x-form-clear-trigger {
+			background: url(_property($MENU-CLOSED--CLEAR, $type)) no-repeat center center;
+			background-size: 10px!important;
+
+			&:hover {
+				background-image: url(_property($MENU-CLOSED--CLEAR---HOVER, $type));
+				background-color: _property($MENU-CLOSED--CLEAR-BG---HOVER, $type);
+			}
+		}
+
+		&.x-form-trigger-arrow {
+			float: right;
+			background: url(_property($MENU-CLOSED--ARROW, $type)) no-repeat center center;
+
+			&:hover {
+				background-image: url(_property($MENU-CLOSED--ARROW---HOVER, $type));
+				background-color: _property($MENU-CLOSED--ARROW-BG---HOVER, $type);
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+/********************************/
+/*** BUTTON                   ***/
+/********************************/
+
+@mixin _button-small($type: $APP) {
+
+}
+
+@mixin _button-small-suggested($type: $APP) {
+
+}
+
+@mixin _button-big($type: $APP) {
+
+}
+
+@mixin _button-big-suggested($type: $APP) {
+
+}
+
+@mixin _button-side-panel($type: $APP) {
+	// Pages, Create, Content, Files, Search, Categories, Devices
+	.x-tab-with-icon {
+
+	}
+}
+
+@mixin _button-tool($type: $APP) {
+	// Status, Publish, Workflow, Cache, Trash, Jobs
+	.x-btn {
+
+	}
+
+}
+
+
+
+
+
+
+
+/********************************/
+/*** TABS                   ***/
+/********************************/
+
+@mixin tabs($type: $APP) {
+
+}
+
+
+
+
+/********************************/
+/********************************/
+/********************************/
+
+#component-input {
+	@include _input();
+}
+
+#component-input-search {
+	@include _input-search();
+}
+
+#component-combo {
+	@include _combo();
+}
+
+#component-drop-down {
+	@include _drop-down();
+}
+
+#component-button-big {
+	@include _button-big();
+}
+
+#component-button-big-suggested {
+	@include _button-big-suggested();
+}
+
+#component-button-small {
+	@include _button-big();
+}
+
+#component-button-small-suggested {
+	@include _button-big-suggested();
+}
+
+
+/********************************/
+/********************************/
+/********************************/
+
+
+
+.content-picker-field {
+	@include _combo-picker($EDIT-ENGINE);
+}
+
+
+div[role="combobox"] {
+	// DEFAULT
+	@include _combo($APP);
+
+	// SIDE PANEL
+	body[data-indigo-gwt-side-panel="open"] & {
+		@include _combo($SIDE-PANEL);
+
+	}
+
+	// EDIT ENGINE
+	.engine-panel & {
+		@include _combo($EDIT-ENGINE);
+
+	}
+
+	// PICKER
+	#JahiaGxtContentPickerWindow & {
+		@include _combo($PICKER-HEADER-INPUT);
+
+	}
+
+	// PICKER > SEARCH
+	#JahiaGxtContentPickerWindow #CRTsearchTabItem & {
+		@include _drop-down($PICKER);
+	}
+
+	// PICKER TOP BAR
+	#JahiaGxtContentPickerWindow #JahiaGxtManagerTobTable {
+		@include _drop-down($PICKER);
+
+	}
+
+}
+
+.x-form-text {
+	@include _input($APP);
+
+	body[data-indigo-gwt-side-panel="open"] & {
+		width: 100%!important;
+		@include _input($SIDE-PANEL);
+	}
+}

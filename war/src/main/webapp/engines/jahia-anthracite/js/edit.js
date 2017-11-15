@@ -183,6 +183,55 @@
                     }
 
                     if(mutationRecord.removedNodes.length > 0){
+						groupedCallbacks = mutationObservers[selector].callbacks.onGroupClose;
+
+                        if(groupedCallbacks){
+                            removedNode = mutationRecord.removedNodes[0];
+
+                            if(removedNode.nodeType == 1){
+                                for(_target in groupedCallbacks){
+
+                                    modifiedSelector = groupedCallbacks[_target].matchType.modifiedSelector;
+
+                                    // See if removedNode matches the _target of the callback
+                                    switch(groupedCallbacks[_target].matchType.type){
+                                        case "tag":
+                                            if(removedNode.tagName.toUpperCase() == modifiedSelector){
+                                                // Loop through all callbacks
+                                                executeCallbacks(groupedCallbacks[_target].queue, mutationRecord.removedNodes, removedNode);
+
+                                            }
+                                            break;
+                                        case "id":
+                                            if(removedNode.id == modifiedSelector){
+                                                // Loop through all callbacks
+                                                executeCallbacks(groupedCallbacks[_target].queue, mutationRecord.removedNodes, removedNode);
+
+                                            }
+                                            break;
+                                        case "classname":
+                                            if(removedNode.classList.contains(modifiedSelector)){
+                                                // Loop through all callbacks
+                                                executeCallbacks(groupedCallbacks[_target].queue, mutationRecord.removedNodes, removedNode);
+
+                                            }
+                                            break;
+                                        case "complex":
+                                            if(removedNode.matches(modifiedSelector)){
+                                                // Loop through all callbacks
+                                                executeCallbacks(groupedCallbacks[_target].queue, mutationRecord.removedNodes, removedNode);
+
+                                            }
+                                            break;
+
+                                    }
+
+                                }
+                            }
+
+
+                        }
+
                         callbacks = mutationObservers[selector].callbacks.onClose;
 
                         if(callbacks){
@@ -438,12 +487,24 @@
 
             },
 
-            append: function(node){
+			append: function(node){
 
                 var n;
 
                 for(n = 0; n < this.nodes.length; n++){
                     this.nodes[n].appendChild(node);
+                }
+
+                return this;
+
+            },
+
+			prepend: function(node){
+
+                var n;
+
+                for(n = 0; n < this.nodes.length; n++){
+                    this.nodes[n].prepend(node);
                 }
 
                 return this;
@@ -457,7 +518,7 @@
                 for(n = 0; n < this.nodes.length; n++){
                     this.nodes[n];
 
-                    if (this.nodes[n].parentNode) {
+                    if (this.nodes[n] && this.nodes[n].parentNode) {
                         this.nodes[n].parentNode.removeChild(this.nodes[n]);
                     }
                 }
@@ -481,7 +542,12 @@
 
             parent: function(){
 
-                this.nodes = [this.nodes[0].parentNode];
+				if(this.nodes[0] && this.nodes[0].parentNode){
+					this.nodes = [this.nodes[0].parentNode];
+				} else {
+					this.nodes = [];
+				}
+
 
                 return this;
 
@@ -548,7 +614,7 @@
             getHTML: function(value){
                 /* Get innerHTML of all first node in nodelist */
 
-                return this.nodes[0].innerHTML;
+                return (this.nodes[0]) ? this.nodes[0].innerHTML : null;
             },
 
             css: function(styles){
@@ -588,7 +654,8 @@
             getAttribute: function(key){
                 /* Get attribute of first node in nodelist */
 
-                return this.nodes[0].getAttribute(key);
+
+                return (this.nodes[0]) ? this.nodes[0].getAttribute(key) : null;
             },
 
             toggleAttribute: function(key, value){
@@ -636,7 +703,10 @@
                 var n;
 
                 for(n = 0; n < this.nodes.length; n++){
-                    this.nodes[n].classList.remove(classname);
+					if(this.nodes[n]){
+						this.nodes[n].classList.remove(classname);
+
+					}
                 }
                 return this;
             },
@@ -762,6 +832,28 @@
                     children: false,
                     persistant: true,
                     mutation_id: mutation_id
+                });
+
+                return this;
+            },
+
+			onGroupClose: function(target, callback, mutation_id){
+                this.onMutation("onGroupClose", target, callback, {
+                    children: false,
+                    persistant: true,
+                    mutation_id: mutation_id,
+                    groupNodes: true
+                });
+
+                return this;
+            },
+
+			onceGroupClose: function(target, callback, mutation_id){
+                this.onMutation("onGroupClose", target, callback, {
+                    children: false,
+                    persistant: false,
+                    mutation_id: mutation_id,
+                    groupNodes: true
                 });
 
                 return this;
@@ -898,8 +990,15 @@
             },
 
 
-            onInput: function(target, callback, event_id){
+			onInput: function(target, callback, event_id){
                 createEventListener(this, "input", this.selector, target, callback, true, event_id);
+
+                return this;
+
+            },
+
+			onChange: function(target, callback, event_id){
+                createEventListener(this, "change", this.selector, target, callback, true, event_id);
 
                 return this;
 
@@ -1129,7 +1228,26 @@
 			singleTask: "Dashboard (%n% task)",
 			multipleTasks: "Dashboard (%n% tasks)",
             workflowType: "%n% Workflow:",
-            chooseWorkflowType: "Choose a workflow for %n%:"
+            chooseWorkflowType: "Choose a workflow for %n%:",
+            filterField: "Filter",
+			sortBy: "Sort By",
+			search: "Search %n%",
+            languageField: "All Languages",
+			fromDate: "From ...",
+			toDate: "To ...",
+			dateRange: "Date Range",
+			dateAnyTime: "Any time",
+			dateCustom: "Time range",
+			dateCustomLabel: "Time range ...",
+			dateType: "By %n% date",
+			allMetadata: "All metadata",
+			ignoreMetadata: "Ignore metadata",
+			metaLabel: "Meta: %n%",
+			pickerTitles: {
+				default: "File Picker",
+				imagepicker: "Image Picker",
+				editoriallinkpicker: "Content picker",
+			},
 		},
 		"FR": {
 			jobs: "Processus",
@@ -1137,7 +1255,26 @@
 			singleTask: "Tableau de bord (%n% Tâche)",
 			multipleTasks: "Tableau de bord (%n% Tâches)",
             workflowType: "%n% Workflow type",
-            chooseWorkflowType: "Choisir une workflow pour %n%:"
+            chooseWorkflowType: "Choisir une workflow pour %n%:",
+            filterField: "Filtrer",
+			sortBy: "Sort By",
+			search: "Rechercher dans %n%",
+			languageField: "All Languages",
+			fromDate: "From ...",
+			toDate: "To ...",
+			dateRange: "Date Range ...",
+			dateAnyTime: "Any time",
+			dateCustom: "Time range",
+			dateCustomLabel: "Time range ...",
+			dateType: "Par %n%",
+			allMetadata: "All metadata",
+			ignoreMetadata: "Ignore metadata",
+			metaLabel: "Meta: %n%",
+			pickerTitles: {
+				default: "File Picker",
+				imagepicker: "Image Picker",
+				editoriallinkpicker: "Content picker",
+			},
 		}
 	}
 
@@ -1145,12 +1282,57 @@
 	var app = {
 		data: {
 			currentApp: null,
+			currentSite: null,
 			previousModeClass: null,
 			UILanguage: null,
 			startedOnSettingsPage: false,
 			startedOnEditPage: true,
 			firstApp: null,
-            ckeditorVersion: CKEDITOR.version
+            ckeditorVersion: CKEDITOR.version,
+			HTTP: function(){
+				var pathnameSplit = document.location.pathname.split("/"),
+					page = pathnameSplit[pathnameSplit.length - 1],
+					root = pathnameSplit[1],
+					queryString = document.location.href,
+					queryStringParameters = queryString.split("?"),
+					queryStringKeyValuePairs,
+					queryStringKeyValuePairsSplit,
+					n,
+					picker =  null,
+					QS = {};
+
+
+
+
+
+
+
+				if(queryStringParameters.length > 1){
+					// Found a query string ...
+					queryStringKeyValuePairs = queryStringParameters[1].split("&");
+
+					for(var n = 0; n < queryStringKeyValuePairs.length; n++){
+						queryStringKeyValuePairsSplit = queryStringKeyValuePairs[n].split("=");
+						QS[queryStringKeyValuePairsSplit[0]] = queryStringKeyValuePairsSplit[1];
+					}
+				}
+
+				if(root == "engines" && page == "contentpicker.jsp"){
+					app = "contentpicker";
+					picker = QS["type"] || "default";
+
+				} else if(root == "cms"){
+					app = pathnameSplit[2];
+				}
+
+				return {
+					page: page,
+					root: root,
+					picker: picker,
+					QS: QS,
+					app: app
+				};
+			}(),
 		},
 		dev: {
 			data: {
@@ -1162,8 +1344,24 @@
 				}
 			}
 		},
-        onChange: function(attrKey, attrValue){
+		onChangeNodePath: function(attrKey, attrValue){
+			var nodePathSplit = attrValue.split("/"),
+				site = nodePathSplit[2];
 
+			if(site && site != app.data.currentSite){
+				app.data.currentSite = site;
+				app.onChangeSite(site);
+			}
+
+		},
+		onChangeSite: function(site){
+			app.edit.history.reset();
+
+			// Switch to pages view (even though maybe hidden, so that the refresh button relates to pages list)
+			DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtPagesTab").trigger("click");
+
+		},
+        onChange: function(attrKey, attrValue){
             if(app.data.previousModeClass == attrValue){
                 return false;
             }
@@ -1203,43 +1401,6 @@
 
 
 		},
-        onChange2: function(mode, arg1, arg2){
-			if(app.data.previousModeClass == mode){
-				return false;
-			}
-
-			app.data.previousModeClass = mode;
-
-			app.dev.log("::: APP ::: ONCHANGE");
-			mode.split(" ").forEach(function(cl) {
-                if (cl.indexOf("x-viewport") == 0) {
-
-                    switch (cl) {
-                        case "x-viewport-editmode":
-							app.switch("edit");
-
-                            break;
-                        case "x-viewport-adminmode":
-							app.switch("admin");
-
-                            break;
-                        case "x-viewport-dashboardmode":
-							app.switch("dashboard");
-
-                            break;
-                        case "x-viewport-studiomode":
-							app.switch("studio");
-
-                            break;
-                        case "x-viewport-contributemode":
-							app.switch("contribute");
-
-                            break;
-                    }
-
-                }
-            })
-		},
 		onResize: function(){
 			app.dev.log("::: APP ::: ONRESIZE");
 			if(app.data.currentApp == "edit"){
@@ -1278,8 +1439,10 @@
 				return false;
 
 			}
-			app.dev.log("::: APP ::: SWITCH: " + appID);
+			app.dev.log("::: APP ::: SWITCH: " + appID, true);
 			app.data.currentApp = appID;
+
+            DexV2.getCached("body").setAttribute("data-INDIGO-APP", appID);
 
 			app[appID].onOpen();
 
@@ -1320,6 +1483,8 @@
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONOPEN");
                     var returnText;
 
+                    DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "open");
+
                     app.dev.log("app.data.currentApp: " + app.data.currentApp);
 
                     switch(app.data.currentApp){
@@ -1350,6 +1515,7 @@
                 },
 				onClose: function(){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONCLOSE");
+                    DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "");
 					// Manager Menu has been closed by clicking on the X.
 		            // Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
 		            DexV2(".menu-editmode-managers-menu").css({
@@ -1440,14 +1606,165 @@
 		picker: {
 			data: {
 				currentItem: null,
-				title: null
+				title: null,
+				pickerTitle: null,
+				displayType: null,
+				previousDisplayType: null,
+				ID: "JahiaGxtContentPickerWindow",
+				standaloneID: "contentpicker",
+				inpageID: "JahiaGxtContentPickerWindow",
+				hasPreview: null,
+				selectedFileCount: 0,
+				zooms: {
+					thumbs: 3,
+					details: 3
+				}
 			},
 			onOpen: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONOPEN");
+
+				if(app.picker.data.standalone){
+					// Set ID for picker ...
+					app.picker.data.ID = app.picker.data.standaloneID;
+
+					// Create title
+					var pickerH1 = document.createElement("h1"),
+						pickerH1Label = document.createTextNode(localisedStrings[app.data.UILanguage].pickerTitles[app.data.HTTP.picker]);
+
+					pickerH1.id = "pickerTitle";
+					pickerH1.appendChild(pickerH1Label);
+
+					// Add title to page
+					DexV2.id("contentpicker").prepend(pickerH1);
+				}
+
+				// Save current view (by default loads on thumbs)
+				app.picker.data.displayType = "thumbsview";
+
+				var pickerTitle = (app.picker.data.standalone) ? DexV2("#pickerTitle") : DexV2.id(app.picker.data.ID).filter(".x-window-tl .x-window-header-text"),
+					box = pickerTitle.getNode(0).getBoundingClientRect(),
+					left = box.left,
+					top = box.top,
+					width = box.width,
+					searchLeftPosition = (left + width + 5);
+
+				DexV2.id("JahiaGxtManagerLeftTree__CRTsearchTabItem").css({
+					"left": searchLeftPosition + "px"
+				});
+
+				// Save picker title ( for later use in search placeholder )
+				app.picker.data.pickerTitle = pickerTitle.getHTML();
+
+				// Create button to toggle the left panel
+				var toggleFilesButton = document.createElement("button"),
+                    toggleFilesButtonLabel = document.createTextNode("Toggle");
+
+				toggleFilesButton.id = "toggle-picker-files";
+
+				DexV2.id(app.picker.data.ID).prepend(toggleFilesButton);
+
+				// Add placeholders to form elements
+				app.picker.setPlaceholders();
+
+				// Set flags for CSS
 				DexV2.getCached("body")
 					.setAttribute("data-INDIGO-PICKER-SEARCH", "")
 					.setAttribute("data-INDIGO-PICKER", "open")
-					.setAttribute("indigo-PICKER-DISPLAY", "thumbs");
+					.setAttribute("indigo-PICKER-DISPLAY", "thumbsview");
+
+				// Reset classes that may have been previously added
+				DexV2.id(app.picker.data.ID).removeClass("search-panel-opened");
+
+				// Listen for clicks on toggle button
+				DexV2.id(app.picker.data.ID).onClick("#toggle-picker-files", function(){
+					DexV2.id(app.picker.data.ID).toggleClass("indigo-collapsed");
+				}, "TOGGLE-PICKER-FILES");
+
+				// Listen for changes in slider (input range)
+				DexV2.id(app.picker.data.ID).onInput("#thumb-size-slider", function(e){
+					var zoomSize = e.target.value;
+
+					// Save zoom level
+					app.picker.data.zooms[app.picker.data.displayType] = zoomSize;
+
+					DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree + div #images-view .x-view").setAttribute("indigo-thumb-zoom", zoomSize);
+				}, "THUMB-SIZE-SLIDER");
+
+				// Fires if multiselect is possible in picker...
+				DexV2.tag("body").onOpen("#JahiaGxtManagerBottomTabs", function(){
+
+					// Create a toggle button for multiple selection
+					var toggleButton = document.createElement("button"),
+						toggleButtonLabel = document.createTextNode("Multiple Selection");
+
+					toggleButton.appendChild(toggleButtonLabel);
+					toggleButton.classList.add("toggle-multiple-selection");
+
+					DexV2.id("JahiaGxtManagerBottomTabs").prepend(toggleButton);
+
+					// Add class for CSS
+					DexV2.id(app.picker.data.ID).addClass("indigo-picker-multi-select");
+
+					// Listen for files being added to the multiple selection
+					DexV2.id("JahiaGxtManagerBottomTabs").onGroupOpen(".x-grid-group", function(groupedNodes){
+						app.picker.data.selectedFileCount = this.length;
+						app.picker.updateMultipleCount();
+					}, "ADDED_FILES_MULTI_SELECT");
+
+					// Listen for files being removed from the multiple selection
+					DexV2.id("JahiaGxtManagerBottomTabs").onGroupClose(".x-grid-group", function(groupedNodes){
+						// Need to manually count the files in multiple selection ...
+						app.picker.data.selectedFileCount = DexV2.id("JahiaGxtManagerBottomTabs").filter(".x-grid-group").nodes.length;
+						app.picker.updateMultipleCount();
+					}, "REMOVED_FILES_MULTI_SELECT");
+
+					// Listen for clicks on the multiple selection toggle button
+					DexV2.id("JahiaGxtManagerBottomTabs").onClick(".toggle-multiple-selection", function(){
+						DexV2.id("JahiaGxtManagerBottomTabs").toggleClass("indigo-collapsed");
+					}, "TOGGLE_MULTI_SELECT");
+
+				}, "CHECK_FOR_MULTISELECT");
+
+				// See if GWT has included a slider for thumb preview, if so then we can add ours ( which is a GWT replacement )
+				var hasSlider = DexV2("#" + app.picker.data.ID + " .x-slider").nodes.length > 0;
+
+				if(hasSlider){
+					var thumbSlider = document.createElement("input");
+
+					thumbSlider.id = "thumb-size-slider";
+					thumbSlider.type = "range";
+					thumbSlider.value = 4;
+					thumbSlider.min = 1;
+					thumbSlider.max = 6;
+
+					DexV2.id(app.picker.data.ID).prepend(thumbSlider);
+
+				}
+
+				// See if GWT has enabled previews for files, if so then set the preview flag to true
+				app.picker.data.enablePreviews = DexV2("#" + app.picker.data.ID + " .toolbar-item-filepreview").nodes.length > 0;
+
+			},
+			updateMultipleCount: function(){
+				DexV2.class("toggle-multiple-selection").setHTML("Multiple selection (" + app.picker.data.selectedFileCount + ")");
+
+			},
+			updateZoomLevel: function(){
+
+				if(DexV2.id("thumb-size-slider").nodes[0]){
+					DexV2.id("thumb-size-slider").nodes[0].value = app.picker.data.zooms[app.picker.data.displayType];
+
+				}
+
+				DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree + div #images-view .x-view").setAttribute("indigo-thumb-zoom", app.picker.data.zooms[app.picker.data.displayType]);
+
+			},
+			setPlaceholders: function(){
+				var filterField = DexV2('#images-view .x-toolbar .x-toolbar-left .x-toolbar-cell:nth-child(2) .x-form-text'),
+                    sortBy = DexV2('#images-view .x-toolbar .x-toolbar-left .x-toolbar-cell:nth-child(5) .x-form-text');
+
+                filterField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterField);
+				sortBy.setAttribute("placeholder", localisedStrings[app.data.UILanguage].sortBy);
 			},
 			onClose: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONCLOSE");
@@ -1461,27 +1778,59 @@
 			},
 			onListView: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONLISTVIEW");
-				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "list");
+				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "listview");
+				app.picker.data.displayType = "listview";
+
 
 			},
 			onThumbView: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONTHUMBVIEW");
-				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "thumbs");
+				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "thumbsview");
+				app.picker.data.displayType = "thumbsview";
+				app.picker.setPlaceholders();
+				app.picker.updateZoomLevel();
+
+			},
+			onDetailView: function(){
+				app.dev.log("::: APP ::: PICKER ::: ONDETAILVIEW");
+				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "detailedview");
+				app.picker.data.displayType = "detailedview";
+				app.picker.setPlaceholders();
+				app.picker.updateZoomLevel();
 
 			},
 			row: {
 				onClick: function(){
 					app.dev.log("::: APP ::: PICKER ::: ROW ::: ONCLICK");
+
 					DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
 				},
 				onMouseOver: function(e){
-					app.dev.log("::: APP ::: PICKER ::: ROW ::: ONMOUSEOVER");
-					// Position the preview button next to the file whilst hovering
-		            app.picker.previewButton.reposition(e, {
-		                left: -58,
-		                top: 0
-		            });
+					app.dev.log("::: APP ::: PICKER ::: ROW ::: MOUSEOVER");
+
+
+					if(app.picker.data.enablePreviews){
+						if(DexV2.node(this).filter(".preview-button").nodes.length == 0){
+							var previewButton = document.createElement("button"),
+			                    previewButtonLabel = document.createTextNode("Preview");
+
+							previewButton.classList.add("preview-button");
+
+							DexV2.node(this).prepend(previewButton);
+
+						}
+					}
+
+					if(DexV2.node(this).filter(".more-info-button").nodes.length == 0){
+						var moreInfoButton = document.createElement("button"),
+							moreInfoButtonLabel = document.createTextNode("More Info");
+
+						moreInfoButton.classList.add("more-info-button");
+
+						DexV2.node(this).prepend(moreInfoButton);
+
+					}
 
 					app.picker.data.currentItem = DexV2.node(this).getNode(0);
 					app.picker.data.title = DexV2.node(this).filter(".x-grid3-col-name").getHTML();
@@ -1514,36 +1863,83 @@
 					app.dev.log("::: APP ::: PICKER ::: THUMB ::: ONCLICK");
 					DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
 
+					DexV2.node(this).addClass("x-view-over");
+
 				},
 				onMouseOver: function(e){
-					app.dev.log("::: APP ::: PICKER ::: THUMB ::: ONMOUSEOVER", e, this);
-					// Position the preview button next to the file whilst hovering
-		            app.picker.previewButton.reposition(e, {
-		                left: -52,
-		                top: 0
-		            });
+					app.dev.log("::: APP ::: PICKER ::: THUMB ::: MOUSEOVER");
+
+					if(DexV2.node(this).filter(".thumb .more-info-button").nodes.length == 0){
+
+						var moreInfoButton = document.createElement("button"),
+							moreInfoButtonLabel = document.createTextNode("More Info");
+
+						moreInfoButton.classList.add("more-info-button");
+
+						DexV2.node(this).filter(".thumb").prepend(moreInfoButton);
+
+					}
+
+					if(app.picker.data.enablePreviews){
+						if(DexV2.node(this).filter(".thumb .preview-button").nodes.length == 0){
+							var previewButton = document.createElement("button"),
+								previewButtonLabel = document.createTextNode("Preview");
+
+							previewButton.classList.add("preview-button");
+
+							DexV2.node(this).filter(".thumb").prepend(previewButton);
+
+						}
+					}
 
 					app.picker.data.currentItem = DexV2.node(this).getNode(0);
 		            app.picker.data.title = DexV2.node(this).getAttribute("id");
 
-		            if(DexV2.node(this).hasClass("x-view-item-sel")){
-		                DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "selected");
+					if(!DexV2.node(this).hasClass("indigo-force-open")){
+						DexV2(".x-view-item-sel.indigo-force-open").removeClass("indigo-force-open");
+					}
 
-		            } else {
-		                DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button-state", "unselected");
 
-		            }
-
-		            DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "show");
+				},
+				onMouseOut: function(){
+					DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "");
 				},
 				onContext: function(e){
-					app.dev.log("::: APP ::: PICKER ::: THUMB ::: ONCONTEXT");
-					// Open Context Menu when clicking "More" button.
-					DexV2.node(e.target).trigger("contextmenu", e.pageX, e.pageY);
+					var that = this;
 
+					DexV2.node(this).trigger("contextmenu", e.pageX, e.pageY);
+					DexV2.node(this).closest(".thumb-wrap").addClass("indigo-force-open");
 
+					DexV2("body").onceClose(".imagepickerContextMenu", function(){
+						DexV2.node(that).closest(".thumb-wrap").removeClass("indigo-force-open");
+
+					});
+				},
+				openPreview: function(){
+					DexV2("#JahiaGxtManagerToolbar .toolbar-item-filepreview").trigger("click");
 				}
 
+			},
+			moreInfoButton: {
+				reposition: function(e, offset){
+					app.dev.log("::: APP ::: PICKER ::: MOREINFOBUTTON ::: REPOSITION");
+					var offset = offset || {
+		                    left: 0,
+		                    top: 0
+		                },
+		                file = e.target,
+		                box = file.getBoundingClientRect(),
+		                left = box.left,
+		                top = box.top,
+		                width = box.width;
+
+		            DexV2.node(e.target).filter(".more-info-button")
+		                .css({
+		                    top: (top + (offset.top)) + "px",
+		                    left: ((left + width) + offset.left + 5) + "px"
+		                })
+		                .addClass("indigo-show-button");
+				}
 			},
 			previewButton: {
 				onMouseOver: function(){
@@ -1571,28 +1967,33 @@
 							.trigger("mousedown")
 							.trigger("mouseup");
 
-						// Now need to remove the preview ( just incase it is previewing a previously selected thumb)
-						DexV2.id("JahiaGxtImagePopup").remove(); // remove OLD preview
+						if(DexV2("#" + app.picker.data.ID + " .toolbar-item-filepreview").hasClass("x-item-disabled")){
+							alert("Preview unavailable");
+						} else {
+							// Now need to remove the preview ( just incase it is previewing a previously selected thumb)
+							DexV2.id("JahiaGxtImagePopup").remove(); // remove OLD preview
 
-						// Reclick on the preview button for the newly selected thumb
-						DexV2.node(this).customTrigger("click", {secondClick: true});
+							// Reclick on the preview button for the newly selected thumb
+							DexV2.node(this).customTrigger("click", {secondClick: true});
+						}
+
+
 					}
 
 		            DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "hide");
 				},
-				reposition: function(e, offset){
+				reposition: function(node, offset){
 					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: REPOSITION");
 					var offset = offset || {
 		                    left: 0,
 		                    top: 0
 		                },
-		                file = e.target,
-		                box = file.getBoundingClientRect(),
+		                box = node.getBoundingClientRect(),
 		                left = box.left,
 		                top = box.top,
 		                width = box.width;
 
-		            DexV2("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
+						DexV2("#JahiaGxtManagerToolbar .toolbar-item-filepreview")
 		                .css({
 		                    top: (top + (offset.top)) + "px",
 		                    left: ((left + width) + offset.left + 5) + "px"
@@ -1608,13 +2009,13 @@
 					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOVER");
 					// USER HAS ROLLED OVER THE COMBO TRIGGER
 		            if(DexV2.getCached("body").getAttribute("data-indigo-picker-source-panel") != "open"){
-		                DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
+		                DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-panel-header").addClass("indigo-hover");
 		            }
 				},
 				onMouseOut: function(){
 					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: ONMOUSEOUT");
 					// USER HAS ROLLED OUT OF THE COMBO TRIGGER
-		            DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+		            DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 				},
 				close: function(){
 					app.dev.log("::: APP ::: PICKER ::: SOURCE ::: CLOSE");
@@ -1628,35 +2029,179 @@
 					// USER HAS CLICKED THE COMBO TRIGGER
 		            e.stopPropagation();
 
-		            DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
+		            DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-panel-header").removeClass("indigo-hover");
 
                     DexV2.getCached("body").toggleAttribute("data-INDIGO-PICKER-SOURCE-PANEL", ["open", ""]);
 
 				}
 			},
 			search: {
+				setUpScreen: function(){
+					// Save the current display time see we can switch back when closing the search panel
+					app.picker.data.previousDisplayType = app.picker.data.displayType;
+
+					// Put the results in LIST mode
+					if(app.picker.data.displayType == "listview"){
+						// Directly remove the listing
+						DexV2("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
+
+					} else {
+						DexV2("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
+
+						// Switch to list view, then remove ...
+						DexV2("#JahiaGxtManagerTobTable").onceGroupOpen(".x-grid3 .x-grid3-row", function(){
+							DexV2.collection(this).remove();
+
+						});
+					}
+
+					// Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
+					DexV2.id("CRTbrowseTabItem").addClass("x-hide-display");
+					DexV2("#CRTsearchTabItem").removeClass("x-hide-display");
+
+					DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "open");
+					DexV2.id(app.picker.data.ID).addClass("search-panel-opened");
+
+					// Ask for class names ...
+					var searchField = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(1) td:nth-child(1) input'),
+						languageField = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(2) input'),
+						fromDate = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(5) input'),
+						toDate = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(6) input'),
+						dateRange = DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7) input');
+
+					searchField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].search.replace("%n%", app.picker.data.pickerTitle));
+					// searchField.getNode(0).value = "";
+					languageField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].languageField);
+
+					fromDate.setAttribute("placeholder", localisedStrings[app.data.UILanguage].fromDate);
+					toDate.setAttribute("placeholder", localisedStrings[app.data.UILanguage].toDate);
+					dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateAnyTime);
+
+					// Callback when user opens Date Range context menu ...
+					DexV2('#' + app.picker.data.ID + ' #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7)').oneClick("img", function(){
+						var alreadyAddedButtons = DexV2(".x-combo-list").hasClass("indigo-buttons");
+
+						if(!alreadyAddedButtons){
+							var anyTimeButton = document.createElement("span"),
+								customRangeButton = document.createElement("span");
+
+							anyTimeButton.innerHTML = localisedStrings[app.data.UILanguage].dateAnyTime;
+							anyTimeButton.classList.add("search-anytime-button");
+							anyTimeButton.classList.add("x-combo-list-item");
+
+							customRangeButton.innerHTML = localisedStrings[app.data.UILanguage].dateCustomLabel;
+							customRangeButton.classList.add("search-custom-date-range-button");
+							customRangeButton.classList.add("x-combo-list-item");
+
+							DexV2(".x-combo-list")
+								// Add Two new buttons to the context menu ...
+								.prepend(anyTimeButton)
+								.append(customRangeButton)
+								.addClass("indigo-buttons");
+						}
+
+						DexV2(".x-combo-list")
+							// Clicked on a Normal Date Filter ( ie. 1 day, 2 days, etc )
+							.onMouseDown(".x-combo-list-item", function(){
+								DexV2.id(app.picker.data.ID).setAttribute("data-indigo-search-date", "simple");
+
+							}, "PREDEFINED_DATE_RANGE")
+
+							// Clicked on the custom date range button
+							.onMouseDown(".search-custom-date-range-button", function(){
+								DexV2.id(app.picker.data.ID).setAttribute("data-indigo-search-date", "custom");
+
+								dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateCustom);
+
+								// Close the context menu by trigger clicking the page
+								DexV2("#" + app.picker.data.ID).trigger("mousedown").trigger("mouseup");
+
+							}, "CUSTOM_DATE_RANGE")
+							.onMouseDown(".search-anytime-button", function(){
+								// Clicked on Any TIme ( removes times filter )
+
+								dateRange.setAttribute("placeholder", localisedStrings[app.data.UILanguage].dateAnyTime);
+								DexV2.id(app.picker.data.ID).setAttribute("data-indigo-search-date", "");
+
+								// Close the context menu by trigger clicking the page
+								DexV2("#" + app.picker.data.ID).trigger("mousedown").trigger("mouseup");
+							}, "ANY_TIME");
+
+
+
+
+					}, "SEARCH_PANEL_DATE_RANGE_BUTTON");
+
+					DexV2.id(app.picker.data.ID)
+						// Listen for changes to meta tags ...
+						.onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(3)", app.picker.search.updateMetaLabel, "CHANGE_META_FILTER")
+
+						// Listen for changes to modification type ...
+						.onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) .x-form-check-wrap", app.picker.search.updateModificationLabel, "CHANGE_MODIFICATION_FILTER")
+
+						// Toggle modification menu when clicking ...
+						.onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) > label", app.picker.search.toggleModificationMenu, "TOGGLE_MODIFICATION_FILTER");
+
+					// Trigger clicks to initiate the labels of Modification and Meta
+					DexV2.id("CRTsearchTabItem").filter(".x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(3)").trigger("click");
+					DexV2.id("CRTsearchTabItem").filter(".x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) input[type=radio]:checked").trigger("click");
+
+				},
 				open: function(){
-					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: OPEN");
 					// OPEN SEARCH PANEL
+					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: OPEN");
 
-		            // Close source picker if open
-		            app.picker.onClose();
+					var searchTabAvailable = DexV2.id("CRTsearchTabItem").exists();
 
+					if(searchTabAvailable){
+						app.picker.search.setUpScreen();
 
-		            // Display the search panel
-		            DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "open");
+					} else {
+						DexV2.tag("body").onOpen("#CRTsearchTabItem", app.picker.search.setUpScreen);
 
-		            // Put the results in LIST mode
-		            DexV2("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
+					}
 
-		            // Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)
-		            DexV2.id("CRTbrowseTabItem").addClass("x-hide-display");
+				},
+				toggleModificationMenu: function(){
+					var menu = DexV2.node(this).parent();
 
+					menu.toggleClass("indigo-show-menu");
+				},
+				updateModificationLabel: function(){
+					var dateType = DexV2.node(this).filter("label").getHTML(),
+						label = localisedStrings[app.data.UILanguage].dateType.replace("%n%", dateType);
 
-		            // Remove the directory listing ( gives the search panel an empty start)
-		            setTimeout(function(){
-		                DexV2("#JahiaGxtManagerTobTable .x-grid3 .x-grid3-row").remove();
-		            }, 250);
+					DexV2.node(this).closest(".x-form-item")
+						.removeClass("indigo-show-menu")
+						.setAttribute("data-indigo-modification-label", label);
+				},
+				updateMetaLabel: function(){
+					var checkboxes = DexV2.node(this).filter(".x-form-check-wrap:not(.x-hide-display) input[type='checkbox']"),
+						selMeta = [],
+						checkboxCount = checkboxes.nodes.length,
+						metaMenuLabel;
+
+					checkboxes.each(function(checkbox){
+						var checkboxLabel = this.nextSibling.innerHTML;
+
+						if(this.checked == true){
+							// Its checked, so add to string ...
+							selMeta.push(checkboxLabel);
+						}
+					});
+
+					if(selMeta.length == checkboxCount){
+						// ALL meta data
+						metaMenuLabel = localisedStrings[app.data.UILanguage].allMetadata;
+
+					} else if(selMeta.length == 0){
+						metaMenuLabel = localisedStrings[app.data.UILanguage].ignoreMetadata;
+					} else {
+						metaMenuLabel = localisedStrings[app.data.UILanguage].metaLabel.replace("%n%", selMeta.join(", "))
+
+					}
+
+					DexV2.node(this).setAttribute("data-indigo-meta-label", metaMenuLabel);
 				},
 				close: function(){
 					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE");
@@ -1664,12 +2209,20 @@
 
 		            // Hide the search panel
 		            DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "");
+					DexV2.id(app.picker.data.ID).removeClass("search-panel-opened");
+
+					DexV2.id("CRTsearchTabItem").addClass("x-hide-display");
+
 
 		            // Display the BROWSE panels
-		            DexV2("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
+		            DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-tab-panel-body > div:nth-child(1)").removeClass("x-hide-display");
+
+					// // Put the results in previous mode
+					DexV2("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-" + app.picker.data.previousDisplayType).trigger("click");
+
 
 					// CLick on the refresh button to reload the content of the directory
-		            DexV2.id("JahiaGxtContentPickerWindow").filter("#JahiaGxtManagerLeftTree .x-panel:not(.x-panel-collapsed) .x-tool-refresh").trigger("click");
+		            DexV2.id(app.picker.data.ID).filter("#JahiaGxtManagerLeftTree .x-panel:not(.x-panel-collapsed) .x-tool-refresh").trigger("click");
 
 				},
 
@@ -1696,17 +2249,80 @@
 			}
 		},
 		engine: {
+            data: {
+                returnToEditEngine: false
+            },
 			onOpen: function(){
 				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
 				var nodeDisplayName = DexV2.getCached("body").getAttribute("data-singleselection-node-displayname");
 
+				setTimeout(function(){
+					var nodeDetails = DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").getHTML();
+						regExp = /\[(.*?)\]/gi,
+						nodeStatus = nodeDetails.match(regExp),
+						isLocked = false;
+
+					if(nodeStatus){
+						isLocked = nodeStatus[0].indexOf("locked") > -1 || nodeStatus[0].indexOf("verrouillé") > -1
+						DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-indigo-locked", isLocked);
+					}
+
+
+					console.log("LOCKED:", isLocked);
+				}, 500);
+
+
+
 				DexV2.getCached("body").setAttribute("data-INDIGO-EDIT-ENGINE", "open");
+
+                // // Create menu ...
+                // var newMenu = document.createElement("menu"),
+                //     editButton = document.createElement("button"),
+                //     editButtonLabel = document.createTextNode("Edit");
+                //
+                // DexV2.node(newMenu).addClass("indigo-edit-engine-menu");
+                // DexV2.node(editButton).addClass("indigo-edit-engine-menu--edit");
+                //
+                // editButton.appendChild(editButtonLabel);
+                // newMenu.appendChild(editButton);
+                //
+                // DexV2(".engine-panel")
+                //     .prepend(newMenu);
+                //
+                // DexV2.class("engine-panel").onClick(".indigo-edit-engine-menu--edit", function(){
+                //     console.log("CLICKED EDIT BUTTIN");
+                //     app.engine.data.returnToEditEngine = true;
+                //     // Save first
+                //     DexV2(".edit-menu-edit").trigger("click");
+                // }, "INDIGO-EDIT-ENGINE--EDIT");
+                //
+                //
+                // DexV2.tag("body").onMouseDown(".toolbar-item-publishone", function(){
+                //     console.log("Save it first");
+                //     DexV2(".engine-panel > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(2) .x-btn.x-btn-text-icon button").trigger("click");
+                // })
+
 
 				// Attribute used to display the friendly name in edit panel
 				DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
+
 			},
-			onClose: function(){
+			onClose: function(e){
 				app.dev.log("::: APP ::: ENGINE ::: ONCLOSE");
+                // var workflowEngine = DexV2.node(this).hasClass("workflowactiondialog-card");
+
+                // if(workflowEngine){
+                //     console.log("CLOSED PUBLICTION SCREEN");
+                //
+                //     if(app.engine.data.returnToEditEngine){
+                //         // DexV2(".edit-menu-edit").trigger("click");
+                //         // DexV2(".toolbar-item-editcontent").trigger("click");
+                //
+                //         app.engine.data.returnToEditEngine = false;
+                //     }
+                //
+                // }
+
 				app.iframe.clearSelection();
 				DexV2.getCached("body")
                     .setAttribute("data-INDIGO-EDIT-ENGINE", "")
@@ -1803,7 +2419,13 @@
 
                     })
 
-                })
+                });
+
+				DexV2("body").onceClose(".x-combo-list", function(){
+					// Remove class that modifies the set up for this context menu
+					DexV2("body").setAttribute("data-indigo-add-visibility-condition", "");
+
+				});
             }
 		},
 		workflow: {
@@ -1811,6 +2433,8 @@
 				onOpen: function(){
 					app.dev.log("::: APP ::: WORKFLOW ::: DASHBOARD ::: ONOPEN");
 					DexV2(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
+
+
 
 				}
 			}
@@ -1893,7 +2517,6 @@
 
 			},
 			onChange: function(attrKey, attrValue){
-
 				if(app.iframe.data.displayName == attrValue || app.data.currentApp == "studio"){
 					return false;
 				}
@@ -1919,6 +2542,11 @@
 						app.contribute.topbar.build();
 
 						break;
+
+                    case "dashboard":
+                        app.dashboard.onChange();
+
+                        break;
 				}
 
 
@@ -1969,7 +2597,6 @@
 
 	                // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
 	                var iframeBody = DexV2.iframe(".window-iframe").filter("body");
-                    console.log("DISABLING NOW ... on", iframeBody);
 
                     iframeBody.nodes[0].style.pointerEvents = "none";
                 }
@@ -2104,6 +2731,8 @@
                         .onFocus(".indigo-search-input", app.pickers.users.onInputFocus, "INDIGO-SEARCH-COMPONENT")
                         .onBlur(".indigo-search-input", app.pickers.users.onInputBlur, "INDIGO-SEARCH-COMPONENT");
 
+					// Remove the clear button on init
+					DexV2.class("indigo-clear-button").addClass("indigo-empty-field");
 
                     DexV2.id("JahiaGxtUserGroupSelect")
                         .onOpen(".x-grid-empty", function(){
@@ -2170,9 +2799,7 @@
 
 				} else if(DexV2.getCached("body").getAttribute("data-indigo-gwt-panel-tab") == "JahiaGxtSidePanelTabs__JahiaGxtPagesTab"){
 					app.edit.history.add("editpage", this);
-
 				}
-
 
 			},
 
@@ -2732,6 +3359,11 @@
 				open:function(e, directAccess){
                     app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
 
+					if(directAccess){
+						// Need to set back to the settings tree list (the onChangeSite will have switched it back to pages)
+						DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("click");
+					}
+
 					// Setup CSS to display page with settings style
 					app.edit.settings.data.opened = true;
 					app.edit.sidepanel.data.open = true;
@@ -2787,16 +3419,19 @@
 
 		            app.edit.sidepanel.close();
 
-		            if(previousEditPage){
+		            if(previousEditPage && document.body.contains(previousEditPage)){
 		                // Trigger click on last viewed settings page
 						DexV2.node(previousEditPage)
 							.trigger("mousedown")
 							.trigger("mouseup");
-		                // mouse.trigger(previousEditPage, "mousedown");
-		                // mouse.trigger(previousEditPage, "mouseup");
 		            } else {
 						// Trigger Click on Second page (first row is not an actual page)
-		                mouse.trigger(document.querySelectorAll("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")[0], "mousedown");
+						// Need to set side panel tab as pages to allow the capture of the click to save the page in history...
+						DexV2.getCached("body").setAttribute("data-indigo-gwt-panel-tab", "JahiaGxtSidePanelTabs__JahiaGxtPagesTab");
+
+						DexV2("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")
+							.trigger("mousedown")
+							.trigger("mouseup");
 
 		            }
 				}
@@ -2805,8 +3440,11 @@
 		},
 		dashboard: {
 			// Event Handlers
-			onOpen: function(){
-				app.dev.log("::: APP ::: DASHBOARD ::: OPENED");
+            data: {
+                beta: false
+            },
+            onOpen: function(){
+                app.dev.log("::: APP ::: DASHBOARD ::: OPENED");
 
 				// Use Anthracite CSS
 				app.theme.on();
@@ -2815,10 +3453,51 @@
                 DexV2.getCached("body")
 					.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no")
                 	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
-			},
-			onClose: function(){},
 
-			// Controls
+
+            },
+            onChange: function(){
+                if(app.dashboard.data.beta){
+                    DexV2.getCached("body").setAttribute("data-INDIGO-BETA", "true");
+                    app.dashboard.setBetaStyle();
+
+                } else {
+                    DexV2.getCached("body").setAttribute("data-INDIGO-BETA", "");
+
+                }
+
+            },
+            onClose: function(){},
+            setBetaStyle: function(){
+                // DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "");
+				//
+                // var iframeHead = DexV2.iframe(".window-iframe").filter("head"),
+                //     iframeBody = DexV2.iframe(".window-iframe").filter("body");
+				//
+                // $("body").append("<div id='dashboard_preview_window_holder'><iframe id='dashboard_preview_window' src='http://localhost:8080/cms/render/default/en/sites/digitall/home.html'></iframe></div>");
+				//
+				//
+                // var newCSS = document.createElement('link');
+                //     newCSS.rel = "stylesheet";
+                //     newCSS.type = "text/css";
+                //     newCSS.href = "/engines/jahia-anthracite/_dashboard-import.css";
+				//
+                // iframeHead.append(newCSS);
+				//
+                // iframeBody.onClick("#userSites_table tr", function(){
+                //     var tr = this,
+                //     siteInput = DexV2.node(tr).filter("td:nth-child(1) input"),
+                //     siteName = siteInput.getAttribute("name"),
+				//
+                //     previewAnchor = DexV2.node(tr).filter("td:nth-child(5) a"),
+                //     url = previewAnchor.getAttribute("href");
+				//
+                //     DexV2.node(this).parent().filter("tr").removeClass("indigo-selected");
+                //     DexV2.node(this).addClass("indigo-selected");
+				//
+                //     DexV2.id("dashboard_preview_window").setAttribute("src", url)
+                // });
+            }
 
 		},
 		studio: {
@@ -3142,7 +3821,53 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
-                .onOpen("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) .x-grid-panel", app.engine.onOpenWorkflow)
+				.onOpen(".content-type-window", function(){
+					DexV2(".content-type-window .x-form-field-wrap input").setAttribute("placeholder", "Filter Content");
+				})
+				// .onClick(".workflowactiondialog-ctn .x-grid3-row", function(){
+				// 	DexV2.class("workflowactiondialog-card").addClass("indigo-opened");
+				// })
+				// .onClick(".workflow-action-dialog .x-tab-strip-spacer", function(){
+				// 	DexV2.class("workflowactiondialog-card").removeClass("indigo-opened");
+				// })
+				.onClick(".toolbar-item-newfolder", function(){
+					// Add new folder
+					var isDisabled = DexV2.node(this).hasClass("x-item-disabled");
+
+					if(isDisabled){
+						// User has clicked on the ADD FOLDER icon whilst in the RIGHT tree, so trigger click on the CONTEXT MENU OF THE LEFT TREE
+						DexV2("#CRTbrowseTabItem .x-grid3-row-selected").trigger("contextmenu");
+
+						// When context menu is opened click on the ADD FOLDER button
+						DexV2("body").onceOpen(".imagepickerContextMenu", function(){
+							DexV2(".imagepickerContextMenu .toolbar-item-newfolder").trigger("click");
+
+						})
+
+					} else {
+						console.log("Nothing to do ...");
+					}
+				})
+				.onClick(".toolbar-item-upload", function(){
+					// Add new folder
+					var isDisabled = DexV2.node(this).hasClass("x-item-disabled");
+
+					if(isDisabled){
+						// User has clicked on the ADD FOLDER icon whilst in the RIGHT tree, so trigger click on the CONTEXT MENU OF THE LEFT TREE
+						DexV2("#CRTbrowseTabItem .x-grid3-row-selected").trigger("contextmenu");
+
+						// When context menu is opened click on the ADD FOLDER button
+						DexV2("body").onceOpen(".imagepickerContextMenu", function(){
+							DexV2(".imagepickerContextMenu .toolbar-item-upload").trigger("click");
+
+						})
+
+					} else {
+						console.log("Nothing to do ...");
+					}
+				})
+				.onAttribute("body", "data-singleselection-node-path", app.onChangeNodePath)
+				.onOpen("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) .x-grid-panel", app.engine.onOpenWorkflow)
                 .onOpen("#JahiaGxtUserGroupSelect", app.pickers.users.onOpen)
 				.onceOpen("#JahiaGxtContentBrowseTab", function(){
                     DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
@@ -3225,7 +3950,7 @@
                 .onOpen(".menu-edit-menu-edit", app.contextMenus.moreInfoMenu.onOpen)
                 .onOpen(".editModeContextMenu", app.contextMenus.moreInfoMenu.onOpen)
                 .onOpen(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onOpen)
-                .onOpen("#JahiaGxtContentPickerWindow", app.picker.onOpen)
+                .onOpen("#" + app.picker.data.ID, app.picker.onOpen)
                 .onOpen("#JahiaGxtEnginePanel", app.engine.onOpen)
                 .onOpen("#JahiaGxtImagePopup", app.imagePreview.onOpen)
                 .onAttribute(".edit-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
@@ -3239,7 +3964,7 @@
                 .onAttribute("body", "data-main-node-path", app.contribute.onChangeMode)
                 .onAttribute(".window-iframe", "src", app.iframe.onChangeSRC)
                 .onAttribute(".x-jahia-root", "class", app.onChange)
-                .onClose("#JahiaGxtContentPickerWindow", app.picker.onClose)
+                .onClose("#" + app.picker.data.ID, app.picker.onClose)
                 .onClose("#JahiaGxtEnginePanel", app.engine.onClose)
                 .onClose("#JahiaGxtImagePopup", app.imagePreview.onClose)
                 .onOpen(".workflow-dashboard-engine", app.workflow.dashboard.onOpen)
@@ -3256,7 +3981,9 @@
 				.onMouseDown("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(1) img.x-form-trigger", app.engine.openConditionsMenu)
                 .onClick(".x-grid3-row .x-grid3-td-size", app.picker.search.onContext)
                 .onClick(".x-grid3-row .x-tree3-el", app.picker.row.onContext)
-                .onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap .thumb", app.picker.thumb.onContext)
+				.onMouseDown("#" + app.picker.data.ID + " .more-info-button", app.picker.thumb.onContext)
+                .onMouseDown("#" + app.picker.data.ID + " .preview-button", app.picker.thumb.openPreview)
+
                 .onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick)
                 // DexV2(".x-viewport-editmode .x-toolbar-first > table").onClick(app.theme.onToggle)
                 .onClick(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose)
@@ -3269,21 +3996,25 @@
 				.onMouseDown(".menu-edit-menu-mode", app.contextMenus.managerMenu.onClose)
                 .onMouseDown(".menu-edit-menu-user", app.contextMenus.managerMenu.onClose)
                 .onClick("#JahiaGxtSidePanelTabs .x-grid3-td-displayName", app.edit.sidepanel.row.onContext)
-                .onClick("#JahiaGxtContentPickerWindow", app.picker.onClick)
-                .onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView)
-                .onClick("#JahiaGxtContentPickerWindow .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView)
+                .onClick("#" + app.picker.data.ID, app.picker.onClick)
+                .onClick("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView)
+				.onClick("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView)
+                .onClick("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-detailedview", app.picker.onDetailView)
                 .onClick(".node-path-title", app.iframe.clearSelection)
-                .onClick(".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
+                .onMouseDown(".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
                 .onMouseDown("#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close)
-                .onMouseDown("#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open)
-                .onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close)
-                .onClick("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle)
-                .onMouseEnter("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver)
-                .onMouseLeave("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOut)
-				.onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .x-grid3-row", app.picker.row.onMouseOver)
-                .onMouseOver("#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onMouseOver)
+                .onMouseUp("#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open)
+                .onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close)
+                .onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle)
+                .onMouseEnter("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOver)
+                .onMouseLeave("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.onMouseOut)
+				.onMouseOver("#" + app.picker.data.ID + " #JahiaGxtManagerTobTable .x-grid3-row", app.picker.row.onMouseOver)
+				.onMouseOver("#" + app.picker.data.ID + " #JahiaGxtManagerTobTable .thumb-wrap", app.picker.thumb.onMouseOver)
+                // .onMouseEnter("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree + div #images-view .x-view", app.picker.thumb.onMouseOut)
                 .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick)
                 .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.settings.open)
+
+//
 
             // WINDOW LISTENERS
             window.onresize = app.onResize; // Use some kind of timer to reduce repaints / DOM manipulations
@@ -3324,6 +4055,17 @@
 
         DexV2.getCached("body").setAttribute("data-CKEDITOR-VERSION", app.data.ckeditorVersion);
 
+		if(app.data.HTTP.app == "contentpicker"){
+			// This is a full page picker, not edit engine
+			app.picker.data.standalone = true;
+			app.picker.data.ID = app.picker.data.standaloneID;
+
+			// Need to "open" the picker manually ...
+			DexV2.tag("body").onOpen("#JahiaGxtContentPicker", function(){
+				app.picker.onOpen();
+			});
+		}
+
         // Attach event listeners
         eventListeners.attach();
 
@@ -3336,6 +4078,7 @@
     document.addEventListener("DOMContentLoaded", function(event) {
         init();
     });
+
 
     // Expose DX to window
     if(exposeAs){

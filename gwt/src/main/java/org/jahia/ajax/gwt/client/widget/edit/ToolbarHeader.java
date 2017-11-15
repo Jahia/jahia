@@ -49,6 +49,7 @@ import com.extjs.gxt.ui.client.widget.Header;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Element;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarMenu;
@@ -160,7 +161,8 @@ public class ToolbarHeader extends Header {
 
             Button menuToolItem = new Button(gwtToolbarMenu.getItemsGroupTitle());
             menuToolItem.addStyleName("action-bar-menu-item");
-            menuToolItem.addStyleName(gwtToolbarMenu.getClassName());
+            gwtToolbarItem.addClasses(menuToolItem);
+
             menuToolItem.setBorders(false);
             String minIconStyle = gwtToolbarMenu.getIcon();
             if (minIconStyle != null) {

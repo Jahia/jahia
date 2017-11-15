@@ -114,6 +114,7 @@ The following example creates an index aggregate on jnt:file that includes the c
             <property>j:areaView</property>
             <property>j:referenceView</property>
             <property>j:serverName</property>
+            <property>j:serverNameAliases</property>
             <property>j:installedModules</property>
             <property>j:languages</property>
             <property>j:mandatoryLanguages</property>

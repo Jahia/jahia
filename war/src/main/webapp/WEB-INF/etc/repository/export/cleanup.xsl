@@ -22,6 +22,7 @@
                     <xsl:when test="name()='j:mandatoryLanguages'"/>
                     <xsl:when test="name()='j:mixLanguage'"/>
                     <xsl:when test="name()='j:serverName'"/>
+                    <xsl:when test="name()='j:serverNameAliases'"/>
                     <xsl:when test="name()='j:templatesSet'"/>
                     <xsl:otherwise>
                         <xsl:copy/>

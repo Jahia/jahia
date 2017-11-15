@@ -529,6 +529,7 @@ extends = jnt:page
  - j:defaultTemplateName (string, choicelist[templatesNode=pageTemplate]) nofulltext
  - j:title (string) protected nofulltext primary
  - j:serverName (string) protected nofulltext
+ - j:serverNameAliases (string) multiple protected nofulltext
  - j:description (string) protected
  - j:siteId (long) protected hidden
  - j:installedModules (string) multiple protected nofulltext

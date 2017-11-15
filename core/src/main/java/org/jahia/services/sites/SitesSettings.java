@@ -54,7 +54,8 @@ import java.util.Set;
  */
 public final class SitesSettings {
     public static final String SERVER_NAME = "j:serverName";
-    
+    public static final String SERVER_NAME_ALIASES = "j:serverNameAliases";
+
     public static final String DEFAULT_SITE = "j:defaultSite";
     
     /**

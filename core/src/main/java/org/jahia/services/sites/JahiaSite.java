@@ -115,6 +115,11 @@ public interface JahiaSite {
     public String getServerName() ;
 
     /**
+     * Return the list of accepted server names
+     */
+    public List<String> getAllServerNames() ;
+
+    /**
      * Return the unique String identifier key ( ex: jahia )
      */
     public String getSiteKey();

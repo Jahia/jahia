@@ -274,7 +274,8 @@ public class JahiaSitesService extends JahiaService {
     }
 
     public JCRSiteNode getSiteByServerName(String serverName, JCRSessionWrapper session) throws RepositoryException {
-        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where lower(s.[j:serverName])='" + JCRContentUtils.sqlEncode(StringUtils.lowerCase(serverName)) + "' and ischildnode(s, '/sites/')", Query.JCR_SQL2);
+        String s = JCRContentUtils.sqlEncode(StringUtils.lowerCase(serverName));
+        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where (lower(s.[j:serverName])='" + s + "' or lower(s.[j:serverNameAliases])='" + s + "')  and ischildnode(s, '/sites/')", Query.JCR_SQL2);
         NodeIterator ni = q.execute().getNodes();
         if (ni.hasNext()) {
             return (JCRSiteNode) ni.next();
@@ -622,7 +623,7 @@ public class JahiaSitesService extends JahiaService {
     public synchronized void removeSite(final JahiaSite siteToRemove) throws JahiaException {
 
         final String siteKeyToRemove = siteToRemove.getSiteKey();
-        String serverName = siteToRemove.getServerName();
+        List<String> serverNames = siteToRemove.getAllServerNames();
 
         try {
             // First delete all groups
@@ -670,7 +671,7 @@ public class JahiaSitesService extends JahiaService {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } finally {
-            invalidateCache(siteKeyToRemove, serverName);
+            invalidateCache(siteKeyToRemove, serverNames);
         }
     }
 
@@ -793,7 +794,11 @@ public class JahiaSitesService extends JahiaService {
         if (site == null) {
             return;
         }
-        invalidateCache(site.getSiteKey(), site.getServerName());
+        invalidateCache(site.getSiteKey(), site.getAllServerNames());
+    }
+
+    public void invalidateCache(String siteKey, String serverName) {
+        invalidateCache(siteKey, serverName != null ? Collections.singletonList(serverName) : null);
     }
 
     /**
@@ -801,15 +806,18 @@ public class JahiaSitesService extends JahiaService {
      *
      * @param siteKey
      *            the key of the site
-     * @param serverName
-     *            the server name of the site
+     * @param serverNames
+     *            the server names of the site
      */
-    public void invalidateCache(String siteKey, String serverName) {
+    public void invalidateCache(String siteKey, List<String> serverNames) {
         if (siteDefaultLanguageBySiteKey != null && siteKey != null) {
             siteDefaultLanguageBySiteKey.remove(siteKey);
         }
-        if (siteKeyByServerNameCache != null && serverName != null) {
-            siteKeyByServerNameCache.remove(serverName);
+
+        if (siteKeyByServerNameCache != null && serverNames != null) {
+            for (String serverName : serverNames) {
+                siteKeyByServerNameCache.remove(serverName);
+            }
         }
     }
 

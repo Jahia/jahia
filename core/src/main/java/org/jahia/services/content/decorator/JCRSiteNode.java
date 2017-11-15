@@ -343,6 +343,24 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     }
 
     @Override
+    public List<String> getAllServerNames() {
+        try {
+            if (hasProperty(SitesSettings.SERVER_NAME_ALIASES)) {
+                List<String> result = new ArrayList<>();
+                result.add(getServerName());
+                Value[] v = getProperty(SitesSettings.SERVER_NAME_ALIASES).getValues();
+                for (Value value : v) {
+                    result.add(value.getString());
+                }
+                return result;
+            }
+        } catch (RepositoryException e) {
+            logger.error(CANNOT_GET_SITE_PROPERTY + SitesSettings.SERVER_NAME_ALIASES, e);
+        }
+        return Collections.singletonList(getServerName());
+    }
+
+    @Override
     public String getSiteKey() {
         return getName();
     }

@@ -114,6 +114,8 @@ public interface JahiaSite {
      */
     public String getServerName() ;
 
+    public List<String> getServerNameAliases();
+
     /**
      * Return the list of accepted server names
      */
@@ -192,6 +194,8 @@ public interface JahiaSite {
      * Set the Full Qualified Domain Name ( www.jahia.org )
      */
     public void setServerName(String name);
+
+    public void setServerNameAliases(List<String> names);
 
     public void setTitle(String value);
 

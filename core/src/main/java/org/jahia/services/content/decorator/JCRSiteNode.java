@@ -343,11 +343,10 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     }
 
     @Override
-    public List<String> getAllServerNames() {
+    public List<String> getServerNameAliases() {
         try {
             if (hasProperty(SitesSettings.SERVER_NAME_ALIASES)) {
                 List<String> result = new ArrayList<>();
-                result.add(getServerName());
                 Value[] v = getProperty(SitesSettings.SERVER_NAME_ALIASES).getValues();
                 for (Value value : v) {
                     result.add(value.getString());
@@ -357,7 +356,15 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
         } catch (RepositoryException e) {
             logger.error(CANNOT_GET_SITE_PROPERTY + SitesSettings.SERVER_NAME_ALIASES, e);
         }
-        return Collections.singletonList(getServerName());
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<String> getAllServerNames() {
+        List<String> result = new ArrayList<>();
+        result.add(getServerName());
+        result.addAll(getServerNameAliases());
+        return result;
     }
 
     @Override
@@ -776,6 +783,17 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void setServerNameAliases(List<String> names) {
+        try {
+            ensureSiteInDefaultWorkspace();
+            setProperty(SitesSettings.SERVER_NAME_ALIASES, names.toArray(new String[names.size()]));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+
     }
 
     @Override

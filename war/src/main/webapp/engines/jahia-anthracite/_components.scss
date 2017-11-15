@@ -3856,19 +3856,35 @@ body[data-indigo-gwt-side-panel="open"] {
 
 .x-window.publication-manager-engine {
 
-	.x-window-header > .x-component:first-child table tbody tr td .x-tool-close {
-		height: 22px;
-		width: 22px;
-		background-image: url(./images/icon-close-large.png);
-		background-position: initial !important;
+	.x-window-header .x-panel-toolbar {
+		display: block;
 		margin-top: 8px;
+		pointer-events: all;
+
+		table tbody tr td .x-tool-close {
+			height: 22px;
+			width: 22px;
+			background-image: url(./images/icon-close-large.png);
+			background-position: initial !important;
+		}
+
 	}
 
 	.x-grid3-scroller {
-		overflow: unset;
+		overflow-y: unset;
+		overflow-x: hidden;
+	}
+
+	.x-window-body.x-window-body-noborder {
+		overflow-x: hidden !important;
+		overflow-y: auto !important;
 	}
 
 	.x-window-header > img {
+		display: none;
+	}
+
+	.x-grid3 .x-grid3-td-displayName::after, .x-grid3 .gwt-content-label::after {
 		display: none;
 	}
 

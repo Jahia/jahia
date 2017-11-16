@@ -529,6 +529,15 @@ public interface JahiaContentManagementService extends RemoteService {
      */
     String getToolbarWarnings() throws GWTJahiaServiceException;
 
+    /**
+     * Returns the path of the displayble node for the specified one.
+     * 
+     * @param nodePath the path of the target node
+     * @return the path of the displayble node for the specified one
+     * @throws GWTJahiaServiceException in case of a JCR access error
+     */
+    String getDisplayableNodePath(String nodePath) throws GWTJahiaServiceException;
+    
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;
         private static int windowId = Random.nextInt();

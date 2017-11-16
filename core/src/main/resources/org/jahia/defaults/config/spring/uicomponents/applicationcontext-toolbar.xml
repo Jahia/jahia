@@ -1455,4 +1455,11 @@
         <property name="icon" value="scmResolve"/>
     </bean>
 
+    <bean id="Toolbar.Item.GoToContent" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.GoToContentActionItem"/>
+        </property>
+        <property name="titleKey" value="label.goToContent"/>
+        <property name="icon" value="goto"/>
+    </bean>
 </beans>

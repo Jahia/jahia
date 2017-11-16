@@ -88,6 +88,7 @@ import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.notification.ToolbarWarningsService;
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.seo.jcr.NonUniqueUrlMappingException;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.translation.TranslationException;
@@ -2819,4 +2820,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return JahiaPrivilegeRegistry.getRegisteredPrivilegeNames();
     }
 
+    @Override
+    public String getDisplayableNodePath(String nodePath) throws GWTJahiaServiceException {
+        try {
+            JCRSessionWrapper session = retrieveCurrentSession();
+            JCRNodeWrapper node = session.getNode(nodePath);
+            RenderContext renderContext = new RenderContext(null, null, session.getUser());
+            JCRNodeWrapper displayableNode = JCRContentUtils.findDisplayableNode(node, renderContext);
+            return displayableNode != null ? displayableNode.getPath() : null;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new GWTJahiaServiceException(e);
+        }
+    }
 }

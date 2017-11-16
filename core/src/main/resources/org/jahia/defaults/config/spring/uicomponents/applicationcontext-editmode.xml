@@ -773,6 +773,7 @@
                         <ref bean="Toolbar.Item.Unlock"/>
                         <ref bean="Toolbar.Item.ClearLock"/>
                         <ref bean="Toolbar.Item.ClearAllLocks"/>
+                        <ref bean="Toolbar.Item.GoToContent"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
                     </list>
                 </property>

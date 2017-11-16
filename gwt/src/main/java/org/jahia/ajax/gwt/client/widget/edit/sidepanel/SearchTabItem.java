@@ -61,6 +61,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -121,11 +122,13 @@ class SearchTabItem extends SidePanelTabItem {
         searchField = new TextField<String>();
         searchField.setFieldLabel(Messages.get("label.search"));
         searchField.setId(gxtTabId + "__searchField");
-        searchField.addListener(KeyboardEvents.Enter, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent be) {
-                // grid.mask("Loading", "x-mask-loading");
-                contentStore.removeAll();
-                loader.load(0,numberResults);
+        searchField.addKeyListener(new KeyListener() {
+            public void handleEvent(ComponentEvent keyEvent) {
+                if (keyEvent.getKeyCode() == 13) {
+                    // grid.mask("Loading", "x-mask-loading");
+                    contentStore.removeAll();
+                    loader.load(0,numberResults);
+                }
             }
         });
         final Button ok = new Button(Messages.get("label.search"), new SelectionListener<ButtonEvent>() {

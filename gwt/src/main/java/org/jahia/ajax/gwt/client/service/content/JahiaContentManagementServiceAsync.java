@@ -450,4 +450,12 @@ public interface JahiaContentManagementServiceAsync {
      * @return the warning messages
      */
     void getToolbarWarnings(AsyncCallback<String> async);
+    
+    /**
+     * Finds the path of the displayble node for the specified one.
+     * 
+     * @param nodePath the path of the target node
+     * @param async the asynchronous callback instance to handle the result of the call
+     */
+    void getDisplayableNodePath(String nodePath, AsyncCallback<String> async);
 }

@@ -467,16 +467,18 @@
 
 			body[data-sitesettings="true"] .x-viewport-editmode & ,
 			.x-viewport-adminmode & {
-				//margin-top: 52px;
-				margin-top: 0;
+				margin-top: 52px;
 				height: calc(100% - 226px)!important;
 				overflow-y: scroll;
+			}
+
+			body[data-sitesettings="true"] .x-viewport-editmode & {
+				margin-top: 0;
 
 			}
 
 			.x-viewport-adminmode & {
 				margin-top: 62px!important;
-
 			}
 
 			.x-viewport-dashboardmode & {
@@ -1630,6 +1632,17 @@ body[data-edit-window-style="settings"] {
 #JahiaGxtContentBrowseTab {
 }
 
+body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTab {
+
+	&::before {
+		// tst
+		position: unset;
+    line-height: 40px;
+    margin-bottom: 16px;
+	}
+
+}
+
 #JahiaGxtPagesTab,
 #JahiaGxtCreateContentTab,
 #JahiaGxtContentBrowseTab,
@@ -1700,10 +1713,6 @@ body[data-edit-window-style="settings"] {
 		position: fixed;
 		top: 23px;
 		left: 70px;
-		// tst
-		position: unset;
-    line-height: 40px;
-    margin-bottom: 16px;
 
 		/* DEV TEMP */
 

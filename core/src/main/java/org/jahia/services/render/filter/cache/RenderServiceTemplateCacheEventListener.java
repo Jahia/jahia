@@ -112,9 +112,9 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
             }
 
         }
-        for (String s : modulesToFlush) {
-            logger.debug("Flushing " + RenderService.RENDER_SERVICE_TEMPLATES_CACHE + " entries for {}", s);
-            renderService.flushCache(s);
+        for (String module : modulesToFlush) {
+            logger.debug("Flushing {} entries for {}", RenderService.RENDER_SERVICE_TEMPLATES_CACHE, module);
+            renderService.flushCache(module);
         }
     }
 

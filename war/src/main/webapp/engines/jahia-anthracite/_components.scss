@@ -3888,7 +3888,43 @@ body[data-indigo-gwt-side-panel="open"] {
 		display: none;
 	}
 
+	.x-window.publication-manager-engine .x-grid3-header {
+		display: table-cell;
+		background: transparent !important;
+
+		.x-grid3-hh {
+			box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+			margin: 2px 2px 8px;
+
+			> table {
+				background: rgba(255, 255, 255, 0.64);	// Change to Variable
+				padding: 4px 0;
+
+				.x-grid3-hd.x-grid3-cell {
+					border-left-color: #EEEEEE;	// Change to Variable
+					border-right-color: #E0E0E0;	// Change to Variable
+
+					span,
+					span div {
+						color: rgba(0, 0, 0, 0.52);	// Change to Variable
+						font-weight: 600;
+						margin-left: 2px;
+					}
+
+				}
+
+			}
+
+		}
+
+		td.x-grid3-hd-over .x-grid3-hd-inner {
+			background: transparent !important;
+		}
+
+	}
+
 }
+
 
 /////////////////////////////////////////////////
 // COMPARE PANEL ////////////////////////////////

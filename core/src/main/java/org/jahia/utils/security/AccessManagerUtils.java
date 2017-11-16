@@ -561,11 +561,12 @@ public class AccessManagerUtils {
                                 Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
                                 for (Value r : roles) {
                                     String role = r.getString();
-                                    if (!foundRoles.contains(principal + ":" + role + roleSuffix)) {
+                                    String key = principal + ":" + role + roleSuffix;
+                                    if (!foundRoles.contains(key)) {
                                         if (granted) {
                                             grantedRoles.add(role + roleSuffix);
                                         }
-                                        foundRoles.add(principal + ":" + role + roleSuffix);
+                                        foundRoles.add(key);
                                     }
                                 }
                             }
@@ -601,11 +602,12 @@ public class AccessManagerUtils {
                 for (String[] ace : entry.getValue()) {
                     boolean granted = !ace[1].equals("DENY");
                     String role = ace[2];
-                    if (!foundRoles.contains(principal + ":"+role)) {
+                    String key = principal + ":" + role;
+                    if (!foundRoles.contains(key)) {
                         if (granted) {
                             grantedRoles.add(role);
                         }
-                        foundRoles.add(principal + ":"+role);
+                        foundRoles.add(key);
                     }
                 }
             }

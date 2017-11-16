@@ -122,7 +122,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     private ThreadLocal<Boolean> loop = new ThreadLocal<Boolean>();
     private volatile boolean isInitialized = false;
 
-    private Map<String,WorkflowDefinition> definitionMap = new HashMap<>();
+    private Map<String, Map<Locale, WorkflowDefinition>> definitionMap = new HashMap<>();
 
     public static JBPM6WorkflowProvider getInstance() {
         return instance;
@@ -238,11 +238,18 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
 
     @Override
     public WorkflowDefinition getWorkflowDefinitionByKey(final String key, final Locale uiLocale) {
-        String cachekey = key + uiLocale;
-        if (!definitionMap.containsKey(cachekey)) {
-            definitionMap.put(cachekey, executeCommand(new GetWorkflowDefinitionCommand(key, uiLocale)));
+        Map<Locale, WorkflowDefinition> defsByKey = definitionMap.get(key);
+        if (defsByKey == null) {
+            defsByKey = new HashMap<>();
+            definitionMap.put(key, defsByKey);
         }
-        return definitionMap.get(cachekey);
+        WorkflowDefinition definition = defsByKey.get(uiLocale);
+        if (definition == null) {
+            definition = executeCommand(new GetWorkflowDefinitionCommand(key, uiLocale));
+            defsByKey.put(uiLocale, definition);
+        }
+        
+        return definition;
     }
 
     @Override

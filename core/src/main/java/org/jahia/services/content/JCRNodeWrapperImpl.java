@@ -226,8 +226,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     @Override
     public Map<String, List<String[]>> getAclEntries() {
         try {
+            String path = getPath();
             if (aclEntries == null) {
-                aclEntries = new LinkedHashMap<String, List<String[]>>();
+                Map<String, List<String[]>> entries = new LinkedHashMap<String, List<String[]>>();
                 breakAcl = false;
                 try {
                     if (hasNode("j:acl")) {
@@ -241,18 +242,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                 }
                                 String principal = ace.getProperty("j:principal").getString();
 
-                                if (!aclEntries.containsKey(principal)) {
-                                    aclEntries.put(principal, new ArrayList<String[]>());
+                                if (!entries.containsKey(principal)) {
+                                    entries.put(principal, new ArrayList<String[]>());
                                 }
                                 Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
                                 if (!ace.isNodeType("jnt:externalAce")) {
                                     String type = ace.getProperty("j:aceType").getString();
                                     for (Value role : roles) {
-                                        aclEntries.get(principal).add(new String[]{getPath(), type, role.getString()});
+                                        entries.get(principal).add(new String[]{path, type, role.getString()});
                                     }
                                 } else {
                                     for (Value role : roles) {
-                                        aclEntries.get(principal).add(new String[]{getPath(), "EXTERNAL", role.getString() + "/" + ace.getProperty("j:externalPermissionsName").getString()});
+                                        entries.get(principal).add(new String[]{path, "EXTERNAL", role.getString() + "/" + ace.getProperty("j:externalPermissionsName").getString()});
                                     }
                                 }
                             }
@@ -264,18 +265,22 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         logger.debug(e.getMessage(), e);
                     }
                 }
+                aclEntries = entries;
             }
 
-            if (!getPath().equals("/") && !breakAcl) {
-                Map<String, List<String[]>> result = new HashMap<>();
+            if (!breakAcl && !path.equals("/")) {
+                Map<String, List<String[]>> result = new LinkedHashMap<>();
                 for (Map.Entry<String, List<String[]>> entry : aclEntries.entrySet()) {
                     result.put(entry.getKey(), new ArrayList<String[]>(entry.getValue()));
                 }
                 for (Map.Entry<String, List<String[]>> entry : getParent().getAclEntries().entrySet()) {
-                    if (result.containsKey(entry.getKey())) {
-                        result.get(entry.getKey()).addAll(entry.getValue());
+                    String key = entry.getKey();
+                    List<String[]> value = entry.getValue();
+                    List<String[]> aclsForKey = result.get(key);
+                    if (aclsForKey != null) {
+                        aclsForKey.addAll(value);
                     } else {
-                        result.put(entry.getKey(), entry.getValue());
+                        result.put(key, value);
                     }
                 }
                 return result;
@@ -562,7 +567,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         } else {
             aced.setProperty(Constants.J_ROLES, dens);
         }
+
         this.aclEntries = null;
+
         return true;
     }
 
@@ -571,6 +578,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public boolean revokeRolesForPrincipal(String principalKey) throws RepositoryException {
+        boolean modified = false;
         Node acl = getOrCreateAcl();
 
         NodeIterator ni = acl.getNodes();
@@ -579,9 +587,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (ace.isNodeType("jnt:ace") && !ace.isNodeType("jnt:externalAce")) {
                 if (ace.getProperty("j:principal").getString().equals(principalKey)) {
                     ace.remove();
+                    modified = true;
                 }
             }
         }
+
+        if (modified) {
+            aclEntries = null;
+        } 
         return true;
     }
 
@@ -590,6 +603,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public boolean revokeAllRoles() throws RepositoryException {
+        boolean modified = false;
         if (hasNode("j:acl")) {
             JCRNodeWrapper acl = getNode("j:acl");
             NodeIterator ni = acl.getNodes();
@@ -597,13 +611,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 Node ace = ni.nextNode();
                 if (ace.isNodeType("jnt:ace") && !ace.isNodeType("jnt:externalAce")) {
                     ace.remove();
+                    modified = true;
                 }
             }
             if (!acl.hasNodes()) {
                 acl.remove();
+                modified = true;
                 if (isNodeType("jmix:accessControlled")) {
                     removeMixin("jmix:accessControlled");
                 }
+            }
+            if (modified) {
+                aclEntries = null;
             }
             return true;
         }
@@ -620,6 +639,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             Node aclNode = getOrCreateAcl();
             if (!aclNode.hasProperty("j:inherit") || aclNode.getProperty("j:inherit").getBoolean() != inheritAcl) {
                 aclNode.setProperty("j:inherit", inheritAcl);
+                aclEntries = null;
             }
         } catch (RepositoryException e) {
             logger.error("Cannot change acl", e);

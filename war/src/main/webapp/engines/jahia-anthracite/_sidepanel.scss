@@ -467,7 +467,8 @@
 
 			body[data-sitesettings="true"] .x-viewport-editmode & ,
 			.x-viewport-adminmode & {
-				margin-top: 52px;
+				//margin-top: 52px;
+				margin-top: 0;
 				height: calc(100% - 226px)!important;
 				overflow-y: scroll;
 
@@ -1699,6 +1700,10 @@ body[data-edit-window-style="settings"] {
 		position: fixed;
 		top: 23px;
 		left: 70px;
+		// tst
+		position: unset;
+    line-height: 40px;
+    margin-bottom: 16px;
 
 		/* DEV TEMP */
 

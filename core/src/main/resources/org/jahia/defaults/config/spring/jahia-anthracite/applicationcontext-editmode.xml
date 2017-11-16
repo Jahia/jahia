@@ -140,6 +140,8 @@
                                 </property>
                             </bean>
 
+                            <ref bean="Toolbar.Item.PublicationStatusWithText"/>
+
                             <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Workflow">
 
                                 <property name="titleKey" value="label.workflow"/>
@@ -157,6 +159,13 @@
                                     </list>
                                 </property>
                             </bean>
+                            <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype" id="Edit.Menu.Tasks" >
+                                <property name="actionItem">
+                                    <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NumberOfTasksWorkflowMenuActionItem" />
+                                </property>
+                                <property name="titleKey" value="label.numberoftasksforuser"/>
+                            </bean>
+
                             <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Cache">
                                 <property name="titleKey" value="label.cache"/>
                                 <!-- <property name="icon" value="publicationAction"/>  -->

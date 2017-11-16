@@ -66,7 +66,7 @@ import java.util.Set;
 public class RenderServiceTemplateCacheEventListener extends DefaultEventListener implements ExternalEventListener {
     private static final int MODULES_LENGTH = "/modules/".length();
 
-    private transient static Logger logger = LoggerFactory.getLogger(RenderServiceTemplateCacheEventListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(RenderServiceTemplateCacheEventListener.class);
 
     private RenderService renderService;
 
@@ -91,6 +91,7 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
      *
      * @param events The event set received.
      */
+    @Override
     public void onEvent(EventIterator events) {
         Set<String> modulesToFlush = new HashSet<String>();
         while (events.hasNext()) {

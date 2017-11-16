@@ -196,6 +196,9 @@ public class TestHelper {
                     logger.warn("shared.zip could not be imported", e);
                 }
             }
+            // we ensure that the template set module is deployed and started; if not, it will be resolved and installed + started
+            ModuleTestHelper.ensureModuleStarted(templateSet);
+
             site = service.addSite(admin, name, serverName, name, name, SettingsBean.getInstance().getDefaultLocale(),
                     templateSet, modulesToDeploy, siteZIPFile == null ? "noImport" : "fileImport", siteZIPFile != null ? new FileSystemResource(siteZIPFile) : null,
                     null, false, false, null);

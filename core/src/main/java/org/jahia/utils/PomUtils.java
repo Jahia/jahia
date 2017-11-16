@@ -149,6 +149,23 @@ public final class PomUtils {
     }
 
     /**
+     * Parses the Maven project model from the specified pom.xml input stream.
+     * 
+     * @param pomXmlStream the Maven project descriptor input stream to read model from
+     * @return the Maven project model from the specified pom.xml input stream
+     * @throws IOException in case of a reading problem
+     * @throws XmlPullParserException in case of a parsing error
+     * @since 7.2.2.0
+     */
+    public static Model read(InputStream pomXmlStream) throws IOException, XmlPullParserException {
+        try {
+            return new MavenXpp3Reader().read(pomXmlStream);
+        } finally {
+            IOUtils.closeQuietly(pomXmlStream);
+        }
+    }
+
+    /**
      * Updates the distribution management repository in the specified Maven project file.
      * 
      * @param pomXmlFile

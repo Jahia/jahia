@@ -43,6 +43,8 @@
  */
 package org.jahia.test.services.acl;
 
+import static org.assertj.core.api.Assertions.*;
+
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -63,6 +65,8 @@ import org.slf4j.Logger;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -102,7 +106,15 @@ public class AclTest {
     private static String content21Identifier;
     private static String content22Identifier;
 
-    public AclTest() {
+    private static void assertRole(JCRNodeWrapper node, String principal, String grantType, String role) {
+        Map<String, List<String[]>> aclEntries = node.getAclEntries();
+        String path = node.getPath();
+        assertThat(aclEntries)
+                .as("ACL entries for node %s should contain %s for role for principal %s", path, grantType, role, principal)
+                .containsKey(principal);
+        assertThat(aclEntries.get(principal).get(0))
+        .as("ACL entries for node %s should contain %s for role for principal %s", path, grantType, role, principal)
+                .containsExactly(path, grantType, role);
     }
 
     @BeforeClass
@@ -180,12 +192,19 @@ public class AclTest {
     public void setUp() throws RepositoryException {
         session = JCRSessionFactory.getInstance().getCurrentUserSession();
         home = session.getNodeByIdentifier(homeIdentifier);
+        home.getAclEntries();
         content1 = session.getNodeByIdentifier(content1Identifier);
+        content1.getAclEntries();
         content11 = session.getNodeByIdentifier(content11Identifier);
+        content11.getAclEntries();
         content12 = session.getNodeByIdentifier(content12Identifier);
+        content12.getAclEntries();
         content2 = session.getNodeByIdentifier(content2Identifier);
+        content2.getAclEntries();
         content21 = session.getNodeByIdentifier(content21Identifier);
+        content21.getAclEntries();
         content22 = session.getNodeByIdentifier(content22Identifier);
+        content22.getAclEntries();
         session.save();
     }
 
@@ -210,6 +229,9 @@ public class AclTest {
     @Test
     public void testGrantUser() throws Exception {
         content11.grantRoles("u:user1", Collections.singleton("owner"));
+
+        assertRole(content11, "u:user1", "GRANT", "owner");
+
         session.save();
 
         assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content11.getPath(), "jcr:write"))));
@@ -219,6 +241,9 @@ public class AclTest {
     @Test
     public void testGrantGroup() throws Exception {
         content11.grantRoles("g:group1", Collections.singleton("owner"));
+
+        assertRole(content11, "g:group1", "GRANT", "owner");
+
         session.save();
 
         assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content11.getPath(), "jcr:write"))));
@@ -231,6 +256,9 @@ public class AclTest {
     public void testDenyUser() throws Exception {
         content1.grantRoles("u:user1", Collections.singleton("owner"));
         content11.denyRoles("u:user1", Collections.singleton("owner"));
+        assertRole(content1, "u:user1", "GRANT", "owner");
+        assertRole(content11, "u:user1", "DENY", "owner");
+
         session.save();
 
         assertTrue((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content1.getPath(), "jcr:write"))));
@@ -239,9 +267,18 @@ public class AclTest {
 
     @Test
     public void testAclBreak() throws Exception {
+        assertThat(content1.getAclEntries()).as("ACL entries for node %s should NOT be empty", content1.getPath()).isNotEmpty();
+
         content1.setAclInheritanceBreak(true);
 
+        assertThat(content1.getAclEntries()).as("ACL entries for node %s should be empty", content1.getPath()).isEmpty();
+
         content11.grantRoles("u:user1", Collections.singleton("owner"));
+
+        assertRole(content11, "u:user1", "GRANT", "owner");
+        assertThat(content11.getAclEntries()).as("ACL entries for node %s should contains %s role for user %s", content11.getPath(),
+                "owner", "user1").containsOnlyKeys("u:user1");
+
         session.save();
         assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(home.getPath(), "jcr:read"))));
         assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content1.getPath(), "jcr:read"))));
@@ -249,7 +286,32 @@ public class AclTest {
         assertFalse((JCRTemplate.getInstance().doExecuteWithUserSession("user1", null, new CheckPermission(content12.getPath(), "jcr:read"))));
     }
 
+    @Test
+    public void testRevokeRoles() throws Exception {
+        content11.grantRoles("u:user1", Collections.singleton("owner"));
+        content11.grantRoles("u:user2", Collections.singleton("owner"));
+        assertRole(content11, "u:user1", "GRANT", "owner");
+        assertRole(content11, "u:user2", "GRANT", "owner");
+        session.save();
 
+        content11.revokeRolesForPrincipal("u:user2");
+        assertRole(content11, "u:user1", "GRANT", "owner");
+        assertThat(content11.getAclEntries())
+                .as("ACL entries for node %s should NOT contain roles for principal %s", content11.getPath(), "u:user2")
+                .doesNotContainKey("u:user2");
+
+        session.save();
+
+        content11.revokeAllRoles();
+        assertThat(content11.getAclEntries())
+                .as("ACL entries for node %s should NOT contain roles for principal %s", content11.getPath(), "u:user1")
+                .doesNotContainKey("u:user1");
+        assertThat(content11.getAclEntries())
+                .as("ACL entries for node %s should NOT contain roles for principal %s", content11.getPath(), "u:user2")
+                .doesNotContainKey("u:user2");
+
+        session.save();
+    }
 
     class CheckPermission implements JCRCallback<Boolean> {
         private String path;

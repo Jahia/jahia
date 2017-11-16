@@ -367,6 +367,45 @@
             <artifactId>awaitility</artifactId>
             <version>${awaitility.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.8.0</version>
+        </dependency>
+
+        <!-- Template sets, required by tests -->
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>bootstrap-acme-space-templates</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>templates-intranet</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>templates-web</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>templates-web-blue</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>templates-web-space</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -43,10 +43,27 @@
  */
 package org.jahia.test;
 
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.templates.ModuleState.State;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.OperationResult;
+import org.jahia.services.modulemanager.util.ModuleUtils;
+import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.utils.PomUtils;
 import org.ops4j.pax.url.mvn.MavenResolver;
 import org.ops4j.pax.url.mvn.ServiceConstants;
 import org.ops4j.pax.url.mvn.internal.AetherBasedResolver;
 import org.ops4j.pax.url.mvn.internal.config.MavenConfigurationImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
+
+import com.sun.star.uno.RuntimeException;
+
 import shaded.org.apache.maven.settings.Profile;
 import shaded.org.apache.maven.settings.Repository;
 import shaded.org.apache.maven.settings.RepositoryPolicy;
@@ -64,9 +81,17 @@ import java.util.Properties;
  */
 public class ModuleTestHelper {
 
+    private static final Logger logger = LoggerFactory.getLogger(ModuleTestHelper.class);
+
+    private static JahiaTemplateManagerService managerService;
+
+    private static ModuleManager moduleManager;
+
     private static final MavenResolver resolver;
 
     static {
+        managerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        moduleManager = ModuleUtils.getModuleManager();
         Settings settings = new Settings();
         Profile jahiaProfile = new Profile();
         jahiaProfile.setId("jahia");
@@ -103,4 +128,57 @@ public class ModuleTestHelper {
         return resolver.resolve(groupId, artifactId, "", "jar", version);
     }
 
+    private static Dependency getArtifactInfo(String artifactId) {
+        try {
+            Model model = PomUtils.read(ModuleTestHelper.class.getClassLoader()
+                    .getResourceAsStream("META-INF/maven/org.jahia.test/jahia-test-module/pom.xml"));
+            for (Dependency dep : model.getDependencies()) {
+                if (artifactId.equals(dep.getArtifactId())) {
+                    return dep;
+                }
+            }
+        } catch (IOException | XmlPullParserException e) {
+            logger.error("Unable to read module information from pom.xml file. Cause: " + e.getMessage(), e);
+            throw new RuntimeException("Unable to read module information from pom.xml file. Cause: " + e.getMessage(),
+                    e);
+        }
+        return null;
+    }
+
+    public static void ensureModuleStarted(String artifactId) {
+        JahiaTemplatesPackage pkg = managerService.getTemplatePackageById(artifactId);
+        if (pkg != null) {
+            State state = pkg.getState().getState();
+            if (state != State.STARTED) {
+                if (state == State.INSTALLED || state == State.RESOLVED) {
+                    // start the module
+                    moduleManager.start(pkg.getBundleKey(), null);
+                } else {
+                    throw new RuntimeException(
+                            "Module " + artifactId + " is in the state " + state + " and cannot be started");
+                }
+            }
+        } else {
+            logger.info("Module {} is not deployed. Retrieving required version information from pom.xml file",
+                    artifactId);
+            Dependency info = getArtifactInfo(artifactId);
+            if (info == null) {
+                throw new RuntimeException("Unable to find version information for module " + artifactId
+                        + " in the pom.xml of the jahia-test-module project");
+            }
+
+            logger.info("Resolved module artifact information: {}. Resolving corresponding Maven artifact", info);
+            try {
+                File moduleFile = getModuleFromMaven(info.getGroupId(), info.getArtifactId(), info.getVersion());
+
+                logger.info("Module Maven artifact resolved to file: {}. Installing and starting module", moduleFile);
+
+                OperationResult opResult = moduleManager.install(new FileSystemResource(moduleFile), null, true);
+
+                logger.info("Module {} has been installed and started with status {}", artifactId, opResult);
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to resolve maven artifact for module " + info);
+            }
+        }
+    }
 }

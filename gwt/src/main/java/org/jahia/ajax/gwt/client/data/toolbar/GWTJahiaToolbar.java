@@ -89,4 +89,12 @@ public class GWTJahiaToolbar implements Serializable {
         this.gwtToolbarItems = gwtToolbarItems;
     }
 
+    public String getClassName() {
+        if (getName() == null) {
+            // We are not sure each toolbar item has an ID.
+            return "";
+        }
+        return getName().toLowerCase().replace('.', '-');
+    }
+
 }

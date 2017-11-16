@@ -93,7 +93,7 @@ public class EditManager extends ContentPanel {
 
         sidePanel.setVisible(!config.getTabs().isEmpty());
 
-        toolbar =  new ActionToolbarLayoutContainer(config.getTopToolbar());
+        toolbar =  new ActionToolbarLayoutContainer(config.getTopToolbars());
         toolbar.setStyleAttribute("z-index", "999");
         toolbar.setStyleAttribute("position", "relative");
         toolbar.addStyleName("gwt-only-panel");

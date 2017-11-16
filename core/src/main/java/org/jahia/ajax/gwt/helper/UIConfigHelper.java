@@ -669,7 +669,10 @@ public class UIConfigHelper {
                 }
 
 
-                gwtConfig.setTopToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
+                gwtConfig.setTopToolbars(new ArrayList<GWTJahiaToolbar>());
+                for (Toolbar toolbar : config.getTopToolbars()) {
+                    gwtConfig.getTopToolbars().add(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, toolbar));
+                }
                 gwtConfig.setSidePanelToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getSidePanelToolbar()));
                 gwtConfig.setMainModuleToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getMainModuleToolbar()));
                 gwtConfig.setContextMenu(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getContextMenu()));

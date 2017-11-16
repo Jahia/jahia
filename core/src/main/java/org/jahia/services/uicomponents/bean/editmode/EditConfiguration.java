@@ -63,7 +63,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private String name;
 
-    private Toolbar topToolbar;
+    private List<Toolbar> topToolbars;
     private Toolbar sidePanelToolbar;
     private Toolbar mainModuleToolbar;
     private Toolbar contextMenu;
@@ -126,11 +126,19 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     }
 
     public Toolbar getTopToolbar() {
-        return topToolbar;
+        return (topToolbars != null && topToolbars.size() > 0) ? topToolbars.get(0) : null;
     }
 
     public void setTopToolbar(Toolbar topToolbar) {
-        this.topToolbar = topToolbar;
+        this.topToolbars = Arrays.asList(topToolbar);
+    }
+
+    public List<Toolbar> getTopToolbars() {
+        return topToolbars;
+    }
+
+    public void setTopToolbars(List<Toolbar> topToolbars) {
+        this.topToolbars = topToolbars;
     }
 
     public Toolbar getSidePanelToolbar() {

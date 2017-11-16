@@ -95,9 +95,11 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
             Log.debug(toolbarList.size() + " toolbar(s).");
             for (int i = 0; i < toolbarList.size(); i++) {
                 GWTJahiaToolbar gwtToolbar = toolbarList.get(i);
-                List<GWTJahiaToolbarItem> toolbarItemsGroups = gwtToolbar.getGwtToolbarItems();
-                if (toolbarItemsGroups != null && !toolbarItemsGroups.isEmpty()) {
-                    addActionToolbar(gwtToolbar, i==0);
+                if (gwtToolbar != null) {
+                    List<GWTJahiaToolbarItem> toolbarItemsGroups = gwtToolbar.getGwtToolbarItems();
+                    if (toolbarItemsGroups != null && !toolbarItemsGroups.isEmpty()) {
+                        addActionToolbar(gwtToolbar, i == 0);
+                    }
                 }
             }
 
@@ -118,9 +120,11 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
     public void addActionToolbar(GWTJahiaToolbar gwtToolbar, boolean first) {
         ActionToolbar actionToolbar = new ActionToolbar(gwtToolbar, linker);
         actionToolbar.createToolBar();
+        actionToolbar.addStyleName("action-toolbar");
         if (first) {
             actionToolbar.addStyleName("x-toolbar-first");
         }
+        actionToolbar.addStyleName(gwtToolbar.getClassName());
         // add to widget
         add(actionToolbar);
         layout();
@@ -152,7 +156,7 @@ public class ActionToolbarLayoutContainer extends LayoutContainer {
     }
 
     public void setConfig(GWTEditConfiguration config) {
-        setToolbarSet(Arrays.asList(config.getTopToolbar()));
+        setToolbarSet(config.getTopToolbars());
     }
 
 }

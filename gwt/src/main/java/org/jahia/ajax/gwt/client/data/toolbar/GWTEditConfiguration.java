@@ -55,7 +55,7 @@ import java.util.List;
  */
 public class GWTEditConfiguration extends GWTConfiguration implements Serializable {
 
-    private GWTJahiaToolbar topToolbar;
+    private List<GWTJahiaToolbar> topToolbars;
     private GWTJahiaToolbar contextMenu;
     private GWTJahiaToolbar sidePanelToolbar;
     private GWTJahiaToolbar mainModuleToolbar;
@@ -72,11 +72,15 @@ public class GWTEditConfiguration extends GWTConfiguration implements Serializab
     }
 
     public GWTJahiaToolbar getTopToolbar() {
-        return topToolbar;
+        return (topToolbars != null && topToolbars.size() > 0) ? topToolbars.get(0) : null;
     }
 
-    public void setTopToolbar(GWTJahiaToolbar topToolbar) {
-        this.topToolbar = topToolbar;
+    public List<GWTJahiaToolbar> getTopToolbars() {
+        return topToolbars;
+    }
+
+    public void setTopToolbars(List<GWTJahiaToolbar> topToolbars) {
+        this.topToolbars = topToolbars;
     }
 
     public GWTJahiaToolbar getSidePanelToolbar() {

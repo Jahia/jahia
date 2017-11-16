@@ -1,5 +1,5 @@
 // Menu Set
-.x-toolbar-first {
+.action-toolbar {
 
     // Need more CSS specificity to over ride GWT
     .app-container & {
@@ -92,7 +92,7 @@
             opacity: 0.8;
 
             // Button Label
-            &::after {
+            &:not(.edit-menu-edit)::after {
                 opacity: 1;
                 pointer-events: none;
 
@@ -649,7 +649,7 @@
     background: url(./images/icons/tabs-pages-white@X2.png) no-repeat center center;
     background-size: 23px;
     text-indent: -50000px;
-    position: absolute;
+    position: fixed;
     left: 425px;
 
     top: 21px;
@@ -693,7 +693,7 @@
     position: fixed;
     top: 20px;
     left: 250px;
-    line-height: 22px;
+    line-height: 22px !important;
 
 
     body[data-multiselect="on"] & {
@@ -719,7 +719,7 @@
     top: -18px;
     text-align: center;
     /* width: 100%; */
-    font-style: italic;
+    font-style: italic !important;
     background: url(./images/icons/icon-page-white@X2.png) no-repeat left center;
     background-size: 11px;
     padding-left: 13px;
@@ -727,7 +727,7 @@
     left: 0;
     top: 9px;
     pointer-events: none;
-    @include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+    @include text(12px !important, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT !important, $DEFAULT--FONT--FAMILY !important);
 
     body[data-multiselect="on"] & {
         display: block;

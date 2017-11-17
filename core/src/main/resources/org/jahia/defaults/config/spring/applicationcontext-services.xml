@@ -351,7 +351,5 @@
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
     </bean>
 
-    <bean id="ReadOnlyModeController" class="org.jahia.settings.readonlymode.ReadOnlyModeController" depends-on="springContextSingleton">
-        <property name="settingsBean" ref="settingsBean"/>
-    </bean>
+    <bean id="ReadOnlyModeController" class="org.jahia.settings.readonlymode.ReadOnlyModeController" depends-on="springContextSingleton" factory-method="getInstance"/>
 </beans>

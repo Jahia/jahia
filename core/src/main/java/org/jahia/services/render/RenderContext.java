@@ -56,6 +56,7 @@ import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.settings.readonlymode.ReadOnlyModeController;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
@@ -432,7 +433,7 @@ public class RenderContext {
      * @return <code>true</code> if the full read only mode is currently enabled; <code>false</code> otherwise
      */
     public boolean isReadOnlyMode() {
-        return SettingsBean.getInstance().isFullReadOnlyMode();
+        return ReadOnlyModeController.getInstance().isReadOnlyModeEnabled();
     }
 
 }

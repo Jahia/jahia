@@ -78,6 +78,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.settings.readonlymode.ReadOnlyModeSupport;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.tools.patches.SqlPatcher;
 import org.jahia.utils.DatabaseUtils;
@@ -105,7 +106,7 @@ import java.util.*;
 
 import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
 
-public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
+public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware, ReadOnlyModeSupport {
 
     /**
      * An initializer of DX cluster related settings.
@@ -190,7 +191,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private int accessManagerPathPermissionCacheMaxSize = 100;
     private int queryApproxCountLimit;
     private boolean readOnlyMode;
-    private boolean fullReadOnlyMode;
     private DataSource dataSource;
     private ClusterSettingsInitializer clusterSettingsInitializer;
     private String internetExplorerCompatibility;
@@ -1301,6 +1301,16 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
     }
 
+    @Override
+    public void onReadOnlyModeChanged(boolean readOnlyModeIsOn, long timeout) {
+        setReadOnlyMode(readOnlyModeIsOn);
+    }
+
+    @Override
+    public int getReadOnlyModePriority() {
+        return 1001;
+    }
+
     public String getOperatingMode() {
         return operatingMode;
     }
@@ -1435,14 +1445,5 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public void setLicenseFile(Resource licenseFile) {
         this.licenseFile = licenseFile;
-    }
-
-    public boolean isFullReadOnlyMode() {
-        return fullReadOnlyMode;
-    }
-
-    public void setFullReadOnlyMode(boolean fullReadOnlyMode) {
-        this.fullReadOnlyMode = fullReadOnlyMode;
-        setReadOnlyMode(fullReadOnlyMode);
     }
 }

@@ -70,6 +70,24 @@ public class ReadOnlyModeController {
         }
     };
 
+    public enum ReadOnlyModeStatus {
+        OFF, ON, PENDING
+    }
+
+    // initialize status: OFF
+    private ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
+
+    private long serviceNotificationTimeout = 2 * 60 * 1000L;
+
+    /**
+     * Checks if read only mode is currently enabled or not.
+     *
+     * @return <code>true</code> if the read-only mode is enabled or pending enabling or pending disabling; code>false</code> if it is disabled
+     */
+    public boolean isReadOnlyModeEnabled() {
+        return readOnlyStatus != ReadOnlyModeStatus.OFF;
+    }
+
     /**
      * Handles the case, when a service encounters read-only mode violation, i.e. a data or state modification is requested.
      * 
@@ -81,37 +99,21 @@ public class ReadOnlyModeController {
 
     }
 
-    private long serviceNotificationTimeout = 2 * 60 * 1000L;
-
-    private SettingsBean settingsBean;
-
-    /**
-     * Checks if read only mode is currently enabled or not.
-     * 
-     * @return <code>true</code> if the read-only mode is enabled; <code>false</code> if it is disabled
-     */
-    public boolean isReadOnlyModeEnabled() {
-        return false;
-    }
-
-    public void setServiceNotificationTimeout(long serviceNotificationTimeout) {
-        this.serviceNotificationTimeout = serviceNotificationTimeout;
-    }
-
-    public void setSettingsBean(SettingsBean settingsBean) {
-        this.settingsBean = settingsBean;
-    }
-
     /**
      * Performs the switch of all DX services into read-only mode or back.
      * 
      * @param enable <code>true</code> if the read-only mode should be enabled; <code>false</code> if it should be disabled
      */
     public void switchReadOnlyMode(boolean enable) {
-        logger.info("Received request to switch read only mode to {}", enable ? "ON" : "OFF");
+        logger.info("Received request to switch read only mode to {}", enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF);
 
-        logger.info("Setting the read-only mode flag");
-        settingsBean.setFullReadOnlyMode(enable);
+        if (!checkStatusUpdateNeeded(enable)) {
+            logger.info("The read-only mode flag is " + readOnlyStatus);
+            return;
+        }
+
+        // switch to pending
+        readOnlyStatus = ReadOnlyModeStatus.PENDING;
 
         List<ReadOnlyModeSupport> services = new LinkedList<>(
                 SpringContextSingleton.getBeansOfType(ReadOnlyModeSupport.class).values());
@@ -126,14 +128,29 @@ public class ReadOnlyModeController {
             }
         }
 
-        logger.info("Finished notifying services about read-only mode change");
+        // switch to final state
+        readOnlyStatus = enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF;
 
-        logger.info("Sending ReadOnlyModeChangedEvent to notify the rest of services about read-only mode change");
+        logger.info("Finished read-only mode switch. Now the read-only mode is {}", enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF);
+    }
 
-        SpringContextSingleton.getInstance().publishEvent(new ReadOnlyModeChangedEvent(this, enable));
+    private boolean checkStatusUpdateNeeded(boolean enable) {
+        return enable ? readOnlyStatus == ReadOnlyModeStatus.OFF : readOnlyStatus == ReadOnlyModeStatus.ON;
+    }
 
-        logger.info("Done sending ReadOnlyModeChangedEvent");
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final ReadOnlyModeController INSTANCE = new ReadOnlyModeController();
+    }
+    public static ReadOnlyModeController getInstance() {
+        return Holder.INSTANCE;
+    }
 
-        logger.info("Finished read-only mode switch. Now the read-only mode is {}", enable ? "ON" : "OFF");
+    public void setServiceNotificationTimeout(long serviceNotificationTimeout) {
+        this.serviceNotificationTimeout = serviceNotificationTimeout;
+    }
+
+    public ReadOnlyModeStatus getReadOnlyStatus() {
+        return readOnlyStatus;
     }
 }

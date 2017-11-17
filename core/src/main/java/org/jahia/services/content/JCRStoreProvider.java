@@ -635,7 +635,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     public void registerNamespaces() throws RepositoryException {
         JCRSessionWrapper sessionWrapper = getSystemSession();
         try {
-            Session s = getSystemSession().getProviderSession(this);
+            Session s = sessionWrapper.getProviderSession(this);
             NamespaceRegistry providerNamespaceRegistry = s.getWorkspace().getNamespaceRegistry();
             if (providerNamespaceRegistry != null) {
                 for (Map.Entry<String, String> namespaceEntry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {

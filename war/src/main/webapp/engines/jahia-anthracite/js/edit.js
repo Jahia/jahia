@@ -1417,6 +1417,7 @@
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
                 app.edit.sidepanel.close();
+				DexV2(".context-menu").css({display: "none"});
             }
 		},
 		onClick: function(e){
@@ -2928,14 +2929,14 @@
                                 // A job is active
 								activeJob = true;
 								jobTooltip = jobString;
-								DexV2(".x-viewport-editmode .action-toolbar .x-toolbar-cell:nth-child(10)").addClass("indigo-job-running");
+								DexV2(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").addClass("indigo-job-running");
 
                             } else {
                                 // No Jobs active
 								activeJob = false;
 								jobTooltip = localisedStrings[app.data.UILanguage].jobs;
 
-								DexV2(".x-viewport-editmode .action-toolbar .x-toolbar-cell:nth-child(10)").removeClass("indigo-job-running");
+								DexV2(".x-viewport-editmode .x-toolbar-first .x-toolbar-cell:nth-child(10)").removeClass("indigo-job-running");
 
                             }
 
@@ -3172,7 +3173,7 @@
                                     // elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
                                     elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
                                     elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 30) + "px";
-                                    elements.nodePathTitle.style.left = (boxes.title.left - 20) + "px";
+                                    elements.nodePathTitle.style.left = (boxes.title.left - 82) + "px";
                                     DexV2(".edit-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.pageTitle);
                                 } else {
                                     // No Select
@@ -3180,7 +3181,7 @@
                                     // elements.refreshButton.style.left = (boxes.title.left + boxes.title.width + 10) + "px";
                                     elements.previewButton.style.left = (boxes.title.left + boxes.title.width + 9) + "px";
                                     elements.moreInfo.style.left = (boxes.title.left + boxes.title.width + 33) + "px";
-                                    elements.nodePathTitle.style.left = (boxes.title.left - 20) + "px";
+                                    elements.nodePathTitle.style.left = (boxes.title.left - 80) + "px";
 
                                     elements.nodePathTitle.setAttribute("data-indigo-file-path", DexV2.getCached("body").getAttribute("data-main-node-path"));
                                     DexV2(".edit-menu-publication .x-btn-mc").setAttribute("data-publication-label", app.iframe.data.publication.label);
@@ -3772,7 +3773,7 @@
                                 // refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
                                 // nodePathTitle: document.getElementsByClassName("node-path-title")[0],
                                 previewButton: document.getElementsByClassName("edit-menu-view")[0],
-                                editPage: DexV2(".action-toolbar .x-toolbar-cell:nth-child(5) table").getNode(0),
+                                editPage: DexV2(".x-toolbar-first .x-toolbar-cell:nth-child(5) table").getNode(0),
                             },
 
                             boxes = {
@@ -3985,7 +3986,7 @@
                 .onMouseDown("#" + app.picker.data.ID + " .preview-button", app.picker.thumb.openPreview)
 
                 .onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick)
-                // DexV2(".x-viewport-editmode .action-toolbar > table").onClick(app.theme.onToggle)
+                // DexV2(".x-viewport-editmode .x-toolbar-first > table").onClick(app.theme.onToggle)
                 .onClick(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose)
                 .onClick("#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", app.edit.settings.close)
                 .onMouseOver(".toolbar-item-filepreview", app.picker.previewButton.onMouseOver)

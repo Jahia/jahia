@@ -296,15 +296,11 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			left: 30px;
 			z-index: 99999;
 			@include text(36px, _property($SIDE-PANEL-TITLE--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
-
-			/* DEV NOTE ::: QUICK N DIRTY */
-			body[data-uilang="fr"] & {
-				letter-spacing: -0.5px;
-			    font-size: 33px;
-			    top: 35px;
-
+			max-width: 252px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 			}
-		}
 	}
 
 	// BODY WRAPPER

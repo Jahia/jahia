@@ -319,7 +319,7 @@ public class VanityUrlManager {
             if (!contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
                 contentNode.addMixin(JAHIAMIX_VANITYURLMAPPED);
             }
-            vanityUrlMappingsNode = contentNode.addNode(VANITYURLMAPPINGS_NODE,JAHIANT_VANITYURLS);
+            vanityUrlMappingsNode = contentNode.addNode(VANITYURLMAPPINGS_NODE, JAHIANT_VANITYURLS);
         } else {
             vanityUrlMappingsNode = contentNode.getNode(VANITYURLMAPPINGS_NODE);
             boolean found = false;
@@ -397,7 +397,7 @@ public class VanityUrlManager {
      *        need to be deleted, add the language to this set, while in the vanityUrls list there will be no
      *        mappings for that language)
      * @param session the JCR session used to find and save the vanity URL nodes
-     * @return true if any vanity URL was added,updated or deleted or false if no change was done
+     * @return true if any vanity URL was added, updated or deleted or false if no change was done
      * @throws ConstraintViolationException if the vanity URL mapping already exists for a different content node or language in the site
      * @throws RepositoryException if there was an unexpected exception accessing the repository
      */
@@ -411,7 +411,7 @@ public class VanityUrlManager {
             if (!contentNode.isNodeType(JAHIAMIX_VANITYURLMAPPED)) {
                 contentNode.addMixin(JAHIAMIX_VANITYURLMAPPED);
             }
-            vanityUrlMappingsNode = contentNode.addNode(VANITYURLMAPPINGS_NODE,JAHIANT_VANITYURLS);
+            vanityUrlMappingsNode = contentNode.addNode(VANITYURLMAPPINGS_NODE, JAHIANT_VANITYURLS);
         } else {
             vanityUrlMappingsNode = contentNode.getNode(VANITYURLMAPPINGS_NODE);
 
@@ -602,6 +602,8 @@ public class VanityUrlManager {
             final List<Map.Entry<String, VanityUrl>> toDelete) throws RepositoryException, NonUniqueUrlMappingException {
         NonUniqueUrlMappingException ex = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,
                 Constants.EDIT_WORKSPACE, null, new JCRCallback<NonUniqueUrlMappingException>() {
+
+                    @Override
                     public NonUniqueUrlMappingException doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
                             checkUniqueConstraint(contentNode, vanityUrl, toDelete, session);
@@ -616,6 +618,8 @@ public class VanityUrlManager {
         }
         ex = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null,
                 new JCRCallback<NonUniqueUrlMappingException>() {
+
+                    @Override
                     public NonUniqueUrlMappingException doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
                             checkUniqueConstraint(contentNode, vanityUrl, toDelete, session);

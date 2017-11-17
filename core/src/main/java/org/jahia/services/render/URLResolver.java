@@ -106,11 +106,11 @@ public class URLResolver {
 
     private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";
 
-    private static final Pattern crossSitesURLPattern = Pattern.compile("[a-z]{0,2}_?[A-Z]{0,2}/sites/.*");
+    private static final Pattern CROSS_SITES_URL_PATTERN = Pattern.compile("[a-z]{0,2}_?[A-Z]{0,2}/sites/.*");
 
-    private static Logger logger = LoggerFactory.getLogger(URLResolver.class);
+    private static final Logger logger = LoggerFactory.getLogger(URLResolver.class);
 
-    private static String[] servletsAllowingUrlMapping = new String[] {
+    private static final String[] SERVLETS_ALLOWING_URL_MAPPING = new String[] {
             StringUtils.substringAfterLast(Render.getRenderServletPath(), "/")
     };
 
@@ -283,7 +283,7 @@ public class URLResolver {
 
     private boolean isServletAllowingUrlMapping() {
         boolean isServletAllowingUrlMapping = false;
-        for (String servletAllowingUrlMapping : servletsAllowingUrlMapping) {
+        for (String servletAllowingUrlMapping : SERVLETS_ALLOWING_URL_MAPPING) {
             if (servletAllowingUrlMapping.equals(servletPart)) {
                 isServletAllowingUrlMapping = true;
                 break;
@@ -319,7 +319,7 @@ public class URLResolver {
                 tempPath = StringUtils.substringAfter(getPath(), "/");
                 VanityUrl resolvedVanityUrl = null;
                 logger.debug("Trying to resolve vanity url for tempPath = {}", tempPath);
-                boolean doNotMatchesCrossSitesPattern = !crossSitesURLPattern.matcher(tempPath).matches();
+                boolean doNotMatchesCrossSitesPattern = !CROSS_SITES_URL_PATTERN.matcher(tempPath).matches();
                 if (!StringUtils.isEmpty(getSiteKey()) && doNotMatchesCrossSitesPattern) {
                     List<VanityUrl> vanityUrls = getVanityUrlService()
                             .findExistingVanityUrls("/" + tempPath,
@@ -530,11 +530,13 @@ public class URLResolver {
         if (siteInfo.isMixLanguagesActive() && siteInfo.getDefaultLanguage() != null) {
             JCRSessionFactory.getInstance().setFallbackLocale(LanguageCodeConverters.getLocaleFromCode(siteInfo.getDefaultLanguage()));
         }
-        JCRSessionWrapper userSession = JCRSessionFactory.getInstance().getCurrentUserSession(workspace,locale);
-        if (userSession.getVersionDate() == null && versionDate != null)
+        JCRSessionWrapper userSession = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
+        if (userSession.getVersionDate() == null && versionDate != null) {
             userSession.setVersionDate(versionDate);
-        if (userSession.getVersionLabel() == null && versionLabel != null)
+        }
+        if (userSession.getVersionLabel() == null && versionLabel != null) {
             userSession.setVersionLabel(versionLabel);
+        }
         try {
             node = userSession.getNode(nodePath);
         } catch (PathNotFoundException e) {

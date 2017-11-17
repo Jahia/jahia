@@ -63,12 +63,12 @@ import org.slf4j.Logger;
 
 /**
  * Service to manage vanity urls in Jahia
- * 
+ *
  * @author Benjamin Papez
  */
 public class VanityUrlService {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(VanityUrlService.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(VanityUrlService.class);
 
     private VanityUrlManager vanityUrlManager;
     private Cache<String, List<VanityUrl>> cacheByUrl;
@@ -78,7 +78,7 @@ public class VanityUrlService {
 
     /**
      * Gets a node's default vanity URL for the given locale and workspace. If none is default then take the first mapping for the locale.
-     * 
+     *
      * @param contentNode
      *            the content node for which to return a mapping
      * @param workspace
@@ -99,6 +99,8 @@ public class VanityUrlService {
         }
         return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, locale,
                 new JCRCallback<VanityUrl>() {
+
+                    @Override
                     public VanityUrl doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         return vanityUrlManager.getVanityUrlForCurrentLocale(contentNode, siteKey, session);
                     }
@@ -107,7 +109,7 @@ public class VanityUrlService {
 
     /**
      * Gets a node's default vanity URL for the given locale and workspace. If none is default then take the first mapping for the locale.
-     * 
+     *
      * @param contentNodePath
      *            the content node path for which to return a mapping
      * @param workspace
@@ -128,6 +130,8 @@ public class VanityUrlService {
         }
         return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, locale,
                 new JCRCallback<VanityUrl>() {
+
+                    @Override
                     public VanityUrl doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         return vanityUrlManager.getVanityUrlForCurrentLocale(session.getNode(contentNodePath), siteKey, session);
                     }
@@ -136,7 +140,7 @@ public class VanityUrlService {
 
     /**
      * Gets all node's vanity URLs for the current locale in the session
-     * 
+     *
      * @param contentNode
      *            the content node for which to return the mappings
      * @param session
@@ -152,7 +156,7 @@ public class VanityUrlService {
 
     /**
      * Gets all node's vanity URLs for the given locale
-     * 
+     *
      * @param contentNode
      *            the content node for which to return the mappings
      * @param languageCode
@@ -171,7 +175,7 @@ public class VanityUrlService {
     /**
      * Completely delete a mapped vanity URL. If the deleted vanity URL is the default one for the current locale, then check whether there
      * are other active mappings for the same locale and set the first found one as the new default.
-     * 
+     *
      * @param contentNode
      *            the content node for which to remove the given mapping
      * @param vanityUrl
@@ -188,7 +192,7 @@ public class VanityUrlService {
 
     /**
      * Completely delete all mapped vanity URL for a locale.
-     * 
+     *
      * @param contentNode
      *            the content node for which to remove the mappings
      * @param languageCode
@@ -205,16 +209,16 @@ public class VanityUrlService {
 
     /**
      * Add or update a vanity URL mapping for a specific content node and the language code set in the VanityUrl bean.
-     * 
+     *
      * If the URL mapping has already been saved before we check whether the default and active flag in the bean is different to the saved
      * one, so we do an update, otherwise no operation is done.
-     * 
+     *
      * If the new or updated mapping is now the default one for the language, then we also check if there already is another default URL for
      * this language and set its default flag to false.
-     * 
+     *
      * We also check whether the same URL is already existing for a different node or language in the current site and throw a
      * ConstraintViolationException if this is the case.
-     * 
+     *
      * @param contentNode
      *            the content node for which to add the given mapping
      * @param vanityUrl
@@ -235,15 +239,15 @@ public class VanityUrlService {
      * Add, update or delete all vanity URL mappings for a specific content node and the language codes set in the list of VanityUrl beans.
      * First we load all existing mappings for all the languages set in the updatedLocales collection. Then we compare the existing with the
      * list of URL mappings given in the vanityUrls collection to know which nodes need to be added, updated or deleted.
-     * 
+     *
      * If the default mapping for a language is set for a new or updated mapping, then we check if there already is another default URL for
      * this language and set its default flag to false.
-     * 
+     *
      * We also check whether the same added URL is already existing for a different node or language in the current site (and which is not
      * being deleted in the same operation) and throw a ConstraintViolationException if this is the case. We also throw a
      * ConstraintViolationException if two URL mappings for the same language in the given vanityUrls collection have the default flag set
      * to true.
-     * 
+     *
      * @param contentNode
      *            the content node for which to add the given mapping
      * @param vanityUrls
@@ -251,7 +255,7 @@ public class VanityUrlService {
      * @param updatedLocales
      *            a set with all locales, which have been edited (e.g. if all mappings for a language need to be deleted, add the language
      *            to this set, while in the vanityUrls list there will be no mappings for that language)
-     * @return true if any vanity URL was added,updated or deleted or false if no change was done
+     * @return true if any vanity URL was added, updated or deleted or false if no change was done
      * @throws ConstraintViolationException
      *             if the vanity URL mapping already exists for a different content node or language in the site
      * @throws RepositoryException
@@ -269,7 +273,7 @@ public class VanityUrlService {
      * Find any mappings for the given vanity URL. If a site is specified the query will be done only for the specified site, otherwise all
      * sites in the workspace will be searched through and a list of VanityURL beans will be returned. The method searches mappings in any
      * language.
-     * 
+     *
      * @param url
      *            URL path to check whether there is a content mapping for it (URL must start with /)
      * @param site
@@ -289,6 +293,8 @@ public class VanityUrlService {
         }
         return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null,
                 new JCRCallback<List<VanityUrl>>() {
+
+                    @Override
                     public List<VanityUrl> doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
                         List<VanityUrl> vanityUrls = vanityUrlManager.findExistingVanityUrls(url, site, session);
@@ -300,7 +306,7 @@ public class VanityUrlService {
 
     /**
      * Injects the dependency to {@link VanityUrlManager}.
-     * 
+     *
      * @param vanityUrlManager
      *            the dependency to {@link VanityUrlManager}
      */
@@ -324,11 +330,11 @@ public class VanityUrlService {
         builder.append(workspace);
         return builder.toString();
     }
-    
+
     public void setUrlResolverListener(URLResolverListener urlResolverListener) {
         urlResolverListener.setVanityUrlService(this); // we wire this manually to avoid loops.
     }
-    
+
     public void flushCaches() {
         cacheByUrl.flush();
     }

@@ -62,7 +62,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
-import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.xml.JahiaSAXParserFactory;
 import org.joda.time.DateTime;

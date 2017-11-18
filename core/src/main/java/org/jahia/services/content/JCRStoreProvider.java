@@ -1295,4 +1295,8 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
         return systemCredentials;
     }
+
+    Map<String, JCRSessionWrapper> getObserverSessions() {
+        return observerSessions;
+    }
 }

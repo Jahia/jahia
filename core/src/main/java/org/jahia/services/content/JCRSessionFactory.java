@@ -60,11 +60,13 @@ import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaCallbackHandler;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.readonlymode.ReadOnlyModeSupport;
+import org.jahia.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -620,7 +622,74 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
 
     @Override
     public void onReadOnlyModeChanged(boolean readOnlyModeIsOn, long timeout) {
+
+        logger.info("Read only mode switch: Newly created JCR session are" + (readOnlyModeIsOn ? " not ": " ") + "allowed to perform saving");
+        // switch to read only so that new sessions will be read only session
         this.readOnlyModeEnabled = readOnlyModeIsOn;
+
+        Set<String> knownSessions = new HashSet<>();
+        // current request sessions ids
+        knownSessions.addAll(getCurrentRequestSessionIdentifiers(systemSession.get()));
+        knownSessions.addAll(getCurrentRequestSessionIdentifiers(userSession.get()));
+
+        // Observers sessions ids
+        for (JCRSessionWrapper observerSession : getDefaultProvider().getObserverSessions().values()) {
+            knownSessions.add(observerSession.getIdentifier());
+        }
+
+        long limitTimeout = System.currentTimeMillis() + timeout;
+        while (true) {
+            // check if sessions are still active
+            Set<JCRSessionWrapper> sessionsToClose = getSessionsToClose(knownSessions, readOnlyModeIsOn);
+            int sessionsToCloseSize = sessionsToClose.size();
+            if (sessionsToCloseSize > 0) {
+                long remaingWaitingTime = limitTimeout - System.currentTimeMillis();
+                if (remaingWaitingTime > 0) {
+                    if (remaingWaitingTime % 100 == 0) {
+                        logger.info("Read only mode switch: {} JCR Session(s) are still opened, will wait for them to close until timeout {}",
+                                sessionsToCloseSize, DateUtils.formatDurationWords(remaingWaitingTime));
+                    }
+                } else {
+                    logger.info("Read only mode switch: {} JCR Session(s) are still opened, but timeout is reached, this session(s) will be closed now");
+                    for (JCRSessionWrapper sessionToClose : sessionsToClose) {
+                        sessionToClose.logout();
+                    }
+                    break;
+                }
+            } else {
+                logger.info("Read only mode switch: No JCR sessions waiting to be closed");
+                break;
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new JahiaRuntimeException("Read only mode switch interrupted unexpectedly");
+            }
+        }
+
+        logger.info("Read only mode on JCR sessions: " + (readOnlyModeIsOn ? "ON" : "OFF"));
     }
 
+    private Set<String> getCurrentRequestSessionIdentifiers(Map<String, Map<String, JCRSessionWrapper>> sessions) {
+        Set<String> resultSessions = new HashSet<>();
+        if (sessions != null) {
+            for (Map<String, JCRSessionWrapper> userSessions : sessions.values()) {
+                for (JCRSessionWrapper session : userSessions.values()) {
+                    resultSessions.add(session.getIdentifier());
+                }
+            }
+        }
+        return resultSessions;
+    }
+
+    private Set<JCRSessionWrapper> getSessionsToClose(Set<String> knownSessions, boolean readOnlyModeEnabled) {
+        Set<JCRSessionWrapper> sessionsToClose = new HashSet<>();
+        for (Map.Entry<UUID, JCRSessionWrapper> uuidjcrSessionWrapperEntry : JCRSessionWrapper.getActiveSessionsObjects().entrySet()) {
+            if (!knownSessions.contains(uuidjcrSessionWrapperEntry.getKey().toString()) && uuidjcrSessionWrapperEntry.getValue().isReadOnly() != readOnlyModeEnabled) {
+                sessionsToClose.add(uuidjcrSessionWrapperEntry.getValue());
+            }
+        }
+        return sessionsToClose;
+    }
 }

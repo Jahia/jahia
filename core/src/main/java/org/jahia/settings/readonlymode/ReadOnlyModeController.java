@@ -77,7 +77,7 @@ public class ReadOnlyModeController {
     // initialize status: OFF
     private ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
 
-    private long serviceNotificationTimeout = 2 * 60 * 1000L;
+    private long serviceNotificationTimeout = 60 * 1000L;
 
     /**
      * Checks if read only mode is currently enabled or not.

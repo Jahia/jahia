@@ -94,11 +94,11 @@ public class SimpleModuleDragSource extends EditModeDragSource {
 
     @Override
     protected void onDragStart(DNDEvent e) {
-        if ("dragZone".equals(MainModule.getInstance().getDragType())) {
-            int left = e.getClientX() - module.getAbsoluteLeft();
-            int right = e.getClientY() - module.getAbsoluteTop();
 
-            boolean inDragZone = left < 20 && right < 20;
+        if ("dragZone".equals(MainModule.getInstance().getDragType())) {
+            int x = e.getClientX() - module.getAbsoluteLeft();
+            int y = e.getClientY() - module.getAbsoluteTop();
+            boolean inDragZone = x < 20 && y < 20;
             if (!inDragZone) {
                 return;
             }

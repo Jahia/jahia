@@ -78,6 +78,7 @@ public class SimpleModuleDragSource extends EditModeDragSource {
         return module;
     }
 
+    @Override
     protected void onDragEnd(DNDEvent e) {
         if (e.getStatus().getData("operationCalled") == null) {
             DOM.setStyleAttribute(module.getHtml().getElement(), "display", "block");

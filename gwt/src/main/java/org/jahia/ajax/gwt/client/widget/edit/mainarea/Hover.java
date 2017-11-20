@@ -53,11 +53,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 
+ *
  * User: toto
  * Date: Sep 3, 2009
  * Time: 3:06:51 PM
- * 
+ *
  */
 public class Hover {
 
@@ -89,8 +89,6 @@ public class Hover {
     public void setMainModule(final MainModule m) {
         this.mainModule = m;
     }
-
-    private boolean hidden = true;
 
     public void addHover(Module module) {
         if (boxes.containsKey(module)) {
@@ -213,10 +211,10 @@ public class Hover {
         }
 
         private void setStyle(String key) {
-            top.setStyleName("hover-top-"+key);
-            bottom.setStyleName("hover-bottom-"+key);
-            left.setStyleName("hover-left-"+key);
-            right.setStyleName("hover-right-"+key);
+            top.setStyleName("hover-top-" + key);
+            bottom.setStyleName("hover-bottom-" + key);
+            left.setStyleName("hover-left-" + key);
+            right.setStyleName("hover-right-" + key);
         }
 
         public void setPosition(int x, int y, int w, int h) {
@@ -230,6 +228,7 @@ public class Hover {
             right.setSize(0, h);
         }
 
+        @Override
         public void show() {
             if (!hidden) {
                 return;
@@ -258,6 +257,7 @@ public class Hover {
             setPosition(WindowUtil.getAbsoluteLeft(element), WindowUtil.getAbsoluteTop(element), ctn.getWidth(), ctn.getHeight());
         }
 
+        @Override
         public void hide() {
             if (hidden) {
                 return;

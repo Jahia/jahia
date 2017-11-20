@@ -78,7 +78,7 @@ import java.util.*;
 
 /**
  * Represents an editable module (area) in the rendered page.
- * 
+ *
  * @author Thomas Draier
  */
 public class SimpleModule extends Module {
@@ -146,6 +146,8 @@ public class SimpleModule extends Module {
             sinkEvents(Event.ONCLICK + Event.ONDBLCLICK + Event.ONMOUSEOVER + Event.ONMOUSEOUT + Event.ONCONTEXTMENU);
 
             Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
+
+                @Override
                 public void handleEvent(ComponentEvent ce) {
                     if (selectable && !MainModule.isGlobalSelectionDisabled()) {
                         Log.info("click" + path + " : " + scriptInfo);
@@ -163,6 +165,8 @@ public class SimpleModule extends Module {
             addListener(Events.OnDoubleClick, new EditContentEnginePopupListener(this, mainModule.getEditLinker()));
 
             Listener<ComponentEvent> hoverListener = new Listener<ComponentEvent>() {
+
+                @Override
                 public void handleEvent(ComponentEvent ce) {
                     if (canHover) {
                         Hover.getInstance().addHover(SimpleModule.this);
@@ -170,6 +174,8 @@ public class SimpleModule extends Module {
                 }
             };
             Listener<ComponentEvent> outListener = new Listener<ComponentEvent>() {
+
+                @Override
                 public void handleEvent(ComponentEvent ce) {
                     Hover.getInstance().removeHover(SimpleModule.this);
                 }
@@ -180,6 +186,7 @@ public class SimpleModule extends Module {
         }
     }
 
+    @Override
     public void setNode(GWTJahiaNode node) {
         super.setNode(node);
 
@@ -201,8 +208,8 @@ public class SimpleModule extends Module {
             layout();
             if (head != null)  {
                 Component headerHtml = new Text(overlayLabel.getText());
-                headerHtml.setStyleAttribute("color",overlayColorText);
-                headerHtml.setStyleAttribute("font-weight","bold");
+                headerHtml.setStyleAttribute("color", overlayColorText);
+                headerHtml.setStyleAttribute("font-weight", "bold");
                 head.addTool(headerHtml);
             }
         }
@@ -210,6 +217,8 @@ public class SimpleModule extends Module {
         if (bindable) {
             final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
             async.getProperties(node.getPath(), null, new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
+
+                @Override
                 public void onSuccess(GWTJahiaGetPropertiesResult gwtJahiaGetPropertiesResult) {
                     if (gwtJahiaGetPropertiesResult.getProperties().containsKey(boundProperty)) {
                         final GWTJahiaNodeProperty o = gwtJahiaGetPropertiesResult.getProperties().get(boundProperty);
@@ -231,7 +240,7 @@ public class SimpleModule extends Module {
     }
 
     /**
-     * Handler class for the bind component action. 
+     * Handler class for the bind component action.
      */
     private class BindSelectionListener extends SelectionListener<IconButtonEvent> {
         private final MainModule mainModule;
@@ -240,6 +249,7 @@ public class SimpleModule extends Module {
             this.mainModule = mainModule;
         }
 
+        @Override
         public void componentSelected(IconButtonEvent event) {
             if (bound != null && bound) {
                 List<GWTJahiaNodeProperty> properties = new ArrayList<GWTJahiaNodeProperty>();
@@ -249,12 +259,15 @@ public class SimpleModule extends Module {
                 properties.add(gwtJahiaNodeProperty);
                 JahiaContentManagementService.App.getInstance()
                         .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback<Object>() {
+
+                            @Override
                             public void onSuccess(Object o) {
                                 Map<String, Object> data = new HashMap<String, Object>();
                                 data.put(Linker.REFRESH_MAIN, true);
                                 getMainModule().getEditLinker().refresh(data);
                             }
 
+                            @Override
                             public void onApplicationFailure(Throwable throwable) {
                                 Window.alert(Messages.getWithArgs("label.gwt.error", "Error: {0}",
                                         new Object[] { throwable }));
@@ -270,6 +283,8 @@ public class SimpleModule extends Module {
                         "url('" + s + "/gwt/resources/images/xtheme-jahia/link.cur'), pointer");
 
                 mainModule.getEditLinker().setSelectionListener(new ModuleSelectionListener() {
+
+                    @Override
                     public void onModuleSelection(Module selection) {
                         mainModule.getInnerElement().getStyle().setProperty("cursor", "");
                         mainModule.getEditLinker().setSelectionListener(null);
@@ -286,12 +301,15 @@ public class SimpleModule extends Module {
                         properties.add(gwtJahiaNodeProperty);
                         JahiaContentManagementService.App.getInstance()
                                 .saveProperties(Arrays.asList(node), properties, null, new BaseAsyncCallback<Object>() {
+
+                                    @Override
                                     public void onSuccess(Object o) {
                                         Map<String, Object> data = new HashMap<String, Object>();
                                         data.put(Linker.REFRESH_MAIN, true);
                                         getMainModule().getEditLinker().refresh(data);
                                     }
 
+                                    @Override
                                     public void onApplicationFailure(Throwable throwable) {
                                         Window.alert(Messages.getWithArgs("label.gwt.error", "Error: {0}",
                                                 new Object[] { throwable }));

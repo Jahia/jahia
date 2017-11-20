@@ -128,7 +128,7 @@ public class MainModule extends Module {
     private String activeChannelVariant;
     private static boolean globalSelectionDisabled = false;
 
-    protected Point framePosition = new Point(0,0);
+    protected Point framePosition = new Point(0, 0);
 
     public MainModule(final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
         super("main", path, nodeTypes, new BorderLayout());
@@ -148,7 +148,7 @@ public class MainModule extends Module {
             if (user != null && !user.equals(JahiaGWTParameters.getCurrentUser())) {
                 storage.clear();
             }
-            storage.setItem("currentUser",JahiaGWTParameters.getCurrentUser());
+            storage.setItem("currentUser", JahiaGWTParameters.getCurrentUser());
         }
         head = new ToolbarHeader();
         head.addStyleName("x-panel-header");
@@ -179,6 +179,8 @@ public class MainModule extends Module {
                     final int y = ce.getClientY() + position.y;
                     ce.stopEvent();
                     DeferredCommand.addCommand(new Command() {
+
+                        @Override
                         public void execute() {
                             onShowContextMenu(x, y);
                         }
@@ -189,6 +191,8 @@ public class MainModule extends Module {
         scrollContainer.addStyleName("gwt-body-edit");
         scrollContainer.setStyleAttribute("position", "relative");
         scrollContainer.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
+            @Override
             public void handleEvent(BaseEvent be) {
                 if (contextMenu != null && contextMenu.isVisible()) {
                     contextMenu.hide();
@@ -235,6 +239,8 @@ public class MainModule extends Module {
                 ((ToolbarHeader) head).addItem(linker, item);
             }
             ToolButton refresh = new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
+
+                @Override
                 public void componentSelected(IconButtonEvent event) {
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put(Linker.REFRESH_MAIN, true);
@@ -287,6 +293,8 @@ public class MainModule extends Module {
 //        scrollContainer.sinkEvents();
 
         Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
+
+            @Override
             public void handleEvent(ComponentEvent ce) {
                 setCtrlActive(ce);
                 makeSelected();
@@ -439,7 +447,7 @@ public class MainModule extends Module {
     }
 
     public boolean needRefresh(Map<String, Object> data) {
-        List<String> paths = (List<String>) data.get("publishedNodes");
+        @SuppressWarnings("unchecked") List<String> paths = (List<String>) data.get("publishedNodes");
         if (paths != null) {
             for (String s : paths) {
                 List<Module> modules = ModuleHelper.getModulesByPath().get(s);
@@ -476,7 +484,7 @@ public class MainModule extends Module {
             activeChannel = editLinker.getActiveChannel();
             activeChannelVariant = editLinker.getActiveChannelVariant();
 
-            Map<String,String> params = getParamsFromUrl(url);
+            Map<String, String> params = getParamsFromUrl(url);
             if (params.containsKey("channel")) {
                 String channelName = params.get("channel");
                 for (GWTJahiaChannel gwtJahiaChannel : JahiaGWTParameters.getChannels()) {
@@ -497,14 +505,14 @@ public class MainModule extends Module {
         }
     }
 
-    private Map<String,String> getParamsFromUrl(String url) {
-        Map<String,String> m = new HashMap<String,String>();
+    private Map<String, String> getParamsFromUrl(String url) {
+        Map<String, String> m = new HashMap<String, String>();
         if (url.contains("?")) {
-            String[] params = url.substring(url.indexOf('?')+1).split("&");
+            String[] params = url.substring(url.indexOf('?') + 1).split("&");
             for (String param : params) {
                 if (param.contains("=")) {
                     String[] v = param.split("=");
-                    m.put(v[0],v[1]);
+                    m.put(v[0], v[1]);
                 }
             }
         }
@@ -521,7 +529,7 @@ public class MainModule extends Module {
 
     public static void editContent(String path) {
         List<Module> modules = ModuleHelper.getModulesByPath().get(path);
-        EngineLoader.showEditEngine(getInstance().getEditLinker(),modules.get(0).getNode(), null);
+        EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null);
     }
 
     public String getUrl(String path, String template, String channel, String variant) {
@@ -714,6 +722,7 @@ public class MainModule extends Module {
         }
     }
 
+    @Override
     protected void onResize(int width, int height) {
         super.onResize(width, height);
         scrollContainer.setHeight(getHeight() - (head != null ? head.getOffsetHeight() : 0));
@@ -732,6 +741,7 @@ public class MainModule extends Module {
         }
     }
 
+    @Override
     public LayoutContainer getContainer() {
         return scrollContainer;
     }
@@ -757,6 +767,7 @@ public class MainModule extends Module {
         moduleMap = ModuleHelper.parse(this, null, el);
     }
 
+    @Override
     public String getModuleId() {
         return "main";
     }
@@ -799,8 +810,8 @@ public class MainModule extends Module {
             if (!path.endsWith("##")) {
                 String pathWithoutFrame = path.replaceFirst("frame/", "/");
                 if (Window.Location.getQueryString().contains("gwt.codesvr")) {
-                    Map<String,String> m = getParamsFromUrl(Window.Location.getQueryString());
-                    pathWithoutFrame += (pathWithoutFrame.contains("?") ? '&': '?') + "gwt.codesvr="+m.get("gwt.codesvr");
+                    Map<String, String> m = getParamsFromUrl(Window.Location.getQueryString());
+                    pathWithoutFrame += (pathWithoutFrame.contains("?") ? '&': '?') + "gwt.codesvr=" + m.get("gwt.codesvr");
                 }
                 if (!pathWithoutFrame.equals(currentHref) || firstLoad) {
                     firstLoad = false;
@@ -887,7 +898,7 @@ public class MainModule extends Module {
             ((ToolbarHeader) head).handleNewMainNodeLoaded(node);
         }
         if (overlayLabel != null) {
-            DOM.setStyleAttribute(mainModuleElement,"position","relative");
+            DOM.setStyleAttribute(mainModuleElement, "position", "relative");
             mainModuleElement.getParentElement().insertFirst(overlayLabel.getElement());
             overlayLabel.setHeight("100%");
             overlayLabel.setWidth("100%");
@@ -947,7 +958,7 @@ public class MainModule extends Module {
 
     public void handleNewMainSelection(String path, String template) {
         if (storage != null) {
-            storage.setItem(MainModule.getInstance().getConfig().getName() + "_nodePath",path);
+            storage.setItem(MainModule.getInstance().getConfig().getName() + "_nodePath", path);
         }
 
         Map<String, List<String>> params = null;
@@ -1103,7 +1114,7 @@ public class MainModule extends Module {
         }
     }
 
-
+    @Override
     public boolean isDraggable() {
         return false;
     }
@@ -1238,7 +1249,7 @@ public class MainModule extends Module {
 
     // reset the frame position to its initial value
     public void resetFramePosition() {
-        framePosition = new Point(0,0);
+        framePosition = new Point(0, 0);
     }
 
     // save the current position of the frame
@@ -1264,6 +1275,7 @@ public class MainModule extends Module {
             super.addStyleName("window-iframe");
         }
 
+        @Override
         public void onBrowserEvent(Event event) {
             try {
                 if (event.getTypeInt() == Event.ONLOAD) {
@@ -1275,6 +1287,8 @@ public class MainModule extends Module {
 
                         DOM.sinkEvents((Element) contentDocument.getDocumentElement(), Event.ONMOUSEMOVE + Event.ONMOUSEUP + Event.ONCONTEXTMENU + Event.ONCLICK + Event.ONMOUSEDOWN);
                         DOM.setEventListener((Element) contentDocument.getDocumentElement(), new EventListener() {
+
+                            @Override
                             public void onBrowserEvent(Event event) {
                                 if (event.getTypeInt() == Event.ONMOUSEMOVE || event.getTypeInt() == Event.ONMOUSEUP || event.getTypeInt() == Event.ONMOUSEDOWN) {
                                     inframe = true;
@@ -1368,7 +1382,7 @@ public class MainModule extends Module {
             super.onAttach();
             IFrameElement iframe = IFrameElement.as(frame.getElement());
             iframe.setAttribute("frameborder", "0");
-//            iframe.setAttribute("sandbox","allows-scripts");
+//            iframe.setAttribute("sandbox", "allows-scripts");
             if (url != null && !super.getUrl().endsWith(URL.encode(url))) {
                 super.setUrl(url);
             }
@@ -1409,7 +1423,7 @@ public class MainModule extends Module {
         return getIE10FrameTop(IFrameElement.as(frame.getElement()));
     }
 
-    public final int getIE10FrameLeft(){
+    public final int getIE10FrameLeft() {
         return getIE10FrameLeft(IFrameElement.as(frame.getElement()));
     }
 

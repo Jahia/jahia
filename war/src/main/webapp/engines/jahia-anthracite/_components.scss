@@ -4229,3 +4229,80 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 }
+
+
+
+/////////////////////////////////////////////////
+// TOAST MESSAGES ///////////////////////////////
+/////////////////////////////////////////////////
+
+
+.x-info.x-info.x-info {
+	left: 12px !important;
+	border-radius: 4px !important;
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+
+	.x-info-tl {
+		background: #455A64 !important;
+
+		.x-info-tr {
+			background: #455A64;
+
+			.x-info-tc {
+				background: #455A64;
+
+				span {
+					color: #FFEB3B;
+					padding-left: 6px;
+				}
+
+			}
+
+		}
+
+	}
+
+	.x-info-ml {
+		background: #455A64 !important;
+
+		.x-info-mr {
+			background: #455A64;
+
+			.x-info-mc {
+				background: #455A64;
+
+				.x-info-body {
+					color: $color-white;
+					padding-top: 6px;
+					padding-left: 6px;
+					box-sizing: border-box;
+
+					.x-component {
+						font-family: $FONT--FAMILY---NUNITO;
+						font-size: 12px;
+						font-weight: $FONT--WEIGHT---SEMIBOLD;
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	.x-info-bl.x-info-nofooter {
+		background: #455A64;
+
+		.x-info-br {
+			background: #455A64;
+
+			.x-info-bc {
+				background: #455A64;
+			}
+
+		}
+
+	}
+
+}

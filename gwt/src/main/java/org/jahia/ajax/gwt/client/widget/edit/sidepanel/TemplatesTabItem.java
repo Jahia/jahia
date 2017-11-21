@@ -191,7 +191,7 @@ public class TemplatesTabItem extends BrowseTabItem {
                             List<Module> modules = ModuleHelper.getModulesByPath().get(selection.getPath());
                             if (modules != null) {
                                 for (Module module : modules) {
-                                    Hover.getInstance().addHover(module);
+                                    Hover.getInstance().addHover(module, ge);
                                 }
                             }
                         }

@@ -43,6 +43,7 @@
  */
 package org.jahia.services.uicomponents.bean.editmode;
 
+import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
 
@@ -77,7 +78,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String sitesLocation;
     private String forcedSite;
 
-    private String enableDragAndDrop;
+    private GWTConfiguration.DnDOption enableDragAndDrop;
     private boolean refreshOnExternalModification = true;
 
     private String requiredPermission;
@@ -207,11 +208,11 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.forcedSite = forcedSite;
     }
 
-    public String getEnableDragAndDrop() {
+    public GWTConfiguration.DnDOption getEnableDragAndDrop() {
         return enableDragAndDrop;
     }
 
-    public void setEnableDragAndDrop(String enableDragAndDrop) {
+    public void setEnableDragAndDrop(GWTConfiguration.DnDOption enableDragAndDrop) {
         this.enableDragAndDrop = enableDragAndDrop;
     }
 

@@ -43,10 +43,12 @@
  */
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.util.WindowUtil;
 
 import java.util.HashMap;
@@ -90,7 +92,7 @@ public class Hover {
         this.mainModule = m;
     }
 
-    public void addHover(Module module) {
+    public void addHover(Module module, ComponentEvent ce) {
         if (boxes.containsKey(module)) {
             return;
         }
@@ -135,9 +137,14 @@ public class Hover {
         }
         b.show();
         module.addStyleName("hover-module");
-        if ("dragZone".equals(mainModule.getDragType()) && module.isSelectable() && module instanceof SimpleModule &&
-                ((SimpleModule) module).hasDragDrop()) {
-            module.addStyleName("hover-draggable");
+        if (mainModule.getDragType() == GWTConfiguration.DnDOption.DRAG_ZONE && module.isSelectable() && module instanceof SimpleModule && ((SimpleModule) module).hasDragDrop()) {
+            module.addStyleName("hover-draggable ");
+            int left = ce.getClientX() - module.getAbsoluteLeft();
+            int right = ce.getClientY() - module.getAbsoluteTop();
+
+            boolean inDragZone = left < 20 && right < 20;
+            ((SimpleModule) module).setDrag(inDragZone);
+
         }
         boxes.put(module, b);
     }

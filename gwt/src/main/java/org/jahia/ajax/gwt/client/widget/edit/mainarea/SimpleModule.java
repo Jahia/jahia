@@ -65,6 +65,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
@@ -89,6 +90,8 @@ public class SimpleModule extends Module {
 
     protected boolean bindable = false;
     protected Boolean bound = null;
+    private DragSource source = null;
+    private DropTarget target = null;
     private String boundProperty = "j:bindedComponent";
 
     public SimpleModule(String id, String path, Element divElement, MainModule mainModule) {
@@ -99,7 +102,7 @@ public class SimpleModule extends Module {
     public SimpleModule(String id, final String path, Element divElement, final MainModule mainModule, boolean header) {
         super(id, path, divElement, mainModule);
 
-        hasDragDrop = !"false".equals(DOM.getElementAttribute(divElement, "dragdrop")) && !"disabled".equals(MainModule.getInstance().getDragType());
+        hasDragDrop = !"false".equals(DOM.getElementAttribute(divElement, "dragdrop")) && !(MainModule.getInstance().getDragType() == GWTConfiguration.DnDOption.NO_DRAG_IN_EDIT_AREA);
         editable = !"false".equals(DOM.getElementAttribute(divElement, "editable"));
         bindable = "true".equals(DOM.getElementAttribute(divElement, "bindable"));
 
@@ -127,9 +130,12 @@ public class SimpleModule extends Module {
 
         if (mainModule.getConfig().isEnableDragAndDrop()) {
             if (hasDragDrop) {
-                DragSource source = new SimpleModuleDragSource(this);
+                source = new SimpleModuleDragSource(this);
                 source.addDNDListener(mainModule.getEditLinker().getDndListener());
-                DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.SIMPLEMODULE_TYPE);
+                if (mainModule.getDragType() == GWTConfiguration.DnDOption.DRAG_ZONE) {
+                    source.disable();
+                }
+                target = new ModuleDropTarget(this, EditModeDNDListener.SIMPLEMODULE_TYPE);
                 target.setAllowSelfAsSource(true);
                 target.addDNDListener(mainModule.getEditLinker().getDndListener());
             } else {
@@ -169,7 +175,7 @@ public class SimpleModule extends Module {
                 @Override
                 public void handleEvent(ComponentEvent ce) {
                     if (canHover) {
-                        Hover.getInstance().addHover(SimpleModule.this);
+                        Hover.getInstance().addHover(SimpleModule.this, ce);
                     }
                 }
             };
@@ -324,5 +330,15 @@ public class SimpleModule extends Module {
 
     public boolean hasDragDrop() {
         return hasDragDrop;
+    }
+
+    public void setDrag(boolean isDrag) {
+        if (source != null) {
+            if (isDrag) {
+                source.enable();
+            } else {
+                source.disable();
+            }
+        }
     }
 }

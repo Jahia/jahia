@@ -79,6 +79,8 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     private Set<String> excludedNodeTypes;
     private List<String> samePathConfigsList;
 
+    public enum DnDOption {TRUE, FALSE, NO_DRAG_IN_EDIT_AREA, DRAG_ZONE}
+
     public GWTConfiguration() {
     	super();
     }

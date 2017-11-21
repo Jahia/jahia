@@ -32,11 +32,12 @@
         <script type="text/javascript" src="<c:url value='/modules/assets/javascript/jquery.jahia.js'/>"></script>
     </c:if>
 
-    <c:if test="${not empty theme}">
-        <link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/manager${themeLocale}.css'/>"/>
-        <!-- Javascript for theme -->
-        <script type="text/javascript" src="<c:url value='/engines/${theme}/js/manager.js'/>"></script>
-    </c:if>
+	<c:if test="${not empty theme}">
+		<link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/edit${themeLocale}.css'/>"/>
+		<!-- Javascript for theme -->
+		<script type="text/javascript" src="<c:url value='/engines/${theme}/js/edit.js'/>"></script>
+	</c:if>
+
 </head>
 <body onload="window.focus()">
 <internal:contentManager conf="${fn:escapeXml(cfg)}" selectedPaths="${fn:escapeXml(param.selectedPaths)}" rootPath="${fn:escapeXml(param.rootPath)}"/>

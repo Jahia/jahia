@@ -1243,10 +1243,17 @@
 			allMetadata: "All metadata",
 			ignoreMetadata: "Ignore metadata",
 			metaLabel: "Meta: %n%",
+			cancel: "Cancel",
 			pickerTitles: {
 				default: "File Picker",
 				imagepicker: "Image Picker",
 				editoriallinkpicker: "Content picker",
+				filemanager: "Documents",
+				editorialcontentmanager: "Content",
+				portletmanager: "Portlets",
+				repositoryexplorer: "Repository",
+				categorymanager: "Categories",
+				sitemanager: "Sites"
 			},
 		},
 		"FR": {
@@ -1270,10 +1277,18 @@
 			allMetadata: "All metadata",
 			ignoreMetadata: "Ignore metadata",
 			metaLabel: "Meta: %n%",
+			cancel: "Annuler",
 			pickerTitles: {
 				default: "File Picker",
 				imagepicker: "Image Picker",
 				editoriallinkpicker: "Content picker",
+				filemanager: "Documents",
+				editorialcontentmanager: "Content",
+				portletmanager: "Portlets",
+				repositoryexplorer: "Repository",
+				categorymanager: "Categories",
+				sitemanager: "Sites"
+
 			},
 		}
 	}
@@ -1320,6 +1335,10 @@
 				if(root == "engines" && page == "contentpicker.jsp"){
 					app = "contentpicker";
 					picker = QS["type"] || "default";
+
+				} else if(root == "engines" && page == "manager.jsp"){
+					app = "manager";
+					picker = QS["conf"] || "default";
 
 				} else if(root == "cms"){
 					app = pathnameSplit[2];
@@ -1439,7 +1458,7 @@
 				return false;
 
 			}
-			app.dev.log("::: APP ::: SWITCH: " + appID, true);
+			app.dev.log("::: APP ::: SWITCH: " + appID);
 			app.data.currentApp = appID;
 
             DexV2.getCached("body").setAttribute("data-INDIGO-APP", appID);
@@ -1612,6 +1631,7 @@
 				previousDisplayType: null,
 				ID: "JahiaGxtContentPickerWindow",
 				standaloneID: "contentpicker",
+				standaloneManagerID: "contentmanager",
 				inpageID: "JahiaGxtContentPickerWindow",
 				hasPreview: null,
 				selectedFileCount: 0,
@@ -1623,9 +1643,17 @@
 			onOpen: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONOPEN");
 
+				// See if GWT has enabled previews for files, if so then set the preview flag to true
+				app.picker.data.enablePreviews = DexV2("#" + app.picker.data.ID + " .toolbar-item-filepreview").nodes.length > 0;
+
+				// Set flags for CSS
+				DexV2.getCached("body")
+					.setAttribute("data-INDIGO-PICKER-SEARCH", "")
+					.setAttribute("data-INDIGO-PICKER", "open")
+					.setAttribute("indigo-PICKER-DISPLAY", "thumbsview");
+
 				if(app.picker.data.standalone){
 					// Set ID for picker ...
-					app.picker.data.ID = app.picker.data.standaloneID;
 
 					// Create title
 					var pickerH1 = document.createElement("h1"),
@@ -1635,8 +1663,17 @@
 					pickerH1.appendChild(pickerH1Label);
 
 					// Add title to page
-					DexV2.id("contentpicker").prepend(pickerH1);
+					DexV2.id(app.picker.data.ID).prepend(pickerH1);
+
+					if(app.data.HTTP.app == "manager"){
+						// See if GWT has enabled previews for files, if so then set the preview flag to true
+						app.picker.data.enablePreviews = true;
+
+						DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "listview");
+					}
 				}
+
+
 
 				// Save current view (by default loads on thumbs)
 				app.picker.data.displayType = "thumbsview";
@@ -1666,18 +1703,32 @@
 				// Add placeholders to form elements
 				app.picker.setPlaceholders();
 
-				// Set flags for CSS
-				DexV2.getCached("body")
-					.setAttribute("data-INDIGO-PICKER-SEARCH", "")
-					.setAttribute("data-INDIGO-PICKER", "open")
-					.setAttribute("indigo-PICKER-DISPLAY", "thumbsview");
+
 
 				// Reset classes that may have been previously added
 				DexV2.id(app.picker.data.ID).removeClass("search-panel-opened");
 
+				// Register the side panel as open:
+				DexV2.id(app.picker.data.ID).setAttribute("indigo-picker-panel", "opened");
+
 				// Listen for clicks on toggle button
 				DexV2.id(app.picker.data.ID).onClick("#toggle-picker-files", function(){
 					DexV2.id(app.picker.data.ID).toggleClass("indigo-collapsed");
+					DexV2.id(app.picker.data.ID).toggleAttribute("indigo-picker-panel", ["collapsed", "opened"]);
+					DexV2.getCached("body").toggleAttribute("indigo-picker-panel", ["collapsed", "opened"]);
+
+					var pickerTitle = (app.picker.data.standalone) ? DexV2("#pickerTitle") : DexV2.id(app.picker.data.ID).filter(".x-window-tl .x-window-header-text"),
+						box = pickerTitle.getNode(0).getBoundingClientRect(),
+						left = box.left,
+						top = box.top,
+						width = box.width,
+						toolbarLeft = (left + width);
+
+					DexV2.id("JahiaGxtManagerToolbar").css({
+						"left": toolbarLeft + "px"
+					});
+
+
 				}, "TOGGLE-PICKER-FILES");
 
 				// Listen for changes in slider (input range)
@@ -1728,7 +1779,7 @@
 				// See if GWT has included a slider for thumb preview, if so then we can add ours ( which is a GWT replacement )
 				var hasSlider = DexV2("#" + app.picker.data.ID + " .x-slider").nodes.length > 0;
 
-				if(hasSlider){
+				if(hasSlider || app.data.HTTP.app == "manager"){
 					var thumbSlider = document.createElement("input");
 
 					thumbSlider.id = "thumb-size-slider";
@@ -1741,8 +1792,7 @@
 
 				}
 
-				// See if GWT has enabled previews for files, if so then set the preview flag to true
-				app.picker.data.enablePreviews = DexV2("#" + app.picker.data.ID + " .toolbar-item-filepreview").nodes.length > 0;
+
 
 			},
 			updateMultipleCount: function(){
@@ -1760,11 +1810,27 @@
 
 			},
 			setPlaceholders: function(){
-				var filterField = DexV2('#images-view .x-toolbar .x-toolbar-left .x-toolbar-cell:nth-child(2) .x-form-text'),
-                    sortBy = DexV2('#images-view .x-toolbar .x-toolbar-left .x-toolbar-cell:nth-child(5) .x-form-text');
 
-                filterField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterField);
-				sortBy.setAttribute("placeholder", localisedStrings[app.data.UILanguage].sortBy);
+				if(app.data.HTTP.app == "manager"){
+					// Have to wait until the fields are loaded
+					DexV2.id("JahiaGxtManagerTobTable").onOpen(".x-panel-tbar", function(){
+						var filterField = DexV2('#JahiaGxtManagerTobTable .x-panel-tbar .x-toolbar-cell:nth-child(2) .x-form-text'),
+							sortBy = DexV2('#JahiaGxtManagerTobTable .x-panel-tbar .x-toolbar-cell:nth-child(5) .x-form-text');
+
+						filterField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterField);
+						sortBy.setAttribute("placeholder", localisedStrings[app.data.UILanguage].sortBy);
+					}, "UPDATE_PLACEHOLDERS");
+
+				} else {
+					var filterField = DexV2('#images-view .x-toolbar .x-toolbar-left .x-toolbar-cell:nth-child(2) .x-form-text'),
+	                	sortBy = DexV2('#images-view .x-toolbar .x-toolbar-left .x-toolbar-cell:nth-child(5) .x-form-text');
+
+					filterField.setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterField);
+					sortBy.setAttribute("placeholder", localisedStrings[app.data.UILanguage].sortBy);
+				}
+
+
+
 			},
 			onClose: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONCLOSE");
@@ -1809,7 +1875,7 @@
 				onMouseOver: function(e){
 					app.dev.log("::: APP ::: PICKER ::: ROW ::: MOUSEOVER");
 
-
+					// Create and add preview button ( if previews exist and have not aleady been added )
 					if(app.picker.data.enablePreviews){
 						if(DexV2.node(this).filter(".preview-button").nodes.length == 0){
 							var previewButton = document.createElement("button"),
@@ -1822,6 +1888,7 @@
 						}
 					}
 
+					// Create and more info button ( if it hasnt aleady been added )
 					if(DexV2.node(this).filter(".more-info-button").nodes.length == 0){
 						var moreInfoButton = document.createElement("button"),
 							moreInfoButtonLabel = document.createTextNode("More Info");
@@ -1830,6 +1897,19 @@
 
 						DexV2.node(this).prepend(moreInfoButton);
 
+					}
+
+					// Create and edit button ( If this is a Manager and if it hasnt aleady been added )
+					if(app.data.HTTP.app == "manager"){
+						if(DexV2.node(this).filter(".edit-button").nodes.length == 0){
+							var editButton = document.createElement("button"),
+								moreInfoButtonLabel = document.createTextNode("More Info");
+
+							editButton.classList.add("edit-button");
+
+							DexV2.node(this).prepend(editButton);
+
+						}
 					}
 
 					app.picker.data.currentItem = DexV2.node(this).getNode(0);
@@ -1869,6 +1949,9 @@
 				onMouseOver: function(e){
 					app.dev.log("::: APP ::: PICKER ::: THUMB ::: MOUSEOVER");
 
+
+
+					// Create and more info button ( if it hasnt aleady been added )
 					if(DexV2.node(this).filter(".thumb .more-info-button").nodes.length == 0){
 
 						var moreInfoButton = document.createElement("button"),
@@ -1880,6 +1963,7 @@
 
 					}
 
+					// Create and add preview button ( if previews exist and have not aleady been added )
 					if(app.picker.data.enablePreviews){
 						if(DexV2.node(this).filter(".thumb .preview-button").nodes.length == 0){
 							var previewButton = document.createElement("button"),
@@ -1888,6 +1972,19 @@
 							previewButton.classList.add("preview-button");
 
 							DexV2.node(this).filter(".thumb").prepend(previewButton);
+
+						}
+					}
+
+					// Create and edit button ( If this is a Manager and if it hasnt aleady been added )
+					if(app.data.HTTP.app == "manager"){
+						if(DexV2.node(this).filter(".thumb .edit-button").nodes.length == 0){
+							var editButton = document.createElement("button"),
+								moreInfoButtonLabel = document.createTextNode("More Info");
+
+							editButton.classList.add("edit-button");
+
+							DexV2.node(this).filter(".thumb").prepend(editButton);
 
 						}
 					}
@@ -1915,8 +2012,50 @@
 
 					});
 				},
-				openPreview: function(){
-					DexV2("#JahiaGxtManagerToolbar .toolbar-item-filepreview").trigger("click");
+				openPreview: function(e){
+
+					if(app.data.HTTP.app == "manager"){
+						DexV2.node(this).parent().trigger("dblclick");
+					} else {
+						DexV2("#JahiaGxtManagerToolbar .toolbar-item-filepreview").trigger("click");
+
+					}
+				},
+				openEdit: function(){
+					// Called to open the edit mode from within the managers
+
+					// Manager Edit Engine doesnt have a title, so determine it from the list. Depending on the Manager / View the title is taken from different places ...
+					var title = DexV2.node(this).parent().filter(".x-grid3-col-name").getHTML() ||
+								DexV2.node(this).parent().filter(".x-grid3-col-displayName").getHTML() ||
+								DexV2.node(this).parent().filter(".thumb img").getAttribute("title") ||
+								DexV2.node(this).parent().parent().getAttribute("id") ||
+								DexV2.node(this).parent().parent().parent().getAttribute("id");
+
+					DexV2.getCached("body").setAttribute("data-indigo-edit-engine", "opened");
+
+					DexV2.id("JahiaGxtManagerBottomTabs")
+						.addClass("engine-panel") // Add engine-panel class to get styling from the proper edit engine
+						.setAttribute("data-edit-engine-title", title); // Put title to be used in Edit Engine here
+
+					// The Manager Edit Engine doesnt have a cancel button ( this is because in the old DX it was not a popup, but constantly displayed on screen)
+					// Only add the button if we havent already done so
+					if(DexV2(".cancel-edit").nodes.length == 0){
+						// Create the button
+						var cancelButton = document.createElement("button"),
+							cancelButtonLabel = document.createTextNode(localisedStrings[app.data.UILanguage].cancel);
+
+						cancelButton.appendChild(cancelButtonLabel)
+						cancelButton.classList.add("cancel-edit");
+
+						// Add the button to the Edit Engine
+						DexV2("#contentmanager .x-panel-bbar .x-toolbar-cell:nth-child(1)").first().prepend(cancelButton);
+					}
+
+				},
+				closeEdit: function(){
+					// Called to close the Edit Engine, either when the user clicks Cancel or Save.
+					DexV2.getCached("body").setAttribute("data-indigo-edit-engine", "");
+
 				}
 
 			},
@@ -3981,6 +4120,8 @@
 				.onMouseDown("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(1) img.x-form-trigger", app.engine.openConditionsMenu)
                 .onClick(".x-grid3-row .x-grid3-td-size", app.picker.search.onContext)
                 .onClick(".x-grid3-row .x-tree3-el", app.picker.row.onContext)
+				.onMouseDown("#" + app.picker.data.ID + " .cancel-edit", app.picker.thumb.closeEdit)
+				.onMouseDown("#" + app.picker.data.ID + " .edit-button", app.picker.thumb.openEdit)
 				.onMouseDown("#" + app.picker.data.ID + " .more-info-button", app.picker.thumb.onContext)
                 .onMouseDown("#" + app.picker.data.ID + " .preview-button", app.picker.thumb.openPreview)
 
@@ -4000,6 +4141,10 @@
                 .onClick("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-listview", app.picker.onListView)
 				.onClick("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-thumbsview", app.picker.onThumbView)
                 .onClick("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-detailedview", app.picker.onDetailView)
+				.onMouseDown(".toolbar-item-listview", app.picker.onListView)
+				.onMouseDown(".toolbar-item-thumbsview", app.picker.onThumbView)
+                .onMouseDown(".toolbar-item-detailedview", app.picker.onDetailView)
+				.onMouseUp("#contentmanager .x-panel-bbar .x-toolbar-cell:nth-child(1) .x-btn", app.picker.thumb.closeEdit)
                 .onClick(".node-path-title", app.iframe.clearSelection)
                 .onMouseDown(".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
                 .onMouseDown("#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close)
@@ -4064,6 +4209,21 @@
 			DexV2.tag("body").onOpen("#JahiaGxtContentPicker", function(){
 				app.picker.onOpen();
 			});
+
+
+		}
+
+		if(app.data.HTTP.app == "manager"){
+			// This is a manager, not edit engine
+			app.picker.data.standalone = true;
+			app.picker.data.ID = app.picker.data.standaloneManagerID;
+
+			// Need to "open" the picker manually ...
+			DexV2.tag("body").onOpen("#contentmanager > .x-viewport", function(){
+				app.picker.onOpen();
+			});
+
+
 		}
 
         // Attach event listeners

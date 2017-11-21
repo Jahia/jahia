@@ -2489,3 +2489,73 @@ body[data-indigo-add-visibility-condition="new"] {
 		}
 	}
 }
+
+
+
+// SEO Panel
+
+
+#JahiaGxtEditEnginePanel-seo > .x-component {
+	max-width: 100%;
+
+	> .x-panel.x-component {
+		max-width: 100%;
+	}
+
+	.x-panel-tbar {
+		pointer-events: all;
+		height: initial;
+		position: relative;
+	}
+
+	.x-grid3-header {
+		display: table-cell;
+	}
+
+	.x-grid3-scroller {
+		width: 100% !important;
+	}
+
+	.x-row-editor-header {
+		display: none;
+	}
+
+	.x-panel-body {
+		position: absolute;
+		max-width: calc(100% - 450px);
+
+		.x-grid3 .x-grid3-row {
+			height: 38px !important;
+			background: red !important;
+		}
+
+	}
+
+	.x-box-inner .x-row-editor-field.x-component.x-box-item:not(.x-form-check-wrap) {
+		width: 498px !important;
+	}
+
+	.x-row-editor-body.x-box-layout-ct {
+		background: rebeccapurple;
+		height: 36px !important;
+		box-sizing: border-box;
+	}
+
+	.x-row-editor-footer {
+		background: rebeccapurple;
+	}
+
+	.x-row-editor .x-btns {
+		background: rebeccapurple;
+
+		.x-plain-bwrap {
+			background: rebeccapurple;
+		}
+
+	}
+
+	.x-row-editor .x-plain-body.x-plain-body-noheader {
+		background: rebeccapurple;
+	}
+
+}

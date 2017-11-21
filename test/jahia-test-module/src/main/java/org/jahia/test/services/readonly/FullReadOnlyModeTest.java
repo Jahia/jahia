@@ -248,7 +248,6 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         switchThead.join();
 
         // test after switch is complete
-        // test that lock is blocked even if some sessions are not closed
         JCRTemplate.getInstance().doExecuteWithSystemSession((sessionWrapper) -> {
             try {
                 insureLock(sessionWrapper, true, true, true);
@@ -341,7 +340,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         switchThead.start();
         switchThead.join();
 
-        // test that unlock is blocked
+        // test that unlock is working
         JCRTemplate.getInstance().doExecuteWithSystemSession((sessionWrapper) -> {
             try {
                 if (useClearAllLocks) {
@@ -402,7 +401,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         switchThead.start();
         switchThead.join();
 
-        // test that unlock is blocked
+        // test that unlock is working
         JCRTemplate.getInstance().doExecuteWithSystemSession((sessionWrapper) -> {
             JCRNodeWrapper systemSiteNode = sessionWrapper.getNode(SYSTEM_SITE_PATH);
             try {

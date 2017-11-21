@@ -258,8 +258,6 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     /**
      * Test that JCR node unlocks are blocked even when the switch is pending because of unclosed sessions
-     *
-     * @throws Exception
      */
     @Test
     public void testJCRUnlockBlocked() throws Exception {
@@ -273,8 +271,6 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     /**
      * Test that JCR node unlocks are blocked even when the switch is pending because of unclosed sessions
-     *
-     * @throws Exception
      */
     @Test
     public void testJCRClearAllLocksBlocked() throws Exception {

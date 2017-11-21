@@ -78,7 +78,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.settings.readonlymode.ReadOnlyModeSupport;
+import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.tools.patches.SqlPatcher;
 import org.jahia.utils.DatabaseUtils;
@@ -106,7 +106,7 @@ import java.util.*;
 
 import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
 
-public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware, ReadOnlyModeSupport {
+public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware, ReadOnlyModeCapable {
 
     /**
      * An initializer of DX cluster related settings.

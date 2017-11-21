@@ -49,7 +49,7 @@ package org.jahia.settings.readonlymode;
  * 
  * @author Sergiy Shyrkov
  */
-public interface ReadOnlyModeSupport {
+public interface ReadOnlyModeCapable {
 
     /**
      * Called by a DX dedicated controller when the read-only mode switch is requested.

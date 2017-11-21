@@ -48,7 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
-import org.jahia.settings.readonlymode.ReadOnlyModeSupport;
+import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ import static org.jahia.services.scheduler.BackgroundJob.*;
  *
  * @author Sergiy Shyrkov
  */
-public class SchedulerService extends JahiaService implements ReadOnlyModeSupport {
+public class SchedulerService extends JahiaService implements ReadOnlyModeCapable {
 
     /**
      * Jahia Spring factory bean that creates, but does not start Quartz scheduler instance. So the instance remain in standby mode until

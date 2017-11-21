@@ -65,7 +65,7 @@ import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.settings.readonlymode.ReadOnlyModeSupport;
+import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +80,7 @@ import org.springframework.web.context.ServletContextAware;
  * @author toto
  * @see JCRTemplate
  */
-public class JCRSessionFactory implements Repository, ServletContextAware, ReadOnlyModeSupport {
+public class JCRSessionFactory implements Repository, ServletContextAware, ReadOnlyModeCapable {
 
     private static final Comparator<String> invertedStringComparator = new Comparator<String>() {
         public int compare(String s1, String s2) {

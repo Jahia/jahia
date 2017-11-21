@@ -128,7 +128,7 @@ public interface JahiaContentManagementServiceAsync {
     void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace, AsyncCallback async);
 
     void deleteAllCompletedJobs(AsyncCallback<Integer> async);
-    
+
     void deleteJob(String jobName, String groupName, AsyncCallback<Boolean> async);
 
     void deletePaths(List<String> paths, AsyncCallback async);
@@ -195,13 +195,13 @@ public interface JahiaContentManagementServiceAsync {
 
     void getNodes(List<String> paths, List<String> fields, AsyncCallback<List<GWTJahiaNode>> async);
 
-    void getNodesAndTypes(List<ModelData> getNodesParams, List<String> types, AsyncCallback<Map<String,List<? extends ModelData>>> async);
+    void getNodesAndTypes(List<ModelData> getNodesParams, List<String> types, AsyncCallback<Map<String, List<? extends ModelData>>> async);
 
     void getNodesByCategory(GWTJahiaNode category, int offset, int limit, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 
     void getNumberOfTasksForUser(AsyncCallback<Integer> asyncCallback);
 
-    void getPollData(Set<String> keys, AsyncCallback<Map<String,Object>> async);
+    void getPollData(Set<String> keys, AsyncCallback<Map<String, Object>> async);
 
     void getPortalNodes(String targetAreaName, AsyncCallback<List<GWTJahiaNode>> asyncCallback);
 
@@ -263,7 +263,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getWorkflowComments(GWTJahiaWorkflow workflow, AsyncCallback<List<GWTJahiaWorkflowComment>> async);
 
-    void getWorkflowDefinitions(List<String> workflowDefinitionIds, AsyncCallback<Map<String,GWTJahiaWorkflowDefinition>> async);
+    void getWorkflowDefinitions(List<String> workflowDefinitionIds, AsyncCallback<Map<String, GWTJahiaWorkflowDefinition>> async);
 
     void getWorkflowHistoryForUser(AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
@@ -271,7 +271,7 @@ public interface JahiaContentManagementServiceAsync {
 
     public void getWorkflowHistoryTasks(String provider, String processId, AsyncCallback<List<GWTJahiaWorkflowHistoryItem>> async);
 
-    void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>>> async);
+    void getWorkflowRules(String path, AsyncCallback<Map<GWTJahiaWorkflowType, List<GWTJahiaWorkflowDefinition>>> async);
 
     void importContent(String parentPath, String fileKey, Boolean replaceContent, AsyncCallback<List<GWTJahiaJobDetail>> async);
 
@@ -374,8 +374,8 @@ public interface JahiaContentManagementServiceAsync {
 
     void uploadedFile(List<String[]> uploadeds, AsyncCallback async);
 
-	void validateWCAG(Map<String, String> richTexts,
-	        AsyncCallback<Map<String, WCAGValidationResult>> asyncCallback);
+    void validateWCAG(Map<String, String> richTexts,
+            AsyncCallback<Map<String, WCAGValidationResult>> asyncCallback);
 
     void zip(List<String> paths, String archiveName, AsyncCallback async);
 
@@ -428,19 +428,19 @@ public interface JahiaContentManagementServiceAsync {
      * @param async Callback to handle the converted tag returned
      */
     void convertTag(String tag, AsyncCallback<String> async);
-    
+
     /**
-     * Retrieve all currently available registered permissions. 
-     * 
+     * Retrieve all currently available registered permissions.
+     *
      * The list of permissions may change during runtime. This can happen for instance after module deployment or when
      * a user's session gets directed to a new server on fail-over. The permissions for a node are held in a BitSet variable,
      * where the bits point to indexes in the permissions list. This makes it very important that on resolving the permissions from
-     * the BitSet we use the very same permissions list, which was used when creating the BitSet. 
-     * 
+     * the BitSet we use the very same permissions list, which was used when creating the BitSet.
+     *
      * As the list is cached on the client and bcause of the possibility that the list changed on the server, we may detect that the
-     * list has to be reloaded.   
-     * 
-     * @param async Callback to handle the permissions returned 
+     * list has to be reloaded.
+     *
+     * @param async Callback to handle the permissions returned
      */
     void getAvailablePermissions(AsyncCallback<List<String>> async);
 
@@ -450,10 +450,10 @@ public interface JahiaContentManagementServiceAsync {
      * @return the warning messages
      */
     void getToolbarWarnings(AsyncCallback<String> async);
-    
+
     /**
      * Finds the path of the displayble node for the specified one.
-     * 
+     *
      * @param nodePath the path of the target node
      * @param async the asynchronous callback instance to handle the result of the call
      */

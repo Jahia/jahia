@@ -90,7 +90,7 @@ public interface JahiaContentManagementService extends RemoteService {
     void activateVersioning(List<String> path) throws GWTJahiaServiceException;
 
     List<GWTJahiaWorkflowComment> addCommentToWorkflow(GWTJahiaWorkflow task, String comment);
-    
+
     void assignAndCompleteTask(GWTJahiaWorkflowTask task, GWTJahiaWorkflowOutcome outcome, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException;
 
     void checkExistence(String path) throws GWTJahiaServiceException;
@@ -122,7 +122,7 @@ public interface JahiaContentManagementService extends RemoteService {
     GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException;
 
     GWTJahiaNode createRSSPortletInstance(String path, String name, String url) throws GWTJahiaServiceException;
-    
+
     boolean createRemotePublication(String nodeName, Map<String, String> props, boolean validateConnectionSettings) throws GWTJahiaServiceException;
 
     GWTJahiaNode createModule(String moduleName, String artifactId, String groupId, String siteType, String source) throws GWTJahiaServiceException;
@@ -134,11 +134,11 @@ public interface JahiaContentManagementService extends RemoteService {
     /**
      * Deletes all completed job details.
      *
-     * @return the number of deleted jobs 
+     * @return the number of deleted jobs
      * @throws GWTJahiaServiceException in case of an error
      */
     Integer deleteAllCompletedJobs() throws GWTJahiaServiceException;
-    
+
     /**
      * Deletes a job either already executed or not yet executed. Don't try to call this on a running job as the
      * behavior will not be determined.
@@ -167,7 +167,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     /**
      * Returns the information, required for performing a release of the module: distribution server, Jahia Private App Store etc.
-     * 
+     *
      * @param moduleId the Id of the module which will be released
      * @return a map with the release info: distribution server, Jahia Private App Store etc
      * @throws GWTJahiaServiceException
@@ -218,7 +218,7 @@ public interface JahiaContentManagementService extends RemoteService {
     GWTEditConfiguration getEditConfiguration(String path, String name, String enforcedWorkspace) throws GWTJahiaServiceException;
 
     String getExportUrl(String path) throws GWTJahiaServiceException;
-    
+
     GWTChoiceListInitializer getFieldInitializerValues(String typeName, String propertyName, String parentPath, Map<String, List<GWTJahiaNodePropertyValue>> dependentValues) throws GWTJahiaServiceException;
 
     List<String> getNamespaces();
@@ -254,12 +254,12 @@ public interface JahiaContentManagementService extends RemoteService {
     String getNodeURLByIdentifier(String servlet, String identifier, Date versionDate, String versionLabel,
                                   String workspace, String locale) throws GWTJahiaServiceException;
     List<GWTJahiaNode> getNodes(List<String> path, List<String> fields) throws GWTJahiaServiceException;
-    Map<String,List<? extends ModelData>> getNodesAndTypes(List<ModelData> getNodesParams, List<String> types) throws GWTJahiaServiceException;
+    Map<String, List<? extends ModelData>> getNodesAndTypes(List<ModelData> getNodesParams, List<String> types) throws GWTJahiaServiceException;
     PagingLoadResult<GWTJahiaNode> getNodesByCategory(GWTJahiaNode category, int offset, int limit) throws GWTJahiaServiceException;
 
     int getNumberOfTasksForUser() throws GWTJahiaServiceException;
 
-    Map<String,Object> getPollData(Set<String> keys) throws GWTJahiaServiceException;
+    Map<String, Object> getPollData(Set<String> keys) throws GWTJahiaServiceException;
 
     List<GWTJahiaNode> getPortalNodes(String targetAreaName);
 
@@ -325,7 +325,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaWorkflowComment> getWorkflowComments(GWTJahiaWorkflow workflow);
 
-    Map<String,GWTJahiaWorkflowDefinition> getWorkflowDefinitions(List<String> workflowDefinitionIds) throws GWTJahiaServiceException;
+    Map<String, GWTJahiaWorkflowDefinition> getWorkflowDefinitions(List<String> workflowDefinitionIds) throws GWTJahiaServiceException;
 
     List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryForUser() throws GWTJahiaServiceException;
 
@@ -334,7 +334,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider, String processId) throws GWTJahiaServiceException;
 
-    Map<GWTJahiaWorkflowType,List<GWTJahiaWorkflowDefinition>> getWorkflowRules(String path) throws GWTJahiaServiceException;
+    Map<GWTJahiaWorkflowType, List<GWTJahiaWorkflowDefinition>> getWorkflowRules(String path) throws GWTJahiaServiceException;
 
     List<GWTJahiaJobDetail> importContent(String parentPath, String fileKey, Boolean replaceContent) throws GWTJahiaServiceException;
 
@@ -403,7 +403,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     /**
      * Updates the module's pom.xml file with the specified distribution server details and returns the module release information.
-     * 
+     *
      * @param module
      *            the module to update distribution management information
      * @param info
@@ -444,11 +444,11 @@ public interface JahiaContentManagementService extends RemoteService {
     void compileAndDeploy(String moduleId) throws GWTJahiaServiceException;
 
     void uploadedFile(List<String[]> uploadeds) throws GWTJahiaServiceException;
-    
+
     /**
      * Validates the HTML texts against WCAG rules. This method allows to validate multiple texts at once to be able to check WCAG rules for
      * all rich text fields in the engine.
-     * 
+     *
      * @param richTexts
      *            a map of HTML texts to be validated, keyed by field IDs ( {@link CKEditorField#getItemId()})
      * @return the WCAG validation results, keyed by the original field IDs ( {@link CKEditorField#getItemId()})
@@ -497,18 +497,18 @@ public interface JahiaContentManagementService extends RemoteService {
      * @return the matching tags retrieved
      */
     List<GWTJahiaValueDisplayBean> getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount) throws GWTJahiaServiceException;
-    
+
     /**
-     * Retrieve all currently available registered permissions. 
-     * 
+     * Retrieve all currently available registered permissions.
+     *
      * The list of permissions may change during runtime. This can happen for instance after module deployment or when
      * a user's session gets directed to a new server on fail-over. The permissions for a node are held in a BitSet variable,
      * where the bits point to indexes in the permissions list. This makes it very important that on resolving the permissions from
-     * the BitSet we use the very same permissions list, which was used when creating the BitSet. 
-     * 
+     * the BitSet we use the very same permissions list, which was used when creating the BitSet.
+     *
      * As the list is cached on the client and bcause of the possibility that the list changed on the server, we may detect that the
-     * list has to be reloaded.   
-     * 
+     * list has to be reloaded.
+     *
      * @return the permissions retrieved
      */
     List<String> getAvailablePermissions() throws GWTJahiaServiceException;
@@ -531,13 +531,13 @@ public interface JahiaContentManagementService extends RemoteService {
 
     /**
      * Returns the path of the displayble node for the specified one.
-     * 
+     *
      * @param nodePath the path of the target node
      * @return the path of the displayble node for the specified one
      * @throws GWTJahiaServiceException in case of a JCR access error
      */
     String getDisplayableNodePath(String nodePath) throws GWTJahiaServiceException;
-    
+
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;
         private static int windowId = Random.nextInt();
@@ -549,6 +549,8 @@ public interface JahiaContentManagementService extends RemoteService {
                 ((ServiceDefTarget) app).setServiceEntryPoint(serviceEntryPoint);
 
                 JahiaGWTParameters.addUpdater(new JahiaGWTParameters.UrlUpdater() {
+
+                    @Override
                     public void updateEntryPointUrl() {
                         String relativeServiceEntryPoint = createEntryPointUrl();
                         String serviceEntryPoint = URL.getAbsoluteURL(relativeServiceEntryPoint);

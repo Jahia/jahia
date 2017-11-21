@@ -52,7 +52,7 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 /**
  * UI action item that "navigates" to the currently selected content (the displayable node, which corresponds to it) in main area of edit
  * mode.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class GoToContentActionItem extends BaseActionItem {
@@ -61,33 +61,38 @@ public class GoToContentActionItem extends BaseActionItem {
 
     @Override
     public void handleNewLinkerSelection() {
-        setEnabled(isMainModuleAvailable() && !isOutOfContextContent());
+        setEnabled(isActionAvailable());
+    }
+
+    private boolean isActionAvailable() {
+        if (!isMainModuleAvailable()) {
+            return false;
+        }
+        GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
+        return (selectedNode != null && !isOutOfContextContent(selectedNode));
     }
 
     private boolean isMainModuleAvailable() {
-        return MainModule.getInstance() != null && MainModule.getInstance().getEditLinker() != null;
+        MainModule mainModule = MainModule.getInstance();
+        return (mainModule != null && mainModule.getEditLinker() != null);
     }
 
-    private boolean isOutOfContextContent() {
-        GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
-        return selectedNode != null
-                && selectedNode.getPath().startsWith(JahiaGWTParameters.getSiteNode().getPath() + "/contents/");
+    private boolean isOutOfContextContent(GWTJahiaNode selectedNode) {
+        return selectedNode.getPath().startsWith(JahiaGWTParameters.getSiteNode().getPath() + "/contents/");
     }
 
     @Override
     public void onComponentSelection() {
-        if (isMainModuleAvailable()) {
-            GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
-            if (selectedNode != null) {
-                JahiaContentManagementService.App.getInstance().getDisplayableNodePath(selectedNode.getPath(),
-                        new BaseAsyncCallback<String>() {
-                            @Override
-                            public void onSuccess(String path) {
-                                MainModule.staticGoTo(path, null);
-                            }
-                        });
-            }
+        if (!isActionAvailable()) {
+            return;
         }
+        GWTJahiaNode selectedNode = linker.getSelectionContext().getSingleSelection();
+        JahiaContentManagementService.App.getInstance().getDisplayableNodePath(selectedNode.getPath(),
+                new BaseAsyncCallback<String>() {
+                    @Override
+                    public void onSuccess(String path) {
+                        MainModule.staticGoTo(path, null);
+                    }
+                });
     }
-
 }

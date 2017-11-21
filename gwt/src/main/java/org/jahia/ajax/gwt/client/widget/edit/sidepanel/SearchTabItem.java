@@ -61,7 +61,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -110,11 +110,12 @@ class SearchTabItem extends SidePanelTabItem {
     private transient RadioGroup dateTypeField;
     private String gxtTabId = "JahiaGxtSearchTab";
 
+    @Override
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
         tab.setLayout(new FitLayout());
         final FormPanel searchForm = new FormPanel();
-        searchForm.addStyleName(gxtTabId+"-form");
+        searchForm.addStyleName(gxtTabId + "-form");
         searchForm.setHeaderVisible(false);
         searchForm.setBorders(false);
         searchForm.setBodyBorder(false);
@@ -123,15 +124,19 @@ class SearchTabItem extends SidePanelTabItem {
         searchField.setFieldLabel(Messages.get("label.search"));
         searchField.setId(gxtTabId + "__searchField");
         searchField.addKeyListener(new KeyListener() {
+
+            @Override
             public void handleEvent(ComponentEvent keyEvent) {
-                if (keyEvent.getKeyCode() == 13) {
+                if (keyEvent.getKeyCode() == KeyCodes.KEY_ENTER) {
                     // grid.mask("Loading", "x-mask-loading");
                     contentStore.removeAll();
-                    loader.load(0,numberResults);
+                    loader.load(0, numberResults);
                 }
             }
         });
         final Button ok = new Button(Messages.get("label.search"), new SelectionListener<ButtonEvent>() {
+
+            @Override
             public void componentSelected(ButtonEvent e) {
                 //  grid.mask("Loading", "x-mask-loading");
                 contentStore.removeAll();
@@ -166,19 +171,19 @@ class SearchTabItem extends SidePanelTabItem {
         defPicker = createNodeSelector();
         searchForm.add(defPicker);
         Radio radio = new Radio();
-        radio.setBoxLabel(Messages.get("label.modification","modification"));
+        radio.setBoxLabel(Messages.get("label.modification", "modification"));
         radio.setValueAttribute("1");
         radio.setValue(true);
         Radio radio2 = new Radio();
-        radio2.setBoxLabel(Messages.get("label.creation","creation"));
+        radio2.setBoxLabel(Messages.get("label.creation", "creation"));
         radio2.setValueAttribute("2");
         Radio radio3 = new Radio();
-        radio3.setBoxLabel(Messages.get("label.publication","publication"));
+        radio3.setBoxLabel(Messages.get("label.publication", "publication"));
         radio3.setValueAttribute("3");
 
         dateTypeField = new RadioGroup();
         dateTypeField.setOrientation(Style.Orientation.VERTICAL);
-        dateTypeField.setFieldLabel(Messages.get("label.dateType","According date of"));
+        dateTypeField.setFieldLabel(Messages.get("label.dateType", "According date of"));
         dateTypeField.add(radio);
         dateTypeField.add(radio2);
         dateTypeField.add(radio3);
@@ -191,7 +196,7 @@ class SearchTabItem extends SidePanelTabItem {
                 super.onClick(ce);
             }
         };
-        startDateField.setFieldLabel(Messages.get("label.startDate","Start Date"));
+        startDateField.setFieldLabel(Messages.get("label.startDate", "Start Date"));
 
         endDateField = new CalendarField("dd.MM.yyyy", false, false, null, false, null) {
             @Override
@@ -200,20 +205,20 @@ class SearchTabItem extends SidePanelTabItem {
                 super.onClick(ce);
             }
         };
-        endDateField.setFieldLabel(Messages.get("label.endDate","End Date"));
+        endDateField.setFieldLabel(Messages.get("label.endDate", "End Date"));
         searchForm.add(startDateField);
         searchForm.add(endDateField);
-        String[] timesValues = {"1day,1","1week,7","2weeks,14","1month,30","3months,90","6months,180","1year,365"};
+        String[] timesValues = {"1day,1", "1week,7", "2weeks,14", "1month,30", "3months,90", "6months,180", "1year,365"};
         ListStore<ModelData> times = new ListStore<ModelData>();
         for (String timesValue : timesValues) {
             String[] value = timesValue.split(",");
             ModelData d = new BaseModelData();
-            d.set("key",value[1]);
-            d.set("title",Messages.get("label." + value[0], value[0]));
+            d.set("key", value[1]);
+            d.set("title", Messages.get("label." + value[0], value[0]));
             times.add(d);
         }
 
-        timesField = new ComboBox<ModelData>(){
+        timesField = new ComboBox<ModelData>() {
 
             @Override
             protected void onClick(ComponentEvent ce) {
@@ -254,15 +259,15 @@ class SearchTabItem extends SidePanelTabItem {
         contentStore = new ListStore<GWTJahiaNode>(loader);
 
         List<GWTColumn> columnNames = new ArrayList<GWTColumn>();
-        columnNames.add(new GWTColumn("icon",Messages.get("label.icon", ""),40));
-        columnNames.add(new GWTColumn("displayName",Messages.get("label.name", "Name"),240));
+        columnNames.add(new GWTColumn("icon", Messages.get("label.icon", ""), 40));
+        columnNames.add(new GWTColumn("displayName", Messages.get("label.name", "Name"), 240));
         final NodeColumnConfigList columnConfigList = new NodeColumnConfigList(columnNames);
         columnConfigList.init();
 
         grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(columnConfigList));
 
         ContentPanel gridPanel = new ContentPanel();
-        gridPanel.addStyleName(gxtTabId+"-results");
+        gridPanel.addStyleName(gxtTabId + "-results");
         gridPanel.setLayout(new FitLayout());
         gridPanel.setBottomComponent(toolBar);
         gridPanel.setHeaderVisible(false);
@@ -272,9 +277,10 @@ class SearchTabItem extends SidePanelTabItem {
         gridPanel.add(grid);
         panel.add(gridPanel, new RowData(1, 1, new Margins(0, 0, 0, 0)));
         tab.add(panel);
-        grid.addListener(Events.OnDoubleClick, new Listener<GridEvent>() {
-            public void handleEvent(GridEvent be) {
-                final GWTJahiaNode node = (GWTJahiaNode) be.getModel();
+        grid.addListener(Events.OnDoubleClick, new Listener<GridEvent<GWTJahiaNode>>() {
+            @Override
+            public void handleEvent(GridEvent<GWTJahiaNode> be) {
+                final GWTJahiaNode node = be.getModel();
                 ModuleHelper.checkCanUseComponentForEdit(node.getNodeTypes().get(0), new CanUseComponentForEditCallback() {
                     @Override
                     public void handle(boolean canUseComponentForEdit) {
@@ -349,6 +355,8 @@ class SearchTabItem extends SidePanelTabItem {
         combo.setTriggerAction(ComboBox.TriggerAction.ALL);
         combo.setForceSelection(true);
         combo.getStore().setStoreSorter(new StoreSorter<GWTJahiaNodeType>(new Comparator<Object>() {
+
+            @Override
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof String && o2 instanceof String) {
                     String s1 = (String) o1;
@@ -361,6 +369,8 @@ class SearchTabItem extends SidePanelTabItem {
             }
         }));
         JahiaContentManagementService.App.getInstance().getContentTypes(Arrays.asList("jmix:editorialContent", "jnt:portlet"), true, false, new BaseAsyncCallback<Map<GWTJahiaNodeType, List<GWTJahiaNodeType>>>() {
+
+            @Override
             public void onSuccess(Map<GWTJahiaNodeType, List<GWTJahiaNodeType>> result) {
                 for (GWTJahiaNodeType key : result.keySet()) {
                     combo.getStore().add(result.get(key));
@@ -368,6 +378,7 @@ class SearchTabItem extends SidePanelTabItem {
                 combo.getStore().sort("label", Style.SortDir.ASC);
             }
 
+            @Override
             public void onApplicationFailure(Throwable caught) {
                 Log.error("Unable to get nodetypes :", caught);
             }

@@ -276,6 +276,14 @@ public class UrlRewriteTest extends JahiaTestCase {
                 rewrittenLang + prefix + "/userssearch.html");
         rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/userssearch/test.html",
                 rewrittenLang + prefix + "/userssearch/test.html");
+        rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/searchusers",
+                rewrittenLang + prefix + "/searchusers");
+        rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/searchusers.html",
+                rewrittenLang + prefix + "/searchusers.html");
+        rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/searchusers/test.html",
+                rewrittenLang + prefix + "/searchusers/test.html");
+        rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/home/users/test.html",
+                rewrittenLang + prefix + "/home/users/test.html");
     }
 
     protected void rewrite(String in, String expectedOut) throws IOException, ServletException,

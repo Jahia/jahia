@@ -636,8 +636,8 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     public void registerNamespaces() throws RepositoryException {
         JCRSessionWrapper sessionWrapper = getSystemSession();
         try {
-            Session s = sessionWrapper.getProviderSession(this);
-            NamespaceRegistry providerNamespaceRegistry = s.getWorkspace().getNamespaceRegistry();
+            Session providerSession = sessionWrapper.getProviderSession(this);
+            NamespaceRegistry providerNamespaceRegistry = providerSession.getWorkspace().getNamespaceRegistry();
             if (providerNamespaceRegistry != null) {
                 for (Map.Entry<String, String> namespaceEntry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {
                     try {
@@ -645,7 +645,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                             continue;
                         }
                     } catch (NamespaceException ne) {
-                        // prfix not yet registered
+                        // prefix not yet registered
                     }
                     providerNamespaceRegistry.registerNamespace(namespaceEntry.getKey(), namespaceEntry.getValue());
                 }
@@ -787,9 +787,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 credentials = getGuestCredentials();
             }
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Login for {} as {}", getKey(), username);
-        }
+        logger.debug("Login for {} as {}", getKey(), username);
 
         return credentials;
     }
@@ -813,6 +811,8 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         final JahiaUser currentAliasedUser = sessionFactory.getCurrentAliasedUser();
         if (session.getUser() != null && currentAliasedUser != null && !currentAliasedUser.equals(session.getUser())) {
             JCRTemplate.getInstance().doExecute(currentAliasedUser, session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
+
+                        @Override
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             try {
                                 return session.getNodeByUUID(objectNode.getIdentifier());
@@ -1218,11 +1218,13 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         JCRStoreProvider that = (JCRStoreProvider) o;
-
         return StringUtils.defaultString(getMountPoint()).equals(that.getMountPoint());
     }
 

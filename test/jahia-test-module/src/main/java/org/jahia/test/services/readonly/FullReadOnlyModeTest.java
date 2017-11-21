@@ -201,6 +201,53 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     }
 
     /**
+     * Test that JCR node locks are blocked even when the switch is pending because of unclosed sessions
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testJCRLockBlocked() throws Exception {
+        String sessionUUID = createUnclosedJCRSession();
+
+        // session should still exist, because we do not logged out
+        // switch to ready only mode ON
+        TestThread switchThead = getReadOnlySwitchThread(true);
+        switchThead.start();
+
+        // sleep a little bit
+        Thread.sleep(3000);
+
+        // test that lock is blocked even if some sessions are not closed
+        JCRTemplate.getInstance().doExecuteWithSystemSession((sessionWrapper) -> {
+            try {
+                testLocks(sessionWrapper, true);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            return null;
+        });
+
+        // test that the opened session can still lock nodes
+        testLocks(JCRSessionWrapper.getActiveSessionsObjects().get(UUID.fromString(sessionUUID)), false);
+
+        // wait for the switch to finish
+        switchThead.join();
+
+        // test after switch is complete
+        // test that lock is blocked even if some sessions are not closed
+        JCRTemplate.getInstance().doExecuteWithSystemSession((sessionWrapper) -> {
+            try {
+                testLocks(sessionWrapper, true);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            return null;
+        });
+    }
+
+    /**
      * Test that switch ON then switch OFF is working
      *
      * @throws Exception
@@ -213,12 +260,82 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         assertTrue(!readOnlyModeController.isReadOnlyModeEnabled());
     }
 
+    private void testLocks(JCRSessionWrapper sessionWrapper, boolean shouldFail) throws Exception {
+        insureLock(sessionWrapper, true, true, shouldFail);
+        insureLock(sessionWrapper, true, false, shouldFail);
+        insureLock(sessionWrapper, false, true, shouldFail);
+        insureLock(sessionWrapper, false, false, shouldFail);
+        insureLockAndStoreToken(sessionWrapper, "unit-test", null, shouldFail);
+        insureLockAndStoreToken(sessionWrapper, "unit-test", "root", shouldFail);
+    }
+
+    private void insureLock(JCRSessionWrapper sessionWrapper, boolean isDeep, boolean sessionScoped, boolean shouldFail) throws Exception {
+        JCRNodeWrapper systemSiteNode = sessionWrapper.getNode("/sites/systemsite");
+        try {
+            systemSiteNode.lock(isDeep, sessionScoped);
+            if (shouldFail) {
+                fail("It should fail");
+            }
+        } catch (ReadOnlyModeException exception) {
+            if (!shouldFail) {
+                fail("It should work");
+            }
+        } finally {
+            if(!shouldFail) {
+                systemSiteNode.unlock();
+            }
+        }
+    }
+
+    private void insureLockAndStoreToken(JCRSessionWrapper sessionWrapper, String type, String userId, boolean shouldFail) throws Exception {
+        JCRNodeWrapper systemSiteNode = sessionWrapper.getNode("/sites/systemsite");
+        try {
+            if (userId != null) {
+                systemSiteNode.lockAndStoreToken(type, userId);
+            } else {
+                systemSiteNode.lockAndStoreToken(type);
+            }
+            if (shouldFail) {
+                fail("It should fail");
+            }
+        } catch (ReadOnlyModeException exception) {
+            if (!shouldFail) {
+                fail("It should work");
+            }
+        } finally {
+            if(!shouldFail) {
+                if (userId != null) {
+                    systemSiteNode.unlock(type, userId);
+                } else {
+                    systemSiteNode.unlock(type);
+                }
+            }
+        }
+    }
+
     private void saveSomething() throws Exception {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 saveSomething(session);
                 return null;
+            }
+        });
+    }
+
+    private TestThread getReadOnlySwitchThread(final boolean readOnlyModeOn){
+        return new TestThread<Void>(() -> {
+            readOnlyModeController.switchReadOnlyMode(readOnlyModeOn);
+            return null;
+        });
+    }
+
+    private TestThread<String> getJCRSessionCreationThread(){
+        return new TestThread<String>(() -> {
+            try {
+                return JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getIdentifier();
+            } catch (RepositoryException e) {
+                throw new RuntimeException(e);
             }
         });
     }
@@ -259,28 +376,5 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     private interface TestThreadCallback<T> {
         T doExecute();
-    }
-
-    private TestThread getReadOnlySwitchThread(final boolean readOnlyModeOn){
-        return new TestThread<Void>(new TestThreadCallback<Void>() {
-            @Override
-            public Void doExecute() {
-                readOnlyModeController.switchReadOnlyMode(readOnlyModeOn);
-                return null;
-            }
-        });
-    }
-
-    private TestThread<String> getJCRSessionCreationThread(){
-        return new TestThread<String>(new TestThreadCallback<String>() {
-            @Override
-            public String doExecute() {
-                try {
-                    return JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getIdentifier();
-                } catch (RepositoryException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
     }
 }

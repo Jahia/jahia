@@ -67,6 +67,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.settings.readonlymode.ReadOnlyModeController;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -2399,6 +2400,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public Lock lock(boolean isDeep, boolean isSessionScoped) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
+        checkReadOnly("Node lock operation is not permitted for the current session as it is in read-only mode");
         return objectNode.lock(isDeep, isSessionScoped);
     }
 
@@ -2421,6 +2423,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public boolean lockAndStoreToken(String type, String userID) throws RepositoryException {
+        checkReadOnly("Node lock operation is not permitted for the current session as it is in read-only mode");
+
         if (!isNodeType("jmix:lockable")) {
             return false;
         }
@@ -4073,6 +4077,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             // recurse into children
             unmarkNodesForDeletion(child);
+        }
+    }
+
+    private void checkReadOnly(String message) {
+        if (session.isReadOnly()) {
+            ReadOnlyModeController.readOnlyModeViolated(message);
         }
     }
 }

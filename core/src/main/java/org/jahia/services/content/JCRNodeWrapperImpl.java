@@ -2658,6 +2658,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public void unlock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
+        checkReadOnly("Node unlock operation is not permitted for the current session as it is in read-only mode");
         objectNode.unlock();
     }
 
@@ -2676,9 +2677,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public void unlock(String type, String userID)
             throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException,
             InvalidItemStateException, RepositoryException {
+
         if (!isLocked()) {
             throw new LockException("Node not locked");
         }
+
+        checkReadOnly("Node unlock operation is not permitted for the current session as it is in read-only mode");
 
         if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION) && hasI18N(session.getLocale(),
                 false)) {
@@ -2730,6 +2734,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     @Override
     public void clearAllLocks() throws RepositoryException {
+        checkReadOnly("Clear all locks on node operation is not permitted for the current session as it is in read-only mode");
+
         if (!isNodeType(Constants.JAHIANT_TRANSLATION)) {
             NodeIterator ni = objectNode.getNodes(TRANSLATION_NODES_PATTERN);
             while (ni.hasNext()) {

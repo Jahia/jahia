@@ -146,7 +146,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         readOnlyModeController.switchReadOnlyMode(true);
 
         // assert the session is not active anymore
-        assertTrue(!JCRSessionWrapper.getActiveSessionsObjects().containsKey(sessionUuid));
+        assertFalse(JCRSessionWrapper.getActiveSessionsObjects().containsKey(sessionUuid));
         assertTrue(readOnlyModeController.isReadOnlyModeEnabled());
     }
 

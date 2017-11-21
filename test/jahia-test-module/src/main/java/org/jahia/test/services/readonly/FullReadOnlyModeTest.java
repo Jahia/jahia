@@ -59,7 +59,7 @@ import java.util.UUID;
  * Test class to test Full read only feature
  */
 public class FullReadOnlyModeTest extends JahiaTestCase {
-    
+
     private static final String SYSTEM_SITE_PATH = "/sites/systemsite";
 
     private static ReadOnlyModeController readOnlyModeController;
@@ -103,29 +103,27 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
      * Test that it's not possible to switch ROM:OFF when a pending switch is still not finished
      * - test PENDING status
      * - test try to switch back during the not finished switch
-     *
-     * @throws Exception
      */
     @Test
     public void testPendingStatus() throws Exception {
 
         createUnclosedJCRSession();
 
-        // session should still exist, because we do not logged out
+        // session should still exist, because we did not log out
         // switch to ready only mode ON
-        TestThread switchThead = getReadOnlySwitchThread(true);
+        TestThread<?> switchThead = getReadOnlySwitchThread(true);
         switchThead.start();
 
         // sleep a little bit
         Thread.sleep(3000);
 
-        // insure state is pending
+        // verify state is pending
         assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.PENDING);
 
         // try to ask for a switch during PENDING state
         readOnlyModeController.switchReadOnlyMode(false);
 
-        // insure state is still pending
+        // verify state is still pending
         assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.PENDING);
 
         // wait for switch to finish
@@ -135,9 +133,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     }
 
     /**
-     * Test that a running JCR session not closed is force close after the configured timeout
-     *
-     * @throws Exception
+     * Test that a running JCR session is force closed after the configured timeout
      */
     @Test
     public void testJCRSessionForceLogout() throws Exception {
@@ -156,17 +152,15 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     /**
      * Test that JCR session save are blocked even when the switch is pending because of unclosed sessions
-     *
-     * @throws Exception
      */
     @Test
     public void testJCRSessionSaveBlocked() throws Exception {
 
         String sessionUUID = createUnclosedJCRSession();
 
-        // session should still exist, because we do not logged out
-        // switch to ready only mode ON
-        TestThread switchThead = getReadOnlySwitchThread(true);
+        // session should still exist, because we did not log out
+        // switch to read only mode ON
+        TestThread<?> switchThead = getReadOnlySwitchThread(true);
         switchThead.start();
 
         // sleep a little bit
@@ -177,7 +171,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
             saveSomething();
             fail("It should have failed");
         } catch (ReadOnlyModeException exception) {
-            // nothing to do this is the expected Exception
+            // nothing to do this is the expected exception
         }
 
         // test that save is not blocked for the opened session
@@ -198,22 +192,20 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
             saveSomething();
             fail("It should have failed");
         } catch (ReadOnlyModeException exception) {
-            // nothing to do this is the expected Exception
+            // nothing to do this is the expected exception
         }
     }
 
     /**
      * Test that JCR node locks are blocked even when the switch is pending because of unclosed sessions
-     *
-     * @throws Exception
      */
     @Test
     public void testJCRLockBlocked() throws Exception {
         String sessionUUID = createUnclosedJCRSession();
 
-        // session should still exist, because we do not logged out
+        // session should still exist, because we did not log out
         // switch to ready only mode ON
-        TestThread switchThead = getReadOnlySwitchThread(true);
+        TestThread<?> switchThead = getReadOnlySwitchThread(true);
         switchThead.start();
 
         // sleep a little bit
@@ -222,12 +214,12 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         // test that lock is blocked even if some sessions are not closed
         JCRTemplate.getInstance().doExecuteWithSystemSession((session) -> {
             try {
-                insureLock(session, true, true, true);
-                insureLock(session, true, false, true);
-                insureLock(session, false, true, true);
-                insureLock(session, false, false, true);
-                insureLockAndStoreToken(session, "unit-test", null, true);
-                insureLockAndStoreToken(session, "unit-test", "root", true);
+                testLock(session, true, true, true);
+                testLock(session, true, false, true);
+                testLock(session, false, true, true);
+                testLock(session, false, false, true);
+                testLockAndStoreToken(session, "unit-test", null, true);
+                testLockAndStoreToken(session, "unit-test", "root", true);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -237,12 +229,12 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
         // test that the opened session can still lock nodes
         JCRSessionWrapper previousOpenSession = JCRSessionWrapper.getActiveSessionsObjects().get(UUID.fromString(sessionUUID));
-        insureLock(previousOpenSession, true, true, false);
-        insureLock(previousOpenSession, true, false, false);
-        insureLock(previousOpenSession, false, true, false);
-        insureLock(previousOpenSession, false, false, false);
-        insureLockAndStoreToken(previousOpenSession, "unit-test", null, false);
-        insureLockAndStoreToken(previousOpenSession, "unit-test", "root", false);
+        testLock(previousOpenSession, true, true, false);
+        testLock(previousOpenSession, true, false, false);
+        testLock(previousOpenSession, false, true, false);
+        testLock(previousOpenSession, false, false, false);
+        testLockAndStoreToken(previousOpenSession, "unit-test", null, false);
+        testLockAndStoreToken(previousOpenSession, "unit-test", "root", false);
 
         // wait for the switch to finish
         switchThead.join();
@@ -250,12 +242,12 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         // test after switch is complete
         JCRTemplate.getInstance().doExecuteWithSystemSession((sessionWrapper) -> {
             try {
-                insureLock(sessionWrapper, true, true, true);
-                insureLock(sessionWrapper, true, false, true);
-                insureLock(sessionWrapper, false, true, true);
-                insureLock(sessionWrapper, false, false, true);
-                insureLockAndStoreToken(sessionWrapper, "unit-test", null, true);
-                insureLockAndStoreToken(sessionWrapper, "unit-test", "root", true);
+                testLock(sessionWrapper, true, true, true);
+                testLock(sessionWrapper, true, false, true);
+                testLock(sessionWrapper, false, true, true);
+                testLock(sessionWrapper, false, false, true);
+                testLockAndStoreToken(sessionWrapper, "unit-test", null, true);
+                testLockAndStoreToken(sessionWrapper, "unit-test", "root", true);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -296,15 +288,13 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     /**
      * Test that switch ON then switch OFF is working
-     *
-     * @throws Exception
      */
     @Test
-    public void testSwitchOnAndSwitchBack() throws Exception {
+    public void testSwitchOnAndOff() throws Exception {
         readOnlyModeController.switchReadOnlyMode(true);
         assertTrue(readOnlyModeController.isReadOnlyModeEnabled());
         readOnlyModeController.switchReadOnlyMode(false);
-        assertTrue(!readOnlyModeController.isReadOnlyModeEnabled());
+        assertFalse(readOnlyModeController.isReadOnlyModeEnabled());
     }
 
     private void testUnlock(boolean isDeep, boolean isSessionScope, boolean useClearAllLocks) throws Exception {
@@ -315,7 +305,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         });
 
         // switch ON
-        TestThread switchThead = getReadOnlySwitchThread(true);
+        TestThread<?> switchThead = getReadOnlySwitchThread(true);
         switchThead.start();
         switchThead.join();
 
@@ -370,7 +360,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         });
 
         // switch ON
-        TestThread switchThead = getReadOnlySwitchThread(true);
+        TestThread<?> switchThead = getReadOnlySwitchThread(true);
         switchThead.start();
         switchThead.join();
 
@@ -422,7 +412,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         });
     }
 
-    private void insureLock(JCRSessionWrapper sessionWrapper, boolean isDeep, boolean sessionScoped, boolean shouldFail) throws Exception {
+    private void testLock(JCRSessionWrapper sessionWrapper, boolean isDeep, boolean sessionScoped, boolean shouldFail) throws Exception {
         JCRNodeWrapper systemSiteNode = sessionWrapper.getNode(SYSTEM_SITE_PATH);
         try {
             systemSiteNode.lock(isDeep, sessionScoped);
@@ -434,13 +424,13 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
                 fail("It should work");
             }
         } finally {
-            if(!shouldFail) {
+            if (!shouldFail) {
                 systemSiteNode.unlock();
             }
         }
     }
 
-    private void insureLockAndStoreToken(JCRSessionWrapper sessionWrapper, String type, String userId, boolean shouldFail) throws Exception {
+    private void testLockAndStoreToken(JCRSessionWrapper sessionWrapper, String type, String userId, boolean shouldFail) throws Exception {
         JCRNodeWrapper systemSiteNode = sessionWrapper.getNode(SYSTEM_SITE_PATH);
         try {
             if (userId != null) {
@@ -456,7 +446,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
                 fail("It should work");
             }
         } finally {
-            if(!shouldFail) {
+            if (!shouldFail) {
                 if (userId != null) {
                     systemSiteNode.unlock(type, userId);
                 } else {
@@ -476,14 +466,20 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         });
     }
 
-    private TestThread getReadOnlySwitchThread(final boolean readOnlyModeOn){
+    private void saveSomething(JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper systemSiteNode = session.getNode(SYSTEM_SITE_PATH);
+        systemSiteNode.setProperty("j:wcagCompliance", !systemSiteNode.getProperty("j:wcagCompliance").getBoolean());
+        session.save();
+    }
+
+    private TestThread<?> getReadOnlySwitchThread(boolean readOnlyModeOn) {
         return new TestThread<Void>(() -> {
             readOnlyModeController.switchReadOnlyMode(readOnlyModeOn);
             return null;
         });
     }
 
-    private TestThread<String> getJCRSessionCreationThread(){
+    private TestThread<String> getJCRSessionCreationThread() {
         return new TestThread<String>(() -> {
             try {
                 return JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getIdentifier();
@@ -493,14 +489,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         });
     }
 
-    private void saveSomething(JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper systemSiteNode = session.getNode(SYSTEM_SITE_PATH);
-        systemSiteNode.setProperty("j:wcagCompliance", !systemSiteNode.getProperty("j:wcagCompliance").getBoolean());
-        session.save();
-    }
-
     private String createUnclosedJCRSession() throws Exception {
-        // create a JCR session first not closed
         TestThread<String> jcrSessionThread = getJCRSessionCreationThread();
         jcrSessionThread.start();
         jcrSessionThread.join();

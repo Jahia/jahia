@@ -49,14 +49,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * The read-only mode controller service that is responsible for performing mode switch and ensuring an appropriate event is broadcasted and
  * the related services are "notified".
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ReadOnlyModeController {
@@ -74,7 +73,6 @@ public class ReadOnlyModeController {
         OFF, ON, PENDING
     }
 
-    // initialize status: OFF
     private ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
 
     private long serviceNotificationTimeout = 60 * 1000L;
@@ -90,7 +88,7 @@ public class ReadOnlyModeController {
 
     /**
      * Handles the case, when a service encounters read-only mode violation, i.e. a data or state modification is requested.
-     * 
+     *
      * @param message the detailed error message from the service
      * @throws ReadOnlyModeException as a result of violation of read-only mode
      */
@@ -101,7 +99,7 @@ public class ReadOnlyModeController {
 
     /**
      * Performs the switch of all DX services into read-only mode or back.
-     * 
+     *
      * @param enable <code>true</code> if the read-only mode should be enabled; <code>false</code> if it should be disabled
      */
     public void switchReadOnlyMode(boolean enable) {

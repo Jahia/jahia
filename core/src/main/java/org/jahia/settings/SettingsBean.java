@@ -393,7 +393,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             siteURLPortOverride = getInt("siteURLPortOverride", 0);
 
-            isSiteErrorEnabled = getBoolean("site.error.enabled",false);
+            isSiteErrorEnabled = getBoolean("site.error.enabled", false);
 
             operatingMode = getString("operatingMode", "development");
             productionMode = !"development".equalsIgnoreCase(operatingMode);
@@ -425,8 +425,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             maxNameSize = getInt("jahia.jcr.maxNameSize", 32);
 
-            expandImportedFilesOnDisk = getBoolean("expandImportedFilesOnDisk",false);
-            expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath","/tmp");
+            expandImportedFilesOnDisk = getBoolean("expandImportedFilesOnDisk", false);
+            expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath", "/tmp");
 
             accessManagerPathPermissionCacheMaxSize = getInt("accessManagerPathPermissionCacheMaxSize", 100);
 

@@ -1551,7 +1551,8 @@ form,
 			.x-grid3-td-displayName,
 			.gwt-content-label,
 			.x-grid3-col-name,
-			.x-tree3-node-text {
+			.x-tree3-node-text,
+			.x-grid3-col-path {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER !optional;
 
 				body[data-edit-window-style="settings"] &,
@@ -1605,6 +1606,7 @@ form,
 			.x-grid3-td-displayName,
 			.gwt-content-label,
 			.x-grid3-col-name,
+			.x-grid3-col-path,
 			.x-tree3-node-text {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED !optional;
 
@@ -1651,6 +1653,7 @@ form,
 				.x-grid3-td-displayName,
 				.gwt-content-label,
 				.x-grid3-col-name,
+				.x-grid3-col-path,
 				.x-tree3-node-text {
 					@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER !optional;
 
@@ -1721,7 +1724,8 @@ form,
 	}
 
 	.x-tree3-node-text,
-	.x-grid3-col-name {
+	.x-grid3-col-name,
+	.x-grid3-col-path {
 		/* List Item Text Label */
 		// @extend %CSS_BLOCK--TREE--ROW--TEXT---UP !optional;
 
@@ -1743,7 +1747,10 @@ form,
 	}
 
 	.x-grid3-col-size,
-	.x-grid3-col-primaryTypeLabel {
+	.x-grid3-col-primaryTypeLabel,
+	.x-grid3-col-jcr\:created,
+	.x-grid3-col-jcr\:createdBy,
+	.x-grid3-col-jcr\:lastModified {
 		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
@@ -4233,6 +4240,8 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 }
+
+
 
 
 

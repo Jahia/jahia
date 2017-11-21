@@ -533,18 +533,18 @@ $DATE-PICKER--YEAR--BG---SELECTED:(
 /* CHECKBOX */
 /****************************/
 $CHECKBOX--BG: (
-	LIGHT: _theme-color(white),
-	DARK: _theme-color(white),
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
 );
 
 $CHECKBOX--BORDER: (
-	LIGHT: 1px solid _theme-color(secondary, c),
-	DARK: 1px solid _theme-color(secondary, c),
+	LIGHT: 1px solid _theme-color(primary, g),
+	DARK: 1px solid _theme-color(primary, g),
 );
 
 $CHECKBOX--SHADOW: (
-	LIGHT: inset 1px 1px 1px 0px _theme-color(black, a),
-	DARK: inset 1px 1px 1px 0px _theme-color(black, a),
+	LIGHT: inset 1px 1px 3px _theme-color(black, a),
+	DARK: inset 1px 1px 3px _theme-color(black, a),
 );
 
 $CHECKBOX--BG---CHECKED: (
@@ -563,7 +563,7 @@ $CHECKBOX--BG---CHECKED: (
 // UP
 $INPUT--COLOR:(
 	LIGHT: _theme-color(primary),
-	DARK: _theme-color(primary),
+	DARK: _theme-color(secondary),
 );
 
 $INPUT--PLACEHOLDER:(
@@ -573,7 +573,7 @@ $INPUT--PLACEHOLDER:(
 
 $INPUT--BG:(
 	LIGHT: _theme-color(white),
-	DARK: _theme-color(white),
+	DARK: radial-gradient(ellipse at bottom right, _theme-color(primary, b) 0%, _theme-color(primary, a) 70%),
 );
 
 $INPUT--BORDER:(
@@ -589,12 +589,12 @@ $INPUT--SHADOW:(
 // HOVER
 $INPUT--COLOR---HOVER:(
 	LIGHT: _theme-color(primary),
-	DARK: _theme-color(primary),
+	DARK: _theme-color(secondary),
 );
 
 $INPUT--BG---HOVER:(
 	LIGHT: _theme-color(white),
-	DARK: _theme-color(white),
+	DARK: _theme-color(primary, b),
 );
 
 $INPUT--BORDER---HOVER:(
@@ -604,7 +604,7 @@ $INPUT--BORDER---HOVER:(
 
 $INPUT--SHADOW---HOVER:(
 	LIGHT: 0px 1px 2px _theme-color(black, b),
-	DARK: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, a),
 );
 
 // FOCUS
@@ -808,6 +808,8 @@ $THUMB--BG---SELECTED: (
 /****************************/
 
 
+
+
 $MENU-SCROLL--BG:(
 	LIGHT: _theme-color(secondary),
 	DARK: _theme-color(secondary),
@@ -880,7 +882,58 @@ $MENU-CLOSED--OPTIONS-BG: (
 	DARK: transparent,
 );
 
+// MUTED COMBO ( basically the combo looks like a text field )
+// CLOSED UP
+$MENU-MUTED-CLOSED--COLOR:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary, c),
+);
 
+$MENU-MUTED-CLOSED--BG:(
+	LIGHT: radial-gradient(ellipse at bottom right, _theme-color(secondary) 0%, _theme-color(white) 70%),
+	DARK: radial-gradient(ellipse at bottom right, #5e5f63 0%, #494a4f 70%),
+);
+
+$MENU-MUTED-CLOSED--SHADOW:(
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: none,
+);
+
+$MENU-MUTED-CLOSED--ARROW: (
+	LIGHT: "./images/icons/combo-arrow-grey.png",
+	DARK: "./images/icons/combo-arrow.png",
+);
+
+$MENU-MUTED-CLOSED--ARROW-BG: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+
+$MENU-MUTED-CLOSED--COLOR---HOVER:(
+	LIGHT: _theme-color(primary),
+	DARK: _theme-color(secondary),
+);
+
+$MENU-MUTED-CLOSED--BG---HOVER:(
+	LIGHT: _theme-color(white),
+	DARK: _theme-color(primary, b),
+);
+
+$MENU-MUTED-CLOSED--SHADOW---HOVER:(
+	LIGHT: 0px 1px 2px _theme-color(black, b),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+$MENU-MUTED-CLOSED--ARROW---HOVER: (
+	LIGHT: "./images/icons/combo-arrow-grey.png",
+	DARK: "./images/icons/combo-arrow.png",
+);
+
+$MENU-MUTED-CLOSED--ARROW-BG---HOVER: (
+	LIGHT: transparent,
+	DARK: transparent,
+);
+// END
 
 
 // CLOSED HOVER

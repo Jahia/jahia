@@ -7,9 +7,11 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 // USed ONLY by full page stand alone picker
 
 
+
 // PICKER CONTAINER
 #JahiaGxtContentPickerWindow,
-#contentpicker {
+#contentpicker,
+#contentmanager {
 	// Reset global position of picker as whole page
 	width: 100%!important;
 	height: 100%!important;
@@ -33,6 +35,12 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		font-size: 36px;
 		color: #7a7e80;
 		font-weight: 100;
+
+		body[data-indigo-edit-engine="opened"] & {
+			display: none;
+		}
+
+
 	}
 
 	&[data-indigo-search-date="custom"] {
@@ -204,22 +212,40 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	}
 
 
+	&[indigo-picker-panel="opened"] {
+
+		#JahiaGxtManagerToolbar {
+			left: calc(#{$PICKER_SIDEPANEL_WIDTH} - 8px) !important;
+
+		}
+
+	}
+
 	// Side Panel has been collapsed
 	&.indigo-collapsed {
 
+		#pickerTitle,
+		.x-window-header-text {
+			top: 6px!important;
+			font-size: 22px!important;
+			left: 13px!important;
+			color: _property($SIDE-PANEL-TITLE--COLOR, LIGHT)!important;
+			opacity: 0.5!important;
+		}
+
 		// TOOLBAR
 		#JahiaGxtManagerTobTable .x-panel-tbar {
-			left: 85px;
+			left: 275px;
 		}
 
 		// NEW FOLDER
 		.toolbar-item-newfolder {
-			left: 15px!important;
+			left: 205px!important;
 		}
 
 		// UPLOAD FILE
 		.toolbar-item-upload {
-			left: 45px!important;
+			left: 235px!important;
 		}
 
 		// MULTISELECT FILES
@@ -230,7 +256,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 
 		.x-window-tl {
-			display: none;
+			// display: none;
 		}
 
 		// LEFT PANEL
@@ -270,6 +296,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		width: 25%!important
 
 	}
+
 
 	// HEADER
 	.x-window-tl {
@@ -849,7 +876,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 									input {
 										width: 400px!important;
 
-										@include _input-search($PICKER);
+										@include _input-search(LIGHT);
 
 										margin: 0 auto;
 										pointer-events: all;
@@ -955,7 +982,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 									}
 
 									&::before {
-										@include _drop-down-fake($PICKER);
+										@include _drop-down-fake(DARK);
 										// background-image: url("./images/icons/combo-arrow.png");
 										// background-position: right 5px center;
 										// background-repeat: no-repeat;
@@ -1423,12 +1450,16 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			}
 
 			.x-grid3-col-name,
-			.x-grid3-col-displayName {
+			.x-grid3-col-displayName,
+			.x-grid3-col-path {
 				color: _property($ROW--COLOR, $PICKER)!important;
 			}
 
 			.x-grid3-col-size,
-			.x-grid3-col-primaryTypeLabel {
+			.x-grid3-col-primaryTypeLabel,
+			.x-grid3-col-jcr\:lastModified,
+			.x-grid3-col-jcr\:created,
+			.x-grid3-col-jcr\:createdBy {
 				color: _property($ROW--COLOR--DIMMED, $PICKER)!important;
 			}
 
@@ -1664,7 +1695,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 					// Sort Combo
 					&:nth-child(5) {
 						.x-form-text {
-							@include text_input("PICKER_SORT");
+							// @include _combo(LIGHT);
 							// padding: 3px 15px 4px 9px!important;
 						}
 
@@ -1760,6 +1791,33 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				background-image:url(./images/icons/icon_preview_small_white.png);
 			}
 
+			.edit-button {
+				position: absolute;
+				top: 0;
+				right: 50px;
+				text-indent: -50000px;
+				width: 25px;
+			    height: 25px;
+				z-index: 99999;
+			    display: none;
+			    border: none;
+
+				&.indigo-show-button {
+					display: block;
+				}
+
+				&:hover {
+					cursor: pointer;
+				}
+				// background: no-repeat center center #767b7e;
+				// background-image:url(./images/icons/icon_preview_small_white.png);
+				background: url("./images/icons/tabs-edit.png") no-repeat center center;
+			}
+
+
+
+
+
 			&.x-view-item-sel,
 			&.x-grid3-row-selected {
 				// More info button SELECTED
@@ -1770,6 +1828,12 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				.preview-button {
 					background-color: #00a0e3;
 				}
+
+				.edit-button {
+					background-color: #00a0e3;
+				}
+
+
 			}
 
 			&:hover {
@@ -1781,6 +1845,12 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				.preview-button {
 					display: block;
 				}
+
+				.edit-button {
+					display: block;
+				}
+
+
 			}
 
 		}
@@ -1821,17 +1891,18 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 		.x-toolbar-cell {
 			margin-left: 5px;
+			vertical-align: top;
 
 			// SAVE
 			&:nth-child(1) {
-				float: right;
+				float: right; // Content PICKER only, not manager
 
 				@include button("ACTIONBAR---SUGGESTED");
 			}
 
 			// CANCEL
 			&:nth-child(2) {
-				float: left;
+				float: left; // Content PICKER only, not manager
 			}
 		}
 	}
@@ -1940,14 +2011,10 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				width: 150px!important;
 				right: 7px;
 				position: fixed;
-				top: 7px!important;
+				top: 5px!important;
 				left: auto!important;
 
-				input {
-					// padding: 3px 15px 4px 9px!important;
-					// background-color: #d9dbdd;
-					// @include text($FORM--TEXT_INPUT--FONT--SIZE, $COLOUR--DARK_CLOUDS, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
-				}
+				@include _combo(DARK);
 
 				.x-form-trigger {
 					height: 25px!important;
@@ -2062,4 +2129,320 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	}
 
+}
+// Corrections for Managers ( extends normal picker )
+#contentmanager {
+
+	// Remove the floats on the save cancel buttons
+	.x-panel-bbar .x-toolbar-cell {
+		float: none!important;
+	}
+
+
+	// Modify the header when in thumb view and detailed view
+	body[indigo-picker-display="thumbsview"] &,
+	body[indigo-picker-display="detailedview"] & {
+		// Header backgrounds: have to make the header in these views higher until we can get rid of the File menu
+		box-shadow: inset 0px 87px 0px #444545, inset 0px 88px 7px #222222;
+
+		// Shift the Slider down too
+		#thumb-size-slider {
+			top: 42px!important;
+			right: 10px!important;
+
+
+		}
+	}
+
+	// Hide when thumb slider when the Edit Engine is opened
+	body[data-indigo-edit-engine="opened"] & {
+		#thumb-size-slider {
+			display: none;
+		}
+	}
+
+
+	.x-panel-bbar {
+		// The Actions Bar is not displayed in the Manager ( because there are no close / save buttons ) so "hide" it.
+		background: transparent!important;
+		box-shadow: none!important;
+
+		// When the Edit Engine is opened we have Save / Cancel buttons, so make it visible again
+		body[data-indigo-edit-engine="opened"] & {
+			background: _property($DARK-FOOTER--BG, $PICKER)!important;
+			box-shadow: _property($DARK-FOOTER--SHADOW, $PICKER)!important;
+		}
+
+		// Because there is no Cancel button we have to insert our own ( via JS ).
+		// To make sure that it gets positioned in-line with the Save button we need make sure the table is inline too
+		.x-toolbar-cell:nth-child(1) > table { // Save button
+			display: inline-block;
+		}
+
+	}
+
+
+	// Cancel Button that is inserted via JS
+	.cancel-edit {
+		display: inline-block;
+		margin-right: 5px;
+		border: none;
+		vertical-align: top;
+		padding: 10px 20px !important;
+		background: _property($ACTION-DEFAULT--BG, $EDIT-ENGINE) !important;
+		box-shadow: _property($ACTION-DEFAULT--SHADOW, $EDIT-ENGINE);
+		@include text(14px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+
+		&:hover {
+			box-shadow: _property($ACTION-DEFAULT--SHADOW---HOVER, $EDIT-ENGINE);
+			background: _property($ACTION-DEFAULT--BG---HOVER, $EDIT-ENGINE) !important;
+			@include text(14px, _property($ACTION-DEFAULT--COLOR---HOVER, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+			cursor: pointer;
+		}
+	}
+
+	// Hide the Side Panel when the Edit Engine is opened
+	body[data-indigo-edit-engine="opened"] & {
+		#JahiaGxtManagerLeftTree {
+			display: none;
+		}
+	}
+
+	// Header tool bar
+	#JahiaGxtManagerToolbar {
+		width: calc(100% - #{$PICKER_SIDEPANEL_WIDTH});
+		position: relative;
+		left: calc(#{$PICKER_SIDEPANEL_WIDTH} - 8px);
+		box-sizing: border-box;
+		padding: 0 10px;
+		z-index: 9;
+
+		> .x-toolbar {
+			border: none!important;
+			background: none!important;
+		}
+
+		// Language Switcher and Node Type Filter Combos
+		div.action-bar-menu-item {
+			// Language Switcher
+			&.toolbar-itemsgroup-languageswitcher {
+				top: 5px!important;
+				right: 5px!important;
+				@include _combo(DARK);
+				transition: none;
+			}
+
+			// Style differently when the Edit Engine is opened
+			body[data-indigo-edit-engine="opened"] & {
+				z-index: 99999!important;
+				left: 73px!important;
+				right: auto!important;
+				top: 132px!important;
+				@include _combo(LIGHT);
+			}
+
+			// Have to shift the Node Type filter to the left of the Language Switcher ( which doesnt exist in normal Picker )
+			&.toolbar-itemsgroup-nodetypefiltering {
+				right: 182px !important;
+			}
+		}
+
+		// File Menu ( File, Edit, View, Image, ...)
+		table.action-bar-tool-item {
+			display: block!important;
+			width: auto!important;
+			position: relative!important;
+			top: 0;
+			height: auto!important;
+			padding: 12px;
+			background: url($ICON--ARROW_DOWN---WHITE) no-repeat right center!important;
+
+			// By default the tbody of action bar tool items are hidden, so revert
+			tbody {
+				display: block!important;
+			}
+
+			// Button, contains the label
+			button {
+				width: auto!important;
+				@include text(12px, _property($TOOL-BUTTON--COLOR, $PICKER)!important, $FONT--WEIGHT---EXTRALIGHT);
+			}
+
+			.x-btn-mc {
+				background: none!important;
+			}
+
+			.x-btn-arrow {
+				background: none!important;
+				padding-right: 6px;
+			}
+
+		}
+	}
+
+	// Toolbar - contains File Menu, Language Switcher and Node Type Combo
+	// Also contains the tool bar for Thimbs, Details view
+	.x-panel-tbar {
+		z-index: 999999;
+		position: relative;
+
+	}
+
+
+	// Inline Edit Engine
+	div#JahiaGxtManagerBottomTabs {
+		display: none;
+		position: fixed!important;
+		top: 0!important;
+		left:0!important;
+		z-index: 99!important;
+		width: 100%!important;
+		height: 100%!important;
+		background: _property($BODY--BG, $EDIT-ENGINE)!important;
+		box-shadow: none!important;
+
+		// Display Edit Engine when toggled to "opened"
+		body[data-indigo-edit-engine="opened"] & {
+			display: block;
+		}
+
+		// Style title of the selected node
+		&::after {
+			content: attr(data-edit-engine-title);
+			display: block;
+			position: fixed;
+			top: 95px;
+			left: 72px;
+			width: 270px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			@include text(18px !important, _theme-color(quinary), $FONT--WEIGHT---EXTRALIGHT)
+		}
+
+		// Action Bar
+		.x-panel-fbar {
+			padding: 0 25px!important;
+		}
+
+		// Hide the multiple selection toggler
+		.toggle-multiple-selection {
+			display: none;
+		}
+	}
+
+
+	// List view labels
+	.x-viewport .x-component {
+		// Numberer
+		.x-grid3-td-numberer {
+			display: none!important; // DEV NOTE ::: WHAT IS THIS, CAN I HIDE IT ???
+		}
+
+		// Node Name
+		.x-grid3-td-name,
+		.x-grid3-td-displayName {
+			width: calc(100% - 367px) !important;
+		}
+
+		// Node Type
+		.x-grid3-td-primaryTypeLabel {
+			width: 98px!important;
+		}
+
+		// Publication Info
+		.x-grid3-td-publicationInfo {
+			left: 18px!important;
+		}
+
+		// Fixes for Category Manager labels in List mode
+		&.x-viewport-categorymanager {
+			// Names & Paths
+			.x-grid3-td-displayName,
+			.x-grid3-td-name,
+			.x-grid3-td-path {
+				width: 25% !important;
+			}
+		}
+
+		// Status Bar
+		> div:nth-child(2) > .x-panel-bbar {
+			z-index: 9999!important;
+			height: 30px!important;
+			bottom: 0!important;
+			width: $PICKER_SIDEPANEL_WIDTH !important;
+			left: 0!important;
+			right: auto!important;
+			padding: 0px 35px;
+			box-shadow: none!important;
+			background: transparent!important;
+		}
+	}
+
+	// Contains List, Thumbs, Details View
+	#JahiaGxtManagerTobTable {
+		// Shift down when in Thumbs, Details view as the header is taller
+		body[indigo-picker-display="thumbsview"] &,
+		body[indigo-picker-display="detailedview"] & {
+			top: 78px!important;
+			height: calc(100% - 79px)!important;
+		}
+
+		// Toolbar for Thumbs / Details view ( Filter & Sort By )
+		.x-panel-tbar {
+			left: calc(#{$PICKER_SIDEPANEL_WIDTH} + 15px) !important;
+			top: 45px !important;
+
+			// Slide left when the Side Panel is collapsed
+			body[indigo-picker-panel="collapsed"] & {
+				left: 10px !important;
+			}
+		}
+
+		// Row
+		.x-grid3-row {
+			// Default Row
+			width: calc(100% + 6px)!important;
+			left: -15px;
+			position: relative;
+			padding-left: 16px;
+
+			.x-grid3-col {
+				pointer-events: none;
+				display: inline-block;
+			}
+
+			// Checkbox holder
+			.x-grid3-td-checker {
+				display: inline-block;
+				left: -7px;
+				top: 5px;
+				position: relative;
+				background: none;
+
+				// Checkbox
+				.x-grid3-row-checker {
+					background: _property($CHECKBOX--BG, $PICKER);
+					width: 12px;
+					height: 12px;
+					box-shadow: _property($CHECKBOX--SHADOW, $PICKER);
+					border: _property($CHECKBOX--BORDER, $PICKER);
+					border-radius: 2px;
+				}
+			}
+
+			// Selected Row
+			&.x-grid3-row-selected {
+
+				// Selected Checkbox
+				.x-grid3-row-checker {
+					background: url($ICON--TICK---WHITE) no-repeat center center _property($CHECKBOX--BG---CHECKED, $PICKER);
+					background-size: 12px;
+					box-shadow: none;
+					border: _property($CHECKBOX--BORDER, $PICKER);
+				}
+			}
+		}
+
+	}
 }

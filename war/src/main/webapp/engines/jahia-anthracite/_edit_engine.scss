@@ -195,6 +195,7 @@
 	.x-form-text {
 		// @include text_input("EDIT_ENGINE");
 		@include text-input($EDIT-ENGINE);
+		@include _input(LIGHT);
 	}
 
 
@@ -1602,6 +1603,44 @@
 
 	}
 
+	#JahiaGxtEditEnginePanel-info {
+		> .infoPane {
+			padding: 46px 10px 20px 29px !important;
+			background: _property($FIELDSET--BG, $EDIT-ENGINE);
+			border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
+			box-sizing: border-box;
+			height: auto!important;
+			width: 100%!important;
+
+			&:before {
+				content: "Preview";
+				text-transform: uppercase;
+				position: absolute;
+				top: 17px;
+				@include text(11px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
+			}
+
+			td {
+				display: block;
+
+				&:nth-child(2) {
+					margin-top: 20px;
+				}
+			}
+
+		}
+
+		.gwt-HTML {
+			@include text(12px, _property($PARAGRAPH--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
+
+			b {
+				width: 150px;
+				display: inline-block;
+
+				@extend %CSS_BLOCK--FORM--LABEL !optional;
+			}
+		}
+	}
 
 	#JahiaGxtEditEnginePanel-content{
 		// Fix problem with non floating form element.

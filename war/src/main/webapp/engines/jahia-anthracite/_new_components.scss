@@ -25,6 +25,19 @@
 			background: _property($MENU-CLOSED--BG---HOVER, $type);
 			box-shadow: _property($MENU-CLOSED--SHADOW---HOVER, $type);
 		}
+
+		&::-webkit-input-placeholder{
+			color: _property($MENU-CLOSED--COLOR, $type);
+		}
+		&:-moz-placeholder{
+			color: _property($MENU-CLOSED--COLOR, $type);
+		}
+		&::-moz-placeholder{
+			color: _property($MENU-CLOSED--COLOR, $type);
+		}
+		&:-ms-input-placeholder {
+			color: _property($MENU-CLOSED--COLOR, $type);
+		}
 	}
 
 	// Trigger
@@ -41,6 +54,45 @@
 		&:hover {
 			background-image: _property($MENU-CLOSED--ARROW---HOVER, $type)!important;
 			background-color: _property($MENU-CLOSED--ARROW-BG---HOVER, $type)!important;
+		}
+	}
+}
+
+@mixin _combo-muted($type: $APP) {
+	input.x-form-text {
+		// border:1px solid red!important;
+		width: 100%!important;
+		height: auto!important;
+		box-sizing: border-box;
+		display: block;
+		padding: 7px 37px 6px 10px !important;
+
+		background: red;
+		box-shadow: _property($MENU-MUTED-CLOSED--SHADOW, $type);
+
+		@include text(12px, _property($MENU-MUTED-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+
+		&:hover {
+			color: _property($MENU-MUTED-CLOSED--COLOR---HOVER, $type);
+			background: _property($MENU-MUTED-CLOSED--BG---HOVER, $type);
+			box-shadow: _property($MENU-MUTED-CLOSED--SHADOW---HOVER, $type);
+		}
+	}
+
+	// Trigger
+	img {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 30px!important;
+		height: 100%!important;
+		border: none!important;
+
+		background: url(_property($MENU-MUTED-CLOSED--ARROW, $type)) no-repeat center center _property($MENU-MUTED-CLOSED--ARROW-BG, $type)!important;
+
+		&:hover {
+			background-image: _property($MENU-MUTED-CLOSED--ARROW---HOVER, $type)!important;
+			background-color: _property($MENU-MUTED-CLOSED--ARROW-BG---HOVER, $type)!important;
 		}
 	}
 }
@@ -184,6 +236,66 @@
 
 		img {
 			background-image: _property($MENU-CLOSED--ARROW---HOVER, $type);
+			background-color: transparent!important;
+		}
+	}
+
+}
+
+
+@mixin _drop-down-muted($type: $APP) {
+	input.x-form-text {
+		// border: 1px solid yellow!important;
+		width: 100%!important;
+		height: auto!important;
+		box-sizing: border-box;
+		display: block;
+		padding: 7px 20px 6px 10px !important;
+
+		pointer-events: none; // Force Drop Down style when neccessary
+
+		background: _property($MENU-MUTED-CLOSED--BG, $type);
+		box-shadow: _property($MENU-MUTED-CLOSED--SHADOW, $type);
+
+		@include text(12px, _property($MENU-MUTED-CLOSED--COLOR, $type), $FONT--WEIGHT---EXTRALIGHT);
+
+		&::-webkit-input-placeholder{
+			color: _property($MENU-MUTED-CLOSED--COLOR, $type);
+		}
+		&:-moz-placeholder{
+			color: _property($MENU-MUTED-CLOSED--COLOR, $type);
+		}
+		&::-moz-placeholder{
+			color: _property($MENU-MUTED-CLOSED--COLOR, $type);
+		}
+		&:-ms-input-placeholder {
+			color: _property($MENU-MUTED-CLOSED--COLOR, $type);
+		}
+
+	}
+
+	// Trigger
+	img {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 100%!important;
+		height: 100%!important;
+		border: none!important;
+
+		background: url(_property($MENU-MUTED-CLOSED--ARROW, $type)) no-repeat right 5px center !important;
+
+	}
+
+	&:hover {
+		input.x-form-text {
+			color: _property($MENU-MUTED-CLOSED--COLOR---HOVER, $type);
+			background: _property($MENU-MUTED-CLOSED--BG---HOVER, $type);
+			box-shadow: _property($MENU-MUTED-CLOSED--SHADOW---HOVER, $type);
+		}
+
+		img {
+			background-image: _property($MENU-MUTED-CLOSED--ARROW---HOVER, $type);
 			background-color: transparent!important;
 		}
 	}
@@ -512,8 +624,14 @@ div[role="combobox"] {
 	}
 
 	// PICKER
-	#JahiaGxtContentPickerWindow & {
-		@include _combo($PICKER-HEADER-INPUT);
+	#JahiaGxtContentPickerWindow &,
+	#contentmanager & {
+		@include _combo(LIGHT);
+
+		body[data-indigo-picker-search="open"] & {
+			@include _combo(DARK);
+
+		}
 
 	}
 
@@ -524,7 +642,7 @@ div[role="combobox"] {
 
 	// PICKER TOP BAR
 	#JahiaGxtContentPickerWindow #JahiaGxtManagerTobTable {
-		@include _drop-down($PICKER);
+		@include _drop-down(LIGHT);
 
 	}
 

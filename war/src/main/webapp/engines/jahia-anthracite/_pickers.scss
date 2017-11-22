@@ -43,6 +43,13 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	}
 
+	// Previewing a file, so get rid of menus
+	body[data-indigo-image-preview="open"] & {
+		#JahiaGxtManagerToolbar {
+			display: none;
+		}
+	}
+
 	&[data-indigo-search-date="custom"] {
 
 		#JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset {

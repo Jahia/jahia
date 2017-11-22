@@ -4257,16 +4257,16 @@ body[data-indigo-gwt-side-panel="open"] {
 	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 
 	.x-info-tl {
-		background: #455A64 !important;
+		background: $COLOUR--GREY_CLOUDS !important;
 
 		.x-info-tr {
-			background: #455A64;
+			background: $COLOUR--GREY_CLOUDS;
 
 			.x-info-tc {
-				background: #455A64;
+				background: $COLOUR--GREY_CLOUDS;
 
 				span {
-					color: #FFEB3B;
+					color: $COLOUR--GREY_CLOUDS;
 					padding-left: 6px;
 				}
 
@@ -4277,13 +4277,13 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-info-ml {
-		background: #455A64 !important;
+		background: $COLOUR--GREY_CLOUDS !important;
 
 		.x-info-mr {
-			background: #455A64;
+			background: $COLOUR--GREY_CLOUDS;
 
 			.x-info-mc {
-				background: #455A64;
+				background: $COLOUR--GREY_CLOUDS;
 
 				.x-info-body {
 					color: $color-white;

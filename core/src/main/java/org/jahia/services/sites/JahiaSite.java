@@ -114,10 +114,15 @@ public interface JahiaSite {
      */
     public String getServerName() ;
 
+    /**
+     * Returns a list of additional server names (aliases).
+     * 
+     * @return list of additional server names (aliases)
+     */
     public List<String> getServerNameAliases();
 
     /**
-     * Return the list of accepted server names
+     * Return the list of accepted server names.
      */
     public List<String> getAllServerNames() ;
 
@@ -195,6 +200,11 @@ public interface JahiaSite {
      */
     public void setServerName(String name);
 
+    /**
+     * Sets a list of additional server names (aliases).
+     * 
+     * @param names a list of additional server names (aliases)
+     */
     public void setServerNameAliases(List<String> names);
 
     public void setTitle(String value);

@@ -368,6 +368,12 @@ public class JahiaSitesService extends JahiaService {
     }
 
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
+            Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
+            Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
+        return addSite(currentUser, title, serverName, null, siteKey, descr, selectedLocale, selectTmplSet, modulesToDeploy, firstImport, fileImport, fileImportName, asAJob, doImportServerPermissions, originatingJahiaRelease, legacyMappingFilePath, legacyDefinitionsFilePath, session);
+    }
+
+    public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String[] serverNameAliases, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
 
@@ -401,18 +407,19 @@ public class JahiaSitesService extends JahiaService {
                         }
                     }
 
-                    siteNode.setProperty("j:title", title);
-                    siteNode.setProperty("j:description", descr);
-                    siteNode.setProperty("j:serverName", serverName);
+                    siteNode.setProperty(Constants.TITLE, title);
+                    siteNode.setProperty(Constants.DESCRIPTION, descr);
+                    siteNode.setProperty(SitesSettings.SERVER_NAME, serverName);
+                    siteNode.setProperty(SitesSettings.SERVER_NAME_ALIASES, serverNameAliases);
                     siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, selectedLocale.toString());
                     siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, false);
                     siteNode.setProperty(SitesSettings.LANGUAGES, new String[]{selectedLocale.toString()});
                     siteNode.setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, new String[]{});
                     siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, new String[]{});
                     siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, new String[]{});
-                    siteNode.setProperty("j:templatesSet", templatePackage);
+                    siteNode.setProperty(SitesSettings.TEMPLATES_SET, templatePackage);
 
-                    siteNode.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
+                    siteNode.setProperty(SitesSettings.INSTALLED_MODULES, new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
 
                     String target = getTargetString(siteKey);
 

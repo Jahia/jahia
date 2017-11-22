@@ -63,13 +63,11 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     private static final String SYSTEM_SITE_PATH = "/sites/systemsite";
 
     private static ReadOnlyModeController readOnlyModeController;
-    private static boolean originReadOnlyModeEnabled;
     private static boolean originSystemSiteWCAcompliance;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         readOnlyModeController = ReadOnlyModeController.getInstance();
-        originReadOnlyModeEnabled = readOnlyModeController.isReadOnlyModeEnabled();
         originSystemSiteWCAcompliance = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -87,16 +85,25 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
                 return null;
             }
         });
+
+        // in case a unit test failed, it's possible that read only mode is still "ON", switch it off to avoid disturbing other unit tests suites
+        switchOffIfNecessary();
     }
 
     @Before
     public void setUp() {
-        readOnlyModeController.switchReadOnlyMode(originReadOnlyModeEnabled);
+        switchOffIfNecessary();
     }
 
     @After
     public void tearDown() {
-        readOnlyModeController.switchReadOnlyMode(originReadOnlyModeEnabled);
+        // nothing to tear down
+    }
+
+    private static void switchOffIfNecessary() {
+        if(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.ON) {
+            readOnlyModeController.switchReadOnlyMode(false);
+        }
     }
 
     /**
@@ -118,18 +125,27 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         Thread.sleep(3000);
 
         // verify state is pending
-        assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.PENDING);
+        assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.PENDING_ON);
+        assertTrue(readOnlyModeController.isReadOnlyModeEnabled());
 
-        // try to ask for a switch during PENDING state
-        readOnlyModeController.switchReadOnlyMode(false);
+        TestThread<?> switchThead2 = getReadOnlySwitchThread(false);
+        switchThead2.start();
 
         // verify state is still pending
-        assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.PENDING);
+        assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.PENDING_ON);
+        assertTrue(readOnlyModeController.isReadOnlyModeEnabled());
 
         // wait for switch to finish
         switchThead.join();
 
+        // switch ON is finished, but thread2 should be released and switch OFF should be starting
+        assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.PENDING_OFF);
         assertTrue(readOnlyModeController.isReadOnlyModeEnabled());
+
+        switchThead2.join();
+
+        assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.OFF);
+        assertFalse(readOnlyModeController.isReadOnlyModeEnabled());
     }
 
     /**
@@ -420,8 +436,10 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
                 fail("It should work");
             }
         } finally {
-            if (!shouldFail) {
+            try {
                 systemSiteNode.unlock();
+            } catch (Exception e) {
+                // do nothing
             }
         }
     }
@@ -442,12 +460,14 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
                 fail("It should work");
             }
         } finally {
-            if (!shouldFail) {
+            try {
                 if (userId != null) {
                     systemSiteNode.unlock(type, userId);
                 } else {
                     systemSiteNode.unlock(type);
                 }
+            } catch (Exception e) {
+                // do nothing
             }
         }
     }

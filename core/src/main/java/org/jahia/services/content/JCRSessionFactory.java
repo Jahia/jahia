@@ -650,7 +650,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
                                 sessionsToCloseSize, DateUtils.formatDurationWords(remaingWaitingTime));
                     }
                 } else {
-                    logger.info("Read only mode switch: {} JCR Session(s) are still opened, but timeout is reached, this session(s) will be closed now");
+                    logger.info("Read only mode switch: {} JCR Session(s) are still opened, but timeout is reached, this session(s) will be closed now", sessionsToCloseSize);
                     for (JCRSessionWrapper sessionToClose : sessionsToClose) {
                         sessionToClose.logout();
                     }

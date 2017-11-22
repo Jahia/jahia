@@ -69,8 +69,15 @@ public class ReadOnlyModeController {
         }
     };
 
+    /**
+     * Different status for the read only switch
+     * OFF: read only is disabled
+     * ON: read only is enabled
+     * PENDING_ON: read only switch is currently performing the switch to switch ON
+     * PENDING_OFF: read only switch is currently performing the switch to switch OFF
+     */
     public enum ReadOnlyModeStatus {
-        OFF, ON, PENDING
+        OFF, ON, PENDING_ON, PENDING_OFF
     }
 
     private ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
@@ -102,16 +109,18 @@ public class ReadOnlyModeController {
      *
      * @param enable <code>true</code> if the read-only mode should be enabled; <code>false</code> if it should be disabled
      */
-    public void switchReadOnlyMode(boolean enable) {
-        logger.info("Received request to switch read only mode to {}", enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF);
+    public synchronized void switchReadOnlyMode(boolean enable) {
 
+        ReadOnlyModeStatus targetStatus = enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF;
+        logger.info("Received request to switch read only mode to {}", targetStatus);
+
+        // synchronize this to avoid multiple thread executing the switch at the exact same time
         if (!checkStatusUpdateNeeded(enable)) {
-            logger.info("The read-only mode flag is " + readOnlyStatus);
-            return;
+            throw new IllegalArgumentException("The read-only mode flag is " + readOnlyStatus + ", unable to switch " + targetStatus);
         }
 
         // switch to pending
-        readOnlyStatus = ReadOnlyModeStatus.PENDING;
+        readOnlyStatus = enable ? ReadOnlyModeStatus.PENDING_ON : ReadOnlyModeStatus.PENDING_OFF;
 
         List<ReadOnlyModeCapable> services = new LinkedList<>(
                 SpringContextSingleton.getBeansOfType(ReadOnlyModeCapable.class).values());
@@ -127,9 +136,9 @@ public class ReadOnlyModeController {
         }
 
         // switch to final state
-        readOnlyStatus = enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF;
+        readOnlyStatus = targetStatus;
 
-        logger.info("Finished read-only mode switch. Now the read-only mode is {}", enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF);
+        logger.info("Finished read-only mode switch. Now the read-only mode is {}", targetStatus);
     }
 
     private boolean checkStatusUpdateNeeded(boolean enable) {

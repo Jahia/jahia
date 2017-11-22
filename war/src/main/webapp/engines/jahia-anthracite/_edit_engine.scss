@@ -2536,6 +2536,17 @@ body[data-indigo-add-visibility-condition="new"] {
 
 #JahiaGxtEditEnginePanel-seo > .x-component {
 	max-width: 100%;
+	background: rgba(255, 255, 255, 0.4);
+	border: 1px solid #e8e8e8 !important;
+	box-sizing: border-box;
+	padding: 8px;
+	height: auto !important;
+
+	.x-panel-header {
+		font-family: "Nunito Sans", sans-serif;
+		background: transparent !important;
+		border: none;
+	}
 
 	> .x-panel.x-component {
 		max-width: 100%;
@@ -2550,6 +2561,9 @@ body[data-indigo-add-visibility-condition="new"] {
 			background: transparent !important;
 			border-color: transparent !important;
 			margin: 8px 0;
+			border-bottom: 1px dashed #ddd !important;
+			padding-bottom: 16px;
+			margin-bottom: 16px;
 		}
 
 	}
@@ -2598,8 +2612,9 @@ body[data-indigo-add-visibility-condition="new"] {
 	}
 
 	.x-panel-body {
-		position: absolute;
-		max-width: calc(100% - 450px);
+		//position: absolute;
+		//max-width: calc(100% - 450px);
+		padding-bottom: 32px;
 
 		.x-grid3 .x-grid3-row {
 			height: 38px !important;

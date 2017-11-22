@@ -78,7 +78,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String sitesLocation;
     private String forcedSite;
 
-    private GWTConfiguration.DnDOption enableDragAndDrop;
+    private GWTConfiguration.DragAndDropBehavior dragAndDropBehavior;
     private boolean refreshOnExternalModification = true;
 
     private String requiredPermission;
@@ -208,12 +208,12 @@ public class EditConfiguration implements Serializable, BeanNameAware {
         this.forcedSite = forcedSite;
     }
 
-    public GWTConfiguration.DnDOption getEnableDragAndDrop() {
-        return enableDragAndDrop;
+    public GWTConfiguration.DragAndDropBehavior getDragAndDropBehavior() {
+        return dragAndDropBehavior;
     }
 
-    public void setEnableDragAndDrop(GWTConfiguration.DnDOption enableDragAndDrop) {
-        this.enableDragAndDrop = enableDragAndDrop;
+    public void setDragAndDropBehavior(GWTConfiguration.DragAndDropBehavior dragAndDropBehavior) {
+        this.dragAndDropBehavior = dragAndDropBehavior;
     }
 
     public boolean getRefreshOnExternalModification() {

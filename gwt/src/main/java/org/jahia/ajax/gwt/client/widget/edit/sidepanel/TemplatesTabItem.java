@@ -93,11 +93,11 @@ public class TemplatesTabItem extends BrowseTabItem {
     private  List<String> displayedDetailTypes;
     private  List<String> hiddenDetailTypes;
 
-    
+
     /**
      * Performs the creation of the tab item and populates its content. The tab contains two panes: one with the tree of templates,
      * available in the module, and the second pane with the detail structure of the template content.
-     * 
+     *
      * @param config
      *            the tab configuration
      * @return the created tab item
@@ -118,7 +118,8 @@ public class TemplatesTabItem extends BrowseTabItem {
         });
         this.tree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         this.tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 detailTree.getSelectionModel().deselectAll();
                 if (se.getSelectedItem() != null) {
                     detailLoader.load(se.getSelectedItem());
@@ -163,14 +164,14 @@ public class TemplatesTabItem extends BrowseTabItem {
             }
         };
 
-        detailLoader = new BaseTreeLoader<GWTJahiaNode>(proxy){
+        detailLoader = new BaseTreeLoader<GWTJahiaNode>(proxy) {
             @Override
             public boolean hasChildren(GWTJahiaNode parent) {
                 return parent.hasChildren();
             }
         };
         detailStore = new TreeStore<GWTJahiaNode>(detailLoader);
-        detailTree = new TreeGrid<GWTJahiaNode>(detailStore,new ColumnModel(columns));
+        detailTree = new TreeGrid<GWTJahiaNode>(detailStore, new ColumnModel(columns));
 
 
         detailTree.setAutoExpandColumn("displayName");
@@ -235,7 +236,7 @@ public class TemplatesTabItem extends BrowseTabItem {
         contentContainer.setBorders(false);
         contentContainer.setScrollMode(Style.Scroll.AUTO);
         contentContainer.setLayout(new FitLayout());
-        contentContainer.setTitle(Messages.get("label.detail","detail"));
+        contentContainer.setTitle(Messages.get("label.detail", "detail"));
         contentContainer.add(detailTree);
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);

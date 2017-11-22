@@ -23,7 +23,7 @@
         <property name="defaultUrlMapping" value="/cms/edit"/>
         <property name="sitesLocation" value="/sites/*"/>
         <property name="refreshOnExternalModification" value="${jahia.ui.refreshOnExternalModification:true}"/>
-        <property name="enableDragAndDrop" value="${jahia.ui.enableDragAndDrop:TRUE}"/>
+        <property name="dragAndDropBehavior" value="${jahia.ui.dragAndDrop:TRUE}"/>
         <property name="nonEditableTypes">
             <set>
                 <value>jmix:studioOnly</value>

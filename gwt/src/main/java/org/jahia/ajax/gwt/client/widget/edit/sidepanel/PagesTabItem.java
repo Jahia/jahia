@@ -210,8 +210,8 @@ public class PagesTabItem extends SidePanelTabItem {
         super.initWithLinker(linker);
         path = linker.getMainModule().getPath();
         initPageTree();
-        if (linker.getConfig().isEnableDragAndDrop()) {
-        initDND();
+        if (linker.getConfig().isDragAndDropEnabled()) {
+            initDND();
         }
     }
 

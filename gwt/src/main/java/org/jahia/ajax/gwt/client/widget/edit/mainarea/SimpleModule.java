@@ -90,8 +90,8 @@ public class SimpleModule extends Module {
 
     protected boolean bindable = false;
     protected Boolean bound = null;
-    private DragSource source = null;
-    private DropTarget target = null;
+    private DragSource dragSource = null;
+    private DropTarget dragTarget = null;
     private String boundProperty = "j:bindedComponent";
 
     public SimpleModule(String id, String path, Element divElement, MainModule mainModule) {
@@ -102,7 +102,7 @@ public class SimpleModule extends Module {
     public SimpleModule(String id, final String path, Element divElement, final MainModule mainModule, boolean header) {
         super(id, path, divElement, mainModule);
 
-        hasDragDrop = !"false".equals(DOM.getElementAttribute(divElement, "dragdrop")) && !(MainModule.getInstance().getDragType() == GWTConfiguration.DnDOption.NO_DRAG_IN_EDIT_AREA);
+        hasDragDrop = !"false".equals(DOM.getElementAttribute(divElement, "dragdrop")) && !(MainModule.getInstance().getDragAndDropBehavior() == GWTConfiguration.DragAndDropBehavior.NO_DRAG_IN_EDIT_AREA);
         editable = !"false".equals(DOM.getElementAttribute(divElement, "editable"));
         bindable = "true".equals(DOM.getElementAttribute(divElement, "bindable"));
 
@@ -128,16 +128,16 @@ public class SimpleModule extends Module {
     public void onParsed() {
         Log.debug("Add drag source for simple module " + path);
 
-        if (mainModule.getConfig().isEnableDragAndDrop()) {
+        if (mainModule.getConfig().isDragAndDropEnabled()) {
             if (hasDragDrop) {
-                source = new SimpleModuleDragSource(this);
-                source.addDNDListener(mainModule.getEditLinker().getDndListener());
-                if (mainModule.getDragType() == GWTConfiguration.DnDOption.DRAG_ZONE) {
-                    source.disable();
+                dragSource = new SimpleModuleDragSource(this);
+                dragSource.addDNDListener(mainModule.getEditLinker().getDndListener());
+                if (mainModule.getDragAndDropBehavior() == GWTConfiguration.DragAndDropBehavior.DRAG_ZONE_IN_EDIT_AREA) {
+                    dragSource.disable();
                 }
-                target = new ModuleDropTarget(this, EditModeDNDListener.SIMPLEMODULE_TYPE);
-                target.setAllowSelfAsSource(true);
-                target.addDNDListener(mainModule.getEditLinker().getDndListener());
+                dragTarget = new ModuleDropTarget(this, EditModeDNDListener.SIMPLEMODULE_TYPE);
+                dragTarget.setAllowSelfAsSource(true);
+                dragTarget.addDNDListener(mainModule.getEditLinker().getDndListener());
             } else {
                 new DropTarget(this) {
                     @Override
@@ -332,12 +332,12 @@ public class SimpleModule extends Module {
         return hasDragDrop;
     }
 
-    public void setDrag(boolean isDrag) {
-        if (source != null) {
-            if (isDrag) {
-                source.enable();
+    public void setDragEnabled(boolean dragEnabled) {
+        if (dragSource != null) {
+            if (dragEnabled) {
+                dragSource.enable();
             } else {
-                source.disable();
+                dragSource.disable();
             }
         }
     }

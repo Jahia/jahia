@@ -90,7 +90,7 @@ public class PlaceholderModule extends Module {
     private LayoutContainer pasteAsReferenceButton;
 
     private static int MIN_WIDTH = 100;
-    
+
     public PlaceholderModule(String id, String path, Element divElement, final MainModule mainModule) {
         super(id, path, divElement, mainModule, new FlowLayout());
 
@@ -111,7 +111,7 @@ public class PlaceholderModule extends Module {
 
     @Override
     public void onNodeTypesLoaded() {
-        if (mainModule.getConfig().isEnableDragAndDrop()) {
+        if (mainModule.getConfig().isDragAndDropEnabled()) {
             DropTarget target = new ModuleDropTarget(this, EditModeDNDListener.PLACEHOLDER_TYPE);
             target.setOperation(DND.Operation.COPY);
             target.setFeedback(DND.Feedback.INSERT);
@@ -135,8 +135,8 @@ public class PlaceholderModule extends Module {
             nodeTypesArray = getNodeTypes().split(" ");
         }
         if (nodeTypesArray != null) {
-            List filter = null;
-            if (nodeTypes != null && nodeTypes.length()>0) {
+            List<String> filter = null;
+            if (nodeTypes != null && nodeTypes.length() > 0) {
                 filter = Arrays.asList(nodeTypes.split(" "));
             }
             final Set<String> displayedNodeTypes = new HashSet<String>(Arrays.asList(nodeTypesArray));
@@ -155,7 +155,7 @@ public class PlaceholderModule extends Module {
                 icon.setTitle(nodeType != null ? nodeType.getLabel() : s );
                 LayoutContainer p = new HorizontalPanel();
                 p.add(icon);
-                
+
                 Text label = new Text(nodeType != null ? nodeType.getLabel() : s);
                 if (getWidth() >= MIN_WIDTH) {
                     p.add(label);
@@ -165,6 +165,8 @@ public class PlaceholderModule extends Module {
                 p.sinkEvents(Event.ONCLICK);
                 p.addStyleName("button-placeholder");
                 p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+
+                    @Override
                     public void handleEvent(ComponentEvent be) {
                         final GWTJahiaNode parentNode = getParentModule().getNode();
                         if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
@@ -183,17 +185,19 @@ public class PlaceholderModule extends Module {
             icon.setTitle(Messages.get("label.paste", "Paste"));
             pasteButton = new HorizontalPanel();
             pasteButton.add(icon);
-            
+
             Text pasteLabel = new Text(Messages.get("label.paste", "Paste"));
             if (getWidth() >= MIN_WIDTH) {
                 pasteButton.add(pasteLabel);
             } else {
-            	pasteButton.setTitle(pasteLabel.getTitle());
+                pasteButton.setTitle(pasteLabel.getTitle());
             }
             pasteButton.sinkEvents(Event.ONCLICK);
             pasteButton.addStyleName("button-placeholder");
 
             pasteButton.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+
+                @Override
                 public void handleEvent(ComponentEvent be) {
                     GWTJahiaNode parentNode = getParentModule().getNode();
                     if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
@@ -204,17 +208,19 @@ public class PlaceholderModule extends Module {
             AbstractImagePrototype pasteAsReferenceIcon = ToolbarIconProvider.getInstance().getIcon("pasteReference");
             pasteAsReferenceButton = new HorizontalPanel();
             pasteAsReferenceButton.add(pasteAsReferenceIcon.createImage());
-            
+
             Text pasteReferenceLabel = new Text(Messages.get("label.pasteReference", "Paste Reference"));
             if (getWidth() >= MIN_WIDTH) {
                 pasteAsReferenceButton.add(pasteReferenceLabel);
             } else {
-            	pasteAsReferenceButton.setTitle(pasteReferenceLabel.getTitle());
+                pasteAsReferenceButton.setTitle(pasteReferenceLabel.getTitle());
             }
             pasteAsReferenceButton.sinkEvents(Event.ONCLICK);
             pasteAsReferenceButton.addStyleName("button-placeholder");
 
             pasteAsReferenceButton.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+
+                @Override
                 public void handleEvent(ComponentEvent be) {
                     GWTJahiaNode parentNode = getParentModule().getNode();
                     if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
@@ -232,10 +238,12 @@ public class PlaceholderModule extends Module {
         }
     }
 
+    @Override
     public boolean isDraggable() {
         return false;
     }
 
+    @Override
     public void setParentModule(Module parentModule) {
         this.parentModule = parentModule;
     }

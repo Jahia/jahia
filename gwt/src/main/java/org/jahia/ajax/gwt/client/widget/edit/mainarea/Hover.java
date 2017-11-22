@@ -137,14 +137,12 @@ public class Hover {
         }
         b.show();
         module.addStyleName("hover-module");
-        if (mainModule.getDragType() == GWTConfiguration.DnDOption.DRAG_ZONE && module.isSelectable() && module instanceof SimpleModule && ((SimpleModule) module).hasDragDrop()) {
+        if (mainModule.getDragAndDropBehavior() == GWTConfiguration.DragAndDropBehavior.DRAG_ZONE_IN_EDIT_AREA && module.isSelectable() && module instanceof SimpleModule && ((SimpleModule) module).hasDragDrop()) {
             module.addStyleName("hover-draggable ");
-            int left = ce.getClientX() - module.getAbsoluteLeft();
-            int right = ce.getClientY() - module.getAbsoluteTop();
-
-            boolean inDragZone = left < 20 && right < 20;
-            ((SimpleModule) module).setDrag(inDragZone);
-
+            int x = ce.getClientX() - module.getAbsoluteLeft();
+            int y = ce.getClientY() - module.getAbsoluteTop();
+            boolean inDragZone = x < 20 && y < 20;
+            ((SimpleModule) module).setDragEnabled(inDragZone);
         }
         boxes.put(module, b);
     }

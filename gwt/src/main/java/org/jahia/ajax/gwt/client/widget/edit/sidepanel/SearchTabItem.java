@@ -300,7 +300,7 @@ class SearchTabItem extends SidePanelTabItem {
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        if (linker.getConfig().isEnableDragAndDrop()) {
+        if (linker.getConfig().isDragAndDropEnabled()) {
             displayGridSource = new DisplayGridDragSource(grid);
             displayGridSource.addDNDListener(editLinker.getDndListener());
         }

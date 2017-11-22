@@ -227,8 +227,8 @@ public class MainModule extends Module {
         return selections;
     }
 
-    public GWTConfiguration.DnDOption getDragType() {
-        return config.getEnableDragAndDrop();
+    public GWTConfiguration.DragAndDropBehavior getDragAndDropBehavior() {
+        return config.getDragAndDropBehavior();
     }
 
     public void initWithLinker(EditLinker linker) {

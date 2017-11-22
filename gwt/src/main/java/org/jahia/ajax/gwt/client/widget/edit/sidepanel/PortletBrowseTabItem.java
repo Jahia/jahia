@@ -83,6 +83,7 @@ class PortletBrowseTabItem extends BrowseTabItem {
     protected transient ImageDragSource dragSource;
     protected transient ThumbsListView listView;
 
+    @Override
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
 
@@ -99,7 +100,7 @@ class PortletBrowseTabItem extends BrowseTabItem {
                     String path = ((GWTJahiaNode) gwtJahiaFolder).getPath();
                     Log.debug("retrieving children of " + path);
                     JahiaContentManagementService.App.getInstance()
-                            .lsLoad(path, JCRClientUtils.PORTLET_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.PERMISSIONS,GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS), false, -1, -1, false, null, null, false, false, listAsyncCallback);
+                            .lsLoad(path, JCRClientUtils.PORTLET_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.PERMISSIONS, GWTJahiaNode.ICON, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.THUMBNAILS, GWTJahiaNode.TAGS), false, -1, -1, false, null, null, false, false, listAsyncCallback);
                 } else {
                     contentContainer.unmask();
                 }
@@ -118,11 +119,13 @@ class PortletBrowseTabItem extends BrowseTabItem {
 
         contentStore = new ListStore<GWTJahiaNode>(listLoader);
         contentStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+
+            @Override
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof String && o2 instanceof String) {
                     String s1 = (String) o1;
                     String s2 = (String) o2;
-                    return Collator.getInstance().localeCompare(s1,s2);
+                    return Collator.getInstance().localeCompare(s1, s2);
                 } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
                     return ((Comparable) o1).compareTo(o2);
                 }
@@ -132,7 +135,7 @@ class PortletBrowseTabItem extends BrowseTabItem {
         tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
-                contentContainer.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+                contentContainer.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
                 listLoader.load(event.getSelectedItem());
             }
         });
@@ -156,7 +159,7 @@ class PortletBrowseTabItem extends BrowseTabItem {
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        if (linker.getConfig().isEnableDragAndDrop()) {
+        if (linker.getConfig().isDragAndDropEnabled()) {
             dragSource = new ImageDragSource(listView);
             dragSource.addDNDListener(linker.getDndListener());
         }
@@ -166,6 +169,8 @@ class PortletBrowseTabItem extends BrowseTabItem {
         public ImageDragSource(ListView listView) {
             super(listView);
             DragListener listener = new DragListener() {
+
+                @Override
                 public void dragEnd(DragEvent de) {
                     DNDEvent e = new DNDEvent(ImageDragSource.this, de.getEvent());
                     e.setData(data);

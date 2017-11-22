@@ -110,7 +110,7 @@ public class EditLinker implements Linker {
      */
     public EditLinker(MainModule mainModule, SidePanel sidePanel, ActionToolbarLayoutContainer toolbar,
                       GWTEditConfiguration config) {
-        if (config.isEnableDragAndDrop()) {
+        if (config.isDragAndDropEnabled()) {
             this.dndListener = new EditModeDNDListener(this);
         }
         this.mainModule = mainModule;

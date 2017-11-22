@@ -66,8 +66,8 @@ class CreateContentTabItem extends SidePanelTabItem {
     private transient CreateGridDragSource gridDragSource;
     private List<String> baseTypes = null;
     private List<String> excludedNodeTypes = null;
-    private List<String> paths;
 
+    @Override
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
         tab.setLayout(new FitLayout());
@@ -86,7 +86,7 @@ class CreateContentTabItem extends SidePanelTabItem {
         initExcludedNodeTypes(linker);
 
         contentTypeTree.fillStore(baseTypes, excludedNodeTypes, true);
-        if (linker.getConfig().isEnableDragAndDrop()) {
+        if (linker.getConfig().isDragAndDropEnabled()) {
             gridDragSource = new CreateGridDragSource(contentTypeTree.getTreeGrid());
             gridDragSource.addDNDListener(linker.getDndListener());
         }
@@ -115,10 +115,6 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     public void setExcludedNodeTypes(List<String> excludedNodeTypes) {
         this.excludedNodeTypes = excludedNodeTypes;
-    }
-
-    public void setPaths(List<String> paths) {
-        this.paths = paths;
     }
 
     @Override

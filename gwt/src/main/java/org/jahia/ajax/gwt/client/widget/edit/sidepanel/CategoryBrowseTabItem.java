@@ -70,11 +70,11 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper.CanUseCompone
 import java.util.Comparator;
 
 /**
- * 
+ *
  * User: ktlili
  * Date: May 11, 2010
  * Time: 12:08:34 PM
- * 
+ *
  */
 public class CategoryBrowseTabItem extends BrowseTabItem {
     protected int limit = 500;
@@ -85,6 +85,7 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
     protected transient DisplayGridDragSource displayGridSource;
     protected transient Grid<GWTJahiaNode> grid;
 
+    @Override
     public TabItem create(final GWTSidePanelTab config) {
         super.create(config);
 
@@ -115,6 +116,8 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
 
         contentStore = new ListStore<GWTJahiaNode>(listLoader);
         contentStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+
+            @Override
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof String && o2 instanceof String) {
                     String s1 = (String) o1;
@@ -132,7 +135,7 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
         grid.setAutoExpandColumn(displayColumns.getAutoExpand());
         contentContainer.add(grid);
 
-  
+
         tree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> event) {
@@ -142,6 +145,8 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
         });
 
         grid.addListener(Events.OnDoubleClick, new Listener<GridEvent<GWTJahiaNode>>() {
+
+            @Override
             public void handleEvent(GridEvent<GWTJahiaNode> baseEvent) {
                 final GWTJahiaNode gwtJahiaNode = baseEvent.getModel();
                 if (gwtJahiaNode != null && editLinker != null) {
@@ -163,7 +168,7 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
         VBoxLayoutData contentVBoxData = new VBoxLayoutData();
         contentVBoxData.setFlex(2);
         tab.add(contentContainer, contentVBoxData);
-        
+
         tab.setId("JahiaGxtCategoryBrowseTab");
         return tab;
     }
@@ -171,7 +176,7 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        if (linker.getConfig().isEnableDragAndDrop()) {
+        if (linker.getConfig().isDragAndDropEnabled()) {
             displayGridSource = new DisplayGridDragSource(grid);
             displayGridSource.addDNDListener(editLinker.getDndListener());
         }

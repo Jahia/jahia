@@ -187,7 +187,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        if (linker.getConfig().isEnableDragAndDrop()) {
+        if (linker.getConfig().isDragAndDropEnabled()) {
             dragSource = new ImageDragSource(listView);
             dragSource.addDNDListener(linker.getDndListener());
         }

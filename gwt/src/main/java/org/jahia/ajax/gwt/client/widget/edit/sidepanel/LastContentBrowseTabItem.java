@@ -97,9 +97,12 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
     private transient LayoutContainer previewLayoutContainer;
     protected transient Grid<GWTJahiaNode> grid;
 
+    @Override
     public TabItem create(final GWTSidePanelTab config) {
         super.create(config);
         tab.addListener(Events.Select, new Listener<BaseEvent>() {
+
+            @Override
             public void handleEvent(BaseEvent be) {
                 fillStore();
                 tab.removeListener(Events.Select, this);
@@ -114,6 +117,8 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         contentContainer.setLayout(new FitLayout());
         contentStore = new ListStore<GWTJahiaNode>();
         contentStore.setStoreSorter(new StoreSorter<GWTJahiaNode>(new Comparator<Object>() {
+
+            @Override
             public int compare(Object o1, Object o2) {
                 if (o1 instanceof String && o2 instanceof String) {
                     String s1 = (String) o1;
@@ -131,6 +136,8 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         ColumnConfig col = new ColumnConfig("icon", "", 40);
         col.setAlignment(Style.HorizontalAlignment.CENTER);
         col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
+
+            @Override
             public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1,
                                  ListStore<GWTJahiaNode> listStore, Grid<GWTJahiaNode> g) {
                 return ContentModelIconProvider.getInstance().getIcon(modelData).getHTML();
@@ -163,6 +170,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
                             "default", "preview", null, true, "editmode",
                             editLinker.getActiveChannelIdentifier(), null, new BaseAsyncCallback<GWTRenderResult>() {
 
+                                @Override
                                 public void onSuccess(GWTRenderResult gwtRenderResult) {
                                     previewLayoutContainer.removeAll();
                                     previewLayoutContainer.add(new HTML(gwtRenderResult.getResult()));
@@ -176,6 +184,8 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
             }
         });
         grid.addListener(Events.OnDoubleClick, new Listener<GridEvent<GWTJahiaNode>>() {
+
+            @Override
             public void handleEvent(GridEvent<GWTJahiaNode> baseEvent) {
                 final GWTJahiaNode gwtJahiaNode = baseEvent.getModel();
                 if (gwtJahiaNode != null && editLinker != null) {
@@ -203,7 +213,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        if (linker.getConfig().isEnableDragAndDrop()) {
+        if (linker.getConfig().isDragAndDropEnabled()) {
             displayGridSource = new DisplayGridDragSource(grid);
             displayGridSource.addDNDListener(editLinker.getDndListener());
         }
@@ -229,6 +239,8 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         }
 
         async.searchSQL(searchString, limit, 0, JCRClientUtils.CONTENT_NODETYPES, Arrays.asList(GWTJahiaNode.ICON, "jcr:lastModified", GWTJahiaNode.PERMISSIONS), false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+
+            @Override
             public void onSuccess(PagingLoadResult<GWTJahiaNode> gwtJahiaNodes) {
                 contentStore.add(gwtJahiaNodes.getData());
                 contentContainer.layout(true);

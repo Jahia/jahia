@@ -86,6 +86,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
     protected transient String repositoryType;
     protected transient GWTJahiaNodeTreeFactory factory;
 
+    @Override
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
         VBoxLayout l = new VBoxLayout();
@@ -125,7 +126,7 @@ abstract class BrowseTabItem extends SidePanelTabItem {
     @Override
     public void initWithLinker(EditLinker linker) {
         super.initWithLinker(linker);
-        if (linker.getConfig().isEnableDragAndDrop()) {
+        if (linker.getConfig().isDragAndDropEnabled()) {
             treeDropTarget = new BrowseTreeGridDropTarget();
             treeDropTarget.addDNDListener(linker.getDndListener());
             treeDropTarget.setAllowDropOnLeaf(true);
@@ -175,6 +176,8 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
         public AsyncCallback<Object> getCallback() {
             AsyncCallback<Object> callback = new BaseAsyncCallback<Object>() {
+
+                @Override
                 public void onSuccess(Object o) {
                     Map<String, Object> data = new HashMap<String, Object>();
                     data.put("event", "browseTreeGridDrop");

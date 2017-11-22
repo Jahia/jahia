@@ -3978,13 +3978,17 @@
 						DexV2("#CRTbrowseTabItem .x-grid3-row-selected").trigger("contextmenu");
 
 						// When context menu is opened click on the ADD FOLDER button
-						DexV2("body").onceOpen(".imagepickerContextMenu", function(){
-							DexV2(".imagepickerContextMenu .toolbar-item-newfolder").trigger("click");
+						DexV2("body").onceOpen(".x-menu", function(){
+                            // Need to shift the context menu out of view because it doesnt dissappear until the alert has been closed.
+                            DexV2(".x-menu").css({
+                                left: "-50000px"
+                            });
+
+                            DexV2(".x-menu .toolbar-item-newfolder").trigger("click");
+
 
 						})
 
-					} else {
-						console.log("Nothing to do ...");
 					}
 				})
 				.onClick(".toolbar-item-upload", function(){
@@ -3996,13 +4000,11 @@
 						DexV2("#CRTbrowseTabItem .x-grid3-row-selected").trigger("contextmenu");
 
 						// When context menu is opened click on the ADD FOLDER button
-						DexV2("body").onceOpen(".imagepickerContextMenu", function(){
-							DexV2(".imagepickerContextMenu .toolbar-item-upload").trigger("click");
+						DexV2("body").onceOpen(".x-menu", function(){
+							DexV2(".x-menu .toolbar-item-upload").trigger("click");
 
 						})
 
-					} else {
-						console.log("Nothing to do ...");
 					}
 				})
 				.onAttribute("body", "data-singleselection-node-path", app.onChangeNodePath)

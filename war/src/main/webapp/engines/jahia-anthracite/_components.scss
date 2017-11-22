@@ -3381,6 +3381,7 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.customized-preview,
 .x-window.publication-manager-engine {	// Added selector for publication manager!
 	background: transparent;
+	z-index: 9999!important;
 
 	.x-window-bwrap {
 		padding: 12px 8px 8px 8px;

@@ -66,6 +66,7 @@ class CreateContentTabItem extends SidePanelTabItem {
     private transient CreateGridDragSource gridDragSource;
     private List<String> baseTypes = null;
     private List<String> excludedNodeTypes = null;
+    private List<String> paths;
 
     @Override
     public TabItem create(GWTSidePanelTab config) {
@@ -115,6 +116,10 @@ class CreateContentTabItem extends SidePanelTabItem {
 
     public void setExcludedNodeTypes(List<String> excludedNodeTypes) {
         this.excludedNodeTypes = excludedNodeTypes;
+    }
+
+    public void setPaths(List<String> paths) {
+        this.paths = paths;
     }
 
     @Override

@@ -1999,10 +1999,21 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	#JahiaGxtManagerToolbar {
 
 		// Remove some GWT styles ...
-		> .x-toolbar {
+		.action-toolbar {
 			border:none;
 			padding: 0;
 			background: none;
+			height: auto!important;
+		    position: relative;
+		    left: auto;
+		    top: auto;
+		    right: auto;
+		    width: auto;
+
+			.x-toolbar-cell {
+				display: inline-block;
+				margin-top: 0;
+			}
 		}
 
 		.action-bar-menu-item {
@@ -2217,7 +2228,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		padding: 0 10px;
 		z-index: 9;
 
-		> .x-toolbar {
+		.action-toolbar {
 			border: none!important;
 			background: none!important;
 		}
@@ -2265,16 +2276,22 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			// Button, contains the label
 			button {
 				width: auto!important;
+				text-indent: 0;
+				height: auto!important;
 				@include text(12px, _property($TOOL-BUTTON--COLOR, $PICKER)!important, $FONT--WEIGHT---EXTRALIGHT);
 			}
 
 			.x-btn-mc {
 				background: none!important;
+				height: auto!important;
+				width: auto!important;
+				text-align: left;
 			}
 
 			.x-btn-arrow {
 				background: none!important;
 				padding-right: 6px;
+				display: block;
 			}
 
 		}

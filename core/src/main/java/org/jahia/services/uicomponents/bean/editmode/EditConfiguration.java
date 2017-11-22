@@ -44,6 +44,7 @@
 package org.jahia.services.uicomponents.bean.editmode;
 
 import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
 
@@ -214,6 +215,11 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setDragAndDropBehavior(GWTConfiguration.DragAndDropBehavior dragAndDropBehavior) {
         this.dragAndDropBehavior = dragAndDropBehavior;
+    }
+
+    // Setter for backward compatibility
+    public void setEnableDragAndDrop(boolean enableDragAndDrop) {
+        this.dragAndDropBehavior = enableDragAndDrop ? GWTEditConfiguration.DragAndDropBehavior.ENABLED : GWTEditConfiguration.DragAndDropBehavior.DISABLED;
     }
 
     public boolean getRefreshOnExternalModification() {

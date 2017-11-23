@@ -354,10 +354,8 @@
 			// }
 		}
 
-		body[data-sitesettings="false"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
-			width: auto!important;
-
-
+		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
+			 width: auto !important;
 		}
 
 		[data-INDIGO-GWT-SIDE-PANEL="open"] & {

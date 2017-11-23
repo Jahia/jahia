@@ -83,6 +83,8 @@ import org.springframework.web.context.ServletContextAware;
 public class JCRSessionFactory implements Repository, ServletContextAware, ReadOnlyModeCapable {
 
     private static final Comparator<String> invertedStringComparator = new Comparator<String>() {
+
+        @Override
         public int compare(String s1, String s2) {
             return s2.compareTo(s1);
         }
@@ -131,6 +133,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         this.servletContextAttributeName = servletContextAttributeName;
     }
 
+    @Override
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
@@ -233,10 +236,12 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         return login(JahiaLoginModule.getCredentials(username, realm), workspace, locale, locale != null ? getFallbackLocale() : null);
     }
 
+    @Override
     public String[] getDescriptorKeys() {
         return descriptors.keySet().toArray(new String[descriptors.size()]);
     }
 
+    @Override
     public String getDescriptor(String s) {
         return descriptors.get(s);
     }
@@ -259,6 +264,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         return s;
     }
 
+    @Override
     public JCRSessionWrapper login(Credentials credentials, String workspace)
             throws LoginException, NoSuchWorkspaceException, RepositoryException {
         return login(credentials, workspace, null, null);
@@ -299,7 +305,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
                 if (userNode != null) {
                     user = userNode.getJahiaUser();
                 } else {
-                    logger.warn("Cannot find user "+jahiaPrincipal.getName() + "@" + jahiaPrincipal.getRealm());
+                    logger.warn("Cannot find user " + jahiaPrincipal.getName() + "@" + jahiaPrincipal.getRealm());
                 }
             }
             return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale, readOnlyModeEnabled);
@@ -307,31 +313,38 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         throw new LoginException("Can't login");
     }
 
+    @Override
     public JCRSessionWrapper login(Credentials credentials) throws LoginException, RepositoryException {
         return login(credentials, null);
     }
 
+    @Override
     public JCRSessionWrapper login(String workspace)
             throws LoginException, NoSuchWorkspaceException, RepositoryException {
         return login(JahiaLoginModule.getGuestCredentials(), workspace);
     }
 
+    @Override
     public JCRSessionWrapper login() throws LoginException, RepositoryException {
         return login(null, null);
     }
 
+    @Override
     public boolean isStandardDescriptor(String key) {
         return false;
     }
 
+    @Override
     public boolean isSingleValueDescriptor(String key) {
         return false;
     }
 
+    @Override
     public Value getDescriptorValue(String key) {
         return null;
     }
 
+    @Override
     public Value[] getDescriptorValues(String key) {
         return new Value[0];
     }
@@ -343,7 +356,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
     public Map<String, JCRStoreProvider> getMountPoints() {
         return mountPoints;
     }
-    
+
     public Map<String, JCRStoreProvider> getProviders() {
         return providers;
     }
@@ -366,7 +379,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
                 try {
                     wrapper.removeFromCache(mountPoint);
                 } catch (RepositoryException e) {
-                    logger.warn("Cannot flush cache",e);
+                    logger.warn("Cannot flush cache", e);
                 }
             }
 
@@ -415,7 +428,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
                 try {
                     wrapper.removeFromCache(p.getMountPoint());
                 } catch (RepositoryException e) {
-                    logger.warn("Cannot flush cache",e);
+                    logger.warn("Cannot flush cache", e);
                 }
             }
 
@@ -491,7 +504,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
     /**
      * Returns the provider which is handling the provided node path. If there is no other provider which can handle the specified node
      * path, the default Jackrabbit ("/") provider is returned.
-     * 
+     *
      * @param path
      *            the node path to be checked
      * @return the provider which handles the provided node path or the default provider if there is no other provider which can handle the
@@ -503,7 +516,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
 
     /**
      * Returns the provider which is handling the provided node path.
-     * 
+     *
      * @param path
      *            the node path to be checked
      * @param includeDefault
@@ -608,7 +621,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
 
     /**
      * Returns <code>true</code> if more than one (default) mount points are registered.
-     * 
+     *
      * @return <code>true</code> if more than one (default) mount points are registered; <code>false</code> otherwise
      */
     public boolean areMultipleMountPointsRegistered() {
@@ -621,16 +634,16 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
     }
 
     @Override
-    public void onReadOnlyModeChanged(boolean readOnlyModeIsOn, long timeout) {
+    public void onReadOnlyModeChanged(boolean readOnlyModeEnabled, long timeout) {
 
-        logger.info("Read only mode switch: Newly created JCR session are" + (readOnlyModeIsOn ? " not ": " ") + "allowed to perform saving");
+        logger.info("Read only mode switch: Newly created JCR session are" + (readOnlyModeEnabled ? " not ": " ") + "allowed to perform saving");
         // switch to read only so that new sessions will be read only session
-        this.readOnlyModeEnabled = readOnlyModeIsOn;
+        this.readOnlyModeEnabled = readOnlyModeEnabled;
 
         Set<String> knownSessions = new HashSet<>();
         // current request sessions ids
-        knownSessions.addAll(getCurrentRequestSessionIdentifiers(systemSession.get()));
-        knownSessions.addAll(getCurrentRequestSessionIdentifiers(userSession.get()));
+        knownSessions.addAll(getSessionIdentifiers(systemSession.get()));
+        knownSessions.addAll(getSessionIdentifiers(userSession.get()));
 
         // Observers sessions ids
         for (JCRSessionWrapper observerSession : getDefaultProvider().getObserverSessions().values()) {
@@ -640,15 +653,13 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         long limitTimeout = System.currentTimeMillis() + timeout;
         while (true) {
             // check if sessions are still active
-            Set<JCRSessionWrapper> sessionsToClose = getSessionsToClose(knownSessions, readOnlyModeIsOn);
+            Set<JCRSessionWrapper> sessionsToClose = getSessionsToClose(knownSessions, readOnlyModeEnabled);
             int sessionsToCloseSize = sessionsToClose.size();
             if (sessionsToCloseSize > 0) {
-                long remaingWaitingTime = limitTimeout - System.currentTimeMillis();
-                if (remaingWaitingTime > 0) {
-                    if (remaingWaitingTime % 100 == 0) {
-                        logger.info("Read only mode switch: {} JCR Session(s) are still opened, will wait for them to close until timeout {}",
-                                sessionsToCloseSize, DateUtils.formatDurationWords(remaingWaitingTime));
-                    }
+                long remainingWaitTime = limitTimeout - System.currentTimeMillis();
+                if (remainingWaitTime > 0) {
+                    logger.info("Read only mode switch: {} JCR Session(s) are still opened, will wait for them to close until timeout {}",
+                            sessionsToCloseSize, DateUtils.formatDurationWords(remainingWaitTime));
                 } else {
                     logger.info("Read only mode switch: {} JCR Session(s) are still opened, but timeout is reached, this session(s) will be closed now", sessionsToCloseSize);
                     for (JCRSessionWrapper sessionToClose : sessionsToClose) {
@@ -668,26 +679,26 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
             }
         }
 
-        logger.info("Read only mode on JCR sessions: " + (readOnlyModeIsOn ? "ON" : "OFF"));
+        logger.info("Read only mode on JCR sessions: " + (readOnlyModeEnabled ? "ON" : "OFF"));
     }
 
-    private Set<String> getCurrentRequestSessionIdentifiers(Map<String, Map<String, JCRSessionWrapper>> sessions) {
-        Set<String> resultSessions = new HashSet<>();
-        if (sessions != null) {
-            for (Map<String, JCRSessionWrapper> userSessions : sessions.values()) {
-                for (JCRSessionWrapper session : userSessions.values()) {
-                    resultSessions.add(session.getIdentifier());
+    private static Set<String> getSessionIdentifiers(Map<String, Map<String, JCRSessionWrapper>> sessionsByUserByWorkspace) {
+        Set<String> result = new HashSet<>();
+        if (sessionsByUserByWorkspace != null) {
+            for (Map<String, JCRSessionWrapper> userSessionsByWorkspace : sessionsByUserByWorkspace.values()) {
+                for (JCRSessionWrapper session : userSessionsByWorkspace.values()) {
+                    result.add(session.getIdentifier());
                 }
             }
         }
-        return resultSessions;
+        return result;
     }
 
-    private Set<JCRSessionWrapper> getSessionsToClose(Set<String> knownSessions, boolean readOnlyModeEnabled) {
+    private static Set<JCRSessionWrapper> getSessionsToClose(Set<String> knownSessions, boolean readOnlyModeEnabled) {
         Set<JCRSessionWrapper> sessionsToClose = new HashSet<>();
-        for (Map.Entry<UUID, JCRSessionWrapper> uuidjcrSessionWrapperEntry : JCRSessionWrapper.getActiveSessionsObjects().entrySet()) {
-            if (!knownSessions.contains(uuidjcrSessionWrapperEntry.getKey().toString()) && uuidjcrSessionWrapperEntry.getValue().isReadOnly() != readOnlyModeEnabled) {
-                sessionsToClose.add(uuidjcrSessionWrapperEntry.getValue());
+        for (Map.Entry<UUID, JCRSessionWrapper> uuidJcrSessionWrapperEntry : JCRSessionWrapper.getActiveSessionsObjects().entrySet()) {
+            if (!knownSessions.contains(uuidJcrSessionWrapperEntry.getKey().toString()) && uuidJcrSessionWrapperEntry.getValue().isReadOnly() != readOnlyModeEnabled) {
+                sessionsToClose.add(uuidJcrSessionWrapperEntry.getValue());
             }
         }
         return sessionsToClose;

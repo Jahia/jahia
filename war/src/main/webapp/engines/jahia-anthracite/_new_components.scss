@@ -6,6 +6,155 @@
 /*** COMBO BOX                ***/
 /********************************/
 
+@mixin _context-list($type: $APP) {
+	width: auto !important;
+	background: transparent;
+	overflow: visible;
+	// z-index: $ZINDEX--CONTEXT_MENU;
+	z-index: 999999999999999!important;
+	border: none;
+
+	.x-menu-list {
+		height: auto!important;
+
+		&::before {
+			background: _property($MENU-TITLE--BG, $type);
+		    width: 100%;
+		    display: block;
+		    padding: 3px 8px;
+		    font-family: "Nunito Sans";
+		    font-size: 9px;
+		    color: _property($MENU-TITLE--COLOR, $type);
+		    text-transform: uppercase;
+		    font-weight: 600;
+		    z-index: $ZINDEX--CONTEXT_MENU---TITLE;
+		}
+	}
+
+
+
+
+
+	.x-menu-list-item {
+
+		.x-menu-item {
+			border:none;
+			display: block;
+			text-align: left!important;
+	        background: _property($MENU-OPENED--BG, $type);
+	        padding: 8px 9px !important;
+	        border: none;
+
+	        @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
+
+		}
+
+		&.x-item-disabled  {
+			.x-menu-item {
+				color: _property($MENU-OPENED--COLOR---DISABLED, $type);
+		        font-style: italic;
+		        opacity: 1;
+				background: _property($MENU-OPENED--BG---DISABLED, $type);
+		        display: none;
+
+				&.x-menu-check-item {
+					display: block;
+				}
+			}
+
+		}
+
+		&.x-menu-item-active  {
+			.x-menu-item {
+				color: _property($MENU-OPENED--COLOR---HOVER, $type);
+				background: _property($MENU-OPENED--BG---HOVER, $type);
+			}
+
+		}
+	}
+}
+
+@mixin _combo-list($type: $APP) {
+	/* Combo Outer Container */
+	// width: auto !important;
+	background: transparent;
+    overflow: visible;
+    z-index: $ZINDEX--COMBO_LIST;
+
+	// @extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER !optional;
+
+	/* Combo Inner Container */
+	.x-combo-list-inner {
+		width: auto!important;
+		background: transparent;
+
+		/* Combo List Items that have Thumbs, ie. Channel Combo */
+		.thumb-wrap {
+
+
+			img {
+				/* Actual thumb */
+				display: none!important;
+			}
+
+
+			.x-editable {
+				/* List item when normal Thumbed Combo
+				   Actual Label of Combo Item */
+				   text-align: left!important;
+   		        background: _property($MENU-OPENED--BG, $type);
+   		        padding: 8px 9px !important;
+   		        border: none;
+
+   		        @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
+
+			}
+
+
+			&.x-combo-selected {
+				/* Selected / Hovered */
+				border:none!important;
+
+
+				.x-editable {
+					/* List item when normal Thumbed Combo */
+					color: _property($MENU-OPENED--COLOR---HOVER, $type);
+			        background: _property($MENU-OPENED--BG---HOVER, $type);
+				}
+			}
+
+		}
+	}
+
+	/* List item when normal Combo */
+	.x-combo-list-item {
+		border:none;
+		display: block;
+		text-align: left!important;
+        background: _property($MENU-OPENED--BG, $type);
+        padding: 8px 9px !important;
+        border: none;
+
+        @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
+
+		&:empty {
+			display: none;
+		}
+
+
+
+		&.x-view-highlightrow,
+		&:hover {
+			/* Selected / Hovered */
+			border:none!important;
+			cursor: pointer;
+			color: _property($MENU-OPENED--COLOR---HOVER, $type);
+			background: _property($MENU-OPENED--BG---HOVER, $type);
+
+		}
+	}
+}
+
 @mixin _combo($type: $APP) {
 	input.x-form-text {
 		// border:1px solid red!important;

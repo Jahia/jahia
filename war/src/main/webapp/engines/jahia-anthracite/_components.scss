@@ -402,74 +402,11 @@
 /////////////////////////////////////////////////
 
 .x-combo-list {
-	/* Combo Outer Container */
-	// width: auto !important;
-	background: transparent;
-    overflow: visible;
-    z-index: $ZINDEX--COMBO_LIST;
-
-	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER !optional;
+	@include _combo-list($APP-MENUS);
 
 }
 
-/* Combo Inner Container */
-.x-combo-list-inner {
-	width: auto!important;
-	background: transparent;
 
-	/* Combo List Items that have Thumbs, ie. Channel Combo */
-	.thumb-wrap {
-
-
-		img {
-			/* Actual thumb */
-			display: none!important;
-		}
-
-
-		.x-editable {
-			/* List item when normal Thumbed Combo
-			   Actual Label of Combo Item */
-			@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM !optional;
-
-		}
-
-
-		&.x-combo-selected {
-			/* Selected / Hovered */
-			border:none!important;
-
-
-			.x-editable {
-				/* List item when normal Thumbed Combo */
-				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER !optional;
-			}
-		}
-
-	}
-}
-
-/* List item when normal Combo */
-.x-combo-list-item {
-	border:none;
-	display: block;
-	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM !optional;
-
-	&:empty {
-		display: none;
-	}
-
-
-
-	&.x-view-highlightrow,
-	&:hover {
-		/* Selected / Hovered */
-		border:none!important;
-		cursor: pointer;
-		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER !optional;
-
-	}
-}
 
 /////////////////////////////////////////////////
 // LIST BOX /////////////////////////////////////
@@ -525,86 +462,71 @@
 // CONTEXT MENUS ////////////////////////////////
 /////////////////////////////////////////////////
 
+// .menu-edit-menu-view {
+// 	.x-menu-list::before {
+// 		content: "hey";
+//
+// 	}
+// }
+
+
+// Add titles to context menus ...
+.x-menu-list::before {
+
+	.menu-edit-menu-publication &,
+	.menu-edit-menu-view &,
+	.menu-edit-menu-edit &,
+	.menu-edit-menu-mode &,
+	.editModeContextMenu & {
+		content: attr(data-indigo-title);
+	}
+
+}
+
 
 // Add Personalised styling to specified context menus from values stored in $personalised_context_menus in theme SASS
-	@each $context_menu in $personalised_context_menus {
-		$_context_menu_class: #{nth($context_menu,1)};
-		$_placeholder: #{nth($context_menu,2)};
-
-		#{$_context_menu_class} {
-			@extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:#{$_placeholder} !optional;
-
-			.x-menu-list::before {
-				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:#{$_placeholder} !optional;
-
-			}
-
-			.x-menu-item {
-				@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:#{$_placeholder} !optional;
-
-			}
-
-			.x-item-disabled {
-				.x-menu-item {
-					@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:#{$_placeholder} !optional;
-
-				}
-
-			}
-
-			.x-menu-item-active {
-				.x-menu-item {
-					@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:#{$_placeholder} !optional;
-
-				}
-			}
-
-		}
-	}
+	// @each $context_menu in $personalised_context_menus {
+	// 	$_context_menu_class: #{nth($context_menu,1)};
+	// 	$_placeholder: #{nth($context_menu,2)};
+    //
+	// 	#{$_context_menu_class} {
+	// 		// @extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER\:#{$_placeholder} !optional;
+    //
+	// 		.x-menu-list::before {
+	// 			// @extend %CSS_BLOCK--FORM--CONTEXT_MENU--TITLE\:#{$_placeholder} !optional;
+    //
+	// 		}
+    //
+	// 		// .x-menu-item {
+	// 		// 	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM\:#{$_placeholder} !optional;
+    //         //
+	// 		// }
+    //         //
+	// 		// .x-item-disabled {
+	// 		// 	.x-menu-item {
+	// 		// 		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED\:#{$_placeholder} !optional;
+    //         //
+	// 		// 	}
+    //         //
+	// 		// }
+    //         //
+	// 		// .x-menu-item-active {
+	// 		// 	.x-menu-item {
+	// 		// 		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER\:#{$_placeholder} !optional;
+    //         //
+	// 		// 	}
+	// 		// }
+    //
+	// 	}
+	// }
 
 /* Context Menus */
 
 .x-menu {
-	width: auto !important;
-	background: transparent;
-	overflow: visible;
-	// z-index: $ZINDEX--CONTEXT_MENU;
-	z-index: 999999999999999!important;
-	border: none;
+	@include _context-list($APP-MENUS);
 }
 
-.x-menu-list {
-	height: auto!important;
 
-	&::before {
-		background: _property($MENU-TITLE--BG, $CONTEXT-MENU);
-	    width: 100%;
-	    display: block;
-	    padding: 3px 8px;
-	    font-family: "Nunito Sans";
-	    font-size: 9px;
-	    color: _property($MENU-TITLE--COLOR, $CONTEXT-MENU);
-	    text-transform: uppercase;
-	    font-weight: 600;
-	    z-index: $ZINDEX--CONTEXT_MENU---TITLE;
-	}
-}
-
-.x-menu-list-item {}
-
-.x-menu-item {
-	@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM !optional;
-
-	.x-item-disabled & {
-		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---DISABLED !optional;
-
-	}
-
-	.x-menu-item-active & {
-		@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER !optional;
-	}
-
-}
 
 .x-item-disabled {
 	opacity: 1;
@@ -4257,16 +4179,16 @@ body[data-indigo-gwt-side-panel="open"] {
 	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 
 	.x-info-tl {
-		background: $COLOUR--GREY_CLOUDS !important;
+		background: #455A64 !important;
 
 		.x-info-tr {
-			background: $COLOUR--GREY_CLOUDS;
+			background: #455A64;
 
 			.x-info-tc {
-				background: $COLOUR--GREY_CLOUDS;
+				background: #455A64;
 
 				span {
-					color: $COLOUR--GREY_CLOUDS;
+					color: #FFEB3B;
 					padding-left: 6px;
 				}
 
@@ -4277,13 +4199,13 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-info-ml {
-		background: $COLOUR--GREY_CLOUDS !important;
+		background: #455A64 !important;
 
 		.x-info-mr {
-			background: $COLOUR--GREY_CLOUDS;
+			background: #455A64;
 
 			.x-info-mc {
-				background: $COLOUR--GREY_CLOUDS;
+				background: #455A64;
 
 				.x-info-body {
 					color: $color-white;

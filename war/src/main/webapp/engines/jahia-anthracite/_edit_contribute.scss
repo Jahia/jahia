@@ -1,3 +1,28 @@
+// Set background colours
+
+
+.x-viewport-contributemode {
+    background: _property($CONTRIBUTE--BG, $CONTRIBUTE);
+
+    div[role="combobox"] {
+        @include _combo($CONTRIBUTE);
+
+    }
+
+
+}
+
+body[data-indigo-app="contribute"] {
+    .x-menu {
+    	@include _context-list($CONTRIBUTE-MENUS);
+    }
+
+    .x-combo-list {
+    	@include _combo-list($CONTRIBUTE-MENUS);
+
+    }
+}
+
 // Menu Set
 .action-toolbar {
 
@@ -444,11 +469,11 @@
 // Workflow Button
 .contribute-menu-workflow {
     position: fixed!important;
-    right: 211px;
+    right: 218px;
     top: 21px;
 
     background-position: top left!important;
-    padding-left: 32px;
+    padding-left: 25px;
 
     > tbody {
         display: none;
@@ -512,10 +537,14 @@
     left: 5px;
     z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
     display: block;
-    background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
+    background: url(_property($BODY--HAMBURGER-ICON, $APP)) no-repeat top 3px left 10px;
     background-size: 32px 32px;
     margin-top: 0;
     opacity: 0.99!important;
+
+    .x-viewport-contributemode & {
+        background-image: url(_property($CONTRIBUTE--HAMBURGER-ICON, $APP));
+    }
 
     &:hover {
         opacity: 1!important;
@@ -558,6 +587,8 @@
             height: 15px;
 
         }
+
+
     }
 
     &::after {
@@ -738,13 +769,14 @@
 }
 
 // Hamburger
-.menu-editmode-managers-menu {
+
+.x-menu.action-bar-menu.menu-editmode-managers-menu {
     position: absolute;
     top: 0!important;
     left: 0!important;
     width: 100%!important;
     height: 100%!important;
-	background: _property($BODY--BG, $HAMBURGER);
+	background: _property($BODY--BG, $HAMBURGER)!important;
 	pointer-events: none;
 
 	&:hover {
@@ -761,7 +793,7 @@
 	    pointer-events: none;
 	    font-family: "Raleway", sans-serif;
 	    font-size: 40px;
-	    color: _property($HAMBURGER--TITLE--COLOR, $HAMBURGER);
+	    color: _property($HAMBURGER--TITLE--COLOR, $HAMBURGER)!important;
 	    font-weight: 100;
 	    width: 100%;
 	    text-align: center;
@@ -779,7 +811,7 @@
 
 		padding-left: 18px;
 
-		@include text(13px, $COLOUR--LEAD_CLOUDS, $FONT--WEIGHT---LIGHT);
+		@include text(13px, $COLOUR--LEAD_CLOUDS !important, $FONT--WEIGHT---LIGHT);
 
 		pointer-events: all;
 	}
@@ -806,9 +838,9 @@
 
     .x-menu-item {
         box-shadow: inset -2px 2px #f1f1f1;
-        background: _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
+        background: _property($HAMBURGER--BUTTON--BG, $HAMBURGER)!important;
 
-        color: _property($HAMBURGER--BUTTON--COLOR, $HAMBURGER);
+        color: _property($HAMBURGER--BUTTON--COLOR, $HAMBURGER)!important;
         font-weight: 100;
 
         transition: all 0.3s ease-in 0s;
@@ -818,9 +850,10 @@
 		pointer-events: all;
 
         &:hover {
-			color: _property($HAMBURGER--BUTTON--COLOR---HOVER, $HAMBURGER);
-			background: _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-			box-shadow: _property($HAMBURGER--BUTTON--SHADOW---HOVER, $HAMBURGER);
+			color: _property($HAMBURGER--BUTTON--COLOR---HOVER, $HAMBURGER)!important;
+			background: _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER)!important;
+			box-shadow: _property($HAMBURGER--BUTTON--SHADOW---HOVER, $HAMBURGER)!important;
+            font-size: 14px;
 
             z-index: 999;
         }
@@ -1008,6 +1041,10 @@
             margin-top: 0px !important;
 
         }
+
+        .x-viewport-contributemode & {
+            box-shadow: _property($CONTRIBUTE--BG--SHADOW, $CONTRIBUTE);
+        }
     }
 }
 
@@ -1055,7 +1092,7 @@
 %CSS_BLOCK--CONTRIBUTE--MODE_SWITCH---SELECTED {
     background: _property($SWITCH--BG--ON, $APP);
     color:_property($SWITCH--COLOR--ON, $APP)!important;
-    border-radius: 10px;
+    border-radius: 3px;
     box-shadow: _property($SWITCH--SHADOW--ON, $APP);
     padding: 5px 10px;
     font-weight: 600;
@@ -1093,7 +1130,7 @@
 // Home page
 .toolbar-item-sitehome {
     margin-left: 60px;
-    border-radius: 10px 0 0 10px;
+    border-radius: 3px 0 0 3px;
 
     &::after {
         content: $text_site;
@@ -1124,7 +1161,7 @@
 
 // Files and images
 .toolbar-item-sitefiels {
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 3px 3px 0;
 
     &::after {
         content: $text_files;

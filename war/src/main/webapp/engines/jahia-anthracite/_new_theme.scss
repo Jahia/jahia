@@ -49,6 +49,8 @@
 $EDIT-ENGINE: 			LIGHT;
 $SIDE-PANEL: 			LIGHT;
 $APP: 					DARK;
+$APP-MENUS:				DARK;
+$CONTRIBUTE-MENUS:		LIGHT;
 $DATE-PICKER: 			DARK;
 $CONTEXT-MENU: 			DARK;
 $THUMBS: 				DARK;
@@ -60,6 +62,7 @@ $PREVIEW:			 	DARK;
 $DASHBOARD:			 	LIGHT;
 $HAMBURGER:			 	LIGHT;
 $MODAL-INPUT: 			LIGHT;
+$CONTRIBUTE: 			LIGHT;
 // INVERSED
 // $EDIT-ENGINE: 			DARK;
 // $SIDE-PANEL: 			DARK;
@@ -157,7 +160,8 @@ $basic-colors: (
 		normal:	$color-quinary,
 		a: 		lighten($color-quinary, 4%),
 		b: 		darken($color-quinary, 5%),
-		c: 		darken($color-quinary, 25%)
+		c: 		darken($color-quinary, 25%),
+		d: 		darken($color-quinary, 10%),
 	),
 	senary: (
 		normal:	$color-senary,
@@ -290,6 +294,26 @@ $BODY--BG:(
 $BODY--BG--SHADOW:(
 	LIGHT: 0 5px 10px 1px _theme-color(black, b),
 	DARK: 0 5px 10px 1px _theme-color(black, b),
+);
+
+$BODY--HAMBURGER-ICON:(
+	LIGHT: $ICON--DX---BLUE,
+	DARK: $ICON--DX---BLUE
+);
+
+$CONTRIBUTE--BG:(
+	LIGHT: radial-gradient(ellipse at bottom right, _theme-color(quinary, b) 0%, _theme-color(quinary) 50%),
+	DARK: radial-gradient(ellipse at bottom right, _theme-color(quinary, b) 0%, _theme-color(quinary) 50%),
+);
+
+$CONTRIBUTE--BG--SHADOW:(
+	LIGHT: 0px 0px 10px 0px _theme-color(quinary, c) !important,
+	DARK: 0px 0px 10px 0px _theme-color(quinary, c) !important,
+);
+
+$CONTRIBUTE--HAMBURGER-ICON:(
+	LIGHT: $ICON--DX---WHITE,
+	DARK: $ICON--DX---WHITE
 );
 
 $SIDE-PANEL--BG:(
@@ -817,7 +841,7 @@ $MENU-SCROLL--BG:(
 
 // TITLE
 $MENU-TITLE--COLOR:(
-	LIGHT: _theme-color(primary),
+	LIGHT: _theme-color(secondary, c),
 	DARK: _theme-color(quinary, c),
 );
 
@@ -994,12 +1018,12 @@ $MENU-CLOSED--OPTIONS-BG---HOVER: (
 
 // OPENED UP
 $MENU-OPENED--COLOR:(
-	LIGHT: _theme-color(senary),
+	LIGHT: _theme-color(secondary, a),
 	DARK: _theme-color(senary)
 );
 
 $MENU-OPENED--BG:(
-	LIGHT: _theme-color(quinary),
+	LIGHT: _theme-color(primary, g),
 	DARK: _theme-color(quinary),
 );
 
@@ -1010,7 +1034,7 @@ $MENU-OPENED--COLOR---HOVER:(
 );
 
 $MENU-OPENED--BG---HOVER:(
-	LIGHT: _theme-color(quinary, a),
+	LIGHT: _theme-color(primary, f),
 	DARK: _theme-color(quinary, a),
 );
 
@@ -1463,17 +1487,17 @@ $HEADER--SHADOW:(
 
 $SWITCH--RAIL: (
 	LIGHT: _theme-color(primary, g),
-	DARK: _theme-color(primary, g),
+	DARK: _theme-color(quinary, d),
 );
 
 $SWITCH--COLOR--ON: (
 	LIGHT: _theme-color(secondary),
-	DARK: _theme-color(secondary),
+	DARK: _theme-color(quinary),
 );
 
 $SWITCH--BG--ON: (
 	LIGHT: _theme-color(quinary),
-	DARK: _theme-color(quinary),
+	DARK: _theme-color(secondary),
 );
 
 $SWITCH--SHADOW--ON: (
@@ -1494,7 +1518,7 @@ $SWITCH--BG--ON---HOVER: (
 
 $SWITCH--COLOR--OFF: (
 	LIGHT: _theme-color(secondary, e),
-	DARK: _theme-color(secondary, e),
+	DARK: _theme-color(white, a),
 );
 
 $SWITCH--COLOR--OFF---HOVER: (

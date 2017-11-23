@@ -1375,10 +1375,16 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 								.x-panel-header-text {
 									pointer-events: all;
-									@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM;
+									text-align: left!important;
+							        background: _property($MENU-OPENED--BG, $CONTEXT-MENU);
+							        padding: 8px 9px !important;
+							        border: none;
+
+							        @include text(13px, _property($MENU-OPENED--COLOR, $CONTEXT-MENU), $FONT--WEIGHT---LIGHT);
 
 									&:hover {
-										@extend %CSS_BLOCK--FORM--CONTEXT_MENU--ITEM---HOVER;
+										color: _property($MENU-OPENED--COLOR---HOVER, $CONTEXT-MENU);
+								        background: _property($MENU-OPENED--BG---HOVER, $CONTEXT-MENU);
 									}
 								}
 							}

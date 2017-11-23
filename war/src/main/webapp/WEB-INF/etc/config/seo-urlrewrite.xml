@@ -95,7 +95,7 @@
         </note>
         <condition type="attribute" name="jahiaSiteKeyMatchesCurrentServerName" operator="equal">^true$</condition>
         <condition type="attribute" name="jahiaSeoServernameForLink" operator="equal">^$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/(?!users/).*)?$</from>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/.*)?$</from>
         <to>$1%{attribute:jahiaSeoCmsToken}%{attribute:jahiaSeoLanguageToken}$4</to>
     </outbound-rule>
 
@@ -108,7 +108,7 @@
         </note>
         <condition type="attribute" name="jahiaSiteKeyMatchesCurrentServerName" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSeoServernameForLink" operator="equal">^$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/(?!users/).*)?$</from>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/.*)?$</from>
         <to>$1%{attribute:jahiaSeoCmsToken}%{attribute:jahiaSeoLanguageToken}/sites/$3$4</to>
     </outbound-rule>
 
@@ -121,7 +121,7 @@
             Removes the /cms part if not disabled and in case the following path does not start with a reserved prefix.
         </note>
         <condition type="attribute" name="jahiaSeoServernameForLink" operator="notequal">^$</condition>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/(?!users/).*)?$</from>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/([a-zA-Z_]{2,5})/sites/([\p{Alnum}\-_]+)(/.*)?$</from>
         <to>$1%{attribute:jahiaSeoCmsToken}%{attribute:jahiaSeoLanguageToken}$4</to>
     </outbound-rule>
 

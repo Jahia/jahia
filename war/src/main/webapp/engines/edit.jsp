@@ -24,8 +24,11 @@
     <script type="text/javascript" src="<c:url value='/modules/assets/javascript/clippy/jquery.clippy.min.js'/>"></script>
 
 	<c:if test="${not empty theme}">
-		<link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/edit${themeLocale}.css'/>"/>
+
 		<!-- Javascript for theme -->
+        <script type="text/javascript">
+            var DXAnthraciteCSS = '/engines/${theme}/edit${themeLocale}.css';
+        </script>
 		<script type="text/javascript" src="<c:url value='/engines/${theme}/js/edit.js'/>"></script>
     </c:if>
 

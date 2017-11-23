@@ -1454,6 +1454,7 @@
 
 		},
 		switch: function(appID){
+
 			if(app.data.currentApp == appID){
 				return false;
 
@@ -1579,7 +1580,7 @@
 		theme: {
 			data: {
 				skin: "dark",
-				enabled: true,
+				enabled: false,
 				anthraciteCSSNode: null
 			},
 			onToggle: function(e){
@@ -1606,20 +1607,27 @@
 
 				if(!app.theme.data.enabled){
 					// Anthracite CSS has been removed, so plug it back in
-                    DexV2.tag("head").append(app.theme.data.anthraciteCSSNode);
+                    var cssLink = document.createElement("link");
+
+                    cssLink.type = "text/css";
+                    cssLink.rel = "stylesheet";
+                    cssLink.id = "anthractite-CSS";
+                    cssLink.href = DXAnthraciteCSS;
+
+                    DexV2("head").append(cssLink);
 
 					app.theme.data.enabled = true;
+
 				}
 			},
 			off: function(){
 				app.dev.log("::: APP ::: THEME ::: OFF");
-				if(app.theme.data.enabled){
-					// Remove Anthracite CSS style sheet
-                    DexV2.node(app.theme.data.anthraciteCSSNode).remove();
 
-	               // Register the fact that it has been removed
-	               app.theme.data.enabled = false;
-			   }
+                if(app.theme.data.enabled){
+                    DexV2.id("anthractite-CSS").remove();
+
+                }
+
 			},
 		},
 		picker: {
@@ -2407,7 +2415,6 @@
 					}
 
 
-					console.log("LOCKED:", isLocked);
 				}, 500);
 
 
@@ -2918,6 +2925,7 @@
 					.setAttribute("data-edit-window-style", "default")
                 	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "")
                 	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
+
 			},
 			onClose: function(){},
 
@@ -3960,6 +3968,20 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
+                .onMouseDown(".toolbar-item-studio", function(){
+                    var studioNodePath = sessionStorage.getItem("studiomode_nodePath"),
+                        baseURL = "/cms/studio/default/" + jahiaGWTParameters.uilang;
+
+                    if(studioNodePath){
+                        studioURL = baseURL + studioNodePath + ".html"
+                    } else {
+                        studioURL = baseURL + "/settings.manageModules.html"
+
+                    }
+
+                    window.location = studioURL;
+
+                })
 				.onOpen(".content-type-window", function(){
 					DexV2(".content-type-window .x-form-field-wrap input").setAttribute("placeholder", "Filter Content");
 				})
@@ -4173,35 +4195,16 @@
 
     // INITIALISE
     var init = function(){
-        // Copy Anthracite CSS to remove / add when dropping in and out of STUDIO mode
-
-		var anthraciteCSS_EN = DexV2("link[rel=stylesheet][href$='edit_en.css']").getNode(0),
-			anthraciteCSS_FR = DexV2("link[rel=stylesheet][href$='edit_fr.css']").getNode(0);
-
-		if(anthraciteCSS_EN){
-			app.data.UILanguage = "EN";
-			app.theme.data.cssReference = "edit_en.css";
-			app.theme.data.anthraciteCSSNode = anthraciteCSS_EN;
-
-		} else if(anthraciteCSS_FR){
-			app.data.UILanguage = "FR";
-			app.theme.data.cssReference = "edit_fr.css";
-			app.theme.data.anthraciteCSSNode = anthraciteCSS_FR;
-
-		}
-
-		if(DexV2.id("editmode").getAttribute("template") == "default"){
-			app.data.firstApp = "edit"; // edit or contribute
-		} else {
-			app.data.firstApp = "settings"; // settings / admin
-
-		}
+        // Get UI Language from GWT parameters
+		app.data.UILanguage = jahiaGWTParameters.uilang.toUpperCase();
 
 		// use Dex to cache an Dex Object
 		DexV2("body").cache("body");
 
+        // Register CK Editor version ( needed by CSS )
         DexV2.getCached("body").setAttribute("data-CKEDITOR-VERSION", app.data.ckeditorVersion);
 
+        // This is a content picker, not main app.
 		if(app.data.HTTP.app == "contentpicker"){
 			// This is a full page picker, not edit engine
 			app.picker.data.standalone = true;
@@ -4215,6 +4218,7 @@
 
 		}
 
+        // This is a manager, not main app.
 		if(app.data.HTTP.app == "manager"){
 			// This is a manager, not edit engine
 			app.picker.data.standalone = true;

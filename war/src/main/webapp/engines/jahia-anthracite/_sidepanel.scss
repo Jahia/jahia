@@ -354,7 +354,7 @@
 			// }
 		}
 
-		body[data-indigo-app="edit"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
+		body[data-indigo-app="edit"][data-sitesettings="false"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
 			 width: auto !important;
 		}
 

@@ -51,6 +51,8 @@ import org.junit.*;
 
 import static org.junit.Assert.*;
 import javax.jcr.RepositoryException;
+import javax.jcr.lock.LockException;
+
 import java.util.UUID;
 
 /**
@@ -87,22 +89,19 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         });
 
         // in case a unit test failed, it's possible that read only mode is still "ON", switch it off to avoid disturbing other unit tests suites
-        switchOffIfNecessary();
+        switchReadOnlyOffIfNecessary();
     }
 
     @Before
     public void setUp() {
-        switchOffIfNecessary();
+        switchReadOnlyOffIfNecessary();
     }
 
-    @After
-    public void tearDown() {
-        // nothing to tear down
-    }
-
-    private static void switchOffIfNecessary() {
-        if(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.ON) {
+    private static void switchReadOnlyOffIfNecessary() {
+        try {
             readOnlyModeController.switchReadOnlyMode(false);
+        } catch (IllegalArgumentException e) {
+            // the read only mode was off already
         }
     }
 
@@ -126,26 +125,22 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
         // verify state is pending
         assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.PENDING_ON);
-        assertTrue(readOnlyModeController.isReadOnlyModeEnabled());
 
         TestThread<?> switchThead2 = getReadOnlySwitchThread(false);
         switchThead2.start();
 
         // verify state is still pending
         assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.PENDING_ON);
-        assertTrue(readOnlyModeController.isReadOnlyModeEnabled());
 
         // wait for switch to finish
         switchThead.join();
 
         // switch ON is finished, but thread2 should be released and switch OFF should be starting
         assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.PENDING_OFF);
-        assertTrue(readOnlyModeController.isReadOnlyModeEnabled());
 
         switchThead2.join();
 
         assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.OFF);
-        assertFalse(readOnlyModeController.isReadOnlyModeEnabled());
     }
 
     /**
@@ -163,7 +158,6 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
         // assert the session is not active anymore
         assertFalse(JCRSessionWrapper.getActiveSessionsObjects().containsKey(sessionUuid));
-        assertTrue(readOnlyModeController.isReadOnlyModeEnabled());
     }
 
     /**
@@ -304,9 +298,9 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     @Test
     public void testSwitchOnAndOff() throws Exception {
         readOnlyModeController.switchReadOnlyMode(true);
-        assertTrue(readOnlyModeController.isReadOnlyModeEnabled());
+        assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.ON);
         readOnlyModeController.switchReadOnlyMode(false);
-        assertFalse(readOnlyModeController.isReadOnlyModeEnabled());
+        assertTrue(readOnlyModeController.getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.OFF);
     }
 
     private void testUnlock(boolean isDeep, boolean isSessionScope, boolean useClearAllLocks) throws Exception {
@@ -438,8 +432,8 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         } finally {
             try {
                 systemSiteNode.unlock();
-            } catch (Exception e) {
-                // do nothing
+            } catch (LockException e) {
+                // the node hasn't been locked
             }
         }
     }
@@ -466,8 +460,8 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
                 } else {
                     systemSiteNode.unlock(type);
                 }
-            } catch (Exception e) {
-                // do nothing
+            } catch (LockException e) {
+                // the node hasn't been locked
             }
         }
     }

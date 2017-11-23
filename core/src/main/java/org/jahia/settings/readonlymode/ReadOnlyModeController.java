@@ -70,28 +70,34 @@ public class ReadOnlyModeController {
     };
 
     /**
-     * Different status for the read only switch
-     * OFF: read only is disabled
-     * ON: read only is enabled
-     * PENDING_ON: read only switch is currently performing the switch to switch ON
-     * PENDING_OFF: read only switch is currently performing the switch to switch OFF
+     * Read only mode status.
      */
     public enum ReadOnlyModeStatus {
-        OFF, ON, PENDING_ON, PENDING_OFF
+
+        /**
+         * Read only mode is switched off
+         */
+        OFF,
+
+        /**
+         * Read only mode is switched on
+         */
+        ON,
+
+        /**
+         * The application is in progress switching read only mode on
+         */
+        PENDING_ON,
+
+        /**
+         * The application is in progress switching read only mode off
+         */
+        PENDING_OFF
     }
 
-    private ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
+    private volatile ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
 
     private long serviceNotificationTimeout = 60 * 1000L;
-
-    /**
-     * Checks if read only mode is currently enabled or not.
-     *
-     * @return <code>true</code> if the read-only mode is enabled or pending enabling or pending disabling; code>false</code> if it is disabled
-     */
-    public boolean isReadOnlyModeEnabled() {
-        return readOnlyStatus != ReadOnlyModeStatus.OFF;
-    }
 
     /**
      * Handles the case, when a service encounters read-only mode violation, i.e. a data or state modification is requested.
@@ -114,7 +120,6 @@ public class ReadOnlyModeController {
         ReadOnlyModeStatus targetStatus = enable ? ReadOnlyModeStatus.ON : ReadOnlyModeStatus.OFF;
         logger.info("Received request to switch read only mode to {}", targetStatus);
 
-        // synchronize this to avoid multiple thread executing the switch at the exact same time
         if (!checkStatusUpdateNeeded(enable)) {
             throw new IllegalArgumentException("The read-only mode flag is " + readOnlyStatus + ", unable to switch " + targetStatus);
         }
@@ -138,7 +143,7 @@ public class ReadOnlyModeController {
         // switch to final state
         readOnlyStatus = targetStatus;
 
-        logger.info("Finished read-only mode switch. Now the read-only mode is {}", targetStatus);
+        logger.info("Finished read-only mode switch. Now the read-only mode is {}", readOnlyStatus);
     }
 
     private boolean checkStatusUpdateNeeded(boolean enable) {

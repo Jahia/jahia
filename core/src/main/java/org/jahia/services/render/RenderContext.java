@@ -104,7 +104,7 @@ public class RenderContext {
     private String mode;
     private SiteInfo siteInfo;
     private boolean forceUILocaleForJCRSession;
-    
+
     private boolean portletActionRequest;
 
     private boolean ugcEnabled = true;
@@ -410,7 +410,7 @@ public class RenderContext {
     public boolean isForceUILocaleForJCRSession() {
         return forceUILocaleForJCRSession;
     }
-    
+
     public boolean isPortletActionRequest() {
         return portletActionRequest;
     }
@@ -428,12 +428,12 @@ public class RenderContext {
     }
 
     /**
-     * Checks the state of the read-only mode.
-     * 
-     * @return <code>true</code> if the full read only mode is currently enabled; <code>false</code> otherwise
+     * Get current read-only mode status.
+     *
+     * @return Current read-only mode status
      */
-    public boolean isReadOnlyMode() {
-        return ReadOnlyModeController.getInstance().isReadOnlyModeEnabled();
+    public ReadOnlyModeController.ReadOnlyModeStatus getReadOnlyStatus() {
+        return ReadOnlyModeController.getInstance().getReadOnlyStatus();
     }
 
 }

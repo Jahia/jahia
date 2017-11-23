@@ -2575,7 +2575,7 @@ body[data-indigo-add-visibility-condition="new"] {
 		.x-grid3-hh {
 			box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
 			margin: 2px 2px 8px;
-			width: calc(100% - 162px) !important;
+			width: calc(100% - 167px) !important;
 			background: #fff;
 
 			> table {
@@ -2612,6 +2612,10 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	}
 
+	.x-grid3-cell-inner.x-grid3-col-url {
+		max-width: 480px;
+	}
+
 	.x-row-editor-header {
 		display: none;
 	}
@@ -2644,6 +2648,18 @@ body[data-indigo-add-visibility-condition="new"] {
 
 		input[type="checkbox"] {
 			margin-left: -3px;
+		}
+
+	}
+
+	.x-row-editor button.x-btn-text {
+		padding: 5px 16px !important;
+		background: #ededed !important;
+		color: rgba(0, 0, 0, 0.87) !important;
+
+		&[aria-disabled="true"] {
+			opacity: .6;
+			color: rgba(0, 0, 0, 0.64) !important;
 		}
 
 	}
@@ -2723,4 +2739,8 @@ body[data-indigo-add-visibility-condition="new"] {
 		padding-top: 17px;
 	}
 
+}
+
+.engine-save-error {
+    z-index: 1050 !important;
 }

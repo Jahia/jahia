@@ -13,14 +13,10 @@
 
     <webflow:flow-executor id="jahiaFlowExecutor" flow-registry="jahiaFlowRegistry"  >
         <webflow:flow-execution-repository conversation-manager="jahiaConversationManager" />
-        <webflow:flow-execution-listeners>
-            <webflow:listener ref="jahiaLoggingListener"/>
-        </webflow:flow-execution-listeners>
     </webflow:flow-executor>
 
     <bean id="jahiaConversationManager" class="org.springframework.webflow.conversation.impl.JahiaConversationManager"/>
 
-    <bean id="jahiaLoggingListener" class="org.jahia.services.render.webflow.LoggingFlowExecutionListener"/>
 
     <bean id="jahiaFlowUrlHandler" class="org.jahia.services.render.webflow.JahiaFlowUrlHandler"/>
 

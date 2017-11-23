@@ -2536,14 +2536,14 @@ body[data-indigo-add-visibility-condition="new"] {
 
 #JahiaGxtEditEnginePanel-seo > .x-component {
 	max-width: 100%;
-	background: rgba(255, 255, 255, 0.4);
+	background: rgba($color-white, .4);
 	border: 1px solid #e8e8e8 !important;
 	box-sizing: border-box;
 	padding: 8px;
 	height: auto !important;
 
 	.x-panel-header {
-		font-family: "Nunito Sans", sans-serif;
+		font-family: $FONT--FAMILY---NUNITO;
 		background: transparent !important;
 		border: none;
 	}
@@ -2573,13 +2573,13 @@ body[data-indigo-add-visibility-condition="new"] {
 		background: transparent !important;
 
 		.x-grid3-hh {
-			box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+			box-shadow: 0px 1px 2px rgba($color-black, .2);
 			margin: 2px 2px 8px;
 			width: calc(100% - 167px) !important;
-			background: #fff;
+			background: $color-white;
 
 			> table {
-				background: rgba(255, 255, 255, 0.64);
+				background: rgba($color-white, .64);
 				padding: 4px 0;
 
 				.x-grid3-hd.x-grid3-cell {
@@ -2655,36 +2655,36 @@ body[data-indigo-add-visibility-condition="new"] {
 	.x-row-editor button.x-btn-text {
 		padding: 5px 16px !important;
 		background: #ededed !important;
-		color: rgba(0, 0, 0, 0.87) !important;
+		color: rgba($color-black, .87) !important;
 
 		&[aria-disabled="true"] {
 			opacity: .6;
-			color: rgba(0, 0, 0, 0.64) !important;
+			color: rgba($color-black, .64) !important;
 		}
 
 	}
 
 	.x-row-editor-body.x-box-layout-ct {
-		background: #5c6164;
+		background: $color-primary;
 		height: 36px !important;
 		box-sizing: border-box;
 	}
 
 	.x-row-editor-footer {
-		background: #5c6164;
+		background: $color-primary;
 	}
 
 	.x-row-editor .x-btns {
-		background: #5c6164;
+		background: $color-primary;
 
 		.x-plain-bwrap {
-			background: #5c6164;
+			background: $color-primary;
 		}
 
 	}
 
 	.x-row-editor .x-plain-body.x-plain-body-noheader {
-		background: #5c6164;
+		background: $color-primary;
 		margin-top: -2px;
 		padding-bottom: 2px;
 	}
@@ -2695,13 +2695,13 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	.x-toolbar-ct .x-btn.x-btn-text-icon button {
 		padding: 5px 16px !important;
-		background: #00a0e3 !important;
+		background: $color-tertiary !important;
 	}
 
 	.x-toolbar-right-row > .x-toolbar-cell > div.x-form-label {
-		color: #ffffff !important;
+		color: $color-white !important;
 		font-weight: 600;
-		font-family: "Nunito Sans", sans-serif;
+		font-family: $FONT--FAMILY---NUNITO;
 		background: #F44336;
 		padding: 4px 12px;
 		border-radius: 20px;

@@ -82,8 +82,8 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
 
     private static Logger logger = LoggerFactory.getLogger(ExternalUsersImportUpdater.class);
 
-    private static final String LIVE_REPOSITORY_XML = "live-repository.xml";
-    private static final String REPOSITORY_XML = "repository.xml";
+    private static final String LIVE_REPOSITORY_XML = ImportExportBaseService.LIVE_REPOSITORY_XML;
+    private static final String REPOSITORY_XML = ImportExportBaseService.REPOSITORY_XML;
     private static final String LIVE_CONTENT = "live-content";
     private static final String CONTENT = "content";
 
@@ -112,7 +112,7 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
 
                 if (LIVE_REPOSITORY_XML.equals(name) || REPOSITORY_XML.equals(name)) {
                     zout.putNextEntry(new ZipEntry(name));
-                    if ("users.zip".equalsIgnoreCase(fileName)) {
+                    if (ImportExportBaseService.USERS_ZIP.equalsIgnoreCase(fileName)) {
                         updated |= transform(zin, zout, pathMapping);
                     } else {
                         updated |= clean(zin, zout, pathMapping);

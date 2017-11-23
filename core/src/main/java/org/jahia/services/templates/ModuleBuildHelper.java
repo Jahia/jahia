@@ -889,7 +889,7 @@ public class ModuleBuildHelper implements InitializingBean {
             }
 
             // Save repository.xml file after first generation
-            if (target.getName().equals("repository.xml")) {
+            if (target.getName().equals(ImportExportBaseService.REPOSITORY_XML)) {
                 FileUtils.copyFile(target, new File(target.getPath() + ".generated"));
             }
 
@@ -910,7 +910,7 @@ public class ModuleBuildHelper implements InitializingBean {
 
                 LinkedList<DiffMatchPatch.Patch> l = dmp.patch_make(StringUtils.join(previouslyGeneratedContent, "\n"), StringUtils.join(sourceContent, "\n"));
 
-                if (target.getName().equals("repository.xml")) {
+                if (target.getName().equals(ImportExportBaseService.REPOSITORY_XML)) {
                     // Keep generated file uptodate
                     FileUtils.writeLines(new File(target.getPath() + ".generated"), transCodeTarget != null ? transCodeTarget.name() : "UTF-8", sourceContent);
                 }

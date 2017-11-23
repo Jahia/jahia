@@ -309,25 +309,65 @@ public class JahiaSitesService extends JahiaService {
     }
 
 
+    /**
+     * @deprecated since 7.2.2.0. Use the {@link #addSite(SiteCreationInfo)} instead
+     */
+    @Deprecated
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, String firstImport, Resource fileImport, String fileImportName,
-                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
-        return addSite(currentUser, title, serverName, siteKey, descr, selectedLocale,
-                selectTmplSet, null, firstImport, fileImport, fileImportName, asAJob,
-                doImportServerPermissions, originatingJahiaRelease, null, null);
+                             /* not used now */ Boolean asAJob, /* not used now */ Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
+        return addSite(currentUser, title, serverName, siteKey, descr, selectedLocale, selectTmplSet, null, firstImport, fileImport, fileImportName, asAJob, doImportServerPermissions, originatingJahiaRelease);
     }
 
+    /**
+     * @deprecated since 7.2.2.0. Use the {@link #addSite(SiteCreationInfo)} instead
+     */
+    @Deprecated
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
-        return addSite(currentUser, title, serverName, siteKey, descr, selectedLocale, selectTmplSet, modulesToDeploy, firstImport, fileImport, fileImportName,
-                asAJob, doImportServerPermissions, originatingJahiaRelease, null, null);
+        return addSite(new SiteCreationInfo(siteKey, serverName, null, title, descr, selectTmplSet, modulesToDeploy,
+                selectedLocale != null ? selectedLocale.toString() : null, currentUser, firstImport, fileImport,
+                fileImportName, originatingJahiaRelease));
     }
 
+    /**
+     * @deprecated since 7.2.2.0. Use the {@link #addSite(SiteCreationInfo)} instead
+     */
+    @Deprecated
     public JahiaSite addSite(final JahiaUser currentUser, final String title, final String serverName, final String siteKey, final String descr,
                              final Locale selectedLocale, final String selectTmplSet, final String[] modulesToDeploy, final String firstImport, final Resource fileImport, final String fileImportName,
                              final Boolean asAJob, final Boolean doImportServerPermissions, final String originatingJahiaRelease, final Resource legacyMappingFilePath, final Resource legacyDefinitionsFilePath) throws JahiaException, IOException {
 
+        return addSite(new SiteCreationInfo(siteKey, serverName, null, title, descr, selectTmplSet, modulesToDeploy,
+                selectedLocale != null ? selectedLocale.toString() : null, currentUser, firstImport, fileImport,
+                fileImportName, originatingJahiaRelease, legacyMappingFilePath, legacyDefinitionsFilePath));
+    }
+
+    /**
+     * @deprecated since 7.2.2.0. Use the {@link #addSite(SiteCreationInfo, JCRSessionWrapper)} instead
+     */
+    @Deprecated
+    public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
+                             Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
+                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
+
+        return addSite(
+                new SiteCreationInfo(siteKey, serverName, null, title, descr, selectTmplSet, modulesToDeploy,
+                        selectedLocale != null ? selectedLocale.toString() : null, currentUser, firstImport, fileImport,
+                        fileImportName, originatingJahiaRelease, legacyMappingFilePath, legacyDefinitionsFilePath),
+                session);
+    }
+
+    /**
+     * Creates the site using the specified data.
+     * 
+     * @param info the site creation information
+     * @return the created site object
+     * @throws JahiaException in case of site creation issues
+     * @throws IOException in case of I/O errors
+     */
+    public JahiaSite addSite(final SiteCreationInfo info) throws JahiaException, IOException {
         JahiaSite site = null;
         final List<Exception> errors = new ArrayList<Exception>(1);
 
@@ -339,7 +379,7 @@ public class JahiaSitesService extends JahiaService {
                 public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         session.getPathMapping().putAll(JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping());
-                        return addSite(currentUser, title, serverName, siteKey, descr, selectedLocale, selectTmplSet, modulesToDeploy, firstImport, fileImport, fileImportName, asAJob, doImportServerPermissions, originatingJahiaRelease, legacyMappingFilePath, legacyDefinitionsFilePath, session);
+                        return addSite(info, session);
                     } catch (IOException e) {
                         errors.add(e);
                     } catch (JahiaException e) {
@@ -367,16 +407,19 @@ public class JahiaSitesService extends JahiaService {
         return site;
     }
 
-    public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
-            Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
-            Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
-        return addSite(currentUser, title, serverName, null, siteKey, descr, selectedLocale, selectTmplSet, modulesToDeploy, firstImport, fileImport, fileImportName, asAJob, doImportServerPermissions, originatingJahiaRelease, legacyMappingFilePath, legacyDefinitionsFilePath, session);
-    }
-
-    public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String[] serverNameAliases, String siteKey, String descr,
-                             Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
-                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
-
+    /**
+     * Creates the site using the specified data.
+     * 
+     * @param info the site creation information
+     * @param session the current JCR session to use for site creation
+     * @return the created site object
+     * @throws JahiaException in case of site creation issues
+     * @throws IOException in case of I/O errors
+     */
+    public JahiaSite addSite(SiteCreationInfo info, JCRSessionWrapper session) throws JahiaException, IOException {
+        long startTime = System.currentTimeMillis();
+        logger.info("Start creation of a site using data: {}", info);
+        
         // check there is no site with same server name before adding
         boolean importingSystemSite = false;
         final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
@@ -384,9 +427,11 @@ public class JahiaSitesService extends JahiaService {
 
         try {
 
+            String siteKey = info.getSiteKey();
+            
             if (!siteExists(siteKey, session)) {
 
-                final JahiaTemplatesPackage templateSet = templateService.getAnyDeployedTemplatePackage(selectTmplSet);
+                final JahiaTemplatesPackage templateSet = templateService.getAnyDeployedTemplatePackage(info.getTemplateSet());
                 final String templatePackage = templateSet.getId();
 
                 JCRNodeWrapper sitesFolder = session.getNode("/sites");
@@ -407,23 +452,23 @@ public class JahiaSitesService extends JahiaService {
                         }
                     }
 
-                    siteNode.setProperty(Constants.TITLE, title);
-                    siteNode.setProperty(Constants.DESCRIPTION, descr);
-                    siteNode.setProperty(SitesSettings.SERVER_NAME, serverName);
-                    siteNode.setProperty(SitesSettings.SERVER_NAME_ALIASES, serverNameAliases);
-                    siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, selectedLocale.toString());
+                    siteNode.setProperty(Constants.TITLE, info.getTitle());
+                    siteNode.setProperty(Constants.DESCRIPTION, info.getDescription());
+                    siteNode.setProperty(SitesSettings.SERVER_NAME, info.getServerName());
+                    siteNode.setProperty(SitesSettings.SERVER_NAME_ALIASES, info.getServerNameAliases());
+                    siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, info.getLocale());
                     siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, false);
-                    siteNode.setProperty(SitesSettings.LANGUAGES, new String[]{selectedLocale.toString()});
-                    siteNode.setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, new String[]{});
-                    siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, new String[]{});
-                    siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, new String[]{});
+                    siteNode.setProperty(SitesSettings.LANGUAGES, new String[] { info.getLocale() });
+                    siteNode.setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, new String[] {});
+                    siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, new String[] {});
+                    siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, new String[] {});
                     siteNode.setProperty(SitesSettings.TEMPLATES_SET, templatePackage);
 
                     siteNode.setProperty(SitesSettings.INSTALLED_MODULES, new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
 
                     String target = getTargetString(siteKey);
 
-                    deployModules(target, modulesToDeploy, templateSet, session, templateService);
+                    deployModules(target, info.getModulesToDeploy(), templateSet, session, templateService);
 
                     //Auto deploy all modules that define this behavior on site creation
                     final List<JahiaTemplatesPackage> availableTemplatePackages = templateService.getAvailableTemplatePackages();
@@ -477,8 +522,8 @@ public class JahiaSitesService extends JahiaService {
                 }
 
                 // attach superadmin user (current) to administrators group...
-                if (currentUser != null) {
-                    adminGroup.addMember(session.getNode(currentUser.getLocalPath()));
+                if (info.getSiteAdmin() != null) {
+                    adminGroup.addMember(session.getNode(info.getSiteAdmin().getLocalPath()));
                 }
 
                 JCRGroupNode sitePrivGroup = jgms.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, session);
@@ -497,15 +542,15 @@ public class JahiaSitesService extends JahiaService {
             }
 
             Resource initialZip = null;
-            if ("fileImport".equals(firstImport)) {
-                initialZip = fileImport;
+            if ("fileImport".equals(info.getFirstImport())) {
+                initialZip = info.getFileImport();
             }
 
-            if ("importRepositoryFile".equals(firstImport) || (initialZip != null && initialZip.exists() && !"noImport".equals(firstImport))) {
+            if ("importRepositoryFile".equals(info.getFirstImport()) || (initialZip != null && initialZip.exists() && !"noImport".equals(info.getFirstImport()))) {
                 try {
                     Map<Object, Object> importInfos = new HashMap<Object, Object>();
-                    importInfos.put("originatingJahiaRelease", originatingJahiaRelease);
-                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, site, importInfos, legacyMappingFilePath, legacyDefinitionsFilePath, session);
+                    importInfos.put("originatingJahiaRelease", info.getOriginatingJahiaRelease());
+                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, site, importInfos, info.getLegacyMappingFilePath(), info.getLegacyDefinitionsFilePath(), session);
                 } catch (RepositoryException e) {
                     logger.warn("Error importing site ZIP", e);
                 }
@@ -514,11 +559,14 @@ public class JahiaSitesService extends JahiaService {
             logger.debug("Site updated with Home Page");
         } catch (RepositoryException e) {
             logger.warn("Error adding home node", e);
+        } finally {
+            logger.info("Done creation of the site {} in {} ms", info.getSiteKey(),
+                    System.currentTimeMillis() - startTime);
         }
 
         return site;
     }
-
+    
     private String getTargetString(String siteKey) {
         return "/sites/" + siteKey;
     }

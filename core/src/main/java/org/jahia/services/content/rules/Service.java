@@ -43,6 +43,8 @@
  */
 package org.jahia.services.content.rules;
 
+import static org.jahia.services.importexport.ImportExportBaseService.*;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.core.FactException;
@@ -65,6 +67,7 @@ import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.sites.SiteCreationInfo;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -73,7 +76,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.quartz.*;
 import org.slf4j.Logger;
@@ -250,7 +252,7 @@ public class Service extends JahiaService {
                 }
 
                 String n = z.getName();
-                if (n.equals("export.properties")) {
+                if (n.equals(EXPORT_PROPERTIES)) {
                     InputStream is = null;
                     try {
                         is = new BufferedInputStream(new FileInputStream(i), 1024);
@@ -261,7 +263,7 @@ public class Service extends JahiaService {
                     }
                 } else if (n.equals("classes.jar")) {
                     FileUtils.deleteQuietly(i);
-                } else if (n.equals("site.properties") || ((n.startsWith("export_") && n.endsWith(".xml")))) {
+                } else if (n.equals(SITE_PROPERTIES) || ((n.startsWith("export_") && n.endsWith(".xml")))) {
                     // this is a single site import, stop everything and import
                     FileUtils.deleteQuietly(i);
                     for (File file : imports.keySet()) {
@@ -296,9 +298,9 @@ public class Service extends JahiaService {
                 String fileName = imports.get(i);
                 Map<Object, Object> value = prepareSiteImport(i, imports.get(i));
                 if (value != null) {
-                    if ("users.xml".equals(fileName) || "users.zip".equals(fileName)) {
+                    if (USERS_XML.equals(fileName) || USERS_ZIP.equals(fileName)) {
                         users = value;
-                    } else if ("serverPermissions.xml".equals(fileName)) {
+                    } else if (SERVER_PERMISSIONS_XML.equals(fileName)) {
                         serverPermissions = value;
                     } else {
                         importsInfos.add(value);
@@ -335,7 +337,7 @@ public class Service extends JahiaService {
             boolean isLegacySite = false;
             try {
                 while ((z = zis2.getNextEntry()) != null) {
-                    if ("site.properties".equals(z.getName())) {
+                    if (SITE_PROPERTIES.equals(z.getName())) {
                         Properties p = new Properties();
                         p.load(zis2);
                         zis2.closeEntry();
@@ -390,7 +392,7 @@ public class Service extends JahiaService {
 
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
-            if (infos.get("importFileName").equals("users.xml")) {
+            if (infos.get("importFileName").equals(USERS_XML)) {
                 ImportExportBaseService.getInstance().importUsers(file);
                 break;
             }
@@ -405,7 +407,7 @@ public class Service extends JahiaService {
                     logger.error(e.getMessage(), e);
                 }
             } else if (infos.get("type").equals("xml") && (infos.get("importFileName").equals(
-                    "serverPermissions.xml") || infos.get("importFileName").equals("users.xml"))) {
+                    SERVER_PERMISSIONS_XML) || infos.get("importFileName").equals(USERS_XML))) {
 
             } else if (infos.get("type").equals("site")) {
                 // site import
@@ -414,16 +416,14 @@ public class Service extends JahiaService {
                     tpl = null;
                 }
                 try {
-                    Locale locale = infos.containsKey("defaultLanguage") ? LanguageCodeConverters
-                            .languageCodeToLocale((String) infos.get("defaultLanguage")) : settingsBean
-                            .getDefaultLocale();
-                    sitesService.addSite(user, (String) infos.get(
-                            "sitetitle"), (String) infos.get("siteservername"), (String) infos.get("sitekey"), "",
-                            locale, tpl,
-                            "fileImport", file == null ? null : new FileSystemResource(file),
-                            (String) infos.get(
-                                    "importFileName"), true,
-                            false, (String) infos.get("originatingJahiaRelease"));
+                    sitesService.addSite(new SiteCreationInfo((String) infos.get("sitekey"),
+                            (String) infos.get("siteservername"), (String) infos.get("siteservernamealiases"),
+                            (String) infos.get("sitetitle"), "", tpl, null,
+                            infos.containsKey("defaultLanguage") ? (String) infos.get("defaultLanguage")
+                                    : settingsBean.getDefaultLanguageCode(),
+                            user, "fileImport", file == null ? null : new FileSystemResource(file),
+                            (String) infos.get("importFileName"), (String) infos.get("originatingJahiaRelease")));
+
                 } catch (Exception e) {
                     logger.error("Cannot create site " + infos.get("sitetitle"), e);
                 }

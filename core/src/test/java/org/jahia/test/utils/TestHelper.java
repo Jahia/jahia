@@ -157,7 +157,7 @@ public class TestHelper {
                     ZipEntry z = null;
                     while ((z = zis.getNextEntry()) != null) {
                         if (siteZIPName.equalsIgnoreCase(z.getName())
-                                || "users.zip".equals(z.getName())) {
+                                || ImportExportBaseService.USERS_ZIP.equals(z.getName())) {
                             File zipFile = File.createTempFile("import", ".zip");
                             os = new FileOutputStream(zipFile);
                             byte[] buf = new byte[4096];
@@ -166,7 +166,7 @@ public class TestHelper {
                                 os.write(buf, 0, r);
                             }
                             os.close();
-                            if ("users.zip".equals(z.getName())) {
+                            if (ImportExportBaseService.USERS_ZIP.equals(z.getName())) {
                                 sharedZIPFile = zipFile;
                             } else {
                                 siteZIPFile = zipFile;

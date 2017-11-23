@@ -77,6 +77,7 @@ import org.jahia.services.importexport.validation.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.sites.SiteCreationInfo;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.services.usermanager.JahiaUser;
@@ -130,15 +131,20 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private static final String FILESACL_XML = "filesacl.xml";
 
-    private static final String REPOSITORY_XML = "repository.xml";
-    private static final String LIVE_REPOSITORY_XML = "live-repository.xml";
+    public static final String REPOSITORY_XML = "repository.xml";
+    public static final String LIVE_REPOSITORY_XML = "live-repository.xml";
     private static final String CATEGORIES_XML = "categories.xml";
     private static final String SITE_PERMISSIONS_XML = "sitePermissions.xml";
-    private static final String USERS_XML = "users.xml";
-    private static final String SITE_PROPERTIES = "site.properties";
-    private static final String EXPORT_PROPERTIES = "export.properties";
+    public static final String USERS_XML = "users.xml";
+    public static final String USERS_ZIP = "users.zip";
+    public static final String SERVER_PERMISSIONS_XML = "serverPermissions.xml";
+    public static final String SITE_PROPERTIES = "site.properties";
+    public static final String EXPORT_PROPERTIES = "export.properties";
     private static final String DEFINITIONS_CND = "definitions.cnd";
     private static final String DEFINITIONS_MAP = "definitions.map";
+    public static final String MOUNTS_ZIP = "mounts.zip";
+    public static final String REFERENCES_ZIP = "references.zip";
+    public static final String ROLES_ZIP = "roles.zip";
 
     public static final String STATIC_MOUNT_POINT_ATTR = "j:staticMountPointProviderKey";
     public static final String DYNAMIC_MOUNT_POINT_ATTR = "j:dynamicMountPointProviderPath";
@@ -437,7 +443,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             // export users
             ZipOutputStream zzout;
             if (serverDirectory == null) {
-                zout.putNextEntry(new ZipEntry("users.zip"));
+                zout.putNextEntry(new ZipEntry(USERS_ZIP));
                 zzout = getZipOutputStream(zout, null);
             } else {
                 zzout = getZipOutputStream(zout, serverDirectory + "/users");
@@ -459,7 +465,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             // export roles
             ZipOutputStream zzout;
             if (serverDirectory == null) {
-                zout.putNextEntry(new ZipEntry("roles.zip"));
+                zout.putNextEntry(new ZipEntry(ROLES_ZIP));
                 zzout = getZipOutputStream(zout, null);
             } else {
                 zzout = getZipOutputStream(zout, serverDirectory + "/roles");
@@ -480,7 +486,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             JCRNodeWrapper mounts = session.getNode("/mounts");
             if (mounts.hasNodes()) {
                 // export mounts
-                zout.putNextEntry(new ZipEntry("mounts.zip"));
+                zout.putNextEntry(new ZipEntry(MOUNTS_ZIP));
                 ZipOutputStream zzout = new ZipOutputStream(zout);
 
                 try {
@@ -503,8 +509,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
         if (!refs.isEmpty()) {
-            zout.putNextEntry(new ZipEntry("references.zip"));
-            ZipOutputStream zzout = getZipOutputStream(zout, serverDirectory + "/references.zip");
+            zout.putNextEntry(new ZipEntry(REFERENCES_ZIP));
+            ZipOutputStream zzout = getZipOutputStream(zout, serverDirectory + "/" + REFERENCES_ZIP);
             try {
                 logger.info("Exporting References Started");
                 exportNodesWithBinaries(session.getRootNode(), refs, zzout, defaultExportNodeTypesToIgnore, externalReferences, params, true);
@@ -816,6 +822,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Properties p = new OrderedProperties();
         p.setProperty("sitetitle", s.getTitle());
         p.setProperty("siteservername", s.getServerName());
+        p.setProperty("siteservernamealiases", StringUtils.join(s.getServerNameAliases(), ", "));
         p.setProperty("sitekey", s.getSiteKey());
         p.setProperty("description", s.getDescr());
         p.setProperty("templatePackageName", s.getTemplateFolder());
@@ -872,7 +879,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         ZipEntry z;
         final Properties infos = new Properties();
         while ((z = zis2.getNextEntry()) != null) {
-            if ("site.properties".equals(z.getName())) {
+            if (SITE_PROPERTIES.equals(z.getName())) {
                 infos.load(zis2);
                 zis2.closeEntry();
 
@@ -882,7 +889,16 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     siteKeyEx = "".equals(
                             infos.get("sitekey")) || sitesService.siteExists((String) infos.get("sitekey"), session);
                     String serverName = (String) infos.get("siteservername");
+                    String serverNameAliases = (String) infos.get("siteservernamealiases");
                     serverNameEx = "".equals(serverName) || (!Url.isLocalhost(serverName) && sitesService.getSiteByServerName(serverName, session) != null);
+                    if (!serverNameEx && StringUtils.isNotEmpty(serverNameAliases)) {
+                        for (String alias : StringUtils.split(serverNameAliases, ", ")) {
+                            if (!Url.isLocalhost(alias) && sitesService.getSiteByServerName(alias, session) != null) {
+                                serverNameEx = true;
+                                break;
+                            }
+                        }
+                    }
                 } catch (RepositoryException e) {
                     logger.error("Error when getting site", e);
                 }
@@ -917,10 +933,17 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 @Override
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     try {
-                                        JahiaSite site = sitesService.addSite(JCRSessionFactory.getInstance().getCurrentUser(), infos.getProperty("sitetitle"), infos.getProperty(
-                                                        "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
-                                                        "description"), finalLocale, finalTpl, null, fileImport != null ? "fileImport" : "importRepositoryFile", fileImport, uri, true,
-                                                false, infos.getProperty("originatingJahiaRelease"), null, null, session);
+                                        JahiaSite site = sitesService
+                                            .addSite(new SiteCreationInfo(infos.getProperty("sitekey"),
+                                                infos.getProperty("siteservername"),
+                                                infos.getProperty("siteservernamealiases"),
+                                                infos.getProperty("sitetitle"),
+                                                infos.getProperty("description"), finalTpl, null,
+                                                finalLocale != null ? finalLocale.toString() : null,
+                                                JCRSessionFactory.getInstance().getCurrentUser(),
+                                                fileImport != null ? "fileImport" : "importRepositoryFile",
+                                                fileImport, uri,
+                                                infos.getProperty("originatingJahiaRelease")), session);
                                         importSiteProperties(site, infos, session);
                                     } catch (JahiaException e) {
                                         throw new RepositoryException(e);
@@ -1596,7 +1619,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 logger.error("Cannot update system site", e);
             }*/
         } else {
-            logger.error("Unable to find site languages in the provided site.properties descriptor. Skip importing site settings.");
+            logger.error("Unable to find site languages in the provided " + SITE_PROPERTIES + " descriptor. Skip importing site settings.");
         }
 
         try {

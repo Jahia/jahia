@@ -679,7 +679,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
             }
         }
 
-        logger.info("Read only mode on JCR sessions: " + (readOnlyModeEnabled ? "ON" : "OFF"));
+        logger.info("Read only mode on JCR sessions: " + (this.readOnlyModeEnabled ? "ON" : "OFF"));
     }
 
     private static Set<String> getSessionIdentifiers(Map<String, Map<String, JCRSessionWrapper>> sessionsByUserByWorkspace) {

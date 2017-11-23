@@ -433,8 +433,8 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         } finally {
             try {
                 systemSiteNode.unlock();
-            } catch (LockException e) {
-                // the node hasn't been locked
+            } catch (ReadOnlyModeException | LockException e) {
+                // the node hasn't been locked or we are read only
             }
         }
     }
@@ -461,8 +461,8 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
                 } else {
                     systemSiteNode.unlock(type);
                 }
-            } catch (LockException e) {
-                // the node hasn't been locked
+            } catch (ReadOnlyModeException | LockException e) {
+                // the node hasn't been locked or we are read only
             }
         }
     }

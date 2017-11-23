@@ -1436,6 +1436,10 @@
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
                 app.edit.sidepanel.close();
+
+                // Trigger mousedown / mouseup on body to close any open context menus and combo menus
+                DexV2.tag("body").trigger("mousedown").trigger("mouseup");
+
             }
 		},
 		onClick: function(e){

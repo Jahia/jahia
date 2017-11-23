@@ -2605,6 +2605,11 @@ body[data-indigo-add-visibility-condition="new"] {
 	.x-grid3-scroller {
 		width: 100% !important;
 		display: table-row-group;
+
+		> .x-grid3-body {
+			padding-bottom: 30px;
+		}
+
 	}
 
 	.x-row-editor-header {
@@ -2612,43 +2617,60 @@ body[data-indigo-add-visibility-condition="new"] {
 	}
 
 	.x-panel-body {
-		//position: absolute;
-		//max-width: calc(100% - 450px);
-		padding-bottom: 32px;
+		padding-bottom: 16px;
 
 		.x-grid3 .x-grid3-row {
 			height: 38px !important;
-			background: #f5f6f7 !important;
+			background: transparent !important;
 			width: calc(100% - 162px) !important;
+
+			&.x-grid3-row-over {
+				background: #f5f6f7 !important;
+			}
+
 		}
 
 	}
 
 	.x-box-inner .x-row-editor-field.x-component.x-box-item:not(.x-form-check-wrap) {
-		width: 498px !important;
+		min-width: 498px !important;
+		padding-left: 8px;
+		padding-top: 2px;
+	}
+
+	.x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap {
+		text-align: center;
+    top: 9px !important;
+
+		input[type="checkbox"] {
+			margin-left: -3px;
+		}
+
 	}
 
 	.x-row-editor-body.x-box-layout-ct {
-		background: rebeccapurple;
+		background: #5c6164;
 		height: 36px !important;
 		box-sizing: border-box;
 	}
 
 	.x-row-editor-footer {
-		background: rebeccapurple;
+		background: #5c6164;
 	}
 
 	.x-row-editor .x-btns {
-		background: rebeccapurple;
+		background: #5c6164;
 
 		.x-plain-bwrap {
-			background: rebeccapurple;
+			background: #5c6164;
 		}
 
 	}
 
 	.x-row-editor .x-plain-body.x-plain-body-noheader {
-		background: rebeccapurple;
+		background: #5c6164;
+		margin-top: -2px;
+		padding-bottom: 2px;
 	}
 
 	.x-toolbar-ct td.x-btn-mc button img {
@@ -2699,31 +2721,6 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	.x-grid3-check-col {
 		padding-top: 17px;
-	}
-
-	// tst
-	.x-grid3-td-url {
-	    width: calc(100% - 333px) !important;
-	    background: #3F51B5;
-	    display: inline-table;
-	}
-
-	.x-grid3-td-default {
-	    width: 100px !important;
-	    background: #03A9F4;
-	    display: inline-table;
-	}
-
-	.x-grid3-td-active {
-	    width: 100px !important;
-	    background: #00BCD4;
-	    display: inline-table;
-	}
-
-	.x-grid3-td-actions {
-	    width: 122px !important;
-	    background: #673AB7;
-	    display: inline-table;
 	}
 
 }

@@ -56,8 +56,8 @@
                         var mutation_id;
 
                         for(mutation_id in queue){
-                            // Call callback function
                             if(queue[mutation_id].attrKey == attrKey){
+
                                 queue[mutation_id].callback.call(node, attrKey, attrValue);
 
                                 if(!queue[mutation_id].persistant){
@@ -976,7 +976,7 @@
                     // mutationObservers[this.selector][childtree].callbacks[mutationType][target] = []
                     mutationObservers[this.selector].callbacks[mutationType][target] = {
                         matchType: matchType,
-                        queue: []
+                        queue: {}
                     }
                 }
 
@@ -3546,23 +3546,40 @@
 						} else {
 							// Could not find a previously selected settings page - this is a first run (or edit page has been changed)
 
-                            // DEV NOTE :: DONT LIKE HAVING TO WAIT ...
+                            // DEV NOTE :: DONT LIKE HAVING TO WAIT LIKE THIS ...
                             setTimeout(function(){
                                 DexV2.id("JahiaGxtRefreshSidePanelButton").trigger("click");
+
+                                // Listen for first settings page to be added to tree, select it then stop listening.
+    							DexV2("#JahiaGxtSettingsTab").onGroupOpen(".x-grid3-row", function(nodeGroup){
+
+                                    if(app.edit.settings.data.opened){
+                                        var firstRow = this[0];
+                                        // DEV NOTE ::: May need to loop through nodeGroup to get first actual available PAGE (ie. not a folder)
+
+                                        DexV2.node(firstRow)
+        									.trigger("mousedown")
+        									.trigger("click");
+                                    } else {
+                                        console.log("IGNORE SETTINGS MENU UPDATE !!");
+                                    }
+
+
+    							});
                             }, 50);
 
-							// Listen for first settings page to be added to tree, select it then stop listening.
-							DexV2("#JahiaGxtSettingsTab").onceOpen(".x-grid3-row", function(nodeGroup){
-                                // DEV NOTE ::: May need to loop through nodeGroup to get first actual available PAGE (ie. not a folder)
-								DexV2.node(this)
-									.trigger("mousedown")
-									.trigger("click");
-							});
+                            DexV2("#JahiaGxtSettingsTab .x-grid3-row")
+                            .trigger("mousedown")
+                            .trigger("click");
+
+
+
 						}
 					}
 
 				},
 				close: function(){
+                    app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: CLOSE");
 					var previousEditPage = app.edit.history.get("editpage");
 
 					app.edit.settings.data.opened = false;
@@ -3576,13 +3593,15 @@
 							.trigger("mousedown")
 							.trigger("mouseup");
 		            } else {
+                        // DEV NOTE ::: This is causing problems when switching site, not selecting a page in the new sites tree openeing settings then closing.
 						// Trigger Click on Second page (first row is not an actual page)
 						// Need to set side panel tab as pages to allow the capture of the click to save the page in history...
 						DexV2.getCached("body").setAttribute("data-indigo-gwt-panel-tab", "JahiaGxtSidePanelTabs__JahiaGxtPagesTab");
+                        DexV2.id("JahiaGxtRefreshSidePanelButton").trigger("click");
 
-						DexV2("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")
-							.trigger("mousedown")
-							.trigger("mouseup");
+                        DexV2("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")
+                            .trigger("mousedown")
+                            .trigger("mouseup");
 
 		            }
 				}

@@ -508,15 +508,8 @@ public class JCRSessionWrapper implements Session {
     public void save(final int operationType)
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        if (readOnly) {
-            ReadOnlyModeController.readOnlyModeViolated(
-                    "Session save operation is not permitted for the current session as it is in read-only mode");
-        }
 
         validate(operationType);
-        newNodes.clear();
-        changedNodes.clear();
-
         JCRObservationManager.doWorkspaceWriteCall(this, operationType, new JCRCallback<Object>() {
 
             @Override
@@ -527,6 +520,9 @@ public class JCRSessionWrapper implements Session {
                 return null;
             }
         });
+
+        newNodes.clear();
+        changedNodes.clear();
 
         if (workspace.getName().equals("default")) {
             // If reference helper found values to update, update them in live too
@@ -1364,5 +1360,11 @@ public class JCRSessionWrapper implements Session {
 
     public boolean isReadOnly() {
         return readOnly;
+    }
+
+    void checkReadOnly(String message) {
+        if (isReadOnly()) {
+            ReadOnlyModeController.readOnlyModeViolated(message);
+        }
     }
 }

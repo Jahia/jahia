@@ -2400,7 +2400,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public Lock lock(boolean isDeep, boolean isSessionScoped) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
-        checkReadOnly("Node lock operation is not permitted for the current session as it is in read-only mode");
+        session.checkReadOnly("Node lock operation is not permitted for the current session as it is in read-only mode");
         return objectNode.lock(isDeep, isSessionScoped);
     }
 
@@ -2423,7 +2423,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public boolean lockAndStoreToken(String type, String userID) throws RepositoryException {
-        checkReadOnly("Node lock operation is not permitted for the current session as it is in read-only mode");
+        session.checkReadOnly("Node lock operation is not permitted for the current session as it is in read-only mode");
 
         if (!isNodeType("jmix:lockable")) {
             return false;
@@ -2658,7 +2658,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public void unlock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
-        checkReadOnly("Node unlock operation is not permitted for the current session as it is in read-only mode");
+        session.checkReadOnly("Node unlock operation is not permitted for the current session as it is in read-only mode");
         objectNode.unlock();
     }
 
@@ -2682,7 +2682,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new LockException("Node not locked");
         }
 
-        checkReadOnly("Node unlock operation is not permitted for the current session as it is in read-only mode");
+        session.checkReadOnly("Node unlock operation is not permitted for the current session as it is in read-only mode");
 
         if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION) && hasI18N(session.getLocale(),
                 false)) {
@@ -2734,7 +2734,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     @Override
     public void clearAllLocks() throws RepositoryException {
-        checkReadOnly("Clear all locks on node operation is not permitted for the current session as it is in read-only mode");
+        session.checkReadOnly("Clear all locks on node operation is not permitted for the current session as it is in read-only mode");
 
         if (!isNodeType(Constants.JAHIANT_TRANSLATION)) {
             NodeIterator ni = objectNode.getNodes(TRANSLATION_NODES_PATTERN);
@@ -4083,12 +4083,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             // recurse into children
             unmarkNodesForDeletion(child);
-        }
-    }
-
-    private void checkReadOnly(String message) {
-        if (session.isReadOnly()) {
-            ReadOnlyModeController.readOnlyModeViolated(message);
         }
     }
 }

@@ -419,6 +419,8 @@ public class JCRObservationManager implements ObservationManager {
 
     public static <X> X doWorkspaceWriteCall(JCRSessionWrapper session, int operationType, JCRCallback<X> callback)
             throws RepositoryException {
+        session.checkReadOnly(operationType + " operation is not permitted for the current session as it is in read-only mode");
+
         currentSession.set(session);
         X res;
         try {

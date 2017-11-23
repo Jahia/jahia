@@ -219,7 +219,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     // Setter for backward compatibility
     public void setEnableDragAndDrop(boolean enableDragAndDrop) {
-        this.dragAndDropBehavior = enableDragAndDrop ? GWTEditConfiguration.DragAndDropBehavior.ENABLED : GWTEditConfiguration.DragAndDropBehavior.DISABLED;
+        setDragAndDropBehavior(enableDragAndDrop ? GWTEditConfiguration.DragAndDropBehavior.ENABLED : GWTEditConfiguration.DragAndDropBehavior.DISABLED);
     }
 
     public boolean getRefreshOnExternalModification() {

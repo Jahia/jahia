@@ -1358,11 +1358,23 @@ public class JCRSessionWrapper implements Session {
         this.readOnlyCacheEnabled = readOnlyCacheEnabled;
     }
 
+    void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    /**
+     * Check if this session is read only
+     * @return true if session is read only, false if not.
+     */
     public boolean isReadOnly() {
         return readOnly;
     }
 
-    void checkReadOnly(String message) {
+    /**
+     * Check if this session is read only, call the read only controller to report read only violation in case the session is read only.
+     * @param message the message used in case of read only mode violation
+     */
+    public void checkReadOnly(String message) {
         if (isReadOnly()) {
             ReadOnlyModeController.readOnlyModeViolated(message);
         }

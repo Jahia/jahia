@@ -441,4 +441,6 @@
         <property name="disabled" value="true"/>
     </bean>
 
+    <!-- Test service to test full read only mode switch -->
+    <bean id="fullReadOnlyModeTestService" class="org.jahia.test.services.readonly.FullReadOnlyModeTestService"/>
 </beans>

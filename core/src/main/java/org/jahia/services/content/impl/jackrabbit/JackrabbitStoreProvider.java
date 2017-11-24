@@ -100,6 +100,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     @Override
     public void start() throws JahiaInitializationException {
         boolean liveWorkspaceCreated = false;
+        org.apache.jackrabbit.core.nodetype.NodeTypeRegistry.disableCheckForReferencesInContentException = true;
         JCRSessionWrapper session = null;
         JCRSessionWrapper livesession = null;
         try {
@@ -222,7 +223,6 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     @Override
     protected void unregisterCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
 
-        org.apache.jackrabbit.core.nodetype.NodeTypeRegistry.disableCheckForReferencesInContentException = true;
         NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(systemId);
         List<String> names = new ArrayList<String>();
 

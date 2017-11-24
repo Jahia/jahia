@@ -2744,3 +2744,63 @@ body[data-indigo-add-visibility-condition="new"] {
 .engine-save-error {
     z-index: 1050 !important;
 }
+
+
+
+// List ordering Panel
+
+
+#JahiaGxtEditEnginePanel-listOrdering {
+
+	.x-panel-bwrap {
+		height: initial !important;
+	}
+
+	.engine-panel .x-tab-panel .x-tab-panel-body > .x-panel-mc {
+		height: initial !important;
+	}
+
+	.x-grid3-header {
+		display: table-cell;
+		background: none !important;
+	}
+
+	.x-fieldset legend .x-tool-toggle {
+		display: none;
+	}
+
+	.x-panel-tbar.x-panel-tbar-noheader {
+		margin-top: 16px;
+	}
+
+	.x-grid3-body tbody tr .x-grid3-td-checker {
+		padding: 0 5px !important;
+	}
+
+	.x-grid3-body .x-grid3-td-checker {
+		background: none !important;
+	}
+
+	.x-panel .x-grid3 .x-grid3-row-table .x-grid3-cell.x-grid3-td-displayName {
+		width: 350px !important;
+	}
+
+	td.x-grid3-header.x-grid3-hd.x-grid3-cell.x-grid3-td-displayName {
+		width: 350px !important;
+		max-width: 350px !important;
+	}
+
+	.x-component .x-grid3-header .x-grid3-hh {
+		box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+		margin: 2px 2px 8px;
+		width: calc(100% - 12px) !important;
+		background: white;
+		pointer-events: none;
+
+		table {
+			padding: 4px 0;
+		}
+
+	}
+
+}

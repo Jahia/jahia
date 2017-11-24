@@ -19,7 +19,7 @@
         <meta http-equiv="X-UA-Compatible" content="${xUaCompatible}"/>
     </c:if>
     <meta name="robots" content="noindex, nofollow"/>
-    <fmt:message key="label.${fn:escapeXml(cfg)}" var="title"/>
+    <fmt:message key="label.${fn:escapeXml(cfg)}.title" var="title"/>
     <title>${fn:escapeXml(title)}</title>
     <internal:gwtGenerateDictionary/>
     <internal:gwtInit/>

@@ -3597,7 +3597,6 @@
 						// Trigger Click on Second page (first row is not an actual page)
 						// Need to set side panel tab as pages to allow the capture of the click to save the page in history...
 						DexV2.getCached("body").setAttribute("data-indigo-gwt-panel-tab", "JahiaGxtSidePanelTabs__JahiaGxtPagesTab");
-                        DexV2.id("JahiaGxtRefreshSidePanelButton").trigger("click");
 
                         DexV2("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")
                             .trigger("mousedown")

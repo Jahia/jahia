@@ -3561,7 +3561,6 @@
         									.trigger("mousedown")
         									.trigger("click");
                                     } else {
-                                        console.log("IGNORE SETTINGS MENU UPDATE !!");
                                     }
 
 
@@ -4054,19 +4053,19 @@
 				.onAttribute("body", "data-singleselection-node-path", app.onChangeNodePath)
 				.onOpen("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) .x-grid-panel", app.engine.onOpenWorkflow)
                 .onOpen("#JahiaGxtUserGroupSelect", app.pickers.users.onOpen)
-				.onceOpen("#JahiaGxtContentBrowseTab", function(){
-                    DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
+				.onOpen("#JahiaGxtContentBrowseTab", function(){
+					DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
                 })
-    			.onceOpen("#JahiaGxtFileImagesBrowseTab", function(){
+    			.onOpen("#JahiaGxtFileImagesBrowseTab", function(){
     				DexV2.node(this).filter("#images-view > div").addClass("results-column");
     			})
-    			.onceOpen("#JahiaGxtCategoryBrowseTab", function(){
+    			.onOpen("#JahiaGxtCategoryBrowseTab", function(){
     				DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");
     			})
-    			.onceOpen("#JahiaGxtSearchTab", function(){
+    			.onOpen("#JahiaGxtSearchTab", function(){
     				DexV2.node(this).filter(".JahiaGxtSearchTab-results .x-grid3-body").addClass("results-column");
     			})
-    			.onceOpen("#JahiaGxtCreateContentTab", function(){
+    			.onOpen("#JahiaGxtCreateContentTab", function(){
     				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", "Filter Content ...")
     			})
                 .onGroupOpen("#JahiaGxtSettingsTab .x-grid3-row", app.edit.settings.onTreeChange) // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
@@ -4202,7 +4201,7 @@
 				.onMouseOver("#" + app.picker.data.ID + " #JahiaGxtManagerTobTable .x-grid3-row", app.picker.row.onMouseOver)
 				.onMouseOver("#" + app.picker.data.ID + " #JahiaGxtManagerTobTable .thumb-wrap", app.picker.thumb.onMouseOver)
                 // .onMouseEnter("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree + div #images-view .x-view", app.picker.thumb.onMouseOut)
-                .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick)
+                .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick, "OPEN-SIDE-PANEL-TAB")
                 .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.settings.open)
 
 //

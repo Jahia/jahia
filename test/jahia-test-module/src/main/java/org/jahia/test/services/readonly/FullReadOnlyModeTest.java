@@ -66,6 +66,8 @@ import java.util.UUID;
 public class FullReadOnlyModeTest extends JahiaTestCase {
 
     private static final String SYSTEM_SITE_PATH = "/sites/systemsite";
+    private static final String TEST_FOLDER_PATH = SYSTEM_SITE_PATH + "/files/testFolder";
+    private static final String TEST_FOLDER_PATH2 = SYSTEM_SITE_PATH + "/files/testFolder2";
 
     private static ReadOnlyModeController readOnlyModeController;
     private static FullReadOnlyModeTestService fullReadOnlyModeTestService;
@@ -77,22 +79,23 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     public static void oneTimeSetUp() throws Exception {
         fullReadOnlyModeTestService = (FullReadOnlyModeTestService) SpringContextSingleton.getBean("fullReadOnlyModeTestService");
         readOnlyModeController = ReadOnlyModeController.getInstance();
-        originSystemSiteWCAcompliance = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            @Override
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                return session.getNode(SYSTEM_SITE_PATH).getProperty("j:wcagCompliance").getBoolean();
-            }
+        originSystemSiteWCAcompliance = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            JCRNodeWrapper systemSiteNode = session.getNode(SYSTEM_SITE_PATH);
+            systemSiteNode.getNode("files").addNode("testFolder", "jnt:folder");
+            systemSiteNode.getNode("files").addNode("testFolder2", "jnt:folder");
+            session.save();
+            return systemSiteNode.getProperty("j:wcagCompliance").getBoolean();
         });
     }
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            @Override
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                session.getNode(SYSTEM_SITE_PATH).setProperty("j:wcagCompliance", originSystemSiteWCAcompliance);
-                return null;
-            }
+        JCRTemplate.getInstance().doExecuteWithSystemSession((JCRCallback<Boolean>) session -> {
+            session.getNode(TEST_FOLDER_PATH).remove();
+            session.getNode(TEST_FOLDER_PATH2).remove();
+            session.getNode(SYSTEM_SITE_PATH).setProperty("j:wcagCompliance", originSystemSiteWCAcompliance);
+            session.save();
+            return null;
         });
     }
 
@@ -245,7 +248,6 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     /**
      * Test that JCR lock operations are correctly blocked
      */
-    @Test
     public void testJCRLockBlocked() throws Exception {
 
         // create and opened session
@@ -291,6 +293,117 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         testUnlock(false, false, true);
         testUnlockOnTokenAndUser("unit-test", null, true);
         testUnlockOnTokenAndUser("unit-test", "root", true);
+    }
+
+    /**
+     * Test checking and checkout operations are correctly blocked
+     */
+    @Test
+    public void testJCRCheckinCheckoutBlocked() throws Exception {
+        // create and opened session
+        UUID sessionUUID = UUID.fromString(createUnclosedJCRSession());
+        JCRSessionWrapper openedSession = JCRSessionWrapper.getActiveSessionsObjects().get(sessionUUID);
+        assertTrue(openedSession != null);
+
+        // insure it's working
+        openedSession.getNode(TEST_FOLDER_PATH).checkin();
+        openedSession.getNode(TEST_FOLDER_PATH).checkout();
+
+        // checkin a folder
+        openedSession.getNode(TEST_FOLDER_PATH2).checkin();
+
+        readOnlyModeController.switchReadOnlyMode(true);
+
+        // test blocked for new session
+        JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+
+            try {
+                session.getNode(TEST_FOLDER_PATH).checkin();
+                fail();
+            } catch (ReadOnlyModeException e) {
+                // expected
+            }
+
+            try {
+                session.getNode(TEST_FOLDER_PATH2).checkout();
+                fail();
+            } catch (ReadOnlyModeException e) {
+                // expected
+            }
+            return null;
+        });
+
+        // test blocked for the opened session
+        try {
+            openedSession.getNode(TEST_FOLDER_PATH).checkin();
+            fail();
+        } catch (ReadOnlyModeException exception) {
+            // expected
+        }
+        try {
+            openedSession.getNode(TEST_FOLDER_PATH2).checkout();
+            fail();
+        } catch (ReadOnlyModeException exception) {
+            // expected
+        }
+
+        readOnlyModeController.switchReadOnlyMode(false);
+
+        JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            session.getNode(TEST_FOLDER_PATH).checkin();
+            session.getNode(TEST_FOLDER_PATH).checkout();
+            return null;
+        });
+
+        openedSession.getNode(TEST_FOLDER_PATH).checkin();
+        openedSession.getNode(TEST_FOLDER_PATH).checkout();
+
+        openedSession.getNode(TEST_FOLDER_PATH2).checkout();
+    }
+
+    /**
+     * Test checkpoint opeartion is correctly blocked
+     * @throws Exception
+     */
+    @Test
+    public void testJCRCheckpointBlocked() throws Exception {
+        // create and opened session
+        UUID sessionUUID = UUID.fromString(createUnclosedJCRSession());
+        JCRSessionWrapper openedSession = JCRSessionWrapper.getActiveSessionsObjects().get(sessionUUID);
+        assertTrue(openedSession != null);
+
+        openedSession.getNode(TEST_FOLDER_PATH).checkpoint();
+
+        readOnlyModeController.switchReadOnlyMode(true);
+
+        // test blocked for new session
+        JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            try {
+                session.getNode(TEST_FOLDER_PATH).checkpoint();
+                fail();
+            } catch (ReadOnlyModeException e) {
+                // expected
+            }
+
+            return null;
+        });
+
+        // test blocked for opened session
+        try {
+            openedSession.getNode(TEST_FOLDER_PATH).checkpoint();
+            fail();
+        } catch (ReadOnlyModeException e) {
+            // expected
+        }
+
+        readOnlyModeController.switchReadOnlyMode(false);
+
+        // test it's unblocked
+        JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            session.getNode(TEST_FOLDER_PATH).checkpoint();
+            return null;
+        });
+        openedSession.getNode(TEST_FOLDER_PATH).checkpoint();
     }
 
     private void testUnlock(boolean isDeep, boolean isSessionScope, boolean useClearAllLocks) throws Exception {
@@ -468,12 +581,9 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     }
 
     private void saveSomething() throws Exception {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            @Override
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                saveSomething(session);
-                return null;
-            }
+        JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            saveSomething(session);
+            return null;
         });
     }
 

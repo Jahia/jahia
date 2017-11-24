@@ -96,7 +96,7 @@ public class JahiaClusterNode extends ClusterNode {
      */
     @Override
     public synchronized void start() throws ClusterException {
-        if (status == NONE) {
+        if (status != STARTED) {
             super.start();
             status = STARTED;
         }

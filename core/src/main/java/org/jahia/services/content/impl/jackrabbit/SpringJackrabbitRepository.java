@@ -49,7 +49,9 @@ import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.cluster.ClusterException;
 import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.settings.SettingsBean;
+import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -66,22 +68,22 @@ import java.io.IOException;
 
 /**
  * Spring-configured Jackrabbit repository.
- * 
+ *
  * User: toto
  * Date: Feb 9, 2009
  * Time: 11:21:20 AM
  */
-public class SpringJackrabbitRepository extends AbstractRepository implements JackrabbitRepository, ServletContextAware, ApplicationContextAware {
-    
+public class SpringJackrabbitRepository extends AbstractRepository implements JackrabbitRepository, ServletContextAware, ApplicationContextAware, ReadOnlyModeCapable {
+
     private static class Holder {
         static final SpringJackrabbitRepository INSTANCE = new SpringJackrabbitRepository();
     }
-    
+
     private static final Logger logger = LoggerFactory.getLogger(SpringJackrabbitRepository.class);
-    
+
     /**
      * Returns a singleton instance of this class.
-     * 
+     *
      * @return a singleton instance of this class
      */
     public static SpringJackrabbitRepository getInstance() {
@@ -101,9 +103,9 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     private ApplicationContext applicationContext;
 
     private String dataStoreGarbageCollectorBeanId;
-    
+
     private SettingsBean settings;
-    
+
     private boolean performMigrationToDataStoreIfNeeded = true;
 
     public Resource getConfigFile() {
@@ -130,6 +132,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         this.servletContextAttributeName = servletContextAttributeName;
     }
 
+    @Override
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
@@ -162,9 +165,9 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
 
     public void start() throws RepositoryException, IOException {
-    	if (homeDir == null) {
-    		homeDir = settings.getRepositoryHomeResource();
-    	}
+        if (homeDir == null) {
+            homeDir = settings.getRepositoryHomeResource();
+        }
         String targetRepositoryConfig = System
                 .getProperty("jahia.jackrabbit.targetRepositoryConfig");
         if (settings.isProcessingServer()
@@ -197,6 +200,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
      * Delegated to the underlying repository instance.
      * {@inheritDoc}
      */
+    @Override
     public Session login(Credentials credentials, String workspaceName)
             throws LoginException, NoSuchWorkspaceException, RepositoryException {
         return repository.login(credentials, workspaceName);
@@ -206,6 +210,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
      * Delegated to the underlying repository instance.
      * {@inheritDoc}
      */
+    @Override
     public String getDescriptor(String key) {
         return repository.getDescriptor(key);
     }
@@ -214,18 +219,22 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
      * Delegated to the underlying repository instance.
      * {@inheritDoc}
      */
+    @Override
     public String[] getDescriptorKeys() {
         return repository.getDescriptorKeys();
     }
 
+    @Override
     public boolean isSingleValueDescriptor(String key) {
         return repository.isSingleValueDescriptor(key);
     }
 
+    @Override
     public Value getDescriptorValue(String key) {
         return repository.getDescriptorValue(key);
     }
 
+    @Override
     public Value[] getDescriptorValues(String key) {
         return repository.getDescriptorValues(key);
     }
@@ -237,10 +246,12 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     /**
      * Delegated to the underlying repository instance.
      */
+    @Override
     public void shutdown() {
         repository.shutdown();
     }
 
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
@@ -259,7 +270,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
     /**
      * Jackrabbit cluster node instance or <code>null</code> if clustering is not activated.
-     * 
+     *
      * @return Jackrabbit cluster node instance or <code>null</code> if clustering is not activated
      */
     public ClusterNode getClusterNode() {
@@ -269,7 +280,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
     /**
      * Returns current Jackrabbit cluster node revision or <code>0</code> if clustering is not activated.
-     * 
+     *
      * @return current Jackrabbit cluster node revision or <code>0</code> if clustering is not activated
      */
     public long getClusterRevision() {
@@ -290,5 +301,31 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
                 logger.error("Error ocurred synchronizing cluster", e);
             }
         }
+    }
+
+    @Override
+    public void onReadOnlyModeChanged(boolean enable, long timeout) {
+
+        ClusterNode clusterNode = getClusterNode();
+        if (clusterNode == null) {
+            return;
+        }
+
+        if (enable) {
+            clusterNode.stop();
+            logger.info("Cluster journal handling stopped in order to enable read only mode");
+        } else {
+            try {
+                clusterNode.start();
+            } catch (ClusterException e) {
+                throw new JahiaRuntimeException(e);
+            }
+            logger.info("Cluster journal handling started in order to disable read only mode");
+        }
+    }
+
+    @Override
+    public int getReadOnlyModePriority() {
+        return 1;
     }
 }

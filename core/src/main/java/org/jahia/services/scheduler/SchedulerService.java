@@ -47,7 +47,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
-import org.jahia.settings.readonlymode.ReadOnlyModeController;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.quartz.*;
 import org.slf4j.Logger;
@@ -91,13 +90,11 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     private Scheduler ramScheduler = null;
 
-    private Scheduler scheduler = null;
+    private ReadOnlyModeSchedulerWrapper scheduler = null;
 
     private ThreadLocal<List<JobDetail>> scheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
 
     private ThreadLocal<List<JobDetail>> ramScheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
-
-    private volatile boolean readOnlyMode;
 
     public Integer deleteAllCompletedJobs() throws SchedulerException {
         return deleteAllCompletedJobs(PURGE_ALL_STRATEGY, true);
@@ -114,7 +111,6 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     public Integer deleteAllCompletedJobs(Map<Pattern, Long> purgeStrategy,
                                           boolean purgeWithNoEndDate, boolean isRAMScheduler) throws SchedulerException {
-        checkReadOnlyMode();
         logger.info("Start looking for completed jobs in {} scheduler", isRAMScheduler ? "RAM" : "persistent");
         int deletedCount = 0;
 
@@ -278,9 +274,6 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     public void scheduleJobNow(JobDetail jobDetail, boolean useRamScheduler) throws SchedulerException {
-        if (!useRamScheduler) {
-            checkReadOnlyMode();
-        }
         JobDataMap data = jobDetail.getJobDataMap();
         SimpleTrigger trigger = new SimpleTrigger(jobDetail.getName() + "_Trigger",
                 INSTANT_TRIGGER_GROUP);
@@ -305,9 +298,6 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     public void scheduleJobAtEndOfRequest(JobDetail jobDetail, boolean useRamScheduler) throws SchedulerException {
-        if (!useRamScheduler) {
-            checkReadOnlyMode();
-        }
         List<JobDetail> jobList = useRamScheduler?ramScheduledAtEndOfRequest.get():scheduledAtEndOfRequest.get();
 
         if (jobList == null) {
@@ -356,7 +346,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     public void setScheduler(Scheduler scheduler) {
-        this.scheduler = scheduler;
+        this.scheduler = new ReadOnlyModeSchedulerWrapper(scheduler);
     }
 
     public void start() throws JahiaInitializationException {
@@ -402,7 +392,10 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     @Override
     public void onReadOnlyModeChanged(boolean readOnlyModeIsOn, long timeout) {
-        this.readOnlyMode = readOnlyModeIsOn;
+
+        // switch db persisted scheduler read only mode flag
+        scheduler.setReadOnly(readOnlyModeIsOn);
+
         if (readOnlyModeIsOn) {
             logger.info("Entering read-only mode. Putting schedulers to standby...");
             try {
@@ -429,13 +422,6 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
         if (scheduler.isStarted() && !scheduler.isInStandbyMode()) {
             scheduler.standby();
-        }
-    }
-
-    private void checkReadOnlyMode() {
-        if (readOnlyMode) {
-            ReadOnlyModeController.readOnlyModeViolated(
-                    "The scheduler service is currently in read-only mode and cannot perform any data or state modifications");
         }
     }
 }

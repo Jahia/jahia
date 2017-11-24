@@ -248,6 +248,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     /**
      * Test that JCR lock operations are correctly blocked
      */
+    @Test
     public void testJCRLockBlocked() throws Exception {
 
         // create and opened session

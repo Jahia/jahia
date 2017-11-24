@@ -97,7 +97,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     private ThreadLocal<List<JobDetail>> ramScheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
 
-    private boolean readOnlyMode;
+    private volatile boolean readOnlyMode;
 
     public Integer deleteAllCompletedJobs() throws SchedulerException {
         return deleteAllCompletedJobs(PURGE_ALL_STRATEGY, true);
@@ -253,9 +253,11 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     public void startSchedulers() throws JahiaInitializationException {
         try {
-            ramScheduler.start();
+            if (!ramScheduler.isStarted() || ramScheduler.isInStandbyMode()) {
+                ramScheduler.start();
+            }
 
-            if (settingsBean.isProcessingServer()) {
+            if (settingsBean.isProcessingServer() && (!scheduler.isStarted() || scheduler.isInStandbyMode())) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Starting scheduler...\n instanceId:"
                             + scheduler.getMetaData().getSchedulerInstanceId() + " instanceName:"
@@ -404,26 +406,29 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         if (readOnlyModeIsOn) {
             logger.info("Entering read-only mode. Putting schedulers to standby...");
             try {
-                if (ramScheduler.isStarted() && !ramScheduler.isInStandbyMode()) {
-                    ramScheduler.standby();
-                }
-                if (scheduler.isStarted() && !scheduler.isInStandbyMode()) {
-                    scheduler.standby();
-                }
+                standBySchedulers();
                 logger.info("Done putting schedulers to standby");
             } catch (SchedulerException e) {
-                logger.error("Unable to put scheduler into standby mode. Cause: " + e.getMessage(), e);
+                throw new RuntimeException(e);
             }
         } else {
             logger.info("Exiting read-only mode. Starting schedulers...");
             try {
-                if (!ramScheduler.isStarted() || ramScheduler.isInStandbyMode()) {
-                    startSchedulers();
-                }
+                startSchedulers();
                 logger.info("Done starting schedulers");
-            } catch (SchedulerException | JahiaInitializationException e) {
-                logger.error("Unable to start schedulers when exiting read-only mode. Cause: " + e.getMessage(), e);
+            } catch (JahiaInitializationException e) {
+                throw new RuntimeException(e);
             }
+        }
+    }
+
+    private void standBySchedulers() throws SchedulerException {
+        if (ramScheduler.isStarted() && !ramScheduler.isInStandbyMode()) {
+            ramScheduler.standby();
+        }
+
+        if (scheduler.isStarted() && !scheduler.isInStandbyMode()) {
+            scheduler.standby();
         }
     }
 

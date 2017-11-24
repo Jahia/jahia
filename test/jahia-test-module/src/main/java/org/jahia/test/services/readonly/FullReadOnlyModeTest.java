@@ -43,12 +43,15 @@
  */
 package org.jahia.test.services.readonly;
 
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
+import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.jahia.test.JahiaTestCase;
 import org.junit.*;
+import org.quartz.Scheduler;
 
 import static org.junit.Assert.*;
 import javax.jcr.RepositoryException;
@@ -70,6 +73,9 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     private static final String TEST_FOLDER_PATH2 = SYSTEM_SITE_PATH + "/files/testFolder2";
 
     private static ReadOnlyModeController readOnlyModeController;
+    private static SchedulerService schedulerService;
+
+
     private static FullReadOnlyModeTestService fullReadOnlyModeTestService;
     private static boolean originSystemSiteWCAcompliance;
 
@@ -79,6 +85,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     public static void oneTimeSetUp() throws Exception {
         fullReadOnlyModeTestService = (FullReadOnlyModeTestService) SpringContextSingleton.getBean("fullReadOnlyModeTestService");
         readOnlyModeController = ReadOnlyModeController.getInstance();
+        schedulerService = ServicesRegistry.getInstance().getSchedulerService();
         originSystemSiteWCAcompliance = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
             JCRNodeWrapper systemSiteNode = session.getNode(SYSTEM_SITE_PATH);
             systemSiteNode.getNode("files").addNode("testFolder", "jnt:folder");
@@ -223,20 +230,10 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         readOnlyModeController.switchReadOnlyMode(true);
 
         // test that save is blocked for new session
-        try {
-            saveSomething();
-            fail("It should have failed");
-        } catch (ReadOnlyModeException exception) {
-            // nothing to do this is the expected exception
-        }
+        testReadOnlyModeViolation(this::saveSomething, true, false);
 
         // test that save is blocked for the opened session
-        try {
-            saveSomething(openedSession);
-            fail("It should have failed");
-        } catch (ReadOnlyModeException exception) {
-            // nothing to do this is the expected exception
-        }
+        testReadOnlyModeViolation(() -> saveSomething(openedSession), true, false);
 
         readOnlyModeController.switchReadOnlyMode(false);
 
@@ -317,36 +314,19 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
         // test blocked for new session
         JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
-
             try {
-                session.getNode(TEST_FOLDER_PATH).checkin();
-                fail();
-            } catch (ReadOnlyModeException e) {
-                // expected
-            }
+                 testReadOnlyModeViolation(() -> session.getNode(TEST_FOLDER_PATH).checkin(), true, false);
 
-            try {
-                session.getNode(TEST_FOLDER_PATH2).checkout();
-                fail();
-            } catch (ReadOnlyModeException e) {
-                // expected
+                 testReadOnlyModeViolation(() -> session.getNode(TEST_FOLDER_PATH2).checkout(), true, false);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
             return null;
         });
 
         // test blocked for the opened session
-        try {
-            openedSession.getNode(TEST_FOLDER_PATH).checkin();
-            fail();
-        } catch (ReadOnlyModeException exception) {
-            // expected
-        }
-        try {
-            openedSession.getNode(TEST_FOLDER_PATH2).checkout();
-            fail();
-        } catch (ReadOnlyModeException exception) {
-            // expected
-        }
+        testReadOnlyModeViolation(() -> openedSession.getNode(TEST_FOLDER_PATH).checkin(), true, false);
+        testReadOnlyModeViolation(() -> openedSession.getNode(TEST_FOLDER_PATH2).checkout(), true, false);
 
         readOnlyModeController.switchReadOnlyMode(false);
 
@@ -380,22 +360,15 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         // test blocked for new session
         JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
             try {
-                session.getNode(TEST_FOLDER_PATH).checkpoint();
-                fail();
-            } catch (ReadOnlyModeException e) {
-                // expected
+                testReadOnlyModeViolation(() -> session.getNode(TEST_FOLDER_PATH).checkpoint(), true, false);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-
             return null;
         });
 
         // test blocked for opened session
-        try {
-            openedSession.getNode(TEST_FOLDER_PATH).checkpoint();
-            fail();
-        } catch (ReadOnlyModeException e) {
-            // expected
-        }
+        testReadOnlyModeViolation(() -> openedSession.getNode(TEST_FOLDER_PATH).checkpoint(), true, false);
 
         readOnlyModeController.switchReadOnlyMode(false);
 
@@ -405,6 +378,70 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
             return null;
         });
         openedSession.getNode(TEST_FOLDER_PATH).checkpoint();
+    }
+
+    /**
+     * Test scheduler are correctly in stand by mode
+     * @throws Exception
+     */
+    @Test
+    public void testSchedulerIsStandbyMode() throws Exception {
+        assertFalse(schedulerService.getRAMScheduler().isInStandbyMode());
+        assertFalse(schedulerService.getScheduler().isInStandbyMode());
+
+        readOnlyModeController.switchReadOnlyMode(true);
+
+        assertTrue(schedulerService.getRAMScheduler().isInStandbyMode());
+        assertTrue(schedulerService.getScheduler().isInStandbyMode());
+
+        readOnlyModeController.switchReadOnlyMode(false);
+
+        assertFalse(schedulerService.getRAMScheduler().isInStandbyMode());
+        assertFalse(schedulerService.getScheduler().isInStandbyMode());
+    }
+
+    /**
+     * Test persisted scheduler actions are blocked
+     * @throws Exception
+     */
+    @Test
+    public void testPersistedSchedulerBlocked() throws Exception {
+        testScheduler(schedulerService.getScheduler(), false);
+
+        readOnlyModeController.switchReadOnlyMode(true);
+
+        testScheduler(schedulerService.getScheduler(), true);
+
+        readOnlyModeController.switchReadOnlyMode(false);
+
+        testScheduler(schedulerService.getScheduler(), false);
+    }
+
+    private void testScheduler(Scheduler scheduler, boolean shouldFail) throws Exception {
+        testReadOnlyModeViolation(() -> scheduler.scheduleJob(null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.scheduleJob(null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.unscheduleJob(null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.rescheduleJob(null, null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.addJob(null, false), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.addJob(null, false), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.deleteJob(null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.triggerJob(null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.triggerJob(null, null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.triggerJobWithVolatileTrigger(null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.triggerJobWithVolatileTrigger(null, null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.pauseJob(null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.pauseJobGroup(null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.pauseTrigger(null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.pauseTriggerGroup(null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.resumeJob(null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.resumeJobGroup(null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.resumeTrigger(null, null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.resumeTriggerGroup(null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(scheduler::pauseAll, shouldFail, !shouldFail);
+        testReadOnlyModeViolation(scheduler::resumeAll, shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.addCalendar(null, null, false, false), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.deleteCalendar(null), shouldFail, !shouldFail);
+        testReadOnlyModeViolation(() -> scheduler.interrupt(null, null), shouldFail, !shouldFail);
     }
 
     private void testUnlock(boolean isDeep, boolean isSessionScope, boolean useClearAllLocks) throws Exception {
@@ -475,25 +512,18 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     private void testUnlock(JCRSessionWrapper sessionWrapper, boolean useClearAllLocks, boolean shouldFail) throws Exception {
         JCRNodeWrapper systemSiteNode = sessionWrapper.getNode(SYSTEM_SITE_PATH);
-        try {
+        testReadOnlyModeViolation(() -> {
             if (useClearAllLocks) {
                 systemSiteNode.clearAllLocks();
             } else {
                 systemSiteNode.unlock();
             }
-            if (shouldFail) {
-                fail("It should fail");
-            }
-        } catch (ReadOnlyModeException e) {
-            if (!shouldFail) {
-                fail("It should work");
-            }
-        }
+        }, shouldFail, false);
     }
 
     private void testUnlockOnTokenAndUser(JCRSessionWrapper sessionWrapper, String type, String userId, boolean useClearAllLocks, boolean shouldFail) throws Exception {
         JCRNodeWrapper systemSiteNode = sessionWrapper.getNode(SYSTEM_SITE_PATH);
-        try {
+        testReadOnlyModeViolation(() -> {
             if (useClearAllLocks) {
                 systemSiteNode.clearAllLocks();
             } else {
@@ -503,14 +533,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
                     systemSiteNode.unlock(type);
                 }
             }
-            if (shouldFail) {
-                fail("It should fail");
-            }
-        } catch (ReadOnlyModeException e) {
-            if (!shouldFail) {
-                fail("It should work");
-            }
-        }
+        }, shouldFail, false);
     }
 
     private void testLocks(boolean shouldFail) throws Exception {
@@ -536,14 +559,9 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     private void testLock(JCRSessionWrapper sessionWrapper, boolean isDeep, boolean sessionScoped, boolean shouldFail) throws Exception {
         JCRNodeWrapper systemSiteNode = sessionWrapper.getNode(SYSTEM_SITE_PATH);
         try {
-            systemSiteNode.lock(isDeep, sessionScoped);
-            if (shouldFail) {
-                fail("It should fail");
-            }
-        } catch (ReadOnlyModeException exception) {
-            if (!shouldFail) {
-                fail("It should work");
-            }
+            testReadOnlyModeViolation(() -> {
+                systemSiteNode.lock(isDeep, sessionScoped);
+            }, shouldFail, false);
         } finally {
             try {
                 systemSiteNode.unlock();
@@ -556,18 +574,13 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     private void testLockAndStoreToken(JCRSessionWrapper sessionWrapper, String type, String userId, boolean shouldFail) throws Exception {
         JCRNodeWrapper systemSiteNode = sessionWrapper.getNode(SYSTEM_SITE_PATH);
         try {
-            if (userId != null) {
-                systemSiteNode.lockAndStoreToken(type, userId);
-            } else {
-                systemSiteNode.lockAndStoreToken(type);
-            }
-            if (shouldFail) {
-                fail("It should fail");
-            }
-        } catch (ReadOnlyModeException exception) {
-            if (!shouldFail) {
-                fail("It should work");
-            }
+            testReadOnlyModeViolation(() -> {
+                if (userId != null) {
+                    systemSiteNode.lockAndStoreToken(type, userId);
+                } else {
+                    systemSiteNode.lockAndStoreToken(type);
+                }
+            }, shouldFail, false);
         } finally {
             try {
                 if (userId != null) {
@@ -652,5 +665,26 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     private interface TestThreadCallback<T> {
         T doExecute();
+    }
+
+    private interface ReadOnlyModeViolationAction {
+        void doExecute() throws Exception;
+    }
+
+    private void testReadOnlyModeViolation(ReadOnlyModeViolationAction action, boolean shouldFail, boolean ignoreExceptions) throws Exception {
+        try {
+            action.doExecute();
+            if (shouldFail) {
+                fail();
+            }
+        } catch (ReadOnlyModeException e) {
+            if (!shouldFail) {
+                fail();
+            }
+        } catch (Exception e) {
+            if (!ignoreExceptions) {
+                throw e;
+            }
+        }
     }
 }

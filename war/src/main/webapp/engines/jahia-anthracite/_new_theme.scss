@@ -1159,12 +1159,12 @@ $ROW--BG:(
 
 // HOVER
 $ROW--COLOR---HOVER:(
-	LIGHT: _theme-color(secondary),
+	LIGHT: _theme-color(primary),
 	DARK: _theme-color(primary),
 );
 
 $ROW--BG---HOVER:(
-	LIGHT: _theme-color(primary, e),
+	LIGHT: _theme-color(secondary, a),
 	DARK: _theme-color(primary, c),
 );
 
@@ -1175,7 +1175,7 @@ $ROW--COLOR---SELECTED:(
 );
 
 $ROW--BG---SELECTED:(
-	LIGHT: _theme-color(primary, c),
+	LIGHT: _theme-color(primary, b),
 	DARK: _theme-color(quinary),
 );
 
@@ -1186,7 +1186,7 @@ $ROW--COLOR---SELECTED-HOVER:(
 );
 
 $ROW--BG---SELECTED-HOVER:(
-	LIGHT: _theme-color(primary, c),
+	LIGHT: _theme-color(primary, b),
 	DARK: _theme-color(primary, e),
 );
 
@@ -1428,7 +1428,7 @@ $TAB--BAR:(
 );
 
 $TAB--COLOR:(
-	LIGHT: _theme-color(primary, c),
+	LIGHT: _theme-color(primary, b),
 	DARK: _theme-color(primary, e),
 );
 

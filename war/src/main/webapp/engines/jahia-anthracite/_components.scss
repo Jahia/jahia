@@ -1535,12 +1535,12 @@ form,
 
 
 				body[data-INDIGO-PICKER-SEARCH="open"] & {
-					color: $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT!important;
+					color: _property($ROW--COLOR---SELECTED, $SIDE-PANEL)!important;
 				}
 
 				body[data-edit-window-style="settings"] &,
 				.x-viewport-adminmode & {
-					@include text(14px !important, #313131 !important, $FONT--WEIGHT---NORMAL !important);
+					@include text(14px !important, _property($ROW--COLOR---SELECTED, $SIDE-PANEL) !important, $FONT--WEIGHT---NORMAL !important);
 				}
 
 				&::after {
@@ -1594,7 +1594,7 @@ form,
 		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP !optional;
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
-			color: $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT!important;
+			color: _property($ROW--COLOR, $SIDE-PANEL)!important;
 		}
 
 
@@ -1651,17 +1651,17 @@ form,
 		/* List Item Text Label */
 		// @extend %CSS_BLOCK--TREE--ROW--TEXT---UP !optional;
 
-		@include text(12px !important, $TREE--ROW--FONT--COLOUR---UP !important, $FONT--WEIGHT---EXTRALIGHT !important);
+		@include text(12px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---EXTRALIGHT !important);
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
-			@include text(12px !important, $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT !important, $FONT--WEIGHT---EXTRALIGHT !important);
+			@include text(12px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---EXTRALIGHT !important);
 
 		}
 
 		body[data-edit-window-style="settings"] &,
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
-			@include text(14px !important, $TREE--ROW--FONT--COLOUR---UP !important, $FONT--WEIGHT---EXTRALIGHT !important);
+			@include text(14px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---EXTRALIGHT !important);
 		}
 
 
@@ -1676,7 +1676,7 @@ form,
 		@extend %CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL !optional;
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
-			color: $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT!important;
+			color: _property($ROW--COLOR--DIMMED, $SIDE-PANEL)!important;
 		}
 
 	}

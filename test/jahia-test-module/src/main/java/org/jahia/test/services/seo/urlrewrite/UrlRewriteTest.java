@@ -108,7 +108,7 @@ public class UrlRewriteTest extends JahiaTestCase {
         if (seoRulesEnabled || seoRemoveCmsPrefix) {
             engine.afterPropertiesSet();
         }
-        JahiaSite site = TestHelper.createSite(SITE_KEY, SERVER_NAME, TestHelper.WEB_TEMPLATES, null, null);
+        JahiaSite site = TestHelper.createSite(SITE_KEY, SERVER_NAME, TestHelper.WEB_TEMPLATES);
         site = (JahiaSite) JCRSessionFactory.getInstance().getCurrentUserSession().getNode(site.getJCRLocalPath());
         Set<String> languages = new HashSet<String>();
         languages.add(DEFAULT_LANG);

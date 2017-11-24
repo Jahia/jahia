@@ -91,7 +91,7 @@ public class SimplePerformanceSearchTest extends JahiaTestCase {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         TestHelper.createSite(FIRST_TESTSITE_NAME, "localhost", TestHelper.WEB_TEMPLATES,
-                                SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/webtemplates.zip", "ACME.zip");
+                                "prepackagedSites/webtemplates.zip", "ACME.zip");
                         session.save();
                     } catch (Exception ex) {
                         logger.warn("Exception during site creation", ex);

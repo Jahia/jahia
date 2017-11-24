@@ -43,17 +43,20 @@
  */
 package org.jahia.test;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.sites.SiteCreationInfo;
 import org.jahia.settings.SettingsBean;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -72,7 +75,6 @@ import javax.jcr.version.VersionException;
 import java.io.*;
 import java.util.Set;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * User: toto
@@ -90,16 +92,118 @@ public class TestHelper {
     public static final String INTRANET_TEMPLATES = "templates-intranet";
     public static final String BOOTSTRAP_ACME_SPACE_TEMPLATES = "bootstrap-acme-space-templates";
 
+
+    public static JahiaSite createSite(SiteCreationInfo info) throws Exception {
+        return createSite(info, null, null);
+    }
+
+    @SuppressWarnings("resource")
+    public static JahiaSite createSite(SiteCreationInfo info, String prepackedZIPFile, String siteZIPName) throws Exception {
+        populateDefaults(info);
+
+        deleteSiteIfPresent(info.getSiteKey());
+
+        JahiaSite site = null;
+        File siteZIPFile = null;
+        File sharedZIPFile = null;
+        try {
+            if (!StringUtils.isEmpty(prepackedZIPFile)) {
+                NoCloseZipInputStream zis = null;
+                try {
+                    zis = new NoCloseZipInputStream(new FileInputStream(prepackedZIPFile.startsWith("prepackagedSites/")
+                            ? new File(SettingsBean.getInstance().getJahiaVarDiskPath(), prepackedZIPFile)
+                            : new File(prepackedZIPFile)));
+                    ZipEntry z = null;
+                    while ((z = zis.getNextEntry()) != null) {
+                        boolean isUsersZip = ImportExportBaseService.USERS_ZIP.equals(z.getName());
+                        if (isUsersZip || siteZIPName.equalsIgnoreCase(z.getName())) {
+                            File zipFile = File.createTempFile("import", ".zip");
+                            FileUtils.copyInputStreamToFile(zis, zipFile);;
+                            if (isUsersZip) {
+                                sharedZIPFile = zipFile;
+                            } else {
+                                siteZIPFile = zipFile;
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                } finally {
+                    if (zis != null) {
+                        try {
+                            zis.reallyClose();
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+            }
+            if (sharedZIPFile != null) {
+                try {
+                    ImportExportBaseService.getInstance().importSiteZip(new FileSystemResource(sharedZIPFile), null, null);
+                } catch (RepositoryException e) {
+                    logger.warn("shared.zip could not be imported", e);
+                }
+            }
+
+            // we ensure that the template set module is deployed and started; if not, it will be resolved and installed + started
+            ModuleTestHelper.ensureModuleStarted(info.getTemplateSet());
+
+            if (siteZIPFile != null) {
+                info.setFirstImport("fileImport");
+                info.setFileImport(new FileSystemResource(siteZIPFile));
+            }
+
+            JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
+            site = service.addSite(info);
+            site = service.getSiteByKey(info.getSiteKey());
+        } finally {
+            FileUtils.deleteQuietly(sharedZIPFile);
+            FileUtils.deleteQuietly(siteZIPFile);
+        }
+
+        return site;
+    }
+
+    private static void deleteSiteIfPresent(String siteKey) throws JahiaException {
+        JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
+        try {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            JahiaSite existingSite = service.getSiteByKey(siteKey, session);
+
+            if (existingSite != null) {
+                service.removeSite(existingSite);
+                session.refresh(false);
+            }
+        } catch (RepositoryException ex) {
+            logger.debug("Error while trying to remove the site", ex);
+        }
+    }
+
+    private static void populateDefaults(SiteCreationInfo info) {
+        long timestamp = System.currentTimeMillis();
+        info.setSiteKey(StringUtils.defaultString(info.getSiteKey(), "mySite-" + timestamp));
+        info.setTitle(StringUtils.defaultString(info.getTitle(), info.getSiteKey()));
+        info.setDescription(StringUtils.defaultString(info.getDescription(), info.getTitle()));
+        info.setServerName(StringUtils.defaultString(info.getServerName(), "localhost" + timestamp));
+        info.setTemplateSet(StringUtils.defaultString(info.getTemplateSet(), WEB_TEMPLATES));
+        info.setLocale(
+                StringUtils.defaultString(info.getLocale(), SettingsBean.getInstance().getDefaultLanguageCode()));
+        if (info.getSiteAdmin() == null) {
+            info.setSiteAdmin(JahiaAdminUser.getAdminUser(null));
+        }
+    }
+
     public static JahiaSite createSite(String name) throws Exception {
-        return createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
+        return createSite(SiteCreationInfo.builder().siteKey(name).build());
     }
 
     public static JahiaSite createSite(String name, String templateSet) throws Exception {
-        return createSite(name, "localhost" + System.currentTimeMillis(), templateSet, null, null, null);
+        return createSite(SiteCreationInfo.builder().siteKey(name).templateSet(templateSet).build());
     }
 
     public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws Exception {
-        createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
+        createSite(name);
         final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/" + name);
         if (!CollectionUtils.isEmpty(languages) && !languages.equals(site.getLanguages())) {
@@ -123,101 +227,15 @@ public class TestHelper {
         return createSite(name, serverName, templateSet, null, null,null);
     }
 
-    public static JahiaSite createSite(String name, String serverName, String templateSet,
-                                       String prepackedZIPFile, String siteZIPName, String[] modulesToDeploy) throws Exception {
-        modulesToDeploy = (modulesToDeploy == null) ? new String[0] : modulesToDeploy;
-
-        JahiaUser admin = JahiaAdminUser.getAdminUser(null);
-
-        JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
-        try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance()
-                    .getCurrentSystemSession(null, null, null);
-            JahiaSite existingSite = service.getSiteByKey(name, session);
-
-            if (existingSite != null) {
-                service.removeSite(existingSite);
-                session.refresh(false);
-            }
-        } catch (RepositoryException ex) {
-            logger.debug("Error while trying to remove the site", ex);
-        }
-        JahiaSite site = null;
-        File siteZIPFile = null;
-        File sharedZIPFile = null;
-        try {
-            if (!StringUtils.isEmpty(prepackedZIPFile)) {
-                ZipInputStream zis = null;
-                OutputStream os = null;
-                try {
-                    zis = new ZipInputStream(new FileInputStream(new File(prepackedZIPFile)));
-                    ZipEntry z = null;
-                    while ((z = zis.getNextEntry()) != null) {
-                        if (siteZIPName.equalsIgnoreCase(z.getName())
-                                || "users.zip".equals(z.getName())) {
-                            File zipFile = File.createTempFile("import", ".zip");
-                            os = new FileOutputStream(zipFile);
-                            byte[] buf = new byte[4096];
-                            int r;
-                            while ((r = zis.read(buf)) > 0) {
-                                os.write(buf, 0, r);
-                            }
-                            os.close();
-                            if ("users.zip".equals(z.getName())) {
-                                sharedZIPFile = zipFile;
-                            } else {
-                                siteZIPFile = zipFile;
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                } finally {
-                    if (os != null) {
-                        try {
-                            os.close();
-                        } catch (IOException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                    if (zis != null) {
-                        try {
-                            zis.close();
-                        } catch (IOException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                }
-            }
-            if (sharedZIPFile != null) {
-                try {
-                    ImportExportBaseService.getInstance().importSiteZip(sharedZIPFile != null ? new FileSystemResource(sharedZIPFile) : null, null, null);
-                } catch (RepositoryException e) {
-                    logger.warn("shared.zip could not be imported", e);
-                }
-            }
-            // we ensure that the template set module is deployed and started; if not, it will be resolved and installed + started
-            ModuleTestHelper.ensureModuleStarted(templateSet);
-
-            site = service.addSite(admin, name, serverName, name, name, SettingsBean.getInstance().getDefaultLocale(),
-                    templateSet, modulesToDeploy, siteZIPFile == null ? "noImport" : "fileImport", siteZIPFile != null ? new FileSystemResource(siteZIPFile) : null,
-                    null, false, false, null);
-            site = service.getSiteByKey(name);
-        } finally {
-            if (sharedZIPFile != null) {
-                sharedZIPFile.delete();
-            }
-            if (siteZIPFile != null) {
-                siteZIPFile.delete();
-            }
-        }
-
-        return site;
+    public static JahiaSite createSite(String name, String serverName, String templateSet, String prepackedZIPFile,
+            String siteZIPName, String[] modulesToDeploy) throws Exception {
+        return createSite(SiteCreationInfo.builder().siteKey(name).serverName(serverName).templateSet(templateSet)
+                .modulesToDeploy(modulesToDeploy).build(), prepackedZIPFile, siteZIPName);
     }
 
     public static JahiaSite createSite(String name, String serverName, String templateSet,
                                        String prepackedZIPFile, String siteZIPName) throws Exception {
-            return createSite(name, serverName, templateSet, prepackedZIPFile, siteZIPName, null);
+        return createSite(name, serverName, templateSet, prepackedZIPFile, siteZIPName, null);
     }
 
     public static void deleteSite(String name) throws Exception {

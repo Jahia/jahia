@@ -92,7 +92,7 @@ public class SimpleSearchTest extends JahiaTestCase {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         TestHelper.createSite(FIRST_TESTSITE_NAME, "localhost", TestHelper.WEB_TEMPLATES,
-                                SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/acme.zip", "ACME.zip");
+                                "prepackagedSites/acme.zip", "ACME.zip");
                         session.save();
                     } catch (Exception ex) {
                         logger.warn("Exception during site creation", ex);
@@ -108,7 +108,7 @@ public class SimpleSearchTest extends JahiaTestCase {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         TestHelper.createSite(SECOND_TESTSITE_NAME, "127.0.0.1", TestHelper.WEB_TEMPLATES,
-                                SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites/acme.zip", "ACME.zip");
+                                "prepackagedSites/acme.zip", "ACME.zip");
                         session.save();
                     } catch (Exception ex) {
                         logger.warn("Exception during site creation", ex);

@@ -118,8 +118,7 @@ public class TestCreateSiteServlet extends BaseTestController {
                                 siteKey = "ACME" + numberOfSites;
                             }
                             TestHelper.createSite(siteKey, "localhost" + numberOfSites, TestHelper.WEB_BLUE_TEMPLATES,
-                                    SettingsBean.getInstance().getJahiaVarDiskPath()
-                                            + "/prepackagedSites/acme.zip", "ACME.zip");
+                                    "prepackagedSites/acme.zip", "ACME.zip");
                             JCRNodeWrapper homeNode = session.getRootNode().getNode("sites/" + siteKey + "/home");
                             if (numberOfParents != 0) {
                                 for (int i = 0; i < numberOfParents; i++) {

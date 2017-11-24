@@ -43,20 +43,28 @@
  */
 package org.jahia.test.services.sites;
 
+import static org.assertj.core.api.Assertions.*;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import javax.jcr.RepositoryException;
 
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.sites.SiteCreationInfo;
+import org.jahia.services.sites.SitesSettings;
 import org.jahia.test.TestHelper;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -156,6 +164,26 @@ public class JahiaSitesServiceTest {
         }
     }
 
+    private JahiaSite getSiteByKey(String siteKey) {
+        return getSiteByKey(siteKey, null);
+    }
+
+    private JahiaSite getSiteByKey(String siteKey, JCRSessionWrapper session) {
+        try {
+            return session != null ? siteService.getSiteByKey(siteKey, session) : siteService.getSiteByKey(siteKey);
+        } catch (JahiaException | RepositoryException e) {
+            throw new JahiaRuntimeException(e);
+        }
+    }
+
+    private JahiaSite getSiteByServerName(String serverName) {
+        try {
+            return siteService.getSiteByServerName(serverName);
+        } catch (JahiaException e) {
+            throw new JahiaRuntimeException(e);
+        }
+    }
+
     private void recreateLiveSession() throws RepositoryException {
         closeSession(liveSession);
 
@@ -165,9 +193,11 @@ public class JahiaSitesServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        siteA = TestHelper.createSite(SITE_A);
-        siteB = TestHelper.createSite(SITE_B);
-        siteC = TestHelper.createSite(SITE_C);
+        siteA = TestHelper.createSite(SiteCreationInfo.builder().siteKey(SITE_A).serverName("localhost").build());
+        siteB = TestHelper.createSite(SiteCreationInfo.builder().siteKey(SITE_B).serverName("siteb.com")
+                .serverNameAliases("111.siteb.com").build());
+        siteC = TestHelper.createSite(SiteCreationInfo.builder().siteKey(SITE_C).serverName("sitec.com")
+                .serverNameAliases("111.sitec.com", "222.sitec.com").build());
 
         defaultSession = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.EDIT_WORKSPACE,
                 Locale.ENGLISH, Locale.ENGLISH);
@@ -209,5 +239,86 @@ public class JahiaSitesServiceTest {
         siteService.removeSite(siteB);
         recreateLiveSession();
         assertNotNull("There is no default site set", siteService.getDefaultSite(liveSession));
+    }
+
+    @Test
+    public void testServerNames() throws Exception {
+        // siteA
+        JahiaSite testSite = getSiteByKey(SITE_A);
+        assertThat(testSite.getServerName()).isNotBlank().isEqualTo("localhost");
+        assertThat(testSite.getServerNameAliases()).isEmpty();
+        assertThat(testSite.getAllServerNames()).hasSize(1).containsExactly("localhost");
+
+        // siteB
+        testSite = getSiteByKey(SITE_B);
+        assertThat(testSite.getServerName()).isNotBlank().isEqualTo("siteb.com");
+        assertThat(testSite.getServerNameAliases()).hasSize(1).containsExactly("111.siteb.com");
+        assertThat(testSite.getAllServerNames()).hasSize(2).containsExactly("siteb.com", "111.siteb.com");
+        assertThat(getSiteByServerName("siteb.com")).isNotNull().hasFieldOrPropertyWithValue("siteKey", SITE_B);
+        assertThat(getSiteByServerName("111.siteb.com")).isNotNull().hasFieldOrPropertyWithValue("siteKey", SITE_B);
+
+        // siteC
+        testSite = getSiteByKey(SITE_C);
+        assertThat(testSite.getServerName()).isNotBlank().isEqualTo("sitec.com");
+        assertThat(testSite.getServerNameAliases()).hasSize(2).containsExactly("111.sitec.com", "222.sitec.com");
+        assertThat(testSite.getAllServerNames()).hasSize(3).containsExactly("sitec.com", "111.sitec.com",
+                "222.sitec.com");
+
+        // lookup by server name
+        assertThat(getSiteByServerName("sitec.com")).isNotNull().hasFieldOrPropertyWithValue("siteKey", SITE_C);
+        assertThat(getSiteByServerName("111.sitec.com")).isNotNull().hasFieldOrPropertyWithValue("siteKey", SITE_C);
+        assertThat(getSiteByServerName("222.sitec.com")).isNotNull().hasFieldOrPropertyWithValue("siteKey", SITE_C);
+        assertThat(getSiteByServerName("333.sitec.com")).isNull();
+
+        // modification test
+        testSite = getSiteByKey(SITE_A, defaultSession);
+        testSite.setServerNameAliases(Arrays.asList("111.sitea.com", "222.sitea.com"));
+        assertThat(testSite.getServerNameAliases()).hasSize(2).containsExactly("111.sitea.com", "222.sitea.com");
+        assertThat(testSite.getAllServerNames()).hasSize(3).containsExactly("localhost", "111.sitea.com",
+                "222.sitea.com");
+        defaultSession.save();
+        assertThat(getSiteByServerName("111.sitea.com")).isNotNull().hasFieldOrPropertyWithValue("siteKey", SITE_A);
+        assertThat(getSiteByServerName("222.sitea.com")).isNotNull().hasFieldOrPropertyWithValue("siteKey", SITE_A);
+        testSite.setServerNameAliases(Arrays.asList("111.sitea.com"));
+        assertThat(testSite.getServerNameAliases()).hasSize(1).containsExactly("111.sitea.com");
+        assertThat(testSite.getAllServerNames()).hasSize(2).containsExactly("localhost", "111.sitea.com");
+        defaultSession.save();
+        assertThat(getSiteByServerName("111.sitea.com")).isNotNull().hasFieldOrPropertyWithValue("siteKey", SITE_A);
+        assertThat(getSiteByServerName("222.sitea.com")).isNull();
+        testSite.setServerNameAliases(null);
+        assertThat(testSite.getServerNameAliases()).isEmpty();
+        assertThat(testSite.getAllServerNames()).hasSize(1).containsExactly("localhost");
+        defaultSession.save();
+        assertThat(getSiteByServerName("111.sitea.com")).isNull();
+
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+            @Override
+            public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper site = session.getNode(JahiaSitesService.SITES_JCR_PATH + "/" + SITE_C);
+                assertThat(site.getPropertyAsString(SitesSettings.SERVER_NAME_ALIASES))
+                        .isEqualTo("111.sitec.com 222.sitec.com");
+                site.setProperty(SitesSettings.SERVER_NAME_ALIASES, new String[] { "333.sitec.com" });
+                session.save();
+
+                assertThat(getSiteByServerName("333.sitec.com")).isNotNull().hasFieldOrPropertyWithValue("siteKey",
+                        SITE_C);
+                assertThat(getSiteByServerName("111.sitec.com")).isNull();
+                assertThat(getSiteByServerName("222.sitec.com")).isNull();
+
+                assertThat(getSiteByKey(SITE_C).getAllServerNames()).hasSize(2).containsExactly("sitec.com",
+                        "333.sitec.com");
+
+                site = session.getNode(JahiaSitesService.SITES_JCR_PATH + "/" + SITE_C);
+                assertThat(site.getPropertyAsString(SitesSettings.SERVER_NAME_ALIASES)).isEqualTo("333.sitec.com");
+                site.setProperty(SitesSettings.SERVER_NAME_ALIASES, (String[]) null);
+                assertThat(site.hasProperty(SitesSettings.SERVER_NAME_ALIASES)).isFalse();
+                session.save();
+                assertThat(getSiteByServerName("333.sitec.com")).isNull();
+                assertThat(getSiteByKey(SITE_C).getServerNameAliases()).isEmpty();
+                assertThat(getSiteByKey(SITE_C).getAllServerNames()).hasSize(1).containsExactly("sitec.com");
+
+                return null;
+            }
+        });
     }
 }

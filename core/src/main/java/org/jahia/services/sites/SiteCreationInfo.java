@@ -55,6 +55,106 @@ import org.springframework.core.io.Resource;
  */
 public class SiteCreationInfo {
 
+    /**
+     * Helper class used to build the {@link SiteCreationInfo} object.
+     */
+    public static class Builder {
+
+        private SiteCreationInfo site;
+
+        private Builder() {
+            site = new SiteCreationInfo();
+        }
+
+        public SiteCreationInfo build() {
+            return site;
+        }
+
+        public Builder description(String description) {
+            site.setDescription(description);
+            return this;
+        }
+
+        public Builder fileImport(Resource fileImport) {
+            site.setFileImport(fileImport);
+            return this;
+        }
+
+        public Builder fileImportName(String fileImportName) {
+            site.setFileImportName(fileImportName);
+            return this;
+        }
+
+        public Builder firstImport(String firstImport) {
+            site.setFirstImport(firstImport);
+            return this;
+        }
+
+        public Builder legacyDefinitionsFilePath(Resource legacyDefinitionsFilePath) {
+            site.setLegacyDefinitionsFilePath(legacyDefinitionsFilePath);
+            return this;
+        }
+
+        public Builder legacyMappingFilePath(Resource legacyMappingFilePath) {
+            site.setLegacyMappingFilePath(legacyMappingFilePath);
+            return this;
+        }
+
+        public Builder locale(String locale) {
+            site.setLocale(locale);
+            return this;
+        }
+
+        public Builder modulesToDeploy(String[] modulesToDeploy) {
+            site.setModulesToDeploy(modulesToDeploy);
+            return this;
+        }
+
+        public Builder originatingJahiaRelease(String originatingJahiaRelease) {
+            site.setOriginatingJahiaRelease(originatingJahiaRelease);
+            return this;
+        }
+
+        public Builder serverName(String serverName) {
+            site.setServerName(serverName);
+            return this;
+        }
+
+        public Builder serverNameAliases(String... serverNameAliases) {
+            site.setServerNameAliases(serverNameAliases);
+            return this;
+        }
+
+        public Builder siteAdmin(JahiaUser siteAdmin) {
+            site.setSiteAdmin(siteAdmin);
+            return this;
+        }
+
+        public Builder siteKey(String siteKey) {
+            site.setSiteKey(siteKey);
+            return this;
+        }
+
+        public Builder templateSet(String templateSet) {
+            site.setTemplateSet(templateSet);
+            return this;
+        }
+
+        public Builder title(String title) {
+            site.setTitle(title);
+            return this;
+        }
+    }
+
+    /**
+     * Returns a helper object, used to build an instance of the {@link SiteCreationInfo}.
+     * 
+     * @return a helper object, used to build an instance of the {@link SiteCreationInfo}
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
     private String description;
 
     private Resource fileImport;

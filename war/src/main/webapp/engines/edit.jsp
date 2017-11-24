@@ -27,7 +27,7 @@
 
 		<!-- Javascript for theme -->
         <script type="text/javascript">
-            var DXAnthraciteCSS = '/engines/${theme}/edit${themeLocale}.css';
+            var DXAnthraciteCSS = '<c:url value="/engines/${theme}/edit${themeLocale}.css"/>';
         </script>
 		<script type="text/javascript" src="<c:url value='/engines/${theme}/js/edit.js'/>"></script>
     </c:if>

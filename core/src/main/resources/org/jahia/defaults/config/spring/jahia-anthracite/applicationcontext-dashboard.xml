@@ -36,12 +36,12 @@
                                     <ref bean="Toolbar.Item.Admin"/>
                                     <ref bean="Toolbar.Item.Edit"/>
                                     <ref bean="Toolbar.Item.Contribute"/>
-                                    <ref bean="Toolbar.Item.EditorialContentManager"/>
-                                    <ref bean="Toolbar.Item.FileManager"/>
-                                    <ref bean="Toolbar.Item.PortletManager"/>
-                                    <ref bean="Toolbar.Item.RepositoryExplorer"/>
-                                    <ref bean="Toolbar.Item.CategoryManager"/>
-                                    <ref bean="Toolbar.Item.SiteManager"/>
+                                    <ref bean="Toolbar.Item.EditorialContentManager.NewTab"/>
+                                    <ref bean="Toolbar.Item.FileManager.NewTab"/>
+                                    <ref bean="Toolbar.Item.PortletManager.NewTab"/>
+                                    <ref bean="Toolbar.Item.RepositoryExplorer.NewTab"/>
+                                    <ref bean="Toolbar.Item.CategoryManager.NewTab"/>
+                                    <ref bean="Toolbar.Item.SiteManager.NewTab"/>
                                 </list>
                             </property>
                         </bean>

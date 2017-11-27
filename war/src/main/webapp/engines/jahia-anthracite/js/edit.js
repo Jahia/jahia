@@ -1244,6 +1244,7 @@
 			ignoreMetadata: "Ignore metadata",
 			metaLabel: "Meta: %n%",
 			cancel: "Cancel",
+			filterContent: "Filter Content",
 			pickerTitles: {
 				default: "File Picker",
 				imagepicker: "Image Picker",
@@ -1278,6 +1279,7 @@
 			ignoreMetadata: "Ignore metadata",
 			metaLabel: "Meta: %n%",
 			cancel: "Annuler",
+			filterContent: "Filtrer le contenu",
 			pickerTitles: {
 				default: "File Picker",
 				imagepicker: "Image Picker",
@@ -4004,7 +4006,15 @@
 
                 })
 				.onOpen(".content-type-window", function(){
-					DexV2(".content-type-window .x-form-field-wrap input").setAttribute("placeholder", "Filter Content");
+
+					DexV2(".content-type-window .x-form-field-wrap input").setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterContent);
+
+					// Firefox has bug which doesnt always set focus on text input, wait a split second before settings focus
+					setTimeout(function(){
+						DexV2(".content-type-window .x-form-field-wrap input")
+							.nodes[0].focus();
+					}, 50);
+
 				})
 				// .onClick(".workflowactiondialog-ctn .x-grid3-row", function(){
 				// 	DexV2.class("workflowactiondialog-card").addClass("indigo-opened");
@@ -4066,7 +4076,7 @@
     				DexV2.node(this).filter(".JahiaGxtSearchTab-results .x-grid3-body").addClass("results-column");
     			})
     			.onOpen("#JahiaGxtCreateContentTab", function(){
-    				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", "Filter Content ...")
+    				DexV2.node(this).filter("input.x-form-text").setAttribute("placeholder", localisedStrings[app.data.UILanguage].filterContent)
     			})
                 .onGroupOpen("#JahiaGxtSettingsTab .x-grid3-row", app.edit.settings.onTreeChange) // Once matchType is improved the target selector can be changed to #JahiaGxtSettingsTab .x-grid3-row
                 .onOpen(".x-grid-empty", function(value){

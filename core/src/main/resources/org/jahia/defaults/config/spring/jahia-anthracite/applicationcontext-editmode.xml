@@ -19,7 +19,7 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
                     <property name="value"
-                              value="$context/engines/manager.jsp?conf=editorialcontentmanager&amp;site=$siteuuid&amp;lang=$lang"/>
+                              value="$context/engines/manager.jsp?conf=editorialcontentmanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>
@@ -45,7 +45,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=filemanager&amp;site=$siteuuid&amp;lang=$lang"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=filemanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>
@@ -76,7 +76,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=repositoryexplorer&amp;lang=$lang"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=repositoryexplorer-anthracite&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>
@@ -103,7 +103,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=portletmanager&amp;site=$siteuuid&amp;lang=$lang"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=portletmanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>
@@ -135,7 +135,7 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
                     <property name="value"
-                              value="$context/engines/manager.jsp?conf=categorymanager&amp;lang=$lang"/>
+                              value="$context/engines/manager.jsp?conf=categorymanager-anthracite&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>
@@ -161,7 +161,7 @@
             <list>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=sitemanager&amp;site=$siteuuid&amp;lang=$lang"/>
+                    <property name="value" value="$context/engines/manager.jsp?conf=sitemanager-anthracite&amp;site=$siteuuid&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>
@@ -184,7 +184,7 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="url"/>
                     <property name="value"
-                              value="$context/engines/manager.jsp?conf=repositoryexplorer&amp;site=$siteuuid&amp;selectedPaths=$nodepath&amp;lang=$lang"/>
+                              value="$context/engines/manager.jsp?conf=repositoryexplorer-anthracite&amp;site=$siteuuid&amp;selectedPaths=$nodepath&amp;lang=$lang"/>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
                     <property name="name" value="target"/>

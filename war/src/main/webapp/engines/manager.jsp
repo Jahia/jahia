@@ -12,7 +12,11 @@
 <%@ page import="org.jahia.settings.SettingsBean" %>
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<c:set var="cfg" value="${functions:default(param.conf, 'repositoryexplorer')}"/>
+<c:set var="cfgbase" value="${functions:default(param.conf, 'repositoryexplorer')}"/>
+<c:set var="cfg" value="${cfgbase}"/>
+<c:if test="${fn:indexOf(cfgbase, '-' ) > 0}">
+    <c:set var="cfg" value="${fn:substringBefore(cfgbase,'-')}"/>
+</c:if>
 <% pageContext.setAttribute("xUaCompatible", SettingsBean.getInstance().getInternetExplorerCompatibility()); %>
 <head>
     <c:if test="${not empty xUaCompatible}">
@@ -40,6 +44,6 @@
 
 </head>
 <body onload="window.focus()">
-<internal:contentManager conf="${fn:escapeXml(cfg)}" selectedPaths="${fn:escapeXml(param.selectedPaths)}" rootPath="${fn:escapeXml(param.rootPath)}"/>
+<internal:contentManager conf="${fn:escapeXml(cfgbase)}" selectedPaths="${fn:escapeXml(param.selectedPaths)}" rootPath="${fn:escapeXml(param.rootPath)}"/>
 </body>
 </html>

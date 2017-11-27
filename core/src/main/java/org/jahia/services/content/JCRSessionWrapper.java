@@ -1358,13 +1358,17 @@ public class JCRSessionWrapper implements Session {
         this.readOnlyCacheEnabled = readOnlyCacheEnabled;
     }
 
+    /**
+     * Set the read only status of this session.
+     * @param readOnly the read only status to set
+     */
     void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
 
     /**
-     * Check if this session is read only
-     * @return true if session is read only, false if not.
+     * Get the read only status of this session.
+     * @return whether this session is read only
      */
     public boolean isReadOnly() {
         return readOnly;

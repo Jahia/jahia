@@ -57,8 +57,7 @@ import static org.junit.Assert.*;
 import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -74,16 +73,14 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     private static ReadOnlyModeController readOnlyModeController;
     private static SchedulerService schedulerService;
-
-
-    private static FullReadOnlyModeTestService fullReadOnlyModeTestService;
+    private static ReadOnlyModeCapablePlaceholder readOnlyModeCapablePlaceholder;
     private static boolean originSystemSiteWCAcompliance;
 
-    private static List<String> openedTestSessions = new ArrayList<>();
+    private HashSet<String> openedTestSessions = new HashSet<>();
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        fullReadOnlyModeTestService = (FullReadOnlyModeTestService) SpringContextSingleton.getBean("fullReadOnlyModeTestService");
+        readOnlyModeCapablePlaceholder = (ReadOnlyModeCapablePlaceholder) SpringContextSingleton.getBean("ReadOnlyModeCapablePlaceholder");
         readOnlyModeController = ReadOnlyModeController.getInstance();
         schedulerService = ServicesRegistry.getInstance().getSchedulerService();
         originSystemSiteWCAcompliance = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
@@ -108,8 +105,9 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     @After
     public void tearDown() {
-        // reset test service
-        fullReadOnlyModeTestService.setTestCallback(null);
+
+        // reset the placeholder
+        readOnlyModeCapablePlaceholder.setReadOnlyModeSwitchImplementation(null);
 
         // switch off read only
         try {
@@ -125,6 +123,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
                 openedSession.logout();
             }
         }
+        openedTestSessions.clear();
     }
 
     /**
@@ -633,8 +632,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     }
 
     private void setWaitingTestService(long millis) {
-        // using test service to wait 30 sec during the switch
-        fullReadOnlyModeTestService.setTestCallback(() -> {
+        readOnlyModeCapablePlaceholder.setReadOnlyModeSwitchImplementation((boolean enable) -> {
             try {
                 Thread.sleep(millis);
             } catch (InterruptedException e) {

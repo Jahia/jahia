@@ -56,13 +56,13 @@ import java.util.Set;
  *
  * Created by Kevan
  */
-class ReadOnlyModeSchedulerWrapper implements Scheduler {
+class ReadOnlyModeAwareScheduler implements Scheduler {
 
     private Scheduler scheduler;
 
     private volatile boolean readOnlyMode = false;
 
-    ReadOnlyModeSchedulerWrapper(Scheduler scheduler) {
+    ReadOnlyModeAwareScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -137,7 +137,7 @@ class ReadOnlyModeSchedulerWrapper implements Scheduler {
     }
 
     @Override
-    public List getCurrentlyExecutingJobs() throws SchedulerException {
+    public List<?> getCurrentlyExecutingJobs() throws SchedulerException {
         return scheduler.getCurrentlyExecutingJobs();
     }
 
@@ -292,7 +292,7 @@ class ReadOnlyModeSchedulerWrapper implements Scheduler {
     }
 
     @Override
-    public Set getPausedTriggerGroups() throws SchedulerException {
+    public Set<?> getPausedTriggerGroups() throws SchedulerException {
         return scheduler.getPausedTriggerGroups();
     }
 
@@ -360,12 +360,12 @@ class ReadOnlyModeSchedulerWrapper implements Scheduler {
     }
 
     @Override
-    public List getGlobalJobListeners() throws SchedulerException {
+    public List<?> getGlobalJobListeners() throws SchedulerException {
         return scheduler.getGlobalJobListeners();
     }
 
     @Override
-    public Set getJobListenerNames() throws SchedulerException {
+    public Set<?> getJobListenerNames() throws SchedulerException {
         return scheduler.getJobListenerNames();
     }
 
@@ -400,12 +400,12 @@ class ReadOnlyModeSchedulerWrapper implements Scheduler {
     }
 
     @Override
-    public List getGlobalTriggerListeners() throws SchedulerException {
+    public List<?> getGlobalTriggerListeners() throws SchedulerException {
         return scheduler.getGlobalTriggerListeners();
     }
 
     @Override
-    public Set getTriggerListenerNames() throws SchedulerException {
+    public Set<?> getTriggerListenerNames() throws SchedulerException {
         return scheduler.getTriggerListenerNames();
     }
 
@@ -430,7 +430,7 @@ class ReadOnlyModeSchedulerWrapper implements Scheduler {
     }
 
     @Override
-    public List getSchedulerListeners() throws SchedulerException {
+    public List<?> getSchedulerListeners() throws SchedulerException {
         return scheduler.getSchedulerListeners();
     }
 }

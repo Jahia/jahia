@@ -90,7 +90,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     private Scheduler ramScheduler = null;
 
-    private ReadOnlyModeSchedulerWrapper scheduler = null;
+    private ReadOnlyModeAwareScheduler scheduler = null;
 
     private ThreadLocal<List<JobDetail>> scheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
 
@@ -249,16 +249,20 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     public void startSchedulers() throws JahiaInitializationException {
         try {
-            if (!ramScheduler.isStarted() || ramScheduler.isInStandbyMode()) {
-                ramScheduler.start();
-            }
+            ramScheduler.start();
 
-            if (settingsBean.isProcessingServer() && (!scheduler.isStarted() || scheduler.isInStandbyMode())) {
+            if (settingsBean.isProcessingServer()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Starting scheduler...\n instanceId:"
-                            + scheduler.getMetaData().getSchedulerInstanceId() + " instanceName:"
-                            + scheduler.getMetaData().getSchedulerName() + "\n"
-                            + scheduler.getMetaData().getSummary());
+                    SchedulerMetaData schedulerMetadata = scheduler.getMetaData();
+                    logger.debug("Starting scheduler...\n"
+                               + " instanceId:{} instanceName:{}\n"
+                               + "{}",
+                        new Object[] {
+                            schedulerMetadata.getSchedulerInstanceId(),
+                            schedulerMetadata.getSchedulerName(),
+                            schedulerMetadata.getSummary()
+                        }
+                    );
                 }
 
                 scheduler.start();
@@ -282,10 +286,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
                                                       // jobdetail's volatility
 
         data.put(JOB_STATUS, STATUS_ADDED);
-        if (logger.isDebugEnabled()) {
-            logger.debug("schedule job " + jobDetail.getName() + " volatile("
-                    + jobDetail.isVolatile() + ") @ " + new Date(System.currentTimeMillis()));
-        }
+        logger.debug("schedule job {} volatile({}) @ {}", new Object[] {jobDetail.getName(), jobDetail.isVolatile(), new Date(System.currentTimeMillis())});
         if (useRamScheduler) {
             ramScheduler.scheduleJob(jobDetail, trigger);
         } else {
@@ -346,9 +347,10 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     public void setScheduler(Scheduler scheduler) {
-        this.scheduler = new ReadOnlyModeSchedulerWrapper(scheduler);
+        this.scheduler = new ReadOnlyModeAwareScheduler(scheduler);
     }
 
+    @Override
     public void start() throws JahiaInitializationException {
 
         try {
@@ -371,6 +373,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         }
     }
 
+    @Override
     public void stop() {
         if (scheduler == null || ramScheduler == null) {
             return;
@@ -391,15 +394,15 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     @Override
-    public void onReadOnlyModeChanged(boolean readOnlyModeIsOn, long timeout) {
+    public void onReadOnlyModeChanged(boolean enableReadOnlyMode, long timeout) {
 
         // switch db persisted scheduler read only mode flag
-        scheduler.setReadOnly(readOnlyModeIsOn);
+        scheduler.setReadOnly(enableReadOnlyMode);
 
-        if (readOnlyModeIsOn) {
+        if (enableReadOnlyMode) {
             logger.info("Entering read-only mode. Putting schedulers to standby...");
             try {
-                standBySchedulers();
+                standbySchedulers();
                 logger.info("Done putting schedulers to standby");
             } catch (SchedulerException e) {
                 throw new RuntimeException(e);
@@ -415,12 +418,9 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         }
     }
 
-    private void standBySchedulers() throws SchedulerException {
-        if (ramScheduler.isStarted() && !ramScheduler.isInStandbyMode()) {
-            ramScheduler.standby();
-        }
-
-        if (scheduler.isStarted() && !scheduler.isInStandbyMode()) {
+    private void standbySchedulers() throws SchedulerException {
+        ramScheduler.standby();
+        if (settingsBean.isProcessingServer()) {
             scheduler.standby();
         }
     }

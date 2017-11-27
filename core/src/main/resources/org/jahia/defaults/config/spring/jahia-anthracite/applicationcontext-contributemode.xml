@@ -25,6 +25,9 @@
                                 </list>
                             </property>
                         </bean>
+                        <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.Upload">
+                            <property name="hideWhenDisabled" value="true"/>
+                        </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.EditContent">
                             <property name="requiredPermission" value="createPageAction"/>
                             <property name="actionItem">

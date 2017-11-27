@@ -59,6 +59,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.sites.SiteCreationInfo;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.After;
@@ -88,6 +89,8 @@ public class UrlRewriteTest extends JahiaTestCase {
 
     private static final String SERVER_NAME = "urlrewrite.jahia.org";
 
+    private static final String SERVER_NAME_ALIAS = "urlrewrite-alias.jahia.org";
+
     private static final String SERVLET = "/cms";
 
     private static final String FILES_SERVLET = "/files";
@@ -108,7 +111,8 @@ public class UrlRewriteTest extends JahiaTestCase {
         if (seoRulesEnabled || seoRemoveCmsPrefix) {
             engine.afterPropertiesSet();
         }
-        JahiaSite site = TestHelper.createSite(SITE_KEY, SERVER_NAME, TestHelper.WEB_TEMPLATES);
+        JahiaSite site = TestHelper.createSite(SiteCreationInfo.builder().siteKey(SITE_KEY).serverName(SERVER_NAME)
+                .serverNameAliases(SERVER_NAME_ALIAS).templateSet(TestHelper.WEB_TEMPLATES).build());
         site = (JahiaSite) JCRSessionFactory.getInstance().getCurrentUserSession().getNode(site.getJCRLocalPath());
         Set<String> languages = new HashSet<String>();
         languages.add(DEFAULT_LANG);
@@ -200,9 +204,9 @@ public class UrlRewriteTest extends JahiaTestCase {
         doSiteUsersTest(lang, rewrittenLang);
     }
 
-    public void doLiveSiteServernameTest(String lang) throws Exception {
+    public void doLiveSiteServernameTest(String serverName, String lang) throws Exception {
         String rewrittenLang = DEFAULT_LANG.equals(lang) ? "" : "/" + lang;
-        request.setServerName(SERVER_NAME);
+        request.setServerName(serverName);
 
         // home page
         rewrite(SERVLET + "/render/live/" + lang + "/sites/urlRewriteSite/home.html", rewrittenLang + "/home.html");
@@ -348,12 +352,22 @@ public class UrlRewriteTest extends JahiaTestCase {
     }
 
     @Test
+    public void testLiveSiteServernameAlias() throws Exception {
+        doLiveSiteServernameTest(SERVER_NAME_ALIAS, DEFAULT_LANG);
+    }
+
+    @Test
+    public void testLiveSiteServernameAliasNonDefaultLanguage() throws Exception {
+        doLiveSiteServernameTest(SERVER_NAME_ALIAS, SECOND_LANG);
+    }
+
+    @Test
     public void testLiveSiteServername() throws Exception {
-        doLiveSiteServernameTest(DEFAULT_LANG);
+        doLiveSiteServernameTest(SERVER_NAME, DEFAULT_LANG);
     }
 
     public void testLiveSiteServernameNonDefaultLanguage() throws Exception {
-        doLiveSiteServernameTest(SECOND_LANG);
+        doLiveSiteServernameTest(SERVER_NAME, SECOND_LANG);
     }
 
     @Test

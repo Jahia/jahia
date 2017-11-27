@@ -43,8 +43,6 @@
  */
 package org.jahia.services.content.rules;
 
-import static org.jahia.services.importexport.ImportExportBaseService.*;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.core.FactException;
@@ -68,7 +66,6 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.SiteCreationInfo;
-import org.jahia.services.sites.SiteCreationInfoBuilder;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -93,6 +90,8 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import static org.jahia.services.importexport.ImportExportBaseService.*;
 
 /**
  * Helper class for accessing Jahia services in rules.
@@ -417,20 +416,20 @@ public class Service extends JahiaService {
                     tpl = null;
                 }
                 try {
-                    SiteCreationInfo siteCreationInfo = new SiteCreationInfoBuilder().
-                            setSiteKey((String) infos.get("sitekey")).
-                            setServerName((String) infos.get("siteservername")).
-                            setServerNameAliasesAsString((String) infos.get("siteservernamealiases")).
-                            setTitle((String) infos.get("sitetitle")).
-                            setDescription("").
-                            setTemplateSet(tpl).
-                            setModulesToDeploy(null).
-                            setLocale(infos.containsKey("defaultLanguage") ? (String) infos.get("defaultLanguage") : settingsBean.getDefaultLanguageCode()).
-                            setSiteAdmin(user).setFirstImport("fileImport").
-                            setFileImport(file == null ? null : new FileSystemResource(file)).
-                            setFileImportName((String) infos.get("importFileName")).
-                            setOriginatingJahiaRelease((String) infos.get("originatingJahiaRelease")).
-                            createSiteCreationInfo();
+                    SiteCreationInfo siteCreationInfo = SiteCreationInfo.builder().
+                            siteKey((String) infos.get("sitekey")).
+                            serverName((String) infos.get("siteservername")).
+                            serverNameAliases((String) infos.get("siteservernamealiases")).
+                            title((String) infos.get("sitetitle")).
+                            description("").
+                            templateSet(tpl).
+                            modulesToDeploy(null).
+                            locale(infos.containsKey("defaultLanguage") ? (String) infos.get("defaultLanguage") : settingsBean.getDefaultLanguageCode()).
+                            siteAdmin(user).
+                            firstImport("fileImport").
+                            fileImport(file == null ? null : new FileSystemResource(file)).
+                            fileImportName((String) infos.get("importFileName")).
+                            originatingJahiaRelease((String) infos.get("originatingJahiaRelease")).build();
                     sitesService.addSite(siteCreationInfo);
 
                 } catch (Exception e) {

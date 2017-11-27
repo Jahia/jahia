@@ -50,7 +50,6 @@ package org.jahia.services.sites;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
@@ -73,7 +72,6 @@ import org.springframework.core.io.Resource;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -326,18 +324,20 @@ public class JahiaSitesService extends JahiaService {
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
-        return addSite(new SiteCreationInfoBuilder().
-                setSiteKey(siteKey).
-                setServerName(serverName).
-                setServerNameAliasesAsString(null).
-                setTitle(title).setDescription(descr).
-                setTemplateSet(selectTmplSet).
-                setModulesToDeploy(modulesToDeploy).
-                setLocale(selectedLocale != null ? selectedLocale.toString() : null).setSiteAdmin(currentUser).
-                setFirstImport(firstImport).setFileImport(fileImport).
-                setFileImportName(fileImportName).
-                setOriginatingJahiaRelease(originatingJahiaRelease).
-                createSiteCreationInfo());
+        return addSite(SiteCreationInfo.builder().
+                siteKey(siteKey).
+                serverName(serverName).
+                serverNameAliases(null).
+                title(title).
+                description(descr).
+                templateSet(selectTmplSet).
+                modulesToDeploy(modulesToDeploy).
+                locale(selectedLocale != null ? selectedLocale.toString() : null).
+                siteAdmin(currentUser).
+                firstImport(firstImport).
+                fileImport(fileImport).
+                fileImportName(fileImportName).
+                originatingJahiaRelease(originatingJahiaRelease).build());
     }
 
     /**
@@ -348,21 +348,22 @@ public class JahiaSitesService extends JahiaService {
                              final Locale selectedLocale, final String selectTmplSet, final String[] modulesToDeploy, final String firstImport, final Resource fileImport, final String fileImportName,
                              final Boolean asAJob, final Boolean doImportServerPermissions, final String originatingJahiaRelease, final Resource legacyMappingFilePath, final Resource legacyDefinitionsFilePath) throws JahiaException, IOException {
 
-        return addSite(new SiteCreationInfoBuilder().
-                setSiteKey(siteKey).
-                setServerName(serverName).
-                setServerNameAliasesAsString(null).
-                setTitle(title).setDescription(descr).
-                setTemplateSet(selectTmplSet).
-                setModulesToDeploy(modulesToDeploy).
-                setLocale(selectedLocale != null ? selectedLocale.toString() : null).setSiteAdmin(currentUser).
-                setFirstImport(firstImport).
-                setFileImport(fileImport).
-                setFileImportName(fileImportName).
-                setOriginatingJahiaRelease(originatingJahiaRelease).
-                setLegacyMappingFilePath(legacyMappingFilePath).
-                setLegacyDefinitionsFilePath(legacyDefinitionsFilePath).
-                createSiteCreationInfo());
+        return addSite(SiteCreationInfo.builder().
+                siteKey(siteKey).
+                serverName(serverName).
+                serverNameAliases(null).
+                title(title).
+                description(descr).
+                templateSet(selectTmplSet).
+                modulesToDeploy(modulesToDeploy).
+                locale(selectedLocale != null ? selectedLocale.toString() : null).
+                siteAdmin(currentUser).
+                firstImport(firstImport).
+                fileImport(fileImport).
+                fileImportName(fileImportName).
+                originatingJahiaRelease(originatingJahiaRelease).
+                legacyMappingFilePath(legacyMappingFilePath).
+                legacyDefinitionsFilePath(legacyDefinitionsFilePath).build());
     }
 
     /**
@@ -373,23 +374,22 @@ public class JahiaSitesService extends JahiaService {
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
 
-        return addSite(
-                new SiteCreationInfoBuilder().
-                        setSiteKey(siteKey).
-                        setServerName(serverName).
-                        setServerNameAliasesAsString(null).
-                        setTitle(title).setDescription(descr).
-                        setTemplateSet(selectTmplSet).
-                        setModulesToDeploy(modulesToDeploy).
-                        setLocale(selectedLocale != null ? selectedLocale.toString() : null).
-                        setSiteAdmin(currentUser).
-                        setFirstImport(firstImport).
-                        setFileImport(fileImport).
-                        setFileImportName(fileImportName).
-                        setOriginatingJahiaRelease(originatingJahiaRelease).
-                        setLegacyMappingFilePath(legacyMappingFilePath).
-                        setLegacyDefinitionsFilePath(legacyDefinitionsFilePath).
-                        createSiteCreationInfo(),
+        return addSite(SiteCreationInfo.builder().
+                        siteKey(siteKey).
+                        serverName(serverName).
+                        serverNameAliases(null).
+                        title(title).
+                        description(descr).
+                        templateSet(selectTmplSet).
+                        modulesToDeploy(modulesToDeploy).
+                        locale(selectedLocale != null ? selectedLocale.toString() : null).
+                        siteAdmin(currentUser).
+                        firstImport(firstImport).
+                        fileImport(fileImport).
+                        fileImportName(fileImportName).
+                        originatingJahiaRelease(originatingJahiaRelease).
+                        legacyMappingFilePath(legacyMappingFilePath).
+                        legacyDefinitionsFilePath(legacyDefinitionsFilePath).build(),
                 session);
     }
 

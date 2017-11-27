@@ -78,7 +78,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.SiteCreationInfo;
-import org.jahia.services.sites.SiteCreationInfoBuilder;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.services.usermanager.JahiaUser;
@@ -934,21 +933,20 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 @Override
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     try {
-                                        SiteCreationInfo siteCreationInfo = new SiteCreationInfoBuilder().
-                                                setSiteKey(infos.getProperty("sitekey")).
-                                                setServerName(infos.getProperty("siteservername")).
-                                                setServerNameAliasesAsString(infos.getProperty("siteservernamealiases")).
-                                                setTitle(infos.getProperty("sitetitle")).
-                                                setDescription(infos.getProperty("description")).
-                                                setTemplateSet(finalTpl).
-                                                setModulesToDeploy(null).
-                                                setLocale(finalLocale != null ? finalLocale.toString() : null).
-                                                setSiteAdmin(JCRSessionFactory.getInstance().getCurrentUser()).
-                                                setFirstImport(fileImport != null ? "fileImport" : "importRepositoryFile").
-                                                setFileImport(fileImport).
-                                                setFileImportName(uri).
-                                                setOriginatingJahiaRelease(infos.getProperty("originatingJahiaRelease")).
-                                                createSiteCreationInfo();
+                                        SiteCreationInfo siteCreationInfo = SiteCreationInfo.builder().
+                                                siteKey(infos.getProperty("sitekey")).
+                                                serverName(infos.getProperty("siteservername")).
+                                                serverNameAliases(infos.getProperty("siteservernamealiases")).
+                                                title(infos.getProperty("sitetitle")).
+                                                description(infos.getProperty("description")).
+                                                templateSet(finalTpl).
+                                                modulesToDeploy(null).
+                                                locale(finalLocale != null ? finalLocale.toString() : null).
+                                                siteAdmin(JCRSessionFactory.getInstance().getCurrentUser()).
+                                                firstImport(fileImport != null ? "fileImport" : "importRepositoryFile").
+                                                fileImport(fileImport).
+                                                fileImportName(uri).
+                                                originatingJahiaRelease(infos.getProperty("originatingJahiaRelease")).build();
                                         JahiaSite site = sitesService
                                             .addSite(siteCreationInfo, session);
                                         importSiteProperties(site, infos, session);

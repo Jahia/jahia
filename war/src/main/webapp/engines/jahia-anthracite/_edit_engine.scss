@@ -2613,7 +2613,9 @@ body[data-indigo-add-visibility-condition="new"] {
 	}
 
 	.x-grid3-cell-inner.x-grid3-col-url {
-		max-width: 480px;
+		max-width: 100%;
+    overflow: hidden;
+    width: inherit;
 	}
 
 	.x-row-editor-header {
@@ -2637,7 +2639,6 @@ body[data-indigo-add-visibility-condition="new"] {
 	}
 
 	.x-box-inner .x-row-editor-field.x-component.x-box-item:not(.x-form-check-wrap) {
-		min-width: 498px !important;
 		padding-left: 8px;
 		padding-top: 2px;
 	}
@@ -2645,6 +2646,11 @@ body[data-indigo-add-visibility-condition="new"] {
 	.x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap {
 		text-align: center;
     top: 9px !important;
+		padding-left: 17px;
+
+		&:nth-child(3) {
+			padding-left: 0;
+		}
 
 		input[type="checkbox"] {
 			margin-left: -3px;
@@ -2676,6 +2682,10 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	.x-row-editor .x-btns {
 		background: $color-primary;
+		position: absolute;
+		right: -16px !important;
+		top: 5px !important;
+		left: initial !important;
 
 		.x-plain-bwrap {
 			background: $color-primary;
@@ -2695,7 +2705,7 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	.x-toolbar-ct .x-btn.x-btn-text-icon button {
 		padding: 5px 16px !important;
-		background: $color-tertiary !important;
+		/*background: $color-tertiary !important;*/
 	}
 
 	.x-toolbar-right-row > .x-toolbar-cell > div.x-form-label {

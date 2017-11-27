@@ -326,9 +326,18 @@ public class JahiaSitesService extends JahiaService {
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease) throws JahiaException, IOException {
-        return addSite(new SiteCreationInfo(siteKey, serverName, null, title, descr, selectTmplSet, modulesToDeploy,
-                selectedLocale != null ? selectedLocale.toString() : null, currentUser, firstImport, fileImport,
-                fileImportName, originatingJahiaRelease));
+        return addSite(new SiteCreationInfoBuilder().
+                setSiteKey(siteKey).
+                setServerName(serverName).
+                setServerNameAliasesAsString(null).
+                setTitle(title).setDescription(descr).
+                setTemplateSet(selectTmplSet).
+                setModulesToDeploy(modulesToDeploy).
+                setLocale(selectedLocale != null ? selectedLocale.toString() : null).setSiteAdmin(currentUser).
+                setFirstImport(firstImport).setFileImport(fileImport).
+                setFileImportName(fileImportName).
+                setOriginatingJahiaRelease(originatingJahiaRelease).
+                createSiteCreationInfo());
     }
 
     /**
@@ -339,9 +348,21 @@ public class JahiaSitesService extends JahiaService {
                              final Locale selectedLocale, final String selectTmplSet, final String[] modulesToDeploy, final String firstImport, final Resource fileImport, final String fileImportName,
                              final Boolean asAJob, final Boolean doImportServerPermissions, final String originatingJahiaRelease, final Resource legacyMappingFilePath, final Resource legacyDefinitionsFilePath) throws JahiaException, IOException {
 
-        return addSite(new SiteCreationInfo(siteKey, serverName, null, title, descr, selectTmplSet, modulesToDeploy,
-                selectedLocale != null ? selectedLocale.toString() : null, currentUser, firstImport, fileImport,
-                fileImportName, originatingJahiaRelease, legacyMappingFilePath, legacyDefinitionsFilePath));
+        return addSite(new SiteCreationInfoBuilder().
+                setSiteKey(siteKey).
+                setServerName(serverName).
+                setServerNameAliasesAsString(null).
+                setTitle(title).setDescription(descr).
+                setTemplateSet(selectTmplSet).
+                setModulesToDeploy(modulesToDeploy).
+                setLocale(selectedLocale != null ? selectedLocale.toString() : null).setSiteAdmin(currentUser).
+                setFirstImport(firstImport).
+                setFileImport(fileImport).
+                setFileImportName(fileImportName).
+                setOriginatingJahiaRelease(originatingJahiaRelease).
+                setLegacyMappingFilePath(legacyMappingFilePath).
+                setLegacyDefinitionsFilePath(legacyDefinitionsFilePath).
+                createSiteCreationInfo());
     }
 
     /**
@@ -353,9 +374,22 @@ public class JahiaSitesService extends JahiaService {
                              Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
 
         return addSite(
-                new SiteCreationInfo(siteKey, serverName, null, title, descr, selectTmplSet, modulesToDeploy,
-                        selectedLocale != null ? selectedLocale.toString() : null, currentUser, firstImport, fileImport,
-                        fileImportName, originatingJahiaRelease, legacyMappingFilePath, legacyDefinitionsFilePath),
+                new SiteCreationInfoBuilder().
+                        setSiteKey(siteKey).
+                        setServerName(serverName).
+                        setServerNameAliasesAsString(null).
+                        setTitle(title).setDescription(descr).
+                        setTemplateSet(selectTmplSet).
+                        setModulesToDeploy(modulesToDeploy).
+                        setLocale(selectedLocale != null ? selectedLocale.toString() : null).
+                        setSiteAdmin(currentUser).
+                        setFirstImport(firstImport).
+                        setFileImport(fileImport).
+                        setFileImportName(fileImportName).
+                        setOriginatingJahiaRelease(originatingJahiaRelease).
+                        setLegacyMappingFilePath(legacyMappingFilePath).
+                        setLegacyDefinitionsFilePath(legacyDefinitionsFilePath).
+                        createSiteCreationInfo(),
                 session);
     }
 

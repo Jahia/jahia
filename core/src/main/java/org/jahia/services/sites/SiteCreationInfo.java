@@ -194,50 +194,7 @@ public class SiteCreationInfo {
 
     /**
      * Initializes an instance of this class.
-     * 
-     * @param siteKey
-     * @param serverName
-     * @param serverNameAliasesAsString
-     * @param title
-     * @param description
-     * @param templateSet
-     * @param modulesToDeploy
-     * @param locale
-     * @param siteAdmin
-     */
-    public SiteCreationInfo(String siteKey, String serverName, String serverNameAliasesAsString, String title,
-            String description, String templateSet, String[] modulesToDeploy, String locale, JahiaUser siteAdmin) {
-        this(siteKey, serverName, serverNameAliasesAsString, title, description, templateSet, modulesToDeploy, locale,
-                siteAdmin, null, null, null, null);
-    }
-
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param siteKey
-     * @param serverName
-     * @param serverNameAliasesAsString
-     * @param title
-     * @param description
-     * @param templateSet
-     * @param modulesToDeploy
-     * @param locale
-     * @param siteAdmin
-     * @param firstImport
-     * @param fileImport
-     * @param fileImportName
-     * @param originatingJahiaRelease
-     */
-    public SiteCreationInfo(String siteKey, String serverName, String serverNameAliasesAsString, String title,
-            String description, String templateSet, String[] modulesToDeploy, String locale, JahiaUser siteAdmin,
-            String firstImport, Resource fileImport, String fileImportName, String originatingJahiaRelease) {
-        this(siteKey, serverName, serverNameAliasesAsString, title, description, templateSet, modulesToDeploy, locale,
-                siteAdmin, firstImport, fileImport, fileImportName, originatingJahiaRelease, null, null);
-    }
-
-    /**
-     * Initializes an instance of this class.
-     * 
+     *
      * @param siteKey
      * @param serverName
      * @param serverNameAliasesAsString

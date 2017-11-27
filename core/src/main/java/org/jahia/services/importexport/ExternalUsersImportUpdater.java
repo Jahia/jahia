@@ -78,12 +78,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import static org.jahia.services.importexport.ImportExportBaseService.LIVE_REPOSITORY_XML;
+import static org.jahia.services.importexport.ImportExportBaseService.REPOSITORY_XML;
+
 public class ExternalUsersImportUpdater extends ImportFileUpdater {
 
     private static Logger logger = LoggerFactory.getLogger(ExternalUsersImportUpdater.class);
 
-    private static final String LIVE_REPOSITORY_XML = ImportExportBaseService.LIVE_REPOSITORY_XML;
-    private static final String REPOSITORY_XML = ImportExportBaseService.REPOSITORY_XML;
     private static final String LIVE_CONTENT = "live-content";
     private static final String CONTENT = "content";
 

@@ -68,6 +68,7 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.SiteCreationInfo;
+import org.jahia.services.sites.SiteCreationInfoBuilder;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -416,13 +417,21 @@ public class Service extends JahiaService {
                     tpl = null;
                 }
                 try {
-                    sitesService.addSite(new SiteCreationInfo((String) infos.get("sitekey"),
-                            (String) infos.get("siteservername"), (String) infos.get("siteservernamealiases"),
-                            (String) infos.get("sitetitle"), "", tpl, null,
-                            infos.containsKey("defaultLanguage") ? (String) infos.get("defaultLanguage")
-                                    : settingsBean.getDefaultLanguageCode(),
-                            user, "fileImport", file == null ? null : new FileSystemResource(file),
-                            (String) infos.get("importFileName"), (String) infos.get("originatingJahiaRelease")));
+                    SiteCreationInfo siteCreationInfo = new SiteCreationInfoBuilder().
+                            setSiteKey((String) infos.get("sitekey")).
+                            setServerName((String) infos.get("siteservername")).
+                            setServerNameAliasesAsString((String) infos.get("siteservernamealiases")).
+                            setTitle((String) infos.get("sitetitle")).
+                            setDescription("").
+                            setTemplateSet(tpl).
+                            setModulesToDeploy(null).
+                            setLocale(infos.containsKey("defaultLanguage") ? (String) infos.get("defaultLanguage") : settingsBean.getDefaultLanguageCode()).
+                            setSiteAdmin(user).setFirstImport("fileImport").
+                            setFileImport(file == null ? null : new FileSystemResource(file)).
+                            setFileImportName((String) infos.get("importFileName")).
+                            setOriginatingJahiaRelease((String) infos.get("originatingJahiaRelease")).
+                            createSiteCreationInfo();
+                    sitesService.addSite(siteCreationInfo);
 
                 } catch (Exception e) {
                     logger.error("Cannot create site " + infos.get("sitetitle"), e);

@@ -173,6 +173,7 @@ public class ManualListOrderingEditor extends ContentPanel {
 
         });
         moveUp.setIcon(StandardIconsProvider.STANDARD_ICONS.moveUp());
+        moveUp.addStyleName("button-moveup");
         toolBar.add(moveUp);
 
         Button moveFirst = new Button(Messages.get("label.move.first", "move first"), new SelectionListener<ButtonEvent>() {
@@ -194,6 +195,7 @@ public class ManualListOrderingEditor extends ContentPanel {
             }
         });
         moveFirst.setIcon(StandardIconsProvider.STANDARD_ICONS.moveFirst());
+        moveFirst.addStyleName("button-movefirst");
         toolBar.add(moveFirst);
 
         Button moveDown = new Button(Messages.get("label.move.down", "move down"), new SelectionListener<ButtonEvent>() {
@@ -219,6 +221,7 @@ public class ManualListOrderingEditor extends ContentPanel {
             }
         });
         moveDown.setIcon(StandardIconsProvider.STANDARD_ICONS.moveDown());
+        moveDown.addStyleName("button-movedown");
         toolBar.add(moveDown);
 
         Button moveLast = new Button(Messages.get("label.move.last", "move last"), new SelectionListener<ButtonEvent>() {
@@ -245,6 +248,7 @@ public class ManualListOrderingEditor extends ContentPanel {
             }
         });
         moveLast.setIcon(StandardIconsProvider.STANDARD_ICONS.moveLast());
+        moveLast.addStyleName("button-movelast");
         toolBar.add(moveLast);
 
         Button remove = new Button(Messages.get("label.remove", "Delete"), new SelectionListener<ButtonEvent>() {
@@ -258,6 +262,7 @@ public class ManualListOrderingEditor extends ContentPanel {
             }
         });
         remove.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
+        remove.addStyleName("button-remove");
         toolBar.add(remove);
 
         setLayout(new FitLayout());

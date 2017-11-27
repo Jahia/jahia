@@ -217,7 +217,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     @Test
     public void testJCRSessionSaveBlocked() throws Exception {
 
-        // create and opened session
+        // create an open session
         UUID sessionUUID = UUID.fromString(createUnclosedJCRSession());
         JCRSessionWrapper openedSession = JCRSessionWrapper.getActiveSessionsObjects().get(sessionUUID);
         assertTrue(openedSession != null);
@@ -247,10 +247,9 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     @Test
     public void testJCRLockBlocked() throws Exception {
 
-        // create and opened session
+        // create an open session
         UUID sessionUUID = UUID.fromString(createUnclosedJCRSession());
         JCRSessionWrapper openedSession = JCRSessionWrapper.getActiveSessionsObjects().get(sessionUUID);
-        assertTrue(openedSession != null);
 
         testLocks(false);
         testLocks(openedSession, false);
@@ -440,10 +439,10 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     }
 
     private void testUnlock(boolean isDeep, boolean isSessionScope, boolean useClearAllLocks) throws Exception {
-        // create and opened session
+
+        // create an open session
         UUID sessionUUID = UUID.fromString(createUnclosedJCRSession());
         JCRSessionWrapper openedSession = JCRSessionWrapper.getActiveSessionsObjects().get(sessionUUID);
-        assertTrue(openedSession != null);
 
         // do lock
         openedSession.getNode(SYSTEM_SITE_PATH).lock(isDeep, isSessionScope);
@@ -472,10 +471,10 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     }
 
     private void testUnlockOnTokenAndUser(String type, String userId, boolean useClearAllLocks) throws Exception {
-        // create and opened session
+
+        // create an open session
         UUID sessionUUID = UUID.fromString(createUnclosedJCRSession());
         JCRSessionWrapper openedSession = JCRSessionWrapper.getActiveSessionsObjects().get(sessionUUID);
-        assertTrue(openedSession != null);
 
         // do lock
         JCRNodeWrapper systemSiteNode = openedSession.getNode(SYSTEM_SITE_PATH);
@@ -490,7 +489,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         // test that unlock is blocked
         testUnlockOnTokenAndUser(openedSession, type, userId, useClearAllLocks, true);
 
-        // test unlock from an other session
+        // test unlock from another session
         JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
             try {
                 testUnlockOnTokenAndUser(session, type, userId, useClearAllLocks, true);

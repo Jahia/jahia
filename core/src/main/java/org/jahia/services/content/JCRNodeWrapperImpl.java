@@ -273,14 +273,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 for (Map.Entry<String, List<String[]>> entry : aclEntries.entrySet()) {
                     result.put(entry.getKey(), new ArrayList<String[]>(entry.getValue()));
                 }
-                for (Map.Entry<String, List<String[]>> entry : getParent().getAclEntries().entrySet()) {
-                    String key = entry.getKey();
-                    List<String[]> value = entry.getValue();
-                    List<String[]> aclsForKey = result.get(key);
-                    if (aclsForKey != null) {
-                        aclsForKey.addAll(value);
-                    } else {
-                        result.put(key, value);
+                try {
+                    for (Map.Entry<String, List<String[]>> entry : getParent().getAclEntries().entrySet()) {
+                        String key = entry.getKey();
+                        List<String[]> value = entry.getValue();
+                        List<String[]> aclsForKey = result.get(key);
+                        if (aclsForKey != null) {
+                            aclsForKey.addAll(value);
+                        } else {
+                            result.put(key, value);
+                        }
+                    }
+                } catch (ItemNotFoundException e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(e.getMessage(), e);
                     }
                 }
                 return result;

@@ -710,6 +710,29 @@
 		height: calc(100% + 40px)!important;
 		overflow: scroll!important;
 
+		.thumb-wrap {
+			width: 47%!important;
+
+			&.x-view-over {
+				background: _property($THUMB--BG---SELECTED, $SIDE-PANEL)!important;
+			}
+		}
+
+		.thumbDetails {
+			position: absolute;
+			bottom: -25px;
+			left: 0;
+			width: 100%;
+			background: _property($THUMB--BG---SELECTED, $SIDE-PANEL);
+		    top: auto!important;
+		    padding: 6px;
+		    box-sizing: border-box;
+
+			div {
+				text-align: center;
+			}
+		}
+
 
 
 

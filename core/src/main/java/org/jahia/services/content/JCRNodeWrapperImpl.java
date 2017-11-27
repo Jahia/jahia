@@ -67,7 +67,6 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.settings.readonlymode.ReadOnlyModeController;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -260,9 +259,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         breakAcl = (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean());
                     }
                 } catch (ItemNotFoundException e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(e.getMessage(), e);
-                    }
+                    logger.debug(e.getMessage(), e);
                 }
 
                 Map<String, List<String[]>> result = entries;
@@ -603,7 +600,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (modified) {
             aclEntries = null;
-        } 
+        }
         return true;
     }
 
@@ -715,9 +712,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 file.getSession().checkout(file);
             }
         } catch (PathNotFoundException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("file " + name + " does not exist, creating...");
-            }
+            logger.debug("file {} does not exist, creating...", name);
             if (!isCheckedOut()) {
                 getSession().checkout(this);
             }
@@ -2515,13 +2510,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             Value[] oldValues = property.getValues();
             boolean addValue = true;
             for (Value oldValue : oldValues) {
-                if(l.equals(oldValue.getString())) {
+                if (l.equals(oldValue.getString())) {
                     addValue = false;
                     break;
                 }
             }
             //Avoid having twice the same lock
-            if(addValue) {
+            if (addValue) {
                 Value[] newValues = new Value[oldValues.length + 1];
                 System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
                 newValues[oldValues.length] = getSession().getValueFactory().createValue(l);
@@ -2807,9 +2802,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         }
                     }
                 } catch (ItemNotFoundException e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("checkLock : no i18n node for node " + localPathInProvider);
-                    }
+                    logger.debug("checkLock : no i18n node for node {}", localPathInProvider);
                 }
             }
         }
@@ -3239,9 +3232,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 co &= versionManager.isCheckedOut(getI18N(session.getLocale()).getPath());
             } catch (ItemNotFoundException e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("isCheckedOut : no i18n node for node " + localPathInProvider);
-                }
+                logger.debug("isCheckedOut : no i18n node for node {}", localPathInProvider);
             }
         }
 
@@ -3636,6 +3627,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 final String path = sharedNode.getCorrespondingNodePath(Constants.LIVE_WORKSPACE);
                 JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Object>() {
+
+                    @Override
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper n = session.getNode(path);
                         getSession().checkout(n);
@@ -3853,12 +3846,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         // also return unescaped name if title is empty
-        if(title != null && !title.isEmpty()) {
+        if (title != null && !title.isEmpty()) {
             return (session.getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) && title.contains("##resourceBundle(")) ?
                     interpolateResourceBundle(title) :
                     title;
-        }
-        else {
+        } else {
             return getUnescapedName();
         }
     }

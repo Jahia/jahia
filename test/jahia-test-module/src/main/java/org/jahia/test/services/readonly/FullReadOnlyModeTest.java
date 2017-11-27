@@ -74,7 +74,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     private static ReadOnlyModeController readOnlyModeController;
     private static SchedulerService schedulerService;
     private static ReadOnlyModeCapablePlaceholder readOnlyModeCapablePlaceholder;
-    private static boolean originSystemSiteWCAcompliance;
+    private static boolean originalSystemSiteWCAcompliance;
 
     private HashSet<String> openedTestSessions = new HashSet<>();
 
@@ -83,12 +83,13 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         readOnlyModeCapablePlaceholder = (ReadOnlyModeCapablePlaceholder) SpringContextSingleton.getBean("ReadOnlyModeCapablePlaceholder");
         readOnlyModeController = ReadOnlyModeController.getInstance();
         schedulerService = ServicesRegistry.getInstance().getSchedulerService();
-        originSystemSiteWCAcompliance = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
             JCRNodeWrapper systemSiteNode = session.getNode(SYSTEM_SITE_PATH);
             systemSiteNode.getNode("files").addNode("testFolder", "jnt:folder");
             systemSiteNode.getNode("files").addNode("testFolder2", "jnt:folder");
             session.save();
-            return systemSiteNode.getProperty("j:wcagCompliance").getBoolean();
+            originalSystemSiteWCAcompliance = systemSiteNode.getProperty("j:wcagCompliance").getBoolean();
+            return null;
         });
     }
 
@@ -97,7 +98,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         JCRTemplate.getInstance().doExecuteWithSystemSession((JCRCallback<Boolean>) session -> {
             session.getNode(TEST_FOLDER_PATH).remove();
             session.getNode(TEST_FOLDER_PATH2).remove();
-            session.getNode(SYSTEM_SITE_PATH).setProperty("j:wcagCompliance", originSystemSiteWCAcompliance);
+            session.getNode(SYSTEM_SITE_PATH).setProperty("j:wcagCompliance", originalSystemSiteWCAcompliance);
             session.save();
             return null;
         });
@@ -139,7 +140,6 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     /**
      * Test the pending status of the read only mode
-     * @throws Exception
      */
     @Test
     public void testPendingStatus() throws Exception {
@@ -200,7 +200,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         UUID newlyCreatedSessionId = UUID.fromString(createUnclosedJCRSession());
         JCRSessionWrapper newlyCreatedSession = JCRSessionWrapper.getActiveSessionsObjects().get(newlyCreatedSessionId);
 
-        // insure newly created session is readonly
+        // ensure newly created session is readonly
         assertTrue(newlyCreatedSession.isReadOnly());
 
         readOnlyModeController.switchReadOnlyMode(false);
@@ -297,12 +297,12 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
      */
     @Test
     public void testJCRCheckinCheckoutBlocked() throws Exception {
-        // create and opened session
+
+        // create an open session
         UUID sessionUUID = UUID.fromString(createUnclosedJCRSession());
         JCRSessionWrapper openedSession = JCRSessionWrapper.getActiveSessionsObjects().get(sessionUUID);
-        assertTrue(openedSession != null);
 
-        // insure it's working
+        // ensure it's working
         openedSession.getNode(TEST_FOLDER_PATH).checkin();
         openedSession.getNode(TEST_FOLDER_PATH).checkout();
 
@@ -311,11 +311,10 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
         readOnlyModeController.switchReadOnlyMode(true);
 
-        // test blocked for new session
+        // test blocked for a new session
         JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
             try {
                  testReadOnlyModeViolation(() -> session.getNode(TEST_FOLDER_PATH).checkin(), true, false);
-
                  testReadOnlyModeViolation(() -> session.getNode(TEST_FOLDER_PATH2).checkout(), true, false);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -323,7 +322,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
             return null;
         });
 
-        // test blocked for the opened session
+        // test blocked for the open session
         testReadOnlyModeViolation(() -> openedSession.getNode(TEST_FOLDER_PATH).checkin(), true, false);
         testReadOnlyModeViolation(() -> openedSession.getNode(TEST_FOLDER_PATH2).checkout(), true, false);
 
@@ -342,21 +341,20 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     }
 
     /**
-     * Test checkpoint opeartion is correctly blocked
-     * @throws Exception
+     * Test checkpoint operation is correctly blocked
      */
     @Test
     public void testJCRCheckpointBlocked() throws Exception {
-        // create and opened session
+
+        // create an open session
         UUID sessionUUID = UUID.fromString(createUnclosedJCRSession());
         JCRSessionWrapper openedSession = JCRSessionWrapper.getActiveSessionsObjects().get(sessionUUID);
-        assertTrue(openedSession != null);
 
         openedSession.getNode(TEST_FOLDER_PATH).checkpoint();
 
         readOnlyModeController.switchReadOnlyMode(true);
 
-        // test blocked for new session
+        // test blocked for a new session
         JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
             try {
                 testReadOnlyModeViolation(() -> session.getNode(TEST_FOLDER_PATH).checkpoint(), true, false);
@@ -366,7 +364,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
             return null;
         });
 
-        // test blocked for opened session
+        // test blocked for the open session
         testReadOnlyModeViolation(() -> openedSession.getNode(TEST_FOLDER_PATH).checkpoint(), true, false);
 
         readOnlyModeController.switchReadOnlyMode(false);
@@ -381,7 +379,6 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     /**
      * Test scheduler are correctly in stand by mode
-     * @throws Exception
      */
     @Test
     public void testSchedulerIsStandbyMode() throws Exception {
@@ -401,7 +398,6 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
 
     /**
      * Test persisted scheduler actions are blocked
-     * @throws Exception
      */
     @Test
     public void testPersistedSchedulerBlocked() throws Exception {

@@ -210,7 +210,7 @@ public class JCRObservationManager implements ObservationManager {
 
     /**
      * Switches the scope of listeners for publication.
-     * 
+     *
      * @param eventsDisabled <code>true</code> to enable event listeners targeted for publication only; <code>false</code> enables all the
      *            listeners
      * @deprecated use directly {@link #pushEventListenersAvailableDuringPublishOnly()} and
@@ -584,7 +584,7 @@ public class JCRObservationManager implements ObservationManager {
                 if (isExtensionNode(getPath())) {
                     String path = getPath();
                     if (event.getType() == PROPERTY_ADDED || event.getType() == PROPERTY_REMOVED || event.getType() == PROPERTY_CHANGED) {
-                        path = StringUtils.substringBeforeLast(path,"/");
+                        path = StringUtils.substringBeforeLast(path, "/");
                     }
                     try {
                         identifier = session.getNode(path).getIdentifier();

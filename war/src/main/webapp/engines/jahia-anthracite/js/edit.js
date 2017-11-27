@@ -3366,7 +3366,11 @@
 				},
 				onStartDrag: function(){
 					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTARTDRAG");
-					app.edit.sidepanel.close();
+
+					// Do not close the side panel as the user wants to drag a page somewhere else
+					if(DexV2.getCached("body").getAttribute("data-indigo-gwt-panel-tab") != "JahiaGxtSidePanelTabs__JahiaGxtPagesTab"){
+						app.edit.sidepanel.close();
+					}
 
 				},
 				onStopDrag: function(){

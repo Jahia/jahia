@@ -2837,6 +2837,7 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	.x-grid3-body tbody tr .x-grid3-td-checker {
 		padding: 4px 5px !important;
+		padding-left: 3px !important;
 	}
 
 	.x-grid3-body .x-grid3-td-checker {
@@ -2863,6 +2864,88 @@ body[data-indigo-add-visibility-condition="new"] {
 			padding: 4px 0;
 		}
 
+	}
+
+	.x-panel-tbar-noheader td.x-toolbar-cell:nth-child(1) > table button img {
+		background: url(./images/icons/move_up.png) !important;
+		background-size: 18px !important;
+		background-position-y: -1px !important;
+		background-position-x: -1px !important;
+		opacity: .64;
+	}
+
+	.x-panel-tbar-noheader td.x-toolbar-cell:nth-child(2) > table button img {
+		background: url(./images/icons/move_first.png) !important;
+		background-size: 18px !important;
+		background-position-y: -1px !important;
+		background-position-x: -1px !important;
+		opacity: .64;
+	}
+
+	.x-panel-tbar-noheader td.x-toolbar-cell:nth-child(3) > table button img {
+		background: url(./images/icons/move_down.png) !important;
+		background-size: 18px !important;
+		background-position-y: -1px !important;
+		background-position-x: -1px !important;
+		opacity: .64;
+	}
+
+	.x-panel-tbar-noheader td.x-toolbar-cell:nth-child(4) > table button img {
+		background: url(./images/icons/move_last.png) !important;
+		background-size: 18px !important;
+		background-position-y: -1px !important;
+		background-position-x: -1px !important;
+		opacity: .64;
+	}
+
+	.x-panel-tbar-noheader td.x-toolbar-cell:nth-child(5) > table button img {
+		background: url(./images/icons/remove_circle.png) !important;
+		background-size: 18px !important;
+		background-position-y: -1px !important;
+		background-position-x: -1px !important;
+		opacity: .64;
+	}
+
+	.x-panel-tbar-noheader td.x-toolbar-cell {
+		padding-left: 12px;
+
+		> table button {
+			background: none !important;
+			color: rgba(0, 0, 0, 0.87);
+			pointer-events: all;
+		}
+
+	}
+
+	.x-masked-relative {
+		pointer-events: none;
+		visibility: hidden;
+	}
+
+	.x-toolbar-layout-ct {
+		background: none !important;
+		border: none !important;
+	}
+
+	.x-grid3-cell-inner.x-grid3-col-icon {
+		visibility: hidden;
+	}
+
+	td.x-grid3-header.x-grid3-hd.x-grid3-cell.x-grid3-td-numberer {
+		border-color: transparent !important;
+	}
+
+	td.x-grid3-header.x-grid3-hd.x-grid3-cell.x-grid3-td-checker {
+		border-color: transparent !important;
+		pointer-events: all;
+	}
+
+	td.x-grid3-header.x-grid3-hd.x-grid3-cell.x-grid3-td-icon {
+		border-left: none !important;
+	}
+
+	.x-grid3-cell-inner.x-grid3-col-displayName {
+		max-width: 320px;
 	}
 
 }

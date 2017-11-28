@@ -2379,7 +2379,8 @@
 	// Contains main window
 	.x-window-bwrap {
 		width: 750px !important;
-	    margin: 90px auto 0;
+	    margin: 7vh auto;
+		height: calc(100% - 17vh);
 
 		// Footer
 		.x-window-bl {
@@ -2567,7 +2568,7 @@ body[data-indigo-add-visibility-condition="new"] {
 			border-color: transparent !important;
 			margin: 8px 0;
 			border-bottom: 1px dashed #ddd !important;
-			padding-bottom: 44px;
+			padding-bottom: 16px;
 			margin-bottom: 16px;
 		}
 
@@ -2617,10 +2618,6 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	}
 
-	.x-panel .x-grid3 .x-grid3-row-table {
-		width: calc(100% - 326px)!important;
-	}
-
 	.x-grid3-cell-inner.x-grid3-col-url {
 		max-width: 100%;
     overflow: hidden;
@@ -2662,7 +2659,7 @@ body[data-indigo-add-visibility-condition="new"] {
 		}
 
 		input[type="checkbox"] {
-			//margin-left: -3px;
+			margin-left: -3px;
 		}
 
 	}
@@ -2719,33 +2716,12 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	.x-toolbar-right-row > .x-toolbar-cell > div.x-form-label {
 		color: $color-white !important;
-    font-weight: 600;
+		font-weight: 600;
 		font-family: $FONT--FAMILY---NUNITO;
-    background: #F44336;
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-right: 8px !important;
-    position: absolute;
-    top: 44px;
-    left: 0;
-    width: calc(100% - 8px);
-    padding-left: 34px;
-    box-sizing: border-box;
-
-		&:before {
-			content: "";
-			background: url(./images/icons/ic_warning@2x.png);
-			position: absolute;
-			left: 0;
-			top: 0;
-			width: 26px;
-			height: 100%;
-			background-size: 18px;
-			background-repeat: no-repeat;
-			background-position-x: 8px;
-			background-position-y: 2px;
-		}
-
+		background: #F44336;
+		padding: 4px 12px;
+		border-radius: 20px;
+		margin-right: 8px !important;
 	}
 
 	.x-grid3-col-actions .x-btn.x-btn-text-icon button {

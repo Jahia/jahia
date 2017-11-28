@@ -247,7 +247,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         return isRamScheduler ? ramScheduler : scheduler;
     }
 
-    public void startSchedulers() throws JahiaInitializationException {
+    public synchronized void startSchedulers() throws JahiaInitializationException {
         try {
             ramScheduler.start();
 
@@ -351,7 +351,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     @Override
-    public void start() throws JahiaInitializationException {
+    public synchronized void start() throws JahiaInitializationException {
 
         try {
             ramScheduler.addSchedulerListener(new JahiaSchedulerListener(ramScheduler));
@@ -374,7 +374,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     @Override
-    public void stop() {
+    public synchronized void stop() {
         if (scheduler == null || ramScheduler == null) {
             return;
         }
@@ -394,22 +394,35 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     @Override
-    public void onReadOnlyModeChanged(boolean enableReadOnlyMode, long timeout) {
+    public synchronized void onReadOnlyModeChanged(boolean enableReadOnlyMode, long timeout) {
 
         // switch db persisted scheduler read only mode flag
         scheduler.setReadOnly(enableReadOnlyMode);
 
         if (enableReadOnlyMode) {
-            logger.info("Entering read-only mode. Putting schedulers to standby...");
+            logger.info("Entering read-only mode...");
             try {
+                logger.info("Putting schedulers to standby...");
                 standbySchedulers();
                 logger.info("Done putting schedulers to standby");
+                logger.info("Waiting for running jobs to complete...");
+                for (int count = getRunningJobsCount(); count > 0; count = getRunningJobsCount()) {
+                    try {
+                        logger.info("{} job(s) are still running...", count);
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(e);
+                    }
+                }
+                logger.info("All running jobs have completed.");
             } catch (SchedulerException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            logger.info("Exiting read-only mode. Starting schedulers...");
+            logger.info("Exiting read-only mode...");
             try {
+                logger.info("Starting schedulers...");
                 startSchedulers();
                 logger.info("Done starting schedulers");
             } catch (JahiaInitializationException e) {
@@ -423,5 +436,9 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         if (settingsBean.isProcessingServer()) {
             scheduler.standby();
         }
+    }
+
+    private int getRunningJobsCount() throws SchedulerException {
+        return (scheduler.getCurrentlyExecutingJobs().size() + ramScheduler.getCurrentlyExecutingJobs().size());
     }
 }

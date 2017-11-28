@@ -304,7 +304,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     }
 
     @Override
-    public void onReadOnlyModeChanged(boolean enable, long timeout) {
+    public void switchReadOnlyMode(boolean enable) {
 
         ClusterNode clusterNode = getClusterNode();
         if (clusterNode == null) {

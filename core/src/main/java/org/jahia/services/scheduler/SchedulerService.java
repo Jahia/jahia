@@ -394,12 +394,12 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
     }
 
     @Override
-    public synchronized void onReadOnlyModeChanged(boolean enableReadOnlyMode, long timeout) {
+    public synchronized void switchReadOnlyMode(boolean enable) {
 
         // switch db persisted scheduler read only mode flag
-        scheduler.setReadOnly(enableReadOnlyMode);
+        scheduler.setReadOnly(enable);
 
-        if (enableReadOnlyMode) {
+        if (enable) {
             logger.info("Entering read-only mode...");
             try {
                 logger.info("Putting schedulers to standby...");

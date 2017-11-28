@@ -97,8 +97,6 @@ public class ReadOnlyModeController {
 
     private volatile ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
 
-    private long serviceNotificationTimeout = 60 * 1000L;
-
     /**
      * Handles the case, when a service encounters read-only mode violation, i.e. a data or state modification is requested.
      *
@@ -134,9 +132,10 @@ public class ReadOnlyModeController {
         logger.info("Notifying {} services about read-only mode change", services.size());
         for (ReadOnlyModeCapable service : services) {
             try {
-                service.onReadOnlyModeChanged(enable, serviceNotificationTimeout);
+                service.switchReadOnlyMode(enable);
             } catch (Exception e) {
                 logger.error("Error notifying service " + service + " about read-only mode change", e);
+                throw e;
             }
         }
 
@@ -156,10 +155,6 @@ public class ReadOnlyModeController {
     }
     public static ReadOnlyModeController getInstance() {
         return Holder.INSTANCE;
-    }
-
-    public void setServiceNotificationTimeout(long serviceNotificationTimeout) {
-        this.serviceNotificationTimeout = serviceNotificationTimeout;
     }
 
     public ReadOnlyModeStatus getReadOnlyStatus() {

@@ -46,25 +46,22 @@ package org.jahia.settings.readonlymode;
 /**
  * The interface is implemented by services, which support the read-only mode change, i.e. are capable of putting themselves into a
  * read-only mode and back.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public interface ReadOnlyModeCapable {
 
     /**
-     * Called by a DX dedicated controller when the read-only mode switch is requested.
-     * 
-     * @param readOnlyModeIsOn <code>true</code> in case the read-only mode should be enabled; <code>false</code> otherwise
-     * @param timeout an amount of milliseconds to wait till the service is forced to react on a mode switch; zero-value means the service
-     *            is forced to react on the mode switch immediately; a negative value (say, <code>-1</code>) indicates that the service can
-     *            perform mode-switch gracefully, i.e. wait indefinitely until it could perform the mode switch.
+     * Enable/disable read-only mode for a specific functional area this ReadOnlyModeCapable is responsible for.
+     *
+     * @param enable <code>true</code> in case the read-only mode should be enabled; <code>false</code> otherwise
      */
-    void onReadOnlyModeChanged(boolean readOnlyModeIsOn, long timeout);
+    void switchReadOnlyMode(boolean enable);
 
     /**
      * Returns the priority of this service, i.e. the higher the priority the earlier the service will be notified of the read only mode
      * changes.
-     * 
+     *
      * @return the priority of the service, which determines the order of notification about read-only mode changes (the higher the value
      *         is, the earlier the service will be notified)
      */

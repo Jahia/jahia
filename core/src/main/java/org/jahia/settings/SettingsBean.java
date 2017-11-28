@@ -1302,8 +1302,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     }
 
     @Override
-    public void onReadOnlyModeChanged(boolean readOnlyModeIsOn, long timeout) {
-        setReadOnlyMode(readOnlyModeIsOn);
+    public void switchReadOnlyMode(boolean enable) {
+        setReadOnlyMode(enable);
     }
 
     @Override

@@ -512,8 +512,8 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
     }
 
     @Override
-    public void onReadOnlyModeChanged(boolean enableReadOnlyMode, long timeout) {
-        readOnly = enableReadOnlyMode;
+    public void switchReadOnlyMode(boolean enable) {
+        readOnly = enable;
     }
 
     @Override

@@ -632,17 +632,17 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
     }
 
     @Override
-    public void onReadOnlyModeChanged(boolean readOnlyModeEnabled, long timeout) {
+    public void switchReadOnlyMode(boolean enable) {
 
-        logger.info("Read only mode switch: JCR session are" + (readOnlyModeEnabled ? " not ": " ") + "allowed to perform saving");
+        logger.info("Read only mode switch: JCR session are" + (enable ? " not ": " ") + "allowed to perform saving");
 
         // todo: thread safety between new sessions are readonly and existing sessions are updated, avoid getting one or multiple sessions not updated correctly due to concurrency
         // switch to read only so that new sessions will be read only session
-        this.readOnlyModeEnabled = readOnlyModeEnabled;
+        this.readOnlyModeEnabled = enable;
 
         // set readonly on living sessions
         for (JCRSessionWrapper sessionWrapper : JCRSessionWrapper.getActiveSessionsObjects().values()) {
-            sessionWrapper.setReadOnly(readOnlyModeEnabled);
+            sessionWrapper.setReadOnly(enable);
         }
 
         logger.info("Read only mode on JCR sessions: " + (this.readOnlyModeEnabled ? "ON" : "OFF"));

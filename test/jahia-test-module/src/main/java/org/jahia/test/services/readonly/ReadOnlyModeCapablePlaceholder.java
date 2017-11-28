@@ -12,7 +12,7 @@ public class ReadOnlyModeCapablePlaceholder implements ReadOnlyModeCapable {
     private ReadOnlyModeSwitchImplementation readOnlyModeSwitchImplementation;
 
     @Override
-    public void onReadOnlyModeChanged(boolean enable, long timeout) {
+    public void switchReadOnlyMode(boolean enable) {
         if (readOnlyModeSwitchImplementation != null) {
             readOnlyModeSwitchImplementation.switchReadOnlyMode(enable);
         }

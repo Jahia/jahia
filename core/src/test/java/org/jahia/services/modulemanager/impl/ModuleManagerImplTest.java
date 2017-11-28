@@ -68,7 +68,7 @@ public class ModuleManagerImplTest {
     }
 
     private void verifyFailureInReadOnlyMode(Runnable action) {
-        moduleManager.onReadOnlyModeChanged(true, 0);
+        moduleManager.switchReadOnlyMode(true);
         try {
             action.run();
             Assert.fail("The action should have failed due to read only mode");
@@ -77,7 +77,7 @@ public class ModuleManagerImplTest {
                 Assert.fail("The action should have failed due to read only mode");
             }
         } finally {
-            moduleManager.onReadOnlyModeChanged(false, 0);
+            moduleManager.switchReadOnlyMode(false);
         }
     }
 }

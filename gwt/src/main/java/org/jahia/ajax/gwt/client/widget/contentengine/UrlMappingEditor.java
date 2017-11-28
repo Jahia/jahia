@@ -48,6 +48,7 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.Text;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
@@ -270,7 +271,7 @@ public class UrlMappingEditor extends LayoutContainer {
         }
 
         ContentPanel cp = new ContentPanel(new FitLayout());
-        cp.setHeadingHtml(node.getUrl());
+        cp.setHeadingHtml("<div class='seo-title'>" + Messages.get("ece_seo_urlMapping", "URL mapping")+"</div><div class='seo-title-path'>"+node.getUrl()+"</div>");
        // cp.setHeaderVisible(false);
         cp.setTopComponent(toolBar);
 

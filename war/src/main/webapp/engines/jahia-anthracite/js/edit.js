@@ -1247,14 +1247,14 @@
             filterContent: "Content filtern",
 			pickerTitles: {
 				default: "File Picker",
-				imagepicker: "Image Picker",
-				editoriallinkpicker: "Content picker",
-				filemanager: "Documents",
-				editorialcontentmanager: "Content",
-				portletmanager: "Portlets",
-				repositoryexplorer: "Repository",
-				categorymanager: "Categories",
-				sitemanager: "Sites"
+                imagepicker: jahia_gwt_messages.label_imagepicker,
+				editoriallinkpicker: jahia_gwt_messages.label_editorialpicker,
+				"filemanager-anthracite": jahia_gwt_messages.label_filemanager_title,
+				"editorialcontentmanager-anthracite": jahia_gwt_messages.label_editorialcontentmanager_title,
+				"portletmanager-anthracite": jahia_gwt_messages.label_portletmanager_title,
+                "repositoryexplorer-anthracite": jahia_gwt_messages.label_repositoryexplorer_title,
+                "categorymanager-anthracite": jahia_gwt_messages.label_categorymanager_title,
+                "sitemanager-anthracite": jahia_gwt_messages.label_sitemanager_title
 			},
         },
 		"EN": {
@@ -1282,14 +1282,14 @@
 			filterContent: "Filter Content",
 			pickerTitles: {
 				default: "File Picker",
-				imagepicker: "Image Picker",
-				editoriallinkpicker: "Content picker",
-				filemanager: "Documents",
-				editorialcontentmanager: "Content",
-				portletmanager: "Portlets",
-				repositoryexplorer: "Repository",
-				categorymanager: "Categories",
-				sitemanager: "Sites"
+				imagepicker: jahia_gwt_messages.label_imagepicker,
+				editoriallinkpicker: jahia_gwt_messages.label_editorialpicker,
+				"filemanager-anthracite": jahia_gwt_messages.label_filemanager_title,
+				"editorialcontentmanager-anthracite": jahia_gwt_messages.label_editorialcontentmanager_title,
+				"portletmanager-anthracite": jahia_gwt_messages.label_portletmanager_title,
+                "repositoryexplorer-anthracite": jahia_gwt_messages.label_repositoryexplorer_title,
+				"categorymanager-anthracite": jahia_gwt_messages.label_categorymanager_title,
+                "sitemanager-anthracite": jahia_gwt_messages.label_sitemanager_title
 			},
 		},
 		"FR": {
@@ -1317,14 +1317,14 @@
 			filterContent: "Filtrer le contenu",
 			pickerTitles: {
 				default: "File Picker",
-				imagepicker: "Image Picker",
-				editoriallinkpicker: "Content picker",
-				filemanager: "Documents",
-				editorialcontentmanager: "Content",
-				portletmanager: "Portlets",
-				repositoryexplorer: "Repository",
-				categorymanager: "Categories",
-				sitemanager: "Sites"
+                imagepicker: jahia_gwt_messages.label_imagepicker,
+				editoriallinkpicker: jahia_gwt_messages.label_editorialpicker,
+				"filemanager-anthracite": jahia_gwt_messages.label_filemanager_title,
+				"editorialcontentmanager-anthracite": jahia_gwt_messages.label_editorialcontentmanager_title,
+				"portletmanager-anthracite": jahia_gwt_messages.label_portletmanager_title,
+				"repositoryexplorer-anthracite": jahia_gwt_messages.label_repositoryexplorer_title,
+                "categorymanager-anthracite": jahia_gwt_messages.label_categorymanager_title,
+				"sitemanager-anthracite": jahia_gwt_messages.label_sitemanager_title
 
 			},
 		}
@@ -4322,3 +4322,10 @@
     }
 
 })("DX");
+
+
+
+// Test for element width workaround. (FIND BETTER IMPLEM.)
+var seoRowImput = document.querySelector('#JahiaGxtEditEnginePanel-seo > .x-component .x-box-inner .x-row-editor-field.x-component.x-box-item');
+var seoRowImputSize = seoRowImput.style.width;
+seoRowImput.style.cssText='width: ' + seoRowImputSize + ' !important;'

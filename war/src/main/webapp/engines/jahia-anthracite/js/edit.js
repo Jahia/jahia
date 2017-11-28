@@ -1222,6 +1222,41 @@
     };
 
 	var localisedStrings = {
+        "DE": {
+            jobs: "Aufgaben",
+            zeroTasks: "Dashboard öffnen",
+            singleTask: "Dashboard (%n% Aufgabe)",
+            multipleTasks: "Dashboard (%n% Aufgaben)",
+            workflowType: "%n% Workflow:",
+            chooseWorkflowType: "Wählen Sie einen Workflow für %n%:",
+            filterField: "Filter",
+            sortBy: "Sortieren nach",
+            search: "Suche %n%",
+            languageField: "Alle Sprachen",
+            fromDate: "Von ...",
+            toDate: "bis ...",
+            dateRange: "Datumsbereich",
+            dateAnyTime: "Jederzeit",
+            dateCustom: "Zeitspanne",
+            dateCustomLabel: "Zeitspanne ...",
+            dateType: "Nach %n% Datum",
+            allMetadata: "Alle Metadaten",
+            ignoreMetadata: "Metadaten ignorieren",
+            metaLabel: "Meta: %n%",
+            cancel: "Abbrechen",
+            filterContent: "Content filtern",
+			pickerTitles: {
+				default: "File Picker",
+				imagepicker: "Image Picker",
+				editoriallinkpicker: "Content picker",
+				filemanager: "Documents",
+				editorialcontentmanager: "Content",
+				portletmanager: "Portlets",
+				repositoryexplorer: "Repository",
+				categorymanager: "Categories",
+				sitemanager: "Sites"
+			},
+        },
 		"EN": {
 			jobs: "Jobs",
 			zeroTasks: "Open Dashboard",

@@ -274,6 +274,11 @@
 				width: calc(100% - 357px) !important;
 
 			}
+
+			body[data-uilang="de"] & {
+				width: calc(100% - 316px) !important;
+
+			}
 		}
 
 		@include button("FIELDSET");

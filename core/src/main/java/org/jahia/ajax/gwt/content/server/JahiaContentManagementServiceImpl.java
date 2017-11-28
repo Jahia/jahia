@@ -284,6 +284,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     @Override
     public GWTManagerConfiguration getManagerConfiguration(String name, String path) throws GWTJahiaServiceException {
+        JCRSessionFactory.getInstance().setReadOnlyCacheEnabled(true);
+
         GWTManagerConfiguration config = null;
         try {
             JCRNodeWrapper context = getSite();
@@ -314,6 +316,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     @Override
     public GWTEditConfiguration getEditConfiguration(String path, String name, String enforcedWorkspace) throws GWTJahiaServiceException {
+        JCRSessionFactory.getInstance().setReadOnlyCacheEnabled(true);
+
         GWTEditConfiguration config = null;
         try {
             JCRSessionWrapper session = retrieveCurrentSession();
@@ -344,6 +348,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                                                      int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes,
                                                      String hiddenRegex, boolean showOnlyNodesWithTemplates, boolean useUILocale)
             throws GWTJahiaServiceException {
+        JCRSessionFactory.getInstance().setReadOnlyCacheEnabled(true);
 
         Locale locale = useUILocale ? getUILocale() : getLocale();
 
@@ -371,6 +376,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                                       List<String> filters, List<String> fields, List<String> selectedNodes,
                                       List<String> openPaths, boolean checkSubChild, boolean displayHiddenTypes,
                                       List<String> hiddenTypes, String hiddenRegex, boolean useUILocale) throws GWTJahiaServiceException {
+        JCRSessionFactory.getInstance().setReadOnlyCacheEnabled(true);
+
         if (openPaths == null || openPaths.size() == 0) {
             openPaths = getOpenPathsForRepository(paths.toString());
         }
@@ -384,6 +391,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     @Override
     public List<GWTJahiaNode> getNodes(List<String> paths, List<String> fields) {
+        JCRSessionFactory.getInstance().setReadOnlyCacheEnabled(true);
+
         long timer = System.currentTimeMillis();
 
         List<GWTJahiaNode> list = getNodesInternal(paths, fields);
@@ -421,6 +430,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     @Override
     @SuppressWarnings("unchecked")
     public Map<String, List<? extends ModelData>> getNodesAndTypes(List<ModelData> getNodesParams, List<String> types) throws GWTJahiaServiceException {
+        JCRSessionFactory.getInstance().setReadOnlyCacheEnabled(true);
+
         long timer = System.currentTimeMillis();
 
         Map<String, List<? extends ModelData>> m = new HashMap<String, List<? extends ModelData>>();
@@ -477,6 +488,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     @Override
     public BasePagingLoadResult<GWTJahiaNode> search(GWTJahiaSearchQuery searchQuery, int limit, int offset, boolean showOnlyNodesWithTemplates)
             throws GWTJahiaServiceException {
+        JCRSessionFactory.getInstance().setReadOnlyCacheEnabled(true);
+
         // To do: find a better war to handle total size
         List<GWTJahiaNode> result = search.search(searchQuery, 0, 0, showOnlyNodesWithTemplates, getSite().getSiteKey().equals("systemsite") ? null : getSite(), retrieveCurrentSession());
         int size = result.size();
@@ -488,12 +501,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     @Override
     public List<GWTJahiaNode> search(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
                                      List<String> filters) throws GWTJahiaServiceException {
+        JCRSessionFactory.getInstance().setReadOnlyCacheEnabled(true);
+
         return search.search(searchString, limit, nodeTypes, mimeTypes, filters, getSite().getSiteKey().equals("systemsite") ? null : getSite(), retrieveCurrentSession());
     }
 
     @Override
     public PagingLoadResult<GWTJahiaNode> searchSQL(String searchString, int limit, int offset, List<String> nodeTypes,
                                                     List<String> fields, boolean sortOnDisplayName) throws GWTJahiaServiceException {
+        JCRSessionFactory.getInstance().setReadOnlyCacheEnabled(true);
+
         List<GWTJahiaNode> gwtJahiaNodes = search.searchSQL(searchString, limit, offset, nodeTypes, null, null, fields, retrieveCurrentSession());
         int total = gwtJahiaNodes.size();
         if (limit >= 0) {

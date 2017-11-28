@@ -4032,7 +4032,7 @@
 			DexV2("body")
                 .onMouseDown(".toolbar-item-studio", function(){
                     var studioNodePath = sessionStorage.getItem("studiomode_nodePath"),
-                        baseURL = "/cms/studio/default/" + jahiaGWTParameters.uilang;
+                        baseURL = jahiaGWTParameters.contextPath + "/cms/studio/default/" + jahiaGWTParameters.uilang;
 
                     if(studioNodePath){
                         studioURL = baseURL + studioNodePath + ".html"

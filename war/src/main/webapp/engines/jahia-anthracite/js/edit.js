@@ -687,11 +687,11 @@
             addClass: function(classname){
                 /* Add class to all nodes in nodelist */
 
-
                 var n;
 
                 for(n = 0; n < this.nodes.length; n++){
                     this.nodes[n].classList.add(classname);
+
                 }
 
                 return this;
@@ -1345,6 +1345,7 @@
 				var pathnameSplit = document.location.pathname.split("/"),
 					page = pathnameSplit[pathnameSplit.length - 1],
 					root = pathnameSplit[1],
+                    servletPath = jahiaGWTParameters.servletPath,
 					queryString = document.location.href,
 					queryStringParameters = queryString.split("?"),
 					queryStringKeyValuePairs,
@@ -1352,12 +1353,6 @@
 					n,
 					picker =  null,
 					QS = {};
-
-
-
-
-
-
 
 				if(queryStringParameters.length > 1){
 					// Found a query string ...
@@ -1369,17 +1364,14 @@
 					}
 				}
 
-				if(root == "engines" && page == "contentpicker.jsp"){
-					app = "contentpicker";
+                if(servletPath == "/engines/contentpicker.jsp"){
+                    app = "contentpicker";
 					picker = QS["type"] || "default";
 
-				} else if(root == "engines" && page == "manager.jsp"){
-					app = "manager";
-					picker = QS["conf"] || "default";
-
-				} else if(root == "cms"){
-					app = pathnameSplit[2];
-				}
+                } else if(servletPath == "/engines/manager.jsp"){
+                    app = "manager";
+                    picker = QS["conf"] || "default";
+                }
 
 				return {
 					page: page,
@@ -4277,6 +4269,7 @@
         // This is a content picker, not main app.
 		if(app.data.HTTP.app == "contentpicker"){
 			// This is a full page picker, not edit engine
+            console.log("A");
 			app.picker.data.standalone = true;
 			app.picker.data.ID = app.picker.data.standaloneID;
 
@@ -4290,6 +4283,7 @@
 
         // This is a manager, not main app.
 		if(app.data.HTTP.app == "manager"){
+            console.log("B");
 			// This is a manager, not edit engine
 			app.picker.data.standalone = true;
 			app.picker.data.ID = app.picker.data.standaloneManagerID;

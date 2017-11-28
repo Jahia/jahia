@@ -2832,6 +2832,10 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	}
 
+	.x-grid3-header-inner {
+		width: calc(100% + 148px) !important;
+	}
+
 	.x-grid3-body {
 
 		.x-grid3-td-numberer {

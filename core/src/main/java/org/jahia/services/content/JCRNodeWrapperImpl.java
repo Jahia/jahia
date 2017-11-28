@@ -45,7 +45,6 @@ package org.jahia.services.content;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
@@ -85,7 +84,6 @@ import javax.jcr.security.Privilege;
 import javax.jcr.version.*;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
@@ -265,29 +263,33 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         logger.debug(e.getMessage(), e);
                     }
                 }
-                aclEntries = entries;
-            }
 
-            if (!breakAcl && !path.equals("/")) {
-                Map<String, List<String[]>> result = new LinkedHashMap<>();
-                for (Map.Entry<String, List<String[]>> entry : aclEntries.entrySet()) {
-                    result.put(entry.getKey(), new ArrayList<String[]>(entry.getValue()));
-                }
-                try {
-                    for (Map.Entry<String, List<String[]>> entry : getParent().getAclEntries().entrySet()) {
-                        String key = entry.getKey();
-                        List<String[]> value = entry.getValue();
-                        List<String[]> aclsForKey = result.get(key);
-                        if (aclsForKey != null) {
-                            aclsForKey.addAll(value);
-                        } else {
-                            result.put(key, value);
+                Map<String, List<String[]>> result = entries;
+
+                if (!breakAcl && !path.equals("/")) {
+                    result = new LinkedHashMap<>();
+                    for (Map.Entry<String, List<String[]>> entry : entries.entrySet()) {
+                        result.put(entry.getKey(), new ArrayList<String[]>(entry.getValue()));
+                    }
+                    try {
+                        for (Map.Entry<String, List<String[]>> entry : getParent().getAclEntries().entrySet()) {
+                            String key = entry.getKey();
+                            List<String[]> value = entry.getValue();
+                            List<String[]> aclsForKey = result.get(key);
+                            if (aclsForKey != null) {
+                                aclsForKey.addAll(value);
+                            } else {
+                                result.put(key, value);
+                            }
+                        }
+                    } catch (ItemNotFoundException e) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug(e.getMessage(), e);
                         }
                     }
-                } catch (ItemNotFoundException e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(e.getMessage(), e);
-                    }
+                }
+                if (session.isReadOnlyCacheEnabled()) {
+                    aclEntries = result;
                 }
                 return result;
             }

@@ -105,6 +105,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private ThreadLocal<JahiaUser> currentAliasedUser = new ThreadLocal<JahiaUser>();
     private ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
     private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
+    private ThreadLocal<Boolean> readOnlyCacheEnabled = new ThreadLocal<Boolean>();
     private LocalValidatorFactoryBean validatorFactoryBean;
 
     private JCRSessionFactory() {
@@ -212,6 +213,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                 wsMap.put(key, s);
             }
         }
+        s.setReadOnlyCacheEnabled(getReadOnlyCacheEnabled());
         return s;
     }
 
@@ -555,6 +557,14 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public void setCurrentAliasedUser(JahiaUser user) {
         currentAliasedUser.set(user);
+    }
+
+    public Boolean getReadOnlyCacheEnabled() {
+        return readOnlyCacheEnabled.get() == null ? false : readOnlyCacheEnabled.get();
+    }
+
+    public void setReadOnlyCacheEnabled(Boolean readOnlyCacheEnabled) {
+        this.readOnlyCacheEnabled.set(readOnlyCacheEnabled);
     }
 
     boolean checkAliasedStatusAndToggleSessionIfNeeded(Session session, final JahiaUser user) {

@@ -149,6 +149,8 @@ public class JCRSessionWrapper implements Session {
     private Locale fallbackLocale;
     private String versionLabel;
 
+    private boolean readOnlyCacheEnabled = false;
+
     private static AtomicLong activeSessions = new AtomicLong(0L);
 
     private Exception thisSessionTrace;
@@ -1336,5 +1338,13 @@ public class JCRSessionWrapper implements Session {
 
     public String getIdentifier() {
         return uuid.toString();
+    }
+
+    public boolean isReadOnlyCacheEnabled() {
+        return readOnlyCacheEnabled;
+    }
+
+    public void setReadOnlyCacheEnabled(boolean readOnlyCacheEnabled) {
+        this.readOnlyCacheEnabled = readOnlyCacheEnabled;
     }
 }

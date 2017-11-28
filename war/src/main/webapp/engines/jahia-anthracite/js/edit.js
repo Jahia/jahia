@@ -4287,10 +4287,3 @@
     }
 
 })("DX");
-
-
-
-// Test for element width workaround. (FIND BETTER IMPLEM.)
-var seoRowImput = document.querySelector('#JahiaGxtEditEnginePanel-seo > .x-component .x-box-inner .x-row-editor-field.x-component.x-box-item');
-var seoRowImputSize = seoRowImput.style.width;
-seoRowImput.style.cssText='width: ' + seoRowImputSize + ' !important;'

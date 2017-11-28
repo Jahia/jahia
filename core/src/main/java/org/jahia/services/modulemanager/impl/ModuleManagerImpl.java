@@ -72,6 +72,8 @@ import org.jahia.services.modulemanager.persistence.PersistentBundleInfoBuilder;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
+import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
+import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.slf4j.Logger;
@@ -85,30 +87,22 @@ import org.springframework.core.io.UrlResource;
  *
  * @author Sergiy Shyrkov
  */
-public class ModuleManagerImpl implements ModuleManager {
+public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
 
     private BundleService bundleService;
     private BundlePersister persister;
-
     private JahiaTemplateManagerService templateManagerService;
+    private volatile boolean readOnly;
 
-    /**
-     * Operation callback which implementation performs the actual operation.
-     *
-     * @author Sergiy Shyrkov
-     */
     private interface BundleOperation {
 
         String getName();
-
+        boolean changesModuleState();
         void perform(BundleInfo info, String target) throws ModuleManagementException;
     }
 
-    /**
-     * @return basic information about this bundle as a new {@link BundleInfo} object
-     */
     private static BundleInfo toBundleInfo(PersistentBundle persistentBundle) {
         return new BundleInfo(persistentBundle.getGroupId(), persistentBundle.getSymbolicName(), persistentBundle.getVersion());
     }
@@ -203,6 +197,7 @@ public class ModuleManagerImpl implements ModuleManager {
         OperationResult result = null;
         Exception error = null;
         try {
+            assertWritable();
             ArrayList<PersistentBundle> bundleInfos = new ArrayList<>(bundleResources.size());
             for (Resource bundleResource : bundleResources) {
                 boolean requiresPersisting = !((bundleResource instanceof UrlResource) && bundleResource.getURL().getProtocol().equals(Constants.URL_PROTOCOL_DX));
@@ -235,14 +230,6 @@ public class ModuleManagerImpl implements ModuleManager {
         return result;
     }
 
-    /**
-     * Performs the specified operation of the bundle.
-     *
-     * @param bundleKey the key of the bundle to perform operation on
-     * @param target the target cluster group
-     * @param operation the operation callback to be used to effectively execute the operation
-     * @return the result of the operation
-     */
     private OperationResult performOperation(String bundleKey, String target, BundleOperation operation) {
 
         if (StringUtils.isEmpty(bundleKey)) {
@@ -257,6 +244,9 @@ public class ModuleManagerImpl implements ModuleManager {
         BundleInfo info = null;
         Exception error = null;
         try {
+            if (operation.changesModuleState()) {
+                assertWritable();
+            }
             info = getBundleInfoGuessIfNeeded(bundleKey);
             if (info == null) {
                 throw new ModuleNotFoundException(bundleKey);
@@ -313,6 +303,11 @@ public class ModuleManagerImpl implements ModuleManager {
             }
 
             @Override
+            public boolean changesModuleState() {
+                return true;
+            }
+
+            @Override
             public void perform(BundleInfo info, String target) throws ModuleManagementException {
                 stopPreviousVersions(info, target);
 
@@ -331,6 +326,11 @@ public class ModuleManagerImpl implements ModuleManager {
             @Override
             public String getName() {
                 return "Stop";
+            }
+
+            @Override
+            public boolean changesModuleState() {
+                return true;
             }
 
             @Override
@@ -383,6 +383,11 @@ public class ModuleManagerImpl implements ModuleManager {
             }
 
             @Override
+            public boolean changesModuleState() {
+                return true;
+            }
+
+            @Override
             public void perform(BundleInfo info, String target) throws ModuleManagementException {
                 bundleService.uninstall(info, target);
             }
@@ -397,6 +402,11 @@ public class ModuleManagerImpl implements ModuleManager {
             @Override
             public String getName() {
                 return "Refresh";
+            }
+
+            @Override
+            public boolean changesModuleState() {
+                return false;
             }
 
             @Override
@@ -499,5 +509,21 @@ public class ModuleManagerImpl implements ModuleManager {
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
         this.templateManagerService = templateManagerService;
+    }
+
+    @Override
+    public void onReadOnlyModeChanged(boolean enableReadOnlyMode, long timeout) {
+        readOnly = enableReadOnlyMode;
+    }
+
+    @Override
+    public int getReadOnlyModePriority() {
+        return 0;
+    }
+
+    private void assertWritable() {
+        if (readOnly) {
+            throw new ReadOnlyModeException("The Module Manager is in read only mode: no operations that change module state are available");
+        }
     }
 }

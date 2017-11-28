@@ -2644,6 +2644,29 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	}
 
+	td.x-grid3-header.x-grid3-hd.x-grid3-cell.x-grid3-td-url {
+		border-left-color: transparent !important;
+	}
+
+	td.x-grid3-hd-menu-open .x-grid3-hd-inner {
+		background: #eee !important;
+	}
+
+	.x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
+		background: url(./images/icons/combo-arrow-grey.png) no-repeat center center !important;
+		width: 23px;
+		background-size: 13px !important;
+		opacity: 0.7;
+	}
+
+	.x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(2) input {
+		margin-right: -2px;
+	}
+
+	.x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap:nth-child(3) input {
+		margin-right: 4px;
+	}
+
 	.x-box-inner .x-row-editor-field.x-component.x-box-item:not(.x-form-check-wrap) {
 		padding-left: 8px;
 		padding-top: 2px;

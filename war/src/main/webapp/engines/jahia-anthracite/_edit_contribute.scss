@@ -748,6 +748,10 @@ body[data-indigo-app="contribute"] {
 
         display: block;
 
+        max-width: 32vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
     }
 
 }
@@ -1221,6 +1225,11 @@ body[data-indigo-app="contribute"] {
         background-size: 23px;
         padding-left: 25px;
         @extend %document_title !optional;
+
+        display: block;
+        max-width: 19vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     table {

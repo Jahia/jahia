@@ -1993,20 +1993,15 @@
 
 				.x-toolbar-cell {
 
+					float: right;
+					margin-left: 5px;
+					padding-bottom: 20px;
+
 					&:nth-child(1) {
-						/* Save as work in progress */
-						// position: absolute;
-						// top: 43px;
+						margin-left: 0;
 
-						// position: fixed!important;
-					    // right: 20px;
-					    // bottom: 26px;
-					    // z-index: 99999999;
-					    // left: auto!important;
-					    // top: auto;
-
+						// Not a button, but its a checkbox for the edit engine
 						> div {
-							// Not a button, but its a checkbox for the edit engine
 							position: fixed!important;
 							left: 30px;
 						    bottom: 32px;
@@ -2015,34 +2010,20 @@
 
 					&:nth-child(2) {
 						/* Save */
-						padding-bottom: 20px;
-						float: right;
-						margin-left: 5px;
+						@include button("ACTIONBAR---SUGGESTED");
+					}
 
-						// Make suggested colour
+					// // VERY DIRTY !!! INSTALL LATEST VERSION OF SASS COMPILER TO USE selector-append()
+					@at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3){
 						@include button("ACTIONBAR---SUGGESTED");
 
-
 					}
 
-					&:nth-child(3) {
-						/* Cancel */
-						padding-bottom: 20px;
-						float:left;
+					&:last-child {
+						// Cancel Button
+						float: left;
+						margin-right: 5px;
 
-
-
-
-						// // VERY DIRTY !!! INSTALL LATEST VERSION OF SASS COMPILER TO USE selector-append()
-						@at-root .engine-panel.createcontentengine-ctn > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(3){
-							@include button("ACTIONBAR---SUGGESTED");
-
-						}
-					}
-
-					&:nth-child(4) {
-						/* Cancel */
-						padding-bottom: 20px;
 					}
 				}
 			}

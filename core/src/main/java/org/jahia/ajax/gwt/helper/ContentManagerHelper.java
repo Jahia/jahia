@@ -720,6 +720,7 @@ public class ContentManagerHelper {
                     for (ValidationResult result : results.getResults()) {
                         if (!result.isSuccessful()) {
                             if (result instanceof MissingModulesValidationResult) {
+                                importErrorMessageLineStepper(buffer);
                                 MissingModulesValidationResult missingModule = ((MissingModulesValidationResult) result);
                                 if (missingModule.isTargetTemplateSetPresent()) {
                                     buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplateSet", uiLocale, missingModule.getTargetTemplateSet()));
@@ -728,10 +729,37 @@ public class ContentManagerHelper {
                                     buffer.append(Messages.getInternalWithArguments("failure.import.missingModules", uiLocale, missingModule.getMissingModules().size())).append(missingModule.getMissingModules());
                                 }
                             } else if (result instanceof MissingNodetypesValidationResult) {
+                                importErrorMessageLineStepper(buffer);
                                 buffer.append(Messages.getInternalWithArguments("failure.import.missingNodetypes", uiLocale, ((MissingNodetypesValidationResult) result).getMissingNodetypes(), ((MissingNodetypesValidationResult) result).getMissingMixins()));
                             } else if (result instanceof MissingTemplatesValidationResult) {
+                                importErrorMessageLineStepper(buffer);
                                 MissingTemplatesValidationResult missingTemplates = ((MissingTemplatesValidationResult) result);
-                                buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplates", uiLocale, missingTemplates.getMissingTemplates().size())).append(missingTemplates.getMissingTemplates().keySet());
+                                buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplates", uiLocale, missingTemplates.getMissingTemplates().size()))
+                                        .append(missingTemplates.getMissingTemplates().keySet());
+                            } else if (result instanceof MissingPortletsValidationResult) {
+                                importErrorMessageLineStepper(buffer);
+                                MissingPortletsValidationResult missingPortlets = ((MissingPortletsValidationResult) result);
+                                buffer.append(Messages.getInternalWithArguments("failure.import.missingPortlets", uiLocale, missingPortlets.getMissingPortlets().size()))
+                                        .append(missingPortlets.getMissingPortlets());
+                            } else if (result instanceof ProviderAvailabilityValidatorResult) {
+                                importErrorMessageLineStepper(buffer);
+                                ProviderAvailabilityValidatorResult providerAvailabilityValidatorResult = ((ProviderAvailabilityValidatorResult) result);
+                                buffer.append(Messages.getInternalWithArguments("failure.import.unavailableProviders", uiLocale, providerAvailabilityValidatorResult.getUnavailableProviders().size()))
+                                        .append(providerAvailabilityValidatorResult.getUnavailableProviders());
+                            } else if (result instanceof ConstraintsValidatorResult) {
+                                ConstraintsValidatorResult constraintsValidatorResult = (ConstraintsValidatorResult) result;
+
+                                // missing properties
+                                importErrorMissingPropertiesAppender(buffer, constraintsValidatorResult.getMissingMandatoryProperties(), uiLocale);
+                                importErrorMissingPropertiesAppender(buffer, constraintsValidatorResult.getMissingMandatoryI18NProperties(), uiLocale);
+
+                                // other constraint validations
+                                if (constraintsValidatorResult.getOtherConstraintViolations().size() > 0) {
+                                    importErrorMessageLineStepper(buffer);
+                                    buffer.append(Messages.getInternalWithArguments("failure.import.constraintViolation", uiLocale, constraintsValidatorResult.getOtherConstraintViolations().size()))
+                                            .append(constraintsValidatorResult.getOtherConstraintViolations().keySet());
+                                }
+                                importErrorMessageLineStepper(buffer);
                             }
                         }
                     }
@@ -746,6 +774,19 @@ public class ContentManagerHelper {
             logger.error("Error when importing", e);
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.import", uiLocale, e.getLocalizedMessage()));
         }
+    }
+
+    private void importErrorMissingPropertiesAppender(StringBuilder errorMessage, Map<String, Set<String>> missingProperties, Locale uiLocale) {
+        for (Map.Entry<String, Set<String>> missingPropertiesEntry : missingProperties.entrySet()) {
+            for (String missingProperty : missingPropertiesEntry.getValue()) {
+                importErrorMessageLineStepper(errorMessage);
+                errorMessage.append(Messages.getInternalWithArguments("failure.import.missingProperty", uiLocale, missingProperty, missingPropertiesEntry.getKey()));
+            }
+        }
+    }
+
+    private void importErrorMessageLineStepper(StringBuilder errorMessage) {
+        errorMessage.append(errorMessage.length() == 0 ? "\n" : "\n\n");
     }
 
     public GWTJahiaNodeACL getACL(String path, boolean newAcl, JCRSessionWrapper currentUserSession, Locale uiLocale)

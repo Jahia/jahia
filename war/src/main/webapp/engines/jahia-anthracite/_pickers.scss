@@ -2184,12 +2184,6 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				}
 			}
 
-			// Hide view selector for following pickers / managers
-			&.portletmanager-menu-view,
-			&.categorymanager-menu-view,
-			&.sitemanager-menu-view {
-				display: none!important;
-			}
 
 		}
 
@@ -2205,6 +2199,13 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 }
 // Corrections for Managers ( extends normal picker )
 #contentmanager {
+
+	// Fixes for the site manager
+	&[config="sitemanager-anthracite"] {
+		#JahiaGxtManagerToolbar div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
+			right: 5px!important;
+		}
+	}
 
 	// Remove the floats on the save cancel buttons
 	.x-panel-bbar .x-toolbar-cell {
@@ -2295,6 +2296,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			// background: none!important;
 		}
 
+
 		// Language Switcher and Node Type Filter Combos
 		div.action-bar-menu-item {
 			// Language Switcher
@@ -2303,6 +2305,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				right: 95px!important;
 				@include _combo(DARK);
 				transition: none;
+
 			}
 
 			// Style differently when the Edit Engine is opened
@@ -2319,6 +2322,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				right: 252px !important;
 			}
 		}
+
+
 
 		// File Menu ( File, Edit, View, Image, ...)
 		table.action-bar-tool-item {

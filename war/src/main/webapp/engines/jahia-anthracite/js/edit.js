@@ -3648,6 +3648,11 @@
                             .trigger("mouseup");
 
 		            }
+
+          // Reset language dropdown position
+          var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
+          langSelector.style.cssText='top: 0';
+
 				}
 			}
 

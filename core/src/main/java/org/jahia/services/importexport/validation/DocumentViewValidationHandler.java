@@ -48,6 +48,7 @@ import java.util.List;
 
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.services.importexport.BaseDocumentViewHandler;
+import org.slf4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -60,6 +61,8 @@ import org.xml.sax.SAXException;
  */
 public class DocumentViewValidationHandler extends BaseDocumentViewHandler implements
         ModuleDependencyAware {
+
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(DocumentViewValidationHandler.class);
 
     private List<String> modules = Collections.emptyList();
 
@@ -86,6 +89,9 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler imple
     public ValidationResults getResults() {
         ValidationResults results = new ValidationResults();
         for (ImportValidator validator : validators) {
+            if(validator.getResult() != null && !validator.getResult().isSuccessful()) {
+                logger.warn("Import validation fail: " + validator.getResult().toString());
+            }
             results.addResult(validator.getResult());
         }
 

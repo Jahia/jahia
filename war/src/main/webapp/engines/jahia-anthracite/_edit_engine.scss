@@ -1939,7 +1939,7 @@
 	> .x-panel-bwrap {
 
 		height: calc(100% - 56px);
-	    position: fixed;
+	    position: fixed!important;
 	    width: 100%;
 	    top: 50px;
 
@@ -1953,6 +1953,12 @@
 				width: 100%!important;
 			}
 
+		}
+
+		.x-window-ml,
+		.x-window-mr,
+		.x-window-mc {
+			height: 100%!important;
 		}
 
 		.x-window-body,
@@ -3098,4 +3104,8 @@ body[data-indigo-add-visibility-condition="new"] {
 		max-width: 320px;
 	}
 
+}
+
+.engine-window {
+	z-index: 999999 !important;
 }

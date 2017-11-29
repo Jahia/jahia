@@ -2048,21 +2048,18 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 		// BUTTON
 		.action-bar-tool-item{
-			display: none;
-
-			position: fixed;
-			top: 6px;
 			opacity: 0.8;
 
 			background-color: transparent;
 			background-position: center;
-			background-size: 10px;
 			background-repeat: no-repeat;
+			background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+			background-size: 21px;
 
 			z-index: 999999;
 
-			width: 25px;
-			height: 25px;
+			width: 35px;
+			height: 38px;
 
 			button {
 				width: 25px!important;
@@ -2077,36 +2074,83 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				cursor: pointer;
 			}
 
-			// DELETE ???
+			// Stop GWT from disabling the buttons.
 			&.x-item-disabled {
-				// display: block!important;
+				display: block!important;
 			}
 
-
-
+			// Refresh icon ( do not need, let user use the one above source selection )
+			&.toolbar-item-refresh {
+				display: none;
+			}
 
 			// Add New Folder
 			&.toolbar-item-newfolder {
-				display: block !important;
-				left: calc(#{$PICKER_SIDEPANEL_WIDTH} + 15px);
-				opacity: 1 !important;
-			    background: url(./images/icons/add-folder@X2.png) no-repeat center center;
+			    background-image: url(./images/icons/add-folder@X2.png);
+			    background-size: 21px;
+			}
+
+			// Add New Content Folder
+			&.toolbar-item-newcontentfolder { // editorial content manager
+			    background-image: url(./images/icons/add-folder@X2.png);
+			    background-size: 21px;
+			}
+
+			// Add New Portlet Folder
+			&.toolbar-item-newportletfolder { // portlet manager
+			    background-image: url(./images/icons/add-folder@X2.png);
+			    background-size: 21px;
+			}
+
+			// New Category
+			&.toolbar-item-newcategory {
+			    background-image: url(./images/icons/add-folder@X2.png);
 			    background-size: 21px;
 			}
 
 			// Upload File
 			&.toolbar-item-upload {
-				display: block !important;
-				left: calc(#{$PICKER_SIDEPANEL_WIDTH} + 45px);
-				background: url(./images/icons/add-media@X2.png) no-repeat top 0px center;
+				background-image: url(./images/icons/add-media@X2.png);
+				background-position: top 6px center;
 				background-size: 23px;
+			}
+
+			// New Content
+			&.toolbar-item-newcontent {
+				background-image: url(./images/icons/add-media@X2.png);
+				background-position: top 6px center;
+				background-size: 23px;
+			}
+
+			// New Portlet
+			&.toolbar-item-newportlet {
+				background-image: url(./images/icons/add-media@X2.png);
+				background-position: top 6px center;
+				background-size: 23px;
+			}
+
+			// New Page
+			&.toolbar-item-newpage {
+				background-image: url(./images/icons/add-media@X2.png);
+				background-position: top 6px center;
+				background-size: 23px;
+			}
+
+			// View Buttons
+			&.toolbar-item-listview,
+			&.toolbar-item-thumbsview,
+			&.toolbar-item-detailedview {
+				position: fixed;
+				top: 6px;
+				display: block !important;
+				width: 25px;
+				height: 25px;
+				background-size: 11px 10px;
 			}
 
 			// List View
 			&.toolbar-item-listview {
-				display: block !important;
 				background-image: url($ICON--DISPLAY--LIST--WHITE);
-			    background-size: 11px 10px;
 				right: 8px;
 
 				body[indigo-PICKER-DISPLAY="listview"] & {
@@ -2118,7 +2162,6 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			// Thumbs View
 			&.toolbar-item-thumbsview {
-				display: block !important;
 				background-image: url($ICON--DISPLAY--THUMBS--WHITE);
 				right: 32px;
 
@@ -2131,7 +2174,6 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			// Display View
 			&.toolbar-item-detailedview {
-				display: block !important;
 				background-image: url($ICON--DISPLAY--DETAILS--WHITE);
 				right: 56px;
 
@@ -2249,8 +2291,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		z-index: 9;
 
 		.action-toolbar {
-			border: none!important;
-			background: none!important;
+			// border: none!important;
+			// background: none!important;
 		}
 
 		// Language Switcher and Node Type Filter Combos
@@ -2258,7 +2300,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			// Language Switcher
 			&.toolbar-itemsgroup-languageswitcher {
 				top: 5px!important;
-				right: 5px!important;
+				right: 95px!important;
 				@include _combo(DARK);
 				transition: none;
 			}
@@ -2274,45 +2316,45 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			// Have to shift the Node Type filter to the left of the Language Switcher ( which doesnt exist in normal Picker )
 			&.toolbar-itemsgroup-nodetypefiltering {
-				right: 182px !important;
+				right: 252px !important;
 			}
 		}
 
 		// File Menu ( File, Edit, View, Image, ...)
 		table.action-bar-tool-item {
-			display: block!important;
-			width: auto!important;
-			position: relative!important;
-			top: 0;
-			height: auto!important;
-			padding: 12px;
-			background: url($ICON--ARROW_DOWN---WHITE) no-repeat right center!important;
-
-			// By default the tbody of action bar tool items are hidden, so revert
-			tbody {
-				display: block!important;
-			}
-
-			// Button, contains the label
-			button {
-				width: auto!important;
-				text-indent: 0;
-				height: auto!important;
-				@include text(12px, _property($TOOL-BUTTON--COLOR, $PICKER)!important, $FONT--WEIGHT---EXTRALIGHT);
-			}
-
-			.x-btn-mc {
-				background: none!important;
-				height: auto!important;
-				width: auto!important;
-				text-align: left;
-			}
-
-			.x-btn-arrow {
-				background: none!important;
-				padding-right: 6px;
-				display: block;
-			}
+			// display: block!important;
+			// width: auto!important;
+			// position: relative!important;
+			// top: 0;
+			// height: auto!important;
+			// padding: 12px;
+			// background: url($ICON--ARROW_DOWN---WHITE) no-repeat right center!important;
+            //
+			// // By default the tbody of action bar tool items are hidden, so revert
+			// tbody {
+			// 	display: block!important;
+			// }
+            //
+			// // Button, contains the label
+			// button {
+			// 	width: auto!important;
+			// 	text-indent: 0;
+			// 	height: auto!important;
+			// 	@include text(12px, _property($TOOL-BUTTON--COLOR, $PICKER)!important, $FONT--WEIGHT---EXTRALIGHT);
+			// }
+            //
+			// .x-btn-mc {
+			// 	background: none!important;
+			// 	height: auto!important;
+			// 	width: auto!important;
+			// 	text-align: left;
+			// }
+            //
+			// .x-btn-arrow {
+			// 	background: none!important;
+			// 	padding-right: 6px;
+			// 	display: block;
+			// }
 
 		}
 	}

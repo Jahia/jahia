@@ -2512,10 +2512,14 @@
             },
             closeConditionEditor: function(){
                 DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)").removeClass("indigo-show");
+                DexV2.getCached("body").setAttribute("data-indigo-editing-condition", false);
             },
             editCondition: function(){
                 DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)").addClass("indigo-show");
-                DexV2("body").setAttribute("data-indigo-add-visibility-condition", "");
+
+                DexV2.getCached("body")
+                    .setAttribute("data-indigo-add-visibility-condition", "")
+                    .setAttribute("data-indigo-editing-condition", true);
 
                 // Create menu ...
                 var newMenu = document.createElement("menu"),
@@ -2535,6 +2539,7 @@
             },
             addCondition: function(){
                 DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)").addClass("indigo-show");
+                DexV2.getCached("body").setAttribute("data-indigo-editing-condition", true);
 
                 DexV2("body").onceOpen("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer", function(){
                     var newMenu = document.createElement("menu"),
@@ -2548,8 +2553,9 @@
 
                     closeButton.appendChild(closeButtonLabel);
                     saveButton.appendChild(saveButtonLabel);
-                    newMenu.appendChild(saveButton);
+
                     newMenu.appendChild(closeButton);
+                    newMenu.appendChild(saveButton);
 
                     DexV2("body").oneClick("#JahiaGxtEditEnginePanel-visibility .cancel-new-condition", function(){
 

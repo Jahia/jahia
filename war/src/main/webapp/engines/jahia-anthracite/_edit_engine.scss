@@ -936,6 +936,11 @@
 		}
 
 		> .x-component {
+
+			.x-panel-footer {
+				text-align: right;
+			}
+
 			// Header Zone
 			&:nth-child(1) {
 				background: _property($FIELDSET--BG, $EDIT-ENGINE);
@@ -1201,7 +1206,7 @@
 							&.done-with-condition {
 								background: _property($ACTION-SUGGESTED--BG, $EDIT-ENGINE);
 								box-shadow: _property($ACTION-SUGGESTED--SHADOW, $EDIT-ENGINE);
-								margin-right: 3px;
+								margin-left: 3px;
 								@include text(16px, _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
 
 								&:hover {
@@ -1850,6 +1855,10 @@
 	    background: transparent;
 	    border: none;
 		z-index: 9999;
+
+		body[data-indigo-editing-condition="true"] & {
+			display: none;
+		}
 
 		> div {
 			// Language Selector

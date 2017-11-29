@@ -80,6 +80,7 @@ public class SidePanelTabItem implements Serializable {
     protected transient EditLinker editLinker;
     protected transient Map<String, Object> autoRefreshData;
     protected transient boolean needManualRefresh;
+    private transient Menu contextMenu = null;
 
     /**
      * Performs the creation of the tab item and populates its content
@@ -119,6 +120,10 @@ public class SidePanelTabItem implements Serializable {
     }
 
     public void refresh(Map<String, Object> data) {
+        // hide context menu when the context is refreshed
+        if (contextMenu != null) {
+            contextMenu.hide();
+        }
         if (editLinker != null && data != null && (data.containsKey(Linker.REFRESH_ALL) || needRefresh(data))) {
             doRefresh();
             autoRefreshData = null;
@@ -192,7 +197,8 @@ public class SidePanelTabItem implements Serializable {
                 selectionModel = ((TreeGridClickSelectionModel)selectionModel).getRightClickSelectionModel();
             }
             final SidePanelLinker linker = new SidePanelLinker(selectionModel);
-            return new ActionContextMenu(toolbarBean, linker);
+            contextMenu = new ActionContextMenu(toolbarBean, linker);
+            return contextMenu;
         }
         return null;
     }

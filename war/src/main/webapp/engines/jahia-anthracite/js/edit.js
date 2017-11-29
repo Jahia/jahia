@@ -2432,59 +2432,42 @@
             data: {
                 returnToEditEngine: false
             },
-			onOpen: function(){
+            onOpen: function(){
 				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
+
+                // Get Friendly Name
 				var nodeDisplayName = DexV2.getCached("body").getAttribute("data-singleselection-node-displayname");
 
+                // Register Edit Engine as Opened and set locked flag to off
+                DexV2.getCached("body")
+                    .setAttribute("data-indigo-edit-engine-locked", "false")
+                    .setAttribute("data-INDIGO-EDIT-ENGINE", "open");
+
+                // Add Friendly Name to attribute of header
+                DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
+
+                // Wait a sec, ...
+                // Then work out if the node has been locked
 				setTimeout(function(){
-					var nodeDetails = DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").getHTML();
+					var nodeDetails = DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").getHTML(),
 						regExp = /\[(.*?)\]/gi,
 						nodeStatus = nodeDetails.match(regExp),
 						isLocked = false;
 
+                    // Square brackets have been found (suggesting its locked) ...
 					if(nodeStatus){
-						isLocked = nodeStatus[0].indexOf("locked") > -1 || nodeStatus[0].indexOf("verrouillé") > -1
-						DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-indigo-locked", isLocked);
+                        // See if the String contains the word locked, or verouillé or gesperrt
+						isLocked = nodeStatus[0].indexOf("locked") > -1 || nodeStatus[0].indexOf("verrouillé") > -1 || nodeStatus[0].indexOf("gesperrt") > -1;
+
+                        // Register the Node as locked
+                        DexV2.getCached("body").setAttribute("data-indigo-edit-engine-locked", isLocked);
+
+                        // Add ONLY the lock message to the header, which will be displayed on a hover
+						DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setHTML(nodeStatus[0])
+
 					}
 
-
 				}, 500);
-
-
-
-				DexV2.getCached("body").setAttribute("data-INDIGO-EDIT-ENGINE", "open");
-
-                // // Create menu ...
-                // var newMenu = document.createElement("menu"),
-                //     editButton = document.createElement("button"),
-                //     editButtonLabel = document.createTextNode("Edit");
-                //
-                // DexV2.node(newMenu).addClass("indigo-edit-engine-menu");
-                // DexV2.node(editButton).addClass("indigo-edit-engine-menu--edit");
-                //
-                // editButton.appendChild(editButtonLabel);
-                // newMenu.appendChild(editButton);
-                //
-                // DexV2(".engine-panel")
-                //     .prepend(newMenu);
-                //
-                // DexV2.class("engine-panel").onClick(".indigo-edit-engine-menu--edit", function(){
-                //     console.log("CLICKED EDIT BUTTIN");
-                //     app.engine.data.returnToEditEngine = true;
-                //     // Save first
-                //     DexV2(".edit-menu-edit").trigger("click");
-                // }, "INDIGO-EDIT-ENGINE--EDIT");
-                //
-                //
-                // DexV2.tag("body").onMouseDown(".toolbar-item-publishone", function(){
-                //     console.log("Save it first");
-                //     DexV2(".engine-panel > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar .x-toolbar-cell:nth-child(2) .x-btn.x-btn-text-icon button").trigger("click");
-                // })
-
-
-				// Attribute used to display the friendly name in edit panel
-				DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
-
 			},
 			onClose: function(e){
 				app.dev.log("::: APP ::: ENGINE ::: ONCLOSE");

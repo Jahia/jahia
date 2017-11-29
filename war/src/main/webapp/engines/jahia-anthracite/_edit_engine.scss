@@ -1844,7 +1844,7 @@
 		left: 0 !important;
 	    top: 0px !important;
 	    position: fixed !important;
-	    height: 170px !important;
+	    height: 182px !important;
 	    width: 315px;
 	    box-sizing: border-box;
 	    background: transparent;
@@ -1856,7 +1856,9 @@
 			margin-right: 24px;
 		    position: absolute;
 		    left: 72px;
-		    top: 124px;
+		    top: 129px;
+
+
 
 		}
 
@@ -1864,41 +1866,61 @@
 		.x-panel-header-text {
 			// Element Title
 			position: fixed;
-			top: 77px;
-			left: -50000px;
-			width: 100%;
-			pointer-events: none;
+		    top: 91px;
+			width: 240px;
+		    max-width: calc(100% - 680px);
+			overflow: hidden;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;
+		    height: 21px !important;
+		    left: -50000px;
+			display: block;
+			background-color: transparent;
+			padding: 37px 0 0 42px;
 
-			max-width: calc(100% - 680px);
-			overflow: inherit;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			height: 64px !important;
-			line-height: 54px;
-			margin-top: -18px;
+			// Styles the Lock message
+			@include text(14px, #c48f00, $FONT--WEIGHT---EXTRABOLD);
 
-			@extend %CSS_BLOCK--EDIT_ENGINE--TITLE;
-
-			&[data-indigo-locked="true"] {
-				&::before {
-					background: url(./images/icons/icon-lock@X2.png) no-repeat left center;
-					background-size: 20px;
-					padding-left: 22px;
-				}
-			}
-
+			// Node Friendly Name
 			&::before {
 				content: attr(data-friendly-name);
 			    display: block;
 			    position: fixed;
-			    top: 80px;
+			    top: 99px;
 			    left: 72px;
-				width: 290px;
+				width: 250px;
 				overflow: hidden;
 				text-overflow: ellipsis;
+				white-space: nowrap;
 
-				@include text(18px !important, _theme-color(quinary), $FONT--WEIGHT---EXTRALIGHT)
+				@include text(18px !important, _theme-color(quinary), $FONT--WEIGHT---EXTRALIGHT);
+
+				// Add Locked icon if the node has been locked
+				body[data-indigo-edit-engine-locked="true"] & {
+					background: url(./images/icons/icon-lock@X2.png) no-repeat left center;
+					background-size: 20px;
+					padding-left: 22px;
+
+				}
+
 			}
+
+			// Node has been locked, so modify styles ...
+			body[data-indigo-edit-engine-locked="true"] & {
+
+				&.hover-info,
+				&:hover {
+					white-space: pre-wrap;
+					background-color: #fcfcfc;
+				    /* width: 100%; */
+				    padding: 37px 20px 16px 42px;
+				    box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
+				    height: auto!important;
+					left: 49px;
+				}
+			}
+
+
 
 		}
 	}

@@ -3532,6 +3532,30 @@
 				open:function(e, directAccess){
                     app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
 
+
+          // Position the language selector dropdown.
+          var siteSettingsList = DexV2.id("JahiaGxtSettingsTab").filter(".x-panel.x-component").nodes[0];
+          var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
+
+          function offset(el) {
+            var rect = el.getBoundingClientRect(),
+            scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+            scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            return {
+              top: rect.top + scrollTop
+            }
+          }
+          var siteSettingsListTop = offset(siteSettingsList).top;
+
+          if(siteSettingsListTop <= 145) {
+            console.log("1 line");
+            langSelector.style.cssText='top: 112px !important';
+          } else if (siteSettingsListTop >= 185) {
+            console.log("2 lines");
+            langSelector.style.cssText='top: 152px !important';
+          };
+
+
 					if(directAccess){
 						// Need to set back to the settings tree list (the onChangeSite will have switched it back to pages)
 						DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("click");
@@ -4305,10 +4329,3 @@
     }
 
 })("DX");
-//
-//
-//
-// // Test for element width workaround. (FIND BETTER IMPLEM.)
-// var seoRowImput = document.querySelector('#JahiaGxtEditEnginePanel-seo > .x-component .x-box-inner .x-row-editor-field.x-component.x-box-item');
-// var seoRowImputSize = seoRowImput.style.width;
-// seoRowImput.style.cssText='width: ' + seoRowImputSize + ' !important;'

@@ -2560,6 +2560,24 @@ body[data-indigo-add-visibility-condition="new"] {
 	padding: 8px;
 	height: auto !important;
 
+	.seo-title-path {
+		font-family: $FONT--FAMILY---NUNITO;
+		font-size: 11px;
+		color: rgba(0, 0, 0, 0.52);
+		font-weight: $FONT--WEIGHT---SEMIBOLD;
+	}
+
+	.seo-title {
+		padding: 0 !important;
+		margin-top: 2px;
+		margin-bottom: 6px;
+		text-transform: uppercase;
+		font-family: $FONT--FAMILY---NUNITO;
+		font-size: 11px;
+		color: $color-primary;
+		font-weight: $FONT--WEIGHT---SEMIBOLD;
+	}
+
 	.x-panel-header {
 		font-family: $FONT--FAMILY---NUNITO;
 		background: transparent !important;
@@ -2591,13 +2609,19 @@ body[data-indigo-add-visibility-condition="new"] {
 		background: transparent !important;
 
 		.x-grid3-hh {
-			box-shadow: 0px 1px 2px rgba($color-black, .2);
+			//box-shadow: 0px 1px 2px rgba($color-black, .2);
 			margin: 2px 2px 8px;
 			width: calc(100% - 167px) !important;
-			background: $color-white;
+			border-bottom: 1px solid #eee;
+			text-transform: uppercase;
+			color: rgba($color-black, .48);
+
+			span {
+				font-weight: $FONT--WEIGHT---EXTRABOLD;
+				font-family: $FONT--FAMILY---NUNITO;
+			}
 
 			> table {
-				background: rgba($color-white, .64);
 				padding: 4px 0;
 
 				.x-grid3-hd.x-grid3-cell {
@@ -2662,6 +2686,10 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	td.x-grid3-header.x-grid3-hd.x-grid3-cell.x-grid3-td-url {
 		border-left-color: transparent !important;
+	}
+
+	td.x-grid3-header.x-grid3-hd.x-grid3-cell {
+		border-color: transparent !important;
 	}
 
 	td.x-grid3-hd-menu-open .x-grid3-hd-inner {
@@ -2950,11 +2978,18 @@ body[data-indigo-add-visibility-condition="new"] {
 	}
 
 	.x-component .x-grid3-header .x-grid3-hh {
-		box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+		//box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
 		margin: 2px 2px 8px;
 		width: calc(100% - 12px) !important;
-		background: white;
+		border-bottom: 1px solid #eee;
+    text-transform: uppercase;
+    color: rgba($color-black, .48);
 		pointer-events: none;
+
+		span {
+			font-weight: $FONT--WEIGHT---EXTRABOLD;
+			font-family: $FONT--FAMILY---NUNITO;
+		}
 
 		table {
 			padding: 4px 0;
@@ -3036,6 +3071,8 @@ body[data-indigo-add-visibility-condition="new"] {
 	}
 
 	td.x-grid3-header.x-grid3-hd.x-grid3-cell {
+
+		border-color: transparent !important;
 
 		&.x-grid3-td-displayName {
 			width: 350px !important;

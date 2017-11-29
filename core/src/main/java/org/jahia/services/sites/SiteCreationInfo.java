@@ -120,8 +120,8 @@ public class SiteCreationInfo {
             return this;
         }
 
-        public Builder serverNameAliases(String... serverNameAliases) {
-            site.setServerNameAliases(serverNameAliases);
+        public Builder serverNameAliases(String serverNameAliases) {
+            site.setServerNameAliasesAsString(serverNameAliases);
             return this;
         }
 

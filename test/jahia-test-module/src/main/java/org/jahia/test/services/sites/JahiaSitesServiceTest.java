@@ -197,7 +197,7 @@ public class JahiaSitesServiceTest {
         siteB = TestHelper.createSite(SiteCreationInfo.builder().siteKey(SITE_B).serverName("siteb.com")
                 .serverNameAliases("111.siteb.com").build());
         siteC = TestHelper.createSite(SiteCreationInfo.builder().siteKey(SITE_C).serverName("sitec.com")
-                .serverNameAliases("111.sitec.com", "222.sitec.com").build());
+                .serverNameAliases("111.sitec.com, 222.sitec.com").build());
 
         defaultSession = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.EDIT_WORKSPACE,
                 Locale.ENGLISH, Locale.ENGLISH);

@@ -327,7 +327,6 @@ public class JahiaSitesService extends JahiaService {
         return addSite(SiteCreationInfo.builder().
                 siteKey(siteKey).
                 serverName(serverName).
-                serverNameAliases(null).
                 title(title).
                 description(descr).
                 templateSet(selectTmplSet).
@@ -351,7 +350,6 @@ public class JahiaSitesService extends JahiaService {
         return addSite(SiteCreationInfo.builder().
                 siteKey(siteKey).
                 serverName(serverName).
-                serverNameAliases(null).
                 title(title).
                 description(descr).
                 templateSet(selectTmplSet).
@@ -377,7 +375,6 @@ public class JahiaSitesService extends JahiaService {
         return addSite(SiteCreationInfo.builder().
                         siteKey(siteKey).
                         serverName(serverName).
-                        serverNameAliases(null).
                         title(title).
                         description(descr).
                         templateSet(selectTmplSet).

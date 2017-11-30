@@ -92,7 +92,17 @@ public class ReadOnlyModeController {
         /**
          * The application is in progress switching read only mode off
          */
-        PENDING_OFF
+        PENDING_OFF,
+
+        /**
+         * The application is partially in read only mode on but an exception happened
+         */
+        PARTIAL_ON,
+
+        /**
+         * The application is partially in read only mode off but an exception happened
+         */
+        PARTIAL_OFF
     }
 
     private volatile ReadOnlyModeStatus readOnlyStatus = ReadOnlyModeStatus.OFF;
@@ -134,6 +144,7 @@ public class ReadOnlyModeController {
             try {
                 service.switchReadOnlyMode(enable);
             } catch (Exception e) {
+                readOnlyStatus = enable ? ReadOnlyModeStatus.PARTIAL_ON : ReadOnlyModeStatus.PARTIAL_OFF;
                 logger.error("Error notifying service " + service + " about read-only mode change", e);
                 throw e;
             }
@@ -146,7 +157,7 @@ public class ReadOnlyModeController {
     }
 
     private boolean checkStatusUpdateNeeded(boolean enable) {
-        return enable ? readOnlyStatus == ReadOnlyModeStatus.OFF : readOnlyStatus == ReadOnlyModeStatus.ON;
+        return (enable ? readOnlyStatus == ReadOnlyModeStatus.OFF : readOnlyStatus == ReadOnlyModeStatus.ON) || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_ON || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_OFF;
     }
 
     // Initialization on demand holder idiom: thread-safe singleton initialization

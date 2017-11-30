@@ -2661,7 +2661,7 @@ body[data-indigo-add-visibility-condition="new"] {
 	}
 
 	.x-panel .x-grid3 .x-grid3-row-table {
-		width: calc(100% - 282px)!important;
+		//width: calc(100% - 282px)!important;
 	}
 
 	.x-grid3-cell-inner.x-grid3-col-url {
@@ -2723,12 +2723,11 @@ body[data-indigo-add-visibility-condition="new"] {
 	}
 
 	.x-box-inner .x-row-editor-field.x-component.x-box-item.x-form-check-wrap {
-		text-align: center;
-    top: 9px !important;
-		padding-left: 17px;
+		top: 9px !important;
+    padding-left: 41px;
 
 		&:nth-child(3) {
-			padding-left: 0;
+			padding-left: 33px;
 		}
 
 		input[type="checkbox"] {

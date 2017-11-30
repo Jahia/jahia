@@ -222,13 +222,11 @@ body {
 /////////////////////////////////////////////////
 
 
-.x-component.x-component {
-    font-family: $FONT--FAMILY---NUNITO !important;
-}
-
+.x-component.x-component,
 .x-grid3-hd-row .x-grid3-hd,
 .x-grid3-row .x-grid3-cell,
-.x-grid3-summary-row .x-grid3-cell {
+.x-grid3-summary-row .x-grid3-cell,
+.x-grid3-td-numberer div {
     font-family: $FONT--FAMILY---NUNITO !important;
 }
 

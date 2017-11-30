@@ -2863,6 +2863,17 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	.x-panel-bwrap {
 		height: initial !important;
+		padding-bottom: 16px;
+	}
+
+	> fieldset {
+		padding-bottom: 0 !important;
+
+		.x-form-check-wrap {
+			text-align: right;
+			margin-top: -33px;
+		}
+
 	}
 
 	> .x-panel {
@@ -2919,6 +2930,8 @@ body[data-indigo-add-visibility-condition="new"] {
 		td[class*="lastModifiedBy"] div {
 			margin-top: 8px;
 			padding-left: 8px;
+			color: $color-primary !important;
+			font-weight: $FONT--WEIGHT---LIGHT;
 		}
 
 		.x-grid3-row-selected .x-grid3-td-numberer {
@@ -2950,18 +2963,18 @@ body[data-indigo-add-visibility-condition="new"] {
 			background-color: #dedede !important;
 
 			div {
-				color: rgba(0, 0, 0, 0.64);
+				color: $color-primary;
 			}
 
 			.x-grid3-col-name {
-				color: rgba(0, 0, 0, 0.64) !important;
+				color: $color-primary !important;
 			}
 
 			&.x-grid3-row-over {
 				background-color: #dedede !important;
 
 				.x-grid3-col-name {
-					color: rgba(0, 0, 0, 0.64) !important;
+					color: $color-primary !important;
 				}
 
 			}
@@ -3050,7 +3063,7 @@ body[data-indigo-add-visibility-condition="new"] {
 
 			> table button {
 				background: none !important;
-				color: rgba(0, 0, 0, 0.87);
+				color: $color-primary;
 				pointer-events: all;
 			}
 

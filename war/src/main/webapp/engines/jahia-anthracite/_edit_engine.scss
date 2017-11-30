@@ -2563,7 +2563,7 @@ body[data-indigo-add-visibility-condition="new"] {
 	background: rgba($color-white, .4);
 	border: 1px solid #e8e8e8 !important;
 	box-sizing: border-box;
-	padding: 8px;
+	padding: 8px 29px;
 	height: auto !important;
 
 	.seo-title-path {
@@ -2655,12 +2655,13 @@ body[data-indigo-add-visibility-condition="new"] {
 
 		> .x-grid3-body {
 			padding-bottom: 30px;
+			width: calc(100% - 160px) !important;
 		}
 
 	}
 
 	.x-panel .x-grid3 .x-grid3-row-table {
-		width: calc(100% - 326px)!important;
+		width: calc(100% - 282px)!important;
 	}
 
 	.x-grid3-cell-inner.x-grid3-col-url {
@@ -2679,7 +2680,7 @@ body[data-indigo-add-visibility-condition="new"] {
 		.x-grid3 .x-grid3-row {
 			height: 38px !important;
 			background: transparent !important;
-			width: calc(100% - 162px) !important;
+			width: 100% !important;
 
 			&.x-grid3-row-over {
 				background: #f5f6f7 !important;
@@ -2759,7 +2760,7 @@ body[data-indigo-add-visibility-condition="new"] {
 	}
 
 	.x-row-editor .x-btns {
-		background: $color-primary;
+		background: transparent;
 		position: absolute;
 		right: -16px !important;
 		top: 5px !important;

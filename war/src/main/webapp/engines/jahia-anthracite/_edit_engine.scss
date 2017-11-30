@@ -2615,7 +2615,6 @@ body[data-indigo-add-visibility-condition="new"] {
 		background: transparent !important;
 
 		.x-grid3-hh {
-			//box-shadow: 0px 1px 2px rgba($color-black, .2);
 			margin: 2px 2px 8px;
 			width: calc(100% - 167px) !important;
 			border-bottom: 1px solid #eee;
@@ -2784,7 +2783,6 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	.x-toolbar-ct .x-btn.x-btn-text-icon button {
 		padding: 5px 16px !important;
-		/*background: $color-tertiary !important;*/
 	}
 
 	.x-toolbar-right-row > .x-toolbar-cell > div.x-form-label {
@@ -2896,9 +2894,8 @@ body[data-indigo-add-visibility-condition="new"] {
 	.x-grid3-body {
 
 		.x-grid3-td-numberer {
-			padding-top: 7px !important;
+			padding-top: 8px !important;
 			background-image: none;
-			font-weight: 500;
 		}
 
 		.x-grid3-td-displayName {

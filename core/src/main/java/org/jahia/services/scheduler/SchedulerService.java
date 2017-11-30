@@ -92,6 +92,8 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     private ReadOnlyModeAwareScheduler scheduler = null;
 
+    private long schedulerReadonlyTimeout;
+
     private ThreadLocal<List<JobDetail>> scheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
 
     private ThreadLocal<List<JobDetail>> ramScheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
@@ -350,6 +352,10 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         this.scheduler = new ReadOnlyModeAwareScheduler(scheduler);
     }
 
+    public void setSchedulerReadonlyTimeout(long schedulerReadonlyTimeout) {
+        this.schedulerReadonlyTimeout = schedulerReadonlyTimeout;
+    }
+
     @Override
     public synchronized void start() throws JahiaInitializationException {
 
@@ -406,16 +412,23 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
                 standbySchedulers();
                 logger.info("Done putting schedulers to standby");
                 logger.info("Waiting for running jobs to complete...");
-                for (int count = getRunningJobsCount(); count > 0; count = getRunningJobsCount()) {
+                long start = System.currentTimeMillis();
+                long current = start;
+                for (int count = getRunningJobsCount(); count > 0 && current-start < schedulerReadonlyTimeout; count = getRunningJobsCount()) {
                     try {
                         logger.info("{} job(s) are still running...", count);
                         Thread.sleep(500);
+                        current = System.currentTimeMillis();
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         throw new RuntimeException(e);
                     }
                 }
-                logger.info("All running jobs have completed.");
+                if (getRunningJobsCount() == 0) {
+                    logger.info("All running jobs have completed.");
+                } else {
+                    throw new RuntimeException("Jobs are still running, timeout expired");
+                }
             } catch (SchedulerException e) {
                 throw new RuntimeException(e);
             }

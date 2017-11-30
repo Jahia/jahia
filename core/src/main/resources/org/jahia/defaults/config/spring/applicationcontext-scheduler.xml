@@ -46,6 +46,7 @@
 	<bean id="SchedulerService" class="org.jahia.services.scheduler.SchedulerService" parent="jahiaServiceTemplate">
 		<property name="scheduler" ref="scheduler" />
 		<property name="ramScheduler" ref="ramScheduler" />
+		<property name="schedulerReadonlyTimeout" value="${scheduler.readonly.timeout:60000}" />
 	</bean>
     
     <bean id="jobSchedulingBean" class="org.jahia.services.scheduler.JobSchedulingBean" abstract="true">

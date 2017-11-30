@@ -1613,7 +1613,7 @@
 	// SMALL LABEL
 	%CSS_BLOCK--TREE--ROW--TEXT---UP\:SMALL_LABEL {
 		line-height: 20px;
-		@include text(10px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---EXTRALIGHT !important);
+		@include text(12px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---EXTRALIGHT !important);
 	}
 
 	%CSS_BLOCK--TREE--ROW--TEXT---HOVER\:SMALL_LABEL {

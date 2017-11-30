@@ -222,7 +222,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	&[indigo-picker-panel="opened"] {
 
 		#JahiaGxtManagerToolbar {
-			left: calc(#{$PICKER_SIDEPANEL_WIDTH} - 8px) !important;
+			left: calc(#{$PICKER_SIDEPANEL_WIDTH}) !important;
+			width: calc(100% - #{$PICKER_SIDEPANEL_WIDTH}) !important;
 
 		}
 
@@ -361,6 +362,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		height: 100%!important;
 		width: 100%!important;
 	}
+
+
 
 	// TREE ICONS
 
@@ -2010,6 +2013,11 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	// TOOLBAR
 	#JahiaGxtManagerToolbar {
+		background: blue;
+		position: fixed;
+	    top: 0;
+	    // left: 0!important;
+		width: 100%!important;
 
 		// Remove some GWT styles ...
 		.action-toolbar {
@@ -2055,6 +2063,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			background-repeat: no-repeat;
 			background-image: url(./images/icons/tabs-placeholder-white@X2.png);
 			background-size: 21px;
+			background-color: red;
 
 			z-index: 999999;
 
@@ -2076,7 +2085,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			// Stop GWT from disabling the buttons.
 			&.x-item-disabled {
-				display: block!important;
+				// display: block!important;
 			}
 
 			// Refresh icon ( do not need, let user use the one above source selection )
@@ -2086,54 +2095,111 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			// Add New Folder
 			&.toolbar-item-newfolder {
-			    background-image: url(./images/icons/add-folder@X2.png);
-			    background-size: 21px;
+			    background-image: url(./images/icons/placeholder-1@X2.png);
 			}
 
 			// Add New Content Folder
 			&.toolbar-item-newcontentfolder { // editorial content manager
-			    background-image: url(./images/icons/add-folder@X2.png);
-			    background-size: 21px;
+			    background-image: url(./images/icons/placeholder-2@X2.png);
 			}
 
 			// Add New Portlet Folder
 			&.toolbar-item-newportletfolder { // portlet manager
-			    background-image: url(./images/icons/add-folder@X2.png);
-			    background-size: 21px;
+			    background-image: url(./images/icons/placeholder-3@X2.png);
 			}
 
 			// New Category
 			&.toolbar-item-newcategory {
-			    background-image: url(./images/icons/add-folder@X2.png);
-			    background-size: 21px;
+			    background-image: url(./images/icons/placeholder-4@X2.png);
 			}
 
 			// Upload File
 			&.toolbar-item-upload {
-				background-image: url(./images/icons/add-media@X2.png);
-				background-position: top 6px center;
-				background-size: 23px;
+				background-image: url(./images/icons/placeholder-5@X2.png);
 			}
 
 			// New Content
 			&.toolbar-item-newcontent {
-				background-image: url(./images/icons/add-media@X2.png);
-				background-position: top 6px center;
-				background-size: 23px;
+				background-image: url(./images/icons/placeholder-6@X2.png);
 			}
 
 			// New Portlet
 			&.toolbar-item-newportlet {
-				background-image: url(./images/icons/add-media@X2.png);
-				background-position: top 6px center;
-				background-size: 23px;
+				background-image: url(./images/icons/placeholder-7@X2.png);
 			}
 
 			// New Page
 			&.toolbar-item-newpage {
-				background-image: url(./images/icons/add-media@X2.png);
-				background-position: top 6px center;
-				background-size: 23px;
+				background-image: url(./images/icons/placeholder-8@X2.png);
+			}
+
+			// Download
+			&.toolbar-item-download {
+				background-image: url(./images/icons/placeholder-9@X2.png);
+			}
+
+			// File preview
+			&.toolbar-item-filepreview {
+				background-image: url(./images/icons/placeholder-10@X2.png);
+			}
+
+			// Rename
+			&.toolbar-item-rename {
+				background-image: url(./images/icons/placeholder-11@X2.png);
+			}
+
+			// Delete
+			&.toolbar-item-delete {
+				background-image: url(./images/icons/placeholder-12@X2.png);
+			}
+
+			// Un delete
+			&.toolbar-item-undelete {
+				background-image: url(./images/icons/placeholder-13@X2.png);
+			}
+
+			// Delete permanently
+			&.toolbar-item-deletepermanently {
+				background-image: url(./images/icons/placeholder-14@X2.png);
+			}
+
+			&.toolbar-item-copy {
+				background-image: url(./images/icons/placeholder-16@X2.png);
+			}
+
+			// Cut
+			&.toolbar-item-cut {
+				background-image: url(./images/icons/placeholder-17@X2.png);
+			}
+
+			// Paste
+			&.toolbar-item-paste {
+				background-image: url(./images/icons/placeholder-18@X2.png);
+			}
+
+			// Paste Reference
+			&.toolbar-item-pastereference {
+				background-image: url(./images/icons/placeholder-19@X2.png);
+			}
+
+			// Crop
+			&.toolbar-item-crop {
+				background-image: url(./images/icons/placeholder-20@X2.png);
+			}
+
+			// Resize
+			&.toolbar-item-resize {
+				background-image: url(./images/icons/placeholder-21@X2.png);
+			}
+
+			// Rotate
+			&.toolbar-item-rotate {
+				background-image: url(./images/icons/placeholder-22@X2.png);
+			}
+
+			// Repo Filter menu
+			&.repositoryexplorer-menu-view {
+				background-image: url(./images/icons/icon_preview_small_white.png);
 			}
 
 			// View Buttons
@@ -2202,9 +2268,30 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	// Fixes for the site manager
 	&[config="sitemanager-anthracite"] {
+		// There are no Display controls so push the langiage switcher to the right
 		#JahiaGxtManagerToolbar div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
 			right: 5px!important;
 		}
+	}
+
+	// Fixes for the Category
+	&[config="categorymanager-anthracite"] {
+	}
+
+	// Fixes for the Repository Explorer
+	&[config="repositoryexplorer-anthracite"] {
+	}
+
+	// Fixes for the Portlets
+	&[config="portletmanager-anthracite"] {
+	}
+
+	// Fixes for the File manager ( Documents )
+	&[config="filemanager-anthracite"] {
+	}
+
+	// Fixes for the Content ( Editorial Content )
+	&[config="editorialcontentmanager-anthracite"] {
 	}
 
 	// Remove the floats on the save cancel buttons
@@ -2284,9 +2371,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	// Header tool bar
 	#JahiaGxtManagerToolbar {
-		width: calc(100% - #{$PICKER_SIDEPANEL_WIDTH});
 		position: relative;
-		left: calc(#{$PICKER_SIDEPANEL_WIDTH} - 8px);
 		box-sizing: border-box;
 		padding: 0 10px;
 		z-index: 9;
@@ -2426,12 +2511,15 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		// Node Name
 		.x-grid3-td-name,
 		.x-grid3-td-displayName {
-			width: calc(100% - 367px) !important;
+			width: calc(100% - 410px) !important;
 		}
 
 		// Node Type
-		.x-grid3-td-primaryTypeLabel {
-			width: 98px!important;
+		.x-grid3-td-primaryTypeLabel,
+		.x-grid3-td-jcr\:created,
+		.x-grid3-td-jcr\:createdBy,
+		.x-grid3-td-jcr\:lastModified {
+			width: 115px!important;
 		}
 
 		// Publication Info
@@ -2440,7 +2528,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		}
 
 		// Fixes for Category Manager labels in List mode
-		&.x-viewport-categorymanager {
+		&.x-viewport-categorymanager,
+		&.x-viewport-categorymanager-anthracite {
 			// Names & Paths
 			.x-grid3-td-displayName,
 			.x-grid3-td-name,

@@ -1788,7 +1788,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			.preview-button {
 				position: absolute;
 				top: 0;
-				right: 25px;
+				right: 50px;
 				text-indent: -50000px;
 				width: 25px;
 			    height: 25px;
@@ -1810,7 +1810,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			.edit-button {
 				position: absolute;
 				top: 0;
-				right: 50px;
+				right: 25px;
 				text-indent: -50000px;
 				width: 25px;
 			    height: 25px;
@@ -2013,7 +2013,6 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	// TOOLBAR
 	#JahiaGxtManagerToolbar {
-		background: blue;
 		position: fixed;
 	    top: 0;
 	    // left: 0!important;
@@ -2063,7 +2062,6 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			background-repeat: no-repeat;
 			background-image: url(./images/icons/tabs-placeholder-white@X2.png);
 			background-size: 21px;
-			background-color: red;
 
 			z-index: 999999;
 
@@ -2085,7 +2083,6 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			// Stop GWT from disabling the buttons.
 			&.x-item-disabled {
-				// display: block!important;
 			}
 
 			// Refresh icon ( do not need, let user use the one above source selection )
@@ -2095,42 +2092,43 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			// Add New Folder
 			&.toolbar-item-newfolder {
-			    background-image: url(./images/icons/placeholder-1@X2.png);
+			    background-image: url(./images/icons/add-folder@X2.png);
 			}
 
 			// Add New Content Folder
 			&.toolbar-item-newcontentfolder { // editorial content manager
-			    background-image: url(./images/icons/placeholder-2@X2.png);
+				background-image: url(./images/icons/add-folder@X2.png);
 			}
 
 			// Add New Portlet Folder
 			&.toolbar-item-newportletfolder { // portlet manager
-			    background-image: url(./images/icons/placeholder-3@X2.png);
+				background-image: url(./images/icons/add-folder@X2.png);
 			}
 
 			// New Category
 			&.toolbar-item-newcategory {
-			    background-image: url(./images/icons/placeholder-4@X2.png);
+			    background-image: url(./images/icons/add@X2.png);
 			}
 
 			// Upload File
 			&.toolbar-item-upload {
-				background-image: url(./images/icons/placeholder-5@X2.png);
+				background-image: url(./images/icons/add-media@X2.png);
+				background-size: 23px;
 			}
 
 			// New Content
 			&.toolbar-item-newcontent {
-				background-image: url(./images/icons/placeholder-6@X2.png);
+				background-image: url(./images/icons/add@X2.png);
 			}
 
 			// New Portlet
 			&.toolbar-item-newportlet {
-				background-image: url(./images/icons/placeholder-7@X2.png);
+				background-image: url(./images/icons/add@X2.png);
 			}
 
 			// New Page
 			&.toolbar-item-newpage {
-				background-image: url(./images/icons/placeholder-8@X2.png);
+				background-image: url(./images/icons/add@X2.png);
 			}
 
 			// Download
@@ -2276,6 +2274,23 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	// Fixes for the Category
 	&[config="categorymanager-anthracite"] {
+		// Hide Display controls so push the langiage switcher to the right
+		#JahiaGxtManagerToolbar {
+			div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
+				right: 5px!important;
+			}
+
+			table.action-bar-tool-item {
+				&.toolbar-item-listview,
+				&.toolbar-item-thumbsview,
+				&.toolbar-item-detailedview {
+					display: none!important;
+				}
+			}
+
+
+		}
+
 	}
 
 	// Fixes for the Repository Explorer
@@ -2284,14 +2299,38 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	// Fixes for the Portlets
 	&[config="portletmanager-anthracite"] {
+		// Hide Display controls so push the langiage switcher to the right
+		#JahiaGxtManagerToolbar {
+			div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
+				right: 5px!important;
+			}
+
+			table.action-bar-tool-item {
+				&.toolbar-item-listview,
+				&.toolbar-item-thumbsview,
+				&.toolbar-item-detailedview {
+					display: none!important;
+				}
+			}
+
+
+		}
 	}
 
 	// Fixes for the File manager ( Documents )
 	&[config="filemanager-anthracite"] {
+		// Always keep the upload / ne folder buttons active, even when the focus is on the tree
+		#JahiaGxtManagerToolbar .action-bar-tool-item.x-item-disabled {
+			display: block!important;
+		}
 	}
 
 	// Fixes for the Content ( Editorial Content )
 	&[config="editorialcontentmanager-anthracite"] {
+		// Always keep the upload / ne folder buttons active, even when the focus is on the tree
+		#JahiaGxtManagerToolbar .action-bar-tool-item.x-item-disabled {
+			display: block!important;
+		}
 	}
 
 	// Remove the floats on the save cancel buttons

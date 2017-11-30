@@ -1916,18 +1916,30 @@
 				onMouseOver: function(e){
 					app.dev.log("::: APP ::: PICKER ::: ROW ::: MOUSEOVER");
 
-					// Create and add preview button ( if previews exist and have not aleady been added )
-					if(app.picker.data.enablePreviews){
-						if(DexV2.node(this).filter(".preview-button").nodes.length == 0){
-							var previewButton = document.createElement("button"),
-			                    previewButtonLabel = document.createTextNode("Preview");
+                    // Dealing with file manager, possibility of images ( and therefore preview button )
+                    if( app.data.HTTP.app == "manager" &&
+                        (   app.data.HTTP.picker == "filemanager-anthracite" ||
+                            app.data.HTTP.picker == "repositoryexplorer-anthracite")
+                        ){
 
-							previewButton.classList.add("preview-button");
+                            var isImage = DexV2.node(this).filter('img[src$="/jnt_file_img.png"]').nodes.length;
 
-							DexV2.node(this).prepend(previewButton);
+                            // Preview is posible ( dealing with an image)
+                            if(isImage){
 
-						}
-					}
+                                // See if the button has already been added ...
+                                if(DexV2.node(this).filter(".preview-button").nodes.length == 0){
+        							var previewButton = document.createElement("button"),
+        			                    previewButtonLabel = document.createTextNode("Preview");
+
+        							previewButton.classList.add("preview-button");
+
+        							DexV2.node(this).prepend(previewButton);
+
+        						}
+                            }
+
+                    }
 
 					// Create and more info button ( if it hasnt aleady been added )
 					if(DexV2.node(this).filter(".more-info-button").nodes.length == 0){
@@ -2056,7 +2068,10 @@
 				openPreview: function(e){
 
 					if(app.data.HTTP.app == "manager"){
-						DexV2.node(this).parent().trigger("dblclick");
+
+                        DexV2.node(this).parent().trigger("dblclick");
+
+
 					} else {
 						DexV2("#JahiaGxtManagerToolbar .toolbar-item-filepreview").trigger("click");
 
@@ -2072,25 +2087,21 @@
 								DexV2.node(this).parent().parent().getAttribute("id") ||
 								DexV2.node(this).parent().parent().parent().getAttribute("id");
 
-					DexV2.getCached("body").setAttribute("data-indigo-edit-engine", "opened");
+                    console.log("HERE IS THE TITLE: ", title);
 
-					DexV2.id("JahiaGxtManagerBottomTabs")
-						.addClass("engine-panel") // Add engine-panel class to get styling from the proper edit engine
-						.setAttribute("data-edit-engine-title", title); // Put title to be used in Edit Engine here
+                    DexV2.node(this).parent().trigger("contextmenu");
 
-					// The Manager Edit Engine doesnt have a cancel button ( this is because in the old DX it was not a popup, but constantly displayed on screen)
-					// Only add the button if we havent already done so
-					if(DexV2(".cancel-edit").nodes.length == 0){
-						// Create the button
-						var cancelButton = document.createElement("button"),
-							cancelButtonLabel = document.createTextNode(localisedStrings[app.data.UILanguage].cancel);
+                    // When context menu is opened click on the EDIT button
+                    DexV2("body").onceOpen(".x-menu", function(){
+                        // Need to shift the context menu out of view because it doesnt dissappear until the alert has been closed.
+                        DexV2(".x-menu").css({
+                            left: "-50000px"
+                        });
 
-						cancelButton.appendChild(cancelButtonLabel)
-						cancelButton.classList.add("cancel-edit");
+                        DexV2(".x-menu .toolbar-item-editcontent").trigger("click");
 
-						// Add the button to the Edit Engine
-						DexV2("#contentmanager .x-panel-bbar .x-toolbar-cell:nth-child(1)").first().prepend(cancelButton);
-					}
+
+                    })
 
 				},
 				closeEdit: function(){
@@ -2433,6 +2444,7 @@
                 returnToEditEngine: false
             },
             onOpen: function(){
+                console.log("ENGINE HAS BEEN OPENED ...");
 				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
 
                 // Get Friendly Name
@@ -2444,7 +2456,13 @@
                     .setAttribute("data-INDIGO-EDIT-ENGINE", "open");
 
                 // Add Friendly Name to attribute of header
-                DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
+                if(app.data.HTTP.app == "manager"){
+                    console.log("set it to ", nodeDisplayName);
+                    DexV2(".engine-window .x-window-header .x-window-header-text").setAttribute("data-friendly-name", nodeDisplayName);
+                } else {
+                    DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
+
+                }
 
                 // Wait a sec, ...
                 // Then work out if the node has been locked
@@ -4093,7 +4111,7 @@
 
 					}
 				})
-				.onClick(".toolbar-item-upload", function(){
+                .onClick(".toolbar-item-upload", function(){
 					// Add new folder
 					var isDisabled = DexV2.node(this).hasClass("x-item-disabled");
 
@@ -4104,6 +4122,22 @@
 						// When context menu is opened click on the ADD FOLDER button
 						DexV2("body").onceOpen(".x-menu", function(){
 							DexV2(".x-menu .toolbar-item-upload").trigger("click");
+
+						})
+
+					}
+				})
+                .onClick(".toolbar-item-newcontent", function(){
+					// Add new folder
+					var isDisabled = DexV2.node(this).hasClass("x-item-disabled");
+
+					if(isDisabled){
+						// User has clicked on the ADD FOLDER icon whilst in the RIGHT tree, so trigger click on the CONTEXT MENU OF THE LEFT TREE
+						DexV2("#CRTbrowseTabItem .x-grid3-row-selected").trigger("contextmenu");
+
+						// When context menu is opened click on the ADD FOLDER button
+						DexV2("body").onceOpen(".x-menu", function(){
+							DexV2(".x-menu .toolbar-item-newcontent").trigger("click");
 
 						})
 
@@ -4195,6 +4229,7 @@
                 .onOpen(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onOpen)
                 .onOpen("#" + app.picker.data.ID, app.picker.onOpen)
                 .onOpen("#JahiaGxtEnginePanel", app.engine.onOpen)
+                // .onOpen("#JahiaGxtEngineWindow", app.picker.thumb.openEdit)
                 .onOpen("#JahiaGxtImagePopup", app.imagePreview.onOpen)
                 .onAttribute(".edit-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
                 .onAttribute(".contribute-menu-tasks", "class", app.edit.infoBar.tasks.onChange)
@@ -4301,7 +4336,7 @@
 
         // This is a manager, not main app.
 		if(app.data.HTTP.app == "manager"){
-            console.log("B");
+            console.log("B", app.data.HTTP.picker);
 			// This is a manager, not edit engine
 			app.picker.data.standalone = true;
 			app.picker.data.ID = app.picker.data.standaloneManagerID;
@@ -4309,6 +4344,11 @@
 			// Need to "open" the picker manually ...
 			DexV2.tag("body").onOpen("#contentmanager > .x-viewport", function(){
 				app.picker.onOpen();
+
+                if(app.data.HTTP.picker == "portletmanager-anthracite"){
+                    // Select list view
+                    DexV2("#contentmanager #JahiaGxtManagerToolbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
+                }
 			});
 
 

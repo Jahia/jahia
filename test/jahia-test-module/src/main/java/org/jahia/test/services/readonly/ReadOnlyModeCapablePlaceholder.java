@@ -35,7 +35,7 @@ public class ReadOnlyModeCapablePlaceholder implements ReadOnlyModeCapable {
         /**
          * Switch read only mode status.
          *
-         * @param enabled Whether read mode should be enabled or disabled
+         * @param enable Whether read mode should be enabled or disabled
          */
         void switchReadOnlyMode(boolean enable);
     }

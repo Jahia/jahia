@@ -326,6 +326,6 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
     @Override
     public int getReadOnlyModePriority() {
-        return 1;
+        return 100;
     }
 }

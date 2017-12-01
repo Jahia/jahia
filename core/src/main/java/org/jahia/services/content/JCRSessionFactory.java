@@ -628,7 +628,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
 
     @Override
     public int getReadOnlyModePriority() {
-        return 0;
+        return 200;
     }
 
     @Override

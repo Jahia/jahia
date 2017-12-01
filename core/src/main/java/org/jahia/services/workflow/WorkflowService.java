@@ -1216,7 +1216,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
     @Override
     public int getReadOnlyModePriority() {
-        return 0;
+        return 700;
     }
 
     private void assertWritable() {

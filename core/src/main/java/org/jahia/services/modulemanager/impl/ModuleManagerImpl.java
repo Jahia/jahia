@@ -518,7 +518,7 @@ public class ModuleManagerImpl implements ModuleManager, ReadOnlyModeCapable {
 
     @Override
     public int getReadOnlyModePriority() {
-        return 0;
+        return 900;
     }
 
     private void assertWritable() {

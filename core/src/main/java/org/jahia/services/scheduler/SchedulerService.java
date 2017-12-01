@@ -396,7 +396,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     @Override
     public int getReadOnlyModePriority() {
-        return 1000;
+        return 800;
     }
 
     @Override

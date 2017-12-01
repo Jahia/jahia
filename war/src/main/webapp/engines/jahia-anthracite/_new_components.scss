@@ -156,6 +156,9 @@
 }
 
 @mixin _combo($type: $APP) {
+
+	width: auto!important;
+
 	input.x-form-text {
 		// border:1px solid red!important;
 		width: 100%!important;
@@ -208,6 +211,9 @@
 }
 
 @mixin _combo-muted($type: $APP) {
+
+	width: auto!important;
+
 	input.x-form-text {
 		// border:1px solid red!important;
 		width: 100%!important;
@@ -249,6 +255,9 @@
 
 
 @mixin _combo-picker($type: $APP) {
+
+	width: auto!important;
+
 	input.x-form-text {
 		// border:1px solid brown!important;
 		width: 100%!important;
@@ -333,6 +342,7 @@
 }
 
 @mixin _drop-down($type: $APP) {
+
 	input.x-form-text {
 		// border: 1px solid yellow!important;
 		width: 100%!important;
@@ -393,6 +403,9 @@
 
 
 @mixin _drop-down-muted($type: $APP) {
+
+	width: auto!important;
+
 	input.x-form-text {
 		// border: 1px solid yellow!important;
 		width: 100%!important;
@@ -797,11 +810,18 @@ div[role="combobox"] {
 
 }
 
+#JahiaGxtSearchTab {
+	.x-form-field-wrap {
+		width: auto!important;
+	}
+}
+
+
+
 .x-form-text {
 	@include _input($APP);
 
 	body[data-indigo-gwt-side-panel="open"] & {
-		width: 100%!important;
 		@include _input($SIDE-PANEL);
 	}
 }

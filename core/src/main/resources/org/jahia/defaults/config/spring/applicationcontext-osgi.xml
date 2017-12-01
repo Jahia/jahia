@@ -51,6 +51,7 @@
 
                 <prop key="hazelcast.osgi.jsr223.disabled">true</prop>
                 <prop key="hazelcast.slow.operation.detector.stacktrace.logging.enabled">true</prop>
+                <prop key="hazelcast.shutdownhook.enabled">false</prop>
 
                 <prop key="org.apache.karaf.cellar.core.event.EventHandlerRegistryDispatcher.threadPool.singleThreadExecutor">true</prop>
 

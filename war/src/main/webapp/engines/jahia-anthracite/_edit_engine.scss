@@ -253,7 +253,8 @@
 
 	fieldset {
 		width: 100%!important;
-
+		min-width: 0;
+		
 		.x-form-item-label {
 			float:left!important;
 			margin-top: 0!important;
@@ -2866,6 +2867,7 @@ body[data-indigo-add-visibility-condition="new"] {
 	.x-panel-bwrap {
 		height: initial !important;
 		padding-bottom: 16px;
+
 	}
 
 	> fieldset {

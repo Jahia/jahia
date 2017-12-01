@@ -45,7 +45,9 @@ package org.jahia.test.services.workflow;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
@@ -57,6 +59,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
+import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.jahia.test.TestHelper;
 import org.junit.*;
 import org.slf4j.Logger;
@@ -121,7 +124,7 @@ public class WorkflowServiceTest {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         JCRNodeWrapper root = session.getNode(SITECONTENT_ROOT_NODE);
         session.checkout(root);
-        stageNode = root.addNode("child-" + ++nodeCounter, "jnt:text");
+        stageNode = root.addNode("child-" + (++nodeCounter), "jnt:text");
         session.save();
         emptyMap = new HashMap<String, Object>();
     }
@@ -134,7 +137,7 @@ public class WorkflowServiceTest {
 
     @Test
     public void testGetPossibleWorkflow() throws Exception {
-        // that call also asserts that possible workflows are present 
+        // that call also asserts that possible workflows are present
         getPossibleWorkflows();
     }
 
@@ -431,6 +434,82 @@ public class WorkflowServiceTest {
         assertEquals("The workflow process should have two history task records", 2, tasks.size());
     }
 
+    @Test
+    public void abortProcessShouldFailInReadOnlyMode() {
+
+        verifyFailureInReadOnlyMode(new Runnable() {
+
+            @Override
+            public void run() {
+                service.abortProcess(processId, PROVIDER);
+            }
+        });
+    }
+
+    @Test
+    public void startProcessShouldFailInReadOnlyMode() {
+
+        verifyFailureInReadOnlyMode(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    service.startProcess(null, null, processId, PROVIDER, null, null);
+                } catch (RepositoryException e) {
+                    throw new JahiaRuntimeException(e);
+                }
+            }
+        });
+    }
+
+    @Test
+    public void assignTaskShouldFailInReadOnlyMode() {
+
+        verifyFailureInReadOnlyMode(new Runnable() {
+
+            @Override
+            public void run() {
+                service.assignTask(null, PROVIDER, johndoe);
+            }
+        });
+    }
+
+    @Test
+    public void completeTaskShouldFailInReadOnlyMode() {
+
+        verifyFailureInReadOnlyMode(new Runnable() {
+
+            @Override
+            public void run() {
+                service.completeTask(null, johndoe, PROVIDER, null, null);
+            }
+        });
+    }
+
+    @Test
+    public void addCommentShouldFailInReadOnlyMode() {
+
+        verifyFailureInReadOnlyMode(new Runnable() {
+
+            @Override
+            public void run() {
+                service.addComment(processId, PROVIDER, "comment", "johndoe");
+            }
+        });
+    }
+
+    @Test
+    public void deleteProcessShouldFailInReadOnlyMode() {
+
+        verifyFailureInReadOnlyMode(new Runnable() {
+
+            @Override
+            public void run() {
+                service.deleteProcess(processId, PROVIDER);
+            }
+        });
+    }
+
     protected Collection<WorkflowDefinition> getPossibleWorkflows() throws RepositoryException {
         final Collection<WorkflowDefinition> workflowList = service.getPossibleWorkflows(stageNode, true, Locale.ENGLISH).values();
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
@@ -452,7 +531,7 @@ public class WorkflowServiceTest {
 
         return workflow;
     }
-    
+
     protected WorkflowDefinition getPossibleWorkflowEnsureExists(String type) throws RepositoryException {
         final Collection<WorkflowDefinition> workflowList = getPossibleWorkflows();
         if (type == null) {
@@ -469,5 +548,17 @@ public class WorkflowServiceTest {
         assertNotNull("Unable to find workflow process of type: " + type, workflow);
 
         return workflow;
+    }
+
+    private void verifyFailureInReadOnlyMode(Runnable action) {
+        service.switchReadOnlyMode(true);
+        try {
+            action.run();
+            Assert.fail("The action should have failed due to read only mode");
+        } catch (ReadOnlyModeException e) {
+            // Expected.
+        } finally {
+            service.switchReadOnlyMode(false);
+        }
     }
 }

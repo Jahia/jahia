@@ -2,7 +2,7 @@ package org.jahia.services.modulemanager.impl;
 
 import java.util.Collection;
 
-import org.codehaus.plexus.util.ExceptionUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.springframework.core.io.Resource;

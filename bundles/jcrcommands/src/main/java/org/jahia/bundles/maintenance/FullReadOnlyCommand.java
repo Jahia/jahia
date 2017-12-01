@@ -13,7 +13,7 @@ import org.jahia.settings.readonlymode.ReadOnlyModeController;
 public class FullReadOnlyCommand implements Action {
 
     @Argument(description = "on/off")
-    @Completion(value=StringsCompleter.class , values = { "ON","OFF" })
+    @Completion(value = StringsCompleter.class , values = {"ON", "OFF"})
     private String enable;
 
     @Override
@@ -26,10 +26,9 @@ public class FullReadOnlyCommand implements Action {
                     ReadOnlyModeController.getInstance().switchReadOnlyMode(enable.equalsIgnoreCase("on"));
                 }
             }
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+        } finally {
+            System.out.println("Current status : " + ReadOnlyModeController.getInstance().getReadOnlyStatus());
         }
-        System.out.println("Current status : " + ReadOnlyModeController.getInstance().getReadOnlyStatus());
         return null;
     }
 }

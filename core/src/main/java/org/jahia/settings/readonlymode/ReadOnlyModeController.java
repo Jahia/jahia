@@ -139,13 +139,13 @@ public class ReadOnlyModeController {
                 SpringContextSingleton.getBeansOfType(ReadOnlyModeCapable.class).values());
         Collections.sort(services, SERVICES_COMPARATOR_BY_PRIORITY);
 
-        logger.info("Notifying {} services about read-only mode change", services.size());
+        logger.info("Switching read only status of {} services", services.size());
         for (ReadOnlyModeCapable service : services) {
             try {
                 service.switchReadOnlyMode(enable);
             } catch (Exception e) {
                 readOnlyStatus = enable ? ReadOnlyModeStatus.PARTIAL_ON : ReadOnlyModeStatus.PARTIAL_OFF;
-                logger.error("Error notifying service " + service + " about read-only mode change", e);
+                logger.error("Error switching read only status of the service " + service, e);
                 throw e;
             }
         }

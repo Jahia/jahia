@@ -13,19 +13,22 @@ import org.jahia.bin.Jahia;
 public class MaintenanceCommand implements Action {
 
     @Argument(description = "on/off")
-    @Completion(value=StringsCompleter.class , values = { "ON","OFF" })
+    @Completion(value = StringsCompleter.class , values = {"ON", "OFF"})
     private String enable;
 
     @Override
     public Object execute() throws Exception {
-        if (enable != null) {
-            if (!enable.equalsIgnoreCase("on") && !enable.equalsIgnoreCase("off")) {
-                System.out.println("Please choose ON or OFF");
-            } else {
-                Jahia.setMaintenance(enable.equalsIgnoreCase("on"));
+        try {
+            if (enable != null) {
+                if (!enable.equalsIgnoreCase("on") && !enable.equalsIgnoreCase("off")) {
+                    System.out.println("Please choose ON or OFF");
+                } else {
+                    Jahia.setMaintenance(enable.equalsIgnoreCase("on"));
+                }
             }
+        } finally {
+            System.out.println("Current status : " + (Jahia.isMaintenance() ? "ON" : "OFF"));
         }
-        System.out.println("Current status : " + (Jahia.isMaintenance() ? "ON" : "OFF"));
         return null;
     }
 }

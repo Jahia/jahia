@@ -46,6 +46,7 @@ package org.jahia.services.scheduler;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.JahiaService;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.quartz.*;
@@ -92,7 +93,7 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
 
     private ReadOnlyModeAwareScheduler scheduler = null;
 
-    private long schedulerReadonlyTimeout;
+    private long timeoutSwitchingToReadOnlyMode;
 
     private ThreadLocal<List<JobDetail>> scheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
 
@@ -352,8 +353,8 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
         this.scheduler = new ReadOnlyModeAwareScheduler(scheduler);
     }
 
-    public void setSchedulerReadonlyTimeout(long schedulerReadonlyTimeout) {
-        this.schedulerReadonlyTimeout = schedulerReadonlyTimeout;
+    public void setTimeoutSwitchingToReadOnlyMode(long timeoutSwitchingToReadOnlyMode) {
+        this.timeoutSwitchingToReadOnlyMode = timeoutSwitchingToReadOnlyMode;
     }
 
     @Override
@@ -413,22 +414,20 @@ public class SchedulerService extends JahiaService implements ReadOnlyModeCapabl
                 logger.info("Done putting schedulers to standby");
                 logger.info("Waiting for running jobs to complete...");
                 long start = System.currentTimeMillis();
-                long current = start;
-                for (int count = getRunningJobsCount(); count > 0 && current-start < schedulerReadonlyTimeout; count = getRunningJobsCount()) {
+                for (int count = getRunningJobsCount(); count > 0; count = getRunningJobsCount()) {
+                    logger.info("{} job(s) are still running...", count);
+                    if (System.currentTimeMillis() - start > timeoutSwitchingToReadOnlyMode) {
+                        logger.error("Timed out waiting for running jobs to complete.");
+                        throw new JahiaRuntimeException("Wait timeout elapsed, jobs are still running");
+                    }
                     try {
-                        logger.info("{} job(s) are still running...", count);
                         Thread.sleep(500);
-                        current = System.currentTimeMillis();
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         throw new RuntimeException(e);
                     }
                 }
-                if (getRunningJobsCount() == 0) {
-                    logger.info("All running jobs have completed.");
-                } else {
-                    throw new RuntimeException("Jobs are still running, timeout expired");
-                }
+                logger.info("All running jobs have completed.");
             } catch (SchedulerException e) {
                 throw new RuntimeException(e);
             }

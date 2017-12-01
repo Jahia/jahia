@@ -1464,7 +1464,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                app.edit.sidepanel.close();
+                // app.edit.sidepanel.close();
 
                 // Trigger mousedown / mouseup on body to close any open context menus and combo menus
                 DexV2.tag("body").trigger("mousedown").trigger("mouseup");
@@ -1717,7 +1717,7 @@
 
 
 				// Save current view (by default loads on thumbs)
-				app.picker.data.displayType = "thumbsview";
+				app.picker.data.displayType = "listview";
 
 				var pickerTitle = (app.picker.data.standalone) ? DexV2("#pickerTitle") : DexV2.id(app.picker.data.ID).filter(".x-window-tl .x-window-header-text"),
 					box = pickerTitle.getNode(0).getBoundingClientRect(),
@@ -2087,7 +2087,6 @@
 								DexV2.node(this).parent().parent().getAttribute("id") ||
 								DexV2.node(this).parent().parent().parent().getAttribute("id");
 
-                    console.log("HERE IS THE TITLE: ", title);
 
                     DexV2.node(this).parent().trigger("contextmenu");
 
@@ -2444,7 +2443,6 @@
                 returnToEditEngine: false
             },
             onOpen: function(){
-                console.log("ENGINE HAS BEEN OPENED ...");
 				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
 
                 // Get Friendly Name
@@ -2457,7 +2455,6 @@
 
                 // Add Friendly Name to attribute of header
                 if(app.data.HTTP.app == "manager"){
-                    console.log("set it to ", nodeDisplayName);
                     DexV2(".engine-window .x-window-header .x-window-header-text").setAttribute("data-friendly-name", nodeDisplayName);
                 } else {
                     DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
@@ -4095,21 +4092,91 @@
 
 					if(isDisabled){
 						// User has clicked on the ADD FOLDER icon whilst in the RIGHT tree, so trigger click on the CONTEXT MENU OF THE LEFT TREE
-						DexV2("#CRTbrowseTabItem .x-grid3-row-selected").trigger("contextmenu");
+
+						var selectedFolder = DexV2("#CRTbrowseTabItem .x-grid3-row-selected");
+
+						if(selectedFolder.nodes.length > 0){
+							selectedFolder.trigger("contextmenu");
+
+						} else {
+							DexV2("#CRTbrowseTabItem .x-grid3-row")
+								.first() // Get first row
+								.trigger("mousedown") // Select it with a mouse down
+								.trigger("mouseup") // Release the mousedown
+								.trigger("contextmenu"); // Trigger a right click
+						}
 
 						// When context menu is opened click on the ADD FOLDER button
 						DexV2("body").onceOpen(".x-menu", function(){
-                            // Need to shift the context menu out of view because it doesnt dissappear until the alert has been closed.
+							// Need to shift the context menu out of view because it doesnt dissappear until the alert has been closed.
                             DexV2(".x-menu").css({
                                 left: "-50000px"
                             });
 
-                            DexV2(".x-menu .toolbar-item-newfolder").trigger("click");
-
+							DexV2(".x-menu .toolbar-item-newfolder").trigger("click");
 
 						})
 
 					}
+
+				})
+				.onClick(".toolbar-item-newcontentfolder", function(){
+					// Add new folder
+					var isDisabled = DexV2.node(this).hasClass("x-item-disabled");
+
+					if(isDisabled){
+						// User has clicked on the ADD FOLDER icon whilst in the RIGHT tree, so trigger click on the CONTEXT MENU OF THE LEFT TREE
+
+						var selectedFolder = DexV2("#CRTbrowseTabItem .x-grid3-row-selected");
+
+						if(selectedFolder.nodes.length > 0){
+							selectedFolder.trigger("contextmenu");
+
+						} else {
+							DexV2("#CRTbrowseTabItem .x-grid3-row")
+								.first() // Get first row
+								.trigger("mousedown") // Select it with a mouse down
+								.trigger("mouseup") // Release the mousedown
+								.trigger("contextmenu"); // Trigger a right click
+						}
+
+						// When context menu is opened click on the ADD FOLDER button
+						DexV2("body").onceOpen(".x-menu", function(){
+							DexV2(".x-menu .toolbar-item-newcontentfolder").trigger("click");
+
+						})
+
+					}
+
+				})
+				.onClick(".toolbar-item-newpage", function(){
+					// Add new folder
+					var isDisabled = DexV2.node(this).hasClass("x-item-disabled");
+
+					if(isDisabled){
+						// User has clicked on the ADD FOLDER icon whilst in the RIGHT tree, so trigger click on the CONTEXT MENU OF THE LEFT TREE
+
+						var selectedFolder = DexV2("#CRTbrowseTabItem .x-grid3-row-selected");
+
+						if(selectedFolder.nodes.length > 0){
+							selectedFolder.trigger("contextmenu");
+
+						} else {
+							DexV2("#CRTbrowseTabItem .x-grid3-row")
+								.first() // Get first row
+								.trigger("mousedown") // Select it with a mouse down
+								.trigger("mouseup") // Release the mousedown
+								.trigger("contextmenu"); // Trigger a right click
+						}
+
+						// When context menu is opened click on the ADD FOLDER button
+						DexV2("body").onceOpen(".x-menu", function(){
+							DexV2(".x-menu .toolbar-item-newpage").trigger("click");
+
+						})
+
+					}
+
 				})
                 .onClick(".toolbar-item-upload", function(){
 					// Add new folder
@@ -4117,7 +4184,19 @@
 
 					if(isDisabled){
 						// User has clicked on the ADD FOLDER icon whilst in the RIGHT tree, so trigger click on the CONTEXT MENU OF THE LEFT TREE
-						DexV2("#CRTbrowseTabItem .x-grid3-row-selected").trigger("contextmenu");
+
+						var selectedFolder = DexV2("#CRTbrowseTabItem .x-grid3-row-selected");
+
+						if(selectedFolder.nodes.length > 0){
+							selectedFolder.trigger("contextmenu");
+
+						} else {
+							DexV2("#CRTbrowseTabItem .x-grid3-row")
+								.first() // Get first row
+								.trigger("mousedown") // Select it with a mouse down
+								.trigger("mouseup") // Release the mousedown
+								.trigger("contextmenu"); // Trigger a right click
+						}
 
 						// When context menu is opened click on the ADD FOLDER button
 						DexV2("body").onceOpen(".x-menu", function(){
@@ -4128,12 +4207,24 @@
 					}
 				})
                 .onClick(".toolbar-item-newcontent", function(){
-					// Add new folder
+					// Add new content folder
 					var isDisabled = DexV2.node(this).hasClass("x-item-disabled");
 
 					if(isDisabled){
 						// User has clicked on the ADD FOLDER icon whilst in the RIGHT tree, so trigger click on the CONTEXT MENU OF THE LEFT TREE
-						DexV2("#CRTbrowseTabItem .x-grid3-row-selected").trigger("contextmenu");
+
+						var selectedFolder = DexV2("#CRTbrowseTabItem .x-grid3-row-selected");
+
+						if(selectedFolder.nodes.length > 0){
+							selectedFolder.trigger("contextmenu");
+
+						} else {
+							DexV2("#CRTbrowseTabItem .x-grid3-row")
+								.first() // Get first row
+								.trigger("mousedown") // Select it with a mouse down
+								.trigger("mouseup") // Release the mousedown
+								.trigger("contextmenu"); // Trigger a right click
+						}
 
 						// When context menu is opened click on the ADD FOLDER button
 						DexV2("body").onceOpen(".x-menu", function(){
@@ -4322,7 +4413,6 @@
         // This is a content picker, not main app.
 		if(app.data.HTTP.app == "contentpicker"){
 			// This is a full page picker, not edit engine
-            console.log("A");
 			app.picker.data.standalone = true;
 			app.picker.data.ID = app.picker.data.standaloneID;
 
@@ -4336,7 +4426,6 @@
 
         // This is a manager, not main app.
 		if(app.data.HTTP.app == "manager"){
-            console.log("B", app.data.HTTP.picker);
 			// This is a manager, not edit engine
 			app.picker.data.standalone = true;
 			app.picker.data.ID = app.picker.data.standaloneManagerID;

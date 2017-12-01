@@ -1308,7 +1308,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     @Override
     public int getReadOnlyModePriority() {
-        return 1001;
+        return 1000;
     }
 
     public String getOperatingMode() {

@@ -300,6 +300,9 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
                         searchSettingNode = session.getNode("/settings/search-settings");
                         cfg.setCurrentProvider(searchSettingNode.hasProperty("j:provider") ? searchSettingNode.getProperty("j:provider")
                                 .getString() : null);
+                        if (cfg.getCurrentProvider() != null && !cfg.getCurrentProvider().equals(settings.getCurrentProvider())) {
+                            selectSearchProvider(cfg.getCurrentProvider());
+                        }
                     } catch (PathNotFoundException e) {
                         cfg.setCurrentProvider(getDefaultSearchProvider().getName());
                         store(cfg, session);

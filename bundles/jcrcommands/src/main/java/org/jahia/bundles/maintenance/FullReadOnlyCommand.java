@@ -1,34 +1,20 @@
 package org.jahia.bundles.maintenance;
 
-import org.apache.karaf.shell.api.action.Action;
-import org.apache.karaf.shell.api.action.Argument;
 import org.apache.karaf.shell.api.action.Command;
-import org.apache.karaf.shell.api.action.Completion;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.karaf.shell.support.completers.StringsCompleter;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
 
 @Command(scope = "dx", name = "full-read-only")
 @Service
-public class FullReadOnlyCommand implements Action {
-
-    @Argument(description = "on/off")
-    @Completion(value = StringsCompleter.class , values = {"ON", "OFF"})
-    private String enable;
+public class FullReadOnlyCommand extends AbstractMaintenanceCommand {
 
     @Override
-    public Object execute() throws Exception {
-        try {
-            if (enable != null) {
-                if (!enable.equalsIgnoreCase("on") && !enable.equalsIgnoreCase("off")) {
-                    System.out.println("Please choose ON or OFF");
-                } else {
-                    ReadOnlyModeController.getInstance().switchReadOnlyMode(enable.equalsIgnoreCase("on"));
-                }
-            }
-        } finally {
-            System.out.println("Current status : " + ReadOnlyModeController.getInstance().getReadOnlyStatus());
-        }
-        return null;
+    protected String getMaintenanceStatus() {
+        return ReadOnlyModeController.getInstance().getReadOnlyStatus().name();
+    }
+
+    @Override
+    protected void setMaintenanceStatus(boolean enable) {
+        ReadOnlyModeController.getInstance().switchReadOnlyMode(enable);
     }
 }

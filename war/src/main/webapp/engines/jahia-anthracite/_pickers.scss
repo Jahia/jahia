@@ -1031,7 +1031,13 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 									// PAGE PICKER
 									&:nth-child(1) {
+										label {
+											display: none!important;
+										}
 
+										.x-form-field-wrap {
+											width: auto!important;
+										}
 									}
 
 									// LANGUAGE
@@ -2261,14 +2267,32 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	}
 
 }
+
+.x-shadow.x-ignore + #JahiaGxtContentPickerWindow {
+	z-index: 99999!important;
+
+	// Disable search button
+	#JahiaGxtManagerLeftTree__CRTsearchTabItem {
+		display: none!important;
+	}
+}
+
 // Corrections for Managers ( extends normal picker )
 #contentmanager {
+
+
+
 
 	// Fixes for the site manager
 	&[config="sitemanager-anthracite"] {
 		// There are no Display controls so push the langiage switcher to the right
 		#JahiaGxtManagerToolbar div.action-bar-menu-item.toolbar-itemsgroup-languageswitcher {
 			right: 5px!important;
+		}
+
+		// Always keep the upload / ne folder buttons active, even when the focus is on the tree
+		#JahiaGxtManagerToolbar .action-bar-tool-item.x-item-disabled {
+			display: block!important;
 		}
 	}
 

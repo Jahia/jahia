@@ -79,7 +79,7 @@
 	// width: auto !important;
 	background: transparent;
     overflow: visible;
-    z-index: $ZINDEX--COMBO_LIST;
+	z-index: 9999999 !important;
 
 	// @extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER !optional;
 

@@ -63,9 +63,10 @@ public class ReadOnlyModeController {
     private static final Logger logger = LoggerFactory.getLogger(ReadOnlyModeController.class);
 
     private static final Comparator<ReadOnlyModeCapable> SERVICES_COMPARATOR_BY_PRIORITY = new Comparator<ReadOnlyModeCapable>() {
+
         @Override
-        public int compare(ReadOnlyModeCapable o1, ReadOnlyModeCapable o2) {
-            return -Integer.compare(o1.getReadOnlyModePriority(), o2.getReadOnlyModePriority());
+        public int compare(ReadOnlyModeCapable readonlyModeCapable1, ReadOnlyModeCapable readonlyModeCapable2) {
+            return Integer.compare(readonlyModeCapable1.getReadOnlyModePriority(), readonlyModeCapable2.getReadOnlyModePriority());
         }
     };
 
@@ -135,9 +136,11 @@ public class ReadOnlyModeController {
         // switch to pending
         readOnlyStatus = enable ? ReadOnlyModeStatus.PENDING_ON : ReadOnlyModeStatus.PENDING_OFF;
 
-        List<ReadOnlyModeCapable> services = new LinkedList<>(
-                SpringContextSingleton.getBeansOfType(ReadOnlyModeCapable.class).values());
+        List<ReadOnlyModeCapable> services = new LinkedList<>(SpringContextSingleton.getBeansOfType(ReadOnlyModeCapable.class).values());
         Collections.sort(services, SERVICES_COMPARATOR_BY_PRIORITY);
+        if (enable) {
+            Collections.reverse(services);
+        }
 
         logger.info("Switching read only status of {} services", services.size());
         for (ReadOnlyModeCapable service : services) {

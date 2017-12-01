@@ -59,11 +59,9 @@ public interface ReadOnlyModeCapable {
     void switchReadOnlyMode(boolean enable);
 
     /**
-     * Returns the priority of this service, i.e. the higher the priority the earlier the service will be notified of the read only mode
-     * changes.
+     * Get the priority of the service.
      *
-     * @return the priority of the service, which determines the order of notification about read-only mode changes (the higher the value
-     *         is, the earlier the service will be notified)
+     * @return the priority of the service; higher priority means earlier invocation of switchReadOnlyMode when switching read only mode on, and later invocation when switching it off
      */
     int getReadOnlyModePriority();
 }

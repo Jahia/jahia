@@ -48,8 +48,8 @@ import org.apache.jackrabbit.commons.AbstractRepository;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.cluster.ClusterException;
 import org.apache.jackrabbit.core.cluster.ClusterNode;
+import org.apache.jackrabbit.core.cluster.JahiaClusterNode;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
-import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.settings.SettingsBean;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.slf4j.Logger;
@@ -107,6 +107,8 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     private SettingsBean settings;
 
     private boolean performMigrationToDataStoreIfNeeded = true;
+
+    private long timeoutSwitchingToReadOnlyMode;
 
     public Resource getConfigFile() {
         return configFile;
@@ -305,27 +307,19 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
     @Override
     public void switchReadOnlyMode(boolean enable) {
-
         ClusterNode clusterNode = getClusterNode();
         if (clusterNode == null) {
             return;
         }
-
-        if (enable) {
-            clusterNode.stop();
-            logger.info("Cluster journal handling stopped in order to enable read only mode");
-        } else {
-            try {
-                clusterNode.start();
-            } catch (ClusterException e) {
-                throw new JahiaRuntimeException(e);
-            }
-            logger.info("Cluster journal handling started in order to disable read only mode");
-        }
+        ((JahiaClusterNode) clusterNode).setReadOnlyMode(enable, timeoutSwitchingToReadOnlyMode);
     }
 
     @Override
     public int getReadOnlyModePriority() {
         return 100;
+    }
+
+    public void setTimeoutSwitchingToReadOnlyMode(long timeoutSwitchingToReadOnlyMode) {
+        this.timeoutSwitchingToReadOnlyMode = timeoutSwitchingToReadOnlyMode;
     }
 }

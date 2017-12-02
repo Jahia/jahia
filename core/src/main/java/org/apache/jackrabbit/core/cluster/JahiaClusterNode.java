@@ -48,6 +48,7 @@ import org.apache.jackrabbit.core.journal.*;
 import org.apache.jackrabbit.core.state.ChangeLog;
 import org.apache.jackrabbit.core.state.ItemState;
 import org.apache.jackrabbit.core.state.NodeReferences;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
@@ -58,6 +59,8 @@ import javax.jcr.RepositoryException;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Extends default clustered node implementation. Add support for NodeLevelLockableJournal
@@ -89,6 +92,9 @@ public class JahiaClusterNode extends ClusterNode {
      */
     private volatile int status = NONE;
 
+    private volatile boolean readOnly;
+    private ReentrantLock readOnlyModeLock = new ReentrantLock();
+
     /**
      * Starts this cluster node.
      *
@@ -96,7 +102,7 @@ public class JahiaClusterNode extends ClusterNode {
      */
     @Override
     public synchronized void start() throws ClusterException {
-        if (status != STARTED) {
+        if (status == NONE) {
             super.start();
             status = STARTED;
         }
@@ -308,6 +314,38 @@ public class JahiaClusterNode extends ClusterNode {
         // Should be called by NodeLevelLockableJournal when syncing
         log.debug("Set revision: {}", revision);
         super.setRevision(revision);
+    }
+
+    public void setReadOnlyMode(boolean enable, long timeout) {
+        log.info("Switching read only mode {}...", (enable ? "ON" : "OFF"));
+        try {
+            if (!readOnlyModeLock.tryLock(timeout, TimeUnit.MILLISECONDS)) {
+                throw new JahiaRuntimeException("Timed out waiting for ongoing cluster sync to finish");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new JahiaRuntimeException();
+        }
+        try {
+            readOnly = enable;
+            log.info("Read only mode is {} now.", (readOnly ? "ON" : "OFF"));
+        } finally {
+            readOnlyModeLock.unlock();
+        }
+    }
+
+    @Override
+    protected void internalSync(boolean startup) throws ClusterException {
+        readOnlyModeLock.lock();
+        try {
+            if (readOnly) {
+                log.debug("Read only mode is ON, will not sync");
+                return;
+            }
+            super.internalSync(startup);
+        } finally {
+            readOnlyModeLock.unlock();
+        }
     }
 
     public static class ExternalChangeLog extends ChangeLog {

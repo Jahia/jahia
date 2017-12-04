@@ -44,24 +44,20 @@
 package org.jahia.services.content;
 
 import java.util.*;
-import javax.jcr.Credentials;
-import javax.jcr.LoginException;
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.NoSuchWorkspaceException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
-import javax.jcr.Value;
+import javax.jcr.*;
+import javax.jcr.query.QueryResult;
 import javax.security.auth.Subject;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaCallbackHandler;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
@@ -643,6 +639,36 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         // set readonly on living sessions
         for (JCRSessionWrapper sessionWrapper : JCRSessionWrapper.getActiveSessionsObjects().values()) {
             sessionWrapper.setReadOnly(enable);
+        }
+
+        // we will try to unlock all the nodes that are locked because of opened engines
+        if (enable) {
+            JCRSessionWrapper systemSession = null;
+            try {
+                systemSession = getSystemSession();
+                systemSession.setReadOnly(false);
+
+                QueryWrapper engineLockedQuery = systemSession.getWorkspace().getQueryManager().createQuery("select * from [jmix:lockable] as lockable where isdescendantnode(lockable, '/sites') and lockable.[j:lockTypes] LIKE '%:engine'",
+                        javax.jcr.query.Query.JCR_SQL2);
+                QueryResult engineLockedQueryResult = engineLockedQuery.execute();
+                final NodeIterator nodeIterator = engineLockedQueryResult.getNodes();
+
+                while (nodeIterator.hasNext()) {
+                    JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
+                    for (JCRValueWrapper lockTypeValue : node.getProperty("j:lockTypes").getValues()) {
+                        String[] lockTypeInfos = StringUtils.split(lockTypeValue.getString(), ":");
+                        if (StringUtils.equals(lockTypeInfos[1], "engine")) {
+                            node.unlock(lockTypeInfos[1], lockTypeInfos[0]);
+                        }
+                    }
+                }
+            } catch (RepositoryException e) {
+                throw new JahiaRuntimeException("Unable to clear the engine locks while switching Read only mode: " + (this.readOnlyModeEnabled ? "ON" : "OFF"));
+            } finally {
+                if (systemSession != null) {
+                    systemSession.logout();
+                }
+            }
         }
 
         logger.info("Read only mode on JCR sessions: " + (this.readOnlyModeEnabled ? "ON" : "OFF"));

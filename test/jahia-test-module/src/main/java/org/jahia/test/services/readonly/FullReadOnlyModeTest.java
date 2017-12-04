@@ -291,6 +291,34 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     }
 
     /**
+     * Test that engine locks are removed when switching read only mode: ON
+     */
+    @Test
+    public void testEngineLocksAreCleared() throws Exception {
+        JCRTemplate.getInstance().doExecuteWithSystemSession((JCRCallback<Boolean>) session -> {
+            session.getNode(TEST_FOLDER_PATH).lockAndStoreToken("engine", "root");
+            assertTrue(session.getNode(TEST_FOLDER_PATH).isLocked());
+            return null;
+        });
+
+        readOnlyModeController.switchReadOnlyMode(true);
+
+        JCRTemplate.getInstance().doExecuteWithSystemSession((JCRCallback<Boolean>) session -> {
+            assertFalse(session.getNode(TEST_FOLDER_PATH).isLocked());
+            assertFalse(session.getNode(TEST_FOLDER_PATH).hasProperty("j:lockTypes"));
+            return null;
+        });
+
+        readOnlyModeController.switchReadOnlyMode(false);
+
+        JCRTemplate.getInstance().doExecuteWithSystemSession((JCRCallback<Boolean>) session -> {
+            assertFalse(session.getNode(TEST_FOLDER_PATH).isLocked());
+            assertFalse(session.getNode(TEST_FOLDER_PATH).hasProperty("j:lockTypes"));
+            return null;
+        });
+    }
+
+    /**
      * Test checking and checkout operations are correctly blocked
      */
     @Test

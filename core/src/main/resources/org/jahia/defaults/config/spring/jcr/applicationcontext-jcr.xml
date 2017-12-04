@@ -388,7 +388,6 @@
         <property name="dataStoreGarbageCollectorBeanId" value="DataStoreGarbageCollectorJob"/>
         <property name="settings" ref="settingsBean"/>
         <property name="performMigrationToDataStoreIfNeeded" value="${jahia.jackrabbit.performMigrationToDataStoreIfNeeded:true}"/>
-        <property name="timeoutSwitchingToReadOnlyMode" value="${jahia.jackrabbit.cluster.timeoutSwitchingToReadOnly:60000}" />
     </bean>
 
     <bean id="rbInitializer"

@@ -641,36 +641,47 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
             sessionWrapper.setReadOnly(enable);
         }
 
-        // we will try to unlock all the nodes that are locked because of opened engines
+        // we will unlock all the nodes that are locked because of opened engines
         if (enable) {
-            JCRSessionWrapper systemSession = null;
             try {
-                systemSession = getSystemSession();
-                systemSession.setReadOnly(false);
-
-                QueryWrapper engineLockedQuery = systemSession.getWorkspace().getQueryManager().createQuery("select * from [jmix:lockable] as lockable where isdescendantnode(lockable, '/sites') and lockable.[j:lockTypes] LIKE '%:engine'",
-                        javax.jcr.query.Query.JCR_SQL2);
-                QueryResult engineLockedQueryResult = engineLockedQuery.execute();
-                final NodeIterator nodeIterator = engineLockedQueryResult.getNodes();
-
-                while (nodeIterator.hasNext()) {
-                    JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
-                    for (JCRValueWrapper lockTypeValue : node.getProperty("j:lockTypes").getValues()) {
-                        String[] lockTypeInfos = StringUtils.split(lockTypeValue.getString(), ":");
-                        if (StringUtils.equals(lockTypeInfos[1], "engine")) {
-                            node.unlock(lockTypeInfos[1], lockTypeInfos[0]);
-                        }
-                    }
-                }
+                clearEngineLocks();
             } catch (RepositoryException e) {
                 throw new JahiaRuntimeException("Unable to clear the engine locks while switching Read only mode: " + (this.readOnlyModeEnabled ? "ON" : "OFF"));
-            } finally {
-                if (systemSession != null) {
-                    systemSession.logout();
-                }
             }
         }
 
         logger.info("Read only mode on JCR sessions: " + (this.readOnlyModeEnabled ? "ON" : "OFF"));
+    }
+
+    private void clearEngineLocks() throws RepositoryException {
+        JCRSessionWrapper systemSession = null;
+        try {
+            systemSession = getSystemSession();
+            systemSession.setReadOnly(false);
+
+            QueryWrapper engineLockedQuery = systemSession.getWorkspace().getQueryManager().createQuery(
+                    "select * from [jmix:lockable] as lockable where isdescendantnode(lockable, '/sites') and lockable.[j:lockTypes] LIKE '%:engine'",
+                    javax.jcr.query.Query.JCR_SQL2);
+            QueryResult engineLockedQueryResult = engineLockedQuery.execute();
+            final NodeIterator nodeIterator = engineLockedQueryResult.getNodes();
+
+            while (nodeIterator.hasNext()) {
+                JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
+                if (node.hasProperty("j:lockTypes")) {
+                    for (JCRValueWrapper lockTypeValue : node.getProperty("j:lockTypes").getValues()) {
+                        // lockTypes format is like: root:engine
+                        String[] lockTypeInfos = StringUtils.split(lockTypeValue.getString(), ":");
+                        if (StringUtils.equals(lockTypeInfos[1], "engine")) {
+                            logger.info("Clearing engine lock for node: {} and user: {}. Before switching Read only mode", node.getPath(), lockTypeInfos[0]);
+                            node.unlock(lockTypeInfos[1], lockTypeInfos[0]);
+                        }
+                    }
+                }
+            }
+        } finally {
+            if (systemSession != null) {
+                systemSession.logout();
+            }
+        }
     }
 }

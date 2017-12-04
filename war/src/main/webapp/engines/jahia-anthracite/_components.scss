@@ -3822,84 +3822,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 // Publication manager
 
-.x-window.publication-manager-engine {
-
-	.x-window-header .x-panel-toolbar {
-		display: block;
-		margin-top: 8px;
-		pointer-events: all;
-
-		table tbody tr td .x-tool-close {
-			height: 22px;
-			width: 22px;
-			background-image: url(./images/icon-close-large.png);
-			background-position: initial !important;
-		}
-
-	}
-
-	.x-grid3-scroller {
-		overflow-y: unset;
-		overflow-x: hidden;
-	}
-
-	.x-window-body.x-window-body-noborder {
-		overflow-x: hidden !important;
-		overflow-y: auto !important;
-	}
-
-	.x-window-header > img {
-		display: none;
-	}
-
-	.x-grid3 .x-grid3-td-displayName::after, .x-grid3 .gwt-content-label::after {
-		display: none;
-	}
-
-	.x-grid3-header {
-		display: table-cell;
-		background: transparent !important;
-
-		.x-grid3-hh {
-			box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
-			margin: 2px 2px 8px;
-
-			> table {
-				background: rgba(255, 255, 255, 0.64);	// Change to Variable
-				padding: 4px 0;
-
-				.x-grid3-hd.x-grid3-cell {
-					border-left-color: _theme-color(secondary);	// Change to Variable
-					border-right-color: _theme-color(secondary, a);	// Change to Variable
-
-					span,
-					span div {
-						color: _theme-color(black, c);	// Change to Variable
-						font-weight: 600;
-						margin-left: 2px;
-					}
-
-				}
-
-			}
-
-		}
-
-		td.x-grid3-hd-over .x-grid3-hd-inner {
-			background: transparent !important;
-		}
-
-	}
-
-	.x-window-mc .x-window-bbar .x-panel-btns-center > .x-toolbar-ct > tbody {
-		float: right;
-	}
-
-}
-
-
-// Trash panel
-
+.x-window.publication-manager-engine,
 .x-window.trashboard-engine {
 
 	.x-window-header .x-panel-toolbar {
@@ -3939,22 +3862,21 @@ body[data-indigo-gwt-side-panel="open"] {
 		background: transparent !important;
 
 		.x-grid3-hh {
-			box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+			border-bottom: 1px solid #eee;
+			text-transform: uppercase;
+			color: _theme-color(black, c);
 			margin: 2px 2px 8px;
 
 			> table {
-				background: rgba(255, 255, 255, 0.64);	// Change to Variable
 				padding: 4px 0;
 
 				.x-grid3-hd.x-grid3-cell {
-					border-left-color: #EEEEEE;	// Change to Variable
-					border-right-color: #E0E0E0;	// Change to Variable
+					border-color: transparent !important;
 
 					span,
 					span div {
-						color: rgba(0, 0, 0, 0.52);	// Change to Variable
-						font-weight: 600;
-						margin-left: 2px;
+						font-weight: 800;
+						//margin-left: 2px;
 					}
 
 				}
@@ -3974,6 +3896,18 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 }
+
+
+// Trash panel
+
+.x-window.trashboard-engine {
+
+	table tbody tr td .x-tool-maximize {
+		display: none;
+	}
+
+}
+
 
 
 /////////////////////////////////////////////////

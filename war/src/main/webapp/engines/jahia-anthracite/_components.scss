@@ -3837,6 +3837,25 @@ body[data-indigo-gwt-side-panel="open"] {
 			background-position: initial !important;
 		}
 
+		table tbody tr td .x-tool-maximize {
+			display: none;
+		}
+
+		.x-grid3-hd-inner {
+			padding-left: 0;
+		}
+
+		td.x-grid3-hd-menu-open .x-grid3-hd-inner {
+			background: _theme-color(secondary, a) !important;
+		}
+
+		.x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
+			background: url(./images/icons/combo-arrow-grey.png) no-repeat center center !important;
+			width: 23px;
+			background-size: 13px !important;
+			opacity: 0.7;
+		}
+
 	}
 
 	.x-grid3-scroller {
@@ -3902,8 +3921,12 @@ body[data-indigo-gwt-side-panel="open"] {
 
 .x-window.trashboard-engine {
 
-	table tbody tr td .x-tool-maximize {
-		display: none;
+	.x-grid3-cell-inner.x-grid3-col-displayName {
+		max-width: 135px;
+	}
+
+	.x-grid3-cell-inner.x-grid3-col-j\:deletionDate {
+		max-width: 140px;
 	}
 
 }

@@ -26,13 +26,13 @@
 			border: none;
 			padding: 0;
 			border-radius: 0;
-			background: $COLOUR--TRANSPARENT;
+			background: transparent;
 			box-shadow: none;
 			margin-bottom: 10px;
 			pointer-events: none !important;
 			font-family: $FONT--FAMILY---RALEWAY;
 			font-size: 36px;
-			color: $COLOUR--WHITE_CLOUDS;
+			color: _theme-color(secondary);
 			font-weight: $FONT--WEIGHT---EXTRALIGHT;
 		}
 
@@ -55,18 +55,18 @@
 
 		.x-grid3-header {
 			display: table-cell;
-			background: #818588;
-			color: $COLOUR--WHITE_CLOUDS;
+			background: _theme-color(primary, d);
+			color: _theme-color(secondary);
 		}
 
 		.x-grid3-scroller {
-			background: #818588;
+			background: _theme-color(primary, d);
 			width: 100% !important;
 		}
 
 		.x-grid3-row.x-grid3-row-selected {
 			background: rgb(239, 239, 239) !important;
-			color: rgb(99, 99, 99) !important;
+			color: _theme-color(primary, a) !important;
 
 			.x-grid3-td-displayName {
 				padding-right: 0 !important;
@@ -80,7 +80,7 @@
 
 		.x-grid3-row {
 			background: rgb(239, 239, 239) !important;
-			color: rgb(99, 99, 99) !important;
+			color: _theme-color(primary, a) !important;
 			height: 38px !important;
 			box-sizing: border-box;
 
@@ -91,12 +91,12 @@
 				padding: 2px 6px;
 				padding-top: 4px;
 				pointer-events: all;
-				background: #a3a3a3;
+				background: _theme-color(secondary, d);
 
 				button {
 					font-family: $FONT--FAMILY---NUNITO;
 					font-size: 13px;
-					color: $COLOUR--WHITE_CLOUDS !important;
+					color: _theme-color(secondary) !important;
 					font-weight: $FONT--WEIGHT---EXTRALIGHT;
 					margin-top: -1px;
 				}
@@ -113,15 +113,15 @@
 
 			.x-grid3-cell .x-grid3-cell-inner label {
 				line-height: 32px;
-				color: #818588;
+				color: _theme-color(primary, c);
 			}
 
 			.x-btn-text-icon .x-btn-icon-small-left .x-btn-text {
-				background: #F44336;
+				background: _theme-color(status, error);
 				margin-top: 4px;
 				height: 24px;
 				padding: 0 4px;
-				color: rgb(239, 239, 239);
+				color: _theme-color(secondary);
 
 				img {
 					display: none !important;
@@ -141,8 +141,8 @@
 	.x-grid3-hd-row {
 
 		.x-grid3-hd {
-			border-left-color: #818588;
-			border-right-color: #b0b2b3;
+			border-left-color: _theme-color(primary, c);
+			border-right-color: _theme-color(primary, e);
 		}
 
 		.x-grid3-hd.x-grid3-hd-over div,
@@ -175,7 +175,7 @@
 
 .content-preview,
 .content-incontext-preview {
-    background: $COLOUR--RAIN_CLOUDS;
+    background: _theme-color(primary);
     padding: 8px;
     width: 100% !important;
     height: 100% !important;
@@ -369,7 +369,7 @@
 			}
 
 			.x-border-panel img.gwt-Image {
-				background: #f26d4f;
+				background: _theme-color(quaternary);
 				position: relative;
 				overflow: hidden;
 				width: 11px;
@@ -465,7 +465,7 @@
 		}
 
 		.x-tab-panel-body {
-			border-color: #5c6164;
+			border-color: _theme-color(primary);
 
 			.x-grid3-body {
 			    padding-right: 160px;
@@ -485,7 +485,7 @@
 			}
 
 			.x-grid-group-hd {
-		    border-bottom-color: #989898;
+		    border-bottom-color: _theme-color(primary, d);
 		    border-width: 1px;
 		    border-bottom-style: dashed;
 		    padding: 4px 0;
@@ -539,7 +539,7 @@
 					}
 
 					> .x-component {
-						color: #dddbdb;
+						color: _theme-color(secondary, a);
 						position: relative;
 						margin-bottom: 1px;
 						border: none!important;
@@ -598,7 +598,7 @@
 						width: calc(100% - 162px);
 						position: absolute;
 						margin-top: 54px;
-						color: #9ea0a2;
+						color: _theme-color(primary, e);
 						font-size: 12px;
 						height: 16px;
 						font-family: "Raleway", sans-serif;
@@ -723,7 +723,7 @@
 			}
 
 			> div.x-panel-header .x-panel-header-text {
-		    color: #a3a3a3;
+		    color: _theme-color(primary, e);
 		    display: inline-block;
 		    position: fixed;
 		    width: 100%;

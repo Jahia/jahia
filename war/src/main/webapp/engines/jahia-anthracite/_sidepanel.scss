@@ -62,12 +62,12 @@
 				// @extend %CSS_BLOCK--COMBO--SIDE-PANEL;
 
 
-				// background: #e8e8e8;
-				// color: $COLOUR--RAIN_CLOUDS;
+				// background: _theme-color(secondary);
+				// color: _theme-color(primary);
 				// transition: none;
 				// padding: 3px 40px 3px 5px !important;
 				// text-transform: none;
-				// color: #7b7f81!important;
+				// color: _theme-color(primary, c)!important;
 				// font-size: 12px!important;
 				// font-weight: 200!important;
 
@@ -89,10 +89,10 @@
 			// 	width: 17px!important;
 			//
 			// 	&:hover {
-			// 		background-color: rgba($COLOUR--GREY_CLOUDS, 0.3)!important;
+			// 		background-color: rgba(_theme-color(primary, c), 0.3)!important;
 			// 		opacity: 1;
 			// 	}
-			// 	// background-color: rgb(222, 222, 222) !important
+			// 	// background-color: _theme-color(secondary, b) !important
 			// }
 
 
@@ -127,7 +127,7 @@
 	#JahiaGxtRefreshSidePanelButton {
 		/* Refresh side panel button */
 		pointer-events: all;
-		background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center $COLOUR--WHITE_CLOUDS;
+		background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center _theme-color(secondary);
 		left: 309px;
 		position: fixed;
 		top: 27px;
@@ -243,7 +243,7 @@
 					height: 100%!important;
 					z-index: $ZINDEX--SIDE_PANEL--CLOSE_CAPTURE_MASK;
 					position: fixed;
-					background: $COLOUR--TRANSPARENT;
+					background: transparent;
 					display: block;
 				}
 				*/
@@ -420,13 +420,13 @@
 
 					&::before {
 						content: $text_done;
-						@include text(16px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+						@include text(16px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
 
 						// font-family: Raleway;
 						// font-size: 16px;
 						/* text-transform: uppercase; */
 						font-weight: 100;
-						background: $COLOUR--JAHIA_BLUE;
+						background: _theme-color(tertiary);
 						padding: 6px 9px;
 						// color: white;
 
@@ -704,7 +704,7 @@
 		top: -20px!important;
 		left: 360px!important;
 		width: 0px!important;
-		background: linear-gradient(to top right, #e0e0e0 0%, #f1f1f1 50%)!important;
+		background: linear-gradient(to top right, #e0e0e0 0%, _theme-color(secondary) 50%)!important;
 		padding-left: 0px;
 		box-shadow: inset 6px 2px 18px #babbbc;
 		height: calc(100% + 40px)!important;
@@ -804,7 +804,7 @@
 		    top: -20px;
 		    left: 363px;
 		    width: 297px;
-		    background: linear-gradient(to top right, #e0e0e0 0%, #f1f1f1 50%)!important;
+		    background: linear-gradient(to top right, #e0e0e0 0%, _theme-color(secondary) 50%)!important;
 		    padding-left: 10px;
 		    box-shadow: inset 6px 2px 18px #babbbc;
 		    height: calc(100% + 40px)!important;
@@ -991,12 +991,12 @@
 
 			font-style: italic;
 
-			@include text(10px, rgba($COLOUR--WHITE_CLOUDS, 0.6), $FONT--WEIGHT---NORMAL);
+			@include text(10px, rgba(_theme-color(secondary), 0.6), $FONT--WEIGHT---NORMAL);
 
 		}
 
 		.my-paging-text {
-			@include text(10px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---NORMAL);
+			@include text(10px, _theme-color(secondary), $FONT--WEIGHT---NORMAL);
 			padding:0 5px;
 
 		}
@@ -1037,7 +1037,7 @@
 		top: -20px!important;
 			left: 360px!important;
 			width: 0px!important;
-		background: linear-gradient(to top right, #e0e0e0 0%, #f1f1f1 50%)!important;
+		background: linear-gradient(to top right, #e0e0e0 0%, _theme-color(secondary) 50%)!important;
 		padding-left: 0px;
 		box-shadow: inset 6px 2px 18px #babbbc;
 		height: calc(100% + 40px)!important;
@@ -1487,7 +1487,7 @@ $side_panel__tab_buttons: (
 
 					@if ($_tab_ID == '#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
 						body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-							//color: rgba(238, 238, 238, 0.9)!important;
+							//color: _theme-color(secondary)!important;
 						}
 					}
                 }
@@ -1574,7 +1574,7 @@ body[data-edit-window-style="settings"] {
 				    display: block;
 				    width: 5px;
 				    height: 5px;
-				    background: $COLOUR--DUSTY_CLOUDS;
+				    background: _theme-color(secondary, d);
 				    text-indent: -50000px;
 				    border-radius: 100%;
 				    display: inline-block;
@@ -1586,10 +1586,10 @@ body[data-edit-window-style="settings"] {
 
 			// PAGE [SELECTED]
 			&.x-grid3-row-selected .x-tree3-node-text {
-				color: $COLOUR--JAHIA_BLUE!important;
+				color: _theme-color(tertiary)!important;
 
 				&::before {
-					background: $COLOUR--JAHIA_BLUE;
+					background: _theme-color(tertiary);
 				}
 
 			}
@@ -1612,7 +1612,7 @@ body[data-edit-window-style="settings"] {
 
 				// FOLDER LABEL
 				span.x-tree3-node-text {
-					color: #7a7e80 !important;
+					color: _theme-color(primary, d) !important;
 					margin-left: 0;
 
 					&::before {
@@ -1621,7 +1621,7 @@ body[data-edit-window-style="settings"] {
 					    display: block;
 					    width: 17px;
 					    height: 17px;
-					    background: $COLOUR--DUSTY_CLOUDS;
+					    background: _theme-color(secondary, d);
 					    text-indent: -50000px;
 					    display: inline-block;
 					    top: 5px;
@@ -1699,7 +1699,7 @@ body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTa
 					margin: 0 0 4px 19px;
 
 					text-transform: uppercase;
-					@include text(10px, $COLOUR--ASH_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
+					@include text(10px, _theme-color(secondary, e), $FONT--WEIGHT---SEMIBOLD);
 				}
 			}
 		}
@@ -1717,7 +1717,7 @@ body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTa
 					margin: 0 0 4px 19px;
 
 					text-transform: uppercase;
-					@include text(10px, $COLOUR--ASH_CLOUDS, $FONT--WEIGHT---SEMIBOLD);
+					@include text(10px, _theme-color(secondary, e), $FONT--WEIGHT---SEMIBOLD);
 				}
 			}
 

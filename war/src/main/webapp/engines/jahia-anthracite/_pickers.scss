@@ -18,7 +18,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	left: 0!important;
 	top: 10px!important;
 	background: _property($BODY--BG, $PICKER);
-	box-shadow: inset 0px 37px 0px #444548, inset 0px 38px 7px #222;
+	box-shadow: inset 0px 37px 0px _theme-color(primary, g), inset 0px 38px 7px #222;
 	z-index: 1100!important;
 
 	body.ext-gecko & {
@@ -33,7 +33,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		z-index: 99999;
 		font-family: "Raleway", sans-serif;
 		font-size: 36px;
-		color: #7a7e80;
+		color: _theme-color(primary, d);
 		font-weight: 100;
 
 		body[data-indigo-edit-engine="opened"] & {
@@ -115,7 +115,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			display: none;
 		}
 
-		box-shadow: inset 0px 41px 0px #444548, inset 0px 79px 0px #515356, inset 0px 80px 1px #222;
+		box-shadow: inset 0px 41px 0px _theme-color(primary, g), inset 0px 79px 0px #515356, inset 0px 80px 1px #222;
 
 		#toggle-picker-files {
 			display: none;
@@ -370,7 +370,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	// STYLE FOR UNHANDLED ICONS
 	.x-grid3-col-icon img, // RIGHT PANEL
 	.x-tree3-node-icon { // LEFT PANEL
-		background-color: rgba(239, 239, 239, 0.17);
+		background-color: rgba(_theme-color(secondary, a), 0.17);
 	    padding: 2px;
 	    border-radius: 15%;
 	}
@@ -536,7 +536,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		.toggle-multiple-selection {
 		    content: attr(data-indigo-multiselection-title);
 		    font-size: 18px;
-		    color: #F1F1F1;
+		    color: _theme-color(secondary, a);
 		    font-weight: 100;
 		    font-family: Nunito Sans;
 		    display: inline-block;
@@ -560,7 +560,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		}
 
 		.x-grid-empty {
-			@include text(12px, #9c9ea0, $FONT--WEIGHT---EXTRALIGHT);
+			@include text(12px, _theme-color(primary, d), $FONT--WEIGHT---EXTRALIGHT);
 			padding: 0;
 		}
 
@@ -622,7 +622,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 						width: auto!important;
 
 						.x-grid3-col-displayName {
-							color: $COLOUR--WHITE_CLOUDS;
+							color: _theme-color(secondary);
 							font-size: 10px;
 						}
 
@@ -783,7 +783,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		    left: 245px;
 		    display: block;
 		    background-size: 20px;
-		    background-color: #e8e8e8;
+		    background-color: _theme-color(secondary, b);
 		    border-radius: 100%;
 
 			/* DEV NOTE ::: QUICK N DIRTY */
@@ -799,7 +799,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			&:hover {
 				cursor: pointer;
-				background-color: #dfdfdf;
+				background-color: _theme-color(secondary, b);
 			}
 
 
@@ -828,7 +828,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			    display: block;
 			    font-size: 12px;
 			    font-family: Nunito Sans;
-			    color: #bbbcbd;
+			    color: _theme-color(secondary, d);
 			}
 
 			&:hover {
@@ -903,7 +903,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 										width: 25px;
 										height: 24px;
 
-									    background: #00a0e3;
+									    background: _theme-color(quinary);
 									    padding: 7px 10px;
 
 										body.ext-gecko & {
@@ -911,7 +911,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 										}
 
-										@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+										@include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
 
 										> tbody {
 											display: none;
@@ -930,7 +930,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 									    bottom: 25px;
 									    left: 24px;
 									    width: 25px;
-									    background: #dedede;
+									    background: _theme-color(secondary, b);
 									    padding: 6px 10px;
 
 										> tbody {
@@ -940,7 +940,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 										&::before {
 											content: $text_save_search_results;
 
-											@include text(12px, #444649, $FONT--WEIGHT---EXTRALIGHT);
+											@include text(12px, _theme-color(primary, g), $FONT--WEIGHT---EXTRALIGHT);
 										}
 									}
 								}
@@ -1042,8 +1042,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 									// LANGUAGE
 									&:nth-child(2) {
-										border-right: 1px solid #595e61;
-										border-right: 1px solid #595e61;
+										border-right: 1px solid _theme-color(primary);
+										border-right: 1px solid _theme-color(primary);
 
 										> label {
 											display: none!important;
@@ -1057,7 +1057,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 									// META DATA
 									&:nth-child(3) {
-										border-right: 1px solid #595e61;
+										border-right: 1px solid _theme-color(primary);
 
 										&::before {
 											content: attr(data-indigo-meta-label);
@@ -1095,7 +1095,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 											.x-component {
 											    position: fixed;
 												width: 130px!important;
-												background: #00a0e3;
+												background: _theme-color(quinary);
 
 
 												.x-component {
@@ -1105,7 +1105,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 													label {
 														text-transform: none;
-														@include text(12px, $COLOUR--WHITE_CLOUDS, 300);
+														@include text(12px, _theme-color(secondary), 300);
 
 													}
 												}
@@ -1299,7 +1299,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 							z-index: 999999!important;
 
 							&:hover {
-								background-color: lighten($COLOUR--RAIN_CLOUDS, 9%);
+								background-color: lighten(_theme-color(primary), 9%);
 							}
 						}
 
@@ -1337,7 +1337,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 							.x-view-item {
 								border: none!important;
 
-								@include text(12px, #7a7e80 !important, $FONT--WEIGHT---EXTRALIGHT);
+								@include text(12px, _theme-color(primary, d) !important, $FONT--WEIGHT---EXTRALIGHT);
 
 							}
 
@@ -1349,12 +1349,12 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 							// Row SELECTED
 							.x-view-item-sel {
 								background: rgb(155, 157, 159) !important;
-								color: #f1f1f1 !important;
+								color: _theme-color(secondary, a) !important;
 
 								// Row SELECTED OVER
 								&.x-view-item-over {
 									background: rgb(155, 157, 159) !important;
-									color: #f1f1f1 !important;
+									color: _theme-color(secondary, a) !important;
 								}
 							}
 						}
@@ -1748,7 +1748,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 								background-image: url($ICON--DESC--WHITE)!important;
 
 								&:hover {
-									background-color: #6a6e70 !important;
+									background-color: _theme-color(primary, b) !important;
 								}
 							}
 						}
@@ -1786,7 +1786,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				&:hover {
 					cursor: pointer;
 				}
-				background: no-repeat center center #767b7e;
+				background: no-repeat center center _theme-color(primary, c);
 				background-image: url($ICON--MORE_OPTIONS---WHITE);
 				background-size: 10px 2px;
 			}
@@ -1809,7 +1809,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				&:hover {
 					cursor: pointer;
 				}
-				background: no-repeat center center #767b7e;
+				background: no-repeat center center _theme-color(primary, c);
 				background-image:url(./images/icons/icon_preview_small_white.png);
 			}
 
@@ -1831,7 +1831,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				&:hover {
 					cursor: pointer;
 				}
-				// background: no-repeat center center #767b7e;
+				// background: no-repeat center center _theme-color(primary, c);
 				// background-image:url(./images/icons/icon_preview_small_white.png);
 				background: url("./images/icons/tabs-edit.png") no-repeat center center;
 			}
@@ -1844,15 +1844,15 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			&.x-grid3-row-selected {
 				// More info button SELECTED
 				.more-info-button {
-					background-color: #00a0e3;
+					background-color: _theme-color(tertiary);
 				}
 
 				.preview-button {
-					background-color: #00a0e3;
+					background-color: _theme-color(tertiary);
 				}
 
 				.edit-button {
-					background-color: #00a0e3;
+					background-color: _theme-color(tertiary);
 				}
 
 
@@ -1959,7 +1959,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			width: 100%;
 			height: 2px;
 			cursor: pointer;
-			background: #8a8e90;
+			background: _theme-color(primary, d);
 		}
 
 		&::-webkit-slider-thumb {
@@ -1967,27 +1967,27 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			height: 12px;
 			width: 12px;
 			border-radius: 100%;
-			background: #d9dbdd;
+			background: _theme-color(secondary, a);
 			cursor: pointer;
 			margin-top: -5px;
 		}
 
 		&:focus::-webkit-slider-runnable-track {
-			background: #8a8e90;
+			background: _theme-color(primary, d);
 		}
 
 		&::-moz-range-track {
 			width: 100%;
 			height: 2px;
 			cursor: pointer;
-			background: #8a8e90;
+			background: _theme-color(primary, d);
 		}
 
 		&::-moz-range-thumb {
 			height: 12px;
 			width: 12px;
 			border-radius: 100%;
-			background: #d9dbdd;
+			background: _theme-color(secondary);
 			cursor: pointer;
 		}
 	}
@@ -2226,7 +2226,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				body[indigo-PICKER-DISPLAY="listview"] & {
 					background-image: url($ICON--DISPLAY--LIST--GREY);
 					opacity: 1;
-					background-color: #d9dbdd;
+					background-color: _theme-color(secondary, b);
 				}
 			}
 
@@ -2238,7 +2238,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				body[indigo-PICKER-DISPLAY="thumbsview"] & {
 					background-image: url($ICON--DISPLAY--THUMBS--GREY);
 					opacity: 1;
-					background-color: #d9dbdd;
+					background-color: _theme-color(secondary, b);
 				}
 			}
 
@@ -2250,7 +2250,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				body[indigo-PICKER-DISPLAY="detailedview"] & {
 					background-image: url($ICON--DISPLAY--DETAILS--GREY);
 					opacity: 1;
-					background-color: #d9dbdd;
+					background-color: _theme-color(secondary, b);
 				}
 			}
 
@@ -2367,7 +2367,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	body[indigo-picker-display="thumbsview"] &,
 	body[indigo-picker-display="detailedview"] & {
 		// Header backgrounds: have to make the header in these views higher until we can get rid of the File menu
-		box-shadow: inset 0px 87px 0px #444545, inset 0px 88px 7px #222222;
+		box-shadow: inset 0px 87px 0px _theme-color(primary, g), inset 0px 88px 7px #222222;
 
 		// Shift the Slider down too
 		#thumb-size-slider {

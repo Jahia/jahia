@@ -1,33 +1,8 @@
-////
-//// VARIABLES
-////
-//// These variables cover the vast majority of styling of the DX Application.
-//// With the exception of a couple of border widths and font sizes, the styles
-//// are not changing layout but just colouring, icons and labels.
-////
-//// The variables are categorised as follows:
-////     BASE COLOURS
-////     DEFAULTS
-////     APPLICATION
-////     FORMS
-////     BUTTONS
-////     TREES
-////     RICH TEXT EDITOR
-////     TOOL BUTTONS
-////     THUMBS
-////     HAMBURGER MENU
-////     EDIT ENGINE
-////     SIDE PANEL
-
-
-
-
 /////////////////////////////////////////////////
 // BASE COLOURS /////////////////////////////////
 /////////////////////////////////////////////////
-    $APP--BASE--COLOUR:                                             $COLOUR--RAIN_CLOUDS;
-    $EDIT_ENGINE--BASE--COLOUR:                                     $COLOUR--RAIN_CLOUDS;
-    $MODAL--BG--COLOUR:                                             rgba($COLOUR--RAIN_CLOUDS, .98);
+    $EDIT_ENGINE--BASE--COLOUR:                                     _theme-color(primary);
+    $MODAL--BG--COLOUR:                                             rgba(_theme-color(primary), .98);
 
 
 
@@ -37,567 +12,16 @@
     $DEFAULT--FONT--FAMILY:                                         $FONT--FAMILY---NUNITO;
     $DEFAULT--FONT--SIZE:                                           14px;
     $DEFAULT--FONT--WEIGHT:                                         $FONT--WEIGHT---NORMAL;
-    $DEFAULT--FONT--COLOUR:                                         $COLOUR--WHITE_CLOUDS;
+    $DEFAULT--FONT--COLOUR:                                         _theme-color(secondary);
 
     $DEFAULT--TITLE_FONT--FAMILY:                                   $FONT--FAMILY---RALEWAY;
 
 	$DEFAULT--TRANSITION: 											$TRANSITION--QUICK---ALL;
 
 
-
 /////////////////////////////////////////////////
-// PUBLICATION COLOURS //////////////////////////
+// ICONS ///////////////////////////////////
 /////////////////////////////////////////////////
-    $PUBLICATION--COLOUR---CONFLICT: 							    yellow;
-    $PUBLICATION--COLOUR---DELETED: 							    black;
-    $PUBLICATION--COLOUR---LIVE_MODIFIED: 					        orange;
-    $PUBLICATION--COLOUR---LIVE_ONLY: 						        orange;
-    $PUBLICATION--COLOUR---LOCKED: 							        yellow;
-    $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_UNPUBLISHABLE: 	    orange;
-    $PUBLICATION--COLOUR---MANDATORY_LANGUAGE_VALID:			    green;
-    $PUBLICATION--COLOUR---MARKED_FOR_DELETION:				        red;
-    $PUBLICATION--COLOUR---MODIFIED: 							    orange;
-    $PUBLICATION--COLOUR---MULTIPLE_WORK_FLOW:						orange;
-    $PUBLICATION--COLOUR---NOT_PUBLISHED: 					        orange;
-    $PUBLICATION--COLOUR---SINGLE_WORK_FLOW: 						orange;
-    $PUBLICATION--COLOUR---PUBLISHED: 						        #0db70d;
-    $PUBLICATION--COLOUR---UNPUBLISHED: 						    grey;
-    $PUBLICATION--COLOUR---WAITING: 							    white;
-    $PUBLICATION--COLOUR---WORK_IN_PROGRESS:					    orange;
-
-
-/////////////////////////////////////////////////
-// VISIBILITY COLOURS //////////////////////////
-/////////////////////////////////////////////////
-    $VISIBILITY--COLOUR---UNKNOWN:					                black;
-    $VISIBILITY--COLOUR---VISIBLE:					                green;
-    $VISIBILITY--COLOUR---HIDDEN:					                red;
-
-
-/////////////////////////////////////////////////
-// APPLICATION //////////////////////////////////
-/////////////////////////////////////////////////
-
-    $APP--BG--COLOUR:                                               $COLOUR--RAIN_CLOUDS;
-    $APP--BG--COLOUR---LOADING:                                     $COLOUR--JAHIA_BLUE;
-    $APP--BG--COLOUR---MULTISELECTION:                              $COLOUR--DARK_CLOUDS;
-
-
-
-/////////////////////////////////////////////////
-// DIALOGUES ////////////////////////////////////
-/////////////////////////////////////////////////
-
-	// MASK
-	$DIALOGUE--MASK--BG--COLOUR: 									rgba($APP--BASE--COLOUR, .98);
-	$DIALOGUE--TITLE--FONT--SIZE: 									32px;
-	$DIALOGUE--TITLE--FONT--COLOUR: 								$COLOUR--WHITE_CLOUDS;
-	$DIALOGUE--TITLE--FONT--WEIGHT: 								$FONT--WEIGHT---EXTRALIGHT;
-	$DIALOGUE--TITLE--FONT--FAMILY: 								$FONT--FAMILY---RALEWAY;
-
-	$DIALOGUE--BODY--FONT--SIZE: 									14px;
-	$DIALOGUE--BODY--FONT--COLOUR: 									$COLOUR--DUSTY_CLOUDS;
-	$DIALOGUE--BODY--FONT--WEIGHT: 									$FONT--WEIGHT---EXTRALIGHT;
-
-/////////////////////////////////////////////////
-// FORMS ////////////////////////////////////////
-/////////////////////////////////////////////////
-
-    // MISC
-    $FORM--LEGEND--FONT--COLOUR:                                    lighten($EDIT_ENGINE--BASE--COLOUR, 55%);
-    $FORM--LABEL--FONT--COLOUR:                                     lighten($EDIT_ENGINE--BASE--COLOUR, 30%);
-    $FORM--FIELDSET--BG--COLOUR:                                    lighten($EDIT_ENGINE--BASE--COLOUR, 2%);
-    $FORM--FIELDSET--BG--COLOUR\:PICKER_SEARCH:                     $COLOUR--WHITE_CLOUDS;
-
-	// TEXT INPUTS
-	$FORM--TEXT_INPUT--BG--COLOUR:                                  rgba($COLOUR--GREY_CLOUDS, .1);
-	$FORM--TEXT_INPUT--BG--COLOUR---FOCUS:                          rgba($COLOUR--GREY_CLOUDS, .7);
-    $FORM--TEXT_INPUT--BG--COLOUR---HOVER:                          rgba($COLOUR--GREY_CLOUDS, .3);
-    $FORM--TEXT_INPUT--BG--COLOUR---DISABLED:                       rgba($COLOUR--GREY_CLOUDS, .05);
-	$FORM--TEXT_INPUT--FONT--COLOUR:                                $COLOUR--GREY_CLOUDS;
-	$FORM--TEXT_INPUT--FONT--COLOUR---HOVER:                        $COLOUR--DARK_CLOUDS;
-    $FORM--TEXT_INPUT--FONT--COLOUR---FOCUS:                        $COLOUR--WHITE_CLOUDS;
-    $FORM--TEXT_INPUT--FONT--COLOUR---DISABLED:                     rgba($COLOUR--GREY_CLOUDS, .7);
-    $FORM--TEXT_INPUT--BORDER:                                      1px solid $COLOUR--TRANSPARENT !important;
-    $FORM--TEXT_INPUT--PADDING:                                     3px 40px 3px 5px !important;
-    $FORM--TEXT_INPUT--FONT--WEIGHT:                                $FONT--WEIGHT---SEMILIGHT;
-    $FORM--TEXT_INPUT--FONT--SIZE:                                  12px;
-    $FORM--TEXT_INPUT--FONT--FAMILY:                                $DEFAULT--FONT--FAMILY;
-
-	// TEXT AREA
-	$FORM--TEXT_AREA--BG--COLOUR:                                  rgba($COLOUR--GREY_CLOUDS, .1);
-	$FORM--TEXT_AREA--BG--COLOUR---FOCUS:                          rgba($COLOUR--GREY_CLOUDS, .7);
-    $FORM--TEXT_AREA--BG--COLOUR---HOVER:                          rgba($COLOUR--GREY_CLOUDS, .3);
-    $FORM--TEXT_AREA--BG--COLOUR---DISABLED:                       rgba($COLOUR--GREY_CLOUDS, .05);
-	$FORM--TEXT_AREA--FONT--COLOUR:                                $COLOUR--GREY_CLOUDS;
-	$FORM--TEXT_AREA--FONT--COLOUR---HOVER:                        $COLOUR--DARK_CLOUDS;
-    $FORM--TEXT_AREA--FONT--COLOUR---FOCUS:                        $COLOUR--WHITE_CLOUDS;
-    $FORM--TEXT_AREA--FONT--COLOUR---DISABLED:                     rgba($COLOUR--GREY_CLOUDS, .7);
-    $FORM--TEXT_AREA--BORDER:                                      1px solid $COLOUR--TRANSPARENT;
-    $FORM--TEXT_AREA--PADDING:                                     3px 40px 3px 5px;
-    $FORM--TEXT_AREA--FONT--WEIGHT:                                $FONT--WEIGHT---SEMILIGHT;
-    $FORM--TEXT_AREA--FONT--SIZE:                                  12px;
-    $FORM--TEXT_AREA--FONT--FAMILY:                                $DEFAULT--FONT--FAMILY;
-
-    // CLEAR BUTTON
-    $FORM--CLEAR_BUTTON--ICON---UP:                                 $ICON--CLOSE_SMALL---WHITE;
-    $FORM--CLEAR_BUTTON--BG--COLOUR---UP:                           rgba($COLOUR--GREY_CLOUDS, .4);
-    $FORM--CLEAR_BUTTON--ICON---HOVER:                              $ICON--CLOSE_SMALL---WHITE;
-    $FORM--CLEAR_BUTTON--BG--COLOUR---HOVER:                        rgba($COLOUR--GREY_CLOUDS, .7);
-
-    // CHECKBOXES
-    $FORM--CHECKBOX--BG--COLOUR---UNCHECKED:                        $COLOUR--WHITE_CLOUDS;
-    $FORM--CHECKBOX--BORDER---UNCHECKED:                            1px solid $COLOUR--GREY_CLOUDS;
-    $FORM--CHECKBOX--SHADOW---UNCHECKED:                            inset 1px 1px 2px 1px rgba($COLOUR--DARK_CLOUDS, 0.1);
-    $FORM--CHECKBOX--BG--COLOUR---CHECKED:                          $COLOUR--VIVID_GRASS;
-    $FORM--CHECKBOX--ICON---CHECKED:                                $ICON--TICK---WHITE;
-
-    // TOGGLES
-    $FORM--TOGGLE--BG--COLOUR:                                      darken($FORM--FIELDSET--BG--COLOUR, 8%);
-    $FORM--TOGGLE--BG--SHADOW:                                      inset 1px 1px 2px 1px rgba(40, 43, 45, 0.1);
-    $FORM--TOGGLE--FONT--LOCALISED_STRING---OFF:                    $text_off;
-    $FORM--TOGGLE--SHUTTLE--COLOUR---OFF:                           $FORM--FIELDSET--BG--COLOUR;
-    $FORM--TOGGLE--FONT--COLOUR---OFF:                              lighten($FORM--FIELDSET--BG--COLOUR, 4%);
-    $FORM--TOGGLE--FONT--LOCALISED_STRING---ON:                     $text_on;
-    $FORM--TOGGLE--SHUTTLE--COLOUR---ON:                            $COLOUR--VIVID_GRASS;
-    $FORM--TOGGLE--FONT--COLOUR---ON:                               $COLOUR--WHITE_CLOUDS;
-
-    // COMBOS
-    $FORM--COMBO--ICON---UP:                                        $ICON--ARROW_DOWN---WHITE;
-    $FORM--COMBO--BG--COLOUR---UP:                                  rgba($COLOUR--GREY_CLOUDS, .4);
-    $FORM--COMBO--ICON---HOVER:                                     $ICON--ARROW_DOWN---WHITE;
-    $FORM--COMBO--BG--COLOUR---HOVER:                               rgba($COLOUR--GREY_CLOUDS, .7);
-
-    // OPEN PICKER COMBOS
-    $FORM--COMBO--ICON---UP\:OPEN_PICKER:                           $ICON--MORE_OPTIONS---WHITE;
-    $FORM--COMBO--BG--COLOUR---UP\:OPEN_PICKER:                     transparent;
-    $FORM--COMBO--ICON---HOVER\:OPEN_PICKER:                        $ICON--MORE_OPTIONS---WHITE;
-    $FORM--COMBO--BG--COLOUR---HOVER\:OPEN_PICKER:                  transparent;
-
-	// CONTEXT MENUS
-    $FORM--CONTEXT_MENU--BG--COLOUR---UP:                           $COLOUR--JAHIA_BLUE;
-    $FORM--CONTEXT_MENU--BG--COLOUR---HOVER:                        lighten($FORM--CONTEXT_MENU--BG--COLOUR---UP, 5%);
-    $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED:                     $COLOUR--JAHIA_BLUE;
-    $FORM--CONTEXT_MENU--FONT--COLOUR---UP:                         $COLOUR--WHITE_CLOUDS;
-    $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER:                      $COLOUR--WHITE_CLOUDS;
-    $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED:                   rgba($FORM--CONTEXT_MENU--FONT--COLOUR---UP, .7) !important;
-
-	// DUAL LIST
-    $FORM--LIST_BOX--BG--COLOUR---UP:                           $COLOUR--WHITE_CLOUDS;
-    $FORM--LIST_BOX--BG--COLOUR---HOVER:                        $COLOUR--DUSTY_CLOUDS;
-    $FORM--LIST_BOX--BG--COLOUR---DISABLED:                     red;
-	$FORM--LIST_BOX--BG--COLOUR---SELECTED: 					$COLOUR--ASH_CLOUDS;
-
-    $FORM--LIST_BOX--FONT--COLOUR---UP:                         $COLOUR--RAIN_CLOUDS;
-    $FORM--LIST_BOX--FONT--COLOUR---HOVER:                      $COLOUR--DARK_CLOUDS;
-    $FORM--LIST_BOX--FONT--COLOUR---DISABLED:                   yellow;
-	$FORM--LIST_BOX--FONT--COLOUR---SELECTED: 					$COLOUR--WHITE_CLOUDS;
-
-    // TABLES
-    $FORM--TABLE--TITLE--COLOUR: 			                        $COLOUR--GREY_CLOUDS;
-	$FORM--TABLE--LABEL--COLOUR: 			                        $COLOUR--GREY_CLOUDS;
-	$FORM--TABLE--VALUE--COLOUR: 			                        $COLOUR--GREY_CLOUDS;
-
-
-
-/////////////////////////////////////////////////
-// DATE PICKER //////////////////////////////////
-/////////////////////////////////////////////////
-
-    $DATE_PICKER--BG--COLOUR: 												$COLOUR--RAIN_CLOUDS;
-    $DATE_PICKER--COMBO--LABEL--COLOUR---UP: 								rgba($COLOUR--WHITE_CLOUDS, .8);
-    $DATE_PICKER--COMBO--LABEL--COLOUR---HOVER: 							$COLOUR--WHITE_CLOUDS;
-    $DATE_PICKER--COMBO--ICON:	 											$ICON--ARROW_DOWN---WHITE;
-    $DATE_PICKER--PREVIOUS_MONTH--ICON: 									"./images/icons/icon_arrow_left_single_white@X2.png";
-    $DATE_PICKER--NEXT_MONTH--ICON: 										"./images/icons/icon_arrow_right_single_white@X2.png";
-
-    $DATE_PICKER--DAYS_OF_WEEK--LABEL--COLOUR: 								$COLOUR--ASH_CLOUDS;
-
-    $DATE_PICKER--DATE--CURRENT_MONTH--LABEL--COLOUR---UP: 					$COLOUR--WHITE_CLOUDS;
-    $DATE_PICKER--DATE--CURRENT_MONTH--LABEL--COLOUR---HOVER: 				$DATE_PICKER--DATE--CURRENT_MONTH--LABEL--COLOUR---UP;
-    $DATE_PICKER--DATE--CURRENT_MONTH--LABEL--BG---UP:		 				rgba($COLOUR--WHITE_CLOUDS, .1);
-    $DATE_PICKER--DATE--CURRENT_MONTH--LABEL--BG---HOVER: 					rgba($COLOUR--WHITE_CLOUDS, .25);
-
-    $DATE_PICKER--DATE--SELECTED_MONTH--LABEL--COLOUR---UP: 				$COLOUR--DARK_CLOUDS;
-    $DATE_PICKER--DATE--SELECTED_MONTH--LABEL--COLOUR---HOVER: 				$DATE_PICKER--DATE--SELECTED_MONTH--LABEL--COLOUR---UP;
-    $DATE_PICKER--DATE--SELECTED_MONTH--LABEL--BG---UP:		 				$COLOUR--WHITE_CLOUDS;
-    $DATE_PICKER--DATE--SELECTED_MONTH--LABEL--BG---HOVER: 					$DATE_PICKER--DATE--SELECTED_MONTH--LABEL--BG---UP;
-
-    $DATE_PICKER--DATE--PREVIOUS_MONTH--LABEL--COLOUR---UP: 				$COLOUR--DARK_CLOUDS;
-    $DATE_PICKER--DATE--PREVIOUS_MONTH--LABEL--COLOUR---HOVER: 				pink;
-    $DATE_PICKER--DATE--PREVIOUS_MONTH--LABEL--BG---UP:		 				transparent;
-    $DATE_PICKER--DATE--PREVIOUS_MONTH--LABEL--BG---HOVER: 					black;
-
-    $DATE_PICKER--DATE--NEXT_MONTH--LABEL--COLOUR---UP: 					$DATE_PICKER--DATE--PREVIOUS_MONTH--LABEL--COLOUR---UP;
-    $DATE_PICKER--DATE--NEXT_MONTH--LABEL--COLOUR---HOVER: 					orange;
-    $DATE_PICKER--DATE--NEXT_MONTH--LABEL--BG---UP:		 					$DATE_PICKER--DATE--PREVIOUS_MONTH--LABEL--BG---UP;
-    $DATE_PICKER--DATE--NEXT_MONTH--LABEL--BG---HOVER: 						green;
-
-    $DATE_PICKER--TODAY_BUTTON--LABEL--COLOUR---UP:							$COLOUR--WHITE_CLOUDS;
-    $DATE_PICKER--TODAY_BUTTON--LABEL--COLOUR---HOVER:						$COLOUR--WHITE_CLOUDS;
-    $DATE_PICKER--TODAY_BUTTON--LABEL--BG---UP:								$COLOUR--DIRTY_ORANGE;
-    $DATE_PICKER--TODAY_BUTTON--LABEL--BG---HOVER:							lighten($COLOUR--DIRTY_ORANGE, 3%);
-
-
-
-    $DATE_PICKER--MONTH_PICKER--LABEL--COLOUR: 								$COLOUR--WHITE_CLOUDS;
-    $DATE_PICKER--MONTH_PICKER--LABEL--TEXT: 								$text_year_picker;
-    $DATE_PICKER--MONTH_PICKER--BG--COLOUR: 								$COLOUR--DARK_CLOUDS;
-
-    $DATE_PICKER--MONTH_PICKER--MONTH--LABEL--COLOUR---UP: 					$COLOUR--DUSTY_CLOUDS;
-    $DATE_PICKER--MONTH_PICKER--MONTH--LABEL--COLOUR---HOVER: 				$COLOUR--WHITE_CLOUDS;
-    $DATE_PICKER--MONTH_PICKER--MONTH--LABEL--COLOUR---SELECTED: 			$COLOUR--DARK_CLOUDS;
-    $DATE_PICKER--MONTH_PICKER--MONTH--LABEL--COLOUR---SELECTED_HOVER: 		$DATE_PICKER--MONTH_PICKER--MONTH--LABEL--COLOUR---SELECTED;
-    $DATE_PICKER--MONTH_PICKER--MONTH--BG--COLOUR---UP: 					transparent;
-    $DATE_PICKER--MONTH_PICKER--MONTH--BG--COLOUR---HOVER: 					rgba($COLOUR--WHITE_CLOUDS, .1);
-    $DATE_PICKER--MONTH_PICKER--MONTH--BG--COLOUR---SELECTED: 				$COLOUR--WHITE_CLOUDS;
-    $DATE_PICKER--MONTH_PICKER--MONTH--BG--COLOUR---SELECTED_HOVER: 		$DATE_PICKER--MONTH_PICKER--MONTH--BG--COLOUR---SELECTED;
-
-    $DATE_PICKER--MONTH_PICKER--YEAR--LABEL--COLOUR---UP: 					$COLOUR--DUSTY_CLOUDS;
-    $DATE_PICKER--MONTH_PICKER--YEAR--LABEL--COLOUR---HOVER: 				$COLOUR--WHITE_CLOUDS;
-    $DATE_PICKER--MONTH_PICKER--YEAR--LABEL--COLOUR---SELECTED: 			$COLOUR--DARK_CLOUDS;
-    $DATE_PICKER--MONTH_PICKER--YEAR--LABEL--COLOUR---SELECTED_HOVER: 		$DATE_PICKER--MONTH_PICKER--YEAR--LABEL--COLOUR---SELECTED;
-    $DATE_PICKER--MONTH_PICKER--YEAR--BG--COLOUR---UP: 						lighten($COLOUR--DARK_CLOUDS, 5%);
-    $DATE_PICKER--MONTH_PICKER--YEAR--BG--COLOUR---HOVER: 					rgba($COLOUR--WHITE_CLOUDS, .1);
-    $DATE_PICKER--MONTH_PICKER--YEAR--BG--COLOUR---SELECTED: 				$COLOUR--WHITE_CLOUDS;
-    $DATE_PICKER--MONTH_PICKER--YEAR--BG--COLOUR---SELECTED_HOVER: 			$DATE_PICKER--MONTH_PICKER--YEAR--BG--COLOUR---SELECTED;
-
-    $DATE_PICKER--MONTH_PICKER--PREVIOUS_YEAR--ICON: 						"./images/icons/icon_arrow_left_single_white@X2.png";
-    $DATE_PICKER--MONTH_PICKER--NEXT_YEAR--ICON:	 						"./images/icons/icon_arrow_right_single_white@X2.png";
-    $DATE_PICKER--MONTH_PICKER--PREVIOUS_YEAR--BG--COLOUR:	 				$DATE_PICKER--MONTH_PICKER--YEAR--BG--COLOUR---UP;
-    $DATE_PICKER--MONTH_PICKER--NEXT_YEAR--BG--COLOUR:	 					$DATE_PICKER--MONTH_PICKER--YEAR--BG--COLOUR---UP;
-
-    $DATE_PICKER--OK_BUTTON--ICON: 											$ICON--TICK---WHITE;
-    $DATE_PICKER--CANCEL_BUTTON--ICON:										$ICON--CLOSE_SMALL---WHITE;
-
-
-
-
-/////////////////////////////////////////////////
-// BUTTONS //////////////////////////////////////
-/////////////////////////////////////////////////
-
-    // DEFAULT BUTTON
-	$BUTTON--BG--COLOUR---UP: 				                        $COLOUR--JAHIA_BLUE;
-    $BUTTON--FONT--COLOUR---UP:                                     $COLOUR--WHITE;
-	$BUTTON--BG--COLOUR---HOVER: 			                        lighten($COLOUR--JAHIA_BLUE, 5%);
-    $BUTTON--FONT--COLOUR---HOVER:                                  $COLOUR--WHITE;
-
-    // PICKER SEARCH
-	$BUTTON--BG--COLOUR---UP\:PICKER_SEARCH: 				        yellow;
-    $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH:                      red;
-
-	$BUTTON--BG--COLOUR---HOVER\:PICKER_SEARCH: 			        black;
-    $BUTTON--FONT--COLOUR---HOVER\:PICKER_SEARCH:                   orange;
-
-    // PICKER SEARCH SUGGESTED
-	$BUTTON--BG--COLOUR---UP\:PICKER_SEARCH---SUGGESTED: 				        red;
-    $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH---SUGGESTED:                      yellow;
-
-	$BUTTON--BG--COLOUR---HOVER\:PICKER_SEARCH---SUGGESTED: 			        orange;
-    $BUTTON--FONT--COLOUR---HOVER\:PICKER_SEARCH---SUGGESTED:                   black;
-
-    // FORM BUTTON
-	$BUTTON--BG--COLOUR---UP\:FORM: 				                $COLOUR--TRANSPARENT;
-    $BUTTON--FONT--COLOUR---UP\:FORM:                               $COLOUR--BLACK_CLOUDS;
-
-	$BUTTON--BG--COLOUR---HOVER\:FORM: 			                    $COLOUR--TRANSPARENT;
-    $BUTTON--FONT--COLOUR---HOVER\:FORM:                            $COLOUR--GREY_CLOUDS;
-
-	// PANEL BUTTON
-	$BUTTON--BG--COLOUR---UP\:SIDE_PANEL: 				                $COLOUR--TEST-1;
-    $BUTTON--FONT--COLOUR---UP\:SIDE_PANEL:                              $COLOUR--TEST-2;
-
-	$BUTTON--BG--COLOUR---HOVER\:SIDE_PANEL: 			                $COLOUR--TEST-2;
-    $BUTTON--FONT--COLOUR---HOVER\:SIDE_PANEL:                           $COLOUR--TEST-1;
-
-	// FIELDSET BUTTON
-	$BUTTON--BG--COLOUR---UP\:FIELDSET: 				            $COLOUR--GREY_CLOUDS;
-    $BUTTON--FONT--COLOUR---UP\:FIELDSET:                           $COLOUR--DUSTY_CLOUDS;
-
-	$BUTTON--BG--COLOUR---HOVER\:FIELDSET: 			                $COLOUR--DIRTY_ORANGE;
-    $BUTTON--FONT--COLOUR---HOVER\:FIELDSET:                        $COLOUR--WHITE_CLOUDS;
-
-	// ACTION BAR BUTTON
-	$BUTTON--BG--COLOUR---UP\:ACTIONBAR: 				            lighten($COLOUR--DUSTY_CLOUDS, 5%);
-    $BUTTON--FONT--COLOUR---UP\:ACTIONBAR:                          darken($COLOUR--RAIN_CLOUDS, 5%);
-
-	$BUTTON--BG--COLOUR---HOVER\:ACTIONBAR: 			            lighten($COLOUR--DUSTY_CLOUDS, 10%);
-    $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR:                       darken($COLOUR--RAIN_CLOUDS, 10%);
-
-	// ACTION BAR (SUGGESTED) BUTTON
-	$BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED: 				 $COLOUR--JAHIA_BLUE;
-    $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED:               $COLOUR--WHITE_CLOUDS;
-
-	$BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED: 			 lighten($COLOUR--JAHIA_BLUE, 3%);
-    $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED:            lighten($COLOUR--WHITE_CLOUDS, 3%);
-
-
-	// SEARCH PANEL (SUGGESTED) BUTTON
-	$BUTTON--BG--COLOUR---UP\:SEARCH_PANEL---SUGGESTED: 			 	$COLOUR--RAIN_CLOUDS;
-	$BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL---SUGGESTED:               $COLOUR--WHITE_CLOUDS;
-
-	$BUTTON--BG--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED: 			 	lighten($COLOUR--RAIN_CLOUDS, 3%);
-	$BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL---SUGGESTED:            lighten($COLOUR--WHITE_CLOUDS, 3%);
-
-	// SEARCH PANEL (NORMAL) BUTTON
-	$BUTTON--BG--COLOUR---UP\:SEARCH_PANEL: 				 			transparent;
-	$BUTTON--FONT--COLOUR---UP\:SEARCH_PANEL:               			$COLOUR--RAIN_CLOUDS;
-
-	$BUTTON--BG--COLOUR---HOVER\:SEARCH_PANEL: 			 				transparent;
-	$BUTTON--FONT--COLOUR---HOVER\:SEARCH_PANEL:            			lighten($COLOUR--RAIN_CLOUDS, 3%);
-
-/////////////////////////////////////////////////
-// TREES ////////////////////////////////////////
-/////////////////////////////////////////////////
-
-	$TREE--MENU--BG--COLOUR---UP: 										$COLOUR--CREAM_CLOUDS;
-	$TREE--MENU--BG--COLOUR---UP\:SEARCH:								transparent;
-	$TREE--MENU--BG--COLOUR---SELECTED:									$COLOUR--DIRTY_ORANGE;
-	$TREE--MENU--BG--COLOUR---SELECTED\:SEARCH:							$COLOUR--DIRTY_ORANGE;
-	$TREE--MENU--ICON--MORE_OPTIONS---UP:								$ICON--MORE_OPTIONS---GREY;
-	$TREE--MENU--ICON--MORE_OPTIONS---UP\:SEARCH:						$ICON--MORE_OPTIONS---WHITE;
-	$TREE--MENU--ICON--MORE_OPTIONS---SELECTED:							$ICON--MORE_OPTIONS---WHITE;
-
-	$TREE--MENU--ICON--PREVIEW---UP:									$ICON--PREVIEW--SMALL_GREY;
-	$TREE--MENU--ICON--PREVIEW---UP\:SEARCH:							$ICON--PREVIEW--SMALL_WHITE;
-	$TREE--MENU--ICON--PREVIEW---SELECTED:								$ICON--PREVIEW--SMALL_WHITE;
-
-
-/////////////////////////////////////////////////
-// TREES ////////////////////////////////////////
-/////////////////////////////////////////////////
-
-    // ROW UP
-    $TREE--ROW--FONT--COLOUR---UP: 					                $COLOUR--GREY_CLOUDS;
-    $TREE--ROW--ICON---UP: 						                    $ICON--PAGES---GREY;
-	$TREE--ROW--BG--COLOUR---UP: 			                        $COLOUR--TRANSPARENT;
-
-    // ROW HOVER
-    $TREE--ROW--BG--COLOUR---HOVER: 			                    rgba( $COLOUR--GREY_CLOUDS, .1 );
-    $TREE--ROW--FONT--COLOUR---HOVER: 				                $COLOUR--BLACK_CLOUDS;
-    $TREE--ROW--ICON---HOVER: 				                        $ICON--PAGES---GREY;
-
-    // ROW SELECTED
-    $TREE--ROW--BG--COLOUR---SELECTED: 		                       	rgba( $COLOUR--GREY_CLOUDS, .7 );
-    $TREE--ROW--FONT--COLOUR---SELECTED: 			               	$COLOUR--WHITE_CLOUDS;
-    $TREE--ROW--ICON---SELECTED: 			                       	$ICON--PAGES---WHITE;
-
-    // ROW HOVER SELECTED
-    $TREE--ROW--BG--COLOUR---SELECTED_HOVER: 	                   	$COLOUR--GREY_CLOUDS;
-    $TREE--ROW--FONT--COLOUR---SELECTED_HOVER: 		               	$COLOUR--WHITE_CLOUDS;
-    $TREE--ROW--ICON---SELECTED_HOVER: 		                       	$ICON--PAGES---WHITE;
-
-    // MORE OPTIONS BUTTON
-	$TREE--MORE_OPTIONS--ICON---UP: 				               	$ICON--MORE_OPTIONS---GREY;
-	$TREE--MORE_OPTIONS--ICON---HOVER: 			                   	$ICON--MORE_OPTIONS---GREY;
-	$TREE--MORE_OPTIONS--ICON---SELECTED: 		                   	$ICON--MORE_OPTIONS---WHITE;
-    $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER: 	               	$ICON--MORE_OPTIONS---WHITE;
-
-/////////////////////////////////////////////////
-// TREES FOR SEARCH RESULT //////////////////////
-/////////////////////////////////////////////////
-
-    // ROW UP
-    $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT: 					                darken($COLOUR--WHITE_CLOUDS, 3%);
-    $TREE--ROW--ICON---UP\:SEARCH_RESULT: 						                    $ICON--PAGES---GREY;
-	$TREE--ROW--BG--COLOUR---UP\:SEARCH_RESULT: 			                        transparent;
-
-    // ROW HOVER
-    $TREE--ROW--BG--COLOUR---HOVER\:SEARCH_RESULT: 			                    rgba( $COLOUR--GREY_CLOUDS, .1 );
-    $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT: 				                lighten($COLOUR--WHITE_CLOUDS, 10%);
-    $TREE--ROW--ICON---HOVER\:SEARCH_RESULT: 				                        $ICON--PAGES---GREY;
-
-    // ROW SELECTED
-    $TREE--ROW--BG--COLOUR---SELECTED\:SEARCH_RESULT: 		                       	rgba( $COLOUR--GREY_CLOUDS, .7 );
-    $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT: 			               	$COLOUR--WHITE_CLOUDS;
-    $TREE--ROW--ICON---SELECTED\:SEARCH_RESULT: 			                       	$ICON--PAGES---WHITE;
-
-    // ROW HOVER SELECTED
-    $TREE--ROW--BG--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: 	                   	$COLOUR--GREY_CLOUDS;
-    $TREE--ROW--FONT--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: 		               	$COLOUR--WHITE_CLOUDS;
-    $TREE--ROW--ICON---SELECTED_HOVER\:SEARCH_RESULT: 		                       	$ICON--PAGES---WHITE;
-
-    // MORE OPTIONS BUTTON
-	$TREE--MORE_OPTIONS--ICON---UP\:SEARCH_RESULT: 				               	$ICON--MORE_OPTIONS---GREY;
-	$TREE--MORE_OPTIONS--ICON---HOVER\:SEARCH_RESULT: 			                   	$ICON--MORE_OPTIONS---GREY;
-	$TREE--MORE_OPTIONS--ICON---SELECTED\:SEARCH_RESULT: 		                   	$ICON--MORE_OPTIONS---WHITE;
-    $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER\:SEARCH_RESULT: 	               	$ICON--MORE_OPTIONS---WHITE;
-
-
-
-/////////////////////////////////////////////////
-// RICH TEXT EDITOR /////////////////////////////
-/////////////////////////////////////////////////
-
-    // ICONS
-    $RICH_TEXT_EDITOR--ICON_SET:                                    $ICON--RICH_TEXT--TOOLBUTTONS;
-    $RICH_TEXT_EDITOR--ICON_SET---LEGACY:                           $ICON--RICH_TEXT--TOOLBUTTONS---LEGACY;
-
-    // TOOL GROUP
-    $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--UP:                   lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
-    $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--HOVER:                lighten($EDIT_ENGINE--BASE--COLOUR, 8%);
-
-    // TOOL
-    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--UP:                        $COLOUR--TRANSPARENT;
-    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER:                     lighten($EDIT_ENGINE--BASE--COLOUR, 12%);
-    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED:                  lighten($EDIT_ENGINE--BASE--COLOUR, 16%);
-
-    // COMBO
-    $RICH_TEXT_EDITOR--COMBO--BG--COLOUR:                           lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
-
-    // LABEL
-    $RICH_TEXT_EDITOR--LABEL--FONT--COLOUR:                         lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
-
-    // PATH
-    $RICH_TEXT_EDITOR--PATH--BG--COLOUR:                            lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
-    $RICH_TEXT_EDITOR--PATH--FONT--COLOUR:                          darken($EDIT_ENGINE--BASE--COLOUR, 50%);
-
-    // DIALOGUE
-    $RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR:               $COLOUR--WHITE_CLOUDS;
-    $RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR:                       $FORM--FIELDSET--BG--COLOUR;
-    $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR:                         $COLOUR--WHITE_CLOUDS;
-    $RICH_TEXT_EDITOR--DIALOGUE--BUTTON_ICON--BG--COLOUR:                     $COLOUR--DUSTY_CLOUDS;
-    $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR:            $COLOUR--DARK_CLOUDS;
-    $RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR:            $COLOUR--DUSTY_CLOUDS;
-    $RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR:            $COLOUR--DIRTY_ORANGE;
-
-    $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR:                 $COLOUR--DUSTY_CLOUDS;
-    $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED:            $COLOUR--WHITE_CLOUDS;
-    $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED:            $COLOUR--DIRTY_ORANGE;
-    $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---HOVER:            $COLOUR--GREY_CLOUDS;
-    $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR:            rgba( $COLOUR--WHITE_CLOUDS, .9 );
-
-    $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR---SELECTED:           $COLOUR--WHITE_CLOUDS;
-    $RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON--BG--COLOUR---SELECTED:           $COLOUR--DIRTY_ORANGE;
-    $RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON---SELECTED:           $ICON--NEXT--WHITE;
-
-
-
-/////////////////////////////////////////////////
-// TOOL BUTTONS /////////////////////////////////
-/////////////////////////////////////////////////
-
-    $TOOL--BUTTON--FONT--COLOUR---NORMAL:                           $COLOUR--WHITE_CLOUDS;
-    $TOOL--BUTTON--FONT--COLOUR---OPEN:                             $COLOUR--GREY_CLOUDS;
-    $TOOL--BUTTON--FONT--COLOUR---OPEN_SELECTED:                    $COLOUR--JAHIA_BLUE;
-    $TOOL--BUTTON--FONT--COLOUR---OFF:          	                $COLOUR--BLACK_CLOUDS;
-
-
-
-/////////////////////////////////////////////////
-// THUMBS ///////////////////////////////////////
-/////////////////////////////////////////////////
-
-    $THUMB--FONT--COLOUR:                                           $COLOUR--DARK_CLOUDS;
-    $THUMB--FONT--BG--COLOUR:                                       rgba($COLOUR--WHITE_CLOUDS, 0.9);
-    $THUMB--BG--COLOUR---UP:                                        $COLOUR--TRANSPARENT;
-    $THUMB--BG--COLOUR---HOVER:                                     rgba($COLOUR--GREY_CLOUDS, 0.2);
-    $THUMB--BG--COLOUR---SELECTED:                                  $COLOUR--JAHIA_BLUE;
-
-
-
-/////////////////////////////////////////////////
-// HAMBURGER MENU ///////////////////////////////
-/////////////////////////////////////////////////
-
-    $HAMBURGER--BG--COLOUR:                                         rgba($COLOUR--JAHIA_BLUE, .99);
-	$HAMBURGER--TITLE--COLOUR: 				                        rgba($COLOUR--WHITE_CLOUDS, .7);
-	$HAMBURGER--BUTTON--COLOUR---UP:			                    rgba($COLOUR--WHITE_CLOUDS, .8);
-	$HAMBURGER--BUTTON--COLOUR---HOVER:		                        $COLOUR--WHITE_CLOUDS;
-
-    // APPLICATION ICONS
-	$HAMBURGER--ICON--CONTENT_MANAGER:		                        $ICON--CONTENT_MANAGER---WHITE;
-	$HAMBURGER--ICON--FILE_MANAGER:			                        $ICON--FILE_MANAGER---WHITE;
-	$HAMBURGER--ICON--PORTLET_MANAGER:		                        $ICON--PORTLET_MANAGER---WHITE;
-	$HAMBURGER--ICON--REPO_EXPLORER:		                        $ICON--REPO_EXPLORER---WHITE;
-	$HAMBURGER--ICON--CATEGORY_MANAGER:		                        $ICON--CATEGORY_MANAGER---WHITE;
-	$HAMBURGER--ICON--SITE_MANAGER:			                        $ICON--SITE_MANAGER---WHITE;
-
-
-
-/////////////////////////////////////////////////
-// EDIT ENGINE //////////////////////////////////
-/////////////////////////////////////////////////
-
-    $EDIT_ENGINE--TITLE--FONT--COLOUR:                              $COLOUR--DARK_CLOUDS;
-    $EDIT_ENGINE--TAB--FONT--COLOUR:                                $COLOUR--ASH_CLOUDS;
-    $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED:                     $COLOUR--WHITE_CLOUDS;
-    $EDIT_ENGINE--TAB--FONT--COLOUR---HOVER:                        rgba($EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED, .7);
-    $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED_over:                $EDIT_ENGINE--TAB--FONT--COLOUR---SELECTED;
-    $EDIT_ENGINE--BG--COLOUR:                                       $EDIT_ENGINE--BASE--COLOUR;
-	$EDIT_ENGINE--TEXT_INPUT--BG--COLOUR:                           lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
-    $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---HOVER:                   lighten($EDIT_ENGINE--BASE--COLOUR, 8%);
-    $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR---FOCUS:                   lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
-    $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR:                         lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
-    $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---HOVER:                 lighten($EDIT_ENGINE--BASE--COLOUR, 85%);
-    $EDIT_ENGINE--TEXT_INPUT--FONT--COLOUR---FOCUS:                 darken($EDIT_ENGINE--BASE--COLOUR, 50%);
-
-	$EDIT_ENGINE--TEXT_AREA--BG--COLOUR:                           lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
-    $EDIT_ENGINE--TEXT_AREA--BG--COLOUR---HOVER:                   lighten($EDIT_ENGINE--BASE--COLOUR, 8%);
-    $EDIT_ENGINE--TEXT_AREA--BG--COLOUR---FOCUS:                   lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
-    $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR:                         lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
-    $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR---HOVER:                 lighten($EDIT_ENGINE--BASE--COLOUR, 85%);
-    $EDIT_ENGINE--TEXT_AREA--FONT--COLOUR---FOCUS:                 darken($EDIT_ENGINE--BASE--COLOUR, 50%);
-
-/////////////////////////////////////////////////
-// SEARCH PANEL  ////////////////////////////////
-/////////////////////////////////////////////////
-
-	$SEARCH_PANEL--TEXT_INPUT--BG--COLOUR:                           lighten($COLOUR--DARK_CLOUDS, 4%);
-	$SEARCH_PANEL--TEXT_INPUT--BG--COLOUR---HOVER:                   lighten($COLOUR--DARK_CLOUDS, 8%);
-	$SEARCH_PANEL--TEXT_INPUT--BG--COLOUR---FOCUS:                   lighten($COLOUR--DARK_CLOUDS, 75%);
-	$SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR:                         lighten($COLOUR--DARK_CLOUDS, 75%);
-	$SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR---HOVER:                 lighten($COLOUR--DARK_CLOUDS, 85%);
-	$SEARCH_PANEL--TEXT_INPUT--FONT--COLOUR---FOCUS:                 $COLOUR--DARK_CLOUDS;
-
-
-/////////////////////////////////////////////////
-// DUAL LIST //////////////////////////////////
-/////////////////////////////////////////////////
-
-    $DUAL_LIST--TEXT_INPUT--BG--COLOUR:                           lighten($COLOUR--DUSTY_CLOUDS, 8%);
-    $DUAL_LIST--TEXT_INPUT--BG--COLOUR---HOVER:                   $COLOUR--DUSTY_CLOUDS;
-    $DUAL_LIST--TEXT_INPUT--BG--COLOUR---FOCUS:                   $COLOUR--GREY_CLOUDS;
-
-	$DUAL_LIST--TEXT_INPUT--FONT--COLOUR:                         $COLOUR--LEAD_CLOUDS;
-    $DUAL_LIST--TEXT_INPUT--FONT--COLOUR---HOVER:                 darken($COLOUR--LEAD_CLOUDS, 8%);
-    $DUAL_LIST--TEXT_INPUT--FONT--COLOUR---FOCUS:				  $COLOUR--WHITE_CLOUDS;
-
-
-/////////////////////////////////////////////////
-// PICKER FILT //////////////////////////////////
-/////////////////////////////////////////////////
-
-    $PICKER_FILTER--TEXT_INPUT--BG--COLOUR:                           lighten($COLOUR--DUSTY_CLOUDS, 8%);
-    $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---HOVER:                   $COLOUR--DUSTY_CLOUDS;
-    $PICKER_FILTER--TEXT_INPUT--BG--COLOUR---FOCUS:                   $COLOUR--GREY_CLOUDS;
-
-	$PICKER_FILTER--TEXT_INPUT--FONT--COLOUR:                         $COLOUR--LEAD_CLOUDS;
-    $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---HOVER:                 darken($COLOUR--LEAD_CLOUDS, 8%);
-    $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR---FOCUS:				  $COLOUR--WHITE_CLOUDS;
-
-/////////////////////////////////////////////////
-// PICKER SORT //////////////////////////////////
-/////////////////////////////////////////////////
-
-    $PICKER_SORT--TEXT_INPUT--BG--COLOUR:                           lighten($COLOUR--DUSTY_CLOUDS, 8%);
-    $PICKER_SORT--TEXT_INPUT--BG--COLOUR---HOVER:                   $COLOUR--DUSTY_CLOUDS;
-    $PICKER_SORT--TEXT_INPUT--BG--COLOUR---FOCUS:                   $COLOUR--GREY_CLOUDS;
-
-	$PICKER_SORT--TEXT_INPUT--FONT--COLOUR:                         $COLOUR--LEAD_CLOUDS;
-    $PICKER_SORT--TEXT_INPUT--FONT--COLOUR---HOVER:                 darken($COLOUR--LEAD_CLOUDS, 8%);
-    $PICKER_SORT--TEXT_INPUT--FONT--COLOUR---FOCUS:				  $COLOUR--WHITE_CLOUDS;
-
-
-/////////////////////////////////////////////////
-// SIDE PANEL ///////////////////////////////////
-/////////////////////////////////////////////////
-
-    // PANEL BACKGROUND
-	$SIDE_PANEL--BG--COLOUR--CLOSED:                               	$COLOUR--TRANSPARENT;
-	$SIDE_PANEL--BG--COLOUR---OPENED:                              	$COLOUR--WHITE_CLOUDS;
-	$SIDE_PANEL--BG--SHADOW:                                       	7px 0px 45px rgba($COLOUR--DARK_CLOUDS, 0.9);
 
     // TAB ICONS ::: CLOSED
     $SIDE_PANEL--ICON--PAGES---CLOSED:                             	$ICON--PAGES---WHITE;
@@ -638,3 +62,129 @@
     $SIDE_PANEL--ICON--TAXONOMY---OFF:                             	$ICON--TAXONOMY---BLACK;
     $SIDE_PANEL--ICON--DEVICES---OFF:                              	$ICON--DEVICES---BLACK;
     $SIDE_PANEL--ICON--SETTINGS---OFF:                             	$ICON--SETTINGS---BLACK;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// THE FOLLOWING STILL NEED TO BE UPDATED WITH THE _property() COLOUR ASSIGNMENT
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+// FORMS ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+    $FORM--CONTEXT_MENU--BG--COLOUR---UP:                           _theme-color(tertiary);
+    $FORM--CONTEXT_MENU--BG--COLOUR---HOVER:                        lighten($FORM--CONTEXT_MENU--BG--COLOUR---UP, 5%);
+    $FORM--CONTEXT_MENU--BG--COLOUR---DISABLED:                     _theme-color(tertiary);
+    $FORM--CONTEXT_MENU--FONT--COLOUR---UP:                         _theme-color(secondary);
+    $FORM--CONTEXT_MENU--FONT--COLOUR---HOVER:                      _theme-color(secondary);
+    $FORM--CONTEXT_MENU--FONT--COLOUR---DISABLED:                   rgba($FORM--CONTEXT_MENU--FONT--COLOUR---UP, .7) !important;
+
+/////////////////////////////////////////////////
+// TREES ////////////////////////////////////////
+/////////////////////////////////////////////////
+
+    // ROW UP
+    $TREE--ROW--FONT--COLOUR---UP: 					                _theme-color(primary, c);
+    $TREE--ROW--ICON---UP: 						                    $ICON--PAGES---GREY;
+	$TREE--ROW--BG--COLOUR---UP: 			                        transparent;
+
+    // ROW HOVER
+    $TREE--ROW--BG--COLOUR---HOVER: 			                    rgba( _theme-color(primary, c), .1 );
+    $TREE--ROW--FONT--COLOUR---HOVER: 				                _theme-color(primary, i);
+    $TREE--ROW--ICON---HOVER: 				                        $ICON--PAGES---GREY;
+
+    // ROW SELECTED
+    $TREE--ROW--BG--COLOUR---SELECTED: 		                       	rgba( _theme-color(primary, c), .7 );
+    $TREE--ROW--FONT--COLOUR---SELECTED: 			               	_theme-color(secondary);
+    $TREE--ROW--ICON---SELECTED: 			                       	$ICON--PAGES---WHITE;
+
+    // ROW HOVER SELECTED
+    $TREE--ROW--BG--COLOUR---SELECTED_HOVER: 	                   	_theme-color(primary, c);
+    $TREE--ROW--FONT--COLOUR---SELECTED_HOVER: 		               	_theme-color(secondary);
+    $TREE--ROW--ICON---SELECTED_HOVER: 		                       	$ICON--PAGES---WHITE;
+
+    // MORE OPTIONS BUTTON
+	$TREE--MORE_OPTIONS--ICON---UP: 				               	$ICON--MORE_OPTIONS---GREY;
+	$TREE--MORE_OPTIONS--ICON---HOVER: 			                   	$ICON--MORE_OPTIONS---GREY;
+	$TREE--MORE_OPTIONS--ICON---SELECTED: 		                   	$ICON--MORE_OPTIONS---WHITE;
+    $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER: 	               	$ICON--MORE_OPTIONS---WHITE;
+
+/////////////////////////////////////////////////
+// TREES FOR SEARCH RESULT //////////////////////
+/////////////////////////////////////////////////
+
+    // ROW UP
+    $TREE--ROW--FONT--COLOUR---UP\:SEARCH_RESULT: 					                darken(_theme-color(secondary), 3%);
+    $TREE--ROW--ICON---UP\:SEARCH_RESULT: 						                    $ICON--PAGES---GREY;
+	$TREE--ROW--BG--COLOUR---UP\:SEARCH_RESULT: 			                        transparent;
+
+    // ROW HOVER
+    $TREE--ROW--BG--COLOUR---HOVER\:SEARCH_RESULT: 			                    rgba( _theme-color(primary, c), .1 );
+    $TREE--ROW--FONT--COLOUR---HOVER\:SEARCH_RESULT: 				                lighten(_theme-color(secondary), 10%);
+    $TREE--ROW--ICON---HOVER\:SEARCH_RESULT: 				                        $ICON--PAGES---GREY;
+
+    // ROW SELECTED
+    $TREE--ROW--BG--COLOUR---SELECTED\:SEARCH_RESULT: 		                       	rgba( _theme-color(primary, c), .7 );
+    $TREE--ROW--FONT--COLOUR---SELECTED\:SEARCH_RESULT: 			               	_theme-color(secondary);
+    $TREE--ROW--ICON---SELECTED\:SEARCH_RESULT: 			                       	$ICON--PAGES---WHITE;
+
+    // ROW HOVER SELECTED
+    $TREE--ROW--BG--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: 	                   	_theme-color(primary, c);
+    $TREE--ROW--FONT--COLOUR---SELECTED_HOVER\:SEARCH_RESULT: 		               	_theme-color(secondary);
+    $TREE--ROW--ICON---SELECTED_HOVER\:SEARCH_RESULT: 		                       	$ICON--PAGES---WHITE;
+
+    // MORE OPTIONS BUTTON
+	$TREE--MORE_OPTIONS--ICON---UP\:SEARCH_RESULT: 				               	$ICON--MORE_OPTIONS---GREY;
+	$TREE--MORE_OPTIONS--ICON---HOVER\:SEARCH_RESULT: 			                   	$ICON--MORE_OPTIONS---GREY;
+	$TREE--MORE_OPTIONS--ICON---SELECTED\:SEARCH_RESULT: 		                   	$ICON--MORE_OPTIONS---WHITE;
+    $TREE--MORE_OPTIONS--ICON---SELECTED_HOVER\:SEARCH_RESULT: 	               	$ICON--MORE_OPTIONS---WHITE;
+
+/////////////////////////////////////////////////
+// RICH TEXT EDITOR /////////////////////////////
+/////////////////////////////////////////////////
+
+    // ICONS
+    $RICH_TEXT_EDITOR--ICON_SET:                                    $ICON--RICH_TEXT--TOOLBUTTONS;
+    $RICH_TEXT_EDITOR--ICON_SET---LEGACY:                           $ICON--RICH_TEXT--TOOLBUTTONS---LEGACY;
+
+    // TOOL GROUP
+    $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--UP:                   lighten($EDIT_ENGINE--BASE--COLOUR, 6%);
+    $RICH_TEXT_EDITOR--TOOLGROUP--BG--COLOUR--HOVER:                lighten($EDIT_ENGINE--BASE--COLOUR, 8%);
+
+    // TOOL
+    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--UP:                        transparent;
+    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--HOVER:                     lighten($EDIT_ENGINE--BASE--COLOUR, 12%);
+    $RICH_TEXT_EDITOR--TOOL--BG--COLOUR--SELECTED:                  lighten($EDIT_ENGINE--BASE--COLOUR, 16%);
+
+    // COMBO
+    $RICH_TEXT_EDITOR--COMBO--BG--COLOUR:                           lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+
+    // LABEL
+    $RICH_TEXT_EDITOR--LABEL--FONT--COLOUR:                         lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+
+    // PATH
+    $RICH_TEXT_EDITOR--PATH--BG--COLOUR:                            lighten($EDIT_ENGINE--BASE--COLOUR, 75%);
+    $RICH_TEXT_EDITOR--PATH--FONT--COLOUR:                          darken($EDIT_ENGINE--BASE--COLOUR, 50%);
+
+    // DIALOGUE
+    $RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR:               _theme-color(secondary);
+    $RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR:                       _property($FIELDSET--BG, LIGHT);
+    $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR:                         _theme-color(secondary);
+    $RICH_TEXT_EDITOR--DIALOGUE--BUTTON_ICON--BG--COLOUR:                     _theme-color(secondary, d);
+    $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR:            _theme-color(primary, g);
+    $RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR:            _theme-color(secondary, d);
+    $RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR:            _theme-color(quaternary);
+
+    $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR:                 _theme-color(secondary, d);
+    $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED:            _theme-color(secondary);
+    $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED:            _theme-color(quaternary);
+    $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---HOVER:            _theme-color(primary, c);
+    $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR:            rgba( _theme-color(secondary), .9 );
+
+    $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR---SELECTED:           _theme-color(secondary);
+    $RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON--BG--COLOUR---SELECTED:           _theme-color(quaternary);
+    $RICH_TEXT_EDITOR--DIALOGUE--LIST--ICON---SELECTED:           $ICON--NEXT--WHITE;

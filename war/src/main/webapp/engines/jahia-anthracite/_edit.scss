@@ -13,7 +13,7 @@
 
 
 		body[data-edit-window-style="settings"] {
-			background: $COLOUR--WHITE_CLOUDS;
+			background: _theme-color(secondary);
 		}
 
 
@@ -29,7 +29,7 @@
 		.x-viewport-adminmode #JahiaGxtSidePanelTabs,
 		.x-viewport-dashboardmode #JahiaGxtSidePanelTabs {
 			border:none!important;
-			background: #5c6164;
+			background: _theme-color(primary);
 
 			box-shadow: 2px 0 24px rgba(40, 43, 45, 0.52) !important;
 			padding-right: 36px;
@@ -96,7 +96,7 @@
 					left: 60px;
 					width: 180px !important;
 					padding: 8px 10px 0px 6px;
-					background: #00a0e3 !important;
+					background: _theme-color(quinary) !important;
 					height: 25px!important;
 
 					.x-tree3-el {
@@ -104,7 +104,7 @@
 					}
 
 					.x-tree3-node-text {
-						color: #eeeeee;
+						color: _theme-color(secondary);
 					}
 
 					img.x-tree3-node-icon {
@@ -116,7 +116,7 @@
 					}
 
 					&:hover {
-						background: #05a5e7!important;
+						background: _theme-color(tertiary, a)!important;
 					}
 
 				}
@@ -187,7 +187,7 @@
 						}
 
 						.x-tree3-node-text {
-							color: rgba(238, 238, 238, 0.6);
+							color: rgba(_theme-color(secondary, a), 0.6);
 						    margin-top: 5px;
 						    text-transform: uppercase;
 						    font-size: 8px;
@@ -218,7 +218,7 @@
 						left: 60px;
 						width: 180px !important;
 						padding: 8px 10px 0px 6px;
-						background: #00a0e3 !important;
+						background: _theme-color(quinary) !important;
 						height: 25px!important;
 
 						.x-tree3-el {
@@ -226,7 +226,7 @@
 						}
 
 						.x-tree3-node-text {
-							color: #eeeeee;
+							color: _theme-color(secondary);
 						}
 
 						.x-tree3-node-icon {
@@ -235,7 +235,7 @@
 						}
 
 						&:hover {
-							background: #05a5e7!important;
+							background: _theme-color(tertiary, a)!important;
 						}
 
 					}

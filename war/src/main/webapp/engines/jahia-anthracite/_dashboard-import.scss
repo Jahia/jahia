@@ -1,5 +1,5 @@
 body {
-    background: #5c6164!important;
+    background: _theme-color(primary)!important;
 }
 
 #userSites_table_wrapper {
@@ -11,7 +11,7 @@ body {
 #userSites_table {
 
     &:before {
-        color: #d9e8ef;
+        color: _theme-color(secondary, a);
         font-size: 16px;
         font-family: Nunito Sans;
         font-weight: 100;
@@ -33,7 +33,7 @@ body {
             display: block;
             background: transparent;
             margin-bottom: 1px;
-            color: #c1cdd3;
+            color: _theme-color(secondary, c);
             font-size: 16px;
             font-family: Nunito Sans;
             font-weight: 100;
@@ -56,25 +56,25 @@ body {
                     background: url(/engines/jahia-anthracite/images/icons/tabs-create-white@X2.png) no-repeat center center;
 
                     background-size: 19px;
-                    background-color: #f26d4f;
+                    background-color: _theme-color(quaternary);
                     opacity: 1;
 
                 }
 
                 &:nth-child(5) {
                     background: url(/engines/jahia-anthracite/images/icons/icon_preview_small_white.png) no-repeat center center;
-                    background-color: rgb(242,109,79);
+                    background-color: _theme-color(quaternary);
 
                     background-size: 19px;
-                    background-color: #f26d4f;
+                    background-color: _theme-color(quaternary);
                     opacity: 1;
 
                 }
             }
         }
         td {
-            background: #c1cdd3;
-            color: #5c6164;
+            background: _theme-color(secondary, b);
+            color: _theme-color(primary);
 
         }
     }
@@ -115,7 +115,7 @@ body {
                     top: 0;
 
                     background: url(/engines/jahia-anthracite/images/icons/icon_preview_small_white.png) no-repeat center center;
-                    background-color: rgb(242,109,79);
+                    background-color: _theme-color(quaternary);
 
                     background-size: 19px;
                     background-color: transparent;

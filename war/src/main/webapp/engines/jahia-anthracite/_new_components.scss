@@ -605,7 +605,7 @@
 	border: _property($INPUT--BORDER, $type);
 	transition: all 0.15s ease-in 0s;
 
-	@include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR, $type), $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+	@include text(12px, _property($INPUT--COLOR, $type), $FONT--WEIGHT---SEMILIGHT);
 
 	&:hover {
 		background-color: _property($INPUT--BG---HOVER, $type);

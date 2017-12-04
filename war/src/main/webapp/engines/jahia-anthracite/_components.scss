@@ -662,7 +662,7 @@
 				@extend %CSS_BLOCK--THUMB--LABEL !optional;
 
 				background: transparent;
-				color: #F1F1F1;
+				color: _theme-color(secondary, a);
 				text-align: left;
 				padding: 0;
 
@@ -1788,14 +1788,14 @@ form,
 .wcag-panel {
 
 	.x-grid3 {
-		background: #6b7074; /* TO THEME */
+		background: _theme-color(primary, b); /* TO THEME */
 
 		.x-grid3-header {
 			display: table-cell;
-			background: #848a8e; /* TO THEME */
-			border-left-color: #848a8e; /* TO THEME */
-			border-right-color: #848a8e; /* TO THEME */
-			color: $COLOUR--WHITE_CLOUDS; /* TO THEME */
+			background: _theme-color(primary, d); /* TO THEME */
+			border-left-color: _theme-color(primary, d); /* TO THEME */
+			border-right-color: _theme-color(primary, d); /* TO THEME */
+			color: _theme-color(secondary); /* TO THEME */
 		}
 
 	}
@@ -1803,7 +1803,7 @@ form,
 	.x-panel-header {
 		display: block !important;
 		width: 100%;
-		color: #f1f1f1; /* TO THEME */
+		color: _theme-color(secondary, a); /* TO THEME */
 
 		.x-panel-toolbar {
 			margin-right: 24px;
@@ -1836,22 +1836,22 @@ form,
 		}
 
 		.x-grid3-row {
-			background: #6b7074 !important; /* TO THEME */
+			background: _theme-color(primary, c) !important; /* TO THEME */
 			margin-top: 5px;
 
 			td.x-grid3-cell {
-				border-right-color: #6b7074 !important; /* TO THEME */
+				border-right-color: _theme-color(primary, g) !important; /* TO THEME */
 				line-height: 19px;
-				color: #dddcdc; /* TO THEME */
+				color: _theme-color(secondary); /* TO THEME */
 
 				.x-grid3-col-message {
 					padding-top: 5px;
 				}
 
 				.x-grid3-col-example a {
-					color: $COLOUR--WHITE_CLOUDS; /* TO THEME */
+					color: _theme-color(secondary); /* TO THEME */
 					text-decoration: none;
-					background: $COLOUR--RAIN_CLOUDS; /* TO THEME */
+					background: _theme-color(primary); /* TO THEME */
 					padding: 6px;
 					margin-left: 6px;
 				}
@@ -1859,13 +1859,13 @@ form,
 			}
 
 			.x-grid3-td-numberer {
-				background: #6b7074; /* TO THEME */
+				background: _theme-color(primary, c); /* TO THEME */
 			}
 
 		}
 
 		.x-grid3-cell-inner.x-grid3-col-numberer {
-			color: #fff;/* TO THEME */
+			color: _theme-color(white);/* TO THEME */
 			text-align: center;
 			padding: 3px 0 !important;
 			border-radius: 42px;
@@ -1887,7 +1887,7 @@ form,
 
 		td.x-grid3-hd-over .x-grid3-hd-inner,
 		td.x-grid3-hd-menu-open .x-grid3-hd-inner {
-			background: #8e9194 !important; /* TO THEME */
+			background: _theme-color(primary, d) !important; /* TO THEME */
 		}
 
 		.x-grid3-scroller {
@@ -2012,8 +2012,8 @@ form,
 }
 
 .cke_panel {
-	background: $COLOUR--WHITE !important; /* TO THEME */
-	border: 6px solid #6b7074 !important; /* TO THEME */
+	background: _theme-color(white) !important; /* TO THEME */
+	border: 6px solid _theme-color(primary, c) !important; /* TO THEME */
 	border-radius: 0 !important;
 	margin-top: 8px !important;
 }
@@ -2021,7 +2021,7 @@ form,
 .cke_combopanel,
 .cke_menu_panel {
 	border-width: 1px !important;
-	border-color: #dddcdc !important; /* TO THEME */
+	border-color: _theme-color(secondary) !important; /* TO THEME */
 	margin-top: 4px !important;
 }
 
@@ -2104,7 +2104,7 @@ form,
 
 .cke_dialog_ui_checkbox {
 	label {
-		@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+		@include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
 	}
 }
 
@@ -2192,7 +2192,7 @@ form,
 		left: 0;
 		background: transparent;
 		height: auto;
-		// background: $FORM--FIELDSET--BG--COLOUR;
+		// background: _property($FIELDSET--BG, LIGHT);
 		margin: 0;
 		// padding: 15px 20px 0;
 		box-sizing: border-box;
@@ -2259,9 +2259,9 @@ form,
 			-webkit-appearance: none;
 
 			background: url($ICON--ARROW_DOWN---WHITE) no-repeat right 5px center;
-			background-color: $EDIT_ENGINE--TEXT_INPUT--BG--COLOUR; /* TO THEME */
+			background-color: _theme-color(primary, c); /* TO THEME */
 			padding: 3px 5px !important;
-			@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+			@include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 
 
 			&:focus {
@@ -2376,15 +2376,15 @@ form,
 			// Normal Button
 			span {
 				// padding: 5px 10px!important;
-				background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
-		    	@include text(12px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
+				background: _theme-color(tertiary) !important; /* TO THEME */
+		    	@include text(12px !important, _theme-color(secondary) !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
 				text-shadow: none;
 				padding: 4px;
 				text-align: center;
 
 				&:hover {
-					background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
-			    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
+					background: lighten(_theme-color(tertiary), 3%) !important; /* TO THEME */
+			    	color: lighten(_theme-color(secondary), 3%) !important; /* TO THEME */
 				}
 			}
 
@@ -2443,13 +2443,13 @@ form,
 			// Normal Button
 			span {
 				padding: 5px 10px!important;
-				background: $BUTTON--BG--COLOUR---UP\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
-		    	@include text(16px !important, $BUTTON--FONT--COLOUR---UP\:ACTIONBAR---SUGGESTED !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
+				background: _theme-color(tertiary) !important; /* TO THEME */
+		    	@include text(16px !important, _theme-color(secondary) !important, $FONT--WEIGHT---EXTRALIGHT !important); /* TO THEME */
 				text-shadow: none;
 
 				&:hover {
-					background: $BUTTON--BG--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
-			    	color: $BUTTON--FONT--COLOUR---HOVER\:ACTIONBAR---SUGGESTED !important; /* TO THEME */
+					background: lighten(_theme-color(tertiary), 3%) !important; /* TO THEME */
+			    	color: lighten(_theme-color(secondary), 3%) !important; /* TO THEME */
 				}
 			}
 
@@ -2549,7 +2549,7 @@ form,
 			}
 
 			span {
-				@include  text(14px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---NORMAL); /* TO THEME */
+				@include  text(14px, _theme-color(primary, g), $FONT--WEIGHT---NORMAL); /* TO THEME */
 			}
 
 			.cke_tpl_title {
@@ -2584,7 +2584,7 @@ form,
 
 /* Modal Mask */
 .x-modal {
-    // background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);  // check on other modals.
+    // background: radial-gradient(ellipse at bottom right, _theme-color(primary, f) 0%, _theme-color(primary) 70%);  // check on other modals.
 	background: _property($MODAL-SOLID--BG---LEGACY, $APP);
     opacity: 1;
     z-index: $ZINDEX--MODAL---MASK;
@@ -2665,7 +2665,7 @@ form,
 		margin-top: -32px; // Trying to offset the increase in height of dialogue due to extra large title.
 
 		.x-window-header-text {
-			@include text($DIALOGUE--TITLE--FONT--SIZE, $DIALOGUE--TITLE--FONT--COLOUR, $DIALOGUE--TITLE--FONT--WEIGHT, $DIALOGUE--TITLE--FONT--FAMILY); /* TO THEME */
+			@include text(32px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY); /* TO THEME */
 		}
 
 		// ICONS
@@ -2677,7 +2677,7 @@ form,
 
 		// CONTENT
 		.ext-mb-text {
-			@include text($DIALOGUE--BODY--FONT--SIZE, $DIALOGUE--BODY--FONT--COLOUR, $DIALOGUE--BODY--FONT--WEIGHT); /* TO THEME */
+			@include text(14px, _theme-color(secondary, d), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 
 		}
 
@@ -2884,14 +2884,14 @@ form,
 	background: none!important;
 }
 .x-slider-horz .x-slider-thumb {
-	background: $COLOUR--ASH_CLOUDS; /* TO THEME */
+	background: _theme-color(secondary, e); /* TO THEME */
     border-radius: 100%;
     width: 12px;
     height: 12px;
     top: 5px;
 
 	&:hover {
-		background: $COLOUR--GREY_CLOUDS; /* TO THEME */
+		background: _theme-color(primary, c); /* TO THEME */
 
 	}
 }
@@ -2901,7 +2901,7 @@ form,
     text-indent: -50000px;
     display: block;
     height: 3px;
-    background: $COLOUR--DUSTY_CLOUDS; /* TO THEME */
+    background: _theme-color(secondary, d); /* TO THEME */
     position: absolute;
     top: 10px;
     width: 100%;
@@ -3058,8 +3058,8 @@ form,
 
 		.x-panel-fbar .x-toolbar-cell:nth-child(1)  {
 			@include button("ACTIONBAR---SUGGESTED");
-			// background: #00a0e3 !important;  /* TO THEME */
-			// color: #f1f1f1 !important;  /* TO THEME */
+			// background: _theme-color(quinary) !important;  /* TO THEME */
+			// color: _theme-color(secondary, a) !important;  /* TO THEME */
 		}
 
 		.x-panel-fbar .x-toolbar-cell:nth-child(2) .x-btn.x-btn-text-icon button {
@@ -3151,7 +3151,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		.x-window-bwrap {
 		    padding: 0;
-		    color: rgba(0, 0, 0, 0.84);
+		    color: _theme-color(black, d);
 		    padding-top: 0;
 		    background: transparent;
 		    height: 302px;
@@ -3159,11 +3159,11 @@ body[data-indigo-gwt-side-panel="open"] {
 
 			.x-form-textarea {
 					margin-top: 8px;
-					color: rgb(0, 0, 0); /* TO THEME */
+					color: _theme-color(black); /* TO THEME */
 					width: 100% !important;
 
 					&:focus {
-						background: $COLOUR--WHITE !important; /* TO THEME */
+						background: _theme-color(white) !important; /* TO THEME */
 					}
 
 			}
@@ -3182,7 +3182,7 @@ body[data-indigo-gwt-side-panel="open"] {
 					> div {
 
 						padding: 0 19px;
-						background: $FORM--FIELDSET--BG--COLOUR!important; /* TO THEME */
+						background: _property($FIELDSET--BG, LIGHT)!important; /* TO THEME */
 
 						&:first-child {
 							padding-top: 19px;
@@ -3192,7 +3192,7 @@ body[data-indigo-gwt-side-panel="open"] {
 							padding-bottom: 19px;
 						}
 
-						@include text(13px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+						@include text(13px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 
 						&.x-panel-fbar {
 							background: transparent!important;
@@ -3207,12 +3207,12 @@ body[data-indigo-gwt-side-panel="open"] {
 							margin-top: 10px;
 
 							.x-grid3-row {
-								background: rgba($COLOUR--GREY_CLOUDS, .6) !important; /* TO THEME */
+								background: rgba(_theme-color(primary, c), .6) !important; /* TO THEME */
 								padding: 3px;
 								box-sizing: border-box;
 
 								&.x-grid3-row-over {
-									background: rgba($COLOUR--GREY_CLOUDS, 1) !important; /* TO THEME */
+									background: rgba(_theme-color(primary, c), 1) !important; /* TO THEME */
 								}
 
 								.x-grid3-col-pagePath {
@@ -3222,7 +3222,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 									a {
 										text-decoration: none;
-										@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+										@include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 
 										&:hover {
 											text-decoration: underline;
@@ -3232,29 +3232,29 @@ body[data-indigo-gwt-side-panel="open"] {
 								}
 
 								.x-grid3-td-path {
-									@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+									@include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
 								}
 							}
 						}
 
 						textarea {
-							background: rgba($COLOUR--GREY_CLOUDS, .6) !important; /* TO THEME */
+							background: rgba(_theme-color(primary, c), .6) !important; /* TO THEME */
 							box-sizing: border-box;
 							margin: 0;
 							padding: 10px!important;
-							color: $COLOUR--WHITE_CLOUDS; /* TO THEME */
+							color: _theme-color(secondary); /* TO THEME */
 							height: 75px!important;
 
 							transition: all 0.3s ease-in 0s!important;
 
 							&:hover {
-								background: rgba($COLOUR--GREY_CLOUDS, 1) !important; /* TO THEME */
+								background: rgba(_theme-color(primary, c), 1) !important; /* TO THEME */
 
 							}
 
 							&:focus {
-								background: $COLOUR--WHITE_CLOUDS!important; /* TO THEME */
-								color: $COLOUR--DARK_CLOUDS; /* TO THEME */
+								background: _theme-color(secondary)!important; /* TO THEME */
+								color: _theme-color(primary, g); /* TO THEME */
 							}
 						}
 
@@ -3263,7 +3263,7 @@ body[data-indigo-gwt-side-panel="open"] {
 						    font-weight: 500;
 						    position: relative;
 						    width: 100%;
-						    color: #fd8787!important; /* TO THEME */
+						    color: _theme-color(status, error) !important; /* TO THEME */
 						    padding-bottom: 19px;
 						}
 					}
@@ -3283,12 +3283,12 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		.x-toolbar-left-row .x-toolbar-cell:first-child .x-btn-text {
-			background: $COLOUR--JAHIA_BLUE !important; /* TO THEME */
-			color: $COLOUR--WHITE_CLOUDS !important; /* TO THEME */
+			background: _theme-color(tertiary) !important; /* TO THEME */
+			color: _theme-color(secondary) !important; /* TO THEME */
 		}
 
 		.x-toolbar-left-row .x-toolbar-cell:nth-child(2) .x-btn-text {
-			background: $COLOUR--CREAM_CLOUDS !important; /* TO THEME */
+			background: _theme-color(secondary, b) !important; /* TO THEME */
 		}
 
 }
@@ -3311,15 +3311,15 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	.x-window-bwrap {
 		padding: 12px 8px 8px 8px;
-		color: rgba(0, 0, 0, 0.84); /* TO THEME */
-		background: #eee;
+		color: _theme-color(black, d); /* TO THEME */
+		background: _theme-color(secondary, a);
 	}
 
 	.x-window-header {
 		padding: 8px 0 !important;
 		font-family: $FONT--FAMILY---RALEWAY !important;
 		font-size: 32px;
-		color: $COLOUR--WHITE_CLOUDS; /* TO THEME */
+		color: _theme-color(secondary); /* TO THEME */
 		font-weight: $FONT--WEIGHT---EXTRALIGHT;
 
 		.x-panel-toolbar {
@@ -3331,7 +3331,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	.x-panel-body.x-panel-body-noheader.x-panel-body-noborder .x-form-item {
 		height: 22px;
 		margin-bottom: 16px;
-		border-bottom: 1px dashed #BDBDBD; /* TO THEME */
+		border-bottom: 1px dashed _theme-color(secondary, c); /* TO THEME */
 		padding-bottom: 10px;
 
 		label {
@@ -3347,12 +3347,12 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-toolbar-left-row .x-toolbar-cell:first-child .x-btn-text {
-		background: #00a0e3 !important; /* TO THEME */
-		color: #f1f1f1 !important; /* TO THEME */
+		background: _theme-color(quinary) !important; /* TO THEME */
+		color: _theme-color(secondary, a) !important; /* TO THEME */
 	}
 
 	.x-toolbar-left-row .x-toolbar-cell:nth-child(2) .x-btn-text {
-		background: #dedede !important; /* TO THEME */
+		background: _theme-color(secondary, b) !important; /* TO THEME */
 	}
 
 	.x-panel-body.x-panel-body-noheader.x-panel-body-noborder table {
@@ -3387,7 +3387,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		> td div.x-form-field {
 			font-size: 11px;
 			font-weight: 600;
-			color: rgba(0, 0, 0, 0.40); /* TO THEME */
+			color: _theme-color(black, b); /* TO THEME */
 			max-width: 152px;
 			padding-right: 8px;
 		}
@@ -3419,7 +3419,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	.x-window-ml {
 		position: relative;
 	    z-index: 999;
-	    background: #eee!important;
+	    background: _theme-color(secondary, a)!important;
 	    padding: 10px!important;
 	}
 
@@ -3453,7 +3453,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-window-bwrap {
-		background: #616669; /* TO THEME */
+		background: _theme-color(primary, a); /* TO THEME */
 		padding: 12px 0 8px 0;
 
 		.x-window-body.x-window-body-noborder {
@@ -3467,24 +3467,24 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-window-tbar .x-toolbar {
-		background: #616669!important; /* TO THEME */
+		background: _theme-color(primary, a)!important; /* TO THEME */
 		padding-bottom: 12px;
 		border-bottom: none;
 	}
 
 	.x-toolbar {
-		background: #eeeeee; /* TO THEME */
+		background: _theme-color(secondary, a); /* TO THEME */
 
 		.my-paging-display {
 			text-transform: uppercase;
-			color: #b9babb; /* TO THEME */
+			color: _theme-color(secondary, c); /* TO THEME */
 		}
 
 	}
 
 	.x-window-bbar .x-btn-mc button.x-btn-text {
-		background: #00a0e3 !important; /* TO THEME */
-		color: #fff; /* TO THEME */
+		background: _theme-color(quinary) !important; /* TO THEME */
+		color: _theme-color(white); /* TO THEME */
 		height: 32px;
 	}
 
@@ -3511,7 +3511,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			margin-right: 10px;
 
 			&.x-grid3-hd-over {
-				background: #e4e5e6; /* TO THEME */
+				background: _theme-color(primary, b); /* TO THEME */
 			}
 
 			div {
@@ -3532,7 +3532,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		> div {
 			font-family: "Nunito Sans", sans-serif;
 			font-size: 12px;
-			color: rgba(241, 241, 241, 0.6); /* TO THEME */
+			color: _theme-color(secondary); /* TO THEME */
 			font-weight: 100;
 		}
 
@@ -3543,7 +3543,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		.x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td {
 
 			&.x-grid3-hd-over span {
-				color: #737373 !important; /* TO THEME */
+				color: _theme-color(primary, c) !important; /* TO THEME */
 			}
 
 			div {
@@ -3559,12 +3559,12 @@ body[data-indigo-gwt-side-panel="open"] {
 					text-transform: uppercase;
 					font-family: "Nunito Sans", sans-serif;
 					font-size: 11px;
-					color: #ebeced; /* TO THEME */
+					color: _theme-color(secondary); /* TO THEME */
 					font-weight: 500;
 				}
 
 				.x-grid3-hd-btn:hover {
-					background-color: #d1d1d1 !important; /* TO THEME */
+					background-color: _theme-color(secondary, b) !important; /* TO THEME */
 					background-size: 13px !important;
 					opacity: 1;
 				}
@@ -3592,7 +3592,7 @@ body[data-indigo-gwt-side-panel="open"] {
 				background: rgba(241, 241, 241, 0.8) !important; /* TO THEME */
 
 				.x-grid3-cell > div {
-					color: #737373 !important; /* TO THEME */
+					color: _theme-color(primary, c) !important; /* TO THEME */
 					font-weight: 700 !important;
 				}
 
@@ -3607,7 +3607,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			> div {
 				font-family: "Nunito Sans", sans-serif;
 				font-size: 12px;
-				color: rgba(241, 241, 241, 0.6); /* TO THEME */
+				color: _theme-color(secondary); /* TO THEME */
 				font-weight: 100;
 			}
 
@@ -3619,7 +3619,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	.x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct {
 		position: relative;
 		z-index: 9999999;
-		background: #616669; /* TO THEME */
+		background: _theme-color(primary, a); /* TO THEME */
 		width: 100% !important;
 		padding: 2px 11px;
 		box-sizing: border-box;
@@ -3661,14 +3661,14 @@ body[data-indigo-gwt-side-panel="open"] {
 			.my-paging-text {
 				font-family: "Nunito Sans", sans-serif;
 				font-size: 12px;
-				color: rgba(241, 241, 241, 0.7); /* TO THEME */
+				color: _theme-color(secondary); /* TO THEME */
 				font-weight: 100;
 			}
 
 			.gwt-TextBox {
 				font-family: "Nunito Sans", sans-serif;
 				font-size: 12px;
-				color: #282b2d; /* TO THEME */
+				color: _theme-color(primary, g); /* TO THEME */
 				font-weight: 100;
 				background: rgba(241, 241, 241, 0.7); /* TO THEME */
 				padding: 3px;
@@ -3690,11 +3690,11 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	.x-form-field-wrap .x-form-text {
 		background: rgba(122, 130, 134, 0.54); /* TO THEME */
-		color: #b2b4b5; /* TO THEME */
+		color: _theme-color(primary, h); /* TO THEME */
 
 		&.x-form-focus {
-			background: #fff;
-			color: rgba(0, 0, 0, 0.84);
+			background: _theme-color(white);
+			color: _theme-color(black, d);
 		}
 
 	}
@@ -3711,7 +3711,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		&:nth-child(2) input {
 			background-image: url(./images/tabs-search-dark@X2.png) !important;
-			background-color: #f1f1f1 !important; /* TO THEME */
+			background-color: _theme-color(secondary, a) !important; /* TO THEME */
 			background-repeat: no-repeat !important;
 			background-position: left center !important;
 			background-size: 23px !important;
@@ -3719,13 +3719,13 @@ body[data-indigo-gwt-side-panel="open"] {
 			padding: 4px 5px 5px 27px !important;
 			font-size: 12px;
 			font-family: "Nunito Sans", sans-serif;
-			color: #7a7e80; /* TO THEME */
+			color: _theme-color(primary, d); /* TO THEME */
 		}
 
 		&:nth-child(3) .x-btn-icon {
 			height: 27px;
 			padding: 0 8px;
-			background: #00a0e3; /* TO THEME */
+			background: _theme-color(quinary); /* TO THEME */
 			margin-left: -4px;
 
 			&:before {
@@ -3736,7 +3736,7 @@ body[data-indigo-gwt-side-panel="open"] {
 				text-align: center;
 				font-family: "Nunito Sans", sans-serif;
 				font-size: 11px;
-				color: #f1f1f1; /* TO THEME */
+				color: _theme-color(secondary, a); /* TO THEME */
 				font-weight: 100;
 			}
 
@@ -3757,8 +3757,8 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	.x-btn-noicon .x-btn-small .x-btn-text {
 		padding: 6px 8px;
-		background: #F44336; /* TO THEME */
-		color: #efefef; /* TO THEME */
+		background: _theme-color(status, error); /* TO THEME */
+		color: _theme-color(secondary); /* TO THEME */
 	}
 
 }
@@ -3785,17 +3785,17 @@ body[data-indigo-gwt-side-panel="open"] {
 	.x-toolbar-left-row .x-toolbar-cell {
 
 		.x-btn-text {
-			background: #dedede !important; /* TO THEME */
+			background: _theme-color(secondary, b) !important; /* TO THEME */
 		}
 
 		&:last-child .x-btn-text {
-			background: #00a0e3 !important; /* TO THEME */
-			color: #f1f1f1 !important; /* TO THEME */
+			background: _theme-color(quinary) !important; /* TO THEME */
+			color: _theme-color(secondary, a) !important; /* TO THEME */
 		}
 
 		&:first-child .x-btn-text {
-			background: #dedede !important; /* TO THEME */
-			color: #505457 !important; /* TO THEME */
+			background: _theme-color(secondary, b) !important; /* TO THEME */
+			color: _theme-color(primary, a) !important; /* TO THEME */
 		}
 
 	}
@@ -3869,12 +3869,12 @@ body[data-indigo-gwt-side-panel="open"] {
 				padding: 4px 0;
 
 				.x-grid3-hd.x-grid3-cell {
-					border-left-color: #EEEEEE;	// Change to Variable
-					border-right-color: #E0E0E0;	// Change to Variable
+					border-left-color: _theme-color(secondary);	// Change to Variable
+					border-right-color: _theme-color(secondary, a);	// Change to Variable
 
 					span,
 					span div {
-						color: rgba(0, 0, 0, 0.52);	// Change to Variable
+						color: _theme-color(black, c);	// Change to Variable
 						font-weight: 600;
 						margin-left: 2px;
 					}
@@ -3982,7 +3982,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 .x-window.compare-engine {
-	background: #616669 !important; /* TO THEME */
+	background: _theme-color(primary, a) !important; /* TO THEME */
 
 	.x-window-header {
 		height: 64px !important;
@@ -4015,7 +4015,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			pointer-events: none !important;
 			font-family: "Raleway", sans-serif;
 			font-size: 24px;
-			color: #f1f1f1; /* TO THEME */
+			color: _theme-color(secondary, a); /* TO THEME */
 			font-weight: 100;
 		}
 
@@ -4027,9 +4027,9 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	.x-panel-header,
 	.x-toolbar {
-		background: #818588; /* TO THEME */
-		border: 1px solid #818588; /* TO THEME */
-		color: #eee; /* TO THEME */
+		background: _theme-color(primary, d); /* TO THEME */
+		border: 1px solid _theme-color(primary, d); /* TO THEME */
+		color: _theme-color(secondary); /* TO THEME */
 	}
 
 	.x-panel-bwrap {
@@ -4061,21 +4061,21 @@ body[data-indigo-gwt-side-panel="open"] {
 			text-transform: uppercase;
 			padding: 0 4px !important;
 			font-weight: 500;
-			color: #424242; /* TO THEME */
+			color: _theme-color(primary, g); /* TO THEME */
 		}
 
 		table.x-btn-pressed .x-btn-mc button.x-btn-text {
-			color: #FFEB3B; /* TO THEME */
+			color: _theme-color(status, warning); /* TO THEME */
 		}
 
 	}
 
 	.x-panel:last-child {
-		border-left: 1px solid #818588; /* TO THEME */
+		border-left: 1px solid _theme-color(primary, d); /* TO THEME */
 	}
 
 	.x-form-field-wrap.x-component {
-		background: #EEEEEE; /* TO THEME */
+		background: _theme-color(secondary, a); /* TO THEME */
 		margin-left: 12px;
 	}
 
@@ -4093,14 +4093,14 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 .translate-content-engine {
-	background: #5c6164 !important; /* TO THEME */
+	background: _theme-color(primary) !important; /* TO THEME */
 	height: 100% !important;
 	width: 100% !important;
 	top: 0 !important;
 	left: 0 !important;
 
 	.mypanel.x-component .x-component {
-		background: $COLOUR--WHITE_CLOUDS; /* TO THEME */
+		background: _theme-color(secondary); /* TO THEME */
 		width: 50% !important;
 	}
 
@@ -4111,7 +4111,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		.x-window-header-text {
 			font-size: 36px;
-			color: #dddcdc; /* TO THEME */
+			color: _theme-color(secondary); /* TO THEME */
 			width: 250px;
 			font-family: $FONT--FAMILY---RALEWAY;
 			font-weight: $FONT--WEIGHT---EXTRALIGHT;
@@ -4148,9 +4148,9 @@ body[data-indigo-gwt-side-panel="open"] {
 			position: fixed;
 			bottom: 0;
 			left: 0;
-			background: #4a4d50; /* TO THEME */
+			background: _theme-color(primary, f); /* TO THEME */
 			width: 100% !important;
-			border-top: 1px solid #353739; /* TO THEME */
+			border-top: 1px solid _theme-color(primary, g); /* TO THEME */
 			box-shadow: inset 0px 13px 40px 0px rgba(38, 38, 38, 0.5); /* TO THEME */
 			padding: 20px 0 0 20px;
 			box-sizing: border-box;
@@ -4164,8 +4164,8 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		.x-toolbar-left td.x-toolbar-cell:nth-child(2) button.x-btn-text {
-			background: #00a0e3 !important;/* TO THEME */
-			color: #f1f1f1 !important; /* TO THEME */
+			background: _theme-color(quinary) !important;/* TO THEME */
+			color: _theme-color(secondary, a) !important; /* TO THEME */
 		}
 
 	}
@@ -4179,17 +4179,17 @@ body[data-indigo-gwt-side-panel="open"] {
 			background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 70%);/* TO THEME */
 
 			&:hover {
-				background-color: rgba(255, 255, 255, 0.07);/* TO THEME */
+				background-color: _theme-color(secondary);/* TO THEME */
 			}
 
 			.x-trigger-wrap-focus {
-				background-color: rgba(255, 255, 255, 0.07);/* TO THEME */
+				background-color: _theme-color(secondary);/* TO THEME */
 			}
 
 		}
 
 		> .x-component.x-border-panel > .x-component > table tbody td.x-btn-mc:nth-child(2) {
-			background: #6b7074;/* TO THEME */
+			background: _theme-color(primary, c);/* TO THEME */
 			position: absolute;
 			left: 200px;
 			height: 30px;
@@ -4197,55 +4197,55 @@ body[data-indigo-gwt-side-panel="open"] {
 
 			button {
 				margin-top: 7px;
-				color: #dddcdc;/* TO THEME */
+				color: _theme-color(secondary);/* TO THEME */
 				padding: 0 8px;
 				width: auto !important;
 			}
 
 			&:hover {
-				background: #798084 !important;/* TO THEME */
+				background: _theme-color(primary, d) !important;/* TO THEME */
 			}
 
 		}
 
 		.x-component.x-border-panel:nth-child(2) {
 			margin-top: 28px;
-			border-top: 1px dashed #8a8e91 !important;/* TO THEME */
+			border-top: 1px dashed _theme-color(primary, d) !important;/* TO THEME */
 		}
 
 		&:nth-child(2) .x-panel-noborder.x-panel.x-component > .x-panel-bwrap {
-			border-left: 10px solid #5c6164 !important;/* TO THEME */
+			border-left: 10px solid _theme-color(primary) !important;/* TO THEME */
 		}
 
 		.x-panel-noborder.x-panel.x-component > .x-panel-bwrap {
 
 			textarea.x-form-field,
 			input.x-form-field {
-				background: #6b7074 !important;
-				color: $COLOUR--WHITE;/* TO THEME */
+				background: _theme-color(primary, c) !important;
+				color: _theme-color(white);/* TO THEME */
 				max-height: 54px !important;
 
 				&:hover {
-					background: #707679 !important;/* TO THEME */
+					background: _theme-color(primary, c) !important;/* TO THEME */
 				}
 
 				&:focus {
-					background: $COLOUR--WHITE !important;/* TO THEME */
+					background: _theme-color(white) !important;/* TO THEME */
 					color: black !important;/* TO THEME */
 				}
 
 			}
 
 			.x-form-readonly .x-form-field {
-				background: #616669 !important;/* TO THEME */
+				background: _theme-color(primary, a) !important;/* TO THEME */
 				padding-left: 0 !important;
 				width: 100% !important;
 
 				&:hover,
 				&:focus {
 					cursor: default;
-					background: #616669 !important;/* TO THEME */
-					color: $COLOUR--WHITE !important;/* TO THEME */
+					background: _theme-color(primary, a) !important;/* TO THEME */
+					color: _theme-color(white) !important;/* TO THEME */
 				}
 
 			}
@@ -4262,7 +4262,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	div[role="combobox"] .x-form-text {
 		padding: 7px 20px 6px 10px !important;
-		color: #f1f1f1;/* TO THEME */
+		color: _theme-color(secondary, a);/* TO THEME */
 		text-transform: uppercase;
 		font-size: 11px;
 		font-weight: 500;
@@ -4295,16 +4295,16 @@ body[data-indigo-gwt-side-panel="open"] {
 	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 
 	.x-info-tl {
-		background: $COLOUR--GREY_CLOUDS !important;
+		background: _theme-color(primary, c) !important;
 
 		.x-info-tr {
-			background: $COLOUR--GREY_CLOUDS;
+			background: _theme-color(primary, c);
 
 			.x-info-tc {
-				background: $COLOUR--GREY_CLOUDS;
+				background: _theme-color(primary, c);
 
 				span {
-					color: #FFEB3B;
+					color: _theme-color(status, warning);
 					padding-left: 6px;
 				}
 
@@ -4315,13 +4315,13 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-info-ml {
-		background: $COLOUR--GREY_CLOUDS !important;
+		background: _theme-color(primary, c) !important;
 
 		.x-info-mr {
-			background: $COLOUR--GREY_CLOUDS;
+			background: _theme-color(primary, c);
 
 			.x-info-mc {
-				background: $COLOUR--GREY_CLOUDS;
+				background: _theme-color(primary, c);
 
 				.x-info-body {
 					color: $color-white;
@@ -4344,13 +4344,13 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-info-bl.x-info-nofooter {
-		background: $COLOUR--GREY_CLOUDS;
+		background: _theme-color(primary, c);
 
 		.x-info-br {
-			background: $COLOUR--GREY_CLOUDS;
+			background: _theme-color(primary, c);
 
 			.x-info-bc {
-				background: $COLOUR--GREY_CLOUDS;
+				background: _theme-color(primary, c);
 			}
 
 		}

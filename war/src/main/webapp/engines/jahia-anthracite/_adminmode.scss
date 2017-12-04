@@ -30,7 +30,7 @@
 			background: url(https://s1.postimg.org/8lkrhxj9in/ic_warning_2x.png) !important;
 			background-size: 20px 20px !important;
 			background-repeat: no-repeat !important;
-			background-color: #F44336 !important;
+			background-color: _theme-color(status, error) !important;
 			background-position: center !important;
 			height: 34px !important;
 			width: 34px !important;
@@ -42,7 +42,7 @@
 		}
 
 		.toolbar-item-displaytoolbarwarningsactionitem.x-btn-menu-active .x-btn-mc button {
-			background-color: #F44336 !important;
+			background-color: _theme-color(status, error) !important;
 			width: 100px !important;
 			background-position-x: 7px !important;
 		}
@@ -189,7 +189,7 @@
 								display: block;
 								height: 20px;
 								padding-top: 5px;
-								color: rgba(238, 238, 238, 0.9);
+								color: _theme-color(secondary);
 								body[data-selection-count="0"] & {
 								   background: url(./images/dx_logo_solid.png) no-repeat left 12px center / 20px 20px, url(./images/combo-arrow.png) no-repeat right center;
 								}
@@ -204,7 +204,7 @@
 
 	> div:nth-child(1) {
 		height: 100%;
-		background: #f1f1f1;
+		background: _theme-color(secondary);
 
 		> div:nth-child(2) {
 			height: 100%;
@@ -235,7 +235,7 @@
 }
 
 .toolbar-warning-messages > div > div > span.x-menu-item {
-	background: #f3665b;
+	background: _theme-color(quinary);
 	padding: 9px 12px !important;
 	font-weight: 600;
 	border-bottom-right-radius: 50px;

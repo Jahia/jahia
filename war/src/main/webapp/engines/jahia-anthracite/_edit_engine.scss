@@ -146,7 +146,7 @@
 				// Default tab content window
 				height: 100%!important;
 				width: 100%!important;
-				background: $COLOUR--TRANSPARENT;
+				background: transparent;
 				border:none!important;
 				padding:0;
 
@@ -287,7 +287,7 @@
 
 
 		// .x-btn-text  {
-		// 	color: #c5c4c4;
+		// 	color: _theme-color(primary, h);
 		// }
 
 
@@ -838,10 +838,10 @@
 
 				button {
 					font-size: 12px;
-					// @include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---NORMAL);
+					// @include text(12px, _theme-color(primary, g), $FONT--WEIGHT---NORMAL);
 					//
 					padding: 5px 25px 5px 10px;
-					// background: $COLOUR--WHITE_CLOUDS;
+					// background: _theme-color(secondary);
 
 					img {
 						right: 0!important;
@@ -1181,7 +1181,7 @@
 			    top: 0;
 			    left: 0;
 			    width: 100%!important;
-			    // background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%);
+			    // background: radial-gradient(ellipse at bottom right, _theme-color(primary, f) 0%, _theme-color(primary) 70%);
 				background: _property($MODAL-SOLID--BG, $EDIT-ENGINE);
 			    z-index: 999;
 				display: none;
@@ -1575,13 +1575,13 @@
 	#JahiaGxtEditEnginePanel-usages {
 
 		.x-grid3-row.x-unselectable-single {
-			background: #6b7074 !important; /* TO THEME */
-			color: #919496;/* TO THEME */
+			background: _theme-color(primary, c) !important; /* TO THEME */
+			color: _theme-color(primary, d);/* TO THEME */
 			padding-top: 7px;
-			border-bottom: 2px solid #5c6164; /* TO THEME */
+			border-bottom: 2px solid _theme-color(primary); /* TO THEME */
 
 			a {
-				color: #dddcdc;
+				color: _theme-color(secondary);
 				text-decoration: none;
 				padding-left: 8px;
 			}
@@ -1589,7 +1589,7 @@
 		}
 
 		.x-grid-panel.x-component {
-			border-top: 1px dashed #8a8e91 !important; /* TO THEME */
+			border-top: 1px dashed _theme-color(primary, d) !important; /* TO THEME */
 			padding-top: 16px !important;
 		}
 
@@ -1597,14 +1597,14 @@
 			margin-bottom: 18px !important;
 
 			&.x-btn-over .x-btn-small.x-btn-icon-small-left button {
-				background: #798084 !important; /* TO THEME */
+				background: _theme-color(primary, d) !important; /* TO THEME */
 			}
 
 			.x-btn-small.x-btn-icon-small-left {
-				background: #6b7074; /* TO THEME */
+				background: _theme-color(primary, c); /* TO THEME */
 
 				button {
-					color: #dddcdc; /* TO THEME */
+					color: _theme-color(secondary); /* TO THEME */
 					padding: 8px 8px;
 				}
 
@@ -1727,7 +1727,7 @@
 
 		.x-grid3-col-label {
 			padding: 5px 10px 5px 4px!important;
-			@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+			@include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
 		}
 
 		.x-grid3-row.x-grid3-row-selected {
@@ -1889,7 +1889,7 @@
 			padding: 37px 0 0 42px;
 
 			// Styles the Lock message
-			@include text(14px, #c48f00, $FONT--WEIGHT---EXTRABOLD);
+			@include text(14px, _theme-color(status, locked), $FONT--WEIGHT---EXTRABOLD);
 
 			// Node Friendly Name
 			&::before {
@@ -1921,7 +1921,7 @@
 				&.hover-info,
 				&:hover {
 					white-space: pre-wrap;
-					background-color: #fcfcfc;
+					background-color: _theme-color(secondary);
 				    /* width: 100%; */
 				    padding: 37px 20px 16px 42px;
 				    box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
@@ -1986,7 +1986,7 @@
 			// padding: 10px 0 0 75px;
 
 			background: _property($FOOTER--BG, $EDIT-ENGINE);
-		    border-top: 1px solid #353739;
+		    border-top: 1px solid _theme-color(primary, g);
 		    box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
 		    box-sizing: border-box;
 		    height: auto;
@@ -2062,7 +2062,7 @@
     top: 0!important;
     width: 100% !important;
     height: 100% !important;
-    background: radial-gradient(ellipse at bottom right, #4c5052 0%, #5c6164 70%); /* TO THEME */
+    background: radial-gradient(ellipse at bottom right, _theme-color(primary, f) 0%, _theme-color(primary) 70%); /* TO THEME */
 	z-index: 9999!important;
 
 	// Top modal bar ( used for dragging and contains close button )
@@ -2092,7 +2092,7 @@
 	.x-panel-bbar {
 		position: relative;
 		z-index: 9999999;
-		background: $FORM--FIELDSET--BG--COLOUR; /* TO THEME */
+		background: _property($FIELDSET--BG, LIGHT); /* TO THEME */
 		width: 100% !important;
 		padding: 2px 11px;
 		box-sizing: border-box;
@@ -2131,12 +2131,12 @@
 				opacity: 0.8;
 
 				.my-paging-text {
-					@include text(12px, rgba($COLOUR--WHITE_CLOUDS, .7), $FONT--WEIGHT---EXTRALIGHT);
+					@include text(12px, rgba(_theme-color(secondary), .7), $FONT--WEIGHT---EXTRALIGHT);
 				}
 
 				.gwt-TextBox {
-					@include text(12px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
-					background: rgba($COLOUR--WHITE_CLOUDS, .7); /* TO THEME */
+					@include text(12px, _theme-color(primary, g), $FONT--WEIGHT---EXTRALIGHT);
+					background: rgba(_theme-color(secondary), .7); /* TO THEME */
 					padding: 3px;
 					border:none;
 				}
@@ -2252,7 +2252,7 @@
 	.x-panel-body {
 		width: 100%!important;
 		height: calc(100% - 30px)!important;
-		background: $FORM--FIELDSET--BG--COLOUR!important;
+		background: _property($FIELDSET--BG, LIGHT)!important;
 	}
 
 	.x-grid-panel {
@@ -2298,10 +2298,10 @@
 									margin-right: 10px;
 
 									&.x-grid3-hd-over {
-										background: $COLOUR--CREAM_CLOUDS; /* TO THEME */
+										background: _theme-color(secondary, b); /* TO THEME */
 
 										span {
-											color: $COLOUR--LEAD_CLOUDS!important; /* TO THEME */
+											color: _theme-color(primary, b)!important; /* TO THEME */
 										}
 
 										img {
@@ -2331,7 +2331,7 @@
 
 											&:hover {
 												// background: url($ICON--ARROW_DOWN---WHITE) no-repeat center center!important;
-												background-color: $COLOUR--DUSTY_CLOUDS!important; /* TO THEME */
+												background-color: _theme-color(secondary, d)!important; /* TO THEME */
 												background-size: 13px!important;
 												opacity: 1;
 											}
@@ -2339,7 +2339,7 @@
 
 										span {
 											text-transform: uppercase;
-											@include text(11px, #ebeced, $FONT--WEIGHT---SEMIBOLD);
+											@include text(11px, _theme-color(secondary), $FONT--WEIGHT---SEMIBOLD);
 										}
 									}
 								}
@@ -2353,7 +2353,7 @@
 		.x-grid-empty {
 			&::before {
 				content: $text_no_results;
-				@include text(12px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+				@include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
 			}
 		}
 
@@ -2367,11 +2367,11 @@
 
 			&.x-grid3-row-selected {
 				pointer-events: none; // Basically disables the double click
-				background: rgba($COLOUR--WHITE_CLOUDS, .8) !important; /* TO THEME */
+				background: rgba(_theme-color(secondary), .8) !important; /* TO THEME */
 
 				.x-grid3-cell {
 					> div {
-						color: $COLOUR--LEAD_CLOUDS!important; /* TO THEME */
+						color: _theme-color(primary, b)!important; /* TO THEME */
 						font-weight: $FONT--WEIGHT---BOLD!important;
 					}
 				}
@@ -2388,8 +2388,8 @@
 			}
 
 			> div {
-				// color: $COLOUR--WHITE_CLOUDS!important;
-				@include text(12px, rgba($COLOUR--WHITE_CLOUDS, .6), $FONT--WEIGHT---EXTRALIGHT);
+				// color: _theme-color(secondary)!important;
+				@include text(12px, rgba(_theme-color(secondary), .6), $FONT--WEIGHT---EXTRALIGHT);
 			}
 		}
 	}
@@ -2441,7 +2441,7 @@
 						    padding: 27px 0 0 44px;
 						    display: block;
 
-							@include text(36px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+							@include text(36px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
 						}
 					}
 
@@ -2493,7 +2493,7 @@
 		&:nth-child(2) {
 			input {
 				background-image: url($ICON--SEARCH---GREY);
-				background-color: $COLOUR--WHITE_CLOUDS; /* TO THEME */
+				background-color: _theme-color(secondary); /* TO THEME */
 				background-repeat: no-repeat;
 				background-position: left center;
 				background-size: 23px;
@@ -2501,7 +2501,7 @@
 				padding: 4px 5px 5px 27px!important;
 				font-size: 12px;
 				font-family: $FONT--FAMILY---NUNITO;
-				color: $COLOUR--GREY_CLOUDS; /* TO THEME */
+				color: _theme-color(primary, c); /* TO THEME */
 				background-size: 23px;
 
 				&:hover {
@@ -2519,7 +2519,7 @@
 				display: block;
 				height: 27px;
 				padding: 0 4px;
-				background: $COLOUR--JAHIA_BLUE; /* TO THEME */
+				background: _theme-color(tertiary); /* TO THEME */
 
 				&:before {
 					content: $text_search;
@@ -2528,7 +2528,7 @@
 					position: relative;
 					text-align: center;
 
-					@include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT);
+					@include text(11px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
 
 				}
 
@@ -2562,7 +2562,7 @@ body[data-indigo-add-visibility-condition="new"] {
 #JahiaGxtEditEnginePanel-seo > .x-component {
 	max-width: 100%;
 	background: rgba($color-white, .4);
-	border: 1px solid #e8e8e8 !important;
+	border: 1px solid _theme-color(secondary) !important;
 	box-sizing: border-box;
 	padding: 8px 29px;
 	height: auto !important;
@@ -2570,7 +2570,7 @@ body[data-indigo-add-visibility-condition="new"] {
 	.seo-title-path {
 		font-family: $FONT--FAMILY---NUNITO;
 		font-size: 11px;
-		color: rgba(0, 0, 0, 0.52);
+		color: _theme-color(black, c);
 		font-weight: $FONT--WEIGHT---SEMIBOLD;
 	}
 
@@ -2604,7 +2604,7 @@ body[data-indigo-add-visibility-condition="new"] {
 			background: transparent !important;
 			border-color: transparent !important;
 			margin: 8px 0;
-			border-bottom: 1px dashed #ddd !important;
+			border-bottom: 1px dashed _theme-color(secondary, c) !important;
 			padding-bottom: 44px;
 			margin-bottom: 16px;
 		}
@@ -2618,9 +2618,9 @@ body[data-indigo-add-visibility-condition="new"] {
 		.x-grid3-hh {
 			margin: 2px 2px 8px;
 			width: calc(100% - 167px) !important;
-			border-bottom: 1px solid #eee;
+			border-bottom: 1px solid _theme-color(secondary, a);
 			text-transform: uppercase;
-			color: rgba($color-black, .48);
+			color: _theme-color(black, b);
 
 			span {
 				font-weight: $FONT--WEIGHT---EXTRABOLD;
@@ -2631,8 +2631,8 @@ body[data-indigo-add-visibility-condition="new"] {
 				padding: 4px 0;
 
 				.x-grid3-hd.x-grid3-cell {
-					border-left-color: #EEEEEE;
-					border-right-color: #E0E0E0;
+					border-left-color: _theme-color(secondary);
+					border-right-color: _theme-color(secondary, a);
 
 					&:last-child {
 						border-right-color: transparent !important;
@@ -2700,7 +2700,7 @@ body[data-indigo-add-visibility-condition="new"] {
 	}
 
 	td.x-grid3-hd-menu-open .x-grid3-hd-inner {
-		background: #eee !important;
+		background: _theme-color(secondary, a) !important;
 	}
 
 	.x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
@@ -2740,11 +2740,11 @@ body[data-indigo-add-visibility-condition="new"] {
 	.x-row-editor button.x-btn-text {
 		padding: 5px 16px !important;
 		background: #ededed !important;
-		color: rgba($color-black, .87) !important;
+		color: _theme-color(black, d) !important;
 
 		&[aria-disabled="true"] {
 			opacity: .6;
-			color: rgba($color-black, .64) !important;
+			color: _theme-color(black, c) !important;
 		}
 
 	}
@@ -2794,7 +2794,7 @@ body[data-indigo-add-visibility-condition="new"] {
 		color: $color-white !important;
 		font-weight: 600;
 		font-family: $FONT--FAMILY---NUNITO;
-		background: #F44336;
+		background: _theme-color(status, error);
 		padding: 4px 12px;
 		border-radius: 20px;
 		margin-right: 8px !important;
@@ -2972,7 +2972,7 @@ body[data-indigo-add-visibility-condition="new"] {
 		}
 
 		.x-grid3-row.x-grid3-row-selected {
-			background-color: #dedede !important;
+			background-color: _theme-color(secondary, a) !important;
 
 			div {
 				color: $color-primary;
@@ -2983,7 +2983,7 @@ body[data-indigo-add-visibility-condition="new"] {
 			}
 
 			&.x-grid3-row-over {
-				background-color: #dedede !important;
+				background-color: _theme-color(secondary, a) !important;
 
 				.x-grid3-col-name {
 					color: $color-primary !important;
@@ -3011,9 +3011,9 @@ body[data-indigo-add-visibility-condition="new"] {
 	.x-component .x-grid3-header .x-grid3-hh {
 		margin: 2px 2px 8px;
 		//width: calc(100% - 12px) !important;
-		border-bottom: 1px solid #eee;
+		border-bottom: 1px solid _theme-color(secondary, a);
     text-transform: uppercase;
-    color: rgba($color-black, .48);
+    color: _theme-color(black, b);
 		pointer-events: none;
 
 		span {
@@ -3138,7 +3138,7 @@ body[data-indigo-add-visibility-condition="new"] {
 // Input Error Tooltip
 
 .x-form-invalid-tip {
-    background: #F44336;
+    background: _theme-color(status, error);
     border-radius: 2px !important;
     box-shadow: 0 2px 5px 0 rgba($color-black, .26);
 

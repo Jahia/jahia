@@ -522,7 +522,7 @@ body[data-indigo-app="contribute"] {
         font-size: 11px;
         line-height: 18px;
         box-shadow: 2px 2px 7px 0px rgba(38,38,38,0.7);
-        @include text(11px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---NORMAL);
+        @include text(11px, _theme-color(secondary), $FONT--WEIGHT---NORMAL);
         text-align: center;
         content: attr(data-info-count);
 		background: _theme-color(status, attention);
@@ -698,7 +698,7 @@ body[data-indigo-app="contribute"] {
         top: 28px;
         background: url(./images/icons/icon-close-white@X2.png) no-repeat center center;
         background-size: 10px !important;
-        background-color: rgba(238,238,238,0.2); /* TO THEME */
+        background-color: rgba(_theme-color(secondary, a),0.2); /* TO THEME */
         border-radius: 100%;
 
         &::before {
@@ -707,7 +707,7 @@ body[data-indigo-app="contribute"] {
 
         &:hover {
             cursor: pointer;
-            background-color: rgba(238,238,238,0.3);
+            background-color: rgba(_theme-color(secondary, a),0.3);
         }
     }
 
@@ -770,7 +770,7 @@ body[data-indigo-app="contribute"] {
     left: 0;
     top: 9px;
     pointer-events: none;
-    @include text(12px !important, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---EXTRALIGHT !important, $DEFAULT--FONT--FAMILY !important);
+    @include text(12px !important, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT !important, $DEFAULT--FONT--FAMILY !important);
 
     body[data-multiselect="on"] & {
         display: block;
@@ -823,7 +823,7 @@ body[data-indigo-app="contribute"] {
 
 		padding-left: 18px;
 
-		@include text(13px, $COLOUR--LEAD_CLOUDS !important, $FONT--WEIGHT---LIGHT);
+		@include text(13px, _theme-color(primary, b) !important, $FONT--WEIGHT---LIGHT);
 
 		pointer-events: all;
 	}
@@ -849,7 +849,7 @@ body[data-indigo-app="contribute"] {
     }
 
     .x-menu-item {
-        box-shadow: inset -2px 2px #f1f1f1;
+        box-shadow: inset -2px 2px _theme-color(secondary);
         background: _property($HAMBURGER--BUTTON--BG, $HAMBURGER)!important;
 
         color: _property($HAMBURGER--BUTTON--COLOR, $HAMBURGER)!important;
@@ -882,7 +882,7 @@ body[data-indigo-app="contribute"] {
     background-size: 11px !important;
     padding-left: 16px!important;
 
-	@include text(13px, $COLOUR--LEAD_CLOUDS!important, $FONT--WEIGHT---LIGHT!important);
+	@include text(13px, _theme-color(primary, b)!important, $FONT--WEIGHT---LIGHT!important);
 
 	&:hover {
 		box-shadow: none!important;
@@ -1247,7 +1247,7 @@ body[data-indigo-app="contribute"] {
 .menu-edit-menu-cache,
 .clipboard-info-menu {
     .x-menu-list {
-        // box-shadow: -1px 2px 3px 0 rgba($COLOUR--DARK_CLOUDS, .3);
+        // box-shadow: -1px 2px 3px 0 rgba(_theme-color(primary, g), .3);
 
         position: absolute;
         top: -48px;

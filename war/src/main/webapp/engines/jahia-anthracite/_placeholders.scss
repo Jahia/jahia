@@ -46,37 +46,37 @@
 /////////////////////////////////////////////////
 
     %document_title {
-        @include text(18px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
+        @include text(18px, _theme-color(secondary), $FONT--WEIGHT---SEMILIGHT);
     }
 
     %multiselect_title {
-        color: $COLOUR--WHITE_CLOUDS;
+        color: _theme-color(secondary);
     }
 
 
 /////////////////////////////////////////////////
 // MORE INFO BUTTONS ////////////////////////////
 /////////////////////////////////////////////////
-	%CSS_BLOCK--MORE_INFO---UP {
-		background: url($TREE--MENU--ICON--MORE_OPTIONS---UP) no-repeat center center $TREE--MENU--BG--COLOUR---UP;
-		background-size: 10px 2px;
-	}
-
-	%CSS_BLOCK--MORE_INFO---SELECTED {
-		background: url($TREE--MENU--ICON--MORE_OPTIONS---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED !important;
-		background-size: 10px 2px!important;
-	}
-
-	// SEARCH
-	%CSS_BLOCK--MORE_INFO---UP\:SEARCH {
-		background: url($TREE--MENU--ICON--MORE_OPTIONS---UP\:SEARCH) no-repeat center center $TREE--MENU--BG--COLOUR---UP\:SEARCH;
-		background-size: 10px 2px;
-	}
-
-	%CSS_BLOCK--MORE_INFO---SELECTED\:SEARCH {
-		background: url($TREE--MENU--ICON--MORE_OPTIONS---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED !important;
-		background-size: 10px 2px!important;
-	}
+	// %CSS_BLOCK--MORE_INFO---UP {
+	// 	background: url($TREE--MENU--ICON--MORE_OPTIONS---UP) no-repeat center center $TREE--MENU--BG--COLOUR---UP;
+	// 	background-size: 10px 2px;
+	// }
+	//
+	// %CSS_BLOCK--MORE_INFO---SELECTED {
+	// 	background: url($TREE--MENU--ICON--MORE_OPTIONS---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED !important;
+	// 	background-size: 10px 2px!important;
+	// }
+	//
+	// // SEARCH
+	// %CSS_BLOCK--MORE_INFO---UP\:SEARCH {
+	// 	background: url($TREE--MENU--ICON--MORE_OPTIONS---UP\:SEARCH) no-repeat center center $TREE--MENU--BG--COLOUR---UP\:SEARCH;
+	// 	background-size: 10px 2px;
+	// }
+	//
+	// %CSS_BLOCK--MORE_INFO---SELECTED\:SEARCH {
+	// 	background: url($TREE--MENU--ICON--MORE_OPTIONS---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED !important;
+	// 	background-size: 10px 2px!important;
+	// }
 
 
 /////////////////////////////////////////////////
@@ -95,7 +95,7 @@
 		&::after {
 			opacity: 0;
 			position: absolute;
-			background: $COLOUR--WHITE_CLOUDS;
+			background: _theme-color(secondary);
 			transition: all 0.3s ease-in 0s;
 			margin: 0!important;
 			pointer-events: none;
@@ -113,7 +113,7 @@
 			text-transform: uppercase;
             text-indent: 0;
 
-			@include text(10px, $COLOUR--DARK_CLOUDS, $FONT--WEIGHT---EXTRABOLD);
+			@include text(10px, _theme-color(primary, g), $FONT--WEIGHT---EXTRABOLD);
 		}
 
 		&::after {
@@ -124,7 +124,7 @@
 			z-index: 10;
 			border-style: solid;
 			border-width: 0 8px 8px 8px;
-			border-color: transparent transparent $COLOUR--WHITE_CLOUDS transparent;
+			border-color: transparent transparent _theme-color(secondary) transparent;
 			background: transparent;
 			top: 25px;
 		}
@@ -160,28 +160,28 @@
 /////////////////////////////////////////////////
 // PREVIEW BUTTONS //////////////////////////////
 /////////////////////////////////////////////////
-	%CSS_BLOCK--PREVIEW_BUTTON---UP {
-		background: url($TREE--MENU--ICON--PREVIEW---UP) no-repeat center center $TREE--MENU--BG--COLOUR---UP;
-	}
-
-	%CSS_BLOCK--PREVIEW_BUTTON---UP\:SEARCH {
-		background: url($TREE--MENU--ICON--PREVIEW---UP\:SEARCH) no-repeat center center $TREE--MENU--BG--COLOUR---UP\:SEARCH;
-	}
-
-	%CSS_BLOCK--PREVIEW_BUTTON---SELECTED {
-		background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED;
-
-	}
-
-	%CSS_BLOCK--PREVIEW_BUTTON---SELECTED\:SEARCH {
-		background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED\:SEARCH;
-
-	}
-
-	%CSS_BLOCK--PREVIEW_BUTTON---HOVER {
-		// background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED;
-
-	}
+	// %CSS_BLOCK--PREVIEW_BUTTON---UP {
+	// 	background: url($TREE--MENU--ICON--PREVIEW---UP) no-repeat center center $TREE--MENU--BG--COLOUR---UP;
+	// }
+	//
+	// %CSS_BLOCK--PREVIEW_BUTTON---UP\:SEARCH {
+	// 	background: url($TREE--MENU--ICON--PREVIEW---UP\:SEARCH) no-repeat center center $TREE--MENU--BG--COLOUR---UP\:SEARCH;
+	// }
+	//
+	// %CSS_BLOCK--PREVIEW_BUTTON---SELECTED {
+	// 	background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED;
+	//
+	// }
+	//
+	// %CSS_BLOCK--PREVIEW_BUTTON---SELECTED\:SEARCH {
+	// 	background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED\:SEARCH;
+	//
+	// }
+	//
+	// %CSS_BLOCK--PREVIEW_BUTTON---HOVER {
+	// 	// background: url($TREE--MENU--ICON--PREVIEW---SELECTED) no-repeat center center $TREE--MENU--BG--COLOUR---SELECTED;
+	//
+	// }
 
 /////////////////////////////////////////////////
 // DATE PICKER //////////////////////////////////
@@ -189,7 +189,7 @@
 
 	// PREVIOUS MONTH BUTTON
 	%CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH_BUTTON---UP {
-		background-image:url($DATE_PICKER--PREVIOUS_MONTH--ICON)!important;
+		background-image:url("./images/icons/icon_arrow_left_single_white@X2.png")!important;
 		background-size: 16px 16px;
 
 		opacity: 0.8;
@@ -201,7 +201,7 @@
 
 	// NEXT MONTH BUTTON
 	%CSS_BLOCK--DATE_PICKER--NEXT_MONTH_BUTTON---UP {
-		background-image:url($DATE_PICKER--NEXT_MONTH--ICON)!important;
+		background-image:url("./images/icons/icon_arrow_right_single_white@X2.png")!important;
 		background-size: 16px 16px;
 
 		opacity: 0.8;
@@ -213,7 +213,7 @@
 
 	// "COMBO" FOR MONTH SELECTOR
 	%CSS_BLOCK--DATE_PICKER--COMBO---UP {
-		background: url($DATE_PICKER--COMBO--ICON) no-repeat right center;
+		background: url($ICON--ARROW_DOWN---WHITE) no-repeat right center;
 		padding-right: 15px;
 		text-transform: uppercase;
 		@include text(11px, _property($DATE-PICKER--MONTH-TITLE, $DATE-PICKER), $FONT--WEIGHT---NORMAL)
@@ -237,7 +237,7 @@
 
 	%CSS_BLOCK--DATE_PICKER--DAY_OF_WEEK {
 		border:none;
-		@include text(10px, $DATE_PICKER--DAYS_OF_WEEK--LABEL--COLOUR, $FONT--WEIGHT---BOLD);
+		@include text(10px, _property($DATE-PICKER--DAY--COLOR, $DATE-PICKER), $FONT--WEIGHT---BOLD);
 	}
 
 	%CSS_BLOCK--DATE_PICKER--PREVIOUS_MONTH---UP {
@@ -286,7 +286,7 @@
 
 
     %CSS_BLOCK--DATE_PICKER--MODAL--LABEL {
-        content: $DATE_PICKER--MONTH_PICKER--LABEL--TEXT;
+        content: $text_year_picker;
         line-height: 27px;
 
         @include text(12px, _property($DATE-PICKER--MODAL-TITLE--COLOR, $DATE-PICKER), $FONT--WEIGHT---NORMAL);
@@ -341,7 +341,7 @@
 
 
 	%CSS_BLOCK--DATE_PICKER--MODAL--PREVIOUS_YEAR---UP {
-		background: url($DATE_PICKER--MONTH_PICKER--PREVIOUS_YEAR--ICON) no-repeat center center _property($DATE-PICKER--YEAR--BG, $DATE-PICKER);
+		background: url("./images/icons/icon_arrow_left_single_white@X2.png") no-repeat center center _property($DATE-PICKER--YEAR--BG, $DATE-PICKER);
 		background-size: 14px 14px;
 		opacity: 0.8;
 	}
@@ -351,7 +351,7 @@
 	}
 
 	%CSS_BLOCK--DATE_PICKER--MODAL--NEXT_YEAR---UP {
-		background: url($DATE_PICKER--MONTH_PICKER--NEXT_YEAR--ICON) no-repeat center center _property($DATE-PICKER--YEAR--BG, $DATE-PICKER);
+		background: url("./images/icons/icon_arrow_right_single_white@X2.png") no-repeat center center _property($DATE-PICKER--YEAR--BG, $DATE-PICKER);
 		background-size: 14px 14px;
 		opacity: 0.8;
 	}
@@ -375,7 +375,7 @@
 	}
 
 	%CSS_BLOCK--DATE_PICKER--CANCEL_BUTTON---UP {
-		background: url($DATE_PICKER--CANCEL_BUTTON--ICON) no-repeat center center;
+		background: url($ICON--CLOSE_SMALL---WHITE) no-repeat center center;
         background-size: 10px 10px;
         text-indent: -50000px;
         width: 25px;
@@ -405,7 +405,7 @@
 
     %CSS_BLOCK--CHECKBOX---CHECKED {
         background: no-repeat center center;
-        background-image: url($FORM--CHECKBOX--ICON---CHECKED);
+        background-image: url($ICON--TICK---WHITE);
         background-size: 15px 15px;
         background-color: _property($CHECKBOX--BG---CHECKED, $APP);
     }
@@ -459,7 +459,7 @@
 
     // TOGGLE
     %CSS_BLOCK--FORM--TOGGLE--BG {
-        content: $FORM--TOGGLE--FONT--LOCALISED_STRING---OFF;
+        content: $text_off;
         background: _property($TOGGLE--RAIL, $EDIT-ENGINE);
         box-shadow: _property($TOGGLE--SHADOW, $EDIT-ENGINE);
         text-transform: uppercase;
@@ -477,7 +477,7 @@
     }
 
     %CSS_BLOCK--FORM--TOGGLE--SHUTTLE---ON {
-        content: $FORM--TOGGLE--FONT--LOCALISED_STRING---ON;
+        content: $text_on;
         background: _property($TOGGLE--SHUTTLE---ON, $EDIT-ENGINE);
         text-transform: uppercase;
 
@@ -485,41 +485,19 @@
     }
 
 	// TEXT INPUT
-    %CSS_BLOCK--FORM--TEXT_INPUT {
-		/*color: none;*/
-        // background: _property($INPUT--BG, $APP);
-        // padding: $FORM--TEXT_INPUT--PADDING;
-        // border: _property($INPUT--BORDER, $APP);
-        // transition: all 0.15s ease-in 0s;
-		//
-        // @include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR, $APP), $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
-    }
+    %CSS_BLOCK--FORM--TEXT_INPUT {}
 
-	%CSS_BLOCK--FORM--TEXT_INPUT---HOVER {
-        // background: _property($INPUT--BG---HOVER, $APP);
-        // color: _property($INPUT--COLOR---HOVER, $APP);
-    }
+	%CSS_BLOCK--FORM--TEXT_INPUT---HOVER {}
 
-	%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS {
-		// background: _property($INPUT--BG---FOCUS, $APP);
-        // color: _property($INPUT--COLOR---FOCUS, $APP);
-    }
+	%CSS_BLOCK--FORM--TEXT_INPUT---FOCUS {}
 
-    %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED {
-        // background: _property($INPUT--BG---DISABLED, $APP);
-        // padding: 3px 40px 3px 5px;
-        // padding-left: 0;
-        // border: 1px solid _property($INPUT--BORDER---DISABLED, $APP);
-        // transition: $DEFAULT--TRANSITION;
-		//
-        // @include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR---DISABLED, $APP), $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
-    }
+    %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED {}
 
 	// EDIT ENGINES EXCEPTION
         %CSS_BLOCK--FORM--TEXT_INPUT\:EDIT_ENGINE {
 			background: _property($INPUT--BG, $EDIT-ENGINE);
 
-            @include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR, $EDIT-ENGINE), $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+            @include text(12px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
         }
 
         %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:EDIT_ENGINE {
@@ -534,14 +512,14 @@
 
         %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE {
 			background: _property($INPUT--BG---DISABLED, $EDIT-ENGINE);
-            @include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+            @include text(12px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
         }
 
 	// SEARCH PANEL EXCEPTION
         %CSS_BLOCK--FORM--TEXT_INPUT\:SEARCH_PANEL {
 			background: _property($INPUT--BG, $SIDE-PANEL);
 
-            @include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR, $SIDE-PANEL), $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+            @include text(12px, _property($INPUT--COLOR, $SIDE-PANEL), $FONT--WEIGHT---SEMILIGHT);
         }
 
         %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:SEARCH_PANEL {
@@ -556,17 +534,17 @@
 
         %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:SEARCH_PANEL {
 			background: _property($INPUT--BG---DISABLED, $SIDE-PANEL);
-            @include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR---DISABLED, $SIDE-PANEL) !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+            @include text(12px, _property($INPUT--COLOR---DISABLED, $SIDE-PANEL) !important, $FONT--WEIGHT---SEMILIGHT);
         }
 
 	// TEXT AREA
     %CSS_BLOCK--FORM--TEXT_AREA {
         background: _property($INPUT--BG, $APP) !important;
-        padding: $FORM--TEXT_AREA--PADDING !important;
-        border: $FORM--TEXT_AREA--BORDER !important;
+        padding: 3px 40px 3px 5px !important;
+        border: 1px solid transparent !important;
         transition: none !important;
 
-        @include text($FORM--TEXT_AREA--FONT--SIZE, _property($INPUT--COLOR, $APP), $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+        @include text(12px, _property($INPUT--COLOR, $APP), $FONT--WEIGHT---SEMILIGHT);
     }
 
 	%CSS_BLOCK--FORM--TEXT_AREA---HOVER {
@@ -586,14 +564,14 @@
         border: 1px solid _property($INPUT--BORDER---DISABLED, $APP);
         transition: $DEFAULT--TRANSITION;
 
-        @include text($FORM--TEXT_AREA--FONT--SIZE, _property($INPUT--COLOR---DISABLED, $APP), $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+        @include text(12px, _property($INPUT--COLOR---DISABLED, $APP), $FONT--WEIGHT---SEMILIGHT);
     }
 
 	// EDIT ENGINES EXCEPTION
 		%CSS_BLOCK--FORM--TEXT_AREA\:EDIT_ENGINE {
 			background: _property($INPUT--BG, $EDIT-ENGINE) !important;
 
-			@include text($FORM--TEXT_AREA--FONT--SIZE, _property($INPUT--COLOR, $EDIT-ENGINE), $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+			@include text(12px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
 		}
 
 		%CSS_BLOCK--FORM--TEXT_AREA---HOVER\:EDIT_ENGINE {
@@ -608,7 +586,7 @@
 
 		%CSS_BLOCK--FORM--TEXT_AREA---DISABLED\:EDIT_ENGINE {
 			background: _property($INPUT--BG---DISABLED, $EDIT-ENGINE) !important;
-			@include text($FORM--TEXT_AREA--FONT--SIZE, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FORM--TEXT_AREA--FONT--WEIGHT, $FORM--TEXT_AREA--FONT--FAMILY);
+			@include text(12px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
 		}
 
 
@@ -617,7 +595,7 @@
         %CSS_BLOCK--FORM--TEXT_INPUT\:DUAL_LIST {
 			background: _property($INPUT--BG, $EDIT-ENGINE) !important;
 
-            @include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR, $EDIT-ENGINE), $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+            @include text(12px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
         }
 
         %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:DUAL_LIST {
@@ -632,13 +610,12 @@
 
         %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:DUAL_LIST {
 			background: _property($INPUT--BG---DISABLED, $EDIT-ENGINE) !important;
-            @include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+            @include text(12px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
         }
 
 	// PICKER SEARCH
 		%CSS_BLOCK--FORM--TEXT_INPUT\:PICKER_FILTER {
 			// width: 120px!important;
-			// background: $PICKER_FILTER--TEXT_INPUT--BG--COLOUR;
 			background-color: _property($INPUT--BG, $PICKER-HEADER-INPUT);
 			background-image: url($ICON--SEARCH--SMALL_GREY);
 			background-repeat: no-repeat;
@@ -659,8 +636,7 @@
 				color: _property($INPUT--PLACEHOLDER, $PICKER-HEADER-INPUT);
 			}
 
-			// @include text($FORM--TEXT_INPUT--FONT--SIZE, $PICKER_FILTER--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
-			@include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR, $PICKER-HEADER-INPUT), $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+			@include text(12px, _property($INPUT--COLOR, $PICKER-HEADER-INPUT), $FONT--WEIGHT---SEMILIGHT);
 		}
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_FILTER {
@@ -700,13 +676,12 @@
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:PICKER_FILTER {
 			background-color: _property($INPUT--BG---DISABLED, $PICKER-HEADER-INPUT) !important;
-			@include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR---DISABLED, $PICKER-HEADER-INPUT) !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+			@include text(12px, _property($INPUT--COLOR---DISABLED, $PICKER-HEADER-INPUT) !important, $FONT--WEIGHT---SEMILIGHT);
 		}
 
 	// PICKER SORT
 		%CSS_BLOCK--FORM--TEXT_INPUT\:PICKER_SORT {
 			width: 80px!important;
-			// background: $PICKER_SORT--TEXT_INPUT--BG--COLOUR;
 			background-color: _property($INPUT--BG, $PICKER-HEADER-INPUT);
 			padding: 1px 15px 2px 5px!important;
 
@@ -723,8 +698,7 @@
 				color: _property($INPUT--PLACEHOLDER, $PICKER-HEADER-INPUT);
 			}
 
-			// @include text($FORM--TEXT_INPUT--FONT--SIZE, $PICKER_SORT--TEXT_INPUT--FONT--COLOUR, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
-			@include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR, $PICKER-HEADER-INPUT), $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+			@include text(12px, _property($INPUT--COLOR, $PICKER-HEADER-INPUT), $FONT--WEIGHT---SEMILIGHT);
 		}
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:PICKER_SORT {
@@ -739,7 +713,7 @@
 
 		%CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:PICKER_SORT {
 			background-color: _property($INPUT--BG---DISABLED, $PICKER-HEADER-INPUT) !important;
-			@include text($FORM--TEXT_INPUT--FONT--SIZE, _property($INPUT--COLOR---DISABLED, $PICKER-HEADER-INPUT) !important, $FORM--TEXT_INPUT--FONT--WEIGHT, $FORM--TEXT_INPUT--FONT--FAMILY);
+			@include text(12px, _property($INPUT--COLOR---DISABLED, $PICKER-HEADER-INPUT) !important, $FONT--WEIGHT---SEMILIGHT);
 		}
 
 
@@ -747,19 +721,19 @@
     %CSS_BLOCK--FORM--CLEAR_BUTTON---UP {
         background: no-repeat center center;
         background-color: _property($INPUT--BG, $APP) !important;
-        background-image: url($FORM--CLEAR_BUTTON--ICON---UP);
+        background-image: url($ICON--CLOSE_SMALL---WHITE);
 		background-size: 45%;
     }
 
     %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER {
         background-color: _property($INPUT--BG---HOVER, $APP) !important;
-        background-image: url($FORM--CLEAR_BUTTON--ICON---HOVER);
+        background-image: url($ICON--CLOSE_SMALL---WHITE);
     }
 
     %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS {
         background-color: _property($INPUT--BG---FOCUS, $APP) !important;
         opacity: 1!important;
-        background-image: url($FORM--CLEAR_BUTTON--ICON---HOVER);
+        background-image: url($ICON--CLOSE_SMALL---WHITE);
     }
 
     // EDIT PANEL EXCEPTIONS
@@ -788,7 +762,7 @@
             border:5px solid red;
 			background-color: _property($INPUT--BG---FOCUS, $EDIT-ENGINE) !important;
             opacity: 1!important;
-            background-image: url($FORM--CLEAR_BUTTON--ICON---HOVER);
+            background-image: url($ICON--CLOSE_SMALL---WHITE);
         }
 
 	// PICKER FILTER EXCEPTIONS
@@ -813,7 +787,7 @@
     %CSS_BLOCK--FORM--COMBO--ARROW---UP {
         background: no-repeat center center;
         background-color: transparent !important;
-        background-image: url($FORM--COMBO--ICON---UP);
+        background-image: url(ICON--ARROW_DOWN---WHITE);
         font-style:italic;
 		height: 29px!important;
 		width: 27px;
@@ -821,19 +795,19 @@
 
     %CSS_BLOCK--FORM--COMBO--ARROW---HOVER {
         background-color: red !important;
-        background-image: url($FORM--COMBO--ICON---HOVER);
+        background-image: url($ICON--ARROW_DOWN---WHITE);
     }
 
     %CSS_BLOCK--FORM--COMBO--ARROW---UP\:OPEN_PICKER {
         background: no-repeat center center;
         background-color: transparent !important;
-        background-image: url($FORM--COMBO--ICON---UP\:OPEN_PICKER);
+        background-image: url($ICON--MORE_OPTIONS---WHITE);
         font-style:italic;
     }
 
     %CSS_BLOCK--FORM--COMBO--ARROW---HOVER\:OPEN_PICKER {
         background-color: red !important;
-        background-image: url($FORM--COMBO--ICON---HOVER\:OPEN_PICKER);
+        background-image: url($ICON--MORE_OPTIONS---WHITE);
     }
 
 	%CSS_BLOCK--COMBO {
@@ -925,7 +899,7 @@
 %CSS_BLOCK--FORM--MODE_COMBO--LABEL {
     text-transform: uppercase;
 
-    @include text(14px, $COLOUR--WHITE_CLOUDS, $FONT--WEIGHT---SEMILIGHT);
+    @include text(14px, _theme-color(secondary), $FONT--WEIGHT---SEMILIGHT);
 }
 
 %CSS_BLOCK--FORM--MODE_COMBO--LABEL---MULTI_SELECT {
@@ -1293,58 +1267,6 @@
 // BUTTONS //////////////////////////////////////
 /////////////////////////////////////////////////
 
-    // PICKER SEARCH BUTTON
-	// DEV ::: DELETE START ?
-    %CSS_BLOCK--BUTTON--TEXT\:PICKER_SEARCH {
-        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH;
-        text-transform: uppercase;
-        padding: 4px 10px;
-        @include text(10px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH, $FONT--WEIGHT---NORMAL);
-    }
-
-    %CSS_BLOCK--BUTTON--TEXT---HOVER\:PICKER_SEARCH {
-        background: $BUTTON--BG--COLOUR---HOVER\:PICKER_SEARCH;
-        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:PICKER_SEARCH, $FONT--WEIGHT---NORMAL);
-    }
-
-    %CSS_BLOCK--BUTTON--ICON\:PICKER_SEARCH {
-        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH;
-        padding: 5px 10px 5px 29px;
-        @include text(16px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH, $FONT--WEIGHT---EXTRALIGHT);
-
-        img {
-            left: 5px!important;
-            top: 7px!important;
-        }
-    }
-
-    // PICKER SEARCH BUTTON SUGGESTED
-    %CSS_BLOCK--BUTTON--TEXT\:PICKER_SEARCH---SUGGESTED {
-        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH---SUGGESTED;
-        text-transform: uppercase;
-        padding: 4px 10px;
-        @include text(10px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH---SUGGESTED, $FONT--WEIGHT---NORMAL);
-    }
-
-    %CSS_BLOCK--BUTTON--TEXT---HOVER\:PICKER_SEARCH---SUGGESTED {
-        background: $BUTTON--BG--COLOUR---HOVER\:PICKER_SEARCH---SUGGESTED;
-        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:PICKER_SEARCH---SUGGESTED, $FONT--WEIGHT---NORMAL);
-    }
-
-    %CSS_BLOCK--BUTTON--ICON\:PICKER_SEARCH---SUGGESTED {
-        background: $BUTTON--BG--COLOUR---UP\:PICKER_SEARCH---SUGGESTED;
-        padding: 5px 10px 5px 29px;
-        @include text(16px, $BUTTON--FONT--COLOUR---UP\:PICKER_SEARCH---SUGGESTED, $FONT--WEIGHT---EXTRALIGHT);
-
-        img {
-            left: 5px!important;
-            top: 7px!important;
-        }
-    }
-	// DEV ::: DELETE END ?
-
-
-
 				    // FORM
 				    %CSS_BLOCK--BUTTON--TEXT\:FORM {
 				        background: _property($BUTTON--BG, $EDIT-ENGINE)!important;
@@ -1445,43 +1367,43 @@
 
 	// FORM
 	%CSS_BLOCK--BUTTON--TEXT\:FORM_SMALL {
-        background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
-        text-transform: uppercase;
-        padding: 5px 10px;
-		text-transform: uppercase;
-        @include text(10px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+        // background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
+        // text-transform: uppercase;
+        // padding: 5px 10px;
+		// text-transform: uppercase;
+        // @include text(10px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
     }
 
 	%CSS_BLOCK--BUTTON--TEXT--HOVER_PARENT\:FORM_SMALL {
-        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET!important;
-        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+        // background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET!important;
+        // @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
     }
 
 	%CSS_BLOCK--BUTTON--TEXT---HOVER\:FORM_SMALL {
-        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET;
-        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+        // background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET;
+        // @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
     }
 
 	%CSS_BLOCK--BUTTON--ICON\:FORM_SMALL {
-        background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
-        padding: 5px 10px 5px 29px;
-        @include text(10px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
-		text-transform: uppercase;
-
-        img {
-            left: 5px!important;
-            top: 7px!important;
-        }
+        // background: $BUTTON--BG--COLOUR---UP\:FIELDSET;
+        // padding: 5px 10px 5px 29px;
+        // @include text(10px, $BUTTON--FONT--COLOUR---UP\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+		// text-transform: uppercase;
+		//
+        // img {
+        //     left: 5px!important;
+        //     top: 7px!important;
+        // }
     }
 
 	%CSS_BLOCK--BUTTON--ICON---HOVER\:FORM_SMALL {
-        background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET !important;
-        padding: 5px 10px 5px 29px;
-        @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
-
-        img {
-            left: 5px!important;
-        }
+        // background: $BUTTON--BG--COLOUR---HOVER\:FIELDSET !important;
+        // padding: 5px 10px 5px 29px;
+        // @include text(10px, $BUTTON--FONT--COLOUR---HOVER\:FIELDSET, $FONT--WEIGHT---SEMIBOLD);
+		//
+        // img {
+        //     left: 5px!important;
+        // }
     }
 
 	// ACTION BAR
@@ -1527,7 +1449,7 @@
 
 	%CSS_BLOCK--BUTTON--TEXT---HOVER\:TOGGLE_ASC {
 		opacity: 1;
-		background-color: #6a6e70 !important;
+		background-color: _theme-color(primary, b) !important;
     }
 
 
@@ -1652,7 +1574,7 @@
 
     %CSS_BLOCK--TREE--ROW--BG---UP\:SETTINGS {
 		// padding: 4px 0 4px 10px;
-        background: $COLOUR--TRANSPARENT !important;
+        background: transparent !important;
         // border-left: 1px solid #c5c5c5!important;
 
     }
@@ -1662,7 +1584,7 @@
     }
 
     %CSS_BLOCK--TREE--ROW--BG---SELECTED\:SETTINGS {
-        background-color: $COLOUR--TRANSPARENT !important;
+        background-color: transparent !important;
         // border-left: 3px solid #f26d4f!important;
         // margin-left: -1px;
     }
@@ -1849,34 +1771,4 @@
 	}
 
 	transition: all 0.2s ease-in 0s;
-}
-
-
-
-%CSS_BLOCK--CUSTOMER--LOGO---LIGHT\:BOTTOM_LEFT {
-	content: "Customer Logo";
-	position: fixed;
-	bottom: 10px;
-	left: 10px;
-	width: 40px;
-	height: 40px;
-	background: red;
-	text-indent: -50000px;
-	background: url($COMPANY_LOGO_LIGHT) no-repeat center center;
-	background-size: 40px 40px;
-	opacity: 0.2;
-}
-
-%CSS_BLOCK--CUSTOMER--LOGO---DARK\:BOTTOM_LEFT {
-	content: "Customer Logo";
-	position: fixed;
-	bottom: 10px;
-	left: 10px;
-	width: 40px;
-	height: 40px;
-	background: red;
-	text-indent: -50000px;
-	background: url($COMPANY_LOGO_DARK) no-repeat center center;
-	background-size: 40px 40px;
-	opacity: 0.2;
 }

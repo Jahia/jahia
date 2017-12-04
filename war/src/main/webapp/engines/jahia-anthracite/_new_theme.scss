@@ -9,14 +9,6 @@
 
 }
 
-/*
-  Usage example: _property()
-
-  input {
-  	color: _property($INPUT--COLOR, $EDIT-ENGINE);
-  }
-
-*/
 
 @function _theme-color($color-name, $color-variant: normal) {
 	$color_map: map-get($basic-colors, $color-name);
@@ -26,15 +18,6 @@
 
 }
 
-/*
-  Usage example: _theme-color()
-
-  input {
-    color: _theme-color(primary),
-  	background-color: _theme-color(secondary, b),
-  }
-
-*/
 
 
 
@@ -63,10 +46,7 @@ $DASHBOARD:			 	LIGHT;
 $HAMBURGER:			 	LIGHT;
 $MODAL-INPUT: 			LIGHT;
 $CONTRIBUTE: 			LIGHT;
-// INVERSED
-// $EDIT-ENGINE: 			DARK;
-// $SIDE-PANEL: 			DARK;
-// $APP: 					LIGHT;
+
 
 
 
@@ -84,38 +64,8 @@ $color-quinary:			rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE) - highlight color,
 $color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
 
 $color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
-$color-white:			rgb(255, 255, 255); 	// #FFFFFF (WHITE)
+$color-white:			rgb(255, 255, 255); 	// _theme-color(white) (WHITE)
 $color-green: 			rgb(4,189,4);
-
-
-
-
-// DEFAULT ANTRACITE BLACK
-// $color-primary:			rgb(50,50,55); 			// #323237 (DARK GREY)
-// $color-secondary:		rgb(238,238,238); 		// #eeeeee (CREAM WHITE)
-// $color-tertiary:		rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE)
-// $color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE)
-// $color-quinary:			rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE)		// Alternatives rgb(238,238,238)
-// $color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
-//
-// $color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
-// $color-white:			rgb(255, 255, 255); 	// #FFFFFF (WHITE)
-
-
-
-
-// DEFAULT JAHIA BLUE
-// $color-primary:			rgb(38,38,38); 			// #323237 (DARK GREY)
-// $color-secondary:		rgb(0, 160, 227); 		// #eeeeee (CREAM WHITE)
-// $color-tertiary:		rgb(238,238,238); 		// #00a0e3 (JAHIA BLUE)
-// $color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE)
-// $color-quinary:			rgb(38,38,38); 			// #00a0e3 (JAHIA BLUE)		// Alternatives rgb(238,238,238)
-// $color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
-//
-// $color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
-// $color-white:			rgb(255, 255, 255); 	// #FFFFFF (WHITE)
-
-
 
 
 
@@ -172,6 +122,7 @@ $basic-colors: (
 		a: 		rgba($color-black, .2),
 		b: 		rgba($color-black, .4),
 		c: 		rgba($color-black, .6),
+		d: 		rgba($color-black, .84),
 	),
 	white: (
 		normal:	$color-white,
@@ -186,7 +137,7 @@ $basic-colors: (
 		deleted:							black,
 		livemodified:						orange,
 		liveonly:							orange,
-		locked:								yellow,
+		locked:								#c48F00,
 		mandatorylanguageunpublishable:		orange,
 		mandatorylanguagevalid:				green,
 		markedfordeletion:					red,
@@ -198,18 +149,21 @@ $basic-colors: (
 		unpublished: 						grey,
 		waiting:							white,
 		workinprogress: 					orange,
-		error: 								red,
+		error: 								#f44336,
 		unknown:							black,
 		visible:							green,
 		hidden:								red,
-		attention:							red
+		attention:							red,
+		warning: 							#ffeb3b
 	)
 );
 
 
 
 
-
+/****************************/
+/* COMPONENT COLOURS  */
+/****************************/
 
 $HAMBURGER--TITLE--COLOR: (
 	LIGHT: _theme-color(quinary),
@@ -333,8 +287,8 @@ $MODAL-SOLID--BG:(
 );
 
 $MODAL-SOLID--BG---LEGACY:(
-	LIGHT: rgba($COLOUR--RAIN_CLOUDS, .98),
-	DARK: rgba($COLOUR--RAIN_CLOUDS, .98),
+	LIGHT: rgba(_theme-color(primary), .98),
+	DARK: rgba(_theme-color(primary), .98),
 );
 
 
@@ -1561,7 +1515,19 @@ $TOGGLE--SHUTTLE---OFF:(
 	DARK: _theme-color(primary, d),
 );
 
-// Create color swatches for colour page ( dev only )
+
+
+
+
+
+
+
+
+
+
+/****************************/
+/* CREATE COLOUR SWATCHES FOR TEST PAGE  */
+/****************************/
 
 @each $color in $basic-colors {
 	$color-name: #{nth($color, 1)};
@@ -1588,8 +1554,4 @@ $TOGGLE--SHUTTLE---OFF:(
 
 
 	}
-
-
-
-
 }

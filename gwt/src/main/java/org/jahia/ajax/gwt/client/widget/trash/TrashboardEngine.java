@@ -55,6 +55,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.*;
@@ -68,6 +69,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
@@ -79,7 +81,7 @@ import java.util.List;
 /**
  * Trash board - display all deleted nodes in a grid, allows to undelete and preview information about each of them
  */
-public class TrashboardEngine extends LayoutContainer {
+public class TrashboardEngine extends Window {
 
     private static final List<String> FIELDS;
 
@@ -96,17 +98,23 @@ public class TrashboardEngine extends LayoutContainer {
     private Grid<GWTJahiaNode> grid;
     private ButtonBar bar;
 
-    public TrashboardEngine(Linker linker, EngineContainer container) {
-        super(new FitLayout());
-        addStyleName("trashboard-engine");
+    public TrashboardEngine(Linker linker) {
+       addStyleName("trashboard-engine");
         this.linker = linker;
         this.container = container;
         init();
-        container.setEngine(this, Messages.get("label.trashboard", "Trash Board"), bar, null, this.linker);
     }
 
     private void init() {
+        setHeadingHtml(Messages.get("label.trashboard", "Trash Board"));
         setLayout(new FitLayout());
+        setSize(800, 600);
+        setBorders(false);
+        setBodyBorder(false);
+        setModal(true);
+        setMaximizable(true);
+        setDraggable(false);
+        getHeader().setBorders(false);
 
 
         // data proxy

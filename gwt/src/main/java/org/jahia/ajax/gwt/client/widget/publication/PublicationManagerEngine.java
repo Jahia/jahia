@@ -107,6 +107,7 @@ public class PublicationManagerEngine extends Window {
         setBorders(false);
         setBodyBorder(false);
         setModal(true);
+        setMaximizable(true);
         getHeader().setBorders(false);
         getHeader().setIcon(ToolbarIconProvider.getInstance().getIcon("siteRepository"));
 

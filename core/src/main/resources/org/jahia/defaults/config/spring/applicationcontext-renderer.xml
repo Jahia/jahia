@@ -27,6 +27,14 @@
                 <ref bean="BundleScriptResolver"/>
             </list>
         </property>
+        <property name="nodeTypesWithTheme">
+            <list>
+                <value>jnt:globalSettings</value>
+                <value>jnt:virtualsite</value>
+                <value>jnt:user</value>
+                <value>jmix:mountPointFactory</value>
+            </list>
+        </property>
         <property name="cacheProvider" ref="ehCacheProvider"/>
         <property name="channelService" ref="ChannelService"/>
         <property name="renderTimeMonitor" ref="RenderTimeMonitor"/>

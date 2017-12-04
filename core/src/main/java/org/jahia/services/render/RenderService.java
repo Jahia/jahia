@@ -112,6 +112,9 @@ public class RenderService {
 
     private JahiaUserManagerService userManagerService;
 
+    // Defines a list of node types on witch a themed content template can be found.
+    private List<String> nodeTypesWithTheme;
+
     public static class RenderServiceBeanPostProcessor implements BeanPostProcessor {
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
             return bean;
@@ -169,6 +172,14 @@ public class RenderService {
 
     public Collection<ScriptResolver> getScriptResolvers() {
         return scriptResolvers;
+    }
+
+    public List<String> getNodeTypesWithTheme() {
+        return nodeTypesWithTheme;
+    }
+
+    public void setNodeTypesWithTheme(List<String> nodeTypesWithTheme) {
+        this.nodeTypesWithTheme = nodeTypesWithTheme;
     }
 
     public void start() throws JahiaInitializationException {
@@ -336,7 +347,7 @@ public class RenderService {
             // Allows to override template by theme for server settings and site settings
             String theme = getSettingsPanelsTheme(renderContext.getRequest());
             if (theme != null
-                    && JCRContentUtils.isNodeType(resource.getNode(), "jnt:globalSettings", "jnt:virtualsite", "jnt:user")) {
+                    && JCRContentUtils.isNodeType(resource.getNode(), nodeTypesWithTheme)) {
                 template = addTemplate(resource, renderContext, templateName + "-" + theme, installedModules, type);
             }
             if (template == null) {

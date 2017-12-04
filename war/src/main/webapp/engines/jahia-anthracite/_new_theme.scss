@@ -165,13 +165,13 @@ $basic-colors: (
 	),
 	senary: (
 		normal:	$color-senary,
-		a: 		lighten($color-senary, 4%)
+		a: 		lighten($color-senary, 4%),
 	),
 	black: (
 		normal:	$color-black,
 		a: 		rgba($color-black, .2),
 		b: 		rgba($color-black, .4),
-		c: 		rgba($color-black, .6)
+		c: 		rgba($color-black, .6),
 	),
 	white: (
 		normal:	$color-white,
@@ -1560,3 +1560,36 @@ $TOGGLE--SHUTTLE---OFF:(
 	LIGHT: _theme-color(primary, d),
 	DARK: _theme-color(primary, d),
 );
+
+// Create color swatches for colour page ( dev only )
+
+@each $color in $basic-colors {
+	$color-name: #{nth($color, 1)};
+	$color_map: map-get($basic-colors, $color-name);
+
+	@each $shade in $color_map {
+		$shade-name: #{nth($shade, 1)};
+
+		@if($color-name != "black" and $color-name != "white" and $color-name != "green"){
+			.swatch.#{$color-name}.#{$shade-name} {
+				background-color: _theme-color($color-name, $shade-name);
+
+				&:before {
+					content: "#{$color-name} #{$shade-name}";
+				}
+
+				&:after {
+					content: "#{_theme-color($color-name, $shade-name)}";
+				}
+
+			}
+		}
+
+
+
+	}
+
+
+
+
+}

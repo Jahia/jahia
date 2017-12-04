@@ -22,7 +22,7 @@
 
 
 
-.engine-panel,
+.engine-panel:not(.trashboardengine-ctn),
 .engine-window {
 	//z-index: $ZINDEX--SIDE_PANEL--EDIT_ENGINE;
 	z-index: 1050!important;

@@ -59,37 +59,23 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Unit test for e-mail validation regular expression.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 @RunWith(Parameterized.class)
 public class EmailValidationTest {
 
     // see 02-jahia-nodetypes.cnd
-    private static final Pattern PATTERN = Pattern.compile("^$|^[A-Za-z0-9]+[A-Za-z0-9._'%+-]*@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}");
+    private static final Pattern PATTERN = Pattern.compile("^$|[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}");
 
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { "", true },                               // 1
-                { "a@a.com", true },                        // 2
-                { "a@a.b.c.com", true },                    // 3
-                { "a@a.b.c.info", true },                   // 4
-                { "a@a.b.c.africa", true },                 // 5
-                { "a.b.c@a.b.c.africa", true },             // 6
-                { "A.b_c@a.b-c.d.aFRica", true },           // 7
-                { "A.b_c2017@a.b-c-2017.d.aFRica", true },  // 8
-                { "mike.o'brian@gmail.com", true },         // 9
+        return Arrays.asList(new Object[][] { { "", true }, { "a@a.com", true }, { "a@a.b.c.com", true },
+                { "a@a.b.c.info", true }, { "a@a.b.c.africa", true }, { "a.b.c@a.b.c.africa", true },
+                { "A.b_c@a.b-c.d.aFRica", true }, { "A.b_c2017@a.b-c-2017.d.aFRica", true },
 
-                { "a", false },                             // 10
-                { "a@", false },                            // 11
-                { "a@com", false },                         // 12
-                { "a.b.c@a.b.c.a", false },                 // 13
-                { "a.b.c@a.b.c.", false },                  // 14
-                { "a.b.c@a.b.c.africa24", false },          // 15
-                { "й%&.b.c@a.b.c.africa24", false },        // 16
-                { ".aaaa@aaa.com", false },                 // 17
-        });
+                { "a", false }, { "a@", false }, { "a@com", false }, { "a.b.c@a.b.c.a", false },
+                { "a.b.c@a.b.c.", false }, { "a.b.c@a.b.c.africa24", false }, { "й%&.b.c@a.b.c.africa24", false } });
     }
 
     private String input;

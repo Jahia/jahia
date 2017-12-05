@@ -71,6 +71,7 @@ public class PreviewWindow extends Window {
 
     public PreviewWindow(Linker linker, GWTJahiaNode jahiaNode) {
         addStyleName("preview-window");
+        setModal(true);
         setLayout(new BorderLayout());
         setSize(800,600);
 

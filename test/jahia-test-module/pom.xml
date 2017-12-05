@@ -371,7 +371,7 @@
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>bootstrap-acme-space-templates</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
+            <version>3.0.5</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>

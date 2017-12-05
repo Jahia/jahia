@@ -3824,7 +3824,8 @@ body[data-indigo-gwt-side-panel="open"] {
 // Publication manager
 
 .x-window.publication-manager-engine,
-.x-window.trashboard-engine {
+.x-window.trashboard-engine,
+.x-window.preview-window {
 
 	.x-window-header .x-panel-toolbar {
 		display: block;
@@ -4012,6 +4013,19 @@ body[data-indigo-gwt-side-panel="open"] {
 			opacity: .52;
 		}
 
+	}
+
+}
+
+.x-window.preview-window {
+
+	.gwt-TextArea-readonly {
+		background: _theme-color(secondary, d);
+		border: none !important;
+		width: 100% !important;
+		margin: 4px 0;
+		box-sizing: border-box;
+		padding: 8px;
 	}
 
 }

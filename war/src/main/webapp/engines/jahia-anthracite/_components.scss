@@ -3305,7 +3305,8 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.content-export,
 .x-window.customized-preview,
 .x-window.publication-manager-engine,
-.x-window.trashboard-engine {	// Added selector for publication manager!
+.x-window.trashboard-engine,
+.x-window.preview-window {	// Added selector for publication manager!
 	background: transparent;
 	z-index: 999999 !important;
 

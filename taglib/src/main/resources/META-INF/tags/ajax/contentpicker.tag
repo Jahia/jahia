@@ -71,6 +71,6 @@ while (selectedNodeIter.hasNext()) {
                          jahiaContextPath="${fn:escapeXml(jahiaContextPath)}" filesServletPath="${fn:escapeXml(filesServletPath)}"  rootPath="<%=rootPath%>"
                          startPath="<%=startPath%>"
                          filters="<%=filters%>"
-                         mimeTypes="${fn:escapeXml(mimeTypes)}" callback="${fn:escapeXml(callback)}" config="${fn:escapeXml(conf)}"
+                         mimeTypes="${fn:escapeXml(mimeTypes)}" callback="${fn:escapeXml(callback)}" config="${fn:escapeXml(conf)}" cssClassName="window-<%=conf%>"
                          embedded="<%=embedded%>" multiple="<%=multiple%>"/>
 

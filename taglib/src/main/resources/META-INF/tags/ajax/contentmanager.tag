@@ -61,6 +61,6 @@ while (selectedNodeIter.hasNext()) {
 </script>
 <template:gwtJahiaModule id="contentmanager" jahiaType="contentmanager" rootPath="<%=rootPath%>"
                          filters="<%=filters%>"
-                         mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>"
+                         mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>" cssClassName="window-<%=conf%>"
                          embedded="<%=embedded%>" multiple="<%=multiple%>" selectedPaths="${selectedPaths}"/>
 

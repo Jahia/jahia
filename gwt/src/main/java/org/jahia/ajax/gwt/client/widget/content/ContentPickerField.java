@@ -157,6 +157,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                             final Window w = new Window();
                             w.setLayout(new FitLayout());
                             w.setId("JahiaGxtContentPickerWindow");
+                            w.addStyleName("modal-" + configuration);
                             final ContentPicker contentPicker =
                                     new ContentPicker(selectorOptions, getValue(), types, filters, mimeTypes,
                                             config, multiple);

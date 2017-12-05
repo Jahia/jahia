@@ -4030,6 +4030,18 @@ body[data-indigo-gwt-side-panel="open"] {
 
 }
 
+.x-window-plain.x-window-dlg {
+	z-index: 99999999 !important;
+}
+
+.x-window-plain.x-window-dlg span.ext-mb-text > span {
+	color: #ffeb3b !important;	// <=== To theme (create variable).
+	font-weight: 600;
+	font-size: 13px;
+	top: 2px;
+	position: relative;
+}
+
 
 
 /////////////////////////////////////////////////
@@ -4038,7 +4050,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 .x-window.compare-engine {
-	background: _theme-color(primary, a) !important; /* TO THEME */
+	background: _theme-color(primary, a) !important;
 
 	.x-window-header {
 		height: 64px !important;

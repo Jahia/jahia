@@ -3881,10 +3881,10 @@ body[data-indigo-gwt-side-panel="open"] {
 		background: transparent !important;
 
 		.x-grid3-hh {
-			border-bottom: 1px solid #eee;
+			border-bottom: 1px solid _theme-color(secondary, d);
 			text-transform: uppercase;
 			color: _theme-color(black, c);
-			margin: 2px 2px 8px;
+			margin: 2px 0 12px;
 
 			> table {
 				padding: 4px 0;
@@ -3921,12 +3921,55 @@ body[data-indigo-gwt-side-panel="open"] {
 
 .x-window.trashboard-engine {
 
-	.x-grid3-cell-inner.x-grid3-col-displayName {
-		max-width: 135px;
+	.x-grid3-cell-inner {
+
+		&.x-grid3-col-displayName {
+			max-width: 135px;
+		}
+
+		&.x-grid3-col-j\:deletionDate {
+			max-width: 140px;
+		}
+
 	}
 
-	.x-grid3-cell-inner.x-grid3-col-j\:deletionDate {
-		max-width: 140px;
+	.x-grid3-td-infos button.x-btn-text {
+		text-indent: -99999px;
+
+		img.x-btn-image {
+			background: url(./images/icons/ic_info_outline-DARK@2x.png) !important;
+			width: 100% !important;
+			background-repeat: no-repeat !important;
+			background-size: 18px !important;
+			background-position: center center !important;
+		}
+
+	}
+
+	.x-grid3-td-Delete button.x-btn-text {
+		text-indent: -99999px;
+
+		img.x-btn-image {
+			background: url(./images/icons/ic_delete_black.png) !important;
+			width: 100% !important;
+			background-repeat: no-repeat !important;
+			background-size: 18px !important;
+			background-position: center center !important;
+		}
+
+	}
+
+	.x-grid3-td-undelete button.x-btn-text {
+		text-indent: -99999px;
+
+		img.x-btn-image {
+			background: url(./images/icons/ic_undo_black.png) !important;
+			width: 100% !important;
+			background-repeat: no-repeat !important;
+			background-size: 18px !important;
+			background-position: center center !important;
+		}
+
 	}
 
 }

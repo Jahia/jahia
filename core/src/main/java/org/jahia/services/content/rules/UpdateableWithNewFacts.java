@@ -48,6 +48,19 @@ import org.jahia.services.content.JCRSessionWrapper;
 import javax.jcr.RepositoryException;
 import java.util.List;
 
+/**
+ * Interface used by rule facts.
+ * The particularity of this Updateable extension is that it can provide a list of new facts after the update, they
+ * will be insert in the rule engine as new facts just after the update, even if the update is delayed for some reasons.
+ */
 public interface UpdateableWithNewFacts extends Updateable {
+
+    /**
+     * Do the update operation in the JCR repository
+     * @param s the context node
+     * @param delayedUpdates list of delayed updates that can be fill by the implementation ( for example when the node is locked ), the update need to be performed later.
+     * @param newFacts list of new facts that need to be insert in the rule engine as a result of the update ( so they can trigger other rules )
+     * @throws RepositoryException
+     */
     void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates, List<Object> newFacts) throws RepositoryException;
 }

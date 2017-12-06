@@ -467,7 +467,9 @@
 			.x-viewport-adminmode & {
 				margin-top: 52px;
 				height: calc(100% - 226px)!important;
-				overflow-y: scroll;
+				overflow: auto;
+				overflow-x: hidden;
+}
 			}
 
 			body[data-sitesettings="true"] .x-viewport-editmode & {

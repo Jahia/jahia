@@ -153,7 +153,7 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
         // switch off read only
         try {
             readOnlyModeController.switchReadOnlyMode(false);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException e) {
             // the read only mode was off already
         }
 

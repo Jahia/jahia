@@ -2656,7 +2656,7 @@ body[data-indigo-add-visibility-condition="new"] {
 
 		> .x-grid3-body {
 			padding-bottom: 30px;
-			width: calc(100% - 160px) !important;
+			width: calc(100% - 180px) !important;
 		}
 
 	}
@@ -2757,23 +2757,25 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	.x-row-editor-footer {
 		background: $color-primary;
+		height: 1px;
+		width: calc(100% - 20px);
 	}
 
 	.x-row-editor .x-btns {
 		background: transparent;
 		position: absolute;
-		right: -16px !important;
-		top: 5px !important;
+		right: 4px !important;
+		top: 4px !important;
 		left: initial !important;
 
 		.x-plain-bwrap {
-			background: $color-primary;
+			background: transparent;
 		}
 
 	}
 
 	.x-row-editor .x-plain-body.x-plain-body-noheader {
-		background: $color-primary;
+		background: transparent;
 		margin-top: -2px;
 		padding-bottom: 2px;
 	}

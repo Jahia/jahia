@@ -78,6 +78,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.tools.patches.SqlPatcher;
 import org.jahia.utils.DatabaseUtils;
@@ -105,7 +106,7 @@ import java.util.*;
 
 import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
 
-public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
+public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware, ReadOnlyModeCapable {
 
     /**
      * An initializer of DX cluster related settings.
@@ -392,7 +393,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             siteURLPortOverride = getInt("siteURLPortOverride", 0);
 
-            isSiteErrorEnabled = getBoolean("site.error.enabled",false);
+            isSiteErrorEnabled = getBoolean("site.error.enabled", false);
 
             operatingMode = getString("operatingMode", "development");
             productionMode = !"development".equalsIgnoreCase(operatingMode);
@@ -424,8 +425,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             maxNameSize = getInt("jahia.jcr.maxNameSize", 32);
 
-            expandImportedFilesOnDisk = getBoolean("expandImportedFilesOnDisk",false);
-            expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath","/tmp");
+            expandImportedFilesOnDisk = getBoolean("expandImportedFilesOnDisk", false);
+            expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath", "/tmp");
 
             accessManagerPathPermissionCacheMaxSize = getInt("accessManagerPathPermissionCacheMaxSize", 100);
 
@@ -1298,6 +1299,16 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 }
             }
         }
+    }
+
+    @Override
+    public void switchReadOnlyMode(boolean enable) {
+        setReadOnlyMode(enable);
+    }
+
+    @Override
+    public int getReadOnlyModePriority() {
+        return 1000;
     }
 
     public String getOperatingMode() {

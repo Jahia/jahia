@@ -61,6 +61,7 @@ import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.settings.readonlymode.ReadOnlyModeController;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.xml.JahiaSAXParserFactory;
 import org.joda.time.DateTime;
@@ -157,8 +158,15 @@ public class JCRSessionWrapper implements Session {
     protected UUID uuid;
     private static Map<UUID, JCRSessionWrapper> activeSessionsObjects = new ConcurrentSkipListMap<UUID, JCRSessionWrapper>();
 
+    private boolean readOnly;
+
     public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
-                             JCRSessionFactory sessionFactory, Locale fallbackLocale) {
+            JCRSessionFactory sessionFactory, Locale fallbackLocale) {
+        this(user, credentials, isSystem, workspace, locale, sessionFactory, fallbackLocale, false);
+    }
+
+    public JCRSessionWrapper(JahiaUser user, Credentials credentials, boolean isSystem, String workspace, Locale locale,
+                             JCRSessionFactory sessionFactory, Locale fallbackLocale, boolean readOnly) {
         uuid = UUID.randomUUID();
         this.user = user;
         this.credentials = credentials;
@@ -182,6 +190,7 @@ public class JCRSessionWrapper implements Session {
             thisSessionTrace = new Exception((isSystem ? "System ":"") + "Session: " + uuid);
         }
         activeSessionsObjects.put(uuid, this);
+        this.readOnly = readOnly;
     }
 
     @Override
@@ -499,10 +508,8 @@ public class JCRSessionWrapper implements Session {
     public void save(final int operationType)
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        validate(operationType);
-        newNodes.clear();
-        changedNodes.clear();
 
+        validate(operationType);
         JCRObservationManager.doWorkspaceWriteCall(this, operationType, new JCRCallback<Object>() {
 
             @Override
@@ -513,6 +520,9 @@ public class JCRSessionWrapper implements Session {
                 return null;
             }
         });
+
+        newNodes.clear();
+        changedNodes.clear();
 
         if (workspace.getName().equals("default")) {
             // If reference helper found values to update, update them in live too
@@ -1346,5 +1356,31 @@ public class JCRSessionWrapper implements Session {
 
     public void setReadOnlyCacheEnabled(boolean readOnlyCacheEnabled) {
         this.readOnlyCacheEnabled = readOnlyCacheEnabled;
+    }
+
+    /**
+     * Set the read only status of this session.
+     * @param readOnly the read only status to set
+     */
+    void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    /**
+     * Get the read only status of this session.
+     * @return whether this session is read only
+     */
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    /**
+     * Check if this session is read only, call the read only controller to report read only violation in case the session is read only.
+     * @param message the message used in case of read only mode violation
+     */
+    public void checkReadOnly(String message) {
+        if (isReadOnly()) {
+            ReadOnlyModeController.readOnlyModeViolated(message);
+        }
     }
 }

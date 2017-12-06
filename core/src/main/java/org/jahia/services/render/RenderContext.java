@@ -56,6 +56,7 @@ import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.settings.readonlymode.ReadOnlyModeController;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.RepositoryException;
@@ -103,7 +104,7 @@ public class RenderContext {
     private String mode;
     private SiteInfo siteInfo;
     private boolean forceUILocaleForJCRSession;
-    
+
     private boolean portletActionRequest;
 
     private boolean ugcEnabled = true;
@@ -409,7 +410,7 @@ public class RenderContext {
     public boolean isForceUILocaleForJCRSession() {
         return forceUILocaleForJCRSession;
     }
-    
+
     public boolean isPortletActionRequest() {
         return portletActionRequest;
     }
@@ -425,4 +426,14 @@ public class RenderContext {
     public void setUgcEnabled(boolean ugcEnabled) {
         this.ugcEnabled = ugcEnabled;
     }
+
+    /**
+     * Get current read-only mode status.
+     *
+     * @return Current read-only mode status
+     */
+    public ReadOnlyModeController.ReadOnlyModeStatus getReadOnlyStatus() {
+        return ReadOnlyModeController.getInstance().getReadOnlyStatus();
+    }
+
 }

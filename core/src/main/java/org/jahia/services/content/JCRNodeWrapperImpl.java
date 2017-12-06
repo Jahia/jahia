@@ -138,6 +138,39 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    protected static void unlock(final Node objectNode, String type, String userID, JCRSessionWrapper session) throws RepositoryException {
+        if (objectNode.hasProperty("j:locktoken")) {
+            Property property = objectNode.getProperty("j:locktoken");
+            String token = property.getString();
+            Value[] types = objectNode.getProperty("j:lockTypes").getValues();
+            for (Value value : types) {
+                String owner = StringUtils.substringBefore(value.getString(), ":");
+                String currentType = StringUtils.substringAfter(value.getString(), ":");
+                if (currentType.equals(type)) {
+                    if (userID.equals(owner)) {
+                        objectNode.getSession().addLockToken(token);
+                        session.checkout(objectNode);
+                        List<Value> valueList = new ArrayList<Value>(Arrays.asList(types));
+                        valueList.remove(value);
+                        if (valueList.isEmpty()) {
+                            session.save();
+                            objectNode.unlock();
+                            property.remove();
+                            objectNode.getProperty("j:lockTypes").remove();
+                        } else {
+                            objectNode.setProperty("j:lockTypes", valueList.toArray(new Value[valueList.size()]));
+                        }
+                        session.save();
+
+                        return;
+                    }
+                }
+            }
+        } else {
+            objectNode.unlock();
+        }
+    }
+
     protected JCRNodeWrapperImpl(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(session, provider);
         this.objectNode = objectNode;
@@ -259,9 +292,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         breakAcl = (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean());
                     }
                 } catch (ItemNotFoundException e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(e.getMessage(), e);
-                    }
+                    logger.debug(e.getMessage(), e);
                 }
 
                 Map<String, List<String[]>> result = entries;
@@ -602,7 +633,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (modified) {
             aclEntries = null;
-        } 
+        }
         return true;
     }
 
@@ -714,9 +745,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 file.getSession().checkout(file);
             }
         } catch (PathNotFoundException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("file " + name + " does not exist, creating...");
-            }
+            logger.debug("file {} does not exist, creating...", name);
             if (!isCheckedOut()) {
                 getSession().checkout(this);
             }
@@ -2399,6 +2428,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public Lock lock(boolean isDeep, boolean isSessionScoped) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
+        session.checkReadOnly("Node lock operation is not permitted for the current session as it is in read-only mode");
         return objectNode.lock(isDeep, isSessionScoped);
     }
 
@@ -2421,6 +2451,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public boolean lockAndStoreToken(String type, String userID) throws RepositoryException {
+        session.checkReadOnly("Node lock operation is not permitted for the current session as it is in read-only mode");
+
         if (!isNodeType("jmix:lockable")) {
             return false;
         }
@@ -2511,13 +2543,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             Value[] oldValues = property.getValues();
             boolean addValue = true;
             for (Value oldValue : oldValues) {
-                if(l.equals(oldValue.getString())) {
+                if (l.equals(oldValue.getString())) {
                     addValue = false;
                     break;
                 }
             }
             //Avoid having twice the same lock
-            if(addValue) {
+            if (addValue) {
                 Value[] newValues = new Value[oldValues.length + 1];
                 System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
                 newValues[oldValues.length] = getSession().getValueFactory().createValue(l);
@@ -2654,6 +2686,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     @Override
     public void unlock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
+        session.checkReadOnly("Node unlock operation is not permitted for the current session as it is in read-only mode");
         objectNode.unlock();
     }
 
@@ -2672,9 +2705,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public void unlock(String type, String userID)
             throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException,
             InvalidItemStateException, RepositoryException {
+
         if (!isLocked()) {
             throw new LockException("Node not locked");
         }
+
+        session.checkReadOnly("Node unlock operation is not permitted for the current session as it is in read-only mode");
 
         if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION) && hasI18N(session.getLocale(),
                 false)) {
@@ -2692,40 +2728,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private void unlock(final Node objectNode, String type, String userID) throws RepositoryException {
-        if (objectNode.hasProperty("j:locktoken")) {
-            Property property = objectNode.getProperty("j:locktoken");
-            String token = property.getString();
-            Value[] types = objectNode.getProperty("j:lockTypes").getValues();
-            for (Value value : types) {
-                String owner = StringUtils.substringBefore(value.getString(), ":");
-                String currentType = StringUtils.substringAfter(value.getString(), ":");
-                if (currentType.equals(type)) {
-                    if (userID.equals(owner)) {
-                        objectNode.getSession().addLockToken(token);
-                        getSession().checkout(objectNode);
-                        List<Value> valueList = new ArrayList<Value>(Arrays.asList(types));
-                        valueList.remove(value);
-                        if (valueList.isEmpty()) {
-                            getSession().save();
-                            objectNode.unlock();
-                            property.remove();
-                            objectNode.getProperty("j:lockTypes").remove();
-                        } else {
-                            objectNode.setProperty("j:lockTypes", valueList.toArray(new Value[valueList.size()]));
-                        }
-                        getSession().save();
-
-                        return;
-                    }
-                }
-            }
-        } else {
-            objectNode.unlock();
-        }
+        unlock(objectNode, type, userID, getSession());
     }
 
     @Override
     public void clearAllLocks() throws RepositoryException {
+        session.checkReadOnly("Clear all locks on node operation is not permitted for the current session as it is in read-only mode");
+
         if (!isNodeType(Constants.JAHIANT_TRANSLATION)) {
             NodeIterator ni = objectNode.getNodes(TRANSLATION_NODES_PATTERN);
             while (ni.hasNext()) {
@@ -2797,9 +2806,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         }
                     }
                 } catch (ItemNotFoundException e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("checkLock : no i18n node for node " + localPathInProvider);
-                    }
+                    logger.debug("checkLock : no i18n node for node {}", localPathInProvider);
                 }
             }
         }
@@ -3229,9 +3236,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 co &= versionManager.isCheckedOut(getI18N(session.getLocale()).getPath());
             } catch (ItemNotFoundException e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("isCheckedOut : no i18n node for node " + localPathInProvider);
-                }
+                logger.debug("isCheckedOut : no i18n node for node {}", localPathInProvider);
             }
         }
 
@@ -3626,6 +3631,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             try {
                 final String path = sharedNode.getCorrespondingNodePath(Constants.LIVE_WORKSPACE);
                 JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Object>() {
+
+                    @Override
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper n = session.getNode(path);
                         getSession().checkout(n);
@@ -3843,12 +3850,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         // also return unescaped name if title is empty
-        if(title != null && !title.isEmpty()) {
+        if (title != null && !title.isEmpty()) {
             return (session.getWorkspace().getName().equals(Constants.EDIT_WORKSPACE) && title.contains("##resourceBundle(")) ?
                     interpolateResourceBundle(title) :
                     title;
-        }
-        else {
+        } else {
             return getUnescapedName();
         }
     }

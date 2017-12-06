@@ -64,6 +64,8 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
+import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.quartz.JobDataMap;
@@ -87,7 +89,7 @@ import java.util.*;
  * @author rincevent
  * @since JAHIA 6.5
  */
-public class WorkflowService implements BeanPostProcessor, ApplicationListener<JahiaTemplateManagerService.ModuleDeployedOnSiteEvent> {
+public class WorkflowService implements BeanPostProcessor, ApplicationListener<JahiaTemplateManagerService.ModuleDeployedOnSiteEvent>, ReadOnlyModeCapable {
 
     public static final String CANDIDATE = "candidate";
     public static final String START_ROLE = "start";
@@ -103,8 +105,10 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     private JCRTemplate jcrTemplate;
     private WorkflowObservationManager observationManager = new WorkflowObservationManager(this);
     private CacheService cacheService;
-    private Cache<String, Map<String,WorkflowRule>> cache;
+    private Cache<String, Map<String, WorkflowRule>> cache;
     private boolean servicesStarted = false;
+
+    private volatile boolean readOnly;
 
     /**
      * Returns a singleton instance of this service.
@@ -471,11 +475,9 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                             site = node.getResolveSite();
                         }
                         if (principal.charAt(0) == 'u') {
-                            JCRUserNode userNode = userService.lookupUser(principalName,strings[0].startsWith("/sites/") ? site.getSiteKey() : null);
+                            JCRUserNode userNode = userService.lookupUser(principalName, strings[0].startsWith("/sites/") ? site.getSiteKey() : null);
                             if (userNode != null) {
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug("user " + userNode.getUserKey() + " is granted");
-                                }
+                                logger.debug("user {} is granted", userNode.getUserKey());
                                 JahiaUser jahiaUser = userNode.getJahiaUser();
                                 principals.add(jahiaUser);
                             }
@@ -486,9 +488,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                                 group = groupService.lookupGroup(null, principalName);
                             }
                             if (group != null) {
-                                if (logger.isDebugEnabled()) {
-                                    logger.debug("group " + group.getGroupKey() + " is granted");
-                                }
+                                logger.debug("group {} is granted", group.getGroupKey());
                                 principals.add(group.getJahiaGroup());
                             }
                         }
@@ -601,7 +601,11 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
      */
     public void abortProcess(String processId, String provider) {
 
-        Workflow workflow = lookupProvider(provider).getWorkflow(processId, null);
+        assertWritable();
+
+        WorkflowProvider workflowProvider = lookupProvider(provider);
+
+        Workflow workflow = workflowProvider.getWorkflow(processId, null);
         final Set<String> actionIds = new HashSet<String>();
         for (final WorkflowAction action : workflow.getAvailableActions()) {
             if (action instanceof WorkflowTask) {
@@ -629,11 +633,11 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                     }
                 });
             } catch (RepositoryException e) {
-                logger.error("Cannot remove tasks",e);
+                logger.error("Cannot remove tasks", e);
             }
         }
 
-        lookupProvider(provider).abortProcess(processId);
+        workflowProvider.abortProcess(processId);
     }
 
     public void startProcessAsJob(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
@@ -653,12 +657,14 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
     public String startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
                                Map<String, Object> args, List<String> comments) throws RepositoryException {
-        boolean debugEnabled = logger.isDebugEnabled();
-        long startTime = debugEnabled ? System.currentTimeMillis() : 0;
-        
+
+        assertWritable();
+
+        long startTime = System.currentTimeMillis();
+
         // retrieve the permission, required to start the workflow
         String startPermission = getPermissionForStart(workflowRegistrationByDefinition.get(processKey));
-        
+
         WorkflowProvider providerImpl = lookupProvider(provider);
         List<String> checkedNodeIds = new ArrayList<String>();
         for (String nodeId : nodeIds) {
@@ -694,7 +700,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
             addCommentsToVariables(newArgs, comments, session.getUser().getUserKey());
         }
         final String processId = providerImpl.startProcess(processKey, newArgs);
-        if (debugEnabled) {
+        if (logger.isDebugEnabled()) {
             // if trace is enabled we log also the UUIDs of all nodes
             logger.debug(
                     "A workflow {} from {} has been started on {}{} nodes{}"
@@ -800,13 +806,13 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
 
     public void assignTask(String taskId, String provider, JahiaUser user) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Assigning user " + user + " to task " + taskId);
-        }
+        assertWritable();
+        logger.debug("Assigning user {} to task {}", user, taskId);
         lookupProvider(provider).assignTask(taskId, user);
     }
 
     public void completeTask(String taskId, JahiaUser user, String provider, String outcome, Map<String, Object> args) {
+        assertWritable();
         lookupProvider(provider).completeTask(taskId, user, outcome, args);
     }
 
@@ -853,6 +859,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     }
 
     public void addComment(String processId, String provider, String comment, String user) {
+        assertWritable();
         lookupProvider(provider).addComment(processId, comment, user);
     }
 
@@ -862,7 +869,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     }
 
     public HistoryWorkflow getHistoryWorkflow(String id, String provider, Locale uiLocale) {
-        List<HistoryWorkflow> list = providers.get(provider).getHistoryWorkflows(Collections.singletonList(id), uiLocale);
+        List<HistoryWorkflow> list = lookupProvider(provider).getHistoryWorkflows(Collections.singletonList(id), uiLocale);
         if (!list.isEmpty()) {
             return list.get(0);
         } else {
@@ -961,7 +968,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
             throws RepositoryException {
         String provider = StringUtils.substringBefore(wfName, ":");
         String wfKey = StringUtils.substringAfter(wfName, ":");
-        WorkflowDefinition definition = providers.get(provider).getWorkflowDefinitionByKey(wfKey, node.getSession().getLocale());
+        WorkflowDefinition definition = lookupProvider(provider).getWorkflowDefinitionByKey(wfKey, node.getSession().getLocale());
         addWorkflowRule(node, definition);
     }
 
@@ -995,12 +1002,12 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
         try {
 
-            Map<String,WorkflowRule> rules = recurseOnRules(objectNode);
-            Map<String,List<String>> perms = new HashMap<>();
+            Map<String, WorkflowRule> rules = recurseOnRules(objectNode);
+            Map<String, List<String>> perms = new HashMap<>();
 
             JCRNodeWrapper rootNode = objectNode.getSession().getNode("/");
             JahiaAccessManager accessControlManager = (JahiaAccessManager) rootNode.getRealNode().getSession().getAccessControlManager();
-            final Map<String,List<String[]>> aclEntries = objectNode.getAclEntries() ;
+            final Map<String, List<String[]>> aclEntries = objectNode.getAclEntries() ;
             if (aclEntries != null) {
                 for (List<String[]> list : aclEntries.values()) {
                     for (String[] strings : list) {
@@ -1013,14 +1020,14 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                     }
                 }
             }
-            Map<String,WorkflowRule> rulesCopy = new HashMap<>(rules);
+            Map<String, WorkflowRule> rulesCopy = new HashMap<>(rules);
             for (Map.Entry<String, WorkflowRule> ruleEntry : rules.entrySet()) {
                 WorkflowRule rule = ruleEntry.getValue();
                 for (Map.Entry<String, List<String>> aclEntry : perms.entrySet()) {
                     if (aclEntry.getKey().startsWith(rule.getDefinitionPath().equals("/") ? "/" : rule.getDefinitionPath() + "/")) {
                         if (!Collections.disjoint(aclEntry.getValue(), rule.getPermissions().values())) {
                             rule = new WorkflowRule(aclEntry.getKey(), ruleEntry.getValue().getDefinitionPath(), rule.getProviderKey(), rule.getWorkflowDefinitionKey(), rule.getPermissions());
-                            rulesCopy.put(ruleEntry.getKey(),rule);
+                            rulesCopy.put(ruleEntry.getKey(), rule);
                         }
                     }
                 }
@@ -1139,7 +1146,8 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
     }
 
     public void deleteProcess(String processId, String provider) {
-        providers.get(provider).deleteProcess(processId);
+        assertWritable();
+        lookupProvider(provider).deleteProcess(processId);
     }
 
     public void addWorkflowListener(WorkflowListener listener) {
@@ -1181,7 +1189,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
     /**
      * Returns the permission name, required to start the workflow of the specified type.
-     * 
+     *
      * @param worklowTypeRegistration
      *            the workflow type registration object
      * @return the permission name, required to start the workflow of the specified type
@@ -1199,5 +1207,21 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
         }
 
         return startPermission;
+    }
+
+    @Override
+    public void switchReadOnlyMode(boolean enable) {
+        readOnly = enable;
+    }
+
+    @Override
+    public int getReadOnlyModePriority() {
+        return 700;
+    }
+
+    private void assertWritable() {
+        if (readOnly) {
+            throw new ReadOnlyModeException("The Workflow Service is in read only mode: no operations that modify workflow state are available");
+        }
     }
 }

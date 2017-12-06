@@ -46,7 +46,9 @@ package org.jahia.services.scheduler;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.JahiaService;
+import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +64,7 @@ import static org.jahia.services.scheduler.BackgroundJob.*;
  *
  * @author Sergiy Shyrkov
  */
-public class SchedulerService extends JahiaService {
+public class SchedulerService extends JahiaService implements ReadOnlyModeCapable {
 
     /**
      * Jahia Spring factory bean that creates, but does not start Quartz scheduler instance. So the instance remain in standby mode until
@@ -89,7 +91,9 @@ public class SchedulerService extends JahiaService {
 
     private Scheduler ramScheduler = null;
 
-    private Scheduler scheduler = null;
+    private ReadOnlyModeAwareScheduler scheduler = null;
+
+    private long timeoutSwitchingToReadOnlyMode;
 
     private ThreadLocal<List<JobDetail>> scheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
 
@@ -246,16 +250,22 @@ public class SchedulerService extends JahiaService {
         return isRamScheduler ? ramScheduler : scheduler;
     }
 
-    public void startSchedulers() throws JahiaInitializationException {
+    public synchronized void startSchedulers() throws JahiaInitializationException {
         try {
             ramScheduler.start();
 
             if (settingsBean.isProcessingServer()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Starting scheduler...\n instanceId:"
-                            + scheduler.getMetaData().getSchedulerInstanceId() + " instanceName:"
-                            + scheduler.getMetaData().getSchedulerName() + "\n"
-                            + scheduler.getMetaData().getSummary());
+                    SchedulerMetaData schedulerMetadata = scheduler.getMetaData();
+                    logger.debug("Starting scheduler...\n"
+                               + " instanceId:{} instanceName:{}\n"
+                               + "{}",
+                        new Object[] {
+                            schedulerMetadata.getSchedulerInstanceId(),
+                            schedulerMetadata.getSchedulerName(),
+                            schedulerMetadata.getSummary()
+                        }
+                    );
                 }
 
                 scheduler.start();
@@ -279,10 +289,7 @@ public class SchedulerService extends JahiaService {
                                                       // jobdetail's volatility
 
         data.put(JOB_STATUS, STATUS_ADDED);
-        if (logger.isDebugEnabled()) {
-            logger.debug("schedule job " + jobDetail.getName() + " volatile("
-                    + jobDetail.isVolatile() + ") @ " + new Date(System.currentTimeMillis()));
-        }
+        logger.debug("schedule job {} volatile({}) @ {}", new Object[] {jobDetail.getName(), jobDetail.isVolatile(), new Date(System.currentTimeMillis())});
         if (useRamScheduler) {
             ramScheduler.scheduleJob(jobDetail, trigger);
         } else {
@@ -343,10 +350,15 @@ public class SchedulerService extends JahiaService {
     }
 
     public void setScheduler(Scheduler scheduler) {
-        this.scheduler = scheduler;
+        this.scheduler = new ReadOnlyModeAwareScheduler(scheduler);
     }
 
-    public void start() throws JahiaInitializationException {
+    public void setTimeoutSwitchingToReadOnlyMode(long timeoutSwitchingToReadOnlyMode) {
+        this.timeoutSwitchingToReadOnlyMode = timeoutSwitchingToReadOnlyMode;
+    }
+
+    @Override
+    public synchronized void start() throws JahiaInitializationException {
 
         try {
             ramScheduler.addSchedulerListener(new JahiaSchedulerListener(ramScheduler));
@@ -368,7 +380,8 @@ public class SchedulerService extends JahiaService {
         }
     }
 
-    public void stop() {
+    @Override
+    public synchronized void stop() {
         if (scheduler == null || ramScheduler == null) {
             return;
         }
@@ -382,4 +395,62 @@ public class SchedulerService extends JahiaService {
         }
     }
 
+    @Override
+    public int getReadOnlyModePriority() {
+        return 800;
+    }
+
+    @Override
+    public synchronized void switchReadOnlyMode(boolean enable) {
+
+        // switch db persisted scheduler read only mode flag
+        scheduler.setReadOnly(enable);
+
+        if (enable) {
+            logger.info("Entering read-only mode...");
+            try {
+                logger.info("Putting schedulers to standby...");
+                standbySchedulers();
+                logger.info("Done putting schedulers to standby");
+                logger.info("Waiting for running jobs to complete...");
+                long start = System.currentTimeMillis();
+                for (int count = getRunningJobsCount(); count > 0; count = getRunningJobsCount()) {
+                    logger.info("{} job(s) are still running...", count);
+                    if (System.currentTimeMillis() - start > timeoutSwitchingToReadOnlyMode) {
+                        logger.error("Timed out waiting for running jobs to complete.");
+                        throw new JahiaRuntimeException("Wait timeout elapsed, jobs are still running");
+                    }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(e);
+                    }
+                }
+                logger.info("All running jobs have completed.");
+            } catch (SchedulerException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            logger.info("Exiting read-only mode...");
+            try {
+                logger.info("Starting schedulers...");
+                startSchedulers();
+                logger.info("Done starting schedulers");
+            } catch (JahiaInitializationException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void standbySchedulers() throws SchedulerException {
+        ramScheduler.standby();
+        if (settingsBean.isProcessingServer()) {
+            scheduler.standby();
+        }
+    }
+
+    private int getRunningJobsCount() throws SchedulerException {
+        return (scheduler.getCurrentlyExecutingJobs().size() + ramScheduler.getCurrentlyExecutingJobs().size());
+    }
 }

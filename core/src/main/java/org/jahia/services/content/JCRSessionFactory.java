@@ -44,26 +44,23 @@
 package org.jahia.services.content;
 
 import java.util.*;
-import javax.jcr.Credentials;
-import javax.jcr.LoginException;
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.NoSuchWorkspaceException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
-import javax.jcr.Value;
+import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import javax.security.auth.Subject;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaCallbackHandler;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -77,9 +74,11 @@ import org.springframework.web.context.ServletContextAware;
  * @author toto
  * @see JCRTemplate
  */
-public class JCRSessionFactory implements Repository, ServletContextAware {
+public class JCRSessionFactory implements Repository, ServletContextAware, ReadOnlyModeCapable {
 
     private static final Comparator<String> invertedStringComparator = new Comparator<String>() {
+
+        @Override
         public int compare(String s1, String s2) {
             return s2.compareTo(s1);
         }
@@ -107,6 +106,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
     private ThreadLocal<Boolean> readOnlyCacheEnabled = new ThreadLocal<Boolean>();
     private LocalValidatorFactoryBean validatorFactoryBean;
+    private boolean readOnlyModeEnabled;
 
     private JCRSessionFactory() {
         super();
@@ -127,6 +127,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         this.servletContextAttributeName = servletContextAttributeName;
     }
 
+    @Override
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
@@ -229,10 +230,12 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return login(JahiaLoginModule.getCredentials(username, realm), workspace, locale, locale != null ? getFallbackLocale() : null);
     }
 
+    @Override
     public String[] getDescriptorKeys() {
         return descriptors.keySet().toArray(new String[descriptors.size()]);
     }
 
+    @Override
     public String getDescriptor(String s) {
         return descriptors.get(s);
     }
@@ -255,6 +258,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return s;
     }
 
+    @Override
     public JCRSessionWrapper login(Credentials credentials, String workspace)
             throws LoginException, NoSuchWorkspaceException, RepositoryException {
         return login(credentials, workspace, null, null);
@@ -295,39 +299,46 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                 if (userNode != null) {
                     user = userNode.getJahiaUser();
                 } else {
-                    logger.warn("Cannot find user "+jahiaPrincipal.getName() + "@" + jahiaPrincipal.getRealm());
+                    logger.warn("Cannot find user " + jahiaPrincipal.getName() + "@" + jahiaPrincipal.getRealm());
                 }
             }
-            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale);
+            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale, readOnlyModeEnabled);
         }
         throw new LoginException("Can't login");
     }
 
+    @Override
     public JCRSessionWrapper login(Credentials credentials) throws LoginException, RepositoryException {
         return login(credentials, null);
     }
 
+    @Override
     public JCRSessionWrapper login(String workspace)
             throws LoginException, NoSuchWorkspaceException, RepositoryException {
         return login(JahiaLoginModule.getGuestCredentials(), workspace);
     }
 
+    @Override
     public JCRSessionWrapper login() throws LoginException, RepositoryException {
         return login(null, null);
     }
 
+    @Override
     public boolean isStandardDescriptor(String key) {
         return false;
     }
 
+    @Override
     public boolean isSingleValueDescriptor(String key) {
         return false;
     }
 
+    @Override
     public Value getDescriptorValue(String key) {
         return null;
     }
 
+    @Override
     public Value[] getDescriptorValues(String key) {
         return new Value[0];
     }
@@ -339,7 +350,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     public Map<String, JCRStoreProvider> getMountPoints() {
         return mountPoints;
     }
-    
+
     public Map<String, JCRStoreProvider> getProviders() {
         return providers;
     }
@@ -362,7 +373,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                 try {
                     wrapper.removeFromCache(mountPoint);
                 } catch (RepositoryException e) {
-                    logger.warn("Cannot flush cache",e);
+                    logger.warn("Cannot flush cache", e);
                 }
             }
 
@@ -411,7 +422,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                 try {
                     wrapper.removeFromCache(p.getMountPoint());
                 } catch (RepositoryException e) {
-                    logger.warn("Cannot flush cache",e);
+                    logger.warn("Cannot flush cache", e);
                 }
             }
 
@@ -487,7 +498,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     /**
      * Returns the provider which is handling the provided node path. If there is no other provider which can handle the specified node
      * path, the default Jackrabbit ("/") provider is returned.
-     * 
+     *
      * @param path
      *            the node path to be checked
      * @return the provider which handles the provided node path or the default provider if there is no other provider which can handle the
@@ -499,7 +510,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     /**
      * Returns the provider which is handling the provided node path.
-     * 
+     *
      * @param path
      *            the node path to be checked
      * @param includeDefault
@@ -604,11 +615,86 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     /**
      * Returns <code>true</code> if more than one (default) mount points are registered.
-     * 
+     *
      * @return <code>true</code> if more than one (default) mount points are registered; <code>false</code> otherwise
      */
     public boolean areMultipleMountPointsRegistered() {
         return mountPoints.size() > 1;
     }
 
+    @Override
+    public int getReadOnlyModePriority() {
+        return 200;
+    }
+
+    @Override
+    public void switchReadOnlyMode(boolean enable) {
+
+        logger.info("Read only mode switch: JCR session are" + (enable ? " not ": " ") + "allowed to perform saving");
+
+        // todo: thread safety between new sessions are readonly and existing sessions are updated, avoid getting one or multiple sessions not updated correctly due to concurrency
+        // switch to read only so that new sessions will be read only session
+        this.readOnlyModeEnabled = enable;
+
+        // set readonly on living sessions
+        for (JCRSessionWrapper sessionWrapper : JCRSessionWrapper.getActiveSessionsObjects().values()) {
+            sessionWrapper.setReadOnly(enable);
+        }
+
+        // we will unlock all the nodes that are locked because of opened engines
+        if (enable) {
+            try {
+                clearEngineLocks();
+            } catch (Exception e) {
+                logger.warn("Unable to clear the engine locks while switching Read only mode to ON", e);
+            }
+        }
+
+        logger.info("Read only mode on JCR sessions: " + (this.readOnlyModeEnabled ? "ON" : "OFF"));
+    }
+
+    private void clearEngineLocks() throws RepositoryException {
+        JCRSessionWrapper systemSession = null;
+        try {
+            systemSession = getSystemSession();
+            systemSession.setReadOnly(false);
+
+            QueryWrapper engineLockedQuery = systemSession.getWorkspace().getQueryManager().createQuery(
+                    "select * from [jmix:lockable] where isdescendantnode('/sites') and [j:lockTypes] like '%:engine'",
+                    Query.JCR_SQL2);
+            QueryResult engineLockedQueryResult = engineLockedQuery.execute();
+            final NodeIterator nodeIterator = engineLockedQueryResult.getNodes();
+
+            while (nodeIterator.hasNext()) {
+                clearEngineLocks(nodeIterator.nextNode(), systemSession);
+            }
+        } finally {
+            if (systemSession != null) {
+                systemSession.logout();
+            }
+        }
+    }
+
+    private void clearEngineLocks(Node node, JCRSessionWrapper session) {
+        try {
+            if (node instanceof JCRNodeWrapper && !node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                for (NodeIterator ni = ((JCRNodeWrapper) node).getI18Ns(); ni.hasNext();) {
+                    clearEngineLocks(ni.nextNode(), session);
+                }
+            }
+            if (node.hasProperty("j:lockTypes")) {
+                for (Value lockTypeValue : node.getProperty("j:lockTypes").getValues()) {
+                    // lockTypes format is like: root:engine
+                    String[] lockTypeInfos = StringUtils.split(lockTypeValue.getString(), ":");
+                    if (lockTypeInfos.length >= 1 && StringUtils.equals(lockTypeInfos[1], "engine")) {
+                        logger.info("Clearing engine lock for node {} and user {} before switching Read only mode",
+                                node.getPath(), lockTypeInfos[0]);
+                        JCRNodeWrapperImpl.unlock(node, lockTypeInfos[1], lockTypeInfos[0], session);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            logger.warn("Unable to check and clean engine locks for node " + node, ex);
+        }
+    }
 }

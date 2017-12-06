@@ -58,6 +58,7 @@
                 <value>org.jahia.test.services.query.QueryAclCheckTest</value>
                 <value>org.jahia.test.services.query.QueryModificationTest</value>
                 <value>org.jahia.test.services.query.QueryResultTest</value>
+                <value>org.jahia.test.services.readonly.FullReadOnlyModeTest</value>
                 <value>org.jahia.test.services.render.JSessionIDTest</value>
                 <value>org.jahia.test.services.render.LoginPageHttpTest</value>
                 <value>org.jahia.test.services.render.filter.ConditionalFilterTest</value>
@@ -440,4 +441,5 @@
         <property name="disabled" value="true"/>
     </bean>
 
+    <bean id="ReadOnlyModeCapablePlaceholder" class="org.jahia.test.services.readonly.ReadOnlyModeCapablePlaceholder"/>
 </beans>

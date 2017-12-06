@@ -48,6 +48,7 @@ import org.apache.jackrabbit.core.journal.*;
 import org.apache.jackrabbit.core.state.ChangeLog;
 import org.apache.jackrabbit.core.state.ItemState;
 import org.apache.jackrabbit.core.state.NodeReferences;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
@@ -89,6 +90,8 @@ public class JahiaClusterNode extends ClusterNode {
      */
     private volatile int status = NONE;
 
+    private volatile boolean readOnly;
+
     /**
      * Starts this cluster node.
      *
@@ -96,7 +99,7 @@ public class JahiaClusterNode extends ClusterNode {
      */
     @Override
     public synchronized void start() throws ClusterException {
-        if (status == NONE) {
+        if (status != STARTED) {
             super.start();
             status = STARTED;
         }
@@ -308,6 +311,87 @@ public class JahiaClusterNode extends ClusterNode {
         // Should be called by NodeLevelLockableJournal when syncing
         log.debug("Set revision: {}", revision);
         super.setRevision(revision);
+    }
+
+    /**
+     * Overrides the super method to avoid syncing in read only mode: even though we stop the cluster node when switching read only mode on,
+     * sync invocations still happen on stopped node, so sync should be muted specifically.
+     */
+    @Override
+    protected void internalSync(boolean startup) throws ClusterException {
+
+        int count = syncCount.get();
+
+        try {
+            syncLock.acquire();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new ClusterException("Interrupted while waiting for mutex.");
+        }
+
+        try {
+
+            // This check must be performed while owning the syncLock to avoid concurrent modifications of the readOnly property via a setReadOnly invocation.
+            if (readOnly) {
+                log.debug("Read only mode is ON, will not sync");
+                return;
+            }
+
+            // JCR-1753: Only synchronize if no other thread already did so
+            // while we were waiting to acquire the syncLock.
+            if (count == syncCount.get()) {
+                syncCount.incrementAndGet();
+                getJournal().sync(startup);
+            }
+        } catch (JournalException e) {
+            throw new ClusterException(e.getMessage(), e.getCause());
+        } finally {
+            syncLock.release();
+        }
+    }
+
+    /**
+     * Switch read only mode on or off.
+     *
+     * @param enable Whether to enable or disable read only mode
+     * @param timeout Timeout waiting for ongoing sync operations to finish before switching read only mode, ms.
+     */
+    public void setReadOnly(boolean enable, long timeout) {
+
+        log.info("Switching read only mode {}...", (enable ? "ON" : "OFF"));
+
+        try {
+            if (!syncLock.attempt(timeout)) {
+                throw new JahiaRuntimeException("Timed out waiting for ongoing cluster syncs to finish");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new JahiaRuntimeException(e);
+        }
+
+        try {
+             // Mode switch and node stop must be performed while owning the syncLock to ensure there are no sync operations in progress.
+            readOnly = enable;
+            if (enable) {
+                // Even though sync will be muted via the readOnly flag, we still need to stop the node to save the last processed journal revision,
+                // disable the journal janitor to avoid removing stale journal records in read only mode, etc.
+                stop();
+            }
+        } finally {
+            syncLock.release();
+        }
+
+        if (!enable) {
+            // Node start must be performed after switching the readOnly flag off so that the startup sync is not muted.
+            // It also must be performed outside the syncLock, because the startup sync itself will acquire the syncLock, but the syncLock is not reentrant.
+            try {
+                start();
+            } catch (ClusterException e) {
+                throw new JahiaRuntimeException(e);
+            }
+        }
+
+        log.info("Read only mode is {} now.", (readOnly ? "ON" : "OFF"));
     }
 
     public static class ExternalChangeLog extends ChangeLog {

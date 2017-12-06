@@ -2758,13 +2758,12 @@ body[data-indigo-add-visibility-condition="new"] {
 	.x-row-editor-footer {
 		background: $color-primary;
 		height: 1px;
-		width: calc(100% - 20px);
 	}
 
 	.x-row-editor .x-btns {
 		background: transparent;
 		position: absolute;
-		right: 4px !important;
+		right: -16px !important;
 		top: 4px !important;
 		left: initial !important;
 

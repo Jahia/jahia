@@ -43,20 +43,30 @@
  */
 package org.jahia.test.services.readonly;
 
+import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.scheduler.SchedulerService;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.readonlymode.ReadOnlyModeController;
 import org.jahia.settings.readonlymode.ReadOnlyModeException;
 import org.jahia.test.JahiaTestCase;
 import org.junit.*;
 import org.quartz.Scheduler;
 
+import com.google.common.collect.ImmutableMap;
+
 import static org.junit.Assert.*;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 
 import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -67,6 +77,7 @@ import java.util.UUID;
 public class FullReadOnlyModeTest extends JahiaTestCase {
 
     private static final String SYSTEM_SITE_PATH = "/sites/systemsite";
+    private static final String TEST_CONTENT_PATH = SYSTEM_SITE_PATH + "/contents";
     private static final String TEST_FOLDER_PATH = SYSTEM_SITE_PATH + "/files/testFolder";
     private static final String TEST_FOLDER_PATH2 = SYSTEM_SITE_PATH + "/files/testFolder2";
 
@@ -75,7 +86,29 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
     private static ReadOnlyModeCapablePlaceholder readOnlyModeCapablePlaceholder;
     private static boolean originalSystemSiteWCAcompliance;
 
-    private HashSet<String> openedTestSessions = new HashSet<>();
+    private static void assertLock(Node node, boolean shouldBeLocked)
+            throws PathNotFoundException, RepositoryException {
+        assertEquals("Node " + node.getPath() + " should " + (shouldBeLocked ? "" : " NOT ") + "be locked",
+                shouldBeLocked, node.isLocked());
+        assertEquals("Node " + node.getPath() + " should " + (shouldBeLocked ? "" : " NOT ") + "be locked",
+                shouldBeLocked, node.hasProperty("j:lockTypes"));
+        if (node instanceof JCRNodeWrapper) {
+            // iterate over translation nodes
+            for (NodeIterator ni = ((JCRNodeWrapper) node).getI18Ns(); ni.hasNext();) {
+                assertLock(ni.nextNode(), shouldBeLocked);
+            }
+        }
+    }
+
+    private static void assertLocks(final Map<String, Boolean> locks) throws RepositoryException {
+        // non-localized session
+        JCRTemplate.getInstance().doExecuteWithSystemSession((JCRCallback<Boolean>) session -> {
+            for (Map.Entry<String, Boolean> lock : locks.entrySet()) {
+                assertLock(session.getNode(lock.getKey()), lock.getValue());
+            }
+            return null;
+        });
+    }
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -98,10 +131,18 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
             session.getNode(TEST_FOLDER_PATH).remove();
             session.getNode(TEST_FOLDER_PATH2).remove();
             session.getNode(SYSTEM_SITE_PATH).setProperty("j:wcagCompliance", originalSystemSiteWCAcompliance);
+            if (session.nodeExists(TEST_CONTENT_PATH + "/text-1")) {
+                session.getNode(TEST_CONTENT_PATH + "/text-1").remove();
+            }
+            if (session.nodeExists(TEST_CONTENT_PATH + "/text-2")) {
+                session.getNode(TEST_CONTENT_PATH + "/text-2").remove();
+            }
             session.save();
             return null;
         });
     }
+
+    private HashSet<String> openedTestSessions = new HashSet<>();
 
     @After
     public void tearDown() {
@@ -295,27 +336,57 @@ public class FullReadOnlyModeTest extends JahiaTestCase {
      */
     @Test
     public void testEngineLocksAreCleared() throws Exception {
-        JCRTemplate.getInstance().doExecuteWithSystemSession((JCRCallback<Boolean>) session -> {
-            session.getNode(TEST_FOLDER_PATH).lockAndStoreToken("engine", "root");
-            assertTrue(session.getNode(TEST_FOLDER_PATH).isLocked());
-            return null;
-        });
+        Locale locale = Locale.ENGLISH;
+        JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
+        JCRTemplate jcrTemplate = JCRTemplate.getInstance();
+        jcrTemplate.doExecuteWithSystemSessionAsUser(user, Constants.EDIT_WORKSPACE, locale,
+                (JCRCallback<Boolean>) session -> {
+                    // non-multi-language content: create engine lock
+                    session.getNode(TEST_FOLDER_PATH).lockAndStoreToken("engine", "root");
+                    // non-multi-language content: create user lock
+                    session.getNode(TEST_FOLDER_PATH2).lockAndStoreToken("user", "root");
+
+                    // multi-language content
+                    JCRNodeWrapper text = session.getNode(TEST_CONTENT_PATH).addNode("text-1", "jnt:text");
+                    text.setProperty("text", "My text 1");
+                    text = session.getNode(TEST_CONTENT_PATH).addNode("text-2", "jnt:text");
+                    text.setProperty("text", "My text 2");
+                    session.save();
+
+                    // create engine lock
+                    session.getNode(TEST_CONTENT_PATH + "/text-1").lockAndStoreToken("engine", "root");
+
+                    // create user lock
+                    session.getNode(TEST_CONTENT_PATH + "/text-2").lockAndStoreToken("user", "root");
+
+                    return null;
+                });
+
+        // all locks should be there
+        assertLocks(ImmutableMap.of(TEST_FOLDER_PATH, true, TEST_FOLDER_PATH2, true, TEST_CONTENT_PATH + "/text-1",
+                true, TEST_CONTENT_PATH + "/text-2", true));
 
         readOnlyModeController.switchReadOnlyMode(true);
 
-        JCRTemplate.getInstance().doExecuteWithSystemSession((JCRCallback<Boolean>) session -> {
-            assertFalse(session.getNode(TEST_FOLDER_PATH).isLocked());
-            assertFalse(session.getNode(TEST_FOLDER_PATH).hasProperty("j:lockTypes"));
-            return null;
-        });
+        // engine locks should be gone, user locks should be still present
+        Map<String, Boolean> locks = ImmutableMap.of(TEST_FOLDER_PATH, false, TEST_FOLDER_PATH2, true,
+                TEST_CONTENT_PATH + "/text-1", false, TEST_CONTENT_PATH + "/text-2", true);
+
+        assertLocks(locks);
 
         readOnlyModeController.switchReadOnlyMode(false);
 
-        JCRTemplate.getInstance().doExecuteWithSystemSession((JCRCallback<Boolean>) session -> {
-            assertFalse(session.getNode(TEST_FOLDER_PATH).isLocked());
-            assertFalse(session.getNode(TEST_FOLDER_PATH).hasProperty("j:lockTypes"));
-            return null;
-        });
+        assertLocks(locks);
+        
+        jcrTemplate.doExecuteWithSystemSessionAsUser(user, Constants.EDIT_WORKSPACE, locale,
+                (JCRCallback<Boolean>) session -> {
+                    session.getNode(TEST_FOLDER_PATH2).unlock("user", "root");
+                    session.getNode(TEST_CONTENT_PATH + "/text-2").unlock("user", "root");
+
+                    session.getNode(TEST_CONTENT_PATH + "/text-1").remove();
+                    session.getNode(TEST_CONTENT_PATH + "/text-2").remove();
+                    return null;
+                });
     }
 
     /**

@@ -45,6 +45,7 @@ package org.jahia.services.content;
 
 import java.util.*;
 import javax.jcr.*;
+import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.security.auth.Subject;
 import javax.servlet.ServletContext;
@@ -54,7 +55,6 @@ import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaCallbackHandler;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
-import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.query.QueryWrapper;
@@ -645,8 +645,8 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         if (enable) {
             try {
                 clearEngineLocks();
-            } catch (RepositoryException e) {
-                throw new JahiaRuntimeException("Unable to clear the engine locks while switching Read only mode: " + (this.readOnlyModeEnabled ? "ON" : "OFF"));
+            } catch (Exception e) {
+                logger.warn("Unable to clear the engine locks while switching Read only mode to ON", e);
             }
         }
 
@@ -660,28 +660,41 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
             systemSession.setReadOnly(false);
 
             QueryWrapper engineLockedQuery = systemSession.getWorkspace().getQueryManager().createQuery(
-                    "select * from [jmix:lockable] as lockable where isdescendantnode(lockable, '/sites') and lockable.[j:lockTypes] LIKE '%:engine'",
-                    javax.jcr.query.Query.JCR_SQL2);
+                    "select * from [jmix:lockable] where isdescendantnode('/sites') and [j:lockTypes] like '%:engine'",
+                    Query.JCR_SQL2);
             QueryResult engineLockedQueryResult = engineLockedQuery.execute();
             final NodeIterator nodeIterator = engineLockedQueryResult.getNodes();
 
             while (nodeIterator.hasNext()) {
-                JCRNodeWrapper node = (JCRNodeWrapper) nodeIterator.next();
-                if (node.hasProperty("j:lockTypes")) {
-                    for (JCRValueWrapper lockTypeValue : node.getProperty("j:lockTypes").getValues()) {
-                        // lockTypes format is like: root:engine
-                        String[] lockTypeInfos = StringUtils.split(lockTypeValue.getString(), ":");
-                        if (StringUtils.equals(lockTypeInfos[1], "engine")) {
-                            logger.info("Clearing engine lock for node: {} and user: {}. Before switching Read only mode", node.getPath(), lockTypeInfos[0]);
-                            node.unlock(lockTypeInfos[1], lockTypeInfos[0]);
-                        }
-                    }
-                }
+                clearEngineLocks(nodeIterator.nextNode(), systemSession);
             }
         } finally {
             if (systemSession != null) {
                 systemSession.logout();
             }
+        }
+    }
+
+    private void clearEngineLocks(Node node, JCRSessionWrapper session) {
+        try {
+            if (node instanceof JCRNodeWrapper && !node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                for (NodeIterator ni = ((JCRNodeWrapper) node).getI18Ns(); ni.hasNext();) {
+                    clearEngineLocks(ni.nextNode(), session);
+                }
+            }
+            if (node.hasProperty("j:lockTypes")) {
+                for (Value lockTypeValue : node.getProperty("j:lockTypes").getValues()) {
+                    // lockTypes format is like: root:engine
+                    String[] lockTypeInfos = StringUtils.split(lockTypeValue.getString(), ":");
+                    if (lockTypeInfos.length >= 1 && StringUtils.equals(lockTypeInfos[1], "engine")) {
+                        logger.info("Clearing engine lock for node {} and user {} before switching Read only mode",
+                                node.getPath(), lockTypeInfos[0]);
+                        JCRNodeWrapperImpl.unlock(node, lockTypeInfos[1], lockTypeInfos[0], session);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            logger.warn("Unable to check and clean engine locks for node " + node, ex);
         }
     }
 }

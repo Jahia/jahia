@@ -138,6 +138,39 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
+    protected static void unlock(final Node objectNode, String type, String userID, JCRSessionWrapper session) throws RepositoryException {
+        if (objectNode.hasProperty("j:locktoken")) {
+            Property property = objectNode.getProperty("j:locktoken");
+            String token = property.getString();
+            Value[] types = objectNode.getProperty("j:lockTypes").getValues();
+            for (Value value : types) {
+                String owner = StringUtils.substringBefore(value.getString(), ":");
+                String currentType = StringUtils.substringAfter(value.getString(), ":");
+                if (currentType.equals(type)) {
+                    if (userID.equals(owner)) {
+                        objectNode.getSession().addLockToken(token);
+                        session.checkout(objectNode);
+                        List<Value> valueList = new ArrayList<Value>(Arrays.asList(types));
+                        valueList.remove(value);
+                        if (valueList.isEmpty()) {
+                            session.save();
+                            objectNode.unlock();
+                            property.remove();
+                            objectNode.getProperty("j:lockTypes").remove();
+                        } else {
+                            objectNode.setProperty("j:lockTypes", valueList.toArray(new Value[valueList.size()]));
+                        }
+                        session.save();
+
+                        return;
+                    }
+                }
+            }
+        } else {
+            objectNode.unlock();
+        }
+    }
+
     protected JCRNodeWrapperImpl(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session, JCRStoreProvider provider) {
         super(session, provider);
         this.objectNode = objectNode;
@@ -2695,36 +2728,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     private void unlock(final Node objectNode, String type, String userID) throws RepositoryException {
-        if (objectNode.hasProperty("j:locktoken")) {
-            Property property = objectNode.getProperty("j:locktoken");
-            String token = property.getString();
-            Value[] types = objectNode.getProperty("j:lockTypes").getValues();
-            for (Value value : types) {
-                String owner = StringUtils.substringBefore(value.getString(), ":");
-                String currentType = StringUtils.substringAfter(value.getString(), ":");
-                if (currentType.equals(type)) {
-                    if (userID.equals(owner)) {
-                        objectNode.getSession().addLockToken(token);
-                        getSession().checkout(objectNode);
-                        List<Value> valueList = new ArrayList<Value>(Arrays.asList(types));
-                        valueList.remove(value);
-                        if (valueList.isEmpty()) {
-                            getSession().save();
-                            objectNode.unlock();
-                            property.remove();
-                            objectNode.getProperty("j:lockTypes").remove();
-                        } else {
-                            objectNode.setProperty("j:lockTypes", valueList.toArray(new Value[valueList.size()]));
-                        }
-                        getSession().save();
-
-                        return;
-                    }
-                }
-            }
-        } else {
-            objectNode.unlock();
-        }
+        unlock(objectNode, type, userID, getSession());
     }
 
     @Override

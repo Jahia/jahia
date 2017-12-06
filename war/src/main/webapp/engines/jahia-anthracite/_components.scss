@@ -3306,7 +3306,8 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.customized-preview,
 .x-window.publication-manager-engine,
 .x-window.trashboard-engine,
-.x-window.preview-window {	// Added selector for publication manager!
+.x-window.preview-window,
+.x-window.image-crop {	// Temporary selector for image crop - MANAGERS
 	background: transparent;
 	z-index: 999999 !important;
 

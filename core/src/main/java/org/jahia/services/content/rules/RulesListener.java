@@ -95,7 +95,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     private static final int UPDATE_DELAY_FOR_LOCKED_NODE = 2000;
     private Set<String> ruleFiles;
-    private static ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
+    private ThreadLocal<Boolean> inRules = new ThreadLocal<Boolean>();
 
     private List<Resource> dslFiles;
     private Map<String, Object> globalObjects;
@@ -560,7 +560,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                         }
 
                         if (!delayedUpdates.isEmpty()) {
-                            TimerTask t = new DelayedUpdatesTimerTask(userId, userRealm, delayedUpdates);
+                            TimerTask t = new DelayedUpdatesTimerTask(userId, userRealm, delayedUpdates, globals);
                             rulesTimer.schedule(t, UPDATE_DELAY_FOR_LOCKED_NODE);
                         }
                     }
@@ -629,18 +629,21 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         private String userRealm;
         private List<Updateable> updates;
         private int count = 1;
+        private Map<String, Object> globals;
 
-        DelayedUpdatesTimerTask(String username, String userRealm, List<Updateable> updates) {
+        DelayedUpdatesTimerTask(String username, String userRealm, List<Updateable> updates, Map<String, Object> globals) {
             this.username = username;
             this.userRealm = userRealm;
             this.updates = updates;
+            this.globals = globals;
         }
 
-        DelayedUpdatesTimerTask(String username, String userRealm, List<Updateable> updates, int count) {
+        DelayedUpdatesTimerTask(String username, String userRealm, List<Updateable> updates, Map<String, Object> globals, int count) {
             this.username = username;
             this.userRealm = userRealm;
             this.updates = updates;
             this.count = count;
+            this.globals = globals;
         }
 
         public void run() {
@@ -650,15 +653,24 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                         inRules.set(Boolean.TRUE);
                         try {
                             List<Updateable> newDelayed = new ArrayList<Updateable>();
-
+                            List<Object> newFacts = new ArrayList<>();
                             for (Updateable p : updates) {
-                                p.doUpdate(s, newDelayed);
+                                if (p instanceof UpdateableWithNewFacts) {
+                                    ((UpdateableWithNewFacts) p).doUpdate(s, newDelayed, newFacts);
+                                } else {
+                                    p.doUpdate(s, newDelayed);
+                                }
                             }
                             s.save();
+
+                            if (!newFacts.isEmpty()) {
+                                executeRules(newFacts, globals);
+                            }
+
                             if (!newDelayed.isEmpty()) {
                                 updates = newDelayed;
                                 if (count < 3) {
-                                    rulesTimer.schedule(new DelayedUpdatesTimerTask(username, userRealm, newDelayed, count + 1),
+                                    rulesTimer.schedule(new DelayedUpdatesTimerTask(username, userRealm, newDelayed, globals, count + 1),
                                             UPDATE_DELAY_FOR_LOCKED_NODE * count);
                                 } else {
                                     logger.error("Node still locked, max count reached, forget pending changes");
@@ -670,7 +682,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                         return null;
                     }
                 });
-            } catch (RepositoryException e) {
+            } catch (Exception e) {
                 logger.error("Cannot set property", e);
             }
         }
@@ -755,9 +767,5 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     public Map<String, String> getModulePackageNameMap() {
         return modulePackageNameMap;
-    }
-
-    static void resetIsInRule() {
-        inRules.set(null);
     }
 }

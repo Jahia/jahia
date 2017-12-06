@@ -73,9 +73,9 @@ import java.util.List;
  * Date: 20 déc. 2007
  * Time: 11:53:45
  */
-public class AddedNodeFact extends AbstractNodeFact implements Updateable {
-    private static Logger logger = LoggerFactory.getLogger(AddedNodeFact.class);
-    
+public class AddedNodeFact extends AbstractNodeFact implements UpdateableWithNewFacts {
+    private static final Logger logger = LoggerFactory.getLogger(AddedNodeFact.class);
+
     static boolean isLocked(JCRNodeWrapper node) throws AccessDeniedException, UnsupportedRepositoryOperationException,
             LockException, RepositoryException {
         boolean locked = node.isLocked();
@@ -134,6 +134,11 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
     }
 
     public void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates) throws RepositoryException {
+        doUpdate(s,delayedUpdates, null);
+    }
+
+    @Override
+    public void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates, List<Object> newFacts) throws RepositoryException {
         try {
             JCRNodeWrapper node = s.getNode(parentNodePath);
 
@@ -141,13 +146,10 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
                 logger.debug("Node is still locked, delay subnode creation to later");
                 delayedUpdates.add(this);
             } else {
-                if (insert) {
-                    // reset isInRule Flag, this way the current node operation will be track by RuleListener
-                    // we need this to insert this operation, this is the only solution to react on the Added node because
-                    // we do not have access to drools KnowledgeHelper in delayed updates.
-                    RulesListener.resetIsInRule();
+                this.node = node.addNode(name, type);
+                if (insert && newFacts != null) {
+                    newFacts.add(this);
                 }
-                node.addNode(name, type);
             }
         } catch (PathNotFoundException e) {
             logger.warn("Node does not exist " + parentNodePath);

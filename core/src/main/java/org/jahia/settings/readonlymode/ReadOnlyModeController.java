@@ -161,11 +161,13 @@ public class ReadOnlyModeController {
 
     /**
      * Checks if the read-only mode status change is allowed in the current state.
-     * @param switchModeTo target read-only mode status, we are checking the switch into 
+     * 
+     * @param switchModeTo target read-only mode status, we are checking the switch into
      * @return <code>true</code> if the current state allows the requested change; <code>false</code> - otherwise
      */
-    public boolean isStatusUpdateAllowed(boolean switchModeTo) {
-        return (switchModeTo ? readOnlyStatus == ReadOnlyModeStatus.OFF : readOnlyStatus == ReadOnlyModeStatus.ON) || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_ON || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_OFF;
+    private boolean isStatusUpdateAllowed(boolean switchModeTo) {
+        return (switchModeTo ? readOnlyStatus == ReadOnlyModeStatus.OFF : readOnlyStatus == ReadOnlyModeStatus.ON)
+                || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_ON || readOnlyStatus == ReadOnlyModeStatus.PARTIAL_OFF;
     }
 
     // Initialization on demand holder idiom: thread-safe singleton initialization

@@ -797,6 +797,14 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         return user == null || GUEST_USERNAME.equals(user.getName());
     }
 
+    /**
+     * Returns <code>true</code> if the specified user is <code>null</code> or a
+     * guest user.
+     *
+     * @param user the user to be tested
+     * @return <code>true</code> if the specified user is <code>null</code> or a
+     * guest user
+     */
     public static boolean isGuest(JahiaUser user) {
         return user == null || GUEST_USERNAME.equals(user.getName());
     }

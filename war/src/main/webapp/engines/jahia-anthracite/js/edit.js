@@ -1244,6 +1244,7 @@
             ignoreMetadata: "Metadaten ignorieren",
             metaLabel: "Meta: %n%",
             cancel: "Abbrechen",
+            backgroundJobs: "Background Jobs",
             filterContent: "Content filtern",
 			pickerTitles: {
 				default: "File Picker",
@@ -1280,6 +1281,7 @@
 			metaLabel: "Meta: %n%",
 			cancel: "Cancel",
 			filterContent: "Filter Content",
+            backgroundJobs: "Background Jobs",
 			pickerTitles: {
 				default: "File Picker",
 				imagepicker: jahia_gwt_messages.label_imagepicker,
@@ -1315,6 +1317,7 @@
 			metaLabel: "Meta: %n%",
 			cancel: "Annuler",
 			filterContent: "Filtrer le contenu",
+            backgroundJobs: "Background Jobs",
 			pickerTitles: {
 				default: "File Picker",
                 imagepicker: jahia_gwt_messages.label_imagepicker,
@@ -1464,7 +1467,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                // app.edit.sidepanel.close();
+                app.edit.sidepanel.close();
 
                 // Trigger mousedown / mouseup on body to close any open context menus and combo menus
                 DexV2.tag("body").trigger("mousedown").trigger("mouseup");
@@ -1663,6 +1666,213 @@
 
 			},
 		},
+        backgroundJobs: {
+            data: {
+                filters: []
+            },
+            onOpen: function(){
+
+                // Update title
+                DexV2.class("job-list-window").filter(".x-window-tl .x-window-header-text").setHTML(localisedStrings[app.data.UILanguage].backgroundJobs);
+
+                // Reset the filters array
+                app.backgroundJobs.data.filters = [];
+
+                // Open GWT Filter menu to copy the entries and build our own menu
+                DexV2.class("job-list-window") // Get thomas to add a class on the filtered combo ...
+                    .filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(1) > table").trigger("click");
+
+                // Wait until the filter menu is opened, then copy the contents to create our own filter menu
+                DexV2("body").onceOpen(".x-menu-list-item", function(){
+                    var menu = DexV2(".x-menu-list .x-menu-list-item span");
+
+                    menu.each(function(menuItem){
+                        var // Get Label
+                            textNode = menuItem.getHTML(),
+                            labelSplit = textNode.split("<"),
+                            label = labelSplit[0],
+
+                            // Get checked status
+                            img = menuItem.filter("img"),
+                            backgroundPosition = window.getComputedStyle(img.nodes[0])["background-position"],
+                            isChecked = (backgroundPosition == "-18px 0px") ? false : true;
+
+                        // Save to filters array
+                        app.backgroundJobs.data.filters.push({
+                            label: label,
+                            isChecked: isChecked
+                        });
+
+                    });
+
+                    // Build the side menu
+                    app.backgroundJobs.buildFilterMenu();
+
+                    // Close the drop down menu
+                    DexV2.getCached("body").trigger("mousedown").trigger("mouseup");
+
+                }, "BACKGROUND-JOBS-INIT-FILTER")
+
+                // Filter toggles
+                DexV2.class("job-list-window").onClick(".indigo-switch > div", function(){
+                    var filterEntry = DexV2.node(this).parent(),
+                        filterID = filterEntry.getAttribute("data-indigo-switch-id");
+
+                    filterEntry.toggleAttribute("data-indigo-switch-checked", ["true", "false"]);
+
+                    // Open the GWT filter combo
+                    DexV2.class("job-list-window") // Get thomas to add a class on the filtered combo ...
+                        .filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(1) > table").trigger("click");
+
+                    // When it has opened, trigger click the selected filter type
+                    DexV2("body").onceOpen(".x-menu", function(){
+                        var menu = DexV2(".x-menu-list .x-menu-list-item span").index(filterID);
+
+                        menu.trigger("click");
+
+                    }, "BACKGROUND-JOBS-TRIGGER-FILTER");
+
+                }, "BACKGROUND-JOBS-TOGGLE-FILTER");
+
+                // Executes when results are loaded into the list
+                DexV2.class("job-list-window").onOpen(".x-grid-group", function(){
+                    var previousButton = DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-bbar .x-toolbar-layout-ct .x-toolbar-left .x-toolbar-cell:nth-child(2) > table"),
+                        nextButton = DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-bbar .x-toolbar-layout-ct .x-toolbar-left .x-toolbar-cell:nth-child(8) > table");
+
+                    // Look at the previous and next buttons to determine if there is more than one page of results
+                    if( previousButton.hasClass("x-item-disabled") &&
+                        nextButton.hasClass("x-item-disabled")){
+
+                        // Only one page, so hide pager
+                        DexV2.class("job-list-window").setAttribute("indigo-results-multiple-pages", "false");
+
+                    } else {
+                        // More than one page, so show pager
+                        DexV2.class("job-list-window").setAttribute("indigo-results-multiple-pages", "true");
+
+                    }
+
+                    // Add info and delete button to each row
+                    var rows = DexV2.class("job-list-window").filter(".x-grid3-row"),
+
+                        // Build the menu
+                        actionMenu = document.createElement("menu"),
+                        deleteButton = document.createElement("button"),
+                        infoButton = document.createElement("button");
+
+                    // Add classes to menu elements
+                    actionMenu.classList.add("action-menu");
+                    deleteButton.classList.add("delete-button");
+                    infoButton.classList.add("info-button");
+
+                    // Add buttons to the menu
+                    actionMenu.appendChild(infoButton);
+                    actionMenu.appendChild(deleteButton);
+
+                    // Duplicate and add the menu to each row
+                    rows.each(function(){
+                        var clonedActionMenu = actionMenu.cloneNode(true);
+
+                        DexV2.node(this).append(clonedActionMenu);
+                    });
+
+                    // Flag that there are results ...
+                    DexV2.class("job-list-window").setAttribute("indigo-results", "true");
+
+                }, "BACKGROUND-JOBS-FILTERED-RESULTS");
+
+                // Excutes when there are no rsults ...
+                DexV2.class("job-list-window").onOpen(".x-grid-empty", function(){
+                    // Flag that there are no results
+                    DexV2.class("job-list-window").setAttribute("indigo-results", "false");
+
+                }, "BACKGROUND-JOBS-FILTERED-RESULTS");
+
+                // User has toggled the auto refresh checkbox, display the seconds input accordingly
+                DexV2(".job-list-window").onClick("input[type='checkbox']", function(){
+                    app.backgroundJobs.autoRefreshUpdate();
+                })
+
+                // User has clicked on the delete entry button
+                DexV2(".job-list-window").onClick(".delete-button", function(){
+                    // Trigger click on the hidden GWT delete button
+                    DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(7) > table").trigger("click");
+                }, "BACKGROUND-JOBS-DELETE-ENTRY");
+
+                // User has clicked on the info button
+                DexV2(".job-list-window").onClick(".info-button", function(){
+                    // Open the details panel by flagging the attribute
+                    DexV2.class("job-list-window").setAttribute("data-indigo-details", "open");
+                }, "BACKGROUND-JOBS-DETAILS-ENTRY");
+
+                // User has clicked on the close details panel
+                DexV2(".job-list-window").onClick(".x-window-bwrap .x-panel:nth-child(2) .x-panel-header .x-panel-toolbar", function(){
+                    // Remove the  flag that displays the details panel
+                    DexV2.class("job-list-window").setAttribute("data-indigo-details", "");
+
+                });
+
+                // Initiate the auto refresh display type
+                app.backgroundJobs.autoRefreshUpdate();
+
+            },
+            onClose: function(){},
+            autoRefreshUpdate: function(){
+                // Check if the auto refresh checkbox is checked, if so then display the seconds input field
+                var isChecked = DexV2.class("job-list-window").filter("input[type='checkbox']").nodes[0].checked;
+
+                DexV2.class("job-list-window").setAttribute("indigo-auto-refresh", isChecked)
+
+            },
+            buildFilterMenu: function(){
+                // Build the filter menu on the left side of the screen
+                // The details have been previously recuperated from the GWT filter by combo
+                var n = 0,
+                    filters = app.backgroundJobs.data.filters,
+
+                    filterMenu = document.createElement("div"),
+                    filterMenuTitle = document.createElement("h1"),
+                    filterMenuTitleText = document.createTextNode("Filters ..."),
+
+                    switchHolder = document.createElement("div"),
+                    switchRail = document.createElement("div"),
+                    switchShuttle = document.createElement("div");
+
+                // Define Menu
+                filterMenu.classList.add("indigo-background-jobs-filters");
+
+                // Define Title
+                filterMenuTitle.appendChild(filterMenuTitleText);
+                filterMenuTitle.classList.add("indigo-background-jobs-filters-title");
+                // filterMenu.appendChild(filterMenuTitle);
+
+                // Create Switch Master
+                switchHolder.classList.add("indigo-switch");
+                switchRail.classList.add("indigo-switch--rail");
+                switchShuttle.classList.add("indigo-switch--shuttle");
+                switchHolder.appendChild(switchRail);
+                switchHolder.appendChild(switchRail);
+                switchHolder.appendChild(switchShuttle);
+
+                for(n = 0; n < filters.length; n ++){
+                    var filterEntry = switchHolder.cloneNode(true);
+
+                    filterEntry.setAttribute("data-indigo-switch-id", n);
+                    filterEntry.setAttribute("data-indigo-switch-label", filters[n].label);
+                    filterEntry.setAttribute("data-indigo-switch-checked", filters[n].isChecked);
+
+                    filterMenu.appendChild(filterEntry);
+
+                }
+
+                // Remove the filters, just incase it has already been added
+                DexV2(".indigo-background-jobs-filters").remove();
+
+                // Add the new Filters Menu
+                DexV2(".job-list-window").append(filterMenu);
+
+            }
+        },
 		picker: {
 			data: {
 				currentItem: null,
@@ -4055,6 +4265,7 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
+                .onOpen(".job-list-window", app.backgroundJobs.onOpen)
                 .onMouseDown(".toolbar-item-studio", function(){
                     var studioNodePath = sessionStorage.getItem("studiomode_nodePath"),
                         baseURL = jahiaGWTParameters.contextPath + "/cms/studio/default/" + jahiaGWTParameters.uilang;

@@ -3307,7 +3307,9 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.publication-manager-engine,
 .x-window.trashboard-engine,
 .x-window.preview-window,
-.x-window.image-crop {	// Temporary selector for image crop - MANAGERS
+.x-window.image-crop,
+.x-window.image-resize,
+.x-window.image-rotate {	// Temporary selector for image crop - MANAGERS
 	background: transparent;
 	z-index: 999999 !important;
 
@@ -4043,6 +4045,22 @@ body[data-indigo-gwt-side-panel="open"] {
 	position: relative;
 }
 
+
+// Image edit modal
+
+.x-window.image-crop {
+
+	.x-component.x-column-layout-ct .x-column-inner .x-form-field-wrap.x-component.x-column {
+		margin-top: 24px;
+		margin-right: 16px;
+		margin-bottom: 8px;
+	}
+
+	table.x-toolbar-ct {
+		float: right;
+	}
+
+}
 
 
 /////////////////////////////////////////////////

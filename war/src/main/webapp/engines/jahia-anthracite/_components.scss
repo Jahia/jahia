@@ -4062,6 +4062,30 @@ body[data-indigo-gwt-side-panel="open"] {
 
 }
 
+.x-window.image-rotate {
+
+	.x-window-body {
+	    min-height: 72px;
+	}
+
+	table.x-toolbar-ct {
+		float: right;
+	}
+
+}
+
+.x-window.image-resize {
+
+	.x-window-body {
+	    min-height: 270px;
+	}
+
+	table.x-toolbar-ct {
+		float: right;
+	}
+
+}
+
 
 /////////////////////////////////////////////////
 // COMPARE PANEL ////////////////////////////////

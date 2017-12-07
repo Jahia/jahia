@@ -114,7 +114,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
 
         final PrintWriter printWriter = response.getWriter();
         final JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
-        if (user == null || user.getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)) {
+        if (JahiaUserManagerService.isGuest(user)) {
             printWriter.write("READONLY\n");
             return;
         }
@@ -373,8 +373,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         }
 
         if (!locationFolder.hasPermission("jcr:addChildNodes") || locationFolder.isLocked()) {
-            String userName = (user == null ? null : user.getName());
-            logger.debug("destination is not writable for user " + userName);
+            logger.debug("destination is not writable for user {}", (user == null ? null : user.getName()));
             return READONLY;
         }
         try {

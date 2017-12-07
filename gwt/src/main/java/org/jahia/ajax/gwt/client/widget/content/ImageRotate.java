@@ -115,9 +115,9 @@ public class ImageRotate extends Window {
                 rotateImage(n.getPath(), newname.getValue(), true, false) ;
             }
         }) ;
+        buttons.add(cancel) ;
         buttons.add(left) ;
         buttons.add(right) ;
-        buttons.add(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);
 

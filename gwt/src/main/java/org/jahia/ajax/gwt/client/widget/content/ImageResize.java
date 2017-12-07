@@ -205,8 +205,8 @@ public class ImageResize extends Window {
                 resizeImage(n.getPath(), newname.getValue(), wf.getValue().intValue(), hf.getValue().intValue(), false) ;
             }
         }) ;
-        buttons.add(submit) ;
         buttons.add(cancel) ;
+        buttons.add(submit) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);
 

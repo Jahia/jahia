@@ -256,8 +256,8 @@ public class ImageCrop extends Window {
                 }
             }
         });
-        buttons.add(submit);
         buttons.add(cancel);
+        buttons.add(submit);
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);
 

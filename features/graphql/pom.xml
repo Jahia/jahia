@@ -51,55 +51,36 @@
         <version>7.2.2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>dx-jackson</artifactId>
-    <name>Jahia DX Jackson Karaf OSGi Feature</name>
+    <artifactId>dx-graphql</artifactId>
+    <name>Jahia DX graphql-java Karaf OSGi Feature</name>
     <packaging>feature</packaging>
     
     <properties>
-        <jackson.version>2.9.0</jackson.version>
+        <graphql-java.version>6.0</graphql-java.version>
+        <graphql-java-annotations.version>6.0.0-jahia-SNAPSHOT</graphql-java-annotations.version>
+        <graphql-java-servlet.version>4.6.1-jahia-SNAPSHOT</graphql-java-servlet.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>java-dataloader</artifactId>
+            <version>2.0.2-jahia-SNAPSHOT</version>
         </dependency>
-
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java</artifactId>
+            <version>${graphql-java.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jdk8</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>io.github.graphql-java</groupId>
+            <artifactId>graphql-java-annotations</artifactId>
+            <version>${graphql-java-annotations.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-base</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jaxb-annotations</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-servlet</artifactId>
+            <version>${graphql-java-servlet.version}</version>
         </dependency>
     </dependencies>
 </project>

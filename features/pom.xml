@@ -60,6 +60,7 @@
         <module>gemini-blueprint</module>
         <module>core</module>
         <module>jackson</module>
+        <module>graphql</module>
         <module>jax-rs</module>
         <module>standard</module>
     </modules>

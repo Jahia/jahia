@@ -4057,7 +4057,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	input {
-		//background: _property($MENU-MUTED-CLOSED--BG---HOVER, $type);
+		background: radial-gradient(ellipse at bottom right, _theme-color(primary, b) 0%, _theme-color(primary, a) 70%);
 		margin-bottom: 2px;
 
 		&:hover {

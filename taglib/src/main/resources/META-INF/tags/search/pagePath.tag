@@ -1,11 +1,13 @@
 <%@ tag body-content="empty" description="Renders page selection control." %>
 <%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
-              description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
-        %>
+              description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided." %>
 <%@ attribute name="value" required="false" type="java.lang.String" description="Initial value for the page path." %>
-<%@ attribute name="includeChildren" required="false" type="java.lang.Boolean"
-              description="Initial value for the include children field." %>
+<%@ attribute name="includeChildren" required="false" type="java.lang.Boolean" description="Initial value for the include children field." %>
+<%@ attribute name="nodeTypes" required="false" type="java.lang.String"
+              description="Comma-separated list of node types to filter out the tree. [jnt:page,jnt:virtualsite,jnt:navMenuText]" %>
+<%@ attribute name="selectableNodeTypes" required="false" type="java.lang.String"
+              description="Comma-separated list of node types that can be selected in the tree. [jnt:page,jnt:navMenuText]" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
@@ -43,7 +45,8 @@
         </c:if>
     </c:if>
     <input ${functions:attributes(attributes)} value="${fn:escapeXml(pageTitle)}"/>
-    <uiComponents:pageSelector fieldId="src_pagePath_value" displayFieldId="${attributes.id}" fieldIdIncludeChildren="src_pagePath.includeChildren" includeChildren="${includeChildren}"/>
+    <uiComponents:pageSelector fieldId="src_pagePath_value" displayFieldId="${attributes.id}" fieldIdIncludeChildren="src_pagePath.includeChildren" includeChildren="${includeChildren}"
+                               nodeTypes="${functions:default(nodeTypes, 'jnt:page,jnt:virtualsite,jnt:navMenuText')}" selectableNodeTypes="${functions:default(selectableNodeTypes, 'jnt:page,jnt:navMenuText')}"/>
 </c:if>
 <c:if test="${!display && includeChildren}">
     <input type="hidden" name="src_pagePath.includeChildren" value="true"/>

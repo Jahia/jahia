@@ -4057,17 +4057,8 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	input.x-form-field {
-		background: radial-gradient(ellipse at bottom right, _theme-color(primary, b) 0%, _theme-color(primary, a) 70%);
+		background: _theme-color(primary, a);
 		margin-bottom: 2px;
-
-		&:hover {
-			background: _theme-color(primary, b);
-		}
-
-		&:focus {
-			background: _theme-color(secondary, g) !important;
-		}
-
 	}
 
 }

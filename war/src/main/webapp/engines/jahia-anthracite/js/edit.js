@@ -1223,6 +1223,7 @@
 
 	var localisedStrings = {
         "DE": {
+			autoRefresh: "automatische Aktualisierung",
             jobs: "Aufgaben",
             zeroTasks: "Dashboard öffnen",
             singleTask: "Dashboard (%n% Aufgabe)",
@@ -1244,7 +1245,7 @@
             ignoreMetadata: "Metadaten ignorieren",
             metaLabel: "Meta: %n%",
             cancel: "Abbrechen",
-            backgroundJobs: "Background Jobs",
+            backgroundJobs: "Hintergrund-Tasks",
             filterContent: "Content filtern",
 			pickerTitles: {
 				default: "File Picker",
@@ -1259,6 +1260,7 @@
 			},
         },
 		"EN": {
+			autoRefresh: "Auto refresh",
 			jobs: "Jobs",
 			zeroTasks: "Open Dashboard",
 			singleTask: "Dashboard (%n% task)",
@@ -1295,6 +1297,7 @@
 			},
 		},
 		"FR": {
+			autoRefresh: "Rafraîchissement automatique",
 			jobs: "Processus",
 			zeroTasks: "Tableau de bord",
 			singleTask: "Tableau de bord (%n% Tâche)",
@@ -1317,7 +1320,7 @@
 			metaLabel: "Meta: %n%",
 			cancel: "Annuler",
 			filterContent: "Filtrer le contenu",
-            backgroundJobs: "Background Jobs",
+            backgroundJobs: "Tâches de fond",
 			pickerTitles: {
 				default: "File Picker",
                 imagepicker: jahia_gwt_messages.label_imagepicker,
@@ -1674,6 +1677,8 @@
 
                 // Update title
                 DexV2.class("job-list-window").filter(".x-window-tl .x-window-header-text").setHTML(localisedStrings[app.data.UILanguage].backgroundJobs);
+				DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar").setAttribute("indigo-label", localisedStrings[app.data.UILanguage].jobs);
+				DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(3) > div").setAttribute("indigo-label", localisedStrings[app.data.UILanguage].autoRefresh);
 
                 // Reset the filters array
                 app.backgroundJobs.data.filters = [];

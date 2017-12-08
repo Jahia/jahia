@@ -45,11 +45,24 @@
 
     &[indigo-auto-refresh="true"] {
         .x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell {
+			&:nth-child(3) {
+				label {
+					display: inline-block!important;
+				}
+
+				> div {
+					&:after {
+						display: none;
+					}
+				}
+			}
+
             &:nth-child(4),
             &:nth-child(5) {
                 display: inline-block;
             }
         }
+
 
     }
 
@@ -232,8 +245,8 @@
                     .x-panel-mc {
                         position: fixed;
                         top: 50px;
-                        left: 390px;
-                        width: calc(100% - 450px);
+                        left: 410px;
+                        width: calc(100% - 470px);
                         padding: 43px 19px 20px 19px;
                         box-sizing: border-box;
                         background: _property($FIELDSET--BG, $BACKGROUND-JOBS);
@@ -244,7 +257,7 @@
                             width: 100%!important;
 
                             &:before {
-                                content: "Filtered Jobs";
+                                content: attr(indigo-label);
                                 position: absolute;
                                 top: 14px;
                                 left: 30px;
@@ -281,6 +294,29 @@
                                     // Auto refresh checkbox
                                     &:nth-child(3) {
                                         display: inline-block;
+
+										label {
+											display: none!important;
+											text-transform: none;
+											font-size: 13px;
+											font-weight: 100;
+										}
+
+										> div {
+											&:after {
+												content: attr(indigo-label);
+												display: inline-block;
+												padding: 2px 0;
+
+												body.ext-gecko & {
+													padding: 4px 0;
+												}
+
+												@include text(13px, _property($LABEL--COLOR, $BACKGROUND-JOBS), 100);
+											}
+										}
+
+
                                     }
 
                                     // Auto refresh input
@@ -291,6 +327,17 @@
 
                                             @include text(11px, #a1a1a1, 400);
                                         }
+                                    }
+
+									// Auto refresh seconds
+                                    &:nth-child(5) {
+
+										label {
+											text-transform: none;
+											font-size: 13px;
+											font-weight: 100;
+										}
+
                                     }
 
                                     // Delete selected

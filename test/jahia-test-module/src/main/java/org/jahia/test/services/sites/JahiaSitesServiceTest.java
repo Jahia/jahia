@@ -43,14 +43,16 @@
  */
 package org.jahia.test.services.sites;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.jcr.RepositoryException;
 
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -209,5 +211,45 @@ public class JahiaSitesServiceTest {
         siteService.removeSite(siteB);
         recreateLiveSession();
         assertNotNull("There is no default site set", siteService.getDefaultSite(liveSession));
+    }
+
+    @Test
+    public void testSiteKeyValidity() throws Exception {
+        List<JahiaSite> sites = new LinkedList<>();
+        JahiaSite site = null;
+        try {
+            site = TestHelper.createSite("jahiaSitesServiceTestSiteD_a-1");
+            assertNotNull(site);
+            sites.add(site);
+
+            try {
+                // create site with a dot in the key which should not be possible
+                site = TestHelper.createSite("jahiaSitesServiceTestSiteD.a");
+                sites.add(site);
+                fail("Site with a dot in the site key should NOT have been created");
+            } catch (JahiaException e) {
+                assertTrue(e.getMessage().contains("Site key is not valid"));
+            }
+            try {
+                // create site with a space in the key
+                site = TestHelper.createSite("jahiaSitesServiceTestSiteD a");
+                sites.add(site);
+                fail("Site with a space in the site key should NOT have been created");
+            } catch (JahiaException e) {
+                assertTrue(e.getMessage().contains("Site key is not valid"));
+            }
+            try {
+                // create site with a non latin characters
+                site = TestHelper.createSite("jahiaSitesServiceTestSiteDäöüß");
+                sites.add(site);
+                fail("Site with a non-Latin charecters in the site key should NOT have been created");
+            } catch (JahiaException e) {
+                assertTrue(e.getMessage().contains("Site key is not valid"));
+            }
+        } finally {
+            for (JahiaSite s : sites) {
+                deleteSite(s, defaultSession);
+            }
+        }
     }
 }

@@ -234,7 +234,7 @@
                         top: 50px;
                         left: 390px;
                         width: calc(100% - 450px);
-                        padding: 43px 29px 20px 19px;
+                        padding: 43px 19px 20px 19px;
                         box-sizing: border-box;
                         background: _property($FIELDSET--BG, $BACKGROUND-JOBS);
                         border: 1px solid _property($FIELDSET--BORDER, $BACKGROUND-JOBS) !important;
@@ -303,8 +303,40 @@
                                     &:nth-child(8) {
                                         display: block;
                                         position: fixed;
-                                        top: 63px;
-                                        right: 74px;
+                                        top: 62px;
+                                        right: 69px;
+
+
+
+										> table {
+											width: 25px;
+											height: 25px;
+											background: url(./images/icons/tabs-trash-black@X2.png) no-repeat center center;
+											background-size: 21px;
+											opacity: 0.8;
+
+											&:hover {
+												opacity: 1;
+											}
+
+											> tbody {
+												display: none;
+											}
+										}
+
+
+
+
+										// @include button("BUTTON_DISCREET");
+										//
+										// .x-btn.x-btn-text-icon button img {
+										//
+										//
+										// 	background: url(./images/icons/icon-close-grey@X2.png) center center no-repeat!important;
+										// 	background-size: 10px!important;
+										// }
+
+
                                     }
                                 }
                             }
@@ -342,13 +374,34 @@
                                     background: none!important;
                                     margin-bottom: 20px;
 
+
+
                                     .x-grid3-header {
                                         display: table-cell;
                                         background: none!important;
                                         border: none;
 
+										&.x-grid3-hd-over,
+										&.x-grid3-hd-menu-open {
+
+											.x-grid3-hd-inner {
+												background: _theme-color(secondary, b)!important;
+
+												a {
+													background: url(./images/icons/icon-toggle-expanded-small-normal.png) no-repeat center center;
+													margin-right: 5px;
+												}
+
+
+	                                            span {
+	                                                color: _theme-color(primary);
+	                                            }
+	                                        }
+										}
+
+
                                         .x-grid3-hd-inner {
-                                            padding: 0 0 0 10px;
+                                            padding: 4px 0 3px 10px;
 
                                             span {
                                                 text-transform: uppercase;
@@ -365,8 +418,7 @@
 
                             // Grouped List
                             .x-grid-group {
-
-                                background: url(./images/icons/icon-toggle-expanded-small-normal.png) no-repeat left top 10px;
+								background: url(./images/icons/icon-toggle-expanded-small-normal.png) no-repeat left top 10px;
 
                                 // Collapsed Group
                                 &.x-grid-group-collapsed {
@@ -374,7 +426,7 @@
 
                                 }
 
-                                // Group header
+								// Group header
                                 .x-grid-group-hd {
                                     border: none;
                                     margin-bottom: 5px;
@@ -386,9 +438,15 @@
                                         @include text(10px, _theme-color(quinary), 500);
                                     }
                                 }
+							}
+
+							// Grouped / Ungrouped List
+							.x-grid-group,
+							.x-grid3 {
 
                                 // Group List Container
-                                .x-grid-group-body {
+                                .x-grid-group-body,
+								.x-grid3-body {
 
                                     .x-grid3-row {
 
@@ -447,7 +505,8 @@
 
                                             background: _property($ROW--BG---SELECTED, $BACKGROUND-JOBS)!important;
 
-                                            .x-grid3-cell-inner {
+                                            .x-grid3-cell-inner,
+											.x-grid3-cell-inner label {
                                                 color: _property($ROW--COLOR---SELECTED, $BACKGROUND-JOBS)!important;
                                             }
 
@@ -463,14 +522,17 @@
 
                                             background: _property($ROW--BG---HOVER, $BACKGROUND-JOBS)!important;
 
-                                            .x-grid3-cell-inner {
+                                            .x-grid3-cell-inner,
+											.x-grid3-cell-inner label {
                                                 color: _property($ROW--COLOR---HOVER, $BACKGROUND-JOBS)!important;
                                             }
 
                                         }
 
-                                        .x-grid3-cell-inner {
+                                        .x-grid3-cell-inner,
+										.x-grid3-cell-inner label {
                                             padding: 5px 0 0 10px;
+											text-transform: none!important;
                                             @include text(12px, _property($ROW--COLOR, $BACKGROUND-JOBS), $FONT--WEIGHT---EXTRALIGHT);
                                         }
                                     }

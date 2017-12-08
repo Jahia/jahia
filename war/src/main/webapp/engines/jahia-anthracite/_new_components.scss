@@ -51,7 +51,7 @@
 
 		&.x-item-disabled  {
 			.x-menu-item {
-				color: _property($MENU-OPENED--COLOR---DISABLED, $type);
+				color: _property($MENU-OPENED--COLOR---DISABLED, $type)!important;
 		        font-style: italic;
 		        opacity: 1;
 				background: _property($MENU-OPENED--BG---DISABLED, $type);

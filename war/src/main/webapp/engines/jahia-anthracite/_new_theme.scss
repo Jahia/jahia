@@ -127,7 +127,8 @@ $basic-colors: (
 	),
 	white: (
 		normal:	$color-white,
-		a: 		rgba($color-white, .4)
+		a: 		rgba($color-white, .4),
+		b: 		rgba($color-white, .8)
 	),
 	green: (
 		normal:	$color-green,
@@ -994,13 +995,13 @@ $MENU-OPENED--BG---HOVER:(
 );
 
 $MENU-OPENED--COLOR---DISABLED:(
-	LIGHT: _theme-color(senary),
-	DARK: white,
+	LIGHT: _theme-color(white, b),
+	DARK: _theme-color(white, b),
 );
 
 $MENU-OPENED--BG---DISABLED:(
 	LIGHT: _theme-color(quinary, a),
-	DARK: red,
+	DARK: _theme-color(quinary, a),
 );
 
 
@@ -1294,6 +1295,35 @@ $BUTTON--COLOR---HOVER:(
 $BUTTON--BG---HOVER:(
 	LIGHT: _theme-color(quaternary, a),
 	DARK: _theme-color(quaternary, a),
+);
+
+
+
+
+/****************************/
+/* DISCREET BUTTONS */
+/****************************/
+
+// UP
+$BUTTON-DISCREET--COLOR:(
+	LIGHT: _theme-color(primary, b),
+	DARK: _theme-color(primary, b),
+);
+
+$BUTTON-DISCREET--BG:(
+	LIGHT: _theme-color(secondary, b),
+	DARK: _theme-color(secondary, b),
+);
+
+// HOVER
+$BUTTON-DISCREET--COLOR---HOVER:(
+	LIGHT: _theme-color(primary, a),
+	DARK: _theme-color(primary, a),
+);
+
+$BUTTON-DISCREET--BG---HOVER:(
+	LIGHT: _theme-color(secondary, c),
+	DARK: _theme-color(secondary, c),
 );
 
 

@@ -1735,7 +1735,8 @@
                 }, "BACKGROUND-JOBS-TOGGLE-FILTER");
 
                 // Executes when results are loaded into the list
-                DexV2.class("job-list-window").onOpen(".x-grid-group", function(){
+                DexV2.class("job-list-window").onOpen(".x-grid-group, .x-grid3-row", function(){
+					console.log("FOUND RESULTS");
                     var previousButton = DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-bbar .x-toolbar-layout-ct .x-toolbar-left .x-toolbar-cell:nth-child(2) > table"),
                         nextButton = DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-bbar .x-toolbar-layout-ct .x-toolbar-left .x-toolbar-cell:nth-child(8) > table");
 
@@ -1773,7 +1774,14 @@
                     rows.each(function(){
                         var clonedActionMenu = actionMenu.cloneNode(true);
 
-                        DexV2.node(this).append(clonedActionMenu);
+						// This listener is sometimes called more than once, so check if the row has already had action menu added before adding ...
+						if(!DexV2.node(this).hasClass("indigo-contains-actions-menu")){
+							DexV2.node(this)
+								.addClass("indigo-contains-actions-menu")
+								.append(clonedActionMenu);
+						}
+
+
                     });
 
                     // Flag that there are results ...
@@ -1783,6 +1791,7 @@
 
                 // Excutes when there are no rsults ...
                 DexV2.class("job-list-window").onOpen(".x-grid-empty", function(){
+					console.log("NO RESULTS");
                     // Flag that there are no results
                     DexV2.class("job-list-window").setAttribute("indigo-results", "false");
 

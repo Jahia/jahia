@@ -43,7 +43,6 @@
  */
 package org.jahia.services.content.rules;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.core.FactException;
 import org.drools.core.spi.KnowledgeHelper;
@@ -60,7 +59,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
-import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.SiteImportJob;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
@@ -71,25 +70,20 @@ import org.jahia.services.tags.TaggingService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.Patterns;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.FileSystemResource;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import javax.servlet.ServletException;
 import java.io.*;
 import java.text.ParseException;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static org.jahia.services.importexport.ImportExportBaseService.*;
 
@@ -172,47 +166,17 @@ public class Service extends JahiaService {
 
     public void importNode(AddedNodeFact node, KnowledgeHelper drools) throws RepositoryException {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
-        String uri = node.getPath();
-        String name = node.getName();
+        JobDetail jobDetail = BackgroundJob.createJahiaJob("xx", SiteImportJob.class);
 
-        StringTokenizer st = new StringTokenizer(name, "_");
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+        jobDataMap.put(BackgroundJob.JOB_USERKEY, user.getJahiaUser().getUserKey());
+        jobDataMap.put(SiteImportJob.NODEPATH, node.getPath());
 
-        String type = st.nextToken();
-        if (type.equals("siteImport")) {
-            try {
-                logger.info("Import site " + uri);
-                //String sitename = st.nextToken() + "_" + st.nextToken();
-
-                if (!user.getUserNode().isRoot()) {
-                    return;
-                }
-
-                ImportExportBaseService.getInstance().importSiteZip(node.getNode());
-            } catch (Exception e) {
-                logger.error("Error during import of file " + uri, e);
-                cacheService.flushAllCaches();
-            }
-
-        } else if (name.endsWith(".zip")) {
-            try {
-                processFileImport(prepareFileImports(node, node.getName()), user.getUserNode().getJahiaUser());
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            } catch (ServletException e) {
-                logger.error(e.getMessage(), e);
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
-            }
-        } else if (name.endsWith(".xml")) {
-            JCRSessionWrapper session = node.getNode().getSession();
-            try {
-                session.importXML("/", node.getNode().getFileContent().downloadFile(), ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE);
-                session.save();
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
+        try {
+            ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
+        } catch (SchedulerException e) {
+            logger.error("Cannot schedult import for "+node.getPath(), e);
         }
-
     }
 
     public void importXML(final AddedNodeFact targetNode, final String path, KnowledgeHelper drools)
@@ -232,213 +196,6 @@ public class Service extends JahiaService {
             IOUtils.closeQuietly(is);
         }
         logger.info("Content of the file '" + path + "' for target node " + targetNode + " imported successfully");
-    }
-
-    private List<Map<Object, Object>> prepareFileImports(AddedNodeFact node, String name) {
-        try {
-            Properties exportProps = new Properties();
-            Node contentNode = node.getNode().getNode(Constants.JCR_CONTENT);
-            ZipInputStream zis = new ZipInputStream(contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream());
-            ZipEntry z;
-            Map<File, String> imports = new HashMap<File, String>();
-            List<File> importList = new ArrayList<File>();
-            while ((z = zis.getNextEntry()) != null) {
-                File i = File.createTempFile("import", ".zip");
-                OutputStream os = new BufferedOutputStream(new FileOutputStream(i));
-                try {
-                    IOUtils.copy(zis, os);
-                } finally {
-                    IOUtils.closeQuietly(os);
-                }
-
-                String n = z.getName();
-                if (n.equals(EXPORT_PROPERTIES)) {
-                    InputStream is = null;
-                    try {
-                        is = new BufferedInputStream(new FileInputStream(i), 1024);
-                        exportProps.load(is);
-                    } finally {
-                        IOUtils.closeQuietly(is);
-                        FileUtils.deleteQuietly(i);
-                    }
-                } else if (n.equals("classes.jar")) {
-                    FileUtils.deleteQuietly(i);
-                } else if (n.equals(SITE_PROPERTIES) || ((n.startsWith("export_") && n.endsWith(".xml")))) {
-                    // this is a single site import, stop everything and import
-                    FileUtils.deleteQuietly(i);
-                    for (File file : imports.keySet()) {
-                        FileUtils.deleteQuietly(file);
-                    }
-                    imports.clear();
-                    importList.clear();
-                    File tempFile = File.createTempFile("import", ".zip");
-                    InputStream is = contentNode.getProperty(Constants.JCR_DATA).getBinary().getStream();
-                    OutputStream tos = new BufferedOutputStream(new FileOutputStream(tempFile));
-                    try {
-                        IOUtils.copy(is, tos);
-                    } finally {
-                        IOUtils.closeQuietly(is);
-                        IOUtils.closeQuietly(tos);
-                    }
-
-                    imports.put(tempFile, name);
-                    importList.add(tempFile);
-                    break;
-                } else {
-                    imports.put(i, n);
-                    importList.add(i);
-                }
-            }
-
-            List<Map<Object, Object>> importsInfos = new ArrayList<Map<Object, Object>>();
-            Map<Object, Object> users = null;
-            Map<Object, Object> serverPermissions = null;
-            for (Iterator<File> iterator = importList.iterator(); iterator.hasNext(); ) {
-                File i = iterator.next();
-                String fileName = imports.get(i);
-                Map<Object, Object> value = prepareSiteImport(i, imports.get(i));
-                if (value != null) {
-                    if (USERS_XML.equals(fileName) || USERS_ZIP.equals(fileName)) {
-                        users = value;
-                    } else if (SERVER_PERMISSIONS_XML.equals(fileName)) {
-                        serverPermissions = value;
-                    } else {
-                        importsInfos.add(value);
-                    }
-                }
-            }
-
-            if (serverPermissions != null) {
-                importsInfos.add(0, serverPermissions);
-            }
-            if (users != null) {
-                importsInfos.add(0, users);
-            }
-            return importsInfos;
-        } catch (IOException e) {
-            logger.error("Cannot read import file :" + e.getMessage());
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return new ArrayList<Map<Object, Object>>();
-    }
-
-    private Map<Object, Object> prepareSiteImport(File i, String filename) throws IOException {
-        Map<Object, Object> importInfos = new HashMap<Object, Object>();
-        importInfos.put("importFile", i);
-        importInfos.put("importFileName", filename);
-        importInfos.put("selected", Boolean.TRUE);
-        if (filename.endsWith(".xml")) {
-            importInfos.put("type", "xml");
-        } else {
-            ZipEntry z;
-            ZipInputStream zis2 = new ZipInputStream(new BufferedInputStream(new FileInputStream(i)));
-            boolean isSite = false;
-            boolean isLegacySite = false;
-            try {
-                while ((z = zis2.getNextEntry()) != null) {
-                    if (SITE_PROPERTIES.equals(z.getName())) {
-                        Properties p = new Properties();
-                        p.load(zis2);
-                        zis2.closeEntry();
-                        importInfos.putAll(p);
-                        importInfos.put("templates", importInfos.containsKey("templatePackageName") ? importInfos.get(
-                                "templatePackageName") : "");
-                        importInfos.put("oldsitekey", importInfos.get("sitekey"));
-                        isSite = true;
-                    } else if (z.getName().startsWith("export_")) {
-                        isLegacySite = true;
-                    }
-                }
-            } finally {
-                IOUtils.closeQuietly(zis2);
-            }
-            importInfos.put("isSite", Boolean.valueOf(isSite));
-            // todo import ga parameters
-            if (isSite || isLegacySite) {
-                importInfos.put("type", "site");
-                if (!importInfos.containsKey("sitekey")) {
-                    importInfos.put("sitekey", "");
-                    importInfos.put("siteservername", "");
-                    importInfos.put("sitetitle", "");
-                    importInfos.put("description", "");
-                    importInfos.put("mixLanguage", "false");
-                    importInfos.put("templates", "");
-                    importInfos.put("siteKeyExists", Boolean.TRUE);
-                    importInfos.put("siteServerNameExists", Boolean.TRUE);
-                } else {
-                    try {
-                        importInfos.put("siteKeyExists", Boolean.valueOf(
-                                sitesService.getSiteByKey(
-                                        (String) importInfos.get("sitekey")) != null || "".equals(importInfos.get(
-                                        "sitekey"))));
-                        importInfos.put("siteServerNameExists", Boolean.valueOf(
-                                sitesService.getSite((String) importInfos.get(
-                                        "siteservername")) != null || "".equals(importInfos.get("siteservername"))));
-                    } catch (JahiaException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            } else {
-                importInfos.put("type", "files");
-            }
-
-        }
-        return importInfos;
-    }
-
-    private void processFileImport(List<Map<Object, Object>> importsInfos, JahiaUser user)
-            throws IOException, RepositoryException, ServletException, JahiaException {
-
-        for (Map<Object, Object> infos : importsInfos) {
-            File file = (File) infos.get("importFile");
-            if (infos.get("importFileName").equals(USERS_XML)) {
-                ImportExportBaseService.getInstance().importUsers(file);
-                break;
-            }
-        }
-
-        for (Map<Object, Object> infos : importsInfos) {
-            File file = (File) infos.get("importFile");
-            if (file != null && infos.get("type").equals("files")) {
-                try {
-                    ImportExportBaseService.getInstance().importSiteZip(new FileSystemResource(file), null, infos);
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            } else if (infos.get("type").equals("xml") && (infos.get("importFileName").equals(
-                    SERVER_PERMISSIONS_XML) || infos.get("importFileName").equals(USERS_XML))) {
-
-            } else if (infos.get("type").equals("site")) {
-                // site import
-                String tpl = (String) infos.get("templates");
-                if ("".equals(tpl)) {
-                    tpl = null;
-                }
-                try {
-                    SiteCreationInfo siteCreationInfo = SiteCreationInfo.builder().
-                            siteKey((String) infos.get("sitekey")).
-                            serverName((String) infos.get("siteservername")).
-                            serverNameAliases((String) infos.get("siteservernamealiases")).
-                            title((String) infos.get("sitetitle")).
-                            description("").
-                            templateSet(tpl).
-                            modulesToDeploy(null).
-                            locale(infos.containsKey("defaultLanguage") ? (String) infos.get("defaultLanguage") : settingsBean.getDefaultLanguageCode()).
-                            siteAdmin(user).
-                            firstImport("fileImport").
-                            fileImport(file == null ? null : new FileSystemResource(file)).
-                            fileImportName((String) infos.get("importFileName")).
-                            originatingJahiaRelease((String) infos.get("originatingJahiaRelease")).build();
-                    sitesService.addSite(siteCreationInfo);
-
-                } catch (Exception e) {
-                    logger.error("Cannot create site " + infos.get("sitetitle"), e);
-                }
-            }
-
-        }
-
     }
 
     public void incrementProperty(AddedNodeFact node, String propertyName,

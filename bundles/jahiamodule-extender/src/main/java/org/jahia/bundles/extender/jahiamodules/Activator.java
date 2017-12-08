@@ -71,7 +71,10 @@ import org.jahia.services.render.scripting.bundle.BundleScriptEngineManager;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.jahia.services.render.scripting.bundle.ScriptBundleObserver;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.templates.*;
+import org.jahia.services.templates.JCRModuleListener;
+import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.TemplatePackageDeployer;
+import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
@@ -91,9 +94,14 @@ import org.springframework.core.io.Resource;
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -108,6 +116,7 @@ public class Activator implements BundleActivator {
     private static final Logger logger = LoggerFactory.getLogger(Activator.class);
 
     private static final BundleURLScanner CND_SCANNER = new BundleURLScanner("META-INF", "*.cnd", false);
+    private static final BundleURLScanner CFG_SCANNER = new BundleURLScanner("META-INF/configurations", "*.cfg", false);
     private static final BundleURLScanner DSL_SCANNER = new BundleURLScanner("META-INF", "*.dsl", false);
     private static final BundleURLScanner DRL_SCANNER = new BundleURLScanner("META-INF", "*.drl", false);
     private static final BundleURLScanner URLREWRITE_SCANNER = new BundleURLScanner("META-INF", "*urlrewrite*.xml", false);
@@ -549,6 +558,8 @@ public class Activator implements BundleActivator {
 
         logger.info("--- Resolving DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
+        checkConfigurations(bundle);
+
         setModuleState(bundle, ModuleState.State.RESOLVED, null);
 
         registeredBundles.put(bundle, pkg);
@@ -599,6 +610,22 @@ public class Activator implements BundleActivator {
             logger.info("Got RESOLVED event for an already started bundle {} v{}. Proccesing started bundle.",
                     pkg.getId(), pkg.getVersion());
             start(bundle);
+        }
+    }
+
+    private void checkConfigurations(Bundle bundle) {
+        List<URL> foundURLs = CFG_SCANNER.scan(bundle);
+        if (!foundURLs.isEmpty()) {
+            for (URL url : foundURLs) {
+                try (InputStream inputStream = url.openStream()) {
+                    Path path = Paths.get( SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf", "etc", StringUtils.substringAfterLast(url.getFile(), "/"));
+                    if (!Files.exists(path)) {
+                        Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
+                    }
+                } catch (IOException e) {
+                    logger.error("unable to copy configuration", e);
+                }
+            }
         }
     }
 

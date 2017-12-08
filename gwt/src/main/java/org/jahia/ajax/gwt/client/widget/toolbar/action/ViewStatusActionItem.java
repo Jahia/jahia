@@ -80,7 +80,7 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
         if (((CheckMenuItem)getMenuItem()).isChecked()) {
             showLayer();
         } else {
-            hideLayers();
+            hideLayers(false);
         }
     }
 
@@ -92,7 +92,7 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
     protected Listener<ComponentEvent> createRemoveListener() {
         Listener<ComponentEvent> removeListener = new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce) {
-                hideLayers();
+                hideLayers(false);
             }
         };
         return removeListener;
@@ -112,10 +112,10 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
         viewStatus(list);
     }
 
-    private void hideLayers() {
+    private void hideLayers(boolean check) {
         Set<InfoLayers.InfoLayer> layers = new HashSet<InfoLayers.InfoLayer>(infoLayers.getContainers());
         layers.removeAll(before);
-        ((CheckMenuItem)getMenuItem()).setChecked(false);
+        ((CheckMenuItem)getMenuItem()).setChecked(check);
         infoLayers.removeAll(layers);
     }
 
@@ -129,7 +129,7 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
         super.handleNewMainNodeLoaded(node);
         if (((CheckMenuItem)getMenuItem()).isChecked()) {
-            hideLayers();
+            hideLayers(true);
             showLayer();
         }
     }

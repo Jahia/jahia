@@ -47,8 +47,11 @@ import static org.assertj.core.api.Assertions.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.jcr.RepositoryException;
@@ -320,5 +323,46 @@ public class JahiaSitesServiceTest {
                 return null;
             }
         });
+    }
+
+
+    @Test
+    public void testSiteKeyValidity() throws Exception {
+        List<JahiaSite> sites = new LinkedList<>();
+        JahiaSite site = null;
+        try {
+            site = TestHelper.createSite("jahiaSitesServiceTestSiteD_a-1");
+            assertNotNull(site);
+            sites.add(site);
+
+            try {
+                // create site with a dot in the key which should not be possible
+                site = TestHelper.createSite("jahiaSitesServiceTestSiteD.a");
+                sites.add(site);
+                fail("Site with a dot in the site key should NOT have been created");
+            } catch (JahiaException e) {
+                assertTrue(e.getMessage().contains("Site key is not valid"));
+            }
+            try {
+                // create site with a space in the key
+                site = TestHelper.createSite("jahiaSitesServiceTestSiteD a");
+                sites.add(site);
+                fail("Site with a space in the site key should NOT have been created");
+            } catch (JahiaException e) {
+                assertTrue(e.getMessage().contains("Site key is not valid"));
+            }
+            try {
+                // create site with a non latin characters
+                site = TestHelper.createSite("jahiaSitesServiceTestSiteDäöüß");
+                sites.add(site);
+                fail("Site with a non-Latin charecters in the site key should NOT have been created");
+            } catch (JahiaException e) {
+                assertTrue(e.getMessage().contains("Site key is not valid"));
+            }
+        } finally {
+            for (JahiaSite s : sites) {
+                deleteSite(s, defaultSession);
+            }
+        }
     }
 }

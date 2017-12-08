@@ -87,6 +87,7 @@
         <property name="validServerNameRegex">
             <value><![CDATA[[^~#%&*{}\\:<>?/+|\"]*$]]></value>
         </property>
+        <property name="validSiteKeyCharacters" value="${org.jahia.site.validSiteKeyCharacters:abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789-}"/>
     </bean>
 
     <bean id="CategoryService" class="org.jahia.services.categories.CategoryServiceImpl"

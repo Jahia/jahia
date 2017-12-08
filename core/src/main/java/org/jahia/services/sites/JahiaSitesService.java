@@ -82,8 +82,6 @@ import java.util.*;
  */
 public class JahiaSitesService extends JahiaService {
 
-    // authorized chars
-    private static final String AUTHORIZED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789.-";
     private static final String DEFAULT_SITE_PROPERTY = "j:defaultSite";
     private static Logger logger = LoggerFactory.getLogger(JahiaSitesService.class);
 
@@ -100,6 +98,7 @@ public class JahiaSitesService extends JahiaService {
     private SelfPopulatingCache siteDefaultLanguageBySiteKey;
     private SelfPopulatingCache sitesListCache;
     private String validServerNameRegex;
+    private String validSiteKeyCharacters;
 
     public synchronized void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;
@@ -451,6 +450,13 @@ public class JahiaSitesService extends JahiaService {
         long startTime = System.currentTimeMillis();
         logger.info("Start creation of a site using data: {}", info);
         
+        String siteKey = info.getSiteKey();
+        
+        if (!isSiteKeyValid(siteKey, true)) {
+            String msg = "Site key is not valid. Allowed characters are: " + validSiteKeyCharacters;
+            throw new JahiaException(msg, msg, JahiaException.DATA_ERROR, JahiaException.ERROR_SEVERITY);
+        }
+
         // check there is no site with same server name before adding
         boolean importingSystemSite = false;
         final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
@@ -458,8 +464,6 @@ public class JahiaSitesService extends JahiaService {
 
         try {
 
-            String siteKey = info.getSiteKey();
-            
             if (!siteExists(siteKey, session)) {
 
                 final JahiaTemplatesPackage templateSet = templateService.getAnyDeployedTemplatePackage(info.getTemplateSet());
@@ -956,21 +960,22 @@ public class JahiaSitesService extends JahiaService {
 
     }
 
-    public boolean isSiteKeyValid(String name) {
+    public boolean isSiteKeyValid(String siteKey) {
+        return isSiteKeyValid(siteKey, false);
+    }
 
-        if (StringUtils.isEmpty(name)) {
-            return false;
-        }
-
-        if (SYSTEM_SITE_KEY.equals(name)) {
+    private boolean isSiteKeyValid(String siteKey, boolean allowSysstemSite) {
+        if (StringUtils.isEmpty(siteKey) || !allowSysstemSite && SYSTEM_SITE_KEY.equals(siteKey)) {
             return false;
         }
 
         boolean valid = true;
-        for (char toBeTested : name.toCharArray()) {
-            if (AUTHORIZED_CHARS.indexOf(toBeTested) == -1) {
-                valid = false;
-                break;
+        if (validSiteKeyCharacters != null && validSiteKeyCharacters.length() > 0) {
+            for (char toBeTested : siteKey.toCharArray()) {
+                if (validSiteKeyCharacters.indexOf(toBeTested) == -1) {
+                    valid = false;
+                    break;
+                }
             }
         }
 
@@ -1081,5 +1086,13 @@ public class JahiaSitesService extends JahiaService {
 
     public void setValidServerNameRegex(String validServerNameRegex) {
         this.validServerNameRegex = validServerNameRegex;
+    }
+
+    public String getValidSiteKeyCharacters() {
+        return validSiteKeyCharacters;
+    }
+
+    public void setValidSiteKeyCharacters(String validSiteKeyCharacters) {
+        this.validSiteKeyCharacters = validSiteKeyCharacters;
     }
 }

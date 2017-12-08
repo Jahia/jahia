@@ -152,6 +152,7 @@ public class JobListPanel extends LayoutContainer {
 
         pagingToolBar = new PagingToolBar(50);
         pagingToolBar.bind(loader);
+        pagingToolBar.addStyleName("jobs-paging-toolbar");
 
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
 
@@ -289,8 +290,10 @@ public class JobListPanel extends LayoutContainer {
         });
 
         ToolBar topToolBar = new ToolBar();
+        topToolBar.addStyleName("jobs-top-toolbar");
         Button filterButton = new Button(Messages.get("label.typeFilter", "Type filter"));
         final Menu filterMenu = new Menu();
+        filterMenu.addStyleName("filter-menu");
         service.getAllJobGroupNames(new BaseAsyncCallback<List<String>>() {
 
             public void onSuccess(List<String> groupNames) {
@@ -321,11 +324,14 @@ public class JobListPanel extends LayoutContainer {
             }
         });
         filterButton.setMenu(filterMenu);
+
+        filterButton.addStyleName("jobs-filter-combo");
         topToolBar.add(filterButton);
 
         topToolBar.add(new SeparatorToolItem());
 
         final CheckBox autoRefreshCheckBox = new CheckBox();
+        autoRefreshCheckBox.addStyleName("jobs-auto-refresh");
         autoRefreshCheckBox.setValue(autoRefreshActivated);
         autoRefreshCheckBox.setBoxLabel(Messages.get("label.autoRefresh", "Auto-refresh every"));
         autoRefreshCheckBox.addListener(Events.Change, new Listener<FieldEvent>() {

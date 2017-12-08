@@ -45,16 +45,20 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
-import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -65,10 +69,36 @@ import java.util.*;
  */
 public abstract class ViewStatusActionItem extends BaseActionItem {
     protected transient InfoLayers infoLayers;
-    protected transient ToggleButton button;
     protected transient Set<InfoLayers.InfoLayer> before;
 
+    @Override
+    public MenuItem createMenuItem() {
+        return new CheckMenuItem();
+    }
+
     public void onComponentSelection() {
+        if (((CheckMenuItem)getMenuItem()).isChecked()) {
+            showLayer();
+        } else {
+            hideLayers();
+        }
+    }
+
+    public void handleNewLinkerSelection() {
+    }
+
+    public abstract void viewStatus(List<Module> moduleList);
+
+    protected Listener<ComponentEvent> createRemoveListener() {
+        Listener<ComponentEvent> removeListener = new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent ce) {
+                hideLayers();
+            }
+        };
+        return removeListener;
+    }
+
+    private void showLayer() {
         List<Module> modules = ModuleHelper.getModules();
         List<Module> list = new ArrayList<Module>();
         for (Module m : modules) {
@@ -82,33 +112,25 @@ public abstract class ViewStatusActionItem extends BaseActionItem {
         viewStatus(list);
     }
 
-    public void handleNewLinkerSelection() {
-    }
-
-    public Component createNewToolItem() {
-        button = new ToggleButton();
-        return button;
-    }
-
-    public abstract void viewStatus(List<Module> moduleList);
-
-    protected Listener<ComponentEvent> createRemoveListener() {
-        Listener<ComponentEvent> removeListener = new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent ce) {
-                Set<InfoLayers.InfoLayer> layers = new HashSet<InfoLayers.InfoLayer>(infoLayers.getContainers());
-                layers.removeAll(before);
-                infoLayers.removeAll(layers);
-                if (button != null) {
-                    button.toggle(false);
-                }
-            }
-        };
-        return removeListener;
+    private void hideLayers() {
+        Set<InfoLayers.InfoLayer> layers = new HashSet<InfoLayers.InfoLayer>(infoLayers.getContainers());
+        layers.removeAll(before);
+        ((CheckMenuItem)getMenuItem()).setChecked(false);
+        infoLayers.removeAll(layers);
     }
 
     @Override public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem,linker);
         infoLayers = ((EditLinker) linker).getMainModule().getInfoLayers();
         infoLayers.initWithLinker(linker);
+    }
+
+    @Override
+    public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        super.handleNewMainNodeLoaded(node);
+        if (((CheckMenuItem)getMenuItem()).isChecked()) {
+            hideLayers();
+            showLayer();
+        }
     }
 }

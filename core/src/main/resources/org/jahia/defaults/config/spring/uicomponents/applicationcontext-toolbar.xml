@@ -742,7 +742,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.ViewPublishStatusActionItem"/>
         </property>
-        <property name="titleKey" value="label.status"/>
+        <property name="titleKey" value="label.showPublicationStatus"/>
         <property name="icon" value="viewPublishStatus"/>
     </bean>
 

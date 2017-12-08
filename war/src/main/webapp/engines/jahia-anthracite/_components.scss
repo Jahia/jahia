@@ -4057,7 +4057,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	input {
-		background: _property($MENU-MUTED-CLOSED--BG---HOVER, $type);
+		//background: _property($MENU-MUTED-CLOSED--BG---HOVER, $type);
 		margin-bottom: 2px;
 
 		&:hover {

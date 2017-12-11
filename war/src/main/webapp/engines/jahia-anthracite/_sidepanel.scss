@@ -233,20 +233,21 @@
 
 				display: none;
 
-				/*
+
 				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
-					// USED AS MASK FOR CAPUTURING CLICK TO CLOSE SIDE PANELS
-					// Need to swap to a div that measures the height of the iframe so that scrolling can still be done
-					top: 0;
-					left: 0;
-					width: 100%!important;
-					height: 100%!important;
-					z-index: $ZINDEX--SIDE_PANEL--CLOSE_CAPTURE_MASK;
+					top: 5px;
+				    left: 335px;
+				    width: 20px !important;
+				    height: 20px !important;
+					z-index: 999;
 					position: fixed;
-					background: transparent;
+					background: red;
 					display: block;
 				}
-				*/
+
+				&:hover {
+					cursor: pointer;
+				}
 
 			}
 		}
@@ -355,7 +356,7 @@
 		}
 
 		body[data-indigo-app="edit"][data-sitesettings="false"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
-			 width: auto !important;
+			 width: 360px !important;
 		}
 
 		[data-INDIGO-GWT-SIDE-PANEL="open"] & {
@@ -705,9 +706,8 @@
 		top: -20px!important;
 		left: 360px!important;
 		width: 0px!important;
-		background: linear-gradient(to top right, #e0e0e0 0%, _theme-color(secondary) 50%)!important;
 		padding-left: 0px;
-		box-shadow: inset 6px 2px 18px #babbbc;
+		box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent, 3px 0px 3px 0 rgba(0, 0, 0, 0.4);
 		height: calc(100% + 40px)!important;
 		overflow: scroll!important;
 
@@ -745,6 +745,86 @@
 			left: 360px!important;
 			width: 297px!important;
 			padding-left: 10px;
+			transition: all 0.2s ease-in 0s;
+			padding-right: 25px;
+			pointer-events: none;
+			background: linear-gradient(to top right, #e0e0e0 0%, rgba(#fafafa, .93) 50%) !important;
+
+			&:hover {
+				cursor: pointer;
+			}
+
+			&:before {
+				content: " ";
+				color: red;
+				z-index: 99999;
+				position: absolute;
+				text-indent: -50000px;
+				right: -6px;
+				background: url(./images/icons/toggle-EW@X2.png) no-repeat center center;
+				background-size: 15px;
+				top: calc(50% - 12px);
+				width: 25px;
+				height: 25px;
+				pointer-events: all;
+				transition: all 0.1s ease-in 0s;
+			}
+
+			body.ext-gecko & {
+				&:before {
+					right: 1px;
+
+				}
+			}
+
+			> div {
+				pointer-events: all;
+			}
+
+
+
+			// Dragging has started
+			body.indigo-drag-to-drop & {
+				opacity: 0;
+				width: 0px!important;
+			}
+
+			body.minimise-results & {
+
+				&:before {
+				    background: url(./images/icons/toggle-WE-white@X2.png) no-repeat center center;
+					background-size: 15px;
+				}
+
+				pointer-events: none;
+			    width: 0px!important;
+				padding: 0 0 0 24px;
+				pointer-events: all;
+				box-shadow: inset 3px 0px 7px rgba(0,0,0,0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
+
+				&:hover {
+					box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
+
+					&:before {
+						right: -8px;
+
+						body.ext-gecko & {
+							right: -1px;
+						}
+					}
+				}
+
+				> div {
+					overflow: hidden;
+				}
+			}
+
+			body.minimise-results.ext-gecko & {
+				&:before {
+					right: -1px;
+
+				}
+			}
 		}
 
 	}
@@ -803,11 +883,11 @@
 		.x-panel-bwrap {
 			position: fixed;
 		    top: -20px;
-		    left: 363px;
+		    left: 360px;
 		    width: 297px;
 		    background: linear-gradient(to top right, #e0e0e0 0%, _theme-color(secondary) 50%)!important;
 		    padding-left: 10px;
-		    box-shadow: inset 6px 2px 18px #babbbc;
+		    box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent, 3px 0px 3px 0 rgba(0, 0, 0, 0.4);
 		    height: calc(100% + 40px)!important;
 
 			&::before {
@@ -818,6 +898,12 @@
 				left: 19px;
 
 				@include text(16px, #7b7f81, $FONT--WEIGHT---LIGHT)
+			}
+
+			body.minimise-results & {
+				&::before {
+					display: none;
+				}
 			}
 		}
 
@@ -834,8 +920,13 @@
 		    z-index: 9999999;
 		    background: linear-gradient(to right, rgba(44,46,48,1) 0%,rgba(80,84,87,1) 6%);;
 		    left: -10px;
-			width: calc(100% + 10px)!important;
+			width: calc(100% + 35px)!important;
 			height: 51px;
+
+			body.minimise-results & {
+				opacity: 0;
+				pointer-events: none;
+			}
 
 			> div {
 				padding: 0 10px;
@@ -1040,7 +1131,7 @@
 			width: 0px!important;
 		background: linear-gradient(to top right, #e0e0e0 0%, _theme-color(secondary) 50%)!important;
 		padding-left: 0px;
-		box-shadow: inset 6px 2px 18px #babbbc;
+		box-shadow: inset 3px 0px 7px #babbbc, inset -24px 0px 0 0 transparent, 3px 0px 3px 0 rgba(0, 0, 0, 0.4);
 		height: calc(100% + 40px)!important;
 		overflow: scroll!important;
 
@@ -1059,10 +1150,154 @@
 			left: 360px!important;
 			width: 297px!important;
 			padding-left: 10px;
+			background: linear-gradient(to top right, #e0e0e0 0%, rgba(#fafafa, .93) 50%) !important;
+			transition: all 0.2s ease-in 0s;
+
+			transition: all 0.2s ease-in 0s;
+			padding-right: 25px;
+			pointer-events: none;
+
+			&:hover {
+				cursor: pointer;
+			}
+
+			&:before {
+				content: " ";
+				color: red;
+				z-index: 99999;
+				position: absolute;
+				text-indent: -50000px;
+				right: -6px;
+				background: url(./images/icons/toggle-EW@X2.png) no-repeat center center;
+				background-size: 15px;
+				top: calc(50% - 12px);
+				width: 25px;
+				height: 25px;
+				pointer-events: all;
+				transition: all 0.1s ease-in 0s;
+			}
+
+			body.ext-gecko & {
+				&:before {
+					right: 1px;
+
+				}
+			}
+
+			> div {
+				pointer-events: all;
+			}
+
+
+
+			// Dragging has started
+			body.indigo-drag-to-drop & {
+				opacity: 0;
+				// pointer-events: none;
+				width: 0px!important;
+			}
+
+			body.minimise-results & {
+
+				&:before {
+				    background: url(./images/icons/toggle-WE-white@X2.png) no-repeat center center;
+					background-size: 15px;
+				}
+
+				pointer-events: none;
+			    width: 0px!important;
+				padding: 0 0 0 24px;
+				pointer-events: all;
+				box-shadow: inset 3px 0px 7px rgba(0,0,0,0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
+
+				&:hover {
+					box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
+
+					&:before {
+						right: -8px;
+
+					}
+				}
+
+				> div {
+					overflow: hidden;
+				}
+			}
+
+			body.minimise-results.ext-gecko & {
+				&:before {
+					right: -1px;
+
+				}
+			}
 		}
 
 		.JahiaGxtSearchTab-results {
 			display: block;
+
+			.x-panel-bwrap {
+				transition: all 0.2s ease-in 0s;
+
+				padding-right: 25px;
+				pointer-events: none;
+
+				&:hover {
+					cursor: pointer;
+				}
+
+				&:after {
+					content: " ";
+					color: red;
+					z-index: 99999;
+					position: absolute;
+					text-indent: -50000px;
+					right: 0;
+					background: url(./images/icons/toggle-EW@X2.png) no-repeat center center;
+					background-size: 15px;
+					top: calc(50% - 12px);
+					width: 25px;
+					height: 25px;
+					pointer-events: all;
+					transition: all 0.1s ease-in 0s;
+				}
+
+				> div {
+					pointer-events: all;
+				}
+
+
+
+				// Dragging has started
+				body.indigo-drag-to-drop & {
+					opacity: 0;
+					width: 0px!important;
+				}
+
+				body.minimise-results & {
+					&:after {
+					    background: url(./images/icons/toggle-WE-white@X2.png) no-repeat center center;
+						background-size: 15px;
+					}
+
+					pointer-events: none;
+				    width: 0px!important;
+					padding: 0 0 0 24px;
+					pointer-events: all;
+					box-shadow: inset 3px 0px 7px rgba(0,0,0,0.4), inset -24px 0px 0 0 #06a1e3, 3px 0px 3px 0 rgba(0, 0, 0, 0.4) !important;
+
+					&:hover {
+						box-shadow: inset 1px 0px 7px rgba(0, 0, 0, 0.4), inset -24px 0px 0 0 #06a1e3, 7px 0px 10px 0 rgba(0, 0, 0, 0.4) !important;
+
+						&:after {
+							right: -3px;
+						}
+					}
+
+					> div {
+						overflow: hidden;
+					}
+				}
+			}
 		}
 
 	}

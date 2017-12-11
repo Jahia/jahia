@@ -42,7 +42,7 @@ body[data-indigo-app="contribute"] {
     display: block;
     height: 40px !important;
     top: 0;
-    right: 2px;
+    right: 5px;
     left: auto;
     padding: 5px;
     width: 49px;
@@ -180,6 +180,8 @@ body[data-indigo-app="contribute"] {
     background: url(./images/icon-more-options-white@X2.png) no-repeat center center;
     background-size: 10px 2px;
 
+
+
     body[data-multiselect="on"] & {
         top: 29px!important;
     }
@@ -233,6 +235,8 @@ body[data-indigo-app="contribute"] {
     display: block;
     opacity: 1;
     margin-bottom: 0!important;
+
+
 
     body[data-multiselect="on"] & {
         top: 29px !important;
@@ -693,6 +697,8 @@ body[data-indigo-app="contribute"] {
 
     top: 21px;
 
+
+
     body[data-multiselect="on"] & { /* MULTI SELECT NOT WORKING IN CONTRIBUTE MODE !!! */
         display: block;
         top: 28px;
@@ -733,6 +739,7 @@ body[data-indigo-app="contribute"] {
     top: 20px;
     left: 250px;
     line-height: 22px !important;
+
 
 
     body[data-multiselect="on"] & {
@@ -1045,6 +1052,11 @@ body[data-indigo-app="contribute"] {
 
 
         }
+
+		body[data-INDIGO-SIDEPANEL-PINNED="true"] & {
+			left: 410px !important;
+		    width: calc(100% - 405px) !important;
+		}
     }
 
     // Iframe

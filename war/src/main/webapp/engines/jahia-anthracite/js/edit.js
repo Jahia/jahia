@@ -1470,7 +1470,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                app.edit.sidepanel.close();
+                // app.edit.sidepanel.close();
 
                 // Trigger mousedown / mouseup on body to close any open context menus and combo menus
                 DexV2.tag("body").trigger("mousedown").trigger("mouseup");
@@ -1480,7 +1480,7 @@
 		onClick: function(e){
             app.dev.log("CLICKED APP");
 			if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                var inSidePanel = DexV2.node(e.target).closest("#JahiaGxtSidePanelTabs, .edit-menu-sites, .window-side-panel #JahiaGxtRefreshSidePanelButton");
+                var inSidePanel = DexV2.node(e.target).closest(".window-side-panel");
 
 		        if(inSidePanel.nodes.length == 0){
 					app.dev.log("::: APP ::: ONCLICK");
@@ -1741,7 +1741,6 @@
 
                 // Executes when results are loaded into the list
                 DexV2.class("job-list-window").onOpen(".x-grid-group, .x-grid3-row", function(){
-					console.log("FOUND RESULTS");
                     var previousButton = DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-bbar .x-toolbar-layout-ct .x-toolbar-left .x-toolbar-cell:nth-child(2) > table"),
                         nextButton = DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-bbar .x-toolbar-layout-ct .x-toolbar-left .x-toolbar-cell:nth-child(8) > table");
 
@@ -1796,7 +1795,6 @@
 
                 // Excutes when there are no rsults ...
                 DexV2.class("job-list-window").onOpen(".x-grid-empty", function(){
-					console.log("NO RESULTS");
                     // Flag that there are no results
                     DexV2.class("job-list-window").setAttribute("indigo-results", "false");
 
@@ -3000,7 +2998,8 @@
 
                 if( DexV2.getCached("body").getAttribute("data-indigo-gwt-side-panel") == "open" &&
                     DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" &&
-                    DexV2.getCached("body").getAttribute("data-sitesettings") == "false"){
+                    DexV2.getCached("body").getAttribute("data-sitesettings") == "false" &&
+					DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") != "true"){
 
 	                // SAVE the curent style properties of the iframes body tag so we can revert to it once the side panel is closed.
 	                var iframeBody = DexV2.iframe(".window-iframe").filter("body");
@@ -3536,6 +3535,7 @@
 				reposition: function(e){
 					app.dev.log("::: APP ::: EDIT ::: TOPBAR ::: REPOSITION");
 					// Center title to page and move surrounding menus to right and left.
+					var offset = (DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") == "true") ? 160 : 0;
 
 					if(document.getElementsByClassName("x-current-page-path").length > 0){
 
@@ -3560,7 +3560,7 @@
 
 
                                 // Center Page Title
-                                elements.title.style.left = ((boxes.body.width / 2) - (boxes.title.width / 2)) + "px";
+                                elements.title.style.left = (((boxes.body.width / 2) - (boxes.title.width / 2)) + offset) + "px";
 
                                 if(elements.innerTitle){
                                     // Get Inner title bunding box
@@ -3619,8 +3619,33 @@
 					open: false,
 					currentTab: null
 				},
+				togglePin: function(){
+					DexV2.getCached("body").toggleAttribute("data-INDIGO-SIDEPANEL-PINNED", ["true", ""]);
+					DexV2.iframe(".window-iframe").filter("body").nodes[0].style.pointerEvents = "all";
+
+					app.edit.topbar.reposition();
+				},
+
+				toggleFloatingPanel: function(e){
+
+					if(DexV2.node(e.target).getAttribute("id") == "images-view" ||
+						DexV2.node(e.target).hasClass("x-panel-bwrap") ||
+						DexV2.node(e.target).hasClass("x-box-item")){
+
+						if(DexV2.getCached("body").hasClass("show-results")){
+							DexV2.getCached("body").toggleClass("minimise-results");
+						} else {
+							DexV2.getCached("body").removeClass("minimise-results");
+
+						}
+					}
+
+
+				},
 				onStartDrag: function(){
 					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTARTDRAG");
+
+					DexV2.getCached("body").addClass("indigo-drag-to-drop");
 
 					// Do not close the side panel as the user wants to drag a page somewhere else
 					if(DexV2.getCached("body").getAttribute("data-indigo-gwt-panel-tab") != "JahiaGxtSidePanelTabs__JahiaGxtPagesTab"){
@@ -3630,6 +3655,7 @@
 				},
 				onStopDrag: function(){
 					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTOPDRAG");
+					DexV2.getCached("body").removeClass("indigo-drag-to-drop");
 
 				},
 				open: function(isSettings){
@@ -3659,7 +3685,7 @@
 
 				},
 				close: function(){
-					if(DexV2.getCached("body").getAttribute("data-edit-window-style") !== "settings" && DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes"){
+					if(DexV2.getCached("body").getAttribute("data-edit-window-style") !== "settings" && DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") != "true"){
 						app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
 		                DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
 
@@ -3712,6 +3738,28 @@
 			            if(acceptClick){
 							DexV2.node(e.target).trigger("contextmenu", e.pageX, e.pageY);
 			            }
+					},
+					onMouseDown: function(e){
+						var nodeJoint = DexV2.node(e.target).hasClass("x-tree3-node-joint"),
+							alreadySelected = DexV2.node(this).hasClass("indigo-selected");
+
+						if(!nodeJoint){
+							if(alreadySelected){
+								// Toggle the drawer
+								DexV2.getCached("body").toggleClass("minimise-results");
+
+							} else {
+								// Show drawer
+								DexV2.getCached("body").removeClass("minimise-results");
+
+								DexV2.id("JahiaGxtSidePanelTabs").filter(".indigo-selected").removeClass("indigo-selected");
+								DexV2.node(this).addClass("indigo-selected");
+							}
+						}
+
+
+
+
 					}
 				}
 			},
@@ -3787,10 +3835,8 @@
           var siteSettingsListTop = offset(siteSettingsList).top;
 
           if(siteSettingsListTop <= 145) {
-            console.log("1 line");
             langSelector.style.cssText='top: 112px !important';
           } else if (siteSettingsListTop >= 185) {
-            console.log("2 lines");
             langSelector.style.cssText='top: 152px !important';
           };
 
@@ -4279,7 +4325,8 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
-                .onOpen(".job-list-window", app.backgroundJobs.onOpen)
+				.onClick(".window-side-panel .x-panel-footer", app.edit.sidepanel.togglePin)
+				.onOpen(".job-list-window", app.backgroundJobs.onOpen)
                 .onMouseDown(".toolbar-item-studio", function(){
                     var studioNodePath = sessionStorage.getItem("studiomode_nodePath"),
                         baseURL = jahiaGWTParameters.contextPath + "/cms/studio/default/" + jahiaGWTParameters.uilang;
@@ -4492,7 +4539,12 @@
     						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
     							DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
 
+    						}  else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
+    							DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
+
     						}
+
+
     						DexV2.getCached("body").removeClass("show-results");
     					}
     				}
@@ -4512,7 +4564,12 @@
     						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
     							DexV2.id("JahiaGxtSearchTab").addClass("show-results");
 
+    						}  else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
+    							DexV2.id("JahiaGxtSearchTab").addClass("show-results");
+
     						}
+
+
     						DexV2.getCached("body").addClass("show-results");
     					}
     				}
@@ -4613,6 +4670,8 @@
                 // .onMouseEnter("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree + div #images-view .x-view", app.picker.thumb.onMouseOut)
                 .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtPagesTab, #JahiaGxtSidePanelTabs__JahiaGxtCreateContentTab, #JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtFileImagesBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtSearchTab, #JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab, #JahiaGxtSidePanelTabs__JahiaGxtChannelsTab", app.edit.sidepanel.tab.onClick, "OPEN-SIDE-PANEL-TAB")
                 .onMouseUp("#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab", app.edit.settings.open)
+				.onMouseDown("#JahiaGxtContentBrowseTab .x-box-item:nth-child(1) .x-grid3-row, #JahiaGxtFileImagesBrowseTab .x-grid3-row, #JahiaGxtCategoryBrowseTab .x-grid3-row", app.edit.sidepanel.row.onMouseDown)
+				.onClick("#images-view, .x-box-inner .x-box-item:nth-child(2), .JahiaGxtSearchTab-results .x-panel-bwrap", app.edit.sidepanel.toggleFloatingPanel)
 
 //
 

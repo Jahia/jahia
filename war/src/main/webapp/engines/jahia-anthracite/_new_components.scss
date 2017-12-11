@@ -774,7 +774,7 @@ div[role="combobox"] {
 	@include _combo($APP);
 
 	// SIDE PANEL
-	body[data-indigo-gwt-side-panel="open"] & {
+	body[data-indigo-gwt-side-panel="open"] .window-side-panel & {
 		@include _combo($SIDE-PANEL);
 
 	}

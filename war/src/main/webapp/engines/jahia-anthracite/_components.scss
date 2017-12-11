@@ -2588,6 +2588,7 @@ form,
 	background: _property($MODAL-SOLID--BG---LEGACY, $APP);
     opacity: 1;
     z-index: $ZINDEX--MODAL---MASK;
+		z-index: 999 !important;	// test
     position: fixed !important;
 
 	body[data-INDIGO-IMAGE-PREVIEW="open"] & {
@@ -4061,9 +4062,19 @@ body[data-indigo-gwt-side-panel="open"] {
 		margin-bottom: 2px;
 	}
 
+	.x-form-text {
+		@include text-input($EDIT-ENGINE);
+		@include _input(LIGHT);
+	}
+
 }
 
 .x-window.image-crop {
+
+	top: 0 !important;
+	bottom: 0 !important;
+	margin: auto;
+	padding-top: 4%;
 
 	.x-component.x-column-layout-ct .x-column-inner .x-form-field-wrap.x-component.x-column {
 		margin-top: 24px;
@@ -4072,7 +4083,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	form.x-form-label-left {
-		overflow: auto !important;
+		height: 100% !important;
 	}
 
 }

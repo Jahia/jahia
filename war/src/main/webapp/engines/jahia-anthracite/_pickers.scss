@@ -30,7 +30,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		position: fixed;
 		top: 30px;
 		left: 30px;
-		z-index: 99999;
+		z-index: 99;
 		font-family: "Raleway", sans-serif;
 		font-size: 36px;
 		color: _theme-color(primary, d);
@@ -692,7 +692,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	    background: _property($SIDE-PANEL--BG, $PICKER);
 	    padding-top: 80px;
 		box-shadow: _property($SIDE-PANEL--SHADOW, $PICKER);
-		z-index: 9999;
+		z-index: 99;
 
 		// Fix GWT problem
 		.x-grid3-td-name,
@@ -1935,7 +1935,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		position: fixed;
 		top: 1px;
 		right: 90px;
-		z-index: 9999;
+		z-index: 999;
 		width: 50px;
 
 		// Hide when in list view
@@ -2515,7 +2515,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	// Toolbar - contains File Menu, Language Switcher and Node Type Combo
 	// Also contains the tool bar for Thimbs, Details view
 	.x-panel-tbar {
-		z-index: 999999;
+		z-index: 99;
 		position: relative;
 
 	}

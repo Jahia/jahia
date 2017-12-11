@@ -253,7 +253,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
                 new String[]{"commit", "-a", "-m", "First commit"},
                 new String[]{"remote", "add", "origin", url},
                 new String[]{"-c", "core.askpass=true", "fetch"},
-                new String[]{"merge", "origin/master"},
+                new String[]{"merge", "origin/master", "--allow-unrelated-histories"},
                 new String[]{"-c", "core.askpass=true", "push", "-u", "origin", "master"});
 
         this.rootFolder = workingDirectory;

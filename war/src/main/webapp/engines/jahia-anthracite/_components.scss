@@ -4058,7 +4058,6 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	input.x-form-field {
-		background: _theme-color(primary, a);
 		margin-bottom: 2px;
 	}
 
@@ -4086,12 +4085,23 @@ body[data-indigo-gwt-side-panel="open"] {
 		height: 100% !important;
 	}
 
+	> .x-window-bwrap .x-window-mc .x-window-body {
+		margin-bottom: 8px;
+		padding-bottom: 0 !important;
+		height: 100% !important;
+	}
+
 }
 
 .x-window.image-rotate {
 
 	.x-window-body {
 	    min-height: 72px;
+	}
+
+	.x-toolbar-left-row .x-toolbar-cell:nth-child(3) .x-btn-text {
+		background: _theme-color(quinary) !important;
+		color: _theme-color(secondary, a) !important;
 	}
 
 }

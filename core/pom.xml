@@ -233,7 +233,17 @@
                     <groupId>org.drools</groupId>
                     <artifactId>drools-core</artifactId>
                 </exclusion>
+                <!-- We override the version of the JDT compiler -->
+                <exclusion>
+                    <groupId>org.eclipse.jdt.core.compiler</groupId>
+                    <artifactId>ecj</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jdt.core.compiler</groupId>
+            <artifactId>ecj</artifactId>
+            <version>4.6.3</version>
         </dependency>
         <!--
         <dependency>

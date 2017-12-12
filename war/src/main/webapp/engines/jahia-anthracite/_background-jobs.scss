@@ -356,16 +356,25 @@
 										> table {
 											width: 25px;
 											height: 25px;
-											background: url(./images/icons/tabs-trash-black@X2.png) no-repeat center center;
+											background: url(./images/icons/tabs-trash-black@X2.png) no-repeat left -2px top;
 											background-size: 21px;
 											opacity: 0.8;
+
+                                            button {
+
+                                                @include text(12px, _theme-color(primary), 400);
+                                            }
 
 											&:hover {
 												opacity: 1;
 											}
 
+                                            img {
+                                                display: none;
+                                            }
+
 											> tbody {
-												display: none;
+												// display: none;
 											}
 										}
 

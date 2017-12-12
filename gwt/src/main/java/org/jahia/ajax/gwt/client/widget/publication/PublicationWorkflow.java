@@ -168,6 +168,7 @@ public class PublicationWorkflow implements CustomWorkflow {
 
     public Button getStartWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {
         final Button button = new Button(Messages.get("label.workflow.start", "Start workflow"));
+        button.addStyleName("button-start");
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -232,6 +233,7 @@ public class PublicationWorkflow implements CustomWorkflow {
     public Button getBypassWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {
         if (!publicationInfos.isEmpty() && publicationInfos.get(0).isAllowedToPublishWithoutWorkflow()) {
             final Button button = new Button(Messages.get("label.bypassWorkflow", "Bypass selected workflow"));
+            button.addStyleName("button-bypassworkflow");
             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
                 @Override
@@ -360,7 +362,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         }
         cards.addGlobalButton(getStartAllWorkflows(cards, linker));
         cards.addGlobalButton(getBypassAllWorkflowsButton(cards, linker));
-        cards.addGlobalButton(new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
+        Button button = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 cards.closeAllEngines();
                 if (doRefresh) {
@@ -370,7 +372,9 @@ public class PublicationWorkflow implements CustomWorkflow {
                     linker.refresh(data);
                 }
             }
-        }));
+        });
+        button.addStyleName("button-cancel");
+        cards.addGlobalButton(button);
         cards.showEngine();
     }
 
@@ -393,6 +397,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         }
 
         final Button button = new Button(Messages.get((cards.getComponents().size()==1?"label.bypassWorkflow":"label.bypassWorkflow.all"), (cards.getComponents().size()==1?"Bypass workflow":"Bypass all workflows")));
+        button.addStyleName("button-bypassworkflow");
 
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -461,6 +466,8 @@ public class PublicationWorkflow implements CustomWorkflow {
         }
 
         final Button button = new Button(Messages.get((cards.getComponents().size()==1?"label.workflow.start":"label.workflow.start.all"), (cards.getComponents().size()==1?"Start workflow":"Start all workflows")));
+        button.addStyleName("button-start");
+
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

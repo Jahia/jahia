@@ -248,6 +248,7 @@ public class ImageCrop extends Window {
                 hide();
             }
         });
+        cancel.addStyleName("button-cancel");
         Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 if (width.getValue().intValue() > 0 && height.getValue().intValue() > 0) {
@@ -256,6 +257,7 @@ public class ImageCrop extends Window {
                 }
             }
         });
+        submit.addStyleName("button-submit");
         buttons.add(cancel);
         buttons.add(submit);
         setButtonAlign(Style.HorizontalAlignment.CENTER);

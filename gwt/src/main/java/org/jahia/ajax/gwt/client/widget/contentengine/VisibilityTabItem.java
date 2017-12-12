@@ -207,9 +207,11 @@ public class VisibilityTabItem extends EditEngineTabItem {
                     final Button button;
                     if (condition.get("node-removed") == null || condition.getNodeTypes().contains("jmix:markedForDeletion")) {
                         button = new Button(Messages.get("label.remove"));
+                        button.addStyleName("button-remove");
                         button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
                     } else {
                         button = new Button(Messages.get("label.undelete"));
+                        button.addStyleName("button-undelete");
                         button.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
                     }
                     button.addSelectionListener(new SelectionListener<ButtonEvent>() {

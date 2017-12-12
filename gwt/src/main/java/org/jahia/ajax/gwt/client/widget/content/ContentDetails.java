@@ -156,6 +156,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         }
 
         ok = new Button(Messages.get("label.save"));
+        ok.addStyleName("button-save");
         ok.setEnabled(false);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SaveSelectionListener());

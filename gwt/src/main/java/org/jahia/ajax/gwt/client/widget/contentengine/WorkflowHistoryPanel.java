@@ -184,6 +184,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                     for (final GWTJahiaWorkflowTask task : parent.getAvailableTasks()) {
                         if (task.getId().equals(historyItem.getId())) {
                             Button b = new Button(historyItem.<String>get("displayName"));
+                            b.addStyleName("button-details");
                             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override
                                 public void componentSelected(ButtonEvent ce) {
@@ -268,6 +269,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                             historyItem instanceof GWTJahiaWorkflowHistoryProcess) {
                         ButtonBar buttonBar = new ButtonBar();
                         Button previewButton = new Button(Messages.get("label.preview"));
+                        previewButton.addStyleName("button-preview");
                         previewButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                             @Override
                             public void componentSelected(ButtonEvent ce) {
@@ -293,6 +295,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                         buttonBar.add(previewButton);
 
                         Button inContextButton = new Button(Messages.get("label.preview.context"));
+                        inContextButton.addStyleName("button-incontext-preview");
                         inContextButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                             @Override
                             public void componentSelected(ButtonEvent ce) {
@@ -375,6 +378,8 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                                      Grid<GWTJahiaWorkflowHistoryItem> gwtJahiaWorkflowHistoryItemGrid) {
                     if (model instanceof GWTJahiaWorkflowHistoryProcess && !((GWTJahiaWorkflowHistoryProcess) model).isFinished()) {
                         Button button = new Button(Messages.get("label.abort", "Abort"));
+                        button.addStyleName("button-abort");
+
                         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                             @Override
                             public void componentSelected(ButtonEvent ce) {

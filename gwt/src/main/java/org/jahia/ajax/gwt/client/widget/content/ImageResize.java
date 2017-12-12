@@ -200,11 +200,13 @@ public class ImageResize extends Window {
                 hide() ;
             }
         });
+        cancel.addStyleName("button-cancel");
         Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 resizeImage(n.getPath(), newname.getValue(), wf.getValue().intValue(), hf.getValue().intValue(), false) ;
             }
         }) ;
+        submit.addStyleName("button-submit");
         buttons.add(cancel) ;
         buttons.add(submit) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);

@@ -143,6 +143,8 @@ class SearchTabItem extends SidePanelTabItem {
                 loader.load(0, numberResults);
             }
         });
+        ok.addStyleName("button-search");
+
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.search());
 //        final Button drag = new Button(Messages.get("org.jahia.jcr.edit.drag.label"));
 //        new EditModeDragSource(drag) {

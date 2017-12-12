@@ -168,6 +168,7 @@ public class PublicationManagerEngine extends Window {
         ButtonBar buttonBar = new ButtonBar();
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
         Button button = new Button(Messages.get("label.publish", "Publish"));
+        button.addStyleName("button-publish");
         buttonBar.add(button);
         setBottomComponent(buttonBar);
 

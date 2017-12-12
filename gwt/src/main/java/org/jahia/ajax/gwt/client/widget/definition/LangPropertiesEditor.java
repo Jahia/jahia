@@ -270,6 +270,7 @@ public class LangPropertiesEditor extends LayoutContainer {
 
     private Button createSuggestTranslationButton() {
         Button button = new Button(Messages.get("label.translate.suggest", "Suggest translation"));
+        button.addStyleName("button-suggest");
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {

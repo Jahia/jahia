@@ -147,6 +147,7 @@ public class TranslateContentEngine extends Window {
         });
 
         Button copyButton = new Button(Messages.get("label.translate.copy", "Copy to other language"));
+        copyButton.addStyleName("button-translatecopy");
         sourceLangPropertiesEditor.getTopBar().add(copyButton);
         copyButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -200,12 +201,15 @@ public class TranslateContentEngine extends Window {
         buttonBar.add(wipCheckbox);
 
         ok = new Button(Messages.get("label.save"));
+        ok.addStyleName("button-save");
+
         ok.setHeight(BUTTON_HEIGHT);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SaveSelectionListener());
         buttonBar.add(ok);
 
         Button cancel = new Button(Messages.get("label.cancel"));
+        cancel.addStyleName("button-cancel");
         cancel.setHeight(BUTTON_HEIGHT);
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {

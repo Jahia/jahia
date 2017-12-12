@@ -57,6 +57,7 @@ public class CancelButtonItem implements ButtonItem {
 
     public BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.cancel", "Cancel"));
+        button.addStyleName("button-cancel");
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {

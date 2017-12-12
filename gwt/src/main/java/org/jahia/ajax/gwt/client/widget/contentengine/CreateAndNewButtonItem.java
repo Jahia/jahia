@@ -67,6 +67,7 @@ public class CreateAndNewButtonItem extends CreateButtonItem {
                 super.setEnabled(enabled);
             }
         };
+        button.addStyleName("button-create");
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {

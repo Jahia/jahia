@@ -105,16 +105,19 @@ public class ImageRotate extends Window {
                 hide() ;
             }
         });
+        cancel.addStyleName("button-cancel");
         Button left = new Button(Messages.get("label.rotateLeft"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 rotateImage(n.getPath(), newname.getValue(), false, false) ;
             }
         }) ;
+        left.addStyleName("button-left");
         Button right = new Button(Messages.get("label.rotateRight"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 rotateImage(n.getPath(), newname.getValue(), true, false) ;
             }
         }) ;
+        right.addStyleName("button-right");
         buttons.add(cancel) ;
         buttons.add(left) ;
         buttons.add(right) ;

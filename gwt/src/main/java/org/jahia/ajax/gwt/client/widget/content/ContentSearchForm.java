@@ -122,12 +122,14 @@ public class ContentSearchForm extends ContentPanel implements AbstractView.Cont
             }
         });
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.search());
+        ok.addStyleName("button-ok");
 
         final Button save = new Button("", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent e) {
                 saveSearch();
             }
         });
+        save.addStyleName("button-save");
         save.setIcon(StandardIconsProvider.STANDARD_ICONS.savedSearch());
         save.setToolTip(Messages.get("saveSearch.label"));
 

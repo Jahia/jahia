@@ -146,6 +146,8 @@ public class LoginBox extends Window {
                 form.submit();
             }
         });
+        btnSubmit.addStyleName("button-submit");
+
         form.addButton(btnSubmit);
 
 
@@ -159,6 +161,7 @@ public class LoginBox extends Window {
                                 com.google.gwt.user.client.Window.Location.getHostName() + port + JahiaGWTParameters.getContextPath());
             }
         });
+        btnCancel.addStyleName("button-cancel");
         form.addButton(btnCancel);
         form.setButtonAlign(HorizontalAlignment.CENTER);
 

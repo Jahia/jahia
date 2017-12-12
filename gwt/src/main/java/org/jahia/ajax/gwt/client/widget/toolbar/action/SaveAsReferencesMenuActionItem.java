@@ -136,6 +136,7 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                                     popup.hide();
                                 }
                             });
+                            b.addStyleName("button-save");
                             Button c = new Button(Messages.get("label.cancel", "Cancel"));
                             c.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override
@@ -143,6 +144,7 @@ public class SaveAsReferencesMenuActionItem extends BaseActionItem {
                                     popup.hide();
                                 }
                             });
+                            c.addStyleName("button-cancel");
                             f.addButton(c);
                             f.setButtonAlign(Style.HorizontalAlignment.CENTER);
 

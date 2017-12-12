@@ -181,6 +181,7 @@ public class TrashboardEngine extends Window {
                         );
                     }
                 });
+                button.addStyleName("button-undelete");
                 button.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
                 return button;
             }
@@ -229,6 +230,7 @@ public class TrashboardEngine extends Window {
                         );
                     }
                 });
+                button.addStyleName("button-delete");
                 button.setIcon(StandardIconsProvider.STANDARD_ICONS.delete());
                 return button;
             }
@@ -246,6 +248,8 @@ public class TrashboardEngine extends Window {
                         w.show();
                     }
                 });
+                button.addStyleName("button-info");
+
                 button.setIcon(StandardIconsProvider.STANDARD_ICONS.information());
                 return button;
             }
@@ -267,6 +271,7 @@ public class TrashboardEngine extends Window {
                 container.closeEngine();
             }
         });
+        cancel.addStyleName("button-close");
         bar.add(cancel);
 
         loader.load();

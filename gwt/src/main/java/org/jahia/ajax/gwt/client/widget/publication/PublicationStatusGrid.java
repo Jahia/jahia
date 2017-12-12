@@ -129,6 +129,7 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
                 if (!paths.contains(path)) {
                     paths.add(path);
                     Button compare = new Button(Messages.get("label.compare", "Compare"));
+                    compare.addStyleName("button-compare");
                     compare.addSelectionListener(new SelectionListener<ButtonEvent>() {
                         @Override
                         public void componentSelected(ButtonEvent ce) {
@@ -138,6 +139,7 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
                     buttonBar.add(compare);
                 }
                 Button review = new Button(Messages.get("label.review.content", "Review Content"));
+                review.addStyleName("button-review");
                 review.addSelectionListener(new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent ce) {

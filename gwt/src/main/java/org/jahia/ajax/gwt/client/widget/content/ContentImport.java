@@ -111,12 +111,14 @@ public class ContentImport extends Window {
                 doImport(n.getPath(), field.getValue());
             }
         });
+        submit.addStyleName("button-submit");
 
         Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
             }
         });
+        cancel.addStyleName("button-cancel");
 
         buttons.add(submit);
         buttons.add(cancel);
@@ -150,6 +152,8 @@ public class ContentImport extends Window {
                         hide();
                     }
                 });
+                close.addStyleName("button-close");
+
                 buttons.removeAll();
                 buttons.add(close);
 

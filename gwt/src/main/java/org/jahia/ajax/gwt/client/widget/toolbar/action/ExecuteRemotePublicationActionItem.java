@@ -150,6 +150,8 @@ public class ExecuteRemotePublicationActionItem extends ExecuteActionItem {
                 doAction();
             }
         });
+        btnSubmit.addStyleName("button-yes");
+
         form.addButton(btnSubmit);
 
 
@@ -158,6 +160,8 @@ public class ExecuteRemotePublicationActionItem extends ExecuteActionItem {
                 wnd.hide();
             }
         });
+        btnCancel.addStyleName("button-no");
+
         form.addButton(btnCancel);
         form.setButtonAlign(HorizontalAlignment.CENTER);
 

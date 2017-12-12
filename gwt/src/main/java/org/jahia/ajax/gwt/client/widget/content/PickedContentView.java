@@ -165,7 +165,8 @@ public class PickedContentView extends BottomRightComponent {
         column.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public Object render(final GWTJahiaNode gwtJahiaNode, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaNode> gwtJahiaNodeListStore, Grid<GWTJahiaNode> gwtJahiaNodeGrid) {
                 final Button pickContentButton = new Button(Messages.get("label.remove"));
-                pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());                
+                pickContentButton.addStyleName("button-remove");
+                pickContentButton.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
                 pickContentButton.setBorders(false);
                 pickContentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                     public void componentSelected(ButtonEvent buttonEvent) {

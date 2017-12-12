@@ -188,6 +188,8 @@ public class UrlMappingEditor extends LayoutContainer {
                                 store.remove(store.getAt(rowIndex));
                             }
                         });
+                button.addStyleName("button-remove");
+
                 button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
                 button.setEnabled(editable);
                 return button;
@@ -257,6 +259,7 @@ public class UrlMappingEditor extends LayoutContainer {
                 re.startEditing(store.indexOf(mapping), true);
             }
         });
+        add.addStyleName("button-add");
         add.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
         add.setEnabled(editable);
         toolBar.add(add);

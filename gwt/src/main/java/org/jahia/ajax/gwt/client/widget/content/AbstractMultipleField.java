@@ -74,6 +74,7 @@ abstract class AbstractMultipleField<T> extends MultiField<List<T>> {
     protected void onRender(Element target, int index) {
         super.onRender(target, index);
         addFieldButton = new Button(Messages.get("label.add"));
+        addFieldButton.addStyleName("button-add");
         addFieldButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {

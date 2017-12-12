@@ -77,6 +77,7 @@ public class ColorPickerField extends AdapterField {
             }
         });
         Button colorButton = new Button("");
+        colorButton.addStyleName("button-color");
         ColorMenu colorMenu = new ColorMenu();
         colorMenu.getColorPalette().addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {

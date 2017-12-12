@@ -102,7 +102,7 @@ public class ContentExportTemplate extends Window {
                 hide() ;
             }
         });
-
+        cancel.addStyleName("button-cancel");
         buttons.add(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);

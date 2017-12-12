@@ -122,6 +122,8 @@ public class CommitModuleActionItem extends BaseActionItem {
                 });
             }
         });
+        btnSubmit.addStyleName("button-submit");
+
         form.addButton(btnSubmit);
 
         Button btnCancel = new Button(Messages.get("label.cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
@@ -131,6 +133,7 @@ public class CommitModuleActionItem extends BaseActionItem {
                 wnd.hide();
             }
         });
+        btnCancel.addStyleName("button-cancel");
         form.addButton(btnCancel);
         form.setButtonAlign(Style.HorizontalAlignment.CENTER);
 

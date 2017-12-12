@@ -186,8 +186,11 @@ public class WizardWindow extends Window {
     @Override
     protected void onRender(Element parent, int pos) {
         prevBtn = new Button(getPreviousButtonText());
+        prevBtn.addStyleName("button-previous");
         nextBtn = new Button(getNextButtonText());
+        nextBtn.addStyleName("button-next");
         cancelBtn = new Button(getCancelButtonText());
+        cancelBtn.addStyleName("button-cancel");
 
         SelectionListener<ButtonEvent> listener = new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent buttonEvent) {

@@ -203,7 +203,7 @@ public abstract class DistributionServerWindow extends Window {
         });
 
         final Window w = this;
-        formPanel.addButton(new Button(Messages.get("label.save", "Save"), new SelectionListener<ButtonEvent>() {
+        Button button = new Button(Messages.get("label.save", "Save"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 w.hide();
                 if (combo.getValue().getValue().equals("forge")) {
@@ -219,13 +219,18 @@ public abstract class DistributionServerWindow extends Window {
                 }
                 callback(info);
             }
-        }));
-        formPanel.addButton(new Button(Messages.get("label.skip", "Skip"), new SelectionListener<ButtonEvent>() {
+        });
+        button.addStyleName("button-save");
+        formPanel.addButton(button);
+        Button skip = new Button(Messages.get("label.skip", "Skip"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 w.hide();
                 callback(null);
             }
-        }));
+        });
+        skip.addStyleName("button-skip");
+        formPanel.addButton(skip);
+
 
         p.add(formPanel);
 

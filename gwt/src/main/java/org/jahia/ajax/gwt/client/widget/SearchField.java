@@ -93,6 +93,7 @@ public abstract class SearchField extends ToolBar {
         add(new FillToolItem());
         if (saveSearchbutton) {
             Button save = new Button(Messages.get("saveSearch.label"));
+            save.addStyleName("button-savesearch");
             save.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
                    onSaveButtonClicked(field.getRawValue());

@@ -125,6 +125,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             }
 
             Button indentButton = new Button(Messages.get("label.indentAll"));
+            indentButton.addStyleName("button-indent");
             indentButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent buttonEvent) {
@@ -137,7 +138,9 @@ public class CodeEditorTabItem extends EditEngineTabItem {
             if (stubType != null) {
                 // stub type is defined -> create combos for code snippets
                 final Button addAllButton = new Button(Messages.get("label.addAll"));
+                addAllButton.addStyleName("button-addAll");
                 final Button addButton = new Button(Messages.get("label.add"));
+                addButton.addStyleName("button-add");
                 snippetType = new ComboBox<GWTJahiaValueDisplayBean>();
                 snippetType.setTypeAhead(true);
                 snippetType.getListView().setStyleAttribute(FONT_SIZE, FONT_SIZE_VALUE);

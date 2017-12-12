@@ -140,12 +140,14 @@ public class UserGroupSelect extends Window {
                 hide();
             }
         }) ;
+        add.addStyleName("button-add");
         addButton(add) ;
         Button cancel = new Button(Messages.get("label.cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 hide();
             }
         });
+        cancel.addStyleName("button-cancel");
         addButton(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);
 

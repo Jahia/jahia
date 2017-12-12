@@ -185,6 +185,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                                     w.hide();
                                 }
                             });
+                            ok.addStyleName("button-save");
                             ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
                             bar.add(ok);
 
@@ -200,6 +201,7 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
                                         }
                                     });
                             cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
+                            cancel.addStyleName("button-cancel");
 
                             bar.add(cancel);
                             w.add(contentPicker);

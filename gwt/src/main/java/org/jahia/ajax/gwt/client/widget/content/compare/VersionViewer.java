@@ -156,6 +156,7 @@ public class VersionViewer extends ContentPanel {
 
         if (versionDate != null) {
             restoreButton = new Button(Messages.get("label.restore", "Restore"));
+            restoreButton.addStyleName("button-restore");
             restoreButton.setEnabled(false);
             restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override

@@ -200,12 +200,14 @@ public class DeleteItemWindow extends Window {
 				}
 			}
 		});
+		submit.addStyleName("button-yes");
 
 		Button cancel = new Button(Messages.get("label.no"), new SelectionListener<ButtonEvent>() {
 			public void componentSelected(ButtonEvent event) {
 				hide();
 			}
 		});
+		cancel.addStyleName("button-no");
 
 		ButtonBar buttons = new ButtonBar() ;
 		buttons.setAlignment(HorizontalAlignment.CENTER);

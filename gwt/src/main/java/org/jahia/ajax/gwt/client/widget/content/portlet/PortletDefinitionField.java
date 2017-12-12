@@ -84,6 +84,8 @@ public class PortletDefinitionField extends TriggerField<String> {
                 w.hide();
             }
         });
+        ok.addStyleName("button-ok");
+
         bar.add(ok);
         w.setTopComponent(bar);
         w.add(card);

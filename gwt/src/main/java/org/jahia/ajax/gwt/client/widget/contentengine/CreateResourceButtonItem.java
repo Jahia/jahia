@@ -75,6 +75,7 @@ public class CreateResourceButtonItem extends SaveButtonItem {
     public BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.save", "Save"));
         button.setHeight(BUTTON_HEIGHT);
+        button.addStyleName("button-save");
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
@@ -101,6 +102,7 @@ public class CreateResourceButtonItem extends SaveButtonItem {
                 f.add(name);
 
                 Button b = new Button(Messages.get("label.submit", "submit"));
+                b.addStyleName("button-submit");
                 f.addButton(b);
                 b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                     @Override
@@ -116,6 +118,7 @@ public class CreateResourceButtonItem extends SaveButtonItem {
                     }
                 });
                 Button c = new Button(Messages.get("label.cancel", "Cancel"));
+                c.addStyleName("button-cancel");
                 c.addSelectionListener(new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {

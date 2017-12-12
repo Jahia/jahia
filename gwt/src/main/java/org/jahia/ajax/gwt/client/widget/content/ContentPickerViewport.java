@@ -88,6 +88,7 @@ public class ContentPickerViewport extends Viewport {
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
 
         Button ok = new Button(Messages.get("label.save"));
+        ok.addStyleName("button-save");
         ok.setHeight(BUTTON_HEIGHT);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -117,6 +118,7 @@ public class ContentPickerViewport extends Viewport {
                 WindowUtil.close();
             }
         });
+        cancel.addStyleName("button-cancel");
         buttonBar.add(cancel);
         buttonsPanel.add(buttonBar);
 

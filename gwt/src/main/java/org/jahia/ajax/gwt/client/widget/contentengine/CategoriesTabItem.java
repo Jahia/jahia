@@ -190,6 +190,7 @@ public class CategoriesTabItem extends EditEngineTabItem {
                 treeGridFactory.getLoader().load();
             }
         });
+        button.addStyleName("button-remove");
         button.setTitle(Messages.get("label.remove"));
         button.setData("associatedNode", n);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());

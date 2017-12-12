@@ -214,6 +214,7 @@ public class CreateButtonItem extends SaveButtonItem {
         f.add(name);
 
         Button b = new Button(Messages.get("label.submit", "submit"));
+        b.addStyleName("button-submit");
         f.addButton(b);
         b.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -224,6 +225,7 @@ public class CreateButtonItem extends SaveButtonItem {
         });
 
         Button c = new Button(Messages.get("label.cancel", "Cancel"));
+        c.addStyleName("button-cancel");
         c.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

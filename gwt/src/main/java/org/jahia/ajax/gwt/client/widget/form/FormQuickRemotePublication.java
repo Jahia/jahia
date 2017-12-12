@@ -159,6 +159,7 @@ public abstract class FormQuickRemotePublication extends FormPanel {
 
         // save properties button
         Button saveButton = new Button(Messages.get("label.save", "Save"));
+        saveButton.addStyleName("button-save");
         saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent componentEvent) {
 

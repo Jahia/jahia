@@ -95,6 +95,7 @@ public class ImagePopup extends Window {
         setId("JahiaGxtImagePopup");
         if (linker instanceof ManagerLinker && ((ManagerLinker) linker).getBottomRightObject() instanceof PickedContentView) {
             Button saveButton = new Button(Messages.get("label.save"));
+            saveButton.addStyleName("button-save");
             saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {

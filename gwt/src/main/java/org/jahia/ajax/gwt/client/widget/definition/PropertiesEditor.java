@@ -752,6 +752,8 @@ public class PropertiesEditor extends FormPanel {
 
                         }
                     });
+                    button.addStyleName("button-copyall");
+
                     panel.add(button);
                 }
                 if (isWriteable && translationSource != null && JahiaGWTParameters.getSiteLanguages().size() > 1
@@ -769,6 +771,7 @@ public class PropertiesEditor extends FormPanel {
                         }
                         if (sourceProperty != null) {
                             Button suggestButton = new Button(Messages.get("label.translate.suggest", "Suggest translation"));
+                            suggestButton.addStyleName("button-suggest");
                             final GWTJahiaNodeProperty finalSourceProperty = sourceProperty;
                             suggestButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                 @Override

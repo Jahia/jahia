@@ -103,6 +103,8 @@ public class ForgeLoginWindow extends Window {
                 callback.handle(tfUsername.getValue(), tfPassword.getValue());
             }
         });
+        b.addStyleName("button-login");
+
         formPanel.addButton(b);
 
         final Window w = this;
@@ -111,6 +113,7 @@ public class ForgeLoginWindow extends Window {
                 w.hide();
             }
         });
+        b.addStyleName("button-cancel");
         formPanel.addButton(b);
 
         add(formPanel);

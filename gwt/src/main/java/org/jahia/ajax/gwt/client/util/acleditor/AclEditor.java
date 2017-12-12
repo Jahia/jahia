@@ -183,6 +183,7 @@ public class AclEditor {
         });
 
         restoreButton = new Button(getResource("label.restore"));
+        restoreButton.addStyleName("button-restore");
         restoreButton.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
         restoreButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
@@ -451,6 +452,7 @@ public class AclEditor {
 
             ToolBar toolBar = new ToolBar();
             Button addUsersToolItem = new Button(getAddUsersLabel());
+            addUsersToolItem.addStyleName("button-add-users");
             addUsersToolItem.setIcon(StandardIconsProvider.STANDARD_ICONS.user());
             addUsersToolItem.setEnabled(!readOnly);
             addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -461,6 +463,7 @@ public class AclEditor {
             toolBar.add(addUsersToolItem);
 
             addUsersToolItem = new Button(getAddGroupsLabel());
+            addUsersToolItem.addStyleName("button-add-groups");
             addUsersToolItem.setIcon(StandardIconsProvider.STANDARD_ICONS.group());
             addUsersToolItem.setEnabled(!readOnly);
             addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {

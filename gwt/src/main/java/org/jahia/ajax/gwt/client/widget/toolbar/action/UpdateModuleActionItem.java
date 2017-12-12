@@ -229,6 +229,7 @@ public class UpdateModuleActionItem extends BaseActionItem {
                 wnd.hide();
             }
         });
+        btnClose.addStyleName("button-close");
         form.addButton(btnClose);
         form.setButtonAlign(Style.HorizontalAlignment.CENTER);
 

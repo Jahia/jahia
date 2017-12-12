@@ -190,6 +190,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
         ToolBar toolBar = new ToolBar();
         Button add = new Button(Messages.get("label.add", "Add"));
+        add.addStyleName("button-add");
         add.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
         add.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -238,6 +239,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         });
         toolBar.add(add);
         final Button remove = new Button(Messages.get("label.remove", "Remove"));
+        remove.addStyleName("button-remove");
         remove.disable();
         remove.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
         remove.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -264,6 +266,8 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         });
         toolBar.add(remove);
         final Button rename = new Button(Messages.get("label.rename", "Rename"));
+        rename.addStyleName("button-rename");
+
         rename.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
         rename.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -321,6 +325,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 }
             }
         });
+        moveUp.addStyleName("move-up");
         moveUp.setIcon(StandardIconsProvider.STANDARD_ICONS.moveUp());
         moveUp.disable();
         toolBar.add(moveUp);
@@ -343,6 +348,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 grid.getView().refresh(false);
             }
         });
+        moveFirst.addStyleName("move-first");
         moveFirst.setIcon(StandardIconsProvider.STANDARD_ICONS.moveFirst());
         moveFirst.disable();
         toolBar.add(moveFirst);
@@ -369,6 +375,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
                 }
             }
         });
+        moveDown.addStyleName("move-down");
         moveDown.setIcon(StandardIconsProvider.STANDARD_ICONS.moveDown());
         moveDown.disable();
         toolBar.add(moveDown);
@@ -396,6 +403,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
 
             }
         });
+        moveLast.addStyleName("move-last");
         moveLast.setIcon(StandardIconsProvider.STANDARD_ICONS.moveLast());
         moveLast.disable();
         toolBar.add(moveLast);

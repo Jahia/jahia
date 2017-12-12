@@ -100,6 +100,7 @@ public class UsagesTabItem extends EditEngineTabItem {
                     });
                 }
             });
+            button.addStyleName("button-clean");
             RowData layoutData1 = new RowData(200, 30);
             layoutData1.setMargins(new Margins(3));
             tab.add(button, layoutData1);

@@ -170,6 +170,7 @@ public class WorkflowActionDialog extends LayoutContainer {
                     container.closeEngine();
                 }
             });
+            cancel.addStyleName("button-cancel");
             buttonsBar.add(cancel);
         }
     }
@@ -282,6 +283,7 @@ public class WorkflowActionDialog extends LayoutContainer {
         FormData data = new FormData("-20");
         formPanel.add(textArea, data);
         Button button = new Button(Messages.get("label.addComment", "Add comment"));
+        button.addStyleName("button-comment");
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -374,6 +376,7 @@ public class WorkflowActionDialog extends LayoutContainer {
      */
     public Button generateStartWorkflowButton(final GWTJahiaWorkflowDefinition wf) {
         final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow") + ":" + wf.getDisplayName());
+        button.addStyleName("button-start");
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

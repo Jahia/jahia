@@ -143,6 +143,7 @@ public class FileUploadField extends AdapterField {
                 }
 
             });
+            clear.addStyleName("button-stop");
 
             name = null;
             key = null;

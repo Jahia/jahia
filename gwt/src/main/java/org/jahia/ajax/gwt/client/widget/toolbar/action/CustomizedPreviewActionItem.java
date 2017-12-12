@@ -261,6 +261,8 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         window.add(verticalPanel);
 
         Button ok = new Button(Messages.get("label.preview.window.confirm", "Show customized preview"));
+        ok.addStyleName("button-preview");
+
         ok.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

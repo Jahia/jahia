@@ -201,6 +201,8 @@ public class ReleaseModuleWindow extends Window {
                 callback.handle(releaseInfo);
             }
         });
+        b.addStyleName("button-release");
+
         formPanel.addButton(b);
 
         final Window w = this;
@@ -209,6 +211,8 @@ public class ReleaseModuleWindow extends Window {
                 w.hide();
             }
         });
+        b.addStyleName("button-cancel");
+
         formPanel.addButton(b);
 
         add(formPanel);

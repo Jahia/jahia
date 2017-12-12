@@ -101,6 +101,7 @@ public class PublicationStatusWindow extends LayoutContainer {
                 container.closeEngine();
             }
         });
+        cancel.addStyleName("button-cancel");
 
         ButtonBar bar = new ButtonBar();
         bar.setAlignment(Style.HorizontalAlignment.CENTER);
@@ -108,6 +109,7 @@ public class PublicationStatusWindow extends LayoutContainer {
         String language = null;
         if (uuids != null && infos != null && !infos.isEmpty() && infos.get(0).isAllowedToPublishWithoutWorkflow()) {
             noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
+            noWorkflow.addStyleName("button-noworkflow");
             noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids));
             String workflowGroup = infos.get(0).getWorkflowGroup();
             language = workflowGroup.substring(0, workflowGroup.indexOf(" "));

@@ -105,6 +105,7 @@ public class PasswordPrompt extends Window {
                 hide() ;
             }
         });
+        cancel.addStyleName("button-cancel");
         Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 JahiaContentManagementService.App.getInstance().storePasswordForProvider(providerKey, user.getValue(), pass.getValue(), new BaseAsyncCallback() {
@@ -123,6 +124,7 @@ public class PasswordPrompt extends Window {
                 });
             }
         }) ;
+        submit.addStyleName("button-submit");
         buttons.add(submit) ;
         buttons.add(cancel) ;
         setButtonAlign(Style.HorizontalAlignment.CENTER);

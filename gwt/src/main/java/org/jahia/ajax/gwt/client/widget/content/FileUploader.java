@@ -116,6 +116,8 @@ public class FileUploader extends Window {
                     }
                 }
             });
+            remove.addStyleName("button-remove");
+
             remove.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());
             remove.setToolTip(Messages.get("label.remove"));
             if (uploads.size() == 0) {
@@ -247,6 +249,8 @@ public class FileUploader extends Window {
                 hide();
             }
         });
+
+        cancel.addStyleName("button-cancel");
         final Button submit = new Button(Messages.get("label.ok"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 try {
@@ -260,7 +264,7 @@ public class FileUploader extends Window {
                 }
             }
         });
-
+        submit.addStyleName("button-ok");
         buttons.add(cancel);
         buttons.add(submit);
         setButtonAlign(Style.HorizontalAlignment.CENTER);

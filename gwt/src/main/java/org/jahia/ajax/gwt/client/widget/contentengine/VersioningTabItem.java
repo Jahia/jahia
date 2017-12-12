@@ -132,6 +132,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                                                  int colIndex, ListStore listStore, Grid grid) {
                                 ButtonBar buttonBar = new ButtonBar();
                                 Button button = new Button(Messages.get("label.compare.with.staging.engine", "Compare With Staging"));
+                                button.addStyleName("button-compare-staging");
                                 final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) model;
                                 button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                     @Override

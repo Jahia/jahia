@@ -88,6 +88,7 @@ public class ContentExport extends Window {
             p.add(new Text(Messages.get("label.exportChoose", "Choose export format")));
             add(p);
             b = new Button(Messages.get("label.exportXML", "XML content"));
+            b.addStyleName("button-exportxml");
             b.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
@@ -108,6 +109,7 @@ public class ContentExport extends Window {
 
 
         });
+        b.addStyleName("button-exportzip");
         addButton(b);
 
         b = new Button(Messages.get("label.exportZipWithLive", "ZIP"));
@@ -118,6 +120,7 @@ public class ContentExport extends Window {
                 com.google.gwt.user.client.Window.Location.assign(result + ".zip?live=true&cleanup=simple");
             }
         });
+        b.addStyleName("button-exportziplive");
         addButton(b);
 
 /*
@@ -138,6 +141,7 @@ public class ContentExport extends Window {
                 hide();
             }
         });
+        b.addStyleName("button-close");
         addButton(b);
     }
 

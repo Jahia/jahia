@@ -204,6 +204,7 @@ public class ResourceBundleEditor extends LayoutContainer {
                         event.getButton().disable();
                     }
                 });
+        btn.addStyleName("button-add");
         btn.setIcon(ToolbarIconProvider.getInstance().getIcon("newAction"));
         btn.disable();
 
@@ -793,7 +794,7 @@ public class ResourceBundleEditor extends LayoutContainer {
                         tabPanel.setSelection(tabPanel.getItem(0));
                     }
                 });
-
+        btn.addStyleName("button-add");
         btn.setEnabled(writable);
 
         formPanel.addButton(btn);

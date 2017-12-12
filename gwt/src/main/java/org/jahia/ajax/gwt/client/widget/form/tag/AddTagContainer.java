@@ -80,6 +80,7 @@ public class AddTagContainer extends HorizontalPanel {
         tagField = _tagField;
         tagComboBox = new TagComboBox(autoComplete);
         addTagButton = new Button(Messages.get("label.add"));
+        addTagButton.addStyleName("button-add");
         addTagButton.setIcon(StandardIconsProvider.STANDARD_ICONS.plusRound());
         addTagButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override

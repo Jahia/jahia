@@ -118,6 +118,7 @@ public class ContentTypeWindow extends Window {
         buttonBar.setAlignment(Style.HorizontalAlignment.CENTER);
 
         ok = new Button(Messages.get("label.ok"));
+        ok.addStyleName("button-save");
         ok.setHeight(ButtonItem.BUTTON_HEIGHT);
         ok.setEnabled(false);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
@@ -137,6 +138,7 @@ public class ContentTypeWindow extends Window {
 
         cancel = new Button(Messages.get("label.cancel"));
         cancel.setHeight(ButtonItem.BUTTON_HEIGHT);
+        cancel.addStyleName("button-cancel");
         cancel.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());
         cancel.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override

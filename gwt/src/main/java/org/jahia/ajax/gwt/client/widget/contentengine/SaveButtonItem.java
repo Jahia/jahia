@@ -75,6 +75,7 @@ public abstract class SaveButtonItem implements ButtonItem {
 
     public BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.save"));
+        button.addStyleName("button-save");
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {

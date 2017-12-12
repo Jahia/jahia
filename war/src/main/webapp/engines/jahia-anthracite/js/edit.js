@@ -1824,6 +1824,29 @@
 
                 });
 
+                DexV2(".job-list-window").onMouseOver(".x-grid3-row", function(e){
+                    // Impossible to know if an entry can be deleted or not WITHOUT first selecting it.
+                    // Now we select a row when it is rolled over, check if the delete button is enabled, if it is not clickable,
+                    //   then we hide the delete button that we previously added to the row
+                    var row = DexV2.node(e.target),
+                        isRow = row.hasClass("x-grid3-row");
+
+                    if(isRow){
+                        // Select the row
+                        row.trigger("mousedown");
+
+                        // See if the GWT delete button is clickable
+                        var cantDelete = DexV2.class("job-list-window").filter(".x-window-bwrap .x-panel:nth-child(1) .x-panel-bwrap .x-panel-mc .x-panel-tbar .x-toolbar-left .x-toolbar-cell:nth-child(7) > table").hasClass("x-item-disabled");
+
+                        if(cantDelete){
+                            // The GWT delete button is disactivated, so hide our delete button
+                            row.addClass("indigo-cant-delete");
+                        }
+
+                    }
+
+                }, "BACKGROUND-JOBS-DETAILS-ROW-OVER");
+
                 // Initiate the auto refresh display type
                 app.backgroundJobs.autoRefreshUpdate();
 

@@ -493,18 +493,27 @@
                                 .x-grid-group-body,
 								.x-grid3-body {
 
+
                                     .x-grid3-row {
 
-                                        position: relative;
-
-                                        &:hover {
-
+                                        &.indigo-cant-delete {
+                                            .action-menu {
+                                                .delete-button {
+                                                    display: none!important;
+                                                }
+                                            }
                                         }
+
+                                        > table {
+                                            pointer-events: none;
+                                        }
+
+                                        position: relative;
 
                                         // Delete more info buttons
                                         .action-menu {
                                             position: absolute;
-                                            right: 0;
+                                            right: 5px;
                                             top: 0;
                                             margin: 0;
                                             padding: 0 0 0 10px;
@@ -533,32 +542,32 @@
                                             }
                                         }
 
-                                        // Selected, Selected & hover
-                                        &.x-grid3-row-selected,
-                                        &.x-grid3-row-selected:hover {
+                                        // Selected, Selected & hover should be same as unselected
+                                        &.x-grid3-row-selected {
                                             .action-menu {
-                                                background: _property($ROW--BG---SELECTED, $BACKGROUND-JOBS);
+                                                background: _property($ROW--BG, $BACKGROUND-JOBS);
 
                                                 .delete-button {
-                                                    background-image: url(./images/icons/icon-close-white@X2.png);
+                                                    background-image: url(./images/icons/icon-close-grey@X2.png);
                                                 }
 
                                                 .info-button {
-                                                    background-image: url(./images/icons/ic_info_outline@2x.png);
+                                                    background-image: url(./images/icons/ic_info_outline-DARK@2x.png);
                                                 }
                                             }
 
-                                            background: _property($ROW--BG---SELECTED, $BACKGROUND-JOBS)!important;
+                                            background: _property($ROW--BG, $BACKGROUND-JOBS)!important;
 
                                             .x-grid3-cell-inner,
 											.x-grid3-cell-inner label {
-                                                color: _property($ROW--COLOR---SELECTED, $BACKGROUND-JOBS)!important;
+                                                color: _property($ROW--COLOR, $BACKGROUND-JOBS)!important;
                                             }
 
                                         }
 
                                         // Hover
-                                        &:hover {
+                                        &:hover,
+                                        &.x-grid3-row-selected:hover {
                                             .action-menu {
                                                 display: block;
 

@@ -2728,6 +2728,81 @@
                     .setAttribute("data-INDIGO-PICKER-SEARCH", "");
 
 			},
+            onOpenHistory: function(){
+
+                // User has clicked on the close details panel
+                DexV2.id("JahiaGxtEditEnginePanel-history").onClick(".x-panel:nth-child(2) .x-panel-toolbar", function(){
+                    // Remove the  flag that displays the details panel
+                    DexV2.id("JahiaGxtEditEnginePanel-history").setAttribute("data-indigo-details", "");
+                    DexV2.getCached("body").setAttribute("data-indigo-history-display", "");
+                });
+
+                // Executes when results are loaded into the list
+                DexV2.id("JahiaGxtEditEnginePanel-history").onGroupOpen(".x-grid3-row", function(){
+                    var previousButton = DexV2.id("JahiaGxtEditEnginePanel-history").filter(".x-panel-bbar .x-toolbar-left .x-toolbar-cell:nth-child(2) > table"),
+                        nextButton = DexV2.id("JahiaGxtEditEnginePanel-history").filter(".x-panel-bbar .x-toolbar-left .x-toolbar-cell:nth-child(8) > table");
+
+                    // Look at the previous and next buttons to determine if there is more than one page of results
+                    if( previousButton.hasClass("x-item-disabled") &&
+                        nextButton.hasClass("x-item-disabled")){
+                        // Only one page, so hide pager
+                        DexV2.id("JahiaGxtEditEnginePanel-history").setAttribute("indigo-results-multiple-pages", "false");
+
+                    } else {
+                        // More than one page, so show pager
+                        DexV2.id("JahiaGxtEditEnginePanel-history").setAttribute("indigo-results-multiple-pages", "true");
+
+                    }
+
+                    // Add info and delete button to each row
+                    var rows = DexV2.id("JahiaGxtEditEnginePanel-history").filter(".x-grid3-row"),
+
+                        // Build the menu
+                        actionMenu = document.createElement("menu"),
+                        infoButton = document.createElement("button");
+
+                    // Add classes to menu elements
+                    actionMenu.classList.add("action-menu");
+                    infoButton.classList.add("info-button");
+
+                    // Add buttons to the menu
+                    actionMenu.appendChild(infoButton);
+
+                    // Duplicate and add the menu to each row
+                    rows.each(function(){
+                        var clonedActionMenu = actionMenu.cloneNode(true);
+
+						// This listener is sometimes called more than once, so check if the row has already had action menu added before adding ...
+						if(!DexV2.node(this).hasClass("indigo-contains-actions-menu")){
+							DexV2.node(this)
+								.addClass("indigo-contains-actions-menu")
+								.append(clonedActionMenu);
+						}
+
+                    });
+
+                    // Flag that there are results ...
+                    DexV2.id("JahiaGxtEditEnginePanel-history").setAttribute("indigo-results", "true");
+
+                }, "HISTORY-RESULTS-LIST");
+
+
+                // Excutes when there are no results ...
+                DexV2.id("JahiaGxtEditEnginePanel-history").onOpen(".x-grid-empty", function(){
+                    // Flag that there are no results
+                    DexV2.id("JahiaGxtEditEnginePanel-history").setAttribute("indigo-results", "false");
+
+                }, "HISTORY-NO-RESULTS-LIST");
+
+
+                // User has clicked on the info button
+                DexV2.id("JahiaGxtEditEnginePanel-history").onClick(".info-button", function(){
+                    // Open the details panel by flagging the attribute
+                    DexV2.id("JahiaGxtEditEnginePanel-history").setAttribute("data-indigo-details", "open");
+                    DexV2.getCached("body").setAttribute("data-indigo-history-display", "true");
+                }, "HISTORY-DETAILS-ENTRY");
+
+            },
             onOpenWorkflow: function(){
                 // Used to prefix the labels with the name of the Selected workflows ...
                 DexV2.node(this).onClick(".x-grid3-row", function(){
@@ -4507,7 +4582,8 @@
 					}
 				})
 				.onAttribute("body", "data-singleselection-node-path", app.onChangeNodePath)
-				.onOpen("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) .x-grid-panel", app.engine.onOpenWorkflow)
+                .onOpen("#JahiaGxtEditEnginePanel-workflow > div > div:nth-child(1) .x-grid-panel", app.engine.onOpenWorkflow)
+				.onOpen("#JahiaGxtEditEnginePanel-history", app.engine.onOpenHistory)
                 .onOpen("#JahiaGxtUserGroupSelect", app.pickers.users.onOpen)
 				.onOpen("#JahiaGxtContentBrowseTab", function(){
 					DexV2.node(this).filter(".x-box-item:nth-child(2) .x-grid3-body").addClass("results-column");

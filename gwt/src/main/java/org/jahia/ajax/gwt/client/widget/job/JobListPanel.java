@@ -463,6 +463,7 @@ public class JobListPanel extends LayoutContainer {
     protected void showDeleteConfirmation(final boolean deleteAllCompleted) {
         final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
         final Dialog dialog = new Dialog();
+        dialog.addStyleName(deleteAllCompleted ? "modal-deletealljob-confirm" : "modal-deletejob-confirm");
         dialog.setModal(true);
         dialog.setHeadingHtml(Messages.get("label.delete", "Delete"));
         dialog.setButtons(Dialog.YESNO);

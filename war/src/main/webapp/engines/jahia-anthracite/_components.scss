@@ -3111,8 +3111,66 @@ body[data-indigo-gwt-side-panel="open"] {
 // DELETE CONFIRMATION MODAL/////////////////////
 /////////////////////////////////////////////////
 
+// Delete all completed jobs title
+.x-window.modal-deletealljob-confirm {
+	.x-window-header {
+		&:before {
+		    content: $text_confirm_delete_completed !important;
+		}
+	}
+}
 
-.x-window.delete-item-window {
+// Exceptions for Background Jobs delete alerts
+.x-window.modal-deletejob-confirm,
+.x-window.modal-deletealljob-confirm {
+
+	.x-window-tl {
+		z-index: 9;
+	}
+
+	.x-window-header {
+		margin-bottom: 0;
+	}
+
+	.x-window-body {
+		.x-component {
+			@include text(13px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
+
+		}
+	}
+
+	// Buttons
+	.x-toolbar-cell {
+
+		// Yes
+		&:nth-child(1) {
+			@include button("ACTIONBAR---SUGGESTED");
+		}
+
+		// No
+		&:nth-child(2) {
+
+		}
+	}
+
+	.x-window-bl {
+		margin-top: 20px;
+	}
+
+	.x-clear {
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		background: _property($MODAL-SOLID--BG---LEGACY, $APP);
+		z-index: -1;
+	}
+}
+
+.x-window.delete-item-window,
+.x-window.modal-deletejob-confirm,
+.x-window.modal-deletealljob-confirm {
     background: transparent;
     height: 370px;
 	width: 460px !important;

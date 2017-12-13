@@ -234,7 +234,7 @@
 				display: none;
 
 
-				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
+				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"] & {
 					top: 5px;
 				    left: 335px;
 				    width: 20px !important;

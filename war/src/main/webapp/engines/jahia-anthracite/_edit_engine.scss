@@ -41,7 +41,7 @@
 	.x-panel-collapsed {
 		.indigo-switch {
 			&::before {
-				content: "Deactivated";
+				content: $text_deactivated;
 				color: #6b7074;
 			}
 
@@ -63,7 +63,7 @@
 	    top: 11px;
 
 		&::before {
-			content: "Activated";
+			content: $text_activated;
 			position: absolute;
 		    font-family: Nunito Sans;
 		    font-size: 11px;

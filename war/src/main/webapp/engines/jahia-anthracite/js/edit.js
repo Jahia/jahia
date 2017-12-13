@@ -1922,8 +1922,8 @@
 				hasPreview: null,
 				selectedFileCount: 0,
 				zooms: {
-					thumbs: 3,
-					details: 3
+					thumbsview: 2,
+					detailedview: 2
 				}
 			},
 			onOpen: function(){
@@ -1959,10 +1959,11 @@
 					}
 				}
 
-
-
 				// Save current view (by default loads on thumbs)
-				app.picker.data.displayType = "listview";
+				app.picker.data.displayType = "thumbsview";
+
+                // Set zoom states
+                app.picker.updateZoomLevel();
 
 				var pickerTitle = (app.picker.data.standalone) ? DexV2("#pickerTitle") : DexV2.id(app.picker.data.ID).filter(".x-window-tl .x-window-header-text"),
 					box = pickerTitle.getNode(0).getBoundingClientRect(),
@@ -2086,7 +2087,6 @@
 
 			},
 			updateZoomLevel: function(){
-
 				if(DexV2.id("thumb-size-slider").nodes[0]){
 					DexV2.id("thumb-size-slider").nodes[0].value = app.picker.data.zooms[app.picker.data.displayType];
 

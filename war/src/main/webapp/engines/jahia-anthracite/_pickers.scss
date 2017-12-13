@@ -2705,3 +2705,157 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	}
 }
+
+
+// Overrides ...
+#JahiaGxtContentPickerWindow {
+
+	// Category Picker
+	// Force the Category Picker to display in List view instead of details view
+	&.modal-categorypicker {
+
+		#thumb-size-slider {
+			display: none;
+		}
+
+		#JahiaGxtManagerTobTable {
+			// Filters
+			.x-panel-tbar {
+				right: 8px;
+				left: auto;
+			}
+			// THUMBS / DETAILS VIEWS
+			.x-view {
+				background: transparent!important;
+				min-height: 100%!important;
+				height: auto!important;
+				padding: 10px 20px 0 10px;
+
+				-webkit-column-count: unset!important;
+				-moz-column-count: unset!important;
+				column-count: unset!important;
+
+				box-sizing: border-box;
+
+				// FILES
+				.thumb-wrap {
+					display: block!important;
+					opacity: 1;
+
+					height: initial!important;
+					max-height: initial!important;
+					margin: 0!important;
+					width: 100%!important;
+					padding: 4px 0 0px 5px !important;
+
+					img {
+						width: 16px!important;
+						background-color: rgba(237, 237, 237, 0.17);
+					    padding: 2px;
+					    border-radius: 15%;
+					}
+
+					.more-info-button {
+						position: fixed;
+						top: unset;
+						right: 19px;
+					}
+
+					// Make sure that which ever thumb is being hovered is pulled to the top
+					&:hover {
+						z-index: 999999999999999;
+					}
+
+					span {
+						// THUMB VIE DETAILS
+						display: none;
+
+						position: absolute;
+						width: 100%;
+						@include text(10px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+						z-index: 999;
+						margin-top: -2px;
+
+						// Filesize
+						&:nth-child(3) {
+							@include text(8px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+							margin-top: 0;
+							z-index: 9;
+							padding-bottom: 10px;
+							padding-top: 14px;
+						}
+					}
+
+					// Hover / force hover (used when the context menu is opened)
+					&.x-view-over,
+					&.indigo-force-open {
+						background: _property($THUMB--BG---HOVER, $PICKER);
+
+						span {
+							background: _property($THUMB--BG---HOVER, $PICKER);
+							display: block;
+						}
+
+					}
+
+					// Selected row
+					&.x-view-item-sel {
+						background: _property($THUMB--BG---SELECTED, $PICKER);
+
+						span {
+							background: _property($THUMB--BG---SELECTED, $PICKER)!important;
+						}
+
+						.thumb {
+							background: _property($THUMB--BG---SELECTED, $PICKER)!important;
+						}
+
+						&.x-view-highlightrow {
+							background: _property($THUMB--BG---SELECTED, $PICKER);
+						}
+
+
+					}
+				}
+
+				.thumb {
+					padding: 0!important;
+					width: 20px!important;
+					float: none!important;
+					display: inline-block;
+					vertical-align: top;
+
+					overflow: visible;
+				}
+
+				.thumbDetails {
+					position: relative!important;
+					display: inline-block!important;
+					top: 0;
+					left: 0;
+					padding: 0;
+					width: calc(100% - 20px) !important;
+					box-sizing: border-box;
+
+
+					div {
+						@include text(12px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+						width: 30%;
+						padding: 2px 10px;
+
+						display: inline-block!important;
+
+						b {
+							@include text(12px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+							display: inline-block!important;
+							text-transform: none;
+							display: none!important;
+						}
+					}
+				}
+
+
+			}
+		}
+	}
+}

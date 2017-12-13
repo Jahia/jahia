@@ -1470,7 +1470,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                app.edit.sidepanel.close();
+                // app.edit.sidepanel.close();
 
                 // Trigger mousedown / mouseup on body to close any open context menus and combo menus
                 DexV2.tag("body").trigger("mousedown").trigger("mouseup");
@@ -3317,6 +3317,9 @@
                 	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "")
                 	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
 
+                // Setup the alternative channels system
+                app.edit.sidepanel.initChannels();
+
 			},
 			onClose: function(){},
 
@@ -3750,6 +3753,106 @@
 					open: false,
 					currentTab: null
 				},
+                initChannels: function(){
+                    // Force GWT to load the GWT tab for channels
+                    DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtChannelsTab").trigger("click");
+
+                    // Build the Channels bar
+                    var channelMenu = document.createElement("menu"),
+                        channelZoomHolder = document.createElement("div"),
+                        channelAutoFitButton = document.createElement("div"),
+                        channelAutoFitButtonLabel = document.createTextNode("Autofit"),
+                        channelSlider = document.createElement("input"),
+                        channelTitle = document.createElement("div"),
+                        channelTitleTextNode = document.createTextNode("Device"),
+                        channelOrientaion = document.createElement("div"),
+                        channelOrientaionTextNode = document.createTextNode("Orientation");
+
+                    // Channel Menu
+                    channelMenu.id = "channel-menu";
+
+                    // Channel Holder
+                    channelZoomHolder.id = "channel-zoom-holder";
+
+                    // Channel Title
+                    channelTitle.id = "channel-title";
+
+                    // Auto fit button
+                    channelAutoFitButton.appendChild(channelAutoFitButtonLabel);
+                    channelAutoFitButton.id = "channel-auto-fit-button";
+
+                    // Orientation button
+                    channelOrientaion.id = "channel-orientation";
+
+                    // Channel Slider
+    				channelSlider.id = "channel-size-slider";
+    				channelSlider.type = "range";
+    				channelSlider.value = 100;
+    				channelSlider.min = 30;
+    				channelSlider.max = 100;
+
+                    // Stick them together
+                    channelZoomHolder.appendChild(channelAutoFitButton);
+                    channelZoomHolder.appendChild(channelSlider);
+                    channelMenu.appendChild(channelTitle);
+                    channelMenu.appendChild(channelOrientaion);
+                    channelMenu.appendChild(channelZoomHolder);
+
+                    // Add the bar to the body
+    				DexV2.getCached("body").prepend(channelMenu);
+
+                    // Auto fit the channel preview to the screen
+                    // Dev note: When this is ON we need to update on page resize
+                    DexV2.getCached("body").onClick("#channel-auto-fit-button", function(){
+                        // Set the value to 1
+                        DexV2.id("channel-size-slider").nodes[0].value = 1;
+
+                        // Trigger the evebnt listener so that it resizes the channel preview
+                        DexV2.id("channel-size-slider").trigger("input");
+                    });
+
+                    // Open the combo to change the Channel
+                    DexV2.getCached("body").onClick("#channel-title", function(){
+
+                        // Click on the Channel drop down in the (hidden) side panel
+                        DexV2.id("JahiaGxtChannelsTab").filter(".x-form-trigger").index(0).trigger("click");
+
+                        // When the combo menu opens, add a class to enable repositioning to bottom of screen
+                        DexV2.getCached("body").onceOpen(".x-combo-list", function(){
+                            DexV2.class("x-combo-list").addClass("channel-device-combo-box");
+                        });
+
+
+                    });
+
+                    // Toggle between orientations
+                    DexV2.getCached("body").onClick("#channel-orientation", function(){
+                        // Open the Orrientation combo in the (hidden) side panel
+                        DexV2.id("JahiaGxtChannelsTab").filter(".x-form-trigger").index(1).trigger("click");
+
+                        // When it is opened, click on the orientation that is NOT selected
+                        DexV2.getCached("body").onceOpen(".x-combo-list", function(){
+                            DexV2(".x-combo-list .x-combo-list-item:not(.x-view-highlightrow)").trigger("mousedown");
+                        })
+                    });
+
+                    // Redimension the Channel Preview
+                    DexV2.getCached("body").onInput("#channel-size-slider", function(e){
+                        var windowHeight = window.innerHeight
+                                    || document.documentElement.clientHeight
+                                    || document.body.clientHeight,
+                            zoomSize = e.target.value,
+                            actualSize = parseInt(DexV2(".mainmodule > div:nth-child(2) > div").nodes[0].style.height),
+                            windowPadding = 136,
+                            scale = (zoomSize > 30) ? (zoomSize / 100) : ((windowHeight - windowPadding) / actualSize);
+
+                        DexV2(".mainmodule > div:nth-child(2) > div").css({
+                            transform: "scale(" + scale + ")",
+                            transformOrigin: "50% 0"
+                        });
+
+                    }, "CHANNEL-SIZE-SLIDER");
+                },
 				togglePin: function(){
 					DexV2.getCached("body").toggleAttribute("data-INDIGO-SIDEPANEL-PINNED", ["true", ""]);
 					DexV2.iframe(".window-iframe").filter("body").nodes[0].style.pointerEvents = "all";

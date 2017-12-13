@@ -2706,6 +2706,39 @@
 
                 }
 
+                // Check if we need to create our own toggle switch when a fieldset header is loaded
+                DexV2("body").onOpen(".x-fieldset-header", function(){
+                    var fieldsetInput = DexV2.node(this).filter("input");
+
+                    // This fieldset HAS a toggle, so replace with our own ...
+                    if(fieldsetInput.nodes.length > 0){
+
+                        var switchHolder = document.createElement("div"),
+                            switchRail = document.createElement("div"),
+                            switchShuttle = document.createElement("div");
+
+                        switchHolder.classList.add("indigo-switch");
+                        switchRail.classList.add("indigo-switch--rail");
+                        switchShuttle.classList.add("indigo-switch--shuttle");
+
+                        switchHolder.appendChild(switchRail);
+                        switchHolder.appendChild(switchRail);
+                        switchHolder.appendChild(switchShuttle);
+
+                        this.prepend(switchHolder);
+
+                    }
+
+                }, "EDIT-ENGINE-INDIGO-SWITCH-CREATOR");
+
+                // Trigger click the GWT checkbox when the user clicks out toggle switch
+                DexV2("body").onClick(".x-fieldset-header .indigo-switch", function(){
+                    var checkbox = DexV2.node(this).parent().filter("input");
+
+                    checkbox.trigger("click");
+
+                }, "EDIT-ENGINE-INDIGO-SWITCH-LISTENER");
+
                 // Wait a sec, ...
                 // Then work out if the node has been locked
 				setTimeout(function(){

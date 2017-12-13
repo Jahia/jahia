@@ -34,6 +34,80 @@
     width: 100%!important;
     height: 100%;
 
+	.indigo-switch + input {
+		display: none;
+	}
+
+	.x-panel-collapsed {
+		.indigo-switch {
+			&::before {
+				content: "Deactivated";
+				color: #6b7074;
+			}
+
+			.indigo-switch--shuttle {
+				left: -1px;
+				background: #F1F1F1;
+			}
+
+			.indigo-switch--rail {
+				background-color: rgba(80, 80, 80, 0.7);
+			}
+		}
+	}
+
+	.indigo-switch {
+
+		position: absolute;
+		right: 40px;
+	    top: 11px;
+
+		&::before {
+			content: "Activated";
+			position: absolute;
+		    font-family: Nunito Sans;
+		    font-size: 11px;
+		    font-weight: 500;
+		    top: 3px;
+		    display: block;
+		    right: 27px;
+		    white-space: nowrap;
+		    text-transform: uppercase;
+			color: #00a0e4;
+		}
+
+
+
+		.indigo-switch--shuttle {
+			width: 20px;
+			height: 20px;
+			background: #00A0E3;
+			border-radius: 20px;
+			position: relative;
+			z-index: 99;
+			left: 11px;
+
+			box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
+
+			transition: left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
+
+			&:hover {
+				cursor: pointer;
+			}
+		}
+
+		.indigo-switch--rail {
+			width: 30px;
+			height: 15px;
+			border-radius: 15px;
+			position: absolute;
+			top: 3px;
+			background: rgba(0, 160, 227, 0.5);
+		}
+
+
+	}
+
 	.indigo-edit-engine-menu {
 		position: fixed;
 		top: 0;
@@ -254,6 +328,12 @@
 	fieldset {
 		width: 100%!important;
 		min-width: 0;
+
+		// &.x-panel-collapsed {
+		// 	.x-form-label-left {
+		// 		display: none;
+		// 	}
+		// }
 
 		.x-form-item-label {
 			float:left!important;

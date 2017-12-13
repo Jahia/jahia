@@ -433,6 +433,7 @@
         box-sizing: border-box;
 
 		&.x-panel-collapsed {
+            background: transparent;
 			border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
 
 		}

@@ -3751,7 +3751,10 @@
 					firstRunPages: true,
 					firstRunSettings: true,
 					open: false,
-					currentTab: null
+					currentTab: null,
+                    channel: {
+                        autofit: false
+                    }
 				},
                 initChannels: function(){
                     // Force GWT to load the GWT tab for channels
@@ -3759,14 +3762,22 @@
 
                     // Build the Channels bar
                     var channelMenu = document.createElement("menu"),
+                        channelCloseButton = document.createElement("button"),
                         channelZoomHolder = document.createElement("div"),
                         channelAutoFitButton = document.createElement("div"),
                         channelAutoFitButtonLabel = document.createTextNode("Autofit"),
+                        channelZoomButton = document.createElement("div"),
+                        channelZoomButtonLabel = document.createTextNode("Zoom"),
                         channelSlider = document.createElement("input"),
+                        channelSliderHolder = document.createElement("div"),
                         channelTitle = document.createElement("div"),
                         channelTitleTextNode = document.createTextNode("Device"),
                         channelOrientaion = document.createElement("div"),
                         channelOrientaionTextNode = document.createTextNode("Orientation");
+
+
+                    // CLose button
+                    channelCloseButton.id = "channel-close-button";
 
                     // Channel Menu
                     channelMenu.id = "channel-menu";
@@ -3781,8 +3792,16 @@
                     channelAutoFitButton.appendChild(channelAutoFitButtonLabel);
                     channelAutoFitButton.id = "channel-auto-fit-button";
 
+                    // Auto fit button
+                    channelZoomButton.appendChild(channelZoomButtonLabel);
+                    channelZoomButton.id = "channel-zoom-button";
+                    channelZoomButton.classList.add("selected");
+
                     // Orientation button
                     channelOrientaion.id = "channel-orientation";
+
+                    // Channel Slider Holder
+                    channelSliderHolder.id = "channel-size-slider-holder";
 
                     // Channel Slider
     				channelSlider.id = "channel-size-slider";
@@ -3792,8 +3811,11 @@
     				channelSlider.max = 100;
 
                     // Stick them together
+                    channelSliderHolder.appendChild(channelSlider);
                     channelZoomHolder.appendChild(channelAutoFitButton);
-                    channelZoomHolder.appendChild(channelSlider);
+                    channelZoomHolder.appendChild(channelZoomButton);
+                    channelZoomHolder.appendChild(channelSliderHolder);
+                    channelMenu.appendChild(channelCloseButton);
                     channelMenu.appendChild(channelTitle);
                     channelMenu.appendChild(channelOrientaion);
                     channelMenu.appendChild(channelZoomHolder);
@@ -3804,8 +3826,43 @@
                     // Auto fit the channel preview to the screen
                     // Dev note: When this is ON we need to update on page resize
                     DexV2.getCached("body").onClick("#channel-auto-fit-button", function(){
-                        // Set the value to 1
-                        DexV2.id("channel-size-slider").nodes[0].value = 1;
+                        DexV2.id("channel-auto-fit-button").addClass("selected");
+                        DexV2.id("channel-zoom-button").removeClass("selected");
+                        DexV2.id("channel-size-slider-holder").addClass("disabled");
+
+                        app.edit.sidepanel.zoomChannel(0);
+                        app.edit.sidepanel.data.channel.autofit = true;
+
+                        // // Set the value to 1
+                        // DexV2.id("channel-size-slider").nodes[0].value = 1;
+                        //
+                        // // Trigger the evebnt listener so that it resizes the channel preview
+                        // DexV2.id("channel-size-slider").trigger("input");
+                    });
+
+
+                    // Close button
+                    DexV2.getCached("body").onClick("#channel-close-button", function(){
+                        // Trigger the close button
+                        // Click on the Channel drop down in the (hidden) side panel
+                        DexV2.id("JahiaGxtChannelsTab").filter(".x-form-trigger").index(0).trigger("click");
+
+                        // When the combo menu opens, add a class to enable repositioning to bottom of screen
+                        DexV2.getCached("body").onceOpen(".x-combo-list", function(){
+                            // CLick first in the list
+                            DexV2.class("x-combo-list").filter(".thumb-wrap").index(0).trigger("mousedown");
+                        });
+                    });
+
+                    DexV2.getCached("body").onClick("#channel-zoom-button", function(){
+                        DexV2.id("channel-auto-fit-button").removeClass("selected");
+                        DexV2.id("channel-zoom-button").addClass("selected");
+                        DexV2.id("channel-size-slider-holder").removeClass("disabled");
+
+                        app.edit.sidepanel.data.channel.autofit = false;
+
+                        // // Set the value to 1
+                        // DexV2.id("channel-size-slider").nodes[0].value = 1;
 
                         // Trigger the evebnt listener so that it resizes the channel preview
                         DexV2.id("channel-size-slider").trigger("input");
@@ -3838,20 +3895,24 @@
 
                     // Redimension the Channel Preview
                     DexV2.getCached("body").onInput("#channel-size-slider", function(e){
-                        var windowHeight = window.innerHeight
-                                    || document.documentElement.clientHeight
-                                    || document.body.clientHeight,
-                            zoomSize = e.target.value,
-                            actualSize = parseInt(DexV2(".mainmodule > div:nth-child(2) > div").nodes[0].style.height),
-                            windowPadding = 136,
-                            scale = (zoomSize > 30) ? (zoomSize / 100) : ((windowHeight - windowPadding) / actualSize);
+                        zoomSize = e.target.value;
 
-                        DexV2(".mainmodule > div:nth-child(2) > div").css({
-                            transform: "scale(" + scale + ")",
-                            transformOrigin: "50% 0"
-                        });
+                        app.edit.sidepanel.zoomChannel(zoomSize);
 
                     }, "CHANNEL-SIZE-SLIDER");
+                },
+                zoomChannel: function(zoomSize){
+                    var windowHeight = window.innerHeight
+                                || document.documentElement.clientHeight
+                                || document.body.clientHeight,
+                        actualSize = parseInt(DexV2(".mainmodule > div:nth-child(2) > div").nodes[0].style.height),
+                        windowPadding = 136,
+                        scale = (zoomSize > 0) ? (zoomSize / 100) : ((windowHeight - windowPadding) / actualSize);
+
+                    DexV2(".mainmodule > div:nth-child(2) > div").css({
+                        transform: "scale(" + scale + ")",
+                        transformOrigin: "50% 0"
+                    });
                 },
 				togglePin: function(){
 					DexV2.getCached("body").toggleAttribute("data-INDIGO-SIDEPANEL-PINNED", ["true", ""]);

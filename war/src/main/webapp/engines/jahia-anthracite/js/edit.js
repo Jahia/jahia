@@ -1472,7 +1472,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                app.edit.sidepanel.close();
+                // app.edit.sidepanel.close();
 
                 // Trigger mousedown / mouseup on body to close any open context menus and combo menus
                 DexV2.tag("body").trigger("mousedown").trigger("mouseup");
@@ -3765,17 +3765,18 @@
                 onNewChannel: function(){
                     // Dev note: This is also triggered when the user changes pages by navigation in Device Channel Preview
 
-                    DexV2.id("channel-auto-fit-button").addClass("selected");
-                    DexV2.id("channel-zoom-button").removeClass("selected");
-                    DexV2.id("channel-size-slider-holder").addClass("disabled");
+                    if(app.edit.sidepanel.data.channel.opened){
+                        DexV2.id("channel-auto-fit-button").addClass("selected");
+                        DexV2.id("channel-zoom-button").removeClass("selected");
+                        DexV2.id("channel-size-slider-holder").addClass("disabled");
 
-                    app.edit.sidepanel.zoomChannel(0);
-                    app.edit.sidepanel.data.channel.autofit = true;
+                        app.edit.sidepanel.zoomChannel(0);
+                        app.edit.sidepanel.data.channel.autofit = true;
 
-                    app.edit.sidepanel.close();
+                        app.edit.sidepanel.close();
 
-                    DexV2(".mainmodule > div:nth-child(2)").removeClass("channel-zoom");
-
+                        DexV2(".mainmodule > div:nth-child(2)").removeClass("channel-zoom");
+                    }
 
                 },
                 onWindowResize: function(){

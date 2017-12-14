@@ -265,6 +265,13 @@
 
 		}
 
+		// Fix the padding issue on icons
+		body[data-sitesettings="false"] & {
+			.x-tree3-node-text {
+				padding-left: 5px;
+			}
+		}
+
 
 
 		position: fixed;

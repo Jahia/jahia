@@ -1415,32 +1415,6 @@
 			DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtPagesTab").trigger("click");
 
 		},
-        nav: {
-            data: {
-            },
-            pushState: function(){
-                var url = window.location.pathname,
-                    DXStateObject = window.history.state; // DX Seems to need this so keep it the same
-
-                history.pushState(DXStateObject, "DX", url);
-            },
-            onPopState: function(event) {
-
-                if(app.workflow.data.open){
-                    DexV2(".workflow-dashboard-engine .x-tool-close").trigger("click");
-
-                } else if(app.backgroundJobs.data.open){
-                    DexV2(".job-list-window .x-tool-close").trigger("click");
-
-                } else if(app.picker.data.open){
-                    DexV2("#JahiaGxtContentPickerWindow .button-cancel").trigger("click");
-
-                } else if(app.engine.data.open){
-                    DexV2(".engine-panel .button-cancel").trigger("click");
-
-                }
-            }
-        },
         onChange: function(attrKey, attrValue){
             if(app.data.previousModeClass == attrValue){
                 return false;
@@ -1485,8 +1459,6 @@
 			app.dev.log("::: APP ::: ONRESIZE");
 			if(app.data.currentApp == "edit"){
 				app.edit.topbar.reposition();
-                app.edit.sidepanel.onWindowResize();
-
 			}
 
 			if(app.data.currentApp == "contribute"){
@@ -1498,7 +1470,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                app.edit.sidepanel.close();
+                // app.edit.sidepanel.close();
 
                 // Trigger mousedown / mouseup on body to close any open context menus and combo menus
                 DexV2.tag("body").trigger("mousedown").trigger("mouseup");
@@ -1699,13 +1671,9 @@
 		},
         backgroundJobs: {
             data: {
-                filters: [],
-                open: false
+                filters: []
             },
             onOpen: function(){
-
-                app.backgroundJobs.data.open = true;
-                app.nav.pushState();
 
                 // Update title
                 DexV2.class("job-list-window").filter(".x-window-tl .x-window-header-text").setHTML(localisedStrings[app.data.UILanguage].backgroundJobs);
@@ -1883,9 +1851,7 @@
                 app.backgroundJobs.autoRefreshUpdate();
 
             },
-            onClose: function(){
-                app.backgroundJobs.data.open = false;
-            },
+            onClose: function(){},
             autoRefreshUpdate: function(){
                 // Check if the auto refresh checkbox is checked, if so then display the seconds input field
                 var isChecked = DexV2.class("job-list-window").filter("input[type='checkbox']").nodes[0].checked;
@@ -1958,14 +1924,10 @@
 				zooms: {
 					thumbsview: 2,
 					detailedview: 2
-				},
-                open: false
+				}
 			},
 			onOpen: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONOPEN");
-
-                app.picker.data.open = true;
-                app.nav.pushState();
 
 				// See if GWT has enabled previews for files, if so then set the preview flag to true
 				app.picker.data.enablePreviews = DexV2("#" + app.picker.data.ID + " .toolbar-item-filepreview").nodes.length > 0;
@@ -2158,7 +2120,6 @@
 			},
 			onClose: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONCLOSE");
-                app.picker.data.open = false;
 				DexV2.getCached("body").setAttribute("data-INDIGO-PICKER", "");
 
 			},
@@ -2724,14 +2685,10 @@
 		},
 		engine: {
             data: {
-                returnToEditEngine: false,
-                open: false
+                returnToEditEngine: false
             },
             onOpen: function(){
 				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
-                app.engine.data.open = true;
-
-                app.nav.pushState();
 
                 // Get Friendly Name
 				var nodeDisplayName = DexV2.getCached("body").getAttribute("data-singleselection-node-displayname");
@@ -2807,7 +2764,6 @@
 			},
 			onClose: function(e){
 				app.dev.log("::: APP ::: ENGINE ::: ONCLOSE");
-                app.engine.data.open = false;
                 // var workflowEngine = DexV2.node(this).hasClass("workflowactiondialog-card");
 
                 // if(workflowEngine){
@@ -3009,24 +2965,13 @@
             }
 		},
 		workflow: {
-            data: {
-                opened: false
-            },
 			dashboard: {
-                onOpen: function(){
+				onOpen: function(){
 					app.dev.log("::: APP ::: WORKFLOW ::: DASHBOARD ::: ONOPEN");
+					DexV2(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
 
-                    app.workflow.data.open = true;
-                    app.nav.pushState();
 
-                    DexV2(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
-				},
-                onClose: function(){
-					app.dev.log("::: APP ::: WORKFLOW ::: DASHBOARD ::: ONOPEN");
 
-                    app.workflow.data.open = false;
-
-                    DexV2(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
 				}
 			}
 		},
@@ -3047,9 +2992,6 @@
 
 				if(app.data.currentApp == "edit"){
 					// TEMP BLIND
-
-                    app.edit.sidepanel.onNewChannel();
-
 
 	                var elements = {
 	                    iframe: document.getElementsByClassName("window-iframe")[0],
@@ -3811,35 +3753,9 @@
 					open: false,
 					currentTab: null,
                     channel: {
-                        autofit: false,
-                        opened: false
+                        autofit: false
                     }
 				},
-                onNewChannel: function(){
-                    // Dev note: This is also triggered when the user changes pages by navigation in Device Channel Preview
-
-                    if(app.edit.sidepanel.data.channel.opened){
-                        DexV2.id("channel-auto-fit-button").addClass("selected");
-                        DexV2.id("channel-zoom-button").removeClass("selected");
-                        DexV2.id("channel-size-slider-holder").addClass("disabled");
-
-                        app.edit.sidepanel.zoomChannel(0);
-                        app.edit.sidepanel.data.channel.autofit = true;
-
-                        app.edit.sidepanel.close();
-
-                        DexV2(".mainmodule > div:nth-child(2)").removeClass("channel-zoom");
-                    }
-
-                },
-                onWindowResize: function(){
-                    if( app.edit.sidepanel.data.channel.opened
-                        && app.edit.sidepanel.data.channel.autofit){
-
-                        app.edit.sidepanel.zoomChannel(0);
-
-                    }
-                },
                 initChannels: function(){
                     // Force GWT to load the GWT tab for channels
                     DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtChannelsTab").trigger("click");
@@ -3917,14 +3833,16 @@
                         app.edit.sidepanel.zoomChannel(0);
                         app.edit.sidepanel.data.channel.autofit = true;
 
-                        DexV2(".mainmodule > div:nth-child(2)").removeClass("channel-zoom");
-
+                        // // Set the value to 1
+                        // DexV2.id("channel-size-slider").nodes[0].value = 1;
+                        //
+                        // // Trigger the evebnt listener so that it resizes the channel preview
+                        // DexV2.id("channel-size-slider").trigger("input");
                     });
 
 
                     // Close button
                     DexV2.getCached("body").onClick("#channel-close-button", function(){
-
                         // Trigger the close button
                         // Click on the Channel drop down in the (hidden) side panel
                         DexV2.id("JahiaGxtChannelsTab").filter(".x-form-trigger").index(0).trigger("click");
@@ -3933,11 +3851,7 @@
                         DexV2.getCached("body").onceOpen(".x-combo-list", function(){
                             // CLick first in the list
                             DexV2.class("x-combo-list").filter(".thumb-wrap").index(0).trigger("mousedown");
-
                         });
-
-                        app.edit.sidepanel.data.channel.opened = false;
-
                     });
 
                     DexV2.getCached("body").onClick("#channel-zoom-button", function(){
@@ -3947,8 +3861,10 @@
 
                         app.edit.sidepanel.data.channel.autofit = false;
 
-                        DexV2(".mainmodule > div:nth-child(2)").addClass("channel-zoom");
+                        // // Set the value to 1
+                        // DexV2.id("channel-size-slider").nodes[0].value = 1;
 
+                        // Trigger the evebnt listener so that it resizes the channel preview
                         DexV2.id("channel-size-slider").trigger("input");
                     });
 
@@ -3963,7 +3879,6 @@
                             DexV2.class("x-combo-list").addClass("channel-device-combo-box");
                         });
 
-                        app.edit.sidepanel.data.channel.opened = true;
 
                     });
 
@@ -3985,22 +3900,18 @@
                         app.edit.sidepanel.zoomChannel(zoomSize);
 
                     }, "CHANNEL-SIZE-SLIDER");
-
-
                 },
                 zoomChannel: function(zoomSize){
                     var windowHeight = window.innerHeight
-                                    || document.documentElement.clientHeight
-                                    || document.body.clientHeight,
-                        actualHeight = parseInt(DexV2(".mainmodule > div:nth-child(2) > div").nodes[0].style.height),
+                                || document.documentElement.clientHeight
+                                || document.body.clientHeight,
+                        actualSize = parseInt(DexV2(".mainmodule > div:nth-child(2) > div").nodes[0].style.height),
                         windowPadding = 136,
-                        transformOrigin = "50% 0",
-                        scale = (zoomSize > 0) ? (zoomSize / 100) : ((windowHeight - windowPadding) / actualHeight);
+                        scale = (zoomSize > 0) ? (zoomSize / 100) : ((windowHeight - windowPadding) / actualSize);
 
-
-                    DexV2(".x-abs-layout-container").css({
+                    DexV2(".mainmodule > div:nth-child(2) > div").css({
                         transform: "scale(" + scale + ")",
-                        transformOrigin: transformOrigin
+                        transformOrigin: "50% 0"
                     });
                 },
 				togglePin: function(){
@@ -5004,7 +4915,6 @@
                 .onClose("#JahiaGxtEnginePanel", app.engine.onClose)
                 .onClose("#JahiaGxtImagePopup", app.imagePreview.onClose)
                 .onOpen(".workflow-dashboard-engine", app.workflow.dashboard.onOpen)
-                .onClose(".workflow-dashboard-engine", app.workflow.dashboard.onClose)
                 .onClick(".app-container", app.onClick)
 				.onClick(".toolbar-item-filepreview", app.picker.previewButton.onClick)
                 .onClick("#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", app.picker.row.onClick)
@@ -5064,8 +4974,6 @@
             // WINDOW LISTENERS
             window.onresize = app.onResize; // Use some kind of timer to reduce repaints / DOM manipulations
             window.addEventListener("blur", app.onBlur);
-
-            window.onpopstate = app.nav.onPopState;
         }
     }
 
@@ -5093,6 +5001,7 @@
 				app.picker.onOpen();
 			});
 
+
 		}
 
         // This is a manager, not main app.
@@ -5116,65 +5025,6 @@
 
         // Attach event listeners
         eventListeners.attach();
-
-
-
-
-        // ======= Menu (jahia logo animation) =======
-
-        var menu
-        menu = DexV2.class("editmode-managers-menu").nodes[0]
-
-        // Preload images for frame
-        var images = new Array()
-
-        function preload() {
-        	for (i = 0; i < preload.arguments.length; i++) {
-        		images[i] = new Image()
-        		images[i].src = preload.arguments[i]
-        	}
-        }
-        preload(
-        	"./images/logo_frame_1.png",
-          "./images/logo_frame_2.png",
-          "./images/logo_frame_3.png",
-          "./images/logo_frame_4.png",
-          "./images/logo_frame_5.png",
-          "./images/logo_frame_6.png",
-          "./images/logo_frame_7.png",
-          "./images/logo_frame_8.png",
-          "./images/logo_frame_9.png",
-        )
-
-        // frames
-        var frame = [
-        	"url(./images/logo_frame_1.png)",
-          "url(./images/logo_frame_2.png)",
-          "url(./images/logo_frame_3.png)",
-          "url(./images/logo_frame_4.png)",
-          "url(./images/logo_frame_5.png)",
-          "url(./images/logo_frame_6.png)",
-          "url(./images/logo_frame_7.png)",
-          "url(./images/logo_frame_8.png)",
-          "url(./images/logo_frame_9.png)",
-
-        function logoAnim(invert) {
-        	for (let i = 0; i <= 8; i++) {
-        		time = 40*(i+1);	// 25fps
-        		setTimeout(function() {
-        			menu.style.backgroundImage = invert ? frame[9-i]: frame[i];
-        		}, time);
-        	}
-        }
-
-        /*menu.onmouseenter = function() {
-        	logoAnim();
-        };
-
-        menu.onmouseleave = function() {
-        	logoAnim(invert=true);
-        }*/
-
 
     }
 

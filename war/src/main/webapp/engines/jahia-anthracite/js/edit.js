@@ -1459,6 +1459,8 @@
 			app.dev.log("::: APP ::: ONRESIZE");
 			if(app.data.currentApp == "edit"){
 				app.edit.topbar.reposition();
+                app.edit.sidepanel.onWindowResize();
+
 			}
 
 			if(app.data.currentApp == "contribute"){
@@ -1470,7 +1472,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                // app.edit.sidepanel.close();
+                app.edit.sidepanel.close();
 
                 // Trigger mousedown / mouseup on body to close any open context menus and combo menus
                 DexV2.tag("body").trigger("mousedown").trigger("mouseup");
@@ -2993,6 +2995,9 @@
 				if(app.data.currentApp == "edit"){
 					// TEMP BLIND
 
+                    app.edit.sidepanel.onNewChannel();
+
+
 	                var elements = {
 	                    iframe: document.getElementsByClassName("window-iframe")[0],
 	                    title: document.getElementsByClassName("x-current-page-path")[0],
@@ -3753,9 +3758,32 @@
 					open: false,
 					currentTab: null,
                     channel: {
-                        autofit: false
+                        autofit: false,
+                        opened: false
                     }
 				},
+                onNewChannel: function(){
+                    // Dev note: This is also triggered when the user changes pages by navigation in Device Channel Preview
+
+                    DexV2.id("channel-auto-fit-button").addClass("selected");
+                    DexV2.id("channel-zoom-button").removeClass("selected");
+                    DexV2.id("channel-size-slider-holder").addClass("disabled");
+
+                    app.edit.sidepanel.zoomChannel(0);
+                    app.edit.sidepanel.data.channel.autofit = true;
+
+                    DexV2(".mainmodule > div:nth-child(2)").removeClass("channel-zoom");
+
+
+                },
+                onWindowResize: function(){
+                    if( app.edit.sidepanel.data.channel.opened
+                        && app.edit.sidepanel.data.channel.autofit){
+
+                        app.edit.sidepanel.zoomChannel(0);
+
+                    }
+                },
                 initChannels: function(){
                     // Force GWT to load the GWT tab for channels
                     DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtChannelsTab").trigger("click");
@@ -3833,16 +3861,14 @@
                         app.edit.sidepanel.zoomChannel(0);
                         app.edit.sidepanel.data.channel.autofit = true;
 
-                        // // Set the value to 1
-                        // DexV2.id("channel-size-slider").nodes[0].value = 1;
-                        //
-                        // // Trigger the evebnt listener so that it resizes the channel preview
-                        // DexV2.id("channel-size-slider").trigger("input");
+                        DexV2(".mainmodule > div:nth-child(2)").removeClass("channel-zoom");
+
                     });
 
 
                     // Close button
                     DexV2.getCached("body").onClick("#channel-close-button", function(){
+
                         // Trigger the close button
                         // Click on the Channel drop down in the (hidden) side panel
                         DexV2.id("JahiaGxtChannelsTab").filter(".x-form-trigger").index(0).trigger("click");
@@ -3851,7 +3877,11 @@
                         DexV2.getCached("body").onceOpen(".x-combo-list", function(){
                             // CLick first in the list
                             DexV2.class("x-combo-list").filter(".thumb-wrap").index(0).trigger("mousedown");
+
                         });
+
+                        app.edit.sidepanel.data.channel.opened = false;
+
                     });
 
                     DexV2.getCached("body").onClick("#channel-zoom-button", function(){
@@ -3861,10 +3891,8 @@
 
                         app.edit.sidepanel.data.channel.autofit = false;
 
-                        // // Set the value to 1
-                        // DexV2.id("channel-size-slider").nodes[0].value = 1;
+                        DexV2(".mainmodule > div:nth-child(2)").addClass("channel-zoom");
 
-                        // Trigger the evebnt listener so that it resizes the channel preview
                         DexV2.id("channel-size-slider").trigger("input");
                     });
 
@@ -3879,6 +3907,7 @@
                             DexV2.class("x-combo-list").addClass("channel-device-combo-box");
                         });
 
+                        app.edit.sidepanel.data.channel.opened = true;
 
                     });
 
@@ -3900,18 +3929,22 @@
                         app.edit.sidepanel.zoomChannel(zoomSize);
 
                     }, "CHANNEL-SIZE-SLIDER");
+
+
                 },
                 zoomChannel: function(zoomSize){
                     var windowHeight = window.innerHeight
-                                || document.documentElement.clientHeight
-                                || document.body.clientHeight,
-                        actualSize = parseInt(DexV2(".mainmodule > div:nth-child(2) > div").nodes[0].style.height),
+                                    || document.documentElement.clientHeight
+                                    || document.body.clientHeight,
+                        actualHeight = parseInt(DexV2(".mainmodule > div:nth-child(2) > div").nodes[0].style.height),
                         windowPadding = 136,
-                        scale = (zoomSize > 0) ? (zoomSize / 100) : ((windowHeight - windowPadding) / actualSize);
+                        transformOrigin = "50% 0",
+                        scale = (zoomSize > 0) ? (zoomSize / 100) : ((windowHeight - windowPadding) / actualHeight);
 
-                    DexV2(".mainmodule > div:nth-child(2) > div").css({
+
+                    DexV2(".x-abs-layout-container").css({
                         transform: "scale(" + scale + ")",
-                        transformOrigin: "50% 0"
+                        transformOrigin: transformOrigin
                     });
                 },
 				togglePin: function(){

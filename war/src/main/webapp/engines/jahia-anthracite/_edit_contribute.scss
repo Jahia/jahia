@@ -17,11 +17,16 @@
 
 }
 
+.mainmodule > div:nth-child(2) > div {
+
+}
+
 // Reposition the Channel Combo to be inline with the new bottom bar
 .channel-device-combo-box {
-    width: 210px!important;
-    bottom: 50px!important;
-    top: auto!important;
+    width: 210px !important;
+    bottom: 6px !important;
+    top: auto !important;
+    left: 60px !important;
 
     .thumb-wrap {
         &:nth-child(1) {
@@ -52,6 +57,12 @@
         width: 100%;
         box-shadow: inset -1px 1px 8px 0 rgba(0,0,0,0.4);
         background: #343638;
+        background: #262829;
+
+        left: -10px;
+        bottom: -10px;
+        width: calc(100% + 20px);
+        padding-bottom: 10px;
     }
 
     // Make the title look like the toolbar entries when a channel has NOT been selected
@@ -61,6 +72,12 @@
         position: absolute;
 
         background: url(./images/icons/tabs-devices-white@X2.png) no-repeat top 6px center;
+
+        body[data-indigo-gwt-side-panel="open"] & {
+            background-image: url(./images/icons/tabs-devices-black@X2.png);
+            color: #747b7f;
+        }
+
         background-size: 27px;
         padding-top: 33px;
         opacity: 0.8;
@@ -88,8 +105,8 @@
 
             width: auto;
             text-align: left;
-            left: 40px;
-            bottom: 15px;
+            left: 50px;
+            bottom: 25px;
 
 
         }
@@ -148,7 +165,7 @@
         height: 25px;
         background: red;
         position: absolute;
-        right: 16px;
+        right: 26px;
         top: 16px;
         display: none;
         opacity: 0.8;
@@ -177,7 +194,13 @@
         display: none;
 
         @include text(14px, #4c5052, 700);
+        @include text(14px, #6c7275, 700);
+
         background: #202123;
+        background: #19191b;
+        background: #1e1e21;
+
+        box-shadow: inset 1px 2px 10px rgba(0,0,0,0.5);
 
         padding: 8px 10px;
 
@@ -195,6 +218,7 @@
             pointer-events: none;
             color: #FAFAFA;
             background: #00a0e3;
+            box-shadow: none;
         }
 
     }
@@ -203,7 +227,13 @@
         display: none;
 
         @include text(14px, #4c5052, 700);
+        @include text(14px, #6c7275, 700);
+
         background: #202123;
+        background: #19191b;
+        background: #1e1e21;
+
+        box-shadow: inset 1px 2px 10px rgba(0,0,0,0.5);
 
         padding: 8px 10px;
 
@@ -220,6 +250,7 @@
             pointer-events: none;
             color: #FAFAFA;
             background: #00a0e3;
+            box-shadow: none;
         }
 
     }
@@ -235,7 +266,7 @@
         transition: all 0.3s ease-in 0s;
 
         position: absolute;
-        left: 15px;
+        left: 25px;
         top: 20px;
 
         opacity: 0.8;
@@ -1370,6 +1401,10 @@ body[data-indigo-app="contribute"] {
         z-index: $ZINDEX--IFRAME--CONTAINER;
         overflow: visible !important;
 
+        &.channel-zoom {
+            // overflow: scroll!important;
+        }
+
         .x-viewport-contributemode & {
             left: 0!important;
             width: 100%!important;
@@ -1383,8 +1418,9 @@ body[data-indigo-app="contribute"] {
             // iframe inner container
             width: 100% !important;
             height: calc(100% + 4px) !important;
-
-
+            transform: none!important;
+            transform-origin: unset!important;
+            overflow: visible!important;
         }
 
         body[data-INDIGO-SIDEPANEL-PINNED="true"] & {

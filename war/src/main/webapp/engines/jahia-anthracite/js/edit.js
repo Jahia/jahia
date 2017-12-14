@@ -5167,13 +5167,13 @@
         	}
         }
 
-        menu.onmouseenter = function() {
+        /*menu.onmouseenter = function() {
         	logoAnim();
         };
 
         menu.onmouseleave = function() {
         	logoAnim(invert=true);
-        }
+        }*/
 
 
     }

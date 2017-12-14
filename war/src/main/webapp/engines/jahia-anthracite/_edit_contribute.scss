@@ -920,7 +920,7 @@ body[data-indigo-app="contribute"] {
     left: 5px;
     z-index: $ZINDEX--HAMBURGER_MENU---BUTTON;
     display: block;
-    background: url(_property($BODY--HAMBURGER-ICON, $APP)) no-repeat top 3px left 10px;
+    background: url(./images/logo_frame_1.png) no-repeat top 3px left 10px;
     background-size: 32px 32px;
     margin-top: 0;
     opacity: 0.99!important;
@@ -944,7 +944,7 @@ body[data-indigo-app="contribute"] {
         }
     }
 
-    &::before {
+    /*&::before {
         content: "y";
         background: url($ICON--HAMBURGER--SMALL---WHITE) no-repeat center center;
         background-size: 15px 15px;
@@ -972,7 +972,7 @@ body[data-indigo-app="contribute"] {
         }
 
 
-    }
+    }*/
 
     &::after {
         content: "";

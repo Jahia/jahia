@@ -3772,6 +3772,8 @@
                     app.edit.sidepanel.zoomChannel(0);
                     app.edit.sidepanel.data.channel.autofit = true;
 
+                    app.edit.sidepanel.close();
+
                     DexV2(".mainmodule > div:nth-child(2)").removeClass("channel-zoom");
 
 

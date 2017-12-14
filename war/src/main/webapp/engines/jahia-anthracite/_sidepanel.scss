@@ -1683,8 +1683,8 @@ $side_panel__tab_buttons: (
             #{$_tab_ID} {
 				@if ($_tab_ID == "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab") {
 					position: fixed;
-					right: 6px;
-					bottom: 0;
+					left: 4px;
+				    bottom: 60px;
 
 					.x-viewport-dashboardmode & {
 						display: none!important;
@@ -1703,13 +1703,8 @@ $side_panel__tab_buttons: (
                     body[data-INDIGO-GWT-SIDE-PANEL="open"] &,
 					.x-viewport-adminmode &,
 					.x-viewport-dashboardmode & {
-						@if ($_tab_ID == '#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab') {
-							background-image: url($_icon_closed);
+						background-image: url($_icon_open);
 
-						} @else {
-							background-image: url($_icon_open);
-
-						}
                     }
 
 

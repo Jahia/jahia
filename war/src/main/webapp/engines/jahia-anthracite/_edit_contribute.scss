@@ -52,6 +52,12 @@
     padding: 0;
     background: transparent;
 
+    display: none;
+
+    body[data-indigo-app="edit"][data-sitesettings="false"] & {
+        display: block;
+    }
+
     // When a channel has been selected set the background and width to a solid bar
     body[data-channel] & {
         width: 100%;

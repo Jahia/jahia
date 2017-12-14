@@ -1415,6 +1415,32 @@
 			DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtPagesTab").trigger("click");
 
 		},
+        nav: {
+            data: {
+            },
+            pushState: function(){
+                var url = window.location.pathname,
+                    DXStateObject = window.history.state; // DX Seems to need this so keep it the same
+
+                history.pushState(DXStateObject, "DX", url);
+            },
+            onPopState: function(event) {
+
+                if(app.workflow.data.open){
+                    DexV2(".workflow-dashboard-engine .x-tool-close").trigger("click");
+
+                } else if(app.backgroundJobs.data.open){
+                    DexV2(".job-list-window .x-tool-close").trigger("click");
+
+                } else if(app.picker.data.open){
+                    DexV2("#JahiaGxtContentPickerWindow .button-cancel").trigger("click");
+
+                } else if(app.engine.data.open){
+                    DexV2(".engine-panel .button-cancel").trigger("click");
+
+                }
+            }
+        },
         onChange: function(attrKey, attrValue){
             if(app.data.previousModeClass == attrValue){
                 return false;
@@ -1472,7 +1498,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                // app.edit.sidepanel.close();
+                app.edit.sidepanel.close();
 
                 // Trigger mousedown / mouseup on body to close any open context menus and combo menus
                 DexV2.tag("body").trigger("mousedown").trigger("mouseup");
@@ -1673,9 +1699,13 @@
 		},
         backgroundJobs: {
             data: {
-                filters: []
+                filters: [],
+                open: false
             },
             onOpen: function(){
+
+                app.backgroundJobs.data.open = true;
+                app.nav.pushState();
 
                 // Update title
                 DexV2.class("job-list-window").filter(".x-window-tl .x-window-header-text").setHTML(localisedStrings[app.data.UILanguage].backgroundJobs);
@@ -1853,7 +1883,9 @@
                 app.backgroundJobs.autoRefreshUpdate();
 
             },
-            onClose: function(){},
+            onClose: function(){
+                app.backgroundJobs.data.open = false;
+            },
             autoRefreshUpdate: function(){
                 // Check if the auto refresh checkbox is checked, if so then display the seconds input field
                 var isChecked = DexV2.class("job-list-window").filter("input[type='checkbox']").nodes[0].checked;
@@ -1926,10 +1958,14 @@
 				zooms: {
 					thumbsview: 2,
 					detailedview: 2
-				}
+				},
+                open: false
 			},
 			onOpen: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONOPEN");
+
+                app.picker.data.open = true;
+                app.nav.pushState();
 
 				// See if GWT has enabled previews for files, if so then set the preview flag to true
 				app.picker.data.enablePreviews = DexV2("#" + app.picker.data.ID + " .toolbar-item-filepreview").nodes.length > 0;
@@ -2122,6 +2158,7 @@
 			},
 			onClose: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONCLOSE");
+                app.picker.data.open = false;
 				DexV2.getCached("body").setAttribute("data-INDIGO-PICKER", "");
 
 			},
@@ -2687,10 +2724,14 @@
 		},
 		engine: {
             data: {
-                returnToEditEngine: false
+                returnToEditEngine: false,
+                open: false
             },
             onOpen: function(){
 				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
+                app.engine.data.open = true;
+
+                app.nav.pushState();
 
                 // Get Friendly Name
 				var nodeDisplayName = DexV2.getCached("body").getAttribute("data-singleselection-node-displayname");
@@ -2766,6 +2807,7 @@
 			},
 			onClose: function(e){
 				app.dev.log("::: APP ::: ENGINE ::: ONCLOSE");
+                app.engine.data.open = false;
                 // var workflowEngine = DexV2.node(this).hasClass("workflowactiondialog-card");
 
                 // if(workflowEngine){
@@ -2967,13 +3009,24 @@
             }
 		},
 		workflow: {
+            data: {
+                opened: false
+            },
 			dashboard: {
-				onOpen: function(){
+                onOpen: function(){
 					app.dev.log("::: APP ::: WORKFLOW ::: DASHBOARD ::: ONOPEN");
-					DexV2(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
 
+                    app.workflow.data.open = true;
+                    app.nav.pushState();
 
+                    DexV2(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
+				},
+                onClose: function(){
+					app.dev.log("::: APP ::: WORKFLOW ::: DASHBOARD ::: ONOPEN");
 
+                    app.workflow.data.open = false;
+
+                    DexV2(".workflow-dashboard-engine .x-tool-maximize").trigger("click");
 				}
 			}
 		},
@@ -4951,6 +5004,7 @@
                 .onClose("#JahiaGxtEnginePanel", app.engine.onClose)
                 .onClose("#JahiaGxtImagePopup", app.imagePreview.onClose)
                 .onOpen(".workflow-dashboard-engine", app.workflow.dashboard.onOpen)
+                .onClose(".workflow-dashboard-engine", app.workflow.dashboard.onClose)
                 .onClick(".app-container", app.onClick)
 				.onClick(".toolbar-item-filepreview", app.picker.previewButton.onClick)
                 .onClick("#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", app.picker.row.onClick)
@@ -5010,6 +5064,8 @@
             // WINDOW LISTENERS
             window.onresize = app.onResize; // Use some kind of timer to reduce repaints / DOM manipulations
             window.addEventListener("blur", app.onBlur);
+
+            window.onpopstate = app.nav.onPopState;
         }
     }
 
@@ -5036,7 +5092,6 @@
 			DexV2.tag("body").onOpen("#JahiaGxtContentPicker", function(){
 				app.picker.onOpen();
 			});
-
 
 		}
 

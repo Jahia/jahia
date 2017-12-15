@@ -4710,62 +4710,62 @@
         attach: function(){
 			DexV2("body")
 				.onceOpen(".editmode-managers-menu", function(){
-					// // editmode-managers-menu is now available
-					// // ======= Menu (jahia logo animation) =======
-					//
-			        // var menu
-			        // menu = DexV2.class("editmode-managers-menu").nodes[0]
-					//
-			        // // Preload images for frame
-			        // var images = new Array()
-					//
-			        // function preload() {
-			        // 	for (i = 0; i < preload.arguments.length; i++) {
-			        // 		images[i] = new Image()
-			        // 		images[i].src = preload.arguments[i]
-			        // 	}
-			        // }
-			        // preload(
-			        // 	"./images/logo_frame_1.png",
-			        //   "./images/logo_frame_2.png",
-			        //   "./images/logo_frame_3.png",
-			        //   "./images/logo_frame_4.png",
-			        //   "./images/logo_frame_5.png",
-			        //   "./images/logo_frame_6.png",
-			        //   "./images/logo_frame_7.png",
-			        //   "./images/logo_frame_8.png",
-			        //   "./images/logo_frame_9.png",
-			        // )
-					//
-			        // // frames
-			        // var frame = [
-			        // 	"url(./images/logo_frame_1.png)",
-			        //   "url(./images/logo_frame_2.png)",
-			        //   "url(./images/logo_frame_3.png)",
-			        //   "url(./images/logo_frame_4.png)",
-			        //   "url(./images/logo_frame_5.png)",
-			        //   "url(./images/logo_frame_6.png)",
-			        //   "url(./images/logo_frame_7.png)",
-			        //   "url(./images/logo_frame_8.png)",
-			        //   "url(./images/logo_frame_9.png)",
-			        // ]
-					//
-			        // function logoAnim(invert) {
-			        // 	for (let i = 0; i <= 8; i++) {
-			        // 		time = 40*(i+1);	// 25fps
-			        // 		setTimeout(function() {
-			        // 			menu.style.backgroundImage = invert ? frame[9-i]: frame[i];
-			        // 		}, time);
-			        // 	}
-			        // }
-					//
-			        // menu.onmouseenter = function() {
-			        // 	logoAnim()
-			        // }
-					//
-			        // menu.onmouseleave = function() {
-			        // 	logoAnim(invert=true)
-			        // }
+					// editmode-managers-menu is now available
+					// ======= Menu (jahia logo animation) =======
+
+			        var menu
+			        menu = DexV2.class("editmode-managers-menu").nodes[0]
+
+			        // Preload images for frame
+			        var images = new Array()
+
+			        function preload() {
+			        	for (i = 0; i < preload.arguments.length; i++) {
+			        		images[i] = new Image()
+			        		images[i].src = preload.arguments[i]
+			        	}
+			        }
+			        preload(
+			        	"../images/logo_frame_1.png",
+			          "../images/logo_frame_2.png",
+			          "../images/logo_frame_3.png",
+			          "../images/logo_frame_4.png",
+			          "../images/logo_frame_5.png",
+			          "../images/logo_frame_6.png",
+			          "../images/logo_frame_7.png",
+			          "../images/logo_frame_8.png",
+			          "../images/logo_frame_9.png",
+			        )
+
+			        // frames
+			        var frame = [
+			        	"url(../images/logo_frame_1.png)",
+			          "url(../images/logo_frame_2.png)",
+			          "url(../images/logo_frame_3.png)",
+			          "url(../images/logo_frame_4.png)",
+			          "url(../images/logo_frame_5.png)",
+			          "url(../images/logo_frame_6.png)",
+			          "url(../images/logo_frame_7.png)",
+			          "url(../images/logo_frame_8.png)",
+			          "url(../images/logo_frame_9.png)",
+			        ]
+
+			        function logoAnim(invert) {
+			        	for (let i = 0; i <= 8; i++) {
+			        		time = 40*(i+1);	// 25fps
+			        		setTimeout(function() {
+			        			menu.style.backgroundImage = invert ? frame[9-i]: frame[i];
+			        		}, time);
+			        	}
+			        }
+
+			        menu.onmouseenter = function() {
+			        	logoAnim()
+			        }
+
+			        menu.onmouseleave = function() {
+			        	logoAnim(invert=true)
+			        }
 				})
 				.onClick(".window-side-panel .x-panel-footer", app.edit.sidepanel.togglePin)
 				.onOpen(".job-list-window", app.backgroundJobs.onOpen)

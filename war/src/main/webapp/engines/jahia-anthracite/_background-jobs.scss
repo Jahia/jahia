@@ -203,7 +203,7 @@
 				pointer-events: all;
 
 				&:before {
-					content: "Done";
+					content: $text_done;
 					display: block;
 
 					@extend %CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SUGGESTED;

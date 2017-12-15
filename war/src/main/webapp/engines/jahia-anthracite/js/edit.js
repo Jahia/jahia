@@ -3810,6 +3810,7 @@
 					firstRunSettings: true,
 					open: false,
 					currentTab: null,
+					previousTab: null,
                     channel: {
                         autofit: false,
                         opened: false
@@ -4091,6 +4092,7 @@
 						// User has clicked on one of the side panel tabs (except for Settings Tab which calls eventHandlers.clickSidePanelSettingsTab)
 			            var clickedTabID = DexV2.node(this).getAttribute("id");
 
+						app.edit.sidepanel.data.previousTab = app.edit.sidepanel.data.currentTab;
 						app.edit.sidepanel.data.currentTab = clickedTabID;
 
 						app.dev.log("app.edit.sidepanel.data.currentTab: " + app.edit.sidepanel.data.currentTab);
@@ -4204,25 +4206,28 @@
                     app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
 
 
-          // Position the language selector dropdown.
-          var siteSettingsList = DexV2.id("JahiaGxtSettingsTab").filter(".x-panel.x-component").nodes[0];
-          var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
+					app.edit.sidepanel.data.previousTab = app.edit.sidepanel.data.currentTab;
 
-          function offset(el) {
-            var rect = el.getBoundingClientRect(),
-            scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-            scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            return {
-              top: rect.top + scrollTop
-            }
-          }
-          var siteSettingsListTop = offset(siteSettingsList).top;
-
-          if(siteSettingsListTop <= 145) {
-            langSelector.style.cssText='top: 112px !important';
-          } else if (siteSettingsListTop >= 185) {
-            langSelector.style.cssText='top: 152px !important';
-          };
+		// NEEDS FIXING
+        //   // Position the language selector dropdown.
+        //   var siteSettingsList = DexV2.id("JahiaGxtSettingsTab").filter(".x-panel.x-component").nodes[0];
+        //   var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
+		  //
+        //   function offset(el) {
+        //     var rect = el.getBoundingClientRect(),
+        //     scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+        //     scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        //     return {
+        //       top: rect.top + scrollTop
+        //     }
+        //   }
+        //   var siteSettingsListTop = offset(siteSettingsList).top;
+		  //
+        //   if(siteSettingsListTop <= 145) {
+        //     langSelector.style.cssText='top: 112px !important';
+        //   } else if (siteSettingsListTop >= 185) {
+        //     langSelector.style.cssText='top: 152px !important';
+        //   };
 
 
 					if(directAccess){
@@ -4318,9 +4323,21 @@
 
 		            }
 
-          // Reset language dropdown position
-          var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
-          langSelector.style.cssText='top: 0';
+		// NEEDS FIXING
+        //   // Reset language dropdown position
+        //   var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
+        //   langSelector.style.cssText='top: 0';
+
+					if(DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") == "true"){
+						// The side panel has been pinned, need to reselect the previously opened tab
+
+						if(app.edit.sidepanel.data.previousTab){
+							DexV2.id(app.edit.sidepanel.data.previousTab).trigger("click");
+						}
+					}
+
+
+
 
 				}
 			}

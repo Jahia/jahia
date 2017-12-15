@@ -3486,8 +3486,7 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	.x-component .x-grid3-header .x-grid3-hh {
 		margin: 2px 2px 8px;
-		//width: calc(100% - 12px) !important;
-		border-bottom: 1px solid _theme-color(secondary, a);
+		border-bottom: 1px solid #dadbdc; // GWT fieldset border color (doesn't exist as variable)
     text-transform: uppercase;
     color: _theme-color(black, b);
 		pointer-events: none;

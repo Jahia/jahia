@@ -4743,28 +4743,28 @@
 			        	}
 			        }
 			        preload(
-			        	"../images/logo_frame_1.png",
-			          "../images/logo_frame_2.png",
-			          "../images/logo_frame_3.png",
-			          "../images/logo_frame_4.png",
-			          "../images/logo_frame_5.png",
-			          "../images/logo_frame_6.png",
-			          "../images/logo_frame_7.png",
-			          "../images/logo_frame_8.png",
-			          "../images/logo_frame_9.png",
+			        	jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_1.png",
+			          jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_2.png",
+			          jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_3.png",
+			          jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_4.png",
+			          jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_5.png",
+			          jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_6.png",
+			          jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_7.png",
+			          jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_8.png",
+			          jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_9.png"
 			        )
 
 			        // frames
 			        var frame = [
-			        	"url(../images/logo_frame_1.png)",
-			          "url(../images/logo_frame_2.png)",
-			          "url(../images/logo_frame_3.png)",
-			          "url(../images/logo_frame_4.png)",
-			          "url(../images/logo_frame_5.png)",
-			          "url(../images/logo_frame_6.png)",
-			          "url(../images/logo_frame_7.png)",
-			          "url(../images/logo_frame_8.png)",
-			          "url(../images/logo_frame_9.png)",
+			        	"url(" + jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_1.png)",
+			          "url(" + jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_2.png)",
+			          "url(" + jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_3.png)",
+			          "url(" + jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_4.png)",
+			          "url(" + jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_5.png)",
+			          "url(" + jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_6.png)",
+			          "url(" + jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_7.png)",
+			          "url(" + jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_8.png)",
+			          "url(" + jahiaGWTParameters.contextPath + "/engines/jahia-anthracite/images/logo_frame_9.png)"
 			        ]
 
 			        function logoAnim(invert) {

@@ -656,6 +656,66 @@
 #JahiaGxtPagesTab {
 	// width: #{$_tab_width}px!important;
 
+	// Deal with icons here ...
+	.x-tree3-node-icon {
+
+		background-size: 23px 23px;
+	    background-repeat: no-repeat;
+	    padding-left: 18px;
+	    width: 18px;
+	    height: 23px;
+		opacity: 0.8;
+
+
+		&[src$="/jnt_page.png"] {
+			background-image: url(./images/tabs-pages-dark@X2.png);
+			opacity: 0.8;
+		}
+
+		&[src$="/jnt_virtualsite.png"] {
+			background-image: url(./images/icons/tabs-site-dark@X2.png);
+		}
+
+		// Internal link
+		&[src$="jnt_nodeLink.png"] {
+			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+		}
+
+		// External link
+		&[src$="jnt_externalLink.png"] {
+			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+		}
+
+		// Menu link
+		&[src$="jnt_navMenuText.png"] {
+			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+		}
+	}
+
+	.x-grid3-row-selected {
+		.x-tree3-node-icon {
+			&[src$="/jnt_page.png"] {
+				background-image: url(./images/tabs-pages-white@X2.png);
+			}
+
+			&[src$="/jnt_virtualsite.png"] {
+				background-image: url(./images/icons/tabs-site-white@X2.png);
+			}
+
+			&[src$="jnt_nodeLink.png"] {
+				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+			}
+
+			&[src$="jnt_externalLink.png"] {
+				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+			}
+
+			&[src$="jnt_navMenuText.png"] {
+				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+			}
+		}
+	}
+
 
 	&::before {
 		/* Tab Content Header Label */
@@ -676,6 +736,33 @@
 #JahiaGxtCreateContentTab {
 	// width: #{$_tab_width}px!important;
 
+	// Deal with icons here ...
+	.gwt-Image {
+		background-size: 23px 23px;
+	    background-repeat: no-repeat;
+	    padding-left: 18px;
+	    width: 18px;
+	    height: 23px;
+		opacity: 0.8;
+
+		// CATEGORY ICON
+		// &[src$="/jnt_category.png"] {
+			background-image: url(./images/icons/tabs-files-dark@X2.png);
+		// }
+
+
+	}
+
+	.x-grid3-row-selected {
+		.gwt-Image {
+			// CATEGORY ICON
+			// &[src$="/jnt_category.png"] {
+				background-image: url(./images/icons/tabs-files@X2.png);
+			// }
+
+
+		}
+	}
 
 	&::before {
 		/* Tab Content Header Label */
@@ -702,10 +789,96 @@
 		content: $text_content!important;
 	}
 
+	// Deal with icons here ...
+	.x-tree3-node-icon {
+
+		background-size: 23px 23px;
+	    background-repeat: no-repeat;
+	    padding-left: 18px;
+	    width: 18px;
+	    height: 23px;
+		opacity: 0.8;
+
+		// FOLDER ICON
+		&[src$="/jnt_contentFolder.png"],
+		&[src$="/jnt_folder.png"] {
+			background-image: url(./images/icons/tabs-files-dark@X2.png);
+		}
+
+		&[src$="/jnt_virtualsite.png"] {
+			background-image: url(./images/icons/tabs-site-dark@X2.png);
+		}
+
+
+	}
+
+	.x-grid3-row-selected {
+		.x-tree3-node-icon {
+			// FOLDER ICON
+			&[src$="/jnt_contentFolder.png"],
+			&[src$="/jnt_folder.png"] {
+				background-image: url(./images/icons/tabs-files@X2.png);
+			}
+
+			&[src$="/jnt_virtualsite.png"] {
+				background-image: url(./images/icons/tabs-site-white@X2.png);
+			}
+		}
+	}
+
 }
 
 #JahiaGxtFileImagesBrowseTab.tab_filesimages {
 	width: 300px!important;
+
+	// Deal with icons here ...
+	.x-tree3-node-icon {
+
+		background-size: 23px 23px;
+	    background-repeat: no-repeat;
+	    padding-left: 18px;
+	    width: 18px;
+	    height: 23px;
+		opacity: 0.8;
+
+		// FOLDER ICON
+		&[src$="/jnt_contentFolder.png"],
+		&[src$="/jnt_folder.png"] {
+			background-image: url(./images/icons/tabs-files-dark@X2.png);
+		}
+
+		// IMPORT DROP BOX
+		&[src$="/jnt_importDropBox.png"] {
+			background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+		}
+
+		&[src$="/jnt_virtualsite.png"] {
+			background-image: url(./images/icons/tabs-site-dark@X2.png);
+		}
+
+
+	}
+
+	.x-grid3-row-selected {
+		.x-tree3-node-icon {
+			// FOLDER ICON
+			&[src$="/jnt_contentFolder.png"],
+			&[src$="/jnt_folder.png"] {
+				background-image: url(./images/icons/tabs-files@X2.png);
+			}
+
+			// IMPORT DROP BOX
+			&[src$="/jnt_importDropBox.png"] {
+				background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+			}
+
+			&[src$="/jnt_virtualsite.png"] {
+				background-image: url(./images/icons/tabs-site-white@X2.png);
+			}
+
+
+		}
+	}
 
 	&::before {
 		/* Tab Content Header Label */
@@ -1110,6 +1283,35 @@
 
 #JahiaGxtCategoryBrowseTab.tab_categories {
 	width: 300px!important;
+
+	// Deal with icons here ...
+	.x-tree3-node-icon {
+
+		background-size: 23px 23px;
+	    background-repeat: no-repeat;
+	    padding-left: 18px;
+	    width: 18px;
+	    height: 23px;
+		opacity: 0.8;
+
+		// CATEGORY ICON
+		&[src$="/jnt_category.png"] {
+			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+		}
+
+
+	}
+
+	.x-grid3-row-selected {
+		.x-tree3-node-icon {
+			// CATEGORY ICON
+			&[src$="/jnt_category.png"] {
+				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+			}
+
+
+		}
+	}
 
 	&::before {
 		/* Tab Content Header Label */

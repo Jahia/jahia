@@ -1479,6 +1479,7 @@ form,
 			.gwt-content-label,
 			.x-grid3-col-name,
 			.x-tree3-node-text,
+			.x-tree3-node-text > span,
 			.x-grid3-col-path {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---HOVER !optional;
 
@@ -1534,7 +1535,8 @@ form,
 			.gwt-content-label,
 			.x-grid3-col-name,
 			.x-grid3-col-path,
-			.x-tree3-node-text {
+			.x-tree3-node-text,
+			.x-tree3-node-text > span {
 				@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED !optional;
 
 
@@ -1581,7 +1583,8 @@ form,
 				.gwt-content-label,
 				.x-grid3-col-name,
 				.x-grid3-col-path,
-				.x-tree3-node-text {
+				.x-tree3-node-text,
+				.x-tree3-node-text > span {
 					@extend %CSS_BLOCK--TREE--ROW--TEXT---SELECTED_HOVER !optional;
 
 					&::after {
@@ -1651,6 +1654,7 @@ form,
 	}
 
 	.x-tree3-node-text,
+	.x-tree3-node-text > span,
 	.x-grid3-col-name,
 	.x-grid3-col-path {
 		/* List Item Text Label */

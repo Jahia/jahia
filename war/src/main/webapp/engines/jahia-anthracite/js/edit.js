@@ -1441,6 +1441,7 @@
 
                 history.pushState(DXStateObject, "DX", url);
 
+
             },
             onPopState: function(event) {
 
@@ -5101,7 +5102,6 @@
                 .onClose("#JahiaGxtEnginePanel", app.engine.onClose)
                 .onClose("#JahiaGxtImagePopup", app.imagePreview.onClose)
                 .onOpen(".workflow-dashboard-engine", app.workflow.dashboard.onOpen)
-                .onClose(".workflow-dashboard-engine", app.workflow.dashboard.onClose)
                 .onClick(".app-container", app.onClick)
 				.onClick(".toolbar-item-filepreview", app.picker.previewButton.onClick)
                 .onClick("#JahiaGxtManagerLeftTree + div .x-grid3 .x-grid3-row", app.picker.row.onClick)

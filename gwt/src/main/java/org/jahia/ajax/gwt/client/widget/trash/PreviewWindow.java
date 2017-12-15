@@ -45,9 +45,12 @@ package org.jahia.ajax.gwt.client.widget.trash;
 
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -94,8 +97,14 @@ public class PreviewWindow extends Window {
         htmlPreview.setScrollMode(Style.Scroll.AUTO);
         add(htmlPreview, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
+        Button button = new Button(Messages.get("label.close", "Close"));
+        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                hide();
+            }
+        });
+        addButton(button);
         // Use gwt configuration for pages
-
         String configuration = jahiaNode.isNodeType("jnt:page")?"gwt":"preview";
         Map<String, List<String>> params = new HashMap<String, List<String>>();
         params.put("noDeleteLayer",Arrays.asList("true"));

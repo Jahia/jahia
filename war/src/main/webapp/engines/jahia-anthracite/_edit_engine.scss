@@ -3037,7 +3037,7 @@ body[data-indigo-add-visibility-condition="new"] {
 #JahiaGxtEditEnginePanel-seo > .x-component {
 	max-width: 100%;
 	background: rgba($color-white, .4);
-	border: 1px solid _theme-color(secondary) !important;
+	border: 1px solid #dadbdc !important; // GWT fieldset border color (doesn't exist as variable)
 	box-sizing: border-box;
 	padding: 8px 29px;
 	height: auto !important;
@@ -3486,7 +3486,8 @@ body[data-indigo-add-visibility-condition="new"] {
 
 	.x-component .x-grid3-header .x-grid3-hh {
 		margin: 2px 2px 8px;
-		border-bottom: 1px solid #dadbdc; // GWT fieldset border color (doesn't exist as variable)
+		//width: calc(100% - 12px) !important;
+		border-bottom: 1px solid _theme-color(secondary, a);
     text-transform: uppercase;
     color: _theme-color(black, b);
 		pointer-events: none;

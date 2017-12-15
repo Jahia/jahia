@@ -4168,6 +4168,10 @@ body[data-indigo-gwt-side-panel="open"] {
 		position: relative !important;
 	}
 
+	div[role="combobox"] img {
+		background: url(./images/icons/combo-arrow-grey.png) no-repeat center center transparent !important;
+	}
+
 }
 
 .x-window.image-crop {

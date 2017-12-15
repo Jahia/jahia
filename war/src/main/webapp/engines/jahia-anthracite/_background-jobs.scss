@@ -165,20 +165,49 @@
         z-index: 999;
 
         .x-window-header {
-            pointer-events: all;
+            pointer-events: none;
         }
 
-        // Close holder
+        // Close holder - mimick bottom action bar
         .x-panel-toolbar {
+
+
+
+			// Footer action bar
+			display: block;
+			// width: 292px!important;
+			// height: 120px;
+			position: fixed;
+			// padding: 10px 0 0 75px;
+
+			background: _property($FOOTER--BG, $EDIT-ENGINE);
+		    border-top: 1px solid _theme-color(primary, g);
+		    box-shadow: _property($FOOTER--SHADOW, $EDIT-ENGINE);
+		    box-sizing: border-box;
+		    height: auto;
+
+			left: -30px;
+			width: calc(100% + 60px)!important;
+			bottom: -30px;
+			padding: 20px 0px 30px 50px;
+			height: 109px;
+
 
             // Button
             .x-tool-close {
                 position: absolute;
-                left: -29px;
-                background: url(./images/icons/icon-back-grey@X2.png) no-repeat center center;
-                background-size: 23px;
-                height: 45px;
-                width: 25px;
+                right: 51px;
+                background: blue;
+				width: auto;
+				height: auto;
+				pointer-events: all;
+
+				&:before {
+					content: "Done";
+					display: block;
+
+					@extend %CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SUGGESTED;
+				}
             }
 
         }
@@ -358,10 +387,17 @@
 											height: 25px;
 											background: url(./images/icons/tabs-trash-black@X2.png) no-repeat left -2px top;
 											background-size: 21px;
+
+											// Small Firefox fix
+											body.ext-gecko & {
+												background: url(./images/icons/tabs-trash-black@X2.png) no-repeat left -2px top -2px;
+												background-size: 21px;
+											}
+
 											opacity: 0.8;
 
                                             button {
-
+												padding-left: 15px;
                                                 @include text(12px, _theme-color(primary), 400);
                                             }
 

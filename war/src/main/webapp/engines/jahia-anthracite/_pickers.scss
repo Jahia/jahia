@@ -1786,9 +1786,21 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				&:hover {
 					cursor: pointer;
 				}
-				background: no-repeat center center _theme-color(primary, c);
-				background-image: url($ICON--MORE_OPTIONS---WHITE);
+				background: url($ICON--MORE_OPTIONS---WHITE) no-repeat center center;
 				background-size: 10px 2px;
+
+
+				body[indigo-picker-display="detailedview"] & {
+					background-color: _theme-color(quinary);
+				}
+
+				body[indigo-picker-display="thumbsview"] & {
+					background-color: _theme-color(quinary);
+				}
+
+				body[indigo-picker-display="listview"] & {
+					background-color: _theme-color(primary, c);
+				}
 			}
 
 			.preview-button {
@@ -1809,8 +1821,19 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				&:hover {
 					cursor: pointer;
 				}
-				background: no-repeat center center _theme-color(primary, c);
-				background-image:url(./images/icons/icon_preview_small_white.png);
+				background: url(./images/icons/icon_preview_small_white.png) no-repeat center center;
+
+				body[indigo-picker-display="detailedview"] & {
+					background-color: _theme-color(quinary);
+				}
+
+				body[indigo-picker-display="thumbsview"] & {
+					background-color: _theme-color(quinary);
+				}
+
+				body[indigo-picker-display="listview"] & {
+					background-color: transparent;
+				}
 			}
 
 			.edit-button {
@@ -1831,9 +1854,20 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 				&:hover {
 					cursor: pointer;
 				}
-				// background: no-repeat center center _theme-color(primary, c);
-				// background-image:url(./images/icons/icon_preview_small_white.png);
+
 				background: url("./images/icons/tabs-edit.png") no-repeat center center;
+
+				body[indigo-picker-display="detailedview"] & {
+					background-color: _theme-color(quinary);
+				}
+
+				body[indigo-picker-display="thumbsview"] & {
+					background-color: _theme-color(quinary);
+				}
+
+				body[indigo-picker-display="listview"] & {
+					background-color: transparent;
+				}
 			}
 
 
@@ -1853,6 +1887,22 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 				.edit-button {
 					background-color: _theme-color(tertiary);
+				}
+
+				body[indigo-picker-display="listview"] & {
+
+					.more-info-button {
+						background-color: transparent;
+					}
+
+					.preview-button {
+						background-color: transparent;
+					}
+
+					.edit-button {
+						background-color: transparent;
+					}
+
 				}
 
 
@@ -2710,6 +2760,23 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 // Overrides ...
 #JahiaGxtContentPickerWindow {
 
+	#JahiaGxtManagerTobTable {
+		.thumb-wrap {
+			.preview-button {
+				right: 25px;
+			}
+		}
+	}
+
+	&.modal-editoriallinkpicker,
+	&.modal-categorypicker {
+		#JahiaGxtManagerTobTable .x-grid3-row .more-info-button {
+			body[indigo-picker-display="thumbsview"] & {
+				background-color: transparent;
+			}
+		}
+	}
+
 	// Category Picker
 	// Force the Category Picker to display in List view instead of details view
 	&.modal-categorypicker {
@@ -2760,6 +2827,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 						top: unset;
 						right: 19px;
 					}
+
+
 
 					// Make sure that which ever thumb is being hovered is pulled to the top
 					&:hover {

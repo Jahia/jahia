@@ -5157,6 +5157,7 @@
           "url(./images/logo_frame_7.png)",
           "url(./images/logo_frame_8.png)",
           "url(./images/logo_frame_9.png)",
+        ]
 
         function logoAnim(invert) {
         	for (let i = 0; i <= 8; i++) {
@@ -5167,13 +5168,13 @@
         	}
         }
 
-        /*menu.onmouseenter = function() {
-        	logoAnim();
-        };
+        menu.onmouseenter = function() {
+        	logoAnim()
+        }
 
         menu.onmouseleave = function() {
-        	logoAnim(invert=true);
-        }*/
+        	logoAnim(invert=true)
+        }
 
 
     }

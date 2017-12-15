@@ -4206,6 +4206,11 @@ body[data-indigo-gwt-side-panel="open"] {
 		color: _theme-color(secondary, a) !important;
 	}
 
+	.x-form-field-wrap {
+		width: calc(100% - 4px) !important;
+		margin-left: 2px;
+	}
+
 }
 
 .x-window.image-resize {

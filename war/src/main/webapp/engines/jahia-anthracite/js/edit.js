@@ -4213,26 +4213,31 @@
 
 					app.edit.sidepanel.data.previousTab = app.edit.sidepanel.data.currentTab;
 
-		// NEEDS FIXING
-        //   // Position the language selector dropdown.
-        //   var siteSettingsList = DexV2.id("JahiaGxtSettingsTab").filter(".x-panel.x-component").nodes[0];
-        //   var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
-		  //
-        //   function offset(el) {
-        //     var rect = el.getBoundingClientRect(),
-        //     scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-        //     scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        //     return {
-        //       top: rect.top + scrollTop
-        //     }
-        //   }
-        //   var siteSettingsListTop = offset(siteSettingsList).top;
-		  //
-        //   if(siteSettingsListTop <= 145) {
-        //     langSelector.style.cssText='top: 112px !important';
-        //   } else if (siteSettingsListTop >= 185) {
-        //     langSelector.style.cssText='top: 152px !important';
-        //   };
+  		  //NEEDS FIXING - Works when user language is French but throw error when dx is in English.
+
+        //DexV2("#JahiaGxtSettingsTab").onOpen(".x-panel.x-component", function(){
+
+            // Position the language selector dropdown.
+            var siteSettingsList = DexV2.id("JahiaGxtSettingsTab").filter(".x-panel.x-component").nodes[0];
+            var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
+
+            function offset(el) {
+              var rect = el.getBoundingClientRect(),
+              scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+              scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+              return {
+                top: rect.top + scrollTop
+              }
+            }
+            var siteSettingsListTop = offset(siteSettingsList).top;
+
+            if(siteSettingsListTop <= 145) {
+              langSelector.style.cssText='top: 112px !important';
+            } else if (siteSettingsListTop >= 185) {
+              langSelector.style.cssText='top: 152px !important';
+            };
+
+        //})
 
 
 					if(directAccess){
@@ -4328,10 +4333,15 @@
 
 		            }
 
-		// NEEDS FIXING
-        //   // Reset language dropdown position
-        //   var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
-        //   langSelector.style.cssText='top: 0';
+
+          // Position for the language picker.
+
+          // EDIT: It seems to work fine as is.
+          //DexV2("body").onChange(".toolbar-itemsgroup-languageswitcher", function(){
+            var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
+            langSelector.style.cssText='top: 0';
+          //})
+
 
 					if(DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") == "true"){
 						// The side panel has been pinned, need to reselect the previously opened tab

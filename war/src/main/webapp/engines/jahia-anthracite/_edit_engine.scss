@@ -3340,6 +3340,15 @@ body[data-indigo-add-visibility-condition="new"] {
 
 #JahiaGxtEditEnginePanel-listOrdering {
 
+	.x-panel-tbar .x-hide-display {
+		display: inline-table !important;
+	}
+
+	.x-toolbar-layout-ct {
+		overflow-x: scroll;
+		pointer-events: all;
+	}
+
 	.x-panel-bwrap {
 		height: initial !important;
 		padding-bottom: 16px;

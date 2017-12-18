@@ -1578,11 +1578,21 @@
 			managerMenu: {
 				onOpen: function(contextmenu){
 					app.dev.log("::: APP ::: CONTEXTMENUS ::: MANAGERMENU ::: ONOPEN");
-                    var returnText;
+                    var returnText,
+						modifyMenuItem = function(menuItem, label){
+							var img = document.createElement("img"),
+								label = document.createTextNode(label);
+
+							img.classList.add("x-menu-item-icon");
+
+							DexV2.class(menuItem)
+								.setHTML("")
+								.append(img)
+								.append(label);
+
+						};
 
                     DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "open");
-
-                    app.dev.log("app.data.currentApp: " + app.data.currentApp);
 
                     switch(app.data.currentApp){
                         case "edit":
@@ -1606,7 +1616,16 @@
 
                             break;
                     }
+
                     DexV2.node(this).setAttribute("data-indigo-title", returnText);
+
+					// Update titles - this can be deleted once the titles have been changed in the GWT config
+					modifyMenuItem("toolbar-item-editorialcontentmanager-newtab", jahia_gwt_messages.label_editorialcontentmanager_title);
+					modifyMenuItem("toolbar-item-categorymanager-newtab", jahia_gwt_messages.label_categorymanager_title);
+					modifyMenuItem("toolbar-item-filemanager-newtab", jahia_gwt_messages.label_filemanager_title);
+					modifyMenuItem("toolbar-item-portletmanager-newtab", jahia_gwt_messages.label_portletmanager_title);
+					modifyMenuItem("toolbar-item-repositoryexplorer-newtab", jahia_gwt_messages.label_repositoryexplorer_title);
+					modifyMenuItem("toolbar-item-sitemanager-newtab", jahia_gwt_messages.label_sitemanager_title);
 
 
                 },

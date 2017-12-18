@@ -180,13 +180,13 @@ $HAMBURGER--BUTTON--COLOR: (
 
 
 $HAMBURGER--BUTTON--SHADOW: (
-	LIGHT: inset -2px 2px _theme-color(secondary),
-	DARK: inset -2px 2px _theme-color(secondary),
+	LIGHT: unquote("inset -2px 2px " + _theme-color(secondary)),
+	DARK: unquote("inset -2px 2px " + _theme-color(secondary)),
 );
 
 $HAMBURGER--BUTTON--SHADOW---HOVER: (
-	LIGHT: unquote("inset -1px 1px " + _theme-color(secondary) + ", 2px 4px 20px 0px " + _theme-color(black, b)),
-	DARK: unquote("inset -1px 1px " + _theme-color(secondary) + ", 2px 4px 20px 0px " + _theme-color(black, b)),
+	LIGHT: inset -1px 1px transparent,
+	DARK: inset -1px 1px transparent,
 );
 
 

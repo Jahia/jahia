@@ -4207,38 +4207,8 @@
 
 					}
 				},
-				open:function(e, directAccess){
-                    app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
-
-
-					app.edit.sidepanel.data.previousTab = app.edit.sidepanel.data.currentTab;
-
-  		  //NEEDS FIXING - Works when user language is French but throw error when dx is in English.
-
-        //DexV2("#JahiaGxtSettingsTab").onOpen(".x-panel.x-component", function(){
-
-            // Position the language selector dropdown.
-            var siteSettingsList = DexV2.id("JahiaGxtSettingsTab").filter(".x-panel.x-component").nodes[0];
-            var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
-
-            function offset(el) {
-              var rect = el.getBoundingClientRect(),
-              scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-              scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-              return {
-                top: rect.top + scrollTop
-              }
-            }
-            var siteSettingsListTop = offset(siteSettingsList).top;
-
-            if(siteSettingsListTop <= 145) {
-              langSelector.style.cssText='top: 112px !important';
-            } else if (siteSettingsListTop >= 185) {
-              langSelector.style.cssText='top: 152px !important';
-            };
-
-        //})
-
+				onReady: function(e, directAccess){
+					app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: ONREADY");
 
 					if(directAccess){
 						// Need to set back to the settings tree list (the onChangeSite will have switched it back to pages)
@@ -4304,6 +4274,47 @@
 
 
 						}
+					}
+
+					if(app.data.currentApp == "edit"){
+						// Jeremys code START
+						// Position the language selector dropdown.
+						var siteSettingsList = DexV2.id("JahiaGxtSettingsTab").filter(".x-panel.x-component").nodes[0];
+						var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
+
+						function offset(el) {
+						  var rect = el.getBoundingClientRect(),
+						  scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+						  scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+						  return {
+							top: rect.top + scrollTop
+						  }
+						}
+						var siteSettingsListTop = offset(siteSettingsList).top;
+
+						if(siteSettingsListTop <= 145) {
+						  langSelector.style.cssText='top: 112px !important';
+						} else if (siteSettingsListTop >= 185) {
+						  langSelector.style.cssText='top: 152px !important';
+						};
+						// Jeremys code END
+					}
+
+
+				},
+				open:function(e, directAccess){
+                    app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
+					app.edit.sidepanel.data.previousTab = app.edit.sidepanel.data.currentTab;
+
+					// Check if the Settings Tab has already been loaded
+					if(DexV2.id("JahiaGxtSettingsTab").exists()){
+					  // Already loaded, so we can execute the onReady function
+					  app.edit.settings.onReady(e, directAccess);
+					} else {
+					  // Doesnt yet exist, so listen for it being added to the DOM, then execute the onReady function
+					  DexV2("body").onOpen("#JahiaGxtSettingsTab", function(){
+						  app.edit.settings.onReady(e, directAccess);
+					  });
 					}
 
 				},

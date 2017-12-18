@@ -71,7 +71,7 @@ public class EmailValidationTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { { "", true }, { "a@a.com", true }, { "a@a.b.c.com", true },
                 { "a@a.b.c.info", true }, { "a@a.b.c.africa", true }, { "a.b.c@a.b.c.africa", true },
-                { "A.b_c@a.b-c.d.aFRica", true }, { "A.b_c2017@a.b-c-2017.d.aFRica", true },
+                { "A.b_c@a.b-c.d.aFRica", true }, { "A.b_c2017@a.b-c-2018.d.aFRica", true },
 
                 { "a", false }, { "a@", false }, { "a@com", false }, { "a.b.c@a.b.c.a", false },
                 { "a.b.c@a.b.c.", false }, { "a.b.c@a.b.c.africa24", false }, { "й%&.b.c@a.b.c.africa24", false } });

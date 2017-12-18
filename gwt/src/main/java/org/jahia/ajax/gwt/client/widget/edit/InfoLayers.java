@@ -60,6 +60,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
+
+import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
@@ -120,7 +122,7 @@ public class InfoLayers {
         layoutContainer.setZIndex(1001);
         LayoutContainer container = module.getContainer();
         El el = container.el();
-        Point xy = el.getXY();
+        Point xy = WindowUtil.getXY(el.dom);
         int w = el.getWidth();
         int h = el.getHeight();
         final boolean header = headerOnly && module instanceof MainModule;
@@ -136,7 +138,7 @@ public class InfoLayers {
                     totalWidth += component.el().getSize().width;
                 }
                 El headerEl = module.getHeader().el();
-                xy = headerEl.getXY();
+                xy = WindowUtil.getXY(headerEl.dom);
                 w = headerEl.getWidth();
                 h = headerEl.getHeight();
             }

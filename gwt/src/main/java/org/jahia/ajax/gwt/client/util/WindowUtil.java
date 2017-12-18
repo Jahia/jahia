@@ -43,6 +43,7 @@
  */
 package org.jahia.ajax.gwt.client.util;
 
+import com.extjs.gxt.ui.client.util.Point;
 import com.google.gwt.user.client.Element;
 
 /**
@@ -88,5 +89,15 @@ public class WindowUtil {
 
         return rect.left + win.pageXOffset;
     }-*/;
+
+    /**
+     * Uses methods of this utility class to calculate the Point of the specified element.
+     * 
+     * @param elem the element to calculate Point data for
+     * @return the Point of the specified element
+     */
+    public static Point getXY(Element elem) {
+        return new Point(getAbsoluteLeft(elem), getAbsoluteTop(elem));
+    }
 
 }

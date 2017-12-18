@@ -4098,6 +4098,16 @@ body[data-indigo-gwt-side-panel="open"] {
 		height: 48px;
 	}
 
+	.x-panel-fbar .x-btn.x-btn-noicon button {
+		margin-top: 8px;
+		background: _theme-color(tertiary) !important;
+		color: _theme-color(secondary, a) !important;
+	}
+
+	.x-window-footer table.x-toolbar-ct {
+		float: right;
+	}
+
 }
 
 .x-window-plain.x-window-dlg {

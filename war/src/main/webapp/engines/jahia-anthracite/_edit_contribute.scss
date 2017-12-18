@@ -1228,7 +1228,6 @@ body[data-indigo-app="contribute"] {
 
     .x-menu-item {
         box-shadow: inset -2px 2px _theme-color(secondary);
-        background: _property($HAMBURGER--BUTTON--BG, $HAMBURGER)!important;
 
         color: _property($HAMBURGER--BUTTON--COLOR, $HAMBURGER)!important;
         font-weight: 100;
@@ -1239,72 +1238,105 @@ body[data-indigo-app="contribute"] {
 
 		pointer-events: all;
 
+		text-align: center!important;
+
         &:hover {
 			color: _property($HAMBURGER--BUTTON--COLOR---HOVER, $HAMBURGER)!important;
-			background: _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER)!important;
+			background-color: _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER)!important;
 			box-shadow: _property($HAMBURGER--BUTTON--SHADOW---HOVER, $HAMBURGER)!important;
             font-size: 14px;
 
             z-index: 999;
         }
     }
-}
 
-//logout
-.toolbar-item-logout {
-	position: fixed !important;
-    bottom: 20px;
-    right: 20px;
-    z-index: 999;
-    background: url($ICON--CLOSE_LARGE---GREY) no-repeat left top 10px !important;
-    background-size: 11px !important;
-    padding-left: 16px!important;
+	//logout
+	.toolbar-item-logout {
+		position: fixed !important;
+	    bottom: 20px;
+	    right: 20px;
+	    z-index: 999;
+	    background: url($ICON--CLOSE_LARGE---GREY) no-repeat left top 10px !important;
+	    background-size: 11px !important;
+	    padding-left: 16px!important;
 
-	@include text(13px, _theme-color(primary, b)!important, $FONT--WEIGHT---LIGHT!important);
+		@include text(13px, _theme-color(primary, b)!important, $FONT--WEIGHT---LIGHT!important);
 
-	&:hover {
-		box-shadow: none!important;
-		color: _property($HAMBURGER--TITLE--COLOR, $HAMBURGER)!important;
+		&:hover {
+			box-shadow: none!important;
+			color: _property($HAMBURGER--TITLE--COLOR, $HAMBURGER)!important;
+		}
+	}
+
+	//Big Buttons (Apps)
+	.toolbar-item-studio,
+	.toolbar-item-admin,
+	.toolbar-item-edit,
+	.toolbar-item-contribute,
+	.toolbar-item-start {
+		width: 23vw;
+		height: 15vw;
+		font-size: 22px;
+		padding-top: 13vw !important;
+		padding-left: 13px !important;
+		padding-bottom: 4vw!important;
+		box-sizing: border-box;
+
+		&:hover {
+			font-size: 23px;
+		}
+	}
+
+	.toolbar-item-studio {
+		background: url(./images/logos/app-studio.svg) no-repeat top 2.5vh center/50%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
+	}
+
+	.toolbar-item-admin {
+		background: url(./images/logos/app-administration.svg) no-repeat top 5.2vh center / 40%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
+
+		&:hover {
+			background-size: 43%;
+			background-position: top 3.2vh center;
+		}
+	}
+
+	.toolbar-item-edit {
+		background: url(./images/logos/app-edit.svg) no-repeat top 2vh center / 50%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
+	}
+
+	.toolbar-item-contribute {
+		background: url(./images/logos/app-contribute.svg) no-repeat top 5vh center / 40%,  _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
+	}
+
+	.toolbar-item-start {
+		background: url(./images/logos/app-dashboard.svg) no-repeat top 5vh center/40%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
+	}
+
+
+
+	// Small Buttons (Managers)
+	.toolbar-item-editorialcontentmanager-newtab,
+	.toolbar-item-filemanager-newtab,
+	.toolbar-item-portletmanager-newtab,
+	.toolbar-item-repositoryexplorer-newtab,
+	.toolbar-item-categorymanager-newtab,
+	.toolbar-item-sitemanager-newtab {
+		width: 11.5vw;
+	    height: 8vw;
+	    font-size: 10px;
+	    padding-top: 6vw !important;
+	    box-sizing: border-box;
+	    font-weight: 400 !important;
+	    padding-right: 14px !important;
+		padding-bottom: 2.5vw!important;
+
+		&:hover {
+			font-size: 11px;
+		}
 	}
 }
 
-//Big Buttons (Apps)
-.toolbar-item-studio,
-.toolbar-item-admin,
-.toolbar-item-edit,
-.toolbar-item-contribute,
-.toolbar-item-start {
-	width: 23vw;
-	height: 18vw;
-	font-size: 22px;
-	padding-top: 15vw !important;
-	padding-left: 13px !important;
-	box-sizing: border-box;
 
-	&:hover {
-		font-size: 23px;
-	}
-}
-
-// Small Buttons (Managers)
-.toolbar-item-editorialcontentmanager-newtab,
-.toolbar-item-filemanager-newtab,
-.toolbar-item-portletmanager-newtab,
-.toolbar-item-repositoryexplorer-newtab,
-.toolbar-item-categorymanager-newtab,
-.toolbar-item-sitemanager-newtab {
-	width: 11.5vw;
-    height: 9vw;
-    font-size: 10px;
-    padding-top: 7vw !important;
-    box-sizing: border-box;
-    font-weight: 400 !important;
-    padding-right: 14px !important;
-
-	&:hover {
-		font-size: 11px;
-	}
-}
 
 // Language Switcher
 .toolbar-itemsgroup-languageswitcher {

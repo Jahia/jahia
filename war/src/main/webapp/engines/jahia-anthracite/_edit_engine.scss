@@ -3037,7 +3037,7 @@ body[data-indigo-add-visibility-condition="new"] {
 #JahiaGxtEditEnginePanel-seo > .x-component {
 	max-width: 100%;
 	background: rgba($color-white, .4);
-	border: 1px solid #dadbdc !important; // GWT fieldset border color (doesn't exist as variable)
+	border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 	box-sizing: border-box;
 	padding: 8px 29px;
 	height: auto !important;

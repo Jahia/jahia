@@ -86,7 +86,7 @@
   			</div>
 
   		</div>
-  		<div class="login-footer">Digital Experience manager 7.2 - Copyrights © 2002-2017 All Rights Reserved by Jahia Solutions Group SA.</div>
+  		<div class="login-footer">Digital Experience manager 7.2 - Copyrights © 2002-2018 All Rights Reserved by Jahia Solutions Group SA.</div>
   	</div>
   </section>
 

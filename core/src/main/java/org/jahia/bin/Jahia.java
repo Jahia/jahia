@@ -95,7 +95,7 @@ public final class Jahia {
 
     public static final String CODE_NAME = "Gaia";
     public static final String VENDOR_NAME = "Jahia Solutions Group SA";
-    public static final String COPYRIGHT = "&copy; Copyright 2002-2017  <a href=\"http://www.jahia.com\" target=\"newJahia\">"
+    public static final String COPYRIGHT = "&copy; Copyright 2002-2018  <a href=\"http://www.jahia.com\" target=\"newJahia\">"
             + VENDOR_NAME + "</a> -";
     public static final String COPYRIGHT_TXT = "2017 " + VENDOR_NAME;
 

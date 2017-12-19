@@ -47,12 +47,31 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 import org.jahia.osgi.LogBridge;
+import org.slf4j.MDC;
+import org.slf4j.spi.MDCAdapter;
+
+import java.lang.reflect.Field;
+import java.util.Map;
 
 /**
  * An appender for the Log4J using inside the pax-logging-service implementation that will bridge the log messages
- * to the Log4J implementation used by DX's core.
+ * to the Log4J implementation used by DX's core. This appender also support SLF4j's MDC by bridging it into the core's
+ * SLF4j MDC. This is currently using reflection API to inject the MDC adapter into the MDC class, so this might easily
+ * break if upgrading SLF4j.
  */
 public class LogBridgeAppender extends AppenderSkeleton {
+
+    MDCAdapter logBridgeAdapter = null;
+
+    public LogBridgeAppender() {
+        super();
+        init();
+    }
+
+    public LogBridgeAppender(boolean isActive) {
+        super(isActive);
+        init();
+    }
 
     @Override
     protected void append(LoggingEvent event) {
@@ -67,5 +86,66 @@ public class LogBridgeAppender extends AppenderSkeleton {
     @Override
     public boolean requiresLayout() {
         return false;
+    }
+
+    private void init() {
+        logBridgeAdapter = new LogBridgeAdapter(MDC.getMDCAdapter());
+        try {
+            Field mdcAdapterField = MDC.class.getDeclaredField("mdcAdapter");
+            mdcAdapterField.setAccessible(true);
+            mdcAdapterField.set(null, logBridgeAdapter);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This is the MDC Adapter class that will wrap an existing MDC adapter and will be injected into the MDC static
+     * field.
+     */
+    public class LogBridgeAdapter implements MDCAdapter {
+
+        MDCAdapter wrappedMDCAdapter = null;
+
+        public LogBridgeAdapter(MDCAdapter wrappedMDCAdapter) {
+            this.wrappedMDCAdapter = wrappedMDCAdapter;
+        }
+
+        @Override
+        public void put(String key, String val) {
+            wrappedMDCAdapter.put(key, val);
+            LogBridge.putMDC(key, val);
+        }
+
+        @Override
+        public String get(String key) {
+            wrappedMDCAdapter.get(key);
+            return LogBridge.getMDC(key);
+        }
+
+        @Override
+        public void remove(String key) {
+            wrappedMDCAdapter.remove(key);
+            LogBridge.removeMDC(key);
+        }
+
+        @Override
+        public void clear() {
+            wrappedMDCAdapter.clear();
+            LogBridge.clearMDC();
+        }
+
+        @Override
+        public Map getCopyOfContextMap() {
+            return LogBridge.getCopyOfContextMap();
+        }
+
+        @Override
+        public void setContextMap(Map contextMap) {
+            wrappedMDCAdapter.setContextMap(contextMap);
+            LogBridge.setContextMap(contextMap);
+        }
     }
 }

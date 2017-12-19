@@ -46,10 +46,14 @@ package org.jahia.osgi;
 import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
+import java.util.Map;
 
 /**
  * This LogBridge is used by a custom pax-logging-service appender to bring back up the log messages inside the OSGi runtime back into DX's
- * core.
+ * core. It also supports SLF4j's MDC bridging through the *MDC methods. These are deliberately not using the MDCAdapter interface to avoid
+ * class loader issues (because this class is being exposed by the DX core).
  */
 public class LogBridge {
 
@@ -81,5 +85,58 @@ public class LogBridge {
         } else {
             logger.trace(msg, t);
         }
+    }
+
+    /**
+     * Put an entry in the DX core SLF4j MDC hashtable
+     * @param key the key name for the entry
+     * @param value the value as a String for the MDC entry
+     */
+    public static void putMDC(String key, String value) {
+        MDC.put(key, value);
+    }
+
+    /**
+     * Retrieve an MDC entry from the DX core SLF4j MDC hashtable
+     * @param key the key name for the entry
+     * @return the value for the entry (might be null if none exists)
+     */
+    public static String getMDC(String key) {
+        return MDC.get(key);
+    }
+
+    /**
+     * Remove an entry from the DX core SLF4j MDC hashtable
+     * @param key the key name to be removed. If the key doesn't exist this method doesn't do anything.
+     */
+    public static void removeMDC(String key) {
+        MDC.remove(key);
+    }
+
+    /**
+     * Clears the DX core SLF4j MDC hashtable. Be careful with this method, it is better to remove entries by key name
+     * because this method might clear data set by other sub-systems or modules
+     */
+    public static void clearMDC() {
+        MDC.clear();
+    }
+
+    /**
+     * Retrieve a copy of the whole DX core SLF4j MDC hashtable
+     * @return despite the fact that this is a generic Map (for compatibility reasons), it should normally only contain
+     * entries with String objects as key and String objects as values
+     */
+    public static Map getCopyOfContextMap() {
+        return MDC.getCopyOfContextMap();
+    }
+
+    /**
+     * Set the whole DX core SLF4j MDC hashtable to a new map. Be VERY careful with this method, not only will it
+     * overwrite data, but you must also make sure you provide a map that only contains keys and values that are String
+     * objects.
+     * @param contextMap a map that only contains keys and values that are String objects
+     */
+    public static void setContextMap(Map contextMap) {
+        MDC.setContextMap(contextMap);
     }
 }

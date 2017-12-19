@@ -66,7 +66,11 @@
                 <configuration>
                     <instructions>
                         <Fragment-Host>org.ops4j.pax.logging.pax-logging-service</Fragment-Host>
-                        <Import-Package>org.jahia.osgi</Import-Package>
+                        <Import-Package>
+                            org.jahia.osgi,
+                            org.slf4j,
+                            org.slf4j.spi
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

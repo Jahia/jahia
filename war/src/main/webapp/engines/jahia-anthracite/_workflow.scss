@@ -76,7 +76,6 @@
 						span,
 						span div {
 							font-weight: 800;
-							//margin-left: 2px;
 						}
 
 					}
@@ -85,6 +84,18 @@
 
 			}
 
+		}
+
+		td.x-grid3-hd-over .x-grid3-hd-inner,
+		td.x-grid3-hd-menu-open .x-grid3-hd-inner {
+			background: _theme-color(primary, d) !important;
+		}
+
+		.x-grid3-header-inner .x-grid3-hh > table > tbody td div .x-grid3-hd-btn {
+			background: url(./images/icons/combo-arrow-grey.png) no-repeat center center !important;
+			width: 23px;
+			background-size: 13px !important;
+			opacity: 0.7;
 		}
 
 		.x-grid3-scroller.x-grid3-scroller {
@@ -174,11 +185,6 @@
 			border-right-color: _theme-color(primary, e);
 		}
 
-		.x-grid3-hd.x-grid3-hd-over div,
-		.x-grid3-hd.x-grid3-hd-menu-open div {
-			background: rgb(142, 145, 148) !important;
-		}
-
 	}
 
 	.x-grid3-col-displayName table {
@@ -201,6 +207,10 @@
 			padding: 0 8px !important;
 		}
 
+	}
+
+	.x-panel-fbar .x-btn.x-btn-over.x-btn-noicon button {
+		background: transparent !important;
 	}
 
 }

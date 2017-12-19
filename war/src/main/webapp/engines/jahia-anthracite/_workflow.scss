@@ -7,6 +7,10 @@
 .workflow-dashboard-engine {
 	background:  lighten($EDIT_ENGINE--BASE--COLOUR, 2%) !important;
 
+	.x-window-bwrap {
+		background: _theme-color(secondary, a);
+	}
+
 	.x-panel-toolbar .x-tool-restore {
 		display: none;
 	}
@@ -55,17 +59,41 @@
 
 		.x-grid3-header {
 			display: table-cell;
-			background: _theme-color(primary, d);
-			color: _theme-color(secondary);
+			background: transparent;
+
+			.x-grid3-hh {
+				border-bottom: 1px solid _theme-color(secondary, d);
+				text-transform: uppercase;
+				color: _theme-color(black, c);
+				margin: 2px 0 12px;
+
+				> table {
+					padding: 4px 0;
+
+					.x-grid3-hd.x-grid3-cell {
+						border-color: transparent !important;
+
+						span,
+						span div {
+							font-weight: 800;
+							//margin-left: 2px;
+						}
+
+					}
+
+				}
+
+			}
+
 		}
 
-		.x-grid3-scroller {
-			background: _theme-color(primary, d);
+		.x-grid3-scroller.x-grid3-scroller {
+			background: _theme-color(secondary, a);
 			width: 100% !important;
 		}
 
 		.x-grid3-row.x-grid3-row-selected {
-			background: rgb(239, 239, 239) !important;
+			background: _theme-color(secondary, c) !important;
 			color: _theme-color(primary, a) !important;
 
 			.x-grid3-td-displayName {
@@ -79,10 +107,11 @@
 		}
 
 		.x-grid3-row {
-			background: rgb(239, 239, 239) !important;
+			background: _theme-color(secondary, c) !important;
 			color: _theme-color(primary, a) !important;
 			height: 38px !important;
 			box-sizing: border-box;
+			padding-left: 12px;
 
 			.x-grid3-td-displayName table.x-btn-noicon {
 				position: absolute;
@@ -96,7 +125,7 @@
 				button {
 					font-family: $FONT--FAMILY---NUNITO;
 					font-size: 13px;
-					color: _theme-color(secondary) !important;
+					color: _theme-color(primary) !important;
 					font-weight: $FONT--WEIGHT---EXTRALIGHT;
 					margin-top: -1px;
 				}
@@ -160,8 +189,18 @@
 		margin-top: 8px;
 	}
 
-	.x-grid3-td-nodeWrapper button {
-		font-size: 13px !important;
+	.x-grid3-td-nodeWrapper table.x-btn-noicon {
+		height: 28px;
+		padding: 2px 6px;
+		padding-top: 4px;
+		pointer-events: all;
+		background: _theme-color(secondary, d);
+
+		button {
+			background: transparent !important;
+			padding: 0 8px !important;
+		}
+
 	}
 
 }

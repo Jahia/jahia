@@ -1627,6 +1627,26 @@
 					modifyMenuItem("toolbar-item-repositoryexplorer-newtab", jahia_gwt_messages.label_repositoryexplorer_title);
 					modifyMenuItem("toolbar-item-sitemanager-newtab", jahia_gwt_messages.label_sitemanager_title);
 
+					if(!DexV2.class("menu-editmode-managers-menu").hasClass("managers-menu-built")){
+						var closeButton = document.createElement("button"),
+							closeButtonLabel = document.createTextNode("Close"),
+							backgroundMask = document.createElement("div");
+
+						backgroundMask.classList.add("managers-menu-mask");
+						closeButton.classList.add("managers-menu-close");
+						closeButton.append(closeButtonLabel);
+
+						DexV2.class("menu-editmode-managers-menu").prepend(closeButton);
+						DexV2.class("menu-editmode-managers-menu").append(backgroundMask);
+
+						DexV2(".menu-editmode-managers-menu").onClick(".managers-menu-close", function(){
+							DexV2.getCached("body")
+								.trigger("mousedown")
+								.trigger("mouseup");
+						});
+
+						DexV2.class("menu-editmode-managers-menu").addClass("managers-menu-built")
+					}
 
                 },
 				onClose: function(){
@@ -1634,6 +1654,7 @@
                     DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "");
 					// Manager Menu has been closed by clicking on the X.
 		            // Can not remove the actual DOM node as it causes problems with GWT, so just hide it instead.
+
 		            DexV2(".menu-editmode-managers-menu").css({
                         "display": "none"
                     });
@@ -5162,7 +5183,7 @@
 
                 .onClick("#JahiaGxtManagerLeftTree + div .thumb-wrap", app.picker.thumb.onClick)
                 // DexV2(".x-viewport-editmode .action-toolbar > table").onClick(app.theme.onToggle)
-                .onClick(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose)
+                // .onClick(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onClose)
                 .onClick("#JahiaGxtSidePanelTabs > .x-tab-panel-header .x-tab-strip-spacer", app.edit.settings.close)
                 .onMouseOver(".toolbar-item-filepreview", app.picker.previewButton.onMouseOver)
                 .onMouseOut(".toolbar-item-filepreview", app.picker.previewButton.onMouseOut)

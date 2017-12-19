@@ -384,7 +384,8 @@
 }
 
 body[data-indigo-app="contribute"] {
-    .x-menu {
+	// Do not want to override the blue menu (:not())
+    .x-menu:not(.menu-editmode-managers-menu) {
     	@include _context-list($CONTRIBUTE-MENUS);
     }
 
@@ -1232,6 +1233,44 @@ body[data-indigo-app="contribute"] {
     height: 100%!important;
 	background: _property($BODY--BG, $HAMBURGER)!important;
 	pointer-events: none;
+	transition: all 0.3s ease-in 0s;
+
+	.managers-menu-mask {
+		display: block;
+	    width: 100%;
+	    height: 100%;
+	    // background: red;
+	    top: 0;
+	    left: 0;
+	    position: fixed;
+		pointer-events: all;
+		z-index: 9;
+
+		&:hover {
+			// background: blue;
+			cursor: auto;
+		}
+	}
+
+	.managers-menu-close {
+		position: fixed;
+		top: 20px;
+		left: 20px;
+		z-index: 999;
+		pointer-events: all;
+		border: none;
+		background: url(./images/icons/icon-close-grey@X2.png) no-repeat center center;
+		background-size: 20px;
+		width: 20px;
+		height: 20px;
+		opacity: 0.8;
+		text-indent: -50000px;
+
+		&:hover {
+			opacity: 1;
+			cursor: pointer;
+		}
+	}
 
 	&:hover {
 		cursor: pointer;
@@ -1251,23 +1290,6 @@ body[data-indigo-app="contribute"] {
 		@include text(40px, _property($HAMBURGER--TITLE--COLOR, $HAMBURGER)!important, 100, $DEFAULT--TITLE_FONT--FAMILY);
     }
 
-	&::after {
-		content: attr(data-indigo-title);
-	    position: fixed;
-	    top: 20px;
-	    left: 20px;
-	    z-index: 999;
-
-		background: url($ICON--BACK--GREY) no-repeat left top 1px;
-		background-size: 15px;
-
-		padding-left: 18px;
-
-		@include text(13px, _theme-color(primary, b) !important, $FONT--WEIGHT---LIGHT);
-
-		pointer-events: all;
-	}
-
 	// Container for the Blue Tiles
     .x-menu-list {
 		position: fixed;
@@ -1277,11 +1299,15 @@ body[data-indigo-app="contribute"] {
 	    height: 100% !important;
 	    padding: 15vh 15vw 0 15vw !important;
 	    box-sizing: border-box;
+		pointer-events: none;
+		z-index: 99;
+
     }
 
 	// Float the tiles
     .x-menu-list-item {
         float: left;
+		pointer-events: all;
     }
 
 	// Remove the scroll bar as it is not neccessary

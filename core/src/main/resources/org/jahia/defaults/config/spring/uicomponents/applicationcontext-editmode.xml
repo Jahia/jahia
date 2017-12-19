@@ -135,6 +135,7 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Start"/>
+                                    <ref bean="Toolbar.Item.Documentation"/>
                                     <ref bean="Toolbar.Item.Logout"/>
                                 </list>
                             </property>

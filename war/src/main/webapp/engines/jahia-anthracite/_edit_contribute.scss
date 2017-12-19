@@ -1321,15 +1321,13 @@ body[data-indigo-app="contribute"] {
 	    bottom: 20px;
 	    right: 20px;
 	    z-index: 999;
-	    background: url($ICON--CLOSE_LARGE---GREY) no-repeat left top 10px !important;
-	    background-size: 11px !important;
-	    padding-left: 16px!important;
+	    background: _theme-color(quinary);
 
-		@include text(13px, _theme-color(primary, b)!important, $FONT--WEIGHT---LIGHT!important);
+		@include text(13px, _theme-color(secondary)!important, $FONT--WEIGHT---LIGHT!important);
+		opacity: 0.9;
 
 		&:hover {
-			box-shadow: none!important;
-			color: _property($HAMBURGER--TITLE--COLOR, $HAMBURGER)!important;
+			opacity: 1;
 		}
 	}
 

@@ -3888,7 +3888,11 @@
                 },
                 initChannels: function(){
                     // Force GWT to load the GWT tab for channels
-                    DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtChannelsTab").trigger("click");
+
+					// Remove just incase already been added ( can happen when returning to Edit Mode from another app)
+					DexV2.id("channel-menu").remove();
+
+					DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtChannelsTab").trigger("click");
 
                     // Build the Channels bar
                     var channelMenu = document.createElement("menu"),
@@ -3965,7 +3969,7 @@
 
                         DexV2(".mainmodule > div:nth-child(2)").removeClass("channel-zoom");
 
-                    });
+                    }, "CHANNEL-AUTO-FIT-BUTTON-ONCLICK");
 
 
                     // Close button
@@ -3984,7 +3988,7 @@
 
                         app.edit.sidepanel.data.channel.opened = false;
 
-                    });
+                    }, "CHANNEL-CLOSE-ONCLICK");
 
                     DexV2.getCached("body").onClick("#channel-zoom-button", function(){
                         DexV2.id("channel-auto-fit-button").removeClass("selected");
@@ -3996,7 +4000,7 @@
                         DexV2(".mainmodule > div:nth-child(2)").addClass("channel-zoom");
 
                         DexV2.id("channel-size-slider").trigger("input");
-                    });
+                    }, "CHANNEL-ZOOM-ONCLICK");
 
                     // Open the combo to change the Channel
                     DexV2.getCached("body").onClick("#channel-title", function(){
@@ -4011,7 +4015,7 @@
 
                         app.edit.sidepanel.data.channel.opened = true;
 
-                    });
+                    }, "CHANNEL-TITLE-ONCLICK");
 
                     // Toggle between orientations
                     DexV2.getCached("body").onClick("#channel-orientation", function(){
@@ -4022,7 +4026,7 @@
                         DexV2.getCached("body").onceOpen(".x-combo-list", function(){
                             DexV2(".x-combo-list .x-combo-list-item:not(.x-view-highlightrow)").trigger("mousedown");
                         })
-                    });
+                    }, "CHANNEL-ORIENTATION-ONCLICK");
 
                     // Redimension the Channel Preview
                     DexV2.getCached("body").onInput("#channel-size-slider", function(e){
@@ -4031,6 +4035,8 @@
                         app.edit.sidepanel.zoomChannel(zoomSize);
 
                     }, "CHANNEL-SIZE-SLIDER");
+
+
 
 
                 },

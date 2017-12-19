@@ -128,7 +128,7 @@
 		/* Refresh side panel button */
 		pointer-events: all;
 		background: url($ICON--REFRESH--SMALL_GREY) no-repeat center center _theme-color(secondary);
-		left: 309px;
+		left: 275px;
 		position: fixed;
 		top: 27px;
 		border-radius: 100%;
@@ -233,16 +233,22 @@
 
 				display: none;
 
-
 				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"] & {
-					top: 5px;
-				    left: 335px;
-				    width: 20px !important;
-				    height: 20px !important;
+					top: 30px;
+					left: 315px;
+					width: 20px !important;
+					height: 20px !important;
 					z-index: 999;
 					position: fixed;
-					background: _theme-color(quinary);
+					background: url(./images/icons/pin.png);
 					display: block;
+					background-size: 20px;
+					background-repeat: no-repeat;
+					opacity: .52;
+				}
+
+				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-indigo-sidepanel-pinned="true"] & {
+					background-image: url(./images/icons/unpin.png);
 				}
 
 				&:hover {

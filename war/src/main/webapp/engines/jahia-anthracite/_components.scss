@@ -1281,112 +1281,112 @@ form,
 			height: 25px!important;
 
 
-			&[src="/icons/publication/conflict.png"] {
+			&[src$="/conflict.png"] {
 				/* Conflict */
 				background: _theme-color(status, conflict)!important;
 
 			}
 
 
-			&[src="/icons/publication/deleted.png"] {
+			&[src$="/deleted.png"] {
 				/* Deleted */
 				background: _theme-color(status, deleted)!important;
 
 			}
 
 
-			&[src="/icons/publication/livemodified.png"] {
+			&[src$="/livemodified.png"] {
 				/* Live Modified */
 				background: _theme-color(status, livemodified)!important;
 
 			}
 
 
-			&[src="/icons/publication/liveonly.png"] {
+			&[src$="/liveonly.png"] {
 				/* Live Only */
 				background: _theme-color(status, liveonly)!important;
 
 			}
 
 
-			&[src="/icons/publication/locked.png"] {
+			&[src$="/locked.png"] {
 				/* Locked */
 				background: _theme-color(status, locked)!important;
 
 			}
 
 
-			&[src="/icons/publication/mandatorylanguageunpublishable.png"] {
+			&[src$="/mandatorylanguageunpublishable.png"] {
 				/* Mandatory Language Unpublishable */
 				background: _theme-color(status, mandatorylanguageunpublishable)!important;
 
 			}
 
 
-			&[src="/icons/publication/mandatorylanguagevalid.png"] {
+			&[src$="/mandatorylanguagevalid.png"] {
 				/* Mandatory Language Valid */
 				background: _theme-color(status, mandatorylanguagevalid)!important;
 
 			}
 
 
-			&[src="/icons/publication/markedfordeletion.png"] {
+			&[src$="/markedfordeletion.png"] {
 				/* Marked FOr Deletion */
 				background: _theme-color(status, markedfordeletion)!important;
 
 			}
 
 
-			&[src="/icons/publication/modified.png"] {
+			&[src$="/modified.png"] {
 				/* Modified */
 				background: _theme-color(status, modified)!important;
 
 			}
 
 
-			&[src="/icons/publication/multipleWF.png"] {
+			&[src$="/multipleWF.png"] {
 				/* Multiple WF */
 				background: _theme-color(status, multipleWF)!important;
 
 			}
 
 
-			&[src="/icons/publication/notpublished.png"] {
+			&[src$="/notpublished.png"] {
 				/* Not Published */
 				background: _theme-color(status, notpublished)!important;
 
 			}
 
 
-			&[src="/icons/publication/oneWF.png"] {
+			&[src$="/oneWF.png"] {
 				/* One WF */
 				background: _theme-color(status, oneWF)!important;
 
 			}
 
 
-			&[src="/icons/publication/published.png"] {
+			&[src$="/published.png"] {
 				/* Published */
 				background: _theme-color(status, published)!important;
 
 			}
 
 
-			&[src="/icons/publication/unpublished.png"] {
+			&[src$="/unpublished.png"] {
 				/* Unpublished */
 				background: _theme-color(status, unpublished)!important;
 
 			}
 
 
-			&[src="/icons/publication/waiting.gif"] {
+			&[src$="/waiting.gif"] {
 				/* Waiting */
 				background: _theme-color(status, waiting)!important;
 
 			}
 
 
-			&[src="/icons/publication/workinprogress.png"] {
+			&[src$="/workinprogress.png"] {
 				/* Work In Progress */
 				background: _theme-color(status, workinprogress)!important;
 

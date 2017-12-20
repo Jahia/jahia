@@ -336,12 +336,20 @@
 			.x-panel-fbar .x-toolbar-cell {
 
 				padding-bottom: 0!important;
+		    float: right;
 
-				@include button("ACTIONBAR", "remove-icons");
+				button {
+					padding: 10px 20px !important;
+					background: _theme-color(secondary, a) !important;
+					font-family: $FONT--FAMILY---NUNITO;
+					font-size: 14px;
+					color: _theme-color(primary) !important;
+					font-weight: $FONT--WEIGHT---EXTRALIGHT;
+				}
 
-				&:nth-child(2),
-				&:nth-child(1) {
-					@include button("ACTIONBAR", "remove-icons");
+				&:last-child button {
+					background: _theme-color(tertiary) !important;
+					color: _theme-color(secondary) !important;
 				}
 
 			}
@@ -528,6 +536,8 @@
 			.x-panel-fbar .x-btn.x-btn-noicon button {
 				background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
 				color: _property($BUTTON--COLOR, $EDIT-ENGINE) !important;
+				height: 24px !important;
+				font-size: 12px;
 			}
 
 			.x-grid-group-hd {

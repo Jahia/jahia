@@ -122,43 +122,10 @@
             // Used when NO channel has been selected
             content: "Responsive Design";
 
-            // Set the title According to the Selected Channel
-            body[data-channel="apple_iphone_ver1"] & {
-                content: "iPhone";
+            // Channel has been selected so use the title added by JS
+            body[data-channel] & {
+                content: attr(data-indigo-label);
             }
-
-            body[data-channel="samsung_gt_i9500_ver1"] & {
-                content: "Samsung Galaxy 4";
-            }
-
-            body[data-channel="samsung_sm_t210_ver1"] & {
-                content: "Samsung Galaxy Tab 3 7.0";
-            }
-
-            body[data-channel="generic_android"] & {
-                content: "Generic Android";
-            }
-
-            body[data-channel="blackberry9530_ver1"] & {
-                content: "Blackberry Storm";
-            }
-
-            body[data-channel="samsung_sm_n900_ver1"] & {
-                content: "Samsung Galaxy Note 3";
-            }
-
-            body[data-channel="amazon_kindle_fire_ver1"] & {
-                content: "Kindle Fire";
-            }
-
-            body[data-channel="apple_ipad_ver1"] & {
-                content: "iPad";
-            }
-
-            body[data-channel="samsung_gt_p5200_ver1"] & {
-                content: "Samsung Galaxy Tab 3 10.1";
-            }
-
 
         }
 

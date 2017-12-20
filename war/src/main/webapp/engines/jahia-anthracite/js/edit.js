@@ -3957,6 +3957,13 @@
                     // Add the bar to the body
     				DexV2.getCached("body").prepend(channelMenu);
 
+                    // Get title of clicked channel for the DX Menu
+                    DexV2("body").onMouseDown(".x-combo-list.channel-device-combo-box .thumb-wrap .x-editable", function(){
+                        var channelLabel = DexV2.node(this).getHTML();
+
+                        DexV2.id("channel-title").setAttribute("data-indigo-label", channelLabel)
+                    }, "CHANNEL-ONCLICK");
+
                     // Auto fit the channel preview to the screen
                     // Dev note: When this is ON we need to update on page resize
                     DexV2.getCached("body").onClick("#channel-auto-fit-button", function(){
@@ -4873,7 +4880,7 @@
 			        // menu.onmouseleave = function() {
 			        // 	logoAnim(invert=true)
 			        // }
-              
+
 				})
 				.onClick(".window-side-panel .x-panel-footer", app.edit.sidepanel.togglePin)
 				.onOpen(".job-list-window", app.backgroundJobs.onOpen)

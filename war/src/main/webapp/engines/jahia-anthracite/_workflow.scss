@@ -466,14 +466,14 @@
 		> .x-grid-panel.x-component.x-border-panel .x-panel-fbar {
 
 			.x-toolbar-cell:first-child .x-btn.x-btn-noicon button {
-				@include text(12px, _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---EXTRALIGHT);
-				background: _property($ACTION-SUGGESTED--BG, $EDIT-ENGINE)!important;
+				@include text(12px, _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---LIGHT);
+				background: _theme-color(quaternary) !important;
 				padding: 4px 5px!important;
 			}
 
 			.x-btn.x-btn-noicon button {
-				@include text(12px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---EXTRALIGHT);
-				background: _property($ACTION-DEFAULT--BG, $EDIT-ENGINE)!important;
+				@include text(12px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---LIGHT);
+				background: _theme-color(quaternary) !important;
 				padding: 4px 5px!important;
 			}
 
@@ -693,8 +693,9 @@
 
 			form button.x-btn-text {
 				position: relative;
-			    top: -40px;
-			    left: 29px;
+				top: -42px;
+				left: 31px;
+				color: _theme-color(secondary, g) !important;
 			}
 
 			> .x-border-panel form.x-form-label-left {

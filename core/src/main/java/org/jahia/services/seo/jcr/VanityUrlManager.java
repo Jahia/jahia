@@ -108,16 +108,18 @@ public class VanityUrlManager {
     @SuppressWarnings("deprecation")
     public List<VanityUrl> findExistingVanityUrls(String url, String site,
             JCRSessionWrapper session) throws RepositoryException {
-        StringBuilder SQL2 = new StringBuilder( "SELECT * FROM [")
+        StringBuilder sql2 = new StringBuilder( "SELECT * FROM [")
                 .append(JAHIANT_VANITYURL)
-                .append("] AS vanityURL")
-                .append(" WHERE ISDESCENDANTNODE(")
-                .append((StringUtils.isEmpty(site) ? "'/" : "'/sites/"))
-                .append(JCRContentUtils.stringToJCRPathExp(site))
-                .append("') AND vanityURL.[").append(PROPERTY_URL).append("] LIKE ")
-                .append(JCRContentUtils.stringToQueryLiteral(url))
-                .append(("live".equals(session.getWorkspace()) ? " AND vanityURL.[j:published] = CASE('true' AS BOOLEAN)" : ""));
-        Query vanityUrlsQuery = session.getWorkspace().getQueryManager().createQuery(SQL2.toString(), "JCR-SQL2");
+                .append("] AS vanityURL WHERE ");
+        if (StringUtils.isNotEmpty(site)) {
+            sql2.append("ISDESCENDANTNODE('/sites/")
+                    .append(JCRContentUtils.sqlEncode(site))
+                    .append("') AND ");
+        }
+        sql2.append("vanityURL.[").append(PROPERTY_URL).append("] LIKE ")
+                .append(JCRContentUtils.stringToQueryLiteral(url));
+
+        Query vanityUrlsQuery = session.getWorkspace().getQueryManager().createQuery(sql2.toString(), "JCR-SQL2");
         NodeIterator vanityUrls = vanityUrlsQuery.execute().getNodes();
         List<VanityUrl> existingVanityUrls = new LinkedList<>();
         while (vanityUrls.hasNext()) {

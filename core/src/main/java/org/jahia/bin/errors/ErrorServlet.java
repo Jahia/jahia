@@ -65,6 +65,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
@@ -99,10 +100,7 @@ public class ErrorServlet extends HttpServlet {
             throw new JahiaRuntimeException(
                     "No appropriate error page found. Server's default page will be used.");
         } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Forwarding request to the following error page: " + errorPagePath);
-            }
-
+            logger.debug("Forwarding request to the following error page: {}", errorPagePath);
             request.setAttribute("org.jahia.exception.forwarded", Boolean.TRUE);
             getServletContext().getRequestDispatcher(errorPagePath).forward(request, response);
         }
@@ -164,32 +162,34 @@ public class ErrorServlet extends HttpServlet {
         }
 
         if (null == path) {
-            String pathToCheck;
             String theme = SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.ui.theme");
-            if (theme != null && !"default".equals(theme)) {
-                pathToCheck = "/errors/" + theme + "/" + page;
-                if (getServletContext().getResource(pathToCheck) != null) {
-                    return pathToCheck;
-                } else {
-                    pathToCheck = "/errors/error.jsp";
-                    if (getServletContext().getResource(pathToCheck) != null) {
-                        return pathToCheck;
-                    }
-                }
-            }
-
-            pathToCheck = "/errors/" + page;
-            if (getServletContext().getResource(pathToCheck) != null) {
-                path = pathToCheck;
-            } else {
-                pathToCheck = "/errors/error.jsp";
-                path = getServletContext().getResource(pathToCheck) != null ? pathToCheck
-                        : null;
+            path = getErrorPagePath(page, theme);
+            if (null == path) {
+                path = getErrorPagePath("error.jsp", theme);
             }
         }
 
         return path;
     }
+
+    private String getErrorPagePath(String page, String theme) throws MalformedURLException {
+        boolean defaultTheme = (theme == null || "default".equals(theme));
+        String path;
+        if (defaultTheme) {
+            path = "/errors/" + page;
+        } else {
+            path = "/errors/" + theme + "/" + page;
+        }
+        if (getServletContext().getResource(path) != null) {
+            return path;
+        }
+        if (defaultTheme) {
+            return null;
+        } else {
+            return getErrorPagePath(page, null);
+        }
+    }
+
 
     protected String resolveSiteKey(HttpServletRequest request) {
         String siteKey = null;
@@ -252,6 +252,7 @@ public class ErrorServlet extends HttpServlet {
         forwardToErrorPage(errorPagePath, request, response);
     }
 
+    @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 

@@ -218,7 +218,7 @@
 
 
 /***********************************************/
-/* PREVIEW & IN-CONTEXT MODAL *********************/
+/* PREVIEW & IN-CONTEXT MODAL ******************/
 /***********************************************/
 
 
@@ -268,8 +268,6 @@
 /* PUBLICATION DASHBOARD ***********************/
 /***********************************************/
 
-// TO-DO: add sass variables.
-
 
 .workflowactiondialog-card.engine-panel {
 
@@ -295,8 +293,9 @@
 	    display: inline-block;
 	    position: fixed;
 	    width: 100%;
-	    left: 70px;
-	    top: 96px;
+			left: 30px;
+			top: 60px;
+			font-weight: 100;
 
 			&:before {
 			    display: none;
@@ -332,10 +331,6 @@
 	/* Footer buttons bar */
 
 	> .x-panel-bwrap > .x-panel-bbar {
-	    // background: #474a4c;
-	    // width: 100% !important;
-	    // position: fixed;
-	    // height: 82px;
 		padding-bottom: 20px;
 
 			.x-panel-fbar .x-toolbar-cell {
@@ -344,7 +339,8 @@
 
 				@include button("ACTIONBAR", "remove-icons");
 
-				&:nth-child(2) {
+				&:nth-child(2),
+				&:nth-child(1) {
 					@include button("ACTIONBAR", "remove-icons");
 				}
 
@@ -360,14 +356,10 @@
 
 .workflowactiondialog-ctn {
 
-
-
-	> .x-border-panel:first-child {
-		height: 150px !important;
-		width: 100% !important;
-	}
-
-
+		> .x-border-panel:first-child {
+			height: 150px !important;
+			width: 100% !important;
+		}
 
 		.x-border-panel > .x-panel-bwrap {
 			width: calc(100% - 162px) !important;
@@ -444,18 +436,18 @@
 				}
 			}
 
-			&.x-grid3-row-selected {
-				.x-grid3-cell-inner {
-					color: _property($ROW--COLOR---SELECTED, $EDIT-ENGINE);
-				}
-
-				&.x-grid3-row-over {
-					.x-grid3-cell-inner {
-						color: _property($ROW--COLOR---SELECTED, $EDIT-ENGINE);
-					}
-				}
-
-			}
+			// &.x-grid3-row-selected {
+			// 	.x-grid3-cell-inner {
+			// 		color: _property($ROW--COLOR---SELECTED, $EDIT-ENGINE);
+			// 	}
+      //
+			// 	&.x-grid3-row-over {
+			// 		.x-grid3-cell-inner {
+			// 			color: _property($ROW--COLOR---SELECTED, $EDIT-ENGINE);
+			// 		}
+			// 	}
+      //
+			// }
 		}
 
 		.x-grid3 .x-grid3-row-table .x-grid3-cell {
@@ -489,6 +481,11 @@
 
 		> .x-grid-panel.x-component.x-border-panel .x-grid3 .x-grid3-row {
 			height: 30px !important;
+
+			&.x-grid3-row-selected {
+				background-color: _theme-color(secondary, c) !important;
+			}
+
 		}
 
 		.x-panel-fbar {
@@ -845,7 +842,7 @@
 
 
 
-
+// ?
 .workflowactiondialog-card.engine-panel-TEST {
 
 
@@ -881,14 +878,14 @@
 			&:first-child{
 				.x-btn.x-btn-noicon button {
 					@include text(12px, _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---EXTRALIGHT);
-					background: _property($ACTION-SUGGESTED--BG, $EDIT-ENGINE)!important;
+					background: _theme-color(quaternary) !important;
 					padding: 4px 5px!important;
 				}
 			}
 
 			.x-btn.x-btn-noicon button {
 				@include text(12px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---EXTRALIGHT);
-				background: _property($ACTION-DEFAULT--BG, $EDIT-ENGINE)!important;
+				background: _theme-color(quaternary) !important;
 				padding: 4px 5px!important;
 			}
 		}
@@ -984,6 +981,6 @@
 
 }
 
-.workflowactiondialog-card > .x-panel-bwrap .x-panel-body.x-panel-body-noborder {
-	// overflow: hidden;
-}
+// .workflowactiondialog-card > .x-panel-bwrap .x-panel-body.x-panel-body-noborder {
+// 	// overflow: hidden;
+// }

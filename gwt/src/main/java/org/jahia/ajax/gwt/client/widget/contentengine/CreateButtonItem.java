@@ -66,6 +66,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.*;
 
@@ -78,6 +79,8 @@ public class CreateButtonItem extends SaveButtonItem {
     private boolean forceCreation = true;
     
     private boolean useNamePopup = false;
+    
+    private boolean redirectToCreatedPage;
 
     public void setUseNamePopup(boolean useNamePopup) {
         this.useNamePopup = useNamePopup;
@@ -165,6 +168,12 @@ public class CreateButtonItem extends SaveButtonItem {
                     data.put(Linker.REFRESH_MAIN, true);
                     data.put("node", node);
                     engine.getLinker().refresh(data);
+
+                    MainModule mainModule = MainModule.getInstance();
+                    if (redirectToCreatedPage && mainModule != null && mainModule.getEditLinker() != null && node.isPage()) {
+                        // if redirection for a newly created page is activated, we refresh the left-side panel and navigate to the created page
+                        MainModule.staticGoTo(node.getPath(), null);
+                    }
                 } else {
                     engine.getTabs().removeAll();
                     engine.initTabs();
@@ -244,6 +253,10 @@ public class CreateButtonItem extends SaveButtonItem {
 
     public void setForceCreation(boolean forceCreation) {
         this.forceCreation = forceCreation;
+    }
+
+    public void setRedirectToCreatedPage(boolean redirectToCreatedPage) {
+        this.redirectToCreatedPage = redirectToCreatedPage;
     }
 
 }

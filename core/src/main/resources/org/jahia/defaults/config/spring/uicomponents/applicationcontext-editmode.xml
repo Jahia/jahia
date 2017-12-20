@@ -1095,9 +1095,13 @@
         </property>
     </bean>
 
-    <bean id="Engine.Button.Create" class="org.jahia.ajax.gwt.client.widget.contentengine.CreateButtonItem" />
+    <bean id="Engine.Button.Create" class="org.jahia.ajax.gwt.client.widget.contentengine.CreateButtonItem">
+        <property name="redirectToCreatedPage" value="${jahia.ui.redirectToCreatedPage:true}"/>
+    </bean>    
 
-    <bean id="Engine.Button.CreateAndNew" class="org.jahia.ajax.gwt.client.widget.contentengine.CreateAndNewButtonItem" />
+    <bean id="Engine.Button.CreateAndNew" class="org.jahia.ajax.gwt.client.widget.contentengine.CreateAndNewButtonItem">
+        <property name="redirectToCreatedPage" value="${jahia.ui.redirectToCreatedPage:true}"/>
+    </bean>    
 
     <bean id="Engine.Button.WorkInProgress" class="org.jahia.ajax.gwt.client.widget.contentengine.WorkInProgressButtonItem">
         <property name="checkedByDefault" value="${wip.checkbox.checked:false}" />

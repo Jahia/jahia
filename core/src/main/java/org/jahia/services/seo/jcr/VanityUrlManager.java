@@ -56,7 +56,6 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.collections.KeyValue;
@@ -109,24 +108,23 @@ public class VanityUrlManager {
     @SuppressWarnings("deprecation")
     public List<VanityUrl> findExistingVanityUrls(String url, String site,
             JCRSessionWrapper session) throws RepositoryException {
-        QueryResult result = session.getWorkspace().getQueryManager()
-                .createQuery(
-                        "/jcr:root"
-                                + (StringUtils.isEmpty(site) ? "" : "/sites/"
-                                        + JCRContentUtils
-                                                .stringToJCRPathExp(site))
-                                + "//element(*, " + JAHIANT_VANITYURL + ")[@"
-                                + PROPERTY_URL + " = "
-                                + JCRContentUtils.stringToQueryLiteral(url)
-                                + ("live".equals(session.getWorkspace()) ? " and @j:published = 'true'" : "")
-                                + "]", Query.XPATH).execute();
-        List<VanityUrl> existingUrls = new ArrayList<VanityUrl>();
-        for (NodeIterator it = result.getNodes(); it.hasNext();) {
-            JCRNodeWrapper node = (JCRNodeWrapper) it.next();
-            existingUrls.add(populateJCRData(node, new VanityUrl()));
+        StringBuilder SQL2 = new StringBuilder( "SELECT * FROM [")
+                .append(JAHIANT_VANITYURL)
+                .append("] AS vanityURL")
+                .append(" WHERE ISDESCENDANTNODE(")
+                .append((StringUtils.isEmpty(site) ? "'/" : "'/sites/"))
+                .append(JCRContentUtils.stringToJCRPathExp(site))
+                .append("') AND vanityURL.[").append(PROPERTY_URL).append("] LIKE ")
+                .append(JCRContentUtils.stringToQueryLiteral(url))
+                .append(("live".equals(session.getWorkspace()) ? " AND vanityURL.[j:published] = CASE('true' AS BOOLEAN)" : ""));
+        Query vanityUrlsQuery = session.getWorkspace().getQueryManager().createQuery(SQL2.toString(), "JCR-SQL2");
+        NodeIterator vanityUrls = vanityUrlsQuery.execute().getNodes();
+        List<VanityUrl> existingVanityUrls = new LinkedList<>();
+        while (vanityUrls.hasNext()) {
+            JCRNodeWrapper vanityUrlNode = (JCRNodeWrapper) vanityUrls.nextNode();
+            existingVanityUrls.add(populateJCRData(vanityUrlNode, new VanityUrl()));
         }
-
-        return existingUrls;
+        return existingVanityUrls;
     }
 
     /**

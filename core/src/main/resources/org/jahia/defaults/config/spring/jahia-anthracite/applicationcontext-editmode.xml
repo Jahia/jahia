@@ -202,16 +202,16 @@
     <util:list id="bluemenu">
         <ref bean="Toolbar.Item.Logout"/>
         <ref bean="Toolbar.Item.Start"/>
-        <ref bean="Toolbar.Item.Studio"/>
         <ref bean="Toolbar.Item.Edit"/>
-        <ref bean="Toolbar.Item.Admin"/>
         <ref bean="Toolbar.Item.Contribute"/>
-        <ref bean="Toolbar.Item.EditorialContentManager.NewTab"/>
+        <ref bean="Toolbar.Item.Studio"/>
+        <ref bean="Toolbar.Item.Admin"/>
         <ref bean="Toolbar.Item.FileManager.NewTab"/>
-        <ref bean="Toolbar.Item.PortletManager.NewTab"/>
+        <ref bean="Toolbar.Item.EditorialContentManager.NewTab"/>
+        <ref bean="Toolbar.Item.SiteManager.NewTab"/>
         <ref bean="Toolbar.Item.RepositoryExplorer.NewTab"/>
         <ref bean="Toolbar.Item.CategoryManager.NewTab"/>
-        <ref bean="Toolbar.Item.SiteManager.NewTab"/>
+        <ref bean="Toolbar.Item.PortletManager.NewTab"/>
         <ref bean="Toolbar.Item.Documentation"/>
     </util:list>
 

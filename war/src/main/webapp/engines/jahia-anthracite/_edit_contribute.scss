@@ -1314,7 +1314,10 @@ body[data-indigo-app="contribute"] {
 	    bottom: 20px;
 	    right: 20px;
 	    z-index: 999;
-	    background: _theme-color(quinary);
+	    background: url(./images/icons/tabs-placeholder-white@X2.png) no-repeat left 5px center _theme-color(quinary);
+
+        background-size: 21px;
+        padding-left: 29px!important;
 
 		@include text(13px, _theme-color(secondary)!important, $FONT--WEIGHT---LIGHT!important);
 		opacity: 0.9;

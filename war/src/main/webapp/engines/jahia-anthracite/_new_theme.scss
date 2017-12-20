@@ -205,6 +205,11 @@ $HAMBURGER--BUTTON--BG---HOVER: (
 	DARK: radial-gradient(ellipse at bottom right, _theme-color(quinary, a) 0%, _theme-color(quinary) 70%),
 );
 
+$HAMBURGER--BUTTON--BG---SELECTED: (
+	LIGHT: radial-gradient(ellipse at bottom right, _theme-color(quaternary, a) 0%, _theme-color(quaternary) 70%),
+	DARK: radial-gradient(ellipse at bottom right, _theme-color(quaternary, a) 0%, _theme-color(quaternary) 70%),
+);
+
 
 
 

@@ -1130,48 +1130,59 @@ body[data-indigo-app="contribute"] {
 %CSS--BLOCK---HAMBURGER-BUTTON {
 	box-shadow: inset -1px 1px _theme-color(secondary);
 
-	transition: transform 0.3s ease-in 0s;
+	transition: none;
 	z-index: 99;
 	pointer-events: all;
 	text-align: center!important;
 	box-sizing: border-box;
 
-	&:hover {
-		color: _property($HAMBURGER--BUTTON--COLOR---HOVER, $HAMBURGER)!important;
-		box-shadow: _property($HAMBURGER--BUTTON--SHADOW---HOVER, $HAMBURGER)!important;
-		transform: scale(1.05);
 
-		z-index: 999;
-	}
 
 	// Use the GWT image as a block for creating a drop shadow -the image is hidden
 	.x-menu-item-icon {
-		display: block;
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
+		// display: block;
+		// position: absolute;
+		// top: 0;
+		// left: 0;
+		// width: 100%;
+		// height: 100%;
+        //
+		// // Hide the image
+		// padding-left: 100%;
+		// box-sizing: border-box;
+        //
+		// transition: box-shadow 0.5s ease-in 0s;
+		// box-shadow: 0 0 0 rgba(0, 0, 0, 0), inset 0px 0px 0 0.5px transparent;
+        //
+		// &:hover {
+		// 	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.35), inset 0px 0px 0 0.5px #0374a5;
+		// }
 
-		// Hide the image
-		padding-left: 100%;
-		box-sizing: border-box;
+        display: block!important;
+        height: 100%;
+        background: url(./images/logos/app-explorer.svg) no-repeat center center/40%;
+        width: 100%;
+        opacity: 1;
+        z-index: 99999999999999999;
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+        padding-left: 100%;
 
-		transition: box-shadow 0.5s ease-in 0s;
-		box-shadow: 0 0 0 rgba(0, 0, 0, 0), inset 0px 0px 0 0.5px transparent;
 
-		&:hover {
-			box-shadow: 0 5px 10px rgba(0, 0, 0, 0.35), inset 0px 0px 0 0.5px #0374a5;
-		}
 	}
+
+    &:hover {
+        box-shadow: none;
+
+    }
 }
 
 %CSS--BLOCK---HAMBURGER-BUTTON-BIG {
-	width: 23vw;
-	height: 15vw;
-	padding-top: 13vw !important;
-	padding-left: 13px !important;
-	padding-bottom: 4vw!important;
+	width: 300px;
+	height: 230px;
+    padding-top: 179px!important;
 
 	@include text(22px, _property($HAMBURGER--BUTTON--COLOR, $HAMBURGER)!important, 100);
 
@@ -1179,11 +1190,9 @@ body[data-indigo-app="contribute"] {
 }
 
 %CSS--BLOCK---HAMBURGER-BUTTON-SMALL {
-	width: 11.5vw;
-	height: 8vw;
-	padding-top: 6vw !important;
-	padding-right: 14px !important;
-	padding-bottom: 2.5vw!important;
+	width: 150px;
+	height: 115px;
+    padding-top: 78px!important;
 
 	@include text(13px, _property($HAMBURGER--BUTTON--COLOR, $HAMBURGER)!important, 300);
 
@@ -1206,7 +1215,6 @@ body[data-indigo-app="contribute"] {
 		display: block;
 	    width: 100%;
 	    height: 100%;
-	    // background: red;
 	    top: 0;
 	    left: 0;
 	    position: fixed;
@@ -1214,7 +1222,6 @@ body[data-indigo-app="contribute"] {
 		z-index: 9;
 
 		&:hover {
-			// background: blue;
 			cursor: auto;
 		}
 	}
@@ -1259,28 +1266,47 @@ body[data-indigo-app="contribute"] {
 
 	// Container for the Blue Tiles
     .x-menu-list {
-		position: fixed;
-	    top: 0;
-	    left: 0;
-	    width: 100%;
-	    height: 100% !important;
-	    padding: 15vh 15vw 0 15vw !important;
-	    box-sizing: border-box;
-		pointer-events: none;
-		z-index: 99;
-
+        /* position: fixed; */
+        top: 0;
+        left: 0;
+        width: 900px;
+        height: 100% !important;
+        /* padding: 15vh 15vw 0 15vw !important; */
+        box-sizing: border-box;
+        pointer-events: none;
+        z-index: 99;
+        min-height: 100% !important;
+        height: auto !important;
+        /* padding: 20px; */
+        box-sizing: border-box;
+        margin: 160px auto;
+        overflow: visible;
     }
+
+
 
 	// Float the tiles
     .x-menu-list-item {
-        float: left;
 		pointer-events: all;
+        float: left;
+
+        transition: all 0.1s ease-in 0s;
+
+        // Do not do the zoom on the logout button ( first in list )
+        &:not(:first-child):hover {
+            transform: scale(1.05);
+            z-index: 999999;
+            position: relative;
+            box-shadow: 0px 3px 5px rgba(0,0,0,0.3);
+        }
     }
 
 	// Remove the scroll bar as it is not neccessary
     .x-menu-scroller {
         display: none;
     }
+
+
 
 	// LOGOUT
 	.toolbar-item-logout {
@@ -1298,114 +1324,121 @@ body[data-indigo-app="contribute"] {
 		}
 	}
 
+
+
 	// APP => STUDIO
 	.toolbar-item-studio {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-BIG;
-		background: url(./images/logos/app-studio.svg) no-repeat top 2.5vh center/50%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
-
-		&:hover {
-			background: url(./images/logos/app-studio.svg) no-repeat top 2.5vh center/50%, _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-		}
+		.x-menu-item-icon {
+            background: url(./images/logos/app-studio.svg) no-repeat top 22px center /50%;
+        }
 	}
 
 	// APP => ADMIN
 	.toolbar-item-admin {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-BIG;
-		background: url(./images/logos/app-administration.svg) no-repeat top 4vh center / 40%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
 
-		&:hover {
-			background: url(./images/logos/app-administration.svg) no-repeat top 4vh center / 40%, _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-		}
+        .x-menu-item-icon {
+            background: url(./images/logos/app-administration.svg) no-repeat top 32px center /40%;
+        }
 	}
 
-	// APP => EDIT MODE
-	.toolbar-item-edit {
-		@extend %CSS--BLOCK---HAMBURGER-BUTTON-BIG;
-		background: url(./images/logos/app-edit.svg) no-repeat top 6vh center / 30%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
+	// SELECTED APP
+    &[data-indigo-current-app="dashboard"] .toolbar-item-start,
+    &[data-indigo-current-app="edit"] .toolbar-item-edit,
+    &[data-indigo-current-app="admin"] .toolbar-item-admin,
+    &[data-indigo-current-app="contribute"] .toolbar-item-contribute {
+        background: _property($HAMBURGER--BUTTON--BG---SELECTED, $HAMBURGER)!important;
+    }
 
-		&:hover {
-			background: url(./images/logos/app-edit.svg) no-repeat top 6vh center / 30%, _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-		}
+	.toolbar-item-edit {
+
+		@extend %CSS--BLOCK---HAMBURGER-BUTTON-BIG;
+
+        .x-menu-item-icon {
+            background: url(./images/logos/app-edit.svg) no-repeat top 43px center/35%;
+        }
 	}
 
 	// APP => CONTRIBUTE
 	.toolbar-item-contribute {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-BIG;
-		background: url(./images/logos/app-contribute.svg) no-repeat top 5vh center / 35%,  _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
 
-		&:hover {
-			background: url(./images/logos/app-contribute.svg) no-repeat top 5vh center / 35%, _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-		}
+        .x-menu-item-icon {
+            background: url(./images/logos/app-contribute.svg) no-repeat top 32px center /40%;
+        }
 	}
 
 	// APP => MY DASHBOARD
 	.toolbar-item-start {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-BIG;
-		background: url(./images/logos/app-dashboard.svg) no-repeat top 5vh center/35%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
 
-		&:hover {
-			background: url(./images/logos/app-dashboard.svg) no-repeat top 5vh center/35%, _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-		}
+        .x-menu-item-icon {
+            background: url(./images/logos/app-dashboard.svg) no-repeat top 32px center /40%;
+        }
+	}
+
+    // SMALL => DOCUMENTATION
+    .toolbar-item-documentation {
+		@extend %CSS--BLOCK---HAMBURGER-BUTTON-SMALL;
+
+        .x-menu-item-icon {
+            background: url(./images/icons/tabs-placeholder-white@X2.png) no-repeat center top 17px/30%;
+        }
 	}
 
 	// MANAGER => CONTENT
 	.toolbar-item-editorialcontentmanager-newtab {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-SMALL;
-		background: url(./images/logos/app-content.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
 
-		&:hover {
-			background: url(./images/logos/app-content.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-		}
+        .x-menu-item-icon {
+            background: url(./images/logos/app-content.svg) no-repeat center top 17px/30%;
+        }
 	}
 
 	// MANAGER => DOCUMENTS
 	.toolbar-item-filemanager-newtab {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-SMALL;
-		background: url(./images/logos/app-document.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
 
-		&:hover {
-			background: url(./images/logos/app-document.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-		}
+        .x-menu-item-icon {
+            background: url(./images/logos/app-document.svg) no-repeat center top 17px/30%;
+        }
 	}
 
 	// MANAGER => PORTLETS
 	.toolbar-item-portletmanager-newtab {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-SMALL;
-		background: url(./images/logos/app-portlet.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
 
-		&:hover {
-			background: url(./images/logos/app-portlet.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-		}
+        .x-menu-item-icon {
+            background: url(./images/logos/app-portlet.svg) no-repeat center top 17px/30%;
+        }
 	}
 
 	// MANAGER => REPO EXPLORER
 	.toolbar-item-repositoryexplorer-newtab {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-SMALL;
-		background: url(./images/logos/app-explorer.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
 
-		&:hover {
-			background: url(./images/logos/app-explorer.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-		}
+        .x-menu-item-icon {
+            background: url(./images/logos/app-explorer.svg) no-repeat center top 17px/30%;
+        }
 	}
 
 	// MANAGER => CATEGORIES
 	.toolbar-item-categorymanager-newtab {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-SMALL;
-		background: url(./images/logos/app-category.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
 
-		&:hover {
-			background: url(./images/logos/app-category.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-		}
+        .x-menu-item-icon {
+            background: url(./images/logos/app-category.svg) no-repeat center top 17px/30%;
+        }
 	}
 
 	// MANAGER => SITES
 	.toolbar-item-sitemanager-newtab {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-SMALL;
-		background: url(./images/logos/app-site.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG, $HAMBURGER);
 
-		&:hover {
-			background: url(./images/logos/app-site.svg) no-repeat top 1.5vh center/40%, _property($HAMBURGER--BUTTON--BG---HOVER, $HAMBURGER);
-		}
+        .x-menu-item-icon {
+            background: url(./images/logos/app-site.svg) no-repeat center top 17px/30%;
+        }
 	}
 }
 

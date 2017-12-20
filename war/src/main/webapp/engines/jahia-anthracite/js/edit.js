@@ -1508,7 +1508,7 @@
 			// Window has lost focus, so presume that the user has clicked in the iframe.
             // If the side panel is open, then close it
             if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open"){
-                app.edit.sidepanel.close();
+                // app.edit.sidepanel.close();
 
                 // Trigger mousedown / mouseup on body to close any open context menus and combo menus
                 DexV2.tag("body").trigger("mousedown").trigger("mouseup");
@@ -1594,30 +1594,7 @@
 
                     DexV2.getCached("body").setAttribute("data-indigo-hamburger-menu", "open");
 
-                    switch(app.data.currentApp){
-                        case "edit":
-                            returnText = "Edit (" + app.iframe.data.displayName + ")";
-                            break;
-
-                        case "admin":
-                            returnText = "Administration";
-                            break;
-
-                        case "dashboard":
-                            returnText = "My Dashboard";
-                            break;
-
-                        case "contribute":
-						returnText = "Contribute (" + app.iframe.data.displayName + ")";
-                            break;
-
-                        default:
-                            returnText = "Back";
-
-                            break;
-                    }
-
-                    DexV2.node(this).setAttribute("data-indigo-title", returnText);
+                    DexV2.node(this).setAttribute("data-indigo-current-app", app.data.currentApp);
 
 					// Update titles - this can be deleted once the titles have been changed in the GWT config
 					modifyMenuItem("toolbar-item-editorialcontentmanager-newtab", jahia_gwt_messages.label_editorialcontentmanager_title);

@@ -733,7 +733,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		    top: 80px;
 		    left: 28px;
 		    background: yellow;
-		    width: calc(#{$PICKER_SIDEPANEL_WIDTH} - 56px);
+		    width: calc(#{$PICKER_SIDEPANEL_WIDTH} - 86px);
 		    height: 30px;
 		    opacity: 0;
 			z-index: 9999;
@@ -1281,7 +1281,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 						box-sizing: border-box;
 						position: relative;
 						z-index: 999;
-						padding: 0 30px;
+						padding: 0 58px 0 30px;
 
 						width: 100%;
 						height: 30px;
@@ -1297,13 +1297,15 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 							height: 30px;
 							width: 30px;
 							position: fixed;
-							left: calc(#{$PICKER_SIDEPANEL_WIDTH} - 83px);
+							left: calc(#{$PICKER_SIDEPANEL_WIDTH} - 59px);
 						    top: 80px;
-							background-size: 12px 10px;
+							background-size: 16px 13px;
 							z-index: 999999!important;
+							opacity: 0.8;
 
 							&:hover {
-								background-color: lighten(_theme-color(primary), 9%);
+								opacity: 1;
+								// background-color: lighten(_theme-color(primary), 9%);
 							}
 						}
 

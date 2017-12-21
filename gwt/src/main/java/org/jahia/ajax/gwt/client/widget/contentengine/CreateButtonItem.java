@@ -77,9 +77,9 @@ import java.util.*;
 public class CreateButtonItem extends SaveButtonItem {
 
     private boolean forceCreation = true;
-    
+
     private boolean useNamePopup = false;
-    
+
     private boolean redirectToCreatedPage;
 
     public void setUseNamePopup(boolean useNamePopup) {
@@ -89,7 +89,7 @@ public class CreateButtonItem extends SaveButtonItem {
     @Override
     protected void prepareAndSave(final AbstractContentEngine engine, final boolean closeAfterSave) {
         if (useNamePopup) {
-            showNamePopup(engine,closeAfterSave);
+            showNamePopup(engine, closeAfterSave);
         } else {
             continuePrepareAndSave(engine, closeAfterSave, ((CreateContentEngine) engine).getTargetName());
         }
@@ -149,10 +149,13 @@ public class CreateButtonItem extends SaveButtonItem {
 
     protected void doSave(final CreateContentEngine engine, String nodeName, List<GWTJahiaNodeProperty> props, Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<String> mixin, List<GWTJahiaNode> children, GWTJahiaNodeACL newNodeACL, final boolean closeAfterSave) {
         final AsyncCallback<GWTJahiaNode> callback = new BaseAsyncCallback<GWTJahiaNode>() {
+
+            @Override
             public void onApplicationFailure(Throwable throwable) {
                 failSave(engine, throwable);
             }
 
+            @Override
             public void onSuccess(GWTJahiaNode node) {
                 if (closeAfterSave) {
                     Info.display(

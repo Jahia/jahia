@@ -49,6 +49,13 @@
 			    padding-left: 25px !important;
 			}
 
+			&.x-menu-item-arrow {
+				background-image: url(./images/icons/toggle-WE-white@X2.png);
+				background-position: right 6px center;
+				background-repeat: no-repeat;
+			    background-size: 13px;
+			}
+
 	        @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
 
 		}
@@ -72,6 +79,13 @@
 			.x-menu-item {
 				color: _property($MENU-OPENED--COLOR---HOVER, $type);
 				background: _property($MENU-OPENED--BG---HOVER, $type);
+
+				&.x-menu-item-arrow {
+					background-image: url(./images/icons/toggle-WE-white@X2.png);
+					background-position: right 6px center;
+					background-repeat: no-repeat;
+				    background-size: 13px;
+				}
 			}
 
 		}

@@ -3136,9 +3136,6 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.modal-deletejob-confirm,
 .x-window.modal-deletealljob-confirm {
 
-	.x-window-tl {
-		z-index: 9;
-	}
 
 	.x-window-header {
 		margin-bottom: 0;
@@ -3167,18 +3164,35 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	.x-window-bl {
 		margin-top: 20px;
+		z-index: 99;
+		position: relative;
 	}
 
-	// .x-clear {
-	// 	position: fixed;
-	// 	width: 100%;
-	// 	height: 100%;
-	// 	top: 0;
-	// 	left: 0;
-	// 	background: _property($MODAL-SOLID--BG---LEGACY, $APP);
-	// 	z-index: -1;
-	// }
 }
+
+
+.x-window {
+	> .x-window-tl,
+	> .x-window-bwrap {
+		position: relative!important;
+		z-index: 99;
+	}
+
+	> .x-resizable-handle {
+		display: none;
+	}
+}
+
+.indigo-modal-mask {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%!important;
+	height: 100%;
+	background: _property($MODAL-SOLID--BG---LEGACY, $APP) !important;
+	z-index: 9;
+}
+
 .x-window.delete-item-window,
 .x-window.modal-deletejob-confirm,
 .x-window.modal-deletealljob-confirm {
@@ -3188,26 +3202,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	height: auto!important;
 	z-index: 9999!important;
 
-		// Make the modal always on top and make .x-window-footer into the modal mask
-		.x-window-tl {
-			position: relative;
-			z-index: 9
-		}
 
-		.x-window-ml {
-			position: relative;
-			z-index: 99;
-		}
-
-		.x-window-footer {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: _property($MODAL-SOLID--BG---LEGACY, $APP) !important;
-			z-index: 9;
-		}
 
 		.x-panel-toolbar {
 		    display: none;
@@ -3235,6 +3230,8 @@ body[data-indigo-gwt-side-panel="open"] {
 		.x-window-body {
 			width: auto!important;
 			height: auto!important;
+			position: relative;
+			z-index: 99;
 
 			> .x-panel {
 				width: auto!important;

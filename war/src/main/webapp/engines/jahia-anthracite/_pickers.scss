@@ -21,6 +21,10 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	box-shadow: inset 0px 37px 0px _theme-color(primary, g), inset 0px 38px 7px #222;
 	z-index: 1100!important;
 
+	.indigo-modal-mask {
+		display: none;
+	}
+
 	body.ext-gecko & {
 		top: 0!important;
 	}
@@ -2343,17 +2347,10 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 .x-shadow.x-ignore + #JahiaGxtContentPickerWindow {
 	z-index: 99999!important;
-
-	// Disable search button
-	#JahiaGxtManagerLeftTree__CRTsearchTabItem {
-		display: none!important;
-	}
 }
 
 // Corrections for Managers ( extends normal picker )
 #contentmanager {
-
-
 
 
 	// Fixes for the site manager
@@ -2758,6 +2755,20 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 
 // Overrides ...
+#JahiaGxtContentPicker {
+	#JahiaGxtManagerToolbar {
+		z-index: 999;
+		pointer-events: none;
+	}
+	#JahiaGxtManagerTobTable {
+		.thumb-wrap {
+			.preview-button {
+				right: 25px;
+			}
+		}
+	}
+}
+
 #JahiaGxtContentPickerWindow {
 
 	#JahiaGxtManagerTobTable {

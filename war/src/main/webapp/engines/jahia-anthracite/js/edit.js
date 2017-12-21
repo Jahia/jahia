@@ -1376,11 +1376,15 @@
 
                 if(servletPath == "/engines/contentpicker.jsp"){
                     app = "contentpicker";
+                    DXApp = "miniApp";
 					picker = QS["type"] || "default";
 
                 } else if(servletPath == "/engines/manager.jsp"){
                     app = "manager";
+                    DXApp = "miniApp";
                     picker = QS["conf"] || "default";
+                } else {
+                    app = DXApp;
                 }
 
 				return {
@@ -1439,11 +1443,13 @@
 			},
             pushState: function(closeButton){
                 var url = window.location.pathname,
+                    qs = window.location.search,
+                    pushUrl = url + qs,
                     DXStateObject = window.history.state; // DX Seems to need this so keep it the same
 
 				app.data.openedXWindows.push(closeButton);
 
-                history.pushState(DXStateObject, "DX", url);
+                history.pushState(DXStateObject, "DX", pushUrl);
 
 
             },
@@ -1700,7 +1706,7 @@
 
 	            }
 			},
-			on: function(){
+			on: function(source){
 				app.dev.log("::: APP ::: THEME ::: ON");
 
 				if(!app.theme.data.enabled){
@@ -3258,7 +3264,7 @@
                 }
 
                 // Use Anthracite CSS
-				app.theme.on();
+				app.theme.on(2);
 
                 // Set attributes to be used by CSS
                 DexV2.getCached("body")
@@ -3397,7 +3403,7 @@
 				app.edit.topbar.build();
 
 				// Use Anthracite CSS
-				app.theme.on();
+				app.theme.on(3);
 
                 // Set attributes to be used by CSS
                 DexV2.getCached("body")
@@ -4418,7 +4424,7 @@
                 DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");
 
 				// Use Anthracite CSS
-				app.theme.on();
+				app.theme.on(4);
 
                 // Set attributes to be used by CSS
                 DexV2.getCached("body")
@@ -4498,7 +4504,7 @@
 				app.dev.log("::: APP ::: CONTRIBUTE ::: OPENED");
 
 				// Use Anthracite CSS
-				app.theme.on();
+				app.theme.on(5);
 
 				app.contribute.topbar.build();
 
@@ -4801,7 +4807,7 @@
                     // Then once GWT has fired and loaded the app, we activate the styling on the drop downs by adding a attribute to the body tag data-indigo-styled-combos="true"
                     if(app.data.currentApp == "studio"){
                         // User curently in studio mode and has requested to open Edit Mode or Admin Mode, so apply the Anthracite Theme immediately
-                        app.theme.on();
+                        app.theme.on(6);
                     }
                 })
 				.onOpen(".x-window", function(){
@@ -4811,6 +4817,15 @@
 
 					// Push State
 					app.nav.pushState(closeButton);
+
+                    // Create Modal Mask
+                    // Can no longer use GWT modal with peace of mind, so insert our own one in the popup.
+                    // It is fairly universal except for pickers, background jobs & workflows which hide it via CSS
+                    var modalMask = document.createElement("div");
+
+                    modalMask.classList.add("indigo-modal-mask");
+
+                    DexV2.node(this).append(modalMask);
 
 				})
 				.onClose(".x-window", function(){
@@ -5286,9 +5301,9 @@
 		}
 
         // Do an immediate check to see whether or not to apply the CSS (this is carried out on PAGE LOAD only)
-        if(app.data.HTTP.DXApp != "studio"){
+        if(app.data.HTTP.DXApp != "studio" && app.data.HTTP.DXApp != "miniApp"){
             // We can switch the Anthracite Theme on because we are displaying studio
-            app.theme.on();
+            app.theme.on(1);
         }
 
         // Attach event listeners

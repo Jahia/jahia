@@ -5,6 +5,11 @@
 
 
 .workflow-dashboard-engine {
+
+	.indigo-modal-mask {
+		display: none;
+	}
+
 	background:  lighten($EDIT_ENGINE--BASE--COLOUR, 2%) !important;
 
 	.x-window-bwrap {

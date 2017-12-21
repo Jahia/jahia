@@ -1,5 +1,9 @@
 .job-list-window {
 
+    .indigo-modal-mask {
+        display: none;
+    }
+
     &[data-indigo-details="open"] {
         // Details panel
         .x-window-bwrap .x-panel:nth-child(2) {
@@ -70,10 +74,10 @@
 
     .indigo-background-jobs-filters {
 
-        position: fixed;
+        position: fixed!important;
         top: 150px;
         left: 72px;
-        z-index: 999;
+        z-index: 999!important;
         width: 280px;
 
         .indigo-background-jobs-filters-title {
@@ -159,10 +163,10 @@
     .x-window-tl {
 
         width: 300px;
-        position: fixed;
+        position: fixed!important;
         top: 55px;
         left: 72px;
-        z-index: 999;
+        z-index: 999!important;
 
         .x-window-header {
             pointer-events: none;

@@ -323,6 +323,7 @@
 
 		&:nth-child(2) {
 			overflow-y: hidden;
+			height: calc(100% - 18px) !important;
 		}
 
 	}
@@ -337,6 +338,7 @@
 
 				padding-bottom: 0!important;
 		    float: right;
+		    margin-left: 5px !important;
 
 				button {
 					padding: 10px 20px !important;
@@ -367,6 +369,10 @@
 		> .x-border-panel:first-child {
 			height: 150px !important;
 			width: 100% !important;
+		}
+
+		.x-border-panel:nth-child(2) .x-panel-body.x-panel-body-noheader.x-panel-body-noborder {
+			height: 214px !important;
 		}
 
 		.x-border-panel > .x-panel-bwrap {
@@ -461,8 +467,13 @@
 		.x-grid3 .x-grid3-row-table .x-grid3-cell {
 
 			.x-grid3-cell-inner {
-					line-height: 21px;
+					line-height: 24px;
 					font-family: "Nunito Sans", sans-serif;
+
+					img {
+						padding-top: 4px;
+					}
+
 			}
 
 			&:last-child {
@@ -602,8 +613,7 @@
 						background: url(./images/icons/speech-DARK@X2.png) no-repeat center left 10px _property($COMMENTS--BG, $EDIT-ENGINE) !important;
 						background-size: 29px!important;
 						padding: 7px 10px 7px 50px;
-					    box-sizing: border-box;
-						width: calc(100% - 7px)!important;
+					  box-sizing: border-box;
 
 						> table {
 							width: 100%;
@@ -688,7 +698,7 @@
 					textarea {
 						@include _input($EDIT-ENGINE);
 						height: 100%!important;
-					    width: 100%!important;
+						width: calc(100% - 52px) !important;
 					}
 				}
 
@@ -811,6 +821,7 @@
 
 						padding-bottom: 0!important;
 				    float: right;
+				    margin-left: 5px !important;
 
 						button {
 							padding: 10px 20px !important;

@@ -296,6 +296,7 @@
 			left: 30px;
 			top: 60px;
 			font-weight: 100;
+			max-width: calc(100% - 100px);
 
 			&:before {
 			    display: none;
@@ -797,6 +798,7 @@
 				left: 30px;
 				top: 60px;
 				font-weight: 100;
+				max-width: calc(100% - 100px);
 
 				&:before {
 					content: "" !important;

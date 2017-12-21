@@ -2942,7 +2942,9 @@ div.engine-window {
 .indigo-search-component {
 
 
-
+	.x-form-field-wrap {
+		width: 100%!important;
+	}
 
 	.x-toolbar-cell {
 		// Used as a cancel button

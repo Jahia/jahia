@@ -1018,40 +1018,40 @@ $MENU-OPENED--BG---DISABLED:(
 
 $LIST-BOX--BG:(
 	LIGHT: _theme-color(secondary, a),
-	DARK: red,
+	DARK: _theme-color(secondary, a),
 );
 
 // Row
 $LIST-BOX--ROW--COLOR:(
 	LIGHT: _theme-color(primary),
-	DARK: red,
+	DARK: _theme-color(primary),
 );
 
 $LIST-BOX--ROW--BG:(
 	LIGHT: _theme-color(secondary, a),
-	DARK: red,
+	DARK: _theme-color(secondary, a),
 );
 
 // Row hover
 $LIST-BOX--ROW--COLOR---HOVER:(
-	LIGHT: _theme-color(primary),
-	DARK: red,
+	LIGHT: _theme-color(secondary),
+	DARK: _theme-color(secondary),
 );
 
 $LIST-BOX--ROW--BG---HOVER:(
 	LIGHT: _theme-color(primary, e),
-	DARK: red,
+	DARK: _theme-color(primary, e),
 );
 
 // Row selected
 $LIST-BOX--ROW--COLOR---SELECTED:(
 	LIGHT: _theme-color(secondary),
-	DARK: red,
+	DARK: _theme-color(secondary),
 );
 
 $LIST-BOX--ROW--BG---SELECTED:(
 	LIGHT: _theme-color(primary, c),
-	DARK: red,
+	DARK: _theme-color(primary, c),
 );
 
 // Row disabled

@@ -116,6 +116,26 @@
         width: 100%!important;
         background: transparent;
 
+		.x-combo-list-item {
+			background: _property($LIST-BOX--ROW--BG, $EDIT-ENGINE);
+			color: _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE);
+
+			&.x-combo-over {
+				background: _property($LIST-BOX--ROW--BG---HOVER, $EDIT-ENGINE);
+				color: _property($LIST-BOX--ROW--COLOR---HOVER, $EDIT-ENGINE);
+			}
+
+			&.x-combo-selected {
+				background: _property($LIST-BOX--ROW--BG---SELECTED, $EDIT-ENGINE);
+				color: _property($LIST-BOX--ROW--COLOR---SELECTED, $EDIT-ENGINE);
+
+				&.x-combo-over {
+					background: _property($LIST-BOX--ROW--BG---SELECTED, $EDIT-ENGINE);
+					color: _property($LIST-BOX--ROW--COLOR---SELECTED, $EDIT-ENGINE);
+				}
+			}
+		}
+
         > table {
             display: block;
 
@@ -142,7 +162,7 @@
                 // BUTTONS
                 &:nth-child(2) {
                     > div {
-                        margin-top: 73px!important;
+                        margin-top: 53px!important;
                     }
                 }
 

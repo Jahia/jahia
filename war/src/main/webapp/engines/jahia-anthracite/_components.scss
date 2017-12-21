@@ -2960,9 +2960,11 @@ form,
 .arrow-right,
 .arrow-left {
 	background: no-repeat center center!important;
-	background-size: 12px 12px!important;
+	background-size: 16px!important;
 	opacity: 0.8;
 	padding: 3px 0;
+	width: 25px!important;
+	height: 25px!important;
 
 	&:hover {
 		opacity: 1;
@@ -2970,19 +2972,19 @@ form,
 }
 
 .arrow-double-right {
-	background-image:url(./images/icons/icon_arrow_right_double_white@X2.png)!important;
+	background-image:url(./images/icons/icon_arrow_right_double_grey@X2.png)!important;
 }
 
 .arrow-right {
-	background-image:url(./images/icons/icon_arrow_right_single_white@X2.png)!important;
+	background-image:url(./images/icons/icon_arrow_right_single_grey@X2.png)!important;
 }
 
 .arrow-double-left {
-	background-image:url(./images/icons/icon_arrow_left_double_white@X2.png)!important;
+	background-image:url(./images/icons/icon_arrow_left_double_grey@X2.png)!important;
 }
 
 .arrow-left {
-	background-image:url(./images/icons/icon_arrow_left_single_white@X2.png)!important;
+	background-image:url(./images/icons/icon_arrow_left_single_grey@X2.png)!important;
 }
 
 

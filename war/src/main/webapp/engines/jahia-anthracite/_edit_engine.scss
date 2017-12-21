@@ -23,7 +23,12 @@
 
 
 .engine-panel:not(.trashboardengine-ctn),
-.engine-window {
+div.engine-window {
+
+	.indigo-modal-mask {
+		display: none;
+	}
+
 	//z-index: $ZINDEX--SIDE_PANEL--EDIT_ENGINE;
 	z-index: 1050!important;
 

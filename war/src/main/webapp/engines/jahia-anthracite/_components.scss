@@ -3518,7 +3518,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	top: calc(14vh) !important;
 
 	.x-window-tl {
-		z-index: 9;
+		z-index: 99;
 	}
 
 	.x-window-bwrap {
@@ -3536,15 +3536,6 @@ body[data-indigo-gwt-side-panel="open"] {
 	    padding: 10px!important;
 	}
 
-	// Used as modal
-	.x-window-bl {
-		background: _property($MODAL-SOLID--BG---LEGACY, $APP)!important;
-	    width: 100%;
-	    height: 100%;
-	    position: fixed;
-	    top: 0;
-	    left: 0;
-	}
 }
 
 
@@ -4131,6 +4122,10 @@ body[data-indigo-gwt-side-panel="open"] {
 
 .x-window.preview-window {
 
+	.indigo-modal-mask {
+		display: none;
+	}
+
 	.gwt-TextArea-readonly {
 		background: _theme-color(secondary, d);
 		border: none !important;
@@ -4174,25 +4169,6 @@ body[data-indigo-gwt-side-panel="open"] {
 	.x-window.image-crop,
 	.x-window.image-rotate,
 	.x-window.image-resize {
-
-		.x-window-header > .x-panel-toolbar {
-			background: _property($MODAL-SOLID--BG---LEGACY, $APP);
-			position: fixed;
-			width: 100%;
-			height: 100%;
-			top: 0;
-			left: 0;
-			display: block;
-			z-index: 9;
-			pointer-events: all;
-			cursor: default;
-
-			> * {
-				display: none;
-				pointer-events: none;
-			}
-
-		}
 
 		.x-window-draggable .x-window-header-text {
 			z-index: 99;

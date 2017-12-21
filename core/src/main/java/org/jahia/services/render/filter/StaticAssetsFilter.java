@@ -131,7 +131,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         RANK.put("javascript", 3);
         RANK.put("inlinejavascript", 4);
         RANK.put("inline", 5);
-        RANK.put("unknown", 6);
+        RANK.put("html", 6);
+        RANK.put("unknown", 7);
         RANK.setFast(true);
     }
 

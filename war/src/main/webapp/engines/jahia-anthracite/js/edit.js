@@ -1395,7 +1395,7 @@
 		},
 		dev: {
 			data: {
-				on: true
+				on: false
 			},
 			log: function(message, force){
 				if(app.dev.data.on || force){
@@ -1701,7 +1701,7 @@
 	            }
 			},
 			on: function(){
-				app.dev.log("::: APP ::: THEME ::: ON", true);
+				app.dev.log("::: APP ::: THEME ::: ON");
 
 				if(!app.theme.data.enabled){
 					// Anthracite CSS has been removed, so plug it back in

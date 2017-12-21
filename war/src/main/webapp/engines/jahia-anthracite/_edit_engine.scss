@@ -315,7 +315,7 @@ div.engine-window {
 	}
 
 	&:before {
-		content: "DX Edit Mode";
+		content: $text_edit_engine;
 	    font-size: 36px;
 	    display: inline-block;
 	    color: _property($TITLE--COLOR, $EDIT-ENGINE);
@@ -328,6 +328,30 @@ div.engine-window {
 	    top: 40px;
 		font-family: $DEFAULT--TITLE_FONT--FAMILY;
 		font-weight: 100;
+	}
+
+	&.createcontentengine-ctn {
+		&:before {
+			content: $text_edit_engine_create;
+		}
+
+		.x-panel-header-text {
+
+			display: block!important;
+			position: fixed!important;
+			top: 99px!important;
+			left: 72px!important;
+			width: 250px!important;
+			overflow: hidden!important;
+			text-overflow: ellipsis!important;
+			white-space: nowrap!important;
+			padding: 0!important;
+			@include text(18px !important, _theme-color(quinary) !important, $FONT--WEIGHT---EXTRALIGHT !important);
+
+			&:before {
+				display: none!important;
+			}
+		}
 	}
 
 	fieldset {

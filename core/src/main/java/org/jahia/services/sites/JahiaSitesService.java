@@ -500,7 +500,7 @@ public class JahiaSitesService extends JahiaService {
                     siteNode.setProperty(SitesSettings.TEMPLATES_SET, templatePackage);
 
                     siteNode.setProperty(SitesSettings.INSTALLED_MODULES, new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
-
+                    session.save();
                     String target = getTargetString(siteKey);
 
                     deployModules(target, info.getModulesToDeploy(), templateSet, session, templateService);

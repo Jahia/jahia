@@ -1574,17 +1574,17 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 					position: absolute;
 					width: 100%;
-					@include text(10px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+					@include text(14px, _property($THUMB--COLOR, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
 					z-index: 999;
 					margin-top: -2px;
 
 					// Filesize
 					&:nth-child(3) {
-						@include text(8px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
+						@include text(10px, _property($THUMB--COLOR--DIMMED, $PICKER), $FONT--WEIGHT---EXTRALIGHT);
 						margin-top: 0;
 					    z-index: 9;
 						padding-bottom: 10px;
-						padding-top: 14px;
+						padding-top: 21px;
 					}
 				}
 

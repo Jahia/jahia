@@ -1349,9 +1349,12 @@
 			firstApp: null,
             ckeditorVersion: CKEDITOR.version,
 			HTTP: function(){
-				var pathnameSplit = document.location.pathname.split("/"),
+
+                var contextIndexOffset = (jahiaGWTParameters.contextPath) ? 1 : 0, // DX is running under a context, need to take this into account with the URL
+                    pathnameSplit = document.location.pathname.split("/"),
 					page = pathnameSplit[pathnameSplit.length - 1],
-					root = pathnameSplit[1],
+                    root = pathnameSplit[1 + contextIndexOffset],
+					DXApp = pathnameSplit[2 + contextIndexOffset],
                     servletPath = jahiaGWTParameters.servletPath,
 					queryString = document.location.href,
 					queryStringParameters = queryString.split("?"),
@@ -1385,13 +1388,14 @@
 					root: root,
 					picker: picker,
 					QS: QS,
-					app: app
+					app: app,
+                    DXApp: DXApp
 				};
 			}(),
 		},
 		dev: {
 			data: {
-				on: false
+				on: true
 			},
 			log: function(message, force){
 				if(app.dev.data.on || force){
@@ -1697,7 +1701,7 @@
 	            }
 			},
 			on: function(){
-				app.dev.log("::: APP ::: THEME ::: ON");
+				app.dev.log("::: APP ::: THEME ::: ON", true);
 
 				if(!app.theme.data.enabled){
 					// Anthracite CSS has been removed, so plug it back in
@@ -3226,6 +3230,8 @@
 			onOpen: function(){
 				app.dev.log("::: APP ::: ADMIN ::: OPENED");
 
+                DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");
+
 				var systemSettingsTabs = document.querySelectorAll(".tab_systemSiteSettings")[0],
                     serverSettingsTabs = document.querySelectorAll(".tab_serverSettings")[0];
 
@@ -3377,6 +3383,8 @@
 			// Event Handlers
 			onOpen: function(){
 				app.dev.log("::: APP ::: EDIT ::: ONOPEN");
+
+                DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");
 
 				// Reset History
 				app.edit.history.reset();
@@ -4407,6 +4415,8 @@
             onOpen: function(){
                 app.dev.log("::: APP ::: DASHBOARD ::: OPENED");
 
+                DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");
+
 				// Use Anthracite CSS
 				app.theme.on();
 
@@ -4782,6 +4792,18 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
+                .onMouseDown(".toolbar-item-edit, .toolbar-item-admin", function(){
+                    // Appyling the Anthracite theme as soon as the user presses mousedown.
+                    // This means that there is a lot less lag time for the user
+                    // Only problem (was) that the menu that the user was clicking on moved ( due to different styling ) and there for the mouseup never fired for GWT,
+                    // meaning the new App wasnt loaded.
+                    // To solve this we do not style menus by default ( meaning that when the Anthracite Theme is applied the drop down menu remains unstyled )
+                    // Then once GWT has fired and loaded the app, we activate the styling on the drop downs by adding a attribute to the body tag data-indigo-styled-combos="true"
+                    if(app.data.currentApp == "studio"){
+                        // User curently in studio mode and has requested to open Edit Mode or Admin Mode, so apply the Anthracite Theme immediately
+                        app.theme.on();
+                    }
+                })
 				.onOpen(".x-window", function(){
 
 					// Get close button
@@ -5263,14 +5285,14 @@
 
 		}
 
+        // Do an immediate check to see whether or not to apply the CSS (this is carried out on PAGE LOAD only)
+        if(app.data.HTTP.DXApp != "studio"){
+            // We can switch the Anthracite Theme on because we are displaying studio
+            app.theme.on();
+        }
+
         // Attach event listeners
         eventListeners.attach();
-
-
-
-
-
-
 
     }
 

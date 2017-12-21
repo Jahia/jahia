@@ -526,7 +526,10 @@
 /* Context Menus */
 
 .x-menu {
-	@include _context-list($APP-MENUS);
+
+	body[data-indigo-styled-combos="true"] & {
+		@include _context-list($APP-MENUS);
+	}
 }
 
 
@@ -2605,6 +2608,8 @@ form,
 	body[data-INDIGO-EDIT-ENGINE="open"] & {
 		// z-index: $ZINDEX--MODAL---MASK\:EDIT_ENGINE;
 	}
+	display: none;
+
 }
 
 /* Loading Loader */
@@ -2708,15 +2713,15 @@ form,
 					z-index: $ZINDEX--EDIT_ENGINE--DIALOGUE;
 				}
 
-				.x-clear {
-					background: _property($MODAL-SOLID--BG---LEGACY, $APP);
-					position: fixed;
-					left: 0;
-					top: 0;
-					width: 100%;
-					height: 100%;
-					z-index: $ZINDEX--MODAL---MASK\:EDIT_ENGINE;
-				}
+				// .x-clear {
+				// 	background: _property($MODAL-SOLID--BG---LEGACY, $APP);
+				// 	position: fixed;
+				// 	left: 0;
+				// 	top: 0;
+				// 	width: 100%;
+				// 	height: 100%;
+				// 	z-index: $ZINDEX--MODAL---MASK\:EDIT_ENGINE;
+				// }
 			}
 		}
 
@@ -3164,17 +3169,16 @@ body[data-indigo-gwt-side-panel="open"] {
 		margin-top: 20px;
 	}
 
-	.x-clear {
-		position: fixed;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		left: 0;
-		background: _property($MODAL-SOLID--BG---LEGACY, $APP);
-		z-index: -1;
-	}
+	// .x-clear {
+	// 	position: fixed;
+	// 	width: 100%;
+	// 	height: 100%;
+	// 	top: 0;
+	// 	left: 0;
+	// 	background: _property($MODAL-SOLID--BG---LEGACY, $APP);
+	// 	z-index: -1;
+	// }
 }
-
 .x-window.delete-item-window,
 .x-window.modal-deletejob-confirm,
 .x-window.modal-deletealljob-confirm {
@@ -3182,6 +3186,28 @@ body[data-indigo-gwt-side-panel="open"] {
     height: 370px;
 	width: 460px !important;
 	height: auto!important;
+	z-index: 9999!important;
+
+		// Make the modal always on top and make .x-window-footer into the modal mask
+		.x-window-tl {
+			position: relative;
+			z-index: 9
+		}
+
+		.x-window-ml {
+			position: relative;
+			z-index: 99;
+		}
+
+		.x-window-footer {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: _property($MODAL-SOLID--BG---LEGACY, $APP) !important;
+			z-index: 9;
+		}
 
 		.x-panel-toolbar {
 		    display: none;
@@ -3256,6 +3282,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 						&:nth-last-child(2) {
 							padding-bottom: 19px;
+							width: 100%!important;
 						}
 
 						@include text(13px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT); /* TO THEME */
@@ -3263,6 +3290,25 @@ body[data-indigo-gwt-side-panel="open"] {
 						&.x-panel-fbar {
 							background: transparent!important;
 							padding: 0!important;
+							width: 100%!important;
+
+							.x-toolbar-ct {
+								> tbody {
+									float: right;
+								}
+							}
+
+							.x-toolbar-cell {
+								float: right;
+
+								table {
+									margin-right: 0;
+								}
+
+								&:nth-child(1) {
+									margin-left: 5px;
+								}
+							}
 
 						}
 

@@ -1245,6 +1245,8 @@
             ignoreMetadata: "Metadaten ignorieren",
             metaLabel: "Meta: %n%",
             cancel: "Abbrechen",
+			create: "Schaffen",
+			save: "Speichern",
             backgroundJobs: "Hintergrund-Tasks",
             filterContent: "Content filtern",
 			pickerTitles: {
@@ -1282,6 +1284,8 @@
 			ignoreMetadata: "Ignore metadata",
 			metaLabel: "Meta: %n%",
 			cancel: "Cancel",
+			create: "Create",
+			save: "Save",
 			filterContent: "Filter Content",
             backgroundJobs: "Background Jobs",
 			pickerTitles: {
@@ -1319,6 +1323,8 @@
 			ignoreMetadata: "Ignore metadata",
 			metaLabel: "Meta: %n%",
 			cancel: "Annuler",
+			create: "Créer",
+			save: "Sauvegarder",
 			filterContent: "Filtrer le contenu",
             backgroundJobs: "Tâches de fond",
 			pickerTitles: {
@@ -2967,6 +2973,11 @@
                 DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)").removeClass("indigo-show");
                 DexV2.getCached("body").setAttribute("data-indigo-editing-condition", false);
             },
+			createConditionMenu: function(newMenu){
+				DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer")
+					.setHTML("")
+					.append(newMenu);
+			},
             editCondition: function(){
                 DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)").addClass("indigo-show");
 
@@ -2977,53 +2988,57 @@
                 // Create menu ...
                 var newMenu = document.createElement("menu"),
                     doneButton = document.createElement("button"),
-                    doneButtonLabel = document.createTextNode("Done");
+                    doneButtonLabel = document.createTextNode(localisedStrings[app.data.UILanguage].save);
 
                 DexV2.node(doneButton).addClass("done-with-condition");
 
                 doneButton.appendChild(doneButtonLabel);
                 newMenu.appendChild(doneButton);
 
-                DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer")
-                    .setHTML("")
-                    .append(newMenu);
-
+				if(DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer").exists()){
+					app.engine.createConditionMenu(newMenu);
+				} else {
+					DexV2.id("JahiaGxtEditEnginePanel-visibility").onOpen(".x-component:nth-child(3) .x-panel-footer", function(){
+						app.engine.createConditionMenu(newMenu);
+					});
+				}
 
             },
             addCondition: function(){
                 DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3)").addClass("indigo-show");
-                DexV2.getCached("body").setAttribute("data-indigo-editing-condition", true);
+                DexV2.getCached("body").setAttribute("data-indigo-editing-condition", "new");
 
-                DexV2("body").onceOpen("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer", function(){
-                    var newMenu = document.createElement("menu"),
-                        saveButton = document.createElement("button"),
-                        saveButtonLabel = document.createTextNode("Create"),
-                        closeButton = document.createElement("button"),
-                        closeButtonLabel = document.createTextNode("Cancel");
+				var newMenu = document.createElement("menu"),
+					saveButton = document.createElement("button"),
+					saveButtonLabel = document.createTextNode(localisedStrings[app.data.UILanguage].create),
+					closeButton = document.createElement("button"),
+					closeButtonLabel = document.createTextNode(localisedStrings[app.data.UILanguage].cancel);
 
-                    DexV2.node(saveButton).addClass("save-new-condition");
-                    DexV2.node(closeButton).addClass("cancel-new-condition");
+				DexV2.node(saveButton).addClass("save-new-condition");
+				DexV2.node(closeButton).addClass("cancel-new-condition");
 
-                    closeButton.appendChild(closeButtonLabel);
-                    saveButton.appendChild(saveButtonLabel);
+				closeButton.appendChild(closeButtonLabel);
+				saveButton.appendChild(saveButtonLabel);
 
-                    newMenu.appendChild(closeButton);
-                    newMenu.appendChild(saveButton);
+				newMenu.appendChild(closeButton);
+				newMenu.appendChild(saveButton);
 
-                    DexV2("body").oneClick("#JahiaGxtEditEnginePanel-visibility .cancel-new-condition", function(){
+				DexV2("body").oneClick("#JahiaGxtEditEnginePanel-visibility .cancel-new-condition", function(){
 
-                        // DEV NOTE ::: Get rid of this timeout
-                        setTimeout(function(){
-                            DexV2.id("JahiaGxtEditEnginePanel-visibility").filter(".x-grid3-row.x-grid3-row-selected .x-grid3-col-remove > table .x-btn-small").trigger("click");
-                        }, 5);
+					// DEV NOTE ::: Get rid of this timeout
+					setTimeout(function(){
+						DexV2.id("JahiaGxtEditEnginePanel-visibility").filter(".x-grid3-row.x-grid3-row-selected .x-grid3-col-remove > table .x-btn-small").trigger("click");
+					}, 5);
 
-                    });
+				});
 
-                    DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer")
-                        .setHTML("")
-                        .append(newMenu);
-
-                });
+				if(DexV2("#JahiaGxtEditEnginePanel-visibility > .x-component:nth-child(3) .x-panel-footer").exists()){
+					app.engine.createConditionMenu(newMenu);
+				} else {
+					DexV2.id("JahiaGxtEditEnginePanel-visibility").onOpen(".x-component:nth-child(3) .x-panel-footer", function(){
+						app.engine.createConditionMenu(newMenu);
+					});
+				}
 
             },
             openConditionsMenu: function(){

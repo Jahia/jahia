@@ -110,6 +110,11 @@
 }
 
 @mixin dual_list($_id: "DUAL_LIST"){
+
+	.x-form-item-label {
+		display: none!important;
+	}
+
     .x-form-group {
         /* Yet another container */
         height: auto!important;
@@ -139,40 +144,60 @@
         > table {
             display: block;
 
-            > tbody > tr > td {
-                // SOURCE LIST
-                &:nth-child(1) {
+            > tbody {
+				display: block;
+				width: 100%;
+				> tr {
+					display: block;
+					width: 100%;
+				   > td {
+					   display: block;
 
-                    .x-form-list {
-                        padding-top: 35px;
+					   // SOURCE LIST
+					   &:nth-child(1) {
 
-                    }
+							width: calc(50% - 15px);
+							display: inline-block;
+							position: relative!important;
 
-                    // INPUT FILTER
-                    > div > table > tbody > tr:nth-child(1) {
-                        position: absolute;
-                        top: 29px;
-                        width: calc(50% - 37px);
-                        left: 5px;
+						   // INPUT FILTER
+						   > div > table > tbody > tr:nth-child(1) > td {
+							   padding: 5px;
+							   background: _property($LIST-BOX--ROW--BG, $EDIT-ENGINE);
+							   box-sizing: border-box;
+						   }
 
+						   .x-form-list {
+							   height: 196px!important;
+						   }
+					   }
 
-                    }
-                }
+					   // BUTTONS
+					   &:nth-child(2) {
 
-                // BUTTONS
-                &:nth-child(2) {
-                    > div {
-                        margin-top: 53px!important;
-                    }
-                }
+						   width: 30px;
+						   display: inline-block;
+						   position: relative!important;
 
-                // SELECTION LIST
-                &:nth-child(3) {
-                    .x-form-list {
-                        height: 235px!important;
-                    }
-                }
-            }
+						   > div {
+							   margin: 53px 0 0 0!important;
+						   }
+					   }
+
+					   // SELECTION LIST
+					   &:nth-child(3) {
+
+						   width: calc(50% - 15px);
+						   display: inline-block;
+						   position: relative!important;
+
+						   .x-form-list {
+							   height: 235px!important;
+						   }
+					   }
+				   }
+			   }
+			}
         }
 
         .x-form-clear-trigger {
@@ -182,6 +207,10 @@
                 @extend %CSS_BLOCK--FORM--CLEAR_BUTTON---HOVER\:#{$_id} !optional;
             }
         }
+
+		.x-form-empty-field + .x-form-clear-trigger {
+			display: none;
+		}
 
         .x-form-text {
             @extend %CSS_BLOCK--FORM--TEXT_INPUT\:#{$_id} !optional;
@@ -198,6 +227,10 @@
         // FILTER CONTAINER
         .x-form-field-wrap {
             width: 100%!important;
+
+			input {
+				padding-right: 24px!important;
+			}
         }
 
         .x-table-layout-cell {

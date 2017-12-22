@@ -1691,7 +1691,7 @@ div.engine-window {
 
 				.x-panel-footer {
 					menu {
-						padding: 0;
+						padding: 0 6px 0 0;
 
 						button {
 							border:none;
@@ -1732,19 +1732,38 @@ div.engine-window {
 				}
 
 				> .x-panel {
+					// Use to vertically align
 					&:before {
-						content: $text_visibility_edit_condition;
-						body[data-indigo-add-visibility-condition="new"] & {
-							content: $text_visibility_new_condition;
+						display: block;
+						height: calc(50vh - 200px);
+						min-height: 0;
+						content: " ";
+					}
+
+					.x-panel-bwrap {
+						&:before {
+							content: $text_visibility_edit_condition;
+							body[data-indigo-editing-condition="new"] & {
+								content: $text_visibility_new_condition;
+							}
+						    display: block;
+						    margin-bottom: 10px;
+							@include text(36px, _property($TITLE--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
 						}
-					    display: block;
-					    margin-top: 150px;
-					    margin-bottom: 10px;
-						@include text(36px, _property($TITLE--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT, $FONT--FAMILY---RALEWAY);
+
+						.x-form-field-wrap {
+							width: 100%!important;
+						}
 					}
 
 					width: 460px!important;
 					margin: 0 auto;
+
+					// Hide occasional duplication of the window
+					&:nth-child(2),
+					&:nth-child(3) {
+						display: none;
+					}
 
 					fieldset {
 						padding: 43px 10px 20px 19px !important;
@@ -2356,7 +2375,8 @@ div.engine-window {
 	    border: none;
 		z-index: 9999;
 
-		body[data-indigo-editing-condition="true"] & {
+		body[data-indigo-editing-condition="true"] &,
+		body[data-indigo-editing-condition="new"] & {
 			display: none;
 		}
 
@@ -3051,11 +3071,12 @@ div.engine-window {
 body[data-indigo-add-visibility-condition="new"] {
 	> .x-combo-list {
 		background: transparent!important;
+		width: auto!important;
 
 		> div {
 			margin-left: 89px;
 		    margin-top: 51px;
-			width: calc(100% + 64px) !important;
+			// width: calc(100% + 64px) !important;
 		}
 	}
 }

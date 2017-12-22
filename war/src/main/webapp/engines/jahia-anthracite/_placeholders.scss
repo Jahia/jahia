@@ -759,12 +759,7 @@
             opacity: 1;
         }
 
-        %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS\:DUAL_LIST {
-            border:5px solid red;
-			background-color: _property($INPUT--BG---FOCUS, $EDIT-ENGINE) !important;
-            opacity: 1!important;
-            background-image: url($ICON--CLOSE_SMALL---WHITE);
-        }
+        %CSS_BLOCK--FORM--CLEAR_BUTTON---FOCUS\:DUAL_LIST {}
 
 	// PICKER FILTER EXCEPTIONS
         %CSS_BLOCK--FORM--CLEAR_BUTTON---UP\:PICKER_FILTER {

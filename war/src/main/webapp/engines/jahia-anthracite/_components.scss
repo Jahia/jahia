@@ -9,7 +9,7 @@
 	box-shadow: none;
 	background: transparent!important;
 
-	
+
 	td {
 		transition: all 0.15s ease-in 0s;
 	}
@@ -2993,15 +2993,50 @@ form,
 
 
 .x-window.content-type-window {
-	background: _property($BODY--BG, $MODAL-INPUT);
-	box-shadow: _property($BODY--BG--SHADOW, $MODAL-INPUT);
+
 	box-sizing: border-box;
 	height: 80%;
 	padding: 30px!important;
 	top: 10% !important;
 	z-index: 20000!important;
+	width: 400px!important;
+
+	// Add padding to show input box shadow doesnt get cropped
+	.x-form-field-wrap {
+		padding: 1px;
+	}
+
+	// Push down the clear button because of padding
+	.x-form-clear-trigger {
+		top: 2px;
+	}
+
+	// Reverse action buttons
+	.x-panel-fbar {
+
+		// Move buttons to the right
+		> table {
+			float: right;
+		}
+
+		// Reverse the buttons
+		td.x-toolbar-cell {
+			float: right;
+
+			// Add padding to separate buttons
+			&:nth-child(1) {
+				margin-left: 5px;
+			}
+		}
+	}
+
 
 	> .x-window-bwrap {
+		background: _property($BODY--BG, $MODAL-INPUT);
+		box-shadow: _property($BODY--BG--SHADOW, $MODAL-INPUT);
+		padding: 30px;
+		box-sizing: border-box;
+
 		height: 100%;
 		width: 100%!important;
 

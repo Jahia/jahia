@@ -2765,7 +2765,7 @@
                 open: false
             },
             onOpen: function(){
-				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
+				app.dev.log("::: APP ::: ENGINE ::: ONOPEN", true);
 
 				// Get close button
 				var closeButton = DexV2.node(this).filter(".button-cancel");
@@ -2788,6 +2788,35 @@
                     DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", nodeDisplayName);
 
                 }
+
+				/* TEST CODE START */
+
+				// When a new Copy To All Language button appears we need to create our own accompanying trigger button
+				DexV2("body").onOpen(".button-copyall", function(){
+					var myButton = document.createElement("button"),
+						myButtonLabel = document.createTextNode("Copy");
+
+					myButton.classList.add("copy-to-all-languages");
+					myButton.appendChild(myButtonLabel);
+
+					DexV2.node(this).parent().append(myButton);
+				});
+
+				// When the user clicks outside of the button, remove the fake drop down
+				DexV2("body").onClick(".engine-panel, .engine-window", function(e){
+					// Ignore the click if the user has clicked on the actual trigger
+					if(!DexV2.node(e.target).hasClass("copy-to-all-languages")){
+						DexV2(".indigo-show-copy-button").removeClass("indigo-show-copy-button");
+					}
+				});
+
+				// Open the fake drop down when someone clicks on the trigger
+				DexV2("body").onClick(".copy-to-all-languages", function(){
+					DexV2.node(this).parent().toggleClass("indigo-show-copy-button");
+				});
+
+				/* TEST CODE END */
+
 
                 // Check if we need to create our own toggle switch when a fieldset header is loaded
                 DexV2("body").onOpen(".x-fieldset-header", function(){
@@ -2822,28 +2851,32 @@
 
                 }, "EDIT-ENGINE-INDIGO-SWITCH-LISTENER");
 
-                // Wait a sec, ...
-                // Then work out if the node has been locked
-				setTimeout(function(){
-					var nodeDetails = DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").getHTML(),
-						regExp = /\[(.*?)\]/gi,
-						nodeStatus = nodeDetails.match(regExp),
-						isLocked = false;
+				if(app.data.HTTP.app == "edit"){
+					// Engine has been opened in Edit Mode
+					// Wait a sec, ...
+					// Then work out if the node has been locked
+					setTimeout(function(){
+						var nodeDetails = DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").getHTML(),
+							regExp = /\[(.*?)\]/gi,
+							nodeStatus = nodeDetails.match(regExp),
+							isLocked = false;
 
-                    // Square brackets have been found (suggesting its locked) ...
-					if(nodeStatus){
-                        // See if the String contains the word locked, or verouillé or gesperrt
-						isLocked = nodeStatus[0].indexOf("locked") > -1 || nodeStatus[0].indexOf("verrouillé") > -1 || nodeStatus[0].indexOf("gesperrt") > -1;
+						// Square brackets have been found (suggesting its locked) ...
+						if(nodeStatus){
+							// See if the String contains the word locked, or verouillé or gesperrt
+							isLocked = nodeStatus[0].indexOf("locked") > -1 || nodeStatus[0].indexOf("verrouillé") > -1 || nodeStatus[0].indexOf("gesperrt") > -1;
 
-                        // Register the Node as locked
-                        DexV2.getCached("body").setAttribute("data-indigo-edit-engine-locked", isLocked);
+							// Register the Node as locked
+							DexV2.getCached("body").setAttribute("data-indigo-edit-engine-locked", isLocked);
 
-                        // Add ONLY the lock message to the header, which will be displayed on a hover
-						DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setHTML(nodeStatus[0])
+							// Add ONLY the lock message to the header, which will be displayed on a hover
+							DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setHTML(nodeStatus[0])
 
-					}
+						}
 
-				}, 500);
+					}, 500);
+				}
+
 			},
 			onClose: function(e){
 				app.dev.log("::: APP ::: ENGINE ::: ONCLOSE");
@@ -4813,7 +4846,7 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
-                .onMouseDown(".toolbar-item-edit, .toolbar-item-admin", function(){
+				.onMouseDown(".toolbar-item-edit, .toolbar-item-admin", function(){
                     // Appyling the Anthracite theme as soon as the user presses mousedown.
                     // This means that there is a lot less lag time for the user
                     // Only problem (was) that the menu that the user was clicking on moved ( due to different styling ) and there for the mouseup never fired for GWT,
@@ -5188,7 +5221,7 @@
                 .onOpen(".editModeContextMenu", app.contextMenus.moreInfoMenu.onOpen)
                 .onOpen(".menu-editmode-managers-menu", app.contextMenus.managerMenu.onOpen)
                 .onOpen("#" + app.picker.data.ID, app.picker.onOpen)
-                .onOpen("#JahiaGxtEnginePanel", app.engine.onOpen)
+                .onOpen(".engine-window, .engine-panel", app.engine.onOpen)
                 // .onOpen("#JahiaGxtEngineWindow", app.picker.thumb.openEdit)
                 .onOpen("#JahiaGxtImagePopup", app.imagePreview.onOpen)
                 .onAttribute(".edit-menu-tasks", "class", app.edit.infoBar.tasks.onChange)

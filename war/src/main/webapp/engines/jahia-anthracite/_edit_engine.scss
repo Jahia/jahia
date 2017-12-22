@@ -2,24 +2,64 @@
 // EDIT ENGINE //////////////////////////////////
 /////////////////////////////////////////////////
 
-/*body {
 
-	&:before {
-		content: attr(data-singleselection-node-displayname);
-	    display: block;
-	    position: fixed;
-	    top: 0;
-	    left: 0;
-	    z-index: 9999;
-	    left: 314px!important;
-	    top: 47px!important;
-	    font-size: 18px!important;
+/* TEST CODE START */
+div.engine-panel:not(.trashboardengine-ctn) fieldset .x-form-field-wrap,
+div.engine-window fieldset div.x-form-field-wrap {
+	width: calc(100% - 164px) !important;
+}
+
+.copy-to-all-languages {
+	width: 25px;
+    height: 25px;
+    text-indent: -5000000px;
+    background: url(./images/icons/duplicate@X2.png) no-repeat center center red;
+	background-size: 20px;
+    display: block;
+    position: absolute;
+    right: 0;
+	top: 2px;
+	border: none;
+
+	&:hover {
+		cursor: pointer;
 	}
+}
 
-}*/
+.engine-panel,
+.engine-window {
+	fieldset {
 
+		overflow: visible;
 
+		.indigo-show-copy-button {
+			table.x-btn.button-copyall {
+				display: block;
+			}
+		}
 
+		table.x-btn.button-copyall {
+			height: 25px!important;
+			display: none;
+			position: absolute;
+			right: 0;
+			top: 25px;
+			z-index: 99;
+
+			.x-btn-text {
+				background: _property($MENU-OPENED--BG, $APP) !important;
+				text-transform: none;
+				overflow: visible;
+				background-size: 16px!important;
+				margin-top: 0!important;
+				padding: 8px 9px !important;
+
+				@include text(13px, _property($MENU-OPENED--COLOR, $APP), $FONT--WEIGHT---LIGHT);
+			}
+		}
+	}
+}
+/* TEST CODE END */
 
 
 .engine-panel:not(.trashboardengine-ctn),

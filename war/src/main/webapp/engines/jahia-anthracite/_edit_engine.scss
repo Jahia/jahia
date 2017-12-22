@@ -421,12 +421,12 @@ div.engine-window {
 
 			/* DEV NOTE ::: QUICK N DIRTY */
 			body[data-uilang="fr"] & {
-				width: calc(100% - 357px) !important;
+				// width: calc(100% - 357px) !important;
 
 			}
 
 			body[data-uilang="de"] & {
-				width: calc(100% - 316px) !important;
+				// width: calc(100% - 316px) !important;
 
 			}
 		}

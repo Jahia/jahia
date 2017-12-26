@@ -4411,14 +4411,14 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 .translate-content-engine {
-	background: _theme-color(primary) !important; /* TO THEME */
+	background: _property($BODY--BG, $EDIT-ENGINE);
 	height: 100% !important;
 	width: 100% !important;
 	top: 0 !important;
 	left: 0 !important;
 
 	.mypanel.x-component .x-component {
-		background: _theme-color(secondary); /* TO THEME */
+		//background: _theme-color(secondary); /* TO THEME */
 		width: 50% !important;
 	}
 

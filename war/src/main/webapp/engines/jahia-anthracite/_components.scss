@@ -4536,7 +4536,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		> .x-component.x-border-panel > .x-component > table tbody td.x-btn-mc:nth-child(2) {
-			background: _theme-color(quinary);
+			background: _theme-color(quaternary);
 			position: absolute;
 			left: 224px;
 			height: 29px;
@@ -4567,7 +4567,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			.x-form-text,
 			textarea.x-form-field,
 			div[role="combobox"] input.x-form-text {
-				background: _theme-color(secondary, g);
+				background: _theme-color(secondary, g) !important;
 				color: _theme-color(primary);
 			}
 

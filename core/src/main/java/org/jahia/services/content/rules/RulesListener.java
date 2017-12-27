@@ -380,18 +380,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                     String propertyName = path.substring(path.lastIndexOf('/') + 1);
                                     if (!propertiesToIgnore.contains(propertyName)) {
                                         try {
-                                            JCRPropertyWrapper p = null;
-                                            try {
-                                                p = (JCRPropertyWrapper) s.getItem(path);
-                                            } catch (PathNotFoundException e) {
-                                                // the node could be moved in between
-                                                try {
-                                                    p = s.getNodeByIdentifier(eventUuid).getProperty(propertyName);
-                                                } catch (RepositoryException infe) {
-                                                    throw e;
-                                                }
-                                            }
-
+                                            JCRPropertyWrapper p = getProperty(s, path, eventUuid, propertyName);
                                             JCRNodeWrapper parent = p.getParent();
                                             if (parent.isNodeType("jnt:translation")) {
                                                 parent = parent.getParent();
@@ -432,8 +421,14 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         }
                                     } else if (propertyName.equals("j:published")) {
                                         JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);
-                                        if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
-                                            final PublishedNodeFact e = new PublishedNodeFact(n);
+                                        if (n.isNodeType("jmix:observable")) {
+                                            JCRPropertyWrapper p = getProperty(s, path, eventUuid, propertyName);
+                                            String language = null;
+                                            if (n.isNodeType("jnt:translation")) {
+                                                language = n.getLanguage();
+                                                n = n.getParent();
+                                            }
+                                            final PublishedNodeFact e = new PublishedNodeFact(n, language, !p.getBoolean());
                                             e.setOperationType(nodeFactOperationType);
                                             final JCRSiteNode resolveSite = n.getResolveSite();
                                             if (resolveSite != null) {
@@ -581,6 +576,22 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         } catch (Exception e) {
             logger.error("Error when executing event", e);
         }
+    }
+        
+    private JCRPropertyWrapper getProperty(JCRSessionWrapper s, String path, String eventUuid, String propertyName)
+            throws RepositoryException {
+        JCRPropertyWrapper p = null;
+        try {
+            p = (JCRPropertyWrapper) s.getItem(path);
+        } catch (PathNotFoundException e) {
+            // the node could be moved in between
+            try {
+                p = s.getNodeByIdentifier(eventUuid).getProperty(propertyName);
+            } catch (RepositoryException infe) {
+                throw e;
+            }
+        }
+        return p;
     }
 
     public Map<String, Object> getGlobals(String username, String userRealm, List<Updateable> delayedUpdates) {

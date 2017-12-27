@@ -264,6 +264,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             throw new JahiaRuntimeException(e);
         } catch (RuntimeException e) {
             running = false;
+            logger.error(e.getMessage(), e);
             throw e;
         } finally {
             JCRSessionFactory.getInstance().closeAllSessions();

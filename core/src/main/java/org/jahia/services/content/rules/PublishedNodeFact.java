@@ -48,13 +48,40 @@ import javax.jcr.RepositoryException;
 import org.jahia.services.content.JCRNodeWrapper;
 
 public class PublishedNodeFact extends AbstractNodeFact {
-
-    public PublishedNodeFact(JCRNodeWrapper node) throws RepositoryException {
+    boolean unpublished;
+    String language;
+    
+    public PublishedNodeFact(JCRNodeWrapper node, String language, boolean unpublished) throws RepositoryException {
         super(node);
+        this.language = language;
+        this.unpublished = unpublished;
     }
 
+    @Override
+    public String getLanguage() {
+        return language;
+    }
+    
     public String toString() {
-        return "published "+node.getPath();
+        return (isUnpublished() ? "un" : "") + "published " + node.getPath() + (isTranslation() ? " in `" + getLanguage() + "`" : "");
     }
 
+    public boolean isTranslation() {
+        return language != null;
+    }
+
+    public boolean isUnpublished() {
+        return unpublished;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!super.equals(o)) return false;
+
+        PublishedNodeFact that = (PublishedNodeFact) o;
+
+        if (language != null ? !language.equals(that.language) : that.language != null)
+            return false;
+        return unpublished == that.unpublished;
+    }
 }

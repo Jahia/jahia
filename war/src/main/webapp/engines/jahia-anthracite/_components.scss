@@ -3592,7 +3592,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-window-bwrap {
-		background: _theme-color(primary, a); /* TO THEME */
+		background: _theme-color(secondary);
 		padding: 12px 0 8px 0;
 
 		.x-window-body.x-window-body-noborder {
@@ -3606,7 +3606,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-window-tbar .x-toolbar {
-		background: _theme-color(primary, a)!important; /* TO THEME */
+		//background: _theme-color(primary, a)!important; /* TO THEME */
 		padding-bottom: 12px;
 		border-bottom: none;
 	}
@@ -3622,9 +3622,14 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-window-bbar .x-btn-mc button.x-btn-text {
-		background: _theme-color(quinary) !important; /* TO THEME */
-		color: _theme-color(white); /* TO THEME */
+		background: _theme-color(quinary) !important;
+		color: _theme-color(white);
 		height: 32px;
+		float: right;
+		padding: 0 16px;
+		width: fit-content !important;
+		max-width: calc(100% - 16px) !important;
+		left: -8px;
 	}
 
 	.x-grid3-cell-inner {
@@ -3669,9 +3674,9 @@ body[data-indigo-gwt-side-panel="open"] {
 		display: inline-block;
 
 		> div {
-			font-family: "Nunito Sans", sans-serif;
+			font-family: $FONT--FAMILY---NUNITO;
 			font-size: 12px;
-			color: _theme-color(secondary); /* TO THEME */
+			color: _theme-color(primary, a);
 			font-weight: 100;
 		}
 
@@ -3682,7 +3687,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		.x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td {
 
 			&.x-grid3-hd-over span {
-				color: _theme-color(primary, c) !important; /* TO THEME */
+				color: _theme-color(secondary) !important;
 			}
 
 			div {
@@ -3698,7 +3703,7 @@ body[data-indigo-gwt-side-panel="open"] {
 					text-transform: uppercase;
 					font-family: "Nunito Sans", sans-serif;
 					font-size: 11px;
-					color: _theme-color(secondary); /* TO THEME */
+					//color: _theme-color(secondary); /* TO THEME */
 					font-weight: 500;
 				}
 
@@ -3725,6 +3730,10 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		.x-grid3-row {
 			padding-top: 4px;
+
+			&.x-grid3-row-over {
+				background: transparent !important;
+			}
 
 			&.x-grid3-row-selected {
 				pointer-events: none;
@@ -3754,11 +3763,24 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	}
 
+
 	// pager
+
+	.x-window-body .x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct {
+		background: _theme-color(primary);
+		width: calc(100% + 10px) !important;
+		padding: 8px;
+		margin: 8px 0;
+	}
+
+	.x-toolbar-left-row .x-toolbar-cell .x-btn-text {
+		background: none !important;
+	}
+
 	.x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct {
 		position: relative;
 		z-index: 9999999;
-		background: _theme-color(primary, a); /* TO THEME */
+		background: _theme-color(secondary);
 		width: 100% !important;
 		padding: 2px 11px;
 		box-sizing: border-box;
@@ -3828,18 +3850,18 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 
 	.x-form-field-wrap .x-form-text {
-		background: rgba(122, 130, 134, 0.54); /* TO THEME */
-		color: _theme-color(primary, h); /* TO THEME */
+		background: _theme-color(white);
+		color: _theme-color(primary);
+		margin-top: 5px;
 
 		&.x-form-focus {
-			background: _theme-color(white);
-			color: _theme-color(black, d);
+			box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4); /* TO THEME */
 		}
 
 	}
 
 	label {
-		line-height: 22px;
+		line-height: 28px;
 	}
 
 	.search-container .x-toolbar-cell {
@@ -3850,15 +3872,15 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		&:nth-child(2) input {
 			background-image: url(./images/tabs-search-dark@X2.png) !important;
-			background-color: _theme-color(secondary, a) !important; /* TO THEME */
 			background-repeat: no-repeat !important;
 			background-position: left center !important;
 			background-size: 23px !important;
 			width: 100% !important;
-			padding: 4px 5px 5px 27px !important;
+			padding: 4px 5px 5px 24px !important;
 			font-size: 12px;
 			font-family: "Nunito Sans", sans-serif;
-			color: _theme-color(primary, d); /* TO THEME */
+			color: _theme-color(primary);
+			margin-top: 0;
 		}
 
 		&:nth-child(3) .x-btn-icon {

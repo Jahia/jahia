@@ -3648,14 +3648,14 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		.x-grid3-header-inner .x-grid3-hh > table > tbody td {
-			width: calc(25% - 10px) !important;
+			width: calc(25% - 12px) !important;
 			pointer-events: all;
 			border: none;
 			background: none;
 			margin-right: 10px;
 
 			&.x-grid3-hd-over {
-				background: _theme-color(primary, b); /* TO THEME */
+				background: _theme-color(secondary, a); /* TO THEME */
 			}
 
 			div {
@@ -3687,7 +3687,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		.x-grid3-viewport > .x-grid3-header .x-grid3-header-inner .x-grid3-hh > table > tbody td {
 
 			&.x-grid3-hd-over span {
-				color: _theme-color(secondary) !important;
+				//color: _theme-color(secondary) !important;
 			}
 
 			div {
@@ -3755,7 +3755,7 @@ body[data-indigo-gwt-side-panel="open"] {
 			> div {
 				font-family: "Nunito Sans", sans-serif;
 				font-size: 12px;
-				color: _theme-color(secondary); /* TO THEME */
+				//color: _theme-color(secondary); /* TO THEME */
 				font-weight: 100;
 			}
 

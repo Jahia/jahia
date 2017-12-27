@@ -74,6 +74,12 @@
 
 		/* ADMIN MODE */
 
+		// Fix loader issue for Server admin.
+		.x-viewport-adminmode #JahiaGxtSettingsTab.tab_systemSiteSettings > .x-component.x-masked-relative {
+			display: none;
+		}
+
+
 		#JahiaGxtSidePanelTabs {
 			background: red!important;
 		}

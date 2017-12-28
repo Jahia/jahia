@@ -820,7 +820,7 @@ extends = jnt:content
  - j:contributeTypes (string, choicelist[componenttypes = 'jmix:editorialContent,jnt:file,jnt:folder,jnt:contentFolder']) multiple nofulltext
 
 [jmix:listRestrictions] mixin
- - j:allowedTypes (string, choicelist[componenttypes = 'jmix:droppableContent,jnt:file,jnt:folder']) multiple nofulltext
+ - j:allowedTypes (string, choicelist[componenttypes = 'notRestrictedToDependencies;jmix:droppableContent,jnt:file,jnt:folder']) multiple nofulltext
  - j:numberOfItems (long) < '[0,]'
 
 //---------------------------------------------------------

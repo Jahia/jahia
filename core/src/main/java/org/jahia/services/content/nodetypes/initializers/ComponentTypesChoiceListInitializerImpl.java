@@ -76,8 +76,14 @@ public class ComponentTypesChoiceListInitializerImpl implements ChoiceListInitia
             List<ChoiceListValue> values, Locale locale, Map<String, Object> context) {
         List<String> includes = DEF_INCLUDES;
         List<String> excludes = null;
+        boolean restrictedToDependencies = true;
 
         if (StringUtils.isNotEmpty(param)) {
+
+            if (StringUtils.startsWith(param, "notRestrictedToDependencies;")) {
+                restrictedToDependencies = false;
+                param = StringUtils.substringAfter(param, "notRestrictedToDependencies;");
+            }
             includes = getNodeTypes(StringUtils.substringBefore(param, ";"));
             excludes = getNodeTypes(StringUtils.substringAfter(param, ";"));
         }
@@ -90,7 +96,7 @@ public class ComponentTypesChoiceListInitializerImpl implements ChoiceListInitia
         }
 
         try {
-            for (Map.Entry<String, String> comp : ComponentRegistry.getComponentTypes(contextNode, includes, excludes, locale).entrySet()) {
+            for (Map.Entry<String, String> comp : ComponentRegistry.getComponentTypes(contextNode, includes, excludes, locale, restrictedToDependencies).entrySet()) {
                 choiceList.add(new ChoiceListValue(comp.getValue(), comp.getKey()));
             }
         } catch (RepositoryException e) {

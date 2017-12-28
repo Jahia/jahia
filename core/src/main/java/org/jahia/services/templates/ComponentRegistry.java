@@ -114,6 +114,12 @@ public class ComponentRegistry {
     public static Map<String, String> getComponentTypes(final JCRNodeWrapper node,
                                                         final List<String> includeTypeList, final List<String> excludeTypeList,
                                                         Locale displayLocale) throws PathNotFoundException, RepositoryException {
+        return getComponentTypes(node, includeTypeList, excludeTypeList, displayLocale, true);
+    }
+
+    public static Map<String, String> getComponentTypes(final JCRNodeWrapper node,
+                                                        final List<String> includeTypeList, final List<String> excludeTypeList,
+                                                        Locale displayLocale, boolean restrictToDependencies) throws PathNotFoundException, RepositoryException {
 
         long timer = System.currentTimeMillis();
 
@@ -134,14 +140,15 @@ public class ComponentRegistry {
             l.addAll(resolvedSite.getInstalledModulesWithAllDependencies());
         }
 
-        for (String aPackage : l) {
-            for (ExtendedNodeType type : NodeTypeRegistry.getInstance().getNodeTypes(aPackage)) {
-                if (allowType(type, includeTypeList, excludeTypeList)) {
-                    for (String s : constraints) {
-                        if (!finalComponents.containsKey(type.getName()) && type.isNodeType(s)) {
-                            finalComponents.put(type.getName(), type.getLabel(displayLocale));
-                            break;
-                        }
+        NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
+        NodeTypeRegistry.JahiaNodeTypeIterator nodeTypes = restrictToDependencies ? nodeTypeRegistry.getAllNodeTypes(new ArrayList<>(l)) : nodeTypeRegistry.getAllNodeTypes();
+
+        for (ExtendedNodeType type : nodeTypes) {
+            if (allowType(type, includeTypeList, excludeTypeList)) {
+                for (String s : constraints) {
+                    if (!finalComponents.containsKey(type.getName()) && type.isNodeType(s)) {
+                        finalComponents.put(type.getName(), type.getLabel(displayLocale));
+                        break;
                     }
                 }
             }

@@ -416,21 +416,18 @@ body[data-indigo-app="contribute"] {
             display: inline-block;
             margin-top: 7px;
 
-            // =======> @Toto needs to add classes for every btns to use better selectors!
-            &:nth-child(5) table {
-                @extend %CSS_BLOCK--CONTRIBUTE--EDIT--BUTTON;
+            .contribute-toolbar-item-upload {
+                @extend %CSS_BLOCK--CONTRIBUTE--UPLOAD--BUTTON;
             }
 
-            &:nth-child(6) table {
+            .contribute-toolbar-item-editcontent {
                 @extend %CSS_BLOCK--CONTRIBUTE--EDITPAGE--BUTTON;
             }
 
-            &:nth-child(7) table {
+            .contribute-toolbar-item-newpage {
                 @extend %CSS_BLOCK--CONTRIBUTE--NEWPAGE--BUTTON;
             }
         }
-
-
 
         margin-top: 10px;
         opacity: 1;
@@ -1630,12 +1627,28 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
     }
 }
 
+// Upload
+%CSS_BLOCK--CONTRIBUTE--UPLOAD--BUTTON {
+    width: 20px;
+    height: 20px;
+    background: url(./images/icons/add-media@X2.png) no-repeat center center;
+    background-size: 23px 23px;
+
+    top: 21px;
+
+    position: fixed;
+
+    td {
+        display: none;
+    }
+}
+
 
 // New Page
 %CSS_BLOCK--CONTRIBUTE--NEWPAGE--BUTTON {
     background: url($ICON--ADD--WHITE) no-repeat top 3px left;
     background-size: 21px;
-    padding-left: 20px;
+    padding-left: 24px;
     margin-left: 10px;
     margin-top: 4px;
 
@@ -1651,11 +1664,11 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
     }
 }
 
-// Edit Page =======> Test (to be improved!)
+// Edit Page
 %CSS_BLOCK--CONTRIBUTE--EDITPAGE--BUTTON {
-    background: url(./images/icons/tabs-create-white@X2.png) no-repeat top 3px left;
+    background: url($ICON--INFO--WHITE) no-repeat top 3px left;
     background-size: 21px;
-    padding-left: 20px;
+    padding-left: 24px;
     margin-left: 10px;
     margin-top: 4px;
 
@@ -1664,7 +1677,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
     }
 
     &::after {
-        content: "Edit page";
+        content: "Edit";
         line-height: 29px;
         font-size: 11px;
         opacity: 1;

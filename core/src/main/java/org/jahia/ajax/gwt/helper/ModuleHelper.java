@@ -152,7 +152,11 @@ public class ModuleHelper {
         final ModuleState state = jahiaTemplatesPackage.getState();
         if (state.getState() == ModuleState.State.SPRING_NOT_STARTED) {
             final Throwable details = (Throwable) state.getDetails();
-            throw new IOException(details.getMessage(), details);
+            if (details != null) {
+                throw new IOException(details.getMessage(), details);
+            } else {
+                throw new IOException("Unexpected state for module-id " + moduleId + ": Spring not started");
+            }
         }
     }
 

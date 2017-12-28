@@ -104,6 +104,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         this.publicationInfos = publicationInfos;
     }
 
+    @Override
     public void initStartWorkflowDialog(GWTJahiaWorkflowDefinition workflow, WorkflowActionDialog dialog) {
         initDialog(dialog);
 
@@ -118,6 +119,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         }
     }
 
+    @Override
     public void initExecuteActionDialog(GWTJahiaWorkflow workflow, WorkflowActionDialog dialog) {
         initDialog(dialog);
     }
@@ -189,7 +191,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 }
                 // enable buttons before close the engine to avoid layout side effect (the remaining button at the same index is disabled)
                 dialog.enableButtons();
-                dialog.getContainer().closeEngine();
+                closeDialog(dialog);
                 Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
                         "message.workflow.starting", "Starting publication workflow"));
                 final String status = Messages.get("label.workflow.task", "Executing workflow task");
@@ -202,13 +204,16 @@ public class PublicationWorkflow implements CustomWorkflow {
                 String locale = workflowGroup.substring(0, workflowGroup.indexOf("/"));
 
                 JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(), wf, nodeProperties,
-                        dialog.getComments(), map, locale, new BaseAsyncCallback() {
+                        dialog.getComments(), map, locale, new BaseAsyncCallback<Object>() {
+
+                            @Override
                             public void onApplicationFailure(Throwable caught) {
                                 WorkInProgressActionItem.removeStatus(status);
                                 Log.error(Messages.get("label.workflow.cannotStart", "Cannot start workflow"), caught);
                                 com.google.gwt.user.client.Window.alert(Messages.get("label.workflow.cannotStart", "Cannot start workflow") + caught.getMessage());
                             }
 
+                            @Override
                             public void onSuccess(Object result) {
                                 Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
                                         "message.workflow.started", "Workflow started"));
@@ -243,7 +248,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                     if (dialog.getPropertiesEditor() != null) {
                         nodeProperties = dialog.getPropertiesEditor().getProperties();
                     }
-                    dialog.getContainer().closeEngine();
+                    closeDialog(dialog);
                     doPublish(nodeProperties, dialog);
                 }
             });
@@ -254,23 +259,29 @@ public class PublicationWorkflow implements CustomWorkflow {
 
     }
 
+    private static void closeDialog(WorkflowActionDialog dialog) {
+        ((EngineCards) dialog.getContainer()).closeEngine(dialog);
+    }
+
     protected void doPublish(List<GWTJahiaNodeProperty> nodeProperties, final WorkflowActionDialog dialog) {
         final String status = Messages.get("label.publication.task", "Publishing content");
         Info.display(status, status);
         WorkInProgressActionItem.setStatus(status);
         final List<String> allUuids = getAllUuids();
-        BaseAsyncCallback callback = new BaseAsyncCallback() {
+        JahiaContentManagementService.App.getInstance().publish(allUuids, nodeProperties, null, new BaseAsyncCallback<Object>() {
+
+            @Override
             public void onApplicationFailure(Throwable caught) {
                 WorkInProgressActionItem.removeStatus(status);
                 Info.display("Cannot publish", "Cannot publish");
                 Window.alert("Cannot publish " + caught.getMessage());
             }
 
+            @Override
             public void onSuccess(Object result) {
                 WorkInProgressActionItem.removeStatus(status);
             }
-        };
-        JahiaContentManagementService.App.getInstance().publish(allUuids, nodeProperties, null, callback);
+        });
     }
 
     public List<String> getAllUuids() {
@@ -322,6 +333,8 @@ public class PublicationWorkflow implements CustomWorkflow {
         if (keys.size() > 0) {
             JahiaContentManagementService.App.getInstance().getWorkflowDefinitions(keys,
                     new BaseAsyncCallback<Map<String, GWTJahiaWorkflowDefinition>>() {
+
+                        @Override
                         public void onSuccess(Map<String, GWTJahiaWorkflowDefinition> definitions) {
                             PublicationWorkflow.create(infosListByWorflowGroup, definitions, linker, unpublish);
                         }
@@ -351,8 +364,8 @@ public class PublicationWorkflow implements CustomWorkflow {
                 final PublicationWorkflow custom = unpublish ? new UnpublicationWorkflow(infoList) : new PublicationWorkflow(infoList);
                 new WorkflowActionDialog(infoList.get(0).getMainPath(), Messages.getWithArgs("label.workflow.start.message",
                         "{0} started by {1} on {2} - {3} content items involved",
-                        new Object[]{definitions.get(workflowDefinition).getDisplayName(), JahiaGWTParameters.getCurrentUser(), DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(new Date()), infoList.size()})
-                        , definitions.get(workflowDefinition),
+                        new Object[] {definitions.get(workflowDefinition).getDisplayName(), JahiaGWTParameters.getCurrentUser(), DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(new Date()), infoList.size()}),
+                        definitions.get(workflowDefinition),
                         linker, custom, cards, infoList.get(0).getLanguage()
                 );
             } else {
@@ -363,6 +376,8 @@ public class PublicationWorkflow implements CustomWorkflow {
         cards.addGlobalButton(getStartAllWorkflows(cards, linker));
         cards.addGlobalButton(getBypassAllWorkflowsButton(cards, linker));
         Button button = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
+
+            @Override
             public void componentSelected(ButtonEvent event) {
                 cards.closeAllEngines();
                 if (doRefresh) {
@@ -512,14 +527,17 @@ public class PublicationWorkflow implements CustomWorkflow {
         return button;
     }
 
-    private static BaseAsyncCallback getCallback(final EngineCards cards, final int[] nbWF, final String successMessage, final String errorMessage, final String statusMessage, final Linker linker, final Map<String, Object> refreshData) {
-        return new BaseAsyncCallback() {
+    private static BaseAsyncCallback<Object> getCallback(final EngineCards cards, final int[] nbWF, final String successMessage, final String errorMessage, final String statusMessage, final Linker linker, final Map<String, Object> refreshData) {
+        return new BaseAsyncCallback<Object>() {
+
+            @Override
             public void onApplicationFailure(Throwable caught) {
                 close(cards, nbWF, errorMessage, statusMessage, linker, refreshData);
                 Log.error(errorMessage, caught);
                 Window.alert(errorMessage + caught.getMessage());
             }
 
+            @Override
             public void onSuccess(Object result) {
                 close(cards, nbWF, successMessage, statusMessage, linker, refreshData);
             }
@@ -531,7 +549,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         if (nbWF[0] == 0) {
             Info.display(message, message);
             WorkInProgressActionItem.removeStatus(statusMessage);
-            if(refreshData != null) {
+            if (refreshData != null) {
                 linker.refresh(refreshData);
             }
             cards.closeAllEngines();

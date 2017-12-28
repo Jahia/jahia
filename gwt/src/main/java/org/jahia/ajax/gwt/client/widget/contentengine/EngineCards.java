@@ -81,7 +81,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
     private List<ButtonBar> bars = new ArrayList<ButtonBar>();
     private List<List<Component>> barItems = new ArrayList<List<Component>>();
     private ButtonBar bar;
-    private int i = 0;
+    private int selectedCardIndex = 0;
 
     public EngineCards(EngineContainer mainContainer, Linker linker) {
         super(new BorderLayout());
@@ -171,39 +171,26 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
      */
     @Override
     public void closeEngine() {
-        components.remove(i);
-        headers.remove(i);
-        bars.remove(i);
-        barItems.remove(i);
-        list.getStore().remove(i);
-
-        if (list.getStore().getCount() == 0) {
-            closeAllEngines();
-        } else {
-            if (i >= list.getStore().getCount()) {
-                i = list.getStore().getCount() - 1;
-            }
-            list.getSelectionModel().select(i, false);
-        }
+        closeEngine(selectedCardIndex);
     }
 
     private void updateView() {
         if (list.getSelectionModel().getSelectedItem() == null) {
             return;
         }
-        String name = components.get(i).getClass().getName();
+        String name = components.get(selectedCardIndex).getClass().getName();
         name = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
         removeStyleName(name + "-ctn");
         mainContainer.getPanel().removeStyleName(name + "-card");
-        i = list.getStore().indexOf(list.getSelectionModel().getSelectedItem());
+        selectedCardIndex = list.getStore().indexOf(list.getSelectionModel().getSelectedItem());
 
-        name = components.get(i).getClass().getName();
+        name = components.get(selectedCardIndex).getClass().getName();
         name = name.substring(name.lastIndexOf('.') + 1).toLowerCase();
         addStyleName(name + "-ctn");
         mainContainer.getPanel().addStyleName(name + "-card");
 
-        ((CardLayout) cardsContainer.getLayout()).setActiveItem(components.get(i));
-        mainContainer.getPanel().setHeadingHtml(headers.get(i));
+        ((CardLayout) cardsContainer.getLayout()).setActiveItem(components.get(selectedCardIndex));
+        mainContainer.getPanel().setHeadingHtml(headers.get(selectedCardIndex));
     }
 
     /**
@@ -217,7 +204,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
     }
 
     public Component getCurrentComponent() {
-        return components.get(i);
+        return components.get(selectedCardIndex);
     }
 
     /**
@@ -239,5 +226,35 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         list.getStore().removeAll();
         mainContainer.closeEngine();
 
+    }
+
+    /**
+     * Close a single card
+     * @param cardIndex The index of the card to close
+     */
+    public void closeEngine(int cardIndex) {
+
+        components.remove(cardIndex);
+        headers.remove(cardIndex);
+        bars.remove(cardIndex);
+        barItems.remove(cardIndex);
+        list.getStore().remove(cardIndex);
+
+        if (list.getStore().getCount() == 0) {
+            closeAllEngines();
+        } else {
+            if (selectedCardIndex >= list.getStore().getCount()) {
+                selectedCardIndex = list.getStore().getCount() - 1;
+            }
+            list.getSelectionModel().select(selectedCardIndex, false);
+        }
+    }
+
+    /**
+     * Close a single card
+     * @param card The card to close
+     */
+    public void closeEngine(Component card) {
+        closeEngine(components.indexOf(card));
     }
 }

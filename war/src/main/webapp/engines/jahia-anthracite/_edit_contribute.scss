@@ -416,11 +416,16 @@ body[data-indigo-app="contribute"] {
             display: inline-block;
             margin-top: 7px;
 
+            // =======> @Toto needs to add classes for every btns to use better selectors!
             &:nth-child(5) table {
                 @extend %CSS_BLOCK--CONTRIBUTE--EDIT--BUTTON;
             }
 
             &:nth-child(6) table {
+                @extend %CSS_BLOCK--CONTRIBUTE--EDITPAGE--BUTTON;
+            }
+
+            &:nth-child(7) table {
                 @extend %CSS_BLOCK--CONTRIBUTE--NEWPAGE--BUTTON;
             }
         }
@@ -1640,6 +1645,26 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 
     &::after {
         content: $text_create_page;
+        line-height: 29px;
+        font-size: 11px;
+        opacity: 1;
+    }
+}
+
+// Edit Page =======> Test (to be improved!)
+%CSS_BLOCK--CONTRIBUTE--EDITPAGE--BUTTON {
+    background: url(./images/icons/tabs-create-white@X2.png) no-repeat top 3px left;
+    background-size: 21px;
+    padding-left: 20px;
+    margin-left: 10px;
+    margin-top: 4px;
+
+    > tbody {
+        display: none;
+    }
+
+    &::after {
+        content: "Edit page";
         line-height: 29px;
         font-size: 11px;
         opacity: 1;

@@ -3886,7 +3886,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		&:nth-child(3) .x-btn-icon {
 			height: 27px;
 			padding: 0 8px;
-			background: _theme-color(quinary); /* TO THEME */
+			background: _theme-color(quinary);
 			margin-left: -4px;
 
 			&:before {
@@ -3895,10 +3895,9 @@ body[data-indigo-gwt-side-panel="open"] {
 				top: 6px;
 				position: relative;
 				text-align: center;
-				font-family: "Nunito Sans", sans-serif;
 				font-size: 11px;
-				color: _theme-color(secondary, a); /* TO THEME */
-				font-weight: 100;
+				color: _theme-color(secondary, g);
+				//font-weight: 100;
 			}
 
 			> tbody {

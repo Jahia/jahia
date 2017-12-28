@@ -45,6 +45,8 @@ package org.jahia.services.content.rules;
 
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jahia.services.content.JCRNodeWrapper;
 
 public class PublishedNodeFact extends AbstractNodeFact {
@@ -73,15 +75,23 @@ public class PublishedNodeFact extends AbstractNodeFact {
     public boolean isUnpublished() {
         return unpublished;
     }
-
+    
+    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!super.equals(o)) return false;
-
-        PublishedNodeFact that = (PublishedNodeFact) o;
-
-        if (language != null ? !language.equals(that.language) : that.language != null)
+        if (this == o) {
+            return true;
+        }
+        if (o == null || o.getClass() != getClass()) {
             return false;
-        return unpublished == that.unpublished;
+        }
+        PublishedNodeFact that = (PublishedNodeFact)o;
+        return new EqualsBuilder().appendSuper(super.equals(o)).append(this.getLanguage(), that.getLanguage())
+                .append(this.isUnpublished(), that.isUnpublished()).isEquals();
+    }
+    
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(node).append(workspace).append(
+                operationType).append(language).append(unpublished).toHashCode();
     }
 }

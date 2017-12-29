@@ -105,7 +105,6 @@ public class VanityUrlManager {
      * @return the list of VanityUrl beans
      * @throws RepositoryException if there was an unexpected exception accessing the repository
      */
-    @SuppressWarnings("deprecation")
     public List<VanityUrl> findExistingVanityUrls(String url, String site,
             JCRSessionWrapper session) throws RepositoryException {
         StringBuilder sql2 = new StringBuilder( "SELECT * FROM [")
@@ -116,7 +115,7 @@ public class VanityUrlManager {
                     .append(JCRContentUtils.sqlEncode(site))
                     .append("') AND ");
         }
-        sql2.append("vanityURL.[").append(PROPERTY_URL).append("] LIKE ")
+        sql2.append("vanityURL.[").append(PROPERTY_URL).append("] = ")
                 .append(JCRContentUtils.stringToQueryLiteral(url));
 
         Query vanityUrlsQuery = session.getWorkspace().getQueryManager().createQuery(sql2.toString(), "JCR-SQL2");

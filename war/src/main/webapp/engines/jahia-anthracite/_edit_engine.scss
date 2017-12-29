@@ -2140,15 +2140,18 @@ div.engine-window {
 	#JahiaGxtEditEnginePanel-usages {
 
 		.x-grid3-row.x-unselectable-single {
-			background: _theme-color(primary, c) !important; /* TO THEME */
-			color: _theme-color(primary, d);/* TO THEME */
+			background: transparent !important;
 			padding-top: 7px;
-			border-bottom: 2px solid _theme-color(primary); /* TO THEME */
 
 			a {
-				color: _theme-color(secondary);
+				color: _theme-color(primary);
 				text-decoration: none;
-				padding-left: 8px;
+				font-weight: 600;
+				border-bottom: 1px dashed _theme-color(primary);
+			}
+
+			div {
+	    	color: _theme-color(primary, d) !important;
 			}
 
 		}
@@ -2166,7 +2169,7 @@ div.engine-window {
 			}
 
 			.x-btn-small.x-btn-icon-small-left {
-				background: _theme-color(primary, c); /* TO THEME */
+				//background: _theme-color(primary, c); /* TO THEME */
 
 				button {
 					color: _theme-color(secondary); /* TO THEME */

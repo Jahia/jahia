@@ -3440,7 +3440,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 /////////////////////////////////////////////////
-// FILE UPLOAD & IMPORT/EXPORT MODAL ////////////
+// MODALS ///////////////////////////////////////
 /////////////////////////////////////////////////
 
 
@@ -3453,7 +3453,8 @@ body[data-indigo-gwt-side-panel="open"] {
 .x-window.preview-window,
 .x-window.image-crop,
 .x-window.image-resize,
-.x-window.image-rotate {	// Temporary selector for image crop - MANAGERS
+.x-window.image-rotate,
+.x-window.download-file {
 	background: transparent;
 	z-index: 999999 !important;
 

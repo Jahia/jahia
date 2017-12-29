@@ -2254,13 +2254,13 @@ div.engine-window {
 
 	#JahiaGxtEditEnginePanel-versioning {
 		@include button("FIELDSET");
+		padding-top: 50px;
 
-
-		// COmpare button
+		// Compare button
 		.x-btn {
 			width: 46px!important;
 			height: 23px;
-			background: url($ICON--DIFF--WHITE) no-repeat center center;
+			background: url(./images/icons/compare_black.svg) no-repeat center center;
 			background-size: 46px 23px;
 			opacity: 0.8;
 
@@ -2292,7 +2292,7 @@ div.engine-window {
 
 		.x-grid3-col-label {
 			padding: 5px 10px 5px 4px!important;
-			@include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
+			@include text(12px, _theme-color(primary), $FONT--WEIGHT---EXTRALIGHT);
 		}
 
 		.x-grid3-row.x-grid3-row-selected {

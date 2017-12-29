@@ -85,7 +85,7 @@ import java.util.Map;
  */
 public class ModuleHelper {
 
-    private static Logger logger = LoggerFactory.getLogger(ModuleHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModuleHelper.class);
 
     private static ModuleReleaseInfo toModuleReleaseInfo(GWTModuleReleaseInfo gwtInfo) {
         ModuleReleaseInfo info = new ModuleReleaseInfo();
@@ -139,8 +139,8 @@ public class ModuleHelper {
         File sources = getSources(moduleId, session);
         JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackageById(moduleId);
         for (String def : templatePackage.getDefinitionsFiles()) {
-            File defFile = new File(sources,"src" + File.separator + "main" + File.separator + "resources" + File.separator + def);
-            JahiaCndReader r = new JahiaCndReader(new FileReader(defFile),defFile.getName(),moduleId, NodeTypeRegistry.getInstance());
+            File defFile = new File(sources, "src" + File.separator + "main" + File.separator + "resources" + File.separator + def);
+            JahiaCndReader r = new JahiaCndReader(new FileReader(defFile), defFile.getName(), moduleId, NodeTypeRegistry.getInstance());
             try {
                 r.parse();
             } catch (ParseException e) {

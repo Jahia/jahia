@@ -4316,6 +4316,46 @@ body[data-indigo-gwt-side-panel="open"] {
 }
 
 
+
+// Download modal
+
+.x-window.download-file  {
+
+	.x-window-bwrap {
+		min-height: 87px;
+
+		.x-window-body {
+			min-height: 87px;
+
+			a {
+				text-decoration: none;
+				font-size: 12px;
+				font-weight: 600;
+				color: _theme-color(tertiary);
+				border-bottom: 1px dashed _theme-color(tertiary);
+			}
+
+		}
+
+	}
+
+	.x-window-header .x-panel-toolbar {
+		display: block;
+
+		table tbody tr td .x-tool-close {
+			height: 22px;
+			width: 22px;
+			background-image: url(./images/icon-close-large.png);
+			background-position: initial !important;
+			margin-top: 8px;
+			pointer-events: all;
+		}
+
+	}
+
+}
+
+
 /////////////////////////////////////////////////
 // COMPARE PANEL ////////////////////////////////
 /////////////////////////////////////////////////

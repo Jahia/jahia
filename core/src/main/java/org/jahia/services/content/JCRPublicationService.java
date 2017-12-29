@@ -1019,38 +1019,40 @@ public class JCRPublicationService extends JahiaService {
         } else {
             checkedUuids.addAll(uuids);
         }
-        JCRObservationManager.pushEventListenersAvailableDuringPublishOnly();
-        try {
-            JCRCallback<Object> callback = new JCRCallback<Object>() {
-                public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
-                    for (ListIterator<String> it = checkedUuids.listIterator(checkedUuids.size()); it.hasPrevious();) {
-                        String uuid = it.previous();
-                        if (uuid != null) {
-                            JCRNodeWrapper destNode = sourceSession.getNodeByIdentifier(uuid);
-                            destNode.setProperty(Constants.PUBLISHED, false);
-                            boolean doLogging = loggingService.isEnabled();
-                            if (doLogging) {
-                                Integer operationType = JCRObservationManager.getCurrentOperationType();
-                                if (operationType != null && operationType == JCRObservationManager.IMPORT) {
-                                    doLogging = false;
-                                }
-                            }
-                            if (doLogging) {
-                                String userID = destNode.getSession().getUserID();
-                                if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
-                                    userID = userID.substring(JahiaLoginModule.SYSTEM.length());
-                                }
-                                loggingService.logContentEvent(userID, "", "", destNode.getIdentifier(), destNode.getPath(),
-                                        destNode.getPrimaryNodeTypeName(), "unpublishedNode",
-                                        destNode.getSession().getWorkspace().getName());
+
+        JCRCallback<Object> callback = new JCRCallback<Object>() {
+            public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
+                for (ListIterator<String> it = checkedUuids.listIterator(checkedUuids.size()); it.hasPrevious(); ) {
+                    String uuid = it.previous();
+                    if (uuid != null) {
+                        JCRNodeWrapper destNode = sourceSession.getNodeByIdentifier(uuid);
+                        destNode.setProperty(Constants.PUBLISHED, false);
+                        boolean doLogging = loggingService.isEnabled();
+                        if (doLogging) {
+                            Integer operationType = JCRObservationManager.getCurrentOperationType();
+                            if (operationType != null && operationType == JCRObservationManager.IMPORT) {
+                                doLogging = false;
                             }
                         }
+                        if (doLogging) {
+                            String userID = destNode.getSession().getUserID();
+                            if ((userID != null) && (userID.startsWith(JahiaLoginModule.SYSTEM))) {
+                                userID = userID.substring(JahiaLoginModule.SYSTEM.length());
+                            }
+                            loggingService.logContentEvent(userID, "", "", destNode.getIdentifier(), destNode.getPath(),
+                                    destNode.getPrimaryNodeTypeName(), "unpublishedNode",
+                                    destNode.getSession().getWorkspace().getName());
+                        }
                     }
-                    sourceSession.save();
-                    return null;
                 }
-            };
-            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, EDIT_WORKSPACE, null, callback);
+                sourceSession.save();
+                return null;
+            }
+        };
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, EDIT_WORKSPACE, null, callback);
+
+        JCRObservationManager.pushEventListenersAvailableDuringPublishOnly();
+        try {
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, LIVE_WORKSPACE, null, callback);
         } finally {
             JCRObservationManager.popEventListenersAvailableDuringPublishOnly();

@@ -2728,14 +2728,14 @@ form,
 	// Popup image preview (used in pickers)
 	#JahiaGxtImagePopup {
 
-		// margin-top: -112px; // Offset the title
-		margin-top: calc(-50vh + 170px);
-		z-index: 1110!important;
-		z-index: 999910 !important;
-
-		.x-resizable-handle {
-			display: none;
-		}
+		// // margin-top: -112px; // Offset the title
+		// margin-top: calc(-50vh + 170px);
+		// z-index: 1110!important;
+		// z-index: 999910 !important;
+    //
+		// .x-resizable-handle {
+		// 	display: none;
+		// }
 
 		&:before {
 			content: "Preview";
@@ -2769,36 +2769,36 @@ form,
 
 
 
-		.x-window-tl {
-			position: absolute;
-			bottom: -47px; // Negate the offset added to main container of popup
-			left: -3px;
-			z-index: 99;
-		}
-
-		// Image Container
-		.x-window-ml {
-			// z-index: 9999;
-			// position: fixed;
-			position: relative;
-			z-index: 99;
-
-			img {
-				height: auto;
-			}
-		}
-
-		.x-window-bl {
-			// Used as modal mask
-			display: block;
-		    width: 100%;
-		    height: 100%;
-		    position: fixed;
-		    background: _property($BODY--BG, $PREVIEW)!important;
-		    top: 0;
-		    left: 0;
-		    z-index: 9;
-		}
+		// .x-window-tl {
+		// 	position: absolute;
+		// 	bottom: -47px; // Negate the offset added to main container of popup
+		// 	left: -3px;
+		// 	z-index: 99;
+		// }
+    //
+		// // Image Container
+		// .x-window-ml {
+		// 	// z-index: 9999;
+		// 	// position: fixed;
+		// 	position: relative;
+		// 	z-index: 99;
+    //
+		// 	img {
+		// 		height: auto;
+		// 	}
+		// }
+    //
+		// .x-window-bl {
+		// 	// Used as modal mask
+		// 	display: block;
+		//     width: 100%;
+		//     height: 100%;
+		//     position: fixed;
+		//     background: _property($BODY--BG, $PREVIEW)!important;
+		//     top: 0;
+		//     left: 0;
+		//     z-index: 9;
+		// }
 
 		.x-window-header {
 
@@ -2817,75 +2817,64 @@ form,
 				display: none;
 			}
 
-			.x-tool-close {
-				width: auto!important;
-				height: auto!important;
-				font-size: 1px;
-				// position: absolute!important;
-    			// right: 18px;
-				pointer-events: all;
+			// .x-tool-close {
+			// 	width: auto!important;
+			// 	height: auto!important;
+			// 	font-size: 1px;
+			// 	// position: absolute!important;
+    	// 		// right: 18px;
+			// 	pointer-events: all;
+      //
+			// 	&::after {
+			// 		content: "Cancel";
+			// 		display: block;
+			// 		width: 100%;
+			// 		height: 100%;
+			// 		box-sizing: border-box;
+      //
+			// 		@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR;
+      //
+			// 		&:hover {
+			// 			@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR;
+      //
+			// 		}
+      //
+			// 	}
+      //
+			// }
 
-				&::after {
-					content: "Cancel";
-					display: block;
-					width: 100%;
-					height: 100%;
-					box-sizing: border-box;
+			// .x-btn-text {
+			// 	width: auto!important;
+			// 	height: auto!important;
+			// 	font-size: 1px;
+			// 	// position: absolute!important;
+    	// 		// right: 18px;
+			// 	pointer-events: all;
+      //
+			// 	&::after {
+			// 		content: "Save";
+			// 		display: block;
+			// 		width: 100%;
+			// 		height: 100%;
+			// 		box-sizing: border-box;
+			// 		margin-top: -1px;
+			// 		padding: 5px 10px;
+      //
+			// 		@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED;
+      //
+			// 		&:hover {
+			// 			@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED;
+      //
+			// 		}
+      //
+			// 	}
+      //
+			// 	// REMOVE IMAGE
+			// 	img {
+			// 		display: none;
+			// 	}
+			// }
 
-					@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR;
-
-					&:hover {
-						@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR;
-
-					}
-
-				}
-
-			}
-
-			.x-btn-text {
-				width: auto!important;
-				height: auto!important;
-				font-size: 1px;
-				// position: absolute!important;
-    			// right: 18px;
-				pointer-events: all;
-
-				&::after {
-					content: "Save";
-					display: block;
-					width: 100%;
-					height: 100%;
-					box-sizing: border-box;
-					margin-top: -1px;
-					padding: 5px 10px;
-
-					@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED;
-
-					&:hover {
-						@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED;
-
-					}
-
-				}
-
-				// REMOVE IMAGE
-				img {
-					display: none;
-				}
-			}
-		}
-
-		// Use as modal mask
-		.x-window-bc .x-window-footer {
-			// position: fixed;
-		    // background: red!important;
-		    // width: 100%;
-		    // height: 100%;
-		    // left: 0;
-		    // top: 0;
-		    // z-index: 9;
-		}
 	}
 
 

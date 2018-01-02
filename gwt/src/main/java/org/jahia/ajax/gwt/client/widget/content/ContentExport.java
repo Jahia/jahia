@@ -82,6 +82,15 @@ public class ContentExport extends Window {
         final ProgressBar progressBar = new ProgressBar();
         add(progressBar);
         Button b;
+
+        b = new Button(Messages.get("label.close"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                hide();
+            }
+        });
+        b.addStyleName("button-close");
+        addButton(b);
+
         if (!n.getNodeTypes().contains("jnt:page")) {
             HorizontalPanel p = new HorizontalPanel();
             p.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
@@ -136,13 +145,6 @@ public class ContentExport extends Window {
         }
 */
 
-        b = new Button(Messages.get("label.close"), new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                hide();
-            }
-        });
-        b.addStyleName("button-close");
-        addButton(b);
     }
 
 

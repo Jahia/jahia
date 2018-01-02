@@ -279,9 +279,7 @@ public class ConflictResolver {
                 JCRNodeWrapper targetSubNode = (JCRNodeWrapper) targetSubNodes.next();
                 if (sourceNode.hasNode(targetSubNode.getName())) {
                     JCRNodeWrapper sourceSubNode = sourceNode.getNode(targetSubNode.getName());
-                    // the order of the check is important, as we will usually have less nodes of type jmix:publication than versioned nodes, so we fail-fast
-                    if (!targetSubNode.isVersioned() && !sourceSubNode.isVersioned() &&
-                            !targetSubNode.isNodeType(Constants.JAHIAMIX_PUBLICATION) && !sourceSubNode.isNodeType(Constants.JAHIAMIX_PUBLICATION) &&
+                    if (shouldPublish(targetSubNode) && shouldPublish(sourceSubNode) &&
                             JCRPublicationService.supportsPublication(targetSubNode.getSession(), targetSubNode)) {
                         diffs.addAll(compare(sourceSubNode, targetSubNode, addPath(basePath, targetSubNode.getName())));
                     }
@@ -360,6 +358,10 @@ public class ConflictResolver {
 
     }
 
+    private boolean shouldPublish(JCRNodeWrapper node) throws RepositoryException {
+        return !node.isVersioned() && !node.isNodeType(Constants.JAHIAMIX_PUBLICATION);
+    }
+
     interface Diff {
         boolean apply() throws RepositoryException;
     }
@@ -376,7 +378,7 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            return !(targetNode.hasNode(oldName) && !targetNode.getNode(oldName).isVersioned()) ||
+            return !(targetNode.hasNode(oldName) && shouldPublish(targetNode.getNode(oldName))) ||
                     targetNode.getNode(oldName).rename(newName);
         }
 
@@ -424,7 +426,7 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            if (sourceNode.getNode(newName).isVersioned() || targetNode.hasNode(newName)) {
+            if (!shouldPublish(sourceNode.getNode(newName)) || targetNode.hasNode(newName)) {
                 if (targetNode.hasNode(newName) && (nextSibling == null || targetNode.hasNode(nextSibling)) && targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
                     if (!newName.contains("/") && (nextSibling == null || !nextSibling.contains("/"))) {
                         // todo reorder non-versionable sub nodes

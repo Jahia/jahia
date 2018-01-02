@@ -2727,156 +2727,72 @@ form,
 
 	// Popup image preview (used in pickers)
 	#JahiaGxtImagePopup {
-
-		// // margin-top: -112px; // Offset the title
 		// margin-top: calc(-50vh + 170px);
-		// z-index: 1110!important;
-		// z-index: 999910 !important;
-    //
-		// .x-resizable-handle {
-		// 	display: none;
-		// }
+		 z-index: 999910 !important;
+
+		.x-resizable-handle {
+			display: none;
+		}
+
+		.x-tool-refresh {
+			display: none;
+		}
 
 		&:before {
 			content: "Preview";
 			display: block;
 			width: 100%;
-			/* text-align: center; */
 			pointer-events: none;
 			margin-left: -2px;
 			position: relative;
 			z-index: 99;
 			top: -50px;
-
 			@include text(36px, _property($TITLE--COLOR, $PREVIEW), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
 		}
 
+		.image-popup .x-window-tl {
+			position: absolute !important;
+			top: -46px;
+			right: 20px;
+		}
+
+		.x-window-header .x-panel-toolbar {
+			display: block;
+			margin-top: 8px;
+			pointer-events: all;
+
+			table tbody tr td .x-tool-close {
+				height: 22px;
+				width: 22px;
+				background-image: url(./images/icon-close-large.png);
+				background-position: initial !important;
+			}
+
+		}
+
 		.x-window-bwrap {
-			margin-top: -50px;
-
-			&:before {
-				content: attr(data-file-name);
-				display: block;
-				width: 100%;
-				/* text-align: center; */
-				@include text(16px, _property($SUBTITLE--COLOR, $PREVIEW), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
-				pointer-events: none;
-				margin-bottom: 9px;
-				position: relative;
-				z-index: 999;
-			}
+			margin-top: -36px;
 		}
 
-
-
-		// .x-window-tl {
-		// 	position: absolute;
-		// 	bottom: -47px; // Negate the offset added to main container of popup
-		// 	left: -3px;
-		// 	z-index: 99;
-		// }
+		// .x-window-bwrap {
+		// 	margin-top: -50px;
     //
-		// // Image Container
-		// .x-window-ml {
-		// 	// z-index: 9999;
-		// 	// position: fixed;
-		// 	position: relative;
-		// 	z-index: 99;
-    //
-		// 	img {
-		// 		height: auto;
+		// 	&:before {
+		// 		content: attr(data-file-name);
+		// 		display: block;
+		// 		width: 100%;
+		// 		@include text(16px, _property($SUBTITLE--COLOR, $PREVIEW), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
+		// 		pointer-events: none;
+		// 		margin-bottom: 9px;
+		// 		position: relative;
+		// 		z-index: 999;
 		// 	}
-		// }
     //
-		// .x-window-bl {
-		// 	// Used as modal mask
-		// 	display: block;
-		//     width: 100%;
-		//     height: 100%;
-		//     position: fixed;
-		//     background: _property($BODY--BG, $PREVIEW)!important;
-		//     top: 0;
-		//     left: 0;
-		//     z-index: 9;
 		// }
 
-		.x-window-header {
-
-			.x-panel-toolbar {
-				> table {
-					// top: -18px;
-				    // position: absolute;
-				    // left: 0;
-				    // width: 100%;
-				}
-			}
-
-
-
-			.x-tool-refresh {
-				display: none;
-			}
-
-			// .x-tool-close {
-			// 	width: auto!important;
-			// 	height: auto!important;
-			// 	font-size: 1px;
-			// 	// position: absolute!important;
-    	// 		// right: 18px;
-			// 	pointer-events: all;
-      //
-			// 	&::after {
-			// 		content: "Cancel";
-			// 		display: block;
-			// 		width: 100%;
-			// 		height: 100%;
-			// 		box-sizing: border-box;
-      //
-			// 		@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR;
-      //
-			// 		&:hover {
-			// 			@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR;
-      //
-			// 		}
-      //
-			// 	}
-      //
-			// }
-
-			// .x-btn-text {
-			// 	width: auto!important;
-			// 	height: auto!important;
-			// 	font-size: 1px;
-			// 	// position: absolute!important;
-    	// 		// right: 18px;
-			// 	pointer-events: all;
-      //
-			// 	&::after {
-			// 		content: "Save";
-			// 		display: block;
-			// 		width: 100%;
-			// 		height: 100%;
-			// 		box-sizing: border-box;
-			// 		margin-top: -1px;
-			// 		padding: 5px 10px;
-      //
-			// 		@extend %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED;
-      //
-			// 		&:hover {
-			// 			@extend %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED;
-      //
-			// 		}
-      //
-			// 	}
-      //
-			// 	// REMOVE IMAGE
-			// 	img {
-			// 		display: none;
-			// 	}
-			// }
-
-		}
 	}
+
+}
 
 
 

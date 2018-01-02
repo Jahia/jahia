@@ -3945,7 +3945,7 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	.x-toolbar-left-row .x-toolbar-cell {
 
-		&:not(:last-child) .x-btn-text {
+		&:not(:first-child) .x-btn-text {
 			background: _theme-color(quinary) !important;
 			color: _theme-color(secondary, a) !important;
 		}

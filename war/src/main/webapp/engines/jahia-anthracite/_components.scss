@@ -2750,7 +2750,7 @@ form,
 			@include text(36px, _property($TITLE--COLOR, $PREVIEW), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
 		}
 
-		.image-popup .x-window-tl {
+		&.x-window > .x-window-tl {
 			position: absolute !important;
 			top: -46px;
 			right: 20px;
@@ -2790,7 +2790,7 @@ form,
     //
 		// }
 
-}
+	}
 
 
 

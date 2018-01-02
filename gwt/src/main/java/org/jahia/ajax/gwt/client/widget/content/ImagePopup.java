@@ -92,39 +92,8 @@ public class ImagePopup extends Window {
         setModal(true);
         setHeaderVisible(true);
         setAutoHide(false);
-        setId("JahiaGxtImagePopup");
-        if (linker instanceof ManagerLinker && ((ManagerLinker) linker).getBottomRightObject() instanceof PickedContentView) {
-            Button saveButton = new Button(Messages.get("label.save"));
-            saveButton.addStyleName("button-save");
-            saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    BottomRightComponent buttonBar = ((ManagerLinker) linker).getBottomRightObject();
-                    if (buttonBar instanceof PickedContentView) {
-                        List<GWTJahiaNode> sel = new ArrayList<GWTJahiaNode>();
-                        sel.add(n);
-                        ((PickedContentView) buttonBar).setSelection(sel);
-                        ((PickedContentView) buttonBar).getSaveButton().fireEvent(Events.Select);
-                        hide();
-                    }
-                }
-            });
-            getHeader().addTool(saveButton);
-        }
 
-        getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
-            public void componentSelected(IconButtonEvent event) { // TODO improve ratio button
-                double expectedHeight = Math.floor((getWidth()) / ratio);
-                if (expectedHeight > getHeight()) {
-                    setHeight(Double.valueOf(expectedHeight).intValue());
-                }
-                double expectedWidth = Math.floor((getHeight()) * ratio);
-                if (expectedWidth > getWidth()) {
-                    setWidth(Double.valueOf(expectedWidth).intValue());
-                }
-                fireEvent(Events.Resize);
-            }
-        }));
+        setId("JahiaGxtImagePopup");
 
         addListener(Events.Resize, new Listener<WindowEvent>() {
             public void handleEvent(WindowEvent event) {

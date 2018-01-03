@@ -2294,7 +2294,7 @@ div.engine-window {
 		}
 
 		.x-grid3-col-label {
-			padding: 5px 10px 5px 4px!important;
+			padding: 5px 10px 5px 0 !important;
 			@include text(12px, _theme-color(primary), $FONT--WEIGHT---EXTRALIGHT);
 		}
 
@@ -2308,6 +2308,22 @@ div.engine-window {
 
 		.x-grid3-row {
 			margin-bottom: 3px;
+		}
+
+		.x-grid3-scroller > .x-grid3-body > .x-grid3-row.x-grid3-row {
+			background: _property($FIELDSET--BG, $EDIT-ENGINE) !important;
+			border: 1px solid _theme-color(secondary, b) !important;
+			padding: 52px 22px 46px 30px;
+			box-sizing: border-box;
+
+			&:before {
+				content: "Compare versions";
+		    text-transform: uppercase;
+		    position: absolute;
+		    top: 18px;
+		    color: _theme-color(primary);
+			}
+
 		}
 
 	}

@@ -54,6 +54,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -347,11 +348,12 @@ public class ManagerLinker implements Linker {
             n.setName(path.substring(path.lastIndexOf("/")));
             l.add(n);
         }
-        m_topRightComponent.selectNodes(l);
-        if (l.size() > 0) {
-            m_bottomRightComponent.fillData(l.get(0));
+        if (m_bottomRightComponent != null) {
+            m_topRightComponent.selectNodes(l);
+            if (l.size() > 0) {
+                m_bottomRightComponent.fillData(l.get(0));
+            }
         }
-
     }
 
     public void refresh(Map<String, Object> data) {

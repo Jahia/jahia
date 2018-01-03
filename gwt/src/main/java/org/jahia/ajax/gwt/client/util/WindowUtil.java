@@ -91,6 +91,28 @@ public class WindowUtil {
     }-*/;
 
     /**
+     * This method has been implemented to fix the bug related to QA-9793 / QA-10230
+     * It uses the same functions as jQuery method to get the scroll position of the window
+     * @param elem  Element
+     * @return      the scroll top position of the window that contains the element
+     */
+    public static native int getScrollTop(Element elem) /*-{
+        win = elem.ownerDocument.defaultView;
+        return win.pageYOffset;
+    }-*/;
+
+    /**
+     * This method has been implemented to fix the bug related to QA-9793 / QA-10230
+     * It uses the same functions as jQuery method to get the scroll position of the window
+     * @param elem  Element
+     * @return      the scroll top position of the window that contains the element
+     */
+    public static native int getScrollLeft(Element elem) /*-{
+        win = elem.ownerDocument.defaultView;
+        return win.pageXOffset;
+    }-*/;
+
+    /**
      * Uses methods of this utility class to calculate the Point of the specified element.
      * 
      * @param elem the element to calculate Point data for

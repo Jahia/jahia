@@ -79,6 +79,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.WindowUtil;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
@@ -1256,8 +1257,9 @@ public class MainModule extends Module {
     // save the current position of the frame
     public Point saveCurrentFramePosition() {
         if (!GXT.isIE10) {
-            framePosition.x = IFrameElement.as(frame.getElement()).getContentDocument().getScrollLeft();
-            framePosition.y = IFrameElement.as(frame.getElement()).getContentDocument().getScrollTop();
+
+            framePosition.x = WindowUtil.getScrollLeft(getInnerElement());
+            framePosition.y = WindowUtil.getScrollTop(getInnerElement());
         } else {
             framePosition.x=getIE10FrameLeft();
             framePosition.y=getIE10FrameTop();

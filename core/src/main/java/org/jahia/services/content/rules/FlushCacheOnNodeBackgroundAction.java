@@ -45,11 +45,13 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.files.FileCacheManager;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEvent;
 
 import javax.jcr.RepositoryException;
 
@@ -69,6 +71,8 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
     private int startLevel;
 
     private int levelsUp;
+
+    private String eventMessage;
 
     public FlushCacheOnNodeBackgroundAction() {
         fileCacheManager = FileCacheManager.getInstance();
@@ -123,6 +127,9 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
                 currentNodePath = StringUtils.substringBeforeLast(currentNodePath,"/");
             }
         }
+        if (eventMessage != null) {
+            SpringContextSingleton.getInstance().publishEvent(new CacheFlushedEvent(node.getPath(), eventMessage, startLevel, levelsUp));
+        }
     }
 
     public void setStartLevel(int startLevel) {
@@ -131,5 +138,38 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
 
     public void setLevelsUp(int endLevel) {
         this.levelsUp = endLevel;
+    }
+
+    public void setEventMessage(String eventMessage) {
+        this.eventMessage = eventMessage;
+    }
+
+    public static class CacheFlushedEvent extends ApplicationEvent {
+        private String reason;
+        private int startLevel;
+        private int levelsUp;
+
+        public CacheFlushedEvent(String path, String reason, int startLevel, int levelsUp) {
+            super(path);
+            this.reason = reason;
+            this.startLevel = startLevel;
+            this.levelsUp = levelsUp;
+        }
+
+        public String getPath() {
+            return (String) getSource();
+        }
+
+        public String getReason() {
+            return reason;
+        }
+
+        public int getStartLevel() {
+            return startLevel;
+        }
+
+        public int getLevelsUp() {
+            return levelsUp;
+        }
     }
 }

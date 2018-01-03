@@ -3521,7 +3521,8 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		.my-paging-display {
 			text-transform: uppercase;
-			color: _theme-color(secondary, c); /* TO THEME */
+			//color: _theme-color(secondary, c);
+
 		}
 
 	}
@@ -3629,8 +3630,9 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		.x-grid3-scroller {
-			padding: 13px 10px 0 20px;
+			padding: 6px 10px 0 20px;
 			box-sizing: border-box;
+			height: calc(100% - 28px) !important;
 		}
 
 		.x-grid3-row {
@@ -3672,10 +3674,11 @@ body[data-indigo-gwt-side-panel="open"] {
 	// pager
 
 	.x-window-body .x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct {
-		background: _theme-color(primary);
+		//background: _theme-color(primary);
 		width: calc(100% + 10px) !important;
-		padding: 8px;
-		margin: 8px 0;
+		padding: 8px 16px;
+		margin: 6px 0;
+		border-bottom: 1px dashed _theme-color(secondary, d) !important;
 	}
 
 	.x-toolbar-left-row .x-toolbar-cell .x-btn-text {
@@ -3701,27 +3704,27 @@ body[data-indigo-gwt-side-panel="open"] {
 			}
 
 			&:nth-child(1) {
-				background: url(./images/icons/icon_arrow_left_double_white@X2.png) no-repeat center center/14px 14px;
+				background: url(./images/icons/icon_arrow_left_double_grey@X2.png) no-repeat center center/14px 14px;
 				margin-left: 0px;
 			}
 
 			&:nth-child(2) {
-				background: url(./images/icons/icon_arrow_left_single_white@X2.png) no-repeat center center/14px 14px;
+				background: url(./images/icons/icon_arrow_left_single_grey@X2.png) no-repeat center center/14px 14px;
 				margin-left: 5px;
 			}
 
 			&:nth-child(8) {
-				background: url(./images/icons/icon-next-white@X2.png) no-repeat center center/14px 14px;
+				background: url(./images/icons/icon-next-grey@X2.png) no-repeat center center/14px 14px;
 				margin-right: 5px;
 			}
 
 			&:nth-child(9) {
-				background: url(./images/icons/icon_arrow_right_double_white@X2.png) no-repeat center center/14px 14px;
+				background: url(./images/icons/icon_arrow_right_double_grey@X2.png) no-repeat center center/14px 14px;
 				margin-right: 5px;
 			}
 
 			&:nth-child(11) {
-				background: url(./images/icons/icon-publication-launcher.png) no-repeat center center/16px 12px;
+				background: url(./images/icons/icon-publication-launcher-grey.png) no-repeat center center/16px 12px;
 			}
 
 			.my-paging-text {
@@ -3802,7 +3805,6 @@ body[data-indigo-gwt-side-panel="open"] {
 				text-align: center;
 				font-size: 11px;
 				color: _theme-color(secondary, g);
-				//font-weight: 100;
 			}
 
 			> tbody {
@@ -3811,6 +3813,10 @@ body[data-indigo-gwt-side-panel="open"] {
 
 		}
 
+	}
+
+	div[role="combobox"] img {
+		background: url(./images/icons/combo-arrow-grey.png) no-repeat center center transparent !important;
 	}
 
 }

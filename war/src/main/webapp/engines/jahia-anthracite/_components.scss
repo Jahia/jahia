@@ -3453,9 +3453,14 @@ body[data-indigo-gwt-side-panel="open"] {
 
 }
 
-// Resolve issue with background ( please do not use the .x-modal to mask the screen as there are many issues with z-indexes )
+
 .x-window.file-uploader {
 	top: calc(14vh) !important;
+
+	.x-window-tc {
+		margin-left: 8px;
+		margin-bottom: -12px;
+	}
 
 	.x-window-tl {
 		z-index: 99;
@@ -3463,6 +3468,12 @@ body[data-indigo-gwt-side-panel="open"] {
 
 	.x-window-bwrap {
 		background: none!important;
+
+		table.x-toolbar-ct {
+			float: right;
+			margin-right: 12px;
+		}
+
 	}
 
 	.x-window-body {
@@ -3472,8 +3483,26 @@ body[data-indigo-gwt-side-panel="open"] {
 	.x-window-ml {
 		position: relative;
 	    z-index: 999;
-	    background: _theme-color(secondary, a)!important;
+	    background: _theme-color(secondary, a) !important;
 	    padding: 10px!important;
+	}
+
+	.x-form-field-wrap {
+		margin-right: 8px;
+
+		.x-form-text {
+			background: _theme-color(secondary, g) !important;
+			color: _theme-color(primary) !important;
+		}
+
+	}
+
+	.x-form-text[disabled] {
+		border: none;
+	}
+
+	div[role="combobox"] img {
+		background: url(./images/icons/combo-arrow-grey.png) no-repeat center center transparent !important;
 	}
 
 }

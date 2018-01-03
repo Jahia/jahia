@@ -4219,6 +4219,8 @@ body[data-indigo-gwt-side-panel="open"] {
 		margin-bottom: 8px;
 		padding-bottom: 0 !important;
 		height: 100% !important;
+		height: fit-content !important;
+		max-height: calc(100% - 152px);
 	}
 
 }

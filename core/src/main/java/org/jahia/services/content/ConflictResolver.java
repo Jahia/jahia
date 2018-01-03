@@ -426,7 +426,14 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            if (!shouldPublish(sourceNode.getNode(newName)) || targetNode.hasNode(newName)) {
+            boolean shouldPublish = false;
+            try {
+                shouldPublish = shouldPublish(sourceNode.getNode(newName));
+            } catch (PathNotFoundException | InvalidItemStateException e) {
+                // these are cases when the node just got deleted in a parallel thread (live before default - see: QA-9168 , QA-10040)
+                logger.warn("Ignoring exception while handling child added conflict during publication for node: " + sourceNode.getPath() + "/" + newName, e);
+            }
+            if (!shouldPublish || targetNode.hasNode(newName)) {
                 if (targetNode.hasNode(newName) && (nextSibling == null || targetNode.hasNode(nextSibling)) && targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
                     if (!newName.contains("/") && (nextSibling == null || !nextSibling.contains("/"))) {
                         // todo reorder non-versionable sub nodes

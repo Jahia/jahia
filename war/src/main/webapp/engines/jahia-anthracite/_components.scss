@@ -4446,14 +4446,38 @@ XXX.x-window.modal-deletealljob-confirm {
 
 	// pager
 
-	.x-window-body .x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct {
-		//background: _theme-color(primary);
-		width: calc(100% + 10px) !important;
-		padding: 8px 16px;
-		margin: 6px 0;
-		border-bottom: 1px dashed _theme-color(secondary, d) !important;
-		margin-top: 4px;
-		padding-top: 4px;
+	.x-window-body {
+
+		> div {
+
+			> table {
+				display: block;
+
+				> tbody {
+					display: block;
+
+					> tr {
+						display: block;
+
+						> td {
+							display: block;
+							padding-right: 2px;
+						}
+					}
+				}
+
+			}
+		}
+
+		.x-small-editor.x-toolbar.x-component.x-toolbar-layout-ct {
+			//background: _theme-color(primary);
+			width: calc(100% + 10px) !important;
+			padding: 8px 16px;
+			margin: 6px 0;
+			border-bottom: 1px dashed _theme-color(secondary, d) !important;
+			margin-top: 4px;
+			padding-top: 4px;
+		}
 	}
 
 	.x-toolbar-left-row .x-toolbar-cell .x-btn-text {

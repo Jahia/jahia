@@ -3940,7 +3940,7 @@
                         channelAutoFitButton = document.createElement("div"),
                         channelAutoFitButtonLabel = document.createTextNode("Autofit"),
                         channelZoomButton = document.createElement("div"),
-                        channelZoomButtonLabel = document.createTextNode("Zoom"),
+                        channelZoomButtonLabel = document.createTextNode("Default"),
                         channelSlider = document.createElement("input"),
                         channelSliderHolder = document.createElement("div"),
                         channelTitle = document.createElement("div"),
@@ -4095,6 +4095,9 @@
                         transformOrigin = "50% 0",
                         scale = (zoomSize > 0) ? (zoomSize / 100) : ((windowHeight - windowPadding) / actualHeight);
 
+					if(scale > 1){
+						scale = 1;
+					}
 
                     DexV2(".x-abs-layout-container").css({
                         transform: "scale(" + scale + ")",

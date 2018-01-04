@@ -4,6 +4,7 @@
 .x-abs-layout-container {
     // background: red;
     transition: all 0.3s ease-in 0s;
+	margin-bottom: 50px;
 }
 
 .x-viewport-contributemode {
@@ -266,7 +267,7 @@
 
         // Show when a channel has been selected
         body[data-channel] & {
-            display: inline-block;
+            // display: inline-block;
         }
 
         // Firefox fix
@@ -1551,7 +1552,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
         overflow: visible !important;
 
         &.channel-zoom {
-            // overflow: scroll!important;
+            overflow: scroll!important;
         }
 
         .x-viewport-contributemode & {

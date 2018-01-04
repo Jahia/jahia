@@ -864,11 +864,19 @@
 							font-size: 14px;
 							color: _theme-color(primary) !important;
 							font-weight: $FONT--WEIGHT---EXTRALIGHT;
+
+							img {
+								display: none;
+							}
 						}
 
 						&:first-child button {
 							background: _theme-color(tertiary) !important;
 							color: _theme-color(secondary) !important;
+							height: auto;
+						    width: auto!important;
+
+
 						}
 
 					}

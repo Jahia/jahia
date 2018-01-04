@@ -348,11 +348,9 @@ public class ManagerLinker implements Linker {
             n.setName(path.substring(path.lastIndexOf("/")));
             l.add(n);
         }
-        if (m_bottomRightComponent != null) {
-            m_topRightComponent.selectNodes(l);
-            if (l.size() > 0) {
-                m_bottomRightComponent.fillData(l.get(0));
-            }
+        m_topRightComponent.selectNodes(l);
+        if (m_bottomRightComponent != null && !l.isEmpty()) {
+            m_bottomRightComponent.fillData(l.get(0));
         }
     }
 

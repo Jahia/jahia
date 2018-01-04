@@ -3294,7 +3294,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	    right: 110px!important;
 
 		&:before {
-			content: "Cancel";
+			content: $text_cancel;
 		}
 	}
 
@@ -3383,7 +3383,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		color: #FAFAFA!important;
 
 		&:before {
-			content: "Close";
+			content: $text_done;
 		}
 	}
 

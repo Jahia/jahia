@@ -905,6 +905,20 @@ label {
 }
 
 /* Text Area */
+div.engine-panel,
+div.engine-window {
+	fieldset.x-fieldset div.x-form-field-wrap.text-area {
+		width: 100%!important;
+
+		textarea {
+			width: 100%!important;
+			box-sizing: border-box;
+		}
+
+
+	}
+}
+
 .x-form-textarea {
 	border: none;
 	height: 180px!important;
@@ -913,15 +927,18 @@ label {
 	// Exceptions ...
 	.engine-panel & {
 		@extend %CSS_BLOCK--FORM--TEXT_AREA\:EDIT_ENGINE !optional;
+		box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
 
 	}
 
 	&:hover {
 		@extend %CSS_BLOCK--FORM--TEXT_AREA---HOVER !optional;
 
+
 		// Exceptions ...
 		.engine-panel & {
 			@extend %CSS_BLOCK--FORM--TEXT_AREA---HOVER\:EDIT_ENGINE !optional;
+			box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4)!important;
 
 		}
 
@@ -933,6 +950,7 @@ label {
 		// Exceptions ...
 		.engine-panel & {
 			@extend %CSS_BLOCK--FORM--TEXT_AREA---FOCUS\:EDIT_ENGINE !optional;
+			box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4)!important;
 
 		}
 
@@ -3657,6 +3675,11 @@ body[data-indigo-gwt-side-panel="open"] {
 		margin: 1px;
 		width: calc(100% - 2px) !important;
 		box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+		color: _theme-color(primary);
+
+		&:hover {
+			color: _theme-color(primary);
+		}
 	}
 
 	> .x-resizable-handle {

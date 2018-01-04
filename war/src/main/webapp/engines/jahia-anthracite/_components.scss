@@ -1806,127 +1806,134 @@ form,
 
 
 // CKEDITOR errors
-
-.app-container .wcag-panel .x-panel-header {
-    position: initial !important;
-    padding-top: 20px;
-    left: 0;
+.x-form-invalid {
+	border: none!important;
+	background: transparent!important;
 }
-
 
 .wcag-panel {
 
-	.x-grid3 {
-		background: _theme-color(primary, b); /* TO THEME */
-
-		.x-grid3-header {
-			display: table-cell;
-			background: _theme-color(primary, d); /* TO THEME */
-			border-left-color: _theme-color(primary, d); /* TO THEME */
-			border-right-color: _theme-color(primary, d); /* TO THEME */
-			color: _theme-color(secondary); /* TO THEME */
-		}
-
-	}
+	border-width: 1px;
+	border: 1px solid _theme-color(status, error);
+	box-shadow: 0px 1px 5px rgba(0,0,0,0.4);
+	z-index: 9999;
+	position: relative;
+	background: _theme-color(status, error);
+	margin-bottom: 15px;
 
 	.x-panel-header {
-		display: block !important;
-		width: 100%;
-		color: _theme-color(secondary, a); /* TO THEME */
+	    box-sizing: border-box;
+		display: block!important;
+		background: _theme-color(status, error)!important;
+		border: none!important;
+		padding:3px;
 
-		.x-panel-toolbar {
-			margin-right: 24px;
+		> img {
+			position: relative;
+			top: 3px;
+			left: 2px;
+		}
+
+		.x-panel-header-text {
+			line-height: 21px;
+			@include text(11px, _theme-color(secondary), 500);
 		}
 
 	}
 
-	.x-panel-bwrap {
-		margin-right: 24px;
-	}
+	.x-panel-toolbar {
+		// Ignore button
+		.x-menu-check-item {
+		    background: _theme-color(secondary);
+		    padding: 3px 8px;
+			text-decoration: none;
+		    text-transform: uppercase;;
+			opacity: 0.9;
+			@include text(9px, _theme-color(status, error) !important, 800);
 
-	.x-panel-body {
-		overflow: hidden !important;
-	}
-
-}
-
-.wcag-warning-grid {
-
-	.x-grid3 {
-
-		.x-grid3-body {
-			overflow-y: scroll !important;
-			overflow-x: hidden;
-			max-height: 84px !important;
+			&:hover {
+				opacity: 1;
+			}
 		}
 
-		.x-grid3-viewport {
-			height: auto !important;
+	}
+
+	.x-grid3-header {
+		display: table-cell!important;
+		background: transparent!important;
+		padding-bottom: 3px;
+
+		.x-grid3-header {
+			display: table-cell!important;
+
+			span {
+				text-transform: uppercase;
+				@include text(9px, _theme-color(secondary, c)!important, 800);
+			}
 		}
+	}
 
-		.x-grid3-row {
-			background: _theme-color(primary, c) !important; /* TO THEME */
-			margin-top: 5px;
+	td.x-grid3-cell {
+		display: inline-block!important;
+		padding: 0 1px!important;
+		border: none!important;
+		background: transparent!important;
 
-			td.x-grid3-cell {
-				border-right-color: _theme-color(primary, g) !important; /* TO THEME */
-				line-height: 19px;
-				color: _theme-color(secondary); /* TO THEME */
-
-				.x-grid3-col-message {
-					padding-top: 5px;
-				}
-
-				.x-grid3-col-example a {
-					color: _theme-color(secondary); /* TO THEME */
-					text-decoration: none;
-					background: _theme-color(primary); /* TO THEME */
-					padding: 6px;
-					margin-left: 6px;
-				}
-
+		&.x-grid3-hd-over {
+			> div {
+				background: rgba(255, 255, 255, 0.85) !important;
 			}
 
-			.x-grid3-td-numberer {
-				background: _theme-color(primary, c); /* TO THEME */
+			a {
+				background: url("./images/icons/combo-arrow-grey.png") no-repeat center center !important;
+				width: 23px;
+			    background-size: 13px !important;
+			    opacity: 0.7;
+
+				&:hover {
+					background-color: rgba(255, 255, 255, 0.5) !important;
+				    background-size: 13px !important;
+				    opacity: 1;
+				}
 			}
 
+			span {
+				color: _theme-color(primary)!important;
+			}
 		}
 
-		.x-grid3-cell-inner.x-grid3-col-numberer {
-			color: _theme-color(white);/* TO THEME */
-			text-align: center;
-			padding: 3px 0 !important;
-			border-radius: 42px;
-			font-weight: 600;
+		div {
+			text-align: left;;
+			@include text(10px, _theme-color(secondary)!important, 400);
 		}
 
-		.x-grid3-col-type img {
-			background: none !important;
-			background-image: url(./images/icons/ic_warning@2x.png) !important;
-			background-size: contain !important;
+		a {
+			color: _theme-color(status, error) !important;
+		    background: _theme-color(secondary);
+		    padding: 3px 5px;
+		    text-decoration: none;
+			opacity: 0.9;
+
+			&:hover {
+				opacity: 1;
+			}
 		}
 
-		.x-grid3-col-context img,
-		.x-grid3-col-code img {
-			background: none !important;
-			background-image: url(./images/icons/ic_info_outline@2x.png) !important;
-			background-size: contain !important;
+		&:last-child{
+			width: auto!important;
 		}
-
-		td.x-grid3-hd-over .x-grid3-hd-inner,
-		td.x-grid3-hd-menu-open .x-grid3-hd-inner {
-			background: _theme-color(primary, d) !important; /* TO THEME */
-		}
-
-		.x-grid3-scroller {
-			overflow-x: hidden !important;
-		}
-
 	}
 
-}
+	.x-grid3-row {
+		overflow: hidden;
 
+		&.x-grid3-row-selected,
+		&.x-grid3-row-over,
+		&.x-grid3-row-over.x-grid3-row-selected {
+			background: transparent!important;
+		}
+	}
+}
 
 .cke {
 	// CKE Rich Text Editor

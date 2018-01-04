@@ -474,6 +474,8 @@
 		}
 
 		.x-grid3-row {
+			padding: 3px;
+
 			.x-grid3-cell-inner {
 				color: _property($ROW--COLOR, $EDIT-ENGINE);
 			}
@@ -504,6 +506,11 @@
 					// line-height: 24px;
 					font-family: "Nunito Sans", sans-serif;
 
+					&.x-grid3-col-action {
+						padding: 0;
+
+					}
+
 					img {
 						padding-top: 4px;
 					}
@@ -528,7 +535,7 @@
 			// height: 30px !important;
 
 			&.x-grid3-row-selected {
-				background-color: inherit !important;
+				background-color: #e1e1e1 !important;
 			}
 
 		}

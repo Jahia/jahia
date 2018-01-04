@@ -4587,6 +4587,8 @@ XXX.x-window.modal-deletealljob-confirm {
 .x-window.content-export {
 
 	width: 700px !important;
+	left:calc((100% - 700px) / 2)!important;
+
 
 	.x-small-editor.x-panel-btns-center.x-panel-fbar.x-component.x-toolbar-layout-ct {
 		width: 100% !important;
@@ -4596,25 +4598,12 @@ XXX.x-window.modal-deletealljob-confirm {
 		display: none;
 	}
 
-	.x-window-tl {
-		left: calc((100% - 700px) / 2);
-
-	}
-
 	.x-window-bwrap {
 		padding-top: 8px;
-		left: calc((100% - 700px) / 2);
-
 	}
 
 	.x-toolbar-left-row .x-toolbar-cell {
 		float: none!important;
-
-		// &:not(:first-child) .x-btn-text {
-		// 	background: _theme-color(quinary) !important;
-		// 	color: _theme-color(secondary, a) !important;
-		// }
-
 	}
 
 	.x-progress-wrap {

@@ -602,7 +602,7 @@ body[data-indigo-app="contribute"] {
 
 // Status Button
 .edit-menu-status {
-    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top 3px center;
+    background: url(./images/icons_light/status.svg) no-repeat top 3px center;
     background-size: 23px 23px;
     margin-top: 50px;
 
@@ -848,7 +848,7 @@ body[data-indigo-app="contribute"] {
 
 .edit-menu-workflow,
 .contribute-menu-workflow {
-    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center / 23px 23px;
+    background: url(./images/icons_light/workflow.svg) no-repeat top center / 23px 23px;
     position: relative;
 
     &[data-info-count="0"] {
@@ -965,12 +965,13 @@ body[data-indigo-app="contribute"] {
 
 // Cache Button
 .edit-menu-cache {
-    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
+    background: url(./images/icons_light/cache.svg) no-repeat top center;
     background-size: 23px 23px;
 
     &::after {
         content: $text_cache;
     }
+
 }
 
 // Trash Button
@@ -996,16 +997,15 @@ body[data-indigo-app="contribute"] {
 
 // Background Jobs Button
 .toolbar-item-workinprogressadmin {
-    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
-    background-size: 23px 23px;
+  background: url(./images/icons_light/jobs.svg) no-repeat top center;
+  background-size: 23px 23px;
+  width: 51px !important;
+  white-space: pre-line;
+  text-align: center;
 
-	width: 51px!important;
-	white-space: pre-line;
-	text-align: center;
-
-    &::after {
-        content: attr(data-indigo-label);
-    }
+  &::after {
+      content: attr(data-indigo-label);
+  }
 
 }
 

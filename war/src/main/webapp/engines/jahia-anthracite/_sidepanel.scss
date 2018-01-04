@@ -240,7 +240,7 @@
 					height: 20px !important;
 					z-index: 999;
 					position: fixed;
-					background: url(./images/icons/pin.png);
+					background: url(./images/icons_dark/pin.svg);
 					display: block;
 					background-size: 20px;
 					background-repeat: no-repeat;
@@ -248,7 +248,7 @@
 				}
 
 				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-indigo-sidepanel-pinned="true"] & {
-					background-image: url(./images/icons/unpin.png);
+					background-image: url(./images/icons_blue/pin.svg);
 				}
 
 				&:hover {

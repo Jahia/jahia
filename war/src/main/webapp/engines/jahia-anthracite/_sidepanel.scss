@@ -1900,7 +1900,7 @@ $side_panel__tab_buttons: (
 				@if ($_tab_ID == "#JahiaGxtSidePanelTabs__JahiaGxtSettingsTab") {
 					position: fixed;
 					left: 4px;
-				    bottom: 60px;
+				    bottom: 50px;
 
 					.x-viewport-dashboardmode & {
 						display: none!important;

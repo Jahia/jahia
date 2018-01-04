@@ -121,7 +121,7 @@
 
         &:before {
             // Used when NO channel has been selected
-            content: "Responsive Design";
+            content: $text_channels_button;
 
             // Channel has been selected so use the title added by JS
             body[data-channel] & {

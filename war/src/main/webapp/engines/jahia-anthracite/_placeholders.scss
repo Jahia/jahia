@@ -562,7 +562,7 @@
         background: _property($INPUT--BG---DISABLED, $APP);
         padding: 3px 40px 3px 5px;
         padding-left: 0;
-        border: 1px solid _property($INPUT--BORDER---DISABLED, $APP);
+        // border: 1px solid _property($INPUT--BORDER---DISABLED, $APP);
         transition: $DEFAULT--TRANSITION;
 
         @include text(12px, _property($INPUT--COLOR---DISABLED, $APP), $FONT--WEIGHT---SEMILIGHT);

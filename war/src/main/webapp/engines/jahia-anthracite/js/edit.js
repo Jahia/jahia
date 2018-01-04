@@ -2791,29 +2791,29 @@
 
 				/* TEST CODE START */
 
-				// When a new Copy To All Language button appears we need to create our own accompanying trigger button
-				DexV2("body").onOpen(".button-copyall", function(){
-					var myButton = document.createElement("button"),
-						myButtonLabel = document.createTextNode("Copy");
-
-					myButton.classList.add("copy-to-all-languages");
-					myButton.appendChild(myButtonLabel);
-
-					DexV2.node(this).parent().append(myButton);
-				});
-
-				// When the user clicks outside of the button, remove the fake drop down
-				DexV2("body").onClick(".engine-panel, .engine-window", function(e){
-					// Ignore the click if the user has clicked on the actual trigger
-					if(!DexV2.node(e.target).hasClass("copy-to-all-languages")){
-						DexV2(".indigo-show-copy-button").removeClass("indigo-show-copy-button");
-					}
-				});
-
-				// Open the fake drop down when someone clicks on the trigger
-				DexV2("body").onClick(".copy-to-all-languages", function(){
-					DexV2.node(this).parent().toggleClass("indigo-show-copy-button");
-				});
+				// // When a new Copy To All Language button appears we need to create our own accompanying trigger button
+				// DexV2("body").onOpen(".button-copyall", function(){
+				// 	var myButton = document.createElement("button"),
+				// 		myButtonLabel = document.createTextNode("Copy");
+				//
+				// 	myButton.classList.add("copy-to-all-languages");
+				// 	myButton.appendChild(myButtonLabel);
+				//
+				// 	DexV2.node(this).parent().append(myButton);
+				// });
+				//
+				// // When the user clicks outside of the button, remove the fake drop down
+				// DexV2("body").onClick(".engine-panel, .engine-window", function(e){
+				// 	// Ignore the click if the user has clicked on the actual trigger
+				// 	if(!DexV2.node(e.target).hasClass("copy-to-all-languages")){
+				// 		DexV2(".indigo-show-copy-button").removeClass("indigo-show-copy-button");
+				// 	}
+				// });
+				//
+				// // Open the fake drop down when someone clicks on the trigger
+				// DexV2("body").onClick(".copy-to-all-languages", function(){
+				// 	DexV2.node(this).parent().toggleClass("indigo-show-copy-button");
+				// });
 
 				/* TEST CODE END */
 

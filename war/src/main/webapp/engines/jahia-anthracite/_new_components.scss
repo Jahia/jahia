@@ -516,7 +516,7 @@
 	&[disabled] {
 		background: _property($INPUT--BG---DISABLED, $type);
 		box-shadow: none!important;
-		border: 1px solid _property($INPUT--BORDER---DISABLED, $type);
+		// border: 1px solid _property($INPUT--BORDER---DISABLED, $type);
 		transition: $DEFAULT--TRANSITION;
 		color: _property($INPUT--COLOR---DISABLED, $type) !important;
 	}

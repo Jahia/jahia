@@ -11,66 +11,70 @@
 /* SPRITE SWAP TEST END */
 
 /* TEST CODE START */
-div.engine-panel:not(.trashboardengine-ctn) fieldset .x-form-field-wrap,
-div.engine-window fieldset div.x-form-field-wrap {
-	width: calc(100% - 164px) !important;
-}
-
-.copy-to-all-languages {
-	width: 25px;
-    height: 25px;
-    text-indent: -5000000px;
-    background: url(./images/icons/duplicate@X2.png) no-repeat center center red;
-	background-size: 20px;
-    display: block;
-    position: absolute;
-    right: 0;
-	top: 2px;
-	border: none;
-
-	&:hover {
-		cursor: pointer;
-	}
-}
-
-.engine-panel,
-.engine-window {
-	fieldset {
-
-		overflow: visible;
-
-		.indigo-show-copy-button {
-			table.x-btn.button-copyall {
-				display: block;
-			}
-		}
-
-		table.x-btn.button-copyall {
-			height: 25px!important;
-			display: none;
-			position: absolute;
-			right: 0;
-			top: 25px;
-			z-index: 99;
-
-			.x-btn-text {
-				background: _property($MENU-OPENED--BG, $APP) !important;
-				text-transform: none;
-				overflow: visible;
-				background-size: 16px!important;
-				margin-top: 0!important;
-				padding: 8px 9px !important;
-
-				@include text(13px, _property($MENU-OPENED--COLOR, $APP), $FONT--WEIGHT---LIGHT);
-			}
-		}
-	}
-}
+// div.engine-panel:not(.trashboardengine-ctn) fieldset .x-form-field-wrap,
+// div.engine-window fieldset div.x-form-field-wrap {
+// 	width: calc(100% - 164px) !important;
+// }
+//
+// .copy-to-all-languages {
+// 	width: 25px;
+//     height: 25px;
+//     text-indent: -5000000px;
+//     background: url(./images/icons/duplicate@X2.png) no-repeat center center red;
+// 	background-size: 20px;
+//     display: block;
+//     position: absolute;
+//     right: 0;
+// 	top: 2px;
+// 	border: none;
+//
+// 	&:hover {
+// 		cursor: pointer;
+// 	}
+// }
+//
+// .engine-panel,
+// .engine-window {
+// 	fieldset {
+//
+// 		overflow: visible;
+//
+// 		.indigo-show-copy-button {
+// 			table.x-btn.button-copyall {
+// 				display: block;
+// 			}
+// 		}
+//
+// 		table.x-btn.button-copyall {
+// 			height: 25px!important;
+// 			display: none;
+// 			position: absolute;
+// 			right: 0;
+// 			top: 25px;
+// 			z-index: 99;
+//
+// 			.x-btn-text {
+// 				background: _property($MENU-OPENED--BG, $APP) !important;
+// 				text-transform: none;
+// 				overflow: visible;
+// 				background-size: 16px!important;
+// 				margin-top: 0!important;
+// 				padding: 8px 9px !important;
+//
+// 				@include text(13px, _property($MENU-OPENED--COLOR, $APP), $FONT--WEIGHT---LIGHT);
+// 			}
+// 		}
+// 	}
+// }
 /* TEST CODE END */
 
 
 .engine-panel:not(.trashboardengine-ctn),
 div.engine-window {
+
+	.x-form-item {
+	    margin-bottom: 12px;
+	}
 
 	.indigo-modal-mask {
 		display: none;
@@ -348,10 +352,10 @@ div.engine-window {
 
 
 
-	.x-form-element {
+	div.x-form-element {
 		> div {
 			> div:only-child {
-				width: calc(100% - 150px)!important;
+				width: 100%!important;
 			}
 		}
 
@@ -414,7 +418,7 @@ div.engine-window {
 		// }
 
 		.x-form-item-label {
-			float:left!important;
+			// float:left!important;
 			margin-top: 0!important;
 			width: 150px!important;
 		}
@@ -423,19 +427,24 @@ div.engine-window {
 			display: inline-block;
 		}
 
+		.button-copyall {
+			// margin: 0 0 20px auto;
+		}
+
 		.x-form-field-wrap {
 			float: left;
-			width: calc(100% - 297px) !important;
+			width: calc(100% - 155px) !important;
 			height: auto!important;
+			margin-right: 5px!important;
 
 			/* DEV NOTE ::: QUICK N DIRTY */
 			body[data-uilang="fr"] & {
-				// width: calc(100% - 357px) !important;
+				width: calc(100% - 203px) !important;
 
 			}
 
 			body[data-uilang="de"] & {
-				// width: calc(100% - 316px) !important;
+				width: calc(100% - 170px) !important;
 
 			}
 		}
@@ -496,6 +505,10 @@ div.engine-window {
 	.x-form-readonly {
 		 .x-form-text {
 			@extend %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE !optional;
+
+			box-shadow: none!important;
+			background: transparent!important;
+			padding-left: 1px!important;
 
 		}
 	}
@@ -2238,31 +2251,44 @@ div.engine-window {
 
 	#JahiaGxtEditEnginePanel-content{
 		// Fix problem with non floating form element.
-		#Title {
+		#Title,
+		#Titre,
+		#Titel {
 			// Contains sytems name / title
 			.x-form-item:nth-child(1) {
 				// System Name
 				.x-form-element {
-					width: calc(100% - 150px);
-					float: left;
+					width: 100%!important;
+					float: none;
 				}
 
 				.x-box-inner {
 					width: 100%!important;
+					height: auto!important;
+					position: relative!important;
 				}
 
 				.x-form-field-wrap {
-					width: calc(100% - 319px) !important;
+					width: 100% !important;
+
+					position: relative!important;
 				}
 
 				.x-form-check-wrap {
-					left: calc(100% - 29px)!important;
-				    top: 4px!important;
+					position: absolute;
+				    left: 0!important;
+				    top: 31px!important;
 				}
 
 				label {
 					left: calc(100% - 310px)!important;
 					top: 4px!important;
+				}
+
+				label.x-box-item {
+					position: relative!important;
+				    left: 16px!important;
+				    top: 0!important;
 				}
 			}
 		}

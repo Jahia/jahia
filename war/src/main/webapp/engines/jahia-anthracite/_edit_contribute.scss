@@ -1163,7 +1163,7 @@ body[data-indigo-app="contribute"] {
 
         display: block!important;
         height: 100%;
-        background: url(./images/logos/app-explorer.svg) no-repeat center center/40%;
+        background: url(./images/icons_light/repository.svg) no-repeat center center/40%;
         width: 100%;
         opacity: 1;
         z-index: 99999999999999999;
@@ -1317,7 +1317,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 	    bottom: 20px;
 	    right: 20px;
 	    z-index: 999;
-	    background: url(./images/icons/tabs-placeholder-white@X2.png) no-repeat left 5px center _theme-color(quinary);
+	    background: url(./images/icons_light/logout.svg) no-repeat left 5px center _theme-color(quinary);
 
         background-size: 21px;
         padding-left: 29px!important;
@@ -1371,7 +1371,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-BIG;
 
         .x-menu-item-icon {
-            background: url(./images/logos/app-contribute.svg) no-repeat top 32px center /40%;
+            background: url(./images/icons_light/contribute.svg) no-repeat top 32px center /40%;
         }
 	}
 
@@ -1389,7 +1389,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-SMALL;
 
         .x-menu-item-icon {
-            background: url(./images/icons/tabs-placeholder-white@X2.png) no-repeat center top 17px/30%;
+            background: url(./images/icons_light/documentation.svg) no-repeat center top 17px/30%;
         }
 	}
 
@@ -1398,7 +1398,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-SMALL;
 
         .x-menu-item-icon {
-            background: url(./images/logos/app-content.svg) no-repeat center top 17px/30%;
+            background: url(./images/icons_light/contents.svg) no-repeat center top 17px/30%;
         }
 	}
 
@@ -1407,7 +1407,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-SMALL;
 
         .x-menu-item-icon {
-            background: url(./images/logos/app-document.svg) no-repeat center top 17px/30%;
+            background: url(./images/icons_light/documents.svg) no-repeat center top 17px/30%;
         }
 	}
 
@@ -1425,7 +1425,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 		@extend %CSS--BLOCK---HAMBURGER-BUTTON-SMALL;
 
         .x-menu-item-icon {
-            background: url(./images/logos/app-explorer.svg) no-repeat center top 17px/30%;
+            background: url(./images/icons_light/repository.svg) no-repeat center top 17px/30%;
         }
 	}
 

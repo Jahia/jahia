@@ -3547,6 +3547,45 @@ body[data-indigo-gwt-side-panel="open"] {
 	}
 }
 
+.x-window.engine-window {
+	> .x-window-tl {
+		z-index: 9999;
+		border:none!important;
+	}
+
+	> .x-window-bwrap {
+		z-index: 9;
+		border:none!important;
+	}
+
+	.x-tool-restore {
+		display: none;
+	}
+
+	.x-window-header {
+		pointer-events: all;
+
+		img {
+			display: block!important;
+		}
+
+		.x-panel-toolbar {
+			// top: 103px;
+		}
+
+		.x-window-header-text {
+			left: 30px!important;
+		    top: 67px!important;
+		    color: #00a0e3!important;
+		    font-weight: 100!important;
+
+			&:before {
+				display: none!important;
+			}
+		}
+	}
+}
+
 
 .x-window {
 	@include _button(".button-close", "ACTIONBAR", "remove-icons");

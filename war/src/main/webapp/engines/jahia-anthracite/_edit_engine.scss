@@ -375,6 +375,8 @@ div.engine-window {
 	    top: 40px;
 		font-family: $DEFAULT--TITLE_FONT--FAMILY;
 		font-weight: 100;
+		z-index: 99999;
+
 	}
 
 	&.createcontentengine-ctn {
@@ -2470,7 +2472,7 @@ div.engine-window {
 		    position: absolute;
 		    left: 72px;
 		    top: 129px;
-
+			display: block;
 
 
 		}

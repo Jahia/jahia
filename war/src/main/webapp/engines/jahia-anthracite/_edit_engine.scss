@@ -2531,8 +2531,10 @@ div.engine-window {
 
 		height: calc(100% - 56px);
 	    position: fixed!important;
-	    width: 100%;
+	    width: 100%!important;
 	    top: 50px;
+		padding: 0px!important;
+
 
 		.x-panel-tbar {
 			// Top action bar

@@ -249,6 +249,7 @@
 
 				body[data-edit-window-style="default"][data-INDIGO-GWT-SIDE-PANEL="open"][data-indigo-app="edit"][data-indigo-sidepanel-pinned="true"] & {
 					background-image: url(./images/icons_blue/pin.svg);
+			    opacity: 1;
 				}
 
 				&:hover {

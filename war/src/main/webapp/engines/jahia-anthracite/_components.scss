@@ -3588,6 +3588,9 @@ body[data-indigo-gwt-side-panel="open"] {
 
 
 .x-window {
+	@include _button(".button-right", "ACTIONBAR---SUGGESTED", "remove-icons");
+	@include _button(".button-left", "ACTIONBAR---SUGGESTED", "remove-icons");
+
 	@include _button(".button-close", "ACTIONBAR", "remove-icons");
 	@include _button(".button-no", "ACTIONBAR", "remove-icons");
 	@include _button(".button-cancel", "ACTIONBAR", "remove-icons");
@@ -4922,6 +4925,22 @@ XXX.x-window.modal-deletealljob-confirm {
 .x-window.image-rotate,
 .x-window.image-resize {
 
+	.x-form-field-wrap {
+		width: initial!important;
+	}
+
+	.x-window-header-text {
+		display: block;
+	}
+
+	.x-toolbar-cell {
+		float: none!important;
+	}
+
+	.x-window-bbar {
+		width: auto!important;
+	}
+
 	table.x-toolbar-ct {
 		float: right;
 	}
@@ -4952,6 +4971,13 @@ XXX.x-window.modal-deletealljob-confirm {
 	margin: auto;
 	padding-top: 4%;
 
+
+
+	> .x-window-tl,
+	> .x-window-bwrap {
+		width: 100%!important;
+	}
+
 	.x-component.x-column-layout-ct .x-column-inner .x-form-field-wrap.x-component.x-column {
 		margin-top: 24px;
 		margin-right: 16px;
@@ -4976,11 +5002,6 @@ XXX.x-window.modal-deletealljob-confirm {
 
 	.x-window-body {
 	    min-height: 72px;
-	}
-
-	.x-toolbar-left-row .x-toolbar-cell:nth-child(3) .x-btn-text {
-		background: _theme-color(quinary) !important;
-		color: _theme-color(secondary, a) !important;
 	}
 
 	.x-form-field-wrap {

@@ -98,7 +98,7 @@ public class HTMLExcerpt extends AbstractExcerpt {
                                    int maxFragments, int maxFragmentSize) throws IOException {
         // TODO Auto-generated method stub
         return JahiaHighlighter.highlight(tpv, getQueryTerms(), text,
-                "<div>", "</div>", "", "", "<span class=\"searchHighlightedText\">", "</span>",
+                "<div>", "</div>", "...", " ", "<span class=\"searchHighlightedText\">", "</span>",
                 maxFragments, maxFragmentSize / 2);
     }
 

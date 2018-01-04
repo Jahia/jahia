@@ -3752,6 +3752,10 @@ body[data-indigo-gwt-side-panel="open"] {
 			}
 		}
 	}
+
+	.x-panel-fbar .x-toolbar-cell:nth-child(2) {
+		@include button("ACTIONBAR", "remove-icons");
+	}
 }
 
 XXX.x-window.delete-item-window,

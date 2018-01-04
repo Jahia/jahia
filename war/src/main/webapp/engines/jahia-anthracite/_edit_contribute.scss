@@ -137,7 +137,8 @@
     #channel-orientation {
         width: 25px;
         height: 25px;
-        background: red;
+        background: url(./images/icons/rotate_screen.svg) no-repeat center center;
+        background-size: 22px;
         position: absolute;
         right: 26px;
         top: 16px;

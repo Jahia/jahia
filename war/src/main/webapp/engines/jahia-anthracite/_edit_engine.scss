@@ -1458,27 +1458,40 @@ div.engine-window {
 			box-sizing: border-box;
 
 			&[src$="/visibilityStatusRed.png"] {
-				background: _theme-color(status, hidden);
+				background: url(./images/icons_dark/visibilityoff.svg) no-repeat center center;
+				background-size: 22px;
+				opacity: .67;
 			}
 
 			&[src$="/visibilityStatusUnknown.png"] {
-				background: _theme-color(status, unknown);
+				// Find better icon for Unknow Status ?
+				background: url(./images/icons_dark/uncheck.svg) no-repeat center center;
+				background-size: 22px;
+				opacity: .67;
 			}
 
 			&[src$="/visibilityStatusGreen.png"] {
-				background: _theme-color(status, visible);
+				background: url(./images/icons_dark/visibility.svg) no-repeat center center;
+				background-size: 22px;
+				opacity: .67;
 			}
 
 			&[src$="/publication/notpublished.png"] {
-				background: _theme-color(status, notpublished);
+				background: url(./images/icons_dark/unpublished.svg) no-repeat center center;
+				background-size: 22px;
+				opacity: .67;
 			}
 
 			&[src$="/publication/modified.png"] {
-				background: _theme-color(status, modified);
+				background: url(./images/icons_dark/modified.svg) no-repeat center center;
+				background-size: 22px;
+				opacity: .67;
 			}
 
 			&[src$="/publication/published.png"] {
-				background: _theme-color(status, published);
+				background: url(./images/icons_dark/published.svg) no-repeat center center;
+				background-size: 22px;
+				opacity: .67;
 			}
 		}
 

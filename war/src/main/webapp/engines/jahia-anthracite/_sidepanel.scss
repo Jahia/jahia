@@ -1902,6 +1902,11 @@ $side_panel__tab_buttons: (
 					left: 4px;
 				    bottom: 50px;
 
+					body[data-uilang="de"] & {
+						bottom: 60px;
+
+					}
+
 					.x-viewport-dashboardmode & {
 						display: none!important;
 					}

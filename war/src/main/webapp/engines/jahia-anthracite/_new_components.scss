@@ -799,7 +799,8 @@ div[role="combobox"] {
 
 	// EDIT ENGINE
 	.engine-panel &,
-	.translate-content-engine & {
+	.translate-content-engine &,
+	.engine-window & {
 		@include _combo($EDIT-ENGINE);
 
 	}

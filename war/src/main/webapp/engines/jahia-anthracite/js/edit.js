@@ -5330,6 +5330,8 @@
 				app.picker.onOpen();
 			});
 
+			DexV2.getCached("body").setAttribute("data-indigo-is-manager", "true");
+
 		}
 
         // This is a manager, not main app.
@@ -5347,6 +5349,8 @@
                     DexV2("#contentmanager #JahiaGxtManagerToolbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
                 }
 			});
+
+			DexV2.getCached("body").setAttribute("data-indigo-is-manager", "true");
 
 
 		}

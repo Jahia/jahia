@@ -41,9 +41,8 @@
     font-weight: $_weight;
 }
 
-@mixin button($_button_id, $_extra: "none"){
-
-    .x-btn {
+@mixin _button($_class, $_button_id, $_extra: "none") {
+	#{$_class} {
 		width: auto!important;
 
         button {
@@ -107,6 +106,16 @@
 
 		}
 	}
+}
+
+@mixin button($_button_id, $_extra: "none"){
+
+	// Button classes are more specific now ( ie. .button-yes )
+	// However, we can no longer use the button mixin as the structure doesnt work with the classes.
+	// button_
+	@include _button(".x-btn", $_button_id, $_extra);
+
+
 }
 
 @mixin dual_list($_id: "DUAL_LIST"){

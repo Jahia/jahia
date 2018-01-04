@@ -1363,24 +1363,23 @@
 
 	// FORM
 	%CSS_BLOCK--BUTTON--TEXT\:FORM_SMALL {
-        background: _property($BUTTON--BG, $EDIT-ENGINE);
-        text-transform: uppercase;
-        padding: 5px 10px;
-		text-transform: uppercase;
-        @include text(10px, _property($BUTTON--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
+        background: _property($BUTTON--BG, $EDIT-ENGINE)!important;
+        text-transform: uppercase!important;
+        padding: 5px 10px!important;
+        @include text(10px, _property($BUTTON--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---SEMIBOLD);
     }
 
 	%CSS_BLOCK--BUTTON--TEXT--HOVER_PARENT\:FORM_SMALL {}
 
 	%CSS_BLOCK--BUTTON--TEXT---HOVER\:FORM_SMALL {
-		background: _property($BUTTON--BG---HOVER, $EDIT-ENGINE);
-        color: _property($BUTTON--COLOR---HOVER, $EDIT-ENGINE);
+		background: _property($BUTTON--BG---HOVER, $EDIT-ENGINE)!important;
+        color: _property($BUTTON--COLOR---HOVER, $EDIT-ENGINE)!important;
     }
 
 	%CSS_BLOCK--BUTTON--ICON\:FORM_SMALL {
-		background: _property($BUTTON--BG, $EDIT-ENGINE);
+		background: _property($BUTTON--BG, $EDIT-ENGINE)!important;
         padding: 5px 10px 5px 29px;
-        @include text(10px, _property($BUTTON--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
+        @include text(10px, _property($BUTTON--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---SEMIBOLD);
 		text-transform: uppercase;
 
         img {
@@ -1390,8 +1389,48 @@
     }
 
 	%CSS_BLOCK--BUTTON--ICON---HOVER\:FORM_SMALL {
-		background: _property($BUTTON--BG---HOVER, $EDIT-ENGINE);
-        color: _property($BUTTON--COLOR---HOVER, $EDIT-ENGINE);
+		background: _property($BUTTON--BG---HOVER, $EDIT-ENGINE)!important;
+        color: _property($BUTTON--COLOR---HOVER, $EDIT-ENGINE)!important;
+    }
+
+
+
+
+	// WARNING
+	%CSS_BLOCK--BUTTON--TEXT\:WARNING {
+        background: _property($BUTTON-WARNING--BG, $EDIT-ENGINE);
+        text-transform: uppercase;
+        padding: 5px 10px;
+		text-transform: uppercase;
+		opacity: 0.95;
+        @include text(10px, _property($BUTTON-WARNING--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
+    }
+
+	%CSS_BLOCK--BUTTON--TEXT--HOVER_PARENT\:WARNING {}
+
+	%CSS_BLOCK--BUTTON--TEXT---HOVER\:WARNING {
+		background: _property($BUTTON-WARNING--BG---HOVER, $EDIT-ENGINE);
+        color: _property($BUTTON-WARNING--COLOR---HOVER, $EDIT-ENGINE);
+		opacity: 1;
+    }
+
+	%CSS_BLOCK--BUTTON--ICON\:WARNING {
+		background: _property($BUTTON-WARNING--BG, $EDIT-ENGINE);
+        padding: 5px 10px 5px 29px;
+        @include text(10px, _property($BUTTON-WARNING--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
+		text-transform: uppercase;
+		opacity: 0.95;
+
+        img {
+            left: 5px!important;
+            top: 7px!important;
+        }
+    }
+
+	%CSS_BLOCK--BUTTON--ICON---HOVER\:WARNING {
+		background: _property($BUTTON-WARNING--BG---HOVER, $EDIT-ENGINE);
+        color: _property($BUTTON-WARNING--COLOR---HOVER, $EDIT-ENGINE);
+		opacity: 1;
     }
 
 	// SIMPLE TEXT BUTTON
@@ -1476,6 +1515,7 @@
 		    // ACTION BAR ::: SUGGESTED
 			%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED {
 				padding: 10px 20px!important;
+				text-transform: none!important;
 				background: _property($ACTION-SUGGESTED--BG, $APP) !important;
 		    	@include text(14px, _property($ACTION-SUGGESTED--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
 		    }
@@ -1486,6 +1526,7 @@
 		    }
 
 			%CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SUGGESTED {
+				text-transform: none!important;
 				padding: 10px 20px!important;
 				background: _property($ACTION-SUGGESTED--BG, $APP) !important;
 		    	@include text(14px, _property($ACTION-SUGGESTED--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);

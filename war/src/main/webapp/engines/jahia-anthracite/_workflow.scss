@@ -6,6 +6,13 @@
 
 .workflow-dashboard-engine {
 
+
+
+	.x-tree3-node-text.x-tree3-node-text-widget,
+	.x-grid3-row-selected .x-tree3-node-text.x-tree3-node-text-widget {
+		color: #01a7ed!important;
+	}
+
 	.indigo-modal-mask {
 		display: none;
 	}
@@ -23,7 +30,6 @@
 	.x-window-header {
 		height: 64px !important;
 		line-height: 64px;
-		padding-left: 16px !important;
 		margin-top: 5px;
 
 		.x-panel-toolbar > table {
@@ -39,10 +45,10 @@
 			box-shadow: none;
 			margin-bottom: 10px;
 			pointer-events: none !important;
-			font-family: $FONT--FAMILY---RALEWAY;
-			font-size: 36px;
-			color: _theme-color(secondary);
-			font-weight: $FONT--WEIGHT---EXTRALIGHT;
+			// font-family: $FONT--FAMILY---RALEWAY;
+			// font-size: 36px;
+			// color: _theme-color(secondary);
+			// font-weight: $FONT--WEIGHT---EXTRALIGHT;
 		}
 
 		> .x-component:first-child {
@@ -50,10 +56,10 @@
 			margin-right: 16px;
 
 			table tbody tr td .x-tool-close {
-				height: 22px;
-				width: 22px;
-				background-image: url(./images/icon-close-large.png);
-				background-position: initial !important;
+				// height: 22px;
+				// width: 22px;
+				// background-image: url(./images/icon-close-large.png);
+				// background-position: initial !important;
 			}
 
 		}
@@ -66,8 +72,9 @@
 			display: table-cell;
 			background: transparent;
 
+
 			.x-grid3-hh {
-				border-bottom: 1px solid _theme-color(secondary, d);
+				// border-bottom: 1px solid _theme-color(secondary, d);
 				text-transform: uppercase;
 				color: _theme-color(black, c);
 				margin: 2px 0 12px;
@@ -104,13 +111,13 @@
 		}
 
 		.x-grid3-scroller.x-grid3-scroller {
-			background: _theme-color(secondary, a);
+			// background: _theme-color(secondary, a);
 			width: 100% !important;
 		}
 
 		.x-grid3-row.x-grid3-row-selected {
-			background: _theme-color(secondary, c) !important;
-			color: _theme-color(primary, a) !important;
+			background: inherit !important;
+			color: inherit !important;
 
 			.x-grid3-td-displayName {
 				padding-right: 0 !important;
@@ -119,32 +126,36 @@
 		}
 
 		.x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {
-			line-height: 33px;
+			// line-height: 33px;
 		}
 
 		.x-grid3-row {
-			background: _theme-color(secondary, c) !important;
+			// background: _theme-color(secondary, c) !important;
 			color: _theme-color(primary, a) !important;
-			height: 38px !important;
+			// height: 38px !important;
 			box-sizing: border-box;
-			padding-left: 12px;
+			// padding-left: 12px;
+			height: auto!important;
+		    margin-bottom: 1px;
 
 			.x-grid3-td-displayName table.x-btn-noicon {
-				position: absolute;
-				top: 3px;
-				height: 28px;
-				padding: 2px 6px;
-				padding-top: 4px;
-				pointer-events: all;
-				background: _theme-color(secondary, d);
+				// Preview of content button
 
-				button {
-					font-family: $FONT--FAMILY---NUNITO;
-					font-size: 13px;
-					color: _theme-color(primary) !important;
-					font-weight: $FONT--WEIGHT---EXTRALIGHT;
-					margin-top: -1px;
-				}
+				// position: absolute;
+				// top: 3px;
+				// height: 28px;
+				// padding: 2px 6px;
+				// padding-top: 4px;
+				// pointer-events: all;
+				// background: _theme-color(secondary, d);
+				//
+				// button {
+				// 	font-family: $FONT--FAMILY---NUNITO;
+				// 	font-size: 13px;
+				// 	color: _theme-color(primary) !important;
+				// 	font-weight: $FONT--WEIGHT---EXTRALIGHT;
+				// 	margin-top: -1px;
+				// }
 
 			}
 
@@ -157,26 +168,41 @@
 		.x-grid3-row-table {
 
 			.x-grid3-cell .x-grid3-cell-inner label {
-				line-height: 32px;
-				color: _theme-color(primary, c);
+				line-height: inherit;
+				color: inherit;
 			}
 
-			.x-btn-text-icon .x-btn-icon-small-left .x-btn-text {
-				background: _theme-color(status, error);
-				margin-top: 4px;
-				height: 24px;
-				padding: 0 4px;
-				color: _theme-color(secondary);
+			// @include button("FORM_SMALL", "remove-icons");
 
-				img {
-					display: none !important;
-				}
+			.x-btn-text-icon .x-btn-icon-small-left {
+				// background: _theme-color(status, error);
+				// margin-top: 4px;
+				// height: 24px;
+				// padding: 0 4px;
+				// color: _theme-color(secondary);
+				//
+				// img {
+				// 	display: none !important;
+				// }
+
+
 
 			}
 
 			.x-grid3-cell {
 				overflow: hidden;
 				display: inline-block;
+
+				table,
+				tbody,
+				tr {
+					display: block;
+				}
+
+				td {
+					display: inline-block;
+					padding: 0!important;
+				}
 			}
 
 		}
@@ -193,29 +219,30 @@
 	}
 
 	.x-grid3-col-displayName table {
-		height: 36px;
+		// height: 36px;
 	}
 
 	.x-grid3-td-locale img {
-		margin-top: 8px;
+		// margin-top: 8px;
 	}
 
 	.x-grid3-td-nodeWrapper table.x-btn-noicon {
-		height: 28px;
-		padding: 2px 6px;
-		padding-top: 4px;
-		pointer-events: all;
-		background: _theme-color(secondary, d);
-
-		button {
-			background: transparent !important;
-			padding: 0 8px !important;
-		}
+		// Incontext button
+		// height: 28px;
+		// padding: 2px 6px;
+		// padding-top: 4px;
+		// pointer-events: all;
+		// background: _theme-color(secondary, d);
+		//
+		// button {
+		// 	background: transparent !important;
+		// 	padding: 0 8px !important;
+		// }
 
 	}
 
 	.x-panel-fbar .x-btn.x-btn-over.x-btn-noicon button {
-		background: transparent !important;
+		// background: transparent !important;
 	}
 
 }
@@ -343,22 +370,22 @@
 			.x-panel-fbar .x-toolbar-cell {
 
 				padding-bottom: 0!important;
-		    float: right;
-		    margin-left: 5px !important;
+			    float: right;
+			    margin-left: 5px !important;
 
-				button {
-					padding: 10px 20px !important;
-					background: _theme-color(secondary, a) !important;
-					font-family: $FONT--FAMILY---NUNITO;
-					font-size: 14px;
-					color: _theme-color(primary) !important;
-					font-weight: $FONT--WEIGHT---EXTRALIGHT;
-				}
-
-				&:first-child button {
-					background: _theme-color(tertiary) !important;
-					color: _theme-color(secondary) !important;
-				}
+				// button {
+				// 	padding: 10px 20px !important;
+				// 	background: _theme-color(secondary, a) !important;
+				// 	font-family: $FONT--FAMILY---NUNITO;
+				// 	font-size: 14px;
+				// 	color: _theme-color(primary) !important;
+				// 	font-weight: $FONT--WEIGHT---EXTRALIGHT;
+				// }
+				//
+				// &:first-child button {
+				// 	background: _theme-color(tertiary) !important;
+				// 	color: _theme-color(secondary) !important;
+				// }
 
 			}
 
@@ -473,7 +500,7 @@
 		.x-grid3 .x-grid3-row-table .x-grid3-cell {
 
 			.x-grid3-cell-inner {
-					line-height: 24px;
+					// line-height: 24px;
 					font-family: "Nunito Sans", sans-serif;
 
 					img {
@@ -490,25 +517,17 @@
 
 		> .x-grid-panel.x-component.x-border-panel .x-panel-fbar {
 
-			.x-toolbar-cell:first-child .x-btn.x-btn-noicon button {
-				@include text(12px, _property($ACTION-SUGGESTED--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---LIGHT);
-				background: _theme-color(quaternary) !important;
-				padding: 4px 5px!important;
-			}
+			@include _button(".button-start", "FORM_SMALL", "remove-icons");
+			@include _button(".button-bypassworkflow", "FORM_SMALL", "remove-icons");
 
-			.x-btn.x-btn-noicon button {
-				@include text(12px, _property($ACTION-DEFAULT--COLOR, $EDIT-ENGINE)!important, $FONT--WEIGHT---LIGHT);
-				background: _theme-color(quaternary) !important;
-				padding: 4px 5px!important;
-			}
 
 		}
 
 		> .x-grid-panel.x-component.x-border-panel .x-grid3 .x-grid3-row {
-			height: 30px !important;
+			// height: 30px !important;
 
 			&.x-grid3-row-selected {
-				background-color: _theme-color(secondary, c) !important;
+				background-color: inherit !important;
 			}
 
 		}
@@ -520,11 +539,11 @@
 			}
 
 			.x-btn.x-btn-noicon button {
-				background: transparent !important;
-				padding: 0!important;
-				font-size: 14px;
-				margin-right: 16px;
-				font-weight: 400;
+				// background: transparent !important;
+				// padding: 0!important;
+				// font-size: 14px;
+				// margin-right: 16px;
+				// font-weight: 400;
 			}
 
 		}

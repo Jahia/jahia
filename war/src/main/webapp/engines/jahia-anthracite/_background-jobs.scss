@@ -161,7 +161,9 @@
 
     // Header
     .x-window-tl {
-
+		border: none!important;
+		background: transparent!important;
+		padding: 0!important;
         width: 300px;
         position: fixed!important;
         top: 55px;
@@ -226,6 +228,8 @@
             //     display: block;
             // }
 
+			display: block;
+
             @include text(36px, _property($TITLE--COLOR, $BACKGROUND-JOBS), 100);
 
         }
@@ -234,6 +238,9 @@
 
     // Body
     .x-window-bwrap {
+
+		border: none!important;
+		background: transparent!important;
 
 
         width: 100%;
@@ -757,6 +764,7 @@
                         width: 25px;
                         height: 25px;
                         opacity: 0.8;
+						display: block;
 
                         &:hover {
                             opacity: 1;

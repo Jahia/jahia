@@ -155,7 +155,7 @@ body {
 .x-btn-bc,
 .x-btn-br {
     visibility: hidden;
-    display: none;
+    display: none!important;
 }
 
 .x-btn-mc {

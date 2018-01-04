@@ -315,6 +315,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		height: 76px;
 		padding: 0 30px!important;
 		z-index: 99999999;
+		background: transparent!important;
+	    border: none!important;
 
 		pointer-events: none;
 
@@ -348,7 +350,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	.x-window-bwrap {
 		height: calc(100% - 76px);
 		padding: 0 31px;
-
+		background: transparent!important;
+	    border: none!important;
 	}
 
 	// HEIGHT FIXES

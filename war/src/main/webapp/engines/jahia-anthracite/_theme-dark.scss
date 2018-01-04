@@ -171,16 +171,16 @@
     $RICH_TEXT_EDITOR--PATH--FONT--COLOUR:                          darken($EDIT_ENGINE--BASE--COLOUR, 50%);
 
     // DIALOGUE
-    $RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR:               _theme-color(secondary);
-    $RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR:                       _property($FIELDSET--BG, LIGHT);
+    $RICH_TEXT_EDITOR--DIALOGUE--TITLE--FONT--COLOUR:               _theme-color(primary);
+    $RICH_TEXT_EDITOR--DIALOGUE--BG--COLOUR:                       	_theme-color(secondary);
     $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW--BG--COLOUR:                         _theme-color(secondary);
     $RICH_TEXT_EDITOR--DIALOGUE--BUTTON_ICON--BG--COLOUR:                     _theme-color(secondary, d);
     $RICH_TEXT_EDITOR--DIALOGUE--PREVIEW_CHARACTERS--FONT--COLOUR:            _theme-color(primary, g);
-    $RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR:            _theme-color(secondary, d);
+    $RICH_TEXT_EDITOR--DIALOGUE--PARAGRAPH--FONT--COLOUR:            _theme-color(primary);
     $RICH_TEXT_EDITOR--DIALOGUE--LINK--FONT--COLOUR:            _theme-color(quaternary);
 
-    $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR:                 _theme-color(secondary, d);
-    $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED:            _theme-color(secondary);
+    $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR:                 _theme-color(primary, b);
+    $RICH_TEXT_EDITOR--DIALOGUE--TAB--FONT--COLOUR---SELECTED:            _theme-color(quinary);
     $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---SELECTED:            _theme-color(quaternary);
     $RICH_TEXT_EDITOR--DIALOGUE--TAB--UNDERLINE--COLOUR---HOVER:            _theme-color(primary, c);
     $RICH_TEXT_EDITOR--DIALOGUE--LIST--BG--COLOUR:            rgba( _theme-color(secondary), .9 );

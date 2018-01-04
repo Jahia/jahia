@@ -5359,11 +5359,6 @@ XXX.x-window.modal-deletealljob-confirm {
 	// Panels
 	.x-component.x-border-panel.x-border-layout-ct {
 
-		// Fix for bg bug on hover -> find better way to fix it.
-		div[role="combobox"] input.x-form-text {
-			background: radial-gradient(ellipse at bottom right, #6b7074 0%, #616669 70%) !important;
-		}
-
 		> .x-component.x-border-panel > .x-component > table tbody td:first-child {
 			position: absolute;
 			left: 26px;

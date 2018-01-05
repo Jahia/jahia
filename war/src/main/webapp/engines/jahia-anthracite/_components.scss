@@ -3627,6 +3627,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	@include _button(".button-exportxml", "ACTIONBAR---SUGGESTED", "remove-icons");
 	@include _button(".button-exportzip", "ACTIONBAR---SUGGESTED", "remove-icons");
 
+	@include _button(".button-create", "ACTIONBAR---SUGGESTED", "remove-icons");
 	@include _button(".button-ok", "ACTIONBAR---SUGGESTED", "remove-icons");
 	@include _button(".button-save", "ACTIONBAR---SUGGESTED", "remove-icons");
 	@include _button(".button-preview", "BUTTON_DISCREET", "remove-icons");

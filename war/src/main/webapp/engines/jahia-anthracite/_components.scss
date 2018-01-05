@@ -2499,7 +2499,7 @@ form,
 
 		// Reverse buttons so that OK comes first
 		td {
-			float: right;
+			float: right !important;
 			margin-right: 5px;
 		}
 

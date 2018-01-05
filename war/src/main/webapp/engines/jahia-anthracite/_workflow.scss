@@ -397,6 +397,43 @@
 
 
 
+// Fix for window-panel (managers)
+
+.workflowactiondialog-card.engine-window {
+
+	div.x-window-header .x-window-header-text {
+		color: #747b7f !important;
+		display: inline-block!important;
+		position: fixed !important;
+		width: 100% !important;
+		left: 30px !important;
+		top: 60px !important;
+		font-weight: 100 !important;
+		max-width: calc(100% - 100px) !important;
+	}
+
+	> .x-window-bwrap {
+		margin-top: 96px;
+
+		.x-window-body.x-window-body-noborder {
+			overflow: hidden;
+		}
+
+		.x-window-bbar .x-panel-fbar .x-toolbar-cell {
+			margin-left: 5px !important;
+		}
+
+	}
+
+	.x-grid3 .x-grid3-row-table {
+		width: 100% !important;
+	}
+
+	.x-toolbar-left {
+		bottom: 0 !important;
+	}
+
+}
 
 
 .workflowactiondialog-ctn {

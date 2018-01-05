@@ -3818,3 +3818,21 @@ body[data-indigo-add-visibility-condition="new"] {
 		}
 
 }
+
+
+// Color picker
+
+.color-picker-field {
+
+	.x-btn.x-btn-noicon em.x-btn-arrow {
+    background: transparent !important;
+	}
+
+	.x-btn.x-btn-noicon button.x-btn-text {
+		background: url(./images/icons_dark/color.svg) no-repeat center center !important;
+		background-size: 18px !important;
+		margin-top: -2px;
+		opacity: .67;
+	}
+
+}

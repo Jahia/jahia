@@ -402,7 +402,7 @@
 .workflowactiondialog-card.engine-window {
 
 	div.x-window-header .x-window-header-text {
-		color: #747b7f !important;
+		color: _theme-color(primary, c) !important;
 		display: inline-block!important;
 		position: fixed !important;
 		width: 100% !important;
@@ -431,6 +431,19 @@
 
 	.x-toolbar-left {
 		bottom: 0 !important;
+	}
+
+	.workflowactiondialog-ctn .x-border-layout-ct:nth-child(2) > .x-border-panel .x-form-element .x-form-field-wrap.x-component {
+		overflow: hidden !important;
+	}
+
+	.workflow-action-dialog .x-tab-panel-body-top .x-border-layout-ct {
+		height: 100% !important;
+		width: calc(100% + 162px) !important;
+	}
+
+	.x-border-layout-ct:nth-child(2) > .x-border-panel:nth-child(2) .x-panel-bwrap {
+		width: calc(100% - 162px) !important;
 	}
 
 }

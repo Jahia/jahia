@@ -132,14 +132,17 @@
 		position: fixed;
 		top: 27px;
 		border-radius: 100%;
-	    background-size: 18px;
-
+		background-size: 18px;
 		height: 25px;
 		width: 25px;
-
 		opacity: 0.7;
-
 		display: none;
+
+		&.x-tool-refresh-red {
+			background: url(./images/icons/tabs-publish-modified@X2.png) no-repeat center center _theme-color(secondary);
+			background-size: 32px;
+	    opacity: .9;
+		}
 
 		body[data-edit-window-style="settings"] &,
 		.x-viewport-adminmode &,

@@ -1195,6 +1195,7 @@ form,
 
 	// @include button("ACTIONBAR", "remove-icons");
 
+	@include _button(".button-create", "ACTIONBAR---SUGGESTED", "remove-icons");
 	@include _button(".button-save", "ACTIONBAR---SUGGESTED", "remove-icons");
 	@include _button(".button-start", "ACTIONBAR---SUGGESTED", "remove-icons");
 	@include _button(".button-cancel", "ACTIONBAR", "remove-icons");

@@ -40,7 +40,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		color: _theme-color(primary, d);
 		font-weight: 100;
 
-		body[data-indigo-edit-engine="opened"] & {
+		body[data-indigo-edit-engine="open"] & {
 			display: none;
 		}
 
@@ -1702,7 +1702,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 							.x-form-text {
 								@include _input-search($PICKER-HEADER-INPUT);
 
-								// width: 80px!important;
+								width: auto!important;
 							}
 
 							.x-form-trigger {
@@ -2454,8 +2454,9 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	}
 
 	// Hide when thumb slider when the Edit Engine is opened
-	body[data-indigo-edit-engine="opened"] & {
-		#thumb-size-slider {
+	body[data-indigo-edit-engine="open"] & {
+		#thumb-size-slider,
+		#toggle-picker-files {
 			display: none;
 		}
 	}
@@ -2467,7 +2468,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		box-shadow: none!important;
 
 		// When the Edit Engine is opened we have Save / Cancel buttons, so make it visible again
-		body[data-indigo-edit-engine="opened"] & {
+		body[data-indigo-edit-engine="open"] & {
 			background: _property($DARK-FOOTER--BG, $PICKER)!important;
 			box-shadow: _property($DARK-FOOTER--SHADOW, $PICKER)!important;
 		}
@@ -2501,7 +2502,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	}
 
 	// Hide the Side Panel when the Edit Engine is opened
-	body[data-indigo-edit-engine="opened"] & {
+	body[data-indigo-edit-engine="open"] & {
 		#JahiaGxtManagerLeftTree {
 			display: none;
 		}
@@ -2532,7 +2533,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			}
 
 			// Style differently when the Edit Engine is opened
-			body[data-indigo-edit-engine="opened"] & {
+			body[data-indigo-edit-engine="open"] & {
 				z-index: 99999!important;
 				left: 73px!important;
 				right: auto!important;
@@ -2542,7 +2543,12 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			// Have to shift the Node Type filter to the left of the Language Switcher ( which doesnt exist in normal Picker )
 			&.toolbar-itemsgroup-nodetypefiltering {
-				right: 252px !important;
+				right: 272px !important;
+
+				body.ext-gecko & {
+					right: 292px !important;
+
+				}
 			}
 		}
 
@@ -2609,7 +2615,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		box-shadow: none!important;
 
 		// Display Edit Engine when toggled to "opened"
-		body[data-indigo-edit-engine="opened"] & {
+		body[data-indigo-edit-engine="open"] & {
 			display: block;
 		}
 

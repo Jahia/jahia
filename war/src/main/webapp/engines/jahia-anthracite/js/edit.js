@@ -5239,7 +5239,7 @@
                 .onAttribute(".window-iframe", "src", app.iframe.onChangeSRC)
                 .onAttribute(".x-jahia-root", "class", app.onChange)
                 .onClose("#" + app.picker.data.ID, app.picker.onClose)
-                .onClose("#JahiaGxtEnginePanel", app.engine.onClose)
+                .onClose("#JahiaGxtEnginePanel, #JahiaGxtEngineWindow", app.engine.onClose)
                 .onClose("#JahiaGxtImagePopup", app.imagePreview.onClose)
                 .onOpen(".workflow-dashboard-engine", app.workflow.dashboard.onOpen)
                 .onClick(".app-container", app.onClick)

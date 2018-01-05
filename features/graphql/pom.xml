@@ -55,32 +55,26 @@
     <name>Jahia DX graphql-java Karaf OSGi Feature</name>
     <packaging>feature</packaging>
     
-    <properties>
-        <graphql-java.version>6.0</graphql-java.version>
-        <graphql-java-annotations.version>6.0.0-jahia-SNAPSHOT</graphql-java-annotations.version>
-        <graphql-java-servlet.version>4.6.1-jahia-SNAPSHOT</graphql-java-servlet.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>java-dataloader</artifactId>
-            <version>2.0.2-jahia-SNAPSHOT</version>
+            <version>2.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java</artifactId>
-            <version>${graphql-java.version}</version>
+            <version>6.0</version>
         </dependency>
         <dependency>
             <groupId>io.github.graphql-java</groupId>
             <artifactId>graphql-java-annotations</artifactId>
-            <version>${graphql-java-annotations.version}</version>
+            <version>6.0.0-jahia1</version>
         </dependency>
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java-servlet</artifactId>
-            <version>${graphql-java-servlet.version}</version>
+            <version>4.7.0</version>
         </dependency>
     </dependencies>
 </project>

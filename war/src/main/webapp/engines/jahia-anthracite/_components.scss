@@ -2183,7 +2183,9 @@ form,
 		background-position: center!important;
 	}
 
-	.cke_dialog_ui_hbox_last {
+	td.cke_dialog_ui_hbox_last {
+		float: left;
+    margin-right: 10px;
 	}
 
 	.cke_dark_background {

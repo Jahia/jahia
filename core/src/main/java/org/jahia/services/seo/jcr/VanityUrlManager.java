@@ -107,18 +107,20 @@ public class VanityUrlManager {
      */
     public List<VanityUrl> findExistingVanityUrls(String url, String site,
             JCRSessionWrapper session) throws RepositoryException {
-        StringBuilder sql2 = new StringBuilder( "SELECT * FROM [")
-                .append(JAHIANT_VANITYURL)
-                .append("] AS vanityURL WHERE ");
-        if (StringUtils.isNotEmpty(site)) {
-            sql2.append("ISDESCENDANTNODE('/sites/")
-                    .append(JCRContentUtils.sqlEncode(site))
-                    .append("') AND ");
-        }
-        sql2.append("vanityURL.[").append(PROPERTY_URL).append("] = ")
-                .append(JCRContentUtils.stringToQueryLiteral(url));
 
-        Query vanityUrlsQuery = session.getWorkspace().getQueryManager().createQuery(sql2.toString(), "JCR-SQL2");
+        StringBuilder xpath = new StringBuilder("/jcr:root");
+        StringBuilder sql2 = new StringBuilder("SELECT * FROM [").append(JAHIANT_VANITYURL).append("] AS vanityURL WHERE ");
+        if (StringUtils.isNotEmpty(site)) {
+            xpath.append("/sites/").append(JCRContentUtils.stringToJCRPathExp(site));
+            sql2.append("ISDESCENDANTNODE('/sites/").append(JCRContentUtils.sqlEncode(site)).append("') AND ");
+        }
+        String urlForQuery = JCRContentUtils.stringToQueryLiteral(url);
+        xpath.append("//element(*, ").append(JAHIANT_VANITYURL).append(")[@").append(PROPERTY_URL).append(" = ").append(urlForQuery)
+                .append("]");
+        sql2.append("vanityURL.[").append(PROPERTY_URL).append("] = ").append(urlForQuery);
+
+        @SuppressWarnings("deprecation")
+        Query vanityUrlsQuery = session.getWorkspace().getQueryManager().createDualQuery(xpath.toString(), Query.XPATH, sql2.toString());
         NodeIterator vanityUrls = vanityUrlsQuery.execute().getNodes();
         List<VanityUrl> existingVanityUrls = new LinkedList<>();
         while (vanityUrls.hasNext()) {

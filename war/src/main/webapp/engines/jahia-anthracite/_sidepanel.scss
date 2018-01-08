@@ -667,21 +667,7 @@
 	// width: #{$_tab_width}px!important;
 
 	.notPublished {
-		padding-left: 5px;
 		font-style: italic;
-
-		&:before {
-			content: " ";
-			background: url(./images/icons/ic_warning@2x.png) _theme-color(status, notpublished) no-repeat top 0px left 2px !important;
-			display: block;
-			width: 15px;
-			height: 15px;
-			background-size: 12px!important;
-			position: absolute;
-			left: -8px;
-			border-radius: 100%;
-			top: -2px;
-		}
 	}
 
 	// Deal with icons here ...

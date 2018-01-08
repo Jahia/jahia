@@ -362,6 +362,14 @@ body[data-indigo-app="contribute"] {
     	@include _combo-list($CONTRIBUTE-MENUS);
 
     }
+
+    // Show Live Entry even if disabled
+    div.x-menu div.x-menu-list-item.x-item-disabled span.x-menu-item.toolbar-item-live {
+        display: block!important;
+        color: rgba(_property($MENU-OPENED--COLOR, $CONTRIBUTE-MENUS), .6)!important;
+        background: _property($MENU-OPENED--BG, $CONTRIBUTE-MENUS)!important;
+    }
+
 }
 
 // Menu Set

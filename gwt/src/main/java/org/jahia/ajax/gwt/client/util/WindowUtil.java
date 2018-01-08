@@ -97,8 +97,11 @@ public class WindowUtil {
      * @return      the scroll top position of the window that contains the element
      */
     public static native int getScrollTop(Element elem) /*-{
-        win = elem.ownerDocument.defaultView;
-        return win.pageYOffset;
+        if (elem) {
+            win = elem.ownerDocument.defaultView;
+            return win.pageYOffset;
+        }
+        return 0;
     }-*/;
 
     /**
@@ -108,8 +111,11 @@ public class WindowUtil {
      * @return      the scroll top position of the window that contains the element
      */
     public static native int getScrollLeft(Element elem) /*-{
-        win = elem.ownerDocument.defaultView;
-        return win.pageXOffset;
+        if (elem) {
+            win = elem.ownerDocument.defaultView;
+            return win.pageXOffset;
+        }
+        return 0;
     }-*/;
 
     /**

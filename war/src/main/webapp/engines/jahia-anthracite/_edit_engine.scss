@@ -2766,7 +2766,7 @@ div.engine-window {
 				opacity: 0.8;
 
 				.my-paging-text {
-					@include text(12px, rgba(_theme-color(secondary), .7), $FONT--WEIGHT---EXTRALIGHT);
+					@include text(12px, inherit, $FONT--WEIGHT---EXTRALIGHT);
 				}
 
 				.gwt-TextBox {

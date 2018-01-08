@@ -2765,7 +2765,7 @@
                 open: false
             },
             onOpen: function(){
-				app.dev.log("::: APP ::: ENGINE ::: ONOPEN", true);
+				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
 
 				// Get close button
 				var closeButton = DexV2.node(this).filter(".button-cancel");
@@ -3131,6 +3131,16 @@
                     app.edit.sidepanel.onNewChannel();
 
 
+                    // A new page has been loaded in the Edit Window Iframe
+                    // If it is NOT a settings page then we need to save the URL so we can use
+                    // it as a return URL when coming back from Settings ( only if not page can be found )
+
+                    if(!app.edit.settings.data.opened){
+                        // Not a settings page so we can save the URL
+                        // NOte that we have modify the URL because the iframe is slightly different from the Edit Mode URL
+                        app.edit.data.returnURL = attrValue.replace("/cms/editframe/", "/cms/edit/");
+                    }
+
 	                var elements = {
 	                    iframe: document.getElementsByClassName("window-iframe")[0],
 	                    title: document.getElementsByClassName("x-current-page-path")[0],
@@ -3432,13 +3442,16 @@
 				history: {
 					settingspage: null,
 					editpage: null,
-				}
+				},
+                returnURL: null
 			},
 			// Event Handlers
 			onOpen: function(){
 				app.dev.log("::: APP ::: EDIT ::: ONOPEN");
 
                 DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");
+
+                app.edit.data.returnURL = window.location.pathname;
 
 				// Reset History
 				app.edit.history.reset();
@@ -4433,9 +4446,18 @@
 						// Need to set side panel tab as pages to allow the capture of the click to save the page in history...
 						DexV2.getCached("body").setAttribute("data-indigo-gwt-panel-tab", "JahiaGxtSidePanelTabs__JahiaGxtPagesTab");
 
-                        DexV2("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)")
-                            .trigger("mousedown")
-                            .trigger("mouseup");
+                        var clickablePage = DexV2("#JahiaGxtPagesTab .x-grid3-row:nth-child(2)");
+
+                        if(clickablePage.exists()){
+                            clickablePage
+                                .trigger("mousedown")
+                                .trigger("mouseup");
+                        } else {
+                            window.location = app.edit.data.returnURL;
+
+                        }
+
+
 
 		            }
 
@@ -4481,7 +4503,6 @@
                 DexV2.getCached("body")
 					.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no")
                 	.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "open");
-
 
             },
             onChange: function(){

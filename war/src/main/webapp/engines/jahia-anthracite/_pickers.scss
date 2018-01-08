@@ -1206,6 +1206,10 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 										> label {
 											display: none!important;
 										}
+
+										.x-form-field-wrap {
+										    width: 100% !important;
+										}
 									}
 
 									// END DATE
@@ -1219,6 +1223,10 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 										> label {
 											display: none!important;
+										}
+
+										.x-form-field-wrap {
+										    width: 100% !important;
 										}
 									}
 

@@ -76,7 +76,6 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
@@ -345,7 +344,7 @@ public class RenderService {
             }
 
             // Allows to override template by theme for server settings and site settings
-            String theme = getSettingsPanelsTheme(renderContext.getRequest());
+            String theme = getSettingsPanelsTheme(renderContext);
             if (theme != null
                     && JCRContentUtils.isNodeType(resource.getNode(), nodeTypesWithTheme)) {
                 template = addTemplate(resource, renderContext, templateName + "-" + theme, installedModules, type);
@@ -604,12 +603,17 @@ public class RenderService {
         this.settingsPanelTheme = settingsBean.getString("jahia.ui.settingsPanels.theme", null);
     }
 
-    private String getSettingsPanelsTheme(HttpServletRequest request) {
+    private String getSettingsPanelsTheme(RenderContext renderContext) {
+        String mode = renderContext.getMode();
+        if (mode != null && ("studio".equals(mode) || "studiovisual".equals(mode))) {
+            // we do not use theme-specific settings panels in Studio mode
+            return null;
+        }
         String theme = null;
         if (settingsPanelTheme != null) {
             theme = settingsPanelTheme.equals("default") ? null : settingsPanelTheme;
-        } else if (request != null) {
-            HttpSession httpSession = request.getSession(false);
+        } else if (renderContext.getRequest() != null) {
+            HttpSession httpSession = renderContext.getRequest().getSession(false);
             if (httpSession != null) {
                 theme = (String) httpSession.getAttribute("jahia.ui.theme");
             }

@@ -305,6 +305,10 @@
 .workflowactiondialog-card.engine-panel,
 .workflowactiondialog-card.engine-window {
 
+	> div.x-panel-header {
+		pointer-events: none;
+	}
+
 	.x-toolbar-left {
 		bottom: 19px!important;
 	}
@@ -455,9 +459,6 @@
 
 .workflowactiondialog-ctn {
 
-		> div.x-panel-header {
-			pointer-events: none;
-		}
 
 		> .x-border-panel:first-child {
 			height: 150px !important;

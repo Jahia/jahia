@@ -120,11 +120,7 @@
 
 @mixin dual_list($_id: "DUAL_LIST"){
 
-	.x-form-item-label {
-		display: none!important;
-	}
-
-    .x-form-group {
+    .list-store-field {
         /* Yet another container */
         height: auto!important;
         width: 100%!important;
@@ -174,11 +170,20 @@
 							   padding: 5px;
 							   background: _property($LIST-BOX--ROW--BG, $EDIT-ENGINE);
 							   box-sizing: border-box;
+
+							   > .x-form-field-wrap {
+								   width: 100%!important;
+							   }
 						   }
 
-						   .x-form-list {
-							   height: 196px!important;
+						   // This block has a text filter, so change the height to accomodate
+						   .x-table-layout-cell {
+							   .x-form-list {
+								   height: 161px!important;
+							   }
 						   }
+
+
 					   }
 
 					   // BUTTONS
@@ -189,7 +194,7 @@
 						   position: relative!important;
 
 						   > div {
-							   margin: 53px 0 0 0!important;
+							   margin: 39px 0 0 0!important;
 						   }
 					   }
 
@@ -200,9 +205,6 @@
 						   display: inline-block;
 						   position: relative!important;
 
-						   .x-form-list {
-							   height: 235px!important;
-						   }
 					   }
 				   }
 			   }

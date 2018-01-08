@@ -1463,7 +1463,6 @@ div.engine-window {
 
 	#JahiaGxtEditEnginePanel-visibility {
 		// Deals with status of visibility and publication
-		@include dual_list();
 
 		img {
 			width: 20px;
@@ -2023,7 +2022,6 @@ div.engine-window {
 
 		}
 
-		@include dual_list();
 
 	}
 
@@ -2397,7 +2395,6 @@ div.engine-window {
 			}
 		}
 
-		@include dual_list();
 	}
 
 	#JahiaGxtEditEnginePanel-layout {

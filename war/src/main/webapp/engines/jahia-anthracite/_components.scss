@@ -3273,6 +3273,76 @@ body[data-indigo-gwt-side-panel="open"] {
 	height: 100%!important;
 	background: #fafafa !important;
 
+	// Deal with icons here ...
+	.x-tree3-node-text {
+		padding-left: 2px!important;
+	}
+
+	.x-tree3-node-icon {
+
+		background-size: 23px 23px;
+	    background-repeat: no-repeat;
+		opacity: 0.8;
+
+		background-color: _theme-color(secondary, c);
+		padding: 2px 2px!important;
+		border-radius: 4px;
+		height: 21px;
+		width: 21px;
+
+		&[src$="/jnt_portletFolder.png"],
+		&[src$="/jnt_navMenuText.png"],
+		&[src$="/jnt_externalLink.png"],
+		&[src$="/jnt_nodeLink.png"],
+		&[src$="/jnt_virtualsite.png"],
+		&[src$="/jnt_page.png"],
+		&[src$="/jnt_folder.png"],
+		&[src$="/jnt_groupsFolder.png"],
+		&[src$="/jnt_contentFolder.png"] {
+			padding: 0 0 0 21px!important;
+			border-radius: 0;
+			height: 23px;
+			background-color: transparent!important;
+		}
+
+
+		&[src$="/jnt_groupsFolder.png"],
+		&[src$="/jnt_contentFolder.png"],
+		&[src$="/jnt_folder.png"] {
+			background-image: url(./images/icons/tabs-files-dark@X2.png);
+		}
+
+		&[src$="/jnt_portletFolder.png"] {
+			background-image: url(./images/icons_dark/portlets.svg);
+			opacity: 0.5;
+		    background-size: 21px;
+		    background-position: center center;
+		}
+
+		&[src$="/jnt_page.png"] {
+			background-image: url(./images/tabs-pages-dark@X2.png);
+		}
+
+		&[src$="/jnt_virtualsite.png"] {
+			background-image: url(./images/icons/tabs-site-dark@X2.png);
+		}
+
+		// Internal link
+		&[src$="jnt_nodeLink.png"] {
+			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+		}
+
+		// External link
+		&[src$="jnt_externalLink.png"] {
+			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+		}
+
+		// Menu link
+		&[src$="jnt_navMenuText.png"] {
+			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+		}
+	}
+
 	.x-grid3-check-col-disabled {
 		opacity: 0;
 	}

@@ -455,6 +455,10 @@
 
 .workflowactiondialog-ctn {
 
+		> div.x-panel-header {
+			pointer-events: none;
+		}
+
 		> .x-border-panel:first-child {
 			height: 150px !important;
 			width: 100% !important;

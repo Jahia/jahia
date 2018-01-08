@@ -405,6 +405,10 @@
 
 .workflowactiondialog-card.engine-window {
 
+	div.x-window-header {
+		pointer-events: none;
+	}
+
 	div.x-window-header .x-window-header-text {
 		color: _theme-color(primary, c) !important;
 		display: inline-block!important;

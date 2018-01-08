@@ -529,6 +529,13 @@
 	body[data-indigo-styled-combos="true"] &,
 	body[data-indigo-is-manager="true"] & {
 		@include _context-list($APP-MENUS);
+
+		// Show Live Entry even if disabled
+		.x-menu-list-item.x-item-disabled .x-menu-item.toolbar-item-live {
+		    display: block!important;
+		    color: rgba(_property($MENU-OPENED--COLOR, $APP), .6)!important;
+			background: _property($MENU-OPENED--BG, $APP)!important;
+		}
 	}
 }
 

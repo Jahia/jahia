@@ -1490,7 +1490,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			.x-grid3-col-name,
 			.x-grid3-col-displayName,
-			.x-grid3-col-path {
+			.x-grid3-col-path,
+			.x-grid3-col-providerKey {
 				color: _property($ROW--COLOR, $PICKER)!important;
 			}
 
@@ -2663,7 +2664,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		// Node Name
 		.x-grid3-td-name,
 		.x-grid3-td-displayName {
-			width: calc(100% - 410px) !important;
+			width: calc(100% - 460px) !important;
 		}
 
 		// Node Type

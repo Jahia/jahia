@@ -28,7 +28,7 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program. If not, see <http://www.gnu.org/licenses/>.
+        along with this program. If not, see <http://www.gnu.org/licenses />.
 
 
         2/ JSEL - Commercial and Supported Versions of the program
@@ -59,7 +59,7 @@
     <scm>
         <connection>scm:dummy:uri</connection>
         <developerConnection>scm:dummy:uri</developerConnection>
-      <tag>HEAD</tag>
+      <tag>JAHIA_7_2_2_0_RC</tag>
   </scm>
 
     <repositories>

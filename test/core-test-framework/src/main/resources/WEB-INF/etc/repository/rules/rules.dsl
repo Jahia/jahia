@@ -28,7 +28,7 @@
 [condition][]- it has the extension type {type}=types contains "{type}"
 [condition][]- it has the type {type}=types contains "{type}"
 [condition][]- it has no type {type}=types not contains "{type}"
-[condition][]- it is in {path}=$node.path matches "{path}/*"
+[condition][]- it is in {path}=$node.path matches "{path}/.*"
 [condition][]- its name is not {name}=name != "{name}"
 [condition][]- its name is {name}=name == "{name}"
 [condition][]- its name matches "{namePattern}"=name matches "{namePattern}"

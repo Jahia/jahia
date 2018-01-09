@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia</groupId>
         <artifactId>jahia-parent</artifactId>
-        <version>7.2.2.0-SNAPSHOT</version>
+        <version>7.2.2.1-SNAPSHOT</version>
         <relativePath>jahia-parent/pom.xml</relativePath>
     </parent>
 
@@ -64,7 +64,7 @@
         <connection>scm:git:git@github.com:Jahia/dxm-private.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/dxm-private.git</developerConnection>
         <url>https://github.com/Jahia/dxm-private</url>
-        <tag>JAHIA_7_2_2_0_RC</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <repositories>

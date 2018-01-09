@@ -173,7 +173,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
         }
 
         JCRNodeWrapper site;
-        if (cfg.equals("repositoryexplorer")) {
+        if (cfg.equals("repositoryexplorer") || cfg.startsWith("repositoryexplorer-")) {
             try {
                 site = JCRSessionFactory.getInstance().getCurrentUserSession().getRootNode();
             } catch (RepositoryException e) {
@@ -181,7 +181,7 @@ public class ContentManagerAccessCheckFilter implements Filter,
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
-        } else if (cfg.equals("categorymanager")) {
+        } else if (cfg.equals("categorymanager") || cfg.startsWith("categorymanager-")) {
             try {
                 site = JCRSessionFactory.getInstance().getCurrentUserSession().getNode("/sites/systemsite");
             } catch (RepositoryException e) {

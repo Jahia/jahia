@@ -134,7 +134,7 @@
         <jahia.sign.keystore>${user.home}/.codesign/jahia-code-signing-certificate.p12</jahia.sign.keystore>
 
         <!-- plugin versions -->
-        <javadoc.plugin.version>2.10.1</javadoc.plugin.version>
+        <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
         <assembly.plugin.version>2.5.2</assembly.plugin.version>
         <site.plugin.version>3.4</site.plugin.version>
         <war.plugin.version>2.5</war.plugin.version>
@@ -485,20 +485,12 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${javadoc.plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
-                                <configuration>
-                                    <detectOfflineLinks>false</detectOfflineLinks>
-                                    <minmemory>128m</minmemory>
-                                    <maxmemory>1g</maxmemory>
-                                    <failOnError>false</failOnError>
-                                    <quiet>true</quiet>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -515,7 +507,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${javadoc.plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>aggregate-javadocs</id>
@@ -525,11 +516,13 @@
                                 <configuration>
                                     <attach>false</attach>
                                     <finalName>${project.artifactId}-${project.version}-aggregate</finalName>
-                                    <detectOfflineLinks>false</detectOfflineLinks>
-                                    <minmemory>128m</minmemory>
-                                    <maxmemory>1g</maxmemory>
-                                    <failOnError>false</failOnError>
-                                    <quiet>true</quiet>
+                                    <additionalDependencies>
+                                        <additionalDependency>
+                                            <groupId>com.google.gwt</groupId>
+                                            <artifactId>gwt-dev</artifactId>
+                                            <version>${gwt.version}</version>
+                                        </additionalDependency>
+                                    </additionalDependencies>
                                 </configuration>
                             </execution>
                         </executions>
@@ -966,6 +959,19 @@
                         <scmCommentPrefix>[jgitflow-maven-plugin] </scmCommentPrefix>
                         <versionChangeFilesPath>..</versionChangeFilesPath>
                      </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${javadoc.plugin.version}</version>
+                    <configuration>
+                        <detectOfflineLinks>false</detectOfflineLinks>
+                        <minmemory>128m</minmemory>
+                        <maxmemory>1g</maxmemory>
+                        <failOnError>false</failOnError>
+                        <quiet>true</quiet>
+                        <additionalparam>-Xdoclint:none --allow-script-in-comments</additionalparam>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

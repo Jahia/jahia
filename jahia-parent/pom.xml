@@ -968,7 +968,7 @@
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <minmemory>128m</minmemory>
                         <maxmemory>1g</maxmemory>
-                        <failOnError>false</failOnError>
+                        <failOnError>true</failOnError>
                         <quiet>true</quiet>
                         <additionalparam>-Xdoclint:none --allow-script-in-comments</additionalparam>
                     </configuration>

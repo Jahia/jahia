@@ -119,45 +119,13 @@ public class DefaultValueListener extends DefaultEventListener {
                             } catch (PathNotFoundException e) {
                                 continue;
                             }
-                            if (n != null) {
-                                boolean anythingChanged = false;
-                                List<NodeType> l = new ArrayList<NodeType>();
-                                NodeType nt = n.getPrimaryNodeType();
-                                l.add(nt);
-                                NodeType mixin[] = n.getMixinNodeTypes();
-                                l.addAll(Arrays.asList(mixin));
-                                for (Iterator<NodeType> iterator = l.iterator(); iterator.hasNext(); ) {
-                                    NodeType nodeType = iterator.next();
-                                    ExtendedNodeType ent = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
-                                    if (ent != null) {
-                                        ExtendedPropertyDefinition[] pds = ent.getPropertyDefinitions();
-                                        for (int i = 0; i < pds.length; i++) {
-                                            ExtendedPropertyDefinition pd = pds[i];
-                                            Value[] defValues = pd.getDefaultValuesAsUnexpandedValue();
-                                            if (defValues.length > 0) {
-                                                boolean handled = handlePropertyDefaultValues(n, pd, defValues, sessionLocale);
-                                                anythingChanged = anythingChanged || handled;
-                                            }
-                                        }
-                                        ExtendedNodeDefinition[] nodes = ent.getChildNodeDefinitions();
-                                        for (ExtendedNodeDefinition definition : nodes) {
-                                            if (definition.isAutoCreated() && !n.hasNode(definition.getName())) {
-                                                Node autoCreated = n.addNode(definition.getName(), definition.getDefaultPrimaryTypeName());
-                                                if (autoCreated.isNodeType("jmix:originWS")) {
-                                                    autoCreated.setProperty("j:originWS", workspace);
-                                                }
-                                                anythingChanged = true;
-                                            }
-                                        }
-                                    }
+
+                            if (n != null && handleNode(n, sessionLocale)) {
+                                n.getRealNode().getSession().save();
+                                if (sessions == null) {
+                                    sessions = new HashSet<Session>();
                                 }
-                                if (anythingChanged) {
-                                    n.getRealNode().getSession().save();
-                                    if (sessions == null) {
-                                        sessions = new HashSet<Session>();
-                                    }
-                                    sessions.add(n.getRealNode().getSession());
-                                }
+                                sessions.add(n.getRealNode().getSession());
                             }
                         } catch (NoSuchNodeTypeException e) {
                             // ignore
@@ -180,7 +148,47 @@ public class DefaultValueListener extends DefaultEventListener {
         } catch (Exception e) {
             logger.error("Error when executing event", e);
         }
+    }
 
+    private boolean handleNode(JCRNodeWrapper node, Locale sessionLocale) throws RepositoryException {
+        boolean anythingChanged = false;
+
+        List<NodeType> nodeTypes = new ArrayList<>();
+        NodeType primaryNodeType = node.getPrimaryNodeType();
+        nodeTypes.add(primaryNodeType);
+        NodeType mixin[] = node.getMixinNodeTypes();
+        nodeTypes.addAll(Arrays.asList(mixin));
+
+        for (Iterator<NodeType> iterator = nodeTypes.iterator(); iterator.hasNext(); ) {
+            NodeType nodeType = iterator.next();
+            ExtendedNodeType extendedNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
+            if (extendedNodeType != null) {
+                ExtendedPropertyDefinition[] propertyDefinitions = extendedNodeType.getPropertyDefinitions();
+
+                for (int i = 0; i < propertyDefinitions.length; i++) {
+                    ExtendedPropertyDefinition propertyDefinition = propertyDefinitions[i];
+                    Value[] defValues = propertyDefinition.getDefaultValuesAsUnexpandedValue();
+                    if (defValues.length > 0) {
+                        boolean handled = handlePropertyDefaultValues(node, propertyDefinition, defValues, sessionLocale);
+                        anythingChanged = anythingChanged || handled;
+                    }
+                }
+
+                ExtendedNodeDefinition[] childNodeDefinitions = extendedNodeType.getChildNodeDefinitions();
+                for (ExtendedNodeDefinition definition : childNodeDefinitions) {
+                    if (definition.isAutoCreated() && !node.hasNode(definition.getName())) {
+                        JCRNodeWrapper autoCreated = node.addNode(definition.getName(), definition.getDefaultPrimaryTypeName());
+                        if (autoCreated.isNodeType("jmix:originWS")) {
+                            autoCreated.setProperty("j:originWS", workspace);
+                        }
+                        handleNode(autoCreated, sessionLocale);
+                        anythingChanged = true;
+                    }
+                }
+            }
+        }
+
+        return anythingChanged;
     }
 
     protected boolean handlePropertyDefaultValues(JCRNodeWrapper n, ExtendedPropertyDefinition pd, Value[] values,

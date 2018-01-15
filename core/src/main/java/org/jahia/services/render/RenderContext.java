@@ -163,14 +163,16 @@ public class RenderContext {
         if (mode == null) {
             // compute current mode
             mode = StringUtils.substringAfterLast(servletPath, "/");
-            if (mode.endsWith("frame")) {
-                mode = StringUtils.substringBefore(mode, "frame");
-            }
-            if ("render".equals(mode)) {
-                if (workspace.equals("live")) {
-                    mode = "live";
-                } else {
-                    mode = "preview";
+            if (mode != null) {
+                if (mode.endsWith("frame")) {
+                    mode = StringUtils.substringBefore(mode, "frame");
+                }
+                if ("render".equals(mode)) {
+                    if (workspace.equals("live")) {
+                        mode = "live";
+                    } else {
+                        mode = "preview";
+                    }
                 }
             }
         }

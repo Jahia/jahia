@@ -91,7 +91,9 @@ public class GoToContentActionItem extends BaseActionItem {
                 new BaseAsyncCallback<String>() {
                     @Override
                     public void onSuccess(String path) {
-                        MainModule.staticGoTo(path, null);
+                        if (path != null) {
+                            MainModule.staticGoTo(path, null);
+                        }
                     }
                 });
     }

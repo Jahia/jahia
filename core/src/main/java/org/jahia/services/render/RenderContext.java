@@ -162,8 +162,8 @@ public class RenderContext {
     public String getMode() {
         if (mode == null) {
             // compute current mode
-            mode = StringUtils.substringAfterLast(servletPath, "/");
-            if (mode != null) {
+            if (servletPath != null) {
+                mode = StringUtils.substringAfterLast(servletPath, "/");
                 if (mode.endsWith("frame")) {
                     mode = StringUtils.substringBefore(mode, "frame");
                 }

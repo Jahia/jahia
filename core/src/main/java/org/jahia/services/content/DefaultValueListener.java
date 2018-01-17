@@ -75,22 +75,21 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.jahia.api.Constants.JCR_LASTMODIFIED;
-import static org.jahia.api.Constants.JCR_LASTMODIFIEDBY;
-
 /**
  * JCR listener that automatically populates node properties with default values (in case of dynamic values or i18n properties) and creates
  * mandatory sub-nodes.
- * 
+ *
  * @author Thomas Draier
  */
 public class DefaultValueListener extends DefaultEventListener {
-    private static Logger logger = LoggerFactory.getLogger(DefaultValueListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultValueListener.class);
 
+    @Override
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED;
     }
 
+    @Override
     public void onEvent(final EventIterator eventIterator) {
         try {
             // todo : may need to move the dynamic default values generation to JahiaNodeTypeInstanceHandler
@@ -98,7 +97,9 @@ public class DefaultValueListener extends DefaultEventListener {
             final Locale sessionLocale = eventSession.getLocale();
             final JahiaUser user = eventSession.getUser();
             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, workspace, null, new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
+
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Set<Session> sessions = null;
                     while (eventIterator.hasNext()) {
                         Event event = eventIterator.nextEvent();
@@ -106,26 +107,26 @@ public class DefaultValueListener extends DefaultEventListener {
                             continue;
                         }
                         try {
-                            JCRNodeWrapper n = null;
+                            JCRNodeWrapper node = null;
                             String eventPath = event.getPath();
                             try {
                                 if (event.getType() == Event.NODE_ADDED) {
-                                    n = (JCRNodeWrapper) s.getItem(eventPath);
+                                    node = (JCRNodeWrapper) session.getItem(eventPath);
                                 }
                                 if (eventPath.endsWith(Constants.JCR_MIXINTYPES)) {
                                     String path = eventPath.substring(0, eventPath.lastIndexOf('/'));
-                                    n = (JCRNodeWrapper) s.getItem(path.length() == 0 ? "/" : path);
+                                    node = (JCRNodeWrapper) session.getItem(path.length() == 0 ? "/" : path);
                                 }
                             } catch (PathNotFoundException e) {
                                 continue;
                             }
 
-                            if (n != null && handleNode(n, sessionLocale)) {
-                                n.getRealNode().getSession().save();
+                            if (node != null && handleNode(node, sessionLocale)) {
+                                node.getRealNode().getSession().save();
                                 if (sessions == null) {
                                     sessions = new HashSet<Session>();
                                 }
-                                sessions.add(n.getRealNode().getSession());
+                                sessions.add(node.getRealNode().getSession());
                             }
                         } catch (NoSuchNodeTypeException e) {
                             // ignore

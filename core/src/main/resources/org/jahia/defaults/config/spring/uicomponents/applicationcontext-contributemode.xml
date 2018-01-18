@@ -9,6 +9,7 @@
         <property name="defaultLocation" value="$defaultSiteHome.html"/>
         <property name="defaultUrlMapping" value="/cms/contribute"/>
         <property name="sitesLocation" value="/sites/*"/>
+        <property name="dragAndDropBehavior" value="#{jahiaProperties['jahia.ui.dragAndDrop.contribute'] != null ? jahiaProperties['jahia.ui.dragAndDrop.contribute'] : (jahiaProperties['jahia.ui.dragAndDrop'] != null ? jahiaProperties['jahia.ui.dragAndDrop'] : 'ENABLED')}"/>
         <property name="excludedNodeTypes">
             <set>
                 <value>jmix:hiddenType</value>

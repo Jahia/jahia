@@ -27,6 +27,7 @@
         <property name="nodeCheckPermission" value="/modules"/>
         <property name="forceHeaders" value="true"/>
         <property name="supportChannelsDisplay" value="false"/>
+        <property name="dragAndDropBehavior" value="#{jahiaProperties['jahia.ui.dragAndDrop.studio'] != null ? jahiaProperties['jahia.ui.dragAndDrop.studio'] : (jahiaProperties['jahia.ui.dragAndDrop'] != null ? jahiaProperties['jahia.ui.dragAndDrop'] : 'ENABLED')}"/>
         <property name="componentsPaths">
             <list>
                 <value>/modules/*</value>

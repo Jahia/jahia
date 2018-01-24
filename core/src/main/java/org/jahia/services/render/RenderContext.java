@@ -438,4 +438,15 @@ public class RenderContext {
         return ReadOnlyModeController.getInstance().getReadOnlyStatus();
     }
 
+    /**
+     * Tells whether write operations are allowed by current read only mode status; in fact, they are only allowed when the read only mode is completely off.
+     * The read only mode completely switched on, as well as any intermediate or failure state switching it on/off, disallows write.
+     *
+     * The getReadOnlyStatus method should be used to analyze current read only mode state in more details when needed.
+     *
+     * @return Whether write operations are allowed by current read only mode status
+     */
+    public boolean isWriteAllowedByReadOnlyStatus() {
+        return (getReadOnlyStatus() == ReadOnlyModeController.ReadOnlyModeStatus.OFF);
+    }
 }

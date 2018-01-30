@@ -136,6 +136,8 @@ public class SettingsTabItem extends SidePanelTabItem {
         fields.add(GWTJahiaNode.LOCKS_INFO);
         fields.add("j:requiredPermissionNames");
         fields.add("j:requiredLicenseFeature");
+        fields.add("j:templateLink");
+        fields.add("j:hashLocation");
 
         RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
             @Override
@@ -212,7 +214,7 @@ public class SettingsTabItem extends SidePanelTabItem {
 
                 if (loadConfig == null) {
                     JahiaContentManagementService.App.getInstance()
-                            .getRoot(paths, Arrays.asList("jnt:template"), null, null, fields, factory.getSelectedPath(), factory.getOpenPath(), true,
+                            .getRoot(paths, Arrays.asList("jnt:template", "jnt:templateLink"), null, null, fields, factory.getSelectedPath(), factory.getOpenPath(), true,
                                     false, null, null, true, asyncCallback);
                 } else {
                     GWTJahiaNode gwtJahiaNode = (GWTJahiaNode) loadConfig;
@@ -230,7 +232,7 @@ public class SettingsTabItem extends SidePanelTabItem {
                             nodePaths.addAll(alt);
                         }
                         JahiaContentManagementService.App.getInstance()
-                                .getRoot(nodePaths, Arrays.asList("jnt:template"), null, null, fields, factory.getSelectedPath(), factory.getOpenPath(), true,
+                                .getRoot(nodePaths, Arrays.asList("jnt:template", "jnt:templateLink"), null, null, fields, factory.getSelectedPath(), factory.getOpenPath(), true,
                                         false, null, null, true, asyncCallback);
                     }
                 }
@@ -239,7 +241,7 @@ public class SettingsTabItem extends SidePanelTabItem {
         settingsLoader = new BaseTreeLoader<GWTJahiaNode>(proxy) {
             @Override
             public boolean hasChildren(GWTJahiaNode parent) {
-                return !parent.isNodeType("jnt:contentTemplate");
+                return !parent.isNodeType("jnt:contentTemplate") && !parent.isNodeType("jnt:templateLink");
             }
         };
 
@@ -278,6 +280,10 @@ public class SettingsTabItem extends SidePanelTabItem {
                 final String path = settingPath.replaceAll("\\$site",JahiaGWTParameters.getSiteNode().getPath()).replaceAll("\\$user",JahiaGWTParameters.getCurrentUserPath());
                 if (e.getModel().isNodeType("jnt:contentTemplate") && !Boolean.FALSE.equals(e.getModel().get("hasAccessToSettings"))) {
                     MainModule.staticGoTo(path, getSelectedItem().getName(), "generic", "");
+                } else if (e.getModel().isNodeType("jnt:templateLink")) {
+                    MainModule.getInstance().resetFramePosition();
+                    String url = MainModule.getInstance().getUrl(path, (String) e.getModel().get("j:templateLink"), "generic", "", false) + "#" + e.getModel().get("j:hashLocation");
+                    MainModule.getInstance().goToSettingsUrl(url);
                 }
             }
         });

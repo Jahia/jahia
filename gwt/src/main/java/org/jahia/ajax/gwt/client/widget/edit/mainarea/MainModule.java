@@ -481,6 +481,18 @@ public class MainModule extends Module {
         center.layout(true);
     }
 
+    public void goToSettingsUrl(final String url) {
+        boolean onlyHashHasChanged = false;
+        if (url.contains("#") && frame.url.contains("#")) {
+            onlyHashHasChanged = (frame.url.contains("#") ? frame.url.substring(0, frame.url.indexOf('#')) : frame.url).equals(url.contains("#") ? url.substring(0, url.indexOf('#')) : url);
+        }
+        if (!onlyHashHasChanged) {
+            goToUrl(url, false, false, false);
+        } else {
+            frame.setUrl(url);
+        }
+    }
+
     private void setChannelFromUrl(String url) {
         if (config.isSupportChannelsDisplay()) {
             activeChannel = editLinker.getActiveChannel();
@@ -509,6 +521,9 @@ public class MainModule extends Module {
 
     private Map<String, String> getParamsFromUrl(String url) {
         Map<String, String> m = new HashMap<String, String>();
+        if (url.contains("#")) {
+            url = url.substring(0, url.indexOf('#'));
+        }
         if (url.contains("?")) {
             String[] params = url.substring(url.indexOf('?') + 1).split("&");
             for (String param : params) {
@@ -1392,6 +1407,11 @@ public class MainModule extends Module {
         }
 
         public final native String getFrameUrl(IFrameElement iFrameElement) /*-{
+            // This is known to work on all modern browsers.
+            return iFrameElement.contentWindow.location.href;
+        }-*/;
+
+        public final native String setFrameUrl(IFrameElement iFrameElement) /*-{
             // This is known to work on all modern browsers.
             return iFrameElement.contentWindow.location.href;
         }-*/;

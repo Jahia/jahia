@@ -216,7 +216,7 @@
                         <executions>
                             <execution>
                                 <id>taglibrarydoc</id>
-                                <phase>verify</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>taglibrarydoc</goal>
                                 </goals>

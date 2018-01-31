@@ -124,7 +124,7 @@ public abstract class JCRProtectedNodeAbstractDecorator extends JCRNodeDecorator
      * Only method to implement, that check the readability of a property, based on the property name
      * @param propertyName the property name to check
      * @return true if the property is readable, false if not
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     protected abstract boolean canReadProperty(String propertyName) throws RepositoryException;
 

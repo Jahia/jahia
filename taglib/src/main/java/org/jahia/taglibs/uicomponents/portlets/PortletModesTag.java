@@ -43,7 +43,6 @@
  */
 package org.jahia.taglibs.uicomponents.portlets;
 
-import org.apache.pluto.container.PortletContainerException;
 import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
@@ -111,6 +110,7 @@ public class PortletModesTag extends TagSupport {
     private String var;
 
     /**
+     * @return name of the pageContext attribute holding the {@link PortletWindowBean}
      * @jsp:attribute name="name" required="true" rtexprvalue="true"
      * description="name of the pageContext attribute holding the PortletWindowBean
      * <p/>
@@ -129,6 +129,7 @@ public class PortletModesTag extends TagSupport {
     }
 
     /**
+     * @return String to append to portlet name's resource bundle key
      * @jsp:attribute name="namePostFix" required="false" rtexprvalue="true"
      * description="String to append to portlet name's resource bundle key
      * <p/>
@@ -147,6 +148,7 @@ public class PortletModesTag extends TagSupport {
     }
 
     /**
+     * @return the name of the resource bundle
      * @jsp:attribute name="resourceBundle" required="false" rtexprvalue="true"
      * description="resource bundle to use to find portlet mode labels.
      * <p/>
@@ -162,6 +164,7 @@ public class PortletModesTag extends TagSupport {
     }
 
     /**
+     * @return CSS class to use to display portlet mode labels
      * @jsp:attribute name="listCSSClass" required="false" rtexprvalue="true"
      * description="CSS class to use to display portlet mode labels.
      * <p/>
@@ -177,6 +180,7 @@ public class PortletModesTag extends TagSupport {
     }
 
     /**
+     * @return CSS class to use to display the currently selected portlet mode label
      * @jsp:attribute name="currentCSSClass" required="false" rtexprvalue="true"
      * description="CSS class to use to display the currently selected portlet mode label.
      * <p/>
@@ -199,6 +203,7 @@ public class PortletModesTag extends TagSupport {
         this.node = node;
     }
 
+    @Override
     public int doStartTag() throws JspException {
 
         RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);

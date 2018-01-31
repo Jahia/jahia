@@ -91,7 +91,7 @@ public class Utils {
     /**
      * Method enumSize : returns the size of the given enumeration
      *
-     * @param enumeration
+     * @param enumeration the enumeration object to return the size of
      * @return its size
      */
     public static int enumSize(final Iterator<?> enumeration) {

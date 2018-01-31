@@ -111,6 +111,7 @@ public class MessageTag extends TagSupport {
     private String property = null;
 
     /**
+     * @param key the key of the resource to fetch in the resource bundle
      * @jsp:attribute name="key" required="false" rtexprvalue="true"
      * description="the key of the resource to fetch in the resource bundle.
      * <p/>
@@ -125,6 +126,7 @@ public class MessageTag extends TagSupport {
     }
 
     /**
+     * @return name of the pageContext attribute which holds the bean to fetch and display 
      * @jsp:attribute name="name" required="false" rtexprvalue="true"
      * description="name of the pageContext attribute which holds the bean to fetch and display.
      * <p/>

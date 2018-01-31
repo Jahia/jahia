@@ -754,7 +754,7 @@ public class JCRSessionWrapper implements Session {
      * @param prefix
      * @param uri
      * @throws NamespaceException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     @Override
     public void setNamespacePrefix(String prefix, String uri) throws NamespaceException, RepositoryException {
@@ -1322,7 +1322,7 @@ public class JCRSessionWrapper implements Session {
      * @param node         node
      * @param propertyName name of the property
      * @return an iterator
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public PropertyIterator getWeakReferences(JCRNodeWrapper node, String propertyName) throws RepositoryException {
         List<PropertyIterator> propertyIterators = new ArrayList<PropertyIterator>();

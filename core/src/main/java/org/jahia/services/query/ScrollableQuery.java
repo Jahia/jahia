@@ -88,7 +88,7 @@ public class ScrollableQuery {
      *
      * @param callback the callback that will be used on each iteration
      * @return return the callback result
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public <T> T execute(ScrollableQueryCallback<T> callback) throws RepositoryException {
         query.setLimit(step);

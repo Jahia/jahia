@@ -1093,7 +1093,7 @@ public class JCRPublicationService extends JahiaService {
      * @param includesReferences If true include info for referenced nodes
      * @param includesSubnodes   If true include info for subnodes
      * @return the <code>PublicationInfo</code> for the requested node(s)
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<PublicationInfo> getPublicationInfo(String uuid, Set<String> languages, boolean includesReferences,
                                                     boolean includesSubnodes, boolean allsubtree,
@@ -1139,7 +1139,7 @@ public class JCRPublicationService extends JahiaService {
      * @param infos              contains all publication infos
      * @param currentPublicationInfo processed publicationInfo
      * @return the <code>PublicationInfo</code> for the requested node(s)
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     private PublicationInfoNode getPublicationInfo(JCRNodeWrapper node, Set<String> languages,
                                                    boolean includesReferences, boolean includesSubnodes,

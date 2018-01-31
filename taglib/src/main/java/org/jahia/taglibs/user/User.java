@@ -163,7 +163,7 @@ public class User {
      *
      * @param task a JCRNodeWrapper representing a WorkflowTask
      * @return <code>true</code> if the user can be assigned to the task, <code>false</code> otherwise
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static Boolean isAssignable(JCRNodeWrapper task) throws RepositoryException {
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();

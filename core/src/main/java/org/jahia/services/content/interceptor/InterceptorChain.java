@@ -115,7 +115,7 @@ public class InterceptorChain {
      * @throws VersionException
      * @throws LockException
      * @throws ConstraintViolationException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Value beforeSetValue(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition,
                                 Value originalValue)
@@ -147,7 +147,7 @@ public class InterceptorChain {
      * @throws VersionException
      * @throws LockException
      * @throws ConstraintViolationException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition,
                                    Value[] originalValues)
@@ -174,7 +174,7 @@ public class InterceptorChain {
      * @param storedValue
      * @return
      * @throws ValueFormatException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Value afterGetValue(JCRPropertyWrapper property, Value storedValue)
             throws ValueFormatException, RepositoryException {
@@ -200,7 +200,7 @@ public class InterceptorChain {
      * @param storedValues
      * @return
      * @throws ValueFormatException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Value[] afterGetValues(JCRPropertyWrapper property, Value[] storedValues)
             throws ValueFormatException, RepositoryException {

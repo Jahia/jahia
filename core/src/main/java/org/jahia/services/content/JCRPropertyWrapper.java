@@ -110,14 +110,14 @@ public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
     /**
      * @return
      * @throws ValueFormatException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     JCRValueWrapper getRealValue() throws ValueFormatException, RepositoryException;
 
     /**
      * @return
      * @throws ValueFormatException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     JCRValueWrapper[] getRealValues() throws ValueFormatException, RepositoryException;
 

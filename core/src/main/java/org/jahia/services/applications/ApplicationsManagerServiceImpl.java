@@ -771,7 +771,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
      * Get entryPoint object from JCRPorletNode
      * @param node
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public EntryPointInstance getEntryPointInstance(JCRPortletNode node) throws RepositoryException {
         final String contextName = node.getContextName();

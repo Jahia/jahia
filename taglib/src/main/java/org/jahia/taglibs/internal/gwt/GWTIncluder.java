@@ -86,7 +86,7 @@ public class GWTIncluder {
      * @param jahiaType   the jahiaType
      * @param id  the id
      * @param extraParams map of extra parameter. Example {("start","/root"}
-     * @return
+     * @return place holder for a jahiaModule
      */
     public static String generateJahiaModulePlaceHolder(boolean templateUsage, String cssClassName, String jahiaType, String id, Map<String, Object> extraParams) {
         // css depending on type of module

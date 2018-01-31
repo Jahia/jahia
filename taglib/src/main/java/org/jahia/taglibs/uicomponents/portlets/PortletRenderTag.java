@@ -126,8 +126,13 @@ public class PortletRenderTag extends AbstractJahiaTag {
     /**
      * draw portlet node
      *
-     * @param jcrPortletNode
-     * @return
+     * @param jcrPortletNode the corresponding portlet JCR node 
+     * @param windowId the window ID
+     * @param out the current JSP writer instance
+     * @param servletContext  the Servlet context instance
+     * @throws JahiaException in case of DX specific error
+     * @throws IOException in case of an I/O error
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void drawPortlet(JCRPortletNode jcrPortletNode, int windowId, final JspWriter out, ServletContext servletContext) throws JahiaException, IOException, RepositoryException {
 

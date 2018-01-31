@@ -96,7 +96,7 @@ public class ZipHelper {
      * @param zipname         the archive name
      * @param files           the file list
      * @return null if everything went fine, a list of untreated files otherwise
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<String> zipFiles(final JCRNodeWrapper parentDirectory, final String zipname, final List<JCRNodeWrapper> files) {
         List<String> missedPaths = null;

@@ -82,7 +82,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
      * @param sessionWrapper current session
      * @return a Map<tag value, usage count> (usage count only supported by faceted suggester)
      *
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     @Override
     public Map<String, Long> suggest(String prefix, String startPath, Long mincount, Long limit, Long offset,
@@ -106,7 +106,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
      * @param sortByCount sort the map by count
      * @param sessionWrapper the session used to do the query
      * @return Map of tags retrieving the tag name and the count associate
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     protected Map<String, Long> facetedSuggestion (String prefix, String startPath, Long mincount, Long limit, Long offset,
                                                boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException {
@@ -148,7 +148,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
      * @param limit the limit of tag returned
      * @param sessionWrapper the session used to do the query
      * @return Map of tags retrieving the tag name
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     protected Map<String, Long> simpleSuggestion (final String prefix, String startPath, final Long limit, JCRSessionWrapper sessionWrapper) throws RepositoryException {
         // handle empty term

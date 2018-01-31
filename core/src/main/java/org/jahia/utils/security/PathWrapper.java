@@ -91,21 +91,21 @@ public interface PathWrapper {
     /**
      * Check if the item exist for the current path in the wrapper
      * @return true if the item exist
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     boolean itemExist() throws RepositoryException;
 
     /**
      * Get the item for the current path in the wrapper
      * @return the item
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     Item getItem() throws RepositoryException;
 
     /**
      * Get the direct parent path wrapped
      * @return the parent path wrapper
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     PathWrapper getAncestor() throws RepositoryException;
 
@@ -113,7 +113,7 @@ public interface PathWrapper {
      * Get a new wrapped path
      * @param path the path to be wrapped
      * @return the wrapped path
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     PathWrapper getNewPathWrapper(String path) throws RepositoryException;
 }

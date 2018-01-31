@@ -73,7 +73,7 @@ public class CopiedNodeFact extends AddedNodeFact {
      *            the UUID of the source node
      * @param top
      *            <code>true</code> in case this was the original top (root) object of the copy operation
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public CopiedNodeFact(JCRNodeWrapper node, String sourceUuid, boolean top)
             throws RepositoryException {

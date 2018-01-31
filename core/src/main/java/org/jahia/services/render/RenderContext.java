@@ -367,7 +367,7 @@ public class RenderContext {
     /**
      * @param node to check
      * @return true if the node is editable (in editableTypes or without nonEditableTypes)
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public boolean isEditable(JCRNodeWrapper node) throws RepositoryException {
         if (editModeConfig != null) {

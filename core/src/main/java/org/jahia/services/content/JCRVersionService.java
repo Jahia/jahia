@@ -154,7 +154,7 @@ public class JCRVersionService extends JahiaService {
      * @param vh          the version history in which to lookup versions
      * @param versionDate the date to compare with. Note that it will find the closest version at OR BEFORE the date
      * @return the closest version at or before the date specified.
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static Version findClosestVersion(VersionHistory vh, Date versionDate) throws RepositoryException {
         VersionIterator vi = null;

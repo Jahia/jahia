@@ -570,7 +570,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * @param node the node to get name
      * @return a content object key for a node if available. Otherwise returns
      *         node name
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static String getContentNodeName(Node node)
             throws RepositoryException {
@@ -584,7 +584,7 @@ public final class JCRContentUtils implements ServletContextAware {
      *
      * @param node the content node to compute path for
      * @return a node path, composed using only content object keys
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static String getContentObjectPath(Node node)
             throws RepositoryException {
@@ -714,7 +714,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * Returns the icon path for the specified type
      * @param type wanted type
      * @return Path of the icon
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static String getIcon(ExtendedNodeType type) throws RepositoryException {
         return getIcon(type, null);
@@ -788,7 +788,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * for system and module default nodetypes, icons asset folder is returned
      * @param primaryNodeType
      * @return folder
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static String getIconsFolder(final ExtendedNodeType primaryNodeType) throws RepositoryException {
         String systemId = primaryNodeType.getSystemId();
@@ -1395,7 +1395,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * @param session
      * @param prefix
      * @param uri
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static void registerNamespace(Session session, String prefix, String uri) throws RepositoryException {
         NamespaceRegistry namespaceRegistry = session.getWorkspace().getNamespaceRegistry();
@@ -1832,7 +1832,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * @param path the path of the default user folder to retrieve, if path is empty or <code>null</code> the user's node is returned
      * @param saveIfCreate <code>true</code> if we want the session to be immediately saved, <code>false</code> if the client code will save the session to commit the changes
      * @return the JCR node associated with the requested default user folder
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public JCRNodeWrapper getDefaultUserFolder(JCRSessionWrapper session, String path, boolean saveIfCreate) throws RepositoryException {
         // if path is null or empty, return the user's node

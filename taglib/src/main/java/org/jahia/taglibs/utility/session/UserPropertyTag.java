@@ -51,7 +51,6 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 import org.jahia.services.render.RenderContext;
-import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
 import org.slf4j.Logger;
 

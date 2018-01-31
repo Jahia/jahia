@@ -152,7 +152,7 @@ public class QueryWrapper implements Query {
      *
      * @param jcrStoreProvider
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     protected Query getQuery(JCRStoreProvider jcrStoreProvider) throws RepositoryException {
         Query query = null;

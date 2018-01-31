@@ -249,7 +249,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param tags the tag list to apply on the node
      *
      * @return the list of added tags
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<String> tag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
         if(tags == null || tags.isEmpty()){
@@ -292,7 +292,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param session the session used to perform the operation
      *
      * @return the list of added tags
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<String> tag(final String nodePath, final List<String> tags, JCRSessionWrapper session) throws RepositoryException {
         return tag(session.getNode(nodePath), tags);
@@ -305,7 +305,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param tag the tag to apply on the node
      *
      * @return the list of added tags
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<String> tag(final JCRNodeWrapper node, final String tag) throws RepositoryException {
         return tag(node, Lists.newArrayList(tag));
@@ -319,7 +319,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param session the session used to perform the operation
      *
      * @return the list of added tags
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<String> tag(final String nodePath, final String tag, JCRSessionWrapper session) throws RepositoryException {
          return tag(session.getNode(nodePath), Lists.newArrayList(tag));
@@ -332,7 +332,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param tags the tag list to remove from the node
      *
      * @return the list of deleted tags
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<String> untag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
         if(tags == null || tags.isEmpty()){
@@ -381,7 +381,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param session the session used to perform the operation
      *
      * @return the list of deleted tags
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<String> untag(final String nodePath, final List<String> tags, JCRSessionWrapper session) throws RepositoryException {
         return untag(session.getNode(nodePath), tags);
@@ -394,7 +394,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param tag the tag to remove from the node
      *
      * @return the list of deleted tags
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<String> untag(final JCRNodeWrapper node, final String tag) throws RepositoryException {
         return untag(node, Lists.newArrayList(tag));
@@ -408,7 +408,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param session the session used to perform the operation
      *
      * @return the list of deleted tags
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<String> untag(final String nodePath, final String tag, JCRSessionWrapper session) throws RepositoryException {
         return untag(session.getNode(nodePath), Lists.newArrayList(tag));
@@ -419,7 +419,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param node target node
      * @param selectedTag tag to rename
      * @param tagNewName new tag name
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void renameTag(final JCRNodeWrapper node, final String selectedTag, final String tagNewName) throws RepositoryException {
         if(node.isNodeType(JMIX_TAGGED) && node.hasProperty(J_TAG_LIST) && tagNewName != null && tagNewName.length() > 0){
@@ -447,7 +447,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param selectedTag tag to rename
      * @param tagNewName new tag name
      * @param session the session used to perform the operation
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void renameTag(final String nodePath, final String selectedTag, final String tagNewName, JCRSessionWrapper session) throws RepositoryException {
         renameTag(session.getNode(nodePath), selectedTag, tagNewName);
@@ -462,7 +462,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param selectedTag tag to rename
      * @param tagNewName new tag name
      * @param callback an optional callback can be used to hook on the actions processed
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public <X> X renameTagUnderPath(String startPath, JCRSessionWrapper session, String selectedTag, String tagNewName, TagActionCallback<X> callback) throws RepositoryException {
         //Check here if tagNewName is not empty before bench operation
@@ -479,7 +479,7 @@ public class TaggingService extends JahiaService implements JahiaAfterInitializa
      * @param session the session used to perform the operation
      * @param selectedTag tag to delete
      * @param callback an optional callback can be used to hook on the actions processed
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public <X> X deleteTagUnderPath(String startPath, JCRSessionWrapper session, String selectedTag, TagActionCallback<X> callback) throws RepositoryException {
         return updateOrDeleteTagUnderPath(startPath, session, selectedTag, null, callback);

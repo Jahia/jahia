@@ -43,25 +43,17 @@
  */
 package org.jahia.taglibs.internal.gwt;
 
-import org.jahia.api.Constants;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 
-import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
-import java.util.Locale;
 
 /**
  * Simple Tag that should be called in the header of the HTML page. It create a javascript object that

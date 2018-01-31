@@ -173,7 +173,7 @@ public class CacheFilter extends AbstractFilter {
      * @param resource current resource
      * @param isAnError true if the fragment is an error, false if not
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     private String execute(String previousOut, RenderContext renderContext, Resource resource, boolean isAnError) throws RepositoryException {
 

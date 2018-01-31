@@ -50,8 +50,6 @@ import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 /**
@@ -63,6 +61,14 @@ public class Functions {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Functions.class);
 
+    /**
+     * Returns the node which corresponds to the bound component of the provided property in the specified node.
+     * 
+     * @param currentNode the node to get the bound component for
+     * @param renderContext current render context
+     * @param property the property name to lookup bound component
+     * @return the bound node
+     */
     public static JCRNodeWrapper getBoundComponent(JCRNodeWrapper currentNode, RenderContext renderContext,
             String property) {
         JCRNodeWrapper boundComponentNode = null;
@@ -76,6 +82,14 @@ public class Functions {
         return boundComponentNode;
     }
     
+    /**
+     * Returns the node path which corresponds to the bound component of the provided property in the specified node.
+     * 
+     * @param currentNode the node to get the bound component for
+     * @param renderContext current render context
+     * @param property the property name to lookup bound component
+     * @return the bound node path
+     */
     public static String getBoundComponentPath(JCRNodeWrapper currentNode, RenderContext renderContext, String property) {
         JCRNodeWrapper boundComponentNode = null;
         try {
@@ -124,6 +138,12 @@ public class Functions {
     }
 
     /**
+     * Returns the node which corresponds to the bound component of the provided property in the specified node.
+     * 
+     * @param currentNode the node to get the bound component for
+     * @param renderContext current render context
+     * @param property the property name to lookup bound component
+     * @return the bound node
      * @deprecated use {@link #getBoundComponent(JCRNodeWrapper, RenderContext, String)} instead
      */
     @Deprecated
@@ -133,6 +153,12 @@ public class Functions {
     }
 
     /**
+     * Returns the node path which corresponds to the bound component of the provided property in the specified node.
+     * 
+     * @param currentNode the node to get the bound component for
+     * @param renderContext current render context
+     * @param property the property name to lookup bound component
+     * @return the bound node path
      * @deprecated use {@link #getBoundComponentPath(JCRNodeWrapper, RenderContext, String)} instead
      */
     @Deprecated

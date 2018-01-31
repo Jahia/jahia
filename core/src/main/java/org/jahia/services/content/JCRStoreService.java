@@ -269,7 +269,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
      * Deploy definitions in all providers and store them in database
      * @param systemId
      * @throws IOException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void deployDefinitions(String systemId) throws IOException, RepositoryException {
         deployDefinitions(systemId, null, -1);
@@ -281,7 +281,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
      * @param moduleVersion
      * @param lastModified
      * @throws IOException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void deployDefinitions(String systemId, String moduleVersion, long lastModified) throws IOException, RepositoryException {
         registerNamespaces();

@@ -88,10 +88,6 @@ public class QueryDefinitionTag extends AbstractJCRTag {
     private long limit;
     private long offset;
 
-    /**
-     * @return
-     * @throws JspException
-     */
     @Override
     public int doEndTag() throws JspException {
         try {
@@ -109,7 +105,7 @@ public class QueryDefinitionTag extends AbstractJCRTag {
      * Returns current QOM builder instance.
      *
      * @return an instance of current {@link QOMBuilder}
-     * @throws JspTagException
+     * @throws JspTagException in case of QOM processing errors
      */
     public QOMBuilder getQOMBuilder() throws JspTagException {
         if (qomBuilder == null) {

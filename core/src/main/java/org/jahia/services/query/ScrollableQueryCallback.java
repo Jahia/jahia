@@ -62,7 +62,7 @@ public abstract class ScrollableQueryCallback<T> {
      * While this method return true, the ScrollableQuery will re execute the query and refresh the stepResult
      *
      * @return true when we need to scroll again the query
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public abstract boolean scroll() throws RepositoryException;
 

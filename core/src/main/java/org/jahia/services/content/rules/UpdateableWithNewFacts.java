@@ -60,7 +60,7 @@ public interface UpdateableWithNewFacts extends Updateable {
      * @param s the context node
      * @param delayedUpdates list of delayed updates that can be fill by the implementation ( for example when the node is locked ), the update need to be performed later.
      * @param newFacts list of new facts that need to be insert in the rule engine as a result of the update ( so they can trigger other rules )
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     void doUpdate(JCRSessionWrapper s, List<Updateable> delayedUpdates, List<Object> newFacts) throws RepositoryException;
 }

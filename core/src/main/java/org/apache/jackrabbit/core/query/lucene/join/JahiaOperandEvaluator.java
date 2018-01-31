@@ -155,7 +155,7 @@ public class JahiaOperandEvaluator extends OperandEvaluator {
      * @param operand
      * @param node
      * @return identified property
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     private Property getProperty(PropertyValue operand, Node node)
             throws RepositoryException {

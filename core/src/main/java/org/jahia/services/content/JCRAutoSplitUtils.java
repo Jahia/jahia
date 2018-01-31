@@ -211,7 +211,7 @@ public final class JCRAutoSplitUtils {
      * @param node the node to enable splitting of children on
      * @param splitConfig auto-splitting settings;
      * @param splitFolderNodeType
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static void enableAutoSplitting(JCRNodeWrapper node, String splitConfig, String splitFolderNodeType)
             throws RepositoryException {

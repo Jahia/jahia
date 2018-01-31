@@ -362,7 +362,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
      * directly on the current user, the following ones are the ACLs that applies on his groups.
      * @param principal The user
      * @return List of PrincipalAcl
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     private String getGroupsSignature(JahiaUser principal) throws RepositoryException {
         if (principal.isRoot()) {
@@ -393,7 +393,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
      * directly on the current user, the following ones are the ACLs that applies on his groups.
      * @param principal The user
      * @return List of PrincipalAcl
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     private List<PrincipalAcl> getUserAcl(JahiaUser principal) throws RepositoryException {
         List<PrincipalAcl> principalAcl = new ArrayList<>();

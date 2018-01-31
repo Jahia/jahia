@@ -328,7 +328,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      * @param session the session used to export
      * @param nodeTypesToIgnore the node types to ignore in the export
      * @return the estimation of nodes to export
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     private long estimateNodesToExport(Set<JCRNodeWrapper> sortedNodes, JCRSessionWrapper session,
                                        Set<String> nodeTypesToIgnore) throws RepositoryException {
@@ -363,7 +363,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      * @param nodeTypesToIgnore Set of nodetypes to filter in query
      * @param locale language to be used when jnt:translation nodes have to be retrieved
      * @return the final estimation
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     private long estimateSubnodesNumber(List<String> paths, JCRSessionWrapper session, Set<String> nodeTypesToIgnore, String locale) throws RepositoryException {
         if(paths == null || paths.size() == 0) {
@@ -993,8 +993,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      * @param legacyMappingFilePath     path to the legacy mappings
      * @param legacyDefinitionsFilePath path for the legacy definitions
      * @param session                   the current JCR session to use for the import
-     * @throws RepositoryException
-     * @throws IOException
+     * @throws RepositoryException in case of JCR-related errors
+     * @throws IOException in case of I/O errors
      */
     public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws RepositoryException, IOException {
         long timerSite = System.currentTimeMillis();

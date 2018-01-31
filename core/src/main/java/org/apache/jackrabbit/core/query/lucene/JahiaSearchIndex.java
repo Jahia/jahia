@@ -619,7 +619,7 @@ public class JahiaSearchIndex extends SearchIndex {
      *
      * @param currentNode
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     private boolean canUseOptimizedACEIndexation(NodeState currentNode) throws RepositoryException {
         final ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(JahiaNodeIndexer.getTypeNameAsString(currentNode.getNodeTypeName(), getContext().getNamespaceRegistry()));

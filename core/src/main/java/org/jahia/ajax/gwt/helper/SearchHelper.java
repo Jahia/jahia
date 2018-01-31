@@ -340,7 +340,7 @@ public class SearchHelper {
      * @param searchString
      * @param session
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Query createQuery(String searchString, JCRSessionWrapper session) throws RepositoryException {
         SearchCriteria criteria = new SearchCriteria();
@@ -355,7 +355,7 @@ public class SearchHelper {
      * @param session
      * @return
      * @throws InvalidQueryException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     private Query createQuery(GWTJahiaSearchQuery gwtQuery, JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {
         return createQuery(gwtQuery, 0, 0, session);
@@ -367,7 +367,7 @@ public class SearchHelper {
      * @param gwtQuery the search criteria bean
      * @param session  current JCR session
      * @return the {@link Query} instance, created from the provided search criteria
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws InvalidQueryException
      */
     private Query createQuery(final GWTJahiaSearchQuery gwtQuery, int limit, int offset, JCRSessionWrapper session) throws InvalidQueryException, RepositoryException {

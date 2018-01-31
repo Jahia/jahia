@@ -72,7 +72,7 @@ public interface JahiaImageService {
      * @return an Image object that usually contains metadata for the other service
      * methods to be able to manipulate the image.
      * @throws IOException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Image getImage(JCRNodeWrapper node) throws IOException, RepositoryException;
 

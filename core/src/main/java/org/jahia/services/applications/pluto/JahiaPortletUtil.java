@@ -214,7 +214,7 @@ public class JahiaPortletUtil {
      *
      * @param val
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static Object convertValues(Value val[]) throws RepositoryException {
         if (val == null) {
@@ -232,7 +232,7 @@ public class JahiaPortletUtil {
      *
      * @param val
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static Object convertValue(Value val) throws RepositoryException {
         Object theValue;

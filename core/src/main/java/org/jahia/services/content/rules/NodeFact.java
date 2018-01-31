@@ -105,8 +105,6 @@ public interface NodeFact {
      * Returns the current JCR operation type.
      *
      * @return the current JCR operation type
-     * @throws RepositoryException
-     *             in case of a repository access error
      * @since Jahia 6.6
      */
     String getOperationType();
@@ -117,6 +115,7 @@ public interface NodeFact {
      * Returns the session that execute the rule
      *
      * @return the session that execute the rule
+     * @throws RepositoryException in case of JCR-related errors
      */
     JCRSessionWrapper getSession() throws RepositoryException;
 }

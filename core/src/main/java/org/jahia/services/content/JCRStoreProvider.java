@@ -607,7 +607,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      * Deploy definitions registered with the given systemId into the underlying repository
      * @param systemId
      * @throws IOException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void deployDefinitions(String systemId) throws IOException, RepositoryException {
         // create repository instance
@@ -631,7 +631,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     /**
      * Deploy all namespaces into provider
      *
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void registerNamespaces() throws RepositoryException {
         JCRSessionWrapper sessionWrapper = getSystemSession();
@@ -659,7 +659,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      * Undeploy definitions registered with the given systemId from the underlying repository
      * @param systemId
      * @throws IOException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void undeployDefinitions(String systemId) throws IOException, RepositoryException {
         // create repository instance
@@ -1197,7 +1197,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      * @param propertyName name of the property
      * @param session      session
      * @return an iterator
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public PropertyIterator getWeakReferences(JCRNodeWrapper node, String propertyName, Session session) throws RepositoryException {
         return null;

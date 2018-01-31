@@ -62,6 +62,7 @@ public class FunctionsTest {
 
     /**
      * Method: getDeleteFacetUrl(Object facetFilterObj, KeyValue facetValue, String queryString)
+     * @throws Exception in case of an error
      */
     @Test
     public void testGetDeleteFacetUrl() throws Exception {

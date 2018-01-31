@@ -291,7 +291,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param key           calculated cache key
      * @param properties    cache properties
      * @return true if fragments is cacheable, false if not
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     protected boolean isCacheable(RenderContext renderContext, Resource resource, String key, Properties properties) throws RepositoryException {
         // first check if the key is not part of the non cacheable fragments
@@ -474,7 +474,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param cache
      * @param key
      * @param finalKey
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws ParseException
      */
     protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties,
@@ -594,7 +594,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param renderContext
      * @param resource
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     protected Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException {
         final Script script = resource.getScript(renderContext);
@@ -685,7 +685,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param resource      The resource that is being rendered
      * @param key           The key of the fragment
      * @return An entry that can be stored in the cache
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     protected CacheEntry<String> createCacheEntry(String previousOut, RenderContext renderContext, Resource resource, String key) {
         String out = TextUtils.replaceBoundedString(previousOut, "<!-- cache:include", "<!-- /cache:include -->", GENERATOR);
@@ -702,7 +702,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param resource
      * @param cacheEntry
      * @param renderContext
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     private void addPropertiesToCacheEntry(Resource resource, CacheEntry<String> cacheEntry,
                                            RenderContext renderContext) throws RepositoryException {

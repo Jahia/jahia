@@ -224,7 +224,7 @@ public class Functions {
      * Checks if the current object is iterable so that it can be used in an c:forEach
      * tag.
      *
-     * @param object the object to be checked if it is iterable
+     * @param o the object to be checked if it is iterable
      * @return if the current object is iterable return true otherwise false
      */
     public static Boolean isIterable(Object o) {

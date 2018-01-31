@@ -318,7 +318,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param principalKey the name of a principal with a prefix, such as "u:" for users, "g:" for groups
      * @param roles        the names of roles that this principal should be granted.
      * @return true if action was successful, or false if not
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     boolean grantRoles(String principalKey, Set<String> roles) throws RepositoryException;
 
@@ -328,7 +328,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param principalKey the name of a principal with a prefix, such as "u:" for users, "g:" for groups
      * @param roles        the names of roles that this principal should be denied.
      * @return true if action was successful, or false if not
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     boolean denyRoles(String principalKey, Set<String> roles) throws RepositoryException;
 
@@ -376,7 +376,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @param name Name of the folder to create
      * @return The wrapped sub folder node that was added.
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @see #addNode(String)
      */
     JCRNodeWrapper createCollection(String name) throws RepositoryException;
@@ -388,7 +388,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param is          The input stream with the file's content
      * @param contentType The MIME content type
      * @return The wrapped file node that was uploaded
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException;
 
@@ -447,7 +447,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * Returns a map of all property names of this node accessible through the current <code>Session</code> with the value as String.
      *
      * @return a map of all property names and its String values
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     Map<String, String> getPropertiesAsString() throws RepositoryException;
 
@@ -455,7 +455,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * Returns the name of the primary node type in effect for this node.
      *
      * @return the name of the primary node type
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     String getPrimaryNodeTypeName() throws RepositoryException;
 
@@ -463,7 +463,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * Returns a list holding the primary node type and all mixin node types for this node
      *
      * @return a list holding the primary node type and all mixin node types
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     List<String> getNodeTypes() throws RepositoryException;
 
@@ -564,7 +564,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * Returns a list of all the ancestor of this item.
      *
      * @return a list of all the ancestor of this item.
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<JCRItemWrapper> getAncestors() throws RepositoryException;
 
@@ -573,7 +573,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @param newName The new name
      * @return true if action was successful, or false if not
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     boolean rename(String newName) throws RepositoryException;
 
@@ -582,7 +582,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @param dest The destination name for the file node
      * @return true if action was successful, or false if not
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     boolean copy(String dest) throws RepositoryException;
 
@@ -592,7 +592,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param dest The destination name for the file node
      * @param name The new name of the copied file node
      * @return true if action was successful, or false if not
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     boolean copy(String dest, String name) throws RepositoryException;
 
@@ -603,7 +603,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param name                      The new name of the copied file node
      * @param allowsExternalSharedNodes
      * @return true if action was successful, or false if not
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     boolean copy(JCRNodeWrapper node, String name, boolean allowsExternalSharedNodes) throws RepositoryException;
 
@@ -739,7 +739,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @param propertyName the name of the property to find the corresponding definition
      * @return the <code>ExtendedPropertyDefinition</code> for the given property
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName) throws RepositoryException;
 
@@ -750,7 +750,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param requiredPropertyType the type of the property to find the corresponding definition
      * @param isMultiple           is the property multiple
      * @return the <code>ExtendedPropertyDefinition</code> for the given property
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     ExtendedPropertyDefinition getApplicablePropertyDefinition(String propertyName, int requiredPropertyType, boolean isMultiple) throws RepositoryException;
 
@@ -764,7 +764,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param nodeType
      * @return the <code>ExtendedPropertyDefinition</code> for the given property
      * @throws ConstraintViolationException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     ExtendedNodeDefinition getApplicableChildNodeDefinition(String childName, String nodeType) throws ConstraintViolationException, RepositoryException;
 
@@ -800,7 +800,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * Return the <code>JCRPlaceholderNode</code> based on the current node
      *
      * @return the <code>JCRPlaceholderNode</code> based on the current node
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     JCRPlaceholderNode getPlaceholder() throws RepositoryException;
 
@@ -820,7 +820,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @param locale
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     Node getI18N(Locale locale) throws RepositoryException;
 
@@ -830,7 +830,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @param locale
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     Node getI18N(Locale locale, boolean fallback) throws RepositoryException;
 
@@ -848,7 +848,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @param locale
      * @return <code>true</code> if the translation node exists
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     boolean hasI18N(Locale locale) throws RepositoryException;
 
@@ -859,7 +859,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @param locale   the locale for which we want to check if a translation exists
      * @param fallback whether or not we should fallback on the default locale if we didn't find an exact translation
      * @return <code>true</code> if the translation node exists
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException;
 
@@ -869,7 +869,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @param locale
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     Node getOrCreateI18N(Locale locale) throws RepositoryException;
 
@@ -879,7 +879,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * Retrieves the list of locales available on a node.
      *
      * @return a list of the locales that exist on this node.
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public List<Locale> getExistingLocales() throws RepositoryException;
 
@@ -912,8 +912,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * Checks if this node can be marked for deletion. This will usually return false on repository implementations
      * that do not support versioining or adding mixins, etc...
      *
-     * @return true if the node suppors marking for deletion.
-     * @throws RepositoryException
+     * @return true if the node supports marking for deletion.
+     * @throws RepositoryException in case of JCR-related errors
      */
     boolean canMarkForDeletion() throws RepositoryException;
 

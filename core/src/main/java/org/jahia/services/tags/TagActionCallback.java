@@ -58,7 +58,7 @@ public interface TagActionCallback<T> {
     /**
      * will be execute after each tag action (after a tag rename on a node, after a tag delete on a node)
      * @param node the node concern by the current tag action
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     void afterTagAction(JCRNodeWrapper node) throws RepositoryException;
 
@@ -66,14 +66,14 @@ public interface TagActionCallback<T> {
      * will be call if a tag action throw a RepositoryException
      * @param node the node in error
      * @param e the exception
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     void onError(JCRNodeWrapper node, RepositoryException e) throws RepositoryException;
 
     /**
      * will be call at the end of all the operations
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     T end() throws RepositoryException;
 }

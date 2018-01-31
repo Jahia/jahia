@@ -131,6 +131,7 @@ public class WindowStatesTag extends TagSupport {
     }
 
     /**
+     * @return name of the pageContext attribute holding the {@link PortletWindowBean}
      * @jsp:attribute name="name" required="true" rtexprvalue="true"
      * description="name of the pageContext attribute holding the PortletWindowBean
      *
@@ -146,6 +147,7 @@ public class WindowStatesTag extends TagSupport {
     }
 
     /**
+     * @return String to append to portlet name's resource bundle key
      * @jsp:attribute name="namePostFix" required="false" rtexprvalue="true"
      * description="String to append to portlet name's resource bundle key
      *
@@ -164,6 +166,7 @@ public class WindowStatesTag extends TagSupport {
     }
 
     /**
+     * @return resource bundle to use to find portlet status labels
      * @jsp:attribute name="resourceBundle" required="false" rtexprvalue="true"
      * description="resource bundle to use to find portlet status labels.
      *
@@ -179,6 +182,7 @@ public class WindowStatesTag extends TagSupport {
     }
 
     /**
+     * @return CSS class to use to display portlet status labels
      * @jsp:attribute name="listCSSClass" required="false" rtexprvalue="true"
      * description="CSS class to use to display portlet status labels.
      *
@@ -194,6 +198,7 @@ public class WindowStatesTag extends TagSupport {
     }
 
     /**
+     * @return CSS class to use to display the currently selected portlet status label
      * @jsp:attribute name="currentCSSClass" required="false" rtexprvalue="true"
      * description="CSS class to use to display the currently selected portlet status label.
      *
@@ -209,6 +214,7 @@ public class WindowStatesTag extends TagSupport {
         this.currentCSSClass = currentCSSClass;
     }
 
+    @Override
     public int doStartTag () {
 
         PortletWindowBean portletWindowBean = (PortletWindowBean) pageContext.

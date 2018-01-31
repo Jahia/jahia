@@ -172,6 +172,7 @@ public class DisplayIconTag extends AbstractJahiaTag {
 
     /**
      *
+     * @param altKey the key in the resource bundle for the internationalized version of the 'alt' text
      * @jsp:attribute name="altKey" required="false" rtexprvalue="true"
      * description="the key in the resource bundle for the internationalized version of the 'alt' text.
      * <p><attriInfo>This key uniquely identifies the locale-specific alt text in the associated 'altBundle' bundle appropriate
@@ -185,6 +186,7 @@ public class DisplayIconTag extends AbstractJahiaTag {
     }
 
     /**
+     * @param altBundle the identifier of the resource bundle where altKey's value is looked up
      * @jsp:attribute name="altBundle" required="false" rtexprvalue="true"
      * description="the identifier of the resource bundle where altKey's value is looked up.
      * <p><attriInfo>If the 'altBundle' attribute isn't specified but 'altKey' is, then the default resource bundle

@@ -422,7 +422,7 @@ public class URLResolver {
      * @return The node, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public JCRNodeWrapper getNode() throws RepositoryException {
         return resolveNode(getWorkspace(), getLocale(), getPath());
@@ -438,7 +438,7 @@ public class URLResolver {
      * @return The resource, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Resource getResource() throws RepositoryException {
         return resolveResource(getWorkspace(), getLocale(), getPath());
@@ -462,7 +462,7 @@ public class URLResolver {
      * @return The node, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     protected JCRNodeWrapper resolveNode(final String workspace,
                                          final Locale locale, final String path) throws RepositoryException {
@@ -570,7 +570,7 @@ public class URLResolver {
      * @return The resource, if found
      * @throws PathNotFoundException
      *             if the resource cannot be resolved
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     protected Resource resolveResource(final String workspace, final Locale locale, final String path)
             throws RepositoryException {

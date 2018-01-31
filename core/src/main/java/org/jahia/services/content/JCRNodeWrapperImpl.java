@@ -692,7 +692,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * Check if acl inheritance is broken on the given node or not
      *
      * @return true if ACL inheritance is broken
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     @Override
     public boolean getAclInheritanceBreak() throws RepositoryException {
@@ -707,7 +707,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * Returns the ACL node of the given node or creates one
      *
      * @return the ACL <code>Node</code> for the given node
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Node getOrCreateAcl() throws RepositoryException {
         if (hasNode("j:acl")) {

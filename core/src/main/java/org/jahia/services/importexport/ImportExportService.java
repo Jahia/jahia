@@ -122,7 +122,7 @@ public interface ImportExportService {
      * @param params
      * @param sites
      * @throws JahiaException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws IOException
      * @throws SAXException
      */
@@ -137,7 +137,7 @@ public interface ImportExportService {
      * @param exportRoot
      * @param out outputstream
      * @param params   @throws JahiaException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws SAXException
      * @throws IOException
      */
@@ -150,7 +150,7 @@ public interface ImportExportService {
      * @param exportRoot
      * @param out outputstream
      * @param params   @throws JahiaException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws SAXException
      * @throws IOException
      */
@@ -188,7 +188,7 @@ public interface ImportExportService {
      * @param rootBehavior Ignore root xml element - can be used to import multiple nodes in the same node, using one single
      *          import
      * @throws IOException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws JahiaException
      */
     void importZip(String parentNodePath, Resource file, int rootBehavior) throws IOException, RepositoryException;
@@ -202,7 +202,7 @@ public interface ImportExportService {
      * @param rootBehavior Ignore root xml element - can be used to import multiple nodes in the same node, using one single
      *          import
      * @throws IOException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws JahiaException
      */
     void importZip(String parentNodePath, Resource file, int rootBehavior, JCRSessionWrapper session) throws IOException, RepositoryException;
@@ -218,7 +218,7 @@ public interface ImportExportService {
      * @param filesToIgnore Files to ignore
      * @param references References map
      * @throws IOException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws JahiaException
      */
     void importZip(String parentNodePath, Resource file, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper) throws IOException, RepositoryException;
@@ -290,7 +290,7 @@ public interface ImportExportService {
      * @param file Zip file
      * @param site The new site where to import
      * @param infos site infos
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws IOException
      */
     void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos) throws RepositoryException, IOException;
@@ -305,7 +305,7 @@ public interface ImportExportService {
      * @param infos site infos
      * @param legacyMappingFilePath path to the legacy mappings
      * @param legacyDefinitionsFilePath path for the legacy definitions
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws IOException
      */
     void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath) throws RepositoryException, IOException;

@@ -467,7 +467,7 @@ public class JCRObservationManager implements ObservationManager {
      *
      * @param path
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static boolean isExtensionNode(String path) throws RepositoryException {
         return JCRSessionFactory.getInstance().getProvider(path, false) != null;

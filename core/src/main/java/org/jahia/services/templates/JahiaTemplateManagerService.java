@@ -219,7 +219,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @param session       session
      * @return the module node
      * @throws IOException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws BundleException
      */
     public JCRNodeWrapper checkoutModule(File moduleSources, String scmURI, String branchOrTag, String moduleId,
@@ -573,7 +573,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @param module         : module to install
      * @param sessionWrapper : session to use
      * @param sites          : list of sites on which deploy the module
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void installModuleOnAllSites(JahiaTemplatesPackage module, JCRSessionWrapper sessionWrapper, List<JCRNodeWrapper> sites) throws RepositoryException {
         moduleInstallationHelper.installModuleOnAllSites(module, sessionWrapper, sites);
@@ -645,7 +645,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      *
      * @param module
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public boolean checkExistingContent(final String module) throws RepositoryException {
         return moduleInstallationHelper.checkExistingContent(module);

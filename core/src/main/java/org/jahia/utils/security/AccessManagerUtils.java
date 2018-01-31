@@ -213,7 +213,7 @@ public class AccessManagerUtils {
      * @param compiledAcls Map used as a cache in memory to store the j:acl result for a given node, to avoid read jcr again to retrieve the acls in next calls
      * @param privilegeRegistry Jahia Privilege registry, used to read Privilege or retrieve them using names.
      * @return true if the jahiaPrincipal match the permissions for the given path, if not return false
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static boolean isGranted(PathWrapper pathWrapper, Set<String> permissions, Session securitySession,
                                     JahiaPrincipal jahiaPrincipal, String workspaceName,
@@ -380,7 +380,7 @@ public class AccessManagerUtils {
      * @param role Role name
      * @param privilegeRegistry JahiaPrivilegeRegistry
      * @return return Set of Privilege objects
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static Set<Privilege> getPermissionsInRole(String role, JahiaPrivilegeRegistry privilegeRegistry) throws RepositoryException {
         Set<Privilege> permsInRole = null;
@@ -405,7 +405,7 @@ public class AccessManagerUtils {
      * @param privilegeRegistry the JahiaPrivilegedRegistry
      * @param workspaceName the workspace
      * @return true if the role contain all the permissions
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static boolean matchPermission(Set<String> permissions, String role, boolean isAliased, JahiaPrivilegeRegistry privilegeRegistry,
                                           String workspaceName) throws RepositoryException {
@@ -458,7 +458,7 @@ public class AccessManagerUtils {
      * @param privilegeRegistry the JahiaPrivilegeRegistry
      * @return the list of privileges from the granted roles for the user on the node
      * @throws PathNotFoundException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static Privilege[] getPrivileges(String absPath, String workspace, JahiaPrincipal jahiaPrincipal, JahiaPrivilegeRegistry privilegeRegistry) throws PathNotFoundException, RepositoryException {
         Node node = JCRSessionFactory.getInstance().getCurrentSystemSession(workspace, null, null).getNode(absPath);
@@ -473,7 +473,7 @@ public class AccessManagerUtils {
      * @param privilegeRegistry the JahiaPrivilegeRegistry
      * @return the list of privileges from the granted roles for the user on the node
      * @throws PathNotFoundException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static Privilege[] getPrivileges(Node node, JahiaPrincipal jahiaPrincipal, JahiaPrivilegeRegistry privilegeRegistry) throws PathNotFoundException, RepositoryException {
 
@@ -515,7 +515,7 @@ public class AccessManagerUtils {
      * @param jahiaPrincipal the jahiaPrincipal
      * @return the list of granted roles for the user on the node
      * @throws PathNotFoundException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static Set<String> getRoles(String absPath, String workspace, JahiaPrincipal jahiaPrincipal) throws PathNotFoundException, RepositoryException {
         Node node = JCRSessionFactory.getInstance().getCurrentSystemSession(workspace, null, null).getNode(absPath);
@@ -528,7 +528,7 @@ public class AccessManagerUtils {
      * @param jahiaPrincipal the jahiaPrincipal
      * @return the list of granted roles for the user on the node
      * @throws PathNotFoundException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public static Set<String> getRoles(Node node, JahiaPrincipal jahiaPrincipal) throws PathNotFoundException, RepositoryException {
         String site = resolveSite(node.getPath());

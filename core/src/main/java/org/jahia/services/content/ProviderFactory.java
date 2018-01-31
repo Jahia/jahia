@@ -65,7 +65,7 @@ public interface ProviderFactory {
      *
      * @param mountPoint The jnt:mountPoint node
      * @return A new provider instance, mounted
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public JCRStoreProvider mountProvider(JCRNodeWrapper mountPoint) throws RepositoryException;
 

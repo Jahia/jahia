@@ -90,7 +90,7 @@ public class JCRReferenceNode extends JCRNodeDecorator {
     /**
      * return the referenced node, null if the reference cannot be resolved.
      * @return the referenced node
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Node getContextualizedNode() throws RepositoryException {
         if (hasProperty(Constants.NODE)) {

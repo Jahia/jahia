@@ -1097,7 +1097,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
      *         {@link SearchCriteria} bean into XPath query or <code>null</code>
      *         if the query cannot be created
      * @throws InvalidQueryException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Query buildQuery(SearchCriteria criteria, JCRSessionWrapper session) throws InvalidQueryException,
             RepositoryException {

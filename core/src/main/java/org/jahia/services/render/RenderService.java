@@ -233,7 +233,7 @@ public class RenderService {
      * @param resource The resource to display
      * @param context
      * @return An executable script
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      * @throws IOException
      */
     public Script resolveScript(Resource resource, RenderContext context) throws RepositoryException, TemplateNotFoundException {

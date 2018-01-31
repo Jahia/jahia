@@ -171,7 +171,7 @@ public class JCRPropertyCustomRendererTag extends AbstractJahiaTag {
     /**
      * Specify the name of the property you want to get value of.
      *
-     * @param name
+     * @param name the name of the property you want to get value of
      */
     public void setName(String name) {
         this.name = name;

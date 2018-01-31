@@ -160,7 +160,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
      * @throws VersionException
      * @throws LockException
      * @throws ConstraintViolationException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Value beforeSetValue(final JCRNodeWrapper node, String name, final ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
@@ -291,7 +291,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
      * @param storedValue
      * @return
      * @throws ValueFormatException
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public Value afterGetValue(final JCRPropertyWrapper property, Value storedValue) throws ValueFormatException, RepositoryException {
         String content = storedValue.getString();

@@ -100,9 +100,9 @@ public class JCRTagUtils {
     /**
      * Get the label value depending on the locale
      *
-     * @param nodeObject
+     * @param nodeObject the node object
      * @param locale as a string
-     * @return
+     * @return the label value depending on the locale
      */
     public static String label(Object nodeObject, String locale) {
         return label(nodeObject, LanguageCodeConverters.languageCodeToLocale(locale));
@@ -330,6 +330,8 @@ public class JCRTagUtils {
     }
 
     /**
+     * @param inputString the string to escape 
+     * @return the escaped string
      * @see org.apache.jackrabbit.util.Text#escapeIllegalJcrChars(String)
      */    
     public static String escapeIllegalJcrChars(String inputString) {

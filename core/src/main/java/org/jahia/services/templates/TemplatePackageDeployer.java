@@ -211,7 +211,7 @@ public class TemplatePackageDeployer {
     /**
      *  clear all module nodes for given package
      * @param pkg
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void clearModuleNodes(final JahiaTemplatesPackage pkg) throws RepositoryException {
         for (String workspace : Arrays.asList(Constants.LIVE_WORKSPACE, Constants.EDIT_WORKSPACE)) {
@@ -223,7 +223,7 @@ public class TemplatePackageDeployer {
      *  clear all module nodes for given package id and version
      * @param id
      * @param version
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void clearModuleNodes(String id, ModuleVersion version) throws RepositoryException {
         for (String workspace : Arrays.asList(Constants.LIVE_WORKSPACE, Constants.EDIT_WORKSPACE)) {
@@ -236,7 +236,7 @@ public class TemplatePackageDeployer {
      * Deprecated: use clearModuleNodes(final JahiaTemplatesPackage pkg)
      * @param pkg
      * @param session
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     @Deprecated
     public void clearModuleNodes(JahiaTemplatesPackage pkg, JCRSessionWrapper session) throws RepositoryException {
@@ -260,7 +260,7 @@ public class TemplatePackageDeployer {
      * @param id
      * @param version
      * @param session
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     public void clearModuleNodes(String id, ModuleVersion version, JCRSessionWrapper session) throws RepositoryException {
         String modulePath = "/modules/" + id + "/" + version;

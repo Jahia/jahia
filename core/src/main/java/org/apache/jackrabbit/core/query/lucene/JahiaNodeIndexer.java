@@ -197,7 +197,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
      * @param nodeTypeName the name
      * @param namespaceRegistry the namespace registry
      * @return
-     * @throws RepositoryException
+     * @throws RepositoryException in case of JCR-related errors
      */
     protected static String getTypeNameAsString(Name nodeTypeName, NamespaceRegistry namespaceRegistry) throws
             RepositoryException {

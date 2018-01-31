@@ -62,7 +62,7 @@ import org.xml.sax.XMLReader;
  *
  * <p>In general, all whitespace in an XML document is potentially
  * significant, so a general-purpose XML writing tool like the
- * {@link com.megginson.sax.XMLWriter XMLWriter} class cannot
+ * {@link XMLWriter XMLWriter} class cannot
  * add newlines or indentation.</p>
  *
  * <p>There is, however, a large class of XML documents where information
@@ -104,12 +104,11 @@ import org.xml.sax.XMLReader;
  * &lt;/Person>
  * </pre>
  *
- * <p>This class inherits from {@link com.megginson.sax.XMLWriter
+ * <p>This class inherits from {@link XMLWriter
  * XMLWriter}, and provides all of the same support for Namespaces.</p>
  *
  * @author David Megginson, david@megginson.com
  * @version 0.2
- * @see com.megginson.sax.XMLWriter
  */
 public class DataWriter extends XMLWriter
 {
@@ -220,7 +219,7 @@ public class DataWriter extends XMLWriter
      * <p>This method is especially useful if the writer failed
      * with an exception the last time through.</p>
      *
-     * @see com.megginson.sax.XMLWriter#reset
+     * @see XMLWriter#reset
      */
     public void reset ()
     {

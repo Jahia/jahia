@@ -5263,7 +5263,7 @@
 			        // }
 
 				})
-				.onClick(".window-side-panel .x-panel-footer", app.edit.sidepanel.togglePin)
+				.onClick(".window-side-panel > .x-panel-bwrap > div:nth-child(2).x-panel-footer", app.edit.sidepanel.togglePin)
 				.onOpen(".job-list-window", app.backgroundJobs.onOpen)
                 .onMouseDown(".toolbar-item-studio", function(){
                     var studioNodePath = sessionStorage.getItem("studiomode_nodePath"),

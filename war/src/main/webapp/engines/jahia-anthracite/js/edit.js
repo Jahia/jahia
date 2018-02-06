@@ -1995,6 +1995,7 @@
 				inpageID: "JahiaGxtContentPickerWindow",
 				hasPreview: null,
 				selectedFileCount: 0,
+				selectedSubFileCount: 0,
 				zooms: {
 					thumbsview: 2,
 					detailedview: 2
@@ -2105,9 +2106,8 @@
 					DexV2("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree + div #images-view .x-view").setAttribute("indigo-thumb-zoom", zoomSize);
 				}, "THUMB-SIZE-SLIDER");
 
-				// Fires if multiselect is possible in picker...
-				DexV2.tag("body").onOpen("#JahiaGxtManagerBottomTabs", function(){
-
+				// If it is a multi picker we need to do this ...
+				if(DexV2.id(app.picker.data.ID).filter("#JahiaGxtManagerBottomTabs").exists()){
 					// Create a toggle button for multiple selection
 					var toggleButton = document.createElement("button"),
 						toggleButtonLabel = document.createTextNode("Multiple Selection");
@@ -2115,30 +2115,29 @@
 					toggleButton.appendChild(toggleButtonLabel);
 					toggleButton.classList.add("toggle-multiple-selection");
 
-					DexV2.id("JahiaGxtManagerBottomTabs").prepend(toggleButton);
+					DexV2.id(app.picker.data.ID).filter("#JahiaGxtManagerBottomTabs").prepend(toggleButton);
 
 					// Add class for CSS
 					DexV2.id(app.picker.data.ID).addClass("indigo-picker-multi-select");
 
 					// Listen for files being added to the multiple selection
-					DexV2.id("JahiaGxtManagerBottomTabs").onGroupOpen(".x-grid-group", function(groupedNodes){
+					DexV2.id(app.picker.data.ID).onGroupOpen("#JahiaGxtManagerBottomTabs .x-grid-group", function(groupedNodes){
 						app.picker.data.selectedFileCount = this.length;
 						app.picker.updateMultipleCount();
 					}, "ADDED_FILES_MULTI_SELECT");
 
 					// Listen for files being removed from the multiple selection
-					DexV2.id("JahiaGxtManagerBottomTabs").onGroupClose(".x-grid-group", function(groupedNodes){
+					DexV2.id(app.picker.data.ID).onGroupClose(".x-grid-group", function(groupedNodes){
 						// Need to manually count the files in multiple selection ...
-						app.picker.data.selectedFileCount = DexV2.id("JahiaGxtManagerBottomTabs").filter(".x-grid-group").nodes.length;
+						app.picker.data.selectedFileCount = DexV2.id(app.picker.data.ID).filter("#JahiaGxtManagerBottomTabs .x-grid-group").nodes.length;
 						app.picker.updateMultipleCount();
 					}, "REMOVED_FILES_MULTI_SELECT");
 
 					// Listen for clicks on the multiple selection toggle button
-					DexV2.id("JahiaGxtManagerBottomTabs").onClick(".toggle-multiple-selection", function(){
+					DexV2.id(app.picker.data.ID).onClick(".toggle-multiple-selection", function(){
 						DexV2.id("JahiaGxtManagerBottomTabs").toggleClass("indigo-collapsed");
 					}, "TOGGLE_MULTI_SELECT");
-
-				}, "CHECK_FOR_MULTISELECT");
+				}
 
 				// See if GWT has included a slider for thumb preview, if so then we can add ours ( which is a GWT replacement )
 				var hasSlider = DexV2("#" + app.picker.data.ID + " .x-slider").nodes.length > 0;
@@ -2243,41 +2242,38 @@
 					DexV2("body > #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree + div #images-view .x-view").setAttribute("indigo-thumb-zoom", zoomSize);
 				}, "SUB-PICKER-THUMB-SIZE-SLIDER");
 
-				/* THIS WILL NEED ADAPTING TOO ... */
-					// Fires if multiselect is possible in picker...
-					// DexV2.tag("body").onOpen("#JahiaGxtManagerBottomTabs", function(){
+				// If it is a multi picker we need to do this ...
+				if(DexV2("body > #JahiaGxtContentPickerWindow #JahiaGxtManagerBottomTabs").exists()){
+					// Create a toggle button for multiple selection
+					var toggleButton = document.createElement("button"),
+						toggleButtonLabel = document.createTextNode("Multiple Selection");
 
-						// // Create a toggle button for multiple selection
-						// var toggleButton = document.createElement("button"),
-						// 	toggleButtonLabel = document.createTextNode("Multiple Selection");
-						//
-						// toggleButton.appendChild(toggleButtonLabel);
-						// toggleButton.classList.add("toggle-multiple-selection");
-						//
-						// DexV2.id("JahiaGxtManagerBottomTabs").prepend(toggleButton);
-						//
-						// // Add class for CSS
-						// DexV2.id(app.picker.data.ID).addClass("indigo-picker-multi-select");
-						//
-						// // Listen for files being added to the multiple selection
-						// DexV2.id("JahiaGxtManagerBottomTabs").onGroupOpen(".x-grid-group", function(groupedNodes){
-						// 	app.picker.data.selectedFileCount = this.length;
-						// 	app.picker.updateMultipleCount();
-						// }, "ADDED_FILES_MULTI_SELECT");
-						//
-						// // Listen for files being removed from the multiple selection
-						// DexV2.id("JahiaGxtManagerBottomTabs").onGroupClose(".x-grid-group", function(groupedNodes){
-						// 	// Need to manually count the files in multiple selection ...
-						// 	app.picker.data.selectedFileCount = DexV2.id("JahiaGxtManagerBottomTabs").filter(".x-grid-group").nodes.length;
-						// 	app.picker.updateMultipleCount();
-						// }, "REMOVED_FILES_MULTI_SELECT");
-						//
-						// // Listen for clicks on the multiple selection toggle button
-						// DexV2.id("JahiaGxtManagerBottomTabs").onClick(".toggle-multiple-selection", function(){
-						// 	DexV2.id("JahiaGxtManagerBottomTabs").toggleClass("indigo-collapsed");
-						// }, "TOGGLE_MULTI_SELECT");
+					toggleButton.appendChild(toggleButtonLabel);
+					toggleButton.classList.add("toggle-multiple-selection");
 
-					// }, "CHECK_FOR_MULTISELECT");
+					DexV2("body > #JahiaGxtContentPickerWindow #JahiaGxtManagerBottomTabs").prepend(toggleButton);
+
+					// Add class for CSS
+					DexV2("body > #JahiaGxtContentPickerWindow").addClass("indigo-picker-multi-select");
+
+					// Listen for files being added to the multiple selection
+					DexV2("body > #JahiaGxtContentPickerWindow #JahiaGxtManagerBottomTabs").onGroupOpen(".x-grid-group", function(groupedNodes){
+						app.picker.data.selectedSubFileCount = this.length;
+						app.picker.updateMultipleSubCount();
+					}, "ADDED_FILES_MULTI_SELECT_SUB");
+
+					// Listen for files being removed from the multiple selection
+					DexV2("body > #JahiaGxtContentPickerWindow #JahiaGxtManagerBottomTabs").onGroupClose(".x-grid-group", function(groupedNodes){
+						// Need to manually count the files in multiple selection ...
+						app.picker.data.selectedSubFileCount = DexV2("body > #JahiaGxtContentPickerWindow #JahiaGxtManagerBottomTabs").filter(".x-grid-group").nodes.length;
+						app.picker.updateMultipleSubCount();
+					}, "REMOVED_FILES_MULTI_SELECT_SUB");
+
+					// Listen for clicks on the multiple selection toggle button
+					DexV2.id("JahiaGxtManagerBottomTabs").onClick(".toggle-multiple-selection", function(){
+						DexV2("body > #JahiaGxtContentPickerWindow #JahiaGxtManagerBottomTabs").toggleClass("indigo-collapsed");
+					}, "TOGGLE_MULTI_SELECT_SUB");
+				}
 
 				// Add slider for zooming images
 				var thumbSlider = document.createElement("input");
@@ -2294,6 +2290,10 @@
 			},
 			updateMultipleCount: function(){
 				DexV2.class("toggle-multiple-selection").setHTML("Multiple selection (" + app.picker.data.selectedFileCount + ")");
+
+			},
+			updateMultipleSubCount: function(){
+				DexV2("body > #JahiaGxtContentPickerWindow .toggle-multiple-selection").setHTML("Multiple selection (" + app.picker.data.selectedSubFileCount + ")");
 
 			},
 			updateZoomLevel: function(){

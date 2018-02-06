@@ -121,7 +121,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 		box-shadow: inset 0px 41px 0px _theme-color(primary, g), inset 0px 79px 0px #515356, inset 0px 80px 1px #222;
 
-		#toggle-picker-files {
+		.toggle-picker-files {
 			display: none;
 		}
 
@@ -194,7 +194,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			display: none;
 		}
 
-		#thumb-size-slider {
+		.thumb-size-slider {
 			right: 16px;
 		}
 
@@ -283,7 +283,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		}
 
 		// TOGGLE BUTTON
-		#toggle-picker-files {
+		.toggle-picker-files {
 			left: 0;
 			background-image: url(./images/icons/toggle-WE-white@X2.png);
 		}
@@ -743,7 +743,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		}
 
 		body[data-INDIGO-PICKER-SEARCH="open"] & {
-			// left: -$PICKER_SIDEPANEL_WIDTH!important;
+			left: -$PICKER_SIDEPANEL_WIDTH!important;
 		}
 
 		// MORE INFO "BUTTON"
@@ -1999,7 +1999,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	// BUTTONS CREATED FOR RIGHT PANEL
 	// Thumb slider used to control the amount of columns in thumb view
-	#thumb-size-slider {
+	.thumb-size-slider {
 		position: fixed;
 		top: 1px;
 		right: 90px;
@@ -2061,7 +2061,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	}
 
 	// Used to toggle the side panel
-	#toggle-picker-files {
+	.toggle-picker-files {
 		position: fixed;
 		top: calc(50% - 45px);
 		left: $PICKER_SIDEPANEL_WIDTH - 23px;
@@ -2366,6 +2366,14 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 // Corrections for Managers ( extends normal picker )
 #contentmanager {
 
+	//
+
+	body[data-indigo-picker-search="open"] & {
+		#JahiaGxtManagerLeftTree {
+			//left: -340px!important;
+		}
+	}
+
 
 	// Fixes for the site manager
 	&[config="sitemanager-anthracite"] {
@@ -2454,7 +2462,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		box-shadow: inset 0px 87px 0px _theme-color(primary, g), inset 0px 88px 7px #222222;
 
 		// Shift the Slider down too
-		#thumb-size-slider {
+		.thumb-size-slider {
 			top: 42px!important;
 			right: 10px!important;
 
@@ -2464,8 +2472,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 	// Hide when thumb slider when the Edit Engine is opened
 	body[data-indigo-edit-engine="open"] & {
-		#thumb-size-slider,
-		#toggle-picker-files {
+		.thumb-size-slider,
+		.toggle-picker-files {
 			display: none;
 		}
 	}
@@ -2811,7 +2819,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	// Force the Category Picker to display in List view instead of details view
 	&.modal-categorypicker {
 
-		#thumb-size-slider {
+		.thumb-size-slider {
 			display: none;
 		}
 

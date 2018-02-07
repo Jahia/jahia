@@ -72,6 +72,7 @@ when we flush this entry we will flush the whole cache
                 <bean class="org.jahia.services.render.filter.cache.ModuleParamsCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.AjaxCacheKeyPartGenerator"/>
                 <ref bean="areaResourceCacheKeyPartGenerator"/>
+                <bean class="org.jahia.services.render.filter.cache.ReadOnlyCacheKeyPartGenerator"/>
             </list>
         </property>
     </bean>

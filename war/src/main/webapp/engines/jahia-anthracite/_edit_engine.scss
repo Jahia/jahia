@@ -1865,130 +1865,130 @@ div.engine-window {
 			display: none!important;
 		}
 
-		.multiple-text-field.x-form-group {
-			width: 100%!important;
+	}
 
-			> table {
-				width: 100%;
+	.multiple-text-field.x-form-group {
+		width: 100%!important;
 
-				.x-form-field-wrap {
-					width: auto!important;
-					float: none;
-					margin-bottom: 5px;
+		> table {
+			width: 100%;
 
-					input {
-						width: 100%!important;
-					}
+			.x-form-field-wrap {
+				width: auto!important;
+				float: none;
+				margin-bottom: 5px;
 
-					button {
-						margin-top:20px;
-					}
+				input {
+					width: 100%!important;
+				}
 
-					img.x-form-clear-trigger {
-						background-image: url($ICON--CLOSE_LARGE---GREY)!important;
-						background-size: 8px 8px!important;
-						background-position: center top 8px!important;
-						opacity: 1;
-						width: 25px;
+				button {
+					margin-top:20px;
+				}
 
-					}
+				img.x-form-clear-trigger {
+					background-image: url($ICON--CLOSE_LARGE---GREY)!important;
+					background-size: 8px 8px!important;
+					background-position: center top 8px!important;
+					opacity: 1;
+					width: 25px;
+
 				}
 			}
 		}
+	}
 
-		.tag-field {
+	.tag-field {
 
 
 
-				width: 100%!important;
+			width: 100%!important;
 
-				> table {
+			> table {
+				display: block;
+
+				> tbody {
+
 					display: block;
 
-					> tbody {
+					> tr {
 
 						display: block;
 
-						> tr {
+						// Tag List
+						&:nth-child(1) {
 
-							display: block;
-
-							// Tag List
-							&:nth-child(1) {
-
-								> td {
-									display: block;
-								}
-
-								.x-column {
-									// Tag Element
-									background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
-
-									.x-component {
-										@include text(12px, _property($BUTTON--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
-
-									}
-
-									button {
-										background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center top 8px;
-										background-size: 8px 8px;
-										padding-left: 23px;
-										box-sizing: border-box;
-										width: 23px!important;
-										height: 23px!important;
-									}
-
-									img {
-										// Delete button
-										display: none;
-									}
-								}
+							> td {
+								display: block;
 							}
 
-							// Add Tag
-							&:nth-child(2) {
-								.x-component {
-									width: 100%!important;
+							.x-column {
+								// Tag Element
+								background: _property($BUTTON--BG, $EDIT-ENGINE) !important;
 
-									> table {
+								.x-component {
+									@include text(12px, _property($BUTTON--COLOR, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
+
+								}
+
+								button {
+									background: url($ICON--CLOSE_LARGE---WHITE) no-repeat center top 8px;
+									background-size: 8px 8px;
+									padding-left: 23px;
+									box-sizing: border-box;
+									width: 23px!important;
+									height: 23px!important;
+								}
+
+								img {
+									// Delete button
+									display: none;
+								}
+							}
+						}
+
+						// Add Tag
+						&:nth-child(2) {
+							.x-component {
+								width: 100%!important;
+
+								> table {
+									width: 100%;
+									display: block;
+
+									> tbody {
 										width: 100%;
 										display: block;
 
-										> tbody {
+										> tr {
 											width: 100%;
 											display: block;
 
-											> tr {
-												width: 100%;
-												display: block;
-
-												> td {
-													display: inline-block;
-
-												}
+											> td {
+												display: inline-block;
 
 											}
+
 										}
 									}
 								}
-
-
-								// Add Tag
-								.x-form-field-wrap {
-									width: 250px!important;
-
-									input {
-										padding-right: 5px!important;
-									}
-								}
-
-								@include button("FORM_SMALL", "remove-icons");
 							}
+
+
+							// Add Tag
+							.x-form-field-wrap {
+								width: 250px!important;
+
+								input {
+									padding-right: 5px!important;
+								}
+							}
+
+							@include button("FORM_SMALL", "remove-icons");
 						}
 					}
 				}
-		}
-
+			}
 	}
 
 	#JahiaGxtEditEnginePanel-contributeMode {

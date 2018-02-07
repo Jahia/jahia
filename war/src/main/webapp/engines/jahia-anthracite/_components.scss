@@ -1455,8 +1455,8 @@ form,
 		body[data-edit-window-style="settings"] &,
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
+			height: calc(100% - 14px)!important;
 			padding-left: 1px;
-			overflow: hidden;
 		}
 	}
 

@@ -488,7 +488,7 @@
 			body[data-sitesettings="true"] .x-viewport-editmode & ,
 			.x-viewport-adminmode & {
 				margin-top: 52px;
-				height: calc(100% - 226px)!important;
+				height: calc(100% - 176px)!important;
 				overflow: auto;
 				overflow-x: hidden;
 			}
@@ -1850,12 +1850,24 @@ $side_panel__tab_buttons: (
 // }
 
 #JahiaGxtSettingsTab {
+	body[data-sitesettings="true"] .x-viewport-editmode & ,
+	.x-viewport-adminmode & {
+		height: 100%!important;
+		width: 100%!important;
+	}
+
 	> .x-component {
 		width: 100%!important;
+		height: calc(100% - 85px);
+		overflow: hidden;
+
+		.x-panel-bwrap {
+			height: 100%;
+		}
 
 		.x-panel-body {
 			> .x-component {
-				height: auto!important;
+				height: 100%!important;
 			}
 		}
 	}

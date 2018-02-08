@@ -1059,6 +1059,8 @@
 
 	 > div {
  		overflow: visible!important;
+		height: calc(100% - 50px) !important;
+		overflow: scroll !important;
 
  	}
 

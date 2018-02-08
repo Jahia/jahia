@@ -3029,6 +3029,9 @@
 
 						// CLick on the refresh button to reload the content of the directory
 			            DexV2.id(app.picker.data.ID).filter("#JahiaGxtManagerLeftTree .x-panel:not(.x-panel-collapsed) .x-tool-refresh").trigger("click");
+
+                        // CLick on List view to resolve display issues
+                        DexV2.class("toolbar-item-listview").trigger("click");
 					// }
 
 
@@ -5600,14 +5603,13 @@
                 .onClick(".node-path-title", app.iframe.clearSelection)
                 .onMouseDown(".x-viewport-editmode #JahiaGxtSidePanelTabs .x-grid3-row", app.edit.onNav)
                 .onMouseDown("#JahiaGxtManagerLeftTree__CRTbrowseTabItem", app.picker.search.close)
-				.onMouseDown("body > #JahiaGxtContentPickerWindow", function(){
-					if(DexV2.getCached("body").getAttribute("data-indigo-sub-picker") == "open" &&
-						DexV2.getCached("body").getAttribute("data-indigo-picker-search") == "open"){
+                .onClose(".indigo-picker-multi-select", function(){
+                    if(DexV2.class("search-panel-opened").exists()){
+                        DexV2.id("JahiaGxtManagerLeftTree__CRTbrowseTabItem").trigger("click");
 
-						app.picker.search.close();
-
-					}
-				})
+                        DexV2.class("search-panel-opened").removeClass("search-panel-opened");
+                    }
+                })
                 .onMouseUp("#JahiaGxtManagerLeftTree__CRTsearchTabItem", app.picker.search.open)
                 .onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-panel-header", app.picker.source.close)
                 .onClick("#" + app.picker.data.ID + " #JahiaGxtManagerLeftTree .x-tab-panel-header .x-tab-strip-spacer", app.picker.source.toggle)

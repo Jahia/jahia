@@ -99,7 +99,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	&.indigo-picker-multi-select {
 
 		div#JahiaGxtManagerTobTable {
-			height: calc(100% - 242px)!important;
+			height: calc(100% - 277px)!important;
 		}
 
 		#JahiaGxtManagerBottomTabs.indigo-collapsed + div#JahiaGxtManagerTobTable{
@@ -107,7 +107,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 		}
 
 		.x-window-bbar {
-			box-shadow: none;
+			// box-shadow: none;
 		}
 
 	}
@@ -514,29 +514,35 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	// MULTI SELECT PANEL
 	#JahiaGxtManagerBottomTabs {
 		position: fixed!important;
-	    bottom: 48px;
+	    bottom: 58px;
 		right: 0;
 	    left: auto!important;
 		width: calc(100% - #{$PICKER_SIDEPANEL_WIDTH})!important;
 	    background: _property($DARK-FOOTER--BG, $PICKER);
-	    height: 150px!important;
+	    height: 180px !important;
 	    top: auto!important;
 		padding: 15px;
 		box-sizing: border-box;
 		box-shadow: inset 0px 1px 7px #222;
 
 		&.indigo-collapsed {
-			height: 79px!important;
+			height: 38px !important;
 			z-index: 99999;
-			background: transparent!important;
-			bottom: 0!important;
+			background: #474a4c !important;
+			bottom: 79px !important;
 			pointer-events: none;
-			padding-top: 28px;
+			padding-top: 6px;
+			box-shadow: none;
 
 			.toggle-multiple-selection {
 				background-image: url(./images/icons/toggle-SN-white@X2.png);
 				pointer-events: all;
 				margin-bottom: 30px;
+			}
+
+			&.selected-files {
+				background: #00a0e3 !important;
+
 			}
 		}
 
@@ -576,7 +582,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			width: 100px;
 			display: inline-block;
-			margin-right: 5px;
+			margin: 5px 5px 0 0;
 
 			// FILE HEADER ( CONTAINS NAME )
 			.x-grid-group-hd {
@@ -585,20 +591,46 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			// CONTAINS FILE AND FILE INFO
 			.x-grid-group-body {
+				width: 100px!important;
+				height: 87px !important;
 
 				// ROW
 				.x-grid3-row {
-					height: auto!important;
+					height: 100%!important;
+					width: 100%!important;
 					background: rgb(0, 160, 227) !important;
-					padding: 5px 3px;
+					padding-top: 10px;
 				    box-sizing: border-box;
 
 					// THUMBNAIL
 					.x-grid3-td-preview {
-						width: 100%!important;
+						width: 40px!important;
+						margin: 0 auto;
+						display: block;
+
+						.x-grid3-col-preview {
+							padding: 0;
+							width: 48px;
+						}
 
 						img {
-							width: 100%!important;
+							width: 32px!important;
+							height: 32px!important;
+							padding: 8px;
+							background-color: rgba(238,238,238,0.1);
+							margin-bottom: 4px;
+							border-radius: 5px;
+
+							&[src$="/jnt_page_large.png"] {
+								background-size: 46px!important;
+								background-position: center top 1px;
+								background-color: transparent!important;
+								background-image: url($ICON--PAGES---WHITE);
+								padding:0 0 0 48px!important;
+
+								width: 48px!important;
+								height: 48px!important;
+							}
 
 						}
 					}
@@ -630,7 +662,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 						.x-grid3-col-displayName {
 							color: _theme-color(secondary);
-							font-size: 10px;
+							font-size: 13px;
+							text-align: center;
 						}
 
 						&::after {
@@ -658,6 +691,10 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 						.x-grid3-col-remove {
 
+							position: absolute;
+							top: -7px;
+							right: -1px;
+
 							// BUTTON
 							> table {
 
@@ -667,6 +704,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 								background-size: 10px;
 								border: 2px solid rgb(0, 160, 227)!important;
 								pointer-events: all;
+
 
 
 								> tbody {

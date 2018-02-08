@@ -2288,12 +2288,34 @@
 				DexV2("body > #JahiaGxtContentPickerWindow").prepend(thumbSlider);
 
 			},
-			updateMultipleCount: function(){
-				DexV2.class("toggle-multiple-selection").setHTML("Multiple selection (" + app.picker.data.selectedFileCount + ")");
+            updateMultipleCount: function(){
+                var selectedFileCount = app.picker.data.selectedFileCount,
+                    toggleString;
+
+                if(selectedFileCount > 0){
+                    DexV2.id("JahiaGxtManagerBottomTabs").addClass("selected-files");
+                    toggleString = "Multiple selection (" + selectedFileCount + ")";
+                } else {
+                    DexV2.id("JahiaGxtManagerBottomTabs").removeClass("selected-files");
+                    toggleString = "Multiple selection";
+                }
+
+                DexV2.class("toggle-multiple-selection").setHTML(toggleString);
 
 			},
-			updateMultipleSubCount: function(){
-				DexV2("body > #JahiaGxtContentPickerWindow .toggle-multiple-selection").setHTML("Multiple selection (" + app.picker.data.selectedSubFileCount + ")");
+            updateMultipleSubCount: function(){
+                var selectedFileCount = app.picker.data.selectedSubFileCount,
+                    toggleString;
+
+                if(selectedFileCount > 0){
+                    DexV2("body > #JahiaGxtContentPickerWindow #JahiaGxtManagerBottomTabs").addClass("selected-files");
+                    toggleString = "Multiple selection (" + selectedFileCount + ")";
+                } else {
+                    DexV2("body > #JahiaGxtContentPickerWindow #JahiaGxtManagerBottomTabs").removeClass("selected-files");
+                    toggleString = "Multiple selection";
+                }
+
+                DexV2("body > #JahiaGxtContentPickerWindow .toggle-multiple-selection").setHTML(toggleString);
 
 			},
 			updateZoomLevel: function(){

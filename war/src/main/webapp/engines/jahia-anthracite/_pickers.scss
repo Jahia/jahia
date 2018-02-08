@@ -2293,7 +2293,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 			// Repo Filter menu
 			&.repositoryexplorer-menu-view {
-				display: none!important;
+				display: block!important;
 				background-image: url(./images/icons/icon_preview_small_white.png);
 			}
 

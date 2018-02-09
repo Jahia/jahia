@@ -175,7 +175,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 			left: 0px!important;
 			top: 94px!important;
 			width: 100%!important;
-			height: calc(100% - 173px) !important;
+			height: calc(100% - 212px) !important;
 		}
 
 
@@ -452,6 +452,168 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	// PAGE ICON
 	img[src$="/jnt_page.png"] {
 		background-image: url(./images/tabs-pages-dark@X2.png);
+	}
+
+	#JahiaGxtManagerTobTable {
+		z-index: 9!important;
+		.x-panel-bbar {
+
+			display: none;
+
+			body[data-indigo-picker-search="open"] & {
+				display: block;
+			}
+
+			/* PAGINATION */
+			width: calc(100% + 40px)!important;
+		    background: #45484a!important;
+		    box-shadow: inset 0px 2px 7px #353739!important;
+		    left: -20px!important;
+		    padding-top: 10px;
+		    height: 40px!important;
+			bottom: 79px;
+
+			> .x-toolbar {
+				padding: 0 10px;
+				height: 100%;
+
+				&.x-item-disabled {
+					display: none;
+
+				}
+
+			}
+
+			.x-toolbar-left,
+			.x-toolbar-right {
+				display: block;
+
+				table,
+				tbody,
+				tr,
+				td {
+					display: block;
+
+				}
+			}
+
+			.x-toolbar-right {
+				position: relative;
+				top: 6px;
+
+				display: none;
+			}
+
+			.x-toolbar-left {
+
+			    width: 200px;
+			    margin: 0 auto;
+
+				.x-toolbar-cell {
+					display: inline-block!important;
+					margin: 0 2px;
+					opacity: 0.8;
+					height: 22px;
+
+					> table {
+						height: 22px;
+
+						&.x-item-disabled {
+							pointer-events: none;
+							opacity: 0.2;
+						}
+					}
+
+					.my-paging-text {
+						line-height: 21px;
+						@include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
+					}
+
+					.gwt-TextBox {
+						@include text(12px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
+						background: _theme-color(primary, a); /* TO THEME */
+						padding: 3px;
+						border:none;
+					}
+
+					.x-btn-mc img {
+						display: none;
+					}
+
+					// First page
+					&:nth-child(1) {
+						float: left; // over ride the Actions Save float
+						width: 16px;
+
+						> table {
+							background: url($ICON--FIRST--WHITE) no-repeat center center / 14px 14px;
+							margin-left: 0px;
+
+							&:hover {
+								opacity: 1;
+								cursor: pointer;
+							}
+
+						}
+					}
+
+
+
+					// Previous page
+					&:nth-child(2) > table {
+						background: url($ICON--BACK--WHITE) no-repeat center center / 14px 14px;
+						margin-left: 5px;
+
+						&:hover {
+							opacity: 1;
+							cursor: pointer;
+						}
+					}
+
+					// Skip to page input
+					&:nth-child(5) > table {
+						&:hover {
+							opacity: 1;
+						}
+					}
+
+					// Next Page
+					&:nth-child(8) > table {
+						background: url($ICON--NEXT--WHITE) no-repeat center center / 14px 14px;
+						margin-right: 5px;
+
+						&:hover {
+							opacity: 1;
+							cursor: pointer;
+						}
+					}
+
+					// Last page
+					&:nth-child(9) > table {
+						background: url($ICON--LAST--WHITE) no-repeat center center / 14px 14px;
+						margin-right: 5px;
+
+						&:hover {
+							opacity: 1;
+							cursor: pointer;
+						}
+
+					}
+
+					// Refresh results
+					&:nth-child(11) > table {
+						background: url($ICON--REFRESH--SMALL_WHITE) no-repeat center center / 16px 12px;
+
+						&:hover {
+							opacity: 1;
+							cursor: pointer;
+						}
+					}
+
+				}
+
+			}
+		}
 	}
 
 	// RIGHT TABLE ICONS ( basically light version )
@@ -972,9 +1134,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 								&:nth-child(3){
 									> table {
 										position: fixed;
-									    bottom: 25px;
-									    left: 24px;
-									    width: 25px;
+									    bottom: 5px;
+									    right: 10px;
 									    background: _theme-color(secondary, b);
 									    padding: 6px 10px;
 
@@ -2405,6 +2566,12 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 #contentmanager {
 
 	//
+
+	&.search-panel-opened {
+		#JahiaGxtManagerTobTable {
+			height: calc(100% - 134px) !important;
+		}
+	}
 
 	body[data-indigo-picker-search="open"] & {
 		#JahiaGxtManagerLeftTree {

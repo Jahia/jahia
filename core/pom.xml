@@ -220,6 +220,7 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
             <version>${drools.version}</version>
+            <classifier>nocdi</classifier>
             <exclusions>
                 <exclusion>
                     <artifactId>xml-apis</artifactId>
@@ -264,6 +265,10 @@
                 <exclusion>
                     <artifactId>javassist</artifactId>
                     <groupId>org.javassist</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.drools</groupId>
+                    <artifactId>drools-compiler</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -1017,6 +1022,12 @@
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-flow-builder</artifactId>
             <version>${jbpm.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.drools</groupId>
+                    <artifactId>drools-compiler</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jbpm</groupId>
@@ -1229,6 +1240,10 @@
                 <exclusion>
                     <artifactId>poi-ooxml</artifactId>
                     <groupId>org.apache.poi</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.drools</groupId>
+                    <artifactId>drools-compiler</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

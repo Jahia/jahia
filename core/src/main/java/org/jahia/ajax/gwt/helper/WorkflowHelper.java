@@ -680,31 +680,31 @@ public class WorkflowHelper {
                         }
                     }
                 }
+
+                Map<Locale, TaskEvent> taskEventByLang = new HashMap<>();
+
                 for (JCRUserNode user : users) {
                     if (user != null) {
-                        TaskEvent taskEvent = new TaskEvent();
-                        try {
-                            JahiaUser jahiaUser = user.getJahiaUser();
+                        Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
+                        TaskEvent taskEvent = taskEventByLang.get(preferredLocale);
+                        if (taskEvent == null) {
+                            taskEvent = new TaskEvent();
                             if (newTask) {
-                                Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
                                 if (preferredLocale == null) {
                                     preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
                                 }
                                 task = service.getWorkflowTask(task.getId(), task.getProvider(), preferredLocale);
                                 taskEvent.setNewTask(StringUtils.defaultString(task.getDisplayName(), task.getName()));
                             }
-                            taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser, newTask ? null : task.getId()));
                             if (!newTask) {
                                 taskEvent.setEndedTask(task.getId());
                             }
-                        } catch (GWTJahiaServiceException e) {
-                            logger.debug(e.getMessage(), e);
+                            taskEventByLang.put(preferredLocale, taskEvent);
                         }
                         Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
                         if (broadcaster != null) {
                             broadcaster.broadcast(taskEvent);
-                        }
-                        else {
+                        } else {
                             try {
                                 ChannelHolder bean = (ChannelHolder) SpringContextSingleton.getBean("org.jahia.ajax.gwt.commons.server.ChannelHolderImpl");
                                 JGroupsChannel jc = bean.getChannel();
@@ -719,7 +719,6 @@ public class WorkflowHelper {
                 }
             }
         }
-
     }
 
     public void setService(WorkflowService service) {

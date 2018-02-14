@@ -62,10 +62,13 @@ import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
 @SuppressWarnings("serial")
 public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implements Poller.PollListener<TaskEvent> {
 
+    private Integer numberOfTasks = null;
+
     public void init(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
         JahiaContentManagementService.App.getInstance().getNumberOfTasksForUser(new BaseAsyncCallback<Integer>() {
             public void onSuccess(Integer result) {
+                numberOfTasks = result;
                 updateLabel(result);
             }
         });
@@ -74,11 +77,18 @@ public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implemen
     }
 
     public void handlePollingResult(TaskEvent result) {
-        if (result.getNumberOfTasks() != null) {
-            updateLabel(result.getNumberOfTasks());
-        }
         if (result.getNewTask() != null) {
             Info.display(Messages.get("label.tasks.new", "You have a new task to do"), result.getNewTask());
+            if (numberOfTasks != null) {
+                numberOfTasks++;
+                updateLabel(numberOfTasks);
+            }
+        }
+        if (result.getEndedTask() != null) {
+            if (numberOfTasks != null && numberOfTasks > 0) {
+                numberOfTasks--;
+                updateLabel(numberOfTasks);
+            }
         }
         if (result.getEndedWorkflow() != null) {
             Info.display(Messages.get("label.workflow.ended", "A workflow has ended"), result.getEndedWorkflow());
@@ -86,6 +96,7 @@ public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implemen
     }
 
     private void updateLabel(Integer nb) {
+        numberOfTasks = nb;
         if (nb == 0) {
             updateTitle(Messages.get("label.numberoftasksforuser.notasks", "No Waiting tasks"));
         } else {

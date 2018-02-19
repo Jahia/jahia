@@ -47,10 +47,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Dialog;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
@@ -744,12 +741,19 @@ public class PropertiesEditor extends FormPanel {
                         public void componentSelected(ButtonEvent ce) {
                             GWTJahiaNodeProperty prop = currentProperties.get(definition.getName()).cloneObject();
                             prop.setValues(getPropertyValues(field, definition));
-                            copyToAllLanguages(prop);
-                            MessageBox.info(Messages.get("label.translate.copyall", "Copy to all languages"),
-                                    Messages.get("label.translate.copyall.done",
-                                            "Content has been copied to other languages"),
-                                    null);
-
+                            final GWTJahiaNodeProperty prop2 = prop;
+                            //message.get Resource bundle
+                            MessageBox.confirm(Messages.get("label.translate.copyall", "Copy to all languages"),
+                                    Messages.get("label.translate.copyall.confirm"),
+                                    new Listener<MessageBoxEvent>() {
+                                        @Override public void handleEvent(MessageBoxEvent be) {
+                                            if(Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())){
+                                                copyToAllLanguages(prop2);
+                                                Info.display(Messages.get("label.translate.copyall", "Copy to all languages"),
+                                                        Messages.get("label.translate.copyall.done"));
+                                            }
+                                        }
+                                    });
                         }
                     });
                     button.addStyleName("button-copyall");

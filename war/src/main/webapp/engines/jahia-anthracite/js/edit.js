@@ -1996,11 +1996,142 @@
 				hasPreview: null,
 				selectedFileCount: 0,
 				selectedSubFileCount: 0,
+                explorer: {
+                    width: 340
+                },
 				zooms: {
 					thumbsview: 2,
 					detailedview: 2
 				},
                 open: false
+			},
+			repositionSidePanel: function(splitterLeft){
+				app.dev.log("::: APP ::: PICKER ::: REPOSITIONSIDEPANEL");
+
+				// Save width of side panel
+				if(splitterLeft){
+					app.picker.data.explorer.width = splitterLeft;
+				}
+
+
+
+				// Calculate Scale size for the picker title
+				var pickerTitle = (app.picker.data.standalone) ? DexV2("#pickerTitle") : DexV2.id(app.picker.data.ID).filter(".x-window-tl .x-window-header-text");
+
+				// Reset the Title size to recalculate the scale from scratch
+				pickerTitle.css({
+					transform: "scale(1)",
+					transformOrigin: "left",
+				});
+
+				var pickerTitleBox = pickerTitle.getNode(0).getBoundingClientRect(),
+					pickerTitleBoxLeft = pickerTitleBox.left,
+					pickerTitleBoxWidth = pickerTitleBox.width,
+					pickerTitleBoxPadding = (pickerTitleBoxLeft * 2),
+					searchButtonWidth = 50,
+					pickerTitleBoxScale = Math.min(app.picker.data.explorer.width / (pickerTitleBoxPadding + pickerTitleBoxWidth + searchButtonWidth), 1);
+
+				// Set size of the Title
+				pickerTitle.css({
+					transform: "scale(" + pickerTitleBoxScale + ")",
+					transformOrigin: "left center",
+				});
+
+				// Update title box info
+				pickerTitleBox = pickerTitle.getNode(0).getBoundingClientRect();
+				pickerTitleBoxLeft = pickerTitleBox.left;
+				pickerTitleBoxWidth = pickerTitleBox.width;
+				searchLeftPosition = (pickerTitleBoxLeft + pickerTitleBoxWidth + 5);
+
+				// Move the search button
+				DexV2.id("JahiaGxtManagerLeftTree__CRTsearchTabItem").css({
+					"left": searchLeftPosition + "px"
+				});
+
+
+
+
+				// Set width of the side panel
+				DexV2.id("JahiaGxtManagerLeftTree").nodes[0].style.setProperty("width", app.picker.data.explorer.width + "px", "important");
+				DexV2.id("JahiaGxtManagerLeftTree").nodes[0].style.setProperty("left", "0px", "important");
+
+				// Set width and position of right panel
+				if(DexV2.getCached("body").getAttribute("indigo-picker-panel") == "collapsed"){
+					DexV2.id("JahiaGxtManagerTobTable").nodes[0].style.setProperty("left", "0px", "important");
+					DexV2.id("JahiaGxtManagerTobTable").nodes[0].style.setProperty("width", "100%", "important");
+					// Move the top toolbar
+					DexV2.id("JahiaGxtManagerToolbar").nodes[0].style.setProperty("left", searchLeftPosition + "px", "important");
+
+					// Move filter toolbar
+					if(DexV2.id("JahiaGxtManagerTobTable").filter(".x-panel-tbar").exists()){
+						DexV2.id("JahiaGxtManagerTobTable").filter(".x-panel-tbar").nodes[0].style.setProperty("left", "20px", "important");
+					}
+				} else {
+					DexV2.id("JahiaGxtManagerTobTable").nodes[0].style.setProperty("left", app.picker.data.explorer.width + "px", "important");
+					DexV2.id("JahiaGxtManagerTobTable").nodes[0].style.setProperty("width", "calc(100% - "+ app.picker.data.explorer.width + "px) ", "important");
+					// Move the top toolbar
+					DexV2.id("JahiaGxtManagerToolbar").nodes[0].style.setProperty("left", app.picker.data.explorer.width + "px", "important");
+
+					// Move filter toolbar
+					if(DexV2.id("JahiaGxtManagerTobTable").filter(".x-panel-tbar").exists()){
+						DexV2.id("JahiaGxtManagerTobTable").filter(".x-panel-tbar").nodes[0].style.setProperty("left", (app.picker.data.explorer.width + 20) + "px", "important");
+					}
+				}
+
+
+				// Move toggle button
+				DexV2.id("toggle-picker-files").css({
+					left: (app.picker.data.explorer.width - 25) + "px"
+				});
+
+				// Set the width of the left tree
+				DexV2("#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap").each(function(){
+					this.style.setProperty("width", app.picker.data.explorer.width  + "px", "important");
+				});
+
+				DexV2("#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap .x-accordion-hd").each(function(){
+					this.style.setProperty("width", app.picker.data.explorer.width  + "px", "important");
+				});
+
+				// Set the position of the refresh button based on VISIBLE combo header
+				var sourceCombo = DexV2("#CRTbrowseTabItem > div > .x-panel:not(.x-panel-collapsed) .x-accordion-hd .x-panel-header-text"),
+					sourceComboBox = sourceCombo.getNode(0).getBoundingClientRect();
+					sourceComboBoxLeft = sourceComboBox.left;
+					sourceComboBoxWidth = sourceComboBox.width;
+					RefreshLeftPosition = (sourceComboBoxLeft + sourceComboBoxWidth);
+
+				DexV2("#CRTbrowseTabItem > div > .x-panel .x-accordion-hd .x-tool-refresh").css({
+					left: RefreshLeftPosition + "px"
+				});
+
+				// Set the width of the Combo Hot Spot
+				DexV2("#JahiaGxtManagerLeftTree .x-tab-strip-spacer").css({
+					width: (sourceComboBoxWidth + 4) + "px"
+				});
+
+			},
+			onResize: function(attr, value){
+				app.dev.log("::: APP ::: PICKER ::: ONRESIZE");
+
+				// User has resized the left panel in a picker
+
+				if(DexV2.getCached("body").getAttribute("data-indigo-picker") == "open"){
+					var splitterLeft = parseInt(DexV2.node(this).nodes[0].style.left);
+
+					// If the requested drag position of the user is too narrow, reset to minimum width
+					if(splitterLeft < 290){
+						// Too narrow, so set to minimum width
+						DexV2(".x-vsplitbar").css({
+							left: "290px"
+						});
+
+						// Stop execution
+						return false;
+					} else {
+						app.picker.repositionSidePanel(splitterLeft);
+					}
+
+				}
 			},
 			onOpen: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONOPEN");
@@ -2092,6 +2223,9 @@
 					DexV2.id("JahiaGxtManagerToolbar").css({
 						"left": toolbarLeft + "px"
 					});
+
+					app.picker.repositionSidePanel();
+
 
 
 				}, "TOGGLE-PICKER-FILES");
@@ -2387,6 +2521,8 @@
 				DexV2.getCached("body").setAttribute("indigo-PICKER-DISPLAY", "listview");
 				app.picker.data.displayType = "listview";
 
+				app.picker.repositionSidePanel();
+
 
 			},
 			onThumbView: function(){
@@ -2396,6 +2532,8 @@
 				app.picker.setPlaceholders();
 				app.picker.updateZoomLevel();
 
+				app.picker.repositionSidePanel();
+
 			},
 			onDetailView: function(){
 				app.dev.log("::: APP ::: PICKER ::: ONDETAILVIEW");
@@ -2403,6 +2541,8 @@
 				app.picker.data.displayType = "detailedview";
 				app.picker.setPlaceholders();
 				app.picker.updateZoomLevel();
+
+				app.picker.repositionSidePanel();
 
 			},
 			row: {
@@ -2835,6 +2975,13 @@
 					DexV2.id("CRTsearchTabItem").filter(".x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(3)").trigger("click");
 					DexV2.id("CRTsearchTabItem").filter(".x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) input[type=radio]:checked").trigger("click");
 
+					// Set width of the side panel
+					DexV2.id("JahiaGxtManagerLeftTree").nodes[0].style.setProperty("left", "-" + app.picker.data.explorer.width + "px", "important");
+
+					// Set position of display results
+					DexV2.id("JahiaGxtManagerTobTable").nodes[0].style.setProperty("left", "0px", "important");
+					DexV2.id("JahiaGxtManagerTobTable").nodes[0].style.setProperty("width", "100%", "important");
+
 				},
 				setUpSubScreen: function(){
 					// Save the current display time see we can switch back when closing the search panel
@@ -3017,6 +3164,8 @@
 				},
 				close: function(){
 					app.dev.log("::: APP ::: PICKER ::: SEARCH ::: CLOSE");
+
+
 					// CLOSE SEARCH PANEL
 					DexV2.getCached("body").setAttribute("data-INDIGO-PICKER-SEARCH", "");
 
@@ -3056,6 +3205,7 @@
                         DexV2.class("toolbar-item-listview").trigger("click");
 					// }
 
+					app.picker.repositionSidePanel();
 
 
 				},
@@ -3228,7 +3378,7 @@
 				app.iframe.clearSelection();
 				DexV2.getCached("body")
                     .setAttribute("data-INDIGO-EDIT-ENGINE", "")
-                    .setAttribute("data-INDIGO-PICKER-SEARCH", "");
+                    // .setAttribute("data-INDIGO-PICKER-SEARCH", "");
 
 			},
             onOpenHistory: function(){
@@ -5190,6 +5340,7 @@
     var eventListeners = {
         attach: function(){
 			DexV2("body")
+                .onAttribute(".x-vsplitbar", "style", app.picker.onResize)
 				.onMouseDown(".toolbar-item-edit, .toolbar-item-admin", function(){
                     // Appyling the Anthracite theme as soon as the user presses mousedown.
                     // This means that there is a lot less lag time for the user

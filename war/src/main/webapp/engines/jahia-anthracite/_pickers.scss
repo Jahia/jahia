@@ -4,9 +4,35 @@
 $PICKER_SIDEPANEL_WIDTH: 340px;
 
 
+
+#JahiaGxtContentPickerWindow,
+#contentpicker,
+#contentmanager,
+#JahiaGxtContentPicker {
+	.x-vsplitbar {
+		z-index: 2147483647;
+		background: red none repeat scroll 0% 0%;
+		opacity: 1;
+		display: block;
+		position: fixed!important;
+
+		body[indigo-picker-panel="collapsed"] &,
+		body[data-indigo-picker-search="open"] & {
+			display: none;
+
+
+		}
+	}
+}
+
+#JahiaGxtContentPicker {
+	.x-vsplitbar {
+		height: calc(100% - 79px)!important;
+		top:0!important;
+	}
+}
+
 // USed ONLY by full page stand alone picker
-
-
 
 // PICKER CONTAINER
 #JahiaGxtContentPickerWindow,
@@ -20,6 +46,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	background: _property($BODY--BG, $PICKER);
 	box-shadow: inset 0px 37px 0px _theme-color(primary, g), inset 0px 38px 7px #222;
 	z-index: 1100!important;
+
+
 
 	.indigo-modal-mask {
 		display: none;
@@ -284,7 +312,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 		// TOGGLE BUTTON
 		.toggle-picker-files {
-			left: 0;
+			left: 0 !important;
 			background-image: url(./images/icons/toggle-WE-white@X2.png);
 		}
 
@@ -1491,7 +1519,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 						box-sizing: border-box;
 						position: relative;
 						z-index: 999;
-						padding: 0 58px 0 30px;
+						padding: 0 0 0 30px;
 
 						width: 100%;
 						height: 30px;
@@ -1526,7 +1554,8 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 						.x-panel-header-text {
 							@include _drop-down-fake(LIGHT);
 
-							width: 100%!important;
+							width: 80% !important;
+						    max-width: 240px;
 
 							body[data-INDIGO-PICKER-SOURCE-PANEL="open"] & {
 								width: 100%!important;
@@ -1540,9 +1569,9 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 						position: fixed;
 						z-index: 99;
 						top: 120px !important;
-						width: calc(#{$PICKER_SIDEPANEL_WIDTH} + 8px) !important;
+						width: 100% !important;
 						height: calc(100% - 150px) !important;
-						padding: 5px 27px 0 32px;
+						padding: 5px 12px 0 32px;
 						box-sizing: border-box;
 
 						// Saved search results styling ...

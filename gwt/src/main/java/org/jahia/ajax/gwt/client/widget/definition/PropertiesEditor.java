@@ -744,7 +744,8 @@ public class PropertiesEditor extends FormPanel {
                             final GWTJahiaNodeProperty prop2 = prop;
                             //message.get Resource bundle
                             MessageBox.confirm(Messages.get("label.translate.copyall", "Copy to all languages"),
-                                    Messages.get("label.translate.copyall.confirm"),
+                                    Messages.get("label.translate.copyall.confirm", "The field value in all the other languages will be replaced by this one, do you want to copy this content"
+                                            + " to all languages?"),
                                     new Listener<MessageBoxEvent>() {
                                         @Override public void handleEvent(MessageBoxEvent be) {
                                             if(Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())){

@@ -582,6 +582,8 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 if (lastDeployed.compareTo(version) > 0) {
                     logger.info("Previously deployed " + systemId + " version was : "+deploymentProperties.getProperty(key) + ", ignoring version "+systemId + " / " + version + " / " + lastModified);
                     return false;
+                } else if (lastDeployed.compareTo(version) < 0) {
+                    return true;
                 }
             }
         }

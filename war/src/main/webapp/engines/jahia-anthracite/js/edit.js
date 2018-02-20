@@ -1433,7 +1433,9 @@
             data: {
             },
 			pullState: function(closeButton){
-				var removeID = null;
+                app.dev.log("APP ::: NAV ::: PULLSTATE");
+
+                var removeID = null;
 
 				for(var n = 0; n < app.data.openedXWindows.length; n++){
 					if(app.data.openedXWindows[n].nodes[0] == closeButton.nodes[0]){
@@ -1447,6 +1449,8 @@
 
 			},
             pushState: function(closeButton){
+                app.dev.log("APP ::: NAV ::: PUSHSTATE");
+
                 var url = window.location.pathname,
                     qs = window.location.search,
                     pushUrl = url + qs,
@@ -1459,9 +1463,10 @@
 
             },
             onPopState: function(event) {
+                app.dev.log("APP ::: NAV ::: ONPOPSTATE");
 
-				if(app.data.openedXWindows.length > 0){
-					app.data.openedXWindows[app.data.openedXWindows.length - 1].trigger("click");
+				if(event.state && app.data.openedXWindows.length > 0){
+                    app.data.openedXWindows[app.data.openedXWindows.length - 1].trigger("click");
 				}
 
             }

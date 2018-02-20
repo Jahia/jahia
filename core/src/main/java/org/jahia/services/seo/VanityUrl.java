@@ -221,21 +221,31 @@ public class VanityUrl implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(getUrl()).append(getPath()).append(
-                getLanguage()).append(getSite()).toHashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        VanityUrl vanityUrl = (VanityUrl) o;
+
+        if (defaultMapping != vanityUrl.defaultMapping) return false;
+        if (active != vanityUrl.active) return false;
+        if (url != null ? !url.equals(vanityUrl.url) : vanityUrl.url != null) return false;
+        if (language != null ? !language.equals(vanityUrl.language) : vanityUrl.language != null) return false;
+        if (identifier != null ? !identifier.equals(vanityUrl.identifier) : vanityUrl.identifier != null) return false;
+        if (path != null ? !path.equals(vanityUrl.path) : vanityUrl.path != null) return false;
+        return site != null ? site.equals(vanityUrl.site) : vanityUrl.site == null;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj)
-                || obj != null
-                && (this.getClass() == obj.getClass())
-                && new EqualsBuilder().append(getUrl(),
-                        ((VanityUrl) obj).getUrl()).append(getPath(),
-                        ((VanityUrl) obj).getPath()).append(getLanguage(),
-                        ((VanityUrl) obj).getLanguage()).append(getSite(),
-                        ((VanityUrl) obj).getSite()).isEquals();
+    public int hashCode() {
+        int result = url != null ? url.hashCode() : 0;
+        result = 31 * result + (language != null ? language.hashCode() : 0);
+        result = 31 * result + (identifier != null ? identifier.hashCode() : 0);
+        result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = 31 * result + (site != null ? site.hashCode() : 0);
+        result = 31 * result + (defaultMapping ? 1 : 0);
+        result = 31 * result + (active ? 1 : 0);
+        return result;
     }
 
     @Override

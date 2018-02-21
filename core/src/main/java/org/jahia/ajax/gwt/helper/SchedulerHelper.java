@@ -151,7 +151,7 @@ public class SchedulerHelper {
                 List<GWTJahiaNodeProperty> publicationInfos = (List<GWTJahiaNodeProperty>) jobDataMap.get(PublicationJob.PUBLICATION_PROPERTIES);
                 if (publicationInfos != null && publicationInfos.size() > 0) {
                     description += " " + publicationInfos.get(0).getValues();
-                }
+    }
                 List<String> publicationPathsFromJob = (List<String>) jobDataMap.get(PublicationJob.PUBLICATION_PATHS);
                 // get target paths from job if specified, if not, use uuids to get the nodes
                 if(publicationPathsFromJob != null && publicationPathsFromJob.size() > 0) {
@@ -217,6 +217,7 @@ public class SchedulerHelper {
             List<JobDetail> l = scheduler.getAllActiveJobs();
             return convertToGWTJobs(l);
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Error retrieving active jobs", e);
         }
     }
@@ -237,6 +238,7 @@ public class SchedulerHelper {
             Collections.sort(gwtJobList, JOB_COMPARATOR);
             return gwtJobList;
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Cannot retrieve jobs. Cause: " + e.getLocalizedMessage(), e);
         }
 
@@ -246,6 +248,7 @@ public class SchedulerHelper {
         try {
             return scheduler.getScheduler().deleteJob(jobName, groupName);
         } catch (SchedulerException e) {
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Cannot delete job " + jobName + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
@@ -254,6 +257,7 @@ public class SchedulerHelper {
         try {
             return Arrays.asList(scheduler.getScheduler().getJobGroupNames());
         } catch (SchedulerException e) {
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Cannot get all job group names. Cause: " + e.getLocalizedMessage(), e);
         }
     }
@@ -262,6 +266,7 @@ public class SchedulerHelper {
         try {
             return scheduler.deleteAllCompletedJobs();
         } catch (SchedulerException e) {
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Cannot delete completed jobs. Cause: " + e.getLocalizedMessage(), e);
         }
     }

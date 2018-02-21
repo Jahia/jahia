@@ -1036,6 +1036,7 @@ public class ContentManagerHelper {
                 }
             }
         } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Cannot get lock information", e);
         }
         return !lockedNodes.isEmpty();

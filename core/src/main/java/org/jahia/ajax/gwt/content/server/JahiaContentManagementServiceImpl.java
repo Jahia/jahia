@@ -2794,6 +2794,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 tags.add(new GWTJahiaValueDisplayBean(tagEntry, tagEntry));
             }
         } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Cannot get tags", e);
         }
         return tags;

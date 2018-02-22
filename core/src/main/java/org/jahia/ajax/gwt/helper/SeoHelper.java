@@ -43,12 +43,6 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import java.util.*;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.validation.ConstraintViolationException;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
@@ -56,6 +50,14 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
+
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Helper class for managing URL mappings.
@@ -85,7 +87,7 @@ public class SeoHelper {
                 .getVanityUrls(session.getNodeByIdentifier(gwtNode.getUUID()), locale, session);
         for (VanityUrl vanityUrl : urls) {
             mappings.add(new GWTJahiaUrlMapping(vanityUrl.getPath(), vanityUrl.getUrl(), vanityUrl.getLanguage(),
-                    vanityUrl.isDefaultMapping(), vanityUrl.isActive()));
+                    vanityUrl.getIdentifier(), vanityUrl.isDefaultMapping(), vanityUrl.isActive()));
         }
 
         return mappings;
@@ -100,6 +102,7 @@ public class SeoHelper {
                 if (StringUtils.isNotBlank(mapping.getUrl())) {
                     VanityUrl url = new VanityUrl(mapping.getUrl(), site, mapping.getLanguage(), mapping.isDefault(),
                             mapping.isActive());
+                    url.setIdentifier(mapping.getIdentifier());
                     url.setPath(mapping.getPath());
                     vanityUrls.add(url);
                 }

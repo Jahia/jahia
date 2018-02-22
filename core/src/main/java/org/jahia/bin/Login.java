@@ -76,8 +76,10 @@ public class Login implements Controller {
     }
     
     protected String getRedirectUrl(HttpServletRequest request, HttpServletResponse response) {
-        return response.encodeRedirectURL(StringUtils.defaultIfEmpty(request.getParameter("redirect"),
-                request.getContextPath() + "/welcome"));
+        // Method only called when the login is successful
+        final String redirect = StringUtils.defaultIfEmpty(request.getParameter("redirect"),
+                request.getContextPath() + "/welcome");
+        return response.encodeRedirectURL(redirect.replaceAll("(\\&|\\?)" + LOGIN_ERR_PARAM_NAME + "=([^&]+)", ""));
     }
 
     /**

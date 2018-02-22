@@ -48,15 +48,23 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.codec.Base64;
+import org.apache.shiro.subject.Subject;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 /**
@@ -65,8 +73,9 @@ import org.springframework.core.io.Resource;
  * @author Sergiy Shyrkov
  */
 public final class WebUtils {
-
     
+    private static final Logger logger = LoggerFactory.getLogger(WebUtils.class);
+
     /**
      * Does a URL encoding of the <code>path</code>. The characters that don't need encoding are those defined 'unreserved' in section 2.3
      * of the 'URI generic syntax' RFC 2396. Not the entire path string is escaped, but every individual part (i.e. the slashes are not
@@ -83,6 +92,53 @@ public final class WebUtils {
         return path != null ? Text.escapePath(path) : null;
     }
     
+    /**
+     * Return authenticated subject, performing login using basic authentication credentials, if provided in the current request.
+     * 
+     * @param request current HTTP request
+     * @return authenticated subject, performing login using basic authentication credentials, if provided in the current request
+     */
+    public static Subject getAuthenticatedSubject(HttpServletRequest request) {
+        Subject subject = SecurityUtils.getSubject();
+        if (subject == null) {
+            // we have no subject in the current content
+            return null;
+        }
+        if (!subject.isAuthenticated()) {
+            String[] authData = getBasicAuthData(request);
+            if (authData != null) {
+                try {
+                    subject.login(new UsernamePasswordToken(authData[0], authData[1]));
+                } catch (AuthenticationException e) {
+                    logger.warn("Unsuccessful login attemp for user " + authData[0] + ". Cause: " + e.getMessage());
+                }
+            }
+        }
+        return subject;
+    }
+
+    /**
+     * Returns the username and password pair from provided request if it contains authorization header of type BASIC.
+     * 
+     * @param request current HTTP request
+     * @return the username/password pair from the current request header or <code>null</code> if the request does not contain such
+     *         information
+     */
+    public static String[] getBasicAuthData(HttpServletRequest request) {
+        String header = request != null ? request.getHeader("Authorization") : null;
+        if (header != null) {
+            String[] authStr = header.split(" ");
+            if (authStr.length >= 2 && authStr[0].equalsIgnoreCase(HttpServletRequest.BASIC_AUTH)) {
+                String decoded = Base64.decodeToString(authStr[1]);
+                String[] tokens = decoded.split(":");
+                if (tokens.length >= 2) {
+                    return new String[] { tokens[0], tokens[1] };
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Loads the content of the specified servlet context resource as text.
      * 
@@ -146,7 +202,7 @@ public final class WebUtils {
     /**
      * Sets proper response headers to cache current response for the specified number of seconds.
      * 
-     * @param expiresSeconds
+     * @param expiresSeconds the expiration in seconds
      * @param response
      *            current response object
      */

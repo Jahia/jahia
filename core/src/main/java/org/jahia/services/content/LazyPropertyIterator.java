@@ -192,6 +192,8 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
             }
         } catch (ConstraintViolationException e) {
             return hasNext();
+        } catch (InvalidItemStateException e) {
+            return hasNext();
         } catch (NoSuchElementException e) {
             return false;
         } catch (RepositoryException e) {
@@ -211,6 +213,8 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         try {
             return node.hasProperty((String) o);
         } catch (ConstraintViolationException e) {
+            return false;
+        } catch (InvalidItemStateException e) {
             return false;
         } catch (RepositoryException e) {
             throw new RuntimeException("containsKey", e);
@@ -236,6 +240,8 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         } catch (PathNotFoundException e) {
             return null;
         } catch (ConstraintViolationException e) {
+            return null;
+        } catch (InvalidItemStateException e) {
             return null;
         } catch (RepositoryException e) {
             throw new RuntimeException("get", e);

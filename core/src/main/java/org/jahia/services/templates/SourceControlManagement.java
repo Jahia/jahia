@@ -45,7 +45,6 @@ package org.jahia.services.templates;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
@@ -147,13 +146,13 @@ public abstract class SourceControlManagement {
      * @throws IOException if merge conflict is still there
      */
     public boolean checkCommit() throws IOException {
-        Map<String, Status> statusMap = createStatusMap();
-        if (statusMap.values().contains(Status.UNMERGED)) {
+        Map<String, Status> newStatusMap = createStatusMap();
+        if (newStatusMap.values().contains(Status.UNMERGED)) {
             throw new IOException("Commit : remaining conflicts need to be resolved");
         }
-        return statusMap.values().contains(Status.MODIFIED) || statusMap.values().contains(Status.ADDED)
-                || statusMap.values().contains(Status.DELETED) || statusMap.values().contains(Status.RENAMED)
-                || statusMap.values().contains(Status.COPIED) || statusMap.values().contains(Status.UNMERGED);
+        return newStatusMap.values().contains(Status.MODIFIED) || newStatusMap.values().contains(Status.ADDED)
+                || newStatusMap.values().contains(Status.DELETED) || newStatusMap.values().contains(Status.RENAMED)
+                || newStatusMap.values().contains(Status.COPIED) || newStatusMap.values().contains(Status.UNMERGED);
     }
 
     /**
@@ -203,32 +202,34 @@ public abstract class SourceControlManagement {
         Status s = statuses.get(path);
         if (s != null) {
             return s;
-        } else {
-            if (path.indexOf('/') != -1 && statuses.values().contains(Status.UNTRACKED)) {
-                StringBuilder subPath = new StringBuilder(32);
-                for (String segment : StringUtils.split(path, '/')) {
-                    if (subPath.length() > 0) {
-                        if (statuses.get(subPath.toString()) == Status.UNTRACKED) {
-                            return Status.UNTRACKED;
-                        }
-                        subPath.append('/');
+        }        
+        if (path.indexOf('/') != -1 && statuses.values().contains(Status.UNTRACKED)) {
+            StringBuilder subPath = new StringBuilder(32);
+            for (String segment : StringUtils.split(path, '/')) {
+                if (subPath.length() > 0) {
+                    if (statuses.get(subPath.toString()) == Status.UNTRACKED) {
+                        return Status.UNTRACKED;
                     }
-                    subPath.append(segment);
+                    subPath.append('/');
                 }
+                subPath.append(segment);
             }
         }
+       
         return Status.UNMODIFIED;
     }
 
     protected final Map<String, Status> getStatusMap() throws IOException {
-        if (statusMap == null) {
+        Map<String, Status> statusMapCopy = statusMap;
+        if (statusMapCopy == null) {
             synchronized (this) {
-                if (statusMap == null) {
-                    statusMap = createStatusMap();
+                statusMapCopy = statusMap;
+                if (statusMapCopy == null) {
+                    statusMap = statusMapCopy = createStatusMap();
                 }
             }
         }
-        return statusMap;
+        return statusMapCopy;
     }
 
     /**

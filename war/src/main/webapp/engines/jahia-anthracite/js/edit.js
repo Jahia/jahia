@@ -3615,7 +3615,7 @@
                     }
 
 	                var elements = {
-	                    iframe: document.getElementsByClassName("window-iframe")[0],
+	                    // iframe: document.getElementsByClassName("window-iframe")[0],
 	                    title: document.getElementsByClassName("x-current-page-path")[0],
 	                    // publishButton: document.getElementsByClassName("edit-menu-publication")[0],
 	                    // refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
@@ -3623,11 +3623,11 @@
 	                    moreInfo: document.getElementsByClassName("edit-menu-edit")[0],
 	                };
 
-	                if( elements.iframe &&
-	                    elements.iframe.style){
-	                        elements.iframe.style.opacity = 0;
-
-	                }
+	                // if( elements.iframe &&
+	                //     elements.iframe.style){
+	                //         elements.iframe.style.opacity = 0;
+					//
+	                // }
 
 	                if( elements.title &&
 	                    elements.title.style){
@@ -4166,7 +4166,7 @@
                     // TEMP BLIND
 					if(app.data.currentApp == "edit" || app.data.currentApp == "contribute"){
 						var elements = {
-	                        iframe: document.getElementsByClassName("window-iframe")[0],
+	                        // iframe: document.getElementsByClassName("window-iframe")[0],
 	                        title: document.getElementsByClassName("x-current-page-path")[0],
 	                        // publishButton: document.getElementsByClassName("edit-menu-publication")[0],
 	                        // refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
@@ -4176,11 +4176,11 @@
 	                    };
 
 
-	                    if( elements.iframe &&
-	                        elements.iframe.style){
-	                            elements.iframe.style.opacity = 1;
-
-	                    }
+	                    // if( elements.iframe &&
+	                    //     elements.iframe.style){
+	                    //         elements.iframe.style.opacity = 1;
+						//
+	                    // }
 
 	                    if( elements.title &&
 	                        elements.title.style){
@@ -5119,7 +5119,7 @@
                     // TEMP BLIND
 					if(app.data.currentApp == "edit" || app.data.currentApp == "contribute"){
 						var elements = {
-	                        iframe: document.getElementsByClassName("window-iframe")[0],
+	                        // iframe: document.getElementsByClassName("window-iframe")[0],
 	                        title: document.getElementsByClassName("toolbar-item-publicationstatus")[0],
 	                        // publishButton: document.getElementsByClassName("edit-menu-publication")[0],
 	                        // refreshButton: document.getElementsByClassName("window-actions-refresh")[0],
@@ -5129,11 +5129,11 @@
 	                    };
 
 
-	                    if( elements.iframe &&
-	                        elements.iframe.style){
-	                            elements.iframe.style.opacity = 1;
-
-	                    }
+	                    // if( elements.iframe &&
+	                    //     elements.iframe.style){
+	                    //         elements.iframe.style.opacity = 1;
+						//
+	                    // }
 
 	                    if( elements.title &&
 	                        elements.title.style){

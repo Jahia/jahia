@@ -81,6 +81,9 @@ public class VanityUrlManager {
     /** Property name specifying if vanity URL is active */
     public static final String PROPERTY_ACTIVE = "j:active";
 
+    /** temporary name for vanity updated */
+    public static final String UPDATED_VANITY_TEMP_NAME = "temp";
+
     /**
      * Find any mappings for the given vanity URL. If a site is specified the
      * query will be done only for the specified site, otherwise all sites in the
@@ -533,6 +536,7 @@ public class VanityUrlManager {
             return false;
         } else {
             session.checkout(vanityUrlMappingsNode);
+            Map<JCRNodeWrapper, String> toRenames = new HashMap<>();
             for (Map.Entry<String, VanityUrl> entry : toUpdate.entrySet()) {
                 JCRNodeWrapper vanityUrlNode = session.getNodeByIdentifier(entry.getValue().getIdentifier());
                 VanityUrl vanityUrl = entry.getValue();
@@ -542,9 +546,14 @@ public class VanityUrlManager {
                 vanityUrlNode.setProperty(PROPERTY_ACTIVE, vanityUrl.isActive());
                 vanityUrlNode.setProperty(PROPERTY_DEFAULT, vanityUrl.isDefaultMapping());
                 String name = JCRContentUtils.escapeLocalNodeName(vanityUrl.getUrl());
+
                 if (!name.equals(vanityUrlNode.getName())) {
-                    vanityUrlNode.rename(name);
+                    vanityUrlNode.rename(JCRContentUtils.findAvailableNodeName(vanityUrlNode.getParent(), UPDATED_VANITY_TEMP_NAME));
+                    toRenames.put(vanityUrlNode, name);
                 }
+            }
+            for (Map.Entry<JCRNodeWrapper, String> toRename : toRenames.entrySet()) {
+                toRename.getKey().rename(toRename.getValue());
             }
             for (String uuid : removeDefaultMapping) {
                 JCRNodeWrapper vanityUrlNode = session.getNodeByIdentifier(uuid);

@@ -1342,7 +1342,6 @@
 		}
 	}
 
-
 	var app = {
 		data: {
 			openedXWindows: [],
@@ -1712,32 +1711,8 @@
 
 	            }
 			},
-			on: function(source){
-				app.dev.log("::: APP ::: THEME ::: ON");
-
-				if(!app.theme.data.enabled){
-					// Anthracite CSS has been removed, so plug it back in
-                    var cssLink = document.createElement("link");
-
-                    cssLink.type = "text/css";
-                    cssLink.rel = "stylesheet";
-                    cssLink.id = "anthractite-CSS";
-                    cssLink.href = DXAnthraciteCSS;
-
-                    DexV2("head").append(cssLink);
-
-					app.theme.data.enabled = true;
-
-				}
-			},
 			off: function(){
 				app.dev.log("::: APP ::: THEME ::: OFF");
-
-                if(app.theme.data.enabled){
-                    DexV2.id("anthractite-CSS").remove();
-
-                }
-
 			},
 		},
         backgroundJobs: {
@@ -3794,9 +3769,6 @@
 
                 }
 
-                // Use Anthracite CSS
-				app.theme.on(2);
-
                 // Set attributes to be used by CSS
                 DexV2.getCached("body")
 					.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no")
@@ -3935,9 +3907,6 @@
 				app.edit.sidepanel.data.firstRunPages = true;
 
 				app.edit.topbar.build();
-
-				// Use Anthracite CSS
-				app.theme.on(3);
 
                 // Set attributes to be used by CSS
                 DexV2.getCached("body")
@@ -4966,9 +4935,6 @@
 
                 DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");
 
-				// Use Anthracite CSS
-				app.theme.on(4);
-
                 // Set attributes to be used by CSS
                 DexV2.getCached("body")
 					.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "no")
@@ -5019,24 +4985,6 @@
             }
 
 		},
-		studio: {
-			// Event Handlers
-			onOpen: function(){
-				app.dev.log("::: APP ::: STUDIO ::: OPENED");
-
-				// Dont use Anthracite CSS
-				app.theme.off();
-
-                // Set attributes to be used by CSS
-                DexV2.getCached("body")
-					.setAttribute("data-INDIGO-GWT-SIDE-PANEL", "")
-                	.setAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL", "yes");
-			},
-			onClose: function(){},
-
-			// Controls
-
-		},
 		contribute: {
 			// Event Handlers
             data: {
@@ -5045,11 +4993,7 @@
 			onOpen: function(){
 				app.dev.log("::: APP ::: CONTRIBUTE ::: OPENED");
 
-				// Use Anthracite CSS
-				app.theme.on(5);
-
 				app.contribute.topbar.build();
-
 
                 // Set attributes to be used by CSS
                 DexV2.getCached("body")
@@ -5341,18 +5285,6 @@
         attach: function(){
 			DexV2("body")
                 .onAttribute(".x-vsplitbar", "style", app.picker.onResize)
-				.onMouseDown(".toolbar-item-edit, .toolbar-item-admin", function(){
-                    // Appyling the Anthracite theme as soon as the user presses mousedown.
-                    // This means that there is a lot less lag time for the user
-                    // Only problem (was) that the menu that the user was clicking on moved ( due to different styling ) and there for the mouseup never fired for GWT,
-                    // meaning the new App wasnt loaded.
-                    // To solve this we do not style menus by default ( meaning that when the Anthracite Theme is applied the drop down menu remains unstyled )
-                    // Then once GWT has fired and loaded the app, we activate the styling on the drop downs by adding a attribute to the body tag data-indigo-styled-combos="true"
-                    if(app.data.currentApp == "studio"){
-                        // User curently in studio mode and has requested to open Edit Mode or Admin Mode, so apply the Anthracite Theme immediately
-                        app.theme.on(6);
-                    }
-                })
 				.onOpen(".x-window", function(){
 
 					// Get close button
@@ -5445,11 +5377,10 @@
                     var studioNodePath = sessionStorage.getItem("studiomode_nodePath"),
                         baseURL = jahiaGWTParameters.contextPath + "/cms/studio/default/" + jahiaGWTParameters.uilang;
 
-                    if(studioNodePath){
+                    if(studioNodePath && studioNodePath !== "/settings"){
                         studioURL = baseURL + studioNodePath + ".html"
                     } else {
                         studioURL = baseURL + "/settings.manageModules.html"
-
                     }
 
                     window.location = studioURL;
@@ -5806,8 +5737,6 @@
         }
     }
 
-
-
     // INITIALISE
     var init = function(){
         // Get UI Language from GWT parameters
@@ -5863,25 +5792,14 @@
 
 		}
 
-        // Do an immediate check to see whether or not to apply the CSS (this is carried out on PAGE LOAD only)
-        if(app.data.HTTP.DXApp != "studio" && app.data.HTTP.DXApp != "miniApp"){
-            // We can switch the Anthracite Theme on because we are displaying studio
-            app.theme.on(1);
-        }
-
         // Attach event listeners
         eventListeners.attach();
-
-    }
-
-
-
+    };
 
     // Start when DOM is ready
     document.addEventListener("DOMContentLoaded", function(event) {
         init();
     });
-
 
     // Expose DX to window
     if(exposeAs){

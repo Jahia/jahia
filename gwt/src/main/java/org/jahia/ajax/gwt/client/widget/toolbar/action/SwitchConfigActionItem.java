@@ -177,7 +177,17 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
                             }
                             newPath = removeWebflowParameter(newPath);
                         }
-                        ((EditLinker) linker).switchConfig(gwtEditConfiguration, newPath, updateSidePanel, updateToolbar, enforcedWorkspace);
+
+                        EditLinker editLinker = ((EditLinker) linker);
+                        if (replaceSwitchByOpen() && newPath != null) {
+                            // replace config in url and remove "frame" suffix
+                            newPath = newPath.replaceFirst(editLinker.getConfig().getDefaultUrlMapping(), gwtEditConfiguration.getDefaultUrlMapping())
+                                    .replaceFirst("frame/default/", "/default/");
+
+                            Window.Location.assign(newPath);
+                        } else {
+                            editLinker.switchConfig(gwtEditConfiguration, newPath, updateSidePanel, updateToolbar, enforcedWorkspace);
+                        }
                     }
                 }
 
@@ -238,4 +248,8 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
     public void setCheckPermissionOnSite(boolean checkPermissionOnSite) {
         this.checkPermissionOnSite = checkPermissionOnSite;
     }
+
+    private static native boolean replaceSwitchByOpen () /*-{
+        return !!$wnd.jahiaReplaceSwitchConfigByOpen;
+    }-*/;
 }

@@ -25,13 +25,20 @@
 
 	<c:if test="${not empty theme}">
 
-		<!-- Javascript for theme -->
-        <script type="text/javascript">
-            var DXAnthraciteCSS = '<c:url value="/engines/${theme}/edit${themeLocale}.css"/>';
-        </script>
-		<script type="text/javascript" src="<c:url value='/engines/${theme}/js/edit.js'/>"></script>
+		<!-- load theme -->
+        <c:choose>
+            <c:when test="${renderContext.editModeConfigName == 'studiomode'}">
+                <script type="text/javascript">
+                    // hack for studio only, this will force the switchConfig action items to be open in a new HTTP call
+                    window.jahiaReplaceSwitchConfigByOpen = true;
+                </script>
+            </c:when>
+            <c:otherwise>
+                <link rel="stylesheet" type="text/css" media="screen" href="<c:url value='/engines/${theme}/edit${themeLocale}.css'/>" />
+                <script type="text/javascript" src="<c:url value='/engines/${theme}/js/edit.js'/>"></script>
+            </c:otherwise>
+        </c:choose>
     </c:if>
-
 </head>
 
 <body>

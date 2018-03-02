@@ -77,9 +77,9 @@ public class Login implements Controller {
     
     protected String getRedirectUrl(HttpServletRequest request, HttpServletResponse response) {
         // Method only called when the login is successful
-        final String redirect = StringUtils.defaultIfEmpty(request.getParameter("redirect"),
+        String redirect = StringUtils.defaultIfEmpty(request.getParameter("redirect"),
                 request.getContextPath() + "/welcome");
-        return response.encodeRedirectURL(redirect.replaceAll("(\\&|\\?)" + LOGIN_ERR_PARAM_NAME + "=([^&]+)", ""));
+        return response.encodeRedirectURL(Login.removeErrorParameter(redirect));
     }
 
     /**
@@ -207,5 +207,12 @@ public class Login implements Controller {
         // relative URL
         return true;
     }
-
+    
+    // Only protected for test purposes
+    protected static String removeErrorParameter(String redirect) {
+        redirect = redirect.replaceAll("\\?" + LOGIN_ERR_PARAM_NAME + "=([^&]+)\\&", "\\?");
+        redirect = redirect.replaceAll("\\?" + LOGIN_ERR_PARAM_NAME + "=([^&]+)", "");
+        redirect = redirect.replaceAll("\\&" + LOGIN_ERR_PARAM_NAME + "=([^&]+)", "");
+        return redirect;
+    }
 }

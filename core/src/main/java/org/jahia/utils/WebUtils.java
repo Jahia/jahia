@@ -125,7 +125,7 @@ public final class WebUtils {
      *         information
      */
     public static String[] getBasicAuthData(HttpServletRequest request) {
-        String header = request != null ? request.getHeader("Authorization") : null;
+        String header = request.getHeader("Authorization");
         if (header != null) {
             String[] authStr = header.split(" ");
             if (authStr.length >= 2 && authStr[0].equalsIgnoreCase(HttpServletRequest.BASIC_AUTH)) {

@@ -48,13 +48,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.scheduler.SchedulerService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -85,6 +88,8 @@ public class TemplatePackageDeployer {
     private ComponentRegistry componentRegistry;
 
     private ImportExportBaseService importExportService;
+    
+    private SchedulerService schedulerService; 
 
     public void setComponentRegistry(ComponentRegistry componentRegistry) {
         this.componentRegistry = componentRegistry;
@@ -209,20 +214,42 @@ public class TemplatePackageDeployer {
     }
 
     /**
-     *  clear all module nodes for given package
-     * @param pkg
+     * Clear all module nodes for given package
+     * @param pkg the module package
      * @throws RepositoryException in case of JCR-related errors
      */
     public void clearModuleNodes(final JahiaTemplatesPackage pkg) throws RepositoryException {
-        for (String workspace : Arrays.asList(Constants.LIVE_WORKSPACE, Constants.EDIT_WORKSPACE)) {
-            clearModuleNodes(workspace, pkg.getId(), pkg.getVersion());
+        clearModuleNodes(pkg, false);
+    }
+
+    /**
+     * Clear all module nodes for given package
+     * @param pkg the module package
+     * @param executeAsBackgroundJob if <code>true</code>, do the action in a background job
+     * @throws RepositoryException in case of JCR-related errors
+     */
+    public void clearModuleNodes(final JahiaTemplatesPackage pkg, boolean executeAsBackgroundJob)
+            throws RepositoryException {
+        String id = pkg.getId();
+        ModuleVersion version = pkg.getVersion();
+        if (executeAsBackgroundJob) {
+            try {
+                schedulerService.scheduleJobNow(ClearModuleNodesJob.createJob(id, version.toString()));
+            } catch (SchedulerException e) {
+                throw new JahiaRuntimeException(
+                        "Unable to schedule background job for cleaning nodes of module " + id + " v" + version, e);
+            }
+        } else {
+            for (String workspace : Arrays.asList(Constants.LIVE_WORKSPACE, Constants.EDIT_WORKSPACE)) {
+                clearModuleNodes(workspace, id, version);
+            }
         }
     }
 
     /**
-     *  clear all module nodes for given package id and version
-     * @param id
-     * @param version
+     * Clear all module nodes for given package id and version
+     * @param id the id of the module to clean nodes for
+     * @param version the version of the module
      * @throws RepositoryException in case of JCR-related errors
      */
     public void clearModuleNodes(String id, ModuleVersion version) throws RepositoryException {
@@ -234,8 +261,8 @@ public class TemplatePackageDeployer {
     /**
      * clear all module nodes for given package and session
      * Deprecated: use clearModuleNodes(final JahiaTemplatesPackage pkg)
-     * @param pkg
-     * @param session
+     * @param pkg the module package
+     * @param session current JCR session instance
      * @throws RepositoryException in case of JCR-related errors
      */
     @Deprecated
@@ -254,12 +281,12 @@ public class TemplatePackageDeployer {
     }
 
     /**
-     *  clear all module nodes for given package id, version and session
+     * Clear all module nodes for given package id, version and session
      *  if you want to remove a module nodes, use clearModuleNodes(String id, ModuleVersion version) to be sure to remove
      *  nodes in both workspaces.
-     * @param id
-     * @param version
-     * @param session
+     * @param id the module ID to clean nodes for
+     * @param version the module version
+     * @param session current JCR session instance
      * @throws RepositoryException in case of JCR-related errors
      */
     public void clearModuleNodes(String id, ModuleVersion version, JCRSessionWrapper session) throws RepositoryException {
@@ -476,6 +503,10 @@ public class TemplatePackageDeployer {
                 }
             }
         }
+    }
+
+    public void setSchedulerService(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
     }
 
 }

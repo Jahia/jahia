@@ -54,6 +54,7 @@ import org.jahia.bundles.extender.jahiamodules.transform.ModuleDependencyURLStre
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleUrlTransformer;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
@@ -502,9 +503,17 @@ public class Activator implements BundleActivator {
         if (jahiaTemplatesPackage != null) {
 
             try {
-                templatePackageDeployer.clearModuleNodes(jahiaTemplatesPackage);
+                SettingsBean settingsBean = SettingsBean.getInstance();
+                boolean isProcessingServer = settingsBean.isProcessingServer();
+                if (isProcessingServer) {
+                    try {
+                        templatePackageDeployer.clearModuleNodes(jahiaTemplatesPackage, true);
+                    } catch (JahiaRuntimeException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
                 if (templatePackageRegistry.getAvailableVersionsForModule(jahiaTemplatesPackage.getId()).equals(Collections.singleton(jahiaTemplatesPackage.getVersion()))) {
-                    if (SettingsBean.getInstance().isDevelopmentMode() && SettingsBean.getInstance().isProcessingServer()
+                    if (settingsBean.isDevelopmentMode() && isProcessingServer
                             && !templatesService.checkExistingContent(bundle.getSymbolicName())) {
                         JCRStoreService jcrStoreService = (JCRStoreService) SpringContextSingleton.getBean("JCRStoreService");
                         jcrStoreService.undeployDefinitions(bundle.getSymbolicName());

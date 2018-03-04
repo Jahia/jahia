@@ -93,7 +93,7 @@ public class Export extends JahiaController implements ServletContextAware {
 
     private static final String CONTROLLER_MAPPING = "/export";
     
-    public static final String EXPORT_SITES_REQUIRED_PERMISSION = "adminVirtualSites";
+    private static final String EXPORT_SITES_REQUIRED_PERMISSION = "adminVirtualSites";
 
     private static final Pattern URI_PATTERN = Pattern.compile(CONTROLLER_MAPPING + "/("
             + Constants.LIVE_WORKSPACE + "|" + Constants.EDIT_WORKSPACE + ")/(.*)\\.(xml|zip)");

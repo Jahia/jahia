@@ -58,4 +58,9 @@ public class SpringTextConfigurationRealm extends TextConfigurationRealm impleme
     public void afterPropertiesSet() throws Exception {
         processDefinitions();
     }
+
+    @Override
+    public String toString() {
+        return getName() != null ? getName() : super.toString();
+    }
 }

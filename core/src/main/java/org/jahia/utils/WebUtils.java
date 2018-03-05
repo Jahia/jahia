@@ -63,8 +63,6 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 /**
@@ -74,8 +72,6 @@ import org.springframework.core.io.Resource;
  */
 public final class WebUtils {
     
-    private static final Logger logger = LoggerFactory.getLogger(WebUtils.class);
-
     /**
      * Does a URL encoding of the <code>path</code>. The characters that don't need encoding are those defined 'unreserved' in section 2.3
      * of the 'URI generic syntax' RFC 2396. Not the entire path string is escaped, but every individual part (i.e. the slashes are not
@@ -97,8 +93,9 @@ public final class WebUtils {
      * 
      * @param request current HTTP request
      * @return authenticated subject, performing login using basic authentication credentials, if provided in the current request
+     * @throws AuthenticationException in case of errors during login operation
      */
-    public static Subject getAuthenticatedSubject(HttpServletRequest request) {
+    public static Subject getAuthenticatedSubject(HttpServletRequest request) throws AuthenticationException {
         Subject subject = SecurityUtils.getSubject();
         if (subject == null) {
             // we have no subject in the current content
@@ -107,11 +104,7 @@ public final class WebUtils {
         if (!subject.isAuthenticated()) {
             String[] authData = getBasicAuthData(request);
             if (authData != null) {
-                try {
-                    subject.login(new UsernamePasswordToken(authData[0], authData[1]));
-                } catch (AuthenticationException e) {
-                    logger.warn("Unsuccessful login attemp for user " + authData[0] + ". Cause: " + e.getMessage());
-                }
+                subject.login(new UsernamePasswordToken(authData[0], authData[1]));
             }
         }
         return subject;

@@ -24,6 +24,7 @@
     </bean>
     
     <bean name="textConfigurationRealm" class="org.jahia.services.security.shiro.SpringTextConfigurationRealm">
+        <property name="name" value="DX Tools"/>
         <property name="userDefinitions">
             <value>
                 ${jahiaToolManagerUsername}=${jahiaToolManagerPassword},toolManager

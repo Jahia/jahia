@@ -3698,6 +3698,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return !objectNode.hasProperty("j:isExternalProviderRoot");
             }
         } catch (RepositoryException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Node " + this.getPath() + " is not valid due to an Exception during validity check", e);
+            }
             return false;
         }
         return true;

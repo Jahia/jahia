@@ -43,6 +43,7 @@
  */
 package org.jahia.bin;
 
+import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -60,21 +61,24 @@ import org.springframework.web.servlet.mvc.Controller;
  * Time: 1:47:38 PM
  */
 public class Login implements Controller {
-    
+
     // TODO move this into configuration
     private static final String CONTROLLER_MAPPING = "/login";
     private static final String LOGIN_ERR_PARAM_NAME = "loginError";
     private static final String FAIL_REDIRECT_PARAM = "failureRedirect";
+    private static final Pattern ERR_PARAM_NOT_ALONE_PATTERN = Pattern.compile("\\?" + LOGIN_ERR_PARAM_NAME + "=([^&]+)\\&");
+    private static final Pattern ERR_PARAM_ALONE_PATTERN = Pattern.compile("\\?" + LOGIN_ERR_PARAM_NAME + "=([^&]+)");
+    private static final Pattern ERR_PARAM_END_PATTERN = Pattern.compile("\\&" + LOGIN_ERR_PARAM_NAME + "=([^&]+)");
 
     public static String getMapping() {
         return CONTROLLER_MAPPING;
     }
-    
+
     public static String getServletPath() {
         // TODO move this into configuration
         return "/cms" + CONTROLLER_MAPPING;
     }
-    
+
     protected String getRedirectUrl(HttpServletRequest request, HttpServletResponse response) {
         // Method only called when the login is successful
         String redirect = StringUtils.defaultIfEmpty(request.getParameter("redirect"),
@@ -159,19 +163,19 @@ public class Login implements Controller {
             String[] urlParts = StringUtils.split(failureRedirectUrl, "\\?");
             StringBuilder sanitizedUrlSb = new StringBuilder(urlParts[0]);
             if(urlParts.length > 1) {
-              String[] urlParams = StringUtils.split(urlParts[1], "&");
-              StringBuilder paramSb = new StringBuilder();
-              for (int i = 0; i < urlParams.length; i++) {
-                if (urlParams[i].indexOf(LOGIN_ERR_PARAM_NAME) == -1) {
-                  paramSb.append(urlParams[i]);
+                String[] urlParams = StringUtils.split(urlParts[1], "&");
+                StringBuilder paramSb = new StringBuilder();
+                for (int i = 0; i < urlParams.length; i++) {
+                    if (urlParams[i].indexOf(LOGIN_ERR_PARAM_NAME) == -1) {
+                        paramSb.append(urlParams[i]);
+                    }
                 }
-              }
               if(StringUtils.isNotEmpty(paramSb.toString())) {
-                sanitizedUrlSb.append("?").append(paramSb.toString());
-              }
-              
+                    sanitizedUrlSb.append("?").append(paramSb.toString());
+                }
+
             }
-            
+
             failureRedirectUrl = sanitizedUrlSb.toString();
         }
         return failureRedirectUrl;
@@ -207,12 +211,12 @@ public class Login implements Controller {
         // relative URL
         return true;
     }
-    
+
     // Only protected for test purposes
     protected static String removeErrorParameter(String redirect) {
-        redirect = redirect.replaceAll("\\?" + LOGIN_ERR_PARAM_NAME + "=([^&]+)\\&", "\\?");
-        redirect = redirect.replaceAll("\\?" + LOGIN_ERR_PARAM_NAME + "=([^&]+)", "");
-        redirect = redirect.replaceAll("\\&" + LOGIN_ERR_PARAM_NAME + "=([^&]+)", "");
+        redirect = ERR_PARAM_NOT_ALONE_PATTERN.matcher(redirect).replaceAll("\\?");
+        redirect = ERR_PARAM_ALONE_PATTERN.matcher(redirect).replaceAll("");
+        redirect = ERR_PARAM_END_PATTERN.matcher(redirect).replaceAll("");
         return redirect;
     }
 }

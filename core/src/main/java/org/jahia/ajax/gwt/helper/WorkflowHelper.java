@@ -683,16 +683,22 @@ public class WorkflowHelper {
 
                 Map<Locale, TaskEvent> taskEventByLang = new HashMap<>();
 
+                Locale defaultSiteLocale = null;
+                ChannelHolder channelHolder = null;
                 for (JCRUserNode user : users) {
                     if (user != null) {
                         Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
+                        if (preferredLocale == null) {
+                            // use the default language of the default site as preferred locale
+                            if (null == defaultSiteLocale) {
+                                defaultSiteLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
+                            }
+                            preferredLocale = defaultSiteLocale;
+                        }
                         TaskEvent taskEvent = taskEventByLang.get(preferredLocale);
                         if (taskEvent == null) {
                             taskEvent = new TaskEvent();
                             if (newTask) {
-                                if (preferredLocale == null) {
-                                    preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
-                                }
                                 task = service.getWorkflowTask(task.getId(), task.getProvider(), preferredLocale);
                                 taskEvent.setNewTask(StringUtils.defaultString(task.getDisplayName(), task.getName()));
                             }
@@ -701,15 +707,18 @@ public class WorkflowHelper {
                             }
                             taskEventByLang.put(preferredLocale, taskEvent);
                         }
-                        Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
+                        String userName = user.getName();
+                        Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + userName);
                         if (broadcaster != null) {
                             broadcaster.broadcast(taskEvent);
                         } else {
                             try {
-                                ChannelHolder bean = (ChannelHolder) SpringContextSingleton.getBean("org.jahia.ajax.gwt.commons.server.ChannelHolderImpl");
-                                JGroupsChannel jc = bean.getChannel();
+                                if (null == channelHolder) {
+                                    channelHolder = (ChannelHolder) SpringContextSingleton.getBean("org.jahia.ajax.gwt.commons.server.ChannelHolderImpl");
+                                }
+                                JGroupsChannel jc = channelHolder.getChannel();
                                 if (jc != null) {
-                                   jc.send(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName(),taskEvent);
+                                   jc.send(ManagedGWTResource.GWT_BROADCASTER_ID + userName, taskEvent);
                                 }
                             } catch (Exception e) {
                                 logger.debug(e.getMessage(), e);

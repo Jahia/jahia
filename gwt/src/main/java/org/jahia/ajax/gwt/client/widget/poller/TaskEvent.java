@@ -49,17 +49,18 @@ import org.atmosphere.gwt20.client.managed.RPCEvent;
 
 public class TaskEvent extends RPCEvent implements Serializable {
     private static final long serialVersionUID = 7742645002324255207L;
-    private Integer numberOfTasks;
     private String newTask;
     private String endedTask;
     private String endedWorkflow;
 
+    @Deprecated
     public Integer getNumberOfTasks() {
-        return numberOfTasks;
+        return 0;
     }
 
+    @Deprecated
     public void setNumberOfTasks(Integer numberOfTasks) {
-        this.numberOfTasks = numberOfTasks;
+        // do nothing
     }
 
     public String getNewTask() {

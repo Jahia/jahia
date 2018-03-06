@@ -163,6 +163,7 @@ public abstract class SourceControlManagement {
      *
      * @param message
      *            the commit message
+     * @return <code>true</code> if the commit was effectively executed; <code>false</code> otherwise
      * @throws IOException
      *             in case of a commit process error
      */
@@ -326,7 +327,7 @@ public abstract class SourceControlManagement {
      * List all available tags on distant repository
      * @param uri the remote SCM repository URI (of the trunk for SVN)
      * @return a map tag/uri
-     * @throws IOException
+     * @throws IOException in case of tag info retrieval errors
      */
     public abstract Map<String, String> getTagInfos(String uri) throws IOException;
 
@@ -334,7 +335,7 @@ public abstract class SourceControlManagement {
      * List all available branches on distant repository
      * @param uri the remote SCM repository URI (of the trunk for SVN)
      * @return a map tag/uri
-     * @throws IOException
+     * @throws IOException in case of branch info retrieval errors
      */
     public abstract Map<String, String> getBranchInfos(String uri) throws IOException;
 }

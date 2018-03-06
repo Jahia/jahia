@@ -44,6 +44,7 @@
 package org.jahia.services.render;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -615,7 +616,7 @@ public class RenderService {
         } else if (renderContext.getRequest() != null) {
             HttpSession httpSession = renderContext.getRequest().getSession(false);
             if (httpSession != null) {
-                theme = (String) httpSession.getAttribute("jahia.ui.theme");
+                theme = (String) httpSession.getAttribute(Constants.UI_THEME);
             }
         }
         return theme;

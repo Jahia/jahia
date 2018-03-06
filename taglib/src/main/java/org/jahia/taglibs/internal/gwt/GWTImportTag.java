@@ -43,10 +43,11 @@
  */
 package org.jahia.taglibs.internal.gwt;
 
+import static org.jahia.api.Constants.*;
+
 import java.io.IOException;
 import java.util.Locale;
 
-import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRUserNode;
@@ -78,28 +79,28 @@ public class GWTImportTag extends AbstractJahiaTag {
             pageContext.getOut().println(GWTIncluder.generateGWTImport(pageContext, getModule()));
 
             final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            String theme = SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.ui.theme");
-            JahiaUser jahiaUser = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
+            String theme = SettingsBean.getInstance().getPropertiesFile().getProperty(UI_THEME);
+            JahiaUser jahiaUser = (JahiaUser) request.getSession().getAttribute(SESSION_USER);
 
-            if (request.getParameter("jahia.ui.theme") != null) {
-                theme = request.getParameter("jahia.ui.theme");
-                String userValue = jahiaUser.getProperty("jahia.ui.theme");
+            if (request.getParameter(UI_THEME) != null) {
+                theme = request.getParameter(UI_THEME);
+                String userValue = jahiaUser.getProperty(UI_THEME);
                 if (userValue == null || !userValue.equals(theme)) {
                     try {
                         JCRSessionWrapper userSession = JCRSessionFactory.getInstance().getCurrentUserSession();
                         JCRUserNode user = (JCRUserNode) userSession.getNode(jahiaUser.getLocalPath());
-                        user.setProperty("jahia.ui.theme", theme);
+                        user.setProperty(UI_THEME, theme);
                         userSession.save();
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
                     }
                 }
-            } else if (jahiaUser != null && jahiaUser.getProperty("jahia.ui.theme") != null) {
-                theme = jahiaUser.getProperty("jahia.ui.theme");
+            } else if (jahiaUser != null && jahiaUser.getProperty(UI_THEME) != null) {
+                theme = jahiaUser.getProperty(UI_THEME);
             }
 
             if (theme != null && !theme.equals("default")) {
-                request.getSession().setAttribute("jahia.ui.theme", theme);
+                request.getSession().setAttribute(UI_THEME, theme);
                 Locale uiLocale = getUILocale();
                 String base = "/engines/" + theme + "/";
                 if (pageContext.getServletContext().getResource(base + module + "_" + uiLocale.getLanguage() + ".css") != null) {
@@ -111,7 +112,7 @@ public class GWTImportTag extends AbstractJahiaTag {
                 }
                 pageContext.setAttribute("theme", theme);
             } else {
-                request.getSession().setAttribute("jahia.ui.theme", null);
+                request.getSession().setAttribute(UI_THEME, null);
             }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);

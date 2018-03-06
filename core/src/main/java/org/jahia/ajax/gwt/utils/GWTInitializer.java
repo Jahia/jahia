@@ -273,7 +273,7 @@ public class GWTInitializer {
     private static void addCss(StringBuilder buf, HttpServletRequest request, boolean frame) {
         String context = request.getContextPath();
 
-        String theme = (String) request.getSession().getAttribute("jahia.ui.theme");
+        String theme = (String) request.getSession().getAttribute(Constants.UI_THEME);
 
         List<String> cssStyles = frame ? getConfig().getCssStylesForFrame() : getConfig().getCssStyles();
 

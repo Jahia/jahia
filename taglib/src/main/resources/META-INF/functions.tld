@@ -607,4 +607,13 @@
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
         <function-signature>java.lang.String getCurrentSiteKey(javax.servlet.http.HttpServletRequest)</function-signature>
     </function>
+
+    <function>
+        <description>
+            Returns the value for the X-UA-Compatible tag, based on the configuration and current UI theme.
+        </description>
+        <name>getInternetExplorerCompatibility</name>
+        <function-class>org.jahia.utils.WebUtils</function-class>
+        <function-signature>java.lang.String getInternetExplorerCompatibility(javax.servlet.http.HttpServletRequest)</function-signature>
+    </function>
 </taglib>

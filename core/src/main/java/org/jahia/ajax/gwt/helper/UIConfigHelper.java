@@ -893,7 +893,7 @@ public class UIConfigHelper {
 
     private Object getThemedConfiguration(String name, HttpServletRequest request) {
         Object config = SpringContextSingleton.getBean(name);
-        String theme = (String) request.getSession().getAttribute("jahia.ui.theme");
+        String theme = (String) request.getSession().getAttribute(org.jahia.api.Constants.UI_THEME);
         if (theme != null) {
             try {
                 config = SpringContextSingleton.getBean(name + "-" + theme);

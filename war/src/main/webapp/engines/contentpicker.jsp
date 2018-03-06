@@ -6,10 +6,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="org.jahia.settings.SettingsBean" %>
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <c:set var="config" value="${functions:default(param.type, 'filepicker')}"/>
-<% pageContext.setAttribute("xUaCompatible", SettingsBean.getInstance().getInternetExplorerCompatibility()); %>
+<c:set var="xUaCompatible" value="${functions:getInternetExplorerCompatibility(pageContext.request)}"/>
 	<head>
         <c:if test="${not empty xUaCompatible}">
             <meta http-equiv="X-UA-Compatible" content="${xUaCompatible}"/>

@@ -4,8 +4,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="org.jahia.settings.SettingsBean" %>
-<% pageContext.setAttribute("xUaCompatible", SettingsBean.getInstance().getInternetExplorerCompatibility()); %>
+<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions"%>
+<c:set var="xUaCompatible" value="${functions:getInternetExplorerCompatibility(pageContext.request)}"/>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <c:if test="${not empty xUaCompatible}">

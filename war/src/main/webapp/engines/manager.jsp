@@ -9,7 +9,6 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ page import="org.jahia.settings.SettingsBean" %>
 <utility:setBundle basename="JahiaInternalResources" useUILocale="true"/>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <c:set var="cfgbase" value="${functions:default(param.conf, 'repositoryexplorer')}"/>
@@ -17,7 +16,7 @@
 <c:if test="${fn:indexOf(cfgbase, '-' ) > 0}">
     <c:set var="cfg" value="${fn:substringBefore(cfgbase,'-')}"/>
 </c:if>
-<% pageContext.setAttribute("xUaCompatible", SettingsBean.getInstance().getInternetExplorerCompatibility()); %>
+<c:set var="xUaCompatible" value="${functions:getInternetExplorerCompatibility(pageContext.request)}"/>
 <head>
     <c:if test="${not empty xUaCompatible}">
         <meta http-equiv="X-UA-Compatible" content="${xUaCompatible}"/>

@@ -50,6 +50,7 @@ import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -59,6 +60,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.subject.Subject;
+import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -130,6 +132,27 @@ public final class WebUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the value for the X-UA-Compatible tag, based on the configuration and current UI theme.
+     * 
+     * @param request current HTTP request
+     * @return the value for the X-UA-Compatible tag, based on the configuration and current UI theme
+     */
+    public static String getInternetExplorerCompatibility(HttpServletRequest request) {
+        String compatibility = SettingsBean.getInstance().getInternetExplorerCompatibility();
+        if (request != null && "IE=10".equals(compatibility)) {
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                String theme = (String) session.getAttribute(Constants.UI_THEME);
+                if (theme != null && !"default".equals(theme)) {
+                    // force IE11 compatibility for non-default theme
+                    compatibility = "IE=11";
+                }
+            }
+        }
+        return compatibility;
     }
 
     /**
@@ -243,7 +266,6 @@ public final class WebUtils {
             throw new IllegalArgumentException(e);
         }
     }
-
 
     /**
      * Initializes an instance of this class.

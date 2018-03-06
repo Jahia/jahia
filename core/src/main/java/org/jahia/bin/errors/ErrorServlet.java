@@ -44,6 +44,7 @@
 package org.jahia.bin.errors;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -162,7 +163,7 @@ public class ErrorServlet extends HttpServlet {
         }
 
         if (null == path) {
-            String theme = SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.ui.theme");
+            String theme = SettingsBean.getInstance().getPropertiesFile().getProperty(Constants.UI_THEME);
             path = getErrorPagePath(page, theme);
             if (null == path) {
                 path = getErrorPagePath("error.jsp", theme);

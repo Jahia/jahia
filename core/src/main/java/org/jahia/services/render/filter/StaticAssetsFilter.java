@@ -61,6 +61,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -84,6 +85,8 @@ import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import javax.script.*;
+import javax.servlet.http.HttpSession;
+
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -448,7 +451,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         if (isEnforceIECompatibilityMode(renderContext)) {
             int idx = element.getBegin() + element.toString().indexOf(">");
             String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\""
-                    + SettingsBean.getInstance().getInternetExplorerCompatibility() + "\"/>";
+                    + WebUtils.getInternetExplorerCompatibility(renderContext.getRequest()) + "\"/>";
             outputDocument.replace(idx, idx + 1, str);
         }
 

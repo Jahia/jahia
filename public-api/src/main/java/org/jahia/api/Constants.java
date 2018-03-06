@@ -326,6 +326,8 @@ public class Constants {
     public static final String JAHIA_PROJECT_VERSION = "${project.version}"; // this is filtered by Maven.
     public static final String SCM_DUMMY_URI = "scm:dummy:uri";
 
+    public static final String UI_THEME = "jahia.ui.theme";
+
     /**
      * The set of properties that are <strong>NOT</strong> internationalized properties but are still copied to translation nodes.
      *

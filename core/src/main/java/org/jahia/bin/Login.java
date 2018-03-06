@@ -48,6 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.settings.SettingsBean;
@@ -139,7 +140,7 @@ public class Login implements Controller {
                     if (request.getParameter("redirect") != null) {
                         request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));
                     }
-                    String theme = SettingsBean.getInstance().getPropertiesFile().getProperty("jahia.ui.theme");
+                    String theme = SettingsBean.getInstance().getPropertiesFile().getProperty(Constants.UI_THEME);
                     if (theme != null && !"default".equals(theme)) {
                         String pathToCheck = "/errors/" + theme + "/error_401.jsp";
                         if (request.getServletContext().getResource(pathToCheck) != null) {

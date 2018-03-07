@@ -43,6 +43,7 @@
  */
 package org.jahia.bin;
 
+import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,7 +64,11 @@ public class Login implements Controller {
     
     // TODO move this into configuration
     private static final String CONTROLLER_MAPPING = "/login";
-    
+    private static final String LOGIN_ERR_PARAM_NAME = "loginError";
+    private static final Pattern ERR_PARAM_NOT_ALONE_PATTERN = Pattern.compile("\\?" + LOGIN_ERR_PARAM_NAME + "=([^&]+)\\&");
+    private static final Pattern ERR_PARAM_ALONE_PATTERN = Pattern.compile("\\?" + LOGIN_ERR_PARAM_NAME + "=([^&]+)");
+    private static final Pattern ERR_PARAM_END_PATTERN = Pattern.compile("\\&" + LOGIN_ERR_PARAM_NAME + "=([^&]+)");
+
     public static String getMapping() {
         return CONTROLLER_MAPPING;
     }
@@ -74,8 +79,10 @@ public class Login implements Controller {
     }
     
     protected String getRedirectUrl(HttpServletRequest request, HttpServletResponse response) {
-        return response.encodeRedirectURL(StringUtils.defaultIfEmpty(request.getParameter("redirect"),
-                request.getContextPath() + "/welcome"));
+        // Method only called when the login is successful
+        String redirect = StringUtils.defaultIfEmpty(request.getParameter("redirect"),
+                request.getContextPath() + "/welcome");
+        return response.encodeRedirectURL(Login.removeErrorParameter(redirect));
     }
 
     /**
@@ -96,7 +103,7 @@ public class Login implements Controller {
         if (redirectActive) {
             String redirectActiveStr = request.getParameter("redirectActive");
             if (redirectActiveStr != null) {
-                redirectActive = Boolean.parseBoolean(redirectActiveStr);    
+                redirectActive = Boolean.parseBoolean(redirectActiveStr);
             }
         }
 
@@ -169,4 +176,11 @@ public class Login implements Controller {
         return true;
     }
 
+    // Only protected for test purposes
+    protected static String removeErrorParameter(String redirect) {
+        redirect = ERR_PARAM_NOT_ALONE_PATTERN.matcher(redirect).replaceAll("\\?");
+        redirect = ERR_PARAM_ALONE_PATTERN.matcher(redirect).replaceAll("");
+        redirect = ERR_PARAM_END_PATTERN.matcher(redirect).replaceAll("");
+        return redirect;
+    }
 }

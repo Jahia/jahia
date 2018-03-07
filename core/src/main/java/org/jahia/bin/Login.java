@@ -65,6 +65,7 @@ public class Login implements Controller {
     // TODO move this into configuration
     private static final String CONTROLLER_MAPPING = "/login";
     private static final String LOGIN_ERR_PARAM_NAME = "loginError";
+    private static final String FAIL_REDIRECT_PARAM = "failureRedirect";
     private static final Pattern ERR_PARAM_NOT_ALONE_PATTERN = Pattern.compile("\\?" + LOGIN_ERR_PARAM_NAME + "=([^&]+)\\&");
     private static final Pattern ERR_PARAM_ALONE_PATTERN = Pattern.compile("\\?" + LOGIN_ERR_PARAM_NAME + "=([^&]+)");
     private static final Pattern ERR_PARAM_END_PATTERN = Pattern.compile("\\&" + LOGIN_ERR_PARAM_NAME + "=([^&]+)");
@@ -119,16 +120,16 @@ public class Login implements Controller {
             }
         } else {
             if (!restMode) {
-                String failureRedirect = request.getParameter("failureRedirect");
-                if (isAuthorizedRedirect(request, failureRedirect, false)) {
+                if (isAuthorizedRedirect(request, request.getParameter(FAIL_REDIRECT_PARAM), false)) {
                     if ("bad_password".equals(result)) {
                         result = "unknown_user";
                     }
+                    String failureRedirectUrl = sanitizeRedirectURL(request);
                     StringBuilder url = new StringBuilder(64);
-                    url.append(failureRedirect);
-                    if (failureRedirect.indexOf('?') == -1) {
-                        url.append("?loginError=").append(result);
-                    } else if (failureRedirect.indexOf("?loginError=") == -1 && failureRedirect.indexOf("&loginError=") == -1) {
+                    url.append(failureRedirectUrl);
+                    if (failureRedirectUrl.indexOf('?') == -1) {
+                        url.append("?" + LOGIN_ERR_PARAM_NAME + "=").append(result);
+                    } else if (failureRedirectUrl.indexOf("?" + LOGIN_ERR_PARAM_NAME + "=") == -1 && failureRedirectUrl.indexOf("&" + LOGIN_ERR_PARAM_NAME + "=") == -1) {
                         url.append("&loginError=").append(result);
                     }
                     response.sendRedirect(url.toString());
@@ -143,6 +144,31 @@ public class Login implements Controller {
             }
         }
         return null;
+    }
+
+    private String sanitizeRedirectURL(HttpServletRequest request) {
+        String failureRedirectUrl = request.getParameter(FAIL_REDIRECT_PARAM);
+        if (StringUtils.isNotEmpty(failureRedirectUrl) && failureRedirectUrl.indexOf(LOGIN_ERR_PARAM_NAME) > -1) {
+            // remove failure redirect param before we add it again
+            String[] urlParts = StringUtils.split(failureRedirectUrl, "\\?");
+            StringBuilder sanitizedUrlSb = new StringBuilder(urlParts[0]);
+            if(urlParts.length > 1) {
+                String[] urlParams = StringUtils.split(urlParts[1], "&");
+                StringBuilder paramSb = new StringBuilder();
+                for (int i = 0; i < urlParams.length; i++) {
+                    if (urlParams[i].indexOf(LOGIN_ERR_PARAM_NAME) == -1) {
+                        paramSb.append(urlParams[i]);
+                    }
+                }
+              if(StringUtils.isNotEmpty(paramSb.toString())) {
+                    sanitizedUrlSb.append("?").append(paramSb.toString());
+                }
+
+            }
+
+            failureRedirectUrl = sanitizedUrlSb.toString();
+        }
+        return failureRedirectUrl;
     }
 
     protected static boolean isAuthorizedRedirect(HttpServletRequest request, String redirectUrl, boolean authorizeNullRedirect) {

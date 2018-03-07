@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2018 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -29,16 +29,17 @@
  *     along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * 2/ JSEL - Commercial and Supported Versions of the program
- * ===================================================================================
+ *     2/ JSEL - Commercial and Supported Versions of the program
+ *     ===================================================================================
  *
- * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- * Alternatively, commercial and supported versions of the program - also known as Enterprise Distributions - must be
- * used in accordance with the terms and conditions contained in a separate written agreement between you and Jahia
- * Solutions Group SA.
+ *     Alternatively, commercial and supported versions of the program - also known as
+ *     Enterprise Distributions - must be used in accordance with the terms and conditions
+ *     contained in a separate written agreement between you and Jahia Solutions Group SA.
  *
- * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
+ *     If you are unsure which license is appropriate for your use,
+ *     please contact the sales department at sales@jahia.com.
  */
 package org.jahia.bin;
 

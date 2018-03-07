@@ -89,7 +89,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     private static final long serialVersionUID = -74193665963116797L;
 
-    private final static Logger logger = LoggerFactory.getLogger(GWTController.class);
+    final static Logger logger = LoggerFactory.getLogger(GWTController.class);
 
     private String remoteServiceName;
 
@@ -244,7 +244,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
                 logger.debug("Executing method " + rpcRequest.getMethod());
             }
 
-            return RPC.invokeAndEncodeResponse(remoteService, rpcRequest
+            return JahiaRPC.invokeAndEncodeResponse(remoteService, rpcRequest
                     .getMethod(), rpcRequest.getParameters(), rpcRequest
                     .getSerializationPolicy());
         } catch (Exception e) {

@@ -340,6 +340,7 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
                 searchSettingNode = session.getNode("/").addNode("settings", "jnt:globalSettings")
                         .addNode("search-settings", "jnt:searchServerSettings");
             }
+            searchSettingNode.setAclInheritanceBreak(true);
         }
 
         if(selectSearchProvider(cfg.getCurrentProvider())){

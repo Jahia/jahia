@@ -49,6 +49,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -148,7 +149,7 @@ public class JcrSettingsTest extends JahiaTestCase {
         userManager = null;
     }
 
-    private void checkNoAccessViaRest() {
+    private void checkNoAccessViaRest() throws IOException {
         String out = getAsText("/modules/api/jcr/v1/live/en/paths/settings/mail-server", SC_NOT_FOUND);
         assertTrue(StringUtils.contains(out, "\"exception\":\"javax.jcr.PathNotFoundException\""));
 
@@ -174,7 +175,7 @@ public class JcrSettingsTest extends JahiaTestCase {
     }
 
     @Test
-    public void shouldHaveAccessToSettingsWithSystemUserViaRest() throws RepositoryException {
+    public void shouldHaveAccessToSettingsWithSystemUserViaRest() throws RepositoryException, IOException {
         loginRoot();
         try {
             String out = getAsText("/modules/api/jcr/v1/default/en/paths/settings/mail-server");
@@ -210,7 +211,7 @@ public class JcrSettingsTest extends JahiaTestCase {
     }
 
     @Test
-    public void shouldNotHaveAccessToSettingsWithGuestUserViaRest() throws RepositoryException {
+    public void shouldNotHaveAccessToSettingsWithGuestUserViaRest() throws RepositoryException, IOException {
         checkNoAccessViaRest();
     }
 
@@ -227,7 +228,7 @@ public class JcrSettingsTest extends JahiaTestCase {
     }
 
     @Test
-    public void shouldNotHaveAccessToSettingsWithPrivilegedUserViaRest() throws RepositoryException {
+    public void shouldNotHaveAccessToSettingsWithPrivilegedUserViaRest() throws RepositoryException, IOException {
         login(PRIVILEGED_GROUPNAME, "password");
         try {
             checkNoAccessViaRest();

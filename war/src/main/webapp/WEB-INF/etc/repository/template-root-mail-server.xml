@@ -6,7 +6,9 @@
          xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
     <settings jcr:primaryType="jnt:globalSettings">
-        <mail-server j:activated="false" j:notificationLevel="Disabled" jcr:primaryType="jnt:mailServerSettings" />
+        <mail-server j:activated="false" j:notificationLevel="Disabled" jcr:primaryType="jnt:mailServerSettings">
+            <j:acl j:inherit="false" jcr:primaryType="jnt:acl"/>
+        </mail-server>
     </settings>
 
 </content>

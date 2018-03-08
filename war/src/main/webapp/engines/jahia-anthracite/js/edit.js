@@ -1,3 +1,22 @@
+// Polyfills
+
+if (!Element.prototype.matches) {
+    Element.prototype.matches =
+        Element.prototype.matchesSelector ||
+        Element.prototype.mozMatchesSelector ||
+        Element.prototype.msMatchesSelector ||
+        Element.prototype.oMatchesSelector ||
+        Element.prototype.webkitMatchesSelector ||
+        function(s) {
+            var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                i = matches.length;
+            while (--i >= 0 && matches.item(i) !== this) {}
+            return i > -1;
+        };
+}
+
+
+
 (function(exposeAs){
         var Dex = function(selector, nodes){
 
@@ -113,7 +132,7 @@
                                             }
                                             break;
                                         case "complex":
-                                            if(addedNode.matches(modifiedSelector)){
+                                            if(addedNode.matches && addedNode.matches(modifiedSelector)){
                                                 // Loop through all callbacks
                                                 executeCallbacks(groupedCallbacks[_target].queue, mutationRecord.addedNodes, addedNode);
 
@@ -166,7 +185,7 @@
                                                 }
                                                 break;
                                             case "complex":
-                                                if(addedNode.matches(modifiedSelector)){
+                                                if(addedNode.matches && addedNode.matches(modifiedSelector)){
                                                     // Loop through all callbacks
                                                     executeCallbacks(callbacks[_target].queue, addedNode, mutationRecord.addedNodes);
 
@@ -271,7 +290,7 @@
                                                 }
                                                 break;
                                             case "complex":
-                                                if(removedNode.matches(modifiedSelector)){
+                                                if(removedNode.matches && removedNode.matches(modifiedSelector)){
                                                     // Loop through all callbacks
                                                     executeCallbacks(callbacks[_target].queue, removedNode);
 
@@ -330,7 +349,7 @@
                                         }
                                         break;
                                     case "complex":
-                                        if(modifiedNodeAttribute.matches(modifiedSelector)){
+                                        if(modifiedNodeAttribute.matches && modifiedNodeAttribute.matches(modifiedSelector)){
                                             // Loop through all callbacks
                                             if(mutationRecord.target.attributes[mutationRecord.attributeName]){ // Its a live list, so check it hasnt been removed
                                                 executeAttributecallbacks(callbacks[_target].queue, modifiedNodeAttribute, mutationRecord.attributeName, mutationRecord.target.attributes[mutationRecord.attributeName].value);
@@ -500,11 +519,13 @@
             },
 
 			prepend: function(node){
-
-                var n;
+				var n,
+					parentNode;
 
                 for(n = 0; n < this.nodes.length; n++){
-                    this.nodes[n].prepend(node);
+					parentNode = this.nodes[n];
+
+					parentNode.insertBefore(node, parentNode.children[0]);
                 }
 
                 return this;
@@ -3290,7 +3311,7 @@
                         switchHolder.appendChild(switchRail);
                         switchHolder.appendChild(switchShuttle);
 
-                        this.prepend(switchHolder);
+						this.insertBefore(switchHolder, this.children[0]);
 
                     }
 
@@ -4238,8 +4259,7 @@
 
 						// Page Title in Edit Made
                         if(pageTitle){
-                            DexV2.class("x-current-page-path").setAttribute("data-PAGE-NAME",pageTitle);
-
+							DexV2.class("x-current-page-path").setAttribute("data-PAGE-NAME",pageTitle);
                         }
 	                    DexV2.class("node-path-text-inner").setHTML(app.iframe.data.displayName);
 

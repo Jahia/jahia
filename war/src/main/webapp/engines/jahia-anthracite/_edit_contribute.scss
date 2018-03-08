@@ -1100,7 +1100,7 @@ body[data-indigo-app="contribute"] {
 
 
     &::before {
-        content: attr(data-page-name);
+        content: attr(data-PAGE-NAME);
 
         @extend %document_title !optional;
 

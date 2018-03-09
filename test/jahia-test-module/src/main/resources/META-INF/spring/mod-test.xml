@@ -42,7 +42,7 @@
                 <value>org.jahia.test.services.content.interceptor.HtmlFilteringInterceptorTest</value>
                 <value>org.jahia.test.services.content.interceptor.URLInterceptorTest</value>
                 <value>org.jahia.test.services.content.nodetypes.NodePropertyDefaultValueTest</value>
-                <value>org.jahia.test.services.content.protection.JcrSettingsTest</value>
+                <value>org.jahia.test.services.content.protection.JcrSettingsAccessTest</value>
                 <value>org.jahia.test.services.htmlvalidator.WAIValidatorTest</value>
                 <value>org.jahia.test.services.i18n.ResourceBundleTest</value>
                 <value>org.jahia.test.services.importexport.ImportExportTest</value>
@@ -296,18 +296,18 @@
                 <value>testResource(org.apache.jackrabbit.test.api.nodetype.PredefinedNodeTypeTest)</value>
                 <value>testMixETag(org.apache.jackrabbit.test.api.nodetype.PredefinedNodeTypeTest)</value>
                 <value>testValueConstraintNotSatisfied(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyBinaryTest)</value>
-                <value>testValueConstraintNotSatisfiedMultiple(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyBinaryTest)</value>                
+                <value>testValueConstraintNotSatisfiedMultiple(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyBinaryTest)</value>
                 <value>testConversions(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyBooleanTest)</value>
                 <value>testConversions(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyDateTest)</value>
                 <value>testConversions(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyDoubleTest)</value>
                 <value>testConversions(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyLongTest)</value>
                 <value>testConversions(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyPathTest)</value>
                 <value>testValueConstraintNotSatisfied(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyNameTest)</value>
-                <value>testValueConstraintNotSatisfiedMultiple(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyNameTest)</value>                
+                <value>testValueConstraintNotSatisfiedMultiple(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyNameTest)</value>
                 <value>testConversions(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyNameTest)</value>
                 <value>testConversionsMultiple(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyNameTest)</value>
                 <value>testValueConstraintNotSatisfied(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyPathTest)</value>
-                <value>testValueConstraintNotSatisfiedMultiple(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyPathTest)</value>                
+                <value>testValueConstraintNotSatisfiedMultiple(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyPathTest)</value>
                 <value>testConversionsMultiple(org.apache.jackrabbit.test.api.nodetype.CanSetPropertyPathTest)</value>
                 <value>testResidualAndLegalType(org.apache.jackrabbit.test.api.nodetype.CanAddChildNodeCallWithNodeTypeTest)</value>
                 <value>testResidualWithDefault(org.apache.jackrabbit.test.api.nodetype.CanAddChildNodeCallWithoutNodeTypeTest)</value>
@@ -396,7 +396,7 @@
                 <value>testInitialNodePredecessorsJcr2(org.apache.jackrabbit.test.api.version.VersionGraphTest)</value>
                 <!--Test needs to be removed or rewritten-->
                 <value>testPublishUnpublishPageWithContent(org.jahia.test.services.publication.PublicationTest)</value>
-                <value>testCreateMultipleTags(org.jahia.test.services.logging.ServiceLoggingTest)</value>                
+                <value>testCreateMultipleTags(org.jahia.test.services.logging.ServiceLoggingTest)</value>
                 <value>testUniqueValue(org.jahia.test.services.i18n.ResourceBundleTest)</value>
             </list>
         </property>
@@ -427,5 +427,5 @@
     <bean class="org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter">
         <property name="priority" value="-99"/>
     </bean>
-    
+
 </beans>

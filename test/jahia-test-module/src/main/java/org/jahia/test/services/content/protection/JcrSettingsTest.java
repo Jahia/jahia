@@ -48,6 +48,7 @@ import static org.jahia.services.usermanager.JahiaGroupManagerService.PRIVILEGED
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -104,9 +105,9 @@ public class JcrSettingsTest extends JahiaTestCase {
                         session.itemExists(path));
                 try {
                     session.getItem(path);
-                } catch (Exception e) {
-                    assertTrue(path + " should not be accessible with " + user + " session in " + workspace,
-                            e instanceof PathNotFoundException);
+                    fail(path + " should not be accessible with " + user + " session in " + workspace);
+                } catch (PathNotFoundException e) {
+                    // Expected.
                 }
             }
         }
@@ -154,16 +155,14 @@ public class JcrSettingsTest extends JahiaTestCase {
     }
 
     private void checkNoAccessViaRest() throws IOException {
-        String out = getAsText("/modules/api/jcr/v1/live/en/paths/settings/mail-server", SC_NOT_FOUND);
-        assertTrue(StringUtils.contains(out, "\"exception\":\"javax.jcr.PathNotFoundException\""));
+        checkNoAccessViaRest("/modules/api/jcr/v1/live/en/paths/settings/mail-server");
+        checkNoAccessViaRest("/modules/api/jcr/v1/default/en/paths/settings/mail-server");
+        checkNoAccessViaRest("/modules/api/jcr/v1/default/en/paths/settings/search-settings");
+        checkNoAccessViaRest("/modules/api/jcr/v1/default/en/paths/settings/forgesSettings");
+    }
 
-        out = getAsText("/modules/api/jcr/v1/default/en/paths/settings/mail-server", SC_NOT_FOUND);
-        assertTrue(StringUtils.contains(out, "\"exception\":\"javax.jcr.PathNotFoundException\""));
-
-        out = getAsText("/modules/api/jcr/v1/default/en/paths/settings/search-settings", SC_NOT_FOUND);
-        assertTrue(StringUtils.contains(out, "\"exception\":\"javax.jcr.PathNotFoundException\""));
-
-        out = getAsText("/modules/api/jcr/v1/default/en/paths/settings/forgesSettings", SC_NOT_FOUND);
+    private void checkNoAccessViaRest(String url) throws IOException {
+        String out = getAsText(url, SC_NOT_FOUND);
         assertTrue(StringUtils.contains(out, "\"exception\":\"javax.jcr.PathNotFoundException\""));
     }
 

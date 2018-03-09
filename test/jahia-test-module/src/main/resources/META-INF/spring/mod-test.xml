@@ -43,7 +43,7 @@
                 <value>org.jahia.test.services.content.interceptor.HtmlFilteringInterceptorTest</value>
                 <value>org.jahia.test.services.content.interceptor.URLInterceptorTest</value>
                 <value>org.jahia.test.services.content.nodetypes.NodePropertyDefaultValueTest</value>
-                <value>org.jahia.test.services.content.protection.JcrSettingsTest</value>
+                <value>org.jahia.test.services.content.protection.JcrSettingsAccessTest</value>
                 <value>org.jahia.test.services.htmlvalidator.WAIValidatorTest</value>
                 <value>org.jahia.test.services.i18n.ResourceBundleTest</value>
                 <value>org.jahia.test.services.importexport.ImportExportTest</value>
@@ -443,4 +443,5 @@
     </bean>
 
     <bean id="ReadOnlyModeCapablePlaceholder" class="org.jahia.test.services.readonly.ReadOnlyModeCapablePlaceholder"/>
+
 </beans>

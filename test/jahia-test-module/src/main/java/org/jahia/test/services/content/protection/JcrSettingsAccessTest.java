@@ -75,7 +75,7 @@ import org.junit.Test;
  *
  * @author Sergiy Shyrkov
  */
-public class JcrSettingsTest extends JahiaTestCase {
+public class JcrSettingsAccessTest extends JahiaTestCase {
 
     private static final String[] JCR_PATHS_TO_TEST = new String[] {
             "/settings/mail-server",

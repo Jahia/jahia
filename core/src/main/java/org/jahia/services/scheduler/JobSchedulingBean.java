@@ -43,25 +43,17 @@
  */
 package org.jahia.services.scheduler;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ComparatorUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.settings.SettingsBean;
-import org.quartz.CronTrigger;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+
+import java.util.*;
 
 /**
  * Convenient Spring bean to schedule background RAM as well as persistent jobs.
@@ -89,7 +81,8 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
     private List<Trigger> triggers = new LinkedList<Trigger>();
 
    public void afterPropertiesSet() throws Exception {
-        if (disabled) {
+        // avoid touching job if it's a persisted job and we are not on processing node
+        if (disabled || (!isRamJob && !settingsBean.isProcessingServer())) {
             return;
         }
         if (overwriteExisting == null) {
@@ -114,6 +107,11 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
 
     @Override
     public void destroy() throws Exception {
+        // avoid touching job if it's a persisted job and we are not on processing node
+        if (!isRamJob && !settingsBean.isProcessingServer()) {
+            return;
+        }
+
         if (JahiaContextLoaderListener.isRunning()) {
             if (isRamJob) {
                 deleteJob();

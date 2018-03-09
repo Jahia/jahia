@@ -70,12 +70,10 @@ import org.junit.Test;
 
 /**
  * Test case for protecting access to JCR settings node.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JcrSettingsTest extends JahiaTestCase {
-
-    private static JahiaGroupManagerService groupManager;
 
     private static final String[] JCR_PATHS_TO_TEST = new String[] { "/settings/mail-server",
             "/settings/mail-server/j:activated", "/settings/search-settings", "/settings/search-settings/j:provider",
@@ -83,6 +81,7 @@ public class JcrSettingsTest extends JahiaTestCase {
 
     private static final String PRIVILEGED_USER_NAME = "jcr-settings-test-privileged-user";
 
+    private static JahiaGroupManagerService groupManager;
     private static JahiaUserManagerService userManager;
 
     private static void checkExistence(JCRSessionWrapper session, boolean expectExists, String... paths)
@@ -121,6 +120,7 @@ public class JcrSettingsTest extends JahiaTestCase {
 
                 groupManager.lookupGroup(null, PRIVILEGED_GROUPNAME, session).addMember(user);
                 session.save();
+
                 return null;
             }
         });
@@ -198,7 +198,6 @@ public class JcrSettingsTest extends JahiaTestCase {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 checkExistence(session, false, JCR_PATHS_TO_TEST);
-
                 return null;
             }
 

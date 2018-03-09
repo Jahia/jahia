@@ -43,6 +43,9 @@
  */
 package org.jahia.utils;
 
+import static org.jahia.api.Constants.SESSION_USER;
+import static org.jahia.api.Constants.UI_THEME;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -64,6 +67,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.springframework.core.io.Resource;
 
@@ -143,13 +147,10 @@ public final class WebUtils {
     public static String getInternetExplorerCompatibility(HttpServletRequest request) {
         String compatibility = SettingsBean.getInstance().getInternetExplorerCompatibility();
         if (request != null && "IE=10".equals(compatibility)) {
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-                String theme = (String) session.getAttribute(Constants.UI_THEME);
-                if (theme != null && !"default".equals(theme)) {
-                    // force IE11 compatibility for non-default theme
-                    compatibility = "IE=11";
-                }
+            String theme = getUITheme(request);
+            if (theme != null && !"default".equals(theme)) {
+                // force IE11 compatibility for non-default theme
+                compatibility = "IE=11";
             }
         }
         return compatibility;
@@ -193,6 +194,32 @@ public final class WebUtils {
         }
 
         return content;
+    }
+
+    /**
+     * Returns the value for of the currently active UI theme.
+     * 
+     * @param request current HTTP request
+     * @return the value for of the currently active UI theme or <code>null</code> if the default theme is used
+     */
+    public static String getUITheme(HttpServletRequest request) {
+        String theme = request.getParameter(UI_THEME);
+        if (theme == null) {
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                theme = (String) session.getAttribute(Constants.UI_THEME);
+                if (theme == null) {
+                    JahiaUser jahiaUser = (JahiaUser) session.getAttribute(SESSION_USER);
+                    if (jahiaUser != null) {
+                        theme = jahiaUser.getProperty(UI_THEME);
+                        if (theme == null) {
+                            theme = SettingsBean.getInstance().getPropertiesFile().getProperty(UI_THEME);
+                        }
+                    }
+                }
+            }
+        }
+        return theme;
     }
 
     /**

@@ -46,6 +46,7 @@ package org.jahia.services.render.filter;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.render.AjaxRenderException;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.TemplateNotFoundException;
@@ -63,16 +64,19 @@ import javax.jcr.Value;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 /**
- * Performs accessibility check for the content: permissions, required mode etc.
+ * Performs accessibility check for the content: permissions, required mode, ajax rendering etc.
  *
  * @author Thomas Draier
  */
 public class TemplatePermissionCheckFilter extends AbstractFilter {
 
     private JahiaUserManagerService userManagerService;
+
+    private boolean allowAjaxRendering;
 
     private static final Pattern TEMPLATE_PATH_MATCHER = Pattern.compile("^\\/modules\\/[^/]*\\/[^/]*\\/templates\\/.*");
     private static final Pattern SETTINGS_PATH_MATCHER = Pattern.compile("^\\/modules\\/[^/]*\\/[^/]*\\/templates\\/[^/]*-settings-base\\/.*");
@@ -129,6 +133,9 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         } else {
             throw new TemplateNotFoundException("Unable to resolve script: "+resource.getResolvedTemplate());
         }
+
+        // check ajax rendering allowed or not
+        checkAjaxRendering(renderContext, resource, script);
 
         String nodePath = node.getPath();
         // lookup for required permission on parents for nodes under templates
@@ -245,6 +252,19 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
         return invert ? "" : null;
     }
 
+    private void checkAjaxRendering(RenderContext context, Resource resource, Script script) throws AjaxRenderException {
+        if (context.isAjaxRequest()) {
+            Properties properties = new Properties();
+            properties.putAll(script.getView().getDefaultProperties());
+            properties.putAll(script.getView().getProperties());
+
+            String scriptAllowedAjaxRendering = properties.getProperty("allowAjaxRendering");
+            if ((StringUtils.isNotEmpty(scriptAllowedAjaxRendering) ? !"true".equals(scriptAllowedAjaxRendering) : !allowAjaxRendering)) {
+                throw new AjaxRenderException("Ajax rendering not allowed for resource: " + resource.getPath());
+            }
+        }
+    }
+
     private boolean hasPermission(JCRNodeWrapper node, String perm) {
         if (perm.indexOf('|') == -1) {
             return node.hasPermission(perm);
@@ -294,5 +314,9 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
         this.userManagerService = userManagerService;
+    }
+
+    public void setAllowAjaxRendering(boolean allowAjaxRendering) {
+        this.allowAjaxRendering = allowAjaxRendering;
     }
 }

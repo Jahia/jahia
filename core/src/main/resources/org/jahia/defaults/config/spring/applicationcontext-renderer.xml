@@ -235,6 +235,7 @@
         <property name="priority" value="21"/>
         <property name="description" value="Handles permissions set on the template"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="allowAjaxRendering" value="${jahia.rendering.allowAjaxRendering:true}"/>
     </bean>
 
     <bean id="forceUILocaleFilter" class="org.jahia.services.render.filter.ForceUILocaleFilter">

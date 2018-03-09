@@ -68,6 +68,7 @@ import org.jahia.exceptions.JahiaServiceUnavailableException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.render.AjaxRenderException;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -123,6 +124,8 @@ public class DefaultErrorHandler implements ErrorHandler {
         	code = SC_NOT_FOUND;
         } else if (e instanceof TemplateNotFoundException) {
         	code = SC_NOT_FOUND;
+        } else if (e instanceof AjaxRenderException) {
+            code = SC_NOT_FOUND;
         } else if (e instanceof AccessDeniedException) {
             if (JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())) {
                 code = SC_UNAUTHORIZED;

@@ -75,9 +75,13 @@ import org.junit.Test;
  */
 public class JcrSettingsTest extends JahiaTestCase {
 
-    private static final String[] JCR_PATHS_TO_TEST = new String[] { "/settings/mail-server",
-            "/settings/mail-server/j:activated", "/settings/search-settings", "/settings/search-settings/j:provider",
-            "/settings/forgesSettings" };
+    private static final String[] JCR_PATHS_TO_TEST = new String[] {
+            "/settings/mail-server",
+            "/settings/mail-server/j:activated",
+            "/settings/search-settings",
+            "/settings/search-settings/j:provider",
+            "/settings/forgesSettings"
+    };
 
     private static final String PRIVILEGED_USER_NAME = "jcr-settings-test-privileged-user";
 

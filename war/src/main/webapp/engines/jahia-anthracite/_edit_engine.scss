@@ -3796,6 +3796,17 @@ body[data-indigo-add-visibility-condition="new"] {
 	z-index: 999999 !important;
 }
 
+// Input Error icon
+
+img.invalid-icon {
+	background: _theme-color(status, error) !important;
+	height: 29px !important;
+	width: 4px !important;
+	border-radius: 2px;
+	left: -10px !important;
+	top: 0 !important;
+}
+
 
 // Input Error Tooltip
 

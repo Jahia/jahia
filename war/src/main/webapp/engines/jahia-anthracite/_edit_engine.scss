@@ -2346,21 +2346,30 @@ div.engine-window {
 		}
 
 		.x-grid3-row {
-			margin-bottom: 3px;
+			margin-bottom: 12px;
+			border-bottom: 1px dashed _theme-color(secondary, b);
 		}
 
-		.x-grid3-scroller > .x-grid3-body > .x-grid3-row.x-grid3-row {
+		.x-grid3-scroller > .x-grid3-body {
 			background: _property($FIELDSET--BG, $EDIT-ENGINE) !important;
 			border: 1px solid _theme-color(secondary, b) !important;
-			padding: 52px 22px 46px 30px;
+			padding: 22px 22px 30px 30px;
 			box-sizing: border-box;
+			margin-top: -40px;
+			position: fixed;
+			width: calc(100% - 462px);
+			height: auto !important;
+			max-height: calc(100% - 180px);
+			overflow: scroll;
 
 			&:before {
 				content: "Compare versions";
-		    text-transform: uppercase;
-		    position: absolute;
-		    top: 18px;
-		    color: _theme-color(primary);
+				text-transform: uppercase;
+				color: _theme-color(primary);
+			}
+
+			> .x-grid3-row.x-grid3-row:first-child {
+				margin-top: 20px;
 			}
 
 		}

@@ -213,6 +213,7 @@ class JahiaPasswordPolicyManager {
                     JCRNodeWrapper root = session.getRootNode();
                     session.checkout(root);
                     policyNode = root.addNode(POLICY_NODENAME, POLICY_NODETYPE);
+                    policyNode.setAclInheritanceBreak(true);
                 }
                 policyNode.setProperty(POLICY_PROPERTY, getSerializer().toXML(policy));
 

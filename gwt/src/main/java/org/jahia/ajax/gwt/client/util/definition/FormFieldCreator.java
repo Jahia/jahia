@@ -155,7 +155,16 @@ public class FormFieldCreator {
                                 ((NumberField) field).setAllowDecimals(true);
                                 break;
                             default:
-                                final TextField<String> f = new TextField<String>();
+                                final TextField<String> f = new TextField<String>() {
+                                    @Override
+                                    public void markInvalid(String msg) {
+                                        super.markInvalid(msg);
+                                        if (errorIcon != null) {
+                                            errorIcon.addStyleName("invalid-icon");
+                                        }
+                                    }
+                                };
+
                                 f.addListener(Events.Change, new Listener<ComponentEvent>() {
                                     public void handleEvent(ComponentEvent event) {
                                         String s = f.getValue();

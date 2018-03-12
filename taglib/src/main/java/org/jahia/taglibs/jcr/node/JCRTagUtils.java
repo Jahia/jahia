@@ -337,7 +337,11 @@ public class JCRTagUtils {
     public static String escapeIllegalJcrChars(String inputString) {
         return Text.escapeIllegalJcrChars(inputString);
     }
-    
+
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public static List<ExtendedNodeType> getContributeTypes(JCRNodeWrapper node, JCRNodeWrapper areaNode, Value[] typelistValues) throws Exception {
         List<ExtendedNodeType> types = new ArrayList<ExtendedNodeType>();
 

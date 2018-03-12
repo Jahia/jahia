@@ -50,6 +50,7 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
@@ -133,6 +134,7 @@ public class VersioningTabItem extends EditEngineTabItem {
                                 ButtonBar buttonBar = new ButtonBar();
                                 Button button = new Button(Messages.get("label.compare.with.staging.engine", "Compare With Staging"));
                                 button.addStyleName("button-compare-staging");
+                                button.setToolTip(Messages.get("label.compare.with.staging.engine", "Compare With Staging"));
                                 final GWTJahiaNodeVersion version = (GWTJahiaNodeVersion) model;
                                 button.addSelectionListener(new SelectionListener<ButtonEvent>() {
                                     @Override

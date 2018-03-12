@@ -76,8 +76,6 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
 
     private JahiaUserManagerService userManagerService;
 
-    private boolean allowAjaxRendering;
-
     private static final Pattern TEMPLATE_PATH_MATCHER = Pattern.compile("^\\/modules\\/[^/]*\\/[^/]*\\/templates\\/.*");
     private static final Pattern SETTINGS_PATH_MATCHER = Pattern.compile("^\\/modules\\/[^/]*\\/[^/]*\\/templates\\/[^/]*-settings-base\\/.*");
 
@@ -259,7 +257,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             properties.putAll(script.getView().getProperties());
 
             String scriptAllowedAjaxRendering = properties.getProperty("allowAjaxRendering");
-            if ((StringUtils.isNotEmpty(scriptAllowedAjaxRendering) ? !"true".equals(scriptAllowedAjaxRendering) : !allowAjaxRendering)) {
+            if (StringUtils.isNotEmpty(scriptAllowedAjaxRendering) && !"true".equals(scriptAllowedAjaxRendering)) {
                 throw new AjaxRenderException("Ajax rendering not allowed for resource: " + resource.getPath());
             }
         }
@@ -314,9 +312,5 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
         this.userManagerService = userManagerService;
-    }
-
-    public void setAllowAjaxRendering(boolean allowAjaxRendering) {
-        this.allowAjaxRendering = allowAjaxRendering;
     }
 }

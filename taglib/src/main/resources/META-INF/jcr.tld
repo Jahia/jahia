@@ -731,7 +731,7 @@
         <function-signature>java.util.Map getContributeTypesDisplay(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.content.JCRNodeWrapper, javax.jcr.Value[], java.util.Locale)</function-signature>
     </function>
     <function>
-        <description>get contribute types</description>
+        <description>DEPRECATED: Not used anymore</description>
         <name>getContributeTypes</name>
         <function-class>org.jahia.taglibs.jcr.node.JCRTagUtils</function-class>
         <function-signature>java.util.List getContributeTypes(org.jahia.services.content.JCRNodeWrapper, org.jahia.services.content.JCRNodeWrapper, javax.jcr.Value[])</function-signature>

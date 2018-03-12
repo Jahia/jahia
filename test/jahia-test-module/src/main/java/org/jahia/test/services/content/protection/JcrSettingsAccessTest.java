@@ -63,6 +63,7 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.JahiaTestCase;
@@ -82,7 +83,9 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
             "/settings/mail-server/j:activated",
             "/settings/search-settings",
             "/settings/search-settings/j:provider",
-            "/settings/forgesSettings"
+            "/settings/forgesSettings",
+            "/passwordPolicy",
+            "/passwordPolicy/j:policy"
     };
 
     private static final String PRIVILEGED_USER_NAME = "jcr-settings-test-privileged-user";
@@ -126,6 +129,9 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
 
                 groupManager.lookupGroup(null, PRIVILEGED_GROUPNAME, session).addMember(user);
                 session.save();
+                
+                // this call initializes the password policy node, if it does not yet present in JCR
+                JahiaPasswordPolicyService.getInstance().getDefaultPolicy();
 
                 return null;
             }
@@ -159,6 +165,8 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
         checkNoAccessViaRest("/modules/api/jcr/v1/default/en/paths/settings/mail-server");
         checkNoAccessViaRest("/modules/api/jcr/v1/default/en/paths/settings/search-settings");
         checkNoAccessViaRest("/modules/api/jcr/v1/default/en/paths/settings/forgesSettings");
+
+        checkNoAccessViaRest("/modules/api/jcr/v1/default/en/paths/passwordPolicy");
     }
 
     private void checkNoAccessViaRest(String url) throws IOException {
@@ -191,6 +199,9 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
 
             out = getAsText("/modules/api/jcr/v1/default/en/paths/settings/forgesSettings");
             assertTrue(StringUtils.contains(out, "\"type\":\"jnt:forgesServerSettings\""));
+            
+            out = getAsText("/modules/api/jcr/v1/default/en/paths/passwordPolicy");
+            assertTrue(StringUtils.contains(out, "\"type\":\"jnt:passwordPolicy\""));
         } finally {
             logout();
         }

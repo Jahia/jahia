@@ -121,7 +121,8 @@ public class ConflictResolver {
                 for (Iterator iterator = sourceUuids.keySet().iterator(); iterator.hasNext(); ) {
                     String key = (String) iterator.next();
                     if (targetUuids.containsKey(key) && !targetUuids.get(key).equals(sourceUuids.get(key))) {
-                        diffs.add(new ChildRenamedDiff(key, addPath(basePath, (String) targetUuids.get(key)), addPath(basePath, (String) sourceUuids.get(key))));
+                        diffs.add(new ChildRenamedDiff(key, addPath(basePath, (String) targetUuids.get(key)),
+                                addPath(basePath, (String) sourceUuids.get(key))));
                     }
                 }
             }
@@ -366,11 +367,13 @@ public class ConflictResolver {
 
             ChildRenamedDiff that = (ChildRenamedDiff) o;
 
-            if (!newName.equals(that.newName)) return false;
-            if (!oldName.equals(that.oldName)) return false;
-            if (!uuid.equals(that.uuid)) return false;
-
-            return true;
+            if (!newName.equals(that.newName)) {
+                return false;
+            }
+            if (!oldName.equals(that.oldName)) {
+                return false;
+            }
+            return uuid.equals(that.uuid);
         }
 
         @Override
@@ -411,7 +414,8 @@ public class ConflictResolver {
                 logger.warn("Ignoring exception while handling child added conflict during publication for node: " + sourceNode.getPath() + "/" + newName, e);
             }
             if (!shouldPublish || targetNode.hasNode(newName)) {
-                if (targetNode.hasNode(newName) && (nextSibling == null || targetNode.hasNode(nextSibling)) && targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
+                if (targetNode.hasNode(newName) && (nextSibling == null || targetNode.hasNode(nextSibling))
+                        && targetNode.getPrimaryNodeType().hasOrderableChildNodes()) {
                     if (!newName.contains("/") && (nextSibling == null || !nextSibling.contains("/"))) {
                         // todo reorder non-versionable sub nodes
                         targetNode.orderBefore(newName, nextSibling);
@@ -421,12 +425,13 @@ public class ConflictResolver {
                 return true;
             }
 
-            JCRNodeWrapper targetNode = getParentTarget(ConflictResolver.this.targetNode, newName);
-            JCRNodeWrapper sourceNode = getParentTarget(ConflictResolver.this.sourceNode, newName);
+            JCRNodeWrapper parentTargetNode = getParentTarget(ConflictResolver.this.targetNode, newName);
+            JCRNodeWrapper parentSourceNode = getParentTarget(ConflictResolver.this.sourceNode, newName);
             String newNameParsed = getTargetName(newName);
 
-            targetNode.getSession().save();
-            JCRPublicationService.getInstance().doClone(sourceNode.getNode(newNameParsed), sourceNode.getSession(), targetNode.getSession(), toCheckpoint);
+            parentTargetNode.getSession().save();
+            JCRPublicationService.getInstance().doClone(parentSourceNode.getNode(newNameParsed), parentSourceNode.getSession(),
+                    parentTargetNode.getSession(), toCheckpoint);
             return true;
         }
 
@@ -437,11 +442,13 @@ public class ConflictResolver {
 
             ChildAddedDiff that = (ChildAddedDiff) o;
 
-            if (newName != null ? !newName.equals(that.newName) : that.newName != null) return false;
-            if (nextSibling != null ? !nextSibling.equals(that.nextSibling) : that.nextSibling != null) return false;
-            if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
-
-            return true;
+            if (newName != null ? !newName.equals(that.newName) : that.newName != null) {
+                return false;
+            }
+            if (nextSibling != null ? !nextSibling.equals(that.nextSibling) : that.nextSibling != null) {
+                return false;
+            }
+            return !(uuid != null ? !uuid.equals(that.uuid) : that.uuid != null);
         }
 
         @Override
@@ -477,7 +484,8 @@ public class ConflictResolver {
             if (targetNode.hasNode(oldName)) {
                 final JCRNodeWrapper node = targetNode.getNode(oldName);
                 if (node.getIdentifier().equals(identifier)) {
-                    JCRPublicationService.getInstance().addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(System.currentTimeMillis()));
+                    JCRPublicationService.getInstance().addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_"
+                            + JCRVersionService.DATE_FORMAT.print(System.currentTimeMillis()));
                     node.remove();
                 }
             }
@@ -491,10 +499,10 @@ public class ConflictResolver {
 
             ChildRemovedDiff that = (ChildRemovedDiff) o;
 
-            if (!oldName.equals(that.oldName)) return false;
-            if (!uuid.equals(that.uuid)) return false;
-
-            return true;
+            if (!oldName.equals(that.oldName)) {
+                return false;
+            }
+            return uuid.equals(that.uuid);
         }
 
         @Override
@@ -569,11 +577,10 @@ public class ConflictResolver {
 
             ChildNodeReorderedDiff that = (ChildNodeReorderedDiff) o;
 
-            if (orderBeforeUuid != null ? !orderBeforeUuid.equals(that.orderBeforeUuid) : that.orderBeforeUuid != null)
+            if (orderBeforeUuid != null ? !orderBeforeUuid.equals(that.orderBeforeUuid) : that.orderBeforeUuid != null) {
                 return false;
-            if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) return false;
-
-            return true;
+            }
+            return !(uuid != null ? !uuid.equals(that.uuid) : that.uuid != null);
         }
 
         @Override
@@ -616,7 +623,8 @@ public class ConflictResolver {
 
         @Override
         public boolean apply() throws RepositoryException {
-            JCRNodeWrapper targetNode = getParentTarget(ConflictResolver.this.targetNode, propertyPath);
+
+            JCRNodeWrapper parentTargetNode = getParentTarget(ConflictResolver.this.targetNode, propertyPath);
             String propertyName = getTargetName(propertyPath);
 
             boolean isMixin = propertyName.equals(Constants.JCR_MIXINTYPES);
@@ -628,16 +636,16 @@ public class ConflictResolver {
                 }); 
 
                 typesToRemove.remove("jmix:liveProperties");
-                if (targetNode.hasProperty("j:liveProperties")) {
-                    for (JCRValueWrapper value : targetNode.getProperty("j:liveProperties").getValues()) {
+                if (parentTargetNode.hasProperty("j:liveProperties")) {
+                    for (JCRValueWrapper value : parentTargetNode.getProperty("j:liveProperties").getValues()) {
                         if (value.getString().startsWith(Constants.JCR_MIXINTYPES + "=")) {
                             typesToRemove.remove(value.getString().substring((Constants.JCR_MIXINTYPES + "=").length()));
                         }
                     }
                 }
 
-                if (!targetNode.isCheckedOut()) {
-                    targetNode.checkout();
+                if (!parentTargetNode.isCheckedOut()) {
+                    parentTargetNode.checkout();
                 }
 
                 List<String> typesToAdd = new ArrayList<>();
@@ -651,34 +659,34 @@ public class ConflictResolver {
                     }
                 }
                 for (String type : typesToRemove) {
-                    targetNode.removeMixin(type);
+                    parentTargetNode.removeMixin(type);
                 }
                 for (String type : typesToAdd) {
-                    targetNode.addMixin(type);
+                    parentTargetNode.addMixin(type);
                 }
             } else {
-                if (targetNode.hasProperty("j:liveProperties")) {
+                if (parentTargetNode.hasProperty("j:liveProperties")) {
                     if (propertyName.equals("j:liveProperties")) {
                         return true;
                     }
 
-                    for (JCRValueWrapper value : targetNode.getProperty("j:liveProperties").getValues()) {
+                    for (JCRValueWrapper value : parentTargetNode.getProperty("j:liveProperties").getValues()) {
                         if (propertyName.equals(value.getString())) {
                             return true;
                         }
                     }
                 }
-                if (!targetNode.isCheckedOut()) {
-                    targetNode.checkout();
+                if (!parentTargetNode.isCheckedOut()) {
+                    parentTargetNode.checkout();
                 }
 
                 if (newValue != null) {
-                    targetNode.getRealNode().setProperty(propertyName, newValue);
+                    parentTargetNode.getRealNode().setProperty(propertyName, newValue);
                 } else if (newValues != null) {
-                    targetNode.getRealNode().setProperty(propertyName, newValues);
+                    parentTargetNode.getRealNode().setProperty(propertyName, newValues);
                 } else {
-                    if (targetNode.hasProperty(propertyName)) {
-                        targetNode.getProperty(propertyName).remove();
+                    if (parentTargetNode.hasProperty(propertyName)) {
+                        parentTargetNode.getProperty(propertyName).remove();
                     }
                 }
             }
@@ -693,16 +701,19 @@ public class ConflictResolver {
             PropertyChangedDiff that = (PropertyChangedDiff) o;
 
             if (newValue != null ? !newValue.equals(that.newValue) : that.newValue != null) return false;
-            if (propertyPath != null ? !propertyPath.equals(that.propertyPath) : that.propertyPath != null)
+            if (propertyPath != null ? !propertyPath.equals(that.propertyPath) : that.propertyPath != null) {
                 return false;
-
-            return true;
+            }
+            if (newValues != null ? !Arrays.equals(newValues, that.newValues) : that.newValues != null) {
+                return false;
+            }
+            return !(propertyPath != null ? !propertyPath.equals(that.propertyPath) : that.propertyPath != null);
         }
 
         @Override
         public int hashCode() {
             int result = propertyPath != null ? propertyPath.hashCode() : 0;
-            result = 31 * result + (newValue != null ? newValue.hashCode() : 0);
+            result = 31 * result + (newValue != null ? newValue.hashCode() : 0) + (newValues != null ? Arrays.hashCode(newValues) : 0);
             return result;
         }
 
@@ -710,7 +721,7 @@ public class ConflictResolver {
         public String toString() {
             return "PropertyChangedDiff{" +
                     "propertyPath='" + propertyPath + '\'' +
-                    ", newValue=" + newValue +
+                    (newValues != null ? ", newValues=" + Arrays.toString(newValues) : ", newValue=" + newValue) +
                     '}';
         }
     }

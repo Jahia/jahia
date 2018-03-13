@@ -724,7 +724,7 @@
             <bean id="sitemanagerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
-                        <ref bean="Toolbar.Item.EditContent"/>
+                        <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                         <ref bean="Toolbar.Item.NewPage"/>
                         <ref bean="Toolbar.Item.Lock"/>
                         <ref bean="Toolbar.Item.Unlock"/>

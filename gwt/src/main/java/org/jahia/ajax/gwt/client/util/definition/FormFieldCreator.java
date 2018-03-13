@@ -133,7 +133,8 @@ public class FormFieldCreator {
                                 if (definition.isProtected() && isMutliple) {
                                     // protected field are displayed but not editable,
                                     // we need a textField to display all Long values comma separated
-                                    field = new TextField<String>();
+                                    field = new TextFieldWithClass();
+
                                 } else {
                                     field = new NumberField();
                                     ((NumberField) field).setAllowDecimals(false);
@@ -144,7 +145,7 @@ public class FormFieldCreator {
                                 if (definition.isProtected() && isMutliple) {
                                     // protected field are displayed but not editable,
                                     // we need a textField to display all Double values comma separated
-                                    field = new TextField<String>();
+                                    field = new TextFieldWithClass();
                                 } else {
                                     field = new NumberField();
                                     ((NumberField) field).setAllowDecimals(true);
@@ -155,15 +156,7 @@ public class FormFieldCreator {
                                 ((NumberField) field).setAllowDecimals(true);
                                 break;
                             default:
-                                final TextField<String> f = new TextField<String>() {
-                                    @Override
-                                    public void markInvalid(String msg) {
-                                        super.markInvalid(msg);
-                                        if (errorIcon != null) {
-                                            errorIcon.addStyleName("invalid-icon");
-                                        }
-                                    }
-                                };
+                                final TextField<String> f = new TextFieldWithClass();
 
                                 f.addListener(Events.Change, new Listener<ComponentEvent>() {
                                     public void handleEvent(ComponentEvent event) {
@@ -311,6 +304,14 @@ public class FormFieldCreator {
                                 };
                                 t.schedule(500);
                             }
+
+                            @Override
+                            public void markInvalid(String msg) {
+                                super.markInvalid(msg);
+                                if (errorIcon != null) {
+                                    errorIcon.addStyleName("invalid-icon");
+                                }
+                            }
                         };
                         combo.setStore(store);
                         combo.setDisplayField("display");
@@ -318,6 +319,7 @@ public class FormFieldCreator {
                         combo.setTriggerAction(TriggerAction.ALL);
                         combo.setForceSelection(true);
                         combo.setTemplate(getComboTemplate());
+
                         field = combo;
                         className = "combo-box-field";
                     }
@@ -896,6 +898,16 @@ public class FormFieldCreator {
             toField.getListView().removeStyleName("x-form-invalid");
             toField.clearInvalid();
             return true;
+        }
+    }
+
+    private static class TextFieldWithClass extends TextField<String> {
+        @Override
+        public void markInvalid(String msg) {
+            super.markInvalid(msg);
+            if (errorIcon != null) {
+                errorIcon.addStyleName("invalid-icon");
+            }
         }
     }
 }

@@ -43,6 +43,7 @@
  */
 package org.jahia.bundles.extender.jahiamodules;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;
@@ -94,6 +95,7 @@ public class Activator implements BundleActivator {
     static Logger logger = LoggerFactory.getLogger(Activator.class);
 
     private static final BundleURLScanner CND_SCANNER = new BundleURLScanner("META-INF", "*.cnd", false);
+    private static final BundleURLScanner CFG_SCANNER = new BundleURLScanner("META-INF/configurations", "*.cfg", false);
     private static final BundleURLScanner DSL_SCANNER = new BundleURLScanner("META-INF", "*.dsl", false);
     private static final BundleURLScanner DRL_SCANNER = new BundleURLScanner("META-INF", "*.drl", false);
     private static final BundleURLScanner URLREWRITE_SCANNER = new BundleURLScanner("META-INF", "*urlrewrite*.xml", false);
@@ -462,6 +464,8 @@ public class Activator implements BundleActivator {
         }
 
         logger.info("--- Parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
+
+        checkConfigurations(bundle);
 
         registeredBundles.put(bundle, pkg);
         boolean newModuleDeployment = !templatePackageRegistry.areVersionsForModuleAvailable(bundle.getSymbolicName());
@@ -977,4 +981,27 @@ public class Activator implements BundleActivator {
         moduleState.setDetails(details);
     }
 
+
+    /**
+     * Scans the provided bundle for configuration files and copies them into /modules folder.
+     * 
+     * @param bundle the bundle to be scanned
+     */
+    private void checkConfigurations(Bundle bundle) {
+        List<URL> foundURLs = CFG_SCANNER.scan(bundle);
+        if (!foundURLs.isEmpty()) {
+            File modulesDir = new File(SettingsBean.getInstance().getJahiaModulesDiskPath());
+            for (URL url : foundURLs) {
+                File target = new File(modulesDir, StringUtils.substringAfterLast(url.getFile(), "/"));
+                if (!target.exists()) {
+                    try {
+                        FileUtils.copyURLToFile(url, target);
+                        logger.info("Copied configuration file of module {} into {}", getDisplayName(bundle), target);
+                    } catch (IOException e) {
+                        logger.error("Unable to copy configuration of bundle: " + getDisplayName(bundle), e);
+                    }
+                }
+            }
+        }
+    }
 }

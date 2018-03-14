@@ -49,12 +49,10 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * User: toto

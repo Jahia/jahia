@@ -52,6 +52,7 @@ import org.slf4j.Logger;
 import javax.jcr.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * User: toto

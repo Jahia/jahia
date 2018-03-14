@@ -50,22 +50,27 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Properties;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.JahiaTestCase;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -89,7 +94,14 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
 
     private static final String PRIVILEGED_USER_NAME = "jcr-settings-test-privileged-user";
 
+    private static final String SERVER_ADMIN_USER_NAME = "jcr-mount-point-test-serveradmin-user";
+
+    private static final String USER_PASSWORD = "password";
+
     private static JahiaGroupManagerService groupManager;
+
+    private static String mountPointPath;
+
     private static JahiaUserManagerService userManager;
 
     private static void checkExistence(JCRSessionWrapper session, boolean expectExists, String... paths)
@@ -123,14 +135,35 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRUserNode user = userManager.createUser(PRIVILEGED_USER_NAME, "password", new Properties(), session);
+                // create privileged user
+                JCRUserNode privilegedUser = userManager.createUser(PRIVILEGED_USER_NAME, USER_PASSWORD, new Properties(), session);
                 session.save();
 
-                groupManager.lookupGroup(null, PRIVILEGED_GROUPNAME, session).addMember(user);
+                // add her into privileged group
+                groupManager.lookupGroup(null, PRIVILEGED_GROUPNAME, session).addMember(privilegedUser);
                 session.save();
                 
                 // this call initializes the password policy node, if it does not yet present in JCR
                 JahiaPasswordPolicyService.getInstance().getDefaultPolicy();
+
+                // create server admin user
+                userManager.createUser(SERVER_ADMIN_USER_NAME, USER_PASSWORD, new Properties(), session);
+                session.save();
+
+                // grant her the server-administrator role
+                session.getRootNode().grantRoles("u:" + SERVER_ADMIN_USER_NAME, Collections.singleton("server-administrator"));
+                session.save();
+
+                // create VFS mount point
+                JCRMountPointNode jcrMountPointNode = (JCRMountPointNode) session.getNode("/mounts").addNode(
+                        "jcr-mount-point-test-" + System.currentTimeMillis() + JCRMountPointNode.MOUNT_SUFFIX,
+                        "jnt:vfsMountPoint");
+                jcrMountPointNode.setProperty("j:rootPath", FileUtils.getTempDirectoryPath());
+                jcrMountPointNode.setMountStatus(JCRMountPointNode.MountStatus.mounted);
+                session.save();
+                JCRStoreProvider mountProvider = jcrMountPointNode.getMountProvider();
+                assertTrue("Unable to create VFS mount point", mountProvider != null && mountProvider.isAvailable());
+                mountPointPath = jcrMountPointNode.getPath();
 
                 return null;
             }
@@ -143,12 +176,23 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRUserNode user = userManager.lookupUser(PRIVILEGED_USER_NAME, session);
-                if (user != null) {
-                    groupManager.lookupGroup(null, PRIVILEGED_GROUPNAME, session).removeMember(user);
+                JCRUserNode privilegedUser = userManager.lookupUser(PRIVILEGED_USER_NAME, session);
+                if (privilegedUser != null) {
+                    groupManager.lookupGroup(null, PRIVILEGED_GROUPNAME, session).removeMember(privilegedUser);
                     session.save();
 
-                    userManager.deleteUser(user.getPath(), session);
+                    userManager.deleteUser(privilegedUser.getPath(), session);
+                    session.save();
+                }
+                JCRUserNode serverAdminUser = userManager.lookupUser(SERVER_ADMIN_USER_NAME, session);
+                if (serverAdminUser != null) {
+                    session.getRootNode().revokeRolesForPrincipal("u:" + SERVER_ADMIN_USER_NAME);
+                    userManager.deleteUser(serverAdminUser.getPath(), session);
+                    session.save();
+                }
+                
+                if (mountPointPath != null && session.nodeExists(mountPointPath)) {
+                    session.getNode(mountPointPath).remove();
                     session.save();
                 }
                 return null;
@@ -166,6 +210,8 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
         checkNoAccessViaRest("/modules/api/jcr/v1/default/en/paths/settings/forgesSettings");
 
         checkNoAccessViaRest("/modules/api/jcr/v1/default/en/paths/passwordPolicy");
+
+        checkNoAccessViaRest("/modules/api/jcr/v1/default/en/paths" + mountPointPath);
     }
 
     private void checkNoAccessViaRest(String url) {
@@ -174,11 +220,40 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
     }
 
     @Test
+    public void shouldHaveAccessToMountPointNodeWithServerAdminUserViaJcr() throws RepositoryException {
+        JCRTemplate.getInstance().doExecute(SERVER_ADMIN_USER_NAME, null, Constants.EDIT_WORKSPACE, Locale.ENGLISH,
+                new JCRCallback<Boolean>() {
+                    @Override
+                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        // mount point
+                        checkExistence(session, true, mountPointPath, mountPointPath + "/j:rootPath");
+                        return null;
+                    }
+                });
+    }
+
+    @Test
+    public void shouldHaveAccessToMountPointNodeWithServerAdminUserViaRest() throws RepositoryException {
+        login(SERVER_ADMIN_USER_NAME, USER_PASSWORD);
+        try {
+            String out = getAsText("/modules/api/jcr/v1/default/en/paths" + mountPointPath);
+            assertTrue(StringUtils.contains(out, "\"type\":\"jnt:vfsMountPoint\""));
+            assertTrue(StringUtils.contains(out, "\"name\":\"j:rootPath\""));
+            assertTrue(StringUtils.contains(out, "\"value\":" + JSONObject.quote(FileUtils.getTempDirectoryPath())));
+        } finally {
+            logout();
+        }
+    }
+
+    @Test
     public void shouldHaveAccessToSettingsWithSystemUserViaJcr() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 checkExistence(session, true, JCR_PATHS_TO_TEST);
+
+                // mount point
+                checkExistence(session, true, mountPointPath, mountPointPath + "/j:rootPath");
                 return null;
             }
         });
@@ -201,6 +276,11 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
             
             out = getAsText("/modules/api/jcr/v1/default/en/paths/passwordPolicy");
             assertTrue(StringUtils.contains(out, "\"type\":\"jnt:passwordPolicy\""));
+
+            out = getAsText("/modules/api/jcr/v1/default/en/paths" + mountPointPath);
+            assertTrue(StringUtils.contains(out, "\"type\":\"jnt:vfsMountPoint\""));
+            assertTrue(StringUtils.contains(out, "\"name\":\"j:rootPath\""));
+            assertTrue(StringUtils.contains(out, "\"value\":" + JSONObject.quote(FileUtils.getTempDirectoryPath())));
         } finally {
             logout();
         }
@@ -212,6 +292,9 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 checkExistence(session, false, JCR_PATHS_TO_TEST);
+
+                // mount point
+                checkExistence(session, false, mountPointPath + "/j:rootPath");
                 return null;
             }
 
@@ -234,6 +317,9 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
                     @Override
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         checkExistence(session, false, JCR_PATHS_TO_TEST);
+
+                        // mount point
+                        checkExistence(session, false, mountPointPath + "/j:rootPath");
                         return null;
                     }
                 });
@@ -241,7 +327,7 @@ public class JcrSettingsAccessTest extends JahiaTestCase {
 
     @Test
     public void shouldNotHaveAccessToSettingsWithPrivilegedUserViaRest() throws RepositoryException {
-        login(PRIVILEGED_GROUPNAME, "password");
+        login(PRIVILEGED_GROUPNAME, USER_PASSWORD);
         try {
             checkNoAccessViaRest();
         } finally {

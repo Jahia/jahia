@@ -43,13 +43,15 @@
  */
 package org.jahia.test.services.categories;
 
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.categories.Category;
-import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.*;
 import org.junit.After;
 import org.junit.Test;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -216,6 +218,26 @@ public class CategoryTest {
         List<Category> childObjectKeys = rootCategory.getChildCategories();
         assertEquals(childObjectKeys.size(), 1);
         assertEquals(childObjectKeys.get(0).getKey(), "rootChild");
+        deleteCategoryWithChildren(rootCategory);
+    }
+
+    @Test
+    public void testCategoryRename() throws Exception {
+        Category rootCategory = Category.createCategory("firstRoot", null);
+        Category.createCategory("rootChild", rootCategory);
+
+        JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
+        sessionFactory.closeAllSessions();
+        JCRSessionWrapper englishEditSession = sessionFactory.getCurrentSystemSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, Locale.ENGLISH);
+        JCRSessionWrapper englishLiveSession = sessionFactory.getCurrentSystemSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH, Locale.ENGLISH);
+
+        JCRNodeWrapper categoryToRename = englishEditSession.getNode("/sites/systemsite/categories/firstRoot/rootChild");
+        categoryToRename.rename("rootChildRenamed");
+        englishEditSession.save();
+
+        assertTrue(englishLiveSession.nodeExists("/sites/systemsite/categories/firstRoot/rootChildRenamed"));
+        assertFalse(englishLiveSession.nodeExists("/sites/systemsite/categories/firstRoot/rootChild"));
+
         deleteCategoryWithChildren(rootCategory);
     }
 

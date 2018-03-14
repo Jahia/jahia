@@ -68,23 +68,30 @@ public class JCRMountPointNode extends JCRProtectedNodeAbstractDecorator {
     public static final String MOUNT_STATUS_PROPERTY_NAME = "mountStatus";
     public static final String MOUNT_SUFFIX = "-mount";
     public static final String MOUNT_POINT_SUFFIX = "-mountPoint";
+    private static final String PERMISSION_TO_READ_PROPERTIES = "adminMountPoints";
     public static final String PROTECTED_PROPERTIES_PROPERTY_NAME = "protectedProperties";
 
     public static enum MountStatus {
         mounted, unmounted, waiting, error
     }
 
+    private static Boolean restrictReadForAllProperties;
+
     @Override
     protected boolean canReadProperty(String propertyName) throws RepositoryException {
 
-        if (node.hasPermission("adminMountPoints")) {
+        if (node.hasPermission(PERMISSION_TO_READ_PROPERTIES)) {
             return true;
+        } else if (isRestrictReadForAllProperties()) {
+            // if we restrict access to all properties for unauthorized users, we do not allow to read any of them 
+            return false;
         }
 
         if (PROTECTED_PROPERTIES_PROPERTY_NAME.equals(propertyName)) {
             return false;
         }
 
+        // we do not restrict access to all properties by default; check if the node defines which properties have to be restricted
         if (node.hasProperty(PROTECTED_PROPERTIES_PROPERTY_NAME)) {
             JCRValueWrapper[] values = node.getProperty(PROTECTED_PROPERTIES_PROPERTY_NAME).getValues();
             if(values != null && values.length > 0) {
@@ -96,6 +103,20 @@ public class JCRMountPointNode extends JCRProtectedNodeAbstractDecorator {
             }
         }
         return true;
+    }
+
+    /**
+     * Flag to restrict read access to all properties of this mount point node for users which do not have appropriate permission
+     * {@link #PERMISSION_TO_READ_PROPERTIES}. If <code>true</code>, all properties will be protected by default for unauthorized users.
+     * 
+     * @return <code>true</code> if the access to all properties of this node should be restricted for all unauthorized users
+     */
+    private boolean isRestrictReadForAllProperties() {
+        if (restrictReadForAllProperties == null) {
+            restrictReadForAllProperties = Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile()
+                    .getProperty("jahia.jcr.mountPointNode.restrictReadForAllProperties", "true"));
+        }
+        return restrictReadForAllProperties.booleanValue();
     }
 
     public void setProtectedPropertyNames(String[] propertyNames) throws RepositoryException {
@@ -210,4 +231,5 @@ public class JCRMountPointNode extends JCRProtectedNodeAbstractDecorator {
 
         return path;
     }
+
 }

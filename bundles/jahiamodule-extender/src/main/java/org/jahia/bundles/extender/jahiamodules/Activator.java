@@ -630,6 +630,7 @@ public class Activator implements BundleActivator {
                     Path path = Paths.get( SettingsBean.getInstance().getJahiaVarDiskPath(), "karaf", "etc", StringUtils.substringAfterLast(url.getFile(), "/"));
                     if (!Files.exists(path)) {
                         Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
+                        logger.info("Copied configuration file of module {} into {}", getDisplayName(bundle), path);
                     }
                 } catch (IOException e) {
                     logger.error("unable to copy configuration", e);

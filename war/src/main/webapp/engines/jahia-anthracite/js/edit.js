@@ -3775,6 +3775,9 @@ if (!Element.prototype.matches) {
 			onOpen: function(){
 				app.dev.log("::: APP ::: ADMIN ::: OPENED");
 
+                app.edit.sidepanel.buildSplitter();
+                app.edit.sidepanel.resizeSidePanel();
+
                 DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");
 
 				var systemSettingsTabs = document.querySelectorAll(".tab_systemSiteSettings")[0],
@@ -4387,6 +4390,133 @@ if (!Element.prototype.matches) {
                         opened: false
                     }
 				},
+                resizeSidePanel: function(xPos){
+
+                    xPos = xPos || function(){
+                        var splitter = DexV2.id("indigoSplitter"),
+                            splitterXPos = (splitter.exists()) ? parseInt(splitter.nodes[0].style.getPropertyValue("left")) : null;
+
+                        return splitterXPos;
+                    }();
+
+                    if(xPos == null){
+                        return false;
+                    }
+
+
+                    // Block the minimum and maximum widths of the side panel
+                    if(xPos < 360){
+                        // Block at minimum width
+                        xPos = 360;
+
+                        // This is the minimum it can go, so change to an east only cursor when hovering the split bar
+                        DexV2.id("indigoSplitter").addClass("move-east-only");
+                    } else if(xPos > 800){
+                        // Block at maximum width
+                        xPos = 800;
+
+                        // This is the maximum it can go, so change to an west only cursor when hovering the split bar
+                        DexV2.id("indigoSplitter").addClass("move-west-only");
+                    } else {
+                        // The split bar can be made smaller or bigger, so just display the normal cursor when hovering
+                        DexV2.id("indigoSplitter").removeClass("move-east-only");
+                        DexV2.id("indigoSplitter").removeClass("move-west-only");
+                    }
+
+                    // Reposition the main frame
+                    var settingsMode = DexV2.getCached("body").getAttribute("data-edit-window-style") == "settings" || DexV2.getCached("body").getAttribute("data-indigo-app") == "admin",
+                        mainFrameWidth = (settingsMode) ? xPos - 50 : xPos + 45,
+                        mainFrameLeft = (settingsMode) ? xPos : xPos + 50;
+
+
+                    // Side Panel is currently pinned, so we need to adjust the width and left position of the main window
+                    if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == "true" || settingsMode){
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("width", "calc(100% - " + mainFrameWidth + "px)", "important");
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("left", mainFrameLeft + "px", "important");
+                    }
+
+                    // Reposition the pin button
+                    DexV2(".window-side-panel > .x-panel-bwrap > div:nth-child(2).x-panel-footer").css({
+                        left: (xPos - 45) + "px"
+                    });
+
+                    DexV2(".window-side-panel #JahiaGxtRefreshSidePanelButton").css({
+                        left: (xPos - 85) + "px"
+                    });
+
+                    // Set position of content create text filter
+                    var contentCreateFilter = DexV2("#JahiaGxtCreateContentTab > .x-border-layout-ct > .x-form-field-wrap");
+
+                    if(contentCreateFilter.exists()){
+                        contentCreateFilter.nodes[0].style.setProperty("width", (xPos - 100) + "px", "important");
+                    }
+
+                    // Set position of Results panels
+                    var categoriesResultsPane = DexV2("#JahiaGxtCategoryBrowseTab.tab_categories .x-box-inner .x-box-item:nth-child(2)"),
+                        imagesResultPane = DexV2("#JahiaGxtFileImagesBrowseTab.tab_filesimages #images-view"),
+                        contentResultsPane = DexV2("#JahiaGxtContentBrowseTab.tab_content .x-box-inner .x-box-item:nth-child(2)");
+
+                        if(categoriesResultsPane.exists()){
+                            categoriesResultsPane.nodes[0].style.setProperty("left", xPos + "px", "important");
+
+                        }
+
+                        if(imagesResultPane.exists()){
+                            imagesResultPane.nodes[0].style.setProperty("left", xPos + "px", "important");
+
+                        }
+
+                        if(contentResultsPane.exists()){
+                            contentResultsPane.nodes[0].style.setProperty("left", xPos + "px", "important");
+
+                        }
+
+
+                    var siteCombo = DexV2("body[data-indigo-gwt-side-panel='open'] .window-side-panel div[role='combobox']");
+
+                    if(siteCombo.exists()){
+                        siteCombo.nodes[0].style.setProperty("width", (xPos - 100) + "px", "important");
+
+                    }
+
+                    // Set width of the Side Panel
+                    DexV2.id("JahiaGxtSidePanelTabs").nodes[0].style.setProperty("width", xPos + "px", "important");
+
+                    // Move the split bar to the position of the mouse
+                    DexV2.id("indigoSplitter").nodes[0].style.setProperty("left", xPos + "px", "important");
+                },
+                onStartResize: function(e){
+                    app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONSTARTRESIZE");
+                    e = e || window.event;
+
+                    // Register that the side panel is being resized ( CSS uses this to remove pointer events on iframe )
+                    DexV2.getCached("body").setAttribute("indigo-dragging-panel", "true");
+
+                    // Cancel the resizing when the mouse is released
+                    document.onmouseup = app.edit.sidepanel.onStopResize;
+
+                    // Update the width of the Side panel when mouse is being moved
+                    document.onmousemove = app.edit.sidepanel.onResize;
+                },
+                onResize: function(e){
+                    app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: ONRESIZE");
+                    e = e || window.event;
+
+                    // Get position of Split bar that will be used to calculate the width of the side panel:
+                    var xPos = e.clientX;
+
+                    app.edit.sidepanel.resizeSidePanel(xPos);
+
+
+                },
+                onStopResize: function(){
+                    // Stop listening to the mouse and kill mousemove and mouseup listeners
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+
+                    // Unregister the resizing of the side panel ( CSS will now remove the no pointer events on the iframe )
+                    DexV2.getCached("body").setAttribute("indigo-dragging-panel", "");
+                },
                 onNewChannel: function(){
                     // Dev note: This is also triggered when the user changes pages by navigation in Device Channel Preview
 
@@ -4595,10 +4725,20 @@ if (!Element.prototype.matches) {
 					DexV2.getCached("body").toggleAttribute("data-INDIGO-SIDEPANEL-PINNED", ["true", ""]);
 					DexV2.iframe(".window-iframe").filter("body").nodes[0].style.pointerEvents = "all";
 
+                    if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == ""){
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
+                    } else {
+                        var xPos = parseInt(DexV2.id("indigoSplitter").nodes[0].style.getPropertyValue("left"));
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("width", "calc(100% - " + (xPos + 45) + "px)", "important");
+                        DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.setProperty("left", (xPos + 50) + "px", "important");
+                    }
+
 					app.edit.topbar.reposition();
 				},
 
 				toggleFloatingPanel: function(e){
+
 
 					if(DexV2.node(e.target).getAttribute("id") == "images-view" ||
 						DexV2.node(e.target).hasClass("x-panel-bwrap") ||
@@ -4630,8 +4770,27 @@ if (!Element.prototype.matches) {
 					DexV2.getCached("body").removeClass("indigo-drag-to-drop");
 
 				},
+                buildSplitter: function(){
+                    // Handle Splitter ( used for changing width of Side Panel )
+                    if(!DexV2.id("indigoSplitter").exists()){
+                        // Create Side Panel splitter ( cant gain proper control of GWT splitter)
+
+                        var sidePanelSplitter = document.createElement("div");
+
+                        // Set ID
+                        sidePanelSplitter.id = "indigoSplitter";
+
+                        // Attach event listener for drag start
+                        sidePanelSplitter.onmousedown = app.edit.sidepanel.onStartResize;
+
+                        // Add the spliiter to the body
+        				DexV2.getCached("body").prepend(sidePanelSplitter);
+                    }
+                },
 				open: function(isSettings){
 					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN [isSettings='" + isSettings + "']");
+
+                    app.edit.sidepanel.buildSplitter();
 
 					var keepCheckingForEmpties = true;
 
@@ -4888,6 +5047,9 @@ if (!Element.prototype.matches) {
                     app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: OPEN");
 					app.edit.sidepanel.data.previousTab = app.edit.sidepanel.data.currentTab;
 
+                    app.edit.sidepanel.buildSplitter();
+                    app.edit.sidepanel.resizeSidePanel();
+
 					// Check if the Settings Tab has already been loaded
 					if(DexV2.id("JahiaGxtSettingsTab").exists()){
 					  // Already loaded, so we can execute the onReady function
@@ -4902,6 +5064,10 @@ if (!Element.prototype.matches) {
 				},
 				close: function(){
                     app.dev.log("::: APP ::: EDIT ::: SETTINGS ::: CLOSE");
+
+                    DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
+                    DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
+
 					var previousEditPage = app.edit.history.get("editpage");
 
 					app.edit.settings.data.opened = false;
@@ -5317,7 +5483,6 @@ if (!Element.prototype.matches) {
         attach: function(){
 			DexV2("body")
                 .onAttribute("#JahiaGxtContentPickerWindow .x-vsplitbar, #contentpicker .x-vsplitbar, #contentmanager .x-vsplitbar, #JahiaGxtContentPicker .x-vsplitbar", "style", app.picker.onResize)
-                .onAttribute(".window-container > .x-vsplitbar", "style", app.edit.sidepanel.onResize)
                 .onAttribute(".x-vsplitbar", "style", app.picker.onResize)
 				.onOpen(".x-window", function(){
 
@@ -5633,8 +5798,10 @@ if (!Element.prototype.matches) {
     			.onOpen(".x-grid3-row", function(value){
     				if(app.edit.sidepanel.data.open){
                         var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
-
+                        app.edit.sidepanel.resizeSidePanel();
     					if(isTreeEntry){
+
+
     						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
     							DexV2.id("JahiaGxtCategoryBrowseTab").addClass("show-results");
 

@@ -2,6 +2,16 @@
 // SIDE PANEL ///////////////////////////////////
 /////////////////////////////////////////////////
 
+// Stop elements being selected when dragging indigo split bar
+body[indigo-dragging-panel] {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
 .window-side-panel {
 	z-index: $ZINDEX--SIDE_PANEL;
 	height: 100%;
@@ -796,7 +806,7 @@
 
 //
 #JahiaGxtContentBrowseTab.tab_content {
-	width: 300px!important;
+	width: 100%!important;
 
 	&::before {
 		/* Tab Content Header Label */
@@ -843,7 +853,7 @@
 }
 
 #JahiaGxtFileImagesBrowseTab.tab_filesimages {
-	width: 300px!important;
+	width: 100%!important;
 
 	// Deal with icons here ...
 	.x-tree3-node-icon {
@@ -1037,7 +1047,7 @@
 }
 
 #JahiaGxtSearchTab.tab_search {
-	width: 300px!important;
+	width: 100%!important;
 
 	&::before {
 		/* Tab Content Header Label */
@@ -1061,11 +1071,12 @@
  		overflow: visible!important;
 		height: calc(100% - 50px) !important;
 		overflow: scroll !important;
+		width: 100%!important;
 
  	}
 
 	.JahiaGxtSearchTab-form {
-		width: 273px!important;
+		width: 100%!important;
 
 		.x-toolbar-right {
 			@include button("ACTIONBAR---SUGGESTED", "remove-icons");
@@ -1298,7 +1309,7 @@
 
 
 #JahiaGxtCategoryBrowseTab.tab_categories {
-	width: 300px!important;
+	width: 100%!important;
 
 	// Deal with icons here ...
 	.x-tree3-node-icon {
@@ -1350,7 +1361,7 @@
 #JahiaGxtFileImagesBrowseTab.tab_filesimages,
 #JahiaGxtCategoryBrowseTab.tab_categories,
 #JahiaGxtSearchTab.tab_search {
-	width: 300px!important;
+	width: 100%!important;
 
 	.x-box-inner .x-box-item:nth-child(2) {
 		display: inline-block;
@@ -1385,6 +1396,10 @@
 			transition: all 0.2s ease-in 0s;
 			padding-right: 25px;
 			pointer-events: none;
+
+			body[indigo-dragging-panel="true"] & {
+				transition: none!important
+			}
 
 			&:hover {
 				cursor: pointer;
@@ -1870,6 +1885,7 @@ $side_panel__tab_buttons: (
 		.x-panel-body {
 			> .x-component {
 				height: 100%!important;
+				width: 100%!important;
 			}
 		}
 	}
@@ -2266,7 +2282,7 @@ body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTa
 			height: 100%!important;
 			display: inline-block;
 			position: relative!important;
-			width: 293px !important;
+			width: 100% !important;
 			top: 0!important;
 			background: transparent!important;
 			vertical-align: top;

@@ -4,28 +4,50 @@
 $PICKER_SIDEPANEL_WIDTH: 340px;
 
 
+body[indigo-dragging-panel="true"] {
+	iframe {
+		pointer-events: none!important;
+	}
+}
+
+
+#indigoSplitter {
+	width: 5px;
+	height: 100%;
+	position: fixed;
+	left: 360px;
+	top: 0;
+	z-index: 1000;
+	background: url($SIDE_PANEL--ICON--SPLIITER) no-repeat center center #d2d2d2;
+	background-size: 5px 10px;
+	border-left: 1px solid transparent;
+
+	display: none;
+
+	body[data-indigo-gwt-side-panel="open"] & {
+		display: block;
+	}
+
+	&:hover {
+		cursor: ew-resize;
+		background-color: #FFF;
+		border-left-color: #444749;
+	}
+
+	&.move-east-only:hover {
+		cursor: e-resize!important;
+
+	}
+
+	&.move-west-only:hover {
+		cursor: w-resize!important;
+
+	}
+}
+
 .window-container {
 	> .x-vsplitbar {
-		z-index: 2147483647;
-		background: url($SIDE_PANEL--ICON--SPLIITER) no-repeat center center #d2d2d2;
-		opacity: 1;
-		display: block;
-		height: 100%!important;
-		top: 0!important;
-		position: fixed !important;
-		border-left: 1px solid transparent;
-		background-size: 5px 10px;
 		display: none;
-
-		&:hover {
-			background-color: #FFF;
-
-		}
-
-		body[data-indigo-gwt-side-panel="open"] & {
-			display: block;
-			border-left-color: #444749;
-		}
 	}
 
 }

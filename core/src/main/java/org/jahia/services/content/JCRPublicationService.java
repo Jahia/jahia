@@ -803,7 +803,6 @@ public class JCRPublicationService extends JahiaService {
         } finally {
             JahiaAccessManager.setDeniedPaths(null);
         }
-        JCRNodeWrapper destinationNode = null;
         try {
             cloneResult.root = destinationSession.getNode(sourceNode.getCorrespondingNodePath(destinationWorkspaceName));
         } catch (RepositoryException e) {
@@ -823,33 +822,6 @@ public class JCRPublicationService extends JahiaService {
                 getDeniedPath(nodeWrapper, deniedPaths, includedUuids);
             }
         }
-    }
-
-    private String handleSharedMove(JCRSessionWrapper sourceSession, JCRNodeWrapper sourceNode, String destinationPath)
-            throws RepositoryException {
-        String oldPath = null;
-        if (sourceNode.hasProperty("j:movedFrom")) {
-            Property movedFrom = sourceNode.getProperty("j:movedFrom");
-            List<Value> values = new ArrayList<Value>(Arrays.asList(movedFrom.getValues()));
-            for (Value value : values) {
-                String v = value.getString();
-                if (v.endsWith(":::" + destinationPath)) {
-                    oldPath = StringUtils.substringBefore(v, ":::");
-                    values.remove(value);
-                    break;
-                }
-            }
-            if (oldPath != null) {
-                sourceSession.checkout(sourceNode);
-                if (values.isEmpty()) {
-                    movedFrom.remove();
-                } else {
-                    movedFrom.setValue(values.toArray(new Value[values.size()]));
-                }
-                sourceSession.save();
-            }
-        }
-        return oldPath;
     }
 
     private void checkpoint(Session session, JCRNodeWrapper node, VersionManager versionManager)

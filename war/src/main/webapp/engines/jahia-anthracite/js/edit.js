@@ -2009,12 +2009,22 @@ if (!Element.prototype.matches) {
 			repositionSidePanel: function(splitterLeft){
 				app.dev.log("::: APP ::: PICKER ::: REPOSITIONSIDEPANEL");
 
+                var isNestedPicker = DexV2.getCached("body").getAttribute("data-indigo-sub-picker") == "open";
+
+                var DOMPaths = {
+                    "JahiaGxtManagerLeftTree": (isNestedPicker) ? "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree" : "#JahiaGxtManagerLeftTree",
+                    "JahiaGxtManagerTobTable": (isNestedPicker) ? "#JahiaGxtContentPickerWindow #JahiaGxtManagerTobTable" : "#JahiaGxtManagerTobTable",
+                    "JahiaGxtManagerToolbar": (isNestedPicker) ? "#JahiaGxtContentPickerWindow #JahiaGxtManagerToolbar" : "#JahiaGxtManagerToolbar",
+                    "#JahiaGxtManagerLeftTree .x-tab-strip-spacer" : (isNestedPicker) ? "#JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree .x-tab-strip-spacer" : "#JahiaGxtManagerLeftTree .x-tab-strip-spacer",
+                    "#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap": (isNestedPicker) ? "#JahiaGxtContentPickerWindow #CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap" : "#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap",
+                    "#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap .x-accordion-hd" : (isNestedPicker) ? "#JahiaGxtContentPickerWindow #CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap .x-accordion-hd" : "#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap .x-accordion-hd"
+                }
+
+
 				// Save width of side panel
 				if(splitterLeft){
 					app.picker.data.explorer.width = splitterLeft;
 				}
-
-
 
 				// Calculate Scale size for the picker title
 				var pickerTitle = (app.picker.data.standalone) ? DexV2("#pickerTitle") : DexV2.id(app.picker.data.ID).filter(".x-window-tl .x-window-header-text");
@@ -2049,33 +2059,30 @@ if (!Element.prototype.matches) {
 					"left": searchLeftPosition + "px"
 				});
 
-
-
-
 				// Set width of the side panel
-				DexV2.id("JahiaGxtManagerLeftTree").nodes[0].style.setProperty("width", app.picker.data.explorer.width + "px", "important");
-				DexV2.id("JahiaGxtManagerLeftTree").nodes[0].style.setProperty("left", "0px", "important");
+				DexV2(DOMPaths["JahiaGxtManagerLeftTree"]).nodes[0].style.setProperty("width", app.picker.data.explorer.width + "px", "important");
+				DexV2(DOMPaths["JahiaGxtManagerLeftTree"]).nodes[0].style.setProperty("left", "0px", "important");
 
 				// Set width and position of right panel
 				if(DexV2.getCached("body").getAttribute("indigo-picker-panel") == "collapsed"){
-					DexV2.id("JahiaGxtManagerTobTable").nodes[0].style.setProperty("left", "0px", "important");
-					DexV2.id("JahiaGxtManagerTobTable").nodes[0].style.setProperty("width", "100%", "important");
+					DexV2(DOMPaths["JahiaGxtManagerTobTable"]).nodes[0].style.setProperty("left", "0px", "important");
+					DexV2(DOMPaths["JahiaGxtManagerTobTable"]).nodes[0].style.setProperty("width", "100%", "important");
 					// Move the top toolbar
-					DexV2.id("JahiaGxtManagerToolbar").nodes[0].style.setProperty("left", searchLeftPosition + "px", "important");
+					DexV2(DOMPaths["JahiaGxtManagerToolbar"]).nodes[0].style.setProperty("left", searchLeftPosition + "px", "important");
 
 					// Move filter toolbar
-					if(DexV2.id("JahiaGxtManagerTobTable").filter(".x-panel-tbar").exists()){
-						DexV2.id("JahiaGxtManagerTobTable").filter(".x-panel-tbar").nodes[0].style.setProperty("left", "20px", "important");
+					if(DexV2(DOMPaths["JahiaGxtManagerTobTable"]).filter(".x-panel-tbar").exists()){
+						DexV2(DOMPaths["JahiaGxtManagerTobTable"]).filter(".x-panel-tbar").nodes[0].style.setProperty("left", "20px", "important");
 					}
 				} else {
-					DexV2.id("JahiaGxtManagerTobTable").nodes[0].style.setProperty("left", app.picker.data.explorer.width + "px", "important");
-					DexV2.id("JahiaGxtManagerTobTable").nodes[0].style.setProperty("width", "calc(100% - "+ app.picker.data.explorer.width + "px) ", "important");
+					DexV2(DOMPaths["JahiaGxtManagerTobTable"]).nodes[0].style.setProperty("left", app.picker.data.explorer.width + "px", "important");
+					DexV2(DOMPaths["JahiaGxtManagerTobTable"]).nodes[0].style.setProperty("width", "calc(100% - "+ app.picker.data.explorer.width + "px) ", "important");
 					// Move the top toolbar
-					DexV2.id("JahiaGxtManagerToolbar").nodes[0].style.setProperty("left", app.picker.data.explorer.width + "px", "important");
+					DexV2(DOMPaths["JahiaGxtManagerToolbar"]).nodes[0].style.setProperty("left", app.picker.data.explorer.width + "px", "important");
 
 					// Move filter toolbar
-					if(DexV2.id("JahiaGxtManagerTobTable").filter(".x-panel-tbar").exists()){
-						DexV2.id("JahiaGxtManagerTobTable").filter(".x-panel-tbar").nodes[0].style.setProperty("left", (app.picker.data.explorer.width + 20) + "px", "important");
+					if(DexV2(DOMPaths["JahiaGxtManagerTobTable"]).filter(".x-panel-tbar").exists()){
+						DexV2(DOMPaths["JahiaGxtManagerTobTable"]).filter(".x-panel-tbar").nodes[0].style.setProperty("left", (app.picker.data.explorer.width + 20) + "px", "important");
 					}
 				}
 
@@ -2086,11 +2093,11 @@ if (!Element.prototype.matches) {
 				});
 
 				// Set the width of the left tree
-				DexV2("#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap").each(function(){
+				DexV2(DOMPaths["#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap"]).each(function(){
 					this.style.setProperty("width", app.picker.data.explorer.width  + "px", "important");
 				});
 
-				DexV2("#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap .x-accordion-hd").each(function(){
+				DexV2(DOMPaths["#CRTbrowseTabItem > div > .x-panel > .x-panel-bwrap .x-accordion-hd"]).each(function(){
 					this.style.setProperty("width", app.picker.data.explorer.width  + "px", "important");
 				});
 
@@ -2106,7 +2113,7 @@ if (!Element.prototype.matches) {
 				});
 
 				// Set the width of the Combo Hot Spot
-				DexV2("#JahiaGxtManagerLeftTree .x-tab-strip-spacer").css({
+				DexV2(DOMPaths["#JahiaGxtManagerLeftTree .x-tab-strip-spacer"]).css({
 					width: (sourceComboBoxWidth + 4) + "px"
 				});
 
@@ -5309,6 +5316,8 @@ if (!Element.prototype.matches) {
     var eventListeners = {
         attach: function(){
 			DexV2("body")
+                .onAttribute("#JahiaGxtContentPickerWindow .x-vsplitbar, #contentpicker .x-vsplitbar, #contentmanager .x-vsplitbar, #JahiaGxtContentPicker .x-vsplitbar", "style", app.picker.onResize)
+                .onAttribute(".window-container > .x-vsplitbar", "style", app.edit.sidepanel.onResize)
                 .onAttribute(".x-vsplitbar", "style", app.picker.onResize)
 				.onOpen(".x-window", function(){
 

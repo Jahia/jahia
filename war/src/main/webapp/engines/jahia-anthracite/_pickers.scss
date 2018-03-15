@@ -4,6 +4,36 @@
 $PICKER_SIDEPANEL_WIDTH: 340px;
 
 
+.window-container {
+	> .x-vsplitbar {
+		z-index: 2147483647;
+		background: url($SIDE_PANEL--ICON--SPLIITER) no-repeat center center #d2d2d2;
+		opacity: 1;
+		display: block;
+		height: 100%!important;
+		top: 0!important;
+		position: fixed !important;
+		border-left: 1px solid transparent;
+		background-size: 5px 10px;
+		display: none;
+
+		&:hover {
+			background-color: #FFF;
+
+		}
+
+		body[data-indigo-gwt-side-panel="open"] & {
+			display: block;
+			border-left-color: #444749;
+		}
+	}
+
+}
+
+.window-side-panel {
+	width: 360px!important;
+}
+
 
 #JahiaGxtContentPickerWindow,
 #contentpicker,
@@ -11,10 +41,18 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 #JahiaGxtContentPicker {
 	.x-vsplitbar {
 		z-index: 2147483647;
-		background: red none repeat scroll 0% 0%;
+		background: url($SIDE_PANEL--ICON--SPLIITER) no-repeat center center #d2d2d2;
 		opacity: 1;
 		display: block;
-		position: fixed!important;
+		position: fixed !important;
+		border-left: 1px solid transparent;
+		background-size: 5px 10px;
+
+		&:hover {
+			background-color: #FFF;
+			border-left-color: #444749;
+
+		}
 
 		body[indigo-picker-panel="collapsed"] &,
 		body[data-indigo-picker-search="open"] & {
@@ -22,6 +60,12 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 
 
 		}
+	}
+}
+
+#contentmanager {
+	body[data-indigo-edit-engine="open"] & {
+		display: none;
 	}
 }
 
@@ -2291,7 +2335,7 @@ $PICKER_SIDEPANEL_WIDTH: 340px;
 	// Used to toggle the side panel
 	.toggle-picker-files {
 		position: fixed;
-		top: calc(50% - 45px);
+		top: calc(50% - 49px);
 		left: $PICKER_SIDEPANEL_WIDTH - 23px;
 		background: red;
 		color: white;

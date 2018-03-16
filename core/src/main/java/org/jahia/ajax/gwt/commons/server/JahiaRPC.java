@@ -47,6 +47,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.impl.AbstractSerializationStream;
 import com.google.gwt.user.server.rpc.RPC;
@@ -56,58 +59,12 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
  * Custom RPC helper class to be able to have more control on the execution of GWT methods. For example, perform logging or occurred errors.
  * It is using parts of the code of the {@link RPC} one and adds a possibility to react on errors, which occur during invocation of target
  * service method. The handling of error is done in {@link #onError(Method, InvocationTargetException)} method.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 final class JahiaRPC {
 
-    private static String formatIllegalAccessErrorMessage(Object target, Method serviceMethod) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("Blocked attempt to access inaccessible method '");
-        sb.append(getSourceRepresentation(serviceMethod));
-        sb.append("'");
-
-        if (target != null) {
-            sb.append(" on target '");
-            sb.append(printTypeName(target.getClass()));
-            sb.append("'");
-        }
-
-        sb.append("; this is either misconfiguration or a hack attempt");
-
-        return sb.toString();
-    }
-
-    private static String formatIllegalArgumentErrorMessage(Object target, Method serviceMethod, Object[] args) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("Blocked attempt to invoke method '");
-        sb.append(getSourceRepresentation(serviceMethod));
-        sb.append("'");
-
-        if (target != null) {
-            sb.append(" on target '");
-            sb.append(printTypeName(target.getClass()));
-            sb.append("'");
-        }
-
-        sb.append(" with invalid arguments");
-
-        if (args != null && args.length > 0) {
-            sb.append(Arrays.asList(args));
-        }
-
-        return sb.toString();
-    }
-
-    /**
-     * Returns the source representation for a method signature.
-     * 
-     * @param method method to get the source signature for
-     * @return source representation for a method signature
-     */
-    private static String getSourceRepresentation(Method method) {
-        return method.toString().replace('$', '.');
-    }
+    private static final Logger logger = LoggerFactory.getLogger(JahiaRPC.class);
 
     static String invokeAndEncodeResponse(Object target, Method serviceMethod, Object[] args,
             SerializationPolicy serializationPolicy) throws SerializationException {
@@ -151,9 +108,57 @@ final class JahiaRPC {
         return responsePayload;
     }
 
+    private static String formatIllegalAccessErrorMessage(Object target, Method serviceMethod) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Blocked attempt to access inaccessible method '");
+        sb.append(getSourceRepresentation(serviceMethod));
+        sb.append("'");
+
+        if (target != null) {
+            sb.append(" on target '");
+            sb.append(printTypeName(target.getClass()));
+            sb.append("'");
+        }
+
+        sb.append("; this is either misconfiguration or a hack attempt");
+
+        return sb.toString();
+    }
+
+    private static String formatIllegalArgumentErrorMessage(Object target, Method serviceMethod, Object[] args) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Blocked attempt to invoke method '");
+        sb.append(getSourceRepresentation(serviceMethod));
+        sb.append("'");
+
+        if (target != null) {
+            sb.append(" on target '");
+            sb.append(printTypeName(target.getClass()));
+            sb.append("'");
+        }
+
+        sb.append(" with invalid arguments");
+
+        if (args != null && args.length > 0) {
+            sb.append(Arrays.asList(args));
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Returns the source representation for a method signature.
+     *
+     * @param method method to get the source signature for
+     * @return source representation for a method signature
+     */
+    private static String getSourceRepresentation(Method method) {
+        return method.toString().replace('$', '.');
+    }
+
     /**
      * Implements handling of an error, which occurred by executing the target GWT service.
-     * 
+     *
      * @param serviceMethod the service method which execution results in error
      * @param e the occurred exception
      */
@@ -162,10 +167,7 @@ final class JahiaRPC {
         if (e.getCause() != null) {
             cause = e.getCause();
         }
-        // here we use the logger from the GWTController to be able to control the logging level for both at once
-        GWTController.logger.error(
-                "An error occurred calling the GWT service method " + serviceMethod + ". Cause: " + cause.getMessage(),
-                cause);
+        logger.error("An error occurred calling the GWT service method " + serviceMethod + ". Cause: " + cause.getMessage(), cause);
     }
 
     /**
@@ -203,8 +205,7 @@ final class JahiaRPC {
         //
         return type.getName().replace('$', '.');
     }
-    
+
     private JahiaRPC() {
-        super();
     }
 }

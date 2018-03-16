@@ -79,7 +79,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * Spring MVC controller implementation to dispatch requests to GWT services.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class GWTController extends RemoteServiceServlet implements Controller,
@@ -89,25 +89,25 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     private static final long serialVersionUID = -74193665963116797L;
 
-    final static Logger logger = LoggerFactory.getLogger(GWTController.class);
+    private static final Logger logger = LoggerFactory.getLogger(GWTController.class);
 
     private String remoteServiceName;
 
     private Integer sessionExpiryTime = null;
 
     private ServletContext servletContext;
-    
+
     private ApplicationContext applicationContext;
-    
+
     private boolean allowPostMethodOnly = true;
 
     private boolean requireAuthenticatedUser = true;
-    
+
     /**
      * A permission, required to access the GWT services. A <code>null</code> or an empty value means no permission check is done.
      */
     private String requiredPermission;
-    
+
     /**
      * Do we allow to cache the successful required permission check in a session?
      */
@@ -122,6 +122,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         return servletContext;
     }
 
+    @Override
     public ModelAndView handleRequest(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         long startTime = System.currentTimeMillis();
@@ -143,15 +144,13 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             }
         }
         doPost(request, response);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Handled request to GWT service '{}' in {} ms", remoteServiceName, System.currentTimeMillis() - startTime);
-        }
+        logger.debug("Handled request to GWT service '{}' in {} ms", remoteServiceName, System.currentTimeMillis() - startTime);
         return null;
     }
 
     /**
      * Checks the required permission to access the GWT service.
-     * 
+     *
      * @param request
      *            current HTTP request
      * @return <code>true</code> if the current user is permitted to access the GWT service
@@ -199,10 +198,10 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     /**
      * Detects the target JCR node for permission check.
-     * 
+     *
      * @param request
      *            current HTTP request
-     * 
+     *
      * @return the detected target JCR node for permission check
      */
     private JCRNodeWrapper getTargetNodeForPermissionCheck(HttpServletRequest request) {
@@ -239,7 +238,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             setServiceData(remoteService, false);
 
             rpcRequest = RPC.decodeRequest(payload, remoteService.getClass(), this);
-            
+
             if (logger.isDebugEnabled()) {
                 logger.debug("Executing method " + rpcRequest.getMethod());
             }
@@ -258,28 +257,34 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             if (remoteService != null) {
                 setServiceData(remoteService, true);
             }
-            
+
         }
     }
 
-    @Override protected SerializationPolicy doGetSerializationPolicy(HttpServletRequest request, String moduleBaseURL,
+    @Override
+    protected SerializationPolicy doGetSerializationPolicy(HttpServletRequest request, String moduleBaseURL,
                                                                      String strongName) {
         SerializationPolicy policy = super.doGetSerializationPolicy(request, moduleBaseURL, strongName);
         if (policy == null) {
             // NEVER use or cache a legacy serializer
             return new SerializationPolicy() {
-                @Override public boolean shouldDeserializeFields(Class<?> clazz) {
+
+                @Override
+                public boolean shouldDeserializeFields(Class<?> clazz) {
                     return (clazz != Object.class);
                 }
 
-                @Override public boolean shouldSerializeFields(Class<?> clazz) {
+                @Override
+                public boolean shouldSerializeFields(Class<?> clazz) {
                     return (clazz != Object.class);
                 }
 
-                @Override public void validateDeserialize(Class<?> clazz) throws SerializationException {
+                @Override
+                public void validateDeserialize(Class<?> clazz) throws SerializationException {
                 }
 
-                @Override public void validateSerialize(Class<?> clazz) throws SerializationException {
+                @Override
+                public void validateSerialize(Class<?> clazz) throws SerializationException {
                 }
             };
 //            throw new UnsupportedOperationException("Bad id, javascript is probably not uptodate - flush your browser cache");
@@ -289,7 +294,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     /**
      * Injects the target GWT service to be called.
-     * 
+     *
      * @param remoteServiceName
      *            the Spring bean ID for the target GWT service to be called
      */
@@ -305,18 +310,22 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         }
     }
 
+    @Override
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
 
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext; 
+        this.applicationContext = applicationContext;
     }
 
+    @Override
     public void log(String message, Throwable t) {
         logger.error(message, t);
     }
 
+    @Override
     public void log(String msg) {
         logger.info(msg);
     }
@@ -331,7 +340,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     /**
      * Sets a permission, required to access the GWT services. A <code>null</code> or an empty value means no permission check is done.
-     * 
+     *
      * @param requiredPermission
      *            a permission, required to access the GWT services
      */
@@ -341,7 +350,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     /**
      * Set it to <code>true</code> if we allow to cache the successful required permission check in a session.
-     * 
+     *
      * @param requiredPermissionCheckCache
      *            <code>true</code> if we allow to cache the successful required permission check in a session; <code>false</code> otherwise
      */

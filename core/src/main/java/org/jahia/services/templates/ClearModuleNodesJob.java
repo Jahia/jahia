@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Background task for performing cleanup of the module nodes in JCR.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ClearModuleNodesJob extends BackgroundJob {
@@ -62,28 +62,27 @@ public class ClearModuleNodesJob extends BackgroundJob {
     private static final Logger logger = LoggerFactory.getLogger(ClearModuleNodesJob.class);
 
     private static final String MODULE_ID = "moduleId";
-
     private static final String MODULE_VERSION = "moduleVersion";
 
     /**
      * Create an instance of {@link JobDetail} for this job with the specified data.
-     * 
+     *
      * @param moduleId the id of the module to clean nodes for
      * @param moduleVersion the version of the module
      * @return the job details instance
      */
     public static JobDetail createJob(String moduleId, String moduleVersion) {
-        JobDetail jobDetail = createJahiaJob("Cleanup module nodes for module " + moduleId + " v" + moduleId,
+        JobDetail jobDetail = createJahiaJob("Cleanup module nodes for module " + moduleId + " v" + moduleVersion,
                 ClearModuleNodesJob.class);
         jobDetail.setGroup("Maintenance");
         jobDetail.getJobDataMap().put(MODULE_ID, moduleId);
         jobDetail.getJobDataMap().put(MODULE_VERSION, moduleVersion);
-
         return jobDetail;
     }
 
     @Override
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
+
         JobDataMap dataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         String id = dataMap.getString(MODULE_ID);
         String version = dataMap.getString(MODULE_VERSION);
@@ -95,5 +94,4 @@ public class ClearModuleNodesJob extends BackgroundJob {
 
         logger.info("...done cleanup of nodes for the module {} v{}", id, version);
     }
-
 }

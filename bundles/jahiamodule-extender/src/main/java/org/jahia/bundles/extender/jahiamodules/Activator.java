@@ -54,7 +54,6 @@ import org.jahia.bundles.extender.jahiamodules.transform.ModuleDependencyURLStre
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleUrlTransformer;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
-import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
@@ -295,11 +294,11 @@ public class Activator implements BundleActivator {
                                     ModuleUtils.updateBundleLocation(bundle, newLocation);
                                     // perform bundle update from the new location
                                     needUpdate = true;
-                                    
+
                                     // we check the start level for a module and adjust it
                                     BundleStartLevel bundleStartLevel = bundle.adapt(BundleStartLevel.class);
                                     int moduleStartLevel = SettingsBean.getInstance().getModuleStartLevel();
-                                    if(bundleStartLevel.getStartLevel() != moduleStartLevel) {
+                                    if (bundleStartLevel.getStartLevel() != moduleStartLevel) {
                                         // update start level
                                         logger.info("Setting start level for bundle {} to {}", bundleDisplayName,
                                                 moduleStartLevel);
@@ -507,8 +506,9 @@ public class Activator implements BundleActivator {
                 boolean isProcessingServer = settingsBean.isProcessingServer();
                 if (isProcessingServer) {
                     try {
-                        templatePackageDeployer.clearModuleNodes(jahiaTemplatesPackage, true);
-                    } catch (JahiaRuntimeException e) {
+                        templatePackageDeployer.clearModuleNodesAsync(jahiaTemplatesPackage);
+                    } catch (Exception e) {
+                        // We still want to perform the rest of operations in case module nodes cleanup fails for some reason.
                         logger.error(e.getMessage(), e);
                     }
                 }
@@ -745,7 +745,7 @@ public class Activator implements BundleActivator {
             if (!foundURLs.isEmpty()) {
                 // rules may use Global objects from his own spring beans, so we delay the rules registration until the spring context is initialized
                 // to insure that potential global objects are available before rules executions
-                if(DRL_SCANNER.equals(scannerAndObserver.getKey()) && hasSpringFile) {
+                if (DRL_SCANNER.equals(scannerAndObserver.getKey()) && hasSpringFile) {
                     logger.info("--- Rules registration for bundle {} has been delayed until its Spring context is initialized --", getDisplayName(bundle));
                     jahiaTemplatesPackage.doExecuteAfterContextInitialized(new JahiaTemplatesPackage.ContextInitializedCallback() {
                         @Override

@@ -82,10 +82,7 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (!isEligibleToManageJob()) {
-            return;
-        }
-        if (disabled) {
+        if (disabled || !isEligibleToManageJob()) {
             return;
         }
         if (overwriteExisting == null) {
@@ -202,6 +199,12 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
         }
     }
 
+    /**
+     * Checks if the scheduler is allowed to manage this type of job, i.e. it is either a RAM job or a persisted job and we are on a
+     * processing server.
+     * 
+     * @return Returns <code>true</code> if the scheduler is allowed to manage this type of job
+     */
     private boolean isEligibleToManageJob() {
         return (isRamJob || settingsBean.isProcessingServer());
     }

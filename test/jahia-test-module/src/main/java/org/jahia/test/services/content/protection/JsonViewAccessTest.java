@@ -60,6 +60,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
@@ -69,6 +70,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.JahiaTestCase;
@@ -89,6 +91,8 @@ public class JsonViewAccessTest extends JahiaTestCase {
     private static final String CATEGORY_NAME = "json-view-access-test-category";
 
     private static final String EDITOR_USER_NAME = "json-view-access-test-editor";
+
+    private static String editorFilesPath;
 
     private static final Logger logger = LoggerFactory.getLogger(JcrSettingsAccessTest.class);
 
@@ -145,6 +149,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
                         subpageNode.setProperty("jcr:title", "Subpage under label 2");
                         subpageNode.setProperty("j:templateName", "simple");
 
+                        // site files
                         JCRNodeWrapper folder = siteNode.getNode("files").addNode("folder-1", Constants.JAHIANT_FOLDER);
                         folder.uploadFile("text-1.txt", IOUtils.toInputStream("text-1"), "plain/text");
                         folder.uploadFile("text-2.txt", IOUtils.toInputStream("text-2"), "plain/text");
@@ -160,6 +165,30 @@ public class JsonViewAccessTest extends JahiaTestCase {
                         return null;
                     }
                 });
+
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            @Override
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                // editor user files
+                JCRNodeWrapper userFiles = session.getNode(ServicesRegistry.getInstance().getJahiaUserManagerService()
+                        .getUserSplittingRule().getPathForUsername(EDITOR_USER_NAME))
+                        .addNode("files", Constants.JAHIANT_FOLDER);
+                editorFilesPath = userFiles.getPath();
+                JCRNodeWrapper folder = userFiles.addNode("folder-1", Constants.JAHIANT_FOLDER);
+                folder.uploadFile("text-1.txt", IOUtils.toInputStream("text-1"), "plain/text");
+                folder.uploadFile("text-2.txt", IOUtils.toInputStream("text-2"), "plain/text");
+                folder = userFiles.addNode("folder-2", Constants.JAHIANT_FOLDER);
+                folder.uploadFile("text-3.txt", IOUtils.toInputStream("text-3"), "plain/text");
+                folder.uploadFile("text-4.txt", IOUtils.toInputStream("text-4"), "plain/text");
+
+                session.save();
+
+                // publish files of a user
+                JCRPublicationService.getInstance().publishByMainId(userFiles.getIdentifier(), Constants.EDIT_WORKSPACE,
+                        Constants.LIVE_WORKSPACE, null, true, null);
+                return null;
+            }
+        });
     }
 
     @BeforeClass
@@ -172,7 +201,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 // create editor user
-                JahiaUserManagerService.getInstance().createUser(EDITOR_USER_NAME, site.getSiteKey(), USER_PASSWORD,
+                JahiaUserManagerService.getInstance().createUser(EDITOR_USER_NAME, null, USER_PASSWORD,
                         new Properties(), session);
                 session.save();
 
@@ -202,6 +231,13 @@ public class JsonViewAccessTest extends JahiaTestCase {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 if (session.nodeExists("/sites/systemsite/categories/" + CATEGORY_NAME)) {
                     session.getNode("/sites/systemsite/categories/" + CATEGORY_NAME).remove();
+                    session.save();
+                }
+
+                JahiaUserManagerService userManager = JahiaUserManagerService.getInstance();
+                JCRUserNode editorUser = userManager.lookupUser(EDITOR_USER_NAME, session);
+                if (editorUser != null) {
+                    userManager.deleteUser(editorUser.getPath(), session);
                     session.save();
                 }
 
@@ -262,14 +298,14 @@ public class JsonViewAccessTest extends JahiaTestCase {
     }
 
     @Test
-    public void guestHasAccessInLiveToSiteFiles() throws RepositoryException, IOException {
+    public void guestHasAccessInLiveToSiteFolders() throws RepositoryException, IOException {
         String sitePath = site.getJCRLocalPath();
-        String[] relativePaths = new String[] { "/files", "/files/folder-1", "/files/folder-2",
-                "/files/folder-1/text-1.txt", "/files/folder-2/text-3.txt" };
+        String[] relativePaths = new String[] { "/files", "/files/folder-1", "/files/folder-2" };
 
         for (String path : relativePaths) {
             checkHasAccess("/cms/render/live/en" + sitePath + path + ".json", "\"jcr:created\"");
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".tree.json", "\"path\":\"" + sitePath + path);
+            checkHasAccess("/cms/render/live/en" + sitePath + path + ".tree.json",
+                    "/files".equals(path) ? "\"path\":\"" + sitePath + path : "[]");
             checkHasAccess("/cms/render/live/en" + sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
             checkHasAccess("/cms/render/live/en" + sitePath + path + ".treeRootItem.json",
                     "\"path\":\"" + sitePath + path);
@@ -325,6 +361,19 @@ public class JsonViewAccessTest extends JahiaTestCase {
     }
 
     @Test
+    public void guestHasNoAccessInLiveToSiteFiles() throws RepositoryException, IOException {
+        String sitePath = site.getJCRLocalPath();
+        String[] relativePaths = new String[] { "/files/folder-1/text-1.txt", "/files/folder-2/text-3.txt" };
+
+        for (String path : relativePaths) {
+            checkNoAccess("/cms/render/live/en" + sitePath + path + ".json");
+            checkNoAccess("/cms/render/live/en" + sitePath + path + ".tree.json");
+            checkNoAccess("/cms/render/live/en" + sitePath + path + ".treeItem.json");
+            checkNoAccess("/cms/render/live/en" + sitePath + path + ".treeRootItem.json");
+        }
+    }
+
+    @Test
     public void guestHasNoAccessInLiveToSiteProtectedContent() throws RepositoryException, IOException {
         String sitePath = site.getJCRLocalPath();
 
@@ -347,6 +396,33 @@ public class JsonViewAccessTest extends JahiaTestCase {
             checkNoAccess("/cms/render/live/en" + sitePath + path + ".tree.json");
             checkNoAccess("/cms/render/live/en" + sitePath + path + ".treeItem.json");
             checkNoAccess("/cms/render/live/en" + sitePath + path + ".treeRootItem.json");
+        }
+    }
+
+    @Test
+    public void guestHasNoAccessInLiveToSiteUserFolders() throws RepositoryException, IOException {
+        String root = editorFilesPath;
+        String[] relativePaths = new String[] { "/files", "/files/folder-1", "/files/folder-2" };
+
+        for (String path : relativePaths) {
+            checkNoAccess("/cms/render/live/en" + root + path + ".json");
+            checkNoAccess("/cms/render/live/en" + root + path + ".tree.json");
+            checkNoAccess("/cms/render/live/en" + root + path + ".treeItem.json");
+            checkNoAccess("/cms/render/live/en" + root + path + ".treeRootItem.json");
+        }
+    }
+
+    @Test
+    public void guestHasNoAccessInLiveToUserFilesAndFolder() throws RepositoryException, IOException {
+        String root = editorFilesPath;
+        String[] relativePaths = new String[] { "", "/folder-1", "/folder-2", "/folder-1/text-1.txt",
+                "/folder-2/text-3.txt" };
+
+        for (String path : relativePaths) {
+            checkNoAccess("/cms/render/live/en" + root + path + ".json");
+            checkNoAccess("/cms/render/live/en" + root + path + ".tree.json");
+            checkNoAccess("/cms/render/live/en" + root + path + ".treeItem.json");
+            checkNoAccess("/cms/render/live/en" + root + path + ".treeRootItem.json");
         }
     }
 

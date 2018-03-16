@@ -49,6 +49,7 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Properties;
@@ -217,7 +218,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
         JCRSessionFactory.getInstance().closeAllSessions();
     }
 
-    private void checkAccess(String url, boolean shouldHaveAccess, String textInResponse) {
+    private void checkAccess(String url, boolean shouldHaveAccess, String textInResponse) throws IOException {
         String out = getAsText(url, shouldHaveAccess ? SC_OK : SC_NOT_FOUND);
         if (textInResponse != null) {
             assertTrue("Response content of the URL " + url + " does not contain expected text: " + textInResponse,
@@ -225,16 +226,16 @@ public class JsonViewAccessTest extends JahiaTestCase {
         }
     }
 
-    private void checkHasAccess(String url, String textInResponse) {
+    private void checkHasAccess(String url, String textInResponse) throws IOException {
         checkAccess(url, true, textInResponse);
     }
 
-    private void checkNoAccess(String url) {
+    private void checkNoAccess(String url) throws IOException {
         checkAccess(url, false, "<title>404 - Page not found</title>");
     }
 
     @Test
-    public void guestHasAccessInLiveToCategories() throws RepositoryException {
+    public void guestHasAccessInLiveToCategories() throws RepositoryException, IOException {
         String rootPath = JCRContentUtils.getSystemSitePath() + "/categories/" + CATEGORY_NAME;
 
         // categories with sub-categories
@@ -261,7 +262,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
     }
 
     @Test
-    public void guestHasAccessInLiveToSiteFiles() throws RepositoryException {
+    public void guestHasAccessInLiveToSiteFiles() throws RepositoryException, IOException {
         String sitePath = site.getJCRLocalPath();
         String[] relativePaths = new String[] { "/files", "/files/folder-1", "/files/folder-2",
                 "/files/folder-1/text-1.txt", "/files/folder-2/text-3.txt" };
@@ -276,7 +277,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
     }
 
     @Test
-    public void guestHasAccessInLiveToSitePages() throws RepositoryException {
+    public void guestHasAccessInLiveToSitePages() throws RepositoryException, IOException {
         String sitePath = site.getJCRLocalPath();
 
         // access with treeRootItem view for site node itself
@@ -305,7 +306,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
     }
 
     @Test
-    public void guestHasNoAccessInLiveToProtectedContent() throws RepositoryException {
+    public void guestHasNoAccessInLiveToProtectedContent() throws RepositoryException, IOException {
         // root j:acl node
         getAsText("/cms/render/live/en/j:acl.json", SC_UNAUTHORIZED);
         getAsText("/cms/render/live/en/j:acl.tree.json", SC_UNAUTHORIZED);
@@ -324,7 +325,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
     }
 
     @Test
-    public void guestHasNoAccessInLiveToSiteProtectedContent() throws RepositoryException {
+    public void guestHasNoAccessInLiveToSiteProtectedContent() throws RepositoryException, IOException {
         String sitePath = site.getJCRLocalPath();
 
         // site node itself

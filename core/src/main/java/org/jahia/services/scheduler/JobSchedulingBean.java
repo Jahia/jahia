@@ -57,15 +57,15 @@ import java.util.*;
 
 /**
  * Convenient Spring bean to schedule background RAM as well as persistent jobs.
- * 
+ *
  * @author Cedric Mailleux
  * @author Sergiy Shyrkov
  * @since JAHIA 6.5
  */
 public class JobSchedulingBean implements InitializingBean, DisposableBean {
 
-    private static Logger logger = LoggerFactory.getLogger(JobSchedulingBean.class);
-    
+    private static final Logger logger = LoggerFactory.getLogger(JobSchedulingBean.class);
+
     private boolean disabled;
 
     private boolean isRamJob;
@@ -80,9 +80,12 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
 
     private List<Trigger> triggers = new LinkedList<Trigger>();
 
-   public void afterPropertiesSet() throws Exception {
-        // avoid touching job if it's a persisted job and we are not on processing node
-        if (disabled || (!isRamJob && !settingsBean.isProcessingServer())) {
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (!isEligibleToManageJob()) {
+            return;
+        }
+        if (disabled) {
             return;
         }
         if (overwriteExisting == null) {
@@ -107,11 +110,9 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        // avoid touching job if it's a persisted job and we are not on processing node
-        if (!isRamJob && !settingsBean.isProcessingServer()) {
+        if (!isEligibleToManageJob()) {
             return;
         }
-
         if (JahiaContextLoaderListener.isRunning()) {
             if (isRamJob) {
                 deleteJob();
@@ -124,7 +125,7 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
     protected Scheduler getScheduler() {
         return isRamJob ? schedulerService.getRAMScheduler() : schedulerService.getScheduler();
     }
-    
+
     protected String getTriggerInfo(Trigger trigger) {
         return (trigger instanceof CronTrigger && ((CronTrigger) trigger).getCronExpression() != null) ? ("CronTrigger ["
                 + ((CronTrigger) trigger).getCronExpression() + "]")
@@ -201,10 +202,14 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
         }
     }
 
+    private boolean isEligibleToManageJob() {
+        return (isRamJob || settingsBean.isProcessingServer());
+    }
+
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
     }
-    
+
     public void setJobDetail(JobDetail jobDetail) {
         this.jobDetail = jobDetail;
     }
@@ -236,7 +241,7 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
             this.triggers.addAll(triggers);
         }
     }
-    
+
     protected Map<String, Trigger> mapByName(Trigger[] triggers) {
         if (triggers == null || triggers.length == 0) {
             return Collections.emptyMap();

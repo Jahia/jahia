@@ -144,7 +144,9 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             }
         }
         doPost(request, response);
-        logger.debug("Handled request to GWT service '{}' in {} ms", remoteServiceName, System.currentTimeMillis() - startTime);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Handled request to GWT service '{}' in {} ms", remoteServiceName, System.currentTimeMillis() - startTime);
+        }
         return null;
     }
 
@@ -240,7 +242,7 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             rpcRequest = RPC.decodeRequest(payload, remoteService.getClass(), this);
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Executing method " + rpcRequest.getMethod());
+                logger.debug("Executing method {}", rpcRequest.getMethod());
             }
 
             return JahiaRPC.invokeAndEncodeResponse(remoteService, rpcRequest

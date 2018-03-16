@@ -267,7 +267,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
     }
 
     private void checkNoAccess(String url) throws IOException {
-        checkAccess(url, false, "<title>404 - Page not found</title>");
+        checkAccess(url, false, "<title>404 - ");
     }
 
     @Test

@@ -540,6 +540,7 @@ public class VanityUrlManager {
             for (Map.Entry<String, VanityUrl> entry : toUpdate.entrySet()) {
                 JCRNodeWrapper vanityUrlNode = session.getNodeByIdentifier(entry.getValue().getIdentifier());
                 VanityUrl vanityUrl = entry.getValue();
+                checkUniqueConstraint(contentNode, vanityUrl, toDelete);
                 session.checkout(vanityUrlNode);
                 vanityUrlNode.setProperty(PROPERTY_URL, vanityUrl.getUrl());
                 vanityUrlNode.setProperty(JCR_LANGUAGE, vanityUrl.getLanguage());

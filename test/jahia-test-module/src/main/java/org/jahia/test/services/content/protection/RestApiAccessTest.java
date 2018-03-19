@@ -141,9 +141,6 @@ public class RestApiAccessTest extends JahiaTestCase {
                 JahiaUserManagerService userManager = JahiaUserManagerService.getInstance();
                 JCRUserNode editorUser = userManager.lookupUser(EDITOR_USER_NAME, session);
                 if (editorUser != null) {
-                    session.getRootNode().revokeRolesForPrincipal("u:" + EDITOR_USER_NAME);
-                    session.save();
-
                     userManager.deleteUser(editorUser.getPath(), session);
                     session.save();
                 }
@@ -225,8 +222,6 @@ public class RestApiAccessTest extends JahiaTestCase {
         loginRoot();
         try {
             checkNoAccess("/users/root/passwordHistory");
-            checkNoAccess("/users/root/passwordHistory");
-            checkNoAccess(pwdEntryPath);
             checkNoAccess(pwdEntryPath);
         } finally {
             logout();

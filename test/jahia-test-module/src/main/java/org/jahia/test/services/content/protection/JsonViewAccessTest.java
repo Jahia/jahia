@@ -78,8 +78,6 @@ import org.jahia.test.TestHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Test case for protecting access to JCR settings node.
@@ -93,8 +91,6 @@ public class JsonViewAccessTest extends JahiaTestCase {
     private static final String EDITOR_USER_NAME = "json-view-access-test-editor";
 
     private static String editorFilesPath;
-
-    private static final Logger logger = LoggerFactory.getLogger(JcrSettingsAccessTest.class);
 
     private static JahiaSite site;
 
@@ -245,11 +241,7 @@ public class JsonViewAccessTest extends JahiaTestCase {
             }
         });
 
-        try {
-            TestHelper.deleteSite(TESTSITE_NAME);
-        } catch (Exception ex) {
-            logger.warn("Exception during test tearDown", ex);
-        }
+        TestHelper.deleteSite(TESTSITE_NAME);
 
         JCRSessionFactory.getInstance().closeAllSessions();
     }

@@ -85,7 +85,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RestApiAccessTest extends JahiaTestCase {
 
-    private static final String EDITOR_USER_NAME = "json-view-access-test-editor";
+    private static final String EDITOR_USER_NAME = "rest-api-access-test-editor";
 
     private static String editorFilesPath;
 

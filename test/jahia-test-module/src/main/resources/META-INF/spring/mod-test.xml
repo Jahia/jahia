@@ -44,6 +44,7 @@
                 <value>org.jahia.test.services.content.nodetypes.NodePropertyDefaultValueTest</value>
                 <value>org.jahia.test.services.content.protection.JcrSettingsAccessTest</value>
                 <value>org.jahia.test.services.content.protection.JsonViewAccessTest</value>
+                <value>org.jahia.test.services.content.protection.RestApiAccessTest</value>
                 <value>org.jahia.test.services.htmlvalidator.WAIValidatorTest</value>
                 <value>org.jahia.test.services.i18n.ResourceBundleTest</value>
                 <value>org.jahia.test.services.importexport.ImportExportTest</value>

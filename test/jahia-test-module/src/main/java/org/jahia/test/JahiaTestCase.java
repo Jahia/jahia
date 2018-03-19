@@ -99,6 +99,8 @@ public class JahiaTestCase {
     
     private final static String BASE_URL = "http://localhost:" + PORT;
 
+    private static boolean baseUrlForTestsLogged;
+
     private static Logger logger = LoggerFactory.getLogger(JahiaTestCase.class);
 
     /**
@@ -185,7 +187,10 @@ public class JahiaTestCase {
     protected String getBaseServerURL() {
         HttpServletRequest req = getRequest();
         String url = req != null ? req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() : BASE_URL;
-        logger.info("Base URL for tests is: " + url);
+        if (!baseUrlForTestsLogged) {
+            logger.info("Base URL for tests is: " + url);
+            baseUrlForTestsLogged = true;
+        }
         return url;
     }
 

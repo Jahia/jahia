@@ -29,6 +29,8 @@
                 <jcr:nodeTypeManagement_default jcr:primaryType="jnt:permission"/>
                 <jcr:retentionManagement_default jcr:primaryType="jnt:permission"/>
                 <jcr:lifecycleManagement_default jcr:primaryType="jnt:permission"/>
+
+                <api-access jcr:primaryType="jnt:permission"/>
             </jcr:all_default>
 
             <jcr:all_live jcr:primaryType="jnt:permission">

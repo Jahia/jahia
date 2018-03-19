@@ -254,9 +254,10 @@ public class JsonViewAccessTest extends JahiaTestCase {
     }
 
     private void checkAccess(String url, boolean shouldHaveAccess, String textInResponse) {
-        String out = getAsText(url, shouldHaveAccess ? SC_OK : SC_NOT_FOUND);
+        String urlToTest = "/cms/render/live/en" + url; 
+        String out = getAsText(urlToTest, shouldHaveAccess ? SC_OK : SC_NOT_FOUND);
         if (textInResponse != null) {
-            assertTrue("Response content of the URL " + url + " does not contain expected text: " + textInResponse,
+            assertTrue("Response content of the URL " + urlToTest + " does not contain expected text: " + textInResponse,
                     StringUtils.contains(out, textInResponse));
         }
     }
@@ -277,10 +278,10 @@ public class JsonViewAccessTest extends JahiaTestCase {
         String[] relativePaths = new String[] { "", "/products", "/services" };
 
         for (String path : relativePaths) {
-            checkHasAccess("/cms/render/live/en" + rootPath + path + ".json", "\"jcr:created\"");
-            checkHasAccess("/cms/render/live/en" + rootPath + path + ".tree.json", "\"path\":\"" + rootPath + path);
-            checkHasAccess("/cms/render/live/en" + rootPath + path + ".treeItem.json", "\"path\":\"" + rootPath + path);
-            checkHasAccess("/cms/render/live/en" + rootPath + path + ".treeRootItem.json",
+            checkHasAccess(rootPath + path + ".json", "\"jcr:created\"");
+            checkHasAccess(rootPath + path + ".tree.json", "\"path\":\"" + rootPath + path);
+            checkHasAccess(rootPath + path + ".treeItem.json", "\"path\":\"" + rootPath + path);
+            checkHasAccess(rootPath + path + ".treeRootItem.json",
                     "\"path\":\"" + rootPath + path);
         }
 
@@ -288,10 +289,10 @@ public class JsonViewAccessTest extends JahiaTestCase {
         relativePaths = new String[] { "/products/DX", "/services/Training" };
 
         for (String path : relativePaths) {
-            checkHasAccess("/cms/render/live/en" + rootPath + path + ".json", "\"jcr:created\"");
-            checkHasAccess("/cms/render/live/en" + rootPath + path + ".tree.json", null);
-            checkHasAccess("/cms/render/live/en" + rootPath + path + ".treeItem.json", "\"path\":\"" + rootPath + path);
-            checkHasAccess("/cms/render/live/en" + rootPath + path + ".treeRootItem.json",
+            checkHasAccess(rootPath + path + ".json", "\"jcr:created\"");
+            checkHasAccess(rootPath + path + ".tree.json", null);
+            checkHasAccess(rootPath + path + ".treeItem.json", "\"path\":\"" + rootPath + path);
+            checkHasAccess(rootPath + path + ".treeRootItem.json",
                     "\"path\":\"" + rootPath + path);
         }
     }
@@ -302,11 +303,11 @@ public class JsonViewAccessTest extends JahiaTestCase {
         String[] relativePaths = new String[] { "/files", "/files/folder-1", "/files/folder-2" };
 
         for (String path : relativePaths) {
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".json", "\"jcr:created\"");
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".tree.json",
+            checkHasAccess(sitePath + path + ".json", "\"jcr:created\"");
+            checkHasAccess(sitePath + path + ".tree.json",
                     "/files".equals(path) ? "\"path\":\"" + sitePath + path : "[]");
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".treeRootItem.json",
+            checkHasAccess(sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
+            checkHasAccess(sitePath + path + ".treeRootItem.json",
                     "\"path\":\"" + sitePath + path);
         }
     }
@@ -316,15 +317,15 @@ public class JsonViewAccessTest extends JahiaTestCase {
         String sitePath = site.getJCRLocalPath();
 
         // access with treeRootItem view for site node itself
-        checkHasAccess("/cms/render/live/en" + sitePath + ".treeRootItem.json", "\"path\":\"" + sitePath + "\"");
+        checkHasAccess(sitePath + ".treeRootItem.json", "\"path\":\"" + sitePath + "\"");
 
         // access for pages with sub-pages
         String[] relativePaths = new String[] { "/home", "/home/page-a", "/home/label-c" };
         for (String path : relativePaths) {
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".json", "\"jcr:created\"");
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".tree.json", "\"path\":\"" + sitePath + path);
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".treeRootItem.json",
+            checkHasAccess(sitePath + path + ".json", "\"jcr:created\"");
+            checkHasAccess(sitePath + path + ".tree.json", "\"path\":\"" + sitePath + path);
+            checkHasAccess(sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
+            checkHasAccess(sitePath + path + ".treeRootItem.json",
                     "\"path\":\"" + sitePath + path);
         }
 
@@ -332,10 +333,10 @@ public class JsonViewAccessTest extends JahiaTestCase {
         relativePaths = new String[] { "/home/page-a/sub-page-1", "/home/label-c/label-sub-page-1" };
 
         for (String path : relativePaths) {
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".json", "\"jcr:created\"");
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".tree.json", null);
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
-            checkHasAccess("/cms/render/live/en" + sitePath + path + ".treeRootItem.json",
+            checkHasAccess(sitePath + path + ".json", "\"jcr:created\"");
+            checkHasAccess(sitePath + path + ".tree.json", null);
+            checkHasAccess(sitePath + path + ".treeItem.json", "\"path\":\"" + sitePath + path);
+            checkHasAccess(sitePath + path + ".treeRootItem.json",
                     "\"path\":\"" + sitePath + path);
         }
     }
@@ -352,10 +353,10 @@ public class JsonViewAccessTest extends JahiaTestCase {
                 "/settings", "/sites", "/users" };
 
         for (String path : relativePaths) {
-            checkNoAccess("/cms/render/live/en" + path + ".json");
-            checkNoAccess("/cms/render/live/en" + path + ".tree.json");
-            checkNoAccess("/cms/render/live/en" + path + ".treeItem.json");
-            checkNoAccess("/cms/render/live/en" + path + ".treeRootItem.json");
+            checkNoAccess(path + ".json");
+            checkNoAccess(path + ".tree.json");
+            checkNoAccess(path + ".treeItem.json");
+            checkNoAccess(path + ".treeRootItem.json");
         }
     }
 
@@ -365,10 +366,10 @@ public class JsonViewAccessTest extends JahiaTestCase {
         String[] relativePaths = new String[] { "/files/folder-1/text-1.txt", "/files/folder-2/text-3.txt" };
 
         for (String path : relativePaths) {
-            checkNoAccess("/cms/render/live/en" + sitePath + path + ".json");
-            checkNoAccess("/cms/render/live/en" + sitePath + path + ".tree.json");
-            checkNoAccess("/cms/render/live/en" + sitePath + path + ".treeItem.json");
-            checkNoAccess("/cms/render/live/en" + sitePath + path + ".treeRootItem.json");
+            checkNoAccess(sitePath + path + ".json");
+            checkNoAccess(sitePath + path + ".tree.json");
+            checkNoAccess(sitePath + path + ".treeItem.json");
+            checkNoAccess(sitePath + path + ".treeRootItem.json");
         }
     }
 
@@ -377,24 +378,24 @@ public class JsonViewAccessTest extends JahiaTestCase {
         String sitePath = site.getJCRLocalPath();
 
         // site node itself
-        checkNoAccess("/cms/render/live/en" + sitePath + ".json");
-        checkNoAccess("/cms/render/live/en" + sitePath + ".tree.json");
-        checkNoAccess("/cms/render/live/en" + sitePath + ".treeItem.json");
+        checkNoAccess(sitePath + ".json");
+        checkNoAccess(sitePath + ".tree.json");
+        checkNoAccess(sitePath + ".treeItem.json");
         // the treeRootItem is still allowed on site node
 
         // j:acl node
-        getAsText("/cms/render/live/en" + sitePath + "/j:acl.json", SC_UNAUTHORIZED);
-        getAsText("/cms/render/live/en" + sitePath + "/j:acl.tree.json", SC_UNAUTHORIZED);
-        getAsText("/cms/render/live/en" + sitePath + "/j:acl.treeItem.json", SC_UNAUTHORIZED);
-        getAsText("/cms/render/live/en" + sitePath + "/j:acl.treeRootItem.json", SC_UNAUTHORIZED);
+        getAsText(sitePath + "/j:acl.json", SC_UNAUTHORIZED);
+        getAsText(sitePath + "/j:acl.tree.json", SC_UNAUTHORIZED);
+        getAsText(sitePath + "/j:acl.treeItem.json", SC_UNAUTHORIZED);
+        getAsText(sitePath + "/j:acl.treeRootItem.json", SC_UNAUTHORIZED);
 
         String[] relativePaths = new String[] { "/contents", "/groups", "/users", "/home/listA", "/home/listA" };
 
         for (String path : relativePaths) {
-            checkNoAccess("/cms/render/live/en" + sitePath + path + ".json");
-            checkNoAccess("/cms/render/live/en" + sitePath + path + ".tree.json");
-            checkNoAccess("/cms/render/live/en" + sitePath + path + ".treeItem.json");
-            checkNoAccess("/cms/render/live/en" + sitePath + path + ".treeRootItem.json");
+            checkNoAccess(sitePath + path + ".json");
+            checkNoAccess(sitePath + path + ".tree.json");
+            checkNoAccess(sitePath + path + ".treeItem.json");
+            checkNoAccess(sitePath + path + ".treeRootItem.json");
         }
     }
 
@@ -404,10 +405,10 @@ public class JsonViewAccessTest extends JahiaTestCase {
         String[] relativePaths = new String[] { "/files", "/files/folder-1", "/files/folder-2" };
 
         for (String path : relativePaths) {
-            checkNoAccess("/cms/render/live/en" + root + path + ".json");
-            checkNoAccess("/cms/render/live/en" + root + path + ".tree.json");
-            checkNoAccess("/cms/render/live/en" + root + path + ".treeItem.json");
-            checkNoAccess("/cms/render/live/en" + root + path + ".treeRootItem.json");
+            checkNoAccess(root + path + ".json");
+            checkNoAccess(root + path + ".tree.json");
+            checkNoAccess(root + path + ".treeItem.json");
+            checkNoAccess(root + path + ".treeRootItem.json");
         }
     }
 
@@ -418,10 +419,10 @@ public class JsonViewAccessTest extends JahiaTestCase {
                 "/folder-2/text-3.txt" };
 
         for (String path : relativePaths) {
-            checkNoAccess("/cms/render/live/en" + root + path + ".json");
-            checkNoAccess("/cms/render/live/en" + root + path + ".tree.json");
-            checkNoAccess("/cms/render/live/en" + root + path + ".treeItem.json");
-            checkNoAccess("/cms/render/live/en" + root + path + ".treeRootItem.json");
+            checkNoAccess(root + path + ".json");
+            checkNoAccess(root + path + ".tree.json");
+            checkNoAccess(root + path + ".treeItem.json");
+            checkNoAccess(root + path + ".treeRootItem.json");
         }
     }
 

@@ -85,13 +85,13 @@ public class RestApiAccessTest extends JahiaTestCase {
 
     private static final String EDITOR_USER_NAME = "rest-api-access-test-editor";
 
-    private static String editorFilesPath;
+    private static final String EDITOR_USER_PASSWORD = "password";
+
+    private static String editorNodePath;
 
     private static JahiaSite site;
 
     private final static String TESTSITE_NAME = "restApiAccessTest";
-
-    private static final String USER_PASSWORD = "password";
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -104,7 +104,8 @@ public class RestApiAccessTest extends JahiaTestCase {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 // create editor user
                 JCRUserNode editorUser = JahiaUserManagerService.getInstance().createUser(EDITOR_USER_NAME, null,
-                        USER_PASSWORD, new Properties(), session);
+                        EDITOR_USER_PASSWORD, new Properties(), session);
+                editorNodePath = editorUser.getPath();
                 session.save();
 
                 // grant her the editor role on the site
@@ -113,10 +114,8 @@ public class RestApiAccessTest extends JahiaTestCase {
                 session.save();
 
                 // create user files folder
-                JCRNodeWrapper userFiles = session.getNode(editorUser.getPath()).addNode("files",
-                        Constants.JAHIANT_FOLDER);
+                JCRNodeWrapper userFiles = editorUser.addNode("files", Constants.JAHIANT_FOLDER);
                 session.save();
-                editorFilesPath = userFiles.getPath();
 
                 // publish files of a user
                 JCRPublicationService.getInstance().publishByMainId(userFiles.getIdentifier(), Constants.EDIT_WORKSPACE,
@@ -153,12 +152,11 @@ public class RestApiAccessTest extends JahiaTestCase {
 
     @Test
     public void accessWithEditorUser() throws RepositoryException, IOException {
-        login(EDITOR_USER_NAME, USER_PASSWORD);
+        login(EDITOR_USER_NAME, EDITOR_USER_PASSWORD);
         try {
-            checkAccess(StringUtils.substringBeforeLast(editorFilesPath, "/"));
-            checkAccess(editorFilesPath);
-
-            checkAccess("/sites/" + TESTSITE_NAME + "/contents");
+            checkLiveAccess(editorNodePath);
+            checkLiveAccess(editorNodePath + "/files");
+            checkLiveAccess("/sites/" + TESTSITE_NAME + "/contents");
         } finally {
             logout();
         }
@@ -166,12 +164,12 @@ public class RestApiAccessTest extends JahiaTestCase {
 
     @Test
     public void accessWithGuestToFoldersAndPages() throws RepositoryException, IOException {
-        checkAccess("/sites/" + TESTSITE_NAME + "/files");
-        checkAccess("/sites/" + TESTSITE_NAME + "/home");
+        checkLiveAccess("/sites/" + TESTSITE_NAME + "/files");
+        checkLiveAccess("/sites/" + TESTSITE_NAME + "/home");
     }
 
-    private void checkAccess(String url) throws IOException {
-        checkAccess("/modules/api/jcr/v1/live/en/paths" + url, true);
+    private void checkLiveAccess(String path) throws IOException {
+        checkAccess("/modules/api/jcr/v1/live/en/paths" + path, true);
     }
 
     private void checkAccess(String url, boolean shouldHaveAccess) throws IOException {
@@ -185,13 +183,13 @@ public class RestApiAccessTest extends JahiaTestCase {
         }
     }
 
-    private void checkNoAccess(String url) throws IOException {
-        checkNoAccess(url, LIVE_WORKSPACE);
-        checkNoAccess(url, EDIT_WORKSPACE);
+    private void checkNoAccess(String path) throws IOException {
+        checkNoAccess(path, LIVE_WORKSPACE);
+        checkNoAccess(path, EDIT_WORKSPACE);
     }
 
-    private void checkNoAccess(String url, String workspace) throws IOException {
-        checkAccess("/modules/api/jcr/v1/" + workspace + "/en/paths" + url, false);
+    private void checkNoAccess(String path, String workspace) throws IOException {
+        checkAccess("/modules/api/jcr/v1/" + workspace + "/en/paths" + path, false);
     }
 
     @Test
@@ -225,10 +223,9 @@ public class RestApiAccessTest extends JahiaTestCase {
     public void noAccessWithGuestToOtherContent() throws RepositoryException, IOException {
         String[] paths = new String[] { "/groups", "/imports", "/j:acl", "/jcr:system", "/modules", "/passwordPolicy",
                 "/referencesKeeper", "/settings", "/sites", "/users", "/users/root", "/users/root/files",
-                editorFilesPath };
+                editorNodePath + "/files" };
         for (String path : paths) {
             checkNoAccess(path);
         }
     }
-
 }

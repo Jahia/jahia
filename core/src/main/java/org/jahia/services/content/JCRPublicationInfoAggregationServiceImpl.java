@@ -8,35 +8,44 @@ import javax.jcr.RepositoryException;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 
+/**
+ * Service implementation that calculates aggregated publication info based on data retrieved from associated PublicationService.
+ */
 public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationInfoAggregationService {
 
     private JCRSessionFactory sessionFactory;
     private JCRPublicationService publicationService;
 
+    /**
+     * @param sessionFactory Associated JCR session factory
+     */
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
+    /**
+     * @param sessionFactory Associated publication service
+     */
     public void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;
     }
 
     @Override
-    public AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean includeSubNodes, boolean includeReferences) {
+    public AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references) {
 
         try {
 
             JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
             JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
 
-            PublicationInfo publicationInfo = publicationService.getPublicationInfo(nodeIdentifier, Collections.singleton(language), includeReferences, includeSubNodes, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE).get(0);
+            PublicationInfo publicationInfo = publicationService.getPublicationInfo(nodeIdentifier, Collections.singleton(language), references, subNodes, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE).get(0);
 
-            if (!includeSubNodes) {
+            if (!subNodes) {
                 // We don't include sub-nodes, but we still need the translation node to get correct status.
                 String translationNodeName = "j:translation_" + language;
                 if (node.hasNode(translationNodeName)) {
                     JCRNodeWrapper translationNode = node.getNode(translationNodeName);
-                    PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), includeReferences, false, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE).get(0);
+                    PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE).get(0);
                     publicationInfo.getRoot().addChild(translationInfo.getRoot());
                 }
             }

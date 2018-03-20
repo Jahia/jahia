@@ -97,6 +97,16 @@
         </bean>
     </osgi:service>
 
+    <osgi:service interface="org.jahia.services.content.JCRPublicationInfoAggregationService">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX publication info aggregation service"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="jcrPublicationInfoAggregationService"/>
+        </bean>
+    </osgi:service>
+
     <osgi:service interface="org.jahia.services.importexport.ImportExportService">
         <osgi:service-properties>
             <entry key="Service Description" value="DX import/export service to manipulate different types of content"/>
@@ -216,7 +226,6 @@
             <property name="target" ref="RenderService"/>
         </bean>
     </osgi:service>
-
 
     <osgi:list id="RenderFilterList" interface="org.jahia.services.render.filter.RenderFilter" availability="optional">
         <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"

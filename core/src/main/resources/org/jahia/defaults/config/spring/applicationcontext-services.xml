@@ -4,7 +4,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <bean id="springContextSingleton" class="org.jahia.services.SpringContextSingleton" factory-method="getInstance"/>
 
@@ -23,8 +23,10 @@
             </map>
         </property>
     </bean>
+
     <bean id="PortletDispatchingProvider" class="org.jahia.services.applications.pluto.PlutoDispatchingProvider"
           init-method="start" destroy-method="stop"/>
+
     <bean id="DispatchingService" class="org.jahia.services.applications.DispatchingServiceImpl"
           parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="dispatchingProviders">
@@ -34,15 +36,19 @@
         </property>
         <property name="applicationsManager" ref="ApplicationsManagerService"/>
     </bean>
+
     <bean id="ServletContextManager" class="org.jahia.services.applications.ServletContextManager"
           factory-method="getInstance" init-method="start">
         <property name="cacheService" ref="JahiaCacheService"/>
     </bean>
+
     <bean id="QueryService" class="org.jahia.services.query.QueryServiceImpl"
           parent="jahiaServiceTemplate" factory-method="getInstance"/>
+
     <bean id="ApplicationsManagerPortletProvider"
           class="org.jahia.services.applications.pluto.ApplicationsManagerPlutoProvider" init-method="start"
           destroy-method="stop"/>
+
     <bean id="ApplicationsManagerService"
           class="org.jahia.services.applications.ApplicationsManagerServiceImpl"
           parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -74,11 +80,13 @@
             </map>
         </property>
     </bean>
+
     <bean id="JahiaFileWatcherService"
           class="org.jahia.services.deamons.filewatcher.JahiaFileWatcherBaseService"
           parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="schedulerService" ref="SchedulerService"/>
     </bean>
+
     <bean id="JahiaSitesService" class="org.jahia.services.sites.JahiaSitesService" parent="jahiaServiceTemplate"
           factory-method="getInstance" lazy-init="true">
         <property name="groupService" ref="JahiaGroupManagerService"/>
@@ -271,6 +279,7 @@
     </bean>
 
     <bean id="org.jahia.services.seo.jcr.VanityUrlManager" class="org.jahia.services.seo.jcr.VanityUrlManager"/>
+
     <bean id="org.jahia.services.seo.jcr.VanityUrlService" class="org.jahia.services.seo.jcr.VanityUrlService">
         <property name="vanityUrlManager" ref="org.jahia.services.seo.jcr.VanityUrlManager"/>
         <property name="cacheService" ref="JahiaCacheService"/>
@@ -354,4 +363,10 @@
     </bean>
 
     <bean id="ReadOnlyModeController" class="org.jahia.settings.readonlymode.ReadOnlyModeController" depends-on="springContextSingleton" factory-method="getInstance"/>
+
+    <bean id="jcrPublicationInfoAggregationService" class="org.jahia.services.content.JCRPublicationInfoAggregationServiceImpl">
+        <property name="sessionFactory" ref="jcrSessionFactory"/>
+        <property name="publicationService" ref="jcrPublicationService"/>
+    </bean>
+
 </beans>

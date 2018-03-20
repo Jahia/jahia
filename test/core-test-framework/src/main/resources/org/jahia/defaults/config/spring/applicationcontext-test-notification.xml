@@ -6,9 +6,9 @@
           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
           http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-	<bean id="org.jahia.services.content.rules.RulesNotificationService" class="org.mockito.Mockito" factory-method="mock">
-		<constructor-arg value="org.jahia.services.content.rules.RulesNotificationService" />
-	</bean>
+    <bean id="org.jahia.services.content.rules.RulesNotificationService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="org.jahia.services.content.rules.RulesNotificationService" />
+    </bean>
     
     <bean id="sitePublisherSubscriber" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.jahia.services.atmosphere.service.PublisherSubscriberService" />
@@ -17,5 +17,8 @@
     <bean id="scriptEngineUtils" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.jahia.utils.ScriptEngineUtils" />
     </bean>
-        
+
+    <bean id="HttpClientService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="org.jahia.services.notification.HttpClientService" />
+    </bean>
 </beans>

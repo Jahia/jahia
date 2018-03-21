@@ -4396,12 +4396,13 @@ if (!Element.prototype.matches) {
                         var splitter = DexV2.id("indigoSplitter"),
                             splitterXPos = (splitter.exists()) ? parseInt(splitter.nodes[0].style.getPropertyValue("left")) : null;
 
-                        return splitterXPos;
+                        return splitterXPos || null;
                     }();
 
                     if(xPos == null){
                         return false;
                     }
+
 
 
                     // Block the minimum and maximum widths of the side panel
@@ -4472,7 +4473,7 @@ if (!Element.prototype.matches) {
                         }
 
 
-                    var siteCombo = DexV2("body[data-indigo-gwt-side-panel='open'] .window-side-panel div[role='combobox']");
+                    var siteCombo = DexV2(".window-side-panel div[role='combobox']");
 
                     if(siteCombo.exists()){
                         siteCombo.nodes[0].style.setProperty("width", (xPos - 100) + "px", "important");
@@ -4779,6 +4780,7 @@ if (!Element.prototype.matches) {
 
                         // Set ID
                         sidePanelSplitter.id = "indigoSplitter";
+						sidePanelSplitter.style.setProperty("left", "360px", "important");
 
                         // Attach event listener for drag start
                         sidePanelSplitter.onmousedown = app.edit.sidepanel.onStartResize;
@@ -4789,6 +4791,8 @@ if (!Element.prototype.matches) {
                 },
 				open: function(isSettings){
 					app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: OPEN [isSettings='" + isSettings + "']");
+
+					app.edit.sidepanel.resizeSidePanel();
 
                     app.edit.sidepanel.buildSplitter();
 
@@ -4818,6 +4822,14 @@ if (!Element.prototype.matches) {
 				close: function(){
 					if(DexV2.getCached("body").getAttribute("data-edit-window-style") !== "settings" && DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-COLLAPSABLE-SIDE-PANEL") == "yes" && DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") != "true"){
 						app.dev.log("::: APP ::: EDIT ::: SIDEPANEL ::: CLOSE");
+
+						var siteCombo = DexV2("body[data-indigo-gwt-side-panel='open'] .window-side-panel div[role='combobox']");
+
+	                    if(siteCombo.exists()){
+	                        siteCombo.nodes[0].style.setProperty("width", "auto", "important");
+
+	                    }
+
 		                DexV2.getCached("body").setAttribute("data-INDIGO-GWT-SIDE-PANEL", "");
 
 		                // Revert iframes body style attribute to what it was originally

@@ -90,6 +90,7 @@
                 <value>org.jahia.test.services.workflow.WorkflowPermissionsTest</value>
                 <value>org.jahia.test.services.workflow.WorkflowServiceTest</value>
                 <value>org.jahia.test.services.modules.ModulesAdministrationTest</value>
+                <value>org.jahia.test.services.content.publication.PublicationInfoAggregationTest</value>
             </list>
         </property>
 

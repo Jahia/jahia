@@ -59,7 +59,7 @@ public interface JCRPublicationInfoAggregationService {
      * @param references Whether to take references into account when calculating the aggregated publication status
      * @return Aggregated publication info about the node
      */
-    AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references);
+    AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references, JCRSessionWrapper session);
 
     Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> language, boolean allSubTree);
 

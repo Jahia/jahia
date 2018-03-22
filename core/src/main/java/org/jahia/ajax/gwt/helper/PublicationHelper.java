@@ -129,7 +129,7 @@ public class PublicationHelper {
         try {
             HashMap<String, GWTJahiaPublicationInfo> infos = new HashMap<String, GWTJahiaPublicationInfo>(languages.size());
             for (String language : languages) {
-                JCRPublicationInfoAggregationService.AggregatedPublicationInfo aggregatedInfo = publicationInfoAggregationService.getAggregatedPublicationInfo(node.getIdentifier(), language, includeSubNodes, includeReferences);
+                JCRPublicationInfoAggregationService.AggregatedPublicationInfo aggregatedInfo = publicationInfoAggregationService.getAggregatedPublicationInfo(node.getIdentifier(), language, includeSubNodes, includeReferences, currentUserSession);
                 GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(node.getIdentifier(), aggregatedInfo.getPublicationStatus());
                 gwtInfo.setLocked(aggregatedInfo.isLocked());
                 gwtInfo.setWorkInProgress(aggregatedInfo.isWorkInProgress());

@@ -88,11 +88,10 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
     }
 
     @Override
-    public AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references) {
+    public AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references, JCRSessionWrapper session) {
 
         try {
 
-            JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
             JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
 
             PublicationInfo publicationInfo = publicationService.getPublicationInfo(nodeIdentifier, Collections.singleton(language), references, subNodes, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE).get(0);

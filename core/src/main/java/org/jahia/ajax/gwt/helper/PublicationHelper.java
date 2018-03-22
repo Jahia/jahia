@@ -166,8 +166,30 @@ public class PublicationHelper {
     public List<GWTJahiaPublicationInfo> getFullPublicationInfos(List<String> uuids, Set<String> languages,
                                                                  JCRSessionWrapper currentUserSession,
                                                                  boolean allSubTree, boolean checkForUnpublication) throws GWTJahiaServiceException {
+
         try {
             if (!checkForUnpublication) {
+
+//                Collection<JCRPublicationInfoAggregationService.FullPublicationInfo> infos = publicationInfoAggregationService.getFullPublicationInfos(uuids, languages, allSubTree, currentUserSession);
+//                LinkedList<GWTJahiaPublicationInfo> result = new LinkedList<>();
+//                for (JCRPublicationInfoAggregationService.FullPublicationInfo info : infos) {
+//                    GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(info.getNodeIdentifier(), info.getPublicationStatus());
+//                    gwtInfo.setPath(info.getNodePath());
+//                    gwtInfo.setMainUUID(info.getPublicationRootNodeIdentifier());
+//                    gwtInfo.setMainPath(info.getPublicationRootNodePath());
+//                    gwtInfo.setLocked(info.isLocked());
+//                    gwtInfo.setWorkInProgress(info.isWorkInProgress());
+//                    gwtInfo.setWorkflowDefinition(info.getWorkflowDefinition());
+//                    gwtInfo.setWorkflowGroup(info.getWorkflowGroup());
+//                    gwtInfo.setIsAllowedToPublishWithoutWorkflow(info.isAllowedToPublishWithoutWorkflow());
+//                    gwtInfo.setLanguage(info.getLanguage());
+//                    gwtInfo.setI18NUuid(info.getTranslationNodeIdentifier());
+//                    gwtInfo.setDeletedI18nUuid(info.getDeletedTranslationNodeIdentifier());
+//                    gwtInfo.setIsNonRootMarkedForDeletion(info.isNonRootMarkedForDeletion());
+//                    result.add(gwtInfo);
+//                }
+
+
                 LinkedHashMap<String, GWTJahiaPublicationInfo> res = new LinkedHashMap<String, GWTJahiaPublicationInfo>();
                 for (String language : languages) {
                     List<PublicationInfo> infos = publicationService.getPublicationInfos(uuids, Collections.singleton(language), true, true, allSubTree, currentUserSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE);

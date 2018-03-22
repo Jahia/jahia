@@ -61,7 +61,7 @@ public interface JCRPublicationInfoAggregationService {
      */
     AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references, JCRSessionWrapper session);
 
-    Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> language, boolean allSubTree, JCRSessionWrapper session);
+    Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session);
 
     /**
      * Aggregated publication info about a JCR node.
@@ -98,6 +98,8 @@ public interface JCRPublicationInfoAggregationService {
 
         String getNodeIdentifier();
         String getNodePath();
+        String getPublicationRootNodeIdentifier();
+        String getPublicationRootNodePath();
         int getPublicationStatus();
         boolean isPublishable();
         boolean isLocked();
@@ -105,6 +107,7 @@ public interface JCRPublicationInfoAggregationService {
         String getWorkflowDefinition();
         String getWorkflowGroup();
         boolean isAllowedToPublishWithoutWorkflow();
+        String getLanguage();
         String getTranslationNodeIdentifier();
         String getDeletedTranslationNodeIdentifier();
         boolean isNonRootMarkedForDeletion();

@@ -272,11 +272,11 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
             throw new JahiaRuntimeException(e);
         }
 
+        info.setLanguage(language);
         info.setWorkInProgress(node.isWorkInProgress());
+        info.setPublicationRootNodeIdentifier(root.getUuid());
         String mainPath = root.getPath();
-//        info.setMainPath(mainPath);
-//        info.setMainUUID(root.getUuid());
-//        info.setLanguage(language);
+        info.setPublicationRootNodePath(mainPath);
         if (!mainPaths.contains(mainPath)) {
             mainPaths.add(mainPath);
         }
@@ -416,13 +416,15 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
 
         private String nodeIdentifier;
         private String nodePath;
-        private boolean publishable;
+        private String publicationRootNodeIdentifier;
+        private String publicationRootNodePath;
         private boolean locked;
         private boolean workInProgress;
         private int publicationStatus;
         private String workflowDefinition;
         private String workflowGroup;
         private boolean allowedToPublishWithoutWorkflow;
+        private String language;
         private String translationNodeIdentifier;
         private String deletedTranslationNodeIdentifier;
         private boolean nonRootMarkedForDeletion;
@@ -440,6 +442,24 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
         @Override
         public String getNodePath() {
             return nodePath;
+        }
+
+        @Override
+        public String getPublicationRootNodeIdentifier() {
+            return publicationRootNodeIdentifier;
+        }
+
+        public void setPublicationRootNodeIdentifier(String publicationRootNodeIdentifier) {
+            this.publicationRootNodeIdentifier = publicationRootNodeIdentifier;
+        }
+
+        @Override
+        public String getPublicationRootNodePath() {
+            return publicationRootNodePath;
+        }
+
+        public void setPublicationRootNodePath(String publicationRootNodePath) {
+            this.publicationRootNodePath = publicationRootNodePath;
         }
 
         public void setNodePath(String nodePath) {
@@ -475,7 +495,31 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
 
         @Override
         public boolean isPublishable() {
-            return publishable;
+
+            if (isLocked()) {
+                return false;
+            }
+
+            int publicationStatus = getPublicationStatus();
+            if (publicationStatus <= PublicationInfo.PUBLISHED) {
+                return false;
+            }
+            if (publicationStatus == PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
+                return false;
+            }
+            if (publicationStatus == PublicationInfo.MANDATORY_LANGUAGE_VALID) {
+                return false;
+            }
+
+            if (isWorkInProgress()) {
+                return false;
+            }
+
+            if (isNonRootMarkedForDeletion()) {
+                return false;
+            }
+
+            return true;
         }
 
         @Override
@@ -508,6 +552,15 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
         @Override
         public String getTranslationNodeIdentifier() {
             return translationNodeIdentifier;
+        }
+
+        @Override
+        public String getLanguage() {
+            return language;
+        }
+
+        public void setLanguage(String language) {
+            this.language = language;
         }
 
         public void setTranslationNodeIdentifier(String translationNodeIdentifier) {

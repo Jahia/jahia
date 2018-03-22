@@ -13,7 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 
-
+/**
+ * drools Util class to remove properties from other workspace (for instance j:published) if a node is 
+ * removed from the other workspace.
+ *
+ * @author wassek
+ */
 public class CheckLiveUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(CheckLiveUtil.class);
@@ -23,7 +28,7 @@ public class CheckLiveUtil {
 		String path = "";
 		try {
 			path = node.getPath();
-			JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
+			JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.EDIT_WORKSPACE, node.getSession().getLocale(), null);
 			if (session.itemExists(path)) {
 				JCRNodeWrapper defNode = session.getNode(path);
 				if (defNode.hasProperty(propertyName) && StringUtils.equals(defNode.getPropertyAsString(propertyName), propertyValue)) {
@@ -40,10 +45,10 @@ public class CheckLiveUtil {
 
 		try {
 			JCRObservationManager.pushEventListenersAvailableDuringPublishOnly();
-			JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(workspace);
+			JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(workspace, node.getSession().getLocale(), null);
 			if (session.itemExists(node.getPath())) {
 				String otherWorkspace = Constants.EDIT_WORKSPACE.equals(workspace) ? Constants.LIVE_WORKSPACE : Constants.EDIT_WORKSPACE;
-				JCRSessionWrapper otherSession = JCRSessionFactory.getInstance().getCurrentUserSession(otherWorkspace);
+				JCRSessionWrapper otherSession = JCRSessionFactory.getInstance().getCurrentSystemSession(otherWorkspace, node.getSession().getLocale(), null);
 				removePropertyFromSubnode(session.getNode(node.getPath()), propertyName, otherSession);
 				session.save();
 			}

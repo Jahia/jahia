@@ -367,6 +367,7 @@
     <bean id="jcrPublicationInfoAggregationService" class="org.jahia.services.content.JCRPublicationInfoAggregationServiceImpl">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="publicationService" ref="jcrPublicationService"/>
+        <property name="workflowService" ref="workflowService"/>
     </bean>
 
 </beans>

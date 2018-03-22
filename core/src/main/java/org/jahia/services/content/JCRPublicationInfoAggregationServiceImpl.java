@@ -43,13 +43,22 @@
  */
 package org.jahia.services.content;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.services.workflow.WorkflowRule;
+import org.jahia.services.workflow.WorkflowService;
 
 /**
  * Service implementation that calculates aggregated publication info based on data retrieved from associated PublicationService.
@@ -58,6 +67,7 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
 
     private JCRSessionFactory sessionFactory;
     private JCRPublicationService publicationService;
+    private WorkflowService workflowService;
 
     /**
      * @param sessionFactory Associated JCR session factory
@@ -71,6 +81,10 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
      */
     public void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;
+    }
+
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
     }
 
     @Override
@@ -140,6 +154,189 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
         }
     }
 
+    @Override
+    public Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree) {
+        try {
+            LinkedHashMap<String, FullPublicationInfo> result = new LinkedHashMap<String, FullPublicationInfo>();
+            ArrayList<String> nodeIdentifierList = new ArrayList<>(nodeIdentifiers);
+            for (String language : languages) {
+                Collection<PublicationInfo> publicationInfos = publicationService.getPublicationInfos(nodeIdentifierList, Collections.singleton(language), true, true, allSubTree, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+                for (PublicationInfo publicationInfo : publicationInfos) {
+                    publicationInfo.clearInternalAndPublishedReferences(nodeIdentifierList);
+                }
+                final Collection<FullPublicationInfo> infos = convert(publicationInfos, language, "publish");
+//                String lastGroup = null;
+//                String lastTitle = null;
+//                Locale locale = new Locale(language);
+                for (FullPublicationInfo info : infos) {
+                    if (!info.isPublishable() && info.getPublicationStatus() != PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
+                        continue;
+                    }
+                    if (info.getWorkflowDefinition() == null && !info.isAllowedToPublishWithoutWorkflow()) {
+                        continue;
+                    }
+                    result.put(language + "/" + info.getNodeIdentifier(), info);
+//                    if (lastGroup == null || !info.getWorkflowGroup().equals(lastGroup)) {
+//                        lastGroup = info.getWorkflowGroup();
+//                        lastTitle = info.getTitle() + " ( " + locale.getDisplayName(locale) + " )";
+//                    }
+//                    info.setWorkflowTitle(lastTitle);
+                }
+            }
+            return new ArrayList<FullPublicationInfo>(result.values());
+        } catch (RepositoryException e) {
+            throw new JahiaRuntimeException(e);
+        }
+    }
+
+    private Collection<FullPublicationInfo> convert(Collection<PublicationInfo> publicationInfos, String language, String workflowAction) throws RepositoryException {
+        List<FullPublicationInfo> result = new ArrayList<FullPublicationInfo>();
+        List<String> mainPaths = new ArrayList<String>();
+        for (PublicationInfo publicationInfo : publicationInfos) {
+            final Collection<FullPublicationInfo> infos = convert(publicationInfo, publicationInfo.getRoot(), mainPaths, language, workflowAction).values();
+            result.addAll(infos);
+        }
+        return result;
+    }
+
+    private Map<String, FullPublicationInfo> convert(PublicationInfo publicationInfo, PublicationInfoNode root, Collection<String> mainPaths, String language, String workflowAction) {
+        Map<String, FullPublicationInfo> infos = new LinkedHashMap<String, FullPublicationInfo>();
+        return convert(publicationInfo, root, mainPaths, language, infos, workflowAction);
+    }
+
+    private Map<String, FullPublicationInfo> convert(PublicationInfo publicationInfo, PublicationInfoNode root, Collection<String> mainPaths, String language, Map<String, FullPublicationInfo> infos, String workflowAction) {
+        PublicationInfoNode node = publicationInfo.getRoot();
+        List<PublicationInfo> referencePublicationInfos = new ArrayList<PublicationInfo>();
+        convert(infos, root, mainPaths, null, node, referencePublicationInfos, language, workflowAction);
+        Map<String, FullPublicationInfo> result = new LinkedHashMap<String, FullPublicationInfo>();
+        result.putAll(infos);
+        for (PublicationInfo referencePublicationInfo : referencePublicationInfos) {
+            if (!infos.containsKey(referencePublicationInfo.getRoot().getUuid())) {
+                result.putAll(convert(referencePublicationInfo, referencePublicationInfo.getRoot(), mainPaths, language, infos, workflowAction));
+            }
+        }
+        return result;
+    }
+
+    private FullPublicationInfo convert(Map<String, FullPublicationInfo> allInfos, PublicationInfoNode root, Collection<String> mainPaths, WorkflowRule lastRule, PublicationInfoNode node, Collection<PublicationInfo> references, String language, String workflowAction) {
+
+        FullPublicationInfoImpl info = new FullPublicationInfoImpl(node.getUuid(), node.getStatus());
+        try {
+            JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
+            JCRNodeWrapper jcrNode;
+            if (node.getStatus() == PublicationInfo.DELETED) {
+                JCRSessionWrapper liveSession = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, session.getLocale(), session.getFallbackLocale());
+                jcrNode = liveSession.getNodeByUUID(node.getUuid());
+            } else {
+                jcrNode = session.getNodeByUUID(node.getUuid());
+                if (lastRule == null || jcrNode.hasNode(WorkflowService.WORKFLOWRULES_NODE_NAME)) {
+                    WorkflowRule rule = workflowService.getWorkflowRuleForAction(jcrNode, false, workflowAction);
+                    if (rule != null) {
+                        if (!rule.equals(lastRule)) {
+                            if (workflowService.getWorkflowRuleForAction(jcrNode, true, workflowAction) != null) {
+                                lastRule = rule;
+                            } else {
+                                lastRule = null;
+                            }
+                        }
+                    }
+                }
+            }
+//            if (jcrNode.hasProperty("jcr:title")) {
+//                info.setTitle(jcrNode.getProperty("jcr:title").getString());
+//            } else {
+//                info.setTitle(jcrNode.getName());
+//            }
+            info.setNodePath(jcrNode.getPath());
+//            info.setNodetype(jcrNode.getPrimaryNodeType().getLabel(currentUserSession.getLocale()));
+            info.setAllowedToPublishWithoutWorkflow(jcrNode.hasPermission("publish"));
+            info.setNonRootMarkedForDeletion(jcrNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION) && !jcrNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
+        } catch (RepositoryException e) {
+            throw new JahiaRuntimeException(e);
+        }
+
+        info.setWorkInProgress(node.isWorkInProgress());
+        String mainPath = root.getPath();
+//        info.setMainPath(mainPath);
+//        info.setMainUUID(root.getUuid());
+//        info.setLanguage(language);
+        if (!mainPaths.contains(mainPath)) {
+            mainPaths.add(mainPath);
+        }
+//        info.setMainPathIndex(mainPaths.indexOf(mainPath));
+        Map<String, FullPublicationInfoImpl> infosByNodePath = new HashMap<String, FullPublicationInfoImpl>();
+        infosByNodePath.put(node.getPath(), info);
+        List<String> referenceUuids = new ArrayList<String>();
+
+        allInfos.put(node.getUuid(), info);
+
+        if (lastRule != null) {
+            info.setWorkflowGroup(language + lastRule.getDefinitionPath());
+            info.setWorkflowDefinition(lastRule.getProviderKey() + ":" + lastRule.getWorkflowDefinitionKey());
+        } else {
+            info.setWorkflowGroup(language + " no-workflow");
+        }
+
+        String translationNodePath = node.getChildren().size() > 0 ? "/j:translation_" + language : null;
+        for (PublicationInfoNode childNode : node.getChildren()) {
+            if (childNode.getPath().contains(translationNodePath)) {
+                String path = StringUtils.substringBeforeLast(childNode.getPath(), "/j:translation");
+                FullPublicationInfoImpl lastInfo = infosByNodePath.get(path);
+                if (lastInfo != null) {
+                    if (childNode.getStatus() > lastInfo.getPublicationStatus()) {
+                        lastInfo.setPublicationStatus(childNode.getStatus());
+                    }
+                    if (lastInfo.getPublicationStatus() == PublicationInfo.UNPUBLISHED && childNode.getStatus() != PublicationInfo.UNPUBLISHED) {
+                        lastInfo.setPublicationStatus(childNode.getStatus());
+                    }
+                    if (childNode.isLocked()) {
+                        info.setLocked(true);
+                    }
+                    if (childNode.isWorkInProgress()) {
+                        info.setWorkInProgress(true);
+                    }
+                    lastInfo.setTranslationNodeIdentifier(childNode.getUuid());
+                }
+                for (PublicationInfo publicationInfo : childNode.getReferences()) {
+                    if (!referenceUuids.contains(publicationInfo.getRoot().getUuid()) && !allInfos.containsKey(publicationInfo.getRoot().getUuid())) {
+                        referenceUuids.add(publicationInfo.getRoot().getUuid());
+                        allInfos.putAll(convert(publicationInfo, publicationInfo.getRoot(), mainPaths, language, allInfos, workflowAction));
+                    }
+                }
+            } else if (childNode.getPath().contains("/j:translation") && (node.getStatus() == PublicationInfo.MARKED_FOR_DELETION || node.getStatus() == PublicationInfo.DELETED)) {
+                String key = StringUtils.substringBeforeLast(childNode.getPath(), "/j:translation");
+                FullPublicationInfoImpl lastPub = infosByNodePath.get(key);
+                if (lastPub.getDeletedTranslationNodeIdentifier() != null) {
+                    lastPub.setDeletedTranslationNodeIdentifier(lastPub.getDeletedTranslationNodeIdentifier() + " " + childNode.getUuid());
+                } else {
+                    lastPub.setDeletedTranslationNodeIdentifier(childNode.getUuid());
+                }
+            }
+        }
+        references.addAll(node.getReferences());
+
+        for (PublicationInfo publicationInfo : node.getReferences()) {
+            if (!referenceUuids.contains(publicationInfo.getRoot().getUuid())) {
+                referenceUuids.add(publicationInfo.getRoot().getUuid());
+                if (!mainPaths.contains(publicationInfo.getRoot().getPath()) && !allInfos.containsKey(publicationInfo.getRoot().getUuid())) {
+                    allInfos.putAll(convert(publicationInfo, publicationInfo.getRoot(), mainPaths, language, allInfos, workflowAction));
+                }
+            }
+        }
+
+        // Move node after references
+        allInfos.remove(node.getUuid());
+        allInfos.put(node.getUuid(), info);
+
+        for (PublicationInfoNode sub : node.getChildren()) {
+            if (sub.getPath().indexOf("/j:translation") == -1) {
+                convert(allInfos, root, mainPaths, lastRule, sub, references, language, workflowAction);
+            }
+        }
+
+        return info;
+    }
+
     private static class AggregatedPublicationInfoImpl implements AggregatedPublicationInfo {
 
         private int publicationStatus;
@@ -197,4 +394,125 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
             this.nonRootMarkedForDeletion = nonRootMarkedForDeletion;
         }
     };
+
+    private static class FullPublicationInfoImpl implements FullPublicationInfo {
+
+        private String nodeIdentifier;
+        private String nodePath;
+        private boolean publishable;
+        private boolean locked;
+        private boolean workInProgress;
+        private int publicationStatus;
+        private String workflowDefinition;
+        private String workflowGroup;
+        private boolean allowedToPublishWithoutWorkflow;
+        private String translationNodeIdentifier;
+        private String deletedTranslationNodeIdentifier;
+        private boolean nonRootMarkedForDeletion;
+
+        public FullPublicationInfoImpl(String nodeIdentifier, int publicationStatus) {
+            this.nodeIdentifier = nodeIdentifier;
+            this.publicationStatus = publicationStatus;
+        }
+
+        @Override
+        public String getNodeIdentifier() {
+            return nodeIdentifier;
+        }
+
+        @Override
+        public String getNodePath() {
+            return nodePath;
+        }
+
+        public void setNodePath(String nodePath) {
+            this.nodePath = nodePath;
+        }
+
+        @Override
+        public int getPublicationStatus() {
+            return publicationStatus;
+        }
+
+        public void setPublicationStatus(int publicationStatus) {
+            this.publicationStatus = publicationStatus;
+        }
+
+        @Override
+        public boolean isLocked() {
+            return locked;
+        }
+
+        public void setLocked(boolean locked) {
+            this.locked = locked;
+        }
+
+        @Override
+        public boolean isWorkInProgress() {
+            return workInProgress;
+        }
+
+        public void setWorkInProgress(boolean workInProgress) {
+            this.workInProgress = workInProgress;
+        }
+
+        @Override
+        public boolean isPublishable() {
+            return publishable;
+        }
+
+        @Override
+        public String getWorkflowDefinition() {
+            return workflowDefinition;
+        }
+
+        public void setWorkflowDefinition(String workflowDefinition) {
+            this.workflowDefinition = workflowDefinition;
+        }
+
+        @Override
+        public String getWorkflowGroup() {
+            return workflowGroup;
+        }
+
+        public void setWorkflowGroup(String workflowGroup) {
+            this.workflowGroup = workflowGroup;
+        }
+
+        @Override
+        public boolean isAllowedToPublishWithoutWorkflow() {
+            return allowedToPublishWithoutWorkflow;
+        }
+
+        public void setAllowedToPublishWithoutWorkflow(boolean allowedToPublishWithoutWorkflow) {
+            this.allowedToPublishWithoutWorkflow = allowedToPublishWithoutWorkflow;
+        }
+
+        @Override
+        public String getTranslationNodeIdentifier() {
+            return translationNodeIdentifier;
+        }
+
+        public void setTranslationNodeIdentifier(String translationNodeIdentifier) {
+            this.translationNodeIdentifier = translationNodeIdentifier;
+        }
+
+        @Override
+        public String getDeletedTranslationNodeIdentifier() {
+            return deletedTranslationNodeIdentifier;
+        }
+
+        public void setDeletedTranslationNodeIdentifier(String deletedTranslationNodeIdentifier) {
+            this.deletedTranslationNodeIdentifier = deletedTranslationNodeIdentifier;
+        }
+
+        @Override
+        public boolean isNonRootMarkedForDeletion() {
+            return nonRootMarkedForDeletion;
+        }
+
+        public void setNonRootMarkedForDeletion(boolean nonRootMarkedForDeletion) {
+            this.nonRootMarkedForDeletion = nonRootMarkedForDeletion;
+        }
+    }
 }

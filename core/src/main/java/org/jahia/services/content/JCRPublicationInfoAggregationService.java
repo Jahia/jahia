@@ -43,6 +43,8 @@
  */
 package org.jahia.services.content;
 
+import java.util.Collection;
+
 /**
  * Provides for aggregated publication info about a JCR node.
  */
@@ -58,6 +60,8 @@ public interface JCRPublicationInfoAggregationService {
      * @return Aggregated publication info about the node
      */
     AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references);
+
+    Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> language, boolean allSubTree);
 
     /**
      * Aggregated publication info about a JCR node.
@@ -87,6 +91,22 @@ public interface JCRPublicationInfoAggregationService {
         /**
          * @return Whether the node is marked for deletion, while is not the root of the sub-tree of nodes to remove
          */
+        boolean isNonRootMarkedForDeletion();
+    }
+
+    interface FullPublicationInfo {
+
+        String getNodeIdentifier();
+        String getNodePath();
+        int getPublicationStatus();
+        boolean isPublishable();
+        boolean isLocked();
+        boolean isWorkInProgress();
+        String getWorkflowDefinition();
+        String getWorkflowGroup();
+        boolean isAllowedToPublishWithoutWorkflow();
+        String getTranslationNodeIdentifier();
+        String getDeletedTranslationNodeIdentifier();
         boolean isNonRootMarkedForDeletion();
     }
 }

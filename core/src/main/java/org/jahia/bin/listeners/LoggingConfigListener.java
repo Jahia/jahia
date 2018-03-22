@@ -44,10 +44,13 @@
 package org.jahia.bin.listeners;
 
 import java.io.File;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
+import org.apache.log4j.LogManager;
 import org.springframework.web.util.Log4jConfigListener;
 
 /**
@@ -174,4 +177,17 @@ public class LoggingConfigListener extends Log4jConfigListener {
 
         System.out.println("Logging directory set to: " + (logDir != null ? logDir : "<current>"));
     }
+
+    public static Hashtable<String, Object> getConfig() {
+        Hashtable<String, Object> p = new Hashtable<>();
+        Enumeration en = LogManager.getLoggerRepository().getCurrentLoggers();
+        while (en.hasMoreElements()) {
+            org.apache.log4j.Logger next = (org.apache.log4j.Logger) en.nextElement();
+            if (next.getLevel() != null) {
+                p.put("log4j.category." + next.getName(), next.getLevel().toString());
+            }
+        }
+        return p;
+    }
+
 }

@@ -36,3 +36,13 @@ rule "Move to split folder"
     then
         Move to split folder node
 end
+
+rule "Check Node is deleted in live and not in default"
+    salience 100
+    when
+        A node is deleted
+            - has Property "j:originWS" with value "default"
+    then
+        Remove the Property "j:published" from the node in "default" workspace
+        Log "j:published property removed from default node"
+end

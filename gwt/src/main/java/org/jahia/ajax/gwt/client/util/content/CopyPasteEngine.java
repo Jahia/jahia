@@ -246,7 +246,13 @@ public class CopyPasteEngine {
         return true;
     }
 
-    public boolean checkNodeType(String nodetypes) {
+    /**
+     * check if the provides node types match the type of the content in the clipboard.
+     * @param nodetypes node types to check
+     * @param checkReferences if true, checks also references.
+     * @return true if the content in the clipboard match a type of the provided node types.
+     */
+    public boolean checkNodeType(String nodetypes, boolean checkReferences) {
         List<GWTJahiaNode> sources = getCopiedNodes();
         boolean allowed = true;
 
@@ -260,7 +266,7 @@ public class CopyPasteEngine {
                                 || (source.isReference() && source.getReferencedNode() != null && source.getReferencedNode().isNodeType(type))) {
                             nodeAllowed = true;
                             break;
-                        } else if(type.equals("jnt:contentReference") && source.isNodeType("jmix:droppableContent")) {
+                        } else if (checkReferences && type.equals("jnt:contentReference") && source.isNodeType("jmix:droppableContent")) {
                             nodeAllowed = true;
                             break;
                         }

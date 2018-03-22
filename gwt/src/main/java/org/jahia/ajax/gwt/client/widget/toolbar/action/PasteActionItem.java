@@ -115,7 +115,7 @@ public class PasteActionItem extends NodeTypeAwareBaseActionItem {
                         nodeTypes.append(",").append(nodeType);
                     }
                 }
-                b = copyPasteEngine.checkNodeType(nodeTypes.toString());
+                b = copyPasteEngine.checkNodeType(nodeTypes.toString(), true);
             }
         }
         boolean isCutWithNodeTypesSkipped = childNodeTypesToSkip != null && copyPasteEngine.isCut();

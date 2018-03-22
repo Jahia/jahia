@@ -44,6 +44,7 @@
 package org.jahia.ajax.gwt.client.widget.definition;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Margins;
@@ -53,7 +54,6 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
@@ -294,6 +294,10 @@ public class PropertiesEditor extends FormPanel {
                     fieldSet.setId(declaringNodeTypeLabel);
                     fieldSet.setHeadingHtml(declaringNodeTypeLabel);
                     fieldSet.setLayout(fl);
+                    // fix issue QA-10064
+                    if (GXT.isSafari) {
+                        fieldSet.setStyleAttribute("overflow", "visible");
+                    }
                     fieldSets.put(optional ? nodeType.getName() : definition.getDeclaringNodeType(), fieldSet);
                     add(fieldSet);
                 }

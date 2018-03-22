@@ -623,7 +623,7 @@ public class VanityUrlManager {
                 .getUrl(), vanityUrl.getSite(), session);
         if (existingUrls != null && !existingUrls.isEmpty()) {
             for (VanityUrl existingUrl : existingUrls) {
-                if (!vanityUrl.equals(existingUrl)) {
+                if (vanityUrl.getIdentifier() == null || !vanityUrl.getIdentifier().equals(existingUrl.getIdentifier())) {
                     boolean oldMatchWillBeDeleted = false;
                     if (toDelete != null) {
                         for (Map.Entry<String, VanityUrl> entry : toDelete) {

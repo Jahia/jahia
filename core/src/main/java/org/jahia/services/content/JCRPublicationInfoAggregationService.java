@@ -61,7 +61,7 @@ public interface JCRPublicationInfoAggregationService {
      */
     AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references, JCRSessionWrapper session);
 
-    Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> language, boolean allSubTree);
+    Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> language, boolean allSubTree, JCRSessionWrapper session);
 
     /**
      * Aggregated publication info about a JCR node.

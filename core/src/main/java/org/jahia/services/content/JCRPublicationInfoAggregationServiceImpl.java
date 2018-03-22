@@ -154,7 +154,7 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
     }
 
     @Override
-    public Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree) {
+    public Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session) {
         try {
             LinkedHashMap<String, FullPublicationInfo> result = new LinkedHashMap<String, FullPublicationInfo>();
             ArrayList<String> nodeIdentifierList = new ArrayList<>(nodeIdentifiers);
@@ -163,7 +163,7 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
                 for (PublicationInfo publicationInfo : publicationInfos) {
                     publicationInfo.clearInternalAndPublishedReferences(nodeIdentifierList);
                 }
-                final Collection<FullPublicationInfo> infos = convert(publicationInfos, language, "publish");
+                final Collection<FullPublicationInfo> infos = convert(publicationInfos, language, "publish", session);
 //                String lastGroup = null;
 //                String lastTitle = null;
 //                Locale locale = new Locale(language);
@@ -188,40 +188,58 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
         }
     }
 
-    private Collection<FullPublicationInfo> convert(Collection<PublicationInfo> publicationInfos, String language, String workflowAction) throws RepositoryException {
+    private Collection<FullPublicationInfo> convert(Collection<PublicationInfo> publicationInfos, String language, String workflowAction, JCRSessionWrapper session) throws RepositoryException {
         List<FullPublicationInfo> result = new ArrayList<FullPublicationInfo>();
         List<String> mainPaths = new ArrayList<String>();
         for (PublicationInfo publicationInfo : publicationInfos) {
-            final Collection<FullPublicationInfo> infos = convert(publicationInfo, publicationInfo.getRoot(), mainPaths, language, workflowAction).values();
+            final Collection<FullPublicationInfo> infos = convert(publicationInfo, publicationInfo.getRoot(), mainPaths, language, workflowAction, session).values();
             result.addAll(infos);
         }
         return result;
     }
 
-    private Map<String, FullPublicationInfo> convert(PublicationInfo publicationInfo, PublicationInfoNode root, Collection<String> mainPaths, String language, String workflowAction) {
+    private Map<String, FullPublicationInfo> convert(PublicationInfo publicationInfo, PublicationInfoNode root, Collection<String> mainPaths, String language, String workflowAction, JCRSessionWrapper session) {
         Map<String, FullPublicationInfo> infos = new LinkedHashMap<String, FullPublicationInfo>();
-        return convert(publicationInfo, root, mainPaths, language, infos, workflowAction);
+        return convert(publicationInfo, root, mainPaths, language, infos, workflowAction, session);
     }
 
-    private Map<String, FullPublicationInfo> convert(PublicationInfo publicationInfo, PublicationInfoNode root, Collection<String> mainPaths, String language, Map<String, FullPublicationInfo> infos, String workflowAction) {
+    private Map<String, FullPublicationInfo> convert(
+        PublicationInfo publicationInfo,
+        PublicationInfoNode root,
+        Collection<String> mainPaths,
+        String language,
+        Map<String, FullPublicationInfo> infos,
+        String workflowAction,
+        JCRSessionWrapper session
+    ) {
+
         PublicationInfoNode node = publicationInfo.getRoot();
         List<PublicationInfo> referencePublicationInfos = new ArrayList<PublicationInfo>();
-        convert(infos, root, mainPaths, null, node, referencePublicationInfos, language, workflowAction);
+        convert(infos, root, mainPaths, null, node, referencePublicationInfos, language, workflowAction, session);
         Map<String, FullPublicationInfo> result = new LinkedHashMap<String, FullPublicationInfo>();
         result.putAll(infos);
         for (PublicationInfo referencePublicationInfo : referencePublicationInfos) {
             if (!infos.containsKey(referencePublicationInfo.getRoot().getUuid())) {
-                result.putAll(convert(referencePublicationInfo, referencePublicationInfo.getRoot(), mainPaths, language, infos, workflowAction));
+                result.putAll(convert(referencePublicationInfo, referencePublicationInfo.getRoot(), mainPaths, language, infos, workflowAction, session));
             }
         }
         return result;
     }
 
-    private FullPublicationInfo convert(Map<String, FullPublicationInfo> allInfos, PublicationInfoNode root, Collection<String> mainPaths, WorkflowRule lastRule, PublicationInfoNode node, Collection<PublicationInfo> references, String language, String workflowAction) {
+    private FullPublicationInfo convert(
+        Map<String, FullPublicationInfo> allInfos,
+        PublicationInfoNode root,
+        Collection<String> mainPaths,
+        WorkflowRule lastRule,
+        PublicationInfoNode node,
+        Collection<PublicationInfo> references,
+        String language,
+        String workflowAction,
+        JCRSessionWrapper session
+    ) {
 
         FullPublicationInfoImpl info = new FullPublicationInfoImpl(node.getUuid(), node.getStatus());
         try {
-            JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
             JCRNodeWrapper jcrNode;
             if (node.getStatus() == PublicationInfo.DELETED) {
                 JCRSessionWrapper liveSession = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, session.getLocale(), session.getFallbackLocale());
@@ -299,7 +317,7 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
                 for (PublicationInfo publicationInfo : childNode.getReferences()) {
                     if (!referenceUuids.contains(publicationInfo.getRoot().getUuid()) && !allInfos.containsKey(publicationInfo.getRoot().getUuid())) {
                         referenceUuids.add(publicationInfo.getRoot().getUuid());
-                        allInfos.putAll(convert(publicationInfo, publicationInfo.getRoot(), mainPaths, language, allInfos, workflowAction));
+                        allInfos.putAll(convert(publicationInfo, publicationInfo.getRoot(), mainPaths, language, allInfos, workflowAction, session));
                     }
                 }
             } else if (childNode.getPath().contains("/j:translation") && (node.getStatus() == PublicationInfo.MARKED_FOR_DELETION || node.getStatus() == PublicationInfo.DELETED)) {
@@ -318,7 +336,7 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
             if (!referenceUuids.contains(publicationInfo.getRoot().getUuid())) {
                 referenceUuids.add(publicationInfo.getRoot().getUuid());
                 if (!mainPaths.contains(publicationInfo.getRoot().getPath()) && !allInfos.containsKey(publicationInfo.getRoot().getUuid())) {
-                    allInfos.putAll(convert(publicationInfo, publicationInfo.getRoot(), mainPaths, language, allInfos, workflowAction));
+                    allInfos.putAll(convert(publicationInfo, publicationInfo.getRoot(), mainPaths, language, allInfos, workflowAction, session));
                 }
             }
         }
@@ -329,7 +347,7 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
 
         for (PublicationInfoNode sub : node.getChildren()) {
             if (sub.getPath().indexOf("/j:translation") == -1) {
-                convert(allInfos, root, mainPaths, lastRule, sub, references, language, workflowAction);
+                convert(allInfos, root, mainPaths, lastRule, sub, references, language, workflowAction, session);
             }
         }
 

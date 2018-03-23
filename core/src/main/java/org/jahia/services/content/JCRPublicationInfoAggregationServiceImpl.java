@@ -97,14 +97,14 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
 
             JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
 
-            PublicationInfo publicationInfo = publicationService.getPublicationInfo(nodeIdentifier, Collections.singleton(language), references, subNodes, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE).get(0);
+            PublicationInfo publicationInfo = publicationService.getPublicationInfo(nodeIdentifier, Collections.singleton(language), references, subNodes, false, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
 
             if (!subNodes) {
                 // We don't include sub-nodes, but we still need the translation node to get correct status.
                 String translationNodeName = "j:translation_" + language;
                 if (node.hasNode(translationNodeName)) {
                     JCRNodeWrapper translationNode = node.getNode(translationNodeName);
-                    PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE).get(0);
+                    PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
                     publicationInfo.getRoot().addChild(translationInfo.getRoot());
                 }
             }

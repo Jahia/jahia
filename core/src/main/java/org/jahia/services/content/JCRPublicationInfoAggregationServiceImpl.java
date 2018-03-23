@@ -47,8 +47,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,6 +59,7 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;
 
@@ -156,18 +159,18 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
     @Override
     public Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session) {
         try {
-            LinkedHashMap<String, FullPublicationInfo> result = new LinkedHashMap<String, FullPublicationInfo>();
+            LinkedHashMap<String, FullPublicationInfo> result = new LinkedHashMap<>();
             ArrayList<String> nodeIdentifierList = new ArrayList<>(nodeIdentifiers);
             for (String language : languages) {
-                Collection<PublicationInfo> publicationInfos = publicationService.getPublicationInfos(nodeIdentifierList, Collections.singleton(language), true, true, allSubTree, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+                Collection<PublicationInfo> publicationInfos = publicationService.getPublicationInfos(nodeIdentifierList, Collections.singleton(language), true, true, allSubTree, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
                 for (PublicationInfo publicationInfo : publicationInfos) {
                     publicationInfo.clearInternalAndPublishedReferences(nodeIdentifierList);
                 }
-                final Collection<FullPublicationInfo> infos = convert(publicationInfos, language, "publish", session);
-//                String lastGroup = null;
-//                String lastTitle = null;
-//                Locale locale = new Locale(language);
-                for (FullPublicationInfo info : infos) {
+                Collection<FullPublicationInfoImpl> infos = convert(publicationInfos, language, "publish", session);
+                String lastGroup = null;
+                String lastTitle = null;
+                Locale locale = new Locale(language);
+                for (FullPublicationInfoImpl info : infos) {
                     if (!info.isPublishable() && info.getPublicationStatus() != PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
                         continue;
                     }
@@ -175,48 +178,89 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
                         continue;
                     }
                     result.put(language + "/" + info.getNodeIdentifier(), info);
-//                    if (lastGroup == null || !info.getWorkflowGroup().equals(lastGroup)) {
-//                        lastGroup = info.getWorkflowGroup();
-//                        lastTitle = info.getTitle() + " ( " + locale.getDisplayName(locale) + " )";
-//                    }
-//                    info.setWorkflowTitle(lastTitle);
+                    if (lastGroup == null || !info.getWorkflowGroup().equals(lastGroup)) {
+                        lastGroup = info.getWorkflowGroup();
+                        lastTitle = info.getNodeTitle() + " ( " + locale.getDisplayName(locale) + " )";
+                    }
+                    info.setWorkflowTitle(lastTitle);
                 }
             }
-            return new ArrayList<FullPublicationInfo>(result.values());
+            return new ArrayList<>(result.values());
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
         }
     }
 
-    private Collection<FullPublicationInfo> convert(Collection<PublicationInfo> publicationInfos, String language, String workflowAction, JCRSessionWrapper session) throws RepositoryException {
-        List<FullPublicationInfo> result = new ArrayList<FullPublicationInfo>();
-        List<String> mainPaths = new ArrayList<String>();
+    @Override
+    public Collection<FullPublicationInfo> getFullUnpublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session) {
+        try {
+            // When asked for un-publication infos, we use live workspace as both source and destination,
+            // because in case of an un-publication there is nothing copied from default to live, or from live to default.
+            // In that case we rather just remove live node, so the only workspace concerned is LIVE.
+            // Doing so, we are able to un-publish a node that have been moved in DEFAULT workspace (because it have the same UUID in DEFAULT and LIVE)
+            List<PublicationInfo> publicationInfos = publicationService.getPublicationInfos(new ArrayList<>(nodeIdentifiers), null, false, true, allSubTree, Constants.LIVE_WORKSPACE, Constants.LIVE_WORKSPACE);
+            LinkedHashMap<String, FullPublicationInfoImpl> result = new LinkedHashMap<>();
+            for (String language : languages) {
+                Collection<FullPublicationInfoImpl> infos = convert(publicationInfos, language, "unpublish", session);
+                String lastGroup = null;
+                String lastTitle = null;
+                Locale locale = new Locale(language);
+                for (FullPublicationInfoImpl info : infos) {
+                    if (info.getPublicationStatus() != PublicationInfo.PUBLISHED) {
+                        continue;
+                    }
+                    if (info.getWorkflowDefinition() == null && !info.isAllowedToPublishWithoutWorkflow()) {
+                        continue;
+                    }
+                    result.put(language + "/" + info.getNodeIdentifier(), info);
+                    if (lastGroup == null || !info.getWorkflowGroup().equals(lastGroup)) {
+                        lastGroup = info.getWorkflowGroup();
+                        lastTitle = info.getNodeTitle() + " ( " + locale.getDisplayName(locale) + " )";
+                    }
+                    info.setWorkflowTitle(lastTitle);
+                }
+            }
+            for (PublicationInfo info : publicationInfos) {
+                Set<String> publishedLanguages = info.getAllPublishedLanguages();
+                if (!languages.containsAll(publishedLanguages)) {
+                    keepOnlyTranslation(result);
+                }
+            }
+            return new ArrayList<>(result.values());
+        } catch (RepositoryException e) {
+            throw new JahiaRuntimeException(e);
+        }
+    }
+
+    private Collection<FullPublicationInfoImpl> convert(Collection<PublicationInfo> publicationInfos, String language, String workflowAction, JCRSessionWrapper session) throws RepositoryException {
+        List<FullPublicationInfoImpl> result = new ArrayList<>();
+        List<String> mainPaths = new ArrayList<>();
         for (PublicationInfo publicationInfo : publicationInfos) {
-            final Collection<FullPublicationInfo> infos = convert(publicationInfo, publicationInfo.getRoot(), mainPaths, language, workflowAction, session).values();
+            final Collection<FullPublicationInfoImpl> infos = convert(publicationInfo, publicationInfo.getRoot(), mainPaths, language, workflowAction, session).values();
             result.addAll(infos);
         }
         return result;
     }
 
-    private Map<String, FullPublicationInfo> convert(PublicationInfo publicationInfo, PublicationInfoNode root, Collection<String> mainPaths, String language, String workflowAction, JCRSessionWrapper session) {
-        Map<String, FullPublicationInfo> infos = new LinkedHashMap<String, FullPublicationInfo>();
+    private Map<String, FullPublicationInfoImpl> convert(PublicationInfo publicationInfo, PublicationInfoNode root, List<String> mainPaths, String language, String workflowAction, JCRSessionWrapper session) {
+        Map<String, FullPublicationInfoImpl> infos = new LinkedHashMap<>();
         return convert(publicationInfo, root, mainPaths, language, infos, workflowAction, session);
     }
 
-    private Map<String, FullPublicationInfo> convert(
+    private Map<String, FullPublicationInfoImpl> convert(
         PublicationInfo publicationInfo,
         PublicationInfoNode root,
-        Collection<String> mainPaths,
+        List<String> mainPaths,
         String language,
-        Map<String, FullPublicationInfo> infos,
+        Map<String, FullPublicationInfoImpl> infos,
         String workflowAction,
         JCRSessionWrapper session
     ) {
 
         PublicationInfoNode node = publicationInfo.getRoot();
-        List<PublicationInfo> referencePublicationInfos = new ArrayList<PublicationInfo>();
+        List<PublicationInfo> referencePublicationInfos = new ArrayList<>();
         convert(infos, root, mainPaths, null, node, referencePublicationInfos, language, workflowAction, session);
-        Map<String, FullPublicationInfo> result = new LinkedHashMap<String, FullPublicationInfo>();
+        Map<String, FullPublicationInfoImpl> result = new LinkedHashMap<>();
         result.putAll(infos);
         for (PublicationInfo referencePublicationInfo : referencePublicationInfos) {
             if (!infos.containsKey(referencePublicationInfo.getRoot().getUuid())) {
@@ -227,9 +271,9 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
     }
 
     private FullPublicationInfo convert(
-        Map<String, FullPublicationInfo> allInfos,
+        Map<String, FullPublicationInfoImpl> allInfos,
         PublicationInfoNode root,
-        Collection<String> mainPaths,
+        List<String> mainPaths,
         WorkflowRule lastRule,
         PublicationInfoNode node,
         Collection<PublicationInfo> references,
@@ -259,13 +303,13 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
                     }
                 }
             }
-//            if (jcrNode.hasProperty("jcr:title")) {
-//                info.setTitle(jcrNode.getProperty("jcr:title").getString());
-//            } else {
-//                info.setTitle(jcrNode.getName());
-//            }
+            if (jcrNode.hasProperty("jcr:title")) {
+                info.setNodeTitle(jcrNode.getProperty("jcr:title").getString());
+            } else {
+                info.setNodeTitle(jcrNode.getName());
+            }
             info.setNodePath(jcrNode.getPath());
-//            info.setNodetype(jcrNode.getPrimaryNodeType().getLabel(currentUserSession.getLocale()));
+            info.setNodeType(jcrNode.getPrimaryNodeType());
             info.setAllowedToPublishWithoutWorkflow(jcrNode.hasPermission("publish"));
             info.setNonRootMarkedForDeletion(jcrNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION) && !jcrNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         } catch (RepositoryException e) {
@@ -280,10 +324,10 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
         if (!mainPaths.contains(mainPath)) {
             mainPaths.add(mainPath);
         }
-//        info.setMainPathIndex(mainPaths.indexOf(mainPath));
-        Map<String, FullPublicationInfoImpl> infosByNodePath = new HashMap<String, FullPublicationInfoImpl>();
+        info.setPublicationRootNodePathIndex(mainPaths.indexOf(mainPath));
+        Map<String, FullPublicationInfoImpl> infosByNodePath = new HashMap<>();
         infosByNodePath.put(node.getPath(), info);
-        List<String> referenceUuids = new ArrayList<String>();
+        List<String> referenceUuids = new ArrayList<>();
 
         allInfos.put(node.getUuid(), info);
 
@@ -322,11 +366,11 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
                 }
             } else if (childNode.getPath().contains("/j:translation") && (node.getStatus() == PublicationInfo.MARKED_FOR_DELETION || node.getStatus() == PublicationInfo.DELETED)) {
                 String key = StringUtils.substringBeforeLast(childNode.getPath(), "/j:translation");
-                FullPublicationInfoImpl lastPub = infosByNodePath.get(key);
-                if (lastPub.getDeletedTranslationNodeIdentifier() != null) {
-                    lastPub.setDeletedTranslationNodeIdentifier(lastPub.getDeletedTranslationNodeIdentifier() + " " + childNode.getUuid());
+                FullPublicationInfoImpl lastInfo = infosByNodePath.get(key);
+                if (lastInfo.getDeletedTranslationNodeIdentifier() != null) {
+                    lastInfo.setDeletedTranslationNodeIdentifier(lastInfo.getDeletedTranslationNodeIdentifier() + " " + childNode.getUuid());
                 } else {
-                    lastPub.setDeletedTranslationNodeIdentifier(childNode.getUuid());
+                    lastInfo.setDeletedTranslationNodeIdentifier(childNode.getUuid());
                 }
             }
         }
@@ -354,7 +398,19 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
         return info;
     }
 
-    private static class AggregatedPublicationInfoImpl implements AggregatedPublicationInfo {
+    private static void keepOnlyTranslation(Map<String, FullPublicationInfoImpl> infosByPath) {
+        Set<String> paths = new HashSet<String>(infosByPath.keySet());
+        for (String path : paths) {
+            FullPublicationInfoImpl info = infosByPath.get(path);
+            if (info.getTranslationNodeIdentifier() == null) {
+                infosByPath.remove(path);
+            } else {
+                info.clearNodeIdentifier();
+            }
+        }
+    }
+
+    private static class PublicationInfoSupport {
 
         private int publicationStatus;
         private boolean locked;
@@ -362,11 +418,10 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
         private boolean allowedToPublishWithoutWorkflow;
         private boolean nonRootMarkedForDeletion;
 
-        public AggregatedPublicationInfoImpl(int publicationStatus) {
+        public PublicationInfoSupport(int publicationStatus) {
             this.publicationStatus = publicationStatus;
         }
 
-        @Override
         public int getPublicationStatus() {
             return publicationStatus;
         }
@@ -375,7 +430,6 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
             this.publicationStatus = publicationStatus;
         }
 
-        @Override
         public boolean isLocked() {
             return locked;
         }
@@ -384,7 +438,6 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
             this.locked = locked;
         }
 
-        @Override
         public boolean isWorkInProgress() {
             return workInProgress;
         }
@@ -393,7 +446,6 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
             this.workInProgress = workInProgress;
         }
 
-        @Override
         public boolean isAllowedToPublishWithoutWorkflow() {
             return allowedToPublishWithoutWorkflow;
         }
@@ -402,7 +454,6 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
             this.allowedToPublishWithoutWorkflow = allowedToPublishWithoutWorkflow;
         }
 
-        @Override
         public boolean isNonRootMarkedForDeletion() {
             return nonRootMarkedForDeletion;
         }
@@ -412,26 +463,32 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
         }
     };
 
-    private static class FullPublicationInfoImpl implements FullPublicationInfo {
+    private static class AggregatedPublicationInfoImpl extends PublicationInfoSupport implements AggregatedPublicationInfo {
+
+        public AggregatedPublicationInfoImpl(int publicationStatus) {
+            super(publicationStatus);
+        }
+    }
+
+    private static class FullPublicationInfoImpl extends PublicationInfoSupport implements FullPublicationInfo {
 
         private String nodeIdentifier;
         private String nodePath;
+        private String nodeTitle;
+        private ExtendedNodeType nodeType;
         private String publicationRootNodeIdentifier;
         private String publicationRootNodePath;
-        private boolean locked;
-        private boolean workInProgress;
-        private int publicationStatus;
+        private int publicationRootNodePathIndex;
+        private String workflowTitle;
         private String workflowDefinition;
         private String workflowGroup;
-        private boolean allowedToPublishWithoutWorkflow;
         private String language;
         private String translationNodeIdentifier;
         private String deletedTranslationNodeIdentifier;
-        private boolean nonRootMarkedForDeletion;
 
         public FullPublicationInfoImpl(String nodeIdentifier, int publicationStatus) {
+            super(publicationStatus);
             this.nodeIdentifier = nodeIdentifier;
-            this.publicationStatus = publicationStatus;
         }
 
         @Override
@@ -439,9 +496,35 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
             return nodeIdentifier;
         }
 
+        public void clearNodeIdentifier() {
+            nodeIdentifier = null;
+        }
+
         @Override
         public String getNodePath() {
             return nodePath;
+        }
+
+        public void setNodePath(String nodePath) {
+            this.nodePath = nodePath;
+        }
+
+        @Override
+        public String getNodeTitle() {
+            return nodeTitle;
+        }
+
+        public void setNodeTitle(String nodeTitle) {
+            this.nodeTitle = nodeTitle;
+        }
+
+        @Override
+        public ExtendedNodeType getNodeType() {
+            return nodeType;
+        }
+
+        public void setNodeType(ExtendedNodeType nodeType) {
+            this.nodeType = nodeType;
         }
 
         @Override
@@ -462,35 +545,67 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
             this.publicationRootNodePath = publicationRootNodePath;
         }
 
-        public void setNodePath(String nodePath) {
-            this.nodePath = nodePath;
+        @Override
+        public int getPublicationRootNodePathIndex() {
+            return publicationRootNodePathIndex;
+        }
+
+        public void setPublicationRootNodePathIndex(int publicationRootNodePathIndex) {
+            this.publicationRootNodePathIndex = publicationRootNodePathIndex;
         }
 
         @Override
-        public int getPublicationStatus() {
-            return publicationStatus;
+        public String getWorkflowTitle() {
+            return workflowTitle;
         }
 
-        public void setPublicationStatus(int publicationStatus) {
-            this.publicationStatus = publicationStatus;
-        }
-
-        @Override
-        public boolean isLocked() {
-            return locked;
-        }
-
-        public void setLocked(boolean locked) {
-            this.locked = locked;
+        public void setWorkflowTitle(String workflowTitle) {
+            this.workflowTitle = workflowTitle;
         }
 
         @Override
-        public boolean isWorkInProgress() {
-            return workInProgress;
+        public String getWorkflowDefinition() {
+            return workflowDefinition;
         }
 
-        public void setWorkInProgress(boolean workInProgress) {
-            this.workInProgress = workInProgress;
+        public void setWorkflowDefinition(String workflowDefinition) {
+            this.workflowDefinition = workflowDefinition;
+        }
+
+        @Override
+        public String getWorkflowGroup() {
+            return workflowGroup;
+        }
+
+        public void setWorkflowGroup(String workflowGroup) {
+            this.workflowGroup = workflowGroup;
+        }
+
+        @Override
+        public String getLanguage() {
+            return language;
+        }
+
+        public void setLanguage(String language) {
+            this.language = language;
+        }
+
+        @Override
+        public String getTranslationNodeIdentifier() {
+            return translationNodeIdentifier;
+        }
+
+        public void setTranslationNodeIdentifier(String translationNodeIdentifier) {
+            this.translationNodeIdentifier = translationNodeIdentifier;
+        }
+
+        @Override
+        public String getDeletedTranslationNodeIdentifier() {
+            return deletedTranslationNodeIdentifier;
+        }
+
+        public void setDeletedTranslationNodeIdentifier(String deletedTranslationNodeIdentifier) {
+            this.deletedTranslationNodeIdentifier = deletedTranslationNodeIdentifier;
         }
 
         @Override
@@ -520,69 +635,6 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
             }
 
             return true;
-        }
-
-        @Override
-        public String getWorkflowDefinition() {
-            return workflowDefinition;
-        }
-
-        public void setWorkflowDefinition(String workflowDefinition) {
-            this.workflowDefinition = workflowDefinition;
-        }
-
-        @Override
-        public String getWorkflowGroup() {
-            return workflowGroup;
-        }
-
-        public void setWorkflowGroup(String workflowGroup) {
-            this.workflowGroup = workflowGroup;
-        }
-
-        @Override
-        public boolean isAllowedToPublishWithoutWorkflow() {
-            return allowedToPublishWithoutWorkflow;
-        }
-
-        public void setAllowedToPublishWithoutWorkflow(boolean allowedToPublishWithoutWorkflow) {
-            this.allowedToPublishWithoutWorkflow = allowedToPublishWithoutWorkflow;
-        }
-
-        @Override
-        public String getTranslationNodeIdentifier() {
-            return translationNodeIdentifier;
-        }
-
-        @Override
-        public String getLanguage() {
-            return language;
-        }
-
-        public void setLanguage(String language) {
-            this.language = language;
-        }
-
-        public void setTranslationNodeIdentifier(String translationNodeIdentifier) {
-            this.translationNodeIdentifier = translationNodeIdentifier;
-        }
-
-        @Override
-        public String getDeletedTranslationNodeIdentifier() {
-            return deletedTranslationNodeIdentifier;
-        }
-
-        public void setDeletedTranslationNodeIdentifier(String deletedTranslationNodeIdentifier) {
-            this.deletedTranslationNodeIdentifier = deletedTranslationNodeIdentifier;
-        }
-
-        @Override
-        public boolean isNonRootMarkedForDeletion() {
-            return nonRootMarkedForDeletion;
-        }
-
-        public void setNonRootMarkedForDeletion(boolean nonRootMarkedForDeletion) {
-            this.nonRootMarkedForDeletion = nonRootMarkedForDeletion;
         }
     }
 }

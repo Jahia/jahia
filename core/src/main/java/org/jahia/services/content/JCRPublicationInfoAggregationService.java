@@ -45,6 +45,8 @@ package org.jahia.services.content;
 
 import java.util.Collection;
 
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+
 /**
  * Provides for aggregated publication info about a JCR node.
  */
@@ -57,14 +59,35 @@ public interface JCRPublicationInfoAggregationService {
      * @param language Publication language
      * @param subNodes Whether to take sub-nodes of the node into account when calculating the aggregated publication status
      * @param references Whether to take references into account when calculating the aggregated publication status
+     * @param session Session to use for JCR access
      * @return Aggregated publication info about the node
      */
     AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references, JCRSessionWrapper session);
 
+    /**
+     * Get full publication info about JCR nodes.
+     *
+     * @param nodeIdentifiers UUIDs of the nodes
+     * @param languages Publication languages
+     * @param allSubTree
+     * @param session Session to use for JCR access
+     * @return A collection of full publication infos
+     */
     Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session);
 
     /**
-     * Aggregated publication info about a JCR node.
+     * Get full un-publication info about JCR nodes.
+     *
+     * @param nodeIdentifiers UUIDs of the nodes
+     * @param languages Publication languages
+     * @param allSubTree
+     * @param session Session to use for JCR access
+     * @return A collection of full un-publication infos
+     */
+    Collection<FullPublicationInfo> getFullUnpublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session);
+
+    /**
+     * Aggregated (un-)publication info about a JCR node.
      */
     interface AggregatedPublicationInfo {
 
@@ -96,20 +119,93 @@ public interface JCRPublicationInfoAggregationService {
 
     interface FullPublicationInfo {
 
+        /**
+         * @return JCR node UUID
+         */
         String getNodeIdentifier();
+
+        /**
+         * @return JCR node path
+         */
         String getNodePath();
+
+        /**
+         * @return JCR node title
+         */
+        String getNodeTitle();
+
+        /**
+         * @return JCR node type
+         */
+        ExtendedNodeType getNodeType();
+
+        /**
+         * @return Root publication node UUID
+         */
         String getPublicationRootNodeIdentifier();
+
+        /**
+         * @return Root publication node path
+         */
         String getPublicationRootNodePath();
+
+        int getPublicationRootNodePathIndex();
+
+        /**
+         * @return Publication status of the node (see PublicationInfo status constants)
+         */
         int getPublicationStatus();
-        boolean isPublishable();
+
+        /**
+         * @return Locked status of the node
+         */
         boolean isLocked();
+
+        /**
+         * @return Work-in-progress status of the node
+         */
         boolean isWorkInProgress();
+
+        /**
+         * @return Publication workflow title
+         */
+        String getWorkflowTitle();
+
+        /**
+         * @return Publication workflow definition name
+         */
         String getWorkflowDefinition();
+
+        /**
+         * @return Publication workflow group name
+         */
         String getWorkflowGroup();
+
+        /**
+         * @return Whether current user is allowed to publish the node omitting any workflows
+         */
         boolean isAllowedToPublishWithoutWorkflow();
+
+        /**
+         * @return Publication language
+         */
         String getLanguage();
+
+        /**
+         * @return The UUID of the translation node
+         */
         String getTranslationNodeIdentifier();
+
         String getDeletedTranslationNodeIdentifier();
+
+        /**
+         * @return Whether the node is marked for deletion, while is not the root of the sub-tree of nodes to remove
+         */
         boolean isNonRootMarkedForDeletion();
+
+        /**
+         * @return Whether the node can be published
+         */
+        boolean isPublishable();
     }
 }

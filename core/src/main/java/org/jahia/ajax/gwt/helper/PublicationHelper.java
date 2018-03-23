@@ -171,23 +171,8 @@ public class PublicationHelper {
             if (!checkForUnpublication) {
 
 //                Collection<JCRPublicationInfoAggregationService.FullPublicationInfo> infos = publicationInfoAggregationService.getFullPublicationInfos(uuids, languages, allSubTree, currentUserSession);
-//                LinkedList<GWTJahiaPublicationInfo> result = new LinkedList<>();
-//                for (JCRPublicationInfoAggregationService.FullPublicationInfo info : infos) {
-//                    GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(info.getNodeIdentifier(), info.getPublicationStatus());
-//                    gwtInfo.setPath(info.getNodePath());
-//                    gwtInfo.setMainUUID(info.getPublicationRootNodeIdentifier());
-//                    gwtInfo.setMainPath(info.getPublicationRootNodePath());
-//                    gwtInfo.setLocked(info.isLocked());
-//                    gwtInfo.setWorkInProgress(info.isWorkInProgress());
-//                    gwtInfo.setWorkflowDefinition(info.getWorkflowDefinition());
-//                    gwtInfo.setWorkflowGroup(info.getWorkflowGroup());
-//                    gwtInfo.setIsAllowedToPublishWithoutWorkflow(info.isAllowedToPublishWithoutWorkflow());
-//                    gwtInfo.setLanguage(info.getLanguage());
-//                    gwtInfo.setI18NUuid(info.getTranslationNodeIdentifier());
-//                    gwtInfo.setDeletedI18nUuid(info.getDeletedTranslationNodeIdentifier());
-//                    gwtInfo.setIsNonRootMarkedForDeletion(info.isNonRootMarkedForDeletion());
-//                    result.add(gwtInfo);
-//                }
+//                List<GWTJahiaPublicationInfo> result = convert(infos, currentUserSession);
+//                return result;
 
 
                 LinkedHashMap<String, GWTJahiaPublicationInfo> res = new LinkedHashMap<String, GWTJahiaPublicationInfo>();
@@ -213,6 +198,11 @@ public class PublicationHelper {
                 }
                 return new ArrayList<GWTJahiaPublicationInfo>(res.values());
             } else {
+
+//                Collection<JCRPublicationInfoAggregationService.FullPublicationInfo> infos = publicationInfoAggregationService.getFullUnpublicationInfos(uuids, languages, allSubTree, currentUserSession);
+//                List<GWTJahiaPublicationInfo> result = convert(infos, currentUserSession);
+//                return result;
+
                 // when asking for publication infos, we use live workspace as source and destination, because in case of an unpublication there is nothing copied from default to live, or from live to default,
                 // in that case we are just removing live node, so the only workspace concerned is LIVE.
                 // by doing that we are able to unpublish a node that have been moved in Default workspace (because it have the same UUID between default and live)
@@ -246,6 +236,36 @@ public class PublicationHelper {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException("Cannot get publication status for nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
         }
+    }
+
+    private static List<GWTJahiaPublicationInfo> convert(Collection<JCRPublicationInfoAggregationService.FullPublicationInfo> infos, JCRSessionWrapper session) {
+        LinkedList<GWTJahiaPublicationInfo> gwtInfos = new LinkedList<>();
+        for (JCRPublicationInfoAggregationService.FullPublicationInfo info : infos) {
+            GWTJahiaPublicationInfo gwtInfo = convert(info, session);
+            gwtInfos.add(gwtInfo);
+        }
+        return gwtInfos;
+    }
+
+    private static GWTJahiaPublicationInfo convert(JCRPublicationInfoAggregationService.FullPublicationInfo info, JCRSessionWrapper session) {
+        GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(info.getNodeIdentifier(), info.getPublicationStatus());
+        gwtInfo.setPath(info.getNodePath());
+        gwtInfo.setTitle(info.getNodeTitle());
+        gwtInfo.setNodetype(info.getNodeType().getLabel(session.getLocale()));
+        gwtInfo.setMainUUID(info.getPublicationRootNodeIdentifier());
+        gwtInfo.setMainPath(info.getPublicationRootNodePath());
+        gwtInfo.setMainPathIndex(info.getPublicationRootNodePathIndex());
+        gwtInfo.setLocked(info.isLocked());
+        gwtInfo.setWorkInProgress(info.isWorkInProgress());
+        gwtInfo.setWorkflowTitle(info.getWorkflowTitle());
+        gwtInfo.setWorkflowDefinition(info.getWorkflowDefinition());
+        gwtInfo.setWorkflowGroup(info.getWorkflowGroup());
+        gwtInfo.setIsAllowedToPublishWithoutWorkflow(info.isAllowedToPublishWithoutWorkflow());
+        gwtInfo.setLanguage(info.getLanguage());
+        gwtInfo.setI18NUuid(info.getTranslationNodeIdentifier());
+        gwtInfo.setDeletedI18nUuid(info.getDeletedTranslationNodeIdentifier());
+        gwtInfo.setIsNonRootMarkedForDeletion(info.isNonRootMarkedForDeletion());
+        return gwtInfo;
     }
 
     public void keepOnlyTranslation(LinkedHashMap<String, GWTJahiaPublicationInfo> all) throws RepositoryException {

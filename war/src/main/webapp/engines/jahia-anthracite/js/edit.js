@@ -3930,7 +3930,8 @@ if (!Element.prototype.matches) {
 			onOpen: function(){
 				app.dev.log("::: APP ::: EDIT ::: ONOPEN");
 
-                DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");
+				DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");
+                DexV2.getCached("body").setAttribute("data-indigo-sidepanel-pinned", "");
 
                 app.edit.data.returnURL = window.location.pathname;
 

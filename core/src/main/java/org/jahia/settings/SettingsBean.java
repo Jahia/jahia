@@ -79,6 +79,7 @@ import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.settings.readonlymode.ReadOnlyModeCapable;
+import org.jahia.settings.readonlymode.ReadOnlyModeController;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.tools.patches.SqlPatcher;
 import org.jahia.utils.DatabaseUtils;
@@ -1376,6 +1377,17 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      */
     public boolean isReadOnlyMode() {
         return readOnlyMode;
+    }
+
+    /**
+     * Returns <code>true</code> if this Jahia instance operates in "full-read-only" mode, i.e. access to the edit/studio/administration modes and
+     * saving in the JCR are not allowed.
+     *
+     * @return <code>true</code> if this Jahia instance operates in "read-only" mode, i.e. access to the edit/studio/administration modes and
+     * saving in the JCR are not allowed.; otherwise returns <code>false</code>
+     */
+    public boolean isFullReadOnlyMode() {
+        return (isReadOnlyMode() || isMaintenanceMode() || ReadOnlyModeController.getInstance().getReadOnlyStatus() != ReadOnlyModeController.ReadOnlyModeStatus.OFF);
     }
 
     /**

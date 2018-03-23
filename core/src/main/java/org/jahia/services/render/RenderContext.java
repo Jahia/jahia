@@ -442,7 +442,6 @@ public class RenderContext {
      * @return Whether the application is in read only mode, dependent on read only, full read only, and maintenance status currently activated/deactivated.
      */
     public boolean isReadOnly() {
-        SettingsBean settings = SettingsBean.getInstance();
-        return (settings.isReadOnlyMode() || settings.isMaintenanceMode() || getReadOnlyStatus() != ReadOnlyModeController.ReadOnlyModeStatus.OFF);
+       return SettingsBean.getInstance().isFullReadOnlyMode();
     }
 }

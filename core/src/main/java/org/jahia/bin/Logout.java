@@ -43,12 +43,6 @@
  */
 package org.jahia.bin;
 
-import java.io.IOException;
-import java.util.*;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.*;
-
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
@@ -58,7 +52,8 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.render.*;
+import org.jahia.services.render.URLResolver;
+import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -70,6 +65,11 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
+
+import javax.jcr.RepositoryException;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Logout controller.
@@ -319,8 +319,10 @@ public class Logout implements Controller {
                 authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
                 authCookie.setSecure(cookieAuthConfig.isSecure());
                 response.addCookie(authCookie);
-                cookieAuthKey.remove();
-                cookieAuthKey.getSession().save();
+                if (!SettingsBean.getInstance().isFullReadOnlyMode()) {
+                    cookieAuthKey.remove();
+                    cookieAuthKey.getSession().save();
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

@@ -59,7 +59,9 @@ import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Thomas Draier
@@ -177,7 +179,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             }
 
             String useCookie = httpServletRequest.getParameter(USE_COOKIE);
-            if ((useCookie != null) && ("on".equals(useCookie))) {
+            if (!SettingsBean.getInstance().isFullReadOnlyMode() && (useCookie != null) && ("on".equals(useCookie))) {
                 // the user has indicated he wants to use cookie authentication
                 CookieAuthValveImpl.createAndSendCookie(authContext, theUser, cookieAuthConfig);
             }

@@ -1,5 +1,6 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
@@ -8,6 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <utility:setBundle basename="JahiaInternalResources"/>
 <html>
+<% pageContext.setAttribute("isFullReadOnly", Boolean.valueOf(SettingsBean.getInstance().isFullReadOnlyMode())); %>
 <head>
     <!-- Meta info -->
     <title><fmt:message key="label.login"/></title>
@@ -73,7 +75,7 @@
     					</div>
             </c:if>
 
-            <c:if test="${not fn:contains(param.redirect, '/administration')}">
+            <c:if test="${(not isFullReadOnly) and (not fn:contains(param.redirect, '/administration'))}">
     					<label class="check-label no-select">
     						<ui:loginRememberMe name="checkbox" class="fs1" />
     						<lb><fmt:message key="label.rememberme"/></lb>

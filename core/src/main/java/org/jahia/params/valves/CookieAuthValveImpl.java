@@ -51,6 +51,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +79,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
     private static final Logger logger = LoggerFactory.getLogger(CookieAuthValveImpl.class);
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
-        if (!isEnabled()) {
+        if (!isEnabled() || SettingsBean.getInstance().isFullReadOnlyMode()) {
             valveContext.invokeNext(context);
             return;
         }

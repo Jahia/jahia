@@ -8,7 +8,6 @@
         <property name="securityManager" ref="securityManager"/>
         <property name="filterChainDefinitions">
             <value>
-                /admin/** = authcBasic, roles[toolManager]
                 /modules/**/*.jsp = authcBasic, roles[toolManager]
                 
                 /**/*.raw = authcBasic, roles[toolManager]

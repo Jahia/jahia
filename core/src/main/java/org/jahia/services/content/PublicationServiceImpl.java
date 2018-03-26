@@ -49,6 +49,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -60,17 +61,25 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.workflow.WorkflowRule;
 import org.jahia.services.workflow.WorkflowService;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 
 /**
- * Service implementation that calculates aggregated publication info based on data retrieved from associated PublicationService.
+ * Service implementation that:
+ * - delegates lower level info retrieval operations to the associated JCRPublicationService
+ * - performs publication via an asynchronous job
  */
-public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationInfoAggregationService {
+public class PublicationServiceImpl implements PublicationService {
 
     private JCRSessionFactory sessionFactory;
-    private JCRPublicationService publicationService;
+    private JCRPublicationService jcrPublicationService;
     private WorkflowService workflowService;
+    private SchedulerService schedulerService;
 
     /**
      * @param sessionFactory Associated JCR session factory
@@ -80,31 +89,41 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
     }
 
     /**
-     * @param sessionFactory Associated publication service
+     * @param sessionFactory Associated JCR publication service
      */
-    public void setPublicationService(JCRPublicationService publicationService) {
-        this.publicationService = publicationService;
+    public void setJcrPublicationService(JCRPublicationService jcrPublicationService) {
+        this.jcrPublicationService = jcrPublicationService;
     }
 
+    /**
+     * @param workflowService Associated workflow service
+     */
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
     }
 
+    /**
+     * @param schedulerService Associated scheduler service
+     */
+    public void setSchedulerService(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
+    }
+
     @Override
-    public AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references, JCRSessionWrapper session) {
+    public AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references, JCRSessionWrapper sourceSession) {
 
         try {
 
-            JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
+            JCRNodeWrapper node = sourceSession.getNodeByIdentifier(nodeIdentifier);
 
-            PublicationInfo publicationInfo = publicationService.getPublicationInfo(nodeIdentifier, Collections.singleton(language), references, subNodes, false, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
+            PublicationInfo publicationInfo = jcrPublicationService.getPublicationInfo(nodeIdentifier, Collections.singleton(language), references, subNodes, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
 
             if (!subNodes) {
                 // We don't include sub-nodes, but we still need the translation node to get correct status.
                 String translationNodeName = "j:translation_" + language;
                 if (node.hasNode(translationNodeName)) {
                     JCRNodeWrapper translationNode = node.getNode(translationNodeName);
-                    PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
+                    PublicationInfo translationInfo = jcrPublicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
                     publicationInfo.getRoot().addChild(translationInfo.getRoot());
                 }
             }
@@ -157,16 +176,16 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
     }
 
     @Override
-    public Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session) {
+    public Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper sourceSession) {
         try {
             LinkedHashMap<String, FullPublicationInfo> result = new LinkedHashMap<>();
             ArrayList<String> nodeIdentifierList = new ArrayList<>(nodeIdentifiers);
             for (String language : languages) {
-                Collection<PublicationInfo> publicationInfos = publicationService.getPublicationInfos(nodeIdentifierList, Collections.singleton(language), true, true, allSubTree, session.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
+                Collection<PublicationInfo> publicationInfos = jcrPublicationService.getPublicationInfos(nodeIdentifierList, Collections.singleton(language), true, true, allSubTree, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
                 for (PublicationInfo publicationInfo : publicationInfos) {
                     publicationInfo.clearInternalAndPublishedReferences(nodeIdentifierList);
                 }
-                Collection<FullPublicationInfoImpl> infos = convert(publicationInfos, language, "publish", session);
+                Collection<FullPublicationInfoImpl> infos = convert(publicationInfos, language, "publish", sourceSession);
                 String lastGroup = null;
                 String lastTitle = null;
                 Locale locale = new Locale(language);
@@ -192,16 +211,20 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
     }
 
     @Override
-    public Collection<FullPublicationInfo> getFullUnpublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session) {
+    public Collection<FullPublicationInfo> getFullUnpublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper liveSession) {
         try {
             // When asked for un-publication infos, we use live workspace as both source and destination,
             // because in case of an un-publication there is nothing copied from default to live, or from live to default.
             // In that case we rather just remove live node, so the only workspace concerned is LIVE.
             // Doing so, we are able to un-publish a node that have been moved in DEFAULT workspace (because it have the same UUID in DEFAULT and LIVE)
-            List<PublicationInfo> publicationInfos = publicationService.getPublicationInfos(new ArrayList<>(nodeIdentifiers), null, false, true, allSubTree, Constants.LIVE_WORKSPACE, Constants.LIVE_WORKSPACE);
+            String workspace = liveSession.getWorkspace().getName();
+            if (!workspace.equals(Constants.LIVE_WORKSPACE)) {
+                throw new IllegalArgumentException("Session must represent the live workspace");
+            }
+            List<PublicationInfo> publicationInfos = jcrPublicationService.getPublicationInfos(new ArrayList<>(nodeIdentifiers), null, false, true, allSubTree, workspace, Constants.LIVE_WORKSPACE);
             LinkedHashMap<String, FullPublicationInfoImpl> result = new LinkedHashMap<>();
             for (String language : languages) {
-                Collection<FullPublicationInfoImpl> infos = convert(publicationInfos, language, "unpublish", session);
+                Collection<FullPublicationInfoImpl> infos = convert(publicationInfos, language, "unpublish", liveSession);
                 String lastGroup = null;
                 String lastTitle = null;
                 Locale locale = new Locale(language);
@@ -407,6 +430,58 @@ public class JCRPublicationInfoAggregationServiceImpl implements JCRPublicationI
             } else {
                 info.clearNodeIdentifier();
             }
+        }
+    }
+
+    @Override
+    public void publish(Collection<String> nodeIdentifiers, Collection<String> languages, JCRSessionWrapper session) {
+
+        Collection<FullPublicationInfo> infos = this.getFullPublicationInfos(nodeIdentifiers, languages, false, session);
+
+        LinkedList<String> uuids = new LinkedList<String>();
+        for (FullPublicationInfo info : infos) {
+            if (info.getPublicationStatus() == PublicationInfo.DELETED) {
+                continue;
+            }
+            if (!info.isAllowedToPublishWithoutWorkflow()) {
+                continue;
+            }
+            if (info.getNodeIdentifier() != null) {
+                uuids.add(info.getNodeIdentifier());
+            }
+            if (info.getTranslationNodeIdentifier() != null) {
+                uuids.add(info.getTranslationNodeIdentifier());
+            }
+            if (info.getDeletedTranslationNodeIdentifier() != null) {
+                for (String s : info.getDeletedTranslationNodeIdentifier().split(" ")) {
+                    uuids.add(s);
+                }
+            }
+        }
+
+        String workspaceName = session.getWorkspace().getName();
+        List<String> paths = new ArrayList<>();
+        for (String uuid : uuids) {
+            try {
+                paths.add(session.getNodeByIdentifier(uuid).getPath());
+            } catch (RepositoryException e) {
+                throw new JahiaRuntimeException(e);
+            }
+        }
+        JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+//        jobDataMap.put(BackgroundJob.JOB_SITEKEY, site.getName());
+//        jobDataMap.put(PublicationJob.PUBLICATION_PROPERTIES, properties);
+//        jobDataMap.put(PublicationJob.PUBLICATION_COMMENTS, comments);
+        jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuids);
+        jobDataMap.put(PublicationJob.PUBLICATION_PATHS, paths);
+        jobDataMap.put(PublicationJob.SOURCE, workspaceName);
+        jobDataMap.put(PublicationJob.DESTINATION, Constants.LIVE_WORKSPACE);
+        jobDataMap.put(PublicationJob.CHECK_PERMISSIONS, true);
+        try {
+            schedulerService.scheduleJobNow(jobDetail);
+        } catch (SchedulerException e) {
+            throw new JahiaRuntimeException(e);
         }
     }
 

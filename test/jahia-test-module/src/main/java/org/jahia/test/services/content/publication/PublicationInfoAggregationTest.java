@@ -53,7 +53,7 @@ import javax.jcr.RepositoryException;
 import org.jahia.api.Constants;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationInfoAggregationService;
+import org.jahia.services.content.PublicationService;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -74,7 +74,7 @@ public class PublicationInfoAggregationTest extends JahiaTestCase {
     private static final String SUBNODE_TITLE_EN2 = "text EN - subList2";
     private static final String SUBNODE_TITLE_FR2 = "text FR - subList2";
 
-    private static JCRPublicationInfoAggregationService aggregationService;
+    private static PublicationService publicationService;
 
     private static String nodeUuid;
     private static String subNodeUuid1;
@@ -94,7 +94,7 @@ public class PublicationInfoAggregationTest extends JahiaTestCase {
     @BeforeClass
     public static void oneTimeSetup() throws Exception {
 
-        aggregationService = BundleUtils.getOsgiService(JCRPublicationInfoAggregationService.class, null);
+        publicationService = BundleUtils.getOsgiService(PublicationService.class, null);
 
         JCRPublicationService publicationService = BundleUtils.getOsgiService(JCRPublicationService.class, null);
 
@@ -196,13 +196,13 @@ public class PublicationInfoAggregationTest extends JahiaTestCase {
 
     @Test
     public void publishedNode_WithoutSubNodes_SeenPublished() throws Exception {
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo info = aggregationService.getAggregatedPublicationInfo(nodeUuid, "en", false, false, getSession());
+        PublicationService.AggregatedPublicationInfo info = publicationService.getAggregatedPublicationInfo(nodeUuid, "en", false, false, getSession());
         Assert.assertEquals(PublicationInfo.PUBLISHED, info.getPublicationStatus());
     }
 
     @Test
     public void notPublishedNode_WithoutSubNodes_SeenNotPublished() throws Exception {
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo info = aggregationService.getAggregatedPublicationInfo(subNodeUuid3, "en", false, false, getSession());
+        PublicationService.AggregatedPublicationInfo info = publicationService.getAggregatedPublicationInfo(subNodeUuid3, "en", false, false, getSession());
         Assert.assertEquals(PublicationInfo.NOT_PUBLISHED, info.getPublicationStatus());
     }
 
@@ -223,25 +223,25 @@ public class PublicationInfoAggregationTest extends JahiaTestCase {
 
     @Test
     public void publishedNode_WithPublishedSubNodes_SeenPublished() throws Exception {
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo info = aggregationService.getAggregatedPublicationInfo(subNodeUuid4, "en", true, false, getSession());
+        PublicationService.AggregatedPublicationInfo info = publicationService.getAggregatedPublicationInfo(subNodeUuid4, "en", true, false, getSession());
         Assert.assertEquals(PublicationInfo.PUBLISHED, info.getPublicationStatus());
     }
 
     @Test
     public void publishedNode_WithDifferentSubNodes_SeenModified() throws Exception {
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo info = aggregationService.getAggregatedPublicationInfo(nodeUuid, "en", true, false, getSession());
+        PublicationService.AggregatedPublicationInfo info = publicationService.getAggregatedPublicationInfo(nodeUuid, "en", true, false, getSession());
         Assert.assertEquals(PublicationInfo.MODIFIED, info.getPublicationStatus());
     }
 
     @Test
     public void publishedNode_WithPublishedReferences_SeenPublished() throws Exception {
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo info = aggregationService.getAggregatedPublicationInfo(ref1Uuid, "en", false, true, getSession());
+        PublicationService.AggregatedPublicationInfo info = publicationService.getAggregatedPublicationInfo(ref1Uuid, "en", false, true, getSession());
         Assert.assertEquals(PublicationInfo.PUBLISHED, info.getPublicationStatus());
     }
 
     @Test
     public void publishedNode_WithNotPublishedReferences_SeenModified() throws Exception {
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo info = aggregationService.getAggregatedPublicationInfo(ref1Uuid, "fr", false, true, getSession());
+        PublicationService.AggregatedPublicationInfo info = publicationService.getAggregatedPublicationInfo(ref1Uuid, "fr", false, true, getSession());
         Assert.assertEquals(PublicationInfo.MODIFIED, info.getPublicationStatus());
     }
 
@@ -257,21 +257,21 @@ public class PublicationInfoAggregationTest extends JahiaTestCase {
 
     @Test
     public void nonRootMarkedForDeletion_Recognized() throws Exception {
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo info = aggregationService.getAggregatedPublicationInfo(subNodeUuid51, "en", false, false, getSession());
+        PublicationService.AggregatedPublicationInfo info = publicationService.getAggregatedPublicationInfo(subNodeUuid51, "en", false, false, getSession());
         Assert.assertEquals(PublicationInfo.MARKED_FOR_DELETION, info.getPublicationStatus());
         Assert.assertTrue(info.isNonRootMarkedForDeletion());
     }
 
     @Test
     public void rootMarkedForDeletion_Recognized() throws Exception {
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo info = aggregationService.getAggregatedPublicationInfo(subNodeUuid5, "en", false, false, getSession());
+        PublicationService.AggregatedPublicationInfo info = publicationService.getAggregatedPublicationInfo(subNodeUuid5, "en", false, false, getSession());
         Assert.assertEquals(PublicationInfo.MARKED_FOR_DELETION, info.getPublicationStatus());
         Assert.assertFalse(info.isNonRootMarkedForDeletion());
     }
 
     @Test
     public void allowedToPublishWithoutWorkflow_Recognized() throws Exception {
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo info = aggregationService.getAggregatedPublicationInfo(subNodeUuid1, "en", false, false, getSession());
+        PublicationService.AggregatedPublicationInfo info = publicationService.getAggregatedPublicationInfo(subNodeUuid1, "en", false, false, getSession());
         Assert.assertTrue(info.isAllowedToPublishWithoutWorkflow());
     }
 
@@ -281,7 +281,7 @@ public class PublicationInfoAggregationTest extends JahiaTestCase {
         JahiaUser currentUserBackup = sessionFactory.getCurrentUser();
         sessionFactory.setCurrentUser(editor);
         try {
-            JCRPublicationInfoAggregationService.AggregatedPublicationInfo info = aggregationService.getAggregatedPublicationInfo(subNodeUuid1, "en", false, false, getSession());
+            PublicationService.AggregatedPublicationInfo info = publicationService.getAggregatedPublicationInfo(subNodeUuid1, "en", false, false, getSession());
             Assert.assertFalse(info.isAllowedToPublishWithoutWorkflow());
         } finally {
             sessionFactory.setCurrentUser(currentUserBackup);
@@ -289,15 +289,15 @@ public class PublicationInfoAggregationTest extends JahiaTestCase {
     }
 
     private static void testPublicationStatus(String nodeUuid, String language, int expectedPublicationStatus) throws Exception {
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo infoNotUsingSubNodes = aggregationService.getAggregatedPublicationInfo(nodeUuid, language, false, false, getSession());
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo infoUsingSubNodes = aggregationService.getAggregatedPublicationInfo(nodeUuid, language, true, false, getSession());
+        PublicationService.AggregatedPublicationInfo infoNotUsingSubNodes = publicationService.getAggregatedPublicationInfo(nodeUuid, language, false, false, getSession());
+        PublicationService.AggregatedPublicationInfo infoUsingSubNodes = publicationService.getAggregatedPublicationInfo(nodeUuid, language, true, false, getSession());
         Assert.assertEquals(expectedPublicationStatus, infoNotUsingSubNodes.getPublicationStatus());
         Assert.assertEquals(expectedPublicationStatus, infoUsingSubNodes.getPublicationStatus());
     }
 
     private static void testLockedWorkInProgress(String nodeUuid, String language, boolean expectedLockedWorkInProgress) throws Exception {
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo infoNotUsingSubNodes = aggregationService.getAggregatedPublicationInfo(nodeUuid, language, false, false, getSession());
-        JCRPublicationInfoAggregationService.AggregatedPublicationInfo infoUsingSubNodes = aggregationService.getAggregatedPublicationInfo(nodeUuid, language, true, false, getSession());
+        PublicationService.AggregatedPublicationInfo infoNotUsingSubNodes = publicationService.getAggregatedPublicationInfo(nodeUuid, language, false, false, getSession());
+        PublicationService.AggregatedPublicationInfo infoUsingSubNodes = publicationService.getAggregatedPublicationInfo(nodeUuid, language, true, false, getSession());
         Assert.assertEquals(expectedLockedWorkInProgress, infoNotUsingSubNodes.isLocked());
         Assert.assertEquals(expectedLockedWorkInProgress, infoNotUsingSubNodes.isWorkInProgress());
         Assert.assertEquals(expectedLockedWorkInProgress, infoUsingSubNodes.isLocked());

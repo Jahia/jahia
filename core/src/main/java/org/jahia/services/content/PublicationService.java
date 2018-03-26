@@ -48,9 +48,9 @@ import java.util.Collection;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 /**
- * Provides for aggregated publication info about a JCR node.
+ * Provides for higher level publication and publication info retrieval operations.
  */
-public interface JCRPublicationInfoAggregationService {
+public interface PublicationService {
 
     /**
      * Get aggregated publication info about a JCR node.
@@ -59,10 +59,10 @@ public interface JCRPublicationInfoAggregationService {
      * @param language Publication language
      * @param subNodes Whether to take sub-nodes of the node into account when calculating the aggregated publication status
      * @param references Whether to take references into account when calculating the aggregated publication status
-     * @param session Session to use for JCR access
+     * @param sourceSession Session representing the publication source workspace (the target workspace is always LIVE)
      * @return Aggregated publication info about the node
      */
-    AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references, JCRSessionWrapper session);
+    AggregatedPublicationInfo getAggregatedPublicationInfo(String nodeIdentifier, String language, boolean subNodes, boolean references, JCRSessionWrapper sourceSession);
 
     /**
      * Get full publication info about JCR nodes.
@@ -70,10 +70,10 @@ public interface JCRPublicationInfoAggregationService {
      * @param nodeIdentifiers UUIDs of the nodes
      * @param languages Publication languages
      * @param allSubTree
-     * @param session Session to use for JCR access
+     * @param sourceSession Session representing the publication source workspace (the target workspace is always LIVE)
      * @return A collection of full publication infos
      */
-    Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session);
+    Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper sourceSession);
 
     /**
      * Get full un-publication info about JCR nodes.
@@ -81,10 +81,19 @@ public interface JCRPublicationInfoAggregationService {
      * @param nodeIdentifiers UUIDs of the nodes
      * @param languages Publication languages
      * @param allSubTree
-     * @param session Session to use for JCR access
+     * @param liveSession Session representing the LIVE workspace
      * @return A collection of full un-publication infos
      */
-    Collection<FullPublicationInfo> getFullUnpublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session);
+    Collection<FullPublicationInfo> getFullUnpublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper liveSession);
+
+    /**
+     * Publish JCR nodes (along with their translation sub-nodes when appropriate) in certain languages.
+     *
+     * @param nodeIdentifiers UUIDs of the nodes
+     * @param languages Publication languages
+     * @param session Session to use for JCR access
+     */
+    void publish(Collection<String> nodeIdentifiers, Collection<String> languages, JCRSessionWrapper session);
 
     /**
      * Aggregated (un-)publication info about a JCR node.

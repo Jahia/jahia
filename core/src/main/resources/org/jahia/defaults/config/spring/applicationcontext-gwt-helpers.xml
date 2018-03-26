@@ -71,8 +71,8 @@
 
     <bean name="PublicationHelper" class="org.jahia.ajax.gwt.helper.PublicationHelper">
         <property name="httpClientService" ref="HttpClientService"/>
-        <property name="publicationService" ref="jcrPublicationService"/>
-        <property name="publicationInfoAggregationService" ref="jcrPublicationInfoAggregationService"/>
+        <property name="jcrPublicationService" ref="jcrPublicationService"/>
+        <property name="publicationService" ref="PublicationService"/>
         <property name="workflowService" ref="workflowService"/>
         <property name="workflowHelper" ref="WorkflowHelper"/>
     </bean>

@@ -49,6 +49,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -390,11 +391,7 @@ public class PublicationServiceImpl implements PublicationService {
             } else if (childNode.getPath().contains("/j:translation") && (node.getStatus() == PublicationInfo.MARKED_FOR_DELETION || node.getStatus() == PublicationInfo.DELETED)) {
                 String key = StringUtils.substringBeforeLast(childNode.getPath(), "/j:translation");
                 FullPublicationInfoImpl lastInfo = infosByNodePath.get(key);
-                if (lastInfo.getDeletedTranslationNodeIdentifier() != null) {
-                    lastInfo.setDeletedTranslationNodeIdentifier(lastInfo.getDeletedTranslationNodeIdentifier() + " " + childNode.getUuid());
-                } else {
-                    lastInfo.setDeletedTranslationNodeIdentifier(childNode.getUuid());
-                }
+                lastInfo.addDeletedTranslationNodeIdentifier(childNode.getUuid());
             }
         }
         references.addAll(node.getReferences());
@@ -436,7 +433,7 @@ public class PublicationServiceImpl implements PublicationService {
     @Override
     public void publish(Collection<String> nodeIdentifiers, Collection<String> languages, JCRSessionWrapper session) {
 
-        Collection<FullPublicationInfo> infos = this.getFullPublicationInfos(nodeIdentifiers, languages, false, session);
+        Collection<FullPublicationInfo> infos = getFullPublicationInfos(nodeIdentifiers, languages, false, session);
 
         LinkedList<String> uuids = new LinkedList<String>();
         for (FullPublicationInfo info : infos) {
@@ -452,10 +449,8 @@ public class PublicationServiceImpl implements PublicationService {
             if (info.getTranslationNodeIdentifier() != null) {
                 uuids.add(info.getTranslationNodeIdentifier());
             }
-            if (info.getDeletedTranslationNodeIdentifier() != null) {
-                for (String s : info.getDeletedTranslationNodeIdentifier().split(" ")) {
-                    uuids.add(s);
-                }
+            for (String deletedTranslationNodeIdentifier : info.getDeletedTranslationNodeIdentifiers()) {
+                uuids.add(deletedTranslationNodeIdentifier);
             }
         }
 
@@ -470,9 +465,6 @@ public class PublicationServiceImpl implements PublicationService {
         }
         JobDetail jobDetail = BackgroundJob.createJahiaJob("Publication", PublicationJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-//        jobDataMap.put(BackgroundJob.JOB_SITEKEY, site.getName());
-//        jobDataMap.put(PublicationJob.PUBLICATION_PROPERTIES, properties);
-//        jobDataMap.put(PublicationJob.PUBLICATION_COMMENTS, comments);
         jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuids);
         jobDataMap.put(PublicationJob.PUBLICATION_PATHS, paths);
         jobDataMap.put(PublicationJob.SOURCE, workspaceName);
@@ -559,7 +551,7 @@ public class PublicationServiceImpl implements PublicationService {
         private String workflowGroup;
         private String language;
         private String translationNodeIdentifier;
-        private String deletedTranslationNodeIdentifier;
+        private LinkedHashSet<String> deletedTranslationNodeIdentifier = new LinkedHashSet<>();
 
         public FullPublicationInfoImpl(String nodeIdentifier, int publicationStatus) {
             super(publicationStatus);
@@ -675,12 +667,12 @@ public class PublicationServiceImpl implements PublicationService {
         }
 
         @Override
-        public String getDeletedTranslationNodeIdentifier() {
+        public Collection<String> getDeletedTranslationNodeIdentifiers() {
             return deletedTranslationNodeIdentifier;
         }
 
-        public void setDeletedTranslationNodeIdentifier(String deletedTranslationNodeIdentifier) {
-            this.deletedTranslationNodeIdentifier = deletedTranslationNodeIdentifier;
+        public void addDeletedTranslationNodeIdentifier(String deletedTranslationNodeIdentifier) {
+            this.deletedTranslationNodeIdentifier.add(deletedTranslationNodeIdentifier);
         }
 
         @Override

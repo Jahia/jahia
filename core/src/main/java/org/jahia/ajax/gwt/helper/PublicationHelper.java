@@ -202,7 +202,7 @@ public class PublicationHelper {
         gwtInfo.setIsAllowedToPublishWithoutWorkflow(info.isAllowedToPublishWithoutWorkflow());
         gwtInfo.setLanguage(info.getLanguage());
         gwtInfo.setI18NUuid(info.getTranslationNodeIdentifier());
-        gwtInfo.setDeletedI18nUuid(info.getDeletedTranslationNodeIdentifier());
+        gwtInfo.setDeletedI18nUuid(StringUtils.join(info.getDeletedTranslationNodeIdentifiers(), ' '));
         gwtInfo.setIsNonRootMarkedForDeletion(info.isNonRootMarkedForDeletion());
         return gwtInfo;
     }

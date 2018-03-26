@@ -205,7 +205,7 @@ public interface PublicationService {
          */
         String getTranslationNodeIdentifier();
 
-        String getDeletedTranslationNodeIdentifier();
+        Collection<String> getDeletedTranslationNodeIdentifiers();
 
         /**
          * @return Whether the node is marked for deletion, while is not the root of the sub-tree of nodes to remove

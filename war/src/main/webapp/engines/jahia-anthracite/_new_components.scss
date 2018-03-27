@@ -488,6 +488,13 @@
 /********************************/
 
 @mixin _input($type: $APP) {
+
+	// Deal with overriding the .x-form-invalid class that is killing the background on normal text
+	&.x-form-invalid {
+		background: _property($INPUT--BG, $type)!important;
+		border: _property($INPUT--BORDER, $type)!important;
+	}
+
 	// border: 1px solid green!important;
 	background: _property($INPUT--BG, $type);
 	padding: 7px 10px 6px 10px !important;

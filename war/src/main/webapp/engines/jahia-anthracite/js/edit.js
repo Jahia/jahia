@@ -1425,7 +1425,7 @@ if (!Element.prototype.matches) {
 		},
 		dev: {
 			data: {
-				on: true
+				on: false
 			},
 			log: function(message, force){
 				if(app.dev.data.on || force){

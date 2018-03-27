@@ -1425,7 +1425,7 @@ if (!Element.prototype.matches) {
 		},
 		dev: {
 			data: {
-				on: false
+				on: true
 			},
 			log: function(message, force){
 				if(app.dev.data.on || force){
@@ -3930,8 +3930,12 @@ if (!Element.prototype.matches) {
 			onOpen: function(){
 				app.dev.log("::: APP ::: EDIT ::: ONOPEN");
 
+				//XXX
+
+				DexV2(".window-side-panel > .x-panel-bwrap > div:nth-child(2).x-panel-footer").addClass("side-panel-pin")
+
 				DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");
-                DexV2.getCached("body").setAttribute("data-indigo-sidepanel-pinned", "");
+                DexV2.getCached("body").setAttribute("data-indigo-sidepanel-pinned", "false");
 
                 app.edit.data.returnURL = window.location.pathname;
 
@@ -4724,10 +4728,10 @@ if (!Element.prototype.matches) {
                     });
                 },
 				togglePin: function(){
-					DexV2.getCached("body").toggleAttribute("data-INDIGO-SIDEPANEL-PINNED", ["true", ""]);
+					DexV2.getCached("body").toggleAttribute("data-INDIGO-SIDEPANEL-PINNED", ["true", "false"]);
 					DexV2.iframe(".window-iframe").filter("body").nodes[0].style.pointerEvents = "all";
 
-                    if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == ""){
+                    if(DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") == "false"){
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("width");
                         DexV2(".mainmodule > div:nth-child(2)").nodes[0].style.removeProperty("left");
                     } else {

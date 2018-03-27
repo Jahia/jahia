@@ -1387,7 +1387,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * saving in the JCR are not allowed.; otherwise returns <code>false</code>
      */
     public boolean isFullReadOnlyMode() {
-        return (isReadOnlyMode() || isMaintenanceMode() || ReadOnlyModeController.getInstance().getReadOnlyStatus() != ReadOnlyModeController.ReadOnlyModeStatus.OFF);
+        return ReadOnlyModeController.getInstance().getReadOnlyStatus() != ReadOnlyModeController.ReadOnlyModeStatus.OFF;
     }
 
     /**

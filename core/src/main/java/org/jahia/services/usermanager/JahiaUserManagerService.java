@@ -476,7 +476,35 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         return searchUsers(searchCriterias, siteKey, providerKeys, false, session);
     }
 
-    public Set<JCRUserNode> searchUsers(final Properties searchCriterias, String siteKey, final String[] providerKeys, boolean excludeProtected, JCRSessionWrapper session) {
+    public Set<JCRUserNode> searchUsers(Properties searchCriterias, String siteKey, final String[] providerKeys, boolean excludeProtected, JCRSessionWrapper session) {
+
+        if (providerKeys != null) {
+            Set<JCRUserNode> users = new HashSet<JCRUserNode>();
+
+            int limit = -1;
+            if (searchCriterias.containsKey(COUNT_LIMIT)) {
+                searchCriterias = (Properties) searchCriterias.clone();
+                limit = Integer.parseInt((String) searchCriterias.get(COUNT_LIMIT));
+            }
+
+            for (String providerKey : providerKeys) {
+                Set<JCRUserNode> userNodes = searchUsers(searchCriterias, siteKey, providerKey, excludeProtected, session);
+                users.addAll(userNodes);
+                if (limit > -1) {
+                    limit -= userNodes.size();
+                    if (limit <= 0) {
+                        return users;
+                    }
+                    searchCriterias.put(COUNT_LIMIT, Integer.toString(limit));
+                }
+            }
+            return users;
+        } else {
+            return searchUsers(searchCriterias, siteKey, (String) null, excludeProtected, session);
+        }
+    }
+
+    public Set<JCRUserNode> searchUsers(final Properties searchCriterias, String siteKey, final String providerKey, boolean excludeProtected, JCRSessionWrapper session) {
 
         try {
 
@@ -488,17 +516,14 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 StringBuilder query = new StringBuilder();
 
                 // Add provider to query
-                if (providerKeys != null) {
-                    List<JCRStoreProvider> providers = getProviders(siteKey, providerKeys, session);
-                    if (!providers.isEmpty()) {
+                if (providerKey != null) {
+                    JCRStoreProvider provider = getProvider(siteKey, providerKey, session);
+                    if (provider != null) {
                         query.append("(");
-                        for (JCRStoreProvider provider : providers) {
-                            query.append(query.length() > 1 ? " OR " : "");
-                            if (provider.isDefault()) {
-                                query.append("u.[j:external] = false");
-                            } else {
-                                query.append("ISDESCENDANTNODE('").append(provider.getMountPoint()).append("')");
-                            }
+                        if (provider.isDefault()) {
+                            query.append("u.[j:external] = false");
+                        } else {
+                            query.append("ISDESCENDANTNODE('").append(provider.getMountPoint()).append("')");
                         }
                         query.append(")");
                     } else {

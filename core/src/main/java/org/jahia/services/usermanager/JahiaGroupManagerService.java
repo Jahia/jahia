@@ -401,26 +401,38 @@ public class JahiaGroupManagerService extends JahiaService {
         return searchGroups(siteKey, searchCriterias, providers, false, session);
     }
 
+
     public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias, String[] providers, boolean excludeProtected, JCRSessionWrapper session) {
+
+        if (providers != null) {
+            Set<JCRGroupNode> groups = new HashSet<JCRGroupNode>();
+
+            for (String providerKey : providers) {
+                groups.addAll(searchGroups(siteKey, searchCriterias, providerKey, excludeProtected, session));
+            }
+            return groups;
+        } else {
+            return searchGroups(siteKey, searchCriterias, (String) null, excludeProtected, session);
+        }
+    }
+
+    public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias, String providerKey, boolean excludeProtected, JCRSessionWrapper session) {
         try {
             Set<JCRGroupNode> groups = new HashSet<JCRGroupNode>();
             if (session.getWorkspace().getQueryManager() != null) {
                 StringBuilder query = new StringBuilder(128);
 
                 // Add provider to query
-                if(providers != null) {
-                    List<JCRStoreProvider> onProviders = getProviders(siteKey, providers, session);
-                    if (!onProviders.isEmpty()) {
+                if(providerKey != null) {
+                    JCRStoreProvider provider = getProvider(siteKey, providerKey, session);
+                    if (provider != null) {
                         query.append("(");
-                        for (JCRStoreProvider provider : onProviders) {
-                            query.append(query.length() > 1 ? " OR " : "");
-                            if (provider.isDefault()) {
-                                query.append("g.[j:external] = false");
-                            } else {
-                                query.append("ISDESCENDANTNODE('").append(provider.getMountPoint()).append("')");
-                            }
+                        if (provider.isDefault()) {
+                            query.append("g.[j:external] = false");
+                        } else {
+                            query.append("ISDESCENDANTNODE('").append(provider.getMountPoint()).append("')");
                         }
-                        query.append(")");
+                        query.append(')');
                     } else {
                         return groups;
                     }

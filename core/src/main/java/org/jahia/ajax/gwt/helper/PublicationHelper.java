@@ -43,11 +43,7 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpState;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
@@ -201,8 +197,14 @@ public class PublicationHelper {
         gwtInfo.setWorkflowGroup(info.getWorkflowGroup());
         gwtInfo.setIsAllowedToPublishWithoutWorkflow(info.isAllowedToPublishWithoutWorkflow());
         gwtInfo.setLanguage(info.getLanguage());
-        gwtInfo.setI18NUuid(info.getTranslationNodeIdentifier());
-        gwtInfo.setDeletedI18nUuid(StringUtils.join(info.getDeletedTranslationNodeIdentifiers(), ' '));
+        String translationNodeIdentifier = info.getTranslationNodeIdentifier();
+        if (StringUtils.isNotEmpty(translationNodeIdentifier)) {
+            gwtInfo.setI18NUuid(translationNodeIdentifier);
+        }
+        String deletedI18nUuid = StringUtils.join(info.getDeletedTranslationNodeIdentifiers(), ' ');
+        if (StringUtils.isNotEmpty(deletedI18nUuid)) {
+            gwtInfo.setDeletedI18nUuid(deletedI18nUuid);
+        }
         gwtInfo.setIsNonRootMarkedForDeletion(info.isNonRootMarkedForDeletion());
         return gwtInfo;
     }

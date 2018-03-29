@@ -1004,7 +1004,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     private void clearModuleTemplateNodes() {
-        if (Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("modules.purgeAtStartup", "true"))) {
+        if (settingsBean.isProcessingServer() && Boolean.parseBoolean(settingsBean.getPropertiesFile().getProperty("modules.purgeAtStartup", "true"))) {
             logger.info("Start checking module template nodes");
             long start = System.currentTimeMillis();
             int count = 0;

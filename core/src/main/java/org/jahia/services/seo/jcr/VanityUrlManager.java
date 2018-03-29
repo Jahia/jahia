@@ -104,6 +104,9 @@ public class VanityUrlManager {
         if (StringUtils.isNotEmpty(site)) {
             xpath.append("/sites/").append(JCRContentUtils.stringToJCRPathExp(site));
             sql2.append("ISDESCENDANTNODE('/sites/").append(JCRContentUtils.sqlEncode(site)).append("') AND ");
+        } else {
+            xpath.append("/sites");
+            sql2.append("ISDESCENDANTNODE('/sites') AND ");
         }
         String urlForQuery = JCRContentUtils.stringToQueryLiteral(url);
         xpath.append("//element(*, ").append(JAHIANT_VANITYURL).append(")[@").append(PROPERTY_URL).append(" = ").append(urlForQuery)

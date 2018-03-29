@@ -66,6 +66,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This class is used in UrlRewriting rules to map the current url to the vanity if exists
@@ -138,22 +140,26 @@ public class VanityUrlMapper {
                         if (siteKey == null) {
                             siteKey = context != null ? context.getSite().getSiteKey() : node.getResolveSite().getSiteKey();
                         }
-                        VanityUrl vanityUrl = vanityUrlService
-                                .getVanityUrlForWorkspaceAndLocale(
-                                        node,
-                                        urlResolver.getWorkspace(),
-                                        urlResolver.getLocale(), siteKey);
-                        if (vanityUrl != null && vanityUrl.isActive()) {
-                            //for macros some parameters added (like ##requestParameters## for languageswitcher)
-                            String extension = "";
-                            if (fullUrl.matches("(.?)*##[a-zA-Z]*##$")) {
-                                extension = "##" + StringUtils.substringBetween(fullUrl, "##") + "##";
-                            } else if (queryIndex >= 0) {
-                                extension = outboundUrl.substring(queryIndex);
-                            }
-                            hsRequest.setAttribute(VANITY_KEY, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl() + extension);
-                            if (serverName != null) {
-                                hsRequest.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK, serverName);
+                        // not necessary to generate vanity url if the current server name is bound to a site that is not the same as the current site key ( it could lead to 400 Error page )
+                        // because the vanity url won't be found on site resolved by the server name or worst it could lead to the wrong page
+                        if (!(StringUtils.isNotEmpty(urlResolver.getSiteKeyByServerName()) && !urlResolver.getSiteKeyByServerName().equals(siteKey))) {
+                            VanityUrl vanityUrl = vanityUrlService
+                                    .getVanityUrlForWorkspaceAndLocale(
+                                            node,
+                                            urlResolver.getWorkspace(),
+                                            urlResolver.getLocale(), siteKey);
+                            if (vanityUrl != null && vanityUrl.isActive() && checkForVanityUrlAmbiguousMapping(vanityUrl, urlResolver, hsRequest, vanityUrlService)) {
+                                //for macros some parameters added (like ##requestParameters## for languageswitcher)
+                                String extension = "";
+                                if (fullUrl.matches("(.?)*##[a-zA-Z]*##$")) {
+                                    extension = "##" + StringUtils.substringBetween(fullUrl, "##") + "##";
+                                } else if (queryIndex >= 0) {
+                                    extension = outboundUrl.substring(queryIndex);
+                                }
+                                hsRequest.setAttribute(VANITY_KEY, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl() + extension);
+                                if (serverName != null) {
+                                    hsRequest.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK, serverName);
+                                }
                             }
                         }
                     }
@@ -165,6 +171,36 @@ public class VanityUrlMapper {
                 }
             }
         }
+    }
+
+    /**
+     * if servername does not allow site resolution, we need to check if the vanity url used is unique between sites
+     *
+     * @return true if vanity url is safe to be use
+     */
+    private boolean checkForVanityUrlAmbiguousMapping(VanityUrl vanityUrlToTest, URLResolver urlResolver, HttpServletRequest hsRequest, VanityUrlService vanityUrlService) throws RepositoryException {
+
+        if (StringUtils.isEmpty(urlResolver.getSiteKeyByServerName())) {
+            // check for vanity uniqueness
+            List<VanityUrl> foundVanityUrls = vanityUrlService.findExistingVanityUrls(vanityUrlToTest.getUrl(), StringUtils.EMPTY, urlResolver.getWorkspace());
+            for (VanityUrl foundVanityUrl : foundVanityUrls) {
+                if (!foundVanityUrl.getSite().equals(vanityUrlToTest.getSite()) &&
+                        foundVanityUrl.getLanguage().equals(vanityUrlToTest.getLanguage())) {
+
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Ambiguous vanity URL resolution: current server name '{}' " +
+                                "does not allow to resolve the appropriate site, and multiple vanity urls exist " +
+                                "with the exact same url mapping '{}' in different sites {}",
+                                new Object[]{hsRequest.getServerName(),
+                                        vanityUrlToTest.getUrl(),
+                                        Arrays.toString(new String[]{vanityUrlToTest.getSite(), foundVanityUrl.getSite()})});
+                    }
+
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private static String lookupSiteKeyByServerName(String host) {

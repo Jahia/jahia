@@ -415,7 +415,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
     }
 
     private static void keepOnlyTranslation(Map<String, FullPublicationInfoImpl> infosByPath) {
-        Set<String> paths = new HashSet<String>(infosByPath.keySet());
+        Set<String> paths = new HashSet<>(infosByPath.keySet());
         for (String path : paths) {
             FullPublicationInfoImpl info = infosByPath.get(path);
             if (info.getTranslationNodeIdentifier() == null) {
@@ -431,7 +431,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
 
         Collection<FullPublicationInfo> infos = getFullPublicationInfos(nodeIdentifiers, languages, false, session);
 
-        LinkedList<String> uuids = new LinkedList<String>();
+        LinkedList<String> uuids = new LinkedList<>();
         for (FullPublicationInfo info : infos) {
             if (info.getPublicationStatus() == PublicationInfo.DELETED) {
                 continue;

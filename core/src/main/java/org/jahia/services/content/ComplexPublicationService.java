@@ -50,7 +50,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 /**
  * Provides for higher level publication and publication info retrieval operations.
  */
-public interface PublicationService {
+public interface ComplexPublicationService {
 
     /**
      * Get aggregated publication info about a JCR node.
@@ -81,17 +81,17 @@ public interface PublicationService {
      * @param nodeIdentifiers UUIDs of the nodes
      * @param languages Publication languages
      * @param allSubTree
-     * @param liveSession Session representing the LIVE workspace
+     * @param session
      * @return A collection of full un-publication infos
      */
-    Collection<FullPublicationInfo> getFullUnpublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper liveSession);
+    Collection<FullPublicationInfo> getFullUnpublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session);
 
     /**
      * Publish JCR nodes (along with their translation sub-nodes when appropriate) in certain languages.
      *
      * @param nodeIdentifiers UUIDs of the nodes
      * @param languages Publication languages
-     * @param session Session to use for JCR access
+     * @param session
      */
     void publish(Collection<String> nodeIdentifiers, Collection<String> languages, JCRSessionWrapper session);
 

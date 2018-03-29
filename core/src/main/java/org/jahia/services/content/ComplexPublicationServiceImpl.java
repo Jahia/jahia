@@ -75,10 +75,10 @@ import org.quartz.SchedulerException;
  * - delegates lower level info retrieval operations to the associated JCRPublicationService
  * - performs publication via an asynchronous job
  */
-public class PublicationServiceImpl implements PublicationService {
+public class ComplexPublicationServiceImpl implements ComplexPublicationService {
 
     private JCRSessionFactory sessionFactory;
-    private JCRPublicationService jcrPublicationService;
+    private JCRPublicationService publicationService;
     private WorkflowService workflowService;
     private SchedulerService schedulerService;
 
@@ -92,8 +92,8 @@ public class PublicationServiceImpl implements PublicationService {
     /**
      * @param sessionFactory Associated JCR publication service
      */
-    public void setJcrPublicationService(JCRPublicationService jcrPublicationService) {
-        this.jcrPublicationService = jcrPublicationService;
+    public void setPublicationService(JCRPublicationService publicationService) {
+        this.publicationService = publicationService;
     }
 
     /**
@@ -117,14 +117,14 @@ public class PublicationServiceImpl implements PublicationService {
 
             JCRNodeWrapper node = sourceSession.getNodeByIdentifier(nodeIdentifier);
 
-            PublicationInfo publicationInfo = jcrPublicationService.getPublicationInfo(nodeIdentifier, Collections.singleton(language), references, subNodes, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
+            PublicationInfo publicationInfo = publicationService.getPublicationInfo(nodeIdentifier, Collections.singleton(language), references, subNodes, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
 
             if (!subNodes) {
                 // We don't include sub-nodes, but we still need the translation node to get correct status.
                 String translationNodeName = "j:translation_" + language;
                 if (node.hasNode(translationNodeName)) {
                     JCRNodeWrapper translationNode = node.getNode(translationNodeName);
-                    PublicationInfo translationInfo = jcrPublicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
+                    PublicationInfo translationInfo = publicationService.getPublicationInfo(translationNode.getIdentifier(), Collections.singleton(language), references, false, false, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE).get(0);
                     publicationInfo.getRoot().addChild(translationInfo.getRoot());
                 }
             }
@@ -182,7 +182,7 @@ public class PublicationServiceImpl implements PublicationService {
             LinkedHashMap<String, FullPublicationInfo> result = new LinkedHashMap<>();
             ArrayList<String> nodeIdentifierList = new ArrayList<>(nodeIdentifiers);
             for (String language : languages) {
-                Collection<PublicationInfo> publicationInfos = jcrPublicationService.getPublicationInfos(nodeIdentifierList, Collections.singleton(language), true, true, allSubTree, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
+                Collection<PublicationInfo> publicationInfos = publicationService.getPublicationInfos(nodeIdentifierList, Collections.singleton(language), true, true, allSubTree, sourceSession.getWorkspace().getName(), Constants.LIVE_WORKSPACE);
                 for (PublicationInfo publicationInfo : publicationInfos) {
                     publicationInfo.clearInternalAndPublishedReferences(nodeIdentifierList);
                 }
@@ -212,20 +212,16 @@ public class PublicationServiceImpl implements PublicationService {
     }
 
     @Override
-    public Collection<FullPublicationInfo> getFullUnpublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper liveSession) {
+    public Collection<FullPublicationInfo> getFullUnpublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper session) {
         try {
             // When asked for un-publication infos, we use live workspace as both source and destination,
             // because in case of an un-publication there is nothing copied from default to live, or from live to default.
             // In that case we rather just remove live node, so the only workspace concerned is LIVE.
             // Doing so, we are able to un-publish a node that have been moved in DEFAULT workspace (because it have the same UUID in DEFAULT and LIVE)
-            String workspace = liveSession.getWorkspace().getName();
-            if (!workspace.equals(Constants.LIVE_WORKSPACE)) {
-                throw new IllegalArgumentException("Session must represent the live workspace");
-            }
-            List<PublicationInfo> publicationInfos = jcrPublicationService.getPublicationInfos(new ArrayList<>(nodeIdentifiers), null, false, true, allSubTree, workspace, Constants.LIVE_WORKSPACE);
+            List<PublicationInfo> publicationInfos = publicationService.getPublicationInfos(new ArrayList<>(nodeIdentifiers), null, false, true, allSubTree, Constants.LIVE_WORKSPACE, Constants.LIVE_WORKSPACE);
             LinkedHashMap<String, FullPublicationInfoImpl> result = new LinkedHashMap<>();
             for (String language : languages) {
-                Collection<FullPublicationInfoImpl> infos = convert(publicationInfos, language, "unpublish", liveSession);
+                Collection<FullPublicationInfoImpl> infos = convert(publicationInfos, language, "unpublish", session);
                 String lastGroup = null;
                 String lastTitle = null;
                 Locale locale = new Locale(language);
@@ -551,7 +547,7 @@ public class PublicationServiceImpl implements PublicationService {
         private String workflowGroup;
         private String language;
         private String translationNodeIdentifier;
-        private LinkedHashSet<String> deletedTranslationNodeIdentifier = new LinkedHashSet<>();
+        private LinkedHashSet<String> deletedTranslationNodeIdentifiers = new LinkedHashSet<>();
 
         public FullPublicationInfoImpl(String nodeIdentifier, int publicationStatus) {
             super(publicationStatus);
@@ -668,11 +664,11 @@ public class PublicationServiceImpl implements PublicationService {
 
         @Override
         public Collection<String> getDeletedTranslationNodeIdentifiers() {
-            return deletedTranslationNodeIdentifier;
+            return Collections.unmodifiableCollection(deletedTranslationNodeIdentifiers);
         }
 
         public void addDeletedTranslationNodeIdentifier(String deletedTranslationNodeIdentifier) {
-            this.deletedTranslationNodeIdentifier.add(deletedTranslationNodeIdentifier);
+            this.deletedTranslationNodeIdentifiers.add(deletedTranslationNodeIdentifier);
         }
 
         @Override

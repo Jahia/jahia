@@ -364,9 +364,9 @@
 
     <bean id="ReadOnlyModeController" class="org.jahia.settings.readonlymode.ReadOnlyModeController" depends-on="springContextSingleton" factory-method="getInstance"/>
 
-    <bean id="PublicationService" class="org.jahia.services.content.PublicationServiceImpl">
+    <bean id="ComplexPublicationService" class="org.jahia.services.content.ComplexPublicationServiceImpl">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="jcrPublicationService" ref="jcrPublicationService"/>
+        <property name="publicationService" ref="jcrPublicationService"/>
         <property name="workflowService" ref="workflowService"/>
         <property name="schedulerService" ref="SchedulerService"/>
     </bean>

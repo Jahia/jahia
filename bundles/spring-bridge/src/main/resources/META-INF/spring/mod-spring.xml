@@ -97,13 +97,13 @@
         </bean>
     </osgi:service>
 
-    <osgi:service interface="org.jahia.services.content.PublicationService">
+    <osgi:service interface="org.jahia.services.content.ComplexPublicationService">
         <osgi:service-properties>
-            <entry key="Service Description" value="DX facade publication service"/>
+            <entry key="Service Description" value="DX complex publication service"/>
             <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
         </osgi:service-properties>
         <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
-            <property name="target" ref="PublicationService"/>
+            <property name="target" ref="ComplexPublicationService"/>
         </bean>
     </osgi:service>
 

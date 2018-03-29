@@ -82,18 +82,18 @@ public class PublicationHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(PublicationHelper.class);
 
-    private JCRPublicationService jcrPublicationService;
-    private PublicationService publicationService;
+    private JCRPublicationService publicationService;
+    private ComplexPublicationService complexPublicationService;
     private WorkflowHelper workflowHelper;
     private WorkflowService workflowService;
     private HttpClientService httpClientService;
 
-    public void setJcrPublicationService(JCRPublicationService publicationService) {
-        this.jcrPublicationService = publicationService;
+    public void setPublicationService(JCRPublicationService publicationService) {
+        this.publicationService = publicationService;
     }
 
-    public void setPublicationService(PublicationService publicationService) {
-        this.publicationService = publicationService;
+    public void setComplexPublicationService(ComplexPublicationService complexPublicationService) {
+        this.complexPublicationService = complexPublicationService;
     }
 
     public void setWorkflowService(WorkflowService workflowService) {
@@ -126,7 +126,7 @@ public class PublicationHelper {
         try {
             HashMap<String, GWTJahiaPublicationInfo> infos = new HashMap<String, GWTJahiaPublicationInfo>(languages.size());
             for (String language : languages) {
-                PublicationService.AggregatedPublicationInfo aggregatedInfo = publicationService.getAggregatedPublicationInfo(node.getIdentifier(), language, includeSubNodes, includeReferences, currentUserSession);
+                ComplexPublicationService.AggregatedPublicationInfo aggregatedInfo = complexPublicationService.getAggregatedPublicationInfo(node.getIdentifier(), language, includeSubNodes, includeReferences, currentUserSession);
                 GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(node.getIdentifier(), aggregatedInfo.getPublicationStatus());
                 gwtInfo.setLocked(aggregatedInfo.isLocked());
                 gwtInfo.setWorkInProgress(aggregatedInfo.isWorkInProgress());
@@ -163,26 +163,26 @@ public class PublicationHelper {
                                                                  JCRSessionWrapper currentUserSession,
                                                                  boolean allSubTree, boolean checkForUnpublication) throws GWTJahiaServiceException {
 
-        Collection<PublicationService.FullPublicationInfo> infos;
+        Collection<ComplexPublicationService.FullPublicationInfo> infos;
         if (checkForUnpublication) {
-            infos = publicationService.getFullUnpublicationInfos(uuids, languages, allSubTree, currentUserSession);
+            infos = complexPublicationService.getFullUnpublicationInfos(uuids, languages, allSubTree, currentUserSession);
         } else {
-            infos = publicationService.getFullPublicationInfos(uuids, languages, allSubTree, currentUserSession);
+            infos = complexPublicationService.getFullPublicationInfos(uuids, languages, allSubTree, currentUserSession);
         }
         List<GWTJahiaPublicationInfo> result = convert(infos, currentUserSession);
         return result;
     }
 
-    private static List<GWTJahiaPublicationInfo> convert(Collection<PublicationService.FullPublicationInfo> infos, JCRSessionWrapper session) {
+    private static List<GWTJahiaPublicationInfo> convert(Collection<ComplexPublicationService.FullPublicationInfo> infos, JCRSessionWrapper session) {
         LinkedList<GWTJahiaPublicationInfo> gwtInfos = new LinkedList<>();
-        for (PublicationService.FullPublicationInfo info : infos) {
+        for (ComplexPublicationService.FullPublicationInfo info : infos) {
             GWTJahiaPublicationInfo gwtInfo = convert(info, session);
             gwtInfos.add(gwtInfo);
         }
         return gwtInfos;
     }
 
-    private static GWTJahiaPublicationInfo convert(PublicationService.FullPublicationInfo info, JCRSessionWrapper session) {
+    private static GWTJahiaPublicationInfo convert(ComplexPublicationService.FullPublicationInfo info, JCRSessionWrapper session) {
         GWTJahiaPublicationInfo gwtInfo = new GWTJahiaPublicationInfo(info.getNodeIdentifier(), info.getPublicationStatus());
         gwtInfo.setPath(info.getNodePath());
         gwtInfo.setTitle(info.getNodeTitle());
@@ -197,13 +197,10 @@ public class PublicationHelper {
         gwtInfo.setWorkflowGroup(info.getWorkflowGroup());
         gwtInfo.setIsAllowedToPublishWithoutWorkflow(info.isAllowedToPublishWithoutWorkflow());
         gwtInfo.setLanguage(info.getLanguage());
-        String translationNodeIdentifier = info.getTranslationNodeIdentifier();
-        if (StringUtils.isNotEmpty(translationNodeIdentifier)) {
-            gwtInfo.setI18NUuid(translationNodeIdentifier);
-        }
-        String deletedI18nUuid = StringUtils.join(info.getDeletedTranslationNodeIdentifiers(), ' ');
-        if (StringUtils.isNotEmpty(deletedI18nUuid)) {
-            gwtInfo.setDeletedI18nUuid(deletedI18nUuid);
+        gwtInfo.setI18NUuid(info.getTranslationNodeIdentifier());
+        Collection<String> deletedTranslationNodeIdentifiers = info.getDeletedTranslationNodeIdentifiers();
+        if (!deletedTranslationNodeIdentifiers.isEmpty()) {
+            gwtInfo.setDeletedI18nUuid(StringUtils.join(deletedTranslationNodeIdentifiers, ' '));
         }
         gwtInfo.setIsNonRootMarkedForDeletion(info.isNonRootMarkedForDeletion());
         return gwtInfo;
@@ -294,7 +291,7 @@ public class PublicationHelper {
      */
     public void publish(List<String> uuids) throws GWTJahiaServiceException {
         try {
-            jcrPublicationService.publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
+            publicationService.publish(uuids, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException("Cannot get publish nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
@@ -313,7 +310,7 @@ public class PublicationHelper {
      */
     public void unpublish(List<String> uuids, Set<String> languages, JahiaUser user) throws GWTJahiaServiceException {
         try {
-            jcrPublicationService.unpublish(uuids);
+            publicationService.unpublish(uuids);
         } catch (RepositoryException e) {
             logger.error("repository exception", e);
             throw new GWTJahiaServiceException("Cannot get unpublish nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);

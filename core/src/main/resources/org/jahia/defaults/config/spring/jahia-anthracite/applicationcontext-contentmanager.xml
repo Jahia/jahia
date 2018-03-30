@@ -4,52 +4,52 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <bean id="AnthraciteManagerEngineConfig" class="org.jahia.services.uicomponents.bean.editmode.EngineConfiguration">
+        <property name="engineTabs">
+            <list>
+                <!--<ref bean="Engine.Tab.ContentAndLayout"/>-->
+                <ref bean="Engine.Tab.Content"/>
+                <ref bean="Engine.Tab.ListOrdering"/>
+                <ref bean="Engine.Tab.Layout"/>
+                <ref bean="Engine.Tab.Metadata"/>
+                <ref bean="Engine.Tab.Seo"/>
+                <ref bean="Engine.Tab.Categories"/>
+                <ref bean="Engine.Tab.Options"/>
+                <ref bean="Engine.Tab.LiveRoles"/>
+                <ref bean="Engine.Tab.EditRoles"/>
+                <ref bean="Engine.Tab.Usages"/>
+                <ref bean="Engine.Tab.History"/>
+                <ref bean="Engine.Tab.Versioning"/>
+                <ref bean="Engine.Tab.Visibility"/>
+                <ref bean="Engine.Tab.ContributeMode"/>
+            </list>
+        </property>
+        <property name="creationButtons">
+            <list>
+                <ref bean="Engine.Button.WorkInProgress"/>
+                <ref bean="Engine.Button.Create"/>
+                <ref bean="Engine.Button.CreateAndNew"/>
+            </list>
+        </property>
+        <property name="editionButtons">
+            <list>
+                <ref bean="Engine.Button.WorkInProgress"/>
+                <ref bean="Engine.Button.Update"/>
+            </list>
+        </property>
+        <property name="commonButtons">
+            <list>
+                <ref bean="Engine.Button.Cancel"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="abstractmanager-anthracite" class="org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration"
           abstract="true">
         <!-- edit engine -->
         <property name="engineConfigurations">
             <map>
-                <entry key="nt:base">
-                    <bean class="org.jahia.services.uicomponents.bean.editmode.EngineConfiguration">
-                        <property name="engineTabs">
-                            <list>
-                                <!--<ref bean="Engine.Tab.ContentAndLayout"/>-->
-                                <ref bean="Engine.Tab.Content"/>
-                                <ref bean="Engine.Tab.ListOrdering"/>
-                                <ref bean="Engine.Tab.Layout"/>
-                                <ref bean="Engine.Tab.Metadata"/>
-                                <ref bean="Engine.Tab.Seo"/>
-                                <ref bean="Engine.Tab.Categories"/>
-                                <ref bean="Engine.Tab.Options"/>
-                                <ref bean="Engine.Tab.LiveRoles"/>
-                                <ref bean="Engine.Tab.EditRoles"/>
-                                <ref bean="Engine.Tab.Usages"/>
-                                <ref bean="Engine.Tab.History"/>
-                                <ref bean="Engine.Tab.Versioning"/>
-                                <ref bean="Engine.Tab.Visibility"/>
-                                <ref bean="Engine.Tab.ContributeMode"/>
-                            </list>
-                        </property>
-                        <property name="creationButtons">
-                            <list>
-                                <ref bean="Engine.Button.WorkInProgress"/>
-                                <ref bean="Engine.Button.Create"/>
-                                <ref bean="Engine.Button.CreateAndNew"/>
-                            </list>
-                        </property>
-                        <property name="editionButtons">
-                            <list>
-                                <ref bean="Engine.Button.WorkInProgress"/>
-                                <ref bean="Engine.Button.Update"/>
-                            </list>
-                        </property>
-                        <property name="commonButtons">
-                            <list>
-                                <ref bean="Engine.Button.Cancel"/>
-                            </list>
-                        </property>
-                    </bean>
-                </entry>
+                <entry key="nt:base" value-ref="AnthraciteManagerEngineConfig"/>
             </map>
         </property>
 

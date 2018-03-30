@@ -168,10 +168,16 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
                 addTab(getEngineTabs(o));
             }
         } else {
-            addTab(getEngineTabs(parent));
+            if (parent != null) {
+                addTab(getEngineTabs(parent));
+            }
         }
-        addTab(getEngineTabs(parentManagerConfiguration));
-        addTab(getEngineTabs(parentEditConfiguration));
+        if (parentManagerConfiguration != null) {
+            addTab(getEngineTabs(parentManagerConfiguration));
+        }
+        if (parentEditConfiguration != null) {
+            addTab(getEngineTabs(parentEditConfiguration));
+        }
     }
 
     @Override

@@ -64,6 +64,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.URL;
+import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
@@ -413,8 +414,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameFieldSet = new FieldSet();
                 nameFieldSet.setHeadingHtml(Messages.get("label.systemName", "System name"));
                 nameFieldSet.setLayout(fl);
-
-                nameText = new TextField<String>();
+                nameText = new FormFieldCreator.TextFieldWithClass();
                 nameText.setId("JahiaGxtField_systemName");
                 nameText.setWidth("250");
                 ((TextField)nameText).setMaxLength(maxNameSize);

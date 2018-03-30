@@ -901,7 +901,7 @@ public class FormFieldCreator {
         }
     }
 
-    private static class TextFieldWithClass extends TextField<String> {
+    public static class TextFieldWithClass extends TextField<String> {
         @Override
         public void markInvalid(String msg) {
             super.markInvalid(msg);

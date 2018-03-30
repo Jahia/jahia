@@ -105,8 +105,8 @@ public class VanityUrlMapperTest {
         try {
             TestHelper.deleteSite(SITEA);
             TestHelper.deleteSite(SITEB);
-            TestHelper.deleteSite(SITEA);
-            TestHelper.deleteSite(SITEA);
+            TestHelper.deleteSite(SITEC);
+            TestHelper.deleteSite(SITED);
         } catch (Exception e) {
             logger.error("Error tearing down ValidationTest environment", e);
         }

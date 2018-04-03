@@ -3930,8 +3930,6 @@ if (!Element.prototype.matches) {
 			onOpen: function(){
 				app.dev.log("::: APP ::: EDIT ::: ONOPEN");
 
-				//XXX
-
 				DexV2(".window-side-panel > .x-panel-bwrap > div:nth-child(2).x-panel-footer").addClass("side-panel-pin")
 
 				DexV2.getCached("body").setAttribute("data-indigo-styled-combos", "true");

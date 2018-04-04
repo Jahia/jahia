@@ -1479,7 +1479,7 @@ div.engine-window {
 
 			&[src$="/visibilityStatusUnknown.png"] {
 				// Find better icon for Unknow Status ?
-				background: url(./images/icons_dark/uncheck.svg) no-repeat center center;
+				background: url(./images/icons/unknown.png) no-repeat center center;
 				background-size: 22px;
 				opacity: .67;
 			}
@@ -1693,10 +1693,6 @@ div.engine-window {
 				    left: -3px;
 				    top: -2px;
 
-					img {
-						width: 3px!important;
-						padding-left: 3px!important;
-					}
 				}
 
 				.x-grid-cell {
@@ -1705,7 +1701,7 @@ div.engine-window {
 
 				.x-grid3-col-name {
 					color: _property($LIST-BOX--ROW--COLOR, $EDIT-ENGINE)!important;
-					padding: 5px 10px 5px 13px;
+					padding: 5px 10px 5px 23px;
 				}
 
 

@@ -1314,16 +1314,18 @@ body[indigo-dragging-panel] {
 	// Deal with icons here ...
 	.x-tree3-node-icon {
 
-		background-size: 23px 23px;
+		background-size: 20px 20px;
 	    background-repeat: no-repeat;
 	    padding-left: 18px;
 	    width: 18px;
 	    height: 23px;
 		opacity: 0.8;
+		background-position: top 2px left 1px;
+		opacity: 0.5;
 
 		// CATEGORY ICON
 		&[src$="/jnt_category.png"] {
-			background-image: url(./images/icons/tabs-placeholder-black@X2.png);
+			background-image: url(./images/icons_dark/category.svg);
 		}
 
 
@@ -1333,7 +1335,8 @@ body[indigo-dragging-panel] {
 		.x-tree3-node-icon {
 			// CATEGORY ICON
 			&[src$="/jnt_category.png"] {
-				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+				background-image: url(./images/icons_light/category.svg);
+				opacity: 0.9;
 			}
 
 

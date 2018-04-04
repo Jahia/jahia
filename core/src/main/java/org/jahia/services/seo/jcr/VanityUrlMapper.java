@@ -184,8 +184,7 @@ public class VanityUrlMapper {
             // check for vanity uniqueness
             List<VanityUrl> foundVanityUrls = vanityUrlService.findExistingVanityUrls(vanityUrlToTest.getUrl(), StringUtils.EMPTY, urlResolver.getWorkspace());
             for (VanityUrl foundVanityUrl : foundVanityUrls) {
-                if (!foundVanityUrl.getSite().equals(vanityUrlToTest.getSite()) &&
-                        foundVanityUrl.getLanguage().equals(vanityUrlToTest.getLanguage())) {
+                if (!foundVanityUrl.getSite().equals(vanityUrlToTest.getSite())) {
 
                     if (logger.isDebugEnabled()) {
                         logger.debug("Ambiguous vanity URL resolution: current server name '{}' " +

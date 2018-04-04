@@ -68,13 +68,18 @@ public class VanityUrlMapperTest {
     private static final String SERVERNAME_NOT_MAPPED = "notmapped";
     private static final String SERVERNAME_TEST1 = "test1";
     private static final String SERVERNAME_TEST2 = "test2";
+    private static final String SERVERNAME_TEST3 = "test3";
 
     private static final String SITEA = "siteA";
     private static final String SITEB = "siteB";
     private static final String SITEC = "siteC";
     private static final String SITED = "siteD";
 
+    private static final String SITEE = "siteE";
+    private static final String SITEF = "siteF";
+
     private static final String AMBIGUOUS_VANITY = "ambiguous_vanity";
+    private static final String AMBIGUOUS_I18N_VANITY = "ambiguous_i18n_vanity";
     private static final String UNIQUE_VANITY = "unique_vanity";
 
     private static VanityUrlService vanityUrlService;
@@ -85,10 +90,13 @@ public class VanityUrlMapperTest {
         try {
             vanityUrlService = (VanityUrlService) SpringContextSingleton.getBean("org.jahia.services.seo.jcr.VanityUrlService");
 
-            initSite(SITEA, SERVERNAME_LOCALHOST, true, true);
-            initSite(SITEB, SERVERNAME_LOCALHOST, true, true);
-            initSite(SITEC, SERVERNAME_TEST1, true, true);
-            initSite(SITED, SERVERNAME_TEST2, false, false);
+            initSite(SITEA, SERVERNAME_LOCALHOST, true, false,true, false,"en");
+            initSite(SITEB, SERVERNAME_LOCALHOST, true, false,true, false,"en");
+            initSite(SITEC, SERVERNAME_TEST1, true, false,true, false,"en");
+            initSite(SITED, SERVERNAME_TEST2, false, true,false, false, "en");
+
+            initSite(SITEE, SERVERNAME_LOCALHOST, false, false,false, true, "en");
+            initSite(SITEF, SERVERNAME_TEST3, false, false,false, true, "fr");
         } catch (Exception e) {
             logger.error("Error setting up ValidationTest environment", e);
             Assert.fail();
@@ -107,6 +115,8 @@ public class VanityUrlMapperTest {
             TestHelper.deleteSite(SITEB);
             TestHelper.deleteSite(SITEC);
             TestHelper.deleteSite(SITED);
+            TestHelper.deleteSite(SITEE);
+            TestHelper.deleteSite(SITEF);
         } catch (Exception e) {
             logger.error("Error tearing down ValidationTest environment", e);
         }
@@ -251,17 +261,56 @@ public class VanityUrlMapperTest {
         ambiguousTestMapper(SERVERNAME_NOT_MAPPED, SITED, UNIQUE_VANITY);
     }
 
+    /**
+     * When:
+     * - ambiguous vanity is used by site E, F
+     * - each site use the same vanity in different languages
+     * - servername is not mapped to a site
+     *
+     * Then:
+     * - nobody can use the ambiguous vanity because servername does not allow site resolution
+     */
+    @Test
+    public void ambiguousi18NVanityTestUsingServernameNotMapped(){
+        ambiguousi18nTestMapper(SERVERNAME_NOT_MAPPED, SITEE, null, "en");
+        ambiguousi18nTestMapper(SERVERNAME_NOT_MAPPED, SITEF, null, "en");
+        ambiguousi18nTestMapper(SERVERNAME_NOT_MAPPED, SITEE, null, "fr");
+        ambiguousi18nTestMapper(SERVERNAME_NOT_MAPPED, SITEF, null, "fr");
+    }
+
+    /**
+     * When:
+     * - ambiguous vanity is used by site E, F
+     * - each site use the same vanity in different languages
+     * - servername is mapped to site F
+     *
+     * Then:
+     * - Only site F is able to use the vanity, because the servername allow site resolution
+     */
+    @Test
+    public void ambiguousi18NsVanityTestUsingServernameMappedOnSiteUsingTheVanity() {
+        ambiguousi18nTestMapper(SERVERNAME_TEST3, SITEE, null, "en");
+        ambiguousi18nTestMapper(SERVERNAME_TEST3, SITEF, null, "en");
+        ambiguousi18nTestMapper(SERVERNAME_TEST3, SITEE, null, "fr");
+        ambiguousi18nTestMapper(SERVERNAME_TEST3, SITEF, AMBIGUOUS_I18N_VANITY, "fr");
+    }
+
     private static void simpleTestMapper(String servername, String site, boolean shouldBeVanity) {
         HttpServletRequest request = mockNewServletRequest(servername);
         vanityUrlMapper.checkVanityUrl(request, "", "/default/en/sites/" + site + "/home/simple.html");
-        Assert.assertEquals(request.getAttribute(VanityUrlMapper.VANITY_KEY), shouldBeVanity ? ("/cms/render/default/" + site) : "/cms/render/default/en/sites/" + site + "/home/simple.html");
+        Assert.assertEquals(shouldBeVanity ? ("/cms/render/default/" + site) : "/cms/render/default/en/sites/" + site + "/home/simple.html", request.getAttribute(VanityUrlMapper.VANITY_KEY));
     }
 
     private static void ambiguousTestMapper(String servername, String site, String expectedVanity) {
         HttpServletRequest request = mockNewServletRequest(servername);
         vanityUrlMapper.checkVanityUrl(request, "", "/default/en/sites/" + site + "/home/ambiguous.html");
-        Assert.assertEquals(request.getAttribute(VanityUrlMapper.VANITY_KEY),
-                expectedVanity != null ? ("/cms/render/default" + expectedVanity ): "/cms/render/default/en/sites/" + site + "/home/ambiguous.html");
+        Assert.assertEquals(expectedVanity != null ? ("/cms/render/default" + expectedVanity ): "/cms/render/default/en/sites/" + site + "/home/ambiguous.html", request.getAttribute(VanityUrlMapper.VANITY_KEY));
+    }
+
+    private static void ambiguousi18nTestMapper(String servername, String site, String expectedVanity, String language) {
+        HttpServletRequest request = mockNewServletRequest(servername);
+        vanityUrlMapper.checkVanityUrl(request, "", "/default/" + language + "/sites/" + site + "/home/i18n.html");
+        Assert.assertEquals(expectedVanity != null ? ("/cms/render/default" + expectedVanity ): "/cms/render/default/" + language + "/sites/" + site + "/home/i18n.html", request.getAttribute(VanityUrlMapper.VANITY_KEY));
     }
 
     private static HttpServletRequest mockNewServletRequest(String servername) {
@@ -289,22 +338,29 @@ public class VanityUrlMapperTest {
                 });
     }
 
-    private static void initSite(String siteKey, String servername, boolean addAmbiguousVanity, boolean addSimpleVanity) throws Exception {
+    private static void initSite(String siteKey, String servername, boolean addAmbiguousVanity, boolean addUniqueVanity ,boolean addSimpleVanity, boolean addI18nVanity, String language) throws Exception {
         JahiaSite site = TestHelper.createSite(siteKey, servername, TestHelper.WEB_TEMPLATES);
         JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
             try {
                 JCRNodeWrapper ambiguousPage = createPage((JCRSiteNode) session.getNode(site.getJCRLocalPath()), "ambiguous");
                 JCRNodeWrapper simplePage = createPage((JCRSiteNode) session.getNode(site.getJCRLocalPath()), "simple");
+                JCRNodeWrapper i18nPage = createPage((JCRSiteNode) session.getNode(site.getJCRLocalPath()), "i18n");
 
                 if (addSimpleVanity) {
                     // simple vanity use the siteKey as url to be unique
-                    vanityUrlService.saveVanityUrlMapping(simplePage, createVanity(true, true, "/" + siteKey, site.getSiteKey()));
+                    vanityUrlService.saveVanityUrlMapping(simplePage, createVanity(true, true, "/" + siteKey, site.getSiteKey(), language));
+                }
+
+                if (addI18nVanity) {
+                    vanityUrlService.saveVanityUrlMapping(i18nPage, createVanity(true, true, AMBIGUOUS_I18N_VANITY, site.getSiteKey(), language));
                 }
 
                 if (addAmbiguousVanity) {
-                    vanityUrlService.saveVanityUrlMapping(ambiguousPage, createVanity(true, true, AMBIGUOUS_VANITY, site.getSiteKey()));
-                } else {
-                    vanityUrlService.saveVanityUrlMapping(ambiguousPage, createVanity(true, true, UNIQUE_VANITY, site.getSiteKey()));
+                    vanityUrlService.saveVanityUrlMapping(ambiguousPage, createVanity(true, true, AMBIGUOUS_VANITY, site.getSiteKey(), language));
+                }
+
+                if (addUniqueVanity) {
+                    vanityUrlService.saveVanityUrlMapping(ambiguousPage, createVanity(true, true, UNIQUE_VANITY, site.getSiteKey(), language));
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -320,11 +376,11 @@ public class VanityUrlMapperTest {
         return page;
     }
 
-    private static VanityUrl createVanity(boolean isActive, boolean isDefault, String url, String site) {
+    private static VanityUrl createVanity(boolean isActive, boolean isDefault, String url, String site, String language) {
         VanityUrl vanityUrl = new VanityUrl();
         vanityUrl.setActive(isActive);
         vanityUrl.setDefaultMapping(isDefault);
-        vanityUrl.setLanguage("en");
+        vanityUrl.setLanguage(language);
         vanityUrl.setSite(site);
         vanityUrl.setUrl(url);
         return vanityUrl;

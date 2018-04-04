@@ -2885,11 +2885,6 @@ if (!Element.prototype.matches) {
 					} else {
 						DexV2("#" + app.picker.data.ID + " .x-panel-tbar .action-bar-tool-item.toolbar-item-listview").trigger("click");
 
-						// Switch to list view, then remove ...
-						DexV2("#JahiaGxtManagerTobTable").onceGroupOpen(".x-grid3 .x-grid3-row", function(){
-							DexV2.collection(this).remove();
-
-						});
 					}
 
 					// Hide the browse panels (GWT does this automatically in Chrome, but not in Firefox - so we have to do it manually)

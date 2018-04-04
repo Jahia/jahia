@@ -135,8 +135,8 @@ public class PublicationHelper {
                 infos.put(language, gwtInfo);
             }
             return infos;
-        } catch (RepositoryException e) {
-            logger.error("repository exception", e);
+        } catch (Exception e) {
+            logger.error("Cannot get publication status for node " + node.getPath() + ". Cause: " + e.getLocalizedMessage(), e);
             throw new GWTJahiaServiceException("Cannot get publication status for node " + node.getPath() + ". Cause: " + e.getLocalizedMessage(), e);
         }
     }
@@ -162,15 +162,19 @@ public class PublicationHelper {
     public List<GWTJahiaPublicationInfo> getFullPublicationInfos(List<String> uuids, Set<String> languages,
                                                                  JCRSessionWrapper currentUserSession,
                                                                  boolean allSubTree, boolean checkForUnpublication) throws GWTJahiaServiceException {
+        try {
+            Collection<ComplexPublicationService.FullPublicationInfo> infos;
+            if (checkForUnpublication) {
+                infos = complexPublicationService.getFullUnpublicationInfos(uuids, languages, allSubTree, currentUserSession);
+            } else {
+                infos = complexPublicationService.getFullPublicationInfos(uuids, languages, allSubTree, currentUserSession);
+            }
 
-        Collection<ComplexPublicationService.FullPublicationInfo> infos;
-        if (checkForUnpublication) {
-            infos = complexPublicationService.getFullUnpublicationInfos(uuids, languages, allSubTree, currentUserSession);
-        } else {
-            infos = complexPublicationService.getFullPublicationInfos(uuids, languages, allSubTree, currentUserSession);
+            return convert(infos, currentUserSession);
+        } catch (Exception e) {
+            logger.error("Cannot get nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
+            throw new GWTJahiaServiceException("Cannot get nodes " + uuids + ". Cause: " + e.getLocalizedMessage(), e);
         }
-        List<GWTJahiaPublicationInfo> result = convert(infos, currentUserSession);
-        return result;
     }
 
     private static List<GWTJahiaPublicationInfo> convert(Collection<ComplexPublicationService.FullPublicationInfo> infos, JCRSessionWrapper session) {

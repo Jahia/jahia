@@ -43,21 +43,6 @@
  */
 package org.jahia.services.content;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -69,6 +54,11 @@ import org.jahia.services.workflow.WorkflowService;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import java.util.*;
 
 /**
  * Service implementation that:
@@ -76,6 +66,8 @@ import org.quartz.SchedulerException;
  * - performs publication via an asynchronous job
  */
 public class ComplexPublicationServiceImpl implements ComplexPublicationService {
+    private static final transient Logger logger = LoggerFactory.getLogger(ComplexPublicationServiceImpl.class);
+
 
     private JCRSessionFactory sessionFactory;
     private JCRPublicationService publicationService;
@@ -90,7 +82,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
     }
 
     /**
-     * @param sessionFactory Associated JCR publication service
+     * @param publicationService Associated JCR publication service
      */
     public void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;
@@ -333,7 +325,8 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
             info.setAllowedToPublishWithoutWorkflow(jcrNode.hasPermission("publish"));
             info.setNonRootMarkedForDeletion(jcrNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION) && !jcrNode.isNodeType(Constants.JAHIAMIX_MARKED_FOR_DELETION_ROOT));
         } catch (RepositoryException e) {
-            throw new JahiaRuntimeException(e);
+            logger.warn("Issue when reading workflow and delete status of node " + node.getPath(), e);
+            info.setNodeTitle(node.getPath());
         }
 
         info.setLanguage(language);

@@ -1526,6 +1526,11 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
     height: 60px;
     display: block;
     position: absolute !important;
+
+    /* SAFARI FIX */
+    &.gwt-only-panel.x-component {
+        overflow: visible!important;
+    }
 }
 
 .window-container {

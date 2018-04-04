@@ -56,6 +56,26 @@ body[indigo-dragging-panel="true"] {
 	width: 360px!important;
 }
 
+/* Fix for the tooltips in Manager Toolbars */
+.x-viewport-repositoryexplorer-anthracite,
+.x-viewport-filemanager-anthracite,
+.x-viewport-editorialcontentmanager-anthracite,
+.x-viewport-sitemanager-anthracite,
+.x-viewport-categorymanager-anthracite,
+.x-viewport-portletmanager-anthracite {
+	> .x-panel-bwrap {
+		overflow: visible;
+
+		> .x-panel-tbar {
+			overflow: visible;
+		}
+	}
+
+	#JahiaGxtManagerToolbar {
+		overflow: visible!important;
+	}
+}
+
 
 #JahiaGxtContentPickerWindow,
 #contentpicker,
@@ -505,6 +525,8 @@ body[indigo-dragging-panel="true"] {
 	img[src$="/bootstrap3nt_columns.png"],
 	img[src$="/jnt_contentFolder.png"],
 	img[src$="/jnt_virtualsite.png"],
+	img[src$="/jnt_category.png"],
+	img[src$="/jnt_portletFolder.png"],
 	img[src$="/jnt_mounts.png"],
 	img[src$="/jnt_file_img.png"] {
 		padding-left: 20px;
@@ -523,6 +545,20 @@ body[indigo-dragging-panel="true"] {
 		background-color: transparent;
 		padding: 0 0 0 20px;
 		border-radius: 0;
+	}
+
+	// Category Icon
+	img[src$="/jnt_category.png"] {
+		background-image: url(./images/icons_dark/category.svg);
+		background-size: 20px;
+		opacity: 0.5;
+	}
+
+	// Portlet Icon
+	img[src$="/jnt_portletFolder.png"] {
+		background-image: url(./images/icons_dark/portlets.svg);
+		background-size: 20px;
+		opacity: 0.5;
 	}
 
 	// BOOTSTRAP COLUMNS
@@ -724,6 +760,20 @@ body[indigo-dragging-panel="true"] {
 			background-image: url(./images/icons/tabs-files@X2.png);
 			opacity: 0.8;
 		}
+
+		// BOOTSTRAP COLUMNS
+		img[src$="/jnt_category.png"] {
+			background-image: url(./images/icons_light/category.svg);
+			background-size: 20px;
+			opacity: 0.5;
+		}
+
+		// Portlet Icon
+		img[src$="/jnt_portletFolder.png"] {
+			background-image: url(./images/icons_light/portlets.svg);
+			background-size: 20px;
+			opacity: 0.5;
+		}
 	}
 
 	// FOLDER ICON
@@ -748,6 +798,20 @@ body[indigo-dragging-panel="true"] {
 		img[src$="/jnt_contentFolder.png"],
 		img[src$="/jnt_folder.png"] {
 			background-image: url(./images/icons/tabs-files@X2.png);
+		}
+
+		// BOOTSTRAP COLUMNS
+		img[src$="/jnt_category.png"] {
+			background-image: url(./images/icons_light/category.svg);
+			background-size: 20px;
+			opacity: 0.9;
+		}
+
+		// Portlet Icon
+		img[src$="/jnt_portletFolder.png"] {
+			background-image: url(./images/icons_light/portlets.svg);
+			background-size: 20px;
+			opacity: 0.9;
 		}
 
 		// SITE ICON
@@ -2459,28 +2523,110 @@ body[indigo-dragging-panel="true"] {
 				display: none;
 			}
 
+			/* TOOLTIPS */
+			&.toolbar-item-newfolder,
+			&.toolbar-item-newcontentfolder,
+			&.toolbar-item-newcategory,
+			&.toolbar-item-upload,
+			&.toolbar-item-newcontent,
+			&.toolbar-item-newportletfolder,
+			&.toolbar-item-newportlet,
+			&.toolbar-item-newpage,
+			&.repositoryexplorer-menu-view {
+				&:hover {
+					&::before,
+					&::after {
+						opacity: 1;
+						transition: all 0.3s ease-in 0.5s;
+					}
+				}
+
+				&::before,
+				&::after {
+					opacity: 0;
+					position: absolute;
+					background: _theme-color(secondary);
+					transition: all 0.3s ease-in 0s;
+					margin: 0!important;
+					pointer-events: none;
+
+				}
+
+				&::before {
+					padding: 7px 10px;
+					white-space: nowrap;
+					text-align: center;
+					z-index: 9;
+					border-radius: 2px;
+					box-shadow: 1px 2px 4px 0 rgba(40, 43, 45, 0.7);
+					text-transform: uppercase;
+					@include text(10px, _theme-color(primary, g), $FONT--WEIGHT---EXTRABOLD);
+					position: absolute;
+					display: block;
+					width: auto;
+					padding: 6px;
+					top: 35px;
+					z-index: 9;
+					border-radius: 3px;
+				}
+
+				&::after {
+					width: 0;
+					height: 0;
+					content: "Arrow";
+					text-indent: -50000px;
+					z-index: 10;
+					border-style: solid;
+					border-width: 0 8px 8px 8px;
+					border-color: transparent transparent _theme-color(secondary) transparent;
+					background: transparent;
+					top: 30px;
+				}
+			}
+			/* END TOOTIPS */
+
 			// Add New Folder
 			&.toolbar-item-newfolder {
 				display: block!important;
-			    background-image: url(./images/icons/add-folder@X2.png);
+			    background-image: url(./images/buttons_light/new-folder.png);
+
+				&::before {
+					content: $text_tooltip_new_folder;
+				}
+
 			}
 
 			// Add New Content Folder
 			&.toolbar-item-newcontentfolder { // editorial content manager
 				display: block!important;
-				background-image: url(./images/icons/add-folder@X2.png);
+				background-image: url(./images/buttons_light/new-content-folder.png);
+				background-size: 19px;
+
+				&::before {
+					content: $text_tooltip_new_content_folder;
+				}
 			}
 
 			// Add New Portlet Folder
 			&.toolbar-item-newportletfolder { // portlet manager
 				display: block!important;
-				background-image: url(./images/icons/add-folder@X2.png);
+				background-image: url(./images/buttons_light/new-content-folder.png);
+				background-size: 19px;
+
+				&::before {
+					content: $text_tooltip_new_portlet_folder;
+				}
 			}
 
 			// New Category
 			&.toolbar-item-newcategory {
 				display: block!important;
-			    background-image: url(./images/icons/add@X2.png);
+				background-image: url(./images/buttons_light/new-content.png);
+				background-size: 17px;
+
+				&::before {
+					content: $text_tooltip_new_category;
+				}
 			}
 
 			// Upload File
@@ -2488,24 +2634,44 @@ body[indigo-dragging-panel="true"] {
 				display: block!important;
 				background-image: url(./images/icons/add-media@X2.png);
 				background-size: 23px;
+				background-position: top 5px center;
+
+				&::before {
+					content: $text_tooltip_upload;
+				}
 			}
 
 			// New Content
 			&.toolbar-item-newcontent {
 				display: block!important;
-				background-image: url(./images/icons/add@X2.png);
+				background-image: url(./images/buttons_light/new-content.png);
+				background-size: 17px;
+
+				&::before {
+					content: $text_tooltip_new_content;
+				}
 			}
 
 			// New Portlet
 			&.toolbar-item-newportlet {
 				display: block!important;
-				background-image: url(./images/icons/add@X2.png);
+				background-image: url(./images/buttons_light/new-portlet.png);
+				background-position: top 7px center;
+
+				&::before {
+					content: $text_tooltip_new_portlet;
+				}
 			}
 
 			// New Page
 			&.toolbar-item-newpage {
 				display: block!important;
-				background-image: url(./images/icons/add@X2.png);
+				background-image: url(./images/buttons_light/new-page.png);
+				background-size: 14px;
+
+				&::before {
+					content: "Create new page";
+				}
 			}
 
 			// Download
@@ -2589,6 +2755,10 @@ body[indigo-dragging-panel="true"] {
 			&.repositoryexplorer-menu-view {
 				display: block!important;
 				background-image: url(./images/icons/icon_preview_small_white.png);
+
+				&::before {
+					content: $text_tooltip_toggle_hidden_elements;
+				}
 			}
 
 			// View Buttons

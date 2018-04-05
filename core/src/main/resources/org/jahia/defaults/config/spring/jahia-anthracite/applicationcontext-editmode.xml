@@ -296,7 +296,6 @@
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar" id="Edit.Menu.RightTop">
                     <property name="items">
                         <list>
-                            <ref bean="Toolbar.Item.ClipBoard"/>
                             <ref bean="Toolbar.ItemsGroup.LanguageSwitcher"/>
                         </list>
                     </property>
@@ -376,6 +375,7 @@
                             </bean>
                             <ref bean="Toolbar.Item.ShowTrashboard"/>
                             <ref bean="Toolbar.Item.WorkInProgressAdmin"/>
+                            <ref bean="Toolbar.Item.ClipBoard"/>
                         </list>
                     </property>
                 </bean>

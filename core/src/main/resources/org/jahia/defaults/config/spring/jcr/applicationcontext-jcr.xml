@@ -226,6 +226,7 @@
                 </entry>
                 <entry key="live">
                     <list>
+					    <bean class="org.jahia.services.content.UnpublishOnLiveDeletionListener"/>
                         <bean class="org.jahia.services.content.DefaultValueListener"/>
                         <bean class="org.jahia.services.content.UGCListener">
                             <property name="excludePropertiesFromUGCCheck" value="${jahia.ugc.excludePropertiesFromUGCCheck:j:published}"/>

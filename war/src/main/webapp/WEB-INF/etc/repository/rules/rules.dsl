@@ -55,7 +55,6 @@
 [condition][]The {node} has not been copied=not CopiedNodeFact ( path == ({node}.getPath()) )
 [condition][]The {node} is not moved=not MovedNodeFact ( originalPath == ({node}.getPath()) )
 [condition][]Not in operation {operation}=not OperationTypeFact( operationType == "{operation}")
-[condition][]- has Property "{property}" with value "{value}" = org.jahia.utils.rules.CheckLiveUtil.checkProperty(node, "{property}", "{value}")
 [condition][]In operation {operation}=OperationTypeFact( operationType == "{operation}")
 [consequence][]Append URL query-parameter "{parameterName}" with {parameterValue}=urlService.addURLQueryParameter(searchHit, "{parameterName}", {parameterValue});
 [consequence][]Change the hit link template type to "{templateType}"=urlService.updateHitLinkTemplateType(searchHit, "{templateType}");
@@ -133,4 +132,3 @@
 [consequence][]Send message to {node} channel with parameters {params}= sitePubSubService.sendNodeMessage(node,{params}, drools);
 [consequence][]Check home page uniqueness for {node}=service.checkHomePage({node}, drools);
 [consequence][]Mount {node}=service.mount({node});
-[consequence][]Remove the Property "{property}" from the node in "{workspace}" workspace=org.jahia.utils.rules.CheckLiveUtil.removeProperyInWorkspaceFromNode(node, "{property}", "{workspace}");

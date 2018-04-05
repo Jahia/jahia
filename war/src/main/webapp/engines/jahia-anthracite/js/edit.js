@@ -1652,7 +1652,7 @@ if (!Element.prototype.matches) {
 
 						backgroundMask.classList.add("managers-menu-mask");
 						closeButton.classList.add("managers-menu-close");
-						closeButton.append(closeButtonLabel);
+						closeButton.appendChild(closeButtonLabel);
 
 						DexV2.class("menu-editmode-managers-menu").prepend(closeButton);
 						DexV2.class("menu-editmode-managers-menu").append(backgroundMask);

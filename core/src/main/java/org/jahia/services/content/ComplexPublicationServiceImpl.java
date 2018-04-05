@@ -171,6 +171,9 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
     @Override
     public Collection<FullPublicationInfo> getFullPublicationInfos(Collection<String> nodeIdentifiers, Collection<String> languages, boolean allSubTree, JCRSessionWrapper sourceSession) {
         try {
+            if (languages == null) {
+                languages = Collections.singletonList(null);
+            }
             LinkedHashMap<String, FullPublicationInfo> result = new LinkedHashMap<>();
             ArrayList<String> nodeIdentifierList = new ArrayList<>(nodeIdentifiers);
             for (String language : languages) {
@@ -181,7 +184,7 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                 Collection<FullPublicationInfoImpl> infos = convert(publicationInfos, language, "publish", sourceSession);
                 String lastGroup = null;
                 String lastTitle = null;
-                Locale locale = new Locale(language);
+                Locale locale = language != null ? new Locale(language) : null;
                 for (FullPublicationInfoImpl info : infos) {
                     if (!info.isPublishable() && info.getPublicationStatus() != PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
                         continue;
@@ -189,10 +192,10 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
                     if (info.getWorkflowDefinition() == null && !info.isAllowedToPublishWithoutWorkflow()) {
                         continue;
                     }
-                    result.put(language + "/" + info.getNodeIdentifier(), info);
-                    if (lastGroup == null || !info.getWorkflowGroup().equals(lastGroup)) {
+                    result.put(language != null ? (language + "/" + info.getNodeIdentifier()) : info.getNodeIdentifier(), info);
+                    if (!info.getWorkflowGroup().equals(lastGroup)) {
                         lastGroup = info.getWorkflowGroup();
-                        lastTitle = info.getNodeTitle() + " ( " + locale.getDisplayName(locale) + " )";
+                        lastTitle = locale != null ? (info.getNodeTitle() + " ( " + locale.getDisplayName(locale) + " )") : info.getNodeTitle();
                     }
                     info.setWorkflowTitle(lastTitle);
                 }

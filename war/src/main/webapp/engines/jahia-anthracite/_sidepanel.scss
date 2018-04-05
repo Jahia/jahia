@@ -407,6 +407,7 @@ body[indigo-dragging-panel] {
 			vertical-align: top;
 			position: relative;
 			z-index: $ZINDEX--SIDE_PANEL--CONTAINER_SUB;
+			overflow: visible;
 
 			// .x-viewport-adminmode &,
 			// .x-viewport-dashboardmode & {

@@ -56,13 +56,14 @@ body[indigo-dragging-panel="true"] {
 	width: 360px!important;
 }
 
-/* Fix for the tooltips in Manager Toolbars */
+/* Fix for the tooltips in Manager / Picker Toolbars */
 .x-viewport-repositoryexplorer-anthracite,
 .x-viewport-filemanager-anthracite,
 .x-viewport-editorialcontentmanager-anthracite,
 .x-viewport-sitemanager-anthracite,
 .x-viewport-categorymanager-anthracite,
-.x-viewport-portletmanager-anthracite {
+.x-viewport-portletmanager-anthracite,
+#JahiaGxtContentPicker {
 	> .x-panel-bwrap {
 		overflow: visible;
 
@@ -129,6 +130,10 @@ body[indigo-dragging-panel="true"] {
 	height: 100%!important;
 	left: 0!important;
 	top: 10px!important;
+
+	body.ext-safari & {
+		top: 0!important;
+	}
 	background: _property($BODY--BG, $PICKER);
 	box-shadow: inset 0px 37px 0px _theme-color(primary, g), inset 0px 38px 7px #222;
 	z-index: 1100!important;
@@ -463,6 +468,8 @@ body[indigo-dragging-panel="true"] {
 	// BODY WRAPPER
 	.x-window-bwrap {
 		height: calc(100% - 76px);
+		width: 100%!important;
+		overflow: visible;
 		padding: 0 31px;
 		background: transparent!important;
 	    border: none!important;

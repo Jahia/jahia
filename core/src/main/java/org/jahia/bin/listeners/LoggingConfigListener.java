@@ -53,6 +53,7 @@ import javax.servlet.ServletContextEvent;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.jahia.osgi.FrameworkService;
 import org.springframework.web.util.Log4jConfigListener;
 
@@ -91,6 +92,12 @@ public class LoggingConfigListener extends Log4jConfigListener {
         return LogManager.getRootLogger().getLevel().toString();
     }
 
+    private static Logger getTargetLogger(String logger) {
+        Logger rootLogger = LogManager.getRootLogger();
+
+        return logger.equals(rootLogger.getName()) ? rootLogger : LogManager.getLogger(logger);
+    }
+
     /**
      * Changes the level for the specified logger.
      * 
@@ -98,7 +105,7 @@ public class LoggingConfigListener extends Log4jConfigListener {
      * @param level the logging level value
      */
     public static void setLoggerLevel(String logger, String level) {
-        LogManager.getLogger(logger).setLevel(Level.toLevel(level));
+        getTargetLogger(logger).setLevel(Level.toLevel(level));
 
         // send an OSGi event about changed configuration
         FrameworkService.sendEvent(EVENT_TOPIC_LOGGING,

@@ -49,7 +49,7 @@ import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.bundles.extender.jahiamodules.fileinstall.FileInstallConfigurer;
-import org.jahia.bundles.extender.jahiamodules.fileinstall.Log4jConfigurer;
+import org.jahia.bundles.extender.jahiamodules.logging.PaxLoggingConfigurer;
 import org.jahia.bundles.extender.jahiamodules.transform.DxModuleURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleDependencyURLStreamHandler;
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleUrlTransformer;
@@ -148,7 +148,7 @@ public class Activator implements BundleActivator {
     private Map<String, List<Bundle>> toBeResolved;
     private Map<Bundle, ModuleState> moduleStates;
     private FileInstallConfigurer fileInstallConfigurer;
-    private Log4jConfigurer log4jConfigurer;
+    private PaxLoggingConfigurer log4jConfigurer;
 
     public Activator() {
         instance = this;
@@ -245,7 +245,7 @@ public class Activator implements BundleActivator {
         fileInstallConfigurer = new FileInstallConfigurer();
         fileInstallConfigurer.start(context);
 
-        log4jConfigurer = new Log4jConfigurer();
+        log4jConfigurer = new PaxLoggingConfigurer();
         log4jConfigurer.start(context);
 
         logger.info("== DX Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);

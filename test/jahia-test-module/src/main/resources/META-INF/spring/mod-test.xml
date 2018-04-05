@@ -49,6 +49,7 @@
                 <value>org.jahia.test.services.htmlvalidator.WAIValidatorTest</value>
                 <value>org.jahia.test.services.i18n.ResourceBundleTest</value>
                 <value>org.jahia.test.services.importexport.ImportExportTest</value>
+                <value>org.jahia.test.services.logging.ModuleLoggingTest</value>
                 <value>org.jahia.test.services.logout.LogoutTest</value>
                 <value>org.jahia.test.services.notification.CamelNotificationServiceTest</value>
                 <value>org.jahia.test.services.notification.HtmlExternalizationServiceTest</value>

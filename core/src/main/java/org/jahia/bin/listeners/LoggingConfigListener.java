@@ -44,13 +44,16 @@
 package org.jahia.bin.listeners;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.jahia.osgi.FrameworkService;
 import org.springframework.web.util.Log4jConfigListener;
 
 /**
@@ -59,10 +62,48 @@ import org.springframework.web.util.Log4jConfigListener;
  * @author Sergiy Shyrkov
  */
 public class LoggingConfigListener extends Log4jConfigListener {
-
+    
+    public static final String EVENT_TOPIC_LOGGING = "org/jahia/dx/logging";
+    public static final String EVENT_TYPE_LOGGING_CONFIG_CHANGED = "loggingConfigurationChanged";
     private static final String JAHIA_LOG_DIR = "jahia.log.dir";
     private static final String JAHIA_LOG4J_CONFIG = "jahia.log4j.config";
     private static final String JAHIA_LOG4J_XML = "jahia/log4j.xml";
+
+    public static Hashtable<String, Object> getConfig() {
+        Hashtable<String, Object> p = new Hashtable<>();
+        @SuppressWarnings("rawtypes")
+        Enumeration loggers = LogManager.getCurrentLoggers();
+        while (loggers.hasMoreElements()) {
+            org.apache.log4j.Logger next = (org.apache.log4j.Logger) loggers.nextElement();
+            if (next.getLevel() != null) {
+                p.put("log4j.category." + next.getName(), next.getLevel().toString());
+            }
+        }
+        return p;
+    }
+
+    /**
+     * Returns the logging level of the root logger.
+     * 
+     * @return the logging level of the root logger
+     */
+    public static String getRootLoggerLevel() {
+        return LogManager.getRootLogger().getLevel().toString();
+    }
+
+    /**
+     * Changes the level for the specified logger.
+     * 
+     * @param logger the name of the logger to change the level for
+     * @param level the logging level value
+     */
+    public static void setLoggerLevel(String logger, String level) {
+        LogManager.getLogger(logger).setLevel(Level.toLevel(level));
+
+        // send an OSGi event about changed configuration
+        FrameworkService.sendEvent(EVENT_TOPIC_LOGGING,
+                Collections.singletonMap("type", EVENT_TYPE_LOGGING_CONFIG_CHANGED), false);
+    }
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
@@ -176,18 +217,6 @@ public class LoggingConfigListener extends Log4jConfigListener {
         }
 
         System.out.println("Logging directory set to: " + (logDir != null ? logDir : "<current>"));
-    }
-
-    public static Hashtable<String, Object> getConfig() {
-        Hashtable<String, Object> p = new Hashtable<>();
-        Enumeration en = LogManager.getLoggerRepository().getCurrentLoggers();
-        while (en.hasMoreElements()) {
-            org.apache.log4j.Logger next = (org.apache.log4j.Logger) en.nextElement();
-            if (next.getLevel() != null) {
-                p.put("log4j.category." + next.getName(), next.getLevel().toString());
-            }
-        }
-        return p;
     }
 
 }

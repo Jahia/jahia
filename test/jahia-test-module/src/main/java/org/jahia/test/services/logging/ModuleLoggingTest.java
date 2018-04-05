@@ -53,6 +53,7 @@ import javax.jcr.RepositoryException;
 import org.apache.log4j.Level;
 import org.jahia.bin.listeners.LoggingConfigListener;
 import org.jahia.test.JahiaTestCase;
+import org.jahia.test.TestHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -77,6 +78,8 @@ public class ModuleLoggingTest extends JahiaTestCase {
         logger.info("Info logging of logger {}", logger.getName());
         logger.warn("Warn logging of logger {}", logger.getName());
         logger.error("Error logging of logger {}", logger.getName());
+        
+        logger.error("Debug enabled for logger {}: {}", logger.getName(), logger.isDebugEnabled());
 
         if (level <= Level.TRACE_INT) {
             assertTrue(logger.isTraceEnabled());
@@ -118,12 +121,14 @@ public class ModuleLoggingTest extends JahiaTestCase {
     @Test
     public void loggerLevelIsError() throws RepositoryException, IOException {
         LoggingConfigListener.setLoggerLevel(loggerB.getName(), Level.ERROR.toString());
+        TestHelper.sleep(2000);
         try {
             assertLevel(loggerA, Level.INFO_INT);
             assertLevel(loggerB, Level.ERROR_INT);
             assertLevel(loggerC, Level.INFO_INT);
         } finally {
             LoggingConfigListener.setLoggerLevel(loggerB.getName(), Level.INFO.toString());
+            TestHelper.sleep(2000);
         }
     }
 }

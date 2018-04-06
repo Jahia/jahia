@@ -2483,6 +2483,7 @@ div.engine-window {
 	    background: transparent;
 	    border: none;
 		z-index: 9999;
+		overflow: visible;
 
 		body[data-indigo-editing-condition="true"] &,
 		body[data-indigo-editing-condition="new"] & {
@@ -2512,7 +2513,7 @@ div.engine-window {
 		    top: 91px;
 			width: 240px;
 		    max-width: calc(100% - 680px);
-			overflow: hidden;
+			overflow: visible;
 		    white-space: nowrap;
 		    text-overflow: ellipsis;
 		    height: 21px !important;

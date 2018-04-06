@@ -1020,8 +1020,8 @@ body[data-indigo-app="contribute"] {
 
 // Clipboard Button
 .toolbar-item-clipboard {
-    background: url(./images/tabs-placeholder-white@X2.png) no-repeat top center;
-    background-size: 23px 23px;
+    background: url(./images/icons/clipboard.png) no-repeat top center;
+    background-size: 20px 20px;
 
     &::after {
         content: $text_clipboard;

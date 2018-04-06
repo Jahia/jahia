@@ -3028,9 +3028,9 @@ if (!Element.prototype.matches) {
 
 					// Callback when user opens Date Range context menu ...
 					DexV2('body > #JahiaGxtContentPickerWindow #JahiaGxtManagerLeftTree #CRTsearchTabItem .x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(7)').oneClick("img", function(){
-						var alreadyAddedButtons = DexV2(".x-combo-list").hasClass("indigo-buttons");
+						var alreadyAddedSubButtons = DexV2(".x-combo-list").hasClass("indigo-sub-buttons");
 
-						if(!alreadyAddedButtons){
+						if(!alreadyAddedSubButtons){
 							var anyTimeButton = document.createElement("span"),
 								customRangeButton = document.createElement("span");
 
@@ -3046,10 +3046,10 @@ if (!Element.prototype.matches) {
 								// Add Two new buttons to the context menu ...
 								.prepend(anyTimeButton)
 								.append(customRangeButton)
-								.addClass("indigo-buttons");
+								.addClass("indigo-sub-buttons");
 						}
 
-						DexV2(".x-combo-list")
+						DexV2(".x-combo-list.indigo-sub-buttons")
 							// Clicked on a Normal Date Filter ( ie. 1 day, 2 days, etc )
 							.onMouseDown(".x-combo-list-item", function(){
 								DexV2("body > #JahiaGxtContentPickerWindow").setAttribute("data-indigo-search-date", "simple");
@@ -3094,6 +3094,13 @@ if (!Element.prototype.matches) {
 					// Trigger clicks to initiate the labels of Modification and Meta
 					DexV2("body > #JahiaGxtContentPickerWindow #CRTsearchTabItem").filter(".x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(3)").trigger("click");
 					DexV2("body > #JahiaGxtContentPickerWindow #CRTsearchTabItem").filter(".x-panel-mc > .x-panel-body > .x-component:nth-child(2) fieldset .x-form-item:nth-child(4) input[type=radio]:checked").trigger("click");
+
+					// Set width of the side panel
+					DexV2(".modal-imagepicker #JahiaGxtManagerLeftTree").nodes[0].style.setProperty("left", "-" + app.picker.data.explorer.width + "px", "important");
+
+					// Set position of display results
+					DexV2(".modal-imagepicker #JahiaGxtManagerTobTable").nodes[0].style.setProperty("left", "0px", "important");
+					DexV2(".modal-imagepicker #JahiaGxtManagerTobTable").nodes[0].style.setProperty("width", "100%", "important");
 
 				},
 				open: function(){
@@ -3382,6 +3389,14 @@ if (!Element.prototype.matches) {
 				DexV2.getCached("body")
                     .setAttribute("data-INDIGO-EDIT-ENGINE", "")
                     // .setAttribute("data-INDIGO-PICKER-SEARCH", "");
+
+				// If there is a picker open we need to reposition the page elements ( ie. Search button, refresh button )
+				if(DexV2.getCached("body").getAttribute("data-indigo-picker") == "open"){
+					var splitVBar = DexV2.class("x-vsplitbar");
+					var splitVBarLeft = parseInt(splitVBar.nodes[0].style.left);
+					app.picker.repositionSidePanel(splitVBarLeft);
+
+				}
 
 			},
             onOpenHistory: function(){

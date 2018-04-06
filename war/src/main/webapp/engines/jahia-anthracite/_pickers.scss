@@ -259,6 +259,7 @@ body[indigo-dragging-panel="true"] {
 		// Get rid of side panel
 		#JahiaGxtManagerLeftTree {
 			left: -$PICKER_SIDEPANEL_WIDTH!important;
+			overflow: visible;
 
 		}
 

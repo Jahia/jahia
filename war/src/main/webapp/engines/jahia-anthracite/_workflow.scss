@@ -637,8 +637,8 @@
 			.x-grid3-scroller .x-grid3-body {
 				overflow-x: hidden;
 				overflow-y: scroll;
-				width: calc(100% - 160px);
-				padding-right: 0;
+				width: calc(100% - 180px);
+				padding-right: 10px;
 			}
 
 			.x-panel-fbar .x-btn.x-btn-noicon button {

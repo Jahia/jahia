@@ -388,6 +388,7 @@ body[indigo-dragging-panel] {
 
 		body[data-indigo-app="edit"][data-sitesettings="false"][data-INDIGO-GWT-SIDE-PANEL="open"] & {
 			 width: 360px !important;
+			 overflow: visible;
 		}
 
 		[data-INDIGO-GWT-SIDE-PANEL="open"] & {

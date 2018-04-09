@@ -156,7 +156,7 @@
         <felix.http.version>2.2.1</felix.http.version>
         <felix.webconsole.version>4.2.16-jahia2</felix.webconsole.version>
         <felix.configadmin.version>1.8.8</felix.configadmin.version>
-        <felix.fileinstall.version>3.5.6-jahia2-SNAPSHOT</felix.fileinstall.version>
+        <felix.fileinstall.version>3.5.6-jahia2</felix.fileinstall.version>
         <felix.utils.version>1.8.0</felix.utils.version>
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <gogo.runtime.version>0.16.2</gogo.runtime.version>

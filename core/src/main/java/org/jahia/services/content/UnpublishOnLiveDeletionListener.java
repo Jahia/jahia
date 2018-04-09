@@ -43,6 +43,7 @@
  */
 package org.jahia.services.content;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
@@ -52,9 +53,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 
 /**
- * Listener implementation used to remove the j:published in default workspace if the node in live workspace is removed. 
- * User: wassek 
- * Date: Apr 05, 2018 
+ * Listener implementation used to remove the j:published in default workspace
+ * if the node in live workspace is removed. User: wassek Date: Apr 05, 2018
  * Time: 10:36:05 AM
  */
 public class UnpublishOnLiveDeletionListener extends DefaultEventListener {
@@ -80,21 +80,27 @@ public class UnpublishOnLiveDeletionListener extends DefaultEventListener {
 										continue;
 									}
 
-									String path = event.getPath();
 									if (event.getType() == Event.NODE_REMOVED
 											&& workspace.equals(Constants.LIVE_WORKSPACE)) {
 										// check in default if exists
-										logger.debug("Node in live removed, check if exists in default");
-										if (session.itemExists(path)) {
-											JCRNodeWrapper node = session.getNode(path);
-											if (node.hasProperty("j:published")
-													&& node.getProperty("j:published").getBoolean()) {
-												try {
-													node.getProperty("j:published").remove();
-												} catch (RepositoryException ex) {
-													logger.error("cannot remove Property j:published", ex);
+										if (logger.isDebugEnabled()) {
+											logger.debug("Node in live removed, check if exists in default (" + event.getPath() + ")");
+										}
+										try {
+											JCRNodeWrapper node = session.getNodeByUUID(event.getIdentifier());
+											if (node != null) {
+												if (node.hasProperty("j:published")
+														&& node.getProperty("j:published").getBoolean()) {
+													try {
+														node.getProperty("j:published").remove();
+													} catch (RepositoryException ex) {
+														logger.error("cannot remove Property j:published", ex);
+													}
 												}
 											}
+										} catch (ItemNotFoundException ex) {
+											// node doesn't exists in default
+											// workspace, do nothing.
 										}
 									}
 								}

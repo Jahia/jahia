@@ -336,22 +336,21 @@ public class VanityUrlManager {
             vanityUrlMappingsNode = contentNode.addNode(VANITYURLMAPPINGS_NODE, JAHIANT_VANITYURLS);
         } else {
             vanityUrlMappingsNode = contentNode.getNode(VANITYURLMAPPINGS_NODE);
-            boolean found = false;
             for (NodeIterator it = vanityUrlMappingsNode.getNodes(); it.hasNext(); ) {
                 JCRNodeWrapper currentNode = (JCRNodeWrapper) it.next();
                 if (vanityUrl.isDefaultMapping()
                         && currentNode.getPropertyAsString(JCR_LANGUAGE).equals(vanityUrl.getLanguage())
                         && currentNode.getProperty(PROPERTY_DEFAULT).getBoolean()) {
                     previousDefaultVanityUrlNode = currentNode;
-                    if (found) {
+                    if (vanityUrlNode != null) {
                         break;
                     }
                 }
-                if (currentNode.getPropertyAsString(PROPERTY_URL).equals(vanityUrl.getUrl())) {
+                if (vanityUrl.getIdentifier() == null ?
+                        (currentNode.getPropertyAsString(PROPERTY_URL).equals(vanityUrl.getUrl())) :
+                        (currentNode.getIdentifier().equals(vanityUrl.getIdentifier()))) {
                     vanityUrlNode = currentNode;
-                    if (!vanityUrl.isDefaultMapping()
-                            || previousDefaultVanityUrlNode != null) {
-                        found = true;
+                    if (!vanityUrl.isDefaultMapping() || previousDefaultVanityUrlNode != null) {
                         break;
                     }
                 }
@@ -363,6 +362,7 @@ public class VanityUrlManager {
 
             vanityUrlNode = vanityUrlMappingsNode.addNode(JCRContentUtils.escapeLocalNodeName(vanityUrl.getUrl()), JAHIANT_VANITYURL);
         } else if (vanityUrlNode.getProperty(PROPERTY_ACTIVE).getBoolean() == vanityUrl.isActive()
+                && vanityUrlNode.getProperty(PROPERTY_URL).getString() == vanityUrl.getUrl()
                 && vanityUrlNode.getProperty(PROPERTY_DEFAULT).getBoolean() == vanityUrl.isDefaultMapping()
                 && vanityUrlNode.getProperty(JCR_LANGUAGE).getString().equals(vanityUrl.getLanguage())) {
             return false;

@@ -505,6 +505,13 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    public List<JCRNodeWrapper> getChangedNodes() {
+        List<JCRNodeWrapper> nodes = new ArrayList<>();
+        nodes.addAll(changedNodes.values());
+        nodes.addAll(newNodes.values());
+        return nodes;
+    }
+
     public void save(final int operationType)
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {

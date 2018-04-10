@@ -44,10 +44,13 @@
 package org.jahia.bundles.blueprint.extender.config;
 
 import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationContext;
+import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.core.io.Resource;
 
@@ -59,6 +62,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * OsgiBundleXmlApplicationContext that does not start until jahia module is registered.
  */
 public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicationContext {
+    
+    private static final Logger logger = LoggerFactory.getLogger(JahiaOsgiBundleXmlApplicationContext.class);
 
     public JahiaOsgiBundleXmlApplicationContext(String[] configLocations) {
         super(configLocations);
@@ -70,6 +75,15 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
 
     @Override
     public void refresh() throws BeansException, IllegalStateException {
+        try {
+            getBundleContext().getBundle();
+        } catch (IllegalStateException e) {
+            logger.info(
+                    "The bundle context is no longer valid for bundle {} and application context {}."
+                            + " Skipping Spring application context refresh.",
+                    OsgiStringUtils.nullSafeNameAndSymName(getBundle()), this);
+            return;
+        }
         if (BundleUtils.isJahiaModuleBundle(getBundle())) {
             final ModuleState state = BundleUtils.getModule(getBundle()).getState();
             if (state != null && state.getState() != null && state.getState() == ModuleState.State.SPRING_STARTING) {

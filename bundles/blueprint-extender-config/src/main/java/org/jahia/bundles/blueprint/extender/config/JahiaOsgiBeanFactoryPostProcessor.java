@@ -50,6 +50,7 @@ import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaModuleAwareProcessor;
 import org.jahia.services.templates.JahiaModulesBeanPostProcessor;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.InvalidSyntaxException;
@@ -75,16 +76,24 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
     @Override
     public void postProcessBeanFactory(BundleContext bundleContext, ConfigurableListableBeanFactory beanFactory)
             throws BeansException, InvalidSyntaxException, BundleException {
+        Bundle bundle = null;
+        try {
+            bundle = bundleContext.getBundle();
+        } catch (IllegalStateException e) {
+            logger.info("The bundle context is no longer valid for the application context {}."
+                    + " Skipping post processing Spring bean factory.", beanFactory);
+            return;
+        }
 
-        if (!BundleUtils.isJahiaModuleBundle(bundleContext.getBundle())) {
+        if (!BundleUtils.isJahiaModuleBundle(bundle)) {
             return;
         }
         long timer = System.currentTimeMillis();
-        String bundleName = OsgiStringUtils.nullSafeNameAndSymName(bundleContext.getBundle());
+        String bundleName = OsgiStringUtils.nullSafeNameAndSymName(bundle);
 
         logger.info("Start post-processing of the Spring bean factory for bundle {}", bundleName);
 
-        registerCoreBeanPostProcessors(bundleContext, beanFactory);
+        registerCoreBeanPostProcessors(bundle, beanFactory);
 
         registerModulesBeanPostProcessors(beanFactory);
 
@@ -92,10 +101,10 @@ public class JahiaOsgiBeanFactoryPostProcessor implements OsgiBeanFactoryPostPro
                 System.currentTimeMillis() - timer);
     }
 
-    private void registerCoreBeanPostProcessors(BundleContext bundleContext, ConfigurableListableBeanFactory beanFactory) {
+    private void registerCoreBeanPostProcessors(Bundle bundle, ConfigurableListableBeanFactory beanFactory) {
 
         // Register bean post-processor for JahiaModuleAware implementors
-        beanFactory.addBeanPostProcessor(new JahiaModuleAwareProcessor(BundleUtils.getModule(bundleContext.getBundle())));
+        beanFactory.addBeanPostProcessor(new JahiaModuleAwareProcessor(BundleUtils.getModule(bundle)));
     }
 
     /**

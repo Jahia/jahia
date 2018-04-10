@@ -207,6 +207,11 @@ public class VanityUrlService {
         return vanityUrlManager.removeVanityUrlMappings(contentNode, languageCode, contentNode.getSession());
     }
 
+    public boolean saveVanityUrlMapping(final JCRNodeWrapper contentNode, final VanityUrl vanityUrl)
+            throws RepositoryException {
+        return saveVanityUrlMapping(contentNode, vanityUrl, true);
+    }
+
     /**
      * Add or update a vanity URL mapping for a specific content node and the language code set in the VanityUrl bean.
      *
@@ -223,17 +228,20 @@ public class VanityUrlService {
      *            the content node for which to add the given mapping
      * @param vanityUrl
      *            the VanityUrl bean representing the URL to be added
+     * @param save
+     *            should the session be saved at the end
      * @return true if the vanity URL was added or false if it was not added
      * @throws ConstraintViolationException
      *             if the vanity URL mapping already exists for a different content node or language in the site
      * @throws RepositoryException
      *             if there was an unexpected exception accessing the repository
      */
-    public boolean saveVanityUrlMapping(final JCRNodeWrapper contentNode, final VanityUrl vanityUrl)
+    public boolean saveVanityUrlMapping(final JCRNodeWrapper contentNode, final VanityUrl vanityUrl, boolean save)
             throws RepositoryException {
         cacheByUrl.flush();
-        return vanityUrlManager.saveVanityUrlMapping(contentNode, vanityUrl, contentNode.getSession());
+        return vanityUrlManager.saveVanityUrlMapping(contentNode, vanityUrl, contentNode.getSession(), save);
     }
+
 
     /**
      * Add, update or delete all vanity URL mappings for a specific content node and the language codes set in the list of VanityUrl beans.

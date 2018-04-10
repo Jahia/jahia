@@ -1212,11 +1212,12 @@ body[data-indigo-app="contribute"] {
 }
 
 %CSS_BLOCK_APP_LARGE {
-    width: 25vw;
-    height: 25vw;
-    max-height: 30vh;
-    text-indent: -50000px;
-    position: relative;
+	width: 30vw;
+	height: 30vw;
+	max-height: 200px;
+	max-width: 200px;
+	text-indent: -50000px;
+	position: relative;
 
     &:before {
         content: "App Title";
@@ -1226,26 +1227,30 @@ body[data-indigo-app="contribute"] {
         text-align: center;
         text-indent: 0;
         left: 0;
-        @include text(23px, _theme-color(secondary)!important, $FONT--WEIGHT---EXTRALIGHT!important);
+        @include text(21px, _theme-color(secondary)!important, $FONT--WEIGHT---EXTRALIGHT!important);
     }
 }
 
 %CSS_BLOCK_APP_SMALL {
-    width: 12.5vw;
-    height: 12.5vw;
-    max-height: 15vh;
+	width: 15vw;
+    height: 15vw;
+	max-height: 100px;
+	max-width: 100px;
     text-indent: -50000px;
     position: relative;
 
     &:before {
         content: "App Title";
         position: absolute;
-        bottom: 20%;
-        width: 100%;
+        bottom: 2vh;
         text-align: center;
         text-indent: 0;
         left: 0;
-        @include text(13px, _theme-color(secondary)!important, $FONT--WEIGHT---LIGHT!important);
+		width: 96%;
+	    white-space: initial;
+		padding: 0 2%;
+		line-height: 14px;
+        @include text(11px, _theme-color(secondary)!important, $FONT--WEIGHT---LIGHT!important);
     }
 }
 
@@ -1258,7 +1263,6 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
     background: _property($BODY--BG, $HAMBURGER)!important;
     pointer-events: none;
     transition: all 0.3s ease-in 0s;
-    padding-top: 100px;
 
     &::before {
 		content: $text_dxm;
@@ -1276,11 +1280,13 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
 
     // Menu Container
     .x-menu-list {
-        width: 75vw;
-        margin: 0 12.5vw;
-        overflow: visible;
-        z-index: 10;
-        position: relative
+		width: 90vw;
+	    margin: 0 auto;
+	    overflow: visible;
+	    z-index: 10;
+	    position: relative;
+	    padding-top: 100px;
+		max-width: 600px;
     }
 
     // Button Container
@@ -1377,7 +1383,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
         &:before {
             content: $text_app_dashboard;
         }
-        background: url(./images/logos/app-contribute.svg) no-repeat #00a0e3 top 32px center /40%!important;
+        background: url(./images/logos/app-contribute.svg) no-repeat #00a0e3 top 30% center /40%!important;
     }
 
     // Edit Mode button ( Large )
@@ -1386,7 +1392,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
         &:before {
             content: $text_app_edit_mode;
         }
-        background: url(./images/logos/app-edit.svg) no-repeat #00a0e3 top 43px center/35%!important;
+        background: url(./images/logos/app-edit.svg) no-repeat #00a0e3 top 30% center/40%!important;
     }
 
     // Contribute mode button ( Large )
@@ -1395,7 +1401,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
         &:before {
             content: $text_app_contribute;
         }
-        background: url(./images/icons_light/contribute.svg) no-repeat #00a0e3 top 32px center /40%!important;
+        background: url(./images/icons_light/contribute.svg) no-repeat #00a0e3 top 30% center /40%!important;
     }
 
     // Studio mode button ( Large )
@@ -1404,7 +1410,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
         &:before {
             content: $text_app_studio;
         }
-		background: url(./images/logos/app-studio.svg) no-repeat #00a0e3 top 22px center /50%!important;
+		background: url(./images/logos/app-studio.svg) no-repeat #00a0e3 top 30% center /40%!important;
 	}
 
     // Admin mode button ( Large )
@@ -1427,64 +1433,64 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
         background-size: 30%!important;
     }
 
-    // Content Manager button ( Large )
+    // Content Manager button ( Small )
     .toolbar-item-editorialcontentmanager-newtab  {
         @extend %CSS_BLOCK_APP_SMALL;
         &:before {
             content: $text_app_content_manager;
         }
         background: url(./images/icons_light/dashboard.svg) no-repeat #00a0e3 center top 30%!important;
-        background-size: 30%!important;
+        background-size: 5vh!important;
     }
 
-    // Site Manager button ( Large )
+    // Site Manager button ( Small )
     .toolbar-item-sitemanager-newtab  {
         @extend %CSS_BLOCK_APP_SMALL;
         &:before {
             content: $text_app_site_manager;
         }
         background: url(./images/logos/app-site.svg) no-repeat #00a0e3 center top 30%!important;
-        background-size: 30%!important;
+		background-size: 5vh!important;
     }
 
-    // Repository Explorer button ( Large )
+    // Repository Explorer button ( Small )
     .toolbar-item-repositoryexplorer-newtab   {
         @extend %CSS_BLOCK_APP_SMALL;
         &:before {
             content: $text_app_repository;
         }
         background: url(./images/icons_light/repository.svg) no-repeat #00a0e3 center top 30%!important;
-        background-size: 30%!important;
+		background-size: 5vh!important;
     }
 
-    // Category Manager button ( Large )
+    // Category Manager button ( Small )
     .toolbar-item-categorymanager-newtab  {
         @extend %CSS_BLOCK_APP_SMALL;
         &:before {
             content: $text_app_categories;
         }
         background: url(./images/logos/app-category.svg) no-repeat #00a0e3 center top 30%!important;
-        background-size: 30%!important;
+		background-size: 5vh!important;
     }
 
-    // Portlet Manager button ( Large )
+    // Portlet Manager button ( Small )
     .toolbar-item-portletmanager-newtab  {
         @extend %CSS_BLOCK_APP_SMALL;
         &:before {
             content: $text_app_portlet_manager;
         }
         background: url(./images/logos/app-portlet.svg) no-repeat #00a0e3 center top 30%!important;
-        background-size: 30%!important;
+		background-size: 5vh!important;
     }
 
-    // Documentation button ( Large )
+    // Documentation button ( Small )
     .toolbar-item-documentation  {
         @extend %CSS_BLOCK_APP_SMALL;
         &:before {
             content: $text_app_documentation;
         }
         background: url(./images/icons_light/documentation.svg) no-repeat #00a0e3 center top 30%!important;
-        background-size: 30%!important;
+		background-size: 5vh!important;
     }
 
     // Highlght the selected app button

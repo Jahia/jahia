@@ -43,6 +43,7 @@
  */
 package org.jahia.services.content;
 
+import com.google.common.collect.HashMultimap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
@@ -56,8 +57,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.HashMultimap;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -1312,7 +1311,7 @@ public class JCRPublicationService extends JahiaService {
                         );
                         status = PublicationInfo.NOT_PUBLISHED;
                     } else {
-                        if (modProp.after(pubProp)) {
+                        if (modProp.after(pubProp) || node.getSession().getChangedNodes().contains(node)) {
                             if (node.hasProperty(FULLPATH) && !node.getCanonicalPath().equals(node.getProperty(FULLPATH).getString())) {
                                 // Check conflict in case of renamed / moved node
                                 if (checkConflict(node, destinationSession, includedUuids) == PublicationInfo.CONFLICT) {

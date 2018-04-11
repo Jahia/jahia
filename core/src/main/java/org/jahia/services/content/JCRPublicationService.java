@@ -79,7 +79,7 @@ public class JCRPublicationService extends JahiaService {
         static final JCRPublicationService INSTANCE = new JCRPublicationService();
     }
 
-    private static transient Logger logger = LoggerFactory.getLogger(JCRPublicationService.class);
+    private static final Logger logger = LoggerFactory.getLogger(JCRPublicationService.class);
 
     private int batchSize;
 
@@ -982,6 +982,8 @@ public class JCRPublicationService extends JahiaService {
         }
 
         JCRCallback<Object> callback = new JCRCallback<Object>() {
+
+            @Override
             public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
                 for (ListIterator<String> it = checkedUuids.listIterator(checkedUuids.size()); it.hasPrevious(); ) {
                     String uuid = it.previous();

@@ -66,6 +66,7 @@ import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.xml.JahiaSAXParserFactory;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.xml.sax.ContentHandler;
@@ -116,7 +117,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author toto
  */
 public class JCRSessionWrapper implements Session {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSessionWrapper.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(JCRSessionWrapper.class);
     public static final String DEREF_SEPARATOR = "@/";
 
     private JCRSessionFactory sessionFactory;
@@ -506,7 +508,7 @@ public class JCRSessionWrapper implements Session {
     }
 
     public List<JCRNodeWrapper> getChangedNodes() {
-        List<JCRNodeWrapper> nodes = new ArrayList<>();
+        List<JCRNodeWrapper> nodes = new ArrayList<>(changedNodes.size() + newNodes.size());
         nodes.addAll(changedNodes.values());
         nodes.addAll(newNodes.values());
         return nodes;

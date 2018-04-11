@@ -295,16 +295,12 @@ public class VanityUrlManager {
         return false;
     }
 
-    public boolean saveVanityUrlMapping(JCRNodeWrapper contentNode, VanityUrl vanityUrl, JCRSessionWrapper session) throws RepositoryException {
-        return saveVanityUrlMapping(contentNode, vanityUrl, session, true);
-    }
-
     /**
-     * Add or update a vanity URL mapping for a specific content node and the language code set in the
-     * VanityUrl bean.
+     * Add or update a vanity URL mapping belonging to a specific content node and identified either by the vanity URL node UUID or the
+     * vanity URL value set in the VanityUrl bean.
      * <p>
-     * If the URL mapping has already been saved before we check whether the default and active flag in
-     * the bean is different to the saved one, so we do an update, otherwise no operation is done.
+     * If the URL mapping has already been saved before, we check whether the default, active, language or vanity URL value in the bean
+     * is different from the saved one, so we do an update, otherwise no operation is done.
      * <p>
      * If the new or updated mapping is now the default one for the language, then we also check
      * if there already is another default URL for this language and set its default flag to false.
@@ -312,12 +308,36 @@ public class VanityUrlManager {
      * We also check whether the same URL is already existing for a different node or language
      * in the current site and throw a ConstraintViolationException if this is the case.
      *
-     * @param contentNode the content node for which to add the given mapping
-     * @param vanityUrl   the VanityUrl bean representing the URL to be added
+     * @param contentNode the content node for which to add or update the given mapping
+     * @param vanityUrl   the VanityUrl bean representing the URL to be added or updated
+     * @param session     the JCR session used to find and save the vanity URL node
+     * @return true if the vanity URL was added or false if it was not added
+     * @throws ConstraintViolationException if the vanity URL mapping already exists for a different content node or language within the site
+     * @throws RepositoryException          if there was an unexpected exception accessing the repository
+     */
+    public boolean saveVanityUrlMapping(JCRNodeWrapper contentNode, VanityUrl vanityUrl, JCRSessionWrapper session) throws RepositoryException {
+        return saveVanityUrlMapping(contentNode, vanityUrl, session, true);
+    }
+
+    /**
+     * Add or update a vanity URL mapping belonging to a specific content node and identified either by the vanity URL node UUID or the
+     * vanity URL value set in the VanityUrl bean.
+     * <p>
+     * If the URL mapping has already been saved before, we check whether the default, active, language or vanity URL value in the bean
+     * is different from the saved one, so we do an update, otherwise no operation is done.
+     * <p>
+     * If the new or updated mapping is now the default one for the language, then we also check
+     * if there already is another default URL for this language and set its default flag to false.
+     * <p>
+     * We also check whether the same URL is already existing for a different node or language
+     * in the current site and throw a ConstraintViolationException if this is the case.
+     *
+     * @param contentNode the content node for which to add or update the given mapping
+     * @param vanityUrl   the VanityUrl bean representing the URL to be added or updated
      * @param session     the JCR session used to find and save the vanity URL node
      * @param save        should the session be saved at the end
      * @return true if the vanity URL was added or false if it was not added
-     * @throws ConstraintViolationException if the vanity URL mapping already exists for a different content node or language in the site
+     * @throws ConstraintViolationException if the vanity URL mapping already exists for a different content node or language within the site
      * @throws RepositoryException          if there was an unexpected exception accessing the repository
      */
     public boolean saveVanityUrlMapping(JCRNodeWrapper contentNode,

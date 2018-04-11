@@ -159,7 +159,7 @@
         <felix.fileinstall.version>3.5.6-jahia2</felix.fileinstall.version>
         <felix.utils.version>1.8.0</felix.utils.version>
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
-        <gemini.blueprint.core.version>1.0.2.RELEASE-jahia1-SNAPSHOT</gemini.blueprint.core.version>
+        <gemini.blueprint.core.version>1.0.2.RELEASE-jahia1</gemini.blueprint.core.version>
         <gogo.runtime.version>0.16.2</gogo.runtime.version>
         <gogo.shell.version>0.10.0</gogo.shell.version>
         <gogo.command.version>0.14.0</gogo.command.version>

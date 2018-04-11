@@ -507,7 +507,7 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
-    public List<JCRNodeWrapper> getChangedNodes() {
+    public Collection<JCRNodeWrapper> getChangedNodes() {
         List<JCRNodeWrapper> nodes = new ArrayList<>(changedNodes.size() + newNodes.size());
         nodes.addAll(changedNodes.values());
         nodes.addAll(newNodes.values());

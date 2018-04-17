@@ -360,15 +360,14 @@ public class VanityUrlManager {
                 JCRNodeWrapper currentNode = (JCRNodeWrapper) it.next();
                 if (vanityUrl.isDefaultMapping()
                         && currentNode.getPropertyAsString(JCR_LANGUAGE).equals(vanityUrl.getLanguage())
-                        && currentNode.getProperty(PROPERTY_DEFAULT).getBoolean()) {
+                        && currentNode.getProperty(PROPERTY_DEFAULT).getBoolean()
+                        && !currentNode.getIdentifier().equals(vanityUrl.getIdentifier())) {
                     previousDefaultVanityUrlNode = currentNode;
                     if (vanityUrlNode != null) {
                         break;
                     }
                 }
-                if (vanityUrl.getIdentifier() == null ?
-                        (currentNode.getPropertyAsString(PROPERTY_URL).equals(vanityUrl.getUrl())) :
-                        (currentNode.getIdentifier().equals(vanityUrl.getIdentifier()))) {
+                if (currentNode.getIdentifier().equals(vanityUrl.getIdentifier())) {
                     vanityUrlNode = currentNode;
                     if (!vanityUrl.isDefaultMapping() || previousDefaultVanityUrlNode != null) {
                         break;
@@ -382,7 +381,7 @@ public class VanityUrlManager {
 
             vanityUrlNode = vanityUrlMappingsNode.addNode(JCRContentUtils.escapeLocalNodeName(vanityUrl.getUrl()), JAHIANT_VANITYURL);
         } else if (vanityUrlNode.getProperty(PROPERTY_ACTIVE).getBoolean() == vanityUrl.isActive()
-                && vanityUrlNode.getProperty(PROPERTY_URL).getString() == vanityUrl.getUrl()
+                && vanityUrlNode.getProperty(PROPERTY_URL).getString().equals(vanityUrl.getUrl())
                 && vanityUrlNode.getProperty(PROPERTY_DEFAULT).getBoolean() == vanityUrl.isDefaultMapping()
                 && vanityUrlNode.getProperty(JCR_LANGUAGE).getString().equals(vanityUrl.getLanguage())) {
             return false;
@@ -395,7 +394,7 @@ public class VanityUrlManager {
         vanityUrlNode.setProperty(PROPERTY_ACTIVE, vanityUrl.isActive());
         vanityUrlNode.setProperty(PROPERTY_DEFAULT, vanityUrl.isDefaultMapping());
 
-        if (previousDefaultVanityUrlNode != null) {
+        if (previousDefaultVanityUrlNode != null ) {
             previousDefaultVanityUrlNode.setProperty(PROPERTY_DEFAULT, false);
         }
         if (save) {

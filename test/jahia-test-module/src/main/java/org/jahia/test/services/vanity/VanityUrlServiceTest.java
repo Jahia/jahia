@@ -53,6 +53,12 @@ import org.jahia.test.TestHelper;
 import org.junit.*;
 import org.slf4j.Logger;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
+import java.util.List;
+import java.util.Set;
+
 import javax.jcr.RepositoryException;
 
 public class VanityUrlServiceTest {
@@ -204,6 +210,19 @@ public class VanityUrlServiceTest {
         });
     }
 
+    private static void saveVanities(List<VanityUrl> vanityUrls, Set<String> updatedLocales) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            try {
+                JCRNodeWrapper page = session.getNode("/sites/" + SITEA + "/home/page1");
+                vanityUrlService.saveVanityUrlMappings(page, vanityUrls, updatedLocales);
+                session.save();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+        });
+    }
+
     private static JCRNodeWrapper createPage(JCRSiteNode site, String pageName) throws Exception {
         JCRNodeWrapper page = site.getNode("home").addNode(pageName, "jnt:page");
         page.setProperty("j:templateName", "simple");
@@ -219,5 +238,29 @@ public class VanityUrlServiceTest {
         vanityUrl.setSite(site);
         vanityUrl.setUrl(url);
         return vanityUrl;
+    }
+
+    @Test
+    public void shouldNotResetDefaultFlag() throws Exception {
+        // create first vanity
+        VanityUrl vanityUrl1 = createVanity(true, true, "/test", SITEA, "en");
+        saveVanity(vanityUrl1);
+        vanityUrl1 = insureVanityExist(vanityUrl1);
+
+        // create second (non-default) vanity
+        VanityUrl vanityUrl2 = createVanity(true, false, "/test2", SITEA, "en");
+        saveVanities(Lists.newArrayList(vanityUrl1, vanityUrl2), Sets.newHashSet("en"));
+
+        vanityUrl1 = insureVanityExist(vanityUrl1);
+        vanityUrl2 = insureVanityExist(vanityUrl2);
+
+        // create third vanity and set it as default
+        VanityUrl vanityUrl3 = createVanity(true, true, "/test3", SITEA, "en");
+        vanityUrl1.setDefaultMapping(false);
+        saveVanities(Lists.newArrayList(vanityUrl1, vanityUrl2, vanityUrl3), Sets.newHashSet("en"));
+
+        insureVanityExist(vanityUrl1);
+        insureVanityExist(vanityUrl2);
+        insureVanityExist(vanityUrl3);
     }
 }

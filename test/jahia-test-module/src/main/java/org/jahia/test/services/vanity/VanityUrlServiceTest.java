@@ -241,7 +241,7 @@ public class VanityUrlServiceTest {
     }
 
     @Test
-    public void shouldNotResetDefaultFlag() throws Exception {
+    public void testDefaultFlag() throws Exception {
         // create first vanity
         VanityUrl vanityUrl1 = createVanity(true, true, "/test", SITEA, "en");
         saveVanity(vanityUrl1);

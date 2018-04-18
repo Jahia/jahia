@@ -547,7 +547,7 @@ public class VanityUrlManager {
         for (Map.Entry<String, VanityUrl> oldDefaultMapping : oldDefaultMappings.entrySet()) {
             VanityUrl oldDefaultVanityUrl = oldDefaultMapping.getValue();
             VanityUrl newDefaultVanityUrl = newDefaultMappings.get(oldDefaultMapping.getKey());
-            if (!oldDefaultVanityUrl.getPath().equals(newDefaultVanityUrl)) {
+            if (!oldDefaultVanityUrl.getPath().equals(newDefaultVanityUrl.getPath())) {
                 boolean oldDefaultWillBeDeleted = false;
                 for (Map.Entry<String, VanityUrl> entry : toDelete) {
                     if (oldDefaultVanityUrl.getPath().equals(entry.getValue().getPath())) {

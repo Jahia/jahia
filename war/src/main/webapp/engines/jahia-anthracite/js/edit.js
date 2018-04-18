@@ -4847,6 +4847,8 @@ if (!Element.prototype.matches) {
 
 		                // Revert iframes body style attribute to what it was originally
                         DexV2.iframe(".window-iframe").filter("body").nodes[0].style.pointerEvents = "all";
+
+						DexV2.id("JahiaGxtSidePanelTabs").nodes[0].style.setProperty("width", "60px", "important");
 		            }
 
 					// app.edit.topbar.reposition();

@@ -56,6 +56,8 @@ import org.slf4j.Logger;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 import java.util.Set;
 
@@ -181,6 +183,17 @@ public class VanityUrlServiceTest {
         });
     }
 
+    private static void insureVanityDoesNotExist(String vanityUrl) throws RepositoryException {
+        int foundCount = JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
+            try {
+                return vanityUrlService.findExistingVanityUrls(vanityUrl, SITEA, "default").size();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        assertEquals(0, foundCount);
+    }
+
     private static VanityUrl insureVanityExist(VanityUrl vanityUrlToTest) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(session -> {
             try {
@@ -262,5 +275,30 @@ public class VanityUrlServiceTest {
         insureVanityExist(vanityUrl1);
         insureVanityExist(vanityUrl2);
         insureVanityExist(vanityUrl3);
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        // create first vanity
+        VanityUrl vanityUrl1 = createVanity(true, true, "/test", SITEA, "en");
+        saveVanity(vanityUrl1);
+        vanityUrl1 = insureVanityExist(vanityUrl1);
+
+        // create second (non-default) vanity
+        VanityUrl vanityUrl2 = createVanity(true, false, "/test2", SITEA, "en");
+        saveVanities(Lists.newArrayList(vanityUrl1, vanityUrl2), Sets.newHashSet("en"));
+
+        vanityUrl1 = insureVanityExist(vanityUrl1);
+        vanityUrl2 = insureVanityExist(vanityUrl2);
+        
+        saveVanities(Lists.newArrayList(vanityUrl1), Sets.newHashSet("en"));
+        
+        insureVanityExist(vanityUrl1);
+        insureVanityDoesNotExist(vanityUrl2.getUrl());
+
+        saveVanities(Lists.newArrayList(), Sets.newHashSet("en"));
+        
+        insureVanityDoesNotExist(vanityUrl1.getUrl());
+        insureVanityDoesNotExist(vanityUrl2.getUrl());
     }
 }

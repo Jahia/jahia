@@ -70,9 +70,8 @@ public class GWTJahiaUrlMapping extends BaseModel {
         set("active", Boolean.valueOf(isActive));
     }
 
-    public GWTJahiaUrlMapping(String path, String url, String language, String identifier, boolean isDefault, boolean isActive) {
+    public GWTJahiaUrlMapping(String path, String url, String language, boolean isDefault, boolean isActive) {
         this(url, language, isDefault, isActive);
-        set("identifier", identifier);
         set("path", path);
     }
 
@@ -88,9 +87,6 @@ public class GWTJahiaUrlMapping extends BaseModel {
         return get("url");
     }
 
-    public String getIdentifier() {
-        return get("identifier");
-    }
     public boolean isActive() {
         return ((Boolean) get("active")).booleanValue();
     }

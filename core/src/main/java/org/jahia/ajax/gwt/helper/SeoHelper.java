@@ -87,7 +87,7 @@ public class SeoHelper {
                 .getVanityUrls(session.getNodeByIdentifier(gwtNode.getUUID()), locale, session);
         for (VanityUrl vanityUrl : urls) {
             mappings.add(new GWTJahiaUrlMapping(vanityUrl.getPath(), vanityUrl.getUrl(), vanityUrl.getLanguage(),
-                    vanityUrl.getIdentifier(), vanityUrl.isDefaultMapping(), vanityUrl.isActive()));
+                    vanityUrl.isDefaultMapping(), vanityUrl.isActive()));
         }
 
         return mappings;
@@ -102,7 +102,6 @@ public class SeoHelper {
                 if (StringUtils.isNotBlank(mapping.getUrl())) {
                     VanityUrl url = new VanityUrl(mapping.getUrl(), site, mapping.getLanguage(), mapping.isDefault(),
                             mapping.isActive());
-                    url.setIdentifier(mapping.getIdentifier());
                     url.setPath(mapping.getPath());
                     vanityUrls.add(url);
                 }

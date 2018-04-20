@@ -5534,6 +5534,11 @@ if (!Element.prototype.matches) {
 					// Get close button
 					var closeButton = DexV2.node(this).filter(".x-tool-close");
 
+					// Close side panel layer
+                    if (DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") != "true") {
+                        DexV2.id("JahiaGxtSidePanelTabs").nodes[0].style.setProperty("width", "60px", "important");
+                    }
+
 					// Remove state
 					app.nav.pullState(closeButton);
 

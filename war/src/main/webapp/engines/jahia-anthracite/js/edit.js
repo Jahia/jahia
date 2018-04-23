@@ -5830,7 +5830,11 @@ if (!Element.prototype.matches) {
     			.onOpen(".x-grid3-row", function(value){
     				if(app.edit.sidepanel.data.open){
                         var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
-                        app.edit.sidepanel.resizeSidePanel();
+
+						if(DexV2.getCached("body").getAttribute("data-INDIGO-GWT-SIDE-PANEL") == "open" && DexV2.getCached("body").getAttribute("data-INDIGO-SIDEPANEL-PINNED") != "true"){
+							app.edit.sidepanel.resizeSidePanel();
+						}
+
     					if(isTreeEntry){
 
 

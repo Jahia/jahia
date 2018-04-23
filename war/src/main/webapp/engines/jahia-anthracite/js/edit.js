@@ -4494,7 +4494,10 @@ if (!Element.prototype.matches) {
                     }
 
                     // Set width of the Side Panel
-                    DexV2.id("JahiaGxtSidePanelTabs").nodes[0].style.setProperty("width", xPos + "px", "important");
+					if(DexV2.id("JahiaGxtSidePanelTabs").exists()){
+						DexV2.id("JahiaGxtSidePanelTabs").nodes[0].style.setProperty("width", xPos + "px", "important");
+
+					}
 
                     // Move the split bar to the position of the mouse
                     DexV2.id("indigoSplitter").nodes[0].style.setProperty("left", xPos + "px", "important");
@@ -4848,7 +4851,9 @@ if (!Element.prototype.matches) {
 		                // Revert iframes body style attribute to what it was originally
                         DexV2.iframe(".window-iframe").filter("body").nodes[0].style.pointerEvents = "all";
 
-						DexV2.id("JahiaGxtSidePanelTabs").nodes[0].style.setProperty("width", "60px", "important");
+						if(DexV2.id("JahiaGxtSidePanelTabs").exists()){
+							DexV2.id("JahiaGxtSidePanelTabs").nodes[0].style.setProperty("width", "60px", "important");
+						}
 		            }
 
 					// app.edit.topbar.reposition();
@@ -5535,8 +5540,8 @@ if (!Element.prototype.matches) {
 					var closeButton = DexV2.node(this).filter(".x-tool-close");
 
 					// Close side panel layer
-                    if (DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") != "true") {
-                        DexV2.id("JahiaGxtSidePanelTabs").nodes[0].style.setProperty("width", "60px", "important");
+                    if (DexV2.getCached("body").getAttribute("data-indigo-sidepanel-pinned") != "true" && DexV2.id("JahiaGxtSidePanelTabs").exists()) {
+						DexV2.id("JahiaGxtSidePanelTabs").nodes[0].style.setProperty("width", "60px", "important");
                     }
 
 					// Remove state

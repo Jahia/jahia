@@ -4916,14 +4916,12 @@ if (!Element.prototype.matches) {
 								// Show drawer
 								DexV2.getCached("body").removeClass("minimise-results");
 
-								DexV2.id("JahiaGxtSidePanelTabs").filter(".indigo-selected").removeClass("indigo-selected");
-								DexV2.node(this).addClass("indigo-selected");
+                                if (DexV2.id("JahiaGxtSidePanelTabs").exists()) {
+                                    DexV2.id("JahiaGxtSidePanelTabs").filter(".indigo-selected").removeClass("indigo-selected");
+                                }
+                                DexV2.node(this).addClass("indigo-selected");
 							}
 						}
-
-
-
-
 					}
 				}
 			},

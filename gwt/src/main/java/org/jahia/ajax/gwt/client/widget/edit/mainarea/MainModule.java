@@ -58,6 +58,7 @@ import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
@@ -544,9 +545,31 @@ public class MainModule extends Module {
         getInstance().unmask();
     }
 
-    public static void editContent(String path) {
-        List<Module> modules = ModuleHelper.getModulesByPath().get(path);
-        EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null);
+    public static void editContent(String path, String name, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
+        if (name == null) {
+            List<Module> modules = ModuleHelper.getModulesByPath().get(path);
+            EngineLoader.showEditEngine(getInstance().getEditLinker(), modules.get(0).getNode(), null);
+        } else {
+            GWTJahiaNode n = getGwtJahiaNode(path, name, nodeTypes, inheritedNodeTypes);
+            EngineLoader.showEditEngine(getInstance().getEditLinker(), n, null);
+        }
+    }
+
+    protected static GWTJahiaNode getGwtJahiaNode(String path, String name, JsArrayString nodeTypes, JsArrayString inheritedNodeTypes) {
+        GWTJahiaNode n = new GWTJahiaNode();
+        n.setName(name);
+        n.setPath(path);
+        n.setNodeTypes(convertArray(nodeTypes));
+        n.setInheritedNodeTypes(convertArray(inheritedNodeTypes));
+        return n;
+    }
+
+    private static List<String> convertArray(JsArrayString jsArrayString) {
+        ArrayList<String> l = new ArrayList<String>();
+        for (int i = 0; i < jsArrayString.length(); i++) {
+            l.add((String) jsArrayString.get(i));
+        }
+        return l;
     }
 
     public String getUrl(String path, String template, String channel, String variant) {
@@ -1158,8 +1181,8 @@ public class MainModule extends Module {
         $wnd.hideMask = function () {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::hideMask()();
         };
-        $wnd.editContent = function (path) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(Ljava/lang/String;)(path);
+        $wnd.editContent = function (path, name, types, inheritedTypes) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path,name,types, inheritedNodeTypes);
         };
         $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;

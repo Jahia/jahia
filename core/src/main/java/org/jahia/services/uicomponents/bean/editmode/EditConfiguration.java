@@ -106,6 +106,8 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private boolean supportChannelsDisplay = true;
 
+    private boolean needFrameParsing = true;
+
     public void addTab(SidePanelTab tab) {
         tabs.add(tab);
     }
@@ -389,5 +391,13 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setSupportChannelsDisplay(boolean supportChannelsDisplay) {
         this.supportChannelsDisplay = supportChannelsDisplay;
+    }
+
+    public boolean isNeedFrameParsing() {
+        return needFrameParsing;
+    }
+
+    public void setNeedFrameParsing(boolean needFrameParsing) {
+        this.needFrameParsing = needFrameParsing;
     }
 }

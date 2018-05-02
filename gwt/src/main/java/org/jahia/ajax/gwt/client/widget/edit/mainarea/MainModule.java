@@ -1320,7 +1320,7 @@ public class MainModule extends Module {
         public void onBrowserEvent(Event event) {
             try {
                 if (event.getTypeInt() == Event.ONLOAD) {
-                    if (isValidUrl(url)) {
+                    if (isValidUrl(url) && config.isNeedFrameParsing()) {
                         final IFrameElement iframe = IFrameElement.as(frame.getElement());
                         Document contentDocument = iframe.getContentDocument();
 

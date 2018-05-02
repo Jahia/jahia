@@ -79,7 +79,8 @@ public class DxModuleURLStreamHandler extends AbstractURLStreamHandlerService {
                 String bundleKey = url.getFile();
                 try {
                     PersistentBundle bundle = ModuleUtils.loadPersistentBundle(bundleKey);
-                    return bundle.isTransformationRequired() ? ModuleUtils.addModuleDependencies(bundle.getResource().getInputStream()) : bundle.getResource().getInputStream();
+                    return bundle.isTransformationRequired() ? ModuleUtils.addModuleDependencies(bundle.getResource().getInputStream())
+                            : bundle.getResource().getInputStream();
                 } catch (ModuleManagementException e) {
                     logger.warn("Couldn't resolve the {}: protocol path for: {}", Constants.URL_PROTOCOL_DX, bundleKey);
                     throw new IOException(e);
@@ -91,9 +92,12 @@ public class DxModuleURLStreamHandler extends AbstractURLStreamHandlerService {
             public long getLastModified() {
                 String bundleKey = url.getFile();
                 try {
-                    return ModuleUtils.loadPersistentBundle(bundleKey).getLastModified();
+                    PersistentBundle info = ModuleUtils.loadPersistentBundle(bundleKey);
+                    if (info != null) {
+                        return info.getLastModified();
+                    }
                 } catch (ModuleManagementException e) {
-                    logger.warn("Unable to get last modified date for the bundle {}", bundleKey);
+                    logger.warn("Unable to get last modified date for the bundle {}. Cause: {}", bundleKey, e);
                 }
                 return 0;
             }

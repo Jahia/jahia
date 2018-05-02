@@ -1182,7 +1182,7 @@ public class MainModule extends Module {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::hideMask()();
         };
         $wnd.editContent = function (path, name, types, inheritedTypes) {
-            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path,name,types, inheritedNodeTypes);
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(*)(path,name,types, inheritedTypes);
         };
         $wnd.disableGlobalSelection = function (value) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;

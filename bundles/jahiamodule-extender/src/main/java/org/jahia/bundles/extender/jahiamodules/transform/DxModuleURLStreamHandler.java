@@ -87,19 +87,21 @@ public class DxModuleURLStreamHandler extends AbstractURLStreamHandlerService {
                 }
             }
 
-            
             @Override
             public long getLastModified() {
+                PersistentBundle info;
                 String bundleKey = url.getFile();
                 try {
-                    PersistentBundle info = ModuleUtils.loadPersistentBundle(bundleKey);
-                    if (info != null) {
-                        return info.getLastModified();
-                    }
+                    info = ModuleUtils.loadPersistentBundle(bundleKey);
                 } catch (ModuleManagementException e) {
-                    logger.warn("Unable to get last modified date for the bundle {}. Cause: {}", bundleKey, e);
+                    logger.warn("Unable to get persistent bundle for bundle key {}; cause: {}", bundleKey, e);
+                    return 0;
                 }
-                return 0;
+                if (info == null) {
+                    logger.warn("Unable to find persistent bundle for bundle key {}", bundleKey);
+                    return 0;
+                }
+                return info.getLastModified();
             }
         };
     }

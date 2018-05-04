@@ -98,8 +98,6 @@ final class BundleInfoJcrHelper {
         }
         if (target != null) {
             logger.debug("Bundle node for key {} found at {}", bundleKey, path);
-        } else {
-            logger.info("Bundle node for key {} not found at {}", bundleKey, path);
         }
 
         return target;

@@ -43,22 +43,67 @@
  */
 package org.jahia.services.search;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * SearchResponse returned by the Jahia search service. 
+ * SearchResponse returned by the Jahia search service.
  *
  * @author Benjamin Papez
  *
  */
 public class SearchResponse {
+
+    /**
+     * Aggregated info about a group of search results corresponding to a specific search facet and a specific result grouping value.
+     *
+     * @param <T> The type of the grouping value.
+     */
+    public static class ResultGroup<T> {
+
+        private T groupingValue;
+        private int resultCount;
+
+        public ResultGroup(T groupingValue, int resultCount) {
+            this.groupingValue = groupingValue;
+            this.resultCount = resultCount;
+        }
+
+        public T getGroupingValue() {
+            return groupingValue;
+        }
+
+        public int getResultCount() {
+            return resultCount;
+        }
+    }
+
+    /**
+     * Groups of results corresponding to a specific search facet.
+     *
+     * @param <T> The type of the grouping values.
+     */
+    public static class FacetedResult<T> {
+
+        private List<ResultGroup<T>> resultGroups;
+
+        public FacetedResult(List<ResultGroup<T>> resultGroups) {
+            this.resultGroups = resultGroups;
+        }
+
+        public List<ResultGroup<T>> getResultGroups() {
+            return Collections.unmodifiableList(resultGroups);
+        }
+    }
+
     private List<Hit<?>> results = Collections.emptyList();
+    private Collection<FacetedResult<?>> facetedResults;
 
     private long offset = 0;
     private long limit = -1;
     private boolean hasMore = false;
-    private long approxCount = 0;    
+    private long approxCount = 0;
 
     /**
      * Initializes an instance of this class.
@@ -69,6 +114,7 @@ public class SearchResponse {
 
     /**
      * Holds a list of Hit objects matching the search criteria.
+     *
      * @return list of Hit objects
      */
     public List<Hit<?>> getResults() {
@@ -78,10 +124,25 @@ public class SearchResponse {
     /**
      * Sets a list of Hits objects matching the search criteria. This setter is being used
      * by the Jahia search service.
+     *
      * @param results List of Hit objects
      */
     public void setResults(List<Hit<?>> results) {
         this.results = results;
+    }
+
+    /**
+     * @return Faceted results corresponding to facet definitions passed as a part of the search criteria if any, null otherwise
+     */
+    public Collection<FacetedResult<?>> getFacetedResults() {
+        return Collections.unmodifiableCollection(facetedResults);
+    }
+
+    /**
+     * @param facetedResults Faceted results corresponding to facet definitions passed as a part of the search criteria (if any)
+     */
+    public void setFacetedResults(Collection<FacetedResult<?>> facetedResults) {
+        this.facetedResults = facetedResults;
     }
 
     public long getOffset() {
@@ -107,12 +168,12 @@ public class SearchResponse {
     public void setHasMore(boolean hasMore) {
         this.hasMore = hasMore;
     }
-    
+
     public long getApproxCount() {
         return approxCount;
     }
 
     public void setApproxCount(long approxCount) {
         this.approxCount = approxCount;
-    }    
+    }
 }

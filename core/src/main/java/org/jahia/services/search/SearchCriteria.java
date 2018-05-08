@@ -44,6 +44,8 @@
 package org.jahia.services.search;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -57,8 +59,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jahia.services.search.SearchCriteria.Term;
-import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.utils.DateUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -70,6 +70,12 @@ import org.joda.time.format.DateTimeFormatter;
  */
 @SuppressWarnings("unchecked")
 public class SearchCriteria implements Serializable {
+
+    /**
+     * Base class for all facet definitions; incapsulates any common facet definition attributes like sort order of aggregated results.
+     */
+    abstract public static class BaseFacetDefinition {
+    }
 
     /**
      * Supports comma separated multiple values.
@@ -398,7 +404,7 @@ public class SearchCriteria implements Serializable {
 
         private String name;
 
-        private Map<String,String> selectorOptions;
+        private Map<String, String> selectorOptions;
 
         private NodeProperty.Type type = NodeProperty.Type.TEXT;
 
@@ -436,7 +442,7 @@ public class SearchCriteria implements Serializable {
             return name;
         }
 
-        public Map<String,String> getSelectorOptions() {
+        public Map<String, String> getSelectorOptions() {
             return selectorOptions;
         }
 
@@ -476,8 +482,8 @@ public class SearchCriteria implements Serializable {
             this.name = name;
         }
 
-        public void setSelectorOptions(Map<String,String> selectorOptions) {
-            this.selectorOptions = new HashMap<String,String>(selectorOptions);
+        public void setSelectorOptions(Map<String, String> selectorOptions) {
+            this.selectorOptions = new HashMap<String, String>(selectorOptions);
         }
 
         public void setType(NodeProperty.Type type) {
@@ -827,6 +833,8 @@ public class SearchCriteria implements Serializable {
 
     private String createdBy;
 
+    private Collection<BaseFacetDefinition> facetDefinitions;
+
     private HierarchicalValue filePath = new HierarchicalValue();
 
     private String fileType;
@@ -879,6 +887,10 @@ public class SearchCriteria implements Serializable {
 
     public String getCreatedBy() {
         return createdBy;
+    }
+
+    public Collection<BaseFacetDefinition> getFacetDefinitions() {
+        return Collections.unmodifiableCollection(facetDefinitions);
     }
 
     public HierarchicalValue getFilePath() {
@@ -1033,6 +1045,10 @@ public class SearchCriteria implements Serializable {
         this.createdBy = author;
     }
 
+    public void setFacetDefinitions(Collection<BaseFacetDefinition> facetDefinitions) {
+        this.facetDefinitions = facetDefinitions;
+    }
+
     public void setFilePath(HierarchicalValue fileLocation) {
         this.filePath = fileLocation;
     }
@@ -1155,7 +1171,7 @@ public class SearchCriteria implements Serializable {
 
     /**
      * Checks if this search criteria represents a file search.
-     * 
+     *
      * @return <code>true</code> if this search criteria represents file search; <code>false</code> otherwise
      */
     public boolean isFileSearch() {
@@ -1175,7 +1191,7 @@ public class SearchCriteria implements Serializable {
 
     /**
      * Checks if this search criteria represents a site content search.
-     * 
+     *
      * @return <code>true</code> if this search criteria represents site search; <code>false</code> otherwise
      */
     public boolean isSiteSearch() {

@@ -63,9 +63,9 @@ public class SearchResponse {
     public static class ResultGroup<T> {
 
         private T groupingValue;
-        private int resultCount;
+        private long resultCount;
 
-        public ResultGroup(T groupingValue, int resultCount) {
+        public ResultGroup(T groupingValue, long resultCount) {
             this.groupingValue = groupingValue;
             this.resultCount = resultCount;
         }
@@ -74,7 +74,7 @@ public class SearchResponse {
             return groupingValue;
         }
 
-        public int getResultCount() {
+        public long getResultCount() {
             return resultCount;
         }
     }

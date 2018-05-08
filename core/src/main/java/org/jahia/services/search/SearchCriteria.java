@@ -890,7 +890,11 @@ public class SearchCriteria implements Serializable {
     }
 
     public Collection<BaseFacetDefinition> getFacetDefinitions() {
-        return Collections.unmodifiableCollection(facetDefinitions);
+        if (facetDefinitions == null) {
+            return null;
+        } else {
+            return Collections.unmodifiableCollection(facetDefinitions);
+        }
     }
 
     public HierarchicalValue getFilePath() {

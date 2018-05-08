@@ -135,7 +135,11 @@ public class SearchResponse {
      * @return Faceted results corresponding to facet definitions passed as a part of the search criteria if any, null otherwise
      */
     public Collection<FacetedResult<?>> getFacetedResults() {
-        return Collections.unmodifiableCollection(facetedResults);
+        if (facetedResults == null) {
+            return null;
+        } else {
+            return Collections.unmodifiableCollection(facetedResults);
+        }
     }
 
     /**

@@ -123,6 +123,11 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
 
     @Override
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
+
+        if (criteria.getFacetDefinitions() != null) {
+            throw new IllegalArgumentException("Search facets are not supported by the JCR search provider");
+        }
+
         SearchResponse response = new SearchResponse();
         List<Hit<?>> results = new ArrayList<Hit<?>>();
         response.setResults(results);
@@ -238,18 +243,14 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         } catch (RepositoryException e) {
             if (e.getMessage() != null && e.getMessage().contains(ParseException.class.getName())) {
                 logger.warn(e.getMessage());
-                if (logger.isDebugEnabled()) {
-                    logger.debug(e.getMessage(), e);
-                }
+                logger.debug(e.getMessage(), e);
             } else {
                 logger.error("Error while trying to perform a search", e);
             }
         } catch (Exception e) {
             logger.error("Error while trying to perform a search", e);
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Search query has {} results", results.size());
-        }
+        logger.debug("Search query has {} results", results.size());
         return response;
     }
 
@@ -465,9 +466,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
 
         xpathQuery = query.toString();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("XPath query built: " + xpathQuery);
-        }
+        logger.debug("XPath query built: {}", xpathQuery);
 
         return xpathQuery;
     }
@@ -475,7 +474,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
     private boolean isFileSearch(SearchCriteria params) {
         return params.isFileSearch();
     }
-    
+
     private boolean isFieldSearch(SearchFields searchFields) {
         return searchFields.isTags() || searchFields.isFileContent() || searchFields.isDescription() || searchFields.isTitle()
                 || searchFields.isKeywords() || searchFields.isFilename();
@@ -684,7 +683,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                 logger.warn("User " + JCRSessionFactory.getInstance().getCurrentUser().getUsername() + " has no right to read the category");
                 return;
             }
-            addConstraint(categoryConstraints, OR, getPropertyName(name,xpath) + "=" + stringToJCRSearchExp(cat.getID()));
+            addConstraint(categoryConstraints, OR, getPropertyName(name, xpath) + "=" + stringToJCRSearchExp(cat.getID()));
             if (includeChildren) {
                 addSubCategoriesConstraints(categoryConstraints, cat, name, xpath);
             }
@@ -699,7 +698,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         List<Category> childs = category.getChildCategories();
         if (childs != null && childs.size() > 0) {
             for (Category cat : childs) {
-                addConstraint(categoryConstraints, OR, getPropertyName(name,xpath) + "=" + stringToJCRSearchExp(cat.getID()));
+                addConstraint(categoryConstraints, OR, getPropertyName(name, xpath) + "=" + stringToJCRSearchExp(cat.getID()));
                 addSubCategoriesConstraints(categoryConstraints, cat, name, xpath);
             }
         }
@@ -847,7 +846,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         }
         return withoutTermContraint;
     }
-    
+
     private String createFilenameConstraints(Term textSearch, String[] terms, String constraint, boolean xpath) {
         StringBuilder nameSearchConstraints = new StringBuilder(256);
 
@@ -925,7 +924,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
             for (String languageCode : params.getLanguages().getValues()) {
                 if (languageCode != null && languageCode.length() != 0) {
                     addConstraint(languageSearchConstraints, OR,
-                            getPropertyName("jcr:language",xpath) + "=" + stringToJCRSearchExp(languageCode.trim()));
+                            getPropertyName("jcr:language", xpath) + "=" + stringToJCRSearchExp(languageCode.trim()));
                 }
             }
         } else {
@@ -936,7 +935,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                         .getCurrentUserSession();
                 if (session.getLocale() != null) {
                     addConstraint(languageSearchConstraints, OR,
-                            getPropertyName("jcr:language",xpath) + "=" + stringToJCRSearchExp(session.getLocale().toString()));
+                            getPropertyName("jcr:language", xpath) + "=" + stringToJCRSearchExp(session.getLocale().toString()));
                 }
             } catch (RepositoryException e) {
             }

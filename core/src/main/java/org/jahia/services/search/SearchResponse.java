@@ -60,7 +60,7 @@ public class SearchResponse {
      *
      * @param <T> The type of the grouping value.
      */
-    public static class ResultGroup<T> {
+    public static class ResultGroup<T extends Object> {
 
         private T groupingValue;
         private long resultCount;
@@ -84,7 +84,7 @@ public class SearchResponse {
      *
      * @param <T> The type of the grouping values.
      */
-    public static class FacetedResult<T> {
+    public static class FacetedResult<T extends Object> {
 
         private List<ResultGroup<T>> resultGroups;
 
@@ -98,7 +98,7 @@ public class SearchResponse {
     }
 
     private List<Hit<?>> results = Collections.emptyList();
-    private Collection<FacetedResult<?>> facetedResults;
+    private Collection<FacetedResult<Object>> facetedResults;
 
     private long offset = 0;
     private long limit = -1;
@@ -134,7 +134,7 @@ public class SearchResponse {
     /**
      * @return Faceted results corresponding to facet definitions passed as a part of the search criteria if any, null otherwise
      */
-    public Collection<FacetedResult<?>> getFacetedResults() {
+    public Collection<FacetedResult<Object>> getFacetedResults() {
         if (facetedResults == null) {
             return null;
         } else {
@@ -145,7 +145,7 @@ public class SearchResponse {
     /**
      * @param facetedResults Faceted results corresponding to facet definitions passed as a part of the search criteria (if any)
      */
-    public void setFacetedResults(Collection<FacetedResult<?>> facetedResults) {
+    public void setFacetedResults(Collection<FacetedResult<Object>> facetedResults) {
         this.facetedResults = facetedResults;
     }
 

@@ -43,13 +43,6 @@
  */
 package org.jahia.services.content;
 
-import java.util.*;
-import javax.jcr.*;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-import javax.security.auth.Subject;
-import javax.servlet.ServletContext;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaCallbackHandler;
@@ -65,6 +58,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.context.ServletContextAware;
+
+import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import javax.security.auth.Subject;
+import javax.servlet.ServletContext;
+import java.util.*;
 
 /**
  * The entry point into the content repositories provided by the <code>JCRStoreProvider</code> list.
@@ -172,7 +172,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         sessionThreadLocal.set(smap);
         String username;
 
-        JahiaUser user = getCurrentUser();
+        JahiaUser user = !system ? getCurrentUser() : null;
 
         if (!system && user == null) {
             logger.error("Null thread user");
@@ -203,6 +203,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         if (s == null || !s.isLive()) {
             if (system) {
                 s = login(JahiaLoginModule.getSystemCredentials(), workspace, locale, fallbackLocale);
+                s.setCurrentUserSession(true);
                 wsMap.put(key, s);
             } else {
                 if (!JahiaLoginModule.GUEST.equals(username)) {
@@ -240,10 +241,12 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
         return descriptors.get(s);
     }
 
-    public Session findSameSession(JCRStoreProvider provider, String userID, String ws) throws RepositoryException {
+    public Session findSameSession(JCRStoreProvider provider, String userID, String ws, boolean system) throws RepositoryException {
         Session s = null;
-        if (userSession != null) {
-            Map<String, Map<String, JCRSessionWrapper>> smap = userSession.get();
+        ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> sessionThreadLocal = system ? systemSession : userSession;
+
+        if (sessionThreadLocal != null) {
+            Map<String, Map<String, JCRSessionWrapper>> smap = sessionThreadLocal.get();
             if (smap != null && smap.containsKey(userID)) {
                 Map<String, JCRSessionWrapper> wsMap = smap.get(userID);
                 for (String key : wsMap.keySet()) {

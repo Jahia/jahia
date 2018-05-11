@@ -303,7 +303,9 @@
 
 
 .workflowactiondialog-card.engine-panel,
-.workflowactiondialog-card.engine-window {
+.workflowactiondialog-card.engine-window,
+.publicationstatuswindow-card.engine-panel,
+.publicationstatuswindow-card.engine-window {
 
 	> div.x-panel-header {
 		pointer-events: none;
@@ -317,7 +319,7 @@
 		margin-top: 0!important;
 	}
 
-	.workflow-action-dialog {
+	.workflow-action-dialog, .publication-status-window {
 		box-shadow: inset 0 1px 2px 1px _theme-color(black, a);
 
 		width: 100% !important;
@@ -403,7 +405,8 @@
 
 // Fix for window-panel (managers)
 
-.workflowactiondialog-card.engine-window {
+.workflowactiondialog-card.engine-window,
+.publicationstatuswindow-card.engine-window {
 
 	div.x-window-header {
 		pointer-events: none;
@@ -450,6 +453,15 @@
 		width: calc(100% + 162px) !important;
 	}
 
+	.publicationstatuswindow-ctn .x-border-layout-ct:nth-child(2) > .x-border-panel .x-form-element .x-form-field-wrap.x-component {
+		overflow: hidden !important;
+	}
+
+	.publication-status-window .x-tab-panel-body-top .x-border-layout-ct {
+		height: 100% !important;
+		width: calc(100% + 162px) !important;
+	}
+
 	.x-border-layout-ct:nth-child(2) > .x-border-panel:nth-child(2) .x-panel-bwrap {
 		width: calc(100% - 162px) !important;
 	}
@@ -461,7 +473,8 @@
 }
 
 
-.workflowactiondialog-ctn {
+.workflowactiondialog-ctn,
+.publicationstatuswindow-ctn {
 
 
 		> .x-border-panel:first-child {
@@ -589,6 +602,8 @@
 
 		> .x-grid-panel.x-component.x-border-panel .x-panel-fbar {
 
+			@include _button(".button-cancel", "FORM_SMALL", "remove-icons");
+			@include _button(".button-noworkflow", "FORM_SMALL", "remove-icons");
 			@include _button(".button-start", "FORM_SMALL", "remove-icons");
 			@include _button(".button-bypassworkflow", "FORM_SMALL", "remove-icons");
 

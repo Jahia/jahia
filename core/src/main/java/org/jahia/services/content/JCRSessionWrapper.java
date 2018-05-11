@@ -909,8 +909,8 @@ public class JCRSessionWrapper implements Session {
                 } else {
                     username = user.getUsername();
                 }
-                if (isCurrentUserSession()) {
-                    s = provider.getSessionFactory().findSameSession(provider, username, workspace.getName(), isSystem());
+                if (isCurrentUserSession() && !simpleCredentials.getUserID().startsWith(JahiaLoginModule.SYSTEM)) {
+                    s = provider.getSessionFactory().findSameSession(provider, username, workspace.getName());
                 }
                 if (s == null) {
                     s = provider.getSession(credentials, workspace.getName());

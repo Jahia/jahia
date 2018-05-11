@@ -57,20 +57,18 @@ public class SearchResponse {
 
     /**
      * Aggregated info about a group of search results corresponding to a specific search facet and a specific result grouping value.
-     *
-     * @param <T> The type of the grouping value.
      */
-    public static class ResultGroup<T extends Object> {
+    public static class ResultGroup {
 
-        private T groupingValue;
+        private Object groupingValue;
         private long resultCount;
 
-        public ResultGroup(T groupingValue, long resultCount) {
+        public ResultGroup(Object groupingValue, long resultCount) {
             this.groupingValue = groupingValue;
             this.resultCount = resultCount;
         }
 
-        public T getGroupingValue() {
+        public Object getGroupingValue() {
             return groupingValue;
         }
 
@@ -81,24 +79,22 @@ public class SearchResponse {
 
     /**
      * Groups of results corresponding to a specific search facet.
-     *
-     * @param <T> The type of the grouping values.
      */
-    public static class FacetedResult<T extends Object> {
+    public static class FacetedResult {
 
-        private List<ResultGroup<T>> resultGroups;
+        private List<ResultGroup> resultGroups;
 
-        public FacetedResult(List<ResultGroup<T>> resultGroups) {
+        public FacetedResult(List<ResultGroup> resultGroups) {
             this.resultGroups = resultGroups;
         }
 
-        public List<ResultGroup<T>> getResultGroups() {
+        public List<ResultGroup> getResultGroups() {
             return Collections.unmodifiableList(resultGroups);
         }
     }
 
     private List<Hit<?>> results = Collections.emptyList();
-    private Collection<FacetedResult<Object>> facetedResults;
+    private Collection<FacetedResult> facetedResults;
 
     private long offset = 0;
     private long limit = -1;
@@ -134,7 +130,7 @@ public class SearchResponse {
     /**
      * @return Faceted results corresponding to facet definitions passed as a part of the search criteria if any, null otherwise
      */
-    public Collection<FacetedResult<Object>> getFacetedResults() {
+    public Collection<FacetedResult> getFacetedResults() {
         if (facetedResults == null) {
             return null;
         } else {
@@ -145,7 +141,7 @@ public class SearchResponse {
     /**
      * @param facetedResults Faceted results corresponding to facet definitions passed as a part of the search criteria (if any)
      */
-    public void setFacetedResults(Collection<FacetedResult<Object>> facetedResults) {
+    public void setFacetedResults(Collection<FacetedResult> facetedResults) {
         this.facetedResults = facetedResults;
     }
 

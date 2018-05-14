@@ -808,6 +808,15 @@ public class JCRSessionWrapper implements Session {
 
     @Override
     public void logout() {
+        if (isCurrentUserSession) {
+            logger.debug("Cannot close shared session");
+            return;
+        }
+
+        doLogout();
+    }
+
+    void doLogout() {
         for (Session session : sessions.values()) {
             if (session.isLive()) {
                 session.logout();

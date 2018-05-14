@@ -484,7 +484,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware, ReadO
                     for (JCRSessionWrapper s : wsMap.values()) {
                         if (s.isLive()) {
                             try {
-                                s.logout();
+                                s.doLogout();
                             } catch (Exception e) {
                                 logger.warn("Error performing JCR session logout for sesison " + s, e);
                             }

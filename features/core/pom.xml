@@ -129,12 +129,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jahia.bundles</groupId>
-            <artifactId>org.jahia.bundles.configadmin.persistence</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
             <version>${project.version}</version>

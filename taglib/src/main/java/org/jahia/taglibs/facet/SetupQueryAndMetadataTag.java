@@ -59,7 +59,6 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -158,7 +157,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 final String queryProperty = isQuery ? facet.getPropertyAsString("query") : null;
 
                 // key used in metadata maps
-                final String metadataKey = isQuery ? queryProperty : facetPropertyName;
+                final String metadataKey = isQuery ? queryProperty : facet.getIdentifier();
 
                 // get node type if we can
                 ExtendedNodeType nodeType = null;
@@ -263,7 +262,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 // only add a column if the facet isn't already applied
                 if (isFacetToBuild) {
                     // key used in the solr query string
-                    final String key = isQuery ? facet.getName() : facetPropertyName;
+                    final String key = isQuery ? facet.getName() : facet.getIdentifier();
                     String query = buildQueryString(facetNodeTypeName, key, minCount, extra);
                     final String columnPropertyName = StringUtils.isNotEmpty(facetPropertyName) ? facetPropertyName : "rep:facet()";
                     qomBuilder.getColumns().add(factory.column(selectorName, columnPropertyName, query));

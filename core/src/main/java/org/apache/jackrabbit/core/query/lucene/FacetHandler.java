@@ -58,6 +58,7 @@ import org.apache.solr.common.params.FacetParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.schema.FieldType;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.search.facets.JahiaQueryParser;
@@ -68,7 +69,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.NamespaceException;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.qom.PropertyValue;
 import javax.jcr.query.qom.Selector;
 import java.io.IOException;
@@ -346,21 +346,11 @@ public class FacetHandler {
                 FacetField f = new FacetField(key);
                 if(!fieldTypeMap.containsKey(key)) {
                     try {
-                        //Find a key like f.field_name#unknownumber.facet.nodetype
-                        Pattern facetNodetype = Pattern.compile("f\\." + key + "#[0-9]+\\.facet\\.nodetype");
-                        String nodetypeName = null;
-                        Iterator<String> parameterNamesIterator = solrParams.getParameterNamesIterator();
-                        while (parameterNamesIterator.hasNext()) {
-                            String next = parameterNamesIterator.next();
-                            if (facetNodetype.matcher(next).matches()) {
-                                nodetypeName = solrParams.get(next);
-                                break;
-                            }
-                        }
-                        ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(nodetypeName).getPropertyDefinition(key);
+                        String fieldFacet = session.getNodeByIdentifier(key).getProperty("field").getString();
+                        ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(StringUtils.substringBefore(fieldFacet, ";")).getPropertyDefinition(StringUtils.substringAfter(fieldFacet, ";"));
                         fieldTypeMap.put(key, getType(epd));
-                    } catch (NoSuchNodeTypeException e) {
-                        log.error(e.getMessage(), e);
+                    } catch (RepositoryException e) {
+                        throw new JahiaRuntimeException(e);
                     }
                 }
                 for (Map.Entry<String, Number> entry : facet.getValue()) {

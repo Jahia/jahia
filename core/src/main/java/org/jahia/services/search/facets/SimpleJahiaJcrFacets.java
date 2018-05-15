@@ -413,10 +413,11 @@ public class SimpleJahiaJcrFacets {
         if (null != facetFs) {
             for (String f : facetFs) {
                 try {
-                    String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
+                    String fieldName = params.getFieldParam(f, "facet.key");
+                    String fieldType = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
                     String locale = params.getFieldParam(f, "facet.locale");
-                    ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f." + f + ".facet.nodetype")).getPropertyDefinition(fieldName);
-                    String fieldNameInIndex = getFieldNameInIndex(f, fieldName, epd, locale);
+                    ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f." + f + ".facet.nodetype")).getPropertyDefinition(fieldType);
+                    String fieldNameInIndex = getFieldNameInIndex(f, fieldType, epd, locale);
                     
                     parseParams(FacetParams.FACET_FIELD, f);
                    // TODO: can we use the key to add item in result like in original Solr ??? 

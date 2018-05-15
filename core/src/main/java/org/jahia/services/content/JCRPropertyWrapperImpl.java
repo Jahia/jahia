@@ -55,7 +55,6 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
-
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -86,20 +85,16 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
      * @param def definition of this property
      */
     public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider,
-            ExtendedPropertyDefinition def) {
+            ExtendedPropertyDefinition def) throws RepositoryException {
         super(session, provider);
         this.node = objectNode;
         this.property = property;
         this.item = property;
         if (property != null) {
-            try {
-                this.localPath = property.getPath();
-                this.localPathInProvider = localPath;
-                this.name = property.getName();
-                this.def = def;
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
+            this.localPath = property.getPath();
+            this.localPathInProvider = localPath;
+            this.name = property.getName();
+            this.def = def;
         }
     }
 

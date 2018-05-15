@@ -83,7 +83,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
 
 
     public JCRFrozenNodeAsRegular(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session, JCRStoreProvider provider,
-                                  Date versionDate, String versionLabel) {
+                                  Date versionDate, String versionLabel) throws RepositoryException {
         super(objectNode, path, parent, session, provider);
         this.versionDate = versionDate;
         this.versionLabel = versionLabel;

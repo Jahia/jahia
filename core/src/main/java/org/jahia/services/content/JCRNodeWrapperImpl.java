@@ -171,7 +171,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
-    protected JCRNodeWrapperImpl(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session, JCRStoreProvider provider) {
+    protected JCRNodeWrapperImpl(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session, JCRStoreProvider provider) throws RepositoryException {
         super(session, provider);
         this.objectNode = objectNode;
         setItem(objectNode);
@@ -194,12 +194,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 logger.error(e.getMessage(), e);
             }
         } else {
-            try {
-                this.localPath = objectNode.getPath();
-                this.localPathInProvider = objectNode.getPath();
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
+            this.localPath = objectNode.getPath();
+            this.localPathInProvider = objectNode.getPath();
         }
         if (parent != null) {
             parentAlreadyResolved = true;

@@ -631,6 +631,10 @@ public class JCRObservationManager implements ObservationManager {
                     : false;
         }
 
+        public boolean isApiEvent() {
+            return event instanceof ApiEvent;
+        }
+
         /**
          * Returns <code>true</code> if this <code>Event</code> is equal to another
          * object.

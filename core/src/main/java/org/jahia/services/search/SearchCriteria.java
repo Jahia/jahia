@@ -75,6 +75,24 @@ public class SearchCriteria implements Serializable {
      * Base class for all facet definitions; incapsulates any common facet definition attributes like sort order of aggregated results.
      */
     abstract public static class BaseFacetDefinition {
+
+        private int maxGroups;
+
+        /**
+         * Create a facet definition instance.
+         *
+         * @param maxGroups The max number of result groups the facet should return
+         */
+        protected BaseFacetDefinition(int maxGroups) {
+            this.maxGroups = maxGroups;
+        }
+
+        /**
+         * @return The max number of result groups the facet should return
+         */
+        public int getMaxGroups() {
+            return maxGroups;
+        }
     }
 
     /**

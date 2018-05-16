@@ -301,6 +301,14 @@
 /* PUBLICATION DASHBOARD ***********************/
 /***********************************************/
 
+// Override buttons in footer bar for publication status window
+.window-container .engine-panel.publicationstatuswindow-card {
+	&.engine-panel.publicationstatuswindow-card > .x-panel-bwrap > .x-panel-bbar .x-panel-fbar {
+		@include _button(".button-cancel", "ACTIONBAR", "remove-icons");
+		@include _button(".button-bypassworkflow", "ACTIONBAR---SUGGESTED", "remove-icons");
+	}
+}
+
 
 .workflowactiondialog-card.engine-panel,
 .workflowactiondialog-card.engine-window,

@@ -25,11 +25,11 @@
 
 	<c:if test="${not empty theme}">
 
-		<!-- load theme -->
+		<%-- load theme --%>
         <c:choose>
             <c:when test="${renderContext.editModeConfigName == 'studiomode'}">
                 <script type="text/javascript">
-                    // hack for studio only, this will force the switchConfig action items to be open in a new HTTP call
+                    <%-- hack for studio only, this will force the switchConfig action items to be open in a new HTTP call --%>
                     window.jahiaReplaceSwitchConfigByOpen = true;
                 </script>
             </c:when>

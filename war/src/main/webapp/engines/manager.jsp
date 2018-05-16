@@ -37,7 +37,7 @@
 
 	<c:if test="${not empty theme}">
 		<link rel="stylesheet" type="text/css" href="<c:url value='/engines/${theme}/edit${themeLocale}.css'/>"/>
-		<!-- Javascript for theme -->
+		<%-- Javascript for theme --%>
 		<script type="text/javascript" src="<c:url value='/engines/${theme}/js/edit.js'/>"></script>
 	</c:if>
 

@@ -52,17 +52,13 @@ import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_SYMBOL
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.modulemanager.util.ModuleUtils;
+import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -124,7 +120,7 @@ public final class PersistentBundleInfoBuilder {
         PersistentBundle bundleInfo = new PersistentBundle(groupId, symbolicName, version);
         bundleInfo.setDisplayName(displayName);
         if (calculateChecksum) {
-            bundleInfo.setChecksum(calculateDigest(resource));
+            bundleInfo.setChecksum(FileUtils.calculateDigest(resource.getInputStream()));
         }
         if (checkTransformationRequired) {
             bundleInfo.setTransformationRequired(isTransformationRequired(resource));
@@ -133,28 +129,9 @@ public final class PersistentBundleInfoBuilder {
         return bundleInfo;
     }
 
-    private static String calculateDigest(Resource resource) throws IOException {
-        try (DigestInputStream digestInputStream = toDigestInputStream(new BufferedInputStream(resource.getInputStream()))) {
-            byte[] b = new byte[1024 * 8];
-            int read = 0;
-            while (read != -1) {
-                read = digestInputStream.read(b);
-            }
-            return Hex.encodeHexString(digestInputStream.getMessageDigest().digest());
-        }
-    }
-
     private static boolean isTransformationRequired(Resource resource) throws IOException {
         try (JarInputStream is = new JarInputStream(new BufferedInputStream(resource.getInputStream()), false)) {
             return ModuleUtils.requiresTransformation(is.getManifest().getMainAttributes());
-        }
-    }
-
-    private static DigestInputStream toDigestInputStream(InputStream is) {
-        try {
-            return new DigestInputStream(is, MessageDigest.getInstance("MD5"));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
         }
     }
 

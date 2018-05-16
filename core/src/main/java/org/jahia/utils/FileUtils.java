@@ -50,6 +50,7 @@
 
 package org.jahia.utils;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -62,11 +63,15 @@ import org.jahia.services.SpringContextSingleton;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -92,6 +97,25 @@ public final class FileUtils {
 
     private static DocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
     
+    /**
+     * Calculates the MD5 digest from the content of the supplied input stream. The supplied stream is closed after reading it.
+     * 
+     * @param is the resource input stream
+     * @return the MD5 digest (as a HEX string) from the content of the supplied input stream
+     * @throws IOException in case of an I/O error reading the resource stream
+     */
+    public static String calculateDigest(InputStream is) throws IOException {
+        try (DigestInputStream digestInputStream = toDigestInputStream(
+                (is instanceof BufferedInputStream) ? is : new BufferedInputStream(is))) {
+            byte[] b = new byte[1024 * 8];
+            int read = 0;
+            while (read != -1) {
+                read = digestInputStream.read(b);
+            }
+            return Hex.encodeHexString(digestInputStream.getMessageDigest().digest());
+        }
+    }
+
     /**
      * Cleans a directory without deleting it, considering also named exclusions.
      *
@@ -310,6 +334,14 @@ public final class FileUtils {
                     org.apache.commons.io.FileUtils.moveToDirectory(f, destDir, true);
                 }
             }
+        }
+    }
+
+    private static DigestInputStream toDigestInputStream(InputStream is) {
+        try {
+            return new DigestInputStream(is, MessageDigest.getInstance("MD5"));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
     }
 

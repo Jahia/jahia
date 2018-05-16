@@ -13,7 +13,7 @@
         <from>^/(LICENSE|modules/.*/META-INF/.*|modules/.*/WEB-INF/.*|modules/.*/mails/.*|modules/.*\.cnd|modules/.*\.drl|modules/.*\.dsl|modules/.*\.properties)$</from>
         <set type="status">404</set>
         <set type="request" name="UrlRewriteFilter.sendError">404</set>
-        <to>null</to>        
+        <to>null</to>
     </rule>
     <!-- end of block direct access -->
     
@@ -25,7 +25,7 @@
         <from>^/tools/osgi/.*$</from>
         <set type="status">404</set>
         <set type="request" name="UrlRewriteFilter.sendError">404</set>
-        <to>null</to>        
+        <to>null</to>
     </rule>
     
     <!-- GWT resources-->
@@ -45,6 +45,22 @@
         <to>/gwt/resources/images/$1</to>
     </rule>
     <!-- end of GWT resources-->
+
+    <!-- Jahia Anthracite Theme resources -->
+    <rule>
+        <name>Jahia Anthracite Theme resources - CSS/JavaScript (inbound)</name>
+        <note>Handles checksum for the edit.js file of the Jahia Anthracite Theme for the proper cache support</note>
+        <from>^/engines/jahia-anthracite/(.*).v.*.(js|css)$</from>
+        <to last="true">/engines/jahia-anthracite/$1.$2</to>
+    </rule>
+    <outbound-rule>
+        <name>Jahia Anthracite Theme resources - CSS/JavaScript (outbound)</name>
+        <note>Handles timestamps for the edit.js file of the Jahia Anthracite Theme for the proper cache support</note>
+        <from>^(/[\p{Alnum}\-_]*)?(/engines/jahia-anthracite/(.*).(js|css))$</from>
+        <run class="org.jahia.services.seo.urlrewrite.ResourceChecksumCalculator" method="calculateChecksum(HttpServletRequest, String, String)"/>
+        <to last="true" encode="false">$1/engines/jahia-anthracite/$3.v%{attribute:ResourceChecksumCalculator.checksum}.$4</to>
+    </outbound-rule>
+    <!-- Jahia Anthracite Theme resources -->
 
     <outbound-rule>
         <name>reset outbound parameters</name>

@@ -157,7 +157,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 final String queryProperty = isQuery ? facet.getPropertyAsString("query") : null;
 
                 // key used in metadata maps
-                final String metadataKey = isQuery ? facet.getPropertyAsString("query")  :
+                final String metadataKey = isQuery ? queryProperty  :
                         facet.isNodeType("jnt:fieldFacet") ? facet.getIdentifier() : facetPropertyName;
 
                 // get node type if we can

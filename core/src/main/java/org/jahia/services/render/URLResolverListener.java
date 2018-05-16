@@ -45,6 +45,7 @@ package org.jahia.services.render;
 
 import net.sf.ehcache.Element;
 
+import org.jahia.services.content.ApiEventListener;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
@@ -68,7 +69,7 @@ import java.util.UUID;
 /**
  * JCR listener to invalidate URL resolver caches
  */
-public class URLResolverListener extends DefaultEventListener {
+public class URLResolverListener extends DefaultEventListener implements ApiEventListener {
 
     private static Logger logger = LoggerFactory.getLogger(URLResolverListener.class);
 

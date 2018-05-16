@@ -348,9 +348,10 @@
         <property name="operationTypes">
             <set value-type="java.lang.Integer">
                 <value type="java.lang.Integer">1</value>
+                <value type="java.lang.Integer">4</value>
                 <value type="java.lang.Integer">12</value>
                 <value type="java.lang.Integer">13</value>
-                <value type="java.lang.Integer">4</value>
+                <value type="java.lang.Integer">14</value>
             </set>
         </property>
     </bean>

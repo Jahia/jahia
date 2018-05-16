@@ -78,7 +78,7 @@ import java.util.Set;
  * @author rincevent
  * @since JAHIA 6.5
  */
-public class HtmlCacheEventListener extends DefaultEventListener implements ExternalEventListener {
+public class HtmlCacheEventListener extends DefaultEventListener implements ExternalEventListener, ApiEventListener {
 
     private static Logger logger = LoggerFactory.getLogger(HtmlCacheEventListener.class);
 

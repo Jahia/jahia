@@ -339,23 +339,35 @@ public class FacetHandler {
             _limitingFacets = new ArrayList<FacetField>(ff.size());
             long minsize = totalSize;
             for (Map.Entry<String, NamedList<Number>> facet : ff) {
-                String key = StringUtils.substringBeforeLast(facet.getKey(),
+                String propertyName = StringUtils.substringBefore(facet.getKey(),
                         SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
-                String fieldInIndex = StringUtils.substringAfterLast(facet.getKey(),
+                String fieldInIndex = StringUtils.substringBetween(facet.getKey(),
                         SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
-                FacetField f = new FacetField(key);
-                if(!fieldTypeMap.containsKey(key)) {
+                String fieldKey = StringUtils.substringAfterLast(facet.getKey(),
+                        SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
+                if(!fieldTypeMap.containsKey(propertyName)) {
                     try {
-                        String fieldFacet = session.getNodeByIdentifier(key).getProperty("field").getString();
-                        ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(StringUtils.substringBefore(fieldFacet, ";")).getPropertyDefinition(StringUtils.substringAfter(fieldFacet, ";"));
-                        fieldTypeMap.put(key, getType(epd));
+                        //Find a key like f.field_name#unknownumber.facet.nodetype
+                        Pattern facetNodetype = Pattern.compile("f\\." + propertyName + "#[0-9]+\\.facet\\.nodetype");
+                        String nodetypeName = null;
+                        Iterator<String> parameterNamesIterator = solrParams.getParameterNamesIterator();
+                        while (parameterNamesIterator.hasNext()) {
+                            String next = parameterNamesIterator.next();
+                            if (facetNodetype.matcher(next).matches()) {
+                                nodetypeName = solrParams.get(next);
+                                break;
+                            }
+                        }
+                        ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(nodetypeName).getPropertyDefinition(propertyName);
+                        fieldTypeMap.put(propertyName, getType(epd));
                     } catch (RepositoryException e) {
                         throw new JahiaRuntimeException(e);
                     }
                 }
+                FacetField f = new FacetField(StringUtils.isEmpty(fieldKey) ? propertyName : fieldKey);
                 for (Map.Entry<String, Number> entry : facet.getValue()) {
                     String facetValue = entry.getKey();
-                    String query = fieldTypeMap.get(key).toInternal(entry.getKey());
+                    String query = fieldTypeMap.get(propertyName).toInternal(entry.getKey());
                     Matcher matcher = valueWithQuery.matcher(facetValue);
                     if (matcher.matches()) {
                         query = matcher.group(2);

@@ -413,17 +413,17 @@ public class SimpleJahiaJcrFacets {
         if (null != facetFs) {
             for (String f : facetFs) {
                 try {
-                    String fieldName = params.getFieldParam(f, "facet.key");
                     String fieldType = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
                     String locale = params.getFieldParam(f, "facet.locale");
                     ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f." + f + ".facet.nodetype")).getPropertyDefinition(fieldType);
                     String fieldNameInIndex = getFieldNameInIndex(f, fieldType, epd, locale);
-                    
+
                     parseParams(FacetParams.FACET_FIELD, f);
                    // TODO: can we use the key to add item in result like in original Solr ??? 
                     String termList = localParams == null ? null : localParams.get(CommonParams.TERMS);
+                    String fieldKey = params.getFieldParam(f, "facet.key") != null ? params.getFieldParam(f, "facet.key") : "";
                     if (termList != null) {
-                        res.add(fieldName + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex,
+                        res.add(fieldType + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex + PROPNAME_INDEX_SEPARATOR + fieldKey,
                                 ensureSortingAndNameResolution(params.getFieldParam(f, "facet.sort"),
                                         getListedTermCounts(f, epd, fieldNameInIndex, locale, termList),
                                         epd,
@@ -431,7 +431,7 @@ public class SimpleJahiaJcrFacets {
                                         LanguageCodeConverters.getLocaleFromCode(locale),
                                         fieldNameInIndex));
                     } else {
-                        res.add(fieldName + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex,
+                        res.add(fieldType + PROPNAME_INDEX_SEPARATOR + fieldNameInIndex + PROPNAME_INDEX_SEPARATOR + fieldKey,
                                 ensureSortingAndNameResolution(params.getFieldParam(f, "facet.sort"),
                                         getTermCounts(f, epd, fieldNameInIndex, locale),
                                         epd,

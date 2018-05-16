@@ -56,11 +56,7 @@ import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -394,7 +390,7 @@ public class FacetedQueryTest {
         QueryResultWrapper res;
 
         // check facets
-        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&key=1)", "startDate","rep:facet(facet.mincount=1&date.start=2000-01-01T00:00:00Z&date.end=2000-03-01T00:00:00Z&date.gap=+1MONTH&key=2)");
+        res = doQuery(session, "eventsType", "rep:facet(facet.mincount=1&key=eventsType)", "startDate","rep:facet(facet.mincount=1&date.start=2000-01-01T00:00:00Z&date.end=2000-03-01T00:00:00Z&date.gap=+1MONTH&key=2)");
         checkResultSize(res, 0);
         field = res.getFacetField("eventsType");
         assertNotNull("Facet field is null",field);
@@ -424,7 +420,7 @@ public class FacetedQueryTest {
         checkFacet(counts.next(), "2000-02-01T00:00:00Z", 13);
         
         for (FacetField.Count count : field.getValues()) {
-            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery(), "eventsType", "rep:facet(facet.mincount=1&key=1)");
+            QueryResultWrapper resCheck = doQuery(session, "rep:filter(startDate)", count.getAsFilterQuery(), "eventsType", "rep:facet(facet.mincount=1&key=eventsType)");
             checkResultSize(resCheck, 0);
             
             FacetField nestedField = resCheck.getFacetDate("startDate");

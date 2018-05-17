@@ -157,8 +157,9 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 final String queryProperty = isQuery ? facet.getPropertyAsString("query") : null;
 
                 // key used in metadata maps
+                final String facetIdentifier = StringUtils.replace("-", "", facet.getIdentifier());
                 final String metadataKey = isQuery ? queryProperty  :
-                        facet.isNodeType("jnt:fieldFacet") ? facet.getIdentifier() : facetPropertyName;
+                        facet.isNodeType("jnt:fieldFacet") ? facetIdentifier : facetPropertyName;
 
                 // get node type if we can
                 ExtendedNodeType nodeType = null;
@@ -263,7 +264,8 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 // only add a column if the facet isn't already applied
                 if (isFacetToBuild) {
                     // key used in the solr query string
-                    final String key = isQuery ? facet.getName() : facet.getIdentifier();
+                    final String key = isQuery ? facet.getName() :
+                            facet.isNodeType("jnt:fieldFacet") ? facetIdentifier : facetPropertyName;
                     String query = buildQueryString(facetNodeTypeName, key, minCount, extra);
                     final String columnPropertyName = StringUtils.isNotEmpty(facetPropertyName) ? facetPropertyName : "rep:facet()";
                     qomBuilder.getColumns().add(factory.column(selectorName, columnPropertyName, query));

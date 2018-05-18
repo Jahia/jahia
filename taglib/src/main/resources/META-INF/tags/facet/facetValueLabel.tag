@@ -1,17 +1,17 @@
-<%@tag import="org.jahia.services.content.nodetypes.renderer.NodeReferenceChoiceListRenderer"%>
-<%@tag import="org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer"%>
+<%@tag import="org.apache.solr.client.solrj.response.FacetField"%>
+<%@tag import="org.apache.solr.client.solrj.response.RangeFacet"%>
 <%@ tag body-content="empty" description="Renders the label of a facet value." %>
-<%@ tag import="java.text.SimpleDateFormat"%>
-<%@ tag import="java.util.Date"%>
-<%@ tag import="java.util.Locale"%>
-<%@ tag import="org.apache.solr.client.solrj.response.FacetField"%>
-<%@ tag import="org.apache.solr.client.solrj.response.RangeFacet"%>
 <%@ tag import="org.apache.solr.schema.DateField"%>
 <%@ tag import="org.apache.solr.util.DateMathParser"%>
 <%@ tag import="org.jahia.services.content.nodetypes.ExtendedPropertyDefinition"%>
+<%@ tag import="org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer"%>
 <%@ tag import="org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService"%>
+<%@ tag import="org.jahia.services.content.nodetypes.renderer.NodeReferenceChoiceListRenderer"%>
 <%@ tag import="org.jahia.services.render.RenderContext"%>
 <%@ tag import="java.text.MessageFormat"%>
+<%@ tag import="java.text.SimpleDateFormat"%>
+<%@ tag import="java.util.Date"%>
+<%@ tag import="java.util.Locale"%>
 <%@ tag import="java.util.TimeZone" %>
 <%@ attribute name="display" required="false" type="java.lang.Boolean" description="Should we display the label or just return it in the parameter set by attribute var."%>
 <%@ attribute name="currentFacetField" required="false" type="org.apache.solr.client.solrj.response.FacetField" description="The FacetField for the current facet." %>
@@ -119,6 +119,9 @@
   <c:if test="${not empty fieldNodeType}">
       <c:set var="fieldPropertyType" value="${fieldNodeType.propertyDefinitionsAsMap[currentFacetName]}"/>
   </c:if>
+    <c:if test="${ empty fieldPropertyType}">
+        <c:set var="fieldPropertyType" value="${facetValuePropNames[currentFacetName]}"/>
+    </c:if>
   <%
       ChoiceListRenderer renderer = ChoiceListRendererService.getInstance().getRenderers().get((String)jspContext.findAttribute("fieldRenderer"));
       String mappedLabel = renderer.getStringRendering((RenderContext) jspContext.findAttribute("renderContext"),

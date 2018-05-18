@@ -569,7 +569,7 @@ public class JCRObservationManager implements ObservationManager {
         @Override
         public String getPath() throws RepositoryException {
             if (effectivePath == null) {
-                effectivePath = !mountPoint.equals("/") ? (mountPoint + event.getPath()
+                effectivePath = !mountPoint.equals("/") ? (mountPoint + (event.getPath().equals("/") ? "" : event.getPath())
                         .substring(relativeRoot.length())) : event.getPath();
             }
 

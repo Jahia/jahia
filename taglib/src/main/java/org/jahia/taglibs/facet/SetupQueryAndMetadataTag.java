@@ -157,7 +157,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 final String queryProperty = isQuery ? facet.getPropertyAsString("query") : null;
 
                 // key used in metadata maps
-                final String facetIdentifier = StringUtils.replace("-", "", facet.getIdentifier());
+                final String facetIdentifier = StringUtils.replace(facet.getIdentifier(), "-", "");
                 final String metadataKey = isQuery ? queryProperty  :
                         facet.isNodeType("jnt:fieldFacet") ? facetIdentifier : facetPropertyName;
 

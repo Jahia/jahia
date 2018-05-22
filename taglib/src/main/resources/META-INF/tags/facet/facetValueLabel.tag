@@ -120,7 +120,7 @@
       <c:set var="fieldPropertyType" value="${fieldNodeType.propertyDefinitionsAsMap[currentFacetName]}"/>
   </c:if>
     <c:if test="${ empty fieldPropertyType}">
-        <c:set var="fieldPropertyType" value="${facetValuePropNames[currentFacetName]}"/>
+        <c:set var="fieldPropertyType" value="${facetValuePropDefs[currentFacetName]}"/>
     </c:if>
   <%
       ChoiceListRenderer renderer = ChoiceListRendererService.getInstance().getRenderers().get((String)jspContext.findAttribute("fieldRenderer"));

@@ -133,8 +133,11 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
             Map<String, String> facetValueLabels = (Map<String, String>) pageContext.getAttribute("facetValueLabels", PageContext.REQUEST_SCOPE);
             Map<String, String> facetValueFormats = (Map<String, String>) pageContext.getAttribute("facetValueFormats", PageContext.REQUEST_SCOPE);
             Map<String, String> facetValueRenderers = (Map<String, String>) pageContext.getAttribute("facetValueRenderers", PageContext.REQUEST_SCOPE);
-            Map<String, ExtendedPropertyDefinition> facetValuePropNames = new HashMap<>();
-            pageContext.setAttribute("facetValuePropNames", facetValuePropNames, PageContext.REQUEST_SCOPE);
+            Map<String, ExtendedPropertyDefinition> facetValuePropDefs = (Map<String, ExtendedPropertyDefinition>) pageContext.getAttribute("facetValuePropDefs", PageContext.REQUEST_SCOPE);
+            if (facetValuePropDefs == null) {
+                facetValuePropDefs = new HashMap<>();
+                pageContext.setAttribute("facetValuePropDefs", facetValuePropDefs, PageContext.REQUEST_SCOPE);
+            }
 
             // specify query for unapplied facets
             final List<JCRNodeWrapper> facets = JCRContentUtils.getNodes(currentNode, "jnt:facet");
@@ -180,8 +183,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                         }
                     }
                     if (nodeType != null) {
-                        facetValuePropNames.put(metadataKey, nodeType.getPropertyDefinitionsAsMap().get(facetPropertyName));
-
+                        facetValuePropDefs.put(metadataKey, nodeType.getPropertyDefinitionsAsMap().get(facetPropertyName));
                     }
                 }
 

@@ -93,9 +93,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -641,6 +639,15 @@ public class Activator implements BundleActivator {
                     if (!Files.exists(path)) {
                         Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
                         logger.info("Copied configuration file of module {} into {}", getDisplayName(bundle), path);
+                    } else {
+                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+                            String header = reader.readLine();
+
+                            if (!header.startsWith("# default configuration")) {
+                                Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
+                                logger.info("Copied (overwrite) configuration file of module {} into {}", getDisplayName(bundle), path);
+                            }
+                        }
                     }
                 } catch (IOException e) {
                     logger.error("unable to copy configuration", e);

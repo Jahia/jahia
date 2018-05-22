@@ -823,6 +823,8 @@ public class Activator implements BundleActivator {
         } else {
             setModuleState(bundle, ModuleState.State.STARTED, errorMessage);
         }
+
+        flushOutputCachesForModule(jahiaTemplatesPackage);
     }
 
     private boolean checkImported(final JahiaTemplatesPackage jahiaTemplatesPackage) {
@@ -882,19 +884,6 @@ public class Activator implements BundleActivator {
         if (JahiaContextLoaderListener.isRunning()) {
 
             templatePackageRegistry.unregister(jahiaTemplatesPackage);
-            boolean cachesNeedFlushing = true;
-
-            if (jahiaTemplatesPackage.getInitialImports().isEmpty()) {
-                // check for initial imports
-                Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
-                if (importXMLEntryEnum == null || !importXMLEntryEnum.hasMoreElements()) {
-                    importXMLEntryEnum = bundle.findEntries("META-INF", "import*.zip", false);
-                    if (importXMLEntryEnum == null || !importXMLEntryEnum.hasMoreElements()) {
-                        // no templates -> no need to flush caches
-                        cachesNeedFlushing = false;
-                    }
-                }
-            }
 
             jahiaTemplatesPackage.setActiveVersion(false);
             templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
@@ -908,16 +897,13 @@ public class Activator implements BundleActivator {
                 List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
                 if (!foundURLs.isEmpty()) {
                     scannerAndObserver.getValue().removingEntries(bundle, foundURLs);
-                    cachesNeedFlushing = true;
                 }
             }
 
             // deal with script engine factories
             scriptEngineManager.removeScriptEngineFactoriesIfNeeded(bundle);
 
-            if (cachesNeedFlushing) {
-                flushOutputCachesForModule(jahiaTemplatesPackage);
-            }
+            flushOutputCachesForModule(jahiaTemplatesPackage);
 
             ServiceTracker<HttpService, HttpService> tracker = bundleHttpServiceTrackers.remove(bundle);
 
@@ -931,30 +917,55 @@ public class Activator implements BundleActivator {
     }
 
     private void flushOutputCachesForModule(final JahiaTemplatesPackage pkg) {
-
-        try {
-
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-
-                @Override
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    List<JCRSiteNode> sitesNodeList = JahiaSitesService.getInstance().getSitesNodeList(session);
-                    Set<String> pathsToFlush = new HashSet<>();
-                    for (JCRSiteNode site : sitesNodeList) {
-                        Set<String> installedModules = site.getInstalledModulesWithAllDependencies();
-                        if (installedModules.contains(pkg.getId()) || installedModules.contains(pkg.getName())) {
-                            pathsToFlush.add(site.getPath());
+        if (hasImports(pkg) || hasViewFiles(pkg)) {
+            try {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                    @Override
+                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        List<JCRSiteNode> sitesNodeList = JahiaSitesService.getInstance().getSitesNodeList(session);
+                        Set<String> pathsToFlush = new HashSet<>();
+                        for (JCRSiteNode site : sitesNodeList) {
+                            Set<String> installedModules = site.getInstalledModulesWithAllDependencies();
+                            if (installedModules.contains(pkg.getId()) || installedModules.contains(pkg.getName())) {
+                                pathsToFlush.add(site.getPath());
+                            }
                         }
+                        if (!pathsToFlush.isEmpty()) {
+                            CacheHelper.flushOutputCachesForPaths(pathsToFlush, true);
+                        }
+                        return Boolean.TRUE;
                     }
-                    if (!pathsToFlush.isEmpty()) {
-                        CacheHelper.flushOutputCachesForPaths(pathsToFlush, true);
-                    }
-                    return Boolean.TRUE;
-                }
-            });
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+                });
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
+    }
+
+    private boolean hasImports(JahiaTemplatesPackage jahiaTemplatesPackage) {
+        if (jahiaTemplatesPackage.getInitialImports().isEmpty()) {
+            // check for initial imports
+            Bundle bundle = jahiaTemplatesPackage.getBundle();
+            Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
+            if (importXMLEntryEnum == null || !importXMLEntryEnum.hasMoreElements()) {
+                importXMLEntryEnum = bundle.findEntries("META-INF", "import*.zip", false);
+                if (importXMLEntryEnum == null || !importXMLEntryEnum.hasMoreElements()) {
+                    // no templates -> no need to flush caches
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean hasViewFiles(JahiaTemplatesPackage jahiaTemplatesPackage) {
+        for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
+            List<URL> foundURLs = scannerAndObserver.getKey().scan(jahiaTemplatesPackage.getBundle());
+            if (!foundURLs.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private synchronized void stopped(Bundle bundle) {

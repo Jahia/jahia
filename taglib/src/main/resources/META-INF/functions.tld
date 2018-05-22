@@ -11,19 +11,19 @@
     <short-name>functions</short-name>
     <uri>http://www.jahia.org/tags/functions</uri>
 
-	<function>
-		<description>
-			Abbreviates a String using ellipses. This will turn:
-     		"Now is the time for all good men" into "Now is the time for..."
-		</description>
-		<name>abbreviate</name>
-		<function-class>org.apache.commons.lang.WordUtils</function-class>
-		<function-signature>java.lang.String abbreviate(java.lang.String, int, int,java.lang.String)</function-signature>
-		<example>
-			${functions:abbreviate(field.value, 100,120,'...')}
-		</example>
-	</function>
-	
+    <function>
+        <description>
+            Abbreviates a String using ellipses. This will turn:
+             "Now is the time for all good men" into "Now is the time for..."
+        </description>
+        <name>abbreviate</name>
+        <function-class>org.apache.commons.lang.WordUtils</function-class>
+        <function-signature>java.lang.String abbreviate(java.lang.String, int, int,java.lang.String)</function-signature>
+        <example>
+            ${functions:abbreviate(field.value, 100,120,'...')}
+        </example>
+    </function>
+
     <function>
         <description>Prints out the attribute values for a tag, based on the provided Map</description>
         <name>attributes</name>
@@ -55,7 +55,7 @@
             &lt;c:out value="${functions:default(param.itemsPerPage, '10')}"&gt;
         </example>
     </function>
-    
+
     <function>
         <description>Remove all cache tags from string.
         </description>
@@ -76,7 +76,7 @@
             Does a URL encoding of the <code>path</code>. The characters that don't need encoding are those defined 'unreserved' in section 2.3
             of the 'URI generic syntax' RFC 2396. Not the entire path string is escaped, but every individual part (i.e. the slashes are not
             escaped).
-            ]]>         
+            ]]>
         </description>
         <name>escapePath</name>
         <function-class>org.jahia.utils.WebUtils</function-class>
@@ -87,7 +87,7 @@
         <description>
             Escapes the characters in a String using JavaScript String rules.
             Escapes any values it finds into their JavaScript String form.
-            Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.)         
+            Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.)
         </description>
         <name>escapeJavaScript</name>
         <function-class>org.apache.commons.lang.StringEscapeUtils</function-class>
@@ -97,7 +97,7 @@
             ${functions:escapeJavaScript(msg) will result in: He didn\'t say, \"Stop!\"
         </example>
     </function>
-    
+
     <function>
         <description>Returns the given value cleaned of its HTML tags</description>
         <name>removeHtmlTags</name>
@@ -194,8 +194,8 @@
 
     <function>
         <description>
-        	Returns a pseudorandom, uniformly distributed int value between '0' (inclusive) 
-        	and the specified value (exclusive), from the Math.random() sequence.
+            Returns a pseudorandom, uniformly distributed int value between '0' (inclusive)
+            and the specified value (exclusive), from the Math.random() sequence.
         </description>
         <name>randomInt</name>
         <function-class>org.apache.commons.lang.math.RandomUtils</function-class>
@@ -207,9 +207,9 @@
 
     <function>
         <description>
-        	Returns the closest int to the argument. 
-        	The result is rounded to an integer by adding 1/2, taking the 
-     		floor of the result, and casting the result to type int.
+            Returns the closest int to the argument.
+            The result is rounded to an integer by adding 1/2, taking the
+             floor of the result, and casting the result to type int.
         </description>
         <name>round</name>
         <function-class>java.lang.Math</function-class>
@@ -260,7 +260,7 @@
             &lt;c:out value="${functions:rint(9 * tag.references.size / totalTagUsage)}"&gt;
         </example>
     </function>
-    
+
     <function>
         <description>Returns the smaller of two long values.</description>
         <name>min</name>
@@ -270,7 +270,7 @@
             &lt;c:out value="${functions:min(hitCount, 10)}"&gt;
         </example>
     </function>
-    
+
     <function>
         <description>Returns the smaller of two long values.</description>
         <name>nextLongIdentifier</name>
@@ -280,10 +280,10 @@
             &lt;input type="text" name="date" id="date-${functions:nextLongIdentifier()}"/&gt;
         </example>
     </function>
-    
+
     <function>
         <description>
-			Extends the standard JSTL's fn:length() function with JCR's RangeIterator support
+            Extends the standard JSTL's fn:length() function with JCR's RangeIterator support
         </description>
         <name>length</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
@@ -292,10 +292,10 @@
             Tag usage count: ${functions:length(tag.weakReferences)}
         </example>
     </function>
-    
+
     <function>
         <description>
-			Reverse a List
+            Reverse a List
         </description>
         <name>reverse</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
@@ -307,7 +307,7 @@
 
     <function>
         <description>
-			Reverse an Iterator
+            Reverse an Iterator
         </description>
         <name>reverseIterator</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
@@ -374,10 +374,10 @@
         <function-class>org.jahia.utils.FileUtils</function-class>
         <function-signature>java.util.List getPossibleFormats()</function-signature>
     </function>
-    
+
     <function>
         <description>
-			Checks if the given object is iterable to be used with c:forEach
+            Checks if the given object is iterable to be used with c:forEach
         </description>
         <name>isIterable</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
@@ -407,7 +407,7 @@
 
     <function>
         <description>
-			Display a locale name in a specified locale
+            Display a locale name in a specified locale
         </description>
         <name>displayLocaleNameWith</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
@@ -415,61 +415,61 @@
     </function>
 
     <function>
-		<description>
-			Capitalize a string "i am FINE" to "I Am Fine" as an example.
-		</description>
-		<name>capitalize</name>
-		<function-class>org.apache.commons.lang.WordUtils</function-class>
-		<function-signature>java.lang.String capitalizeFully(java.lang.String)</function-signature>
-		<example>
-			${functions:capitalize(field.value)}
-		</example>
-	</function>
+        <description>
+            Capitalize a string "i am FINE" to "I Am Fine" as an example.
+        </description>
+        <name>capitalize</name>
+        <function-class>org.apache.commons.lang.WordUtils</function-class>
+        <function-signature>java.lang.String capitalizeFully(java.lang.String)</function-signature>
+        <example>
+            ${functions:capitalize(field.value)}
+        </example>
+    </function>
 
     <function>
-		<description>
+        <description>
             DEPRECATED: Use user taglib instead
-			Lookup the user by the user key (path) or username.
-		</description>
-		<name>lookupUser</name>
-		<function-class>org.jahia.taglibs.user.User</function-class>
-		<function-signature>org.jahia.services.content.decorator.JCRUserNode lookupUser(java.lang.String)</function-signature>
-		<example>
-			${functions:lookupUser('sergiy')} or ${functions:lookupUser('/users/aa/bb/cc/john')}
-		</example>
-	</function>
+            Lookup the user by the user key (path) or username.
+        </description>
+        <name>lookupUser</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>org.jahia.services.content.decorator.JCRUserNode lookupUser(java.lang.String)</function-signature>
+        <example>
+            ${functions:lookupUser('sergiy')} or ${functions:lookupUser('/users/aa/bb/cc/john')}
+        </example>
+    </function>
 
     <function>
-		<description>
+        <description>
             DEPRECATED: Use user taglib instead
-			Retrieve the displayable name for a principal object. For the moment this implementation only changes
+            Retrieve the displayable name for a principal object. For the moment this implementation only changes
             the guest user and guest group names to be localized using resource bundle entries (see jahia.properties
             for configuration of resource bundle name and key).
-		</description>
-		<name>displayName</name>
-		<function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
+        </description>
+        <name>displayName</name>
+        <function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
         <function-signature>java.lang.String getDisplayName(java.lang.Object)</function-signature>
         <example>
-			${functions:displayName(jahiaUser)}
-		</example>
-	</function>
+            ${functions:displayName(jahiaUser)}
+        </example>
+    </function>
 
     <function>
-		<description>
+        <description>
             DEPRECATED: Use user taglib instead
-			Retrieve the full name or displayable for a principal object.
+            Retrieve the full name or displayable for a principal object.
             Builds the full user name, which is build the following way :
             - for a JahiaGroup, simply calls getDisplayName(p)
             - for a JahiaUser, if the firstName and lastName properties are defined, they are concatenated and this method
             returns that result. If the properties don't exist, this is equivalent to getDisplayName(p)
-		</description>
-		<name>fullName</name>
-		<function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
+        </description>
+        <name>fullName</name>
+        <function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
         <function-signature>java.lang.String getFullName(java.lang.Object)</function-signature>
         <example>
-			${functions:fullName(jahiaUser)} or ${functions:fullName(jahiaGroup)}
-		</example>
-	</function>
+            ${functions:fullName(jahiaUser)} or ${functions:fullName(jahiaGroup)}
+        </example>
+    </function>
 
     <function>
         <description>Encode facet filter URL parameter</description>
@@ -515,7 +515,7 @@
             Optionally the entries list can be limited in size and also sorted.
             Following values are supported for the sorting type:
              - latestFirst: sorts the entries by latest added descending
-             - displayName: a ascending case-insensitive alphabetical ordering by display name   
+             - displayName: a ascending case-insensitive alphabetical ordering by display name
         </description>
         <name>getRolesForNode</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
@@ -552,7 +552,7 @@
         <function-signature>java.lang.String modulePath(javax.servlet.http.HttpServletRequest,java.lang.String)</function-signature>
         <example>${functions:modulePath(pageContext.request, 'default')}</example>
     </function>
-    
+
     <function>
         <description>
             Returns the first parent of the current node, which has the ACL inheritance broken,
@@ -563,7 +563,7 @@
         <function-signature>org.jahia.services.content.JCRNodeWrapper getParentWithAclInheritanceBroken(org.jahia.services.content.JCRNodeWrapper)</function-signature>
         <example>${functions:getParentWithAclInheritanceBroken(node)}</example>
     </function>
-    
+
     <function>
         <description>
             Joins the provided elements using the specified separator.
@@ -573,7 +573,7 @@
         <function-signature>java.lang.String join(java.lang.Object, java.lang.String)</function-signature>
         <example>${functions:join(dependentModuleList, ', ')}</example>
     </function>
-    
+
     <function>
         <description>
             Returns a human-readable representation of the file size (number of bytes).
@@ -618,9 +618,8 @@
     </function>
 
     <function>
-        <description><![CDATA[
-            Returns the value for of the currently active UI theme.
-            ]]>         
+        <description>
+            Returns the value of the currently active UI theme.
         </description>
         <name>getUITheme</name>
         <function-class>org.jahia.utils.WebUtils</function-class>

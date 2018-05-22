@@ -16,7 +16,7 @@
         <to>null</to>
     </rule>
     <!-- end of block direct access -->
-    
+
     <rule enabled="true">
         <name>OSGi Web console access</name>
         <note>Allow access via /tools/osgi/* path only to the OSGi Web console</note>
@@ -27,7 +27,7 @@
         <set type="request" name="UrlRewriteFilter.sendError">404</set>
         <to>null</to>
     </rule>
-    
+
     <!-- GWT resources-->
     <rule>
         <note>GWT CSS</note>
@@ -60,7 +60,7 @@
         <run class="org.jahia.services.seo.urlrewrite.ResourceChecksumCalculator" method="calculateChecksum(HttpServletRequest, String, String)"/>
         <to last="true" encode="false">$1/engines/jahia-anthracite/$3.v%{attribute:ResourceChecksumCalculator.checksum}.$4</to>
     </outbound-rule>
-    <!-- Jahia Anthracite Theme resources -->
+    <!-- end of Jahia Anthracite Theme resources -->
 
     <outbound-rule>
         <name>reset outbound parameters</name>
@@ -134,5 +134,5 @@
         <from>^/administration(/)?$</from>
         <to type="redirect">%{context-path}/welcome/adminmode</to>
     </rule>
-    
+
 </urlrewrite>

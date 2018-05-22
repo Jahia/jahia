@@ -59,6 +59,7 @@ import org.artofsolving.jodconverter.document.DefaultDocumentFormatRegistry;
 import org.artofsolving.jodconverter.document.DocumentFamily;
 import org.artofsolving.jodconverter.document.DocumentFormat;
 import org.artofsolving.jodconverter.document.DocumentFormatRegistry;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
@@ -76,7 +77,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 public final class FileUtils {
-    
+
     @SuppressWarnings("unchecked")
     private static class Holder {
         static final Map<String, String> fileExtensionIcons;
@@ -96,15 +97,14 @@ public final class FileUtils {
     }
 
     private static DocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
-    
+
     /**
      * Calculates the MD5 digest from the content of the supplied input stream. The supplied stream is closed after reading it.
-     * 
+     *
      * @param is the resource input stream
      * @return the MD5 digest (as a HEX string) from the content of the supplied input stream
-     * @throws IOException in case of an I/O error reading the resource stream
      */
-    public static String calculateDigest(InputStream is) throws IOException {
+    public static String calculateDigest(InputStream is) {
         try (DigestInputStream digestInputStream = toDigestInputStream(
                 (is instanceof BufferedInputStream) ? is : new BufferedInputStream(is))) {
             byte[] b = new byte[1024 * 8];
@@ -113,6 +113,8 @@ public final class FileUtils {
                 read = digestInputStream.read(b);
             }
             return Hex.encodeHexString(digestInputStream.getMessageDigest().digest());
+        } catch (IOException e) {
+            throw new JahiaRuntimeException(e);
         }
     }
 
@@ -120,7 +122,7 @@ public final class FileUtils {
      * Cleans a directory without deleting it, considering also named exclusions.
      *
      * @param directory directory to clean
-     * @param filter the file filter to consider 
+     * @param filter the file filter to consider
      * @throws IOException in case cleaning is unsuccessful
      * @see org.apache.commons.io.FileUtils#cleanDirectory(File)
      */
@@ -163,7 +165,7 @@ public final class FileUtils {
 
     /**
      * Returns the content of the specified {@link Resource} as a string.
-     * 
+     *
      * @param resource
      *            the resource to be read
      * @return the content of the specified {@link Resource} as a string
@@ -200,7 +202,7 @@ public final class FileUtils {
     }
 
     public static String[] getFileExtensionIconsMapping() {
-        return Arrays.copyOf(Holder.fileExtensionIconsMapping, Holder.fileExtensionIconsMapping.length);         
+        return Arrays.copyOf(Holder.fileExtensionIconsMapping, Holder.fileExtensionIconsMapping.length);
     }
 
     public static String getFileIcon(String fileName) {
@@ -241,7 +243,7 @@ public final class FileUtils {
 
     /**
      * Returns the last modified date of the specified resource.
-     * 
+     *
      * @param resource
      *            resource to check the last modified date on
      * @return the last modified date of the specified resource
@@ -252,7 +254,7 @@ public final class FileUtils {
         URL resourceUrl = resource.getURL();
         return ResourceUtils.isJarURL(resourceUrl) ? ResourceUtils.getFile(ResourceUtils.extractJarFileURL(resourceUrl)).lastModified() : resource.lastModified();
     }
-    
+
     public static List<DocumentFormat> getPossibleFormats() {
         Set<DocumentFormat> map = new LinkedHashSet<DocumentFormat>();
         Set<DocumentFormat> formatSet = formatRegistry.getOutputFormats(DocumentFamily.TEXT);
@@ -271,10 +273,10 @@ public final class FileUtils {
         });
         return list;
     }
-    
+
     /**
      * Returns a human-readable representation of the file size (number of bytes).
-     * 
+     *
      * @param bytes
      *            the file size in bytes
      * @return a human-readable representation of the file size (number of bytes)
@@ -285,7 +287,7 @@ public final class FileUtils {
 
     /**
      * Returns a human-readable representation of the file size (number of bytes).
-     * 
+     *
      * @param bytes
      *            the file size in bytes
      * @param withDetails
@@ -317,12 +319,12 @@ public final class FileUtils {
 
         return display.toString();
     }
-    
+
     /**
-     * Moves the content of the directory to the specified one considering the filter. 
+     * Moves the content of the directory to the specified one considering the filter.
      * @param srcDir the source directory to move content from
      * @param destDir the target directory
-     * @param filter a filter for inclusions 
+     * @param filter a filter for inclusions
      * @throws IOException in case of an I/O errors
      */
     public static void moveDirectoryContentToDirectory(File srcDir, File destDir, FileFilter filter)

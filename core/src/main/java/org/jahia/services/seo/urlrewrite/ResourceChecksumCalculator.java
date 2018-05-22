@@ -44,7 +44,6 @@
 
 package org.jahia.services.seo.urlrewrite;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
@@ -58,7 +57,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class that calculates checksum for the specified Web resources.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ResourceChecksumCalculator {
@@ -77,7 +76,7 @@ public class ResourceChecksumCalculator {
 
     /**
      * Calculates the checksum for the specified resource and sets it as a request attribute.
-     * 
+     *
      * @param request the current request
      * @param ctx current request context
      * @param resourcePath the resource path to calculate checksum for
@@ -89,20 +88,11 @@ public class ResourceChecksumCalculator {
     private String getChecksum(HttpServletRequest request, String resourcePath) {
         String checksum = checksums.get(resourcePath);
         if (checksum == null) {
-            boolean debug = logger.isDebugEnabled();
-            long startTime = debug ? System.currentTimeMillis() : 0;
-
-            @SuppressWarnings("resource")
-            InputStream resourceAsStream = request.getServletContext().getResourceAsStream(resourcePath);
-            try {
-                checksum = resourceAsStream != null ? FileUtils.calculateDigest(resourceAsStream) : "0";
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-
+            long startTime = System.currentTimeMillis();
+            @SuppressWarnings("resource") InputStream resourceAsStream = request.getServletContext().getResourceAsStream(resourcePath);
+            checksum = resourceAsStream != null ? FileUtils.calculateDigest(resourceAsStream) : "0";
             checksums.put(resourcePath, checksum);
-
-            if (debug) {
+            if (logger.isDebugEnabled()) {
                 logger.debug("Checksum for resource {} calculated in {} ms: {}",
                         new Object[] { resourcePath, System.currentTimeMillis() - startTime, checksum });
             }

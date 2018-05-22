@@ -198,7 +198,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
             assertNull(r1.error);
             assertNotNull(r1.result);
             assertNull(r2.result);
-            assertTrue(r2.error != null && r2.error.getMessage().contains("Module generation takes too long due to module not generated fast enough (1000 ms)"));
+            assertTrue(r2.error != null && r2.error.getMessage().contains("Module generation takes too long due to module not generated fast enough (>1000 ms)"));
             assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer >= 3000);
             assertTrue("Waiting thread don't spent the correct time waiting before throw error", r2.timer >= 1000);
         } finally {

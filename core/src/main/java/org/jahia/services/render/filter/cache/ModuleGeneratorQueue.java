@@ -43,6 +43,8 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.exceptions.JahiaServiceUnavailableException;
 import org.jahia.services.render.RenderContext;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.slf4j.Logger;
@@ -65,6 +67,8 @@ import java.util.concurrent.TimeUnit;
  * Created : 12 oct. 2010
  */
 public class ModuleGeneratorQueue implements InitializingBean {
+
+    public static final String HAS_PROCESSING_SEMAPHORE_PARAM = "moduleGeneratorQueue.hasProcessingSemaphore";
 
     private Map<String, String> notCacheableModule = new ConcurrentHashMap<String, String>(2503);
     private Map<String, CountDownLatch> generatingModules;
@@ -123,7 +127,7 @@ public class ModuleGeneratorQueue implements InitializingBean {
 
         if (generatingModules.get(key) == null) {
             // get permit to generate fragment (based on maximum allowed number of fragment generation in parallel)
-            getFragmentGenerationPermit(key, request);
+            getFragmentsGenerationPermit(key, request);
         }
         synchronized (generatingModules) {
             latch = generatingModules.get(key);
@@ -135,57 +139,62 @@ public class ModuleGeneratorQueue implements InitializingBean {
         }
         if (mustWait) {
             // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait
-            revokeFragmentGenerationPermit();
+            releaseFragmentsGenerationPermit(request);
 
             try {
                 if (!latch.await(getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
                     manageThreadDump();
-                    throw new Exception("Module generation takes too long due to module not generated fast enough (" + moduleGenerationWaitTime + " ms) - " + key + " - " + request.getRequestURI());
+                    StringBuilder errorMsgBuilder = new StringBuilder(512);
+                    errorMsgBuilder.append("Module generation takes too long due to module not generated fast enough (>")
+                            .append(moduleGenerationWaitTime).append(" ms)- ").append(key).append(" - ")
+                            .append(request.getRequestURI());
+                    throw new JahiaServiceUnavailableException(errorMsgBuilder.toString());
                 }
                 latch = null;
             } catch (InterruptedException e) {
-                logger.debug("The waiting thread has been interrupted", e);
-                throw new Exception(e);
+                Thread.currentThread().interrupt();
+                throw new JahiaRuntimeException(e);
             }
         }
         return latch;
     }
 
     /**
-     * Number of threads generating fragments in parallel is limited, this function is used to get the permission to generate a fragment
-     * based on the property "maxModulesToGenerateInParallel". The permit is stored in the current thread and must be released
-     * when the fragment generation is complete by the current thread using the function "releaseFragmentGenerationPermit(String finalKey)"
-     * @param finalKey the final key of the fragment
+     * Number of threads generating fragments in parallel is limited, this function is used to get the permission to generate a page
+     * based on the property "maxModulesToGenerateInParallel". The permit is stored in the current request attributes and must be released
+     * when the page is complete by the current thread request using the function "releaseRequestGenerationPermit(HttpServletRequest request)"
+     * @param resourceIdentifier Identifier for the current resource, could be the cache key if available, or anything that could identify the resource ( only use for log purpose )
      * @param request the current request
      */
-    protected void getFragmentGenerationPermit(String finalKey, HttpServletRequest request) throws Exception {
-        if (generatingKeySemaphore.get() == null) {
-            if (!getAvailableProcessings().tryAcquire(moduleGenerationWaitTime, TimeUnit.MILLISECONDS)) {
-                manageThreadDump();
-                throw new Exception("Module generation takes too long due to maximum parallel processing reached (" + maxModulesToGenerateInParallel + ") - " + finalKey + " - " + request.getRequestURI());
-            } else {
-                generatingKeySemaphore.set(finalKey);
+    protected void getFragmentsGenerationPermit(String resourceIdentifier, HttpServletRequest request) {
+        if (!Boolean.TRUE.equals(request.getAttribute(HAS_PROCESSING_SEMAPHORE_PARAM))) {
+            try {
+                if (!getAvailableProcessings().tryAcquire(getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
+                    manageThreadDump();
+                    StringBuilder errorMsgBuilder = new StringBuilder(512).append("Module generation takes too long due to maximum parallel processing reached (")
+                            .append(maxModulesToGenerateInParallel).append(") - ").append(resourceIdentifier).append(" - ")
+                            .append(request.getRequestURI());
+                    throw new JahiaServiceUnavailableException(errorMsgBuilder.toString());
+                } else {
+                    request.setAttribute(HAS_PROCESSING_SEMAPHORE_PARAM, Boolean.TRUE);
+                }
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                throw new JahiaRuntimeException(ie);
             }
         }
     }
 
     /**
      * Release a permit previously set for the current thread, this function is used when the current thread just finish
-     * a fragment generation. A permit slot is released allowing an other thread to take it to generate a fragment.
-     * @param finalKey the final key of the fragment
+     * a page generation. A permit slot is released allowing an other thread to take it to generate a fragment.
+     * @param request the current request
      */
-    protected void releaseFragmentGenerationPermit(String finalKey) {
-        if (finalKey.equals(generatingKeySemaphore.get())) {
-            getAvailableProcessings().release();
-            generatingKeySemaphore.set(null);
-        }
-    }
-
-    private void revokeFragmentGenerationPermit() {
-        if (generatingKeySemaphore.get() != null) {
+    protected void releaseFragmentsGenerationPermit(HttpServletRequest request) {
+        if (Boolean.TRUE.equals(request.getAttribute(HAS_PROCESSING_SEMAPHORE_PARAM))) {
             // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait
             getAvailableProcessings().release();
-            generatingKeySemaphore.set(null);
+            request.removeAttribute(HAS_PROCESSING_SEMAPHORE_PARAM);
         }
     }
 
@@ -251,9 +260,6 @@ public class ModuleGeneratorQueue implements InitializingBean {
      * The permit is automatically released, no need to do additional call to release the permit.
      */
     protected void releaseLatch(String finalKey) {
-        // release fragment generation permit
-        releaseFragmentGenerationPermit(finalKey);
-
         Set<CountDownLatch> latches = processingLatches.get();
         CountDownLatch latch = generatingModules.get(finalKey);
         if (latches != null && latches.contains(latch)) {

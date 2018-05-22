@@ -64,6 +64,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.jahia.services.render.filter.AggregateFilter.RESOURCES_STACK;
+
 /**
  * Cache render filter, in charge of providing the html for a given fragment (from the cache or by generating it)
  * Then cache the result if necessary
@@ -101,6 +103,7 @@ public class CacheFilter extends AbstractFilter {
         @SuppressWarnings("unchecked")
         Map<String, Object> moduleMap = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
         if (!isCacheFilterEnabled(moduleMap)) {
+            generatorQueue.getFragmentsGenerationPermit(resource.toString(), renderContext.getRequest());
             return null;
         }
 
@@ -154,7 +157,7 @@ public class CacheFilter extends AbstractFilter {
         }
 
         // get permit to generate fragment (based on maximum allowed number of fragment generation in parallel)
-        generatorQueue.getFragmentGenerationPermit(finalKey, renderContext.getRequest());
+        generatorQueue.getFragmentsGenerationPermit(finalKey, renderContext.getRequest());
         return null;
     }
 
@@ -223,13 +226,8 @@ public class CacheFilter extends AbstractFilter {
                             cacheProvider.getCache(), finalKey, isAnError);
                     // content is in cache and available, release latch for other threads waiting for this fragment
                     generatorQueue.releaseLatch(finalKey);
-                } else {
-                    // release fragment generation permit
-                    generatorQueue.releaseFragmentGenerationPermit(finalKey);
                 }
             } else {
-                // release fragment generation permit
-                generatorQueue.releaseFragmentGenerationPermit(finalKey);
                 cacheProvider.addNonCacheableFragment(key);
             }
         }
@@ -260,9 +258,13 @@ public class CacheFilter extends AbstractFilter {
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
 
+        // In case key stack have been cleaned by AggregateFilter because page is generated OR No key stack at all
+        if (renderContext.getRequest().getAttribute(RESOURCES_STACK) == null) {
+            generatorQueue.releaseFragmentsGenerationPermit(renderContext.getRequest());
+        }
+
         // If an error occured during render and the latch is not release during the execute() it's important that we release it
         // in any case to avoid threads waiting for nothing
-
         @SuppressWarnings("unchecked")
         Map<String, Object> moduleMap = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
         if (isCacheFilterEnabled(moduleMap)) {

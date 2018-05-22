@@ -14,7 +14,7 @@
     <function>
         <description>
             Abbreviates a String using ellipses. This will turn:
-             "Now is the time for all good men" into "Now is the time for..."
+            "Now is the time for all good men" into "Now is the time for..."
         </description>
         <name>abbreviate</name>
         <function-class>org.apache.commons.lang.WordUtils</function-class>
@@ -209,7 +209,7 @@
         <description>
             Returns the closest int to the argument.
             The result is rounded to an integer by adding 1/2, taking the
-             floor of the result, and casting the result to type int.
+            floor of the result, and casting the result to type int.
         </description>
         <name>round</name>
         <function-class>java.lang.Math</function-class>

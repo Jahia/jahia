@@ -226,6 +226,8 @@ public class Constants {
     public static final String LASTPUBLISHEDBY = "j:lastPublishedBy";
     public static final String PUBLISHED = "j:published";
     public static final String WORKINPROGRESS = "j:workInProgress";
+    public static final String WORKINPROGRESS_STATUS = "j:workInProgressStatus";
+    public static final String WORKINPROGRESS_LANGUAGES = "j:workInProgressLanguages";
 
     public static final String CONTENT = "content";
     public static final String SYSTEM = "j:system";

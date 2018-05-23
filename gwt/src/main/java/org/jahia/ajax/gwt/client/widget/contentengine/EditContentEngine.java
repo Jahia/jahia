@@ -184,8 +184,6 @@ public class EditContentEngine extends AbstractContentEngine {
                     langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguage(), result);
                 }
 
-                setWorkInProgress(workInProgressCheckedByDefault || (node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress")));
-
                 fillCurrentTab();
                 refreshButtons();
             }
@@ -248,8 +246,14 @@ public class EditContentEngine extends AbstractContentEngine {
                     heading = heading + "&nbsp;" + Messages.get("label.edit.engine.heading.locked.by.you", "[ locked by you ]");
                     container.getPanel().setHeadingHtml(heading);
                 }
-                setWorkInProgress(workInProgressCheckedByDefault || (node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress")));
 
+                if (node.get("j:workInProgressStatus") != null) {
+                    setWipStatus(WipStatus.valueOf((String) node.get("j:workInProgressStatus")));
+                    // set languages
+                    if (node.get("j:workInProgressLanguages") != null) {
+                        setWorkInProgressByLocale((List<String>)node.get("j:workInProgressLanguages"));
+                    }
+                }
                 setAvailableLanguages(result.getAvailabledLanguages());
 
                 // set selectedNode as processed

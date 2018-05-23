@@ -43,11 +43,19 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
+import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
+import com.extjs.gxt.ui.client.widget.form.Field;
+import com.extjs.gxt.ui.client.widget.form.Radio;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.messages.Messages;
+
 
 /**
  * Button Item for create and new
@@ -61,19 +69,138 @@ public class WorkInProgressButtonItem implements ButtonItem {
     @Override
     public BoxComponent create(final AbstractContentEngine engine) {
 
-        final CheckboxWorkInProgress checkbox = new CheckboxWorkInProgress();
-        engine.setWorkInProgressCheckedByDefault(checkedByDefault);
-        checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
-            public void handleEvent(ComponentEvent event) {
-                engine.setWorkInProgress(checkbox.getValue());
+        final Button wipButton = new Button(Messages.get("label.saveAsWIP", "Save as work in progress"));
+
+        final Window window = new WorkInProgressWindow(engine);
+
+        wipButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                window.show();
             }
         });
-        checkbox.setBoxLabel(Messages.get("label.saveAsWIP", "Save as work in progress"));
-        checkbox.setToolTip(Messages.get("label.saveAsWIP.information", "If checked, this content will ne be part of publication process"));
-        return checkbox;
+
+        return wipButton;
     }
 
     public void setCheckedByDefault(boolean checkedByDefault) {
         this.checkedByDefault = checkedByDefault;
+    }
+
+    /**
+     * Window that displays WIP details
+     */
+    public class WorkInProgressWindow extends Window {
+
+        private final Radio allContents = new Radio();
+        private final Radio turnOff = new Radio();
+        private final Radio selectedLanguages = new Radio();
+        private final CheckBoxGroup languages = new CheckBoxGroup();
+
+        public WorkInProgressWindow(final AbstractContentEngine engine) {
+            super();
+            setSize(500, 300);
+            setPlain(true);
+            setModal(true);
+            setBlinkModal(true);
+            setHeadingText(Messages.get("label.wip.title", "Work in progress"));
+            addWindowListener(new WindowListener() {
+                @Override
+                public void windowShow(WindowEvent we) {
+                    super.windowShow(we);
+                    // init form with engine values
+                    switch (engine.getWipStatus()) {
+                        case DISABLED:
+                            turnOff.setValue(true);
+                            break;
+                        case LANGUAGES:
+                            selectedLanguages.setValue(true);
+                            break;
+                        case ALL_CONTENTS:
+                            allContents.setValue(true);
+                            break;
+                        default:
+                            if (checkedByDefault) {
+                                allContents.setValue(true);
+                            } else {
+                                turnOff.setValue(true);
+                            }
+                    }
+                    // fill languages
+                    for (Field language : languages.getAll()) {
+                        language.setValue(engine.getWorkInProgressByLanguages().contains(((CheckBox) language).getValueAttribute()));
+                    }
+                    // set languages
+                    if (allContents.getValue() || turnOff.getValue()) {
+                        languages.disable();
+                    } else {
+                        languages.enable();
+                    }
+                }
+            });
+
+            VerticalPanel vp = new VerticalPanel();
+            allContents.addListener(Events.OnChange, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    languages.disable();
+                }
+            });
+            allContents.setBoxLabel(Messages.get("label.wip.allcontent", "All Content ( localised & non-localised )"));
+
+            selectedLanguages.setBoxLabel(Messages.get("label.wip.localisedcontent.helper", "Localised Content only"));
+            selectedLanguages.addListener(Events.OnChange, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    languages.enable();
+                }
+            });
+            ;
+
+            turnOff.setBoxLabel(Messages.get("label.wip.turnoff", "Turn off Work in Progress"));
+            turnOff.addListener(Events.OnChange, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    languages.disable();
+                }
+            });
+            vp.add(allContents);
+            vp.add(selectedLanguages);
+            languages.setFieldLabel("Languages");
+            for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
+                CheckBox languageCheck = new CheckBox();
+                languageCheck.setBoxLabel(language.getDisplayName());
+                languageCheck.setValueAttribute(language.getLanguage());
+                languages.add(languageCheck);
+            }
+            vp.add(languages);
+            vp.add(turnOff);
+
+            add(vp);
+
+            addButton(new Button(Messages.get("label.cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    hide();
+                }
+            }));
+            addButton(new Button(Messages.get("label.save", "Save"), new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    // save wip window data to the engine
+                    engine.setWipStatus(allContents.getValue() ?
+                            AbstractContentEngine.WipStatus.ALL_CONTENTS : selectedLanguages.getValue() ?
+                            AbstractContentEngine.WipStatus.LANGUAGES : AbstractContentEngine.WipStatus.DISABLED);
+                    engine.getWorkInProgressByLanguages().clear();
+                    for (CheckBox language : languages.getValues()) {
+                        if (language.getValue()) {
+                            engine.addWorkInProgressLocale(language.getValueAttribute());
+                        }
+                    }
+                    hide();
+                }
+            }));
+            setFocusWidget(getButtonBar().getItem(0));
+        }
     }
 }

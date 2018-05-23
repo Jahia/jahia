@@ -170,9 +170,6 @@ public class CreateContentEngine extends AbstractContentEngine {
      */
     protected void onLanguageChange(GWTJahiaLanguage previous) {
 
-        if (!changedI18NProperties.containsKey(language.getLanguage())) {
-            setWorkInProgress(workInProgressCheckedByDefault);
-        }
         if (previous != null) {
             final String lang = previous.getLanguage();
             for (TabItem item : tabs.getItems()) {
@@ -218,8 +215,6 @@ public class CreateContentEngine extends AbstractContentEngine {
                 });
 
                 nodeName = result.getDefaultName();
-
-                setWorkInProgress(workInProgressCheckedByDefault);
 
                 fillCurrentTab();
                 refreshButtons();

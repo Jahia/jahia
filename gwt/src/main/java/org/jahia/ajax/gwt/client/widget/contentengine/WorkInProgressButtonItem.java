@@ -165,7 +165,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
             });
 
             turnOff.setBoxLabel(Messages.get("label.wip.turnoff", "Turn off Work in Progress"));
-            turnOff.setBoxLabel(Messages.get("label.wip.turnoff.helper", "Turn off helper text. Find out more at The Academy"));
+            turnOff.setToolTip(Messages.get("label.wip.turnoff.helper", "Turn off helper text. Find out more at The Academy"));
             turnOff.addListener(Events.OnChange, new Listener<BaseEvent>() {
                 @Override
                 public void handleEvent(BaseEvent be) {

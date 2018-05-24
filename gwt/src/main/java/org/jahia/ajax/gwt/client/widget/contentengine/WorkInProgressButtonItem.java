@@ -218,6 +218,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
                 }
             }));
             setFocusWidget(getButtonBar().getItem(0));
+            wipButton.updateButtonTitle();
         }
 
         void reset() {

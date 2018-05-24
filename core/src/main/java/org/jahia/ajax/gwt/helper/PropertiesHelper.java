@@ -554,17 +554,4 @@ public class PropertiesHelper {
         }
     }
 
-    private String[] convertLanguagesToArray(String languages){
-        String[] res;
-        if(languages.length() <= 3){
-            res = new String[1];
-            res[0] = languages;
-        }else{
-           languages = languages.substring(1, languages.length()-1);
-           res = languages.split(",");
-        }
-        return res;
-    }
-
-
 }

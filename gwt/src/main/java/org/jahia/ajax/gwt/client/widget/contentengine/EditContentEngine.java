@@ -253,6 +253,12 @@ public class EditContentEngine extends AbstractContentEngine {
                     if (node.get("j:workInProgressLanguages") != null) {
                         setWorkInProgressByLocale((List<String>)node.get("j:workInProgressLanguages"));
                     }
+                    // update button
+                    for (BoxComponent saveButton : saveButtons) {
+                        if (saveButton instanceof WorkInProgressButton) {
+                             ((WorkInProgressButton) saveButton).updateButtonTitle();
+                        }
+                    }
                 }
                 setAvailableLanguages(result.getAvailabledLanguages());
 

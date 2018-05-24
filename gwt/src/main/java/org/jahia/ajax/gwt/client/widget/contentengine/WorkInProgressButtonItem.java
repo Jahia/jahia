@@ -66,10 +66,12 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
     private boolean checkedByDefault = false;
 
+    private transient WorkInProgressButton wipButton;
+
     @Override
     public BoxComponent create(final AbstractContentEngine engine) {
 
-        final Button wipButton = new Button(Messages.get("label.saveAsWIP", "Save as work in progress"));
+        wipButton = new WorkInProgressButton(engine);
 
         final Window window = new WorkInProgressWindow(engine);
 
@@ -90,7 +92,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
     /**
      * Window that displays WIP details
      */
-    public class WorkInProgressWindow extends Window {
+    private class WorkInProgressWindow extends Window {
 
         private final Radio allContents = new Radio();
         private final Radio turnOff = new Radio();
@@ -108,6 +110,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
                 @Override
                 public void windowShow(WindowEvent we) {
                     super.windowShow(we);
+                    reset();
                     // init form with engine values
                     switch (engine.getWipStatus()) {
                         case DISABLED:
@@ -155,7 +158,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     languages.enable();
                 }
             });
-            ;
 
             turnOff.setBoxLabel(Messages.get("label.wip.turnoff", "Turn off Work in Progress"));
             turnOff.addListener(Events.OnChange, new Listener<BaseEvent>() {
@@ -197,10 +199,20 @@ public class WorkInProgressButtonItem implements ButtonItem {
                             engine.addWorkInProgressLocale(language.getValueAttribute());
                         }
                     }
+                    wipButton.updateButtonTitle();
                     hide();
                 }
             }));
             setFocusWidget(getButtonBar().getItem(0));
+        }
+
+        void reset() {
+            allContents.setValue(false);
+            turnOff.setValue(false);
+            selectedLanguages.setValue(false);
+            for (Field checkBox : languages.getAll()) {
+                checkBox.setValue(false);
+            }
         }
     }
 }

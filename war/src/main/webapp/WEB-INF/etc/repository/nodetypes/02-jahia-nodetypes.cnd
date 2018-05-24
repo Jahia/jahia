@@ -56,7 +56,7 @@
   - j:lastPublished (date) protected onconflict=ignore
   - j:lastPublishedBy (string) protected nofulltext onconflict=ignore
   - j:workInProgress (boolean) = false hidden nofulltext onconflict=ignore
-  - j:workInProgressStatus (string) hidden nofulltext onconflict=ignore < 'DISABLED', 'ALL_CONTENTS', 'LANGUAGES'
+  - j:workInProgressStatus (string) hidden nofulltext onconflict=ignore < 'DISABLED', 'ALL_CONTENT', 'LANGUAGES'
   - j:workInProgressLanguages (string) hidden nofulltext onconflict=ignore multiple
 
 [jmix:originWS] mixin

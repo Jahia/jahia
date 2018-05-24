@@ -123,7 +123,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     protected String parentPath;
 
-    public enum WipStatus { DISABLED, ALL_CONTENTS, LANGUAGES }
+    public enum WipStatus { DISABLED, ALL_CONTENT, LANGUAGES }
 
 
     protected AbstractContentEngine(GWTEngineConfiguration config, Linker linker, String parentPath) {

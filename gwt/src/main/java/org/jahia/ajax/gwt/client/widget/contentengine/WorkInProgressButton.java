@@ -65,7 +65,7 @@ public class WorkInProgressButton extends Button {
      */
     public void updateButtonTitle() {
         switch (engine.getWipStatus()) {
-            case ALL_CONTENTS:
+            case ALL_CONTENT:
                 setHtml(Messages.get("label.wip.engine.title.all", "All Content ( localised & non-localised )"));
                 break;
             case LANGUAGES:

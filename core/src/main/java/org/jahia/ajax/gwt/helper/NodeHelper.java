@@ -134,7 +134,7 @@ class NodeHelper {
         return url;
     }
 
-    public static Object getPropertyValue(Value value, JCRSessionWrapper session)
+    private static Object getPropertyValue(Value value, JCRSessionWrapper session)
             throws RepositoryException {
         switch (value.getType()) {
             case PropertyType.DATE:
@@ -150,7 +150,7 @@ class NodeHelper {
         }
     }
 
-    public static void setPropertyValue(GWTJahiaNode n, JCRPropertyWrapper property,
+    private static void setPropertyValue(GWTJahiaNode n, JCRPropertyWrapper property,
                                          JCRSessionWrapper session) throws RepositoryException {
         if (property.isMultiple()) {
             Value[] values = property.getValues();

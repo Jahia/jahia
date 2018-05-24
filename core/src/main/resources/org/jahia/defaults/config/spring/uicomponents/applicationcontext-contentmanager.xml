@@ -643,6 +643,7 @@
                             <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
+                                    <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>
@@ -694,6 +695,7 @@
             <bean id="repositoryexplorerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
+                        <ref bean="Toolbar.Item.EditContent"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Undelete"/>
@@ -831,6 +833,7 @@
                             <property name="titleKey" value="label.edit"/>
                             <property name="items">
                                 <list>
+                                    <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Rename"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>
@@ -867,6 +870,7 @@
             <bean id="editorialcontentmanagerContextMenu" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
                     <list>
+                        <ref bean="Toolbar.Item.EditContent"/>
                         <ref bean="Toolbar.Item.Rename"/>
                         <ref bean="Toolbar.Item.Delete"/>
                         <ref bean="Toolbar.Item.Undelete"/>

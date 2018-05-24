@@ -49,7 +49,6 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -59,7 +58,6 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaEditEngineInitBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -103,12 +101,10 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     protected Map<String,Set<String>> referencesWarnings;
 
     private List<GWTJahiaNode> selectedNodes = null;
-    private boolean workInProgress = false;
 
 
     private final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
     private Button ok;
-    private CheckBox wip;
 
     public ContentDetails(GWTManagerConfiguration config, ManagerLinker linker) {
         super();
@@ -139,21 +135,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         m_component.add(tabs);
         final ButtonBar buttonBar = new ButtonBar();
         buttonBar.setAlignment(Style.HorizontalAlignment.RIGHT);
-
-        if (config.isShowWorkInProgress()) {
-            wip = new CheckBox();
-            wip.setValue(false);
-            workInProgress = wip.getValue();
-
-            wip.addListener(Events.Change, new Listener<ComponentEvent>() {
-                public void handleEvent(ComponentEvent event) {
-                    workInProgress = wip.getValue();
-                }
-            });
-            wip.setBoxLabel(Messages.get("label.saveAsWIP", "Save as work in progress"));
-            wip.setToolTip(Messages.get("label.saveAsWIP.information", "If checked, this content will ne be part of publication process"));
-            buttonBar.add(wip);
-        }
 
         ok = new Button(Messages.get("label.save"));
         ok.addStyleName("button-save");
@@ -264,10 +245,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                                 } else {
                                     ok.setEnabled(false); //disable save button
                                 }
-                                if (config.isShowWorkInProgress()) {
-                                    wip.setEnabled(true);
-                                    wip.setValue(result.getNode() != null && result.getNode().get("j:workInProgress") != null && (Boolean) result.getNode().get("j:workInProgress"));
-                                }
 
                                 fillCurrentTab();
                             }
@@ -300,9 +277,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                                     }
                                 }
                             }
-                        }
-                        if (config.isShowWorkInProgress()) {
-                            wip.setEnabled(false);
                         }
                         fillCurrentTab();
                     }
@@ -402,19 +376,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
             // general properties
             final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
 
-            if (getNode() != null && getNode().isNodeType("jmix:lastPublished")) {
-                for (GWTJahiaNodeProperty property : changedProperties) {
-                    if (property.getName().equals("j:workInProgress")) {
-                        if (workInProgress) {
-                            property.setValue(new GWTJahiaNodePropertyValue(Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN));
-                        } else {
-                            property.setValue(new GWTJahiaNodePropertyValue((String) null, GWTJahiaNodePropertyType.BOOLEAN));
-                        }
-                        return;
-                    }
-                }
-            }
-
             final Set<String> addedTypes = new HashSet<String>();
             final Set<String> removedTypes = new HashSet<String>();
             // general properties
@@ -432,13 +393,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 }
 
                 item.doSave(getNode(), changedProperties, changedI18NProperties, addedTypes, removedTypes, null, acl);
-            }
-            if (config.isShowWorkInProgress()) {
-                if (changedI18NProperties.containsKey(language.getLanguage())) {
-                    changedI18NProperties.get(language.getLanguage()).add(new GWTJahiaNodeProperty("j:workInProgress", Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN));
-                } else {
-                    changedI18NProperties.put(language.getLanguage(), Arrays.asList(new GWTJahiaNodeProperty("j:workInProgress", Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN)));
-                }
             }
 
             getNode().getNodeTypes().removeAll(removedTypes);

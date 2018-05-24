@@ -134,7 +134,7 @@ class NodeHelper {
         return url;
     }
 
-    private static Object getPropertyValue(Value value, JCRSessionWrapper session)
+    public static Object getPropertyValue(Value value, JCRSessionWrapper session)
             throws RepositoryException {
         switch (value.getType()) {
             case PropertyType.DATE:
@@ -150,7 +150,7 @@ class NodeHelper {
         }
     }
 
-    private static void setPropertyValue(GWTJahiaNode n, JCRPropertyWrapper property,
+    public static void setPropertyValue(GWTJahiaNode n, JCRPropertyWrapper property,
                                          JCRSessionWrapper session) throws RepositoryException {
         if (property.isMultiple()) {
             Value[] values = property.getValues();
@@ -927,6 +927,7 @@ class NodeHelper {
             if (node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
                 setPropertyValue(n, node.getProperty(Constants.WORKINPROGRESS_STATUS), node.getSession());
             }
+
             if (node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES)) {
                 setPropertyValue(n, node.getProperty(Constants.WORKINPROGRESS_LANGUAGES), node.getSession());
             }

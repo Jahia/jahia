@@ -365,8 +365,6 @@ public class PropertiesHelper {
         if (!objectNode.isCheckedOut()) {
             objectNode.checkout();
         }
-
-        GWTJahiaNodeProperty wipProp = null;
         for (GWTJahiaNodeProperty prop : newProps) {
             try {
                 if (prop != null &&
@@ -490,46 +488,14 @@ public class PropertiesHelper {
                             objectNode.getProperty(prop.getName()).remove();
                         }
                     }
-                } else if (prop != null && StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS)) {
-                    // do not set wip property here, as we are in a loop if wip property is the first the i18n nodes are may be not created yet
-                    wipProp = prop;
                 }
             } catch (PathNotFoundException e) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Property with the name '" + prop.getName() + "' not found on the node " + objectNode.getPath() + ". Skipping.", e);
+                    logger.debug("Property with the name '" + prop.getName() + "' not found on the node " + objectNode.getPath() + ". Skipping.",
+                            e);
                 } else {
-                    logger.info("Property with the name '" + prop.getName()  + "' not found on the node " + objectNode.getPath() + ". Skipping.");
+                    logger.info("Property with the name '" + prop.getName() + "' not found on the node " + objectNode.getPath() + ". Skipping.");
                 }
-            }
-        }
-
-        // set wip property if necessary
-        try {
-            if(wipProp != null) {
-                Node n;
-                objectNode.checkLock();
-                boolean wip = wipProp.getValues().get(0).getBoolean();
-                Locale locale = objectNode.getSession().getLocale();
-                if (locale == null || !objectNode.hasI18N(locale)) {
-                    n = objectNode;
-                } else {
-                    n = objectNode.getI18N(locale);
-                }
-                if (!wip && n.hasProperty(Constants.WORKINPROGRESS)) {
-                    n.getProperty(Constants.WORKINPROGRESS).remove();
-                } else if (wip) {
-                    n.setProperty(Constants.WORKINPROGRESS, wip);
-                }
-            }
-        } catch (PathNotFoundException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Property with the name '"
-                        + wipProp.getName() + "' not found on the node "
-                        + objectNode.getPath() + ". Skipping.", e);
-            } else {
-                logger.info("Property with the name '" + wipProp.getName()
-                        + "' not found on the node "
-                        + objectNode.getPath() + ". Skipping.");
             }
         }
     }
@@ -586,6 +552,18 @@ public class PropertiesHelper {
             NodeConstraintViolationException v = violationException;
             gwt.addError(v.getPath(), v.getConstraintMessage(), v.getLocale() != null ? v.getLocale().toString() : null, null, null);
         }
+    }
+
+    private String[] convertLanguagesToArray(String languages){
+        String[] res;
+        if(languages.length() <= 3){
+            res = new String[1];
+            res[0] = languages;
+        }else{
+           languages = languages.substring(1, languages.length()-1);
+           res = languages.split(",");
+        }
+        return res;
     }
 
 

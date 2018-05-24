@@ -1116,6 +1116,8 @@ public class JCRPublicationService extends JahiaService {
                                                    List<PublicationInfo> infos, PublicationInfo currentPublicationInfo) throws
             RepositoryException {
 
+        String[] wipLanguages = null;
+        boolean wipAllContent = false;
         PublicationInfoNode info = null;
         final String uuid = node.getIdentifier();
         info = infosMap.get(uuid);
@@ -1160,9 +1162,13 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            if (node.hasProperty(Constants.WORKINPROGRESS) && node.getProperty(Constants.WORKINPROGRESS).getBoolean()
-                    && !node.isMarkedForDeletion() && (!node.isNodeType(Constants.JAHIANT_TRANSLATION) || !node.getParent().isMarkedForDeletion())) {
+            if(node.hasProperty(Constants.WORKINPROGRESS_STATUS) && node.getProperty(Constants.WORKINPROGRESS_STATUS).getString()
+                    .equalsIgnoreCase(Constants.WORKINPROGRESS_ALLCONTENT)){
                 info.setWorkInProgress(true);
+                wipAllContent = true;
+            }else if (node.hasProperty(Constants.WORKINPROGRESS_STATUS) && node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES) && node.getProperty(Constants.WORKINPROGRESS_STATUS).getString()
+                    .equalsIgnoreCase(Constants.WORKINPROGRESS_LANG)){
+                wipLanguages = node.getPropertiesAsString().get(Constants.WORKINPROGRESS_LANGUAGES).split(" ");
             }
 
             info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet()));
@@ -1223,10 +1229,11 @@ public class JCRPublicationService extends JahiaService {
                                 getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
                                         sourceSession, destinationSession, infosMap, infos, currentPublicationInfo);
                         info.addChild(child);
-                        if (child.isWorkInProgress()) {
+
+                        if ((wipLanguages != null && Arrays.asList(wipLanguages).contains(translationLanguage)) || wipAllContent) {
+                            child.setWorkInProgress(true);
                             info.getChildren().clear();
                             info.getReferences().clear();
-                            info.addChild(child);
                             info.setWorkInProgress(true);
                             break;
                         }

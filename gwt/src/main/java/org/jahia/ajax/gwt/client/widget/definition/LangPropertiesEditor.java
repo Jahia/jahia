@@ -99,7 +99,6 @@ public class LangPropertiesEditor extends LayoutContainer {
     private LayoutContainer topBar;
     private boolean translationEnabled;
     private LangPropertiesEditor translationSource;
-    private Map<String, Boolean> workInProgressByLocale = new HashMap<String, Boolean>();
     private CallBack callback;
     // flag used when translationSource is used and is not fully loaded when we try to read data from it.
     private boolean needRefresh = false;
@@ -365,9 +364,6 @@ public class LangPropertiesEditor extends LayoutContainer {
                 }
 
                 updatePropertiesComponent(locale);
-                if (!workInProgressByLocale.containsKey(locale)) {
-                    workInProgressByLocale.put(locale, node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress"));
-                }
 
                 if (callback != null) {
                     callback.execute();
@@ -449,21 +445,6 @@ public class LangPropertiesEditor extends LayoutContainer {
             mapProperties.put(langCode, langPropertiesEditorMap.get(langCode).getProperties(true, false, true));
         }
         return mapProperties;
-    }
-
-    /**
-     * @return the work in progress status of the editor
-     */
-    public boolean isWip(String locale) {
-        return workInProgressByLocale.get(locale);
-    }
-
-    public boolean isWip() {
-        return isWip(displayedLocale.getLanguage());
-    }
-
-    public void setWorkInProgress(boolean wip) {
-        workInProgressByLocale.put(displayedLocale.getLanguage(), wip);
     }
 
     public boolean isNeedRefresh() {

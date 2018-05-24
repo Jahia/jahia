@@ -60,7 +60,6 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -93,6 +92,9 @@ public class TranslateContentEngine extends Window {
     private LangPropertiesEditor sourceLangPropertiesEditor;
     private LangPropertiesEditor targetLangPropertiesEditor;
     protected ButtonBar buttonBar;
+
+    private Set<String> workInProgressByLocale = new HashSet<String>();
+
 
 
     /**
@@ -142,9 +144,18 @@ public class TranslateContentEngine extends Window {
         targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true, destLanguage, sourceLangPropertiesEditor, new LangPropertiesEditor.CallBack() {
             @Override
             public void execute() {
-                wipCheckbox.setValue(targetLangPropertiesEditor.isWip());
+                wipCheckbox.setValue(workInProgressByLocale.contains(targetLangPropertiesEditor.getDisplayedLocale().getLanguage()));
             }
         });
+
+        // Fill WIP infos
+        if (node.get("j:workInProgressStatus") != null) {
+            wipStatus = AbstractContentEngine.WipStatus.valueOf((String) node.get("j:workInProgressStatus"));
+            // set languages
+            if (node.get("j:workInProgressLanguages") != null) {
+                workInProgressByLocale.addAll((List<String>)node.get("j:workInProgressLanguages"));
+            }
+        }
 
         Button copyButton = new Button(Messages.get("label.translate.copy", "Copy to other language"));
         copyButton.addStyleName("button-translatecopy");
@@ -195,7 +206,7 @@ public class TranslateContentEngine extends Window {
         wipCheckbox.addListener(Events.Change, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
-                targetLangPropertiesEditor.setWorkInProgress(wipCheckbox.getValue());
+                setWorkInProgress(wipCheckbox.getValue());
             }
         });
         buttonBar.add(wipCheckbox);
@@ -231,13 +242,23 @@ public class TranslateContentEngine extends Window {
             final List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
             List<GWTJahiaNodeProperty> sharedProperties = new ArrayList<GWTJahiaNodeProperty>();
             nodes.add(node);
+
+            // WIP
+            List<GWTJahiaNodePropertyValue> languages = new LinkedList<GWTJahiaNodePropertyValue>();
+            for (String locale : workInProgressByLocale) {
+                languages.add(new GWTJahiaNodePropertyValue(locale));
+            }
+            GWTJahiaNodeProperty wipLocaleProperty = new GWTJahiaNodeProperty();
+            wipLocaleProperty.setName("j:workInProgressLanguages");
+            wipLocaleProperty.setValues(languages);
+            wipLocaleProperty.setMultiple(true);
+            sharedProperties.add(wipLocaleProperty);
+
             Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties = targetLangPropertiesEditor.getLangPropertiesMap();
             for (String language : targetLangPropertiesEditor.getLangPropertiesMap().keySet()) {
                 if (!changedI18NProperties.containsKey(language)) {
                     changedI18NProperties.put(language, new ArrayList<GWTJahiaNodeProperty>());
                 }
-                GWTJahiaNodePropertyValue wipValue = new GWTJahiaNodePropertyValue(String.valueOf(targetLangPropertiesEditor.isWip(language)), GWTJahiaNodePropertyType.BOOLEAN);
-                changedI18NProperties.get(language).add(new GWTJahiaNodeProperty("j:workInProgress", wipValue));
             }
             // Ajax call to update values
             JahiaContentManagementService.App.getInstance().savePropertiesAndACL(nodes, null, changedI18NProperties, sharedProperties, null, new BaseAsyncCallback<Object>() {
@@ -261,6 +282,14 @@ public class TranslateContentEngine extends Window {
             });
         }
 
+    }
+
+    public void setWorkInProgress(boolean wip) {
+        if (wip) {
+            workInProgressByLocale.add(targetLangPropertiesEditor.getDisplayedLocale().getLanguage());
+        } else {
+            workInProgressByLocale.remove(targetLangPropertiesEditor.getDisplayedLocale().getLanguage());
+        }
     }
 
     @Override

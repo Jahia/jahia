@@ -59,7 +59,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 
 
 /**
- * Button Item for create and new
+ * Button Item to handle work in progress in edit engine
  */
 public class WorkInProgressButtonItem implements ButtonItem {
 

@@ -230,6 +230,7 @@ public class Constants {
     public static final String WORKINPROGRESS_LANGUAGES = "j:workInProgressLanguages";
     public static final String WORKINPROGRESS_ALLCONTENT = "ALL_CONTENT";
     public static final String WORKINPROGRESS_LANG = "LANGUAGES";
+    public static final String WORKINPROGRESS_DISABLED = "DISABLED";
 
     public static final String CONTENT = "content";
     public static final String SYSTEM = "j:system";

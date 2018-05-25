@@ -150,7 +150,6 @@ public class TranslateContentEngine extends Window {
 
         // Fill WIP infos
         if (node.get("j:workInProgressStatus") != null) {
-            wipStatus = AbstractContentEngine.WipStatus.valueOf((String) node.get("j:workInProgressStatus"));
             // set languages
             if (node.get("j:workInProgressLanguages") != null) {
                 workInProgressByLocale.addAll((List<String>)node.get("j:workInProgressLanguages"));

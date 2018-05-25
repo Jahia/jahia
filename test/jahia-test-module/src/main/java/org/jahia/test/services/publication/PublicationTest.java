@@ -625,7 +625,9 @@ public class PublicationTest {
     public void testWorkInProgressStatus() throws RepositoryException {
         JCRNodeWrapper list = TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        editTextNode1.setProperty("j:workInProgress",Boolean.TRUE);
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS,Constants.WORKINPROGRESS_LANG);
+        String[] langs = new String[]{"en"};
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_LANGUAGES, langs);
         englishEditSession.save();
         getCleanSession();
         HashSet<String> languages = new HashSet<String>(Arrays.asList("en"));
@@ -651,7 +653,7 @@ public class PublicationTest {
         englishEditSession.save();
         getCleanSession();
         infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-        assertEquals("Invalid 'work in progress' info for content", false, getWipFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid 'work in progress' info for content", true, getWipFor(infos, editTextNode1.getIdentifier()));
 
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
         editTextNode1.unmarkForDeletion();
@@ -661,7 +663,7 @@ public class PublicationTest {
         assertEquals("Invalid 'work in progress' info for content", true, getWipFor(infos, editTextNode1.getIdentifier()));
 
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        editTextNode1.setProperty("j:workInProgress",Boolean.FALSE);
+        editTextNode1.setProperty("j:workInProgressStatus", Constants.WORKINPROGRESS_DISABLED);
         englishEditSession.save();
 
         getCleanSession();

@@ -111,7 +111,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
                 @Override
                 public void windowShow(WindowEvent we) {
                     super.windowShow(we);
-                    reset();
                     // init form with engine values
                     switch (engine.getWipStatus()) {
                         case DISABLED:
@@ -219,15 +218,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
             }));
             setFocusWidget(getButtonBar().getItem(0));
             wipButton.updateButtonTitle();
-        }
-
-        void reset() {
-            allContents.setValue(false);
-            turnOff.setValue(false);
-            selectedLanguages.setValue(false);
-            for (Field checkBox : languages.getAll()) {
-                checkBox.setValue(false);
-            }
         }
     }
 }

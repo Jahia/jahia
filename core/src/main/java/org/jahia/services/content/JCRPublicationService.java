@@ -1162,13 +1162,21 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            if (node.hasProperty(Constants.WORKINPROGRESS_STATUS) && node.getProperty(Constants.WORKINPROGRESS_STATUS).getString()
-                    .equalsIgnoreCase(Constants.WORKINPROGRESS_ALLCONTENT)) {
-                info.setWorkInProgress(true);
-                wipAllContent = true;
-            } else if (node.hasProperty(Constants.WORKINPROGRESS_STATUS) && node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES) && node.getProperty(Constants.WORKINPROGRESS_STATUS).getString()
-                    .equalsIgnoreCase(Constants.WORKINPROGRESS_LANG)) {
-                wipLanguages = node.getPropertiesAsString().get(Constants.WORKINPROGRESS_LANGUAGES).split(" ");
+            try {
+                if (node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
+                    if (node.getProperty(Constants.WORKINPROGRESS_STATUS).getString().equalsIgnoreCase(Constants.WORKINPROGRESS_ALLCONTENT)) {
+                        info.setWorkInProgress(true);
+                        wipAllContent = true;
+                    } else if (node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES) && node.getProperty(Constants.WORKINPROGRESS_STATUS).getString().equalsIgnoreCase(Constants.WORKINPROGRESS_LANG)) {
+                        wipLanguages = node.getPropertiesAsString().get(Constants.WORKINPROGRESS_LANGUAGES).split(" ");
+                    } else if (node.getProperty(Constants.WORKINPROGRESS_STATUS).getString().equalsIgnoreCase(Constants.WORKINPROGRESS_LANG)
+                            && (!node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES)
+                            || node.getProperty(Constants.WORKINPROGRESS_LANGUAGES) == null)) {
+                        throw new ItemNotFoundException("property j:workInProgressLanguages is empty");
+                    }
+                }
+            } catch (ItemNotFoundException e){
+                logger.debug("property j:workInProgressLanguages is not properly set or empty");
             }
 
             info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet()));
@@ -1230,10 +1238,11 @@ public class JCRPublicationService extends JahiaService {
                                         sourceSession, destinationSession, infosMap, infos, currentPublicationInfo);
                         info.addChild(child);
 
-                        if ((wipLanguages != null && Arrays.asList(wipLanguages).contains(translationLanguage)) || wipAllContent) {
-                            child.setWorkInProgress(true);
+                        if (wipAllContent || (wipLanguages != null && Arrays.asList(wipLanguages).contains(translationLanguage))) {
                             info.getChildren().clear();
                             info.getReferences().clear();
+                            info.addChild(child);
+                            child.setWorkInProgress(true);
                             info.setWorkInProgress(true);
                             break;
                         }

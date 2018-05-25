@@ -337,5 +337,5 @@ public class Constants {
      *
      * TODO: this set might not be exhaustive at the moment. Please complete if needed!
      */
-    public static final Set<String> nonI18nPropertiesCopiedToTranslationNodes = new HashSet<>(Arrays.asList(PUBLISHED, LASTPUBLISHED, LASTPUBLISHEDBY, WORKINPROGRESS));
+    public static final Set<String> nonI18nPropertiesCopiedToTranslationNodes = new HashSet<>(Arrays.asList(PUBLISHED, LASTPUBLISHED, LASTPUBLISHEDBY));
 }

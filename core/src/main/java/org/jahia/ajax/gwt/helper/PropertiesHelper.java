@@ -282,50 +282,6 @@ public class PropertiesHelper {
         }
     }
 
-    public void saveWorkInProgress(List<GWTJahiaNode> nodes, Map<String, List<GWTJahiaNodeProperty>> langProperties, JCRSessionWrapper currentUserSession) throws RepositoryException {
-        for (GWTJahiaNode aNode : nodes) {
-            JCRNodeWrapper currentNode = currentUserSession.getNode(aNode.getPath());
-            saveWorkInProgress(currentNode, langProperties);
-        }
-    }
-
-    public void saveWorkInProgress(JCRNodeWrapper node, Map<String, List<GWTJahiaNodeProperty>> langProperties) throws RepositoryException {
-        node.checkLock();
-        if (node.hasTranslations()) {
-            for (String language : langProperties.keySet()) {
-                boolean isWipLanguage = false;
-                for (GWTJahiaNodeProperty prop : langProperties.get(language)) {
-                    isWipLanguage |= StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS) && prop.getValues().get(0).getBoolean();
-                }
-                if (node.hasI18N(LanguageCodeConverters.languageCodeToLocale(language))) {
-                    Node i18N = node.getI18N(LanguageCodeConverters.languageCodeToLocale(language));
-                    if (isWipLanguage) {
-                        if (node.hasProperty(Constants.WORKINPROGRESS)) {
-                            node.getProperty(Constants.WORKINPROGRESS).remove();
-                        }
-                        i18N.setProperty(Constants.WORKINPROGRESS, true);
-                    } else if (i18N.hasProperty(Constants.WORKINPROGRESS)) {
-                        i18N.getProperty(Constants.WORKINPROGRESS).remove();
-                    }
-                }
-            }
-        } else {
-            boolean isWipLanguage = false;
-            for (String language : langProperties.keySet()) {
-                for (GWTJahiaNodeProperty prop : langProperties.get(language)) {
-                    isWipLanguage |= StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS) && prop.getValues().get(0).getBoolean();
-                }
-            }
-            if (isWipLanguage) {
-                node.setProperty(Constants.WORKINPROGRESS, true);
-            } else if (node.hasProperty(Constants.WORKINPROGRESS)) {
-                node.getProperty(Constants.WORKINPROGRESS).remove();
-            }
-        }
-    }
-
-
-
     private void removeItemFromNode(ExtendedItemDefinition item, JCRNodeWrapper objectNode, JCRSessionWrapper currentUserSession) throws RepositoryException {
         if (!item.isUnstructured()) {
             if (item.isNode()) {
@@ -369,9 +325,7 @@ public class PropertiesHelper {
             try {
                 if (prop != null &&
                         !prop.getName().equals("*") &&
-                        !Constants.forbiddenPropertiesToCopy.contains(prop.getName()) &&
-                        !StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS)
-                        ) {
+                        !Constants.forbiddenPropertiesToCopy.contains(prop.getName())) {
                     if (prop.isMultiple()) {
                         List<Value> values = new ArrayList<Value>();
                         for (GWTJahiaNodePropertyValue val : prop.getValues()) {

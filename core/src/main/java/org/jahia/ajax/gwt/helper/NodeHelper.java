@@ -932,15 +932,6 @@ class NodeHelper {
             if (node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES)) {
                 setPropertyValue(n, node.getProperty(Constants.WORKINPROGRESS_LANGUAGES), node.getSession());
             }
-
-            if (node.hasI18N(node.getSession().getLocale())) {
-                final Node i18n = node.getI18N(node.getSession().getLocale());
-                if (i18n.hasProperty(Constants.WORKINPROGRESS)) {
-                    n.set(Constants.WORKINPROGRESS, i18n.getProperty(Constants.WORKINPROGRESS).getBoolean());
-                } else {
-                    n.set(Constants.WORKINPROGRESS, false);
-                }
-            }
         } catch (RepositoryException e) {
             logger.error("Cannot get repository infos", e);
         }

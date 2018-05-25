@@ -1162,12 +1162,12 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            if(node.hasProperty(Constants.WORKINPROGRESS_STATUS) && node.getProperty(Constants.WORKINPROGRESS_STATUS).getString()
-                    .equalsIgnoreCase(Constants.WORKINPROGRESS_ALLCONTENT)){
+            if (node.hasProperty(Constants.WORKINPROGRESS_STATUS) && node.getProperty(Constants.WORKINPROGRESS_STATUS).getString()
+                    .equalsIgnoreCase(Constants.WORKINPROGRESS_ALLCONTENT)) {
                 info.setWorkInProgress(true);
                 wipAllContent = true;
-            }else if (node.hasProperty(Constants.WORKINPROGRESS_STATUS) && node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES) && node.getProperty(Constants.WORKINPROGRESS_STATUS).getString()
-                    .equalsIgnoreCase(Constants.WORKINPROGRESS_LANG)){
+            } else if (node.hasProperty(Constants.WORKINPROGRESS_STATUS) && node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES) && node.getProperty(Constants.WORKINPROGRESS_STATUS).getString()
+                    .equalsIgnoreCase(Constants.WORKINPROGRESS_LANG)) {
                 wipLanguages = node.getPropertiesAsString().get(Constants.WORKINPROGRESS_LANGUAGES).split(" ");
             }
 

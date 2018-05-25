@@ -85,7 +85,7 @@ import java.util.*;
  */
 public class PropertiesHelper {
 
-    private static Logger logger = LoggerFactory.getLogger(PropertiesHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(PropertiesHelper.class);
 
     private ContentDefinitionHelper contentDefinition;
     private NavigationHelper navigation;
@@ -127,10 +127,10 @@ public class PropertiesHelper {
                     // check that we're not dealing with a not-set property from the translation nodes,
                     // in which case it needs to be omitted
                     final Locale locale = currentUserSession.getLocale();
-                    if(Constants.nonI18nPropertiesCopiedToTranslationNodes.contains(propName) && objectNode.hasI18N(locale, false)) {
+                    if (Constants.nonI18nPropertiesCopiedToTranslationNodes.contains(propName) && objectNode.hasI18N(locale, false)) {
                         // get the translation node for the current locale
                         final Node i18N = objectNode.getI18N(locale, false);
-                        if(!i18N.hasProperty(propName)) {
+                        if (!i18N.hasProperty(propName)) {
                             // if the translation node doesn't have the property and it's part of the set of copied properties, then we shouldn't return it
                             continue;
                         }

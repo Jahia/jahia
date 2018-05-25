@@ -90,7 +90,8 @@ import java.util.*;
  * @author Sergiy Shyrkov
  */
 class NodeHelper {
-    private static Logger logger = LoggerFactory.getLogger(NodeHelper.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(NodeHelper.class);
 
     /**
      * Get node url depending
@@ -110,7 +111,7 @@ class NodeHelper {
         RenderContext renderContext = new RenderContext(null, null, node.getSession().getUser());
         renderContext.setMainResource(resource);
         renderContext.setServletPath("/cms/" + servlet);
-        JCRNodeWrapper nodeForURL = node; 
+        JCRNodeWrapper nodeForURL = node;
         if (findDisplayable) {
             nodeForURL = JCRContentUtils.findDisplayableNode(node, renderContext);
             if (nodeForURL != null && !nodeForURL.getIdentifier().equals(node.getIdentifier())) {
@@ -421,7 +422,7 @@ class NodeHelper {
 
         populateInvalidLanguages(n, node);
 
-        List<String> installedModules = (List<String>) n.get("j:installedModules");
+        @SuppressWarnings("unchecked") List<String> installedModules = (List<String>) n.get("j:installedModules");
         if (installedModules != null) {
             List<JahiaTemplatesPackage> s = new ArrayList<>();
             LinkedHashMap<JahiaTemplatesPackage, List<JahiaTemplatesPackage>> deps = new LinkedHashMap<>();
@@ -569,7 +570,7 @@ class NodeHelper {
             }
             n.setHasChildren(allowChildNodes && (slowConnection || node.hasNodes()));
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -606,7 +607,7 @@ class NodeHelper {
                 }
             }
         }
-        n.set("j:resolvedDependencies",dependencies);
+        n.set("j:resolvedDependencies", dependencies);
     }
 
     private void populateDescription(GWTJahiaNode n, JCRNodeWrapper node) {
@@ -934,7 +935,7 @@ class NodeHelper {
 
             if (node.hasI18N(node.getSession().getLocale())) {
                 final Node i18n = node.getI18N(node.getSession().getLocale());
-                if (i18n.hasProperty(Constants.WORKINPROGRESS)){
+                if (i18n.hasProperty(Constants.WORKINPROGRESS)) {
                     n.set(Constants.WORKINPROGRESS, i18n.getProperty(Constants.WORKINPROGRESS).getBoolean());
                 } else {
                     n.set(Constants.WORKINPROGRESS, false);
@@ -1011,7 +1012,7 @@ class NodeHelper {
                         n.set("j:scmURI", versionInfo.getProperty("j:scmURI").getString());
                     }
                     if (StringUtils.isNotEmpty(packageByFileName.getForgeUrl()))  {
-                        n.set("j:forgeUrl",packageByFileName.getForgeUrl());
+                        n.set("j:forgeUrl", packageByFileName.getForgeUrl());
                     }
                 }
             }

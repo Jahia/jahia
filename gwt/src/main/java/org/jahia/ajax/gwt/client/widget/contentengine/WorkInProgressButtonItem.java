@@ -77,6 +77,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
         final Window window = new WorkInProgressWindow(engine);
 
         wipButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+
             @Override
             public void componentSelected(ButtonEvent ce) {
                 window.show();
@@ -95,19 +96,21 @@ public class WorkInProgressButtonItem implements ButtonItem {
      */
     private class WorkInProgressWindow extends Window {
 
-        private final Radio allContents = new Radio();
         private final Radio turnOff = new Radio();
+        private final Radio allContents = new Radio();
         private final Radio selectedLanguages = new Radio();
         private final CheckBoxGroup languages = new CheckBoxGroup();
 
         public WorkInProgressWindow(final AbstractContentEngine engine) {
-            super();
+
             setSize(500, 300);
             setPlain(true);
             setModal(true);
             setBlinkModal(true);
             setHeadingText(Messages.get("label.wip.title", "Work in progress"));
+
             addWindowListener(new WindowListener() {
+
                 @Override
                 public void windowShow(WindowEvent we) {
                     super.windowShow(we);
@@ -131,10 +134,10 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     }
                     // fill languages
                     for (Field language : languages.getAll()) {
-                        language.setValue(engine.getWorkInProgressByLanguages().contains(((CheckBox) language).getValueAttribute()));
+                        language.setValue(engine.getWorkInProgressLocales().contains(((CheckBox) language).getValueAttribute()));
                     }
                     // set languages
-                    if (allContents.getValue() || turnOff.getValue()) {
+                    if (turnOff.getValue() || allContents.getValue()) {
                         languages.disable();
                     } else {
                         languages.enable();
@@ -206,7 +209,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     engine.setWipStatus(allContents.getValue() ?
                             AbstractContentEngine.WipStatus.ALL_CONTENT : selectedLanguages.getValue() ?
                             AbstractContentEngine.WipStatus.LANGUAGES : AbstractContentEngine.WipStatus.DISABLED);
-                    engine.getWorkInProgressByLanguages().clear();
+                    engine.getWorkInProgressLocales().clear();
                     for (CheckBox language : languages.getValues()) {
                         if (language.getValue()) {
                             engine.addWorkInProgressLocale(language.getValueAttribute());

@@ -185,7 +185,6 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
 
                 fillCurrentTab();
-                refreshButtons();
             }
         });
 
@@ -251,7 +250,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     setWipStatus(WipStatus.valueOf((String) node.get("j:workInProgressStatus")));
                     // set languages
                     if (node.get("j:workInProgressLanguages") != null) {
-                        setWorkInProgressByLocale((List<String>)node.get("j:workInProgressLanguages"));
+                        setWorkInProgressLocales((List<String>)node.get("j:workInProgressLanguages"));
                     }
                     // update button
                     for (BoxComponent saveButton : saveButtons) {
@@ -327,7 +326,6 @@ public class EditContentEngine extends AbstractContentEngine {
             properties = result.getProperties();
             currentLanguageBean = result.getCurrentLocale();
             fillCurrentTab();
-            refreshButtons();
         }
     }
 

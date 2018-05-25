@@ -111,8 +111,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected GWTJahiaNodeACL acl;
     protected Map<String, Set<String>> referencesWarnings;
     protected GWTJahiaLanguage language;
-    private List<String> workInProgressByLocale = new ArrayList<String>();
-    private transient WipStatus wipStatus = WipStatus.DISABLED; // Default status is disabled
+    private List<String> workInProgressLocales = new ArrayList<String>();
+    private WipStatus wipStatus = WipStatus.DISABLED; // Default status is disabled
     protected boolean closed = false;
 
     // general properties
@@ -123,8 +123,11 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     protected String parentPath;
 
-    public enum WipStatus { DISABLED, ALL_CONTENT, LANGUAGES }
-
+    public enum WipStatus {
+        DISABLED,
+        ALL_CONTENT,
+        LANGUAGES
+    }
 
     protected AbstractContentEngine(GWTEngineConfiguration config, Linker linker, String parentPath) {
         this.config = config;
@@ -396,8 +399,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                                         } catch (Exception ex) {
                                                             /*
                                                              * it could happen that the combobox is empty and so exception is thrown
-                                                    		 * and combobox isn't reinitialized
-                                                    		 */
+                                                             * and combobox isn't reinitialized
+                                                             */
                                                         }
                                                     }
                                                     ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
@@ -545,10 +548,6 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return defaultValues;
     }
 
-    protected void refreshButtons() {
-        // Do nothing
-    }
-
     public void setWipStatus(WipStatus wipStatus) {
         this.wipStatus = wipStatus;
     }
@@ -558,28 +557,28 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     }
 
     public void addWorkInProgressLocale(String locale) {
-        workInProgressByLocale.add(locale);
+        workInProgressLocales.add(locale);
     }
 
-    public List<String> getWorkInProgressByLanguages() {
-        return workInProgressByLocale;
+    public List<String> getWorkInProgressLocales() {
+        return workInProgressLocales;
     }
 
-    public void setWorkInProgressByLocale(List<String> workInProgressByLocale) {
-        this.workInProgressByLocale = workInProgressByLocale;
+    public void setWorkInProgressLocales(List<String> workInProgressLocales) {
+        this.workInProgressLocales = workInProgressLocales;
     }
 
-    public void setWorkInProgressProperty() {
+    public void setWorkInProgressProperties() {
         if (isNodeOfJmixLastPublishedType()) {
             List<GWTJahiaNodePropertyValue> languages = new LinkedList<GWTJahiaNodePropertyValue>();
-            for (String locale : workInProgressByLocale) {
+            for (String locale : workInProgressLocales) {
                 languages.add(new GWTJahiaNodePropertyValue(locale));
             }
-            GWTJahiaNodeProperty wipLocaleProperty = new GWTJahiaNodeProperty();
-            wipLocaleProperty.setName("j:workInProgressLanguages");
-            wipLocaleProperty.setValues(languages);
-            wipLocaleProperty.setMultiple(true);
-            changedProperties.add(wipLocaleProperty);
+            GWTJahiaNodeProperty wipLocalesProperty = new GWTJahiaNodeProperty();
+            wipLocalesProperty.setName("j:workInProgressLanguages");
+            wipLocalesProperty.setValues(languages);
+            wipLocalesProperty.setMultiple(true);
+            changedProperties.add(wipLocalesProperty);
             changedProperties.add(new GWTJahiaNodeProperty("j:workInProgressStatus", wipStatus.toString()));
         }
     }

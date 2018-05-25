@@ -70,15 +70,15 @@ public class WorkInProgressButton extends Button {
                 break;
             case LANGUAGES:
                 String title = Messages.get("label.wip.engine.title", "Work in progress:");
-                if (engine.getWorkInProgressByLanguages().size() == 1) {
-                    String[] language = {resolveLanguageDisplayName(engine.getWorkInProgressByLanguages().get(0))};
+                if (engine.getWorkInProgressLocales().size() == 1) {
+                    String[] language = {resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(0))};
                     setHtml(title + Messages.getWithArgs("label.wip.engine.title.one", "{0} ( excluding non-localised content )", language));
-                } else if (engine.getWorkInProgressByLanguages().size() == 2) {
-                    String[] languages = {resolveLanguageDisplayName(engine.getWorkInProgressByLanguages().get(0)), resolveLanguageDisplayName(engine.getWorkInProgressByLanguages().get(1))};
+                } else if (engine.getWorkInProgressLocales().size() == 2) {
+                    String[] languages = {resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(0)), resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(1))};
                     setHtml(title + Messages.getWithArgs("label.wip.engine.title.two", "{0} and {1} ( excluding non-localised content )", languages));
 
-                } else if (engine.getWorkInProgressByLanguages().size() > 2) {
-                    String[] params = {resolveLanguageDisplayName(engine.getWorkInProgressByLanguages().get(0)), Integer.valueOf(engine.getWorkInProgressByLanguages().size()).toString()};
+                } else if (engine.getWorkInProgressLocales().size() > 2) {
+                    String[] params = {resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(0)), Integer.valueOf(engine.getWorkInProgressLocales().size()).toString()};
                     setHtml(title + Messages.getWithArgs("label.wip.engine.title.more", "{0} and {1} more languages ( excluding non-localised content )", params));
                 }
                 break;

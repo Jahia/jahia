@@ -74,7 +74,7 @@ import java.util.Map;
  * User: toto
  * Date: Jan 7, 2010
  * Time: 1:55:28 PM
- * 
+ *
  */
 public class CreateContentEngine extends AbstractContentEngine {
 
@@ -183,7 +183,6 @@ public class CreateContentEngine extends AbstractContentEngine {
             }
         }
         fillCurrentTab();
-        refreshButtons();
     }
 
 
@@ -217,7 +216,6 @@ public class CreateContentEngine extends AbstractContentEngine {
                 nodeName = result.getDefaultName();
 
                 fillCurrentTab();
-                refreshButtons();
 
                 loaded();
             }
@@ -227,7 +225,7 @@ public class CreateContentEngine extends AbstractContentEngine {
             }
         });
     }
-    
+
     public void setButtonsEnabled(final boolean enabled) {
         for (BoxComponent button : saveButtons) {
             button.setEnabled(enabled);

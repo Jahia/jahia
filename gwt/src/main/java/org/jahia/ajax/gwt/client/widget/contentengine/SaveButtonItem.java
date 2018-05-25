@@ -87,7 +87,7 @@ public abstract class SaveButtonItem implements ButtonItem {
     }
 
     protected void save(final AbstractContentEngine engine, final boolean closeAfterSave, boolean skipValidation) {
-        engine.setWorkInProgressProperty();
+        engine.setWorkInProgressProperties();
         engine.mask(Messages.get("label.saving", "Saving..."), "x-mask-loading");
         engine.setButtonsEnabled(false);
 

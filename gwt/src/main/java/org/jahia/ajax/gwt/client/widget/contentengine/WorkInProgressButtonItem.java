@@ -146,7 +146,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
             vp.setSpacing(10);
             Html title = new Html(Messages.get("label.wip.title.sub", "Select what you would like to mark as Work in Progress"));
             vp.add(title);
-            allContents.addListener(Events.OnChange, new Listener<BaseEvent>() {
+            allContents.addListener(Events.OnClick, new Listener<BaseEvent>() {
                 @Override
                 public void handleEvent(BaseEvent be) {
                     languages.disable();
@@ -156,7 +156,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
             allContents.setToolTip(Messages.get("label.wip.allcontent.helper", "All Content helper text. Find out more at The Academy"));
             selectedLanguages.setBoxLabel(Messages.get("label.wip.localisedcontent", "Localised Content only"));
             selectedLanguages.setToolTip(Messages.get("label.wip.localisedcontent.helper", "Localised Content helper text. Find out more at The Academy"));
-            selectedLanguages.addListener(Events.OnChange, new Listener<BaseEvent>() {
+            selectedLanguages.addListener(Events.OnClick, new Listener<BaseEvent>() {
                 @Override
                 public void handleEvent(BaseEvent be) {
                     languages.enable();
@@ -165,7 +165,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
             turnOff.setBoxLabel(Messages.get("label.wip.turnoff", "Turn off Work in Progress"));
             turnOff.setToolTip(Messages.get("label.wip.turnoff.helper", "Turn off helper text. Find out more at The Academy"));
-            turnOff.addListener(Events.OnChange, new Listener<BaseEvent>() {
+            turnOff.addListener(Events.OnClick, new Listener<BaseEvent>() {
                 @Override
                 public void handleEvent(BaseEvent be) {
                     languages.disable();

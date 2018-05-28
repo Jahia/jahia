@@ -237,21 +237,29 @@ public class TranslateContentEngine extends Window {
      */
     private class SaveSelectionListener extends SelectionListener<ButtonEvent> {
         public void componentSelected(ButtonEvent event) {
-            // node
-            final List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
             List<GWTJahiaNodeProperty> sharedProperties = new ArrayList<GWTJahiaNodeProperty>();
-            nodes.add(node);
 
             // WIP
             List<GWTJahiaNodePropertyValue> languages = new LinkedList<GWTJahiaNodePropertyValue>();
+            boolean saveWip = false;
+            List<String> currentLanguages = node.get("j:workInProgressLanguages");
             for (String locale : workInProgressByLocale) {
+                saveWip |= !currentLanguages.contains(locale);
                 languages.add(new GWTJahiaNodePropertyValue(locale));
             }
-            GWTJahiaNodeProperty wipLocaleProperty = new GWTJahiaNodeProperty();
-            wipLocaleProperty.setName("j:workInProgressLanguages");
-            wipLocaleProperty.setValues(languages);
-            wipLocaleProperty.setMultiple(true);
-            sharedProperties.add(wipLocaleProperty);
+            // save Wip only if languages added or removed
+            if (saveWip || languages.size() != currentLanguages.size()) {
+                String status = node.get("j:workInProgressStatus");
+                if (status == null) {
+                    status = AbstractContentEngine.WipStatus.LANGUAGES.name();
+                }
+                sharedProperties.add(new GWTJahiaNodeProperty("j:workInProgressStatus", status));
+                GWTJahiaNodeProperty wipLocaleProperty = new GWTJahiaNodeProperty();
+                wipLocaleProperty.setName("j:workInProgressLanguages");
+                wipLocaleProperty.setValues(languages);
+                wipLocaleProperty.setMultiple(true);
+                sharedProperties.add(wipLocaleProperty);
+            }
 
             Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties = targetLangPropertiesEditor.getLangPropertiesMap();
             for (String language : targetLangPropertiesEditor.getLangPropertiesMap().keySet()) {
@@ -260,7 +268,7 @@ public class TranslateContentEngine extends Window {
                 }
             }
             // Ajax call to update values
-            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(nodes, null, changedI18NProperties, sharedProperties, null, new BaseAsyncCallback<Object>() {
+            JahiaContentManagementService.App.getInstance().saveNode(node, null, changedI18NProperties, sharedProperties, null, new BaseAsyncCallback() {
                 public void onApplicationFailure(Throwable throwable) {
                     String message = throwable.getMessage();
                     if (message.contains("Invalid link")) {

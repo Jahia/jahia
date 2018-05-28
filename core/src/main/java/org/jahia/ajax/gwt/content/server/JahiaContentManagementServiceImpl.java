@@ -766,6 +766,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                            Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
                            List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException {
         RpcMap result = new RpcMap();
+        List<GWTJahiaNodeProperty> wipProperties = extractWipProperties(sharedProperties);
         final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
 
         try {
@@ -872,6 +873,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     logger.error(e.getMessage(), e);
                 }
             }
+
+            // WIP
+            properties.saveWorkInProgress(nodeWrapper, wipProperties);
+
         } catch (LockException e) {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("could.not.be.accessed", getUILocale(), node.getDisplayName(), getLocalizedMessage(e)));
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {
@@ -896,7 +901,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             // save shared properties
             properties.saveProperties(Arrays.asList(node), sharedProperties, removedTypes, session, getUILocale(), getSession().getId());
-            if (!removedTypes.isEmpty()) {
+            if (removedTypes!= null && !removedTypes.isEmpty()) {
                 for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {
                     removedTypes.remove(mixin.getName());
                 }
@@ -969,6 +974,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                                    GWTJahiaNodeACL acl, List<GWTJahiaNodeProperty> props,
                                    Map<String, List<GWTJahiaNodeProperty>> langCodeProperties, List<GWTJahiaNode> subNodes, Map<String, String> parentNodesType, boolean forceCreation)
             throws GWTJahiaServiceException {
+        List<GWTJahiaNodeProperty> wipProperties = extractWipProperties(props);
         if (name == null) {
             if (langCodeProperties != null) {
                 String defaultLanguage = getLocale().toString();
@@ -1015,6 +1021,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
             }
             session.save();
+            properties.saveWorkInProgress(nodeWrapper, wipProperties);
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {
             if (e instanceof CompositeConstraintViolationException) {
                 properties.convertException((CompositeConstraintViolationException) e);
@@ -1041,6 +1048,22 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
 
         return node;
+    }
+
+    private List<GWTJahiaNodeProperty> extractWipProperties(List<GWTJahiaNodeProperty> props) {
+        List<GWTJahiaNodeProperty> wipProperties = new ArrayList<>();
+        List<GWTJahiaNodeProperty> newProps = new ArrayList<>();
+        props.forEach(prop -> {
+                    if (StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS_LANGUAGES) || StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS_STATUS)) {
+                        wipProperties.add(prop);
+                    } else {
+                        newProps.add(prop);
+                    }
+                }
+        );
+        props.clear();
+        props.addAll(newProps);
+        return wipProperties;
     }
 
     /**

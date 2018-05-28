@@ -105,6 +105,8 @@ public class EditContentEngine extends AbstractContentEngine {
         addStyleName("edit-content-engine");
 
         handlerRegistration = Window.addCloseHandler(new CloseHandler<Window>() {
+
+            @Override
             public void onClose(CloseEvent<Window> event) {
                 close();
             }
@@ -112,9 +114,12 @@ public class EditContentEngine extends AbstractContentEngine {
         //setTopComponent(toolBar);
     }
 
+    @Override
     public void close() {
         super.close();
         JahiaContentManagementService.App.getInstance().closeEditEngine(contentPath, new BaseAsyncCallback<Object>() {
+
+            @Override
             public void onSuccess(Object result) {
             }
         });
@@ -151,10 +156,11 @@ public class EditContentEngine extends AbstractContentEngine {
     /**
      * init buttons
      */
+    @Override
     protected void initFooter() {
         for (ButtonItem buttonItem : config.getEditionButtons()) {
             BoxComponent button = buttonItem.create(this);
-            saveButtons.add(button);
+            buttons.add(button);
             buttonBar.add(button);
         }
         for (ButtonItem buttonItem : config.getCommonButtons()) {
@@ -169,10 +175,13 @@ public class EditContentEngine extends AbstractContentEngine {
      */
     private void loadProperties() {
         JahiaContentManagementService.App.getInstance().getProperties(contentPath, getSelectedLanguage(), new BaseAsyncCallback<GWTJahiaGetPropertiesResult>() {
+
+            @Override
             public void onApplicationFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
             }
 
+            @Override
             public void onSuccess(GWTJahiaGetPropertiesResult result) {
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
@@ -196,6 +205,9 @@ public class EditContentEngine extends AbstractContentEngine {
     private void loadEngine() {
 
         JahiaContentManagementService.App.getInstance().initializeEditEngine(contentPath, true, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+
+            @Override
+            @SuppressWarnings("unchecked")
             public void onSuccess(GWTJahiaEditEngineInitBean result) {
                 if (closed) {
                     return;
@@ -253,9 +265,9 @@ public class EditContentEngine extends AbstractContentEngine {
                         setWorkInProgressLocales((List<String>)node.get("j:workInProgressLanguages"));
                     }
                     // update button
-                    for (BoxComponent saveButton : saveButtons) {
-                        if (saveButton instanceof WorkInProgressButton) {
-                             ((WorkInProgressButton) saveButton).updateButtonTitle();
+                    for (BoxComponent button : buttons) {
+                        if (button instanceof WorkInProgressButton) {
+                             ((WorkInProgressButton) button).updateButtonTitle();
                         }
                     }
                 }
@@ -285,6 +297,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 loaded();
             }
 
+            @Override
             public void onApplicationFailure(Throwable throwable) {
                 Log.debug("Cannot get properties", throwable);
                 Info.display(Messages.get("label.error", "Error"), throwable.getLocalizedMessage());
@@ -304,6 +317,7 @@ public class EditContentEngine extends AbstractContentEngine {
      *
      * @param previous
      */
+    @Override
     protected void onLanguageChange(GWTJahiaLanguage previous) {
         if (previous != null) {
             final String lang = previous.getLanguage();
@@ -329,8 +343,9 @@ public class EditContentEngine extends AbstractContentEngine {
         }
     }
 
+    @Override
     public void setButtonsEnabled(final boolean enabled) {
-        for (BoxComponent button : saveButtons) {
+        for (BoxComponent button : buttons) {
             button.setEnabled(enabled);
         }
     }

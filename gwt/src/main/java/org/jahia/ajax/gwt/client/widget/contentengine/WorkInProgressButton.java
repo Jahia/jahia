@@ -66,20 +66,20 @@ public class WorkInProgressButton extends Button {
     public void updateButtonTitle() {
         switch (engine.getWipStatus()) {
             case ALL_CONTENT:
-                setHtml(Messages.get("label.wip.engine.title.all", "All Content ( localised & non-localised )"));
+                setHtml(Messages.get("label.wip.engine.title.all", "All Content (localized & non-localized)"));
                 break;
             case LANGUAGES:
                 String title = Messages.get("label.wip.engine.title", "Work in progress:");
                 if (engine.getWorkInProgressLocales().size() == 1) {
                     String[] language = {resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(0))};
-                    setHtml(title + Messages.getWithArgs("label.wip.engine.title.one", "{0} ( excluding non-localised content )", language));
+                    setHtml(title + Messages.getWithArgs("label.wip.engine.title.one", "{0} (excluding non-localized content)", language));
                 } else if (engine.getWorkInProgressLocales().size() == 2) {
                     String[] languages = {resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(0)), resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(1))};
-                    setHtml(title + Messages.getWithArgs("label.wip.engine.title.two", "{0} and {1} ( excluding non-localised content )", languages));
+                    setHtml(title + Messages.getWithArgs("label.wip.engine.title.two", "{0} and {1} (excluding non-localized content)", languages));
 
                 } else if (engine.getWorkInProgressLocales().size() > 2) {
                     String[] params = {resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(0)), Integer.valueOf(engine.getWorkInProgressLocales().size()).toString()};
-                    setHtml(title + Messages.getWithArgs("label.wip.engine.title.more", "{0} and {1} more languages ( excluding non-localised content )", params));
+                    setHtml(title + Messages.getWithArgs("label.wip.engine.title.more", "{0} and {1} more languages (excluding non-localized content)", params));
                 }
                 break;
             case DISABLED:

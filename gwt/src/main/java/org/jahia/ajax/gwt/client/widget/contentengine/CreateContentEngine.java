@@ -115,6 +115,7 @@ public class CreateContentEngine extends AbstractContentEngine {
 
     }
 
+    @Override
     public void close() {
         super.close();
         container.closeEngine();
@@ -141,10 +142,11 @@ public class CreateContentEngine extends AbstractContentEngine {
     /**
      * init buttons
      */
+    @Override
     protected void initFooter() {
         for (ButtonItem buttonItem : config.getCreationButtons()) {
             BoxComponent button = buttonItem.create(this);
-            saveButtons.add(button);
+            buttons.add(button);
             buttonBar.add(button);
         }
         for (ButtonItem buttonItem : config.getCommonButtons()) {
@@ -168,6 +170,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      * on language chnage, fill currentAzble
      * @param previous
      */
+    @Override
     protected void onLanguageChange(GWTJahiaLanguage previous) {
 
         if (previous != null) {
@@ -191,6 +194,8 @@ public class CreateContentEngine extends AbstractContentEngine {
      */
     private void loadEngine() {
         JahiaContentManagementService.App.getInstance().initializeCreateEngine(nodeTypes.iterator().next().getName(), parentPath, targetName, new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
+
+            @Override
             public void onSuccess(GWTJahiaCreateEngineInitBean result) {
                 if (closed) {
                     return;
@@ -208,6 +213,8 @@ public class CreateContentEngine extends AbstractContentEngine {
                 initTabs();
 
                 tabs.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+                    @Override
                     public void handleEvent(ComponentEvent event) {
                         fillCurrentTab();
                     }
@@ -220,14 +227,16 @@ public class CreateContentEngine extends AbstractContentEngine {
                 loaded();
             }
 
+            @Override
             public void onApplicationFailure(Throwable caught) {
                 Log.error("Unable to load avalibale mixin", caught);
             }
         });
     }
 
+    @Override
     public void setButtonsEnabled(final boolean enabled) {
-        for (BoxComponent button : saveButtons) {
+        for (BoxComponent button : buttons) {
             button.setEnabled(enabled);
         }
     }

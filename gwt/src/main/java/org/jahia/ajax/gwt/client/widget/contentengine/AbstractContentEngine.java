@@ -92,7 +92,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected Linker linker = null;
     protected List<GWTJahiaNodeType> nodeTypes;
     protected List<GWTJahiaNodeType> mixin;
-    protected List<BoxComponent> saveButtons = new ArrayList<BoxComponent>();
+    protected List<BoxComponent> buttons = new ArrayList<BoxComponent>();
     protected Map<String, GWTChoiceListInitializer> choiceListInitializersValues;
     protected Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues;
     protected Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
@@ -112,7 +112,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected Map<String, Set<String>> referencesWarnings;
     protected GWTJahiaLanguage language;
     private List<String> workInProgressLocales = new ArrayList<String>();
-    private WipStatus wipStatus = WipStatus.DISABLED; // Default status is disabled
+    private WipStatus wipStatus = WipStatus.DISABLED;
     protected boolean closed = false;
 
     // general properties
@@ -164,6 +164,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         loading();
     }
 
+    @Override
     public void close() {
         closed = true;
     }
@@ -312,11 +313,14 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected void initChoiceListInitializer(final Field<?> dependentField, final String propertyId,
                                              final PropertiesEditor pe, final List<String> dependentProperties) {
         if (dependentField instanceof DualListField<?>) {
             ((DualListField<GWTJahiaValueDisplayBean>) dependentField).getToList().getStore()
                     .addStoreListener(new StoreListener<GWTJahiaValueDisplayBean>() {
+
+                        @Override
                         public void handleEvent(StoreEvent<GWTJahiaValueDisplayBean> event) {
                             refillDependantListWidgetOn(dependentField, propertyId,
                                     dependentProperties);
@@ -324,6 +328,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                     });
         } else {
             dependentField.addListener(Events.Change, new Listener<FieldEvent>() {
+
+                @Override
                 public void handleEvent(FieldEvent event) {
                     refillDependantListWidgetOn(dependentField, propertyId, dependentProperties);
                 }
@@ -357,6 +363,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
         JahiaContentManagementService.App.getInstance().getFieldInitializerValues(nodeTypeName, propertyName, parentPath,
                 dependentValues, new BaseAsyncCallback<GWTChoiceListInitializer>() {
+
+                    @Override
                     public void onSuccess(GWTChoiceListInitializer result) {
                         choiceListInitializersValues.put(propertyId, result);
                         if (result.getDisplayValues() != null) {
@@ -373,7 +381,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                             }
                                             if (propertyName.equals(field.getName()) || (field instanceof DualListField<?> && nameForDualFields.equals(field.getName()))) {
                                                 if (field instanceof DualListField<?>) {
-                                                    DualListField<GWTJahiaValueDisplayBean> dualListField = (DualListField<GWTJahiaValueDisplayBean>) field;
+                                                    @SuppressWarnings("unchecked") DualListField<GWTJahiaValueDisplayBean> dualListField = (DualListField<GWTJahiaValueDisplayBean>) field;
                                                     ListStore<GWTJahiaValueDisplayBean> store = dualListField.getToField().getStore();
                                                     for (GWTJahiaValueDisplayBean toValue : store.getModels()) {
                                                         if (!result.getDisplayValues()
@@ -388,7 +396,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                                     store.add(result.getDisplayValues());
                                                     dualListField.getFromField().getListView().refresh();
                                                 } else if (field instanceof ComboBox<?>) {
-                                                    ComboBox<GWTJahiaValueDisplayBean> comboBox = (ComboBox<GWTJahiaValueDisplayBean>) field;
+                                                    @SuppressWarnings("unchecked") ComboBox<GWTJahiaValueDisplayBean> comboBox = (ComboBox<GWTJahiaValueDisplayBean>) field;
                                                     if (comboBox.getValue() != null
                                                             && !result
                                                             .getDisplayValues()
@@ -415,6 +423,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                         }
                     }
 
+                    @Override
                     public void onApplicationFailure(Throwable caught) {
                         Log.error("Unable to load avalibale mixin", caught);
                     }
@@ -439,35 +448,42 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         getChangedI18NProperties().keySet().retainAll(editedLanguages);
     }
 
-
+    @Override
     public Linker getLinker() {
         return linker;
     }
 
+    @Override
     public List<GWTJahiaNodeType> getNodeTypes() {
         return nodeTypes;
     }
 
+    @Override
     public List<GWTJahiaNodeType> getMixin() {
         return mixin;
     }
 
+    @Override
     public Map<String, GWTChoiceListInitializer> getChoiceListInitializersValues() {
         return choiceListInitializersValues;
     }
 
+    @Override
     public Map<String, GWTJahiaNodeProperty> getProperties() {
         return properties;
     }
 
+    @Override
     public Map<String, GWTJahiaNodeProperty> getPresetProperties() {
         return presetProperties;
     }
 
+    @Override
     public GWTJahiaNode getNode() {
         return node;
     }
 
+    @Override
     public String getNodeName() {
         return nodeName;
     }
@@ -476,30 +492,37 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         this.nodeName = nodeName;
     }
 
+    @Override
     public String getDefaultLanguageCode() {
         return defaultLanguageCode;
     }
 
+    @Override
     public GWTJahiaNodeACL getAcl() {
         return acl;
     }
 
+    @Override
     public Map<String, Set<String>> getReferencesWarnings() {
         return referencesWarnings;
     }
 
+    @Override
     public GWTJahiaNode getTargetNode() {
         return targetNode;
     }
 
+    @Override
     public boolean isExistingNode() {
         return existingNode;
     }
 
+    @Override
     public boolean isMultipleSelection() {
         return false;
     }
 
+    @Override
     public List<GWTJahiaNode> getNodes() {
         return Arrays.asList(node);
     }
@@ -544,6 +567,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return parentPath;
     }
 
+    @Override
     public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDefaultValues() {
         return defaultValues;
     }

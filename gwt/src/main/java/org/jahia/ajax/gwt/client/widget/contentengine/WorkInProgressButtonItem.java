@@ -57,7 +57,6 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
-
 /**
  * Button Item to handle work in progress in edit engine
  */
@@ -133,8 +132,9 @@ public class WorkInProgressButtonItem implements ButtonItem {
                             }
                     }
                     // fill languages
-                    for (Field language : languages.getAll()) {
-                        language.setValue(engine.getWorkInProgressLocales().contains(((CheckBox) language).getValueAttribute()));
+                    for (Field<?> field : languages.getAll()) {
+                        CheckBox language = (CheckBox) field;
+                        language.setValue(engine.getWorkInProgressLocales().contains(language.getValueAttribute()));
                     }
                     // set languages
                     if (turnOff.getValue() || allContents.getValue()) {
@@ -149,7 +149,9 @@ public class WorkInProgressButtonItem implements ButtonItem {
             vp.setSpacing(10);
             Html title = new Html(Messages.get("label.wip.title.sub", "Select what you would like to mark as Work in Progress"));
             vp.add(title);
+
             allContents.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
                 @Override
                 public void handleEvent(BaseEvent be) {
                     languages.disable();
@@ -157,9 +159,11 @@ public class WorkInProgressButtonItem implements ButtonItem {
             });
             allContents.setBoxLabel(Messages.get("label.wip.allcontent", "All Content ( localised & non-localised )"));
             allContents.setToolTip(Messages.get("label.wip.allcontent.helper", "All Content helper text. Find out more at The Academy"));
+
             selectedLanguages.setBoxLabel(Messages.get("label.wip.localisedcontent", "Localised Content only"));
             selectedLanguages.setToolTip(Messages.get("label.wip.localisedcontent.helper", "Localised Content helper text. Find out more at The Academy"));
             selectedLanguages.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
                 @Override
                 public void handleEvent(BaseEvent be) {
                     languages.enable();
@@ -169,11 +173,13 @@ public class WorkInProgressButtonItem implements ButtonItem {
             turnOff.setBoxLabel(Messages.get("label.wip.turnoff", "Turn off Work in Progress"));
             turnOff.setToolTip(Messages.get("label.wip.turnoff.helper", "Turn off helper text. Find out more at The Academy"));
             turnOff.addListener(Events.OnClick, new Listener<BaseEvent>() {
+
                 @Override
                 public void handleEvent(BaseEvent be) {
                     languages.disable();
                 }
             });
+
             vp.add(allContents);
             if (JahiaGWTParameters.getSiteLanguages().size() > 1) {
                 vp.add(selectedLanguages);
@@ -191,12 +197,15 @@ public class WorkInProgressButtonItem implements ButtonItem {
             add(vp);
 
             addButton(new Button(Messages.get("label.cancel", "Cancel"), new SelectionListener<ButtonEvent>() {
+
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     hide();
                 }
             }));
+
             addButton(new Button(Messages.get("label.save", "Save"), new SelectionListener<ButtonEvent>() {
+
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                     // check for languages
@@ -219,7 +228,9 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     hide();
                 }
             }));
+
             setFocusWidget(getButtonBar().getItem(0));
+
             wipButton.updateButtonTitle();
         }
     }

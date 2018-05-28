@@ -204,8 +204,10 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
     }
 
     protected boolean isWorkInProgress(GWTJahiaNode gwtJahiaNode) {
-        return gwtJahiaNode != null && gwtJahiaNode.get("j:workInProgressStatus") != null && (String) gwtJahiaNode.get
-                ("j:workInProgressStatus") != "DISABLED" && !gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletion");
+        return gwtJahiaNode != null
+           && gwtJahiaNode.get("j:workInProgressStatus") != null
+           && !((String) gwtJahiaNode.get("j:workInProgressStatus")).equals("DISABLED")
+           && !gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletion");
     }
 
     /**

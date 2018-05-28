@@ -928,7 +928,6 @@ class NodeHelper {
             if (node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
                 setPropertyValue(n, node.getProperty(Constants.WORKINPROGRESS_STATUS), node.getSession());
             }
-
             if (node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES)) {
                 setPropertyValue(n, node.getProperty(Constants.WORKINPROGRESS_LANGUAGES), node.getSession());
             }

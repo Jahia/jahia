@@ -1162,23 +1162,16 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            try {
-                if (node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
-                    if (node.getProperty(Constants.WORKINPROGRESS_STATUS).getString().equalsIgnoreCase(Constants.WORKINPROGRESS_ALLCONTENT)) {
-                        info.setWorkInProgress(true);
-                        wipAllContent = true;
-                    } else if (node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES) && node.getProperty(Constants.WORKINPROGRESS_STATUS).getString().equalsIgnoreCase(Constants.WORKINPROGRESS_LANG)) {
-                        for (JCRValueWrapper value : node.getProperty(Constants.WORKINPROGRESS_LANGUAGES).getValues()) {
-                            wipLanguages.add(value.getString());
-                        }
-                    } else if (node.getProperty(Constants.WORKINPROGRESS_STATUS).getString().equalsIgnoreCase(Constants.WORKINPROGRESS_LANG)
-                            && (!node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES)
-                            || node.getProperty(Constants.WORKINPROGRESS_LANGUAGES) == null)) {
-                        throw new ItemNotFoundException("property j:workInProgressLanguages is empty");
+            if (node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
+                String wipStatus = node.getProperty(Constants.WORKINPROGRESS_STATUS).getString();
+                if (wipStatus.equals(Constants.WORKINPROGRESS_ALLCONTENT)) {
+                    info.setWorkInProgress(true);
+                    wipAllContent = true;
+                } else if (wipStatus.equals(Constants.WORKINPROGRESS_LANG)) {
+                    for (JCRValueWrapper value : node.getProperty(Constants.WORKINPROGRESS_LANGUAGES).getValues()) {
+                        wipLanguages.add(value.getString());
                     }
                 }
-            } catch (ItemNotFoundException e){
-                logger.debug("property j:workInProgressLanguages is not properly set or empty");
             }
 
             info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet()));

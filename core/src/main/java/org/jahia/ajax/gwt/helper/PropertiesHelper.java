@@ -346,7 +346,10 @@ public class PropertiesHelper {
                 jcrNode.setProperty(Constants.WORKINPROGRESS_STATUS, status.get());
             }
         }
-        jcrNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES,  languages.toArray(new String[languages.size()]));
+        // Set languages only if languages not is empty and no languages have not be removed
+        if (!(languages.isEmpty() && removedLanguages.isEmpty())) {
+            jcrNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES, languages.toArray(new String[languages.size()]));
+        }
         jcrNode.getSession().save();
     }
 

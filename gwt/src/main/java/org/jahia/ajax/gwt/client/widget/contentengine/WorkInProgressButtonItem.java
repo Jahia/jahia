@@ -151,7 +151,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
             vp.add(title);
 
             allContents.addListener(Events.OnClick, new Listener<BaseEvent>() {
-
                 @Override
                 public void handleEvent(BaseEvent be) {
                     languages.disable();
@@ -163,7 +162,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
             selectedLanguages.setBoxLabel(Messages.get("label.wip.localisedcontent", "Localised Content only"));
             selectedLanguages.setToolTip(Messages.get("label.wip.localisedcontent.helper", "Localised Content helper text. Find out more at The Academy"));
             selectedLanguages.addListener(Events.OnClick, new Listener<BaseEvent>() {
-
                 @Override
                 public void handleEvent(BaseEvent be) {
                     languages.enable();
@@ -173,7 +171,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
             turnOff.setBoxLabel(Messages.get("label.wip.turnoff", "Turn off Work in Progress"));
             turnOff.setToolTip(Messages.get("label.wip.turnoff.helper", "Turn off helper text. Find out more at The Academy"));
             turnOff.addListener(Events.OnClick, new Listener<BaseEvent>() {
-
                 @Override
                 public void handleEvent(BaseEvent be) {
                     languages.disable();
@@ -208,6 +205,8 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
                 @Override
                 public void componentSelected(ButtonEvent ce) {
+                    // Save WIP only if necessary
+                    engine.setSaveWIP(true);
                     // check for languages
                     if (selectedLanguages.getValue() && languages.getValues().size() < 1) {
                         // error
@@ -215,10 +214,16 @@ public class WorkInProgressButtonItem implements ButtonItem {
                         return;
                     }
                     // save wip window data to the engine
-                    engine.setWipStatus(allContents.getValue() ?
-                            AbstractContentEngine.WipStatus.ALL_CONTENT : selectedLanguages.getValue() ?
-                            AbstractContentEngine.WipStatus.LANGUAGES : AbstractContentEngine.WipStatus.DISABLED);
-                    engine.getWorkInProgressLocales().clear();
+
+                    if (allContents.getValue()) {
+                        engine.setWipStatus(AbstractContentEngine.WipStatus.ALL_CONTENT);
+                    } else if (selectedLanguages.getValue()) {
+                        engine.setWipStatus(AbstractContentEngine.WipStatus.LANGUAGES);
+                    } else if (turnOff.getValue()) {
+                        engine.setWipStatus(AbstractContentEngine.WipStatus.DISABLED);
+                    } else {
+                        throw new IllegalArgumentException("unable to set WIP status");
+                    }
                     for (CheckBox language : languages.getValues()) {
                         if (language.getValue()) {
                             engine.addWorkInProgressLocale(language.getValueAttribute());

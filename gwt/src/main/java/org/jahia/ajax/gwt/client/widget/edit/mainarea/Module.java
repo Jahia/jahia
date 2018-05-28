@@ -51,6 +51,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.Constants;
 
 import java.util.List;
 import java.util.Map;
@@ -251,11 +252,21 @@ public abstract class Module extends LayoutContainer {
             overlayLabel.setStyleName("deleted-overlay");
             opacity = "0.4";
             overlayColorText = "#f00";
-        } else if (node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress")) {
-            overlayLabel = new HTML(Messages.get("label.workInProgress", "work in progress"));
-            overlayLabel.setStyleName("workinprogress-overlay");
-            opacity = "0.6";
-            overlayColorText = "#39f";
+        } else if (node.get("j:workInProgressStatus") != null && !node.get("j:workInProgressStatus").equals("DISABLED")) {
+            if(node.get("j:workInProgressStatus").equals("ALL_CONTENT")) {
+                overlayLabel = new HTML(Messages.get("label.workInProgress", "work in progress"));
+                overlayLabel.setStyleName("workinprogress-overlay");
+                opacity = "0.6";
+                overlayColorText = "#39f";
+            } else if(node.get("j:workInProgressStatus").equals("LANGUAGES") && node.get("j:workInProgressLanguages") != null) {
+                String wipLanguages = node.getProperties().get("j:workInProgressLanguages").toString();
+                if(wipLanguages.contains(node.getLanguageCode())) {
+                    overlayLabel = new HTML(Messages.get("label.workInProgress", "work in progress"));
+                    overlayLabel.setStyleName("workinprogress-overlay");
+                    opacity = "0.6";
+                    overlayColorText = "#39f";
+                }
+            }
         }
     }
 

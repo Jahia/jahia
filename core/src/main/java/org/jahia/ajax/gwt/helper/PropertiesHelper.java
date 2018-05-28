@@ -285,9 +285,11 @@ public class PropertiesHelper {
     }
 
     /**
-     *
-     * @param node
-     * @param props
+     * Save WIP settings, this method must be call to the these settings as it uses a JCR session to prevent content
+     * metadata to be updated.
+     * This method also check that the user has enough privileges to update the properties.
+     * @param node the node on witch the WIP properties will be set
+     * @param props the WIP data from the UI.
      * @throws RepositoryException
      */
     public void saveWorkInProgress(JCRNodeWrapper node, List<GWTJahiaNodeProperty> props) throws RepositoryException {

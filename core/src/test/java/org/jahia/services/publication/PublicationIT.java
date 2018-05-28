@@ -50,12 +50,7 @@ import javax.jcr.*;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.PublicationInfo;
-import org.jahia.services.content.PublicationInfoNode;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.framework.AbstractJUnitTest;
 import org.jahia.test.utils.TestHelper;
@@ -618,7 +613,9 @@ public class PublicationIT extends AbstractJUnitTest {
     public void testWorkInProgressStatus() throws RepositoryException {
         JCRNodeWrapper list = TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        editTextNode1.setProperty("j:workInProgress",Boolean.TRUE);
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS,Constants.WORKINPROGRESS_LANG);
+        String[] langs = new String[]{"en"};
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_LANGUAGES, langs);
         englishEditSession.save();
         getCleanSession();
         HashSet<String> languages = new HashSet<String>(Arrays.asList("en"));
@@ -644,7 +641,7 @@ public class PublicationIT extends AbstractJUnitTest {
         englishEditSession.save();
         getCleanSession();
         infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
-        assertEquals("Invalid 'work in progress' info for content", false, getWipFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid 'work in progress' info for content", true, getWipFor(infos, editTextNode1.getIdentifier()));
 
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
         editTextNode1.unmarkForDeletion();
@@ -654,7 +651,7 @@ public class PublicationIT extends AbstractJUnitTest {
         assertEquals("Invalid 'work in progress' info for content", true, getWipFor(infos, editTextNode1.getIdentifier()));
 
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        editTextNode1.setProperty("j:workInProgress",Boolean.FALSE);
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_DISABLED);
         englishEditSession.save();
 
         getCleanSession();
@@ -664,6 +661,47 @@ public class PublicationIT extends AbstractJUnitTest {
         assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
         assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
         assertEquals("Invalid 'work in progress' info for content", false, getWipFor(infos, editTextNode1.getIdentifier()));
+
+        //add keywords, publish then put a work in progress in english, and modify the keywords
+        editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_DISABLED);
+        editTextNode1.addMixin("jmix:keywords");
+        editTextNode1.setProperty("j:keywords", new String[]{"Hello, Bonjour"});
+        englishEditSession.save();
+        getCleanSession();
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, true,
+                null);
+
+        infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE,
+                Constants.LIVE_WORKSPACE);
+
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED, getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid 'work in progress' info for content", false, getWipFor(infos, editTextNode1.getIdentifier()));
+
+        editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_LANG);
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_LANGUAGES, new String[]{"en"});
+        editTextNode1.setProperty("j:keywords", new String[]{"Hello1, Bonjour1"});
+        englishEditSession.save();
+        getCleanSession();
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, true,
+                null);
+
+        infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, true, Constants.EDIT_WORKSPACE,
+                Constants.LIVE_WORKSPACE);
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED, getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.MODIFIED, getStatusFor(infos, editTextNode1.getIdentifier()));
+
+
+        getCleanSession();
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, new HashSet<String>
+                (Arrays.asList("en", "fr")), true, null);
+
+        editTextNode1 = englishLiveSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
+        String keywords = editTextNode1.getPropertiesAsString().get("j:keywords");
+        assertEquals(true, keywords.contains("Hello"));
+        assertEquals(true, keywords.contains("Bonjour"));
     }
 
     private void testNodeInWorkspace(JCRSessionWrapper sessionWrapper, String absoluteNodePath, String failureMessage)

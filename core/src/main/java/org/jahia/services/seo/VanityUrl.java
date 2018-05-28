@@ -44,8 +44,6 @@
 package org.jahia.services.seo;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.io.Serializable;
@@ -86,7 +84,7 @@ public class VanityUrl implements Serializable {
      */
     public VanityUrl(String url, String site, String language) {
         super();
-        this.url = StringUtils.stripEnd(StringUtils.startsWith(url, "/") ? url : '/' + url, "/");
+        setUrl(url);
         this.site = site;
         this.language = language;
     }
@@ -118,6 +116,16 @@ public class VanityUrl implements Serializable {
      * @param url the vanity URL
      */
     public void setUrl(String url) {
+        // we strip excessive slashes from the URL mapping and add a leading one if it does not present
+        url = StringUtils.stripEnd(url, "/");
+        if (url != null) {
+            // this check is here to avoid unneeded string creation
+            if (url.length() > 1 && (url.charAt(0) == '/' && url.charAt(1) == '/')) {
+                url = '/' + StringUtils.stripStart(url, "/");
+            } else {
+                url = url.length() > 0 && url.charAt(0) != '/' ? '/' + url : url;
+            }
+        }
         this.url = url;
     }
 

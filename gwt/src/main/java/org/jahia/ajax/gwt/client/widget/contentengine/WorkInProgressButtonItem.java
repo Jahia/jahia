@@ -231,8 +231,8 @@ public class WorkInProgressButtonItem implements ButtonItem {
                         if (language.getValue()) {
                             langs.add(language.getValueAttribute());
                         }
-                        engine.setWorkInProgressLanguages(langs);
                     }
+                    engine.setWorkInProgressLanguages(langs);
                     wipButton.updateButtonTitle();
                     hide();
                 }

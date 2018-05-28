@@ -48,6 +48,8 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
+import java.util.Iterator;
+
 /**
  * Button used for work in progress button item.
  */
@@ -70,15 +72,16 @@ public class WorkInProgressButton extends Button {
                 break;
             case LANGUAGES:
                 String title = Messages.get("label.wip.engine.title", "Work in progress:");
-                if (engine.getWorkInProgressLocales().size() == 1) {
-                    String[] language = {resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(0))};
+                Iterator<String> languagesIt = engine.getWorkInProgressLanguages().iterator();
+                if (engine.getWorkInProgressLanguages().size() == 1) {
+                    String[] language = {resolveLanguageDisplayName(languagesIt.next())};
                     setHtml(title + Messages.getWithArgs("label.wip.engine.title.one", "{0} (excluding non-localized content)", language));
-                } else if (engine.getWorkInProgressLocales().size() == 2) {
-                    String[] languages = {resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(0)), resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(1))};
+                } else if (engine.getWorkInProgressLanguages().size() == 2) {
+                    String[] languages = {resolveLanguageDisplayName(languagesIt.next()), resolveLanguageDisplayName(languagesIt.next())};
                     setHtml(title + Messages.getWithArgs("label.wip.engine.title.two", "{0} and {1} (excluding non-localized content)", languages));
 
-                } else if (engine.getWorkInProgressLocales().size() > 2) {
-                    String[] params = {resolveLanguageDisplayName(engine.getWorkInProgressLocales().get(0)), Integer.valueOf(engine.getWorkInProgressLocales().size()).toString()};
+                } else if (engine.getWorkInProgressLanguages().size() > 2) {
+                    String[] params = {resolveLanguageDisplayName(languagesIt.next()), Integer.valueOf(engine.getWorkInProgressLanguages().size() - 1).toString()};
                     setHtml(title + Messages.getWithArgs("label.wip.engine.title.more", "{0} and {1} more languages (excluding non-localized content)", params));
                 }
                 break;

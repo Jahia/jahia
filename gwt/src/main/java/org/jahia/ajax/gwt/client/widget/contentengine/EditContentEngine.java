@@ -69,10 +69,7 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Content editing widget.
@@ -262,7 +259,11 @@ public class EditContentEngine extends AbstractContentEngine {
                     setWipStatus(WipStatus.valueOf((String) node.get("j:workInProgressStatus")));
                     // set languages
                     if (node.get("j:workInProgressLanguages") != null) {
-                        setWorkInProgressLocales((List<String>)node.get("j:workInProgressLanguages"));
+                        HashSet<String> languages = new HashSet<String>();
+                        for (String lang : (List<String>) node.get("j:workInProgressLanguages")) {
+                            languages.add(lang);
+                        }
+                        setWorkInProgressLanguages(languages);
                     }
                     // update button
                     for (BoxComponent button : buttons) {

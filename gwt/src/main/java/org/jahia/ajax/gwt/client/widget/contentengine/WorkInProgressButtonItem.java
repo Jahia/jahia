@@ -57,6 +57,8 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
+import java.util.HashSet;
+
 /**
  * Button Item to handle work in progress in edit engine
  */
@@ -134,7 +136,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     // fill languages
                     for (Field<?> field : languages.getAll()) {
                         CheckBox language = (CheckBox) field;
-                        language.setValue(engine.getWorkInProgressLocales().contains(language.getValueAttribute()));
+                        language.setValue(engine.getWorkInProgressLanguages().contains(language.getValueAttribute()));
                     }
                     // set languages
                     if (turnOff.getValue() || allContents.getValue()) {
@@ -224,10 +226,12 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     } else {
                         throw new IllegalArgumentException("unable to set WIP status");
                     }
+                    HashSet<String> langs = new HashSet<String>();
                     for (CheckBox language : languages.getValues()) {
                         if (language.getValue()) {
-                            engine.addWorkInProgressLocale(language.getValueAttribute());
+                            langs.add(language.getValueAttribute());
                         }
+                        engine.setWorkInProgressLanguages(langs);
                     }
                     wipButton.updateButtonTitle();
                     hide();

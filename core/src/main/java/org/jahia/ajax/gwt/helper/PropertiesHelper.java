@@ -314,10 +314,11 @@ public class PropertiesHelper {
             }
         }
         // remove existing languages
+        Set<String> newLanguages = new HashSet<>(languages);
         Set<String> removedLanguages = new HashSet<>();
         if (node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES)) {
             for (JCRValueWrapper lang : node.getProperty(Constants.WORKINPROGRESS_LANGUAGES).getValues()) {
-                if (!languages.remove(lang.getString())) {
+                if (!newLanguages.remove(lang.getString())) {
                     // if language cannot be removed from existing languages, it means that it has been removed from the UI
                     removedLanguages.add(lang.getString());
                 };

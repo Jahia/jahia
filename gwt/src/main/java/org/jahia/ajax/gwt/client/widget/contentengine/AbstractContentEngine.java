@@ -111,7 +111,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected GWTJahiaNodeACL acl;
     protected Map<String, Set<String>> referencesWarnings;
     protected GWTJahiaLanguage language;
-    private List<String> workInProgressLocales = new ArrayList<String>();
+    private Set<String> workInProgressLanguages = new HashSet<String>();
     private boolean saveWIP;
     private WipStatus wipStatus = WipStatus.DISABLED;
     protected boolean closed = false;
@@ -581,16 +581,12 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return wipStatus;
     }
 
-    public void addWorkInProgressLocale(String locale) {
-        workInProgressLocales.add(locale);
+    public Set<String> getWorkInProgressLanguages() {
+        return Collections.unmodifiableSet(workInProgressLanguages);
     }
 
-    public List<String> getWorkInProgressLocales() {
-        return Collections.unmodifiableList(workInProgressLocales);
-    }
-
-    public void setWorkInProgressLocales(List<String> workInProgressLocales) {
-        this.workInProgressLocales = workInProgressLocales;
+    public void setWorkInProgressLanguages(Set<String> workInProgressLocales) {
+        this.workInProgressLanguages = workInProgressLocales;
     }
 
     public void setSaveWIP(boolean saveWIP) {
@@ -600,7 +596,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     public void setWorkInProgressProperties() {
         if (saveWIP && isNodeOfJmixLastPublishedType()) {
             Set<GWTJahiaNodePropertyValue> languages = new HashSet<GWTJahiaNodePropertyValue>();
-            for (String locale : workInProgressLocales) {
+            for (String locale : workInProgressLanguages) {
                 languages.add(new GWTJahiaNodePropertyValue(locale));
             }
             GWTJahiaNodeProperty wipLocalesProperty = new GWTJahiaNodeProperty();

@@ -1116,7 +1116,7 @@ public class JCRPublicationService extends JahiaService {
                                                    List<PublicationInfo> infos, PublicationInfo currentPublicationInfo) throws
             RepositoryException {
 
-        String[] wipLanguages = null;
+        Set<String> wipLanguages = new HashSet<>();
         boolean wipAllContent = false;
         PublicationInfoNode info = null;
         final String uuid = node.getIdentifier();
@@ -1168,7 +1168,9 @@ public class JCRPublicationService extends JahiaService {
                         info.setWorkInProgress(true);
                         wipAllContent = true;
                     } else if (node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES) && node.getProperty(Constants.WORKINPROGRESS_STATUS).getString().equalsIgnoreCase(Constants.WORKINPROGRESS_LANG)) {
-                        wipLanguages = node.getPropertiesAsString().get(Constants.WORKINPROGRESS_LANGUAGES).split(" ");
+                        for (JCRValueWrapper value : node.getProperty(Constants.WORKINPROGRESS_LANGUAGES).getValues()) {
+                            wipLanguages.add(value.getString());
+                        }
                     } else if (node.getProperty(Constants.WORKINPROGRESS_STATUS).getString().equalsIgnoreCase(Constants.WORKINPROGRESS_LANG)
                             && (!node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES)
                             || node.getProperty(Constants.WORKINPROGRESS_LANGUAGES) == null)) {
@@ -1238,7 +1240,7 @@ public class JCRPublicationService extends JahiaService {
                                         sourceSession, destinationSession, infosMap, infos, currentPublicationInfo);
                         info.addChild(child);
 
-                        if (wipAllContent || (wipLanguages != null && Arrays.asList(wipLanguages).contains(translationLanguage))) {
+                        if (wipAllContent || (wipLanguages != null && wipLanguages.contains(translationLanguage))) {
                             info.getChildren().clear();
                             info.getReferences().clear();
                             info.addChild(child);

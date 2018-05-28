@@ -243,6 +243,9 @@ public class TranslateContentEngine extends Window {
             List<GWTJahiaNodePropertyValue> languages = new LinkedList<GWTJahiaNodePropertyValue>();
             boolean saveWip = false;
             List<String> currentLanguages = node.get("j:workInProgressLanguages");
+            if (currentLanguages == null) {
+                currentLanguages = new ArrayList<String>();
+            }
             for (String locale : workInProgressByLocale) {
                 saveWip |= !currentLanguages.contains(locale);
                 languages.add(new GWTJahiaNodePropertyValue(locale));

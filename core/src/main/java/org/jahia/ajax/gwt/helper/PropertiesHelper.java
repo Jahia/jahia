@@ -348,7 +348,7 @@ public class PropertiesHelper {
         }
         // Set languages only if languages not is empty and no languages have not be removed
         if (!(languages.isEmpty() && removedLanguages.isEmpty())) {
-            jcrNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES, languages.toArray(new String[languages.size()]));
+            jcrNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES, languages.toArray(new String[0]));
         }
         jcrNode.getSession().save();
     }

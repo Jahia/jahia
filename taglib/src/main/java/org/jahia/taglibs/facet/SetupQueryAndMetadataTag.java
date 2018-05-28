@@ -72,6 +72,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
     private JCRNodeWrapper boundComponent;
     private QueryObjectModel existing;
     private Map<String, List<KeyValue>> activeFacets;
+    private static final String currentFacetKey = "currentIndexFacetKey";
     private String var;
 
     public void setBoundComponent(JCRNodeWrapper boundComponent) {
@@ -163,7 +164,15 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                 final String queryProperty = isQuery ? facet.getPropertyAsString("query") : null;
 
                 // key used in metadata maps
-                final String facetIdentifier = StringUtils.replace(facet.getIdentifier(), "-", "");
+                // get current keys from the query
+                Integer facetKey = (Integer) pageContext.getRequest().getAttribute(currentFacetKey);
+                if (facetKey == null) {
+                    facetKey = 1;
+                } else {
+                    facetKey ++;
+                }
+                final String facetIdentifier = currentFacetKey + facetKey;
+                pageContext.getRequest().setAttribute(currentFacetKey, facetKey);
                 final String metadataKey = isQuery ? queryProperty  :
                         facet.isNodeType("jnt:fieldFacet") ? facetIdentifier : facetPropertyName;
 

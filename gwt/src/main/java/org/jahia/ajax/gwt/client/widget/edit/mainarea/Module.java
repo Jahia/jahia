@@ -252,17 +252,11 @@ public abstract class Module extends LayoutContainer {
             overlayColorText = "#f00";
         } else if (node.get("j:workInProgressStatus") != null && !node.get("j:workInProgressStatus").equals("DISABLED")) {
             if (node.get("j:workInProgressStatus").equals("ALL_CONTENT")) {
-                overlayLabel = new HTML(Messages.get("label.workInProgress", "work in progress"));
-                overlayLabel.setStyleName("workinprogress-overlay");
-                opacity = "0.6";
-                overlayColorText = "#39f";
+                applyWipOverlay();
             } else if (node.get("j:workInProgressStatus").equals("LANGUAGES") && node.get("j:workInProgressLanguages") != null) {
                 String wipLanguages = node.getProperties().get("j:workInProgressLanguages").toString();
                 if (wipLanguages.contains(node.getLanguageCode())) {
-                    overlayLabel = new HTML(Messages.get("label.workInProgress", "work in progress"));
-                    overlayLabel.setStyleName("workinprogress-overlay");
-                    opacity = "0.6";
-                    overlayColorText = "#39f";
+                    applyWipOverlay();
                 }
             }
         }
@@ -315,5 +309,12 @@ public abstract class Module extends LayoutContainer {
 
     public Element getInnerElement() {
         return html.getElement();
+    }
+
+    public void applyWipOverlay(){
+        overlayLabel = new HTML(Messages.get("label.workInProgress", "work in progress"));
+        overlayLabel.setStyleName("workinprogress-overlay");
+        opacity = "0.6";
+        overlayColorText = "#39f";
     }
 }

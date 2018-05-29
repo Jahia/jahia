@@ -314,11 +314,10 @@ public class PropertiesHelper {
             }
         }
         // remove existing languages
-        Set<String> newLanguages = new HashSet<>(languages);
         Set<String> removedLanguages = new HashSet<>();
         if (node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES)) {
             for (JCRValueWrapper lang : node.getProperty(Constants.WORKINPROGRESS_LANGUAGES).getValues()) {
-                if (!newLanguages.remove(lang.getString())) {
+                if (!languages.contains(lang.getString())) {
                     // if language cannot be removed from existing languages, it means that it has been removed from the UI
                     removedLanguages.add(lang.getString());
                 };
@@ -347,10 +346,8 @@ public class PropertiesHelper {
                 jcrNode.setProperty(Constants.WORKINPROGRESS_STATUS, status.get());
             }
         }
-        // Set languages only if languages not is empty and no languages have not be removed
-        if (!(languages.isEmpty() && removedLanguages.isEmpty())) {
-            jcrNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES, languages.toArray(new String[0]));
-        }
+
+        jcrNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES, languages.toArray(new String[0]));
         jcrNode.getSession().save();
     }
 

@@ -51,7 +51,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.Constants;
 
 import java.util.List;
 import java.util.Map;
@@ -69,7 +68,7 @@ public abstract class Module extends LayoutContainer {
     protected String scriptInfo;
     protected String sourceInfo;
     protected String headerText;
-    protected Map<String,List<String>> moduleParams;
+    protected Map<String, List<String>> moduleParams;
     protected Module parentModule;
     protected MainModule mainModule;
     protected String nodeTypes;
@@ -85,7 +84,6 @@ public abstract class Module extends LayoutContainer {
     protected HTML overlayLabel = null;
     protected String opacity = "";
     protected String overlayColorText = "";
-
 
     public Module() {
         super();
@@ -160,14 +158,14 @@ public abstract class Module extends LayoutContainer {
     }
 
     /**
-     * Callback that is executed when the DOM module for this module is parsed. 
+     * Callback that is executed when the DOM module for this module is parsed.
      */
     public void onParsed() {
         // will be overridden in sub-classes
     }
 
     /**
-     * Callback that is executed when the required node types are loaded from the server for this module. 
+     * Callback that is executed when the required node types are loaded from the server for this module.
      */
     public void onNodeTypesLoaded() {
         // will be overridden in sub-classes
@@ -253,14 +251,14 @@ public abstract class Module extends LayoutContainer {
             opacity = "0.4";
             overlayColorText = "#f00";
         } else if (node.get("j:workInProgressStatus") != null && !node.get("j:workInProgressStatus").equals("DISABLED")) {
-            if(node.get("j:workInProgressStatus").equals("ALL_CONTENT")) {
+            if (node.get("j:workInProgressStatus").equals("ALL_CONTENT")) {
                 overlayLabel = new HTML(Messages.get("label.workInProgress", "work in progress"));
                 overlayLabel.setStyleName("workinprogress-overlay");
                 opacity = "0.6";
                 overlayColorText = "#39f";
-            } else if(node.get("j:workInProgressStatus").equals("LANGUAGES") && node.get("j:workInProgressLanguages") != null) {
+            } else if (node.get("j:workInProgressStatus").equals("LANGUAGES") && node.get("j:workInProgressLanguages") != null) {
                 String wipLanguages = node.getProperties().get("j:workInProgressLanguages").toString();
-                if(wipLanguages.contains(node.getLanguageCode())) {
+                if (wipLanguages.contains(node.getLanguageCode())) {
                     overlayLabel = new HTML(Messages.get("label.workInProgress", "work in progress"));
                     overlayLabel.setStyleName("workinprogress-overlay");
                     opacity = "0.6";

@@ -159,7 +159,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
                 @Override
                 public void handleEvent(BaseEvent be) {
                     errorLanguages.hide();
-                    languages.markInvalid();
                     vpLanguages.removeStyleName("error-languages");
                 }
             });

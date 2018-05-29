@@ -116,11 +116,14 @@ public final class CacheHelper {
         }
         
         if (propagateInCluster) {
-            // we use special sync cache here to let other cluster nodes know that they need to flush caches
-            // this "event" is handled in org.jahia.services.cache.ehcache.FlushCacheEventListener
-            ModuleCacheProvider.getInstance().getSyncCache().put(new Element("FLUSH_ALL_CACHES",
-                    // Create an empty CacheClusterEvent to flush caches right away (not correlated to any JCR event)
-                    new CacheClusterEvent("", Long.MIN_VALUE)));
+            Cache syncCache = ModuleCacheProvider.getInstance().getSyncCache();
+            if (syncCache != null) {
+                // we use special sync cache here to let other cluster nodes know that they need to flush caches
+                // this "event" is handled in org.jahia.services.cache.ehcache.FlushCacheEventListener
+                ModuleCacheProvider.getInstance().getSyncCache().put(new Element("FLUSH_ALL_CACHES",
+                        // Create an empty CacheClusterEvent to flush caches right away (not correlated to any JCR event)
+                        new CacheClusterEvent("", Long.MIN_VALUE)));
+            }
         }
 
         logger.info("...done flushing all caches.");
@@ -218,9 +221,12 @@ public final class CacheHelper {
     }
 
     private static void flushOutputCachesCluster() {
-        ModuleCacheProvider.getInstance().getSyncCache().put(new Element("FLUSH_OUTPUT_CACHES",
-                // Create an empty CacheClusterEvent to flush caches right away (not correlated to any JCR event)
-                new CacheClusterEvent("",Long.MIN_VALUE)));
+        Cache syncCache = ModuleCacheProvider.getInstance().getSyncCache();
+        if (syncCache != null) {
+            syncCache.put(new Element("FLUSH_OUTPUT_CACHES",
+                    // Create an empty CacheClusterEvent to flush caches right away (not correlated to any JCR event)
+                    new CacheClusterEvent("",Long.MIN_VALUE)));
+        }
     }
 
     public static void flushOutputCachesForPath(String path, boolean flushSubtree) {

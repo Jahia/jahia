@@ -311,7 +311,7 @@ public abstract class Module extends LayoutContainer {
         return html.getElement();
     }
 
-    public void applyWipOverlay(){
+    private void applyWipOverlay() {
         overlayLabel = new HTML(Messages.get("label.workInProgress", "work in progress"));
         overlayLabel.setStyleName("workinprogress-overlay");
         opacity = "0.6";

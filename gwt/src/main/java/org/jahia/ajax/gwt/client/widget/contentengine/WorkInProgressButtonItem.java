@@ -226,8 +226,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
                 @Override
                 public void componentSelected(ButtonEvent ce) {
-                    // Save WIP only if necessary
-                    engine.setSaveWIP(true);
                     // check for languages
                     if (selectedLanguages.getValue() && languages.getValues().size() < 1) {
                         // error

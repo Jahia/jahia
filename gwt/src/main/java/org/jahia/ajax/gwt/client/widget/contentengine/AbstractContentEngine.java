@@ -111,9 +111,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected GWTJahiaNodeACL acl;
     protected Map<String, Set<String>> referencesWarnings;
     protected GWTJahiaLanguage language;
-    private Set<String> workInProgressLanguages = new HashSet<String>();
+    protected Set<String> workInProgressLanguages = new HashSet<String>();
+    protected WipStatus wipStatus = WipStatus.DISABLED;
     private boolean saveWIP;
-    private WipStatus wipStatus = WipStatus.DISABLED;
     protected boolean closed = false;
 
     // general properties
@@ -574,6 +574,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     }
 
     public void setWipStatus(WipStatus wipStatus) {
+        saveWIP = true;
         this.wipStatus = wipStatus;
     }
 
@@ -586,6 +587,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     }
 
     public void setWorkInProgressLanguages(Set<String> workInProgressLanguages) {
+        saveWIP = true;
         this.workInProgressLanguages = workInProgressLanguages;
     }
 

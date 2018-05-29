@@ -256,14 +256,14 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
 
                 if (node.get("j:workInProgressStatus") != null) {
-                    setWipStatus(WipStatus.valueOf((String) node.get("j:workInProgressStatus")));
+                    wipStatus = WipStatus.valueOf((String) node.get("j:workInProgressStatus"));
                     // set languages
                     if (node.get("j:workInProgressLanguages") != null) {
                         HashSet<String> languages = new HashSet<String>();
                         for (String lang : (List<String>) node.get("j:workInProgressLanguages")) {
                             languages.add(lang);
                         }
-                        setWorkInProgressLanguages(languages);
+                        workInProgressLanguages = languages;
                     }
                     // update button
                     for (BoxComponent button : buttons) {

@@ -43,6 +43,10 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -54,12 +58,18 @@ import java.util.Iterator;
  * Button used for work in progress button item.
  */
 
-public class WorkInProgressButton extends Button {
+public class WorkInProgressButton extends HorizontalPanel {
 
     private AbstractContentEngine engine;
+    private Button button = new Button();
+    private Html title = new Html();
 
     public WorkInProgressButton(AbstractContentEngine engine) {
         this.engine = engine;
+        title.addStyleName("button-label");
+        add(title);
+        add(button);
+        addStyleName("button-label-group");
     }
 
     /**
@@ -68,27 +78,40 @@ public class WorkInProgressButton extends Button {
     public void updateButtonTitle() {
         switch (engine.getWipStatus()) {
             case ALL_CONTENT:
-                setHtml(Messages.get("label.wip.engine.title.all", "All Content (localized & non-localized)"));
+                title.setHtml(Messages.get("label.wip.engine.title", "Work in progress:"));
+                button.setHtml(Messages.get("label.wip.engine.title.all", "All Content <span>(localized & non-localized)</span>"));
+                button.removeStyleName("button-work-in-progress-off");
+                button.addStyleName("button-work-in-progress-on");
                 break;
             case LANGUAGES:
-                String title = Messages.get("label.wip.engine.title", "Work in progress:");
+                title.setHtml(Messages.get("label.wip.engine.title", "Work in progress:"));
+                button.removeStyleName("button-work-in-progress-off");
+                button.addStyleName("button-work-in-progress-on");
+
                 Iterator<String> languagesIt = engine.getWorkInProgressLanguages().iterator();
                 if (engine.getWorkInProgressLanguages().size() == 1) {
                     String[] language = {resolveLanguageDisplayName(languagesIt.next())};
-                    setHtml(title + Messages.getWithArgs("label.wip.engine.title.one", "{0} (excluding non-localized content)", language));
+                    button.setHtml(Messages.getWithArgs("label.wip.engine.title.one", "{0} <span>(excluding non-localized content)</span>", language));
                 } else if (engine.getWorkInProgressLanguages().size() == 2) {
                     String[] languages = {resolveLanguageDisplayName(languagesIt.next()), resolveLanguageDisplayName(languagesIt.next())};
-                    setHtml(title + Messages.getWithArgs("label.wip.engine.title.two", "{0} and {1} (excluding non-localized content)", languages));
+                    button.setHtml(Messages.getWithArgs("label.wip.engine.title.two", "{0} and {1} <span>(excluding non-localized content)</span>", languages));
 
                 } else if (engine.getWorkInProgressLanguages().size() > 2) {
                     String[] params = {resolveLanguageDisplayName(languagesIt.next()), Integer.valueOf(engine.getWorkInProgressLanguages().size() - 1).toString()};
-                    setHtml(title + Messages.getWithArgs("label.wip.engine.title.more", "{0} and {1} more languages (excluding non-localized content)", params));
+                    button.setHtml(Messages.getWithArgs("label.wip.engine.title.more", "{0} and {1} more languages <span>(excluding non-localized content)</span>", params));
                 }
                 break;
             case DISABLED:
             default:
-                setHtml(Messages.get("label.saveAsWIP", "Save as work in progress"));
+                title.setHtml("");
+                button.removeStyleName("button-work-in-progress-on");
+                button.addStyleName("button-work-in-progress-off");
+                button.setHtml(Messages.get("label.saveAsWIP", "Save as work in progress"));
         }
+    }
+
+    public void addSelectionListener(SelectionListener<ButtonEvent> listener) {
+        button.addSelectionListener(listener);
     }
 
     private String resolveLanguageDisplayName(String lang) {

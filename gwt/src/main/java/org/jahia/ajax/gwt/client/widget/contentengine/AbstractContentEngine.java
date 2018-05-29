@@ -113,7 +113,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected GWTJahiaLanguage language;
     protected Set<String> workInProgressLanguages = new HashSet<String>();
     protected WipStatus wipStatus = WipStatus.DISABLED;
-    private boolean saveWIP;
+    private boolean wipModified;
     protected boolean closed = false;
 
     // general properties
@@ -574,7 +574,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     }
 
     public void setWipStatus(WipStatus wipStatus) {
-        saveWIP = true;
+        wipModified = true;
         this.wipStatus = wipStatus;
     }
 
@@ -582,17 +582,17 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return wipStatus;
     }
 
-    public Set<String> getWorkInProgressLanguages() {
-        return Collections.unmodifiableSet(new TreeSet<String>(workInProgressLanguages));
+    public Set<String> getWorkInProgressLanguagesSorted() {
+        return Collections.unmodifiableSet(new TreeSet<>(workInProgressLanguages));
     }
 
     public void setWorkInProgressLanguages(Set<String> workInProgressLanguages) {
-        saveWIP = true;
+        wipModified = true;
         this.workInProgressLanguages = workInProgressLanguages;
     }
 
     public void setWorkInProgressProperties() {
-        if (saveWIP && isNodeOfJmixLastPublishedType()) {
+        if (wipModified && isNodeOfJmixLastPublishedType()) {
             Set<GWTJahiaNodePropertyValue> languages = new HashSet<GWTJahiaNodePropertyValue>();
             for (String locale : workInProgressLanguages) {
                 languages.add(new GWTJahiaNodePropertyValue(locale));
@@ -609,5 +609,4 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected boolean isNodeOfJmixLastPublishedType() {
         return getNode() != null && getNode().isNodeType("jmix:lastPublished");
     }
-
 }

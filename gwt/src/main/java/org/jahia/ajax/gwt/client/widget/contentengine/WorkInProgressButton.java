@@ -88,16 +88,16 @@ public class WorkInProgressButton extends HorizontalPanel {
                 button.removeStyleName("button-work-in-progress-off");
                 button.addStyleName("button-work-in-progress-on");
 
-                Iterator<String> languagesIt = engine.getWorkInProgressLanguages().iterator();
-                if (engine.getWorkInProgressLanguages().size() == 1) {
+                Iterator<String> languagesIt = engine.getWorkInProgressLanguagesSorted().iterator();
+                if (engine.getWorkInProgressLanguagesSorted().size() == 1) {
                     String[] language = {resolveLanguageDisplayName(languagesIt.next())};
                     button.setHtml(Messages.getWithArgs("label.wip.engine.title.one", "{0} <span>(excluding non-localized content)</span>", language));
-                } else if (engine.getWorkInProgressLanguages().size() == 2) {
+                } else if (engine.getWorkInProgressLanguagesSorted().size() == 2) {
                     String[] languages = {resolveLanguageDisplayName(languagesIt.next()), resolveLanguageDisplayName(languagesIt.next())};
                     button.setHtml(Messages.getWithArgs("label.wip.engine.title.two", "{0} and {1} <span>(excluding non-localized content)</span>", languages));
 
-                } else if (engine.getWorkInProgressLanguages().size() > 2) {
-                    String[] params = {resolveLanguageDisplayName(languagesIt.next()), Integer.valueOf(engine.getWorkInProgressLanguages().size() - 1).toString()};
+                } else if (engine.getWorkInProgressLanguagesSorted().size() > 2) {
+                    String[] params = {resolveLanguageDisplayName(languagesIt.next()), Integer.valueOf(engine.getWorkInProgressLanguagesSorted().size() - 1).toString()};
                     button.setHtml(Messages.getWithArgs("label.wip.engine.title.more", "{0} and {1} more languages <span>(excluding non-localized content)</span>", params));
                 }
                 break;

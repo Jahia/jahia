@@ -45,12 +45,11 @@
 package org.jahia.services.seo.urlrewrite;
 
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.map.LRUMap;
 import org.jahia.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,8 +61,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceChecksumCalculator {
 
-    @SuppressWarnings("unchecked")
-    private static Map<String, String> checksums = Collections.synchronizedMap(new LRUMap(1000));
+    private static Map<String, String> checksums = new ConcurrentHashMap<>();
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceChecksumCalculator.class);
 

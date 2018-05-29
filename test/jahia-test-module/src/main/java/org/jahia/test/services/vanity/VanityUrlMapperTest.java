@@ -304,13 +304,13 @@ public class VanityUrlMapperTest {
     private static void ambiguousTestMapper(String servername, String site, String expectedVanity) {
         HttpServletRequest request = mockNewServletRequest(servername);
         vanityUrlMapper.checkVanityUrl(request, "", "/default/en/sites/" + site + "/home/ambiguous.html");
-        Assert.assertEquals(expectedVanity != null ? ("/cms/render/default" + expectedVanity ): "/cms/render/default/en/sites/" + site + "/home/ambiguous.html", request.getAttribute(VanityUrlMapper.VANITY_KEY));
+        Assert.assertEquals(expectedVanity != null ? ("/cms/render/default" + (expectedVanity.charAt(0) != '/' ? ('/' + expectedVanity) : expectedVanity)): "/cms/render/default/en/sites/" + site + "/home/ambiguous.html", request.getAttribute(VanityUrlMapper.VANITY_KEY));
     }
 
     private static void ambiguousi18nTestMapper(String servername, String site, String expectedVanity, String language) {
         HttpServletRequest request = mockNewServletRequest(servername);
         vanityUrlMapper.checkVanityUrl(request, "", "/default/" + language + "/sites/" + site + "/home/i18n.html");
-        Assert.assertEquals(expectedVanity != null ? ("/cms/render/default" + expectedVanity ): "/cms/render/default/" + language + "/sites/" + site + "/home/i18n.html", request.getAttribute(VanityUrlMapper.VANITY_KEY));
+        Assert.assertEquals(expectedVanity != null ? ("/cms/render/default" + (expectedVanity.charAt(0) != '/' ? ('/' + expectedVanity) : expectedVanity)): "/cms/render/default/" + language + "/sites/" + site + "/home/i18n.html", request.getAttribute(VanityUrlMapper.VANITY_KEY));
     }
 
     private static HttpServletRequest mockNewServletRequest(String servername) {

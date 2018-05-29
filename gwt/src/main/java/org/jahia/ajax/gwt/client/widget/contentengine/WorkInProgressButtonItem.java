@@ -202,6 +202,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
                 vpLanguages.add(errorLanguages);
                 vp.add(vpLanguages);
             }
+
             turnOff.setBoxLabel(Messages.get("label.wip.turnoff", "Turn off Work in Progress"));
             turnOff.setToolTip(Messages.get("label.wip.turnoff.helper", "Turn off helper text. Find out more at The Academy"));
             turnOff.addListener(Events.OnClick, new Listener<BaseEvent>() {

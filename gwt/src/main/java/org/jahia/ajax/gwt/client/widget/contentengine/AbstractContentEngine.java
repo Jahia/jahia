@@ -583,7 +583,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     }
 
     public Set<String> getWorkInProgressLanguagesSorted() {
-        return Collections.unmodifiableSet(new TreeSet<>(workInProgressLanguages));
+        return Collections.unmodifiableSet(new TreeSet<String>(workInProgressLanguages));
     }
 
     public void setWorkInProgressLanguages(Set<String> workInProgressLanguages) {

@@ -57,7 +57,6 @@ import java.util.Iterator;
 /**
  * Button used for work in progress button item.
  */
-
 public class WorkInProgressButton extends HorizontalPanel {
 
     private AbstractContentEngine engine;
@@ -114,7 +113,7 @@ public class WorkInProgressButton extends HorizontalPanel {
         button.addSelectionListener(listener);
     }
 
-    private String resolveLanguageDisplayName(String lang) {
+    private static String resolveLanguageDisplayName(String lang) {
         for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
             if (lang.equals(language.getLanguage())) {
                 return language.getDisplayName();

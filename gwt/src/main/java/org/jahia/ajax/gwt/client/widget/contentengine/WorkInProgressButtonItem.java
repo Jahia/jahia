@@ -242,7 +242,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
                         }
                     }
                     engine.setWorkInProgressLanguages(langs);
-                    engine.setWipStyle();
+                    engine.updateWipStyle();
                     wipButton.updateButtonTitle();
                     hide();
                 }

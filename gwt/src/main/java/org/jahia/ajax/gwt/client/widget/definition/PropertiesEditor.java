@@ -72,7 +72,6 @@ import org.jahia.ajax.gwt.client.widget.form.tag.TagField;
 
 import java.util.*;
 
-
 /**
  * This is a property editor that allows to edit properties of a JCR node.
  */
@@ -717,6 +716,8 @@ public class PropertiesEditor extends FormPanel {
                 final CheckBox checkbox = new CheckBox();
                 final Field<?> f = field;
                 checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
+
+                    @Override
                     public void handleEvent(ComponentEvent event) {
                         if (checkbox.getValue()) {
                             Log.debug("add ");
@@ -726,7 +727,6 @@ public class PropertiesEditor extends FormPanel {
                             f.setEnabled(false);
                         }
                     }
-
                 });
                 checkbox.setHideLabel(true);
                 final HBoxLayout hBoxLayout = new HBoxLayout();
@@ -754,7 +754,7 @@ public class PropertiesEditor extends FormPanel {
                                             + " to all languages?"),
                                     new Listener<MessageBoxEvent>() {
                                         @Override public void handleEvent(MessageBoxEvent be) {
-                                            if(Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())){
+                                            if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
                                                 copyToAllLanguages(prop2);
                                                 Info.display(Messages.get("label.translate.copyall", "Copy to all languages"),
                                                         Messages.get("label.translate.copyall.done"));

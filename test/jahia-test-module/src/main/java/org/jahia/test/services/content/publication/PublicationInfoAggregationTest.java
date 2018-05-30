@@ -49,6 +49,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.jahia.api.Constants;
 import org.jahia.osgi.BundleUtils;
@@ -110,8 +111,10 @@ public class PublicationInfoAggregationTest extends JahiaTestCase {
 
             JCRNodeWrapper subNode2 = node.addNode("testSubList2", "jnt:contentList");
             subNode2.setProperty("jcr:title", SUBNODE_TITLE_EN2);
+            subNode2.addMixin("jmix:lastPublished");
+            subNode2.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_LANG);
+            subNode2.setProperty(Constants.WORKINPROGRESS_LANGUAGES, new String[]{"en"});
             JCRNodeWrapper subNode2En = subNode2.getNode("j:translation_en");
-            subNode2En.setProperty(Constants.WORKINPROGRESS, true);
             subNodeUuid2 = subNode2.getIdentifier();
 
             JCRNodeWrapper subNode3 = node.addNode("testSubList3", "jnt:contentList");
@@ -296,10 +299,7 @@ public class PublicationInfoAggregationTest extends JahiaTestCase {
     }
 
     private static void testLockedWorkInProgress(String nodeUuid, String language, boolean expectedLockedWorkInProgress) throws Exception {
-        ComplexPublicationService.AggregatedPublicationInfo infoNotUsingSubNodes = publicationService.getAggregatedPublicationInfo(nodeUuid, language, false, false, getSession());
         ComplexPublicationService.AggregatedPublicationInfo infoUsingSubNodes = publicationService.getAggregatedPublicationInfo(nodeUuid, language, true, false, getSession());
-        Assert.assertEquals(expectedLockedWorkInProgress, infoNotUsingSubNodes.isLocked());
-        Assert.assertEquals(expectedLockedWorkInProgress, infoNotUsingSubNodes.isWorkInProgress());
         Assert.assertEquals(expectedLockedWorkInProgress, infoUsingSubNodes.isLocked());
         Assert.assertEquals(expectedLockedWorkInProgress, infoUsingSubNodes.isWorkInProgress());
     }

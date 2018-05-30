@@ -123,6 +123,10 @@ public class ComplexPublicationServiceImpl implements ComplexPublicationService 
 
             AggregatedPublicationInfoImpl result = new AggregatedPublicationInfoImpl(publicationInfo.getRoot().getStatus());
 
+            if(publicationInfo.getRoot().isWorkInProgress()){
+                result.setWorkInProgress(true);
+            }
+
             String translationNodeRelPath = (publicationInfo.getRoot().getChildren().size() > 0 ? ("/j:translation_" + language) : null);
             for (PublicationInfoNode childNode : publicationInfo.getRoot().getChildren()) {
                 if (childNode.getPath().contains(translationNodeRelPath)) {

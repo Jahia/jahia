@@ -58,6 +58,7 @@ import org.jahia.services.content.files.FileCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
@@ -170,19 +171,24 @@ public class VersioningHelper {
         try {
             if (node != null) {
 
+                boolean supportVersioning = node.getProvider().getRepository().getDescriptorValue(Repository.OPTION_VERSIONING_SUPPORTED).getBoolean();
                 JCRSessionWrapper session = node.getSession();
-                VersionManager versionManager = session.getWorkspace().getVersionManager();
-                if (!node.isVersioned()) {
-                    node.versionFile();
-                    session.save();
+
+                if(supportVersioning) {
+                    VersionManager versionManager = session.getWorkspace().getVersionManager();
+                    if (!node.isVersioned()) {
+                        node.versionFile();
+                        session.save();
+                    }
+                    VersionIterator allVersions = versionManager.getVersionHistory(node.getPath()).getAllVersions();
+                    if (allVersions.getSize() == 1) {
+                        // First version ever apart root version
+                        versionManager.checkpoint(node.getPath());
+                        versionService.addVersionLabel(node, getVersionLabel(node.getProperty("jcr:created").getDate().getTime().getTime()));
+                    }
+                    versionManager.checkout(node.getPath());
                 }
-                VersionIterator allVersions = versionManager.getVersionHistory(node.getPath()).getAllVersions();
-                if (allVersions.getSize() == 1) {
-                    // First version ever apart root version
-                    versionManager.checkpoint(node.getPath());
-                    versionService.addVersionLabel(node, getVersionLabel(node.getProperty("jcr:created").getDate().getTime().getTime()));
-                }
-                versionManager.checkout(node.getPath());
+
                 UploadedPendingFile item = fileStorage.getRequired(httpSessionID, tmpName);
                 try {
                     InputStream is = null;
@@ -197,13 +203,16 @@ public class VersioningHelper {
                     fileStorage.remove(httpSessionID, tmpName);
                 }
                 session.save();
-                versionManager.checkpoint(node.getPath());
-                versionService.addVersionLabel(node, getVersionLabelCurrent());
-                cacheManager.invalidate(session.getWorkspace().getName(), node.getPath());
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Number of version: " + node.getVersions().size());
+
+                if(supportVersioning) {
+                    session.getWorkspace().getVersionManager().checkpoint(node.getPath());
+                    versionService.addVersionLabel(node, getVersionLabelCurrent());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Number of version: " + node.getVersions().size());
+                    }
                 }
 
+                cacheManager.invalidate(session.getWorkspace().getName(), node.getPath());
             } else {
                 logger.error("Could not add version to a null file.");
             }

@@ -286,16 +286,16 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     public void updateWipStyle() {
         TabItem currentTab = tabs.getSelectedItem();
         if (currentTab != null) {
-            currentTab.removeStyleName("LANGUAGES-wip");
-            currentTab.removeStyleName("ALL-wip");
+            currentTab.removeStyleName("WIP-i18n");
+            currentTab.removeStyleName("WIP-all-content");
             switch (getWipStatus()) {
                 case LANGUAGES:
                     if (workInProgressLanguages.contains(language.getLanguage())) {
-                        currentTab.addStyleName("LANGUAGES-wip");
+                        currentTab.addStyleName("WIP-i18n");
                     }
                     break;
                 case ALL_CONTENT:
-                    currentTab.addStyleName("ALL-wip");
+                    currentTab.addStyleName("WIP-all-content");
                     break;
                 case DISABLED:
                     break;

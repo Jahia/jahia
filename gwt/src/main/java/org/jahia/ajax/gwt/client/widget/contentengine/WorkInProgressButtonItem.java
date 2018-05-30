@@ -170,10 +170,12 @@ public class WorkInProgressButtonItem implements ButtonItem {
                 }
             });
             Html title = new Html(Messages.get("label.wip.title.sub", "Select what you would like to mark as Work in Progress"));
+            title.addStyleName("wip-panel-subtitle");
             vp.add(title);
 
             allContents.addListener(Events.OnClick, getOnChangeListener(false, Messages.getWithArgs("label.wip.allcontent.helper", "All Content helper text. <a href=\"{0}\">Find out more at The Academy</a>", new String[] {academyUrl})));
             allContents.setBoxLabel(Messages.get("label.wip.allcontent", "All Content ( localised & non-localised )"));
+            allContents.addStyleName("wip-radio-all-content");
             vp.add(allContents);
 
             selectedLanguages.setBoxLabel(Messages.get("label.wip.localisedcontent", "Localised Content only"));
@@ -188,16 +190,19 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     languageCheck.setValueAttribute(language.getLanguage());
                     languages.add(languageCheck);
                 }
+                languages.addStyleName("wip-language-list");
                 vpLanguages.add(languages);
                 errorLanguages.addStyleName("error-message");
                 errorLanguages.setHtml(Messages.get("label.wip.localisedcontent.error", "At least one language must be selected"));
                 errorLanguages.hide();
                 vpLanguages.add(errorLanguages);
                 vp.add(vpLanguages);
+                vpLanguages.addStyleName("wip-radio-localised");
             }
 
             turnOff.setBoxLabel(Messages.get("label.wip.turnoff", "Turn off Work in Progress"));
             turnOff.addListener(Events.OnClick, getOnChangeListener(false, Messages.getWithArgs("label.wip.turnoff.helper", "Turn off helper text. <a href=\"{0}\">Find out more at The Academy</a>",  new String[] {academyUrl})));
+            turnOff.addStyleName("wip-radio-off");
             vp.add(turnOff);
 
             add(vp);

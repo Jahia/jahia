@@ -253,6 +253,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
             wipButton.updateButtonTitle();
             // add help hover
+            helpPanel.addStyleName("help-message");
             add(helpPanel);
         }
 

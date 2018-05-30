@@ -71,6 +71,8 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
     private transient WorkInProgressButton wipButton;
 
+    private String academyUrl;
+
     @Override
     public BoxComponent create(final AbstractContentEngine engine) {
 
@@ -93,6 +95,10 @@ public class WorkInProgressButtonItem implements ButtonItem {
         this.checkedByDefault = checkedByDefault;
     }
 
+    public void setAcademyUrl(String academyUrl) {
+        this.academyUrl = academyUrl;
+    }
+
     /**
      * Window that displays WIP details
      */
@@ -103,6 +109,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
         private final Radio selectedLanguages = new Radio();
         private final CheckBoxGroup languages = new CheckBoxGroup();
         private final Html errorLanguages = new Html();
+        private final Html helpPanel = new Html();
 
         public WorkInProgressWindow(final AbstractContentEngine engine) {
 
@@ -110,7 +117,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
             vp.setSpacing(10);
 
             final VerticalPanel vpLanguages = new VerticalPanel();
-            vpLanguages.setSpacing(10);
 
             setSize(500, 300);
             setPlain(true);
@@ -128,18 +134,23 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     switch (engine.getWipStatus()) {
                         case DISABLED:
                             turnOff.setValue(true);
+                            turnOff.fireEvent(Events.OnClick);
                             break;
                         case LANGUAGES:
                             selectedLanguages.setValue(true);
+                            selectedLanguages.fireEvent(Events.OnClick);
                             break;
                         case ALL_CONTENT:
                             allContents.setValue(true);
+                            allContents.fireEvent(Events.OnClick);
                             break;
                         default:
                             if (checkedByDefault) {
                                 allContents.setValue(true);
+                                allContents.fireEvent(Events.OnClick);
                             } else {
                                 turnOff.setValue(true);
+                                turnOff.fireEvent(Events.OnClick);
                             }
                     }
                     // fill languages
@@ -148,16 +159,10 @@ public class WorkInProgressButtonItem implements ButtonItem {
                         CheckBox language = (CheckBox) field;
                         language.setValue(wipLanguages.contains(language.getValueAttribute()));
                     }
-                    // set languages
-                    if (turnOff.getValue() || allContents.getValue()) {
-                        languages.disable();
-                    } else {
-                        languages.enable();
-                    }
                 }
             });
             // remove errors on click
-            vpLanguages.addListener(Events.OnClick, new Listener<BaseEvent>() {
+            vpLanguages.addListener(Events.OnChange, new Listener<BaseEvent>() {
                 @Override
                 public void handleEvent(BaseEvent be) {
                     errorLanguages.hide();
@@ -167,27 +172,15 @@ public class WorkInProgressButtonItem implements ButtonItem {
             Html title = new Html(Messages.get("label.wip.title.sub", "Select what you would like to mark as Work in Progress"));
             vp.add(title);
 
-            allContents.addListener(Events.OnClick, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    languages.disable();
-                }
-            });
+            allContents.addListener(Events.OnClick, getOnChangeListener(false, Messages.getWithArgs("label.wip.allcontent.helper", "All Content helper text. <a href=\"{0}\">Find out more at The Academy</a>", new String[] {academyUrl})));
             allContents.setBoxLabel(Messages.get("label.wip.allcontent", "All Content ( localised & non-localised )"));
-            allContents.setToolTip(Messages.get("label.wip.allcontent.helper", "All Content helper text. Find out more at The Academy"));
             vp.add(allContents);
 
             selectedLanguages.setBoxLabel(Messages.get("label.wip.localisedcontent", "Localised Content only"));
-            selectedLanguages.setToolTip(Messages.get("label.wip.localisedcontent.helper", "Localised Content helper text. Find out more at The Academy"));
-            selectedLanguages.addListener(Events.OnClick, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    languages.enable();
-                }
-            });
+            selectedLanguages.addListener(Events.OnClick, getOnChangeListener(true, Messages.getWithArgs("label.wip.localisedcontent.helper", "Localised Content helper text. <a href=\"{0}\">Find out more at The Academy</a>",  new String[] {academyUrl})));
 
             if (JahiaGWTParameters.getSiteLanguages().size() > 1) {
-                vp.add(selectedLanguages);
+                vpLanguages.add(selectedLanguages);
                 languages.setFieldLabel("Languages");
                 for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
                     CheckBox languageCheck = new CheckBox();
@@ -204,13 +197,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
             }
 
             turnOff.setBoxLabel(Messages.get("label.wip.turnoff", "Turn off Work in Progress"));
-            turnOff.setToolTip(Messages.get("label.wip.turnoff.helper", "Turn off helper text. Find out more at The Academy"));
-            turnOff.addListener(Events.OnClick, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    languages.disable();
-                }
-            });
+            turnOff.addListener(Events.OnClick, getOnChangeListener(false, Messages.getWithArgs("label.wip.turnoff.helper", "Turn off helper text. <a href=\"{0}\">Find out more at The Academy</a>",  new String[] {academyUrl})));
             vp.add(turnOff);
 
             add(vp);
@@ -233,6 +220,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     if (selectedLanguages.getValue() && languages.getValues().size() < 1) {
                         // error
                         languages.markInvalid(Messages.get("label.wip.localisedcontent.error", "At least one language must be selected"));
+                        vpLanguages.addStyleName("error-languages");
                         errorLanguages.show();
                         return;
                     }
@@ -264,6 +252,22 @@ public class WorkInProgressButtonItem implements ButtonItem {
             setFocusWidget(getButtonBar().getItem(0));
 
             wipButton.updateButtonTitle();
+            // add help hover
+            add(helpPanel);
+        }
+
+        private Listener<BaseEvent> getOnChangeListener(final Boolean enableLanguage, final String help) {
+            return new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    if (enableLanguage) {
+                        languages.enable();
+                    } else {
+                        languages.disable();
+                    }
+                    helpPanel.setHtml(help);
+                }
+            };
         }
     }
 }

@@ -89,7 +89,8 @@ import static org.junit.Assert.*;
  *         <p/>
  */
 public class PublicationIT extends AbstractJUnitTest {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(PublicationIT.class);
+
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(PublicationIT.class);
 
     private static JahiaSite site;
     private static JCRPublicationService jcrService;
@@ -125,8 +126,8 @@ public class PublicationIT extends AbstractJUnitTest {
         try {
             getCleanSession();
             JCRNodeWrapper englishEditSiteHomeNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home");
-            testHomeEdit = englishEditSiteHomeNode.addNode("test"+System.currentTimeMillis(), "jnt:page");
-            testHomeEdit.setProperty("jcr:title", "Test page");
+            testHomeEdit = englishEditSiteHomeNode.addNode("test" + System.currentTimeMillis(), Constants.JAHIANT_PAGE);
+            testHomeEdit.setProperty(Constants.JCR_TITLE, "Test page");
             testHomeEdit.setProperty("j:templateName", "simple");
             englishEditSession.save();
             jcrService.publishByMainId(testHomeEdit.getIdentifier());
@@ -231,7 +232,7 @@ public class PublicationIT extends AbstractJUnitTest {
         editTextNode1.rename("contentList1_text1");
         englishEditSession.save();
 
-        // Need to add this, as otherwise the node renaming back to the previous name will still be in live session cache with the intermediate name 
+        // Need to add this, as otherwise the node renaming back to the previous name will still be in live session cache with the intermediate name
         getCleanSession();
 
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
@@ -402,7 +403,7 @@ public class PublicationIT extends AbstractJUnitTest {
 
         for (int i = 4; i < 8; i++) {
             JCRNodeWrapper textNode = editContentList1.addNode(editContentList1.getName() + "_text" + Integer.toString(i), "jnt:mainContent");
-            textNode.setProperty("jcr:title", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + Integer.toString(i));
+            textNode.setProperty(Constants.JCR_TITLE, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + Integer.toString(i));
             textNode.setProperty("body", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + Integer.toString(i));
         }
 
@@ -412,7 +413,7 @@ public class PublicationIT extends AbstractJUnitTest {
         testChildOrdering(liveContentList1Node, Constants.LIVE_WORKSPACE, "contentList1_text0", "contentList1_text1", "contentList1_text2", "contentList1_text3", "contentList1_text4", "contentList1_text5", "contentList1_text6", "contentList1_text7");
 
         JCRNodeWrapper textNode = editContentList1.addNode(editContentList1.getName() + "_text8", "jnt:mainContent");
-        textNode.setProperty("jcr:title", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + 8);
+        textNode.setProperty(Constants.JCR_TITLE, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + 8);
         textNode.setProperty("body", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE + 8);
 
         editContentList1.orderBefore("contentList1_text8", "contentList1_text1");
@@ -489,7 +490,7 @@ public class PublicationIT extends AbstractJUnitTest {
     public void testPublicationMixin() throws RepositoryException {
         TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         String listPath = testHomeEdit.getPath() + "/contentList1/contentList1_text2";
-        englishEditSession.getNode(listPath).addMixin("jmix:publication");
+        englishEditSession.getNode(listPath).addMixin(Constants.JAHIAMIX_PUBLICATION);
         englishEditSession.save();
 
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
@@ -510,7 +511,7 @@ public class PublicationIT extends AbstractJUnitTest {
         // Set french title
         JCRSessionWrapper frenchEditSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, LanguageCodeConverters.languageCodeToLocale("fr"));
         JCRNodeWrapper page = frenchEditSession.getNode(testHomeEdit.getPath());
-        page.setProperty("jcr:title", "French title");
+        page.setProperty(Constants.JCR_TITLE, "French title");
         frenchEditSession.save();
 
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, Collections.singleton("en"), false, null);
@@ -536,9 +537,9 @@ public class PublicationIT extends AbstractJUnitTest {
         getCleanSession();
         List<PublicationInfo> infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), null, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
-        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
-        assertEquals("Invalid status for list", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, list.getIdentifier()));
-        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED, getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.NOT_PUBLISHED, getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED, getStatusFor(infos, editTextNode1.getIdentifier()));
 
         // Publish content
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, false, null);
@@ -546,9 +547,9 @@ public class PublicationIT extends AbstractJUnitTest {
         getCleanSession();
         infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), null, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
-        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
-        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
-        assertEquals("Invalid status for content", PublicationInfo.PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED, getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED, getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.PUBLISHED, getStatusFor(infos, editTextNode1.getIdentifier()));
 
         // Change un-internationalized property
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
@@ -558,9 +559,9 @@ public class PublicationIT extends AbstractJUnitTest {
         getCleanSession();
         infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), null, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
-        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
-        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
-        assertEquals("Invalid status for content", PublicationInfo.MODIFIED,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED, getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED, getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.MODIFIED, getStatusFor(infos, editTextNode1.getIdentifier()));
     }
 
     private int getStatusFor(List<PublicationInfo> infos, String uuid) {
@@ -613,17 +614,16 @@ public class PublicationIT extends AbstractJUnitTest {
     public void testWorkInProgressStatus() throws RepositoryException {
         JCRNodeWrapper list = TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS,Constants.WORKINPROGRESS_LANG);
-        String[] langs = new String[]{"en"};
-        editTextNode1.setProperty(Constants.WORKINPROGRESS_LANGUAGES, langs);
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_LANG);
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_LANGUAGES, new String[] {"en"});
         englishEditSession.save();
         getCleanSession();
-        HashSet<String> languages = new HashSet<String>(Arrays.asList("en"));
+        Set<String> languages = Collections.singleton("en");
         List<PublicationInfo> infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
-        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
-        assertEquals("Invalid status for list", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, list.getIdentifier()));
-        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED, getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.NOT_PUBLISHED, getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED, getStatusFor(infos, editTextNode1.getIdentifier()));
         assertEquals("Invalid 'work in progress' info for content", true, getWipFor(infos, editTextNode1.getIdentifier()));
         // Publish content
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
@@ -631,9 +631,9 @@ public class PublicationIT extends AbstractJUnitTest {
         getCleanSession();
         infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
-        assertEquals("Invalid status forQA-5120 :  page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
-        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
-        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid status forQA-5120 :  page", PublicationInfo.PUBLISHED, getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED, getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED, getStatusFor(infos, editTextNode1.getIdentifier()));
         assertEquals("Invalid 'work in progress' info for content", true, getWipFor(infos, editTextNode1.getIdentifier()));
 
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
@@ -657,46 +657,40 @@ public class PublicationIT extends AbstractJUnitTest {
         getCleanSession();
         infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
-        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
-        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
-        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED, getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED, getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED, getStatusFor(infos, editTextNode1.getIdentifier()));
         assertEquals("Invalid 'work in progress' info for content", false, getWipFor(infos, editTextNode1.getIdentifier()));
 
-        //add keywords, publish then put a work in progress in english, and modify the keywords
+        // Add keywords, publish then put a work in progress in english, and modify the keywords
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
         editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_DISABLED);
         editTextNode1.addMixin("jmix:keywords");
-        editTextNode1.setProperty("j:keywords", new String[]{"Hello, Bonjour"});
+        editTextNode1.setProperty("j:keywords", new String[] {"Hello, Bonjour"});
         englishEditSession.save();
         getCleanSession();
-        jcrService.publishByMainId(testHomeEdit.getIdentifier(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, true,
-                null);
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, true, null);
 
-        infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE,
-                Constants.LIVE_WORKSPACE);
+        infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
         assertEquals("Invalid status for page", PublicationInfo.PUBLISHED, getStatusFor(infos, testHomeEdit.getIdentifier()));
-        assertEquals("Invalid status for content", PublicationInfo.PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.PUBLISHED, getStatusFor(infos, editTextNode1.getIdentifier()));
         assertEquals("Invalid 'work in progress' info for content", false, getWipFor(infos, editTextNode1.getIdentifier()));
 
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
         editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_LANG);
-        editTextNode1.setProperty(Constants.WORKINPROGRESS_LANGUAGES, new String[]{"en"});
-        editTextNode1.setProperty("j:keywords", new String[]{"Hello1, Bonjour1"});
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_LANGUAGES, new String[] {"en"});
+        editTextNode1.setProperty("j:keywords", new String[] {"Hello1, Bonjour1"});
         englishEditSession.save();
         getCleanSession();
-        jcrService.publishByMainId(testHomeEdit.getIdentifier(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, true,
-                null);
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, true, null);
 
-        infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, true, Constants.EDIT_WORKSPACE,
-                Constants.LIVE_WORKSPACE);
+        infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
         assertEquals("Invalid status for page", PublicationInfo.PUBLISHED, getStatusFor(infos, testHomeEdit.getIdentifier()));
         assertEquals("Invalid status for content", PublicationInfo.MODIFIED, getStatusFor(infos, editTextNode1.getIdentifier()));
 
-
         getCleanSession();
-        jcrService.publishByMainId(testHomeEdit.getIdentifier(),Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, new HashSet<String>
-                (Arrays.asList("en", "fr")), true, null);
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, new HashSet<String>(Arrays.asList("en", "fr")), true, null);
 
         editTextNode1 = englishLiveSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
         String keywords = editTextNode1.getPropertiesAsString().get("j:keywords");
@@ -797,6 +791,4 @@ public class PublicationIT extends AbstractJUnitTest {
         englishEditSession = sessionFactory.getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         englishLiveSession = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
     }
-
-
 }

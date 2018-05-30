@@ -252,16 +252,19 @@ public class TranslateContentEngine extends Window {
             }
             // save Wip only if languages added or removed
             if (saveWip || languages.size() != currentLanguages.size()) {
-                String status = node.get("j:workInProgressStatus");
-                if (status == null) {
-                    status = AbstractContentEngine.WipStatus.LANGUAGES.name();
-                }
-                sharedProperties.add(new GWTJahiaNodeProperty("j:workInProgressStatus", status));
                 GWTJahiaNodeProperty wipLocaleProperty = new GWTJahiaNodeProperty();
                 wipLocaleProperty.setName("j:workInProgressLanguages");
                 wipLocaleProperty.setValues(languages);
                 wipLocaleProperty.setMultiple(true);
                 sharedProperties.add(wipLocaleProperty);
+
+                String status = node.get("j:workInProgressStatus");
+                if (status == null) {
+                    status = AbstractContentEngine.WipStatus.LANGUAGES.name();
+                } else if (languages.size() == 0) {
+                    status = AbstractContentEngine.WipStatus.DISABLED.name();
+                }
+                sharedProperties.add(new GWTJahiaNodeProperty("j:workInProgressStatus", status));
             }
 
             Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties = targetLangPropertiesEditor.getLangPropertiesMap();

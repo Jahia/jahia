@@ -287,16 +287,20 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         // set Wip class
         TabItem currentTab = tabs.getSelectedItem();
         if (currentTab != null) {
-            currentTab.removeStyleDependentName("wip-");
-            if (getWipStatus() == WipStatus.LANGUAGES) {
-                if (getWorkInProgressLanguagesSorted().contains(language.getLanguage())) {
-                    currentTab.addStyleName("wip-" + getWipStatus().name());
-                }
-            } else {
-                currentTab.addStyleName("wip-" + getWipStatus().name());
+            currentTab.removeStyleName(WipStatus.LANGUAGES + "-wip");
+            currentTab.removeStyleName("ALL-wip");
+            switch (getWipStatus()) {
+                case LANGUAGES:
+                    if (getWorkInProgressLanguagesSorted().contains(language.getLanguage())) {
+                        currentTab.addStyleName(WipStatus.LANGUAGES + "-wip");
+                    }
+                    break;
+                case ALL_CONTENT:
+                    currentTab.addStyleName("ALL-wip");
             }
 
-        }    }
+        }
+    }
 
     protected void focusFirstField() {
         TabItem currentTab = tabs.getSelectedItem();

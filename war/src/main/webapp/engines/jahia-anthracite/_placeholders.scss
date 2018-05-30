@@ -55,6 +55,38 @@
 
 
 /////////////////////////////////////////////////
+// WORK IN PROGRESS /////////////////////////////
+/////////////////////////////////////////////////
+%CSS_BLOCK--HIGHLIGHT--WIP-FIELDS {
+	background: rgba(255, 255, 0, 0.42);
+	padding: 10px 20px 20px 20px !important;
+	left: -10px;
+	position: relative;
+	border: 1px solid #f7f700;
+	box-shadow: 2px 2px 2px rgba(38, 38, 38, 0.2);
+
+	.x-form-item-label.x-form-item-label {
+		display: inline-block !important;
+		width: auto !important;
+		position: relative;
+		color: _theme-color(septenary, b);
+
+		img {
+			position: absolute;
+			right: -16px;
+			top: 6px;
+		}
+
+		&::after {
+			content: $text_work_in_progress;
+			margin-left: 5px;
+			font-weight: 800;
+		}
+	}
+}
+
+
+/////////////////////////////////////////////////
 // MORE INFO BUTTONS ////////////////////////////
 /////////////////////////////////////////////////
 	// %CSS_BLOCK--MORE_INFO---UP {
@@ -426,7 +458,7 @@
     // FIELDSET
     %CSS_BLOCK--FIELDSET {
         border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
-        padding: 43px 10px 20px 29px !important;
+        padding: 43px 20px 20px 29px !important;
         margin: 0 23px 10px 0 !important;
         position: relative;
         background: _property($FIELDSET--BG, $EDIT-ENGINE);
@@ -1512,30 +1544,77 @@
 
 
 
-		    // ACTION BAR ::: SUGGESTED
-			%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED {
-				padding: 10px 20px!important;
-				text-transform: none!important;
-				background: _property($ACTION-SUGGESTED--BG, $APP) !important;
-		    	@include text(14px, _property($ACTION-SUGGESTED--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
-		    }
+    // ACTION BAR ::: SUGGESTED
+    %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED {
+        padding: 10px 20px!important;
+        text-transform: none!important;
+        background: _property($ACTION-SUGGESTED--BG, $APP) !important;
+        @include text(14px, _property($ACTION-SUGGESTED--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
 
-			%CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED {
-				background: _property($ACTION-SUGGESTED--BG---HOVER, $APP) !important;
-				@include text(14px, _property($ACTION-SUGGESTED--COLOR---HOVER, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
-		    }
+    %CSS_BLOCK--BUTTON--TEXT---HOVER\:ACTIONBAR---SUGGESTED {
+        background: _property($ACTION-SUGGESTED--BG---HOVER, $APP) !important;
+        @include text(14px, _property($ACTION-SUGGESTED--COLOR---HOVER, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
 
-			%CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SUGGESTED {
-				text-transform: none!important;
-				padding: 10px 20px!important;
-				background: _property($ACTION-SUGGESTED--BG, $APP) !important;
-		    	@include text(14px, _property($ACTION-SUGGESTED--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
-		    }
+    %CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SUGGESTED {
+        text-transform: none!important;
+        padding: 10px 20px!important;
+        background: _property($ACTION-SUGGESTED--BG, $APP) !important;
+        @include text(14px, _property($ACTION-SUGGESTED--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
 
-			%CSS_BLOCK--BUTTON--ICON---HOVER\:ACTIONBAR---SUGGESTED {
-				background: _property($ACTION-SUGGESTED--BG---HOVER, $APP) !important;
-				@include text(14px, _property($ACTION-SUGGESTED--COLOR---HOVER, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
-		    }
+    %CSS_BLOCK--BUTTON--ICON---HOVER\:ACTIONBAR---SUGGESTED {
+        background: _property($ACTION-SUGGESTED--BG---HOVER, $APP) !important;
+        @include text(14px, _property($ACTION-SUGGESTED--COLOR---HOVER, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
+    }
+
+
+
+
+    // ACTION BAR ::: WORK IN PROGRESS ON
+    %CSS_BLOCK--BUTTON--TEXT\:WIP---SUGGESTED {
+        padding: 10px 39px 10px 17px !important;
+        text-transform: none!important;
+        background: url($ICON--CREATE---GREY) no-repeat right 11px center _property($ACTION-WIP--BG, $APP) !important;
+        background-size: 23px !important;
+        border-radius: 50px;
+        @include text(14px, _property($ACTION-WIP--COLOR, $APP) !important, $FONT--WEIGHT---NORMAL);
+
+        span {
+            font-style: italic;
+            opacity: 0.8;
+
+            @include text(inherit, inherit, inherit, inherit)
+        }
+
+    }
+
+    %CSS_BLOCK--BUTTON--TEXT---HOVER\:WIP---SUGGESTED {
+        background-color: _property($ACTION-WIP--BG---HOVER, $APP) !important;
+        @include text(14px, _property($ACTION-WIP--COLOR---HOVER, $APP) !important, $FONT--WEIGHT---NORMAL);
+    }
+
+    %CSS_BLOCK--BUTTON--ICON\:WIP---SUGGESTED {
+        text-transform: none!important;
+        padding: 10px 39px 10px 17px !important;
+        background: url($ICON--CREATE---GREY) no-repeat right 11px center _property($ACTION-WIP--BG, $APP) !important;
+        background-size: 23px !important;
+        border-radius: 50px;
+        @include text(14px, _property($ACTION-WIP--COLOR, $APP) !important, $FONT--WEIGHT---NORMAL);
+
+        span {
+            font-style: italic;
+            opacity: 0.8;
+
+            @include text(inherit, inherit, inherit, inherit)
+        }
+    }
+
+    %CSS_BLOCK--BUTTON--ICON---HOVER\:WIP---SUGGESTED {
+        background-color: _property($ACTION-WIP--BG---HOVER, $APP) !important;
+        @include text(14px, _property($ACTION-WIP--COLOR---HOVER, $APP) !important, $FONT--WEIGHT---NORMAL);
+    }
 
 
 			// SEARCH PANEL SUGGESTED

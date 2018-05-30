@@ -72,6 +72,34 @@
 .engine-panel:not(.trashboardengine-ctn),
 div.engine-window {
 
+	.mypanel {
+		width: auto!important;
+	}
+
+	.button-label-group {
+		bottom: 20px !important;
+
+		.button-label {
+			color: #fdfdfd;
+			font-size: 14px;
+			font-weight: 300;
+			margin-right: 10px;
+		}
+	}
+
+	// Work in Progress Stuff
+	&.WIP-all-content{
+		.x-form-item.x-form-item.WIP-field {
+			@extend %CSS_BLOCK--HIGHLIGHT--WIP-FIELDS;
+		}
+	}
+
+	&.WIP-i18n {
+		.x-form-item.x-form-item.WIP-field-i18n {
+			@extend %CSS_BLOCK--HIGHLIGHT--WIP-FIELDS;
+		}
+	}
+
 	.x-form-item {
 	    margin-bottom: 12px;
 	}
@@ -2275,8 +2303,8 @@ div.engine-window {
 				}
 
 				label {
-					left: calc(100% - 310px)!important;
-					top: 4px!important;
+					// left: calc(100% - 310px)!important;
+					// top: 4px!important;
 				}
 
 				label.x-box-item {
@@ -3848,5 +3876,107 @@ img.invalid-icon {
 		margin-top: -2px;
 		opacity: .67;
 	}
+
+}
+
+
+
+// Work in progress Panel
+.wip-window {
+	z-index: 99999999!important;
+
+	table {
+		border-collapse: collapse;
+	}
+
+	label {
+		text-transform: none;
+		font-size: 14px;
+		font-weight: 100;
+		color: #5c6164 !important;
+		padding-left: 6px !important;
+	}
+
+	.help-message {
+		padding: 5px 10px;
+		background: orange;
+		font-size: 14px;
+		color: white;
+		font-weight: 100;
+		margin-top: 20px;
+
+		a {
+			color: white;
+		}
+	}
+
+	.x-item-disabled {
+		opacity: 0.7;
+	}
+
+	// Header
+	> .x-window-tl {
+		padding-bottom: 0!important;
+
+		.x-window-header {
+			 .x-window-header-text {
+				 display: block;
+			 }
+		}
+	}
+
+	.x-window-body {
+		height: auto!important;
+
+		> div {
+			> table { // Ask for class
+				> tbody {
+					> tr {
+
+						> td {
+							margin-bottom: 10px;
+							margin-left: 10px;
+							display: block;
+						}
+
+						&:nth-child(1) { // Ask for a class
+							> td {
+								margin-bottom: 30px;
+								margin-left: 0;
+
+								div {
+									color: #5c6164;
+									font-size: 16px;
+									font-weight: 300;
+								}
+							}
+						}
+
+						&:nth-child(3) > td > div > table > tbody > tr:nth-child(2) > td { // Ask for a class
+							padding-left: 18px;
+							padding-top: 5px;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.x-window-bl {
+		margin-top: 20px;
+
+		.x-panel-fbar {
+			.x-toolbar-cell {
+				// Stop the buttons being inversed
+				float: none
+			}
+		}
+	}
+
+	// Error message labels
+	.error-message {
+		color: red;
+	}
+
 
 }

@@ -1211,6 +1211,8 @@ form,
 	@include _button(".button-save", "ACTIONBAR---SUGGESTED", "remove-icons");
 	@include _button(".button-start", "ACTIONBAR---SUGGESTED", "remove-icons");
 	@include _button(".button-cancel", "ACTIONBAR", "remove-icons");
+	@include _button(".button-work-in-progress-off", "ACTIONBAR---SUGGESTED", "remove-icons");
+	@include _button(".button-work-in-progress-on", "WIP---SUGGESTED", "remove-icons");
 }
 
 /* Button Bar, regular button bar */
@@ -5583,46 +5585,5 @@ XXX.x-window.modal-deletealljob-confirm {
 		}
 
 	}
-
-}
-
-
-// Work in progress
-.wip-window {
-	z-index: 99999999!important;
-
-	// Header
-	> .x-window-tl {
-		padding-bottom: 0!important;
-
-		.x-window-header {
-			 .x-window-header-text {
-				 display: block;
-			 }
-		}
-	}
-
-	.x-window-body {
-		height: auto!important;
-
-		// Ask david for a class
-		> div > table > tbody > tr:nth-child(1) div {
-			color: pink;
-		}
-	}
-
-	.x-panel-fbar {
-		.x-toolbar-cell {
-			// Stop the buttons being inversed
-			float: none
-		}
-	}
-
-	// Error message labels
-	.error-message {
-		color: red;
-	}
-
-	// Modal Title
 
 }

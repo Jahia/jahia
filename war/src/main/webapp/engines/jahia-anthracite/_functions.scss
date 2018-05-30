@@ -54,7 +54,6 @@
 			// Button has icon
 			button {
 				@extend %CSS_BLOCK--BUTTON--TEXT\:#{$_button_id} !optional;
-
 			}
 		}
 

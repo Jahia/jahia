@@ -63,7 +63,7 @@ $color-tertiary:		rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE) - action colors
 $color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE) - secondary buttons
 $color-quinary:			rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE) - highlight color, menu color, hamburger
 $color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
-
+$color-septenary: 		rgb(217,217,62);		// Yellow
 $color-black:			rgb(0, 0, 0); 			// #000000 (BLACK)
 $color-white:			rgb(255, 255, 255); 	// _theme-color(white) (WHITE)
 $color-green: 			rgb(4,189,4);
@@ -117,6 +117,11 @@ $basic-colors: (
 	senary: (
 		normal:	$color-senary,
 		a: 		lighten($color-senary, 4%),
+	),
+	septenary: (
+		normal:	$color-septenary,
+		a: 		lighten($color-septenary, 5%),
+		b:		darken($color-septenary, 20%),
 	),
 	black: (
 		normal:	$color-black,
@@ -1427,6 +1432,38 @@ $ACTION-SUGGESTED--BG:(
 );
 
 $ACTION-SUGGESTED--SHADOW:(
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+// WORK IN PROGRESS
+$ACTION-WIP--COLOR:(
+	LIGHT: _theme-color(black),
+	DARK: _theme-color(black),
+);
+
+$ACTION-WIP--BG:(
+	LIGHT: _theme-color(septenary),
+	DARK: _theme-color(septenary),
+);
+
+$ACTION-WIP--SHADOW:(
+	LIGHT: 0px 1px 2px _theme-color(black, a),
+	DARK: 0px 1px 2px _theme-color(black, a),
+);
+
+// WORK IN PROGRESS HOVER
+$ACTION-WIP--COLOR---HOVER:(
+	LIGHT: _theme-color(black),
+	DARK: _theme-color(black),
+);
+
+$ACTION-WIP--BG---HOVER:(
+	LIGHT: _theme-color(septenary, a),
+	DARK: _theme-color(septenary, a),
+);
+
+$ACTION-WIP--SHADOW---HOVER:(
 	LIGHT: 0px 1px 2px _theme-color(black, a),
 	DARK: 0px 1px 2px _theme-color(black, a),
 );

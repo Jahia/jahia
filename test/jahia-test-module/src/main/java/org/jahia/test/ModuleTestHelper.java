@@ -43,6 +43,8 @@
  */
 package org.jahia.test;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -53,6 +55,7 @@ import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.OperationResult;
 import org.jahia.services.modulemanager.util.ModuleUtils;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
 import org.ops4j.pax.url.mvn.MavenResolver;
 import org.ops4j.pax.url.mvn.ServiceConstants;
@@ -72,10 +75,11 @@ import shaded.org.ops4j.util.property.PropertiesPropertyResolver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 /**
- * A helper class to retrieve module files from maven.
+ * A helper class to retrieve module files from Maven.
  *
  * @author Christophe Laprun
  */
@@ -122,10 +126,14 @@ public class ModuleTestHelper {
     }
 
     public static File getModuleFromMaven(String groupId, String artifactId, String version) throws IOException {
+        return getArtifactFromMaven(groupId, artifactId, version, "jar");
+    }
+
+    public static File getArtifactFromMaven(String groupId, String artifactId, String version, String packaging) throws IOException {
         if(version == null ||  version.trim().isEmpty()) {
             version = "LATEST";
         }
-        return resolver.resolve(groupId, artifactId, "", "jar", version);
+        return resolver.resolve(groupId, artifactId, "", packaging, version);
     }
 
     private static Dependency getArtifactInfo(String artifactId) {
@@ -163,8 +171,10 @@ public class ModuleTestHelper {
                     artifactId);
             Dependency info = getArtifactInfo(artifactId);
             if (info == null) {
-                throw new RuntimeException("Unable to find version information for module " + artifactId
-                        + " in the pom.xml of the jahia-test-module project");
+                logger.warn("Unable to find version information for module {} in the pom.xml of the jahia-test-module project", artifactId);
+                info = new Dependency();
+                info.setArtifactId(artifactId);
+                info.setGroupId("org.jahia.modules");
             }
 
             logger.info("Resolved module artifact information: {}. Resolving corresponding Maven artifact", info);
@@ -179,6 +189,41 @@ public class ModuleTestHelper {
             } catch (IOException e) {
                 throw new RuntimeException("Unable to resolve maven artifact for module " + info);
             }
+        }
+    }
+
+    public static void ensurePrepackagedSiteExist(String prepackedZIPFile) {
+        if (prepackedZIPFile == null) {
+            return;
+        }
+        File prepackagedSiteFile = prepackedZIPFile.startsWith("prepackagedSites/")
+                ? new File(SettingsBean.getInstance().getJahiaVarDiskPath(), prepackedZIPFile)
+                : new File(prepackedZIPFile);
+        if (prepackagedSiteFile.exists()) {
+            // the prepackaged site ZIP is already present
+            return;
+        }
+
+        String artifactId = StringUtils.substringBefore(StringUtils.substringAfter(prepackedZIPFile, "/"), ".zip");
+        logger.info("Prepackaged site {} is not present. Retrieving required version information from pom.xml file",
+                artifactId);
+        Dependency info = getArtifactInfo(artifactId);
+        if (info == null) {
+            throw new RuntimeException("Unable to find version information for prepackaged site " + artifactId
+                    + " in the pom.xml of the jahia-test-module project");
+        }
+
+        logger.info("Resolved prepackaged site artifact information: {}. Resolving corresponding Maven artifact", info);
+        try {
+            File moduleFile = getArtifactFromMaven(info.getGroupId(), info.getArtifactId(), info.getVersion(), info.getType());
+
+            logger.info("Module Maven artifact resolved to file: {}. Copying prepackaged site", moduleFile);
+
+            FileUtils.copyFile(moduleFile, prepackagedSiteFile);
+
+            logger.info("Prepackaged site copied to {}", prepackagedSiteFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to resolve maven artifact for module " + info);
         }
     }
 }

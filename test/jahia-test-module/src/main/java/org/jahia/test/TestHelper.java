@@ -58,6 +58,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.SiteCreationInfo;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.zip.DirectoryZipInputStream;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +74,15 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 import java.io.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * User: toto
@@ -108,6 +116,8 @@ public class TestHelper {
         File sharedZIPFile = null;
         try {
             if (!StringUtils.isEmpty(prepackedZIPFile)) {
+                ModuleTestHelper.ensurePrepackagedSiteExist(prepackedZIPFile);
+
                 NoCloseZipInputStream zis = null;
                 try {
                     zis = new NoCloseZipInputStream(new FileInputStream(prepackedZIPFile.startsWith("prepackagedSites/")
@@ -146,13 +156,18 @@ public class TestHelper {
                 }
             }
 
-            // we ensure that the template set module is deployed and started; if not, it will be resolved and installed + started
-            ModuleTestHelper.ensureModuleStarted(info.getTemplateSet());
-
             if (siteZIPFile != null) {
                 info.setFirstImport("fileImport");
                 info.setFileImport(new FileSystemResource(siteZIPFile));
+                List<String> modulesToInstall = readInstalledModules(siteZIPFile);
+                Collections.reverse(modulesToInstall);
+                for (String module : modulesToInstall) {
+                    ModuleTestHelper.ensureModuleStarted(module);
+                }
             }
+
+            // we ensure that the template set module is deployed and started; if not, it will be resolved and installed + started
+            ModuleTestHelper.ensureModuleStarted(info.getTemplateSet());
 
             JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
             site = service.addSite(info);
@@ -163,6 +178,48 @@ public class TestHelper {
         }
 
         return site;
+    }
+
+    private static List<String> readInstalledModules(File siteZipFile) throws IOException {
+        List<String> modules = new LinkedList<>();
+        ZipEntry z;
+
+        ZipInputStream zis2 = siteZipFile.isDirectory() ? new DirectoryZipInputStream(siteZipFile)
+                        : new NoCloseZipInputStream(new BufferedInputStream(
+                                        new FileInputStream(siteZipFile)));
+        try {
+            while ((z = zis2.getNextEntry()) != null) {
+                try {
+                    if (ImportExportBaseService.SITE_PROPERTIES.equals(z.getName())) {
+                        Properties p = new Properties();
+                        p.load(zis2);
+                        Map<Integer, String> im = new TreeMap<>();
+                        for (Object k : p.keySet()) {
+                            String key = String.valueOf(k);
+                            if (key.startsWith("installedModules.")) {
+                                try {
+                                    im.put(Integer.valueOf(StringUtils
+                                                    .substringAfter(key, ".")),
+                                                    p.getProperty(key));
+                                } catch (NumberFormatException e) {
+                                    logger.warn("Unable to parse installed module from key {}",
+                                                    key);
+                                }
+                            }
+                        }
+                        modules.addAll(im.values());
+                    }
+                } finally {
+                    zis2.closeEntry();
+                }
+            }
+        } finally {
+            if (zis2 instanceof NoCloseZipInputStream) {
+                ((NoCloseZipInputStream) zis2).reallyClose();
+            }
+        }
+
+        return modules;
     }
 
     private static void deleteSiteIfPresent(String siteKey) throws JahiaException {

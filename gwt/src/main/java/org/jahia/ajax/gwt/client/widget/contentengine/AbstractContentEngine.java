@@ -279,8 +279,24 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 }
                 focusFirstField();
             }
+            setWipStyle();
         }
     }
+
+    protected void setWipStyle() {
+        // set Wip class
+        TabItem currentTab = tabs.getSelectedItem();
+        if (currentTab != null) {
+            currentTab.removeStyleDependentName("wip-");
+            if (getWipStatus() == WipStatus.LANGUAGES) {
+                if (getWorkInProgressLanguagesSorted().contains(language.getLanguage())) {
+                    currentTab.addStyleName("wip-" + getWipStatus().name());
+                }
+            } else {
+                currentTab.addStyleName("wip-" + getWipStatus().name());
+            }
+
+        }    }
 
     protected void focusFirstField() {
         TabItem currentTab = tabs.getSelectedItem();

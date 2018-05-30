@@ -313,6 +313,8 @@ public class PropertiesEditor extends FormPanel {
                 adapterField.setStyleAttribute("padding-left", "0");
                 if (definition.isInternationalized()) {
                     adapterField.addStyleName("field-i18n");
+                } else {
+                    adapterField.addStyleName("field-no-i18n");
                 }
 
                 fields.put(field.getName(), adapterField);

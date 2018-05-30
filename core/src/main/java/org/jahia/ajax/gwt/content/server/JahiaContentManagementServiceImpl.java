@@ -1051,6 +1051,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     private List<GWTJahiaNodeProperty> extractWipProperties(List<GWTJahiaNodeProperty> props) {
+        if (props == null) {
+            return (List<GWTJahiaNodeProperty>) Collections.EMPTY_LIST;
+        }
         List<GWTJahiaNodeProperty> wipProperties = new ArrayList<>();
         List<GWTJahiaNodeProperty> newProps = new ArrayList<>();
         props.forEach(prop -> {

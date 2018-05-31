@@ -72,6 +72,11 @@
 .engine-panel:not(.trashboardengine-ctn),
 div.engine-window {
 
+	.x-form-item {
+		position: relative;
+	}
+
+
 	.mypanel {
 		width: auto!important;
 	}
@@ -87,18 +92,7 @@ div.engine-window {
 		}
 	}
 
-	// Work in Progress Stuff
-	&.WIP-all-content{
-		.x-form-item.x-form-item.WIP-field {
-			@extend %CSS_BLOCK--HIGHLIGHT--WIP-FIELDS;
-		}
-	}
 
-	&.WIP-i18n {
-		.x-form-item.x-form-item.WIP-field-i18n {
-			@extend %CSS_BLOCK--HIGHLIGHT--WIP-FIELDS;
-		}
-	}
 
 	.x-form-item {
 	    margin-bottom: 12px;
@@ -302,6 +296,21 @@ div.engine-window {
 
 			> .x-panel-mc {
 				// Default tab content window
+
+				// Work in progress stuff
+				&.WIP-all-content{
+					.x-form-item.x-form-item.prop-i18n-field,
+					.x-form-item.x-form-item.prop-field {
+						@extend %CSS_BLOCK--HIGHLIGHT--WIP-FIELDS;
+					}
+				}
+
+				&.WIP-i18n {
+					.x-form-item.x-form-item.prop-i18n-field {
+						@extend %CSS_BLOCK--HIGHLIGHT--WIP-FIELDS;
+					}
+				}
+
 				height: 100%!important;
 				width: 100%!important;
 				background: transparent;
@@ -3887,6 +3896,7 @@ img.invalid-icon {
 
 	table {
 		border-collapse: collapse;
+		width: 100%;
 	}
 
 	label {
@@ -3910,8 +3920,35 @@ img.invalid-icon {
 		}
 	}
 
+	.error-languages {
+		background: rgba(255, 0, 0, 0.11);
+		display: block;
+		position: relative;
+		margin-left: -15px;
+		z-index: 999999999999;
+		padding: 5px 15px !important;
+
+		.error-message {
+			color: red;
+			font-size: 14px;
+			font-weight: 400;
+			margin-top: 13px;
+			margin-bottom: 6px;
+		}
+
+		// Error Icon
+		img.gwt-Image {
+			display: none!important;
+		}
+	}
+
 	.x-item-disabled {
 		opacity: 0.7;
+	}
+
+
+	.x-window-bwrap {
+		overflow: hidden;
 	}
 
 	// Header
@@ -3927,6 +3964,7 @@ img.invalid-icon {
 
 	.x-window-body {
 		height: auto!important;
+		overflow: visible;
 
 		> div {
 			> table { // Ask for class
@@ -3934,8 +3972,8 @@ img.invalid-icon {
 					> tr {
 
 						> td {
-							margin-bottom: 10px;
 							margin-left: 10px;
+							margin-bottom: 5px;
 							display: block;
 						}
 
@@ -3955,6 +3993,10 @@ img.invalid-icon {
 						&:nth-child(3) > td > div > table > tbody > tr:nth-child(2) > td { // Ask for a class
 							padding-left: 18px;
 							padding-top: 5px;
+						}
+
+						&:nth-child(3) > td > div { // Ask for a class
+							padding: 5px 0;
 						}
 					}
 				}

@@ -105,7 +105,7 @@ public class WorkInProgressButton extends HorizontalPanel {
                 title.setHtml("");
                 button.removeStyleName("button-work-in-progress-on");
                 button.addStyleName("button-work-in-progress-off");
-                button.setHtml(Messages.get("label.saveAsWIP", "Save as work in progress"));
+                button.setHtml(Messages.get("label.wip.button.title", "Mark as work in progress"));
         }
     }
 

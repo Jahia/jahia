@@ -75,20 +75,36 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
     @Override
     public BoxComponent create(final AbstractContentEngine engine) {
+        if (JahiaGWTParameters.getSiteLanguages().size() > 1) {
 
-        wipButton = new WorkInProgressButton(engine);
+            wipButton = new WorkInProgressButton(engine);
 
-        final Window window = new WorkInProgressWindow(engine);
+            final Window window = new WorkInProgressWindow(engine);
 
-        wipButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            wipButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                window.show();
-            }
-        });
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    window.show();
+                }
+            });
 
-        return wipButton;
+            return wipButton;
+        } else {
+            final CheckBoxWip checkbox = new CheckBoxWip();
+            checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
+                public void handleEvent(ComponentEvent event) {
+                    engine.setWipStatus(checkbox.getValue() ? AbstractContentEngine.WipStatus.ALL_CONTENT : AbstractContentEngine.WipStatus.DISABLED);
+                }
+            });
+            checkbox.setBoxLabel(Messages.get("label.saveAsWIP", "Save as work in progress"));
+            checkbox.setToolTip(Messages.get("label.saveAsWIP.information", "If checked, this content will ne be part of publication process"));
+            return checkbox;
+        }
+    }
+
+    public class CheckBoxWip extends CheckBox {
+        // Do nothing
     }
 
     public void setCheckedByDefault(boolean checkedByDefault) {
@@ -179,26 +195,24 @@ public class WorkInProgressButtonItem implements ButtonItem {
             vp.add(allContents);
 
             selectedLanguages.setBoxLabel(Messages.get("label.wip.localisedcontent", "Localised Content only"));
-            selectedLanguages.addListener(Events.OnClick, getOnChangeListener(true, Messages.getWithArgs("label.wip.localisedcontent.helper", "Localised Content helper text. <a target=\"_blank\" href=\"{0}\">Find out more at The Academy</a>",  new String[] {academyUrl})));
+            selectedLanguages.addListener(Events.OnClick, getOnChangeListener(true, Messages.getWithArgs("label.wip.localisedcontent.helper", "Localised Content helper text. <a target=\"_blank\" href=\"{0}\">Find out more at The Academy</a>", new String[]{academyUrl})));
 
-            if (JahiaGWTParameters.getSiteLanguages().size() > 1) {
-                vpLanguages.add(selectedLanguages);
-                languages.setFieldLabel("Languages");
-                for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
-                    CheckBox languageCheck = new CheckBox();
-                    languageCheck.setBoxLabel(language.getDisplayName());
-                    languageCheck.setValueAttribute(language.getLanguage());
-                    languages.add(languageCheck);
-                }
-                languages.addStyleName("wip-language-list");
-                vpLanguages.add(languages);
-                errorLanguages.addStyleName("error-message");
-                errorLanguages.setHtml(Messages.get("label.wip.localisedcontent.error", "At least one language must be selected"));
-                errorLanguages.hide();
-                vpLanguages.add(errorLanguages);
-                vp.add(vpLanguages);
-                vpLanguages.addStyleName("wip-radio-localised");
+            vpLanguages.add(selectedLanguages);
+            languages.setFieldLabel("Languages");
+            for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
+                CheckBox languageCheck = new CheckBox();
+                languageCheck.setBoxLabel(language.getDisplayName());
+                languageCheck.setValueAttribute(language.getLanguage());
+                languages.add(languageCheck);
             }
+            languages.addStyleName("wip-language-list");
+            vpLanguages.add(languages);
+            errorLanguages.addStyleName("error-message");
+            errorLanguages.setHtml(Messages.get("label.wip.localisedcontent.error", "At least one language must be selected"));
+            errorLanguages.hide();
+            vpLanguages.add(errorLanguages);
+            vp.add(vpLanguages);
+            vpLanguages.addStyleName("wip-radio-localised");
 
             turnOff.setBoxLabel(Messages.get("label.wip.turnoff", "Turn off Work in Progress"));
             turnOff.addListener(Events.OnClick, getOnChangeListener(false, Messages.getWithArgs("label.wip.turnoff.helper", "Turn off helper text. <a target=\"_blank\" href=\"{0}\">Find out more at The Academy</a>",  new String[] {academyUrl})));

@@ -270,6 +270,9 @@ public class EditContentEngine extends AbstractContentEngine {
                         if (button instanceof WorkInProgressButton) {
                              ((WorkInProgressButton) button).updateButtonTitle();
                         }
+                        if (button instanceof WorkInProgressButtonItem.CheckBoxWip) {
+                            ((WorkInProgressButtonItem.CheckBoxWip) button).setValue(wipStatus == WipStatus.ALL_CONTENT);
+                        }
                     }
                 }
                 setAvailableLanguages(result.getAvailabledLanguages());

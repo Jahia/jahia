@@ -228,8 +228,11 @@ public class ContentTabItem extends PropertiesTabItem {
                     autoUpdateName.setVisible(false);
                 }
                 autoUpdateLabel.setHtml("");
-                nameText.setValue("");
-                nameText.setEnabled(false);
+                // dont't set name text if not initialized. This could happen if case of multiple selection
+                if (nameText != null) {
+                    nameText.setValue("");
+                    nameText.setEnabled(false);
+                }
             }
 
         }

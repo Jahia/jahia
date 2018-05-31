@@ -991,6 +991,7 @@
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.content.InfoTabItem"/>
         </property>
+        <property name="showInEngine" value="false"/>
     </bean>
 
     <bean id="Engine.Tab.Roles" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">

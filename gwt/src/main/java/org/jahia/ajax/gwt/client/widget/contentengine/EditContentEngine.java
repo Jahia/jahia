@@ -139,7 +139,7 @@ public class EditContentEngine extends AbstractContentEngine {
         tabs.setId("JahiaGxtEditEngineTabs");
         for (GWTEngineTab tabConfig : config.getEngineTabs()) {
             EditEngineTabItem tabItem = tabConfig.getTabItem();
-            if (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode())) {
+            if (tabConfig.showInEngine() && (tabConfig.getRequiredPermission() == null || PermissionsUtils.isPermitted(tabConfig.getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
                 if ((tabItem.getHideForTypes().isEmpty() || !node.isNodeType(tabItem.getHideForTypes())) &&
                         ((hasOrderableChildNodes && tabItem.isOrderableTab()) || ( !tabItem.isOrderableTab() && (tabItem.getShowForTypes().isEmpty() || node.isNodeType(tabItem.getShowForTypes()))))) {
                     tabs.add(tabItem.create(tabConfig, this));

@@ -43,9 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.data.toolbar;
 
-import java.io.Serializable;
-
 import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
+
+import java.io.Serializable;
 
 /**
  * User: toto
@@ -56,6 +56,7 @@ public class GWTEngineTab implements Serializable {
     private String id;
     private String title;
     private String requiredPermission;
+    private boolean showInEngine = true;
 
     private EditEngineTabItem tabItem;
 
@@ -81,6 +82,14 @@ public class GWTEngineTab implements Serializable {
 
     public void setRequiredPermission(String requiredPermission) {
         this.requiredPermission = requiredPermission;
+    }
+
+    public boolean showInEngine() {
+        return showInEngine;
+    }
+
+    public void setShowInEngine(boolean showInEngine) {
+        this.showInEngine = showInEngine;
     }
 
     public String getId() {

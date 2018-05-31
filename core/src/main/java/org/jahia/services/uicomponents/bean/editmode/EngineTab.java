@@ -73,6 +73,7 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     private EditEngineTabItem tabItem;
     private int order;
     private String requiredPermission;
+    private boolean showInEngine = true;
 
     private Object parent;
     private Object parentEditConfiguration;
@@ -98,6 +99,14 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public boolean showInEngine() {
+        return showInEngine;
+    }
+
+    public void setShowInEngine(boolean showInEngine) {
+        this.showInEngine = showInEngine;
     }
 
     public String getTitle() {

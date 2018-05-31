@@ -840,6 +840,7 @@ public class UIConfigHelper {
         }
         gwtTab.setTabItem(engineTab.getTabItem());
         gwtTab.setRequiredPermission(engineTab.getRequiredPermission());
+        gwtTab.setShowInEngine(engineTab.showInEngine());
         return gwtTab;
     }
 

@@ -10,11 +10,12 @@ public class FieldFacetDefinition extends SearchCriteria.BaseFacetDefinition {
     /**
      * Create a field facet definition instance.
      *
+     * @param id the unique identifier for this facet definition
      * @param fieldName Facet field name
      * @param maxGroups The max number of result groups the facet should return
      */
-    public FieldFacetDefinition(String fieldName, int maxGroups) {
-        super(maxGroups);
+    public FieldFacetDefinition(String id, String fieldName, int maxGroups) {
+        super(id, maxGroups);
         this.fieldName = fieldName;
     }
 

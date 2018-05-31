@@ -252,10 +252,37 @@ public class PropertiesEditor extends FormPanel {
             final GWTJahiaItemDefinition definition = items.get(itemIndex);
             final FormLayout fl = new FormLayout() {
 
-                private Template fieldTemplate;
+                private Template fieldTemplate = null;
+                private Template fieldI18nTemplate = null;
 
                 @Override
                 protected void renderField(Field<?> field, int index, El target) {
+                   if (!(field instanceof PropertyAdapterField)) {
+                        super.renderField(field, index, target);
+                        return;
+                    }
+                    boolean internationalized = ((PropertyAdapterField) field).getDefinition().isInternationalized();
+                    Template tpl = internationalized ? fieldI18nTemplate : fieldTemplate;
+                    if (tpl == null) {
+                        StringBuffer sb = new StringBuffer();
+                        if (internationalized) {
+                            sb.append("<div role='presentation' class='x-form-item prop-i18n-field {5}' tabIndex='-1'>");
+                        } else {
+                            sb.append("<div role='presentation' class='x-form-item prop-field {5}' tabIndex='-1'>");
+                        }
+                        sb.append("<label for={8} style='{2};{7}' class=x-form-item-label>{1}{4}</label>");
+                        sb.append("<div role='presentation' class='x-form-element x-form-el-{0}' id='x-form-el-{0}' style='{3}'>");
+                        sb.append("</div><div class='{6}' role='presentation'></div>");
+                        sb.append("</div>");
+                        tpl = new Template(sb.toString());
+                        tpl.compile();
+                        if (internationalized) {
+                            fieldI18nTemplate = tpl;
+                        } else {
+                            fieldTemplate = tpl;
+                        }
+                    }
+
                     String ls = field.getLabelSeparator() != null ? field.getLabelSeparator() : super.getLabelSeparator();
                     field.setLabelSeparator(ls);
                     Params p = new Params();
@@ -276,21 +303,7 @@ public class PropertiesEditor extends FormPanel {
                     String inputId = field.getId();
                     p.add(inputId);
 
-                    if (fieldTemplate == null) {
-                        StringBuffer sb = new StringBuffer();
-                        if (definition.isInternationalized()) {
-                            sb.append("<div role='presentation' class='x-form-item prop-i18n-field {5}' tabIndex='-1'>");
-                        } else {
-                            sb.append("<div role='presentation' class='x-form-item prop-field {5}' tabIndex='-1'>");
-                        }
-                        sb.append("<label for={8} style='{2};{7}' class=x-form-item-label>{1}{4}</label>");
-                        sb.append("<div role='presentation' class='x-form-element x-form-el-{0}' id='x-form-el-{0}' style='{3}'>");
-                        sb.append("</div><div class='{6}' role='presentation'></div>");
-                        sb.append("</div>");
-                        fieldTemplate = new Template(sb.toString());
-                        fieldTemplate.compile();
-                    }
-                    fieldTemplate.insert(target.dom, index, p);
+                    tpl.insert(target.dom, index, p);
                     if (field.isRendered()) {
                         target.selectNode(".x-form-el-" + field.getId()).appendChild(field.getElement());
                     } else {

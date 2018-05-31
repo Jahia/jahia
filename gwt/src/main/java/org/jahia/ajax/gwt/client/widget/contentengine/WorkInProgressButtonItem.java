@@ -173,13 +173,13 @@ public class WorkInProgressButtonItem implements ButtonItem {
             title.addStyleName("wip-panel-subtitle");
             vp.add(title);
 
-            allContents.addListener(Events.OnClick, getOnChangeListener(false, Messages.getWithArgs("label.wip.allcontent.helper", "All Content helper text. <a href=\"{0}\">Find out more at The Academy</a>", new String[] {academyUrl})));
+            allContents.addListener(Events.OnClick, getOnChangeListener(false, Messages.getWithArgs("label.wip.allcontent.helper", "All Content helper text. <a target=\"_blank\" href=\"{0}\">Find out more at The Academy</a>", new String[] {academyUrl})));
             allContents.setBoxLabel(Messages.get("label.wip.allcontent", "All Content ( localised & non-localised )"));
             allContents.addStyleName("wip-radio-all-content");
             vp.add(allContents);
 
             selectedLanguages.setBoxLabel(Messages.get("label.wip.localisedcontent", "Localised Content only"));
-            selectedLanguages.addListener(Events.OnClick, getOnChangeListener(true, Messages.getWithArgs("label.wip.localisedcontent.helper", "Localised Content helper text. <a href=\"{0}\">Find out more at The Academy</a>",  new String[] {academyUrl})));
+            selectedLanguages.addListener(Events.OnClick, getOnChangeListener(true, Messages.getWithArgs("label.wip.localisedcontent.helper", "Localised Content helper text. <a target=\"_blank\" href=\"{0}\">Find out more at The Academy</a>",  new String[] {academyUrl})));
 
             if (JahiaGWTParameters.getSiteLanguages().size() > 1) {
                 vpLanguages.add(selectedLanguages);
@@ -201,7 +201,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
             }
 
             turnOff.setBoxLabel(Messages.get("label.wip.turnoff", "Turn off Work in Progress"));
-            turnOff.addListener(Events.OnClick, getOnChangeListener(false, Messages.getWithArgs("label.wip.turnoff.helper", "Turn off helper text. <a href=\"{0}\">Find out more at The Academy</a>",  new String[] {academyUrl})));
+            turnOff.addListener(Events.OnClick, getOnChangeListener(false, Messages.getWithArgs("label.wip.turnoff.helper", "Turn off helper text. <a target=\"_blank\" href=\"{0}\">Find out more at The Academy</a>",  new String[] {academyUrl})));
             turnOff.addStyleName("wip-radio-off");
             vp.add(turnOff);
 

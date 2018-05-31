@@ -1788,7 +1788,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
-        checkLock();
+        checkLock(locale != null && epd.isInternationalized());
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
 
         if (locale != null) {
@@ -1822,7 +1822,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
-        checkLock();
+        checkLock(locale != null && epd.isInternationalized());
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
 
         if (locale != null) {
@@ -1872,7 +1872,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
-        checkLock();
+        checkLock(locale != null && epd.isInternationalized());
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
 
         if (locale != null) {
@@ -1920,7 +1920,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
-        checkLock();
+        checkLock(locale != null && epd.isInternationalized());
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
 
         if (locale != null) {
@@ -2763,9 +2763,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     @Override
     public void checkLock() throws RepositoryException {
+        checkLock(false);
+    }
+
+    private void checkLock(boolean unlockSharedLock) throws RepositoryException {
         if (!session.isSystem() && isLocked()) {
             List<String> owners = getLockOwners(objectNode);
-            if (owners.size() == 1 && owners.contains(session.getUserID())) {
+            if ((owners.size() == 1 && owners.contains(session.getUserID())) || unlockSharedLock) {
                 objectNode.getSession().addLockToken(objectNode.getProperty("j:locktoken").getString());
             } else {
                 boolean lockOwningSession = false;

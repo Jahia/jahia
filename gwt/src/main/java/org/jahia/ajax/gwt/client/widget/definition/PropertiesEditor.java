@@ -46,8 +46,11 @@ package org.jahia.ajax.gwt.client.widget.definition;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.core.El;
+import com.extjs.gxt.ui.client.core.Template;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Margins;
+import com.extjs.gxt.ui.client.util.Params;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
@@ -247,7 +250,59 @@ public class PropertiesEditor extends FormPanel {
         }
         for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
             final GWTJahiaItemDefinition definition = items.get(itemIndex);
-            final FormLayout fl = new FormLayout();
+            final FormLayout fl = new FormLayout() {
+
+                private Template fieldTemplate;
+
+                @Override
+                protected void renderField(Field<?> field, int index, El target) {
+                    String ls = field.getLabelSeparator() != null ? field.getLabelSeparator() : super.getLabelSeparator();
+                    field.setLabelSeparator(ls);
+                    Params p = new Params();
+                    if (super.getHideLabels()) {
+                        field.setHideLabel(true);
+                    }
+                    int pad = getLabelPad() != 0 ? getLabelPad() : 5;
+                    String elementStyle = getHideLabels() ? "padding-left:0;" : getLabelAlign() ==  LabelAlign.TOP ? "padding-left:0;" : "padding-left:" + (getLabelWidth() + pad) + "px";
+                    p.add(field.getId());
+                    p.add(field.getFieldLabel());
+                    p.add(super.getLabelWidth());
+                    p.add(elementStyle);
+                    p.add(ls);
+                    p.add(field.isHideLabel() ? "x-hide-label" : "");
+                    p.add("x-form-clear-left");
+                    p.add(field.getLabelStyle());
+
+                    String inputId = field.getId();
+                    p.add(inputId);
+
+                    if (fieldTemplate == null) {
+                        StringBuffer sb = new StringBuffer();
+                        if (definition.isInternationalized()) {
+                            sb.append("<div role='presentation' class='x-form-item prop-i18n-field {5}' tabIndex='-1'>");
+                        } else {
+                            sb.append("<div role='presentation' class='x-form-item prop-field {5}' tabIndex='-1'>");
+                        }
+                        sb.append("<label for={8} style='{2};{7}' class=x-form-item-label>{1}{4}</label>");
+                        sb.append("<div role='presentation' class='x-form-element x-form-el-{0}' id='x-form-el-{0}' style='{3}'>");
+                        sb.append("</div><div class='{6}' role='presentation'></div>");
+                        sb.append("</div>");
+                        fieldTemplate = new Template(sb.toString());
+                        fieldTemplate.compile();
+                    }
+                    fieldTemplate.insert(target.dom, index, p);
+                    if (field.isRendered()) {
+                        target.selectNode(".x-form-el-" + field.getId()).appendChild(field.getElement());
+                    } else {
+                        field.render(target.selectNode(".x-form-el-" + field.getId()).dom);
+                    }
+
+                    if (field.getStyleName().contains("-wrap")) {
+                        inputId += "-input";
+                        target.selectNode(".x-form-el-" + field.getId()).previousSibling().setAttribute("for", inputId);
+                    }
+                }
+            };
             fl.setLabelWidth(0);
 
             if ((excludedTypes != null && excludedTypes.contains(definition.getDeclaringNodeType())) ||
@@ -312,8 +367,6 @@ public class PropertiesEditor extends FormPanel {
                 adapterField.setStyleAttribute("padding-left", "0");
                 if (definition.isInternationalized()) {
                     adapterField.addStyleName("field-i18n");
-                } else {
-                    adapterField.addStyleName("field-no-i18n");
                 }
 
                 fields.put(field.getName(), adapterField);

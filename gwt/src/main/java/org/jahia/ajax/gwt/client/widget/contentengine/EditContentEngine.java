@@ -266,14 +266,7 @@ public class EditContentEngine extends AbstractContentEngine {
                         workInProgressLanguages = languages;
                     }
                     // update button
-                    for (BoxComponent button : buttons) {
-                        if (button instanceof WorkInProgressButton) {
-                             ((WorkInProgressButton) button).updateButtonTitle();
-                        }
-                        if (button instanceof WorkInProgressButtonItem.CheckBoxWip) {
-                            ((WorkInProgressButtonItem.CheckBoxWip) button).setValue(wipStatus == WipStatus.ALL_CONTENT);
-                        }
-                    }
+                    updateBottomBarButtons();
                 }
                 setAvailableLanguages(result.getAvailabledLanguages());
 

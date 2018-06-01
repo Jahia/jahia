@@ -627,6 +627,18 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         }
     }
 
+
+    protected void updateBottomBarButtons() {
+        for (BoxComponent button : buttons) {
+            if (button instanceof WorkInProgressButton) {
+                ((WorkInProgressButton) button).updateButtonTitle();
+            }
+            if (button instanceof WorkInProgressButtonItem.CheckBoxWip) {
+                ((WorkInProgressButtonItem.CheckBoxWip) button).setValue(wipStatus == WipStatus.ALL_CONTENT);
+            }
+        }
+    }
+
     protected boolean isNodeOfJmixLastPublishedType() {
         return getNode() != null && getNode().isNodeType("jmix:lastPublished");
     }

@@ -75,6 +75,11 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
     @Override
     public BoxComponent create(final AbstractContentEngine engine) {
+        // handle default value
+        if (engine instanceof CreateContentEngine && checkedByDefault) {
+            engine.setWipStatus(AbstractContentEngine.WipStatus.ALL_CONTENT);
+        }
+
         if (JahiaGWTParameters.getSiteLanguages().size() > 1) {
 
             wipButton = new WorkInProgressButton(engine);

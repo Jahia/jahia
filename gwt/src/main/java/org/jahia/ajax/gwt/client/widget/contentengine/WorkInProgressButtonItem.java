@@ -91,7 +91,9 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
             return wipButton;
         } else {
+
             final CheckBoxWip checkbox = new CheckBoxWip();
+
             checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
 
                 @Override
@@ -99,14 +101,16 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     engine.setWipStatus(checkbox.getValue() ? AbstractContentEngine.WipStatus.ALL_CONTENT : AbstractContentEngine.WipStatus.DISABLED);
                 }
             });
+
             checkbox.setBoxLabel(Messages.get("label.saveAsWIP", "Save as work in progress"));
             checkbox.setToolTip(Messages.get("label.saveAsWIP.information", "If checked, this content will ne be part of publication process"));
+
             return checkbox;
         }
     }
 
+    // A dedicated class so that a WIP checkbox object can be distinguished from other checkboxes by its class.
     public class CheckBoxWip extends CheckBox {
-        // Do nothing
     }
 
     public void setCheckedByDefault(boolean checkedByDefault) {

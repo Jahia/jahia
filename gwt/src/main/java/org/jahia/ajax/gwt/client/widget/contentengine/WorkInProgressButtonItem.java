@@ -93,6 +93,8 @@ public class WorkInProgressButtonItem implements ButtonItem {
         } else {
             final CheckBoxWip checkbox = new CheckBoxWip();
             checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
+
+                @Override
                 public void handleEvent(ComponentEvent event) {
                     engine.setWipStatus(checkbox.getValue() ? AbstractContentEngine.WipStatus.ALL_CONTENT : AbstractContentEngine.WipStatus.DISABLED);
                 }
@@ -177,14 +179,17 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     }
                 }
             });
+
             // remove errors on click
             vpLanguages.addListener(Events.OnChange, new Listener<BaseEvent>() {
+
                 @Override
                 public void handleEvent(BaseEvent be) {
                     errorLanguages.hide();
                     vpLanguages.removeStyleName("error-languages");
                 }
             });
+
             Html title = new Html(Messages.get("label.wip.title.sub", "Select what you would like to mark as Work in Progress"));
             title.addStyleName("wip-panel-subtitle");
             vp.add(title);
@@ -195,7 +200,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
             vp.add(allContents);
 
             selectedLanguages.setBoxLabel(Messages.get("label.wip.localisedcontent", "Localised Content only"));
-            selectedLanguages.addListener(Events.OnClick, getOnChangeListener(true, Messages.getWithArgs("label.wip.localisedcontent.helper", "Localised Content helper text. <a target=\"_blank\" href=\"{0}\">Find out more at The Academy</a>", new String[]{academyUrl})));
+            selectedLanguages.addListener(Events.OnClick, getOnChangeListener(true, Messages.getWithArgs("label.wip.localisedcontent.helper", "Localised Content helper text. <a target=\"_blank\" href=\"{0}\">Find out more at The Academy</a>", new String[] {academyUrl})));
 
             vpLanguages.add(selectedLanguages);
             languages.setFieldLabel("Languages");
@@ -278,7 +283,9 @@ public class WorkInProgressButtonItem implements ButtonItem {
         }
 
         private Listener<BaseEvent> getOnChangeListener(final Boolean enableLanguage, final String help) {
+
             return new Listener<BaseEvent>() {
+
                 @Override
                 public void handleEvent(BaseEvent be) {
                     if (enableLanguage) {

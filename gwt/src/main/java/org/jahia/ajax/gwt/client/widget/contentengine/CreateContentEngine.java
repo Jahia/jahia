@@ -223,8 +223,10 @@ public class CreateContentEngine extends AbstractContentEngine {
                 nodeName = result.getDefaultName();
 
                 fillCurrentTab();
-                // update button
-                updateBottomBarButtons();
+                if (node.get("j:workInProgressStatus") != null) {
+                    // update button
+                    updateBottomBarButtons();
+                }
 
                 loaded();
             }

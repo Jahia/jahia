@@ -82,8 +82,8 @@ public class SearchCriteria implements Serializable {
         /**
          * Create a facet definition instance.
          *
-         * @param id an unique identifier for this facet definition. This identifier might be used for caching facet result
-         *           so make sure it is unique
+         * @param id an unique identifier for this facet definition. This helps differentiate facet definitions that
+         *           are of the same type but are operating on different data objects
          * @param maxGroups The max number of result groups the facet should return
          */
         protected BaseFacetDefinition(String id, int maxGroups) {

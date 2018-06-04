@@ -98,7 +98,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
     private GWTJahiaLanguage language;
     private GWTJahiaNodeACL acl;
     private String defaultLanguageCode;
-    protected Map<String,Set<String>> referencesWarnings;
+    protected Map<String, Set<String>> referencesWarnings;
 
     private List<GWTJahiaNode> selectedNodes = null;
 
@@ -125,6 +125,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         initTabs();
 
         tabs.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            @Override
             public void handleEvent(ComponentEvent event) {
                 if (selectedNodes != null && selectedNodes.size() > 0) {
                     fillCurrentTab();
@@ -157,11 +159,12 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         }
     }
 
+    @Override
     public Component getComponent() {
         return m_component;
     }
 
-
+    @Override
     public void clear() {
         m_component.setHeadingHtml("&nbsp;");
         selectedNodes = null;
@@ -176,10 +179,13 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         fillData(new ArrayList<GWTJahiaNode>());
     }
 
+    @Override
     public void close() {
         fillData(selectedNodes);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     public void fillData(Object selectedItem) {
         clear();
 
@@ -218,6 +224,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 final GWTJahiaNode node = selectedNodes.get(0);
                 service.initializeEditEngine(node.getPath(), false,
                         new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+
+                            @Override
                             public void onSuccess(GWTJahiaEditEngineInitBean result) {
                                 if (selectedNodes == null || !selectedNodes.contains(result.getNode())) {
                                     return;
@@ -254,7 +262,9 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 for (GWTJahiaNode node : selectedNodes) {
                     paths.add(node.getPath());
                 }
-                service.initializeEditEngine(paths,false, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+                service.initializeEditEngine(paths, false, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
+
+                    @Override
                     public void onSuccess(GWTJahiaEditEngineInitBean result) {
                         types = result.getNodeTypes();
                         properties = result.getProperties();
@@ -266,7 +276,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         ok.setEnabled(true);
                         for (TabItem item : tabs.getItems()) {
                             EditEngineTabItem editItem = (EditEngineTabItem) item.getData("item");
-                            if (((EditEngineTabItem) item.getData("item")).isHandleMultipleSelection() && 
+                            if (((EditEngineTabItem) item.getData("item")).isHandleMultipleSelection() &&
                                     (editItem.getGwtEngineTab().getRequiredPermission() == null || editItem.getGwtEngineTab().getRequiredPermission() != null && PermissionsUtils.isPermitted(editItem.getGwtEngineTab().getRequiredPermission(), JahiaGWTParameters.getSiteNode()))) {
                                 item.setEnabled(true);
                             }
@@ -299,34 +309,42 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         }
     }
 
+    @Override
     public List<GWTJahiaNodeType> getNodeTypes() {
         return types;
     }
 
+    @Override
     public List<GWTJahiaNodeType> getMixin() {
         return mixin;
     }
 
+    @Override
     public Map<String, GWTChoiceListInitializer> getChoiceListInitializersValues() {
         return initializersValues;
     }
 
+    @Override
     public GWTJahiaNode getNode() {
         return selectedNodes != null ? selectedNodes.get(0) : null;
     }
 
+    @Override
     public List<GWTJahiaNode> getNodes() {
         return selectedNodes;
     }
 
+    @Override
     public String getNodeName() {
         return getNode().getName();
     }
 
+    @Override
     public String getDefaultLanguageCode() {
         return defaultLanguageCode;
     }
 
+    @Override
     public GWTJahiaNodeACL getAcl() {
         return acl;
     }
@@ -336,30 +354,37 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
         return selectedNodes;
     }
 
+    @Override
     public Map<String, Set<String>> getReferencesWarnings() {
         return referencesWarnings;
     }
 
+    @Override
     public GWTJahiaNode getTargetNode() {
         return null;
     }
 
+    @Override
     public boolean isExistingNode() {
         return true;
     }
 
+    @Override
     public boolean isMultipleSelection() {
         return selectedNodes != null && selectedNodes.size() > 1;
     }
 
+    @Override
     public Map<String, GWTJahiaNodeProperty> getProperties() {
         return properties;
     }
 
+    @Override
     public Map<String, GWTJahiaNodeProperty> getPresetProperties() {
         return new HashMap<String, GWTJahiaNodeProperty>();
     }
 
+    @Override
     public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDefaultValues() {
         return defaultValues;
     }
@@ -368,9 +393,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
      * Save selection listener
      */
     private class SaveSelectionListener extends SelectionListener<ButtonEvent> {
+
         public SaveSelectionListener() {
         }
 
+        @Override
         public void componentSelected(ButtonEvent event) {
 
             // general properties
@@ -400,6 +427,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
             EngineValidation e = new EngineValidation(ContentDetails.this, tabs, defaultLanguageCode, changedI18NProperties);
             boolean valid = e.validateData(new EngineValidation.ValidateCallback() {
+
                 @Override
                 public void handleValidationResult(EngineValidation.ValidateResult result) {
                     if (result.errorTab != null && !tabs.getSelectedItem().equals(result.errorTab)) {
@@ -438,6 +466,8 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
 
         // Ajax call to update values
         AsyncCallback callback = new BaseAsyncCallback() {
+
+            @Override
             public void onApplicationFailure(Throwable throwable) {
                 String message = throwable.getMessage();
                 if (message.contains("Invalid link")) {
@@ -449,6 +479,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 ok.setEnabled(okEnabled);
             }
 
+            @Override
             public void onSuccess(Object o) {
                 ok.setEnabled(okEnabled);
                 Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
@@ -471,5 +502,4 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                             removedTypes, callback);
         }
     }
-
 }

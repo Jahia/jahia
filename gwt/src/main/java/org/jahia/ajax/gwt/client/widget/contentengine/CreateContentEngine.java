@@ -223,8 +223,7 @@ public class CreateContentEngine extends AbstractContentEngine {
                 nodeName = result.getDefaultName();
 
                 fillCurrentTab();
-                // update button
-                updateBottomBarButtons();
+                updateWipControls();
                 loaded();
             }
 

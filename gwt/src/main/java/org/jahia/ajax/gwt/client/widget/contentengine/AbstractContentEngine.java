@@ -627,8 +627,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         }
     }
 
-
-    protected void updateBottomBarButtons() {
+    protected void updateWipControls() {
         for (BoxComponent button : buttons) {
             if (button instanceof WorkInProgressButton) {
                 ((WorkInProgressButton) button).updateButtonTitle();

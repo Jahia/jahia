@@ -266,7 +266,7 @@ public class EditContentEngine extends AbstractContentEngine {
                         workInProgressLanguages = languages;
                     }
                     // update button
-                    updateBottomBarButtons();
+                    updateWipControls();
                 }
                 setAvailableLanguages(result.getAvailabledLanguages());
 

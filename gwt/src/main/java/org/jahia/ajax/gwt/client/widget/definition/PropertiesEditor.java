@@ -264,7 +264,6 @@ public class PropertiesEditor extends FormPanel {
                         return;
                     }
 
-                    boolean internationalized = ((PropertyAdapterField) field).getDefinition().isInternationalized();
                     if (fieldTemplate == null) {
                         StringBuffer sb = new StringBuffer();
                         sb.append("<div role='presentation' class='x-form-item {9} {5}' tabIndex='-1'>");
@@ -295,7 +294,9 @@ public class PropertiesEditor extends FormPanel {
 
                     String inputId = field.getId();
                     p.add(inputId);
-                    p.add(internationalized? "prop-i18n-field" : "prop-field");
+
+                    boolean internationalized = ((PropertyAdapterField) field).getDefinition().isInternationalized();
+                    p.add(internationalized ? "prop-i18n-field" : "prop-field");
 
                     fieldTemplate.insert(target.dom, index, p);
                     if (field.isRendered()) {

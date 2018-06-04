@@ -61,7 +61,6 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
 
     private static final long serialVersionUID = -8372296247741073414L;
 
-
     private String name;
 
     private List<Column> treeColumns;
@@ -92,7 +91,6 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     private List<Toolbar> toolbars;
     private Toolbar contextMenu;
 
-
     private boolean expandRoot = false;
 
     private boolean allowRootNodeEditing;
@@ -119,8 +117,6 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     private String titleKey = null;
 
     private boolean suppressPublicationInfo;
-
-    private boolean showWorkInProgress;
 
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
@@ -421,7 +417,6 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
         this.displaySearchInDateMeta = displaySearchInDateMeta;
     }
 
-
     public boolean isEditableGrid() {
         return editableGrid;
     }
@@ -446,7 +441,6 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
         this.titleKey = titleKey;
     }
 
-
     public boolean isSuppressPublicationInfo() {
         return suppressPublicationInfo;
     }
@@ -456,10 +450,9 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
     }
 
     /**
-     * @deprecated since 7.2.1.3
+     * @deprecated since 7.2.3.1
      */
     @Deprecated
     public void setShowWorkInProgress(boolean showWorkInProgress) {
-        this.showWorkInProgress = showWorkInProgress;
     }
 }

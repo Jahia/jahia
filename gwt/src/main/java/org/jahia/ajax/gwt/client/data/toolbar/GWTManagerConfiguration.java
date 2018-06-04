@@ -57,7 +57,7 @@ import java.util.List;
 public class GWTManagerConfiguration extends GWTConfiguration implements Serializable {
 
     private static final long serialVersionUID = -8280137812056599560L;
-    
+
     private List<GWTColumn> treeColumns;
     private List<String> treeColumnKeys;
 
@@ -89,7 +89,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private GWTJahiaToolbar contextMenu;
 
     private boolean expandRoot = false;
-    
+
     private boolean allowRootNodeEditing;
 
     private boolean displaySearch = true;
@@ -105,16 +105,15 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private String searchBasePath = null;
 
     private boolean showOnlyNodesWithTemplates = false;
-    
+
     private String title = null;
-    
+
     private boolean suppressPublicationInfo;
-    private boolean showWorkInProgress;
 
     private boolean editableGrid = false;
 
     public GWTManagerConfiguration() {
-    	super();
+        super();
         treeColumns = new ArrayList<GWTColumn>();
         treeColumnKeys = new ArrayList<String>();
         tableColumns = new ArrayList<GWTColumn>();
@@ -146,28 +145,28 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public List<GWTColumn> getTableColumns() {
         if (tableColumns.isEmpty()) {
-            addTableColumn(new GWTColumn("name", Messages.get("label.name"),-1));
+            addTableColumn(new GWTColumn("name", Messages.get("label.name"), -1));
         }
         return tableColumns;
     }
 
     public List<String> getTableColumnKeys() {
         if (tableColumns.isEmpty()) {
-            addTableColumn(new GWTColumn("name", Messages.get("label.name"),-1));
+            addTableColumn(new GWTColumn("name", Messages.get("label.name"), -1));
         }
         return tableColumnKeys;
     }
 
     public List<GWTColumn> getTreeColumns() {
         if (treeColumns.isEmpty()) {
-            addTreeColumn(new GWTColumn("name", Messages.get("label.name"),-1));
+            addTreeColumn(new GWTColumn("name", Messages.get("label.name"), -1));
         }
         return treeColumns;
     }
 
     public List<String> getTreeColumnKeys() {
         if (treeColumns.isEmpty()) {
-            addTreeColumn(new GWTColumn("name", Messages.get("label.name"),-1));
+            addTreeColumn(new GWTColumn("name", Messages.get("label.name"), -1));
         }
         return treeColumnKeys;
     }
@@ -371,11 +370,11 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     }
 
     public List<GWTEngineTab> getManagerEngineTabs() {
-    	return managerEngineTabs;
+        return managerEngineTabs;
     }
 
-	public void setManagerEngineTabs(List<GWTEngineTab> managerEngineTabs) {
-    	this.managerEngineTabs = managerEngineTabs;
+    public void setManagerEngineTabs(List<GWTEngineTab> managerEngineTabs) {
+        this.managerEngineTabs = managerEngineTabs;
     }
 
     public List<String> getHiddenTypes() {

@@ -43,7 +43,6 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.StringValue;
 import org.apache.tika.io.IOUtils;
@@ -57,7 +56,6 @@ import org.jahia.ajax.gwt.content.server.UploadedPendingFile;
 import org.jahia.api.Constants;
 import org.jahia.bin.SessionNamedDataStorage;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
@@ -66,7 +64,6 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.i18n.Messages;
-import org.jahia.utils.security.AccessManagerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -75,7 +72,6 @@ import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.security.Privilege;
 import java.io.InputStream;
 import java.util.*;
 
@@ -282,73 +278,6 @@ public class PropertiesHelper {
             }
             setProperties(objectNode, newProps, httpSessionID);
         }
-    }
-
-    /**
-     * Save WIP settings, this method must be call to the these settings as it uses a JCR session to prevent content
-     * metadata to be updated.
-     * This method also check that the user has enough privileges to update the properties.
-     * @param node the node on witch the WIP properties will be set
-     * @param props the WIP data from the UI.
-     * @throws RepositoryException
-     */
-    public void saveWorkInProgress(JCRNodeWrapper node, List<GWTJahiaNodeProperty> props) throws RepositoryException {
-        // do Nothing if nothing to do ..
-        if (props.isEmpty()) {
-            return;
-        }
-        // check if current user has write access to save WIP info
-        // get Languages added
-        Set<String> languages = new HashSet<>();
-        Optional<GWTJahiaNodeProperty> languageStream = props.stream().filter(prop -> prop.getName().equals(Constants.WORKINPROGRESS_LANGUAGES)).findFirst();
-        if (languageStream.isPresent()) {
-            GWTJahiaNodeProperty newLanguages = languageStream.get();
-            if (!newLanguages.getValues().isEmpty()) {
-                newLanguages.getValues().forEach(val -> {
-                    try {
-                        languages.add(contentDefinition.convertValue(val).getString());
-                    } catch (RepositoryException e) {
-                        throw new JahiaRuntimeException(e);
-                    }
-                });
-            }
-        }
-        // remove existing languages
-        Set<String> removedLanguages = new HashSet<>();
-        if (node.hasProperty(Constants.WORKINPROGRESS_LANGUAGES)) {
-            for (JCRValueWrapper lang : node.getProperty(Constants.WORKINPROGRESS_LANGUAGES).getValues()) {
-                if (!languages.contains(lang.getString())) {
-                    // if language cannot be removed from existing languages, it means that it has been removed from the UI
-                    removedLanguages.add(lang.getString());
-                };
-            }
-        }
-
-        // check if the user can edit properties in that locale
-        for (String newLang : Sets.union(languages, removedLanguages)) {
-            if (!node.hasPermission(AccessManagerUtils.getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, node.getSession().getWorkspace().getName()) + "_" + newLang)) {
-                throw new AccessDeniedException("unable to save WIP information on node " + node.getPath() + " for user " + node.getSession().getUser().getName() + " in locale " + newLang);
-            }
-        }
-
-        // Get node with JCR Session
-        Node jcrNode = JCRSessionFactory.getInstance().getDefaultProvider().getSystemSession().getProviderSession(JCRSessionFactory.getInstance().getDefaultProvider()).getNode(node.getPath());
-        Optional<GWTJahiaNodeProperty> statusStream = props.stream().filter(prop -> prop.getName().equals(Constants.WORKINPROGRESS_STATUS)).findFirst();
-        if (statusStream.isPresent()) {
-            Optional<String> status = statusStream.get().getValues().stream().map(val -> {
-                try {
-                    return contentDefinition.convertValue(val).getString();
-                } catch (RepositoryException e) {
-                    throw new JahiaRuntimeException(e);
-                }
-            }).findFirst();
-            if (status.isPresent()) {
-                jcrNode.setProperty(Constants.WORKINPROGRESS_STATUS, status.get());
-            }
-        }
-
-        jcrNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES, languages.toArray(new String[0]));
-        jcrNode.getSession().save();
     }
 
     private void removeItemFromNode(ExtendedItemDefinition item, JCRNodeWrapper objectNode, JCRSessionWrapper currentUserSession) throws RepositoryException {

@@ -96,6 +96,8 @@ import static org.jahia.api.Constants.*;
  */
 public final class JCRContentUtils implements ServletContextAware {
 
+    private static final Value[] EMPTY_VALUES = new Value[] {};
+
     public static final Pattern COLON_PATTERN = Patterns.COLON;
 
     public static final Comparator<NodeType> NODE_TYPE_NAME_COMPARATOR = new Comparator<NodeType>() {
@@ -247,6 +249,27 @@ public final class JCRContentUtils implements ServletContextAware {
                     .getName());
         }
         return null;
+    }
+
+    /**
+     * Creates the JCR property values, depending on the type of the corresponding value.
+     *
+     * @param objectValues the object values to be converted
+     * @param factory     the {@link ValueFactory} instance
+     * @return the JCR property value
+     */
+    public static Value[] createValues(Collection<?> objectValues, ValueFactory factory) {
+        if (objectValues == null) {
+            return null;
+        } else if (objectValues.isEmpty()) {
+            return EMPTY_VALUES;
+        } else {
+            List<Value> vals = new ArrayList<>(objectValues.size());
+            for (Object objValue : objectValues) {
+                vals.add(createValue(objValue, factory));
+            }
+            return vals.toArray(EMPTY_VALUES);
+        }
     }
 
     /**

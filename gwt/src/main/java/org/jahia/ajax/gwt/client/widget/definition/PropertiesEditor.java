@@ -250,17 +250,21 @@ public class PropertiesEditor extends FormPanel {
         }
         for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
             final GWTJahiaItemDefinition definition = items.get(itemIndex);
+
             final FormLayout fl = new FormLayout() {
 
                 private Template fieldTemplate = null;
                 private Template fieldI18nTemplate = null;
 
+                // Override to be able to supply for a CSS class to the field root element telling whether the field is internationalized or not.
                 @Override
                 protected void renderField(Field<?> field, int index, El target) {
-                   if (!(field instanceof PropertyAdapterField)) {
+
+                    if (!(field instanceof PropertyAdapterField)) {
                         super.renderField(field, index, target);
                         return;
                     }
+
                     boolean internationalized = ((PropertyAdapterField) field).getDefinition().isInternationalized();
                     Template tpl = internationalized ? fieldI18nTemplate : fieldTemplate;
                     if (tpl == null) {

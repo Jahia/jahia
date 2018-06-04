@@ -46,8 +46,8 @@ package org.jahia.ajax.gwt.client.data.toolbar;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: rfelden
@@ -440,13 +440,5 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setSuppressPublicationInfo(boolean suppressPublicationInfo) {
         this.suppressPublicationInfo = suppressPublicationInfo;
-    }
-
-    public boolean isShowWorkInProgress() {
-        return showWorkInProgress;
-    }
-
-    public void setShowWorkInProgress(boolean showWorkInProgress) {
-        this.showWorkInProgress = showWorkInProgress;
     }
 }

@@ -455,10 +455,10 @@ public class ManagerConfiguration implements Serializable, BeanNameAware {
         this.suppressPublicationInfo = suppressPublicationInfo;
     }
 
-    public boolean isShowWorkInProgress() {
-        return showWorkInProgress;
-    }
-
+    /**
+     * @deprecated since 7.2.1.3
+     */
+    @Deprecated
     public void setShowWorkInProgress(boolean showWorkInProgress) {
         this.showWorkInProgress = showWorkInProgress;
     }

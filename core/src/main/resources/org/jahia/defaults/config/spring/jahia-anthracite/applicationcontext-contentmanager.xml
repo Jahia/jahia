@@ -682,7 +682,6 @@
                 <value>publicationInfo,40</value>
             </list>
         </property>
-        <property name="showWorkInProgress" value="true"/>
     </bean>
 
     <!-- sitemanager manager -->
@@ -778,7 +777,6 @@
                 <value>publicationInfo,40</value>
             </list>
         </property>
-        <property name="showWorkInProgress" value="true"/>
     </bean>
 
 </beans>

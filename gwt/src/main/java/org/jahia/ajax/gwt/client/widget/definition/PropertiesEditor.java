@@ -267,7 +267,7 @@ public class PropertiesEditor extends FormPanel {
                     boolean internationalized = ((PropertyAdapterField) field).getDefinition().isInternationalized();
                     if (fieldTemplate == null) {
                         StringBuffer sb = new StringBuffer();
-                        sb.append("<div role='presentation' class='x-form-item {8} {5}' tabIndex='-1'>");
+                        sb.append("<div role='presentation' class='x-form-item {9} {5}' tabIndex='-1'>");
                         sb.append("<label for={8} style='{2};{7}' class=x-form-item-label>{1}{4}</label>");
                         sb.append("<div role='presentation' class='x-form-element x-form-el-{0}' id='x-form-el-{0}' style='{3}'>");
                         sb.append("</div><div class='{6}' role='presentation'></div>");
@@ -292,10 +292,10 @@ public class PropertiesEditor extends FormPanel {
                     p.add(field.isHideLabel() ? "x-hide-label" : "");
                     p.add("x-form-clear-left");
                     p.add(field.getLabelStyle());
-                    p.add(internationalized? "prop-i18n-field" : "prop-field");
 
                     String inputId = field.getId();
                     p.add(inputId);
+                    p.add(internationalized? "prop-i18n-field" : "prop-field");
 
                     fieldTemplate.insert(target.dom, index, p);
                     if (field.isRendered()) {

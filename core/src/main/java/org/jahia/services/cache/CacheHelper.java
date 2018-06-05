@@ -114,13 +114,13 @@ public final class CacheHelper {
                 }
             }
         }
-        
+
         if (propagateInCluster) {
             Cache syncCache = ModuleCacheProvider.getInstance().getSyncCache();
             if (syncCache != null) {
                 // we use special sync cache here to let other cluster nodes know that they need to flush caches
                 // this "event" is handled in org.jahia.services.cache.ehcache.FlushCacheEventListener
-                ModuleCacheProvider.getInstance().getSyncCache().put(new Element("FLUSH_ALL_CACHES",
+                syncCache.put(new Element("FLUSH_ALL_CACHES",
                         // Create an empty CacheClusterEvent to flush caches right away (not correlated to any JCR event)
                         new CacheClusterEvent("", Long.MIN_VALUE)));
             }
@@ -225,27 +225,23 @@ public final class CacheHelper {
         if (syncCache != null) {
             syncCache.put(new Element("FLUSH_OUTPUT_CACHES",
                     // Create an empty CacheClusterEvent to flush caches right away (not correlated to any JCR event)
-                    new CacheClusterEvent("",Long.MIN_VALUE)));
+                    new CacheClusterEvent("", Long.MIN_VALUE)));
         }
     }
 
     public static void flushOutputCachesForPath(String path, boolean flushSubtree) {
         flushOutputCachesForPaths(Sets.newHashSet(path), flushSubtree);
     }
-    
+
     public static void flushOutputCachesForPaths(Set<String> paths, boolean flushSubtree) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Flushing dependencies for paths: {}", paths);
-        }
+        logger.debug("Flushing dependencies for paths: {}", paths);
         ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
         Cache cache = cacheProvider.getDependenciesCache();
         Set<Object> cacheKeys = new HashSet<>();
         for (String path : paths) {
             Element element = cache.get(path);
             if (element != null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Flushing path: {}", path);
-                }
+                logger.debug("Flushing path: {}", path);
                 cacheKeys.add(element.getObjectKey());
             }
         }
@@ -266,7 +262,7 @@ public final class CacheHelper {
         cacheProvider.invalidate(paths, true);
         cache.removeAll(cacheKeys);
     }
-    
+
     private static boolean isKeyMatched(String stringKey, Set<String> paths) {
         for (String path : paths) {
             if (stringKey.equals(path) || stringKey.startsWith(path + '/')) {
@@ -289,7 +285,7 @@ public final class CacheHelper {
         info.setHitRatio(info.getAccessCount() > 0 ? info.getHitCount() * 100 / (double) info.getAccessCount() : 0);
 
         info.setSize(stats.getSize());
-        
+
         info.setLocalHeapSize(stats.getLocalHeapSize());
 
         info.setOverflowToDisk(cache.getCacheConfiguration().isOverflowToDisk());
@@ -379,7 +375,7 @@ public final class CacheHelper {
 
     /**
      * Returns the configuration and statistics information for all the available cache managers.
-     * 
+     *
      * @param withConfig
      *            if <code>true</code> the configuration information will be also available
      * @param withSizeInBytes
@@ -407,7 +403,7 @@ public final class CacheHelper {
 
     /**
      * Returns a value of the specified cache element (by key), considering also classloader-aware deserialization if required.
-     * 
+     *
      * @param cache
      *            the target cache
      * @param key
@@ -420,7 +416,7 @@ public final class CacheHelper {
 
     /**
      * Returns a value of the specified cache element, considering also classloader-aware deserialization if required.
-     * 
+     *
      * @param cacheElement
      *            the cache element
      * @return a value of the specified cache element (by key), considering also classloader-aware deserialization if required

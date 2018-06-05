@@ -78,7 +78,14 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
         // handle default value
         if (engine instanceof CreateContentEngine && checkedByDefault) {
-            engine.setWipStatus(AbstractContentEngine.WipStatus.ALL_CONTENT);
+            if (JahiaGWTParameters.getSiteLanguages().size() == 1) {
+                engine.setWipStatus(AbstractContentEngine.WipStatus.LANGUAGES);
+                Set<String> langs = new HashSet<String>();
+                langs.add(JahiaGWTParameters.getSiteLanguages().get(0).getLanguage());
+                engine.setWorkInProgressLanguages(langs);
+            } else {
+                engine.setWipStatus(AbstractContentEngine.WipStatus.ALL_CONTENT);
+            }
         }
 
         if (JahiaGWTParameters.getSiteLanguages().size() > 1) {

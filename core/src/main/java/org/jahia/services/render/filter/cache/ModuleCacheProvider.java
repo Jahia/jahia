@@ -43,6 +43,8 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import static org.jahia.services.cache.CacheHelper.*;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -50,7 +52,6 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.DependenciesCacheEvictionPolicy;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -58,7 +59,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 
-import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -84,7 +84,6 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     private Cache syncCache;
     private Set<String> nonCacheableFragments = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
     private CacheKeyGenerator keyGenerator;
-    private JCRSessionFactory jcrSessionFactory;
 
     // needed for retro compatibility with old cache implem
     private AggregateCacheFilter aggregateCacheFilter;
@@ -143,7 +142,6 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      * Flushes all the cache entries, related to the specified node.
      *
      * @param nodePathOrIdentifier the node path or node uuid to be invalidated.
-     * @throws ParseException in case of a malformed key
      */
     public void invalidate(String nodePathOrIdentifier) {
         invalidate(nodePathOrIdentifier, true);
@@ -153,7 +151,6 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      * Flushes all the cache entries, related to the specified node.
      * @param nodePathOrIdentifier the node path or node uuid to be invalidated.
      * @param propagateToOtherClusterNodes do notify replicators of this event
-     * @throws ParseException in case of a malformed key
      */
     @SuppressWarnings("unchecked")
     public void invalidate(String nodePathOrIdentifier, boolean propagateToOtherClusterNodes) {
@@ -249,29 +246,20 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
             Set<String> deps = (Set<String>) element.getObjectValue();
             htmlCache.removeAll(deps);
         }
-        if(propagateToOtherClusterNodes && syncCache != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Sending flush of regexp {} across cluster", key);
-            }
-            syncCache.put(new Element("FLUSH_REGEXP-" + UUID.randomUUID(), new CacheClusterEvent(key,getClusterRevision())));
+        if(propagateToOtherClusterNodes) {
+            sendCacheFlushCommandToCluster(CMD_FLUSH_REGEXP, key);
         }
     }
 
     public void propagateFlushRegexpDependenciesOfPath(String key, boolean propagateToOtherClusterNodes) {
-        if(propagateToOtherClusterNodes && syncCache != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Sending flush of regexp dependencies {} across cluster", key);
-            }
-            syncCache.put(new Element("FLUSH_REGEXPDEP-" + UUID.randomUUID(), new CacheClusterEvent(key,getClusterRevision())));
+        if(propagateToOtherClusterNodes) {
+            sendCacheFlushCommandToCluster(CMD_FLUSH_REGEXPDEP, key);
         }
     }
 
     public void propagateChildrenDependenciesFlushToCluster(String path, boolean propagateToOtherClusterNodes) {
-        if(propagateToOtherClusterNodes && syncCache != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Sending flush of children of {} across cluster", path);
-            }
-            syncCache.put(new Element("FLUSH_CHILDS-" + UUID.randomUUID(), new CacheClusterEvent(path,getClusterRevision())));
+        if(propagateToOtherClusterNodes) {
+            sendCacheFlushCommandToCluster(CMD_FLUSH_CHILDREN, path);
         }
     }
 
@@ -377,20 +365,12 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     }
 
     public void propagatePathFlushToCluster(String nodePathOrIdentifier) {
-        if (syncCache != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Sending flush of {} across cluster", nodePathOrIdentifier);
-            }
-            syncCache.put(new Element("FLUSH_PATH-" + UUID.randomUUID(), new CacheClusterEvent(nodePathOrIdentifier,getClusterRevision())));
-        }
+        sendCacheFlushCommandToCluster(CMD_FLUSH_PATH, nodePathOrIdentifier);
     }
 
-    private long getClusterRevision() {
-        return SpringJackrabbitRepository.getInstance().getClusterRevision();
-    }
-
+    @Deprecated
     public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
-        this.jcrSessionFactory = jcrSessionFactory;
+        // deprecated since 7.2.3.1 as not used
     }
 
     public Cache getSyncCache() {

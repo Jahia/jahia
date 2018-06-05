@@ -82,7 +82,6 @@
 
     <bean id="urlResolverListener" class="org.jahia.services.render.URLResolverListener">
         <property name="availableDuringPublish" value="true"/>
-        <property name="moduleCacheProvider" ref="ModuleCacheProvider"/>
     </bean>
 
     <bean id="BaseRulesListener" class="org.jahia.services.content.rules.RulesListener" init-method="start" abstract="true">

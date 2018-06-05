@@ -43,7 +43,8 @@
  */
 package org.jahia.utils.security;
 
-import net.sf.ehcache.Element;
+import static org.jahia.services.cache.CacheHelper.*;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
@@ -56,12 +57,8 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
-import org.jahia.services.render.filter.cache.CacheClusterEvent;
-import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,16 +130,7 @@ public class AccessManagerUtils {
         }
         if (matchingPermissions != null) {
             matchingPermissions.flush();
-            if (SettingsBean.getInstance().isClusterActivated()) {
-                // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
-                // to flush it across the cluster
-                net.sf.ehcache.Cache htmlCacheEventSync = getHtmlCacheEventSync();
-                if (htmlCacheEventSync != null) {
-                    htmlCacheEventSync.put(new Element("FLUSH_MATCHINGPERMISSIONS-" + UUID.randomUUID(),
-                            // Create an empty CacheClusterEvent to be executed after next Journal sync
-                            new CacheClusterEvent("", getClusterRevision())));
-                }
-            }
+            sendCacheFlushCommandToCluster(CMD_FLUSH_MATCHINGPERMISSIONS);
         }
     }
 
@@ -866,21 +854,6 @@ public class AccessManagerUtils {
         if (!isAliased) {
             pathPermissionCache.put(key, value);
         }
-    }
-
-    private static net.sf.ehcache.Cache getHtmlCacheEventSync() {
-        net.sf.ehcache.Cache htmlCacheEventSync = null;
-        try {
-            htmlCacheEventSync = ModuleCacheProvider.getInstance().getSyncCache();
-        } catch (Exception e) {
-            // not initialized yet
-        }
-
-        return htmlCacheEventSync;
-    }
-
-    private static long getClusterRevision() {
-        return SpringJackrabbitRepository.getInstance().getClusterRevision();
     }
 
     private static  <K,V> Cache<K, V> initCache(String name) {

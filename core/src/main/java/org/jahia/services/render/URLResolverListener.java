@@ -43,12 +43,10 @@
  */
 package org.jahia.services.render;
 
-import net.sf.ehcache.Element;
+import static org.jahia.services.cache.CacheHelper.*;
 
 import org.jahia.services.content.ApiEventListener;
 import org.jahia.services.content.DefaultEventListener;
-import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
-import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
@@ -61,10 +59,7 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * JCR listener to invalidate URL resolver caches
@@ -75,7 +70,6 @@ public class URLResolverListener extends DefaultEventListener implements ApiEven
 
     private URLResolverFactory urlResolverFactory;
     private VanityUrlService vanityUrlService;
-    private ModuleCacheProvider moduleCacheProvider;
 
     @Override
     public int getEventTypes() {
@@ -136,31 +130,20 @@ public class URLResolverListener extends DefaultEventListener implements ApiEven
             vanityUrlService.flushCaches();
         }
         if ((pathsToFlush != null || flushVanityUrlCache) && SettingsBean.getInstance().isClusterActivated()) {
-            List<Element> syncEvents = new LinkedList<Element>();
             // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
             // to flush it across the cluster
             if (pathsToFlush != null) {
-                for (String path : pathsToFlush) {
-                    syncEvents.add(new Element("FLUSH_URLRESOLVER-" + UUID.randomUUID(),
-                    // Create an empty CacheClusterEvent to be executed after next Journal sync
-                            new CacheClusterEvent(path, getClusterRevision())));
-                }
+                sendMultipleCacheFlushCommandsToCluster(CMD_FLUSH_URLRESOLVER, pathsToFlush);
             }
             if (flushVanityUrlCache) {
-                syncEvents.add(new Element("FLUSH_VANITYURL-" + UUID.randomUUID(),
-                // Create an empty CacheClusterEvent to be executed after next Journal sync
-                        new CacheClusterEvent("", getClusterRevision())));
+                sendCacheFlushCommandToCluster(CMD_FLUSH_VANITYURL);
             }
-            moduleCacheProvider.getSyncCache().putAll(syncEvents);
         }
     }
 
-    private static long getClusterRevision() {
-        return SpringJackrabbitRepository.getInstance().getClusterRevision();
-    }
-
+    @Deprecated
     public void setModuleCacheProvider(ModuleCacheProvider moduleCacheProvider) {
-        this.moduleCacheProvider = moduleCacheProvider;
+     // deprecated since 7.2.3.1 as not used
     }
 
 }

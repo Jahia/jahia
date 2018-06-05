@@ -99,7 +99,6 @@ when we flush this entry we will flush the whole cache
     <bean id="ModuleCacheProvider" class="org.jahia.services.render.filter.cache.ModuleCacheProvider">
         <property name="cacheProvider" ref="bigEhCacheProvider"/>
         <property name="keyGenerator" ref="cacheKeyGenerator"/>
-        <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
         <property name="aggregateCacheFilter" ref="cacheFilter"/>
     </bean>
 

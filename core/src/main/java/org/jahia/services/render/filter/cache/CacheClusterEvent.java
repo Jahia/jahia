@@ -46,23 +46,41 @@ package org.jahia.services.render.filter.cache;
 import java.io.Serializable;
 
 /**
- * Bean object for cluster wide flush event
- * Created : 08/04/14
+ * Bean object for cluster wide flush event.
  */
 public class CacheClusterEvent implements Serializable {
+    private static final String EMPTY_EVENT = "";
 
     private final String event;
     private final long clusterRevision;
 
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param event the cluster event message
+     * @param clusterRevision current cluster journal revision to consider ordering of events. Use negative value (say
+     *            {@link Integer#MIN_VALUE}) to execute event immediately on receipt.
+     */
     public CacheClusterEvent(String event, long clusterRevision) {
         this.event = event;
         this.clusterRevision = clusterRevision;
     }
 
+    /**
+     * The cluster event message.
+     * 
+     * @return a custom event message or an empty string if no message was provided for this event
+     */
     public String getEvent() {
-        return event;
+        // return an empty string instead of null for backward compatibility
+        return event != null ? event : EMPTY_EVENT;
     }
 
+    /**
+     * The target cluster journal revision to consider when processing this event.
+     * 
+     * @return cluster journal revision to consider when processing this event
+     */
     public long getClusterRevision() {
         return clusterRevision;
     }

@@ -104,7 +104,15 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
                 @Override
                 public void handleEvent(ComponentEvent event) {
-                    engine.setWipStatus(checkbox.getValue() ? AbstractContentEngine.WipStatus.ALL_CONTENT : AbstractContentEngine.WipStatus.DISABLED);
+                    Set<String> langs = new HashSet<String>(engine.getWorkInProgressLanguagesSorted());
+                    if (checkbox.getValue()) {
+                        engine.setWipStatus(AbstractContentEngine.WipStatus.LANGUAGES);
+                        langs.add(engine.getSelectedLanguage());
+                    } else {
+                        engine.setWipStatus(AbstractContentEngine.WipStatus.DISABLED);
+                        langs.remove(engine.getSelectedLanguage());
+                    }
+                    engine.setWorkInProgressLanguages(langs);
                 }
             });
 

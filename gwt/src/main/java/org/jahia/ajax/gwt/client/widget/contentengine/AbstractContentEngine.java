@@ -290,8 +290,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
             currentTab.removeStyleName("WIP-all-content");
             switch (getWipStatus()) {
                 case LANGUAGES:
-                    if (workInProgressLanguages.contains(language.getLanguage())) {
-                        currentTab.addStyleName("WIP-i18n");
+                    if (workInProgressLanguages.contains(getSelectedLanguage())) {
+                        currentTab.addStyleName(JahiaGWTParameters.getSiteLanguages().size() > 1 ? "WIP-i18n" : "WIP-all-content");
                     }
                     break;
                 case ALL_CONTENT:
@@ -633,7 +633,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 ((WorkInProgressButton) button).updateButtonTitle();
             }
             if (button instanceof WorkInProgressButtonItem.CheckBoxWip) {
-                ((WorkInProgressButtonItem.CheckBoxWip) button).setValue(wipStatus == WipStatus.ALL_CONTENT);
+                ((WorkInProgressButtonItem.CheckBoxWip) button).setValue(wipStatus == WipStatus.LANGUAGES && workInProgressLanguages.contains(getSelectedLanguage()));
             }
         }
     }

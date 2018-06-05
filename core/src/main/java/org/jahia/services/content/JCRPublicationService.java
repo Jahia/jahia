@@ -408,8 +408,8 @@ public class JCRPublicationService extends JahiaService {
         try {
             List<String> toDelete = new ArrayList<String>();
             List<JCRNodeWrapper> toDeleteOnSource = new ArrayList<JCRNodeWrapper>();
-            for (Iterator<JCRNodeWrapper> it = toPublish.iterator(); it.hasNext(); ) {
-                JCRNodeWrapper nodeWrapper = it.next();
+            for (Iterator<JCRNodeWrapper> nodeIterator = toPublish.iterator(); nodeIterator.hasNext(); ) {
+                JCRNodeWrapper nodeWrapper = nodeIterator.next();
                 if (nodeWrapper.hasProperty("j:deletedChildren")) {
                     JCRPropertyWrapper property = nodeWrapper.getProperty("j:deletedChildren");
                     Value[] values = property.getValues();
@@ -425,11 +425,11 @@ public class JCRPublicationService extends JahiaService {
                     toDeleteOnSource.add(nodeWrapper);
                     toDelete.add(nodeWrapper.getIdentifier());
 
-                    it.remove();
+                    nodeIterator.remove();
                 } else {
                     for (JCRNodeWrapper nodeToDelete : toDeleteOnSource) {
                         if (nodeWrapper.getPath().startsWith(nodeToDelete.getPath())) {
-                            it.remove();
+                            nodeIterator.remove();
                             break;
                         }
                     }
@@ -444,15 +444,15 @@ public class JCRPublicationService extends JahiaService {
                     logger.warn("Already deleted : " + nodeWrapper.getPath());
                 }
             }
-            for (String uuid : toDelete) {
+            for (String nodeUuid : toDelete) {
                 try {
-                    JCRNodeWrapper node = destinationSession.getNodeByIdentifier(uuid);
+                    JCRNodeWrapper node = destinationSession.getNodeByIdentifier(nodeUuid);
                     addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
                     node.remove();
                 } catch (ItemNotFoundException e) {
-                    logger.warn("Already deleted : " + uuid);
+                    logger.warn("Already deleted : " + nodeUuid);
                 } catch (InvalidItemStateException e) {
-                    logger.warn("Already deleted : " + uuid);
+                    logger.warn("Already deleted : " + nodeUuid);
                 }
             }
             sourceSession.save();

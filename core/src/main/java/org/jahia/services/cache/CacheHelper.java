@@ -132,7 +132,7 @@ public final class CacheHelper {
         }
 
         if (propagateInCluster) {
-            sendCacheFlushCommandToClusterImmediately(CMD_FLUSH_ALL_CACHES);
+            sendCacheFlushCommandToCluster(CMD_FLUSH_ALL_CACHES, false, null, false);
         }
 
         logger.info("...done flushing all caches.");
@@ -230,7 +230,7 @@ public final class CacheHelper {
     }
 
     private static void flushOutputCachesCluster() {
-        sendCacheFlushCommandToClusterImmediately(CMD_FLUSH_OUTPUT_CACHES);
+        sendCacheFlushCommandToCluster(CMD_FLUSH_OUTPUT_CACHES, false, null, false);
     }
 
     public static void flushOutputCachesForPath(String path, boolean flushSubtree) {
@@ -453,16 +453,6 @@ public final class CacheHelper {
 
     private static Cache getSyncCache() {
         return ModuleCacheProvider.getInstance().getSyncCache();
-    }
-
-    /**
-     * Sends the specified cache flush command to other cluster nodes (if clustering is activated). The event will be processed immediately
-     * upon receipt.
-     *
-     * @param command the command to be sent
-     */
-    public static void sendCacheFlushCommandToClusterImmediately(String command) {
-        sendCacheFlushCommandToCluster(command, false, null, false);
     }
 
     /**

@@ -112,7 +112,7 @@ public class PublicationInfoAggregationTest extends JahiaTestCase {
             JCRNodeWrapper subNode2 = node.addNode("testSubList2", "jnt:contentList");
             subNode2.setProperty("jcr:title", SUBNODE_TITLE_EN2);
             subNode2.addMixin("jmix:lastPublished");
-            subNode2.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_LANG);
+            subNode2.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_STATUS_LANG);
             subNode2.setProperty(Constants.WORKINPROGRESS_LANGUAGES, new String[]{"en"});
             JCRNodeWrapper subNode2En = subNode2.getNode("j:translation_en");
             subNodeUuid2 = subNode2.getIdentifier();

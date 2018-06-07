@@ -1164,10 +1164,10 @@ public class JCRPublicationService extends JahiaService {
 
             if (node.hasProperty(Constants.WORKINPROGRESS_STATUS)) {
                 String wipStatus = node.getProperty(Constants.WORKINPROGRESS_STATUS).getString();
-                if (wipStatus.equals(Constants.WORKINPROGRESS_ALLCONTENT)) {
+                if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_ALLCONTENT)) {
                     info.setWorkInProgress(true);
                     wipAllContent = true;
-                } else if (wipStatus.equals(Constants.WORKINPROGRESS_LANG)) {
+                } else if (wipStatus.equals(Constants.WORKINPROGRESS_STATUS_LANG)) {
                     for (JCRValueWrapper value : node.getProperty(Constants.WORKINPROGRESS_LANGUAGES).getValues()) {
                         wipLanguages.add(value.getString());
                     }

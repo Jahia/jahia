@@ -627,7 +627,7 @@ public class PublicationTest {
     public void testWorkInProgressStatus() throws RepositoryException {
         JCRNodeWrapper list = TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_LANG);
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_STATUS_LANG);
         editTextNode1.setProperty(Constants.WORKINPROGRESS_LANGUAGES, new String[] {"en"});
         englishEditSession.save();
         getCleanSession();
@@ -664,7 +664,7 @@ public class PublicationTest {
         assertEquals("Invalid 'work in progress' info for content", true, getWipFor(infos, editTextNode1.getIdentifier()));
 
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_DISABLED);
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_STATUS_DISABLED);
         englishEditSession.save();
 
         getCleanSession();
@@ -677,7 +677,7 @@ public class PublicationTest {
 
         // Add keywords, publish then put a work in progress in english, and modify the keywords
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_DISABLED);
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_STATUS_DISABLED);
         editTextNode1.addMixin("jmix:keywords");
         editTextNode1.setProperty("j:keywords", new String[] {"Hello, Bonjour"});
         englishEditSession.save();
@@ -691,7 +691,7 @@ public class PublicationTest {
         assertEquals("Invalid 'work in progress' info for content", false, getWipFor(infos, editTextNode1.getIdentifier()));
 
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_LANG);
+        editTextNode1.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_STATUS_LANG);
         editTextNode1.setProperty(Constants.WORKINPROGRESS_LANGUAGES, new String[] {"en"});
         editTextNode1.setProperty("j:keywords", new String[] {"Hello1, Bonjour1"});
         englishEditSession.save();

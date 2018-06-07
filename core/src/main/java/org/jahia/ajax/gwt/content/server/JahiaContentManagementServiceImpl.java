@@ -1072,8 +1072,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         if (wipStatusProperty != null && wipStatusProperty.getValues() != null
                 && !wipStatusProperty.getValues().isEmpty()) {
             newWipStatus = wipStatusProperty.getValues().get(0).getString();
-            if ((Constants.WORKINPROGRESS_ALLCONTENT.equals(newWipStatus)
-                    || Constants.WORKINPROGRESS_DISABLED.equals(newWipStatus))
+            if ((Constants.WORKINPROGRESS_STATUS_ALLCONTENT.equals(newWipStatus)
+                    || Constants.WORKINPROGRESS_STATUS_DISABLED.equals(newWipStatus))
                     && !node.hasPermission(AccessManagerUtils.getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES,
                             session.getWorkspace().getName()))) {
                 // we do not allow translators to change WIP status type to all content or disabled
@@ -1138,14 +1138,22 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         Node targetNode = systemSession.getProviderSession(node.getProvider())
                                 .getNodeByIdentifier(node.getIdentifier());
                         boolean debugEnabled = logger.isDebugEnabled();
-                        if (wipStatusToSet != null) {
-                            targetNode.setProperty(Constants.WORKINPROGRESS_STATUS, wipStatusToSet);
+                        String effectiveWipStatusToSet = wipStatusToSet; 
+                        if (effectiveWipStatusToSet != null) {
+                            targetNode.setProperty(Constants.WORKINPROGRESS_STATUS, effectiveWipStatusToSet);
                             if (debugEnabled) {
                                 logger.debug("Setting WIP status on node {} to {}", targetNode.getPath(),
-                                        wipStatusToSet);
+                                        effectiveWipStatusToSet);
+                            }
+                        } else if (wipLangugagesToSet != null && wipLangugagesToSet.isEmpty()) {
+                            // languages are empty
+                            if (targetNode.hasProperty(Constants.WORKINPROGRESS_STATUS) && Constants.WORKINPROGRESS_STATUS_LANG.equals(targetNode.getProperty(Constants.WORKINPROGRESS_STATUS).getString())) {
+                                // in this case we are removing WIP completely
+                                effectiveWipStatusToSet = Constants.WORKINPROGRESS_STATUS_DISABLED;
                             }
                         }
-                        if (wipStatusToSet != null && (Constants.WORKINPROGRESS_DISABLED.equals(wipStatusToSet)
+
+                        if (effectiveWipStatusToSet != null && (Constants.WORKINPROGRESS_STATUS_DISABLED.equals(effectiveWipStatusToSet)
                                 || wipLangugagesToSet != null && wipLangugagesToSet.isEmpty())) {
                             targetNode.setProperty(Constants.WORKINPROGRESS_LANGUAGES, (Value[]) null);
                             targetNode.setProperty(Constants.WORKINPROGRESS_STATUS, (Value) null);

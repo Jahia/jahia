@@ -458,17 +458,21 @@ public class JCRPublicationService extends JahiaService {
             sourceSession.save();
             destinationSession.save();
 
-
             Set<String> allCloned = new HashSet<String>();
             for (JCRNodeWrapper sourceNode : toPublish) {
                 try {
-                    sourceNode.getCorrespondingNodePath(destinationWorkspace);
-                } catch (ItemNotFoundException e) {
-                    CloneResult cloneResult = ensureNodeInDestinationWorkspace(sourceNode, destinationSession,
-                            toCheckpoint);
-                    allCloned.addAll(cloneResult.includedUuids);
+                    try {
+                        sourceNode.getCorrespondingNodePath(destinationWorkspace);
+                    } catch (ItemNotFoundException e) {
+                        CloneResult cloneResult = ensureNodeInDestinationWorkspace(sourceNode, destinationSession, toCheckpoint);
+                        allCloned.addAll(cloneResult.includedUuids);
+                    }
+                } catch (RepositoryException e) {
+                    logger.error("Error when fetching node from or cloning node in the destination workspace", e);
+                    restorePublicationStatus(sourceSession, sourceNode.getIdentifier(), previousPropertyByNodeUuidByName);
                 }
             }
+
             uuidsToPublish.removeAll(allCloned);
             for (String includedUuid : allCloned) {
                 toPublish.remove(sourceSession.getNodeByIdentifier(includedUuid));
@@ -479,14 +483,7 @@ public class JCRPublicationService extends JahiaService {
                     mergeToDestinationWorkspace(node, sourceSession, destinationSession, calendar, toCheckpoint);
                 } catch (RepositoryException e) {
                     logger.error("Error when merging differences", e);
-                    String nodeUuid = node.getIdentifier();
-                    Map<String, Value> previousPropertyByName = previousPropertyByNodeUuidByName.get(nodeUuid);
-                    if (previousPropertyByName != null) {
-                        restorePublicationStatus(sourceSession, nodeUuid, previousPropertyByName);
-                        if (sourceSession.hasPendingChanges()) {
-                            sourceSession.save();
-                        }
-                    }
+                    restorePublicationStatus(sourceSession, node.getIdentifier(), previousPropertyByNodeUuidByName);
                 }
             }
 
@@ -497,7 +494,7 @@ public class JCRPublicationService extends JahiaService {
             for (Map.Entry<String, Map<String, Value>> nodeEntry : previousPropertyByNodeUuidByName.entrySet()) {
                 String nodeUuid = nodeEntry.getKey();
                 Map<String, Value> previousPropertyByName = nodeEntry.getValue();
-                restorePublicationStatus(sourceSession, nodeUuid, previousPropertyByName);
+                doRestorePublicationStatus(sourceSession, nodeUuid, previousPropertyByName);
             }
             if (sourceSession.hasPendingChanges()) {
                 sourceSession.save();
@@ -539,7 +536,18 @@ public class JCRPublicationService extends JahiaService {
         destinationSession.refresh(false);
     }
 
-    private static void restorePublicationStatus(JCRSessionWrapper sourceSession, String nodeUuid, Map<String, Value> previousPropertyByName) throws RepositoryException {
+    private static void restorePublicationStatus(JCRSessionWrapper sourceSession, String nodeUuid, Map<String, Map<String, Value>> previousPropertyByNodeUuidByName) throws RepositoryException {
+        Map<String, Value> previousPropertyByName = previousPropertyByNodeUuidByName.get(nodeUuid);
+        if (previousPropertyByName == null) {
+            return;
+        }
+        doRestorePublicationStatus(sourceSession, nodeUuid, previousPropertyByName);
+        if (sourceSession.hasPendingChanges()) {
+            sourceSession.save();
+        }
+    }
+
+    private static void doRestorePublicationStatus(JCRSessionWrapper sourceSession, String nodeUuid, Map<String, Value> previousPropertyByName) throws RepositoryException {
 
         JCRNodeWrapper node;
         try {

@@ -46,6 +46,8 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
@@ -53,6 +55,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -109,6 +112,18 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     private static final String CACHE_ALL_PRINCIPALS_ENTRY_KEY = "all principals";
     private static final String PROPERTY_CACHE_NAME = "HTMLRequiredPermissionsCache";
 
+
+    private static boolean isUnderUsersNode(String path) {
+        if (path.startsWith("/users/")) {
+            return true;
+        }
+        if (path.startsWith("/sites/") && path.contains("/users/")) {
+            String siteKey = JCRContentUtils.getSiteKey(path);
+            return siteKey != null && path.startsWith(JahiaSitesService.SITES_JCR_PATH + "/" + siteKey + "/users/");
+        }
+        return false;
+    }
+
     private final Object objForSync = new Object();
     private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<>();
     private EhCacheProvider cacheProvider;
@@ -123,6 +138,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     private boolean useGroupsSignature = false;
     
     private Set<String> groupsSignatureAclPathsToQuery;
+    private String allPrincipalsWithAclQuery;
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
@@ -476,18 +492,17 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                         long startTime = System.currentTimeMillis();
                         Set<String> results = new HashSet<>();
                         String queryStatement = getAllPrincipalsWithAclQuery();
-                        QueryWrapper query = session.getWorkspace().getQueryManager().createQuery(
-                        queryStatement, Query.JCR_SQL2);
+                        QueryWrapper query = session.getWorkspace().getQueryManager().createQuery(queryStatement, Query.JCR_SQL2);
                         RowIterator ri = query.execute().getRows();
                         while (ri.hasNext()) {
                             Row row = ri.nextRow();
+                            String path = row.getValue("jcr:path").getString();
+                            if (isUnderUsersNode(path)) {
+                                continue;
+                            }
                             Value v = row.getValue("j:principal");
                             String principal = v !=  null ? v.getString() : null;
                             if (StringUtils.isEmpty(principal)) {
-                                continue;
-                            }
-                            String path = row.getValue("jcr:path").getString();
-                            if (path.startsWith("/users/") || path.startsWith("/sites/") && path.contains("/users/") && path.startsWith(session.getNode(path).getResolveSite().getPath() + "/users/")) {
                                 continue;
                             }
                             results.add(principal);
@@ -507,25 +522,51 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
       return (Set<String>) element.getObjectValue();
     }
 
-    private String getAllPrincipalsWithAclQuery() {
-        final String queryBase = "SELECT [jcr:path],[j:principal] FROM [jnt:ace]";
-        if (groupsSignatureAclPathsToQuery == null) {
-            return queryBase;
-        }
-        StringBuilder q = new StringBuilder(128);
-        q.append(queryBase).append(" WHERE ");
-        boolean first = true;
-        for (String path : groupsSignatureAclPathsToQuery) {
-            if (!first) {
-                q.append(" OR");
-            } else {
-                first = false;
+    /**
+     * Checks if the specified path is relevant for the calculation of the all principals with ACLs cache entry, based on configured
+     * {@link #groupsSignatureAclPathsToQuery} value.
+     * 
+     * @param path the node path to check
+     * @return <code>true</code> if the path is relevant for the calculation of the all principals with ACLs cache entry; <code>false</code>
+     *         otherwise.
+     */
+    public boolean isRelevantForAllPrincipalsCacheEntry(String path) {
+        if (groupsSignatureAclPathsToQuery != null) {
+            boolean relevant = false;
+            for (String testPath : groupsSignatureAclPathsToQuery) {
+                if (path.startsWith(testPath)) {
+                    relevant = true;
+                    break;
+                }
             }
-
-            q.append(" ISDESCENDANTNODE('").append(JCRContentUtils.sqlEncode(path)).append("')");
+            return relevant && !isUnderUsersNode(path);
         }
+        return true;
+    }
 
-        return q.toString();
+    private String getAllPrincipalsWithAclQuery() {
+        if (allPrincipalsWithAclQuery == null) {
+            final String queryBase = "SELECT [jcr:path],[j:principal] FROM [jnt:ace]";
+            if (groupsSignatureAclPathsToQuery == null) {
+                allPrincipalsWithAclQuery = queryBase;
+            } else {
+                StringBuilder q = new StringBuilder(128);
+                q.append(queryBase).append(" WHERE");
+                boolean first = true;
+                for (String path : groupsSignatureAclPathsToQuery) {
+                    if (!first) {
+                        q.append(" OR");
+                    } else {
+                        first = false;
+                    }
+        
+                    q.append(" ISDESCENDANTNODE('").append(JCRContentUtils.sqlEncode(path)).append("')");
+                }
+        
+                allPrincipalsWithAclQuery = q.toString();
+            }
+        }
+        return allPrincipalsWithAclQuery;
     }
 
     private Element generateCacheEntry(final String cacheKey, CacheEntryNotFoundCallback callback) throws RepositoryException {
@@ -578,6 +619,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     public void flushUsersGroupsKey(String key, boolean propagateToOtherClusterNodes) {
         synchronized (objForSync) {
             cache.remove(key, !propagateToOtherClusterNodes);
+            logger.debug("Flushed entry {} from " + CACHE_NAME + " cache", key);
             Element element = cache.get(CACHE_ALL_PRINCIPALS_ENTRY_KEY);
             if (element != null) {
                 @SuppressWarnings("unchecked")
@@ -586,6 +628,34 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     // The principal is not present in the list, flush the list
                     // Don't need to flush it if a principal has been removed from all ACEs
                     cache.remove(CACHE_ALL_PRINCIPALS_ENTRY_KEY, !propagateToOtherClusterNodes);
+                    logger.debug("Flushed entry " + CACHE_ALL_PRINCIPALS_ENTRY_KEY + " from " + CACHE_NAME + " cache");
+                }
+            }
+        }
+    }
+
+    public void flushUsersGroupsKeys(Collection<String> keys, Collection<String> keysRelevantForGroupSignature, boolean propagateToOtherClusterNodes) {
+        boolean keysEmpty = CollectionUtils.isEmpty(keys);
+        boolean keysRelevantForGroupSignatureEmpty = CollectionUtils.isEmpty(keysRelevantForGroupSignature);
+        if (keysEmpty && keysRelevantForGroupSignatureEmpty) {
+            return;
+        }
+        synchronized (objForSync) {
+            if (!keysEmpty) {
+                cache.removeAll(keys, !propagateToOtherClusterNodes);
+                logger.debug("Flushed entries {} from " + CACHE_NAME + " cache", keys);
+            }
+            if (!keysRelevantForGroupSignatureEmpty) {
+                Element element = cache.get(CACHE_ALL_PRINCIPALS_ENTRY_KEY);
+                if (element != null) {
+                    @SuppressWarnings("unchecked")
+                    Set<String> allPrincipalsWithAcl = (Set<String>) element.getObjectValue();
+                    for (String key : keysRelevantForGroupSignature) {
+                        if (key.lastIndexOf(':') == 1 && !allPrincipalsWithAcl.contains(key)) {
+                            allPrincipalsWithAcl.add(key);
+                            logger.debug("Added key {} to the entry " + CACHE_ALL_PRINCIPALS_ENTRY_KEY + " in " + CACHE_NAME + " cache", key);
+                        }
+                    }
                 }
             }
         }
@@ -607,6 +677,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     public void setGroupsSignatureAclPathsToQuery(String paths) {
         groupsSignatureAclPathsToQuery = null;
+        allPrincipalsWithAclQuery = null;
         if (StringUtils.isNotBlank(paths)) {
             groupsSignatureAclPathsToQuery = new LinkedHashSet<>(Arrays.asList(StringUtils.split(paths, ", ")));
         }

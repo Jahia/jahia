@@ -43,13 +43,14 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import static org.jahia.api.Constants.*;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.observation.EventState;
 import org.apache.jackrabbit.core.state.NoSuchItemStateException;
 import org.jahia.services.content.*;
-import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.seo.jcr.VanityUrlManager;
@@ -149,9 +150,11 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
 
         final Cache depCache = cacheProvider.getDependenciesCache();
         final Set<String> flushed = new HashSet<String>();
+        final Set<String> checkedAclEntries = new HashSet<String>();
 
         AclCacheKeyPartGenerator cacheKeyGenerator = (AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls");
         final Set<String> userGroupsKeyToFlush = new HashSet<String>();
+        final Set<String> principalsForGroupSignature = new HashSet<String>();
         for (Event event : events) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Event: {}", event);
@@ -181,10 +184,11 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
                     flushForVanityUrl = true;
                 }
-                final String siteKey = JCRContentUtils.getSiteKey(path);
-                if (path.contains("j:acl") && !path.endsWith("j:acl")) {
+                if (path.contains(ACL) && !path.endsWith(ACL)) {
                     // Flushing cache of acl key for users as a group or an acl has been updated
-                    if (cacheKeyGenerator != null) {
+                    if (cacheKeyGenerator != null && !checkedAclEntries.contains(path)) {
+                        // remember that we saw this path already
+                        checkedAclEntries.add(path);
 
                         String nodeName = StringUtils.substringAfterLast(path, "/");
 
@@ -200,20 +204,31 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                                 key = nodeName.substring(Math.max(u + 1, g + 1));
                             }
                         } else {
-                            logger.warn("Cannot parse ACL event for : " + nodeName);
+                            logger.warn("Cannot parse ACL event for: {}", nodeName);
                         }
+                        final String siteKey = JCRContentUtils.getSiteKey(path);
+                        String principalKey = null;
+                        String principalKeyWithSite = null;
                         if (key.startsWith("u_")) {
+                            principalKey = "u:" + key.substring(2);
                             if(siteKey != null) {
-                                userGroupsKeyToFlush.add("u:" + key.substring(2) + ":" + siteKey);
+                                principalKeyWithSite = principalKey + ":" + siteKey;
                             }
-                            userGroupsKeyToFlush.add("u:" + key.substring(2));
                         } else if (key.startsWith("g_")) {
+                            principalKey = "g:" + key.substring(2);
                             if(siteKey != null) {
-                                userGroupsKeyToFlush.add("g:" + key.substring(2) + ":" + siteKey);
+                                principalKeyWithSite = principalKey + ":" + siteKey;
                             }
-                            userGroupsKeyToFlush.add("g:" + key.substring(2));
                         } else {
-                            userGroupsKeyToFlush.add(key);
+                            principalKey = key;
+                        }
+                        userGroupsKeyToFlush.add(principalKey);
+                        if (principalKeyWithSite != null) {
+                            userGroupsKeyToFlush.add(principalKeyWithSite);
+                        }
+                        if (cacheKeyGenerator.isRelevantForAllPrincipalsCacheEntry(path)) {
+                            // the path is relevant for calculation of all principal ACL cache entry (we ignore here the site key)
+                            principalsForGroupSignature.add(principalKey);
                         }
                     }
                     flushParent = true;
@@ -226,13 +241,21 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                             @Override
                             public Object doInJCR(JCRSessionWrapper systemSession) throws RepositoryException {
                                 final QueryManagerWrapper queryManager = systemSession.getWorkspace().getQueryManager();
-                                QueryResultWrapper result = queryManager.createQuery("select * from ['jnt:ace'] where isdescendantnode('" + JCRContentUtils.sqlEncode(fPath) + "/')", Query.JCR_SQL2).execute();
-                                for (JCRNodeWrapper nodeWrapper : result.getNodes()) {
-                                    String principal = nodeWrapper.getProperty("j:principal").getString();
-                                    if(siteKey != null) {
-                                        userGroupsKeyToFlush.add(principal + ":" + siteKey);
+                                JCRNodeIteratorWrapper nodes = queryManager.createQuery("select * from ['jnt:ace'] where isdescendantnode('" + JCRContentUtils.sqlEncode(fPath) + "/')", Query.JCR_SQL2).execute().getNodes();
+                                if (nodes.hasNext()) {
+                                    final String siteKey = JCRContentUtils.getSiteKey(fPath);
+                                    boolean relevantForGroupSignature = cacheKeyGenerator.isRelevantForAllPrincipalsCacheEntry(fPath);
+                                    for (JCRNodeWrapper nodeWrapper : nodes) {
+                                        String principal = nodeWrapper.getProperty("j:principal").getString();
+                                        userGroupsKeyToFlush.add(principal);
+                                        if (relevantForGroupSignature) {
+                                            // the path is relevant for calculation of all principal ACL cache entry (we ignore here the site key)
+                                            principalsForGroupSignature.add(principal);
+                                        }
+                                        if(siteKey != null) {
+                                            userGroupsKeyToFlush.add(principal + ":" + siteKey);
+                                        }
                                     }
-                                    userGroupsKeyToFlush.add(principal);
                                 }
                                 return null;
                             }
@@ -304,20 +327,17 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     }
                 }
 
-                if (cacheKeyGenerator != null) {
-                    if (userGroupsKeyToFlush.contains("")) {
-                        cacheKeyGenerator.flushUsersGroupsKey(propagateToOtherClusterNodes);
-                    } else {
-                        for (String key : userGroupsKeyToFlush) {
-                            cacheKeyGenerator.flushUsersGroupsKey(key, propagateToOtherClusterNodes);
-                        }
-                    }
-                }
-
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
+        }
 
+        if (cacheKeyGenerator != null) {
+            if (userGroupsKeyToFlush.contains("")) {
+                cacheKeyGenerator.flushUsersGroupsKey(propagateToOtherClusterNodes);
+            } else {
+                cacheKeyGenerator.flushUsersGroupsKeys(userGroupsKeyToFlush, principalsForGroupSignature, propagateToOtherClusterNodes);
+            }
         }
     }
 

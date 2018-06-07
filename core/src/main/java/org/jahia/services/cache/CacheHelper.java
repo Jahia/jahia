@@ -452,7 +452,12 @@ public final class CacheHelper {
     }
 
     private static Cache getSyncCache() {
-        return ModuleCacheProvider.getInstance().getSyncCache();
+        try {
+            return ModuleCacheProvider.getInstance().getSyncCache();
+        } catch (Exception e) {
+            // cache was initialized yet
+            return null;
+        }
     }
 
     /**
@@ -491,16 +496,25 @@ public final class CacheHelper {
         if (syncCache != null) {
             // we use special sync cache here to let other cluster nodes know that they need to flush caches
             // this "event" is handled in org.jahia.services.cache.ehcache.FlushCacheEventListener
-            CacheClusterEvent cacheEvent = new CacheClusterEvent(eventMessage,
-                    executeConsideringCurrentClusterRevision ? getClusterRevision() : Long.MIN_VALUE);
-            String commandString = appendRandomSufixToCommand ? (command + '-' + UUID.randomUUID()) : command;
-            Element element = new Element(commandString, cacheEvent);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Sending cache flush command {} to cluster with messsage {} and cluster revision {}",
-                        new Object[] { commandString, cacheEvent.getEvent(), cacheEvent.getClusterRevision() });
-            }
-            syncCache.put(element);
+            syncCache.put(createCacheElementToSendCommand(command, appendRandomSufixToCommand, eventMessage,
+                    getClusterRevisionForEventToBeSent(executeConsideringCurrentClusterRevision)));
         }
+    }
+
+    private static Element createCacheElementToSendCommand(String command, boolean appendRandomSufixToCommand, String eventMessage,
+            long clusterRevision) {
+        CacheClusterEvent cacheEvent = new CacheClusterEvent(eventMessage, clusterRevision);
+        String commandString = appendRandomSufixToCommand ? (command + '-' + UUID.randomUUID()) : command;
+        Element element = new Element(commandString, cacheEvent);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Sending cache flush command {} to cluster with messsage {} and cluster revision {}",
+                    new Object[] { commandString, cacheEvent.getEvent(), cacheEvent.getClusterRevision() });
+        }
+        return element;
+    }
+
+    private static long getClusterRevisionForEventToBeSent(boolean executeConsideringCurrentClusterRevision) {
+        return executeConsideringCurrentClusterRevision ? getClusterRevision() : Long.MIN_VALUE;
     }
 
     /**
@@ -530,17 +544,9 @@ public final class CacheHelper {
             // we use special sync cache here to let other cluster nodes know that they need to flush caches
             // this "event" is handled in org.jahia.services.cache.ehcache.FlushCacheEventListener
             List<Element> cacheElements = new ArrayList<>(eventMessages.size());
-            long clusterRevision = executeConsideringCurrentClusterRevision ? getClusterRevision() : Long.MIN_VALUE;
-            boolean debugEnabled = logger.isDebugEnabled();
+            long clusterRevision = getClusterRevisionForEventToBeSent(executeConsideringCurrentClusterRevision);
             for (String msg : eventMessages) {
-                CacheClusterEvent cacheEvent = new CacheClusterEvent(msg, clusterRevision);
-                String commandString = appendRandomSufixToCommand ? (command + '-' + UUID.randomUUID()) : command;
-                Element element = new Element(commandString, cacheEvent);
-                cacheElements.add(element);
-                if (debugEnabled) {
-                    logger.debug("Sending cache flush command {} to cluster with messsage {} and cluster revision {}",
-                            new Object[] { commandString, cacheEvent.getEvent(), cacheEvent.getClusterRevision() });
-                }
+                cacheElements.add(createCacheElementToSendCommand(command, appendRandomSufixToCommand, msg, clusterRevision));
             }
             syncCache.putAll(cacheElements);
         }

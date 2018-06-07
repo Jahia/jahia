@@ -64,7 +64,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
-import java.io.Serializable;
 import java.lang.management.ManagementFactory;
 import java.util.*;
 
@@ -133,7 +132,7 @@ public final class CacheHelper {
         }
 
         if (propagateInCluster) {
-            sendCacheFlushCommandToClusterImmediate(CMD_FLUSH_ALL_CACHES);
+            sendCacheFlushCommandToClusterImmediately(CMD_FLUSH_ALL_CACHES);
         }
 
         logger.info("...done flushing all caches.");
@@ -231,7 +230,7 @@ public final class CacheHelper {
     }
 
     private static void flushOutputCachesCluster() {
-        sendCacheFlushCommandToClusterImmediate(CMD_FLUSH_OUTPUT_CACHES);
+        sendCacheFlushCommandToClusterImmediately(CMD_FLUSH_OUTPUT_CACHES);
     }
 
     public static void flushOutputCachesForPath(String path, boolean flushSubtree) {
@@ -459,17 +458,17 @@ public final class CacheHelper {
     /**
      * Sends the specified cache flush command to other cluster nodes (if clustering is activated). The event will be processed immediately
      * upon receipt.
-     * 
+     *
      * @param command the command to be sent
      */
-    public static void sendCacheFlushCommandToClusterImmediate(String command) {
+    public static void sendCacheFlushCommandToClusterImmediately(String command) {
         sendCacheFlushCommandToCluster(command, false, null, false);
     }
 
     /**
      * Sends the specified cache flush command to other cluster nodes (if clustering is activated). The event will be processed considering
      * current cluster revision.
-     * 
+     *
      * @param command the command to be sent
      */
     public static void sendCacheFlushCommandToCluster(String command) {
@@ -479,7 +478,7 @@ public final class CacheHelper {
     /**
      * Sends the specified cache flush command with a message to other cluster nodes (if clustering is activated). The event will be
      * processed considering current cluster revision.
-     * 
+     *
      * @param command the command to be sent
      * @param eventMessage custom event message
      */
@@ -489,7 +488,7 @@ public final class CacheHelper {
 
     /**
      * Sends the specified cache flush command to other cluster nodes (if clustering is activated).
-     * 
+     *
      * @param command the command to be sent
      * @param appendRandomSufixToCommand if true a random prefix (generated UUID) will be appended to the command name
      * @param eventMessage custom event message
@@ -517,7 +516,7 @@ public final class CacheHelper {
     /**
      * Sends the specified cache flush commands to other cluster nodes (if clustering is activated). The events will be processed
      * considering current cluster revision.
-     * 
+     *
      * @param command the command to be sent
      * @param eventMessages a collection of event messages to send
      */
@@ -527,7 +526,7 @@ public final class CacheHelper {
 
     /**
      * Sends the specified cache flush commands to other cluster nodes (if clustering is activated).
-     * 
+     *
      * @param command the command to be sent
      * @param appendRandomSufixToCommand if true a random prefix (generated UUID) will be appended to the command name
      * @param eventMessages a collection of event messages to send
@@ -545,10 +544,9 @@ public final class CacheHelper {
             boolean debugEnabled = logger.isDebugEnabled();
             for (String msg : eventMessages) {
                 CacheClusterEvent cacheEvent = new CacheClusterEvent(msg, clusterRevision);
-                Serializable commandString = appendRandomSufixToCommand ? (command + '-' + UUID.randomUUID()) : command;
-                Element cacheElement = new Element(commandString, cacheEvent);
-                cacheElements.add(cacheElement);
-
+                String commandString = appendRandomSufixToCommand ? (command + '-' + UUID.randomUUID()) : command;
+                Element element = new Element(commandString, cacheEvent);
+                cacheElements.add(element);
                 if (debugEnabled) {
                     logger.debug("Sending cache flush command {} to cluster with messsage {} and cluster revision {}",
                             new Object[] { commandString, cacheEvent.getEvent(), cacheEvent.getClusterRevision() });

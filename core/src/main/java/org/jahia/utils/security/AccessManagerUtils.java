@@ -113,10 +113,10 @@ public class AccessManagerUtils {
      * Init privilegesInRole and matchingPermissions static cache
      */
     public static void initCaches() {
-        if(privilegesInRole == null) {
+        if (privilegesInRole == null) {
             privilegesInRole = initCache("org.jahia.security.privilegesInRolesCache");
         }
-        if(matchingPermissions == null) {
+        if (matchingPermissions == null) {
             matchingPermissions = initCache("org.jahia.security.matchingPermissions");
         }
     }
@@ -307,14 +307,14 @@ public class AccessManagerUtils {
             if (permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))) {
                 if (jcrPath.contains("j:translation_")) {
                     Matcher matcher = TRANSLATION_LANGUAGE_PATTERN.matcher(jcrPath);
-                    if(matcher.matches()) {
+                    if (matcher.matches()) {
                         String language = matcher.group(2);
                         permissions.remove(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName));
                         permissions.add(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName) + "_" + language);
                     }
                 } else if (jcrPath.contains("j:referenceInField_")) {
                     Matcher matcher = REFERENCE_FIELD_LANGUAGE_PATTERN.matcher(jcrPath);
-                    if(matcher.matches()) {
+                    if (matcher.matches()) {
                         String language = matcher.group(2);
                         permissions.remove(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName));
                         permissions.add(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName) + "_" + language);
@@ -324,12 +324,12 @@ public class AccessManagerUtils {
 
             // Always allow to add child nodes when it's a translation node and the user have the translate permission
 
-            if(permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
+            if (permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
                 String nodeName = pathWrapper.getNodeName();
-                if((nodeName.startsWith("j:translation_") || nodeName.startsWith("j:referenceInField_")) &&
+                if ((nodeName.startsWith("j:translation_") || nodeName.startsWith("j:referenceInField_")) &&
                         isGranted(nodePathWrapper, Collections.singleton(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)),
                                 securitySession, jahiaPrincipal, workspaceName, isAliased,
-                                pathPermissionCache, compiledAcls, privilegeRegistry)){
+                                pathPermissionCache, compiledAcls, privilegeRegistry)) {
                     return true;
                 }
             }
@@ -372,7 +372,7 @@ public class AccessManagerUtils {
      */
     public static Set<Privilege> getPermissionsInRole(String role, JahiaPrivilegeRegistry privilegeRegistry) throws RepositoryException {
         Set<Privilege> permsInRole = null;
-        if(privilegesInRole == null) {
+        if (privilegesInRole == null) {
             privilegesInRole = initCache("org.jahia.security.privilegesInRolesCache");
         } else {
             permsInRole = privilegesInRole.get(role);
@@ -406,10 +406,7 @@ public class AccessManagerUtils {
         Boolean cachedValue = matchingPermissionsGet(entryKey, isAliased);
         if (cachedValue == null) {
             Set<Privilege> permsInRole = getPermissionsInRole(role, privilegeRegistry);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Checking role {}", role);
-            }
-
+            logger.debug("Checking role {}", role);
             for (Privilege privilege : permsInRole) {
                 String privilegeName = privilege.getName();
                 if (checkPrivilege(permissions, privilegeName, entryKey, isAliased, workspaceName)) {
@@ -487,7 +484,7 @@ public class AccessManagerUtils {
      * @return true if the user is administrator
      */
     public static boolean isAdmin(String siteKey, JahiaPrincipal jahiaPrincipal) {
-        if(jahiaPrincipal.getAdmin() == null) {
+        if (jahiaPrincipal.getAdmin() == null) {
             // optimize away guest, we assume he can never be site administrator.
             jahiaPrincipal.setAdmin(!JahiaLoginModule.GUEST.equals(jahiaPrincipal.getName()) &&
                     ServicesRegistry.getInstance().getJahiaGroupManagerService().isAdminMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), siteKey));
@@ -570,9 +567,7 @@ public class AccessManagerUtils {
                 node = node.getParent();
             }
         } catch (ItemNotFoundException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug(e.getMessage(), e);
-            }
+            logger.debug(e.getMessage(), e);
         }
 
         return grantedRoles;
@@ -659,7 +654,7 @@ public class AccessManagerUtils {
                                     }
                                 }
                             } catch (RepositoryException e) {
-                                logger.error("Can't read ACE "+aceNode.getPath(),e);
+                                logger.error("Can't read ACE " + aceNode.getPath(), e);
                             }
                         }
                         acl.broken = aclNode.hasProperty("j:inherit") && !aclNode.getProperty("j:inherit").getBoolean();
@@ -803,9 +798,7 @@ public class AccessManagerUtils {
 
     private static boolean checkPrivilege(Set<String> permissions, String privilegeName) {
         if (permissions.contains(privilegeName)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Found privilege {}", privilegeName);
-            }
+            logger.debug("Found privilege {}", privilegeName);
             permissions.remove(privilegeName);
             if (permissions.isEmpty()) {
                 return true;
@@ -856,7 +849,7 @@ public class AccessManagerUtils {
         }
     }
 
-    private static  <K,V> Cache<K, V> initCache(String name) {
+    private static <K, V> Cache<K, V> initCache(String name) {
         CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
         if (cacheService != null) {
             // Jahia is initialized

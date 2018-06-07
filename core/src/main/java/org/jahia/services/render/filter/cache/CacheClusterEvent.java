@@ -49,6 +49,7 @@ import java.io.Serializable;
  * Bean object for cluster wide flush event.
  */
 public class CacheClusterEvent implements Serializable {
+
     private static final String EMPTY_EVENT = "";
 
     private final String event;
@@ -56,7 +57,7 @@ public class CacheClusterEvent implements Serializable {
 
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param event the cluster event message
      * @param clusterRevision current cluster journal revision to consider ordering of events. Use negative value (say
      *            {@link Integer#MIN_VALUE}) to execute event immediately on receipt.
@@ -68,7 +69,7 @@ public class CacheClusterEvent implements Serializable {
 
     /**
      * The cluster event message.
-     * 
+     *
      * @return a custom event message or an empty string if no message was provided for this event
      */
     public String getEvent() {
@@ -78,7 +79,7 @@ public class CacheClusterEvent implements Serializable {
 
     /**
      * The target cluster journal revision to consider when processing this event.
-     * 
+     *
      * @return cluster journal revision to consider when processing this event
      */
     public long getClusterRevision() {

@@ -75,7 +75,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     private static final String DEPS_CACHE_NAME = "HTMLDependenciesCache";
     private static final String REGEXPDEPS_CACHE_NAME = "HTMLREGEXPDependenciesCache";
 
-    private static Logger logger = LoggerFactory.getLogger(ModuleCacheProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModuleCacheProvider.class);
 
     private Cache regexpDependenciesCache;
     private Cache htmlCache;
@@ -164,7 +164,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
                 htmlCache.removeAll(deps);
             }
         }
-        if(propagateToOtherClusterNodes) {
+        if (propagateToOtherClusterNodes) {
             propagatePathFlushToCluster(nodePathOrIdentifier);
         }
     }
@@ -189,7 +189,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
         }
         htmlCache.removeAll(all);
 
-        if(propagateToOtherClusterNodes) {
+        if (propagateToOtherClusterNodes) {
             for (String nodePathOrIdentifier : nodePathOrIdentifiers) {
                 propagatePathFlushToCluster(nodePathOrIdentifier);
             }
@@ -246,19 +246,19 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
             Set<String> deps = (Set<String>) element.getObjectValue();
             htmlCache.removeAll(deps);
         }
-        if(propagateToOtherClusterNodes) {
+        if (propagateToOtherClusterNodes) {
             sendCacheFlushCommandToCluster(CMD_FLUSH_REGEXP, key);
         }
     }
 
     public void propagateFlushRegexpDependenciesOfPath(String key, boolean propagateToOtherClusterNodes) {
-        if(propagateToOtherClusterNodes) {
+        if (propagateToOtherClusterNodes) {
             sendCacheFlushCommandToCluster(CMD_FLUSH_REGEXPDEP, key);
         }
     }
 
     public void propagateChildrenDependenciesFlushToCluster(String path, boolean propagateToOtherClusterNodes) {
-        if(propagateToOtherClusterNodes) {
+        if (propagateToOtherClusterNodes) {
             sendCacheFlushCommandToCluster(CMD_FLUSH_CHILDREN, path);
         }
     }
@@ -269,9 +269,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      * @param propagateToOtherClusterNodes true if it should propagate to other cluster nodes
      */
     public void flushChildrenDependenciesOfPath(String path, boolean propagateToOtherClusterNodes) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Flushing dependencies for path: {}", path);
-        }
+        logger.debug("Flushing dependencies for path: {}", path);
         @SuppressWarnings("unchecked")
         List<String> keys = dependenciesCache.getKeys();
         String pathWithTrailingSlash = null;
@@ -297,9 +295,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      *            <code>true</code> in case the flush event should be propagated to other cluster nodes
      */
     public void flushRegexpDependenciesOfPath(String path, boolean propagateToOtherClusterNodes) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Flushing dependencies for path: {}", path);
-        }
+        logger.debug("Flushing dependencies for path: {}", path);
         @SuppressWarnings("unchecked")
         List<String> keys = getRegexpDependenciesCache().getKeys();
         for (String key : keys) {

@@ -66,7 +66,7 @@ import java.util.Set;
  */
 public class URLResolverListener extends DefaultEventListener implements ApiEventListener {
 
-    private static Logger logger = LoggerFactory.getLogger(URLResolverListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(URLResolverListener.class);
 
     private URLResolverFactory urlResolverFactory;
     private VanityUrlService vanityUrlService;
@@ -76,6 +76,7 @@ public class URLResolverListener extends DefaultEventListener implements ApiEven
         return Event.NODE_ADDED + Event.NODE_REMOVED + Event.NODE_MOVED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED;
     }
 
+    @Override
     public void onEvent(final EventIterator events) {
         if (urlResolverFactory == null) {
             return;
@@ -145,5 +146,4 @@ public class URLResolverListener extends DefaultEventListener implements ApiEven
     public void setModuleCacheProvider(ModuleCacheProvider moduleCacheProvider) {
      // deprecated since 7.2.3.1 as not used
     }
-
 }

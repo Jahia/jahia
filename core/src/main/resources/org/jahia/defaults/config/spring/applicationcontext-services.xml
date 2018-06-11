@@ -371,4 +371,7 @@
         <property name="schedulerService" ref="SchedulerService"/>
     </bean>
 
+    <bean id="journalEventReader" class="org.jahia.services.events.JournalEventReader">
+        <property name="settingsBean" ref="settingsBean"/>
+    </bean>
 </beans>

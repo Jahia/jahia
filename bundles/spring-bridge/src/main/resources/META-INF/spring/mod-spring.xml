@@ -227,6 +227,26 @@
         </bean>
     </osgi:service>
 
+    <osgi:service interface="org.jahia.services.events.JournalEventReader">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX node journal event reader"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="journalEventReader"/>
+        </bean>
+    </osgi:service>
+
+    <osgi:service interface="org.apache.camel.CamelContext">
+        <osgi:service-properties>
+            <entry key="Service Description" value="DX node camel context"/>
+            <entry key="Service Vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+        <bean class="org.jahia.bundles.spring.bridge.CoreContextSpringBeanProxy">
+            <property name="target" ref="jahiaNotificationContext"/>
+        </bean>
+    </osgi:service>
+
     <osgi:list id="RenderFilterList" interface="org.jahia.services.render.filter.RenderFilter" availability="optional">
         <osgi:listener ref="org.jahia.modules.default.ModuleRegistry" bind-method="osgiBind"
                        unbind-method="osgiUnbind"/>

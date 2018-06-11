@@ -132,3 +132,4 @@
 [consequence][]Send message to {node} channel with parameters {params}= sitePubSubService.sendNodeMessage(node,{params}, drools);
 [consequence][]Check home page uniqueness for {node}=service.checkHomePage({node}, drools);
 [consequence][]Mount {node}=service.mount({node});
+[consequence][]Update work in progress state of descendants of site {node}=service.updateWipStatesIfNeeded({node}, drools);

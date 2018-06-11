@@ -64,7 +64,6 @@ import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.sites.SiteCreationInfo;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -84,8 +83,6 @@ import javax.jcr.query.QueryResult;
 import java.io.*;
 import java.text.ParseException;
 import java.util.*;
-
-import static org.jahia.services.importexport.ImportExportBaseService.*;
 
 /**
  * Helper class for accessing Jahia services in rules.
@@ -175,7 +172,7 @@ public class Service extends JahiaService {
         try {
             ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
         } catch (SchedulerException e) {
-            logger.error("Cannot schedult import for "+node.getPath(), e);
+            logger.error("Cannot schedult import for " + node.getPath(), e);
         }
     }
 
@@ -400,7 +397,7 @@ public class Service extends JahiaService {
                 logger.debug("No cache found for name '" + cacheId + "'. Skip flushing.");
             }
         } catch (JahiaInitializationException e) {
-            logger.debug("Cannot get cache",e);
+            logger.debug("Cannot get cache", e);
         }
     }
 
@@ -413,7 +410,7 @@ public class Service extends JahiaService {
                 logger.debug("No cache found for name '" + cacheId + "'. Skip flushing.");
             }
         } catch (JahiaInitializationException e) {
-            logger.debug("Cannot get cache",e);
+            logger.debug("Cannot get cache", e);
         }
     }
 
@@ -473,9 +470,11 @@ public class Service extends JahiaService {
 
     public void createPermission(final String path, final String name, final KnowledgeHelper drools) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+
+            @Override
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper node = session.getNode(path);
-                String replacedname = name.replace(":","_");
+                String replacedname = name.replace(":", "_");
                 if (!node.hasNode(replacedname)) {
                     node.addNode(replacedname, "jnt:permission");
                 }
@@ -574,6 +573,8 @@ public class Service extends JahiaService {
 
     public void deleteNodesWithReference(final String nodetype, final String propertyName, final NodeFact node) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
+            @Override
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 QueryManager q = session.getWorkspace().getQueryManager();
                 String sql = "select * from [" + nodetype + "] where [" + propertyName + "] = '" + node.getIdentifier() + "'";
@@ -607,7 +608,7 @@ public class Service extends JahiaService {
 
     public void publishProfilePicture(AddedNodeFact node, KnowledgeHelper drools) throws RepositoryException {
         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) node.getNode();
-        if(nodeWrapper.getPath().matches(".*/users/.*/files/profile/.*")) {
+        if (nodeWrapper.getPath().matches(".*/users/.*/files/profile/.*")) {
             final JCRSessionWrapper jcrSessionWrapper = nodeWrapper.getSession();
             jcrSessionWrapper.save();
 
@@ -632,6 +633,28 @@ public class Service extends JahiaService {
                 }
             }
         }
+    }
+
+    public void updateWipStatesIfNeeded(AddedNodeFact site, KnowledgeHelper drools) throws RepositoryException {
+
+        Set<String> languages = ((JCRSiteNode) site.getNode()).getLanguages();
+        if (languages.size() > 1) {
+            return;
+        }
+
+        String[] language = {languages.iterator().next()};
+        JCRSessionWrapper session = site.getSession();
+
+        String sql2 = "select * from [" + Constants.JAHIAMIX_LASTPUBLISHED + "] where isdescendantnode([" + site.getPath() + "]) and [" + Constants.WORKINPROGRESS_STATUS + "] = '" + Constants.WORKINPROGRESS_STATUS_ALLCONTENT + "'";
+        Query query = session.getWorkspace().getQueryManager().createQuery(sql2, Query.JCR_SQL2);
+
+        for (NodeIterator it = query.execute().getNodes(); it.hasNext(); ) {
+            Node node = it.nextNode();
+            node.setProperty(Constants.WORKINPROGRESS_STATUS, Constants.WORKINPROGRESS_STATUS_LANG);
+            node.setProperty(Constants.WORKINPROGRESS_LANGUAGES, language);
+        }
+
+        session.save();
     }
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {

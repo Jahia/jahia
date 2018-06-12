@@ -220,8 +220,9 @@ public class WorkInProgressButtonItem implements ButtonItem {
             vp.add(title);
 
             allContents.addListener(Events.OnClick, getOnChangeListener(false, Messages.getWithArgs("label.wip.allcontent.helper", "All Content helper text. <a target=\"_blank\" href=\"{0}\">Find out more at The Academy</a>", new String[] {academyUrl})));
-            allContents.setBoxLabel(Messages.get("label.wip.allcontent", "All Content ( localised & non-localised )"));
-            allContents.setTitle(Messages.get("label.wip.allcontent", "All Content ( localised & non-localised )"));
+            String titleText = Messages.get("label.wip.allcontent", "All Content ( localised & non-localised )");
+            allContents.setBoxLabel(titleText);
+            allContents.setTitle(titleText);
             allContents.addStyleName("wip-radio-all-content");
             vp.add(allContents);
 

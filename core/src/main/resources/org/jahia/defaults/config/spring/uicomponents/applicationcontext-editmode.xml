@@ -722,6 +722,7 @@
                 <ref bean="Toolbar.Item.RepositoryExplorer"/>
                 <ref bean="Toolbar.Item.CategoryManager"/>
                 <ref bean="Toolbar.Item.SiteManager"/>
+                <ref bean="Toolbar.Item.ContentManager"/>
             </list>
         </property>
     </bean>

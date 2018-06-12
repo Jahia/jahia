@@ -33,6 +33,20 @@
         </property>
     </bean>
 
+    <!-- Content Manager -->
+    <bean id="Toolbar.Item.ContentManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.SwitchConfigActionItem">
+                <property name="configurationName" value="contentmanager"/>
+                <property name="updateOnMainNodeRefresh" value="true"/>
+                <property name="checkPermissionOnSite" value="true"/>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.contentmanager"/>
+        <property name="icon" value="content-manager-1616"/>
+        <property name="requiredPermission" value="contentManager"/>
+    </bean>
+
     <!-- File Manager -->
     <bean id="Toolbar.Item.FileManager.NewTab" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
@@ -59,7 +73,7 @@
         </property>
     </bean>
 
-    <!-- Content Manager -->
+    <!-- Repository Manager -->
     <bean id="Toolbar.Item.RepositoryExplorer.NewTab" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
@@ -208,6 +222,7 @@
         <ref bean="Toolbar.Item.Admin"/>
         <ref bean="Toolbar.Item.FileManager.NewTab"/>
         <ref bean="Toolbar.Item.EditorialContentManager.NewTab"/>
+        <ref bean="Toolbar.Item.ContentManager"/>
         <ref bean="Toolbar.Item.SiteManager.NewTab"/>
         <ref bean="Toolbar.Item.RepositoryExplorer.NewTab"/>
         <ref bean="Toolbar.Item.CategoryManager.NewTab"/>

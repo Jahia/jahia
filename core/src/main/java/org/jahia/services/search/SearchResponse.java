@@ -82,15 +82,36 @@ public class SearchResponse {
      */
     public static class FacetedResult {
 
+        private String id;
+
         private List<ResultGroup> resultGroups;
 
-        public FacetedResult(List<ResultGroup> resultGroups) {
-            this.resultGroups = resultGroups;
+        public FacetedResult(String id, List<ResultGroup> resultGroups) {
+            if (id == null || id.length() == 0) {
+                throw new IllegalArgumentException("Facet definition ID should not be null or empty");
+            }
+            this.id = id;
+            this.resultGroups = resultGroups != null ? Collections.unmodifiableList(resultGroups) : null;
         }
 
-        public List<ResultGroup> getResultGroups() {
-            return Collections.unmodifiableList(resultGroups);
+        /**
+         * Returns identifier of the corresponding facet definition to match this faceted result to.
+         * 
+         * @return identifier of the corresponding facet definition to match this faceted result to
+         */
+        public String getId() {
+            return id;
         }
+
+        /**
+         * A list of facet result groups.
+         * 
+         * @return of facet result groups
+         */
+        public List<ResultGroup> getResultGroups() {
+            return resultGroups;
+        }
+
     }
 
     private List<Hit<?>> results = Collections.emptyList();
@@ -131,18 +152,32 @@ public class SearchResponse {
      * @return Faceted results corresponding to facet definitions passed as a part of the search criteria if any, null otherwise
      */
     public Collection<FacetedResult> getFacetedResults() {
-        if (facetedResults == null) {
-            return null;
-        } else {
-            return Collections.unmodifiableCollection(facetedResults);
+        return facetedResults;
+    }
+
+    /**
+     * Retrieves the faceted result, which corresponds to the supplied facet definition ID.
+     * 
+     * @param facetDefinitionId the facet definition ID to retrieve results for
+     * @return faceted result, which corresponds to the supplied facet definition ID, or <code>null</code> if there is no information about
+     *         that facet (or no result for that facet is present)
+     */
+    public FacetedResult getFacetedResult(String facetDefinitionId) {
+        if (facetedResults != null) {
+            for (FacetedResult result : facetedResults) {
+                if (result.getId().equals(facetDefinitionId)) {
+                    return result;
+                }
+            }
         }
+        return null;
     }
 
     /**
      * @param facetedResults Faceted results corresponding to facet definitions passed as a part of the search criteria (if any)
      */
     public void setFacetedResults(Collection<FacetedResult> facetedResults) {
-        this.facetedResults = facetedResults;
+        this.facetedResults = facetedResults != null ? Collections.unmodifiableCollection(facetedResults) : null;
     }
 
     public long getOffset() {

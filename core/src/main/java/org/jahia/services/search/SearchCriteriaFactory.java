@@ -91,7 +91,8 @@ public class SearchCriteriaFactory {
     private static final ConvertUtilsBean CONVERTER_UTILS_BEAN = new ConvertUtilsBean();
 
     private static Converter ENUM_CONVERTER = new Converter() {
-        public Object convert(Class type, Object value) {
+        @SuppressWarnings("unchecked")
+        public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
             return Enum.valueOf(type, String.valueOf(value).toUpperCase());
         }
     };
@@ -125,7 +126,6 @@ public class SearchCriteriaFactory {
      * @return the {@link SearchCriteria} bean with the current search
      *         parameters
      */
-    @SuppressWarnings("unchecked")
     public static SearchCriteria getInstance(RenderContext ctx) {
 
         SearchCriteria searchParams = (SearchCriteria) ctx.getRequest().getAttribute(ATTR_QUERY_PARAMS);
@@ -269,7 +269,6 @@ public class SearchCriteriaFactory {
 
     }
 
-    @SuppressWarnings("unchecked")
     private static boolean isRequestDataPresent(HttpServletRequest request) {
         boolean present = false;
         Enumeration<String> params = request.getParameterNames();

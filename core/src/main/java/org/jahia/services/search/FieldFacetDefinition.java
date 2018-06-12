@@ -5,6 +5,8 @@ package org.jahia.services.search;
  */
 public class FieldFacetDefinition extends SearchCriteria.BaseFacetDefinition {
 
+    private static final long serialVersionUID = -8262925411007789117L;
+
     private String fieldName;
 
     /**

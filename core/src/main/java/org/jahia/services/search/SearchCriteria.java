@@ -56,6 +56,7 @@ import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -72,9 +73,11 @@ import org.joda.time.format.DateTimeFormatter;
 public class SearchCriteria implements Serializable {
 
     /**
-     * Base class for all facet definitions; incapsulates any common facet definition attributes like sort order of aggregated results.
+     * Base class for all facet definitions; encapsulates any common facet definition attributes like sort order of aggregated results.
      */
-    abstract public static class BaseFacetDefinition {
+    abstract public static class BaseFacetDefinition implements Serializable {
+
+        private static final long serialVersionUID = 7275734915870152689L;
 
         private String id;
         private int maxGroups;
@@ -87,6 +90,9 @@ public class SearchCriteria implements Serializable {
          * @param maxGroups The max number of result groups the facet should return
          */
         protected BaseFacetDefinition(String id, int maxGroups) {
+            if (id == null || id.length() == 0) {
+                throw new IllegalArgumentException("Facet definition ID should not be null or empty");
+            }
             this.id = id;
             this.maxGroups = maxGroups;
         }
@@ -919,11 +925,7 @@ public class SearchCriteria implements Serializable {
     }
 
     public Collection<BaseFacetDefinition> getFacetDefinitions() {
-        if (facetDefinitions == null) {
-            return null;
-        } else {
-            return Collections.unmodifiableCollection(facetDefinitions);
-        }
+        return facetDefinitions;
     }
 
     public HierarchicalValue getFilePath() {
@@ -1079,7 +1081,7 @@ public class SearchCriteria implements Serializable {
     }
 
     public void setFacetDefinitions(Collection<BaseFacetDefinition> facetDefinitions) {
-        this.facetDefinitions = facetDefinitions;
+        this.facetDefinitions = facetDefinitions != null ? Collections.unmodifiableCollection(facetDefinitions) : null;
     }
 
     public void setFilePath(HierarchicalValue fileLocation) {
@@ -1234,5 +1236,18 @@ public class SearchCriteria implements Serializable {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns a hash code for this object, calculate based on all fields.
+     * 
+     * @return a hash code for this object, calculate based on all fields
+     */
+    public int toHashCode() {
+        return new HashCodeBuilder().append(created).append(createdBy).append(facetDefinitions).append(filePath)
+                .append(fileType).append(itemsPerPage).append(languages).append(lastModified).append(lastModifiedBy)
+                .append(limit).append(nodeType).append(offset).append(orderings).append(originSiteKey).append(pagePath)
+                .append(properties).append(rawQuery).append(sites).append(sitesForReferences).append(terms)
+                .toHashCode();
     }
 }

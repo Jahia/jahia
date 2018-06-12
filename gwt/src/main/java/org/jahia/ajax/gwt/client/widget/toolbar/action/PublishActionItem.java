@@ -205,15 +205,11 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
 
     protected boolean isWorkInProgress(GWTJahiaNode gwtJahiaNode) {
         boolean isNode = gwtJahiaNode != null;
-        boolean hasWipStatus = gwtJahiaNode.get("j:workInProgressStatus") != null;
-        boolean notDisabled = !((String) gwtJahiaNode.get("j:workInProgressStatus")).equals("DISABLED");
-        boolean hasWipLanguage = gwtJahiaNode.get("j:workInProgressLanguages") != null && ((String) gwtJahiaNode.get("j:workInProgressStatus")).equals("LANGUAGES") && ((List<String>) gwtJahiaNode.get("j:workInProgressLanguages")).contains(JahiaGWTParameters.getLanguage());
+        boolean hasWipStatus = isNode && gwtJahiaNode.get("j:workInProgressStatus") != null;
+        boolean notDisabled = hasWipStatus && !((String) gwtJahiaNode.get("j:workInProgressStatus")).equals("DISABLED");
+        boolean isWip = notDisabled && gwtJahiaNode.get("j:workInProgressLanguages") != null && ((String) gwtJahiaNode.get("j:workInProgressStatus")).equals("LANGUAGES") && ((List<String>) gwtJahiaNode.get("j:workInProgressLanguages")).contains(JahiaGWTParameters.getLanguage());
         boolean isNotMarkAsDeletion = !gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletion");
-        return isNode
-           && hasWipStatus
-           && notDisabled
-           && hasWipLanguage
-           && isNotMarkAsDeletion;
+        return isWip && isNotMarkAsDeletion;
     }
 
     /**

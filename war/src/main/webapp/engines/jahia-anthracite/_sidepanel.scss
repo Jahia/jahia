@@ -288,7 +288,7 @@ body[indigo-dragging-panel] {
 		// Fix the padding issue on icons
 		body[data-sitesettings="false"] & {
 			.x-tree3-node-text {
-				padding-left: 5px;
+				//padding-left: 5px;
 			}
 		}
 
@@ -2114,28 +2114,16 @@ body[data-edit-window-style="settings"] {
 					}
 				}
 
+				// Fix icon position
+				img {
+					margin-left: 4px;
+				}
+
 				// FOLDER LABEL
 				span.x-tree3-node-text {
 					color: _theme-color(primary, d) !important;
-					margin-left: 0;
-
-					&::before {
-						content: ">";
-					    margin-right: 5px;
-					    display: block;
-					    width: 17px;
-					    height: 17px;
-					    background: _theme-color(secondary, d);
-					    text-indent: -50000px;
-					    display: inline-block;
-					    top: 5px;
-						left: 2px;
-					    position: relative;
-					    background: url($ICON--FOLDER--SMALL---GREY) no-repeat center center;
-					    background-size: 16px;
-					}
-
-
+					margin-left: -11px;
+					padding-left: 4px !important;
 				}
 			}
 
@@ -2145,7 +2133,7 @@ body[data-edit-window-style="settings"] {
 					font-style: italic;
 
 					&::before {
-					    background-image: url($ICON--FOLDER_OPEN--SMALL---GREY);
+					    margin-left: 7px;
 					}
 				}
 			}

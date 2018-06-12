@@ -2101,7 +2101,7 @@ body[data-edit-window-style="settings"] {
 			// FOLDER
 			&.unselectable-row {
 				pointer-events: none;
-				padding-left: 15px!important;
+				padding-left: 10px!important;
 
 				.x-tree3-node-joint {
 					width: 100%!important;
@@ -2123,7 +2123,7 @@ body[data-edit-window-style="settings"] {
 				span.x-tree3-node-text {
 					color: _theme-color(primary, d) !important;
 					margin-left: -11px;
-					padding-left: 4px !important;
+					//padding-left: 4px !important;
 				}
 			}
 
@@ -2133,7 +2133,7 @@ body[data-edit-window-style="settings"] {
 					font-style: italic;
 
 					&::before {
-					    margin-left: 7px;
+					    //margin-left: 7px;
 					}
 				}
 			}

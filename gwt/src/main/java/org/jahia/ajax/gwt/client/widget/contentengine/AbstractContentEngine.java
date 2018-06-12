@@ -633,6 +633,13 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 ((WorkInProgressButton) button).updateButtonTitle();
             }
             if (button instanceof WorkInProgressButtonItem.CheckBoxWip) {
+                // if status is ALL_CONTENT but only one language is set, change it to LANGUAGES with the current site language
+                if (JahiaGWTParameters.getSiteLanguages().size() == 1 && wipStatus == WipStatus.ALL_CONTENT) {
+                    setWipStatus(WipStatus.LANGUAGES);
+                    Set<String> langs = new HashSet<String>();
+                    langs.add(JahiaGWTParameters.getSiteLanguages().get(0).getLanguage());
+                    setWorkInProgressLanguages(langs);
+                }
                 ((WorkInProgressButtonItem.CheckBoxWip) button).setValue(wipStatus == WipStatus.LANGUAGES && workInProgressLanguages.contains(getSelectedLanguage()));
             }
         }

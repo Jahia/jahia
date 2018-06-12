@@ -76,9 +76,9 @@ end
 rule "notify user (create)"
     when
        A new node is created
-        - the node has the type jnt:user
-        - its name is not guest
-        - its name is not root
+		- the node has the type jnt:user
+		- its name is not guest
+		- its name is not root
     then
         Notify new user with mail template "/WEB-INF/notifications/templates/mail/newUser.vm"
 end
@@ -86,7 +86,7 @@ end
 rule "User password is set"
     when
         A property j:password has been set on a node
-            - the node has the type jnt:user
+			- the node has the type jnt:user
     then
         Store password history for user node
 end
@@ -102,7 +102,7 @@ end
 rule "Create dependency on module"
     when
         A property j:dependencies has been set on a node
-            - the node has the type jnt:moduleVersion
+			- the node has the type jnt:moduleVersion
     then
         Update dependencies for module
 end
@@ -110,7 +110,7 @@ end
 rule "Flush user cache when adding user"
     when
         A new node is created
-            - the node has the type jnt:user
+			- the node has the type jnt:user
     then
         Flush user cache for node
 end
@@ -127,7 +127,7 @@ end
 rule "Flush group cache when adding group"
     when
         A new node is created
-            - the node has the type jnt:group
+			- the node has the type jnt:group
     then
         Flush group cache for node
 end
@@ -144,7 +144,7 @@ end
 rule "Flush group membership cache when adding member"
     when
         A new node is created
-            - the node has the type jnt:member
+			- the node has the type jnt:member
     then
         Flush group membership cache for node
 end
@@ -160,8 +160,8 @@ end
 
 rule "Clear site cache when updated"
     when
-        A property has been set on a node
-            - the node has the type jnt:virtualsite
+		A property has been set on a node
+			- the node has the type jnt:virtualsite
     then
 >       service.updateSite(node);
 >       JahiaSitesService.flushSitesInternalCaches();
@@ -169,8 +169,8 @@ end
 
 rule "Update language availability on system site"
     when
-        A property has been set on a node
-            - the node has the type jnt:virtualsite
+		A property has been set on a node
+			- the node has the type jnt:virtualsite
     then
 >       service.updateSystemSiteLanguages(node, drools);
 end
@@ -236,7 +236,7 @@ end
 rule "Ensure only one home page is set"
     when
         A property j:isHomePage has been set on a node
-            - the node has the type jnt:page
+			- the node has the type jnt:page
             - the value is "true"
     then
         Check home page uniqueness for node
@@ -248,13 +248,4 @@ rule "Flush privileges in role cache"
             - the node has the type jnt:role
     then
 >       JahiaAccessManager.flushPrivilegesInRoles();
-end
-
-rule "Site languages updated - update work in progress states if needed"
-    when
-        A property j:languages has been set on a node
-            - the node has the type jnt:virtualsite
-            - it is in /sites
-    then
-        Update work in progress state of descendants of site node
 end

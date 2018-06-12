@@ -692,6 +692,9 @@ body[indigo-dragging-panel] {
 	    height: 23px;
 		opacity: 0.8;
 
+		// Default
+		background-image: url(./images/tabs-pages-dark@X2.png);
+
 
 		&[src$="/jnt_page.png"] {
 			background-image: url(./images/tabs-pages-dark@X2.png);
@@ -739,6 +742,9 @@ body[indigo-dragging-panel] {
 			&[src$="jnt_navMenuText.png"] {
 				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
 			}
+
+			// Default
+			background-image: url(./images/tabs-pages-white@X2.png);
 		}
 	}
 

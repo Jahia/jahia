@@ -2059,26 +2059,26 @@ body[data-edit-window-style="settings"] {
 
 			.x-tree3-node-icon,
 			.x-tree3-node-joint {
-				display: none!important;
+				//display: none!important;
 			}
 
 			// PAGE
 			.x-tree3-node-text {
-				margin-left: 31px;
-				line-height: 30px;
+				margin-left: -10px;
+				line-height: 28px;
 
 				&::before {
 					content: ">";
-				    display: block;
-				    width: 5px;
-				    height: 5px;
-				    background: _theme-color(secondary, d);
-				    text-indent: -50000px;
-				    border-radius: 100%;
-				    display: inline-block;
-				    top: 12px;
-					left: -8px;
-				    position: relative;
+			    width: 24px;
+			    height: 24px;
+			    background: #fdfdfd;
+			    text-indent: -50000px;
+			    display: inline-block;
+			    top: 3px;
+			    left: -10px;
+			    position: relative;
+			    z-index: -1;
+			    border-radius: 2px;
 				}
 			}
 

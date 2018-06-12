@@ -1443,16 +1443,6 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
         background-size: 5vh!important;
     }
 
-    // Content Manager button ( Small )
-    .toolbar-item-contentmanager  {
-        @extend %CSS_BLOCK_APP_SMALL;
-        &:before {
-            content: $text_app_content_manager_v2;
-        }
-        background: url(./images/icons_light/dashboard.svg) no-repeat #00a0e3 center top 30%!important;
-        background-size: 5vh!important;
-    }
-
     // Site Manager button ( Small )
     .toolbar-item-sitemanager-newtab  {
         @extend %CSS_BLOCK_APP_SMALL;

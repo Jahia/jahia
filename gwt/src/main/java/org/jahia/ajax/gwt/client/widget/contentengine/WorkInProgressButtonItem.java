@@ -111,13 +111,12 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
                 @Override
                 public void handleEvent(ComponentEvent event) {
-                    Set<String> langs = new HashSet<String>(engine.getWorkInProgressLanguagesSorted());
+                    Set<String> langs = new HashSet<String>();
                     if (checkbox.getValue()) {
                         engine.setWipStatus(AbstractContentEngine.WipStatus.LANGUAGES);
                         langs.add(engine.getSelectedLanguage());
                     } else {
                         engine.setWipStatus(AbstractContentEngine.WipStatus.DISABLED);
-                        langs.remove(engine.getSelectedLanguage());
                     }
                     engine.setWorkInProgressLanguages(langs);
                 }

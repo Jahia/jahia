@@ -261,7 +261,11 @@ public class EditContentEngine extends AbstractContentEngine {
                     if (node.get("j:workInProgressLanguages") != null) {
                         HashSet<String> languages = new HashSet<String>();
                         for (String lang : (List<String>) node.get("j:workInProgressLanguages")) {
-                            languages.add(lang);
+                            for (GWTJahiaLanguage l : result.getAvailabledLanguages()) {
+                                if (l.getLanguage().equals(lang)) {
+                                    languages.add(lang);
+                                }
+                            }
                         }
                         workInProgressLanguages = languages;
                     }

@@ -3995,7 +3995,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             if (child.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT)) {
                 // if by any chance the child node was already marked for deletion (root), remove the mixin
-                child.unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
+                try {
+                    child.unlock(MARKED_FOR_DELETION_LOCK_TYPE, MARKED_FOR_DELETION_LOCK_USER);
+                } catch (LockException ignored) {
+                    // ignore
+                }
                 child.removeMixin(JAHIAMIX_MARKED_FOR_DELETION_ROOT);
             }
             // set mixin

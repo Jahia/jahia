@@ -5597,38 +5597,80 @@ XXX.x-window.modal-deletealljob-confirm {
 
 
 // Preview image modal
-
-.x-window.fileimage-browse-preview {
-    width: 100% !important;
-    left: 0 !important;
-    height: 100%;
-    top: 0 !important;
-
-		.x-window-tl {
-			width: 100% !important;
-
-			.x-panel-toolbar {
+// Full size image preview
+	.fileimage-browse-preview {
+		position: fixed!important;
+		width: 100%!important;
+		height: 100%!important;
+		z-index: 999910 !important;
+		&:before {
+			content: "Preview";
+			display: block;
+			width: 100%;
+			pointer-events: none;
+			position: absolute;;
+			z-index: 99999999!important;
+			top: 12px;
+			left: 20px;
+			@include text(36px, _theme-color(primary), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
+			z-index: 999;
+		}
+		.x-window-header .x-panel-toolbar {
+			display: block;
+			margin-top: 8px;
+			pointer-events: all;
+			table tbody tr td .x-tool-close {
+				background: url(./images/icons/icon-close-grey@X2.png) no-repeat center top;
+				background-size: 20px;
+				width: 25px;
+				height: 25px;
+				opacity: 0.8;
 				display: block;
-				pointer-events: all;
-
-				tr td:first-child {
-					visibility: hidden;
-				}
-
+				right: 20px;
+			    position: fixed;
+			    top: 26px;
 			}
-
 		}
-
-		> .x-window-bwrap {
-			height: 100%;
-			max-height: calc(100% - 42px);
-			width: 100% !important;
+		.x-tool-refresh,
+ 		.x-tool-maximize,
+		.x-resizable-handle,
+		.button-save,
+		.x-window-header-text {
+			display: none!important;
 		}
-
-		.x-window-body img {
-			left: 0 !important;
-			top: 0 !important;
-			max-height: 100%;
+		.x-window-tl {
+			z-index: 999;
 		}
-
-}
+		.x-window-bwrap {
+			width: calc(100% - 40px);
+			height: calc(100% - 90px);
+		    margin-left: 20px;
+			z-index: 999;
+		    margin-top: 53px;
+			position: relative!important;
+		}
+		.x-window-ml,
+		.x-window-mr,
+		.x-window-mc,
+		.x-window-body {
+			width: 100%!important;
+			height: 100%!important;
+		}
+		.x-window-body,
+		img.gwt-Image {
+			max-width: 100%!important;
+			max-height: 100%!important;
+		}
+		img.gwt-Image {
+			left: 0!important;
+			top: 0!important;
+			// max-width: 100%;
+		    // max-height: 100%;
+		}
+		.x-resizable-handle {
+			display: none;
+		}
+		.indigo-modal-mask {
+			background: _theme-color(secondary)!important;
+		}
+	}

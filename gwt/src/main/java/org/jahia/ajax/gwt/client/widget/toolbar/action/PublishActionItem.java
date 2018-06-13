@@ -208,7 +208,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
         boolean hasWipStatus = isNode && gwtJahiaNode.get("j:workInProgressStatus") != null;
         boolean notDisabled = hasWipStatus && !((String) gwtJahiaNode.get("j:workInProgressStatus")).equals("DISABLED");
         boolean isWip = notDisabled && gwtJahiaNode.get("j:workInProgressLanguages") != null && ((String) gwtJahiaNode.get("j:workInProgressStatus")).equals("LANGUAGES") && ((List<String>) gwtJahiaNode.get("j:workInProgressLanguages")).contains(JahiaGWTParameters.getLanguage());
-        boolean isNotMarkAsDeletion = !gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletion");
+        boolean isNotMarkAsDeletion = isNode && !gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletion");
         return isWip && isNotMarkAsDeletion;
     }
 

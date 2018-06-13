@@ -724,7 +724,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             reader = new InputStreamReader(resource.getInputStream(), ASSET_ENCODING);
             writer = new OutputStreamWriter(new FileOutputStream(tmpMinifiedFile), ASSET_ENCODING);
 
-            if (type.equals("css")) {
+            if (type.equals("css") && !path.contains(".min")) {
                 String s = IOUtils.toString(reader);
                 IOUtils.closeQuietly(reader);
                 if (s.indexOf("url(") != -1) {
@@ -737,7 +737,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 reader = new StringReader(s);
                 CssCompressor compressor = new CssCompressor(reader);
                 compressor.compress(writer, -1);
-            } else if (type.equals("js")) {
+            } else if (type.equals("js") && !path.contains(".min")) {
                 try {
                     JavaScriptCompressor compressor  = new JavaScriptCompressor(reader, new JavaScriptErrorReporter());
                     compressor.compress(writer, -1, true, true, false, false);

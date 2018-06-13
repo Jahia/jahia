@@ -112,7 +112,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected Map<String, Set<String>> referencesWarnings;
     protected GWTJahiaLanguage language;
     protected Set<String> workInProgressLanguages = new HashSet<String>();
-    protected WipStatus wipStatus = WipStatus.DISABLED;
+    protected GWTJahiaNode.WipStatus wipStatus = GWTJahiaNode.WipStatus.DISABLED;
     private boolean wipModified;
     protected boolean closed = false;
 
@@ -123,12 +123,6 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected final Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties = new HashMap<String, List<GWTJahiaNodeProperty>>();
 
     protected String parentPath;
-
-    public enum WipStatus {
-        DISABLED,
-        ALL_CONTENT,
-        LANGUAGES
-    }
 
     protected AbstractContentEngine(GWTEngineConfiguration config, Linker linker, String parentPath) {
         this.config = config;
@@ -594,12 +588,12 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         return defaultValues;
     }
 
-    public void setWipStatus(WipStatus wipStatus) {
+    public void setWipStatus(GWTJahiaNode.WipStatus wipStatus) {
         wipModified = true;
         this.wipStatus = wipStatus;
     }
 
-    public WipStatus getWipStatus() {
+    public GWTJahiaNode.WipStatus getWipStatus() {
         return wipStatus;
     }
 
@@ -619,11 +613,11 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 languages.add(new GWTJahiaNodePropertyValue(locale));
             }
             GWTJahiaNodeProperty wipLocalesProperty = new GWTJahiaNodeProperty();
-            wipLocalesProperty.setName("j:workInProgressLanguages");
+            wipLocalesProperty.setName(GWTJahiaNode.WORK_IN_PROGRESS_LANGUAGES);
             wipLocalesProperty.setValues(new ArrayList<GWTJahiaNodePropertyValue>(languages));
             wipLocalesProperty.setMultiple(true);
             changedProperties.add(wipLocalesProperty);
-            changedProperties.add(new GWTJahiaNodeProperty("j:workInProgressStatus", wipStatus.toString()));
+            changedProperties.add(new GWTJahiaNodeProperty(GWTJahiaNode.WORK_IN_PROGRESS_STATUS, wipStatus.toString()));
         }
     }
 
@@ -636,7 +630,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                 // Disable event to prevent values to be mark as modified while setting the default value.
                 button.disableEvents(true);
                 // checkbox checked if status is ALL_CONTENT or for current language
-                ((WorkInProgressButtonItem.CheckBoxWip) button).setValue(wipStatus == WipStatus.ALL_CONTENT || (wipStatus == WipStatus.LANGUAGES && workInProgressLanguages.contains(getSelectedLanguage())));
+                ((WorkInProgressButtonItem.CheckBoxWip) button).setValue(wipStatus == GWTJahiaNode.WipStatus.ALL_CONTENT || (wipStatus == GWTJahiaNode.WipStatus.LANGUAGES && workInProgressLanguages.contains(getSelectedLanguage())));
                 button.disableEvents(false);
             }
         }

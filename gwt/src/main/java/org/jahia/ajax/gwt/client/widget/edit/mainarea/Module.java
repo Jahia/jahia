@@ -250,15 +250,8 @@ public abstract class Module extends LayoutContainer {
             overlayLabel.setStyleName("deleted-overlay");
             opacity = "0.4";
             overlayColorText = "#f00";
-        } else if (node.get("j:workInProgressStatus") != null && !node.get("j:workInProgressStatus").equals("DISABLED")) {
-            if (node.get("j:workInProgressStatus").equals("ALL_CONTENT")) {
-                applyWipOverlay();
-            } else if (node.get("j:workInProgressStatus").equals("LANGUAGES") && node.get("j:workInProgressLanguages") != null) {
-                String wipLanguages = node.getProperties().get("j:workInProgressLanguages").toString();
-                if (wipLanguages.contains(node.getLanguageCode())) {
-                    applyWipOverlay();
-                }
-            }
+        } else if (node.isInWorkInProgress(node.getLanguageCode())) {
+            applyWipOverlay();
         }
     }
 

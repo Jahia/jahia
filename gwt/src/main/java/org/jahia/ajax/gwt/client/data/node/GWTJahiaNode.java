@@ -63,6 +63,12 @@ import java.util.*;
  * @version 19 juin 2008 - 15:57:38
  */
 public class GWTJahiaNode extends BaseTreeModel implements Serializable, Comparable<GWTJahiaNode>, ListLoadConfig {
+    public enum WipStatus {
+        DISABLED,
+        ALL_CONTENT,
+        LANGUAGES
+    }
+
     private static final long serialVersionUID = -1918118279356793994L;
     public static final String TAGS = "tags";
     public static final String SITE_LANGUAGES = "siteLanguages";
@@ -107,6 +113,8 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String RESOURCE_BUNDLE = "resourceBundle";
     public static final String INCLUDE_CHILDREN = "includeChildren";
     public static final String EDIT_MODE_BLOCKED = "editModeBlocked";
+    public static final String WORK_IN_PROGRESS_LANGUAGES = "j:workInProgressLanguages";
+    public static final String WORK_IN_PROGRESS_STATUS = "j:workInProgressStatus";
 
     public static final List<String> DEFAULT_FIELDS =
             Arrays.asList(ICON, TAGS, CHILDREN_INFO, "j:view", "j:width", "j:height", PERMISSIONS, LOCKS_INFO, PUBLICATION_INFO, SUBNODES_CONSTRAINTS_INFO);
@@ -700,5 +708,37 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
             removedChildrenPaths.add(((GWTJahiaNode)child).getPath());
         }
         super.removeAll();
+    }
+    
+    /**
+     * Checks that the current node is in WIP state either for all languages (all content) or for a specified language.
+     * 
+     * @param language the languages to check WIP status for
+     * @return <code>true</code>if the current node is in WIP state either for all languages (all content) or for a specified language;
+     *         <code>false</code> otherwise
+     */
+    public boolean isInWorkInProgress(String language) {
+        String wipStatus = getWorkInProgressStatus();
+        if (wipStatus == null || WipStatus.DISABLED.name().equals(wipStatus)) {
+            return false;
+        }
+        return WipStatus.ALL_CONTENT.name().equals(wipStatus) || WipStatus.LANGUAGES.name().equals(wipStatus)
+                && getWorkInProgressLanguages() != null && getWorkInProgressLanguages().contains(language);
+    }
+
+    public List<String> getWorkInProgressLanguages() {
+        return get(WORK_IN_PROGRESS_LANGUAGES);
+    }
+
+    public String getWorkInProgressStatus() {
+        return get(WORK_IN_PROGRESS_STATUS);
+    }
+
+    public void setWorkInProgressLanguages(List<String> languages) {
+        set(WORK_IN_PROGRESS_LANGUAGES, languages);
+    }
+
+    public void setWorkInProgressStatus(String status) {
+        set(WORK_IN_PROGRESS_STATUS, status);
     }
 }

@@ -55,6 +55,7 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.HashSet;
@@ -79,12 +80,12 @@ public class WorkInProgressButtonItem implements ButtonItem {
         // handle default value
         if (engine instanceof CreateContentEngine && checkedByDefault) {
             if (JahiaGWTParameters.getSiteLanguages().size() == 1) {
-                engine.setWipStatus(AbstractContentEngine.WipStatus.LANGUAGES);
+                engine.setWipStatus(GWTJahiaNode.WipStatus.LANGUAGES);
                 Set<String> langs = new HashSet<String>();
                 langs.add(JahiaGWTParameters.getSiteLanguages().get(0).getLanguage());
                 engine.setWorkInProgressLanguages(langs);
             } else {
-                engine.setWipStatus(AbstractContentEngine.WipStatus.ALL_CONTENT);
+                engine.setWipStatus(GWTJahiaNode.WipStatus.ALL_CONTENT);
             }
         }
 
@@ -113,10 +114,10 @@ public class WorkInProgressButtonItem implements ButtonItem {
                 public void handleEvent(ComponentEvent event) {
                     Set<String> langs = new HashSet<String>();
                     if (checkbox.getValue()) {
-                        engine.setWipStatus(AbstractContentEngine.WipStatus.LANGUAGES);
+                        engine.setWipStatus(GWTJahiaNode.WipStatus.LANGUAGES);
                         langs.add(engine.getSelectedLanguage());
                     } else {
-                        engine.setWipStatus(AbstractContentEngine.WipStatus.DISABLED);
+                        engine.setWipStatus(GWTJahiaNode.WipStatus.DISABLED);
                     }
                     engine.setWorkInProgressLanguages(langs);
                 }
@@ -277,11 +278,11 @@ public class WorkInProgressButtonItem implements ButtonItem {
                     // save wip window data to the engine
 
                     if (allContents.getValue()) {
-                        engine.setWipStatus(AbstractContentEngine.WipStatus.ALL_CONTENT);
+                        engine.setWipStatus(GWTJahiaNode.WipStatus.ALL_CONTENT);
                     } else if (selectedLanguages.getValue()) {
-                        engine.setWipStatus(AbstractContentEngine.WipStatus.LANGUAGES);
+                        engine.setWipStatus(GWTJahiaNode.WipStatus.LANGUAGES);
                     } else if (turnOff.getValue()) {
-                        engine.setWipStatus(AbstractContentEngine.WipStatus.DISABLED);
+                        engine.setWipStatus(GWTJahiaNode.WipStatus.DISABLED);
                     } else {
                         throw new IllegalArgumentException("unable to set WIP status");
                     }

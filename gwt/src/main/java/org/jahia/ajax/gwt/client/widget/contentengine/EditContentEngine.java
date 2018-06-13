@@ -255,12 +255,12 @@ public class EditContentEngine extends AbstractContentEngine {
                     container.getPanel().setHeadingHtml(heading);
                 }
 
-                if (node.get("j:workInProgressStatus") != null) {
-                    wipStatus = WipStatus.valueOf((String) node.get("j:workInProgressStatus"));
+                if (node.getWorkInProgressStatus() != null) {
+                    wipStatus = GWTJahiaNode.WipStatus.valueOf(node.getWorkInProgressStatus());
                     // set languages
-                    if (node.get("j:workInProgressLanguages") != null) {
+                    if (node.getWorkInProgressLanguages() != null) {
                         HashSet<String> languages = new HashSet<String>();
-                        for (String lang : (List<String>) node.get("j:workInProgressLanguages")) {
+                        for (String lang : node.getWorkInProgressLanguages()) {
                             for (GWTJahiaLanguage l : result.getAvailabledLanguages()) {
                                 if (l.getLanguage().equals(lang)) {
                                     languages.add(lang);

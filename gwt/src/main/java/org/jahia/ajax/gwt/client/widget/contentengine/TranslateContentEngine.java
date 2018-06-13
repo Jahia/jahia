@@ -149,10 +149,10 @@ public class TranslateContentEngine extends Window {
         });
 
         // Fill WIP infos
-        if (node.get("j:workInProgressStatus") != null) {
+        if (node.getWorkInProgressStatus() != null) {
             // set languages
-            if (node.get("j:workInProgressLanguages") != null) {
-                workInProgressByLocale.addAll((List<String>)node.get("j:workInProgressLanguages"));
+            if (node.getWorkInProgressLanguages() != null) {
+                workInProgressByLocale.addAll(node.getWorkInProgressLanguages());
             }
         }
 
@@ -242,7 +242,7 @@ public class TranslateContentEngine extends Window {
             // WIP
             List<GWTJahiaNodePropertyValue> languages = new LinkedList<GWTJahiaNodePropertyValue>();
             boolean saveWip = false;
-            List<String> currentLanguages = node.get("j:workInProgressLanguages");
+            List<String> currentLanguages = node.getWorkInProgressLanguages();
             if (currentLanguages == null) {
                 currentLanguages = new ArrayList<String>();
             }
@@ -253,18 +253,18 @@ public class TranslateContentEngine extends Window {
             // save Wip only if languages added or removed
             if (saveWip || languages.size() != currentLanguages.size()) {
                 GWTJahiaNodeProperty wipLocaleProperty = new GWTJahiaNodeProperty();
-                wipLocaleProperty.setName("j:workInProgressLanguages");
+                wipLocaleProperty.setName(GWTJahiaNode.WORK_IN_PROGRESS_LANGUAGES);
                 wipLocaleProperty.setValues(languages);
                 wipLocaleProperty.setMultiple(true);
                 sharedProperties.add(wipLocaleProperty);
 
-                String status = node.get("j:workInProgressStatus");
+                String status = node.getWorkInProgressStatus();
                 if (status == null) {
-                    status = AbstractContentEngine.WipStatus.LANGUAGES.name();
+                    status = GWTJahiaNode.WipStatus.LANGUAGES.name();
                 } else if (languages.size() == 0) {
-                    status = AbstractContentEngine.WipStatus.DISABLED.name();
+                    status = GWTJahiaNode.WipStatus.DISABLED.name();
                 }
-                sharedProperties.add(new GWTJahiaNodeProperty("j:workInProgressStatus", status));
+                sharedProperties.add(new GWTJahiaNodeProperty(GWTJahiaNode.WORK_IN_PROGRESS_STATUS, status));
             }
 
             Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties = targetLangPropertiesEditor.getLangPropertiesMap();

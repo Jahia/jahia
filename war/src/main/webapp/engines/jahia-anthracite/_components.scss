@@ -5594,3 +5594,41 @@ XXX.x-window.modal-deletealljob-confirm {
 	}
 
 }
+
+
+// Preview image modal
+
+.x-window.fileimage-browse-preview {
+    width: 100% !important;
+    left: 0 !important;
+    height: 100%;
+    top: 0 !important;
+
+		.x-window-tl {
+			width: 100% !important;
+
+			.x-panel-toolbar {
+				display: block;
+				pointer-events: all;
+
+				tr td:first-child {
+					visibility: hidden;
+				}
+
+			}
+
+		}
+
+		> .x-window-bwrap {
+			height: 100%;
+			max-height: calc(100% - 42px);
+			width: 100% !important;
+		}
+
+		.x-window-body img {
+			left: 0 !important;
+			top: 0 !important;
+			max-height: 100%;
+		}
+
+}

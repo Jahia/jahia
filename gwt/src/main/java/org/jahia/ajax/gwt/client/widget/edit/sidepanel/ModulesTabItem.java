@@ -112,7 +112,7 @@ public class ModulesTabItem extends BrowseTabItem {
                     v = SafeHtmlUtils.htmlEscape(v);
                 }
                 String classes = "";
-                if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
+                if (node.isMarkedForDeletion()) {
                     classes += "markedForDeletion ";
                 }
                 if (node.getNodeTypes().contains("jmix:moduleImportFile")) {

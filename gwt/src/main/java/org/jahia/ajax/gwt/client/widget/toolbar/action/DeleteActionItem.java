@@ -95,7 +95,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                         break;
                     }
                 } else {
-                    if (!noMarkForDeletion && !selected.isNodeType("jmix:markedForDeletionRoot")) {
+                    if (!noMarkForDeletion && !selected.isMarkedForDeletionRoot()) {
                         enabled = false;
                         break;
                     }
@@ -115,7 +115,7 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
 
             // if one of the selected nodes cannot be marked for deletion -> do not display the delete action
                 for (GWTJahiaNode selected : lh.getMultipleSelection()) {
-                    if (!selected.canMarkForDeletion() || selected.getNodeTypes().contains("jmix:markedForDeletionRoot")) {
+                    if (!selected.canMarkForDeletion() || selected.isMarkedForDeletionRoot()) {
                         enabled = false;
                         break;
                     }

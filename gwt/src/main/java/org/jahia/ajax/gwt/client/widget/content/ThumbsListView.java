@@ -86,7 +86,7 @@ public class ThumbsListView extends ListView<GWTJahiaNode> {
 
     @Override
     protected GWTJahiaNode prepareData(GWTJahiaNode model) {
-        if (model.getNodeTypes().contains("jmix:markedForDeletion")) {
+        if (model.isMarkedForDeletion()) {
             model.set("markedForDeletion", "true" );
         } else {
             model.set("markedForDeletion", "false" );

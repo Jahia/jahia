@@ -239,7 +239,7 @@ public abstract class Module extends LayoutContainer {
         overlayLabel = null;
         overlayColorText = "";
         opacity = "";
-        if (node.getNodeTypes().contains("jmix:markedForDeletionRoot")) {
+        if (node.isMarkedForDeletionRoot()) {
             overlayLabel = new HTML(Messages.get("label.deleted", "Deleted"));
             overlayLabel.setStyleName("deleted-overlay");
             overlayColorText = "#f00";

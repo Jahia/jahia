@@ -911,7 +911,7 @@ public class MainModule extends Module {
     public void setNode(GWTJahiaNode node) {
         mainModule = this;
         super.setNode(node);
-        if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
+        if (node.isMarkedForDeletion()) {
             overlayLabel = new HTML(Messages.get("label.deleted", "Deleted"));
             overlayLabel.setStyleName("deleted-overlay");
             overlayColorText = "#f00";

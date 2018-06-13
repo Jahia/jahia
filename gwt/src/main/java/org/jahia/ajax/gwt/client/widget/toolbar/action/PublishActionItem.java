@@ -89,8 +89,8 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
 
         boolean markedForDeletion = false;
         for (GWTJahiaNode node : selection.getMultipleSelection()) {
-            markedForDeletion = node.getNodeTypes().contains("jmix:markedForDeletion")
-                    && !node.getNodeTypes().contains("jmix:markedForDeletionRoot");
+            markedForDeletion = node.isMarkedForDeletion()
+                    && !node.isMarkedForDeletionRoot();
             if (!markedForDeletion) {
                 break;
             }
@@ -204,12 +204,8 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
     }
 
     protected boolean isWorkInProgress(GWTJahiaNode gwtJahiaNode) {
-        boolean isNode = gwtJahiaNode != null;
-        boolean hasWipStatus = isNode && gwtJahiaNode.getWorkInProgressStatus() != null;
-        boolean notDisabled = hasWipStatus && !gwtJahiaNode.getWorkInProgressStatus().equals("DISABLED");
-        boolean isWip = notDisabled && gwtJahiaNode.getWorkInProgressLanguages() != null && gwtJahiaNode.getWorkInProgressStatus().equals("LANGUAGES") && gwtJahiaNode.getWorkInProgressLanguages().contains(JahiaGWTParameters.getLanguage());
-        boolean isNotMarkAsDeletion = isNode && !gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletion");
-        return isWip && isNotMarkAsDeletion;
+        return gwtJahiaNode != null && !gwtJahiaNode.isMarkedForDeletion()
+                && gwtJahiaNode.isInWorkInProgress(JahiaGWTParameters.getLanguage());
     }
 
     /**

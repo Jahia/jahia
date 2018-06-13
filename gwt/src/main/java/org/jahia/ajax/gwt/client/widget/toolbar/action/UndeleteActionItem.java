@@ -138,7 +138,7 @@ public class UndeleteActionItem extends NodeTypeAwareBaseActionItem {
                 ) {
             canUndelete = true;
             for (GWTJahiaNode gwtJahiaNode : selection) {
-                canUndelete &= gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletionRoot");
+                canUndelete &= gwtJahiaNode.isMarkedForDeletionRoot();
                 canUndelete = canUndelete && (!gwtJahiaNode.isLocked() || isLockedForDeletion(gwtJahiaNode));
                 if (!canUndelete) {
                     break;

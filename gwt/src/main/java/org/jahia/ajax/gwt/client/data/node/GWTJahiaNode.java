@@ -741,4 +741,25 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public void setWorkInProgressStatus(String status) {
         set(WORK_IN_PROGRESS_STATUS, status);
     }
+
+    /**
+     * Checks if the current node is marked for deletion.
+     * 
+     * @return <code>true</code>if the current node is marked for deletion; <code>false</code> otherwise
+     */
+    public boolean isMarkedForDeletion() {
+        List<String> nodeTypes = getNodeTypes();
+        return nodeTypes != null && nodeTypes.contains("jmix:markedForDeletion");
+    }
+
+    /**
+     * Checks if the current node is marked for deletion as root node.
+     * 
+     * @return <code>true</code>if the current node is marked for deletion as root node; <code>false</code> otherwise
+     */
+    public boolean isMarkedForDeletionRoot() {
+        List<String> nodeTypes = getNodeTypes();
+        return nodeTypes != null && nodeTypes.contains("jmix:markedForDeletionRoot");
+    }
+
 }

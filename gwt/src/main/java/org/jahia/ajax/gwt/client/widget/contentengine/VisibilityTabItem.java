@@ -205,7 +205,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
             remove.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 public Object render(final GWTJahiaNode condition, String property, com.extjs.gxt.ui.client.widget.grid.ColumnData config, final int rowIndex, final int colIndex, ListStore<GWTJahiaNode> listStore, final Grid<GWTJahiaNode> grid) {
                     final Button button;
-                    if (condition.get("node-removed") == null || condition.getNodeTypes().contains("jmix:markedForDeletion")) {
+                    if (condition.get("node-removed") == null || condition.isMarkedForDeletion()) {
                         button = new Button(Messages.get("label.remove"));
                         button.addStyleName("button-remove");
                         button.setIcon(StandardIconsProvider.STANDARD_ICONS.minusRound());

@@ -240,7 +240,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             if (v != null) {
                 v = SafeHtmlUtils.htmlEscape(v.toString());
             }
-            if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
+            if (node.isMarkedForDeletion()) {
                 v = "<span class=\"markedForDeletion\">" + v + "</span>";
             }
             return v;
@@ -255,7 +255,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 v = SafeHtmlUtils.htmlEscape(v);
             }
             String classes = "";
-            if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
+            if (node.isMarkedForDeletion()) {
                 classes += "markedForDeletion ";
             }
             if (node.getQuickPublicationInfo() != null &&

@@ -2469,6 +2469,13 @@ form,
 
 	}
 
+	// Fix for the Advanced tab
+	.cke_dialog_ui_vbox.cke_dialog_page_contents[name="advanced"] .cke_dialog_ui_vbox_child[style="padding:1px"] .cke_dialog_ui_hbox > td:not([style="width:320px"]):not([style="width:90px"]) {
+		width: 100% !important;
+		display: block !important;
+		margin-bottom: 5px;
+	}
+
 	.cke_dialog_ui_vbox {}
 	.cke_dialog_ui_vbox_child {
 		padding: 0!important;

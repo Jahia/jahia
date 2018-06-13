@@ -263,10 +263,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                         try {
                             script = RenderService.getInstance().resolveScript(resource, renderContext);
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                    script, add);
+                                    script, add, isReferencesAllowed(node));
                         } catch (TemplateNotFoundException e) {
                             printModuleStart(type, node.getPath(), resource.getResolvedTemplate(),
-                                    null, add);
+                                    null, add, isReferencesAllowed(node));
                         }
                         nodeTypes = oldNodeTypes;
                         currentResource.getDependencies().add(node.getCanonicalPath());
@@ -508,7 +508,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     protected void printModuleStart(String type, String path, String resolvedTemplate, Script script,
-                                    String additionalParameters)
+                                    String additionalParameters, boolean isReferenceAllowed)
             throws RepositoryException, IOException {
 
         builder.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ").append("id=\"module")
@@ -518,23 +518,23 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         if (script != null && script.getView().getModule().getSourcesFolder() != null) {
             String version = script.getView().getModule().getIdWithVersion();
-            builder.append(" sourceInfo=\"/modules/" + version + "/sources/src/main/resources" + StringUtils.substringAfter(script.getView().getPath(), "/modules/" + script.getView().getModule().getId()) + "\"");
+            builder.append(" sourceInfo=\"/modules/").append(version).append("/sources/src/main/resources").append(StringUtils.substringAfter(script.getView().getPath(), "/modules/" + script.getView().getModule().getId())).append("\"");
         }
 
         builder.append(" path=\"").append(path != null && path.indexOf('"') != -1 ? Patterns.DOUBLE_QUOTE.matcher(path).replaceAll("&quot;") : path).append("\"");
 
         if (!StringUtils.isEmpty(nodeTypes)) {
             nodeTypes = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(nodeTypes))),' ');
-            builder.append(" nodetypes=\"" + nodeTypes + "\"");
-            isReferencesAllowed(builder);
+            builder.append(" nodetypes=\"").append(nodeTypes).append("\"");
+            builder.append(" allowReferences=\"").append(isReferenceAllowed).append("\"");
         } else if (!StringUtils.isEmpty(constraints)) {
             constraints = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(constraints))),' ');
-            builder.append(" nodetypes=\"" + constraints + "\"");
-            isReferencesAllowed(builder);
+            builder.append(" nodetypes=\"").append(constraints).append("\"");
+            builder.append(" allowReferences=\"").append(isReferenceAllowed).append("\"");
         }
 
         if (listLimit > -1) {
-            builder.append(" listlimit=\"" + listLimit + "\"");
+            builder.append(" listlimit=\"").append(listLimit).append("\"");
         }
 
         if (!StringUtils.isEmpty(constraints)) {
@@ -553,21 +553,17 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         printAndClean();
     }
 
-    private void isReferencesAllowed(final StringBuilder builder) throws RepositoryException {
+    protected boolean isReferencesAllowed(final JCRNodeWrapper node) throws RepositoryException {
         if (node == null) {
-            return;
+            return false;
         }
-
-        boolean referencesAllowed;
 
         try {
             node.getApplicableChildNodeDefinition("*", "jnt:contentReference");
-            referencesAllowed = true;
+            return true;
         } catch (ConstraintViolationException e) {
-            referencesAllowed = false;
+            return false;
         }
-
-        builder.append(" allowReferences=\"").append(referencesAllowed).append("\"");
     }
 
     protected void printModuleEnd() throws IOException {
@@ -646,7 +642,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 if (contributeTypes != null) {
                     nodeTypes = StringUtils.join(contributeTypes, " ");
                 }
-                printModuleStart("placeholder", path, null, null, null);
+                printModuleStart("placeholder", path, null, null, null, isReferencesAllowed(currentResource.getNode()));
                 printModuleEnd();
             }
         }

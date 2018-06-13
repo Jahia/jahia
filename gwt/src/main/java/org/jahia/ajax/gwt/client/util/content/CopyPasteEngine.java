@@ -88,10 +88,10 @@ public class CopyPasteEngine {
         exportStaticMethod();
     }
 
-    public void paste(final GWTJahiaNode m, final Linker linker, List<String> childNodeTypesToSkip) {
+    public void paste(final GWTJahiaNode m, final Linker linker, List<String> childNodeTypesToSkip, String newName) {
         if (!getCopiedNodes().isEmpty()) {
             JahiaContentManagementService
-                    .App.getInstance().paste(JCRClientUtils.getPathesList(getCopiedNodes()), m.getPath(), null, isCut(), childNodeTypesToSkip, new BaseAsyncCallback() {
+                    .App.getInstance().paste(JCRClientUtils.getPathesList(getCopiedNodes()), m.getPath(), newName, isCut(), childNodeTypesToSkip, new BaseAsyncCallback() {
                 public void onApplicationFailure(Throwable throwable) {
                     final String message = isCut() ? throwable
                             .getLocalizedMessage() : Messages.get("failure.paste.label") + "\n" + throwable

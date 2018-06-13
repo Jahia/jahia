@@ -201,7 +201,11 @@ public class PlaceholderModule extends Module {
                 public void handleEvent(ComponentEvent be) {
                     GWTJahiaNode parentNode = getParentModule().getNode();
                     if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
-                        CopyPasteEngine.getInstance().paste(parentNode, mainModule.getEditLinker(), null);
+                        String nodeName = null;
+                        if ((path != null) && !"*".equals(path) && !path.startsWith("/")) {
+                            nodeName = path;
+                        }
+                        CopyPasteEngine.getInstance().paste(parentNode, mainModule.getEditLinker(), null, nodeName);
                     }
                 }
             });
@@ -252,7 +256,7 @@ public class PlaceholderModule extends Module {
         String restrictToNodeTypes = getNodeTypes() != null && !getNodeTypes().isEmpty() ? getNodeTypes() : parentModule.getNodeTypes();
         if (!CopyPasteEngine.getInstance().getCopiedNodes().isEmpty()) {
             pasteButton.setVisible(CopyPasteEngine.getInstance().checkNodeType(restrictToNodeTypes, false) && CopyPasteEngine.getInstance().canCopyTo(getParentModule().getNode()));
-            pasteAsReferenceButton.setVisible(CopyPasteEngine.getInstance().checkNodeType(restrictToNodeTypes, true) && CopyPasteEngine.getInstance().canPasteAsReference() && parentModule.isAllowReferences());
+            pasteAsReferenceButton.setVisible(CopyPasteEngine.getInstance().checkNodeType(restrictToNodeTypes, true) && CopyPasteEngine.getInstance().canPasteAsReference() && parentModule.isAllowReferences() && isAllowReferences());
         } else {
             pasteButton.setVisible(false);
             pasteAsReferenceButton.setVisible(false);

@@ -87,7 +87,7 @@ public class PasteActionItem extends NodeTypeAwareBaseActionItem {
                 linker.loading(pastingMessage);
             }
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            copyPasteEngine.paste(m, linker, childNodeTypesToSkip);
+            copyPasteEngine.paste(m, linker, childNodeTypesToSkip, null);
         }
     }
 

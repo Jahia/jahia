@@ -215,7 +215,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 additionalParameters.append(" editable=\"false\"");
             }
             
-            printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters.toString());
+            printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters.toString(), isReferencesAllowed(resource.getNode()));
             if (enableArea && areaNode != null) {
                 try {
                     render(renderContext, new Resource(areaNode, resource.getTemplateType(), resource.getTemplate(), Resource.CONFIGURATION_WRAPPEDCONTENT));

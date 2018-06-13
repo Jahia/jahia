@@ -104,13 +104,14 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
     protected boolean allSubTree = false;
     protected boolean allLanguages = false;
 
+    @Override
     public void handleNewLinkerSelection() {
         setEnabled(false);
         this.getGwtToolbarItem().setHideWhenDisabled(true);
         LinkerSelectionContext ctx = linker.getSelectionContext();
         boolean hasOnlyOneLanguage = JahiaGWTParameters.getSiteLanguages().size() == 1;
         if (allLanguages) {
-            if(hasOnlyOneLanguage) {
+            if (hasOnlyOneLanguage) {
                 setEnabled(false);
                 return;
             }
@@ -132,11 +133,11 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 } else if (gwtJahiaNode != null) {
                     String title;
                     if (allSubTree) {
-                        title = Messages.getWithArgs("label.publishall.all.languages", "Publish all under {0} in all languages", new String[]{gwtJahiaNode.getDisplayName()});
+                        title = Messages.getWithArgs("label.publishall.all.languages", "Publish all under {0} in all languages", new String[] {gwtJahiaNode.getDisplayName()});
                     } else {
-                        title = Messages.getWithArgs("label.publish.languages","Publish {0} in all languages",new String[]{gwtJahiaNode.getDisplayName()});
+                        title = Messages.getWithArgs("label.publish.languages", "Publish {0} in all languages", new String[] {gwtJahiaNode.getDisplayName()});
                     }
-                    updateItem(ctx, gwtJahiaNode,title);
+                    updateItem(ctx, gwtJahiaNode, title);
                 }
             }
         } else if (allSubTree) {
@@ -236,11 +237,14 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
             }
             linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
             BaseAsyncCallback<List<GWTJahiaPublicationInfo>> asyncCallback = new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
+
+                @Override
                 public void onApplicationFailure(Throwable caught) {
                     linker.loaded();
                     Window.alert("Cannot get status: " + caught.getMessage());
                 }
 
+                @Override
                 public void onSuccess(List<GWTJahiaPublicationInfo> result) {
                     linker.loaded();
                     callback(result);
@@ -307,6 +311,8 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 if (!result.isEmpty()) {
                     message.append("<br/>").append(Messages.get("message.continue"));
                     MessageBox.confirm(Messages.get("label.publish", "Publication"), message.toString(), new Listener<MessageBoxEvent>() {
+
+                        @Override
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
                                 PublicationWorkflow.create(result, linker, checkForUnpublication);
@@ -337,7 +343,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
     }
 
     private void updateItem(LinkerSelectionContext ctx, GWTJahiaNode gwtJahiaNode, String title) {
-        if(!isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+        if (!isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
             setEnabled(true);
             if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                 if (gwtJahiaNode.isFile()) {
@@ -350,7 +356,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
 
     private boolean supportPublication(List<GWTJahiaNode> multipleSelection) {
         for (GWTJahiaNode gwtJahiaNode : multipleSelection) {
-            if(!Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))){
+            if (!Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))) {
                 return false;
             }
         }

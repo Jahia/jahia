@@ -73,15 +73,15 @@ import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import java.util.*;
 
 /**
- * 
+ *
  * User: ktlili
  * Date: Jan 20, 2010
  * Time: 1:53:30 PM
- * 
+ *
  */
 public class TranslateContentEngine extends Window {
     public static final int BUTTON_HEIGHT = 24;
-    
+
     private GWTJahiaNode node;
     private final GWTJahiaLanguage srcLanguage;
     private final GWTJahiaLanguage destLanguage;
@@ -94,8 +94,6 @@ public class TranslateContentEngine extends Window {
     protected ButtonBar buttonBar;
 
     private Set<String> workInProgressByLocale = new HashSet<String>();
-
-
 
     /**
      * Initializes an instance of this class.
@@ -164,7 +162,7 @@ public class TranslateContentEngine extends Window {
             public void componentSelected(ButtonEvent ce) {
                 PropertiesEditor sourcePropertiesEditor = sourceLangPropertiesEditor.getPropertiesEditorByLang(sourceLangPropertiesEditor.getDisplayedLocale().getLanguage());
                 List<GWTJahiaNodeProperty> props = sourcePropertiesEditor.getProperties();
-                Map<String,PropertiesEditor.PropertyAdapterField> fieldsMap = targetLangPropertiesEditor.getPropertiesEditorByLang(targetLangPropertiesEditor.getDisplayedLocale().getLanguage()).getFieldsMap();
+                Map<String, PropertiesEditor.PropertyAdapterField> fieldsMap = targetLangPropertiesEditor.getPropertiesEditorByLang(targetLangPropertiesEditor.getDisplayedLocale().getLanguage()).getFieldsMap();
                 for (final GWTJahiaNodeProperty prop : props) {
                     if (sourcePropertiesEditor.getGWTJahiaItemDefinition(prop).isInternationalized()) {
                         final Field<?> f = fieldsMap.get(prop.getName()).getField();
@@ -236,6 +234,8 @@ public class TranslateContentEngine extends Window {
      * Save selection listener
      */
     private class SaveSelectionListener extends SelectionListener<ButtonEvent> {
+
+        @Override
         public void componentSelected(ButtonEvent event) {
             List<GWTJahiaNodeProperty> sharedProperties = new ArrayList<GWTJahiaNodeProperty>();
 
@@ -275,16 +275,19 @@ public class TranslateContentEngine extends Window {
             }
             // Ajax call to update values
             JahiaContentManagementService.App.getInstance().saveNode(node, null, changedI18NProperties, sharedProperties, null, new BaseAsyncCallback() {
+
+                @Override
                 public void onApplicationFailure(Throwable throwable) {
                     String message = throwable.getMessage();
                     if (message.contains("Invalid link")) {
-                        message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":")+1);
+                        message = Messages.get("label.error.invalidlink", "Invalid link") + " : " + message.substring(message.indexOf(":") + 1);
                     }
                     com.google.gwt.user.client.Window.alert(Messages.get("failure.properties.save", "Properties save failed") + "\n\n"
                             + message);
                     Log.error("failed", throwable);
                 }
 
+                @Override
                 public void onSuccess(Object o) {
                     Info.display(Messages.get("label.information", "Information"), Messages.get("saved_prop", "Properties saved\n\n"));
                     TranslateContentEngine.this.hide();
@@ -309,6 +312,5 @@ public class TranslateContentEngine extends Window {
     public void focus() {
         // do nothing to prevent menu to disappear when mouse over
     }
-
 }
 

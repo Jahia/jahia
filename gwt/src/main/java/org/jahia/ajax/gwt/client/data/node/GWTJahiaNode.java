@@ -63,6 +63,7 @@ import java.util.*;
  * @version 19 juin 2008 - 15:57:38
  */
 public class GWTJahiaNode extends BaseTreeModel implements Serializable, Comparable<GWTJahiaNode>, ListLoadConfig {
+
     public enum WipStatus {
         DISABLED,
         ALL_CONTENT,
@@ -709,21 +710,33 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         }
         super.removeAll();
     }
-    
+
     /**
      * Checks that the current node is in WIP state either for all languages (all content) or for a specified language.
-     * 
-     * @param language the languages to check WIP status for
-     * @return <code>true</code>if the current node is in WIP state either for all languages (all content) or for a specified language;
+     *
+     * @param language the language to check WIP status for
+     * @return <code>true</code>if the current node is in WIP state either for all languages (all content) or for the specified language;
      *         <code>false</code> otherwise
      */
     public boolean isInWorkInProgress(String language) {
-        String wipStatus = getWorkInProgressStatus();
-        if (wipStatus == null || WipStatus.DISABLED.name().equals(wipStatus)) {
+
+        String wipStatusStr = getWorkInProgressStatus();
+        if (wipStatusStr == null) {
             return false;
         }
-        return WipStatus.ALL_CONTENT.name().equals(wipStatus) || WipStatus.LANGUAGES.name().equals(wipStatus)
-                && getWorkInProgressLanguages() != null && getWorkInProgressLanguages().contains(language);
+
+        WipStatus wipStatus = WipStatus.valueOf(wipStatusStr);
+        switch (wipStatus) {
+            case DISABLED:
+                return false;
+            case ALL_CONTENT:
+                return true;
+            case LANGUAGES:
+                List<String> wipLanguages = getWorkInProgressLanguages();
+                return (wipLanguages != null && wipLanguages.contains(language));
+            default:
+                throw new IllegalStateException("Unsupported WIP status: " + wipStatus);
+        }
     }
 
     public List<String> getWorkInProgressLanguages() {
@@ -744,7 +757,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     /**
      * Checks if the current node is marked for deletion.
-     * 
+     *
      * @return <code>true</code>if the current node is marked for deletion; <code>false</code> otherwise
      */
     public boolean isMarkedForDeletion() {
@@ -754,12 +767,11 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     /**
      * Checks if the current node is marked for deletion as root node.
-     * 
+     *
      * @return <code>true</code>if the current node is marked for deletion as root node; <code>false</code> otherwise
      */
     public boolean isMarkedForDeletionRoot() {
         List<String> nodeTypes = getNodeTypes();
         return nodeTypes != null && nodeTypes.contains("jmix:markedForDeletionRoot");
     }
-
 }

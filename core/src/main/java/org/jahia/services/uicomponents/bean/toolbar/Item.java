@@ -55,6 +55,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.config.ListFactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -335,7 +336,9 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
         } else if (parent instanceof Toolbar) {
             Toolbar parentToolbar = (Toolbar) parent;
             results.add(parentToolbar.getItems());
-        } else {
+        } else if (parent instanceof List) {
+            results.add((List)parent);
+        }else {
             throw new IllegalArgumentException(
                     "Unknown parent type '"
                             + parent.getClass().getName()

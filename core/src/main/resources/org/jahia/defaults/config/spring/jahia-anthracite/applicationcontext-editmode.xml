@@ -210,7 +210,6 @@
         <ref bean="Toolbar.Item.EditorialContentManager.NewTab"/>
         <ref bean="Toolbar.Item.SiteManager.NewTab"/>
         <ref bean="Toolbar.Item.RepositoryExplorer.NewTab"/>
-        <ref bean="Toolbar.Item.CategoryManager.NewTab"/>
         <ref bean="Toolbar.Item.PortletManager.NewTab"/>
         <ref bean="Toolbar.Item.Documentation"/>
     </util:list>

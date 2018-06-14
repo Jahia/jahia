@@ -727,13 +727,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             if (type.equals("css") && !path.contains(".min")) {
                 String s = IOUtils.toString(reader);
                 IOUtils.closeQuietly(reader);
-                if (s.indexOf("url(") != -1) {
-                    String url = StringUtils.substringBeforeLast(path, "/") + "/";
-                    s = URL_PATTERN_1.matcher(s).replaceAll("url(");
-                    s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url);
-                    s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url);
-                    s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url);
-                }
+                s = urlRewriting(s, path);
                 reader = new StringReader(s);
                 CssCompressor compressor = new CssCompressor(reader);
                 compressor.compress(writer, -1);
@@ -750,9 +744,15 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     IOUtils.copy(reader, writer);
                 }
             } else {
+                String s = null;
+                if (type.equals("css")){
+                    s = IOUtils.toString(reader);
+                    s = urlRewriting(s, path);
+                    reader = new StringReader(s);
+                    s = null;
+                }
                 BufferedWriter bw = new BufferedWriter(writer);
                 BufferedReader br = new BufferedReader(reader);
-                String s = null;
                 while ((s = br.readLine()) != null) {
                     bw.write(s);
                     bw.write("\n");
@@ -991,5 +991,17 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
         ajaxResolvedTemplate = null;
         resolvedTemplate = null;
+    }
+
+    private static String urlRewriting(String s, String path) {
+        if (s.indexOf("url(") != -1) {
+            String url = StringUtils.substringBeforeLast(path, "/") + "/";
+            s = URL_PATTERN_1.matcher(s).replaceAll("url(");
+            s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url);
+            s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url);
+            s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url);
+        }
+
+        return s;
     }
 }

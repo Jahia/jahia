@@ -55,7 +55,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.config.ListFactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -310,6 +309,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
         }
     }
 
+    @SuppressWarnings("unchecked")
     private List<List<Item>> getItems(Object parent) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         List<List<Item>> results = new ArrayList<>();
         if (parent == null) {
@@ -337,8 +337,8 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
             Toolbar parentToolbar = (Toolbar) parent;
             results.add(parentToolbar.getItems());
         } else if (parent instanceof List) {
-            results.add((List)parent);
-        }else {
+            results.add((List<Item>) parent);
+        } else {
             throw new IllegalArgumentException(
                     "Unknown parent type '"
                             + parent.getClass().getName()

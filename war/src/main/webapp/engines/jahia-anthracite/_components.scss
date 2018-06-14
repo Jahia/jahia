@@ -622,6 +622,8 @@
 	position: relative;
 	background: none;
 
+	margin-bottom: 24px !important;
+
 	> div {
 		/* Some Thumbs have extra divs containing more Meta Data, so hide them */
 		display: none;
@@ -658,7 +660,7 @@
 	    z-index: $ZINDEX--THUMB---DETAILS;
 	    margin: 0 !important;
 	    width: calc(100% - 50px);
-	    display: none;
+	    //display: none;
 		z-index: 999;
 
 
@@ -674,7 +676,7 @@
 				@extend %CSS_BLOCK--THUMB--LABEL !optional;
 
 				background: transparent;
-				color: _theme-color(secondary, a);
+				color: _theme-color(primary);
 				text-align: left;
 				padding: 0;
 
@@ -5619,7 +5621,7 @@ XXX.x-window.modal-deletealljob-confirm {
 				@include text(36px, _theme-color(primary), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
 				z-index: 999;
 			}
-			
+
 		}
 
 		.x-window-header .x-panel-toolbar {

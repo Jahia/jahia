@@ -935,15 +935,19 @@ body[indigo-dragging-panel] {
 			}
 		}
 
+		.thumb-wrap:hover .thumbDetails {
+			background: _property($THUMB--BG---SELECTED, $SIDE-PANEL);
+		}
+
 		.thumbDetails {
 			position: absolute;
 			bottom: -25px;
 			left: 0;
 			width: 100%;
-			background: _property($THUMB--BG---SELECTED, $SIDE-PANEL);
-		    top: auto!important;
-		    padding: 6px;
-		    box-sizing: border-box;
+			//background: _property($THUMB--BG---SELECTED, $SIDE-PANEL);
+	    top: auto!important;
+	    padding: 6px;
+	    box-sizing: border-box;
 
 			div {
 				text-align: center;

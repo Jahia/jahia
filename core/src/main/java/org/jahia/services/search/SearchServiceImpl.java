@@ -116,7 +116,17 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
 
     @Override
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
-        return getCurrentProvider().search(criteria, context);
+
+        // get response from the search response handler
+        SearchResponseHandler searchResponseHandler = new SearchResponseHandler(criteria.toHashCode(), context.getRequest());
+        SearchResponse response = searchResponseHandler.getStoredSearchResponse();
+
+        if (response == null) {
+            response = getCurrentProvider().search(criteria, context);
+            searchResponseHandler.store(response);
+        }
+
+        return response;
     }
 
     @Override

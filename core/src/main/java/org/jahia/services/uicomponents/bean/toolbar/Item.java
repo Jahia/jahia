@@ -309,7 +309,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private List<List<Item>> getItems(Object parent) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         List<List<Item>> results = new ArrayList<>();
         if (parent == null) {
@@ -337,7 +337,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
             Toolbar parentToolbar = (Toolbar) parent;
             results.add(parentToolbar.getItems());
         } else if (parent instanceof List) {
-            results.add((List<Item>) parent);
+            results.add((List) parent);
         } else {
             throw new IllegalArgumentException(
                     "Unknown parent type '"

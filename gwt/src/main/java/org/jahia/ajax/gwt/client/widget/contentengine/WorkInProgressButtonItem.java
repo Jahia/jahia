@@ -157,7 +157,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
         public WorkInProgressWindow(final AbstractContentEngine engine) {
 
             final VerticalPanel vp = new VerticalPanel();
-            vp.setScrollMode(Style.Scroll.AUTO);
             vp.setSpacing(10);
 
             final VerticalPanel vpLanguages = new VerticalPanel();

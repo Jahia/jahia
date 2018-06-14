@@ -113,7 +113,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.util.List</type>
-        </attribute>        
+        </attribute>
     </tag>
 
     <tag>
@@ -122,7 +122,7 @@
         <tag-class>org.jahia.taglibs.search.ResultsTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-        	<description>The name of the page scope variable the hit count will be exposed under. [count]</description>
+            <description>The name of the page scope variable the hit count will be exposed under. [count]</description>
             <name>countVar</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -156,7 +156,7 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-        	<description>The name of the page scope variable the list of found hits will be exposed under. [hits]</description>
+            <description>The name of the page scope variable the list of found hits will be exposed under. [hits]</description>
             <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -168,23 +168,23 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>     
+        </attribute>
         <attribute>
-        	<description>Are empty search allowed</description>
+            <description>Are empty search allowed</description>
             <name>allowEmptySearchTerm</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
-        	<description>Limit</description>
+            <description>Limit</description>
             <name>limit</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.Long</type>
         </attribute>
         <attribute>
-        	<description>Results offset</description>
+            <description>Results offset</description>
             <name>offset</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -212,7 +212,7 @@
         <tag-class>org.jahia.taglibs.search.SuggestionsTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-        	<description>The name of the page scope variable the hit count will be exposed under. [suggestedCount]</description>
+            <description>The name of the page scope variable the hit count will be exposed under. [suggestedCount]</description>
             <name>countVar</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -228,14 +228,14 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-        	<description>The name of the page scope variable the found suggestion will be exposed under. [suggestion]</description>
+            <description>The name of the page scope variable the found suggestion will be exposed under. [suggestion]</description>
             <name>suggestionVar</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-        	<description>The name of the page scope variable the list of found hits will be exposed under. [suggestedHits]</description>
+            <description>The name of the page scope variable the list of found hits will be exposed under. [suggestedHits]</description>
             <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -254,9 +254,13 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
-        </attribute>        
+        </attribute>
     </tag>
 
+    <tag-file>
+        <name>afterForm</name>
+        <path>/META-INF/tags/search/afterForm.tag</path>
+    </tag-file>
     <tag-file>
         <name>created</name>
         <path>/META-INF/tags/search/created.tag</path>
@@ -317,7 +321,7 @@
     <tag-file>
         <name>orderBy</name>
         <path>/META-INF/tags/search/orderBy.tag</path>
-    </tag-file>    
+    </tag-file>
     <tag-file>
         <name>pagePath</name>
         <path>/META-INF/tags/search/pagePath.tag</path>

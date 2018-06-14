@@ -43,6 +43,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.Html;
@@ -53,6 +54,7 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.Radio;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -231,6 +233,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
             vpLanguages.add(selectedLanguages);
             languages.setFieldLabel("Languages");
+            languages.setOrientation(Style.Orientation.VERTICAL);
             for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
                 CheckBox languageCheck = new CheckBox();
                 languageCheck.setBoxLabel(language.getDisplayName());

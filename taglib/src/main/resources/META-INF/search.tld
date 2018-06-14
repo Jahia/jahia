@@ -370,4 +370,22 @@
         <path>/META-INF/tags/search/termMatch.tag</path>
     </tag-file>
 
+    <function>
+        <description>
+            Retrieves the faceted result, which corresponds to the supplied facet definition ID. This call also executes the search, if it was
+            not executed in this request yet and the request contains the search criteria. [since 7.2.3.1]
+        </description>
+        <name>getFacetedResult</name>
+        <function-class>org.jahia.services.search.SearchUtils</function-class>
+        <function-signature>org.jahia.services.search.SearchResponse.FacetedResult getFacetedResult(java.lang.String, org.jahia.services.render.RenderContext)</function-signature>
+    </function>
+
+    <function>
+        <description>
+            Obtains the search response object for the current search. If no search criteria is found in current request parameters, null is returned. [since 7.2.3.1]
+        </description>
+        <name>getSearchResponse</name>
+        <function-class>org.jahia.services.search.SearchUtils</function-class>
+        <function-signature>org.jahia.services.search.SearchResponse getSearchResponse(org.jahia.services.render.RenderContext)</function-signature>
+    </function>
 </taglib>

@@ -63,6 +63,7 @@ import org.springframework.context.ApplicationListener;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,13 +118,15 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
     @Override
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
 
-        // get response from the search response handler
-        SearchResponseHandler searchResponseHandler = new SearchResponseHandler(criteria.toHashCode(), context.getRequest());
-        SearchResponse response = searchResponseHandler.getStoredSearchResponse();
+        // get stored response for current search criteria from the HTTP request attribute
+        SearchResponse response = SearchUtils.getStoredSearchResponse(criteria, context.getRequest());
 
         if (response == null) {
+            // execute the search
             response = getCurrentProvider().search(criteria, context);
-            searchResponseHandler.store(response);
+
+            // store search response in request attribute
+            SearchUtils.storeSearchResponse(criteria, response, context.getRequest());
         }
 
         return response;

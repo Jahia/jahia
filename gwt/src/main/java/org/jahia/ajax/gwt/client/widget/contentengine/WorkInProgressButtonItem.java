@@ -233,7 +233,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
             vpLanguages.add(selectedLanguages);
             languages.setFieldLabel("Languages");
             languages.setOrientation(Style.Orientation.VERTICAL);
-            languages.setStyleAttribute("margin-left", "15px");
             for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
                 CheckBox languageCheck = new CheckBox();
                 languageCheck.setBoxLabel(language.getDisplayName());

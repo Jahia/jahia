@@ -933,10 +933,16 @@ body[indigo-dragging-panel] {
 			&.x-view-over {
 				background: _property($THUMB--BG---SELECTED, $SIDE-PANEL)!important;
 			}
+
 		}
 
 		.thumb-wrap:hover .thumbDetails {
 			background: _property($THUMB--BG---SELECTED, $SIDE-PANEL);
+
+			div:first-child {
+					color: _theme-color(secondary, a);
+			}
+
 		}
 
 		.thumbDetails {
@@ -944,7 +950,6 @@ body[indigo-dragging-panel] {
 			bottom: -25px;
 			left: 0;
 			width: 100%;
-			//background: _property($THUMB--BG---SELECTED, $SIDE-PANEL);
 	    top: auto!important;
 	    padding: 6px;
 	    box-sizing: border-box;
@@ -952,6 +957,7 @@ body[indigo-dragging-panel] {
 			div {
 				text-align: center;
 			}
+
 		}
 
 

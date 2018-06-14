@@ -5619,11 +5619,14 @@ XXX.x-window.modal-deletealljob-confirm {
 				@include text(36px, _theme-color(primary), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
 				z-index: 999;
 			}
+			
 		}
+
 		.x-window-header .x-panel-toolbar {
 			display: block;
 			margin-top: 8px;
 			pointer-events: all;
+
 			table tbody tr td .x-tool-close {
 				background: url(./images/icons/icon-close-grey@X2.png) no-repeat center top;
 				background-size: 20px;
@@ -5635,7 +5638,9 @@ XXX.x-window.modal-deletealljob-confirm {
 				position: absolute;
 				top: 25px;
 			}
+
 		}
+
 		.x-tool-refresh,
  		.x-tool-maximize,
 		.x-resizable-handle,
@@ -5643,15 +5648,18 @@ XXX.x-window.modal-deletealljob-confirm {
 		.x-window-header-text {
 			display: none!important;
 		}
+
 		.x-window-tl {
 			z-index: 999;
 		}
+
 		.x-window-bwrap {
 			width: calc(100% - 40px);
 			height: calc(100% - 90px);
 			z-index: 999;
 			position: relative!important;
 		}
+
 		.x-window-ml,
 		.x-window-mr,
 		.x-window-mc,
@@ -5659,21 +5667,20 @@ XXX.x-window.modal-deletealljob-confirm {
 			width: 100%!important;
 			height: 100%!important;
 		}
+
 		.x-window-body,
 		img.gwt-Image {
 			max-width: 100%!important;
 			max-height: 100%!important;
 		}
+
 		img.gwt-Image {
 			left: 0!important;
 			top: 0!important;
-			// max-width: 100%;
-		    // max-height: 100%;
 		}
+
 		.x-resizable-handle {
 			display: none;
 		}
-		.indigo-modal-mask {
-			background: _theme-color(secondary)!important;
-		}
+
 	}

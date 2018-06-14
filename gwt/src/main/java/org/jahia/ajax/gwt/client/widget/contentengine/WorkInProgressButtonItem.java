@@ -45,16 +45,14 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.BoxComponent;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -159,9 +157,12 @@ public class WorkInProgressButtonItem implements ButtonItem {
         public WorkInProgressWindow(final AbstractContentEngine engine) {
 
             final VerticalPanel vp = new VerticalPanel();
+            vp.setScrollMode(Style.Scroll.AUTO);
             vp.setSpacing(10);
 
             final VerticalPanel vpLanguages = new VerticalPanel();
+            final LayoutContainer langContainer = new LayoutContainer();
+
 
             setSize(500, 300);
             setPlain(true);
@@ -230,11 +231,10 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
             selectedLanguages.setBoxLabel(Messages.get("label.wip.localisedcontent", "Localised Content only"));
             selectedLanguages.addListener(Events.OnClick, getOnChangeListener(true, Messages.getWithArgs("label.wip.localisedcontent.helper", "Localised Content helper text. <a target=\"_blank\" href=\"{0}\">Find out more at The Academy</a>", new String[] {academyUrl})));
-
             vpLanguages.add(selectedLanguages);
             languages.setFieldLabel("Languages");
             languages.setOrientation(Style.Orientation.VERTICAL);
-            languages.setStyleAttribute("margin-left", "20px");
+            languages.setStyleAttribute("margin-left", "15px");
             for (GWTJahiaLanguage language : JahiaGWTParameters.getSiteLanguages()) {
                 CheckBox languageCheck = new CheckBox();
                 languageCheck.setBoxLabel(language.getDisplayName());
@@ -242,7 +242,10 @@ public class WorkInProgressButtonItem implements ButtonItem {
                 languages.add(languageCheck);
             }
             languages.addStyleName("wip-language-list");
-            vpLanguages.add(languages);
+            langContainer.add(languages);
+            langContainer.setScrollMode(Style.Scroll.AUTO);
+            langContainer.setHeight(100);
+            vpLanguages.add(langContainer);
             errorLanguages.addStyleName("error-message");
             errorLanguages.setHtml(Messages.get("label.wip.localisedcontent.error", "At least one language must be selected"));
             errorLanguages.hide();

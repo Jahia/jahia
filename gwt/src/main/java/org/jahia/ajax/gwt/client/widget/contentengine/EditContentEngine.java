@@ -69,7 +69,10 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Content editing widget.
@@ -259,15 +262,17 @@ public class EditContentEngine extends AbstractContentEngine {
                     wipStatus = GWTJahiaNode.WipStatus.valueOf(node.getWorkInProgressStatus());
                     // set languages
                     if (node.getWorkInProgressLanguages() != null) {
-                        HashSet<String> languages = new HashSet<String>();
                         for (String lang : node.getWorkInProgressLanguages()) {
                             for (GWTJahiaLanguage l : result.getAvailabledLanguages()) {
                                 if (l.getLanguage().equals(lang)) {
-                                    languages.add(lang);
+                                    workInProgressLanguages.add(lang);
                                 }
                             }
                         }
-                        workInProgressLanguages = languages;
+                    }
+                    // if no language set, change the status to no workflow
+                    if (workInProgressLanguages.isEmpty()) {
+                        wipStatus = GWTJahiaNode.WipStatus.DISABLED;
                     }
                     // update button
                     updateWipControls();

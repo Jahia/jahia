@@ -744,15 +744,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     IOUtils.copy(reader, writer);
                 }
             } else {
-                String s = null;
                 if (type.equals("css")){
-                    s = IOUtils.toString(reader);
-                    s = urlRewriting(s, path);
-                    reader = new StringReader(s);
-                    s = null;
+                    String s = IOUtils.toString(reader);
+                    IOUtils.closeQuietly(reader);
+                    reader = new StringReader(urlRewriting(s, path));
                 }
                 BufferedWriter bw = new BufferedWriter(writer);
                 BufferedReader br = new BufferedReader(reader);
+                String s;
                 while ((s = br.readLine()) != null) {
                     bw.write(s);
                     bw.write("\n");

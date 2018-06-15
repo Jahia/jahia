@@ -2019,6 +2019,14 @@ form,
 .cke_inner {
 	// CKE container
 	background: transparent!important;
+
+	&.cke_reset.cke_maximized {
+		// Can't use 'rgba($color-white, .4)' because we need a solid color.
+		background: #fcfcfc !important;
+		padding: 8px !important;
+		box-sizing: border-box;
+	}
+
 }
 
 .cke_top {

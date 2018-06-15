@@ -61,6 +61,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode.WipStatus;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -259,7 +260,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
 
                 if (node.getWorkInProgressStatus() != null) {
-                    wipStatus = GWTJahiaNode.WipStatus.valueOf(node.getWorkInProgressStatus());
+                    WipStatus status = WipStatus.valueOf(node.getWorkInProgressStatus());
                     // set languages
                     if (node.getWorkInProgressLanguages() != null) {
                         for (String lang : node.getWorkInProgressLanguages()) {
@@ -270,10 +271,9 @@ public class EditContentEngine extends AbstractContentEngine {
                             }
                         }
                     }
-                    // if no language set, change the status to no workflow
-                    if (workInProgressLanguages.isEmpty()) {
-                        wipStatus = GWTJahiaNode.WipStatus.DISABLED;
-                    }
+                    // if no language set and the state is LANGUAGES, we change it to DISABLED
+                    wipStatus = status == WipStatus.LANGUAGES && workInProgressLanguages.isEmpty() ? WipStatus.DISABLED : status; 
+
                     // update button
                     updateWipControls();
                 }

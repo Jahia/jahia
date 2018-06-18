@@ -199,7 +199,6 @@ public class TemplateScriptFilter extends AbstractFilter {
                     logger.error("Cannot log error", e1);
                 }
             }
-            logger.error("Error while rendering content", e);
             return "<pre>"+getExceptionDetails(e)+"</pre>";
         }
         return super.getContentForError(renderContext, resource, renderChain, e);

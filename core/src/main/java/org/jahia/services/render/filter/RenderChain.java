@@ -180,7 +180,6 @@ public class RenderChain {
             throw e;
         } catch (Exception e) {
             out = null;
-            logger.error("Error while rendering the resource: " + resource + " -> " + e.toString());
             for (index++; index > 0 && renderContext.getRedirect() == null && out == null; index--) {
                 RenderFilter filter = filters.get(index-1);
                 if (filter.areConditionsMatched(renderContext, resource)) {
@@ -193,6 +192,8 @@ public class RenderChain {
             }
             if (out == null) {
                 throw new RenderFilterException(e);
+            } else {
+                logger.error("Error while rendering the resource: " + resource, e);
             }
         } finally {
             if(finalFilterIndex !=  null) {

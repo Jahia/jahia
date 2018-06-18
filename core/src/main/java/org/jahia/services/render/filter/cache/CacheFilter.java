@@ -284,8 +284,6 @@ public class CacheFilter extends AbstractFilter {
         }
 
         try {
-            logger.error(e.getMessage(), e);
-
             // Returns a fragment with an error comment
             return execute("<!-- Module error : " + HtmlUtils.htmlEscape(e.getMessage()) + "-->", renderContext, resource, true);
         } catch (Exception e1) {

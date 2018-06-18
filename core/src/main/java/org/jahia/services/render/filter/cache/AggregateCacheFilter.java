@@ -1066,7 +1066,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
         try {
             renderContext.getRequest().setAttribute("expiration", Integer.toString(errorCacheExpiration));
-            logger.error(e.getMessage(), e);
 
             final Properties properties = getAttributesForKey(renderContext, resource);
             final String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);

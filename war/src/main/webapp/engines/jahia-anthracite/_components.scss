@@ -2732,6 +2732,7 @@ form,
 
 // Change loader when loading a tree.
 .x-treegrid.x-masked:before {
+		background: url(./images/loader_dark.svg) no-repeat center center;
     background-color: transparent !important;
     position: initial !important;
 }

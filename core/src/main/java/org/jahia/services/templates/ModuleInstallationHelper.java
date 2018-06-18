@@ -264,21 +264,44 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             final JCRSessionWrapper session) throws RepositoryException {
         QueryManager manager = session.getWorkspace().getQueryManager();
         for (String module : modules) {
+            String workspaceName = session.getWorkspace().getName();
+            logger.info("Purging content in workspace {} for node types, defined in module {}", workspaceName, module);
+
             NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(module);
             while (nti.hasNext()) {
-                ExtendedNodeType next = (ExtendedNodeType) nti.next();
-                Query q = manager.createQuery("select * from ['" + next.getName()
+                ExtendedNodeType nodeType = (ExtendedNodeType) nti.next();
+                String nodeTypeName = nodeType.getName();
+                Query q = manager.createQuery("select * from ['" + nodeTypeName
                         + "'] as c where isdescendantnode(c,'" + JCRContentUtils.sqlEncode(sitePath) + "')", Query.JCR_SQL2);
+                boolean isMixin = nodeType.isMixin();
                 try {
                     NodeIterator ni = q.execute().getNodes();
+                    int processedCount = 0;
                     while (ni.hasNext()) {
                         JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) ni.nextNode();
-                        nodeWrapper.remove();
+                        if (isMixin) {
+                            nodeWrapper.removeMixin(nodeTypeName);
+                        } else {
+                            nodeWrapper.remove();
+                        }
+                        processedCount++;
+                    }
+                    if (processedCount > 0) {
+                        if (isMixin) {
+                            logger.info("Removed mixin {} from {} node(s) in workspace {}",
+                                    new Object[] { nodeTypeName, processedCount, workspaceName });
+                        } else {
+                            logger.info("Removed {} node(s) of type {} in workspace {}",
+                                    new Object[] { processedCount, nodeTypeName, workspaceName });
+                        }
                     }
                 } catch (RepositoryException e) {
                     logger.error("Cannot remove node", e);
                 }
             }
+
+            logger.info("... done purging content in workspace {} for node types, defined in module {}", workspaceName,
+                    module);
         }
     }
 

@@ -44,6 +44,7 @@
 package org.jahia.services.search;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -56,7 +57,6 @@ import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -74,6 +74,9 @@ public class SearchCriteria implements Serializable {
 
     /**
      * Base class for all facet definitions; encapsulates any common facet definition attributes like sort order of aggregated results.
+     * 
+     * Note, please, if you are creating a sub-class for this class and adding fields, be sure to override {@link #hashCode()} and
+     * {@link #equals(Object)} methods.
      */
     abstract public static class BaseFacetDefinition implements Serializable {
 
@@ -109,6 +112,34 @@ public class SearchCriteria implements Serializable {
          */
         public int getMaxGroups() {
             return maxGroups;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((id == null) ? 0 : id.hashCode());
+            result = prime * result + maxGroups;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            BaseFacetDefinition other = (BaseFacetDefinition) obj;
+            if (id == null) {
+                if (other.id != null)
+                    return false;
+            } else if (!id.equals(other.id))
+                return false;
+            if (maxGroups != other.maxGroups)
+                return false;
+            return true;
         }
     }
 
@@ -232,6 +263,52 @@ public class SearchCriteria implements Serializable {
                     TO_STRING_STYLE);
         }
 
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((from == null) ? 0 : from.hashCode());
+            result = prime * result + ((fromAsDate == null) ? 0 : fromAsDate.hashCode());
+            result = prime * result + ((to == null) ? 0 : to.hashCode());
+            result = prime * result + ((toAsDate == null) ? 0 : toAsDate.hashCode());
+            result = prime * result + ((type == null) ? 0 : type.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            DateValue other = (DateValue) obj;
+            if (from == null) {
+                if (other.from != null)
+                    return false;
+            } else if (!from.equals(other.from))
+                return false;
+            if (fromAsDate == null) {
+                if (other.fromAsDate != null)
+                    return false;
+            } else if (!fromAsDate.equals(other.fromAsDate))
+                return false;
+            if (to == null) {
+                if (other.to != null)
+                    return false;
+            } else if (!to.equals(other.to))
+                return false;
+            if (toAsDate == null) {
+                if (other.toAsDate != null)
+                    return false;
+            } else if (!toAsDate.equals(other.toAsDate))
+                return false;
+            if (type != other.type)
+                return false;
+            return true;
+        }
+
     }
 
     /**
@@ -251,6 +328,28 @@ public class SearchCriteria implements Serializable {
 
         public void setIncludeChildren(boolean includeChildren) {
             this.includeChildren = includeChildren;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = super.hashCode();
+            result = prime * result + (includeChildren ? 1231 : 1237);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (!super.equals(obj))
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            HierarchicalValue other = (HierarchicalValue) obj;
+            if (includeChildren != other.includeChildren)
+                return false;
+            return true;
         }
 
     }
@@ -293,6 +392,28 @@ public class SearchCriteria implements Serializable {
 
         public void setValues(String[] values) {
             this.values = values;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + Arrays.hashCode(values);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            MultipleValue other = (MultipleValue) obj;
+            if (!Arrays.equals(values, other.values))
+                return false;
+            return true;
         }
     }
 
@@ -416,6 +537,61 @@ public class SearchCriteria implements Serializable {
                     TO_STRING_STYLE);
         }
 
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = super.hashCode();
+            result = prime * result + ((categoryValue == null) ? 0 : categoryValue.hashCode());
+            result = prime * result + (constrained ? 1231 : 1237);
+            result = prime * result + ((dateValue == null) ? 0 : dateValue.hashCode());
+            result = prime * result + ((match == null) ? 0 : match.hashCode());
+            result = prime * result + (multiple ? 1231 : 1237);
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            result = prime * result + ((nodeType == null) ? 0 : nodeType.hashCode());
+            result = prime * result + ((type == null) ? 0 : type.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (!super.equals(obj))
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            NodeProperty other = (NodeProperty) obj;
+            if (categoryValue == null) {
+                if (other.categoryValue != null)
+                    return false;
+            } else if (!categoryValue.equals(other.categoryValue))
+                return false;
+            if (constrained != other.constrained)
+                return false;
+            if (dateValue == null) {
+                if (other.dateValue != null)
+                    return false;
+            } else if (!dateValue.equals(other.dateValue))
+                return false;
+            if (match != other.match)
+                return false;
+            if (multiple != other.multiple)
+                return false;
+            if (name == null) {
+                if (other.name != null)
+                    return false;
+            } else if (!name.equals(other.name))
+                return false;
+            if (nodeType == null) {
+                if (other.nodeType != null)
+                    return false;
+            } else if (!nodeType.equals(other.nodeType))
+                return false;
+            if (type != other.type)
+                return false;
+            return true;
+        }
+
     }
 
     /**
@@ -528,6 +704,61 @@ public class SearchCriteria implements Serializable {
         @Override
         public String toString() {
             return ReflectionToStringBuilder.reflectionToString(this);
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + Arrays.hashCode(allowedValues);
+            result = prime * result + (constrained ? 1231 : 1237);
+            result = prime * result + ((defaultValue == null) ? 0 : defaultValue.hashCode());
+            result = prime * result + ((label == null) ? 0 : label.hashCode());
+            result = prime * result + (multiple ? 1231 : 1237);
+            result = prime * result + ((name == null) ? 0 : name.hashCode());
+            result = prime * result + ((selectorOptions == null) ? 0 : selectorOptions.hashCode());
+            result = prime * result + ((type == null) ? 0 : type.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            NodePropertyDescriptor other = (NodePropertyDescriptor) obj;
+            if (!Arrays.equals(allowedValues, other.allowedValues))
+                return false;
+            if (constrained != other.constrained)
+                return false;
+            if (defaultValue == null) {
+                if (other.defaultValue != null)
+                    return false;
+            } else if (!defaultValue.equals(other.defaultValue))
+                return false;
+            if (label == null) {
+                if (other.label != null)
+                    return false;
+            } else if (!label.equals(other.label))
+                return false;
+            if (multiple != other.multiple)
+                return false;
+            if (name == null) {
+                if (other.name != null)
+                    return false;
+            } else if (!name.equals(other.name))
+                return false;
+            if (selectorOptions == null) {
+                if (other.selectorOptions != null)
+                    return false;
+            } else if (!selectorOptions.equals(other.selectorOptions))
+                return false;
+            if (type != other.type)
+                return false;
+            return true;
         }
     }
 
@@ -726,6 +957,46 @@ public class SearchCriteria implements Serializable {
                         TO_STRING_STYLE);
             }
 
+            @Override
+            public int hashCode() {
+                final int prime = 31;
+                int result = 1;
+                result = prime * result + (description ? 1231 : 1237);
+                result = prime * result + (fileContent ? 1231 : 1237);
+                result = prime * result + (filename ? 1231 : 1237);
+                result = prime * result + (keywords ? 1231 : 1237);
+                result = prime * result + (siteContent ? 1231 : 1237);
+                result = prime * result + (tags ? 1231 : 1237);
+                result = prime * result + (title ? 1231 : 1237);
+                return result;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (this == obj)
+                    return true;
+                if (obj == null)
+                    return false;
+                if (getClass() != obj.getClass())
+                    return false;
+                SearchFields other = (SearchFields) obj;
+                if (description != other.description)
+                    return false;
+                if (fileContent != other.fileContent)
+                    return false;
+                if (filename != other.filename)
+                    return false;
+                if (keywords != other.keywords)
+                    return false;
+                if (siteContent != other.siteContent)
+                    return false;
+                if (tags != other.tags)
+                    return false;
+                if (title != other.title)
+                    return false;
+                return true;
+            }
+
         }
 
         private static final long serialVersionUID = -3881090179063748926L;
@@ -778,6 +1049,43 @@ public class SearchCriteria implements Serializable {
 
         public void setApplyFilter(boolean applyFilter) {
             this.applyFilter = applyFilter;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (applyFilter ? 1231 : 1237);
+            result = prime * result + ((fields == null) ? 0 : fields.hashCode());
+            result = prime * result + ((match == null) ? 0 : match.hashCode());
+            result = prime * result + ((term == null) ? 0 : term.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Term other = (Term) obj;
+            if (applyFilter != other.applyFilter)
+                return false;
+            if (fields == null) {
+                if (other.fields != null)
+                    return false;
+            } else if (!fields.equals(other.fields))
+                return false;
+            if (match != other.match)
+                return false;
+            if (term == null) {
+                if (other.term != null)
+                    return false;
+            } else if (!term.equals(other.term))
+                return false;
+            return true;
         }
     }
 
@@ -842,6 +1150,41 @@ public class SearchCriteria implements Serializable {
         public String toString() {
             return ReflectionToStringBuilder.reflectionToString(this,
                     TO_STRING_STYLE);
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((caseConversion == null) ? 0 : caseConversion.hashCode());
+            result = prime * result + (normalize ? 1231 : 1237);
+            result = prime * result + ((operand == null) ? 0 : operand.hashCode());
+            result = prime * result + ((order == null) ? 0 : order.hashCode());
+            result = prime * result + ((propertyName == null) ? 0 : propertyName.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Ordering other = (Ordering) obj;
+            if (caseConversion != other.caseConversion)
+                return false;
+            if (normalize != other.normalize)
+                return false;
+            if (operand != other.operand)
+                return false;
+            if (order != other.order)
+                return false;
+            if (propertyName == null) {
+                if (other.propertyName != null)
+                    return false;
+            } else if (!propertyName.equals(other.propertyName))
+                return false;
+            return true;
         }
     }
 
@@ -1272,16 +1615,139 @@ public class SearchCriteria implements Serializable {
         return false;
     }
 
-    /**
-     * Returns a hash code for this object, calculate based on all fields.
-     * 
-     * @return a hash code for this object, calculate based on all fields
-     */
-    public int toHashCode() {
-        return new HashCodeBuilder().append(created).append(createdBy).append(facetDefinitions).append(facets).append(filePath)
-                .append(fileType).append(itemsPerPage).append(languages).append(lastModified).append(lastModifiedBy)
-                .append(limit).append(nodeType).append(offset).append(orderings).append(originSiteKey).append(pagePath)
-                .append(properties).append(rawQuery).append(sites).append(sitesForReferences).append(terms)
-                .toHashCode();
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((created == null) ? 0 : created.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((facetDefinitions == null) ? 0 : facetDefinitions.hashCode());
+        result = prime * result + ((facets == null) ? 0 : facets.hashCode());
+        result = prime * result + ((filePath == null) ? 0 : filePath.hashCode());
+        result = prime * result + ((fileType == null) ? 0 : fileType.hashCode());
+        result = prime * result + itemsPerPage;
+        result = prime * result + ((languages == null) ? 0 : languages.hashCode());
+        result = prime * result + ((lastModified == null) ? 0 : lastModified.hashCode());
+        result = prime * result + ((lastModifiedBy == null) ? 0 : lastModifiedBy.hashCode());
+        result = prime * result + (int) (limit ^ (limit >>> 32));
+        result = prime * result + ((nodeType == null) ? 0 : nodeType.hashCode());
+        result = prime * result + (int) (offset ^ (offset >>> 32));
+        result = prime * result + ((orderings == null) ? 0 : orderings.hashCode());
+        result = prime * result + ((originSiteKey == null) ? 0 : originSiteKey.hashCode());
+        result = prime * result + ((pagePath == null) ? 0 : pagePath.hashCode());
+        result = prime * result + ((properties == null) ? 0 : properties.hashCode());
+        result = prime * result + ((rawQuery == null) ? 0 : rawQuery.hashCode());
+        result = prime * result + ((sites == null) ? 0 : sites.hashCode());
+        result = prime * result + ((sitesForReferences == null) ? 0 : sitesForReferences.hashCode());
+        result = prime * result + ((terms == null) ? 0 : terms.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SearchCriteria other = (SearchCriteria) obj;
+        if (created == null) {
+            if (other.created != null)
+                return false;
+        } else if (!created.equals(other.created))
+            return false;
+        if (createdBy == null) {
+            if (other.createdBy != null)
+                return false;
+        } else if (!createdBy.equals(other.createdBy))
+            return false;
+        if (facetDefinitions == null) {
+            if (other.facetDefinitions != null)
+                return false;
+        } else if (!facetDefinitions.equals(other.facetDefinitions))
+            return false;
+        if (facets == null) {
+            if (other.facets != null)
+                return false;
+        } else if (!facets.equals(other.facets))
+            return false;
+        if (filePath == null) {
+            if (other.filePath != null)
+                return false;
+        } else if (!filePath.equals(other.filePath))
+            return false;
+        if (fileType == null) {
+            if (other.fileType != null)
+                return false;
+        } else if (!fileType.equals(other.fileType))
+            return false;
+        if (itemsPerPage != other.itemsPerPage)
+            return false;
+        if (languages == null) {
+            if (other.languages != null)
+                return false;
+        } else if (!languages.equals(other.languages))
+            return false;
+        if (lastModified == null) {
+            if (other.lastModified != null)
+                return false;
+        } else if (!lastModified.equals(other.lastModified))
+            return false;
+        if (lastModifiedBy == null) {
+            if (other.lastModifiedBy != null)
+                return false;
+        } else if (!lastModifiedBy.equals(other.lastModifiedBy))
+            return false;
+        if (limit != other.limit)
+            return false;
+        if (nodeType == null) {
+            if (other.nodeType != null)
+                return false;
+        } else if (!nodeType.equals(other.nodeType))
+            return false;
+        if (offset != other.offset)
+            return false;
+        if (orderings == null) {
+            if (other.orderings != null)
+                return false;
+        } else if (!orderings.equals(other.orderings))
+            return false;
+        if (originSiteKey == null) {
+            if (other.originSiteKey != null)
+                return false;
+        } else if (!originSiteKey.equals(other.originSiteKey))
+            return false;
+        if (pagePath == null) {
+            if (other.pagePath != null)
+                return false;
+        } else if (!pagePath.equals(other.pagePath))
+            return false;
+        if (properties == null) {
+            if (other.properties != null)
+                return false;
+        } else if (!properties.equals(other.properties))
+            return false;
+        if (rawQuery == null) {
+            if (other.rawQuery != null)
+                return false;
+        } else if (!rawQuery.equals(other.rawQuery))
+            return false;
+        if (sites == null) {
+            if (other.sites != null)
+                return false;
+        } else if (!sites.equals(other.sites))
+            return false;
+        if (sitesForReferences == null) {
+            if (other.sitesForReferences != null)
+                return false;
+        } else if (!sitesForReferences.equals(other.sitesForReferences))
+            return false;
+        if (terms == null) {
+            if (other.terms != null)
+                return false;
+        } else if (!terms.equals(other.terms))
+            return false;
+        return true;
     }
 }

@@ -97,7 +97,7 @@ public final class SearchUtils {
      */
     static SearchResponse getStoredSearchResponse(SearchCriteria searchCriteria, HttpServletRequest request) {
         Map<Integer, SearchResponse> searchResponses = getStoredSearchResponses(request, false);
-        return searchResponses != null ? searchResponses.get(searchCriteria.toHashCode()) : null;
+        return searchResponses != null ? searchResponses.get(searchCriteria.hashCode()) : null;
     }
 
     @SuppressWarnings("unchecked")
@@ -121,6 +121,6 @@ public final class SearchUtils {
      */
     static void storeSearchResponse(SearchCriteria searchCriteria, SearchResponse response,
             HttpServletRequest request) {
-        getStoredSearchResponses(request, true).put(searchCriteria.toHashCode(), response);
+        getStoredSearchResponses(request, true).put(searchCriteria.hashCode(), response);
     }
 }

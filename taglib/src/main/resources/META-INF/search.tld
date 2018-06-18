@@ -336,7 +336,8 @@
         <path>/META-INF/tags/search/searchUrl.tag</path>
         <!--
             Import-Package:
-                org.jahia.services.render
+                org.jahia.services.render,
+                org.jahia.taglibs.template
         -->
     </tag-file>
     <tag-file>

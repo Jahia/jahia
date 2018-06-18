@@ -531,6 +531,16 @@ public class SearchCriteria implements Serializable {
         }
     }
 
+    private static class FacetMapFactory implements Factory, Serializable {
+
+        private static final long serialVersionUID = 7123060746726311423L;
+
+        @Override
+        public Object create() {
+            return new HashMap<String, String>();
+        }
+    }
+
     protected static class NodePropertyFactory implements Factory, Serializable {
         private static final long serialVersionUID = 3303613294641347422L;
 
@@ -870,6 +880,12 @@ public class SearchCriteria implements Serializable {
 
     private Collection<BaseFacetDefinition> facetDefinitions;
 
+    /**
+     * Active facets for the search.
+     */
+    private Map<String, Map<String, String>> facets = LazyMap.decorate(new HashMap<String, Map<String, String>>(),
+            new FacetMapFactory());
+    
     private HierarchicalValue filePath = new HierarchicalValue();
 
     private String fileType;
@@ -926,6 +942,15 @@ public class SearchCriteria implements Serializable {
 
     public Collection<BaseFacetDefinition> getFacetDefinitions() {
         return facetDefinitions;
+    }
+
+    /**
+     * Return active facet filters.
+     * 
+     * @return active facet filters
+     */
+    public Map<String, Map<String, String>> getFacets() {
+        return facets;
     }
 
     public HierarchicalValue getFilePath() {
@@ -1082,6 +1107,15 @@ public class SearchCriteria implements Serializable {
 
     public void setFacetDefinitions(Collection<BaseFacetDefinition> facetDefinitions) {
         this.facetDefinitions = facetDefinitions != null ? Collections.unmodifiableCollection(facetDefinitions) : null;
+    }
+
+    /**
+     * Sets the active facet filters.
+     * 
+     * @param facets the active facet filters
+     */
+    public void setFacets(Map<String, Map<String, String>> facets) {
+        this.facets = facets;
     }
 
     public void setFilePath(HierarchicalValue fileLocation) {
@@ -1244,7 +1278,7 @@ public class SearchCriteria implements Serializable {
      * @return a hash code for this object, calculate based on all fields
      */
     public int toHashCode() {
-        return new HashCodeBuilder().append(created).append(createdBy).append(facetDefinitions).append(filePath)
+        return new HashCodeBuilder().append(created).append(createdBy).append(facetDefinitions).append(facets).append(filePath)
                 .append(fileType).append(itemsPerPage).append(languages).append(lastModified).append(lastModifiedBy)
                 .append(limit).append(nodeType).append(offset).append(orderings).append(originSiteKey).append(pagePath)
                 .append(properties).append(rawQuery).append(sites).append(sitesForReferences).append(terms)

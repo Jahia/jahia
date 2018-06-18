@@ -130,6 +130,16 @@ public class SearchResponse {
     }
 
     /**
+     * Initializes an instance of this class.
+     * 
+     * @param results the search result list
+     */
+    public SearchResponse(List<Hit<?>> results) {
+        this();
+        setResults(results);
+    }
+
+    /**
      * Holds a list of Hit objects matching the search criteria.
      *
      * @return list of Hit objects

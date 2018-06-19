@@ -54,11 +54,15 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+
+import static org.jahia.api.Constants.UI_THEME;
+
 import java.util.*;
 
 /**
@@ -269,5 +273,19 @@ public class User {
     
     public static Boolean isReadOnlyProvider(JCRNodeWrapper principal) {
         return principal.getProvider().isReadOnly();
+    }
+
+    /**
+     * Returns the value for of the preferred UI theme for the specified user. If the preferred theme property is not set for the user, we
+     * use the globally configured theme.
+     * 
+     * @param user the user JCR node
+     * @return the value for of the preferred UI theme for the currently logged in user
+     * 
+     * @since 7.2.3.1
+     */
+    public static String getUITheme(JCRUserNode user) {
+        String theme = user != null ? user.getPropertyAsString(UI_THEME) : null;
+        return theme != null ? theme : SettingsBean.getInstance().getPropertiesFile().getProperty(UI_THEME);
     }
 }

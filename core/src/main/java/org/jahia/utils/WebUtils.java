@@ -197,10 +197,11 @@ public final class WebUtils {
     }
 
     /**
-     * Returns the value for of the currently active UI theme.
+     * Returns the value for of the currently active UI theme, considering the theme request parameter, session scope attribute, user
+     * preferred theme property and finally the globally configured theme.
      * 
      * @param request current HTTP request
-     * @return the value for of the currently active UI theme or <code>null</code> if the default theme is used
+     * @return the value for of the currently active UI theme
      */
     public static String getUITheme(HttpServletRequest request) {
         String theme = request.getParameter(UI_THEME);

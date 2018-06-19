@@ -203,4 +203,15 @@
             &lt;c:if test="${user:isReadOnlyProvider(testUser)}"/&gt;
         </example>
     </function>
+
+    <function>
+        <description>
+            Returns the value for of the preferred UI theme for the currently logged in user.
+            If the preferred theme property is not set for the user, we use the globally configured theme. [since 7.2.3.1]
+        </description>
+        <name>getUITheme</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>java.lang.String getUITheme(org.jahia.services.content.decorator.JCRUserNode)</function-signature>
+    </function>
+
 </taglib>

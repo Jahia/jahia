@@ -617,13 +617,4 @@
         <function-signature>java.lang.String getInternetExplorerCompatibility(javax.servlet.http.HttpServletRequest)</function-signature>
     </function>
 
-    <function>
-        <description>
-            Returns the value of the currently active UI theme.
-        </description>
-        <name>getUITheme</name>
-        <function-class>org.jahia.utils.WebUtils</function-class>
-        <function-signature>java.lang.String getUITheme(javax.servlet.http.HttpServletRequest)</function-signature>
-    </function>
-
 </taglib>

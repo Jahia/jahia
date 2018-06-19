@@ -840,7 +840,7 @@ public class MainModule extends Module {
         goToUrl(getUrl(path, template, channel, variant), false, false, false);
     }
 
-    private void setHashMarker(String path) {
+    private void updateUrlBar(String path) {
         String currentHref = Window.Location.getHref();
         if (currentHref.endsWith(path)) {
             return;
@@ -1374,7 +1374,7 @@ public class MainModule extends Module {
                         editLinker.getMainModule().unmask();
                     }
                     // always set url regarding the frame value
-                    setHashMarker(frame.getCurrentFrameUrl());
+                    updateUrlBar(frame.getCurrentFrameUrl());
                 }
             } catch (Exception e) {
                 Log.error("Error in EditFrame: " + e.getMessage(), e);

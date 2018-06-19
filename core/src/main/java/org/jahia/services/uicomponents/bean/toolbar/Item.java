@@ -249,9 +249,6 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
             } else {
                 addItem(getItems(parent));
             }
-
-            // clean the reference
-            parent = null;
         }
     }
 

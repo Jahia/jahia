@@ -1223,7 +1223,6 @@ public class MainModule extends Module {
             Document contentDocument = iframe.getContentDocument();
             Element body = (Element) contentDocument.getElementsByTagName("body").getItem(0);
             Element head = (Element) contentDocument.getElementsByTagName("head").getItem(0);
-            setHashMarker(frame.getCurrentFrameUrl());
             if (forceImageRefresh) {
                 refreshImages(body);
             }
@@ -1374,6 +1373,8 @@ public class MainModule extends Module {
                     } else {
                         editLinker.getMainModule().unmask();
                     }
+                    // always set url regarding the frame value
+                    setHashMarker(frame.getCurrentFrameUrl());
                 }
             } catch (Exception e) {
                 Log.error("Error in EditFrame: " + e.getMessage(), e);

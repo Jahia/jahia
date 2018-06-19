@@ -82,7 +82,7 @@ public class ContentTabItem extends PropertiesTabItem {
     protected int maxNameSize = 32;
 
     private transient boolean isNodeNameFieldDisplayed = false;
-    protected transient Field name;
+    protected transient Field<?> name;
     protected transient CheckBox autoUpdateName;
     protected transient Field<String> nameText;
     protected transient FieldSet nameFieldSet;
@@ -159,7 +159,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 }
                 if (titleField != null) {
                     List<Listener<? extends BaseEvent>> listeners = new ArrayList<Listener<? extends BaseEvent>>(titleField.getListeners(Events.KeyUp));
-                    for (Listener listener : listeners) {
+                    for (Listener<? extends BaseEvent> listener : listeners) {
                         titleField.removeListener(Events.KeyUp, listener);
                     }
                 }
@@ -194,6 +194,8 @@ public class ContentTabItem extends PropertiesTabItem {
 
                 if (titleField != null && autoUpdateName != null) {
                     autoUpdateName.addListener(Events.Change, new Listener<ComponentEvent>() {
+
+                        @Override
                         public void handleEvent(ComponentEvent event) {
                             nameText.setEnabled(!autoUpdateName.getValue());
 
@@ -211,6 +213,8 @@ public class ContentTabItem extends PropertiesTabItem {
                         }
                     });
                     titleField.addListener(Events.KeyUp, new Listener<FieldEvent>() {
+
+                        @Override
                         public void handleEvent(FieldEvent fe) {
                             if (autoUpdateName.getValue()) {
                                 if (titleField.getValue() != null && ((String)titleField.getValue()).trim().length()>0) {
@@ -223,12 +227,14 @@ public class ContentTabItem extends PropertiesTabItem {
                     });
                 }
             } else {
+
                 isNodeNameFieldDisplayed = false;
                 if (autoUpdateName != null) {
                     autoUpdateName.setVisible(false);
                 }
                 autoUpdateLabel.setHtml("");
-                // dont't set name text if not initialized. This could happen if case of multiple selection
+
+                // Dont't set name text if not initialized. This could happen in case of multiple selection, for example.
                 if (nameText != null) {
                     nameText.setValue("");
                     nameText.setEnabled(false);
@@ -405,6 +411,7 @@ public class ContentTabItem extends PropertiesTabItem {
         super.attachPropertiesEditor(engine, tab);
     }
 
+    @SuppressWarnings("rawtypes")
     protected void setNameField(NodeHolder engine, AsyncTabItem tab) {
         if (!engine.isMultipleSelection()) {
             tab.setLayout(new RowLayout());
@@ -420,8 +427,8 @@ public class ContentTabItem extends PropertiesTabItem {
                 nameText = new FormFieldCreator.TextFieldWithClass();
                 nameText.setId("JahiaGxtField_systemName");
                 nameText.setWidth("250");
-                ((TextField)nameText).setMaxLength(maxNameSize);
-                ((TextField)nameText).setAllowBlank(false);
+                ((TextField) nameText).setMaxLength(maxNameSize);
+                ((TextField) nameText).setAllowBlank(false);
                 nameText.setStyleAttribute("padding-left", "0");
                 nameText.setFireChangeEventOnSetValue(true);
 
@@ -462,7 +469,7 @@ public class ContentTabItem extends PropertiesTabItem {
                 tab.setData("NodeName", engine.getNodeName());
                 if (titleField != null) {
                     List<Listener<? extends BaseEvent>> listeners = new ArrayList<Listener<? extends BaseEvent>>(titleField.getListeners(Events.KeyUp));
-                    for (Listener listener : listeners) {
+                    for (Listener<? extends BaseEvent> listener : listeners) {
                         titleField.removeListener(Events.KeyUp, listener);
                     }
                 }

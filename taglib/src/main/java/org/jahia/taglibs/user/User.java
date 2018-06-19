@@ -71,7 +71,7 @@ import java.util.*;
  * @author Quentin Lamerand
  */
 public class User {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(User.class);
 
     public static Boolean memberOf(String groups, RenderContext renderContext) {
@@ -109,7 +109,7 @@ public class User {
         }
         return true;
     }
-    
+
     public static Collection<JCRNodeWrapper> getMembers(String group, RenderContext renderContext) {
         return JahiaGroupManagerService.getInstance().lookupGroupByPath(group).getMembers();
     }
@@ -152,11 +152,11 @@ public class User {
         final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final List<String> userMembership = managerService.getMembershipByPath(user.getPath());
         for (String groupPath : userMembership) {
-            if(!groupPath.endsWith("/" + JahiaGroupManagerService.GUEST_GROUPNAME) &&
+            if (!groupPath.endsWith("/" + JahiaGroupManagerService.GUEST_GROUPNAME) &&
                     !groupPath.endsWith("/" + JahiaGroupManagerService.USERS_GROUPNAME) &&
                     !groupPath.endsWith("/" + JahiaGroupManagerService.SITE_USERS_GROUPNAME)) {
                 final JCRGroupNode group = managerService.lookupGroupByPath(groupPath);
-                map.put(groupPath,group);
+                map.put(groupPath, group);
             }
         }
         return map;
@@ -264,24 +264,24 @@ public class User {
     }
 
     public static String formatUserValueOption(Object principal) {
-        return new PrincipalViewHelper(new String[]{"Name,30","Properties,30"}).getPrincipalValueOption(principal);
+        return new PrincipalViewHelper(new String[] {"Name,30", "Properties,30"}).getPrincipalValueOption(principal);
     }
 
-    public static String formatUserTextOption(JCRNodeWrapper principal,String fieldsToDisplay) {
+    public static String formatUserTextOption(JCRNodeWrapper principal, String fieldsToDisplay) {
         return new PrincipalViewHelper(fieldsToDisplay.split(";")).getPrincipalTextOption(principal);
     }
-    
+
     public static Boolean isReadOnlyProvider(JCRNodeWrapper principal) {
         return principal.getProvider().isReadOnly();
     }
 
     /**
-     * Returns the value for of the preferred UI theme for the specified user. If the preferred theme property is not set for the user, we
-     * use the globally configured theme.
-     * 
+     * Returns the value of the preferred UI theme for the specified user. If the preferred theme property is not set for the user, we
+     * use the globally configured theme. Null user parameter passed means global setting retrieval.
+     *
      * @param user the user JCR node
      * @return the value for of the preferred UI theme for the currently logged in user
-     * 
+     *
      * @since 7.2.3.1
      */
     public static String getUITheme(JCRUserNode user) {

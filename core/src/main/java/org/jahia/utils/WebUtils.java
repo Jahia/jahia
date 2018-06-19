@@ -73,16 +73,16 @@ import org.springframework.core.io.Resource;
 
 /**
  * Miscellaneous request/response handling methods.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class WebUtils {
-    
+
     /**
      * Does a URL encoding of the <code>path</code>. The characters that don't need encoding are those defined 'unreserved' in section 2.3
      * of the 'URI generic syntax' RFC 2396. Not the entire path string is escaped, but every individual part (i.e. the slashes are not
      * escaped).
-     * 
+     *
      * @param path
      *            the path to encode
      * @return the escaped path
@@ -93,10 +93,10 @@ public final class WebUtils {
     public static String escapePath(String path) {
         return path != null ? Text.escapePath(path) : null;
     }
-    
+
     /**
      * Return authenticated subject, performing login using basic authentication credentials, if provided in the current request.
-     * 
+     *
      * @param request current HTTP request
      * @return authenticated subject, performing login using basic authentication credentials, if provided in the current request
      * @throws AuthenticationException in case of errors during login operation
@@ -118,7 +118,7 @@ public final class WebUtils {
 
     /**
      * Returns the username and password pair from provided request if it contains authorization header of type BASIC.
-     * 
+     *
      * @param request current HTTP request
      * @return the username/password pair from the current request header or <code>null</code> if the request does not contain such
      *         information
@@ -140,7 +140,7 @@ public final class WebUtils {
 
     /**
      * Returns the value for the X-UA-Compatible tag, based on the configuration and current UI theme.
-     * 
+     *
      * @param request current HTTP request
      * @return the value for the X-UA-Compatible tag, based on the configuration and current UI theme
      */
@@ -158,7 +158,7 @@ public final class WebUtils {
 
     /**
      * Loads the content of the specified servlet context resource as text.
-     * 
+     *
      * @param path
      *            the resource path (context relative)
      * @return the text of the specified resource content or <code>null</code> if the corresponding resource does not exist
@@ -197,9 +197,9 @@ public final class WebUtils {
     }
 
     /**
-     * Returns the value for of the currently active UI theme, considering the theme request parameter, session scope attribute, user
+     * Returns the value of the currently active UI theme, considering the theme request parameter, session scope attribute, user
      * preferred theme property and finally the globally configured theme.
-     * 
+     *
      * @param request current HTTP request
      * @return the value for of the currently active UI theme
      */
@@ -225,7 +225,7 @@ public final class WebUtils {
 
     /**
      * Loads the content of the servlet context resource as text looking up the specified paths until the first resource is found.
-     * 
+     *
      * @param lookupPaths
      *            the resource paths to lookup (context relative)
      * @return the text of the specified resource content or <code>null</code> if the corresponding resource does not exist
@@ -245,7 +245,7 @@ public final class WebUtils {
 
     /**
      * Sets proper response headers to cache current response for the specified number of seconds.
-     * 
+     *
      * @param expiresSeconds the expiration in seconds
      * @param response
      *            current response object
@@ -257,7 +257,7 @@ public final class WebUtils {
 
     /**
      * Sets proper response headers to prevent caching of this response.
-     * 
+     *
      * @param response
      *            current response object
      */
@@ -270,7 +270,7 @@ public final class WebUtils {
 
     /**
      * Sets proper response headers in case of file download using the provided file name.
-     * 
+     *
      * @param response
      *            current response
      * @param fileName
@@ -279,10 +279,10 @@ public final class WebUtils {
     public static void setFileDownloadHeaders(HttpServletResponse response, String fileName) {
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
     }
-    
+
     /**
      * Decodes a <code>application/x-www-form-urlencoded</code> string using the character encoding, configured in jahia.properties.
-     * 
+     *
      * @param url
      *            the string to be decoded
      * @return the decoded string

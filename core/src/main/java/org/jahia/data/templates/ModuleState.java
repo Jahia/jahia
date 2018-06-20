@@ -48,7 +48,7 @@ package org.jahia.data.templates;
  */
 public class ModuleState {
     public enum State {
-        INSTALLED, ERROR_WITH_DEFINITIONS, RESOLVED, STARTED, STARTING, STOPPING, UPDATED, WAITING_TO_BE_IMPORTED, SPRING_STARTING, SPRING_NOT_STARTED, INCOMPATIBLE_VERSION;
+        INSTALLED, ERROR_WITH_DEFINITIONS, ERROR_WITH_RULES, RESOLVED, STARTED, STARTING, STOPPING, UPDATED, WAITING_TO_BE_IMPORTED, SPRING_STARTING, SPRING_NOT_STARTED, INCOMPATIBLE_VERSION;
 
         @Override
         public String toString() {
@@ -57,6 +57,8 @@ public class ModuleState {
                     return "Resolved";
                 case ERROR_WITH_DEFINITIONS:
                     return "Error when parsing definitions";
+                case ERROR_WITH_RULES:
+                    return "Error when compiling rules";
                 case INSTALLED:
                     return "Installed";
                 case UPDATED:

@@ -56,6 +56,7 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -106,8 +107,9 @@ public class RulesBundleObserver implements BundleObserver<URL> {
                 }
 
                 logger.info("Registered rules from file {} for bundle {}", url, bundleName);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 logger.error("Error registering rules file " + url + " for bundle " + bundle, e);
+                throw new RuntimeException("Error registering rules file " + url + " for bundle " + bundle, e);
             }
         }
     }

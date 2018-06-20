@@ -698,8 +698,8 @@ public class Activator implements BundleActivator {
 
     private synchronized void starting(Bundle bundle) {
 
-        if (getModuleState(bundle).getState() == ModuleState.State.ERROR_WITH_DEFINITIONS ||
-                getModuleState(bundle).getState() == ModuleState.State.INCOMPATIBLE_VERSION) {
+        ModuleState.State moduleState = getModuleState(bundle).getState();
+        if (isValid(moduleState)) {
             return;
         }
 
@@ -737,8 +737,7 @@ public class Activator implements BundleActivator {
         }
 
         ModuleState.State state = getModuleState(bundle).getState();
-        if (state == ModuleState.State.ERROR_WITH_DEFINITIONS ||
-                state == ModuleState.State.INCOMPATIBLE_VERSION) {
+        if (isValid(state)) {
             return;
         }
 
@@ -767,7 +766,13 @@ public class Activator implements BundleActivator {
                     jahiaTemplatesPackage.doExecuteAfterContextInitialized(new JahiaTemplatesPackage.ContextInitializedCallback() {
                         @Override
                         public void execute(AbstractApplicationContext context) {
-                            scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+                            try {
+                                scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+                            }  catch (Exception e) {
+                                logger.error("--- Error parsing rules for DX OSGi bundle " + jahiaTemplatesPackage.getId() + " v" + jahiaTemplatesPackage.getVersion(), e);
+                                setModuleState(bundle, ModuleState.State.ERROR_WITH_RULES, e);
+                            }
+                            return;
                         }
                     });
                 } else {
@@ -866,8 +871,8 @@ public class Activator implements BundleActivator {
 
     private synchronized void stopping(Bundle bundle) {
 
-        if (getModuleState(bundle).getState() == ModuleState.State.ERROR_WITH_DEFINITIONS ||
-                getModuleState(bundle).getState() == ModuleState.State.INCOMPATIBLE_VERSION) {
+        ModuleState.State moduleState = getModuleState(bundle).getState();
+        if (isValid(moduleState)) {
             return;
         }
 
@@ -914,6 +919,10 @@ public class Activator implements BundleActivator {
 
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished stopping DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
+    }
+
+    private static boolean isValid(ModuleState.State moduleState) {
+        return moduleState == ModuleState.State.ERROR_WITH_DEFINITIONS || moduleState == ModuleState.State.ERROR_WITH_RULES || moduleState == ModuleState.State.INCOMPATIBLE_VERSION;
     }
 
     private void flushOutputCachesForModule(final JahiaTemplatesPackage pkg) {
@@ -973,8 +982,8 @@ public class Activator implements BundleActivator {
         // Ensure context is reset
         BundleUtils.setContextToStartForModule(bundle, null);
 
-        if (getModuleState(bundle).getState() == ModuleState.State.ERROR_WITH_DEFINITIONS ||
-                getModuleState(bundle).getState() == ModuleState.State.INCOMPATIBLE_VERSION) {
+        ModuleState.State moduleState = getModuleState(bundle).getState();
+        if (isValid(moduleState)) {
             return;
         }
 

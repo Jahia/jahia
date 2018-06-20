@@ -67,12 +67,21 @@ import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.with;
 import static org.junit.Assert.*;
-import static org.awaitility.Awaitility.*;
-import static java.util.concurrent.TimeUnit.*;
 
 public class ModuleDeploymentTest {
 
@@ -236,9 +245,9 @@ public class ModuleDeploymentTest {
             f = new File(settingsBean.getJahiaModulesDiskPath(), tmpFile.getName());
 
             with().pollInterval(Duration.ONE_SECOND).await().atMost(20, SECONDS).until(isPackageDeployedAndServiceInstalled("dummy1"));
-            
+
             JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
-            
+
             assertNotNull(pack);
             assertEquals("Module is not started", ModuleState.State.STARTED, pack.getState().getState());
             assertNotNull("Spring context is null", pack.getContext());
@@ -266,6 +275,48 @@ public class ModuleDeploymentTest {
 
     }
 
+    @Test
+    public void testJarWithWrongRules() throws RepositoryException {
+        SettingsBean settingsBean = SettingsBean.getInstance();
+
+        File f = null;
+        try {
+            File tmpFile = File.createTempFile("module",".jar");
+            InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "1.0" + ".jar").getInputStream();
+            FileUtils.copyInputStreamToFile(stream,  tmpFile);
+            Map<String, String> env = new HashMap<>();
+            env.put("create", "true");
+            FileSystem fs = FileSystems.newFileSystem(URI.create("jar:file:" + tmpFile.getAbsolutePath()), env);
+            File droolsFile = File.createTempFile("rules", ".drl");
+            FileUtils.writeStringToFile(droolsFile, "dummy text");
+            Files.copy(droolsFile.toPath(), fs.getPath("/META-INF/rules.drl"), StandardCopyOption.REPLACE_EXISTING);
+            fs.close();
+            FileUtils.copyFileToDirectory(tmpFile, new File(settingsBean.getJahiaModulesDiskPath()));
+            droolsFile.delete();
+            tmpFile.delete();
+            f = new File(settingsBean.getJahiaModulesDiskPath(), tmpFile.getName());
+
+            with().pollInterval(Duration.ONE_SECOND).await().atMost(20, SECONDS).until(isPackageDeployedAndServiceInstalled("dummy1"));
+
+            JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
+
+            assertNotNull(pack);
+            assertEquals("Module is not with invalid rule state", ModuleState.State.ERROR_WITH_RULES, pack.getState().getState());
+
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            fail(e.toString());
+        } finally {
+            FileUtils.deleteQuietly(f);
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+    }
+
     private Callable<Boolean> isPackageDeployedAndServiceInstalled(final String packageId) {
         return new Callable<Boolean>() {
             public Boolean call() throws Exception {
@@ -274,7 +325,7 @@ public class ModuleDeploymentTest {
             }
         };
     }
-    
+
     
     @Test
     public void testJarUndeploy() throws RepositoryException {

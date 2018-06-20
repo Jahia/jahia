@@ -46,6 +46,7 @@ package org.jahia.services.content.rules;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageBuilderErrors;
@@ -295,13 +296,12 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     }
                     logger.info("Rules for " + pkg.getName() + " updated in " + (System.currentTimeMillis() - start) + "ms.");
                 } else {
-                    logger.error("---------------------------------------------------------------------------------");
-                    logger.error("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
-                    logger.error("---------------------------------------------------------------------------------");
+                    throw new RuntimeException("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
                 }
             }
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | IOException | DroolsParserException e) {
             logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 

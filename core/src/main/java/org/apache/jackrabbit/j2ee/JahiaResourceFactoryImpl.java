@@ -59,11 +59,14 @@ import org.apache.jackrabbit.webdav.simple.ResourceFactoryImpl;
 import org.apache.jackrabbit.webdav.version.*;
 import org.apache.jackrabbit.webdav.version.report.Report;
 import org.apache.jackrabbit.webdav.version.report.ReportInfo;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Custom resource factory
@@ -71,11 +74,19 @@ import java.util.List;
 public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaResourceFactoryImpl.class);
     private final LockManager lockMgr;
-
+    private Set<String> allowedNodeTypes;
 
     public JahiaResourceFactoryImpl(LockManager lockMgr, ResourceConfig resourceConfig) {
         super(lockMgr, resourceConfig);
         this.lockMgr=lockMgr;
+        allowedNodeTypes = new LinkedHashSet<>();
+        String allowedNodeTypesStrList = SettingsBean.getInstance().getPropertiesFile().getProperty("repositoryAllowedNodeTypes", "rep:root,jnt:virtualsitesFolder,jnt:virtualsite,jnt:folder,jnt:file");
+        if (allowedNodeTypesStrList == null) {
+            return;
+        }
+        for (String allowedNodeTypeName : allowedNodeTypesStrList.split(",")) {
+            allowedNodeTypes.add(allowedNodeTypeName.trim());
+        }
     }
 
     public DavResource createResource(DavResourceLocator locator, DavServletRequest request,
@@ -141,6 +152,9 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
                 Item item = session.getItem(repoPath);
                 if (item instanceof Node) {
                     node = (Node)item;
+                    if (!allowedNodeTypes.contains(node.getPrimaryNodeType().getName())) {
+                        throw new RepositoryException("Access denied.");
+                    }
                 } // else: item is a property -> return null
             }
         } catch (PathNotFoundException e) {

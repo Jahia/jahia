@@ -43,12 +43,14 @@
  */
 package org.jahia.services.webdav;
 
-import javax.jcr.Item;
-import javax.jcr.Session;
+import javax.jcr.*;
 
 import org.apache.jackrabbit.webdav.simple.DefaultItemFilter;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * WebDAV resource filter that disables directory listing completely if activated in <code>jahia.properties</code> or delegates to the
@@ -60,6 +62,7 @@ public class JahiaItemFilter extends DefaultItemFilter {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaItemFilter.class);
 
     private Boolean directoryListingDisabled;
+    private Set<String> allowedNodeTypes;
 
     public JahiaItemFilter() {
         super();
@@ -71,17 +74,47 @@ public class JahiaItemFilter extends DefaultItemFilter {
             directoryListingDisabled = Boolean
                     .valueOf(SettingsBean.getInstance().getPropertiesFile()
                             .getProperty("repositoryDirectoryListingDisabled", "false"));
+            allowedNodeTypes = new LinkedHashSet<>();
+            String allowedNodeTypesStrList = SettingsBean.getInstance().getPropertiesFile().getProperty("repositoryAllowedNodeTypes", "rep:root,jnt:virtualsitesFolder,jnt:virtualsite,jnt:folder,jnt:file");
+            if (allowedNodeTypesStrList == null) {
+                return;
+            }
+            for (String allowedNodeTypeName : allowedNodeTypesStrList.split(",")) {
+                allowedNodeTypes.add(allowedNodeTypeName.trim());
+            }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.error("Error initializing Jahia WebDAV item filter", e);
         }
     }
 
     public boolean isFilteredItem(Item item) {
-        return directoryListingDisabled ? true : super.isFilteredItem(item);
+        if (directoryListingDisabled) {
+            return true;
+        }
+        String ntName = null;
+        try {
+            if (item.isNode()) {
+                ntName = ((Node) item).getPrimaryNodeType().getName();
+            } else {
+                ntName = ((Property) item).getDefinition().getDeclaringNodeType().getName();
+            }
+        } catch (RepositoryException re) {
+            logger.warn("Error filtering item " + item.toString(), re);
+        }
+        if (ntName == null) {
+            return super.isFilteredItem(item);
+        }
+        if (allowedNodeTypes.contains(ntName)) {
+            return super.isFilteredItem(item);
+        }
+        return true;
     }
 
     public boolean isFilteredItem(String name, Session session) {
-        return directoryListingDisabled ? true : super.isFilteredItem(name, session);
+        if (directoryListingDisabled) {
+            return true;
+        }
+        return super.isFilteredItem(name, session);
     }
 
 }

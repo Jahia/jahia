@@ -308,6 +308,14 @@
                 <entry key="img">
                     <set>
                         <value>src</value>
+                        <value>srcset</value>
+                        <value>data-src</value>
+                        <value>data-srcset</value>
+                    </set>
+                </entry>
+                <entry key="source">
+                    <set>
+                        <value>srcset</value>
                     </set>
                 </entry>
                 <entry key="link">

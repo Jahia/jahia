@@ -44,6 +44,7 @@
 package org.jahia.services.seo.urlrewrite;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.interceptor.url.SrcSetURLReplacer;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter.ModeCondition;
@@ -94,9 +95,16 @@ public class UrlRewriteVisitor implements HtmlTagAttributeVisitor {
         if (preconditionsMatch(attrValue, context, resource)) {
             long timer = System.currentTimeMillis();
             try {
-                String rewritten = urlRewriteService.rewriteOutbound(attrValue,
-                        context.getRequest(), context.getResponse());
-                value = rewritten;
+                if (StringUtils.equals(SrcSetURLReplacer.IMG, tagName.toLowerCase()) && StringUtils.endsWith(attrName.toLowerCase(), SrcSetURLReplacer.IMG_SRCSET_ATTR)) {
+                    String[] urls = SrcSetURLReplacer.getURLsFromSrcSet(value);
+                    for (String url : urls) {
+                        value = StringUtils.replace(value, url, urlRewriteService.rewriteOutbound(url,
+                                context.getRequest(), context.getResponse()));
+                    }
+                } else {
+                    value = urlRewriteService.rewriteOutbound(attrValue,
+                            context.getRequest(), context.getResponse());
+                }
             } catch (Exception e) {
                 logger.error("Error rewriting URL value " + attrValue + " Skipped rewriting.", e);
             }

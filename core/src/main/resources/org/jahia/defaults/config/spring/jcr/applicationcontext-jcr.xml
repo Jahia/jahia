@@ -313,9 +313,7 @@
                     <!-- if removeContentBetweenTags is set to true also the content between the filtereed tags will be removed -->
                     <property name="removeContentBetweenTags" value="false"/>
                 </bean>
-                <bean class="org.jahia.services.content.interceptor.URLInterceptor" parent="abstractRichTextPropertyInterceptor">
-                    <constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
-                </bean>
+                <ref bean="urlInterceptor"/>
                 <bean class="org.jahia.services.content.interceptor.TagInterceptor">
                     <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
                     <property name="nodeTypes">
@@ -332,6 +330,24 @@
             </list>
         </property>
         <property name="providerChecker" ref="JCRStoreProviderChecker"/>
+    </bean>
+
+    <bean id="baseURLTagReplacer" class="org.jahia.services.content.interceptor.url.BaseURLReplacer">
+        <property name="urlInterceptor" ref="urlInterceptor"/>
+    </bean>
+
+    <bean id="srcSetReplacer" class="org.jahia.services.content.interceptor.url.SrcSetURLReplacer">
+        <property name="urlInterceptor" ref="urlInterceptor"/>
+    </bean>
+
+    <bean id="urlInterceptor" class="org.jahia.services.content.interceptor.URLInterceptor" parent="abstractRichTextPropertyInterceptor">
+        <constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
+        <property name="urlReplacers">
+            <list>
+                <ref bean="srcSetReplacer"/>
+                <ref bean="baseURLTagReplacer"/>
+            </list>
+        </property>
     </bean>
 
     <bean id="mountPointListener" class="org.jahia.services.content.MountPointListener">

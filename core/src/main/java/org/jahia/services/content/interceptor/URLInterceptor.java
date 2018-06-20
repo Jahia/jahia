@@ -48,31 +48,26 @@ import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
+import org.jahia.services.content.interceptor.url.URLReplacer;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
-import org.jahia.utils.WebUtils;
-import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.jahia.api.Constants.JAHIAMIX_REFERENCES_IN_FIELD;
@@ -93,17 +88,19 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(URLInterceptor.class);
 
+    public static final String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
+    public static final String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
+    public static final Pattern DOC_CONTEXT_PLACEHOLDER_PATTERN = Pattern.compile(DOC_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
+    public static final Pattern CMS_CONTEXT_PLACEHOLDER_PATTERN = Pattern.compile(CMS_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
+    public static final String MISSING_IMAGE = "/missing-image.png";
+
     private String dmsContext;
     private String cmsContext;
-
-    private static final String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
-    private static final String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
-    private static final Pattern DOC_CONTEXT_PLACEHOLDER_PATTERN = Pattern.compile(DOC_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
-    private static final Pattern CMS_CONTEXT_PLACEHOLDER_PATTERN = Pattern.compile(CMS_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
-
     private Pattern cmsPattern;
     private Pattern cmsPatternWithContextPlaceholder;
     private Pattern refPattern;
+
+    private List<URLReplacer> urlReplacers;
 
     private HtmlTagAttributeTraverser urlTraverser;
 
@@ -204,7 +201,12 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                 public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
                     if (StringUtils.isNotEmpty(value)) {
                         try {
-                            value = replaceRefsByPlaceholders(value, newRefs, refs, node.getSession().getWorkspace().getName(), node.getSession().getLocale(), node, definition);
+                            for (URLReplacer urlReplacer : urlReplacers) {
+                                if (urlReplacer.canHandle(tagName, attrName)) {
+                                    value = urlReplacer.replaceRefsByPlaceholders(value, newRefs, refs, node.getSession().getWorkspace().getName(), node.getSession().getLocale(), node, definition);
+                                    break;
+                                }
+                            }
                         } catch (RepositoryException e) {
                             throw new RuntimeException(e);
                         }
@@ -337,9 +339,15 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                 public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
                     if (StringUtils.isNotEmpty(value)) {
                         try {
-                            value = replacePlaceholdersByRefs(value, refs, property.getSession().getWorkspace().getName(), property.getSession().getLocale(), property.getParent());
-                            if ("#".equals(value) && attrName.toLowerCase().equals("src") && tagName.toLowerCase().equals("img")) {
-                                value = "/missing-image.png";
+                            for (URLReplacer urlReplacer : urlReplacers) {
+                                if (urlReplacer.canHandle(tagName, attrName)) {
+                                    value = urlReplacer.replacePlaceholdersByRefs(value, refs, property.getSession().getWorkspace().getName(), property.getSession().getLocale(), property.getParent());
+                                    break;
+                                }
+                            }
+
+                            if ("#".equals(value) && (tagName.toLowerCase().equals("img") || tagName.toLowerCase().equals("source"))) {
+                                value = MISSING_IMAGE;
                             }
                         } catch (RepositoryException e) {
                             throw new RuntimeException(e);
@@ -379,180 +387,6 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         return res;
     }
 
-    private String replaceRefsByPlaceholders(final String originalValue, final Map<String, Long> newRefs, final Map<String, Long> oldRefs, String workspace, final Locale locale, final JCRNodeWrapper node, final ExtendedPropertyDefinition definition) throws RepositoryException {
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Before replaceRefsByPlaceholders : " + originalValue);
-        }
-
-        String pathPart = originalValue;
-        final boolean isCmsContext;
-        if (pathPart.startsWith(dmsContext)) {
-            // Remove DOC context part
-            pathPart = StringUtils.substringAfter(StringUtils.substringAfter(pathPart, dmsContext), "/");
-            isCmsContext = false;
-        } else if (pathPart.startsWith(cmsContext)) {
-            // Remove CMS context part
-            Matcher m = cmsPattern.matcher(pathPart);
-            if (!m.matches()) {
-                throw new PropertyConstraintViolationException(node, Messages.getInternal("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + pathPart, definition.isInternationalized() ? locale : null,definition);
-            }
-            pathPart = m.group(5);
-            isCmsContext = true;
-        } else {
-            return originalValue;
-        }
-
-        final String path = "/" + WebUtils.urlDecode(pathPart);
-
-        return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<String>() {
-            public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                String value = originalValue;
-                String ext = null;
-                String tpl = null;
-                JCRNodeWrapper reference;
-                try {
-                    String currentPath = path;
-                    if (isCmsContext) {
-                        while (true) {
-                            int i = currentPath.lastIndexOf('.');
-                            if (i > currentPath.lastIndexOf('/')) {
-                                if (ext == null) {
-                                    ext = currentPath.substring(i + 1);
-                                } else if (tpl == null) {
-                                    tpl = currentPath.substring(i + 1);
-                                } else {
-                                    tpl = currentPath.substring(i + 1) + "." + tpl;
-                                }
-                                currentPath = currentPath.substring(0, i);
-                            } else {
-                                throw new PathNotFoundException("not found in " + path);
-                            }
-                            try {
-                                reference = session.getNode(JCRContentUtils.escapeNodePath(currentPath));
-                                break;
-                            } catch (PathNotFoundException e) {
-                                // continue
-                            }
-                        }
-                        value = CMS_CONTEXT_PLACEHOLDER + StringUtils.substringAfter(value, cmsContext);
-                    } else {
-                        // retrieve path
-                        while (true) {
-                            if (StringUtils.contains(currentPath, '/')) {
-                                currentPath = StringUtils.substringAfter(currentPath, "/");
-                            } else {
-                                throw new PathNotFoundException("not found in " + path);
-                            }
-                            try {
-                                reference = session.getNode(JCRContentUtils.escapeNodePath("/" + currentPath));
-                                break;
-                            } catch (PathNotFoundException e) {
-                                // continue
-                            }
-                        }
-                        value = DOC_CONTEXT_PLACEHOLDER + StringUtils.substringAfter(value, dmsContext);
-                    }
-                } catch (PathNotFoundException e) {
-                    throw new PropertyConstraintViolationException(node, Messages.getInternal("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + path, definition.isInternationalized() ? locale : null, definition);
-                }
-                String id = reference.getIdentifier();
-                if (!newRefs.containsKey(id)) {
-                    if (oldRefs.containsKey(id)) {
-                        newRefs.put(id, oldRefs.get(id));
-                    } else {
-                        Long max = Math.max(oldRefs.isEmpty() ? 0 : Collections.max(oldRefs.values()), newRefs.isEmpty() ? 0 : Collections.max(newRefs.values()));
-                        newRefs.put(id, max + 1);
-                    }
-                }
-                Long index = newRefs.get(id);
-                String link = "/##ref:link" + index + "##";
-                if (tpl != null) {
-                    link += "." + tpl;
-                }
-                if (ext != null) {
-                    link += "." + ext;
-                }
-                value = WebUtils.urlDecode(value).replace(path, link);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("After replaceRefsByPlaceholders : " + value);
-                }
-                return value;
-            }
-        });
-    }
-
-
-    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName, final Locale locale, final JCRNodeWrapper parent) throws RepositoryException {
-
-        String pathPart = originalValue;
-        if (logger.isDebugEnabled()) {
-            logger.debug("Before replacePlaceholdersByRefs : " + originalValue);
-        }
-        final boolean isCmsContext;
-
-        if (pathPart.startsWith(DOC_CONTEXT_PLACEHOLDER)) {
-            // Remove DOC context part
-            pathPart = StringUtils.substringAfter(StringUtils.substringAfter(pathPart, DOC_CONTEXT_PLACEHOLDER), "/");
-            isCmsContext = false;
-        } else if (pathPart.startsWith(CMS_CONTEXT_PLACEHOLDER)) {
-            // Remove CMS context part
-            Matcher m = cmsPatternWithContextPlaceholder.matcher(pathPart);
-            if (!m.matches()) {
-                logger.error("Cannot match URL : " + pathPart);
-                return originalValue;
-            }
-            pathPart = m.group(5);
-            isCmsContext = true;
-        } else {
-            return originalValue;
-        }
-
-        final String path = "/" + pathPart;
-        return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspaceName, null, new JCRCallback<String>() {
-            public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                String value = originalValue;
-                try {
-                    Matcher matcher = refPattern.matcher(path);
-                    if (!matcher.matches()) {
-                        logger.error("Cannot match value, should contain ##ref : " + path);
-                        return originalValue;
-                    }
-                    String id = matcher.group(1);
-                    String ext = matcher.group(2);
-                    String uuid = refs.get(new Long(id));
-                    String nodePath = null;
-
-                    JCRNodeWrapper node = null;
-                    if (!StringUtils.isEmpty(uuid)) {
-                        try {
-                            node = session.getNodeByUUID(uuid);
-                        } catch (ItemNotFoundException infe) {
-                            // Warning is logged below (also if uuid is empty)
-                        }
-                    }
-                    if (node == null) {
-                        logger.warn("Cannot find referenced item : " + parent.getPath() + " -> " + path + " -> " + uuid);
-                        return "#";
-                    }
-                    nodePath = Text.escapePath(node.getPath());
-                    value = originalValue.replace(path, nodePath + ext);
-                    if (isCmsContext) {
-                        value = CMS_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(cmsContext);
-                    } else {
-                        value = DOC_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(dmsContext);
-                    }
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("After replacePlaceholdersByRefs : " + value);
-                    }
-                } catch (Exception e) {
-                    logger.error("Exception when transforming placeholder for " + parent.getPath() + " -> " + path, e);
-                }
-                return value;
-            }
-        });
-    }
-
     public void afterPropertiesSet() throws Exception {
         dmsContext = Jahia.getContextPath() + "/files/";
         cmsContext = Jahia.getContextPath() + "/cms/";
@@ -566,5 +400,27 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         cmsPatternWithContextPlaceholder = Pattern.compile(escape(CMS_CONTEXT_PLACEHOLDER) + pattern);
     }
 
+    public void setUrlReplacers(List<URLReplacer> urlReplacers) {
+        this.urlReplacers = urlReplacers;
+    }
 
+    public String getDmsContext() {
+        return dmsContext;
+    }
+
+    public String getCmsContext() {
+        return cmsContext;
+    }
+
+    public Pattern getCmsPattern() {
+        return cmsPattern;
+    }
+
+    public Pattern getCmsPatternWithContextPlaceholder() {
+        return cmsPatternWithContextPlaceholder;
+    }
+
+    public Pattern getRefPattern() {
+        return refPattern;
+    }
 }

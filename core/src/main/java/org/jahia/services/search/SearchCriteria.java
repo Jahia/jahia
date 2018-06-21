@@ -768,9 +768,25 @@ public class SearchCriteria implements Serializable {
 
         @Override
         public Object create() {
-            return new HashMap<String, String>();
+            return LazyMap.decorate(new HashMap<String, FacetValue>(), new FacetValueFactory());
         }
     }
+
+    public static class FacetValue extends MultipleValue {
+
+        private static final long serialVersionUID = 8254717328505039602L;
+    }
+
+    private static class FacetValueFactory implements Factory, Serializable {
+
+        private static final long serialVersionUID = -7067653312417793462L;
+
+        @Override
+        public Object create() {
+            return new FacetValue();
+        }
+    }
+
 
     protected static class NodePropertyFactory implements Factory, Serializable {
         private static final long serialVersionUID = 3303613294641347422L;
@@ -877,6 +893,16 @@ public class SearchCriteria implements Serializable {
 
             public boolean isTitle() {
                 return title;
+            }
+
+            public void setAll(boolean allValue) {
+                setDescription(allValue);
+                setFileContent(allValue);
+                setFilename(allValue);
+                setKeywords(allValue);
+                setSiteContent(allValue);
+                setTags(allValue);
+                setTitle(allValue);
             }
 
             public void setCustom(String[] customFields) {
@@ -1226,7 +1252,7 @@ public class SearchCriteria implements Serializable {
     /**
      * Active facets for the search.
      */
-    private Map<String, Map<String, String>> facets = LazyMap.decorate(new HashMap<String, Map<String, String>>(),
+    private Map<String, Map<String, FacetValue>> facets = LazyMap.decorate(new HashMap<String, Map<String, FacetValue>>(),
             new FacetMapFactory());
     
     private HierarchicalValue filePath = new HierarchicalValue();
@@ -1292,7 +1318,7 @@ public class SearchCriteria implements Serializable {
      * 
      * @return active facet filters
      */
-    public Map<String, Map<String, String>> getFacets() {
+    public Map<String, Map<String, FacetValue>> getFacets() {
         return facets;
     }
 
@@ -1457,7 +1483,7 @@ public class SearchCriteria implements Serializable {
      * 
      * @param facets the active facet filters
      */
-    public void setFacets(Map<String, Map<String, String>> facets) {
+    public void setFacets(Map<String, Map<String, FacetValue>> facets) {
         this.facets = facets;
     }
 

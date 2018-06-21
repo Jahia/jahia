@@ -58,22 +58,22 @@ public class SearchResponse {
     /**
      * Aggregated info about a group of search results corresponding to a specific search facet and a specific result grouping value.
      */
-    public static class ResultGroup {
+    public static class Facet {
 
-        private Object groupingValue;
-        private long resultCount;
+        private Object value;
+        private long count;
 
-        public ResultGroup(Object groupingValue, long resultCount) {
-            this.groupingValue = groupingValue;
-            this.resultCount = resultCount;
+        public Facet(Object value, long count) {
+            this.value = value;
+            this.count = count;
         }
 
-        public Object getGroupingValue() {
-            return groupingValue;
+        public Object getValue() {
+            return value;
         }
 
-        public long getResultCount() {
-            return resultCount;
+        public long getCount() {
+            return count;
         }
     }
 
@@ -84,14 +84,14 @@ public class SearchResponse {
 
         private String id;
 
-        private List<ResultGroup> resultGroups;
+        private List<Facet> facets;
 
-        public FacetedResult(String id, List<ResultGroup> resultGroups) {
+        public FacetedResult(String id, List<Facet> facets) {
             if (id == null || id.length() == 0) {
                 throw new IllegalArgumentException("Facet definition ID should not be null or empty");
             }
             this.id = id;
-            this.resultGroups = resultGroups != null ? Collections.unmodifiableList(resultGroups) : null;
+            this.facets = facets != null ? Collections.unmodifiableList(facets) : null;
         }
 
         /**
@@ -108,8 +108,8 @@ public class SearchResponse {
          * 
          * @return of facet result groups
          */
-        public List<ResultGroup> getResultGroups() {
-            return resultGroups;
+        public List<Facet> getFacets() {
+            return facets;
         }
 
     }

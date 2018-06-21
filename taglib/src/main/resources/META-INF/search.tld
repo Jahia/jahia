@@ -389,4 +389,14 @@
         <function-class>org.jahia.services.search.SearchUtils</function-class>
         <function-signature>org.jahia.services.search.SearchResponse getSearchResponse(org.jahia.services.render.RenderContext)</function-signature>
     </function>
+
+
+    <function>
+        <description>
+            Retrieves the data of the requested facet to be used in a JSP view when rendering facet search results. [since 7.2.3.1]
+        </description>
+        <name>getFacetData</name>
+        <function-class>org.jahia.taglibs.search.facets.Functions</function-class>
+        <function-signature>org.jahia.taglibs.search.facets.FacetData getFacetData(java.lang.String, javax.servlet.http.HttpServletRequest)</function-signature>
+    </function>
 </taglib>

@@ -699,7 +699,7 @@ public class Activator implements BundleActivator {
     private synchronized void starting(Bundle bundle) {
 
         ModuleState.State moduleState = getModuleState(bundle).getState();
-        if (isValid(moduleState)) {
+        if (isInvalid(moduleState)) {
             return;
         }
 
@@ -737,7 +737,7 @@ public class Activator implements BundleActivator {
         }
 
         ModuleState.State state = getModuleState(bundle).getState();
-        if (isValid(state)) {
+        if (isInvalid(state)) {
             return;
         }
 
@@ -872,7 +872,7 @@ public class Activator implements BundleActivator {
     private synchronized void stopping(Bundle bundle) {
 
         ModuleState.State moduleState = getModuleState(bundle).getState();
-        if (isValid(moduleState)) {
+        if (isInvalid(moduleState)) {
             return;
         }
 
@@ -921,7 +921,7 @@ public class Activator implements BundleActivator {
         logger.info("--- Finished stopping DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
     }
 
-    private static boolean isValid(ModuleState.State moduleState) {
+    private static boolean isInvalid(ModuleState.State moduleState) {
         return moduleState == ModuleState.State.ERROR_WITH_DEFINITIONS || moduleState == ModuleState.State.ERROR_WITH_RULES || moduleState == ModuleState.State.INCOMPATIBLE_VERSION;
     }
 
@@ -983,7 +983,7 @@ public class Activator implements BundleActivator {
         BundleUtils.setContextToStartForModule(bundle, null);
 
         ModuleState.State moduleState = getModuleState(bundle).getState();
-        if (isValid(moduleState)) {
+        if (isInvalid(moduleState)) {
             return;
         }
 

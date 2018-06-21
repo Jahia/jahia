@@ -258,10 +258,6 @@
     </tag>
 
     <tag-file>
-        <name>afterForm</name>
-        <path>/META-INF/tags/search/afterForm.tag</path>
-    </tag-file>
-    <tag-file>
         <name>created</name>
         <path>/META-INF/tags/search/created.tag</path>
     </tag-file>
@@ -272,6 +268,10 @@
     <tag-file>
         <name>date</name>
         <path>/META-INF/tags/search/date.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>drillDownForm</name>
+        <path>/META-INF/tags/search/drillDownForm.tag</path>
     </tag-file>
     <tag-file>
         <name>nodeProperty</name>

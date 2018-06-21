@@ -276,7 +276,7 @@ public class ModuleDeploymentTest {
     }
 
     @Test
-    public void testJarWithWrongRules() throws RepositoryException {
+    public void testJarWithFailingRules() throws RepositoryException {
         SettingsBean settingsBean = SettingsBean.getInstance();
 
         File f = null;
@@ -291,10 +291,12 @@ public class ModuleDeploymentTest {
             FileUtils.writeStringToFile(droolsFile, "dummy text");
             Files.copy(droolsFile.toPath(), fs.getPath("/META-INF/rules.drl"), StandardCopyOption.REPLACE_EXISTING);
             fs.close();
+
             FileUtils.copyFileToDirectory(tmpFile, new File(settingsBean.getJahiaModulesDiskPath()));
-            droolsFile.delete();
-            tmpFile.delete();
             f = new File(settingsBean.getJahiaModulesDiskPath(), tmpFile.getName());
+
+            FileUtils.deleteQuietly(droolsFile);
+            FileUtils.deleteQuietly(tmpFile);
 
             with().pollInterval(Duration.ONE_SECOND).await().atMost(20, SECONDS).until(isPackageDeployedAndServiceInstalled("dummy1"));
 

@@ -43,6 +43,7 @@
  */
 package org.apache.jackrabbit.j2ee;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.webdav.*;
 import org.apache.jackrabbit.webdav.io.InputContext;
 import org.apache.jackrabbit.webdav.io.OutputContext;
@@ -59,14 +60,20 @@ import org.apache.jackrabbit.webdav.simple.ResourceFactoryImpl;
 import org.apache.jackrabbit.webdav.version.*;
 import org.apache.jackrabbit.webdav.version.report.Report;
 import org.apache.jackrabbit.webdav.version.report.ReportInfo;
+import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeType;
 import java.io.IOException;
-import java.util.LinkedHashSet;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Custom resource factory
@@ -74,37 +81,32 @@ import java.util.Set;
 public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaResourceFactoryImpl.class);
     private final LockManager lockMgr;
-    private Set<String> allowedNodeTypes;
+    private static Set<NodeType> allowedNodeTypes;
+    private static Set<String> allowedNodeTypesAsString = new HashSet<>();
 
     public JahiaResourceFactoryImpl(LockManager lockMgr, ResourceConfig resourceConfig) {
         super(lockMgr, resourceConfig);
         this.lockMgr=lockMgr;
-        allowedNodeTypes = new LinkedHashSet<>();
-        String allowedNodeTypesStrList = SettingsBean.getInstance().getPropertiesFile().getProperty("repositoryAllowedNodeTypes", "rep:root,jnt:virtualsitesFolder,jnt:virtualsite,jnt:folder,jnt:file");
-        if (allowedNodeTypesStrList == null) {
-            return;
-        }
-        for (String allowedNodeTypeName : allowedNodeTypesStrList.split(",")) {
-            allowedNodeTypes.add(allowedNodeTypeName.trim());
-        }
     }
 
     public DavResource createResource(DavResourceLocator locator, DavServletRequest request,
                                                 DavServletResponse response) throws DavException {
         try {
             if (locator.isRootLocation()) {
-                JahiaRootCollection jahiaRootCollection = new JahiaRootCollection(locator, (JcrDavSession)request.getDavSession(),
-                                                                                  this);
+                JahiaRootCollection jahiaRootCollection = new JahiaRootCollection(locator, (JcrDavSession) request.getDavSession(),
+                        this);
                 jahiaRootCollection.addLockManager(lockMgr);
                 return jahiaRootCollection;
             } else if ("default".equals(locator.getWorkspaceName()) && "/repository".equals(locator.getRepositoryPath())) {
-                JahiaServerRootCollection jahiaServerRootCollection = new JahiaServerRootCollection(locator, (JcrDavSession)request
+                JahiaServerRootCollection jahiaServerRootCollection = new JahiaServerRootCollection(locator, (JcrDavSession) request
                         .getDavSession(), this);
                 jahiaServerRootCollection.addLockManager(lockMgr);
                 return jahiaServerRootCollection;
             }
             return createResource(super.createResource(locator, request, response), getNode(request.getDavSession(),
                     locator.getRepositoryPath()));
+        } catch (AccessDeniedException e) {
+            throw new DavException(DavServletResponse.SC_NOT_FOUND);
         } catch (RepositoryException e) {
             throw new DavException(DavServletResponse.SC_INTERNAL_SERVER_ERROR, e);
         }
@@ -122,6 +124,8 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
                 return jahiaServerRootCollection;
             }
             return createResource(super.createResource(locator, session), getNode(session, locator.getRepositoryPath()));
+        } catch (AccessDeniedException e) {
+            throw new DavException(DavServletResponse.SC_NOT_FOUND);
         } catch (RepositoryException e) {
             throw new DavException(DavServletResponse.SC_INTERNAL_SERVER_ERROR, e);
         }
@@ -149,11 +153,11 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
         try {
             if (repoPath != null) {
                 Session session = ((JcrDavSession)sessionImpl).getRepositorySession();
-                Item item = session.getItem(repoPath);
+                final Item item = session.getItem(repoPath);
                 if (item instanceof Node) {
-                    node = (Node)item;
-                    if (!allowedNodeTypes.contains(node.getPrimaryNodeType().getName())) {
-                        throw new RepositoryException("Access denied.");
+                    node = (Node) item;
+                    if (!isAllowed(((Node) item).getPrimaryNodeType().getName())) {
+                        throw new AccessDeniedException("Access denied.");
                     }
                 } // else: item is a property -> return null
             }
@@ -163,8 +167,28 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
         return node;
     }
 
+    /**
+     * check if the provided node type is allowed to be browsed by WebDav
+     * @param nodetype to check
+     * @return true if the nodeType is allowed, false in other cases
+     */
+    public static boolean isAllowed(String nodetype) {
+        return allowedNodeTypesAsString.contains(nodetype) || getAllowedNodeTypes().stream().anyMatch(t -> t.isNodeType(nodetype) && allowedNodeTypesAsString.add(t.getName()));
+    }
 
-
+    private static Set<NodeType> getAllowedNodeTypes() {
+        if (allowedNodeTypes == null) {
+            String allowedNodeTypesStrList = SettingsBean.getInstance().getPropertiesFile().getProperty("repositoryAllowedNodeTypes", "rep:root,jnt:virtualsitesFolder,jnt:virtualsite,jnt:folder,jnt:file");
+            allowedNodeTypes = Arrays.stream(StringUtils.split(allowedNodeTypesStrList, ",")).map(nodeType -> {
+                try {
+                    return NodeTypeRegistry.getInstance().getNodeType(nodeType);
+                } catch (NoSuchNodeTypeException e) {
+                    throw new JahiaRuntimeException("unable to resolve type [" + nodeType + "]", e);
+                }
+            }).collect(Collectors.toSet());
+        }
+        return allowedNodeTypes;
+    }
 
     class DavResourceImpl implements DavResource {
         DavResource resource;

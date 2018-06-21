@@ -43,14 +43,12 @@
  */
 package org.jahia.services.webdav;
 
-import javax.jcr.*;
-
+import org.apache.jackrabbit.j2ee.JahiaResourceFactoryImpl;
 import org.apache.jackrabbit.webdav.simple.DefaultItemFilter;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import javax.jcr.*;
 
 /**
  * WebDAV resource filter that disables directory listing completely if activated in <code>jahia.properties</code> or delegates to the
@@ -62,7 +60,6 @@ public class JahiaItemFilter extends DefaultItemFilter {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaItemFilter.class);
 
     private Boolean directoryListingDisabled;
-    private Set<String> allowedNodeTypes;
 
     public JahiaItemFilter() {
         super();
@@ -74,14 +71,6 @@ public class JahiaItemFilter extends DefaultItemFilter {
             directoryListingDisabled = Boolean
                     .valueOf(SettingsBean.getInstance().getPropertiesFile()
                             .getProperty("repositoryDirectoryListingDisabled", "false"));
-            allowedNodeTypes = new LinkedHashSet<>();
-            String allowedNodeTypesStrList = SettingsBean.getInstance().getPropertiesFile().getProperty("repositoryAllowedNodeTypes", "rep:root,jnt:virtualsitesFolder,jnt:virtualsite,jnt:folder,jnt:file");
-            if (allowedNodeTypesStrList == null) {
-                return;
-            }
-            for (String allowedNodeTypeName : allowedNodeTypesStrList.split(",")) {
-                allowedNodeTypes.add(allowedNodeTypeName.trim());
-            }
         } catch (Exception e) {
             logger.error("Error initializing Jahia WebDAV item filter", e);
         }
@@ -104,7 +93,7 @@ public class JahiaItemFilter extends DefaultItemFilter {
         if (ntName == null) {
             return super.isFilteredItem(item);
         }
-        if (allowedNodeTypes.contains(ntName)) {
+        if (JahiaResourceFactoryImpl.isAllowed(ntName)) {
             return super.isFilteredItem(item);
         }
         return true;

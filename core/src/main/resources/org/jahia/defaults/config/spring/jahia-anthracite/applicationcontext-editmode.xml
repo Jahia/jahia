@@ -214,6 +214,35 @@
         <ref bean="Toolbar.Item.Documentation"/>
     </util:list>
 
+
+    <util:list id="anthraciteEditmodeMainModuleMenuItems">
+        <ref bean="Toolbar.Item.EditContent"/>
+        <ref bean="Toolbar.Item.Delete"/>
+        <ref bean="Toolbar.Item.Undelete"/>
+        <ref bean="Toolbar.Item.DeletePermanently"/>
+        <ref bean="Toolbar.Item.Separator"/>
+        <ref bean="Toolbar.Item.EditSourceContent"/>
+        <ref bean="Toolbar.Item.Separator"/>
+        <ref bean="Toolbar.Item.Copy"/>
+        <ref bean="Toolbar.Item.Cut"/>
+        <ref bean="Toolbar.Item.Paste"/>
+        <ref bean="Toolbar.Item.PasteReference"/>
+        <ref bean="Toolbar.Item.Separator"/>
+        <ref bean="Toolbar.Item.Publish"/>
+        <ref bean="Toolbar.Item.Separator"/>
+        <ref bean="Toolbar.Item.TranslateMenu"/>
+        <ref bean="Toolbar.Item.Separator"/>
+        <ref bean="Toolbar.Item.Export"/>
+        <ref bean="Toolbar.Item.Import"/>
+        <ref bean="Toolbar.Item.Separator"/>
+        <ref bean="Toolbar.Item.Lock"/>
+        <ref bean="Toolbar.Item.Unlock"/>
+        <ref bean="Toolbar.Item.ClearLock"/>
+        <ref bean="Toolbar.Item.ClearAllLocks"/>
+        <ref bean="Toolbar.Item.Separator"/>
+        <ref bean="Toolbar.Item.OpenInContentManager.NewTab"/>
+    </util:list>
+
     <bean id="editmode-jahia-anthracite" parent="editmode">
         <property name="topToolbars">
             <list>
@@ -256,40 +285,9 @@
                             <bean class="org.jahia.services.uicomponents.bean.toolbar.Menu" id="Edit.Menu.Edit">
                                 <property name="titleKey" value="label.edit"/>
                                 <property name="icon" value="editAction"/>
-                                <property name="items">
-                                    <list>
-                                        <ref bean="Toolbar.Item.EditContent"/>
-                                        <ref bean="Toolbar.Item.Delete"/>
-                                        <ref bean="Toolbar.Item.Undelete"/>
-                                        <ref bean="Toolbar.Item.DeletePermanently"/>
-                                        <ref bean="Toolbar.Item.Separator"/>
-                                        <ref bean="Toolbar.Item.EditSourceContent"/>
-                                        <ref bean="Toolbar.Item.Separator"/>
-                                        <ref bean="Toolbar.Item.Copy"/>
-                                        <ref bean="Toolbar.Item.Cut"/>
-                                        <ref bean="Toolbar.Item.Paste"/>
-                                        <ref bean="Toolbar.Item.PasteReference"/>
-                                        <ref bean="Toolbar.Item.Separator"/>
-                                        <ref bean="Toolbar.Item.Publish"/>
-                                        <ref bean="Toolbar.Item.Separator"/>
-                                        <ref bean="Toolbar.Item.TranslateMenu"/>
-                                        <ref bean="Toolbar.Item.Separator"/>
-                                        <ref bean="Toolbar.Item.Export"/>
-                                        <ref bean="Toolbar.Item.Import"/>
-                                        <ref bean="Toolbar.Item.Separator"/>
-                                        <ref bean="Toolbar.Item.Lock"/>
-                                        <ref bean="Toolbar.Item.Unlock"/>
-                                        <ref bean="Toolbar.Item.ClearLock"/>
-                                        <ref bean="Toolbar.Item.ClearAllLocks"/>
-                                        <ref bean="Toolbar.Item.Separator"/>
-                                        <ref bean="Toolbar.Item.OpenInContentManager.NewTab"/>
-                                    </list>
-                                </property>
+                                <property name="items" ref="anthraciteEditmodeMainModuleMenuItems"/>
                             </bean>
-
                         </list>
-
-
                     </property>
                 </bean>
                 <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar" id="Edit.Menu.RightTop">

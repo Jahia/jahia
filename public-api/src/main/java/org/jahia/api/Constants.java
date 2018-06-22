@@ -253,6 +253,7 @@ public class Constants {
     public static final String THUMBNAIL = "j:thumbnail";
     public static final String FULLPATH = "j:fullpath";
     public static final String TAGS = "j:tags";
+    public static final String TAG_LIST = "j:tagList";
     public static final String KEYWORDS = "j:keywords";
     public static final String DEFAULT_CATEGORY = "j:defaultCategory";
     public static final String DESCRIPTION = "j:description";
@@ -261,6 +262,9 @@ public class Constants {
     public static final String SPLIT_CONFIG = "j:splitConfig";
     public static final String SPLIT_NODETYPE = "j:splitNodeType";
 
+    public static final String JAHIANT_CONDITION = "jnt:condition";
+    public static final String JAHIANT_CONDITIONAL_VISIBILITY = "jnt:conditionalVisibility";
+	
     public static final String JAHIANT_GROUP = "jnt:group";
     public static final String JAHIANT_MEMBERS = "jnt:members";
     public static final String JAHIANT_MEMBER = "jnt:member";

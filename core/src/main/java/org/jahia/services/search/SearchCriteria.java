@@ -53,6 +53,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.collections.map.LazyMap;
@@ -60,6 +62,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jahia.api.Constants;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.DateUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -1624,7 +1629,7 @@ public class SearchCriteria implements Serializable {
                 return false;
             }
         }
-        return true;
+        return !isPropertiesSearchOnContent();
     }
 
     /**
@@ -1636,6 +1641,23 @@ public class SearchCriteria implements Serializable {
         for (Term term : getTerms()) {
             if (term.getFields() != null && term.getFields().isSiteContent()) {
                 return true;
+            }
+        }
+        if (!getPagePath().isEmpty()) {
+            return true;
+        }
+        return isPropertiesSearchOnContent();
+    }
+    
+    private boolean isPropertiesSearchOnContent() {
+        for (NodeProperty property : getPropertiesAll()) {
+            try {
+                ExtendedNodeType propertyNodeType = NodeTypeRegistry.getInstance().getNodeType(property.getNodeType());
+                if (propertyNodeType.isNodeType(Constants.JAHIANT_CONTENT) || propertyNodeType.isNodeType(Constants.JAHIANT_PAGE)) {
+                    return true;
+                }
+            } catch (NoSuchNodeTypeException e) {
+                // ignore unknown nodetypes
             }
         }
         return false;

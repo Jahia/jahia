@@ -351,15 +351,7 @@ public class ExtendedNodeType implements NodeType {
 
 
     public NodeTypeIterator getSubtypes() {
-        List<ExtendedNodeType> l = new ArrayList<ExtendedNodeType>();
-        for (Iterator<ExtendedNodeType> iterator = declaredSubtypes.iterator(); iterator.hasNext();) {
-            ExtendedNodeType s =  iterator.next();
-            l.add(s);
-            NodeTypeIterator subtypes = s.getSubtypes();
-            while (subtypes.hasNext()) {
-                l.add((ExtendedNodeType) subtypes.next());
-            }
-        }
+        List<ExtendedNodeType> l = getSubtypesAsList();
         return new NodeTypeIteratorImpl(l.iterator(), l.size());
     }
 

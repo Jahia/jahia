@@ -728,7 +728,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                         if (property.isConstrained()) {
                             String matchType = "=";
                             if (property.getMatch() == MatchType.WITHOUT_WORDS || property.getMatch() == MatchType.NO_EXACT_PROPERTY_VALUE) {
-                                matchType = "!=";
+                                matchType = (xpath ? "!=" : "<>");
                             }
                             addConstraint(propertyConstraints, OR, getPropertyName(property.getName(), xpath) + matchType + stringToJCRSearchExp(value));
                         } else {
@@ -1007,7 +1007,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
         } else if (MatchType.EXACT_PROPERTY_VALUE == matchType) {
             return (scope + "=" + stringToQueryLiteral(term));
         } else if (MatchType.NO_EXACT_PROPERTY_VALUE == matchType) {
-            return (scope + "!=" + stringToQueryLiteral(term));
+            return (scope + (xpath ? "!=" : "<>") + stringToQueryLiteral(term));
         } else {
             throw new IllegalArgumentException("Unsupported match type: " + matchType);
         }

@@ -220,7 +220,7 @@ public class ResultsTag extends AbstractJahiaTag {
         if (values != null) {
             for (int i = 0; i < values.length; i++) {
                 String value = values[i];
-                if (!value.startsWith(basePagePath)) {
+                if (StringUtils.isNotEmpty(value) && !value.startsWith(basePagePath)) {
                     values[i] = basePagePath;
                 }
             }

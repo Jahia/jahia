@@ -88,21 +88,21 @@ public class SearchCriteria implements Serializable {
         private static final long serialVersionUID = 7275734915870152689L;
 
         private String id;
-        private int maxGroups;
+        private int maxFacetResults;
 
         /**
          * Create a facet definition instance.
          *
          * @param id an unique identifier for this facet definition. This helps differentiate facet definitions that
          *           are of the same type but are operating on different data objects
-         * @param maxGroups The max number of result groups the facet should return
+         * @param maxFacetResults the maximum number of facet results (different facet values) the facet should return
          */
-        protected BaseFacetDefinition(String id, int maxGroups) {
+        protected BaseFacetDefinition(String id, int maxFacetResults) {
             if (id == null || id.length() == 0) {
                 throw new IllegalArgumentException("Facet definition ID should not be null or empty");
             }
             this.id = id;
-            this.maxGroups = maxGroups;
+            this.maxFacetResults = maxFacetResults;
         }
 
         /**
@@ -113,10 +113,10 @@ public class SearchCriteria implements Serializable {
         }
 
         /**
-         * @return The max number of result groups the facet should return
+         * @return the maximum number of facet results (different facet values) the facet should return
          */
-        public int getMaxGroups() {
-            return maxGroups;
+        public int getMaxFacetResults() {
+            return maxFacetResults;
         }
 
         @Override
@@ -124,7 +124,7 @@ public class SearchCriteria implements Serializable {
             final int prime = 31;
             int result = 1;
             result = prime * result + ((id == null) ? 0 : id.hashCode());
-            result = prime * result + maxGroups;
+            result = prime * result + maxFacetResults;
             return result;
         }
 
@@ -142,7 +142,7 @@ public class SearchCriteria implements Serializable {
                     return false;
             } else if (!id.equals(other.id))
                 return false;
-            if (maxGroups != other.maxGroups)
+            if (maxFacetResults != other.maxFacetResults)
                 return false;
             return true;
         }

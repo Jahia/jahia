@@ -56,7 +56,7 @@ import java.util.List;
 public class SearchResponse {
 
     /**
-     * Aggregated info about a group of search results corresponding to a specific search facet and a specific result grouping value.
+     * Information about particular search facet result, including its value (term) and aggregated count.
      */
     public static class Facet {
 
@@ -78,7 +78,7 @@ public class SearchResponse {
     }
 
     /**
-     * Groups of results corresponding to a specific search facet.
+     * Results, corresponding to a specific search facet.
      */
     public static class FacetedResult {
 
@@ -104,9 +104,9 @@ public class SearchResponse {
         }
 
         /**
-         * A list of facet result groups.
+         * A list of facets.
          * 
-         * @return of facet result groups
+         * @return a list of of facets
          */
         public List<Facet> getFacets() {
             return facets;

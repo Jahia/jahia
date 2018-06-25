@@ -60,20 +60,26 @@ public class SearchResponse {
      */
     public static class Facet {
 
-        private Object value;
         private long count;
+        private Object value;
+        private String valueAsString;
 
-        public Facet(Object value, long count) {
+        public Facet(Object value, String valueAsString, long count) {
             this.value = value;
+            this.valueAsString = valueAsString;
             this.count = count;
+        }
+
+        public long getCount() {
+            return count;
         }
 
         public Object getValue() {
             return value;
         }
 
-        public long getCount() {
-            return count;
+        public String getValueAsString() {
+            return valueAsString;
         }
     }
 

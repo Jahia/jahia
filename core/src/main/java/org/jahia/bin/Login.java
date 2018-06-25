@@ -186,9 +186,11 @@ public class Login implements Controller {
         if (redirectUrl == null) {
             return authorizeNullRedirect;
         }
-        if (redirectUrl.contains("://")) {
-            if (redirectUrl.startsWith("http://") || redirectUrl.startsWith("https://")) {
-                String redirectUrlAfterProtocol = StringUtils.substringAfter(redirectUrl, "://");
+
+        boolean startWithDoubleSlash = redirectUrl.startsWith("//");
+        if (redirectUrl.contains("://") || startWithDoubleSlash) {
+            if (redirectUrl.startsWith("http://") || redirectUrl.startsWith("https://") || startWithDoubleSlash) {
+                String redirectUrlAfterProtocol = StringUtils.substringAfter(redirectUrl, "//");
                 String urlBase = StringUtils.substringAfter(StringUtils.removeEnd(request.getRequestURL().toString(), request.getRequestURI()), "://");
                 if (redirectUrlAfterProtocol.startsWith(urlBase)) {
                     return true;

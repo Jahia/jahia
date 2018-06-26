@@ -134,7 +134,7 @@ public class AddResourcesTag extends AbstractJahiaTag {
         final Map<String, String> mapping = getStaticAssetMapping();
 
         Set<String> strings = new LinkedHashSet<String>();
-        for (String sourceResource : Patterns.COMMA.split(resources)) {
+        for (String sourceResource : Patterns.COMMA_WHITESPACE.split(resources.trim())) {
             String replacement = mapping.get(sourceResource);
             if (replacement != null) {
                 for (String r : StringUtils.split(replacement, " ")) {

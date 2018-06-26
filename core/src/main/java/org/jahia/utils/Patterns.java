@@ -60,6 +60,8 @@ public final class Patterns {
 
     public static final Pattern COMMA = Pattern.compile(",", Pattern.LITERAL);
 
+    public static final Pattern COMMA_WHITESPACE = Pattern.compile("[\\s,]+");
+
     public static final Pattern DASH = Pattern.compile("-", Pattern.LITERAL);
 
     public static final Pattern DOLLAR = Pattern.compile("$", Pattern.LITERAL);

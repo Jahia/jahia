@@ -457,7 +457,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
                 permPath = permPath.contains("/") ? StringUtils.substringBeforeLast(permPath, "/") : "";
             }
 
-            Map<String, List<String[]>> m = node.getAclEntries();
+            Map<String, Map<String, String>> actualAclEntries = node.getActualAclEntries();
             principals = new LinkedList<JahiaPrincipal>();
             JahiaUserManagerService userService = ServicesRegistry.getInstance()
                     .getJahiaUserManagerService();
@@ -466,16 +466,16 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
             JCRSiteNode site = null;
 
-            for (Map.Entry<String, List<String[]>> entry : m.entrySet()) {
-                for (String[] strings : entry.getValue()) {
-                    if (strings[1].equals("GRANT") && roles.contains(strings[2]) || strings[1].equals("EXTERNAL") && extPerms.contains(strings[2])) {
-                        String principal = entry.getKey();
+            for (Map.Entry<String, Map<String, String>> actualAclEntry : actualAclEntries.entrySet()) {
+                for (Map.Entry<String, String> aclEntry : actualAclEntry.getValue().entrySet()) {
+                    if ("GRANT".equals(aclEntry.getValue()) && roles.contains(aclEntry.getKey()) || "EXTERNAL".equals(aclEntry.getValue()) && extPerms.contains(aclEntry.getKey())) {
+                        String principal = actualAclEntry.getKey();
                         final String principalName = principal.substring(2);
                         if (site == null) {
                             site = node.getResolveSite();
                         }
                         if (principal.charAt(0) == 'u') {
-                            JCRUserNode userNode = userService.lookupUser(principalName, strings[0].startsWith("/sites/") ? site.getSiteKey() : null);
+                            JCRUserNode userNode = userService.lookupUser(principalName, node.getPath().startsWith("/sites/") ? site.getSiteKey() : null);
                             if (userNode != null) {
                                 logger.debug("user {} is granted", userNode.getUserKey());
                                 JahiaUser jahiaUser = userNode.getJahiaUser();

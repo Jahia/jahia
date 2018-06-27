@@ -571,6 +571,17 @@ public class ContentManagerHelper {
                     if (!permanentlyDelete && supportsMarkingForDeletion(nodeToDelete)) {
                         nodeToDelete.markForDeletion(comment);
                     } else {
+                        // check if node exist in live before permanently delete it in default
+                        if (permanentlyDelete && nodeToDelete.isMarkedForDeletion()) {
+                            try {
+                                nodeToDelete.getCorrespondingNodePath(Constants.LIVE_WORKSPACE);
+                                missedPaths.add(nodeToDelete.getPath() + Messages.getInternal("label.gwt.error.could.not.delete.node.exist.live", uiLocale));
+                                continue;
+                            } catch (ItemNotFoundException ignored) {
+                                //ignore
+                            }
+                        }
+
                         nodeToDelete.getParent().getSession().checkout(nodeToDelete.getParent());
                         nodeToDelete.remove();
                     }

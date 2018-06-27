@@ -99,6 +99,7 @@ public class TestHelper {
     public static final String WEB_SPACE_TEMPLATES = "templates-web-space";
     public static final String INTRANET_TEMPLATES = "templates-intranet";
     public static final String BOOTSTRAP_ACME_SPACE_TEMPLATES = "bootstrap-acme-space-templates";
+    public static final String DX_BASE_DEMO_TEMPLATES = "dx-base-demo-templates";
 
 
     public static JahiaSite createSite(SiteCreationInfo info) throws Exception {

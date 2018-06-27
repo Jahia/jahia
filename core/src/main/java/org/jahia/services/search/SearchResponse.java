@@ -47,6 +47,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * SearchResponse returned by the Jahia search service.
  *
@@ -107,6 +109,24 @@ public class SearchResponse {
          */
         public String getId() {
             return id;
+        }
+
+        /**
+         * Facet, requested by its string value.
+         * 
+         * @param valueAsString the facet string value to retrieve facet for
+         * 
+         * @return Facet, requested by its string value, or <code>null</code> if there is no corresponding facet
+         */
+        public Facet getFacet(String valueAsString) {
+            if (facets != null) {
+                for (Facet f : facets) {
+                    if (StringUtils.equals(valueAsString, f.getValueAsString())) {
+                        return f;
+                    }
+                }
+            }
+            return null;
         }
 
         /**

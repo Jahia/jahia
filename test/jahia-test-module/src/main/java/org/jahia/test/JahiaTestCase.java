@@ -139,6 +139,14 @@ public class JahiaTestCase {
     protected static void setSessionSite(JahiaSite site) {
     }
 
+    protected static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+    }
+
     private HttpClient client;
 
     protected String getAsText(String relativeUrl) throws IOException {
@@ -254,4 +262,5 @@ public class JahiaTestCase {
 
         return new PostResult(statusCode, statusLine, responseBody);
     }
+
 }

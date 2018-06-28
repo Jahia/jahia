@@ -50,4 +50,6 @@ package org.jahia.services.content;
  */
 public enum JCRNodeLockType {
     DELETION, UNKNOWN, USER, WORKFLOW;
+
+    public static String ALLOWS_ADD_SUFFIX = "-allows-add";
 }

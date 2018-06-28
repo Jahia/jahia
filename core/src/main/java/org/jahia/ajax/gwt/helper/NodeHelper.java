@@ -681,6 +681,10 @@ class NodeHelper {
                                         .toString().toLowerCase()));
                     }
                 }
+
+                if (infos.get(null) != null && infos.get(null).stream().allMatch(s->s.endsWith(JCRNodeLockType.ALLOWS_ADD_SUFFIX))) {
+                    n.setLockAllowsAdd(true);
+                }
             }
             n.setLockInfos(results);
             if (node.getSession().getLocale() != null) {

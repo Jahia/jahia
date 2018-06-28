@@ -145,7 +145,7 @@ public class NewContentActionItem extends BaseActionItem  {
                 }
             }
             setEnabled(isValidParent && !"".equals(n.getChildConstraints().trim())
-                    && !lh.isLocked()
+                    && (!lh.isLocked() || n.isLockAllowsAdd())
                     && hasPermission(JahiaGWTParameters.getSiteNode())
                     && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()));
         } else {

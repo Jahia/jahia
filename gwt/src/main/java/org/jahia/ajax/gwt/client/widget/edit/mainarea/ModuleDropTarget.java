@@ -94,7 +94,7 @@ public class ModuleDropTarget extends DropTarget {
     }
 
     private void showInsert(DNDEvent event, Element row, boolean before) {
-        if (PermissionsUtils.isPermitted("jcr:addChildNodes", module.getParentModule().getNode()) && !module.getParentModule().getNode().isLocked()) {
+        if (PermissionsUtils.isPermitted("jcr:addChildNodes", module.getParentModule().getNode()) && (!module.getParentModule().getNode().isLocked() || module.getParentModule().getNode().isLockAllowsAdd())) {
             Insert insert = Insert.get();
             insert.setVisible(true);
             // Set insert relative to main content
@@ -150,7 +150,7 @@ public class ModuleDropTarget extends DropTarget {
     protected void onDragEnter(DNDEvent e) {
         Module parentModule = module.getParentModule();
         final GWTJahiaNode jahiaNode = parentModule.getNode();
-        if (PermissionsUtils.isPermitted("jcr:addChildNodes", jahiaNode) && !jahiaNode.isLocked()) {
+        if (PermissionsUtils.isPermitted("jcr:addChildNodes", jahiaNode) &&  (!jahiaNode.isLocked() || jahiaNode.isLockAllowsAdd())) {
             String nodetypes = parentModule.getNodeTypes();
             if (targetType.equals(EditModeDNDListener.PLACEHOLDER_TYPE) &&
                     (module.getNodeTypes() != null) && (module.getNodeTypes().length() > 0)) {

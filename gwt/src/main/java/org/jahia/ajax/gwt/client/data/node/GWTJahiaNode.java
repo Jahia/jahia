@@ -78,6 +78,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String PATH = "path";
     public static final String ICON = "icon";
     public static final String LOCKED = "locked";
+    public static final String LOCK_ALLOWS_ADD = "lockAllowsAdd";
     public static final String LOCKABLE = "lockable";
     public static final String PERMISSIONS = "permissions";
     public static final String DELETEABLE = "deleteable";
@@ -136,7 +137,7 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final List<String> DEFAULT_SITEMAP_FIELDS = Arrays.asList("j:versionInfo", EDIT_MODE_BLOCKED);
 
     public static final List<String> RESERVED_FIELDS =
-            Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, PERMISSIONS, DELETEABLE, UUID, DISPLAY_NAME, FILE,
+            Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCK_ALLOWS_ADD, LOCKABLE, PERMISSIONS, DELETEABLE, UUID, DISPLAY_NAME, FILE,
                     SIZE, NODE_TYPES, INHERITED_NODE_TYPES, PROVIDER_KEY, PREVIEW, THUMBNAILS, SITE_UUID,
                     CURRENT_VERSION, VERSIONS, CHILDREN_INFO, COUNT, AVAILABLE_WORKKFLOWS, DEFAULT_LANGUAGE, HOMEPAGE_PATH,
                     LOCKS_INFO, VISIBILITY_INFO, PUBLICATION_INFO, PUBLICATION_INFOS, QUICK_PUBLICATION_INFO, WORKFLOW_INFO, WORKFLOW_INFOS, PRIMARY_TYPE_LABEL,
@@ -213,6 +214,14 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public Boolean isLocked() {
         return get(LOCKED) != null ? (Boolean) get(LOCKED) : false;
+    }
+
+    public void setLockAllowsAdd(Boolean locked) {
+        set(LOCK_ALLOWS_ADD, locked);
+    }
+
+    public Boolean isLockAllowsAdd() {
+        return get(LOCK_ALLOWS_ADD) != null ? (Boolean) get(LOCK_ALLOWS_ADD) : false;
     }
 
     public Map<String, List<String>> getLockInfos() {

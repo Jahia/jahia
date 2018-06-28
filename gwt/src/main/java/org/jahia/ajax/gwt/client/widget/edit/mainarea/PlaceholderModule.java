@@ -169,7 +169,7 @@ public class PlaceholderModule extends Module {
                     @Override
                     public void handleEvent(ComponentEvent be) {
                         final GWTJahiaNode parentNode = getParentModule().getNode();
-                        if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
+                        if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && (!parentNode.isLocked() || parentNode.isLockAllowsAdd())) {
                             String nodeName = null;
                             if ((path != null) && !"*".equals(path) && !path.startsWith("/")) {
                                 nodeName = path;
@@ -200,7 +200,7 @@ public class PlaceholderModule extends Module {
                 @Override
                 public void handleEvent(ComponentEvent be) {
                     GWTJahiaNode parentNode = getParentModule().getNode();
-                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
+                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && (!parentNode.isLocked() || parentNode.isLockAllowsAdd())) {
                         String nodeName = null;
                         if ((path != null) && !"*".equals(path) && !path.startsWith("/")) {
                             nodeName = path;
@@ -227,7 +227,7 @@ public class PlaceholderModule extends Module {
                 @Override
                 public void handleEvent(ComponentEvent be) {
                     GWTJahiaNode parentNode = getParentModule().getNode();
-                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
+                    if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && (!parentNode.isLocked() || parentNode.isLockAllowsAdd())) {
                         CopyPasteEngine.getInstance().pasteReference(parentNode, mainModule.getEditLinker());
                     }
                 }

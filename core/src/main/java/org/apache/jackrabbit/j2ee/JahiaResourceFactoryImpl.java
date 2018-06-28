@@ -64,13 +64,13 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -79,14 +79,15 @@ import java.util.stream.Collectors;
  * Custom resource factory
  */
 public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaResourceFactoryImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(JahiaResourceFactoryImpl.class);
+    private static Set<String> allowedNodeTypes;
     private final LockManager lockMgr;
-    private static Set<NodeType> allowedNodeTypes;
-    private static Set<String> allowedNodeTypesAsString = new HashSet<>();
 
     public JahiaResourceFactoryImpl(LockManager lockMgr, ResourceConfig resourceConfig) {
         super(lockMgr, resourceConfig);
         this.lockMgr=lockMgr;
+        // initialize allowed node types
+        getAllowedNodeTypes();
     }
 
     public DavResource createResource(DavResourceLocator locator, DavServletRequest request,
@@ -156,7 +157,7 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
                 final Item item = session.getItem(repoPath);
                 if (item instanceof Node) {
                     node = (Node) item;
-                    if (!isAllowed(((Node) item).getPrimaryNodeType().getName())) {
+                    if (!isAllowed(((Node) item).getPrimaryNodeType())) {
                         throw new AccessDeniedException("Access denied.");
                     }
                 } // else: item is a property -> return null
@@ -168,20 +169,24 @@ public class JahiaResourceFactoryImpl extends ResourceFactoryImpl {
     }
 
     /**
-     * check if the provided node type is allowed to be browsed by WebDav
+     * Check if the provided node type is allowed to be browsed by WebDAV.
      * @param nodetype to check
      * @return true if the nodeType is allowed, false in other cases
      */
-    public static boolean isAllowed(String nodetype) {
-        return allowedNodeTypesAsString.contains(nodetype) || getAllowedNodeTypes().stream().anyMatch(t -> t.isNodeType(nodetype) && allowedNodeTypesAsString.add(t.getName()));
+    public static boolean isAllowed(NodeType nodetype) {
+        return getAllowedNodeTypes().stream().anyMatch(t -> nodetype.isNodeType(t));
     }
 
-    private static Set<NodeType> getAllowedNodeTypes() {
+    private static Set<String> getAllowedNodeTypes() {
         if (allowedNodeTypes == null) {
-            String allowedNodeTypesStrList = SettingsBean.getInstance().getPropertiesFile().getProperty("repositoryAllowedNodeTypes", "rep:root,jnt:virtualsitesFolder,jnt:virtualsite,jnt:folder,jnt:file");
-            allowedNodeTypes = Arrays.stream(StringUtils.split(allowedNodeTypesStrList, ",")).map(nodeType -> {
+            String configuredTypes = SettingsBean.getInstance().getPropertiesFile().getProperty(
+                    "repositoryAllowedNodeTypes",
+                    "rep:root,jnt:virtualsitesFolder,jnt:virtualsite,jnt:folder,jnt:file");
+            allowedNodeTypes = Arrays.stream(StringUtils.split(configuredTypes, ", ")).map(nodeType -> {
                 try {
-                    return NodeTypeRegistry.getInstance().getNodeType(nodeType);
+                    // we verify that the node type is actually valid
+                    NodeTypeRegistry.getInstance().getNodeType(nodeType);
+                    return nodeType;
                 } catch (NoSuchNodeTypeException e) {
                     throw new JahiaRuntimeException("unable to resolve type [" + nodeType + "]", e);
                 }

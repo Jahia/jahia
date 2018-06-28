@@ -49,6 +49,7 @@ import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
 
 /**
  * WebDAV resource filter that disables directory listing completely if activated in <code>jahia.properties</code> or delegates to the
@@ -80,20 +81,20 @@ public class JahiaItemFilter extends DefaultItemFilter {
         if (directoryListingDisabled) {
             return true;
         }
-        String ntName = null;
+        NodeType nt = null;
         try {
             if (item.isNode()) {
-                ntName = ((Node) item).getPrimaryNodeType().getName();
+                nt = ((Node) item).getPrimaryNodeType();
             } else {
-                ntName = ((Property) item).getDefinition().getDeclaringNodeType().getName();
+                nt = ((Property) item).getDefinition().getDeclaringNodeType();
             }
         } catch (RepositoryException re) {
             logger.warn("Error filtering item " + item.toString(), re);
         }
-        if (ntName == null) {
+        if (nt == null) {
             return super.isFilteredItem(item);
         }
-        if (JahiaResourceFactoryImpl.isAllowed(ntName)) {
+        if (JahiaResourceFactoryImpl.isAllowed(nt)) {
             return super.isFilteredItem(item);
         }
         return true;

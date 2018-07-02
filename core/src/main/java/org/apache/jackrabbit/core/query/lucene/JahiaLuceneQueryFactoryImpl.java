@@ -707,6 +707,8 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             PropertyValue pv = (PropertyValue) left;
             if (pv.getPropertyName().equals("_PARENT")) {
                 return new JackrabbitTermQuery(new Term(FieldNames.PARENT, getValueString(evaluator.getValue(rigth), PropertyType.REFERENCE)));
+            } else if (pv.getPropertyName().equals(Constants.JCR_PRIMARYTYPE) || pv.getPropertyName().equals(Constants.JCR_MIXINTYPES)) {
+                return getPropertyValueQuery(npResolver.getJCRName(session.getQName(pv.getPropertyName())), operator, evaluator.getValue(rigth), PropertyType.NAME, transform);
             }
         }
         return super.getComparisonQuery(left, transform, operator, rigth, selectorMap);

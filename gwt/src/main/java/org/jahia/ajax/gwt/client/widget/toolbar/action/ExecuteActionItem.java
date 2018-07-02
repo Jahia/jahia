@@ -172,9 +172,11 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
         boolean enabled = lh.getMultipleSelection().size() > 0 && isNodeTypeAllowed(lh.getMultipleSelection());
         if (enabled && requiredNodeTypes != null && !requiredNodeTypes.isEmpty()) {
             for (GWTJahiaNode selected : lh.getMultipleSelection()) {
-                if (!selected.isNodeType(requiredNodeTypes)) {
-                    enabled = false;
-                    break;
+                for (String nodeType : requiredNodeTypes) {
+                    if (!selected.isNodeType(nodeType)) {
+                        enabled = false;
+                        break;
+                    }
                 }
             }
             

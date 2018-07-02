@@ -74,7 +74,6 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
@@ -86,6 +85,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.HTMLElementName;
+import net.htmlparser.jericho.Source;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -220,12 +223,18 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
     public void testPrecompileJsps() throws IOException {
         HttpClient client = new HttpClient();
         client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("jahia", "password"));
-        String url = getPrecompileServletURL() + "?compile_type=all&jsp_precompile=true";
-        logger.info("Starting the precompileServlet with the following url: " + url);
-        GetMethod get = new GetMethod(url);
+        GetMethod get = new GetMethod(getPrecompileServletURL());
         try {
             get.setDoAuthentication(true);
             int statusCode = client.executeMethod(get);
+            Assert.assertEquals("Precompile servlet failed", HttpStatus.SC_OK, statusCode);
+            
+            Source source = new Source(get.getResponseBodyAsString());
+            Element aElement = source.getFirstElement(HTMLElementName.A);
+            String url = getBaseServerURL() + aElement.getAttributeValue("href");
+            logger.info("Starting the precompileServlet with the following url: " + url);
+            get = new GetMethod(url);
+            statusCode = client.executeMethod(get);
             Assert.assertEquals("Precompile servlet failed", HttpStatus.SC_OK, statusCode);
             Assert.assertThat("Precompilation found buggy JSPs", get.getResponseBodyAsString(), containsString("No problems found!"));
             Assert.assertEquals("There were errors during the precompile process", "", toText(logEventCollector.getCollectedEvents()));

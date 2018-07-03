@@ -146,6 +146,7 @@ when we flush this entry we will flush the whole cache
 
     <bean id="abstractFlushCacheOnNodeBackgroundAction" class="org.jahia.services.content.rules.FlushCacheOnNodeBackgroundAction" abstract="true">
         <property name="cacheProvider" ref="ModuleCacheProvider"/>
+        <property name="urlResolverFactory" ref="urlResolverFactory"/>
     </bean>
 
     <bean id="cacheReferencesFilter" class="org.jahia.services.render.filter.cache.ReferencesToDependenciesFilter">

@@ -48,6 +48,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.files.FileCacheManager;
+import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,7 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
 
     private FileCacheManager fileCacheManager;
     private ModuleCacheProvider cacheProvider;
+    private URLResolverFactory urlResolverFactory;
 
     private int startLevel;
 
@@ -80,6 +82,10 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
 
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {
         this.cacheProvider = cacheProvider;
+    }
+
+    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
+        this.urlResolverFactory = urlResolverFactory;
     }
 
     public void executeBackgroundAction(JCRNodeWrapper node) {
@@ -106,6 +112,10 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
                     if (log) {
                         logger.debug("Flushed regexp dependencies for node {}", path);
                     }
+                    urlResolverFactory.flushCaches(path);
+                    if (log) {
+                        logger.debug("Flushed url resolver cache for node {}", path);
+                    }
                 }
                 currentNode = currentNode.getParent();
             }
@@ -122,6 +132,10 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
                     cacheProvider.flushRegexpDependenciesOfPath(currentNodePath, true);
                     if (log) {
                         logger.debug("Flushed regexp dependencies for node {}", currentNodePath);
+                    }
+                    urlResolverFactory.flushCaches(currentNodePath);
+                    if (log) {
+                        logger.debug("Flushed url resolver cache for node {}", currentNodePath);
                     }
                 }
                 currentNodePath = StringUtils.substringBeforeLast(currentNodePath,"/");

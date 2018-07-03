@@ -61,11 +61,10 @@ import org.ops4j.pax.url.mvn.MavenResolver;
 import org.ops4j.pax.url.mvn.ServiceConstants;
 import org.ops4j.pax.url.mvn.internal.AetherBasedResolver;
 import org.ops4j.pax.url.mvn.internal.config.MavenConfigurationImpl;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
-
-import com.sun.star.uno.RuntimeException;
 
 import shaded.org.apache.maven.settings.Profile;
 import shaded.org.apache.maven.settings.Repository;
@@ -75,7 +74,7 @@ import shaded.org.ops4j.util.property.PropertiesPropertyResolver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -192,16 +191,21 @@ public class ModuleTestHelper {
         }
     }
 
-    public static void ensurePrepackagedSiteExist(String prepackedZIPFile) {
+    public static String ensurePrepackagedSiteExist(String prepackedZIPFile) {
         if (prepackedZIPFile == null) {
-            return;
+            return null;
         }
         File prepackagedSiteFile = prepackedZIPFile.startsWith("prepackagedSites/")
                 ? new File(SettingsBean.getInstance().getJahiaVarDiskPath(), prepackedZIPFile)
                 : new File(prepackedZIPFile);
         if (prepackagedSiteFile.exists()) {
             // the prepackaged site ZIP is already present
-            return;
+            return prepackagedSiteFile.getAbsolutePath();
+        } else {
+            String bundleInfo = getPrepackagedSiteInBundle(prepackedZIPFile);
+            if (bundleInfo != null) {
+                return bundleInfo;
+            }
         }
 
         String artifactId = StringUtils.substringBefore(StringUtils.substringAfter(prepackedZIPFile, "/"), ".zip");
@@ -225,5 +229,20 @@ public class ModuleTestHelper {
         } catch (IOException e) {
             throw new RuntimeException("Unable to resolve maven artifact for module " + info);
         }
+        return prepackagedSiteFile.getAbsolutePath();
+    }
+    
+    private static String getPrepackagedSiteInBundle(String prepackedZIPFile) {
+        for (final JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getAvailableTemplatePackages()) {
+            final Bundle bundle = aPackage.getBundle();
+            if (bundle != null) {
+                URL url = bundle.getEntry("META-INF/prepackagedSites/" + prepackedZIPFile);
+                if (url != null) {
+                    return url + "#" + bundle.getSymbolicName();
+                }
+            }
+        }
+        return null;
     }
 }

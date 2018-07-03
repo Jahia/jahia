@@ -45,7 +45,9 @@ package org.jahia.test;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.osgi.BundleResource;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -74,6 +76,7 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 import java.io.*;
+import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -106,7 +109,6 @@ public class TestHelper {
         return createSite(info, null, null);
     }
 
-    @SuppressWarnings("resource")
     public static JahiaSite createSite(SiteCreationInfo info, String prepackedZIPFile, String siteZIPName) throws Exception {
         populateDefaults(info);
 
@@ -114,56 +116,18 @@ public class TestHelper {
 
         JahiaSite site = null;
         File siteZIPFile = null;
-        File sharedZIPFile = null;
         try {
             if (!StringUtils.isEmpty(prepackedZIPFile)) {
-                ModuleTestHelper.ensurePrepackagedSiteExist(prepackedZIPFile);
-
-                NoCloseZipInputStream zis = null;
-                try {
-                    zis = new NoCloseZipInputStream(new FileInputStream(prepackedZIPFile.startsWith("prepackagedSites/")
-                            ? new File(SettingsBean.getInstance().getJahiaVarDiskPath(), prepackedZIPFile)
-                            : new File(prepackedZIPFile)));
-                    ZipEntry z = null;
-                    while ((z = zis.getNextEntry()) != null) {
-                        boolean isUsersZip = ImportExportBaseService.USERS_ZIP.equals(z.getName());
-                        if (isUsersZip || siteZIPName.equalsIgnoreCase(z.getName())) {
-                            File zipFile = File.createTempFile("import", ".zip");
-                            FileUtils.copyInputStreamToFile(zis, zipFile);;
-                            if (isUsersZip) {
-                                sharedZIPFile = zipFile;
-                            } else {
-                                siteZIPFile = zipFile;
-                            }
-                        }
+                String prepackedZipFileOrBundle = ModuleTestHelper.ensurePrepackagedSiteExist(prepackedZIPFile);
+                siteZIPFile = importSharedAndGetSiteZipFileOfPrepackagedSite(prepackedZipFileOrBundle, siteZIPName);
+                if (siteZIPFile != null) {
+                    info.setFirstImport("fileImport");
+                    info.setFileImport(new FileSystemResource(siteZIPFile));
+                    List<String> modulesToInstall = readInstalledModules(siteZIPFile);
+                    Collections.reverse(modulesToInstall);
+                    for (String module : modulesToInstall) {
+                        ModuleTestHelper.ensureModuleStarted(module);
                     }
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                } finally {
-                    if (zis != null) {
-                        try {
-                            zis.reallyClose();
-                        } catch (IOException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                }
-            }
-            if (sharedZIPFile != null) {
-                try {
-                    ImportExportBaseService.getInstance().importSiteZip(new FileSystemResource(sharedZIPFile), null, null);
-                } catch (RepositoryException e) {
-                    logger.warn("shared.zip could not be imported", e);
-                }
-            }
-
-            if (siteZIPFile != null) {
-                info.setFirstImport("fileImport");
-                info.setFileImport(new FileSystemResource(siteZIPFile));
-                List<String> modulesToInstall = readInstalledModules(siteZIPFile);
-                Collections.reverse(modulesToInstall);
-                for (String module : modulesToInstall) {
-                    ModuleTestHelper.ensureModuleStarted(module);
                 }
             }
 
@@ -174,11 +138,60 @@ public class TestHelper {
             site = service.addSite(info);
             site = service.getSiteByKey(info.getSiteKey());
         } finally {
-            FileUtils.deleteQuietly(sharedZIPFile);
             FileUtils.deleteQuietly(siteZIPFile);
         }
-
         return site;
+    }
+    
+    private static File importSharedAndGetSiteZipFileOfPrepackagedSite(String prepackedZipFileOrBundle, String siteZIPName) {
+        File siteZIPFile = null;
+        File sharedZIPFile = null;
+        NoCloseZipInputStream zis = null;
+        try {
+            zis = new NoCloseZipInputStream(getPrepackedSiteInputStream(prepackedZipFileOrBundle));
+            ZipEntry z = null;
+            while ((z = zis.getNextEntry()) != null) {
+                boolean isUsersZip = ImportExportBaseService.USERS_ZIP.equals(z.getName());
+                if (isUsersZip || siteZIPName.equalsIgnoreCase(z.getName())) {
+                    File zipFile = File.createTempFile("import", ".zip");
+                    FileUtils.copyInputStreamToFile(zis, zipFile);
+                    if (isUsersZip) {
+                        sharedZIPFile = zipFile;
+                    } else {
+                        siteZIPFile = zipFile;
+                    }
+                }
+            }
+            if (sharedZIPFile != null) {
+                ImportExportBaseService.getInstance().importSiteZip(new FileSystemResource(sharedZIPFile), null, null);
+            }
+        } catch (RepositoryException e) {
+            logger.warn("shared.zip could not be imported", e);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            if (zis != null) {
+                try {
+                    zis.reallyClose();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+
+            FileUtils.deleteQuietly(sharedZIPFile);
+        }
+        return siteZIPFile;
+    }
+    
+    private static InputStream getPrepackedSiteInputStream(String prepackedZipFileOrBundle) throws IOException {
+        if (StringUtils.startsWith(prepackedZipFileOrBundle, "bundle")) {
+            String[] bundleInfos = StringUtils.split(prepackedZipFileOrBundle, "#");
+            BundleResource resource = new BundleResource(new URL(bundleInfos[0]),
+                    ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(bundleInfos[1]).getBundle());
+            return new BufferedInputStream(resource.getInputStream());
+        } else {
+            return new FileInputStream(new File(prepackedZipFileOrBundle));
+        }
     }
 
     private static List<String> readInstalledModules(File siteZipFile) throws IOException {
@@ -191,25 +204,23 @@ public class TestHelper {
         try {
             while ((z = zis2.getNextEntry()) != null) {
                 try {
-                    if (ImportExportBaseService.SITE_PROPERTIES.equals(z.getName())) {
-                        Properties p = new Properties();
-                        p.load(zis2);
-                        Map<Integer, String> im = new TreeMap<>();
-                        for (Object k : p.keySet()) {
-                            String key = String.valueOf(k);
-                            if (key.startsWith("installedModules.")) {
-                                try {
-                                    im.put(Integer.valueOf(StringUtils
-                                                    .substringAfter(key, ".")),
-                                                    p.getProperty(key));
-                                } catch (NumberFormatException e) {
-                                    logger.warn("Unable to parse installed module from key {}",
-                                                    key);
-                                }
-                            }
-                        }
-                        modules.addAll(im.values());
+                    if (!ImportExportBaseService.SITE_PROPERTIES.equals(z.getName())) {
+                        continue;
                     }
+                    Properties p = new Properties();
+                    p.load(zis2);
+                    Map<Integer, String> im = new TreeMap<>();
+                    for (Object k : p.keySet()) {
+                        String key = String.valueOf(k);
+                        if (!key.startsWith("installedModules.")) {
+                            continue;
+                        }
+                        String version = StringUtils.substringAfter(key, ".");
+                        if (NumberUtils.isNumber(version)) {
+                            im.put(Integer.valueOf(version), p.getProperty(key));
+                        }
+                    }
+                    modules.addAll(im.values());
                 } finally {
                     zis2.closeEntry();
                 }

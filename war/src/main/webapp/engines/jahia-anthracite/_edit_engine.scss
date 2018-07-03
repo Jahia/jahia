@@ -69,6 +69,15 @@
 /* TEST CODE END */
 
 
+// Comparaison panel open from edit engine
+body[data-indigo-edit-engine="open"] {
+	div.compare-engine.x-window-maximized {
+		z-index: 1032 !important;
+	}
+}
+
+
+
 .engine-panel:not(.trashboardengine-ctn),
 div.engine-window {
 

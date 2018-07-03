@@ -693,7 +693,14 @@ body[indigo-dragging-panel] {
 		opacity: 0.8;
 
 		// Default
-		background-image: url(./images/tabs-pages-dark@X2.png);
+		//background-image: url(./images/tabs-pages-dark@X2.png);
+		&:not([src$="/jnt_page.png"]):not([src$="/jnt_virtualsite.png"]):not([src$="/jnt_nodeLink.png"]):not([src$="/jnt_externalLink.png"]):not([src$="/jnt_navMenuText.png"]) {
+			width: 16px !important;
+			height: 16px !important;
+			padding-left: 0;
+			opacity: 1;
+			padding-top: 0;
+		}
 
 
 		&[src$="/jnt_page.png"] {
@@ -744,7 +751,7 @@ body[indigo-dragging-panel] {
 			}
 
 			// Default
-			background-image: url(./images/tabs-pages-white@X2.png);
+			//background-image: url(./images/tabs-pages-white@X2.png);
 		}
 	}
 

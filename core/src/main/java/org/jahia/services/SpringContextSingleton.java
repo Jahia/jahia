@@ -187,8 +187,10 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         found.putAll(SpringContextSingleton.getInstance().getContext().getBeansOfType(type));
         for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService()
                 .getAvailableTemplatePackages()) {
-            if (aPackage.getContext() != null) {
-                found.putAll(aPackage.getContext().getBeansOfType(type));
+            @SuppressWarnings("resource")
+            AbstractApplicationContext ctx = aPackage.getContext();
+            if (ctx != null && ctx.isActive()) {
+                found.putAll(ctx.getBeansOfType(type));
             }
         }
         return found;
@@ -198,7 +200,8 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
      * Returns a map with beans of the specified type
      * If applicationContext is root context, only look in this context
      * Otherwise, lookup in all modules context.
-     *
+     * 
+     * @param applicationContext the context to look for bean classes in 
      * @param clazz the bean type to search for
      * @return a map with beans of the specified type
      * @throws BeansException in case of a lookup error

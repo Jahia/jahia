@@ -766,17 +766,12 @@ public class Activator implements BundleActivator {
                     jahiaTemplatesPackage.doExecuteAfterContextInitialized(new JahiaTemplatesPackage.ContextInitializedCallback() {
                         @Override
                         public void execute(AbstractApplicationContext context) {
-                            try {
-                                scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
-                            }  catch (Exception e) {
-                                logger.error("--- Error parsing rules for DX OSGi bundle " + jahiaTemplatesPackage.getId() + " v" + jahiaTemplatesPackage.getVersion(), e);
-                                setModuleState(bundle, ModuleState.State.ERROR_WITH_RULES, e);
-                            }
+                            registerRules(bundle, jahiaTemplatesPackage, scannerAndObserver, foundURLs);
                             return;
                         }
                     });
                 } else {
-                    scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+                    registerRules(bundle, jahiaTemplatesPackage, scannerAndObserver, foundURLs);
                 }
             }
         }
@@ -815,10 +810,12 @@ public class Activator implements BundleActivator {
 
         logger.info("--- Finished starting DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
 
-       if (hasSpringFile) {
+        if (hasSpringFile) {
             setModuleState(bundle, ModuleState.State.SPRING_STARTING, errorMessage);
             try {
-                final AbstractApplicationContext contextToStartForModule = BundleUtils.getContextToStartForModule(bundle);
+                @SuppressWarnings("resource")
+                final AbstractApplicationContext contextToStartForModule = BundleUtils
+                        .getContextToStartForModule(bundle);
                 if (contextToStartForModule != null) {
                     contextToStartForModule.refresh();
                 }
@@ -826,10 +823,23 @@ public class Activator implements BundleActivator {
                 logger.error("Unable to create application context for [" + bundle.getSymbolicName() + "]", e);
             }
         } else {
-            setModuleState(bundle, ModuleState.State.STARTED, errorMessage);
+            if (getModuleState(bundle).getState() != ModuleState.State.ERROR_WITH_RULES) {
+                setModuleState(bundle, ModuleState.State.STARTED, errorMessage);
+            }
         }
 
         flushOutputCachesForModule(jahiaTemplatesPackage);
+    }
+
+    private void registerRules(final Bundle bundle, final JahiaTemplatesPackage jahiaTemplatesPackage,
+            final Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver,
+            final List<URL> foundURLs) {
+        try {
+            scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
+        }  catch (Exception e) {
+            logger.error("--- Error parsing rules for DX OSGi bundle " + jahiaTemplatesPackage.getId() + " v" + jahiaTemplatesPackage.getVersion(), e);
+            setModuleState(bundle, ModuleState.State.ERROR_WITH_RULES, e);
+        }
     }
 
     private boolean checkImported(final JahiaTemplatesPackage jahiaTemplatesPackage) {
@@ -922,7 +932,7 @@ public class Activator implements BundleActivator {
     }
 
     private static boolean isInvalid(ModuleState.State moduleState) {
-        return moduleState == ModuleState.State.ERROR_WITH_DEFINITIONS || moduleState == ModuleState.State.ERROR_WITH_RULES || moduleState == ModuleState.State.INCOMPATIBLE_VERSION;
+        return moduleState == ModuleState.State.ERROR_WITH_DEFINITIONS || moduleState == ModuleState.State.INCOMPATIBLE_VERSION;
     }
 
     private void flushOutputCachesForModule(final JahiaTemplatesPackage pkg) {

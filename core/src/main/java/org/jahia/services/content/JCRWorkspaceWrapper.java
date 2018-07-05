@@ -188,7 +188,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                 source = source.substring(provider.getMountPoint().length());
             }
             final String sourcePath = source;
-            Node sourceNode = session.getProviderSession(provider).getNode(source);
+            JCRNodeWrapper sourceNode = session.getNode(source);
             if (sourceNode.isNodeType("jmix:shareable")) {
                 final String destination = dest;
                 final JCRCallback<Object> callback = new JCRCallback<Object>() {
@@ -252,6 +252,15 @@ public class JCRWorkspaceWrapper implements Workspace {
                     }
                 }
             } else {
+                JCRNodeWrapper parent = null;
+                try {
+                    parent = sourceNode.getParent();
+                } catch (ItemNotFoundException e) {
+                    // do nothing, in some cases parent is not readable because of validity checks (published, languages, workspace, etc .)
+                }
+                if (parent != null) {
+                    JCRLockUtils.checkLock(parent, false, true);
+                }
                 if (sessionMove) {
                     session.getProviderSession(provider).move(source, dest);
                 } else {

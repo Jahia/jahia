@@ -286,7 +286,7 @@ public class ModuleDeploymentTest {
             FileUtils.copyInputStreamToFile(stream,  tmpFile);
             Map<String, String> env = new HashMap<>();
             env.put("create", "true");
-            FileSystem fs = FileSystems.newFileSystem(URI.create("jar:file:" + tmpFile.getAbsolutePath()), env);
+            FileSystem fs = FileSystems.newFileSystem(URI.create("jar:" + tmpFile.toURI().toURL()), env);
             File droolsFile = File.createTempFile("rules", ".drl");
             FileUtils.writeStringToFile(droolsFile, "dummy text");
             Files.copy(droolsFile.toPath(), fs.getPath("/META-INF/rules.drl"), StandardCopyOption.REPLACE_EXISTING);

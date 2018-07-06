@@ -371,6 +371,7 @@
 
                             </bean>
                             <ref bean="Toolbar.Item.ShowTrashboard"/>
+                            <ref bean="Toolbar.Item.WorkInProgress"/>
                             <ref bean="Toolbar.Item.WorkInProgressAdmin"/>
                             <ref bean="Toolbar.Item.ClipBoard"/>
                         </list>

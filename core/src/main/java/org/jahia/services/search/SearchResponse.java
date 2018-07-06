@@ -83,6 +83,10 @@ public class SearchResponse {
         public String getValueAsString() {
             return valueAsString;
         }
+        
+        public boolean isValueEmpty() {
+            return StringUtils.isEmpty(valueAsString);
+        }
     }
 
     /**
@@ -138,6 +142,22 @@ public class SearchResponse {
             return facets;
         }
 
+        /**
+         * Checks that the faceted result is empty, i.e. either it has no facets or all facets have empty values.
+         * 
+         * @return <code>true</code> if the faceted result is considered as empty; <code>false</code> otherwise
+         */
+        public boolean isResultEmpty() {
+            if (facets != null) {
+                for (Facet f : facets) {
+                    if (!f.isValueEmpty()) {
+                        // at least one facet value is not empty
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
     }
 
     private List<Hit<?>> results = Collections.emptyList();

@@ -112,7 +112,7 @@ public class SearchCriteriaFactory {
         CONVERTER_UTILS_BEAN.register(ENUM_CONVERTER, Ordering.Order.class);        
         
         ArrayConverter converter = new ArrayConverter(String[].class, new StringConverter());
-        converter.setAllowedChars(new char[] {'.', '-', '_', ':'});
+        converter.setAllowedChars(new char[] {'.', '-', '_', ':', ' '});
         CONVERTER_UTILS_BEAN.register(converter, String[].class);
     }
 

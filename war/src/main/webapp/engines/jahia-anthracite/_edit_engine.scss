@@ -3146,6 +3146,12 @@ div.engine-window {
 	}
 }
 
+// Fix size of User select Modal
+.user-group-select .x-window-body .x-panel-body .x-grid3-body {
+    max-height: 280px;
+}
+
+
 .indigo-search-component {
 
 

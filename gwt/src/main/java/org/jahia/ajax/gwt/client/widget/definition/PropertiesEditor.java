@@ -370,7 +370,7 @@ public class PropertiesEditor extends FormPanel {
                     }
                 }
 
-                final PropertyAdapterField adapterField = new PropertyAdapterField(field, definition, gwtJahiaNodeProperty);
+                final PropertyAdapterField adapterField = new PropertyAdapterField(field, definition, gwtJahiaNodeProperty, remoteField);
                 adapterField.setWidth("98%");
                 adapterField.setStyleAttribute("padding-left", "0");
                 if (definition.isInternationalized()) {
@@ -485,7 +485,7 @@ public class PropertiesEditor extends FormPanel {
     }
 
     @SuppressWarnings("unchecked")
-    private void setExternalMixin(PropertyAdapterField c, boolean b) {
+    public void setExternalMixin(PropertyAdapterField c, boolean b) {
         String addMixin = null;
         if (c.getValue() != null) {
             addMixin = ((ComboBox<GWTJahiaValueDisplayBean>)c.getField()).getValue().get("addMixin");
@@ -710,7 +710,7 @@ public class PropertiesEditor extends FormPanel {
         return new GWTJahiaNodePropertyValue(propValueString, requiredType);
     }
 
-    public void copyToAllLanguages(GWTJahiaNodeProperty prop) {
+    public void copyToAllLanguages(GWTJahiaNodeProperty prop, Field<?> remoteField) {
 
     }
 
@@ -767,9 +767,11 @@ public class PropertiesEditor extends FormPanel {
         private boolean dirty = false;
         private GWTJahiaItemDefinition definition;
         private LayoutContainer panel;
+        private Field<?> remoteAdapterField;
 
-        public PropertyAdapterField(final Field<?> field, final GWTJahiaItemDefinition definition, final GWTJahiaNodeProperty property) {
+        public PropertyAdapterField(final Field<?> field, final GWTJahiaItemDefinition definition, final GWTJahiaNodeProperty property, final Field<?> remoteAdapterField) {
             super(new LayoutContainer());
+            this.remoteAdapterField = remoteAdapterField;
             panel = (LayoutContainer) getWidget();
 
             if (isMultipleEdit && !definition.isProtected()) {
@@ -816,7 +818,7 @@ public class PropertiesEditor extends FormPanel {
                                     new Listener<MessageBoxEvent>() {
                                         @Override public void handleEvent(MessageBoxEvent be) {
                                             if (Dialog.YES.equalsIgnoreCase(be.getButtonClicked().getItemId())) {
-                                                copyToAllLanguages(prop2);
+                                                copyToAllLanguages(prop2, remoteAdapterField);
                                                 Info.display(Messages.get("label.translate.copyall", "Copy to all languages"),
                                                         Messages.get("label.translate.copyall.done"));
                                             }

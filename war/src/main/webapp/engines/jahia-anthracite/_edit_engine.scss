@@ -4063,3 +4063,8 @@ img.invalid-icon {
 
 
 }
+
+// Hidde disabled buttons if content is locked
+body[data-indigo-edit-engine-locked="true"] .JahiaEditEngineButtonBar button[aria-disabled="true"] {
+    display: none;
+}

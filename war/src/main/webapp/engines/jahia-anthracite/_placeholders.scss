@@ -450,23 +450,26 @@
         position: absolute;
         top: 14px;
         left: 30px;
-        text-transform: uppercase;
+        // text-transform: uppercase;
 
-    	@include text(11px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
+    	@include text(18px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
     }
 
     // FIELDSET
     %CSS_BLOCK--FIELDSET {
-        border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
-        padding: 43px 20px 20px 29px !important;
-        margin: 0 23px 10px 0 !important;
+        border: none!important;
+        padding: 43px 10px 20px 39px !important;
+        margin: 0 23px 0px 0 !important;
         position: relative;
-        background: _property($FIELDSET--BG, $EDIT-ENGINE);
+        // background: _property($FIELDSET--BG, $EDIT-ENGINE);
         box-sizing: border-box;
+		border-bottom: 1px solid #c4c0c0!important;
 
 		&.x-panel-collapsed {
             background: transparent;
-			border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
+			// border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
+			border-bottom: 1px solid #c4c0c0!important;
+		    padding-bottom: 10px!important;
 
 		}
     }
@@ -484,10 +487,10 @@
 	%CSS_BLOCK--FORM--LABEL {
         padding: 0!important;
         margin: 0!important;
-        text-transform: uppercase;
+        // text-transform: uppercase;
         line-height: 24px;
 
-        @include text(10px, _property($LABEL--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD, $DEFAULT--FONT--FAMILY !important);
+        @include text(13px, _property($LABEL--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
     }
 
     // TOGGLE
@@ -1498,7 +1501,7 @@
 
 	// ACTION BAR
 				%CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR {
-					padding: 10px 20px!important;
+					padding: 8px 15px!important;
 			        background: _property($ACTION-DEFAULT--BG, $APP) !important;
 			    	@include text(14px, _property($ACTION-DEFAULT--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
 			    }
@@ -1510,7 +1513,7 @@
 			    }
 
 				%CSS_BLOCK--BUTTON--ICON\:ACTIONBAR {
-					padding: 10px 20px!important;
+					padding: 8px 15px!important;
 					background: _property($ACTION-DEFAULT--BG, $APP) !important;
 					@include text(14px, _property($ACTION-DEFAULT--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
 
@@ -1546,7 +1549,7 @@
 
     // ACTION BAR ::: SUGGESTED
     %CSS_BLOCK--BUTTON--TEXT\:ACTIONBAR---SUGGESTED {
-        padding: 10px 20px!important;
+        padding: 8px 15px!important;
         text-transform: none!important;
         background: _property($ACTION-SUGGESTED--BG, $APP) !important;
         @include text(14px, _property($ACTION-SUGGESTED--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
@@ -1559,7 +1562,7 @@
 
     %CSS_BLOCK--BUTTON--ICON\:ACTIONBAR---SUGGESTED {
         text-transform: none!important;
-        padding: 10px 20px!important;
+        padding: 8px 15px!important;
         background: _property($ACTION-SUGGESTED--BG, $APP) !important;
         @include text(14px, _property($ACTION-SUGGESTED--COLOR, $APP) !important, $FONT--WEIGHT---EXTRALIGHT);
     }
@@ -1702,11 +1705,11 @@
     }
 
     %CSS_BLOCK--TREE--ROW--BG---SELECTED {
-        background-color: _property($ROW--BG---SELECTED, $SIDE-PANEL)!important;
+        background-color: #007cb0!important;
     }
 
     %CSS_BLOCK--TREE--ROW--BG---SELECTED_HOVER {
-        background: _property($ROW--BG---SELECTED-HOVER, $SIDE-PANEL)!important;
+        background: #007cb0!important;
     }
 
 
@@ -1724,6 +1727,7 @@
 
     %CSS_BLOCK--TREE--ROW--BG---SELECTED\:SETTINGS {
         background-color: transparent !important;
+		background: linear-gradient(to left, rgba(0, 124, 176, 0.86) 1%, #007cb0 100%) left center !important;
         // border-left: 3px solid #f26d4f!important;
         // margin-left: -1px;
     }
@@ -1873,21 +1877,21 @@
 
     // TAB BUTTONS
     %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON {
-    	padding: 5px 0 5px 5px;
+    	padding: 5px 0 5px 8px;
 
-    	@include text(14px, _property($TAB--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---NORMAL);
+    	@include text(14px, _property($TAB--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
     }
 
     %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---SELECTED {
-    	@include text(14px, _property($TAB--COLOR---SELECTED, $EDIT-ENGINE) !important, $FONT--WEIGHT---NORMAL);
+    	@include text(14px, _property($TAB--COLOR---SELECTED, $EDIT-ENGINE) !important, $FONT--WEIGHT---LIGHT);
     }
 
     %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER {
-    	@include text(14px, _property($TAB--COLOR---HOVER, $EDIT-ENGINE) !important, $FONT--WEIGHT---NORMAL);
+    	@include text(14px, _property($TAB--COLOR---HOVER, $EDIT-ENGINE) !important, $FONT--WEIGHT---LIGHT);
     }
 
     %CSS_BLOCK--EDIT_ENGINE--TAB_BUTTON---HOVER_SELECTED {
-    	@include text(14px, _property($TAB--COLOR---SELECTED-HOVER, $EDIT-ENGINE) !important, $FONT--WEIGHT---NORMAL);
+    	@include text(14px, _property($TAB--COLOR---SELECTED-HOVER, $EDIT-ENGINE) !important, $FONT--WEIGHT---LIGHT);
     }
 
 

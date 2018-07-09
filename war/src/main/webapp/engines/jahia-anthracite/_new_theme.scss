@@ -57,10 +57,12 @@ $CONTRIBUTE: 			LIGHT;
 /****************************/
 
 // DEFAULT ANTRACITE GREY
-$color-primary:			rgb(92, 97, 100); 		// #5c6164 (GREY)
+// $color-primary:			rgb(92, 97, 100); 	// #5c6164 (GREY)
+$color-primary:			#363636; 				// #363636 (NEW GREY)
 $color-secondary:		rgb(250, 250, 250); 	// #FAFAFA (WHITE)
 $color-tertiary:		rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE) - action colors
-$color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE) - secondary buttons
+// $color-quaternary:		rgb(242, 109, 79); 		// #f26d4f (ORANGE) - secondary buttons
+$color-quaternary:		#E67D3A; 				// #E67D3A (ORANGE) - secondary buttons  #E67D3A
 $color-quinary:			rgb(0, 160, 227); 		// #00a0e3 (JAHIA BLUE) - highlight color, menu color, hamburger
 $color-senary:			rgb(250, 250, 250); 	// #FAFAFA (WHITE)
 $color-septenary: 		rgb(217,217,62);		// Yellow
@@ -254,7 +256,7 @@ $SCROLL--SHUTTLE---HOVER:(
 
 $BODY--BG:(
 	LIGHT: radial-gradient(ellipse at bottom right, darken(_theme-color(secondary), 4%) 0%, _theme-color(secondary) 50%),
-	DARK: radial-gradient(ellipse at bottom right, darken(_theme-color(primary), 10%) 0%, _theme-color(primary) 70%),
+	DARK: linear-gradient(to bottom, #585757 1%, #4c4b4b 100%),
 );
 
 $BODY--BG--SHADOW:(
@@ -1151,8 +1153,8 @@ $ROW--BG---HOVER:(
 
 // SELECTED
 $ROW--COLOR---SELECTED:(
-	LIGHT: _theme-color(secondary),
-	DARK: _theme-color(secondary),
+	LIGHT: #FCFCFC,
+	DARK: #FCFCFC,
 );
 
 $ROW--BG---SELECTED:(
@@ -1256,8 +1258,8 @@ $PARAGRAPH--COLOR:(
 /****************************/
 
 $LABEL--COLOR:(
-	LIGHT: _theme-color(secondary, e),
-	DARK: _theme-color(primary, e),
+	LIGHT: #5C5C5C,
+	DARK: #5C5C5C,
 );
 
 
@@ -1422,13 +1424,13 @@ $ACTION-DEFAULT--SHADOW---HOVER:(
 
 // SUGGESTED UP
 $ACTION-SUGGESTED--COLOR:(
-	LIGHT: _theme-color(secondary),
-	DARK: _theme-color(secondary),
+	LIGHT: #FCFCFC,
+	DARK: #FCFCFC,
 );
 
 $ACTION-SUGGESTED--BG:(
-	LIGHT: _theme-color(tertiary),
-	DARK: _theme-color(tertiary),
+	LIGHT: #007cb0,
+	DARK: #007cb0,
 );
 
 $ACTION-SUGGESTED--SHADOW:(
@@ -1510,8 +1512,8 @@ $TAB--BAR---HOVER:(
 );
 
 $TAB--COLOR---HOVER:(
-	LIGHT: _theme-color(quinary),
-	DARK: _theme-color(secondary),
+	LIGHT: #007cb0,
+	DARK: #007cb0,
 );
 
 // SELECTED
@@ -1521,8 +1523,8 @@ $TAB--BAR---SELECTED:(
 );
 
 $TAB--COLOR---SELECTED:(
-	LIGHT: _theme-color(quinary),
-	DARK: _theme-color(secondary),
+	LIGHT: #FCFCFC,
+	DARK: #FCFCFC,
 );
 
 // SELECTED HOVER
@@ -1532,8 +1534,8 @@ $TAB--BAR---SELECTED-HOVER:(
 );
 
 $TAB--COLOR---SELECTED-HOVER:(
-	LIGHT: _theme-color(quinary),
-	DARK: _theme-color(secondary),
+	LIGHT: #FCFCFC,
+	DARK: #FCFCFC,
 );
 
 

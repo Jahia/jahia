@@ -873,6 +873,12 @@ fieldset {
 
 	@extend %CSS_BLOCK--FIELDSET;
 
+	.x-form-label-left {
+		// border-left: 1px solid #bababa;
+		// padding-left: 10px;
+		// padding-bottom: 1px;
+	}
+
 }
 
 label {
@@ -1592,7 +1598,7 @@ form,
 				&::after {
 					background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED);
 					opacity: 1;
-					background-color: _property($ROW--BG---SELECTED, $SIDE-PANEL)!important;
+					background-color: #007cb0 !important;
 
 				}
 			}
@@ -1628,7 +1634,7 @@ form,
 
 					&::after {
 						background-image: url($TREE--MORE_OPTIONS--ICON---SELECTED_HOVER);
-						background-color: _property($ROW--BG---SELECTED-HOVER, $SIDE-PANEL)!important;
+						background-color: #007cb0 !important;
 					}
 				}
 			}
@@ -1710,7 +1716,7 @@ form,
 		body[data-edit-window-style="settings"] &,
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
-			@include text(14px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---EXTRALIGHT !important);
+			@include text(13px !important, _property($ROW--COLOR, $SIDE-PANEL) !important, $FONT--WEIGHT---LIGHT !important);
 		}
 
 
@@ -1799,6 +1805,7 @@ form,
 						    font-weight: inherit;
 						    padding: inherit;
 						    font-size: inherit;
+							top: -3px;
 						}
 
 						td > .x-tree3-node-icon {
@@ -3416,7 +3423,7 @@ body[data-indigo-gwt-side-panel="open"] {
 	.x-tool-close {
 		background: #ededed !important;
 		@include text(14px, #FAFAFA, 100);
-		padding: 10px 20px !important;
+		padding: 8px 15px !important;
 		color: #5c6164!important;
 
 		width: auto!important;
@@ -3508,7 +3515,7 @@ body[data-indigo-gwt-side-panel="open"] {
 		height: auto!important;
 		background: #00a7ed !important;
 		@include text(14px, #FAFAFA, 100);
-		padding: 10px 20px !important;
+		padding: 8px 15px !important;
 		position: absolute;
 		right: 52px;
 		top: 20px;
@@ -3683,11 +3690,13 @@ body[data-indigo-gwt-side-panel="open"] {
 	> .x-window-tl {
 		z-index: 9999;
 		border:none!important;
+		background: transparent!important;
 	}
 
 	> .x-window-bwrap {
 		z-index: 9;
 		border:none!important;
+		top: 0;
 	}
 
 	.x-tool-restore {
@@ -3706,10 +3715,14 @@ body[data-indigo-gwt-side-panel="open"] {
 		}
 
 		.x-window-header-text {
-			left: 30px!important;
-		    top: 67px!important;
-		    color: #00a0e3!important;
-		    font-weight: 100!important;
+			left: 6px !important;
+		    top: 42px !important;
+		    color: #007cb0 !important;
+		    font-weight: 100 !important;
+		    font-size: 18px;
+		    width: 254px!important;
+		    max-width: unset!important;
+		    overflow: hidden!important;
 
 			&:before {
 				display: none!important;
@@ -5425,9 +5438,10 @@ XXX.x-window.modal-deletealljob-confirm {
 
 		left: -30px;
 		width: calc(100% + 60px)!important;
-		bottom: -30px;
+		bottom: -55px;
 		padding: 20px 0px 30px 50px;
 		height: 109px;
+		z-index: 999;
 
 		.x-panel-fbar {
 			width: 100%!important;
@@ -5435,14 +5449,14 @@ XXX.x-window.modal-deletealljob-confirm {
 
 			.x-toolbar-left {
 				position: fixed;
-				right: 20px;
+				right: 4px;
 				bottom: 0;
 			}
 
 			.x-toolbar-cell {
 				float: right;
 				margin-left: 5px;
-				padding-bottom: 20px;
+				padding-bottom: 10px;
 
 				&:nth-child(1) {
 					margin-left: 0;

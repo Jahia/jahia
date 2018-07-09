@@ -31,14 +31,70 @@ body[indigo-dragging-panel] {
 	.edit-menu-sites {
 		/* Site Selector */
 
-		body[data-sitesettings="true"] & {
-			display: none
+		div[role="combobox"] {
+			input.x-form-text {
+				background: transparent;
+			    font-size: 14px;
+			    padding: 0 17px 0 0 !important;
+			    box-shadow: none;
+
+				// &:focus,
+				// &:active {
+				// 	width: 123px!important;
+				// }
+			}
+
+			img {
+				width: 15px !important;
+			    background: url(./images/expanded-white.png) no-repeat left center transparent !important;
+			    background-size: 14px !important;
+			}
+		}
+
+
+
+		body[data-sitesettings="true"][data-indigo-gwt-side-panel="open"] &,
+		body[data-sitesettings="true"][data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
+			// display: none;
+			display: block!important;
+			overflow: visible;
+		    z-index: 9;
+		    top: 29px!important;
+		    left: 76px!important;
+
+			.x-form-field-wrap {
+				// Need to resize this with JS
+				// width: 58px!important;
+			}
+
+			input[type="text"] {
+				// width: 123px;
+				box-shadow: none;
+				background: #fafafa;
+				width: 100%!important;
+				font-size: 14px;
+				padding: 0 16px 0 0!important;
+
+
+			}
+
+			img {
+				position: absolute;
+			    top: 0;
+			    right: 0;
+			    width: 15px !important;
+			    height: 100% !important;
+			    border: none !important;
+			    background: url(./images/expanded-black.png) no-repeat left center transparent !important;
+			    background-size: 14px!important;
+			}
 		}
 
 		position: fixed;
         left: 60px;
-        top: 17px !important;
-        background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%,rgba(255, 255, 255, 0) 70%);
+        top: 20px !important;
+        // background: radial-gradient(ellipse at bottom right, rgba(255, 255, 255, 0.07) 0%,rgba(255, 255, 255, 0) 70%);
+		background: transparent;
 
         pointer-events: all;
 		z-index: $ZINDEX--MAINMODULE--LANGUAGE_SWITCHER;
@@ -51,15 +107,28 @@ body[indigo-dragging-panel] {
 			top: 62px!important;
 			left: 70px!important;
 
-			background: radial-gradient(ellipse at bottom right, rgba(38, 38, 38, 0.11) 0%, rgba(38, 38, 38, 0.05) 70%);
+			background: transparent;
 			display: block!important;
+
+			input[type="text"] {
+				background: transparent;
+				font-size: 14px;
+				padding: 0 17px 0 0 !important;
+				box-shadow: none;
+			}
+
+			img {
+				width: 15px !important;
+			    background: url(./images/expanded-black.png) no-repeat left center transparent !important;
+			    background-size: 14px !important;
+			}
 		}
 
 
 		.x-form-field-wrap {
 			body[data-indigo-gwt-side-panel="open"] & {
 
-				width: 265px!important
+				// width: 265px!important
 			}
 		}
 
@@ -157,7 +226,10 @@ body[indigo-dragging-panel] {
 		body[data-edit-window-style="settings"] &,
 		.x-viewport-adminmode &,
 		.x-viewport-dashboardmode & {
-			top: 62px;
+			top: 55px;
+			left:275px!important;
+			opacity: 1;
+			background-size: 13px;
 		}
 
 		body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode & {
@@ -291,7 +363,20 @@ body[indigo-dragging-panel] {
 		.x-viewport-dashboardmode & {
 			@extend %CSS_BLOCK--SIDE_PANEL--CONTAINER---OPEN;
 
+
+
 		}
+
+		body[data-indigo-gwt-side-panel="open"][data-sitesettings="true"] &,
+		.x-viewport-adminmode &,
+		.x-viewport-dashboardmode & {
+			padding-top: 46px!important;
+
+
+
+		}
+
+
 
 		// Fix the padding issue on icons
 		body[data-sitesettings="false"][data-indigo-app="edit"] & {
@@ -447,7 +532,7 @@ body[indigo-dragging-panel] {
 
 				.x-tab-strip-spacer {
 					/* Close settings Button */
-					left: 68px;
+					left: 48px;
 				    bottom: 40px;
 				    // background: url(./images/icons/icon-close-large.png) no-repeat center center !important;
 				    width: 50px;
@@ -462,13 +547,13 @@ body[indigo-dragging-panel] {
 
 					&::before {
 						content: $text_done;
-						@include text(16px, _theme-color(secondary), $FONT--WEIGHT---EXTRALIGHT);
+						@include text(14px, #FCFCFC, $FONT--WEIGHT---LIGHT);
 
 						// font-family: Raleway;
 						// font-size: 16px;
 						/* text-transform: uppercase; */
 						font-weight: 100;
-						background: _theme-color(tertiary);
+						background: #2a8cb9;
 						padding: 6px 9px;
 						// color: white;
 
@@ -511,15 +596,20 @@ body[indigo-dragging-panel] {
 				height: calc(100% - 176px)!important;
 				overflow: auto;
 				overflow-x: hidden;
+				width: 100%!important;
+			    padding-left: 14px;
+			    padding-right: 14px;
 			}
 
 			body[data-sitesettings="true"] .x-viewport-editmode & {
 				margin-top: 0;
 
+
 			}
 
 			.x-viewport-adminmode & {
 				margin-top: 62px!important;
+				padding: 20px 30px 0;
 			}
 
 			.x-viewport-dashboardmode & {
@@ -673,11 +763,11 @@ body[indigo-dragging-panel] {
 	// Highlight item when menu is open (PAGES tab)
 
 	.x-grid3 .x-grid3-row.context-menu-open {
-		background: _property($ROW--BG---SELECTED, $SIDE-PANEL) !important;
+		background: #007cb0 !important;
 	}
 
 	.x-grid3 .x-grid3-row.x-grid3-row-selected.context-menu-open {
-		background: _property($ROW--BG---SELECTED, $SIDE-PANEL) !important;
+		background: #007cb0 !important;
 	}
 
 
@@ -699,6 +789,7 @@ body[indigo-dragging-panel] {
 	    width: 18px;
 	    height: 23px;
 		opacity: 0.8;
+		background-position: center top 2px;
 
 		// Default
 		//background-image: url(./images/tabs-pages-dark@X2.png);
@@ -740,22 +831,27 @@ body[indigo-dragging-panel] {
 		.x-tree3-node-icon {
 			&[src$="/jnt_page.png"] {
 				background-image: url(./images/tabs-pages-white@X2.png);
+				opacity: 1;
 			}
 
 			&[src$="/jnt_virtualsite.png"] {
 				background-image: url(./images/icons/tabs-site-white@X2.png);
+				opacity: 1;
 			}
 
 			&[src$="jnt_nodeLink.png"] {
 				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+				opacity: 1;
 			}
 
 			&[src$="jnt_externalLink.png"] {
 				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+				opacity: 1;
 			}
 
 			&[src$="jnt_navMenuText.png"] {
 				background-image: url(./images/icons/tabs-placeholder-white@X2.png);
+				opacity: 1;
 			}
 
 			// Default
@@ -1906,7 +2002,8 @@ $side_panel__tab_buttons: (
 	body[data-sitesettings="true"] .x-viewport-editmode & ,
 	.x-viewport-adminmode & {
 		height: 100%!important;
-		width: 100%!important;
+		width: calc(100% + 22px) !important;
+		left:5px;
 	}
 
 	> .x-component {
@@ -2067,13 +2164,17 @@ body[data-edit-window-style="settings"] {
 	}
 
 	.x-grid3 {
+		.x-tree3-node-joint {
+			margin-left: 2px;
+		}
+
 		.x-grid3-body {
 			// padding-left: 4px;
 		}
 
 		.x-grid3-row {
 			padding-left: 0!important;
-			height: 30px!important;
+			height: 25px!important;
 			position: relative;
 
 			table,
@@ -2095,27 +2196,28 @@ body[data-edit-window-style="settings"] {
 
 			// PAGE
 			.x-tree3-node-text {
-				margin-left: -10px;
-				line-height: 28px;
+				margin-left: -17px;
+				line-height: 25px;
 
 				&::before {
 					content: ">";
-			    width: 24px;
-			    height: 24px;
-			    background: #fdfdfd;
-			    text-indent: -50000px;
-			    display: inline-block;
-			    top: 3px;
-			    left: -10px;
-			    position: relative;
-			    z-index: -1;
-			    border-radius: 2px;
+				    width: 21px;
+				    height: 19px;
+				    background: #fdfdfd;
+				    text-indent: -50000px;
+				    display: inline-block;
+				    top: 3px;
+				    left: -2px;
+				    position: relative;
+				    z-index: -1;
+				    border-radius: 2px;
 				}
 			}
 
 			// PAGE [SELECTED]
 			&.x-grid3-row-selected .x-tree3-node-text {
-				color: _theme-color(tertiary)!important;
+				// color: _theme-color(tertiary)!important;
+				color: #FCFCFC!important;
 
 				&::before {
 					background: _theme-color(tertiary);
@@ -2127,12 +2229,16 @@ body[data-edit-window-style="settings"] {
 			&.unselectable-row {
 				pointer-events: none;
 				padding-left: 10px!important;
+				background: url(./images/collapsed-black.png) no-repeat left 6px top 6px!important;
+				background-size: 14px!important;
 
 				.x-tree3-node-joint {
 					width: 100%!important;
 					display: inline-block!important;
 					opacity: 0;
 					position: absolute!important;
+					left: -10px;
+				    height: 23px!important;
 
 					&:hover {
 						cursor: pointer;
@@ -2146,16 +2252,19 @@ body[data-edit-window-style="settings"] {
 
 				// FOLDER LABEL
 				span.x-tree3-node-text {
-					color: _theme-color(primary, d) !important;
-					margin-left: -11px;
+					color: _theme-color(primary) !important;
+					margin-left: -15px;
 					//padding-left: 4px !important;
 				}
 			}
 
 			// FOLDER [OPENED]
 			&.unselectable-row.indigo-opened {
+				background: url(./images/expanded-black.png) no-repeat left 5px top 6px!important;
+				background-size: 14px!important;
+
 				.x-tree3-node-text {
-					font-style: italic;
+					// font-style: italic;
 
 					&::before {
 					    //margin-left: 7px;
@@ -2177,7 +2286,7 @@ body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTa
 	    line-height: 40px;
 	    margin-bottom: 45px;
 		top: 0;
-		left: 0;
+		left: 45px;
 	}
 
 }
@@ -2215,10 +2324,10 @@ body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTa
 			> .x-component {
 				&::before {
 					content: $text_server_settings;
-					margin: 0 0 4px 19px;
+					margin: 0 0 4px 8px;
 
-					text-transform: uppercase;
-					@include text(10px, _theme-color(secondary, e), $FONT--WEIGHT---SEMIBOLD);
+					// text-transform: uppercase;
+					@include text(13px, _theme-color(primary), $FONT--WEIGHT---LIGHT);
 				}
 			}
 		}
@@ -2233,10 +2342,10 @@ body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTa
 				margin-top: 20px;
 				&::before {
 					content: $text_system_settings;
-					margin: 0 0 4px 19px;
+					margin: 0 0 4px 8px;
 
-					text-transform: uppercase;
-					@include text(10px, _theme-color(secondary, e), $FONT--WEIGHT---SEMIBOLD);
+					// text-transform: uppercase;
+					@include text(13px, _theme-color(primary), $FONT--WEIGHT---LIGHT);
 				}
 			}
 
@@ -2269,9 +2378,12 @@ body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTa
 
 		.x-viewport-adminmode & {
 			content: $text_administration !important;
-			letter-spacing: -1px;
+			// letter-spacing: -1px;
 
 			padding-left: 39px;
+			padding-left: 0px;
+			top: 40px!important;
+		    left: 75px!important;
 		}
 
 		.x-viewport-dashboardmode & {

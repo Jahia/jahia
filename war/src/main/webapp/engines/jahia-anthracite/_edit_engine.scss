@@ -114,7 +114,7 @@ div.engine-window {
 	//z-index: $ZINDEX--SIDE_PANEL--EDIT_ENGINE;
 	z-index: 1031!important;
 
-	background: _property($BODY--BG, $EDIT-ENGINE);
+	background: linear-gradient(to bottom, #DBDBDB 1%, #d5d5d5 100%);
     position: fixed!important;
     top: 0!important;
     left: 0!important;
@@ -135,10 +135,11 @@ div.engine-window {
 			.indigo-switch--shuttle {
 				left: -1px;
 				background: #F1F1F1;
+				border-color:#F1F1F1;
 			}
 
 			.indigo-switch--rail {
-				background-color: rgba(80, 80, 80, 0.7);
+				// background-color: rgba(80, 80, 80, 0.7);
 			}
 		}
 	}
@@ -147,7 +148,7 @@ div.engine-window {
 
 		position: absolute;
 		right: 40px;
-	    top: 11px;
+	    top: 17px;
 
 		&::before {
 			content: $text_activated;
@@ -160,23 +161,21 @@ div.engine-window {
 		    right: 27px;
 		    white-space: nowrap;
 		    text-transform: uppercase;
-			color: #00a0e4;
 		}
 
 
 
 		.indigo-switch--shuttle {
 			width: 20px;
-			height: 20px;
-			background: #00A0E3;
-			border-radius: 20px;
-			position: relative;
-			z-index: 99;
-			left: 11px;
-
-			box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
-
-			transition: left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
+		    height: 20px;
+		    background: #4ed205;
+		    border-radius: 20px;
+		    position: relative;
+		    z-index: 99;
+		    left: 11px;
+		    box-shadow: 1px 2px 1px 0px rgba(0, 0, 0, 0.4);
+		    transition: left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease;
+		    border: 1px solid #5ddf15;
 
 			&:hover {
 				cursor: pointer;
@@ -189,7 +188,7 @@ div.engine-window {
 			border-radius: 15px;
 			position: absolute;
 			top: 3px;
-			background: rgba(0, 160, 227, 0.5);
+			background: rgba(80, 80, 80, 0.7);
 		}
 
 
@@ -216,14 +215,20 @@ div.engine-window {
 
 		.x-tab-panel-header {
 			// Tab list menu
-			width: 387px !important;
+			width: 317px !important;
 			display: inline-block;
 			box-sizing: border-box;
 			vertical-align: top;
 			border: none;
 			height: 100%;
 			background: none;
-			padding: 0 0 0 73px;
+			padding: 50px 20px 0 43px;
+			background: grey;
+		    top: 0;
+		    position: fixed;
+			box-shadow: 0px 2px 12px 0px rgba(58, 58, 58, 0.4);
+			background: linear-gradient(to right bottom, #F5F5F5 50%, #e5e4e4 100%);
+			z-index: 99;
 
 			.x-tab-strip-wrap {
 				// Menu Container
@@ -236,10 +241,10 @@ div.engine-window {
 					width: 100%;
 					height: auto;
 					border:none;
-					border-left: 1px solid _property($TAB--BAR, $EDIT-ENGINE);
+					// border-left: 1px solid _property($TAB--BAR, $EDIT-ENGINE);
 					background: none;
 					padding: 0 0 0 5px;
-					margin: 150px 0 0 0;
+					margin: 110px 0 0 0;
 
 					li {
 						// Tab entry
@@ -248,17 +253,18 @@ div.engine-window {
 						display: block;
 
 						&.x-tab-strip-active {
-							border-left: 3px solid _property($TAB--BAR---SELECTED, $EDIT-ENGINE);
-							left: -7px;
-							padding-left: 4px;
+							// border-left: 3px solid _property($TAB--BAR---SELECTED, $EDIT-ENGINE);
+							// left: -7px;
+							// padding-left: 4px;
+							background: #007cb0;
 
 							&.x-tab-strip-over {
-								border-left-color: _property($TAB--BAR---SELECTED, $EDIT-ENGINE);
+								// border-left-color: _property($TAB--BAR---SELECTED, $EDIT-ENGINE);
 							}
 						}
 
 						&.x-tab-strip-over {
-							border-left-color: _property($TAB--BAR---HOVER, $EDIT-ENGINE);
+							// border-left-color: _property($TAB--BAR---HOVER, $EDIT-ENGINE);
 						}
 
 
@@ -297,11 +303,12 @@ div.engine-window {
 			// Tab content container
 
 			display: inline-block;
-			width: calc(100% - 456px) !important;
+			width: calc(100% - 310px) !important;
 			box-sizing: border-box;
 			vertical-align: top;
 			height: calc(100% - 111px)!important;
 			background: none;
+			margin-left: 316px;
 
 			> .x-panel-mc {
 				// Default tab content window
@@ -421,9 +428,8 @@ div.engine-window {
 	    margin-top: 15px;
 	    position: fixed;
 	    width: 290px;
-	    left: 72px;
-	    top: 40px;
-		font-family: $DEFAULT--TITLE_FONT--FAMILY;
+		left: 48px;
+	    top: 20px;
 		font-weight: 100;
 		z-index: 99999;
 
@@ -1383,8 +1389,8 @@ div.engine-window {
 	// Personalised COntent Window
 	#JahiaGxtEditEnginePanel-categories {
 		height: auto!important;
-		background: _property($FIELDSET--BG, $EDIT-ENGINE);
-		border:1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
+		// background: _property($FIELDSET--BG, $EDIT-ENGINE);
+		// border:1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
 		box-sizing: border-box;
 		padding-bottom: 1px;
 
@@ -1399,9 +1405,9 @@ div.engine-window {
 			padding: 14px 0 0 25px!important;
 
 			.x-panel-header-text {
-				text-transform: uppercase;
+				// text-transform: uppercase;
 
-				@include text(11px, _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMIBOLD);
+				@include text(18px, #363636, $FONT--WEIGHT---LIGHT);
 			}
 
 		}
@@ -1477,9 +1483,9 @@ div.engine-window {
 
 				position: relative !important;
 			    top: auto !important;
-			    background: _property($LIST-BOX--BG, $EDIT-ENGINE) !important;
+			    background: whitesmoke !important;
 			    width: calc(100% - 20px)!important;
-			    margin: 10px!important;
+			    margin: 0 25px!important;
 			    padding: 15px 20px 20px 20px;
 			    box-sizing: border-box;
 
@@ -2451,7 +2457,7 @@ div.engine-window {
 	#JahiaGxtEditEnginePanel-layout {
 		/* Preview window */
 		fieldset.x-panel {
-			border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
+			// border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE)!important;
 		}
 		> .x-component {
 
@@ -2494,7 +2500,7 @@ div.engine-window {
 							/* Preview container */
 							height: 100%!important;
 							width: 100%!important;
-							background: transparent!important;
+							background: white!important;
 						}
 
 					}
@@ -2523,7 +2529,7 @@ div.engine-window {
 		left: 0 !important;
 	    top: 0px !important;
 	    position: fixed !important;
-	    height: 182px !important;
+	    height: 157px !important;
 	    width: 315px;
 	    box-sizing: border-box;
 	    background: transparent;
@@ -2545,9 +2551,20 @@ div.engine-window {
 			// Language Selector
 			margin-right: 24px;
 		    position: absolute;
-		    left: 72px;
-		    top: 129px;
+		    left: 49px;
+		    top: 109px;
 			display: block;
+
+			input {
+				padding: 0!important;
+				background: transparent;
+				box-shadow: none;
+				font-size: 14px;
+			}
+
+			img {
+				// Put image here
+			}
 
 
 		}
@@ -2576,14 +2593,14 @@ div.engine-window {
 				content: attr(data-friendly-name);
 			    display: block;
 			    position: fixed;
-			    top: 99px;
-			    left: 72px;
+			    top: 78px;
+			    left: 48px;
 				width: 250px;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
 
-				@include text(18px !important, _theme-color(quinary), $FONT--WEIGHT---EXTRALIGHT);
+				@include text(18px !important, #007cb0, $FONT--WEIGHT---EXTRALIGHT);
 
 				// Add Locked icon if the node has been locked
 				body[data-indigo-edit-engine-locked="true"] & {
@@ -2619,11 +2636,11 @@ div.engine-window {
 	> .x-window-bwrap,
 	> .x-panel-bwrap {
 
-		height: calc(100% - 46px);
-	    position: fixed!important;
-	    width: 100%!important;
-	    top: 50px;
-		padding: 0px!important;
+		height: calc(100%);
+	    position: fixed !important;
+	    width: 100% !important;
+	    top: 10px;
+	    padding: 0px !important;
 
 
 		.x-panel-tbar {
@@ -2675,9 +2692,10 @@ div.engine-window {
 
 			left: -30px;
 			width: calc(100% + 60px)!important;
-			bottom: -30px;
+			bottom: -55px;
 			padding: 20px 0px 30px 50px;
 			height: 109px;
+			z-index: 999;
 
 			.x-panel-fbar {
 				width: 100%!important;
@@ -2685,7 +2703,7 @@ div.engine-window {
 
 				.x-toolbar-left {
 					position: fixed;
-				    right: 20px;
+				    right: 4px;
 				    bottom: 0;
 				}
 
@@ -2693,7 +2711,7 @@ div.engine-window {
 
 					float: right;
 					margin-left: 5px;
-					padding-bottom: 20px;
+					padding-bottom: 10px;
 
 					&:nth-child(1) {
 						margin-left: 0;
@@ -2701,8 +2719,8 @@ div.engine-window {
 						// Not a button, but its a checkbox for the edit engine
 						> div {
 							position: fixed!important;
-							left: 30px;
-						    bottom: 32px;
+							left: 0;
+						    bottom: 10px!important;
 						}
 					}
 
@@ -3261,18 +3279,18 @@ body[data-indigo-add-visibility-condition="new"] {
 
 
 #JahiaGxtEditEnginePanel-seo > .x-component {
-	max-width: 100%;
-	background: rgba($color-white, .4);
-	border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
+	width: 100%!important;
+	// background: rgba($color-white, .4);
+	// border: 1px solid _property($FIELDSET--BORDER, $EDIT-ENGINE) !important;
 	box-sizing: border-box;
-	padding: 8px 29px;
+	padding: 8px 0 0 29px;
 	height: auto !important;
 
 	.seo-title-path {
 		font-family: $FONT--FAMILY---NUNITO;
-		font-size: 11px;
-		color: _theme-color(black, c);
-		font-weight: $FONT--WEIGHT---SEMIBOLD;
+		font-size: 14px;
+		color: #363636;
+		font-weight: $FONT--WEIGHT---LIGHT;
 	}
 
 	.seo-title {
@@ -3281,9 +3299,9 @@ body[data-indigo-add-visibility-condition="new"] {
 		margin-bottom: 6px;
 		text-transform: uppercase;
 		font-family: $FONT--FAMILY---NUNITO;
-		font-size: 11px;
-		color: $color-primary;
-		font-weight: $FONT--WEIGHT---SEMIBOLD;
+		font-size: 18px;
+		color: #363636;
+		font-weight: $FONT--WEIGHT---LIGHT;
 	}
 
 	.x-panel-header {

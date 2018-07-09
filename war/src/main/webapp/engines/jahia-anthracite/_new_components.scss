@@ -98,6 +98,7 @@
 	background: transparent;
     overflow: visible;
 	z-index: 9999999 !important;
+	min-width: 150px;
 
 	// @extend %CSS_BLOCK--FORM--CONTEXT_MENU--HOLDER !optional;
 

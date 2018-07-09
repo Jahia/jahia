@@ -3936,6 +3936,35 @@ if (!Element.prototype.matches) {
 				},
                 returnURL: null
 			},
+			resizeLanguageInput: function(){
+				var languageInput = DexV2(".toolbar-itemsgroup-languageswitcher input")
+
+				if(languageInput.nodes[0]){
+					var languageInputValue = DexV2(".toolbar-itemsgroup-languageswitcher input").nodes[0].value
+
+					var wideChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ"
+					var mediumChars = "abcdefghkmnopqrstuvwxyzI"
+					var slimChars = "ijl"
+
+					var textWidth = function(languageInputValue){
+						var returnWidth = 0;
+
+						for(var char of languageInputValue){
+							var isWide = (wideChars.indexOf(char) > -1) ? 10 : 0;
+							var isMedium = (mediumChars.indexOf(char) > -1) ? 7 : 0;
+							var isSlim = (slimChars.indexOf(char) > -1) ? 5 : 0;
+							var addWidth = (isWide + isMedium + isSlim)
+
+							returnWidth = returnWidth + (addWidth || 10)
+						}
+
+						return returnWidth;
+
+					}(languageInputValue)
+
+					DexV2(".toolbar-itemsgroup-languageswitcher").nodes[0].style.setProperty("width", ((textWidth + 15) + "px"), "important");
+				}
+			},
 			// Event Handlers
 			onOpen: function(){
 				app.dev.log("::: APP ::: EDIT ::: ONOPEN");
@@ -3965,6 +3994,11 @@ if (!Element.prototype.matches) {
 
                 // Setup the alternative channels system
                 app.edit.sidepanel.initChannels();
+
+
+				console.log("Edit on open")
+				app.edit.resizeLanguageInput()
+
 
 			},
 			onClose: function(){},
@@ -4489,7 +4523,7 @@ if (!Element.prototype.matches) {
                     var siteCombo = DexV2(".window-side-panel div[role='combobox']");
 
                     if(siteCombo.exists()){
-                        siteCombo.nodes[0].style.setProperty("width", (xPos - 100) + "px", "important");
+                        // siteCombo.nodes[0].style.setProperty("width", (xPos - 100) + "px", "important");
 
                     }
 
@@ -5050,26 +5084,27 @@ if (!Element.prototype.matches) {
 					if(app.data.currentApp == "edit"){
 						// Jeremys code START
 						// Position the language selector dropdown.
-						var siteSettingsList = DexV2.id("JahiaGxtSettingsTab").filter(".x-panel.x-component").nodes[0];
-						var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
-
-						function offset(el) {
-						  var rect = el.getBoundingClientRect(),
-						  scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-						  scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-						  return {
-							top: rect.top + scrollTop
-						  }
-						}
-						var siteSettingsListTop = offset(siteSettingsList).top;
-
-						if(siteSettingsListTop <= 145) {
-						  langSelector.style.cssText='top: 112px !important';
-						} else if (siteSettingsListTop >= 185) {
-						  langSelector.style.cssText='top: 152px !important';
-						};
+						// var siteSettingsList = DexV2.id("JahiaGxtSettingsTab").filter(".x-panel.x-component").nodes[0];
+						// var langSelector = DexV2.class("toolbar-itemsgroup-languageswitcher").nodes[0];
+						//
+						// function offset(el) {
+						//   var rect = el.getBoundingClientRect(),
+						//   scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+						//   scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+						//   return {
+						// 	top: rect.top + scrollTop
+						//   }
+						// }
+						// var siteSettingsListTop = offset(siteSettingsList).top;
+						//
+						// if(siteSettingsListTop <= 145) {
+						//   langSelector.style.cssText='top: 112px !important';
+						// } else if (siteSettingsListTop >= 185) {
+						//   langSelector.style.cssText='top: 152px !important';
+						// };
 						// Jeremys code END
 					}
+
 
 
 				},
@@ -5147,6 +5182,7 @@ if (!Element.prototype.matches) {
 						}
 					}
 
+					app.edit.resizeLanguageInput()
 
 
 				}
@@ -5512,6 +5548,46 @@ if (!Element.prototype.matches) {
     var eventListeners = {
         attach: function(){
 			DexV2("body")
+				.onAttribute("body", "data-sitekey", function(){
+					console.log("changed site settings(" + app.edit.settings.data.opened + ")")
+
+
+					var languageInput = DexV2(".edit-menu-sites input")
+
+					if(languageInput.nodes[0]){
+						var languageInputValue = DexV2(".edit-menu-sites input").nodes[0].value
+
+						var wideChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ "
+						var mediumChars = "abcdefghkmnopqrstuvwxyzI"
+						var slimChars = "ijl"
+
+						var textWidth = function(languageInputValue){
+							var returnWidth = 0;
+
+							for(var char of languageInputValue){
+								var isWide = (wideChars.indexOf(char) > -1) ? 10 : 0;
+								var isMedium = (mediumChars.indexOf(char) > -1) ? 7 : 0;
+								var isSlim = (slimChars.indexOf(char) > -1) ? 5 : 0;
+								var addWidth = (isWide + isMedium + isSlim)
+
+								returnWidth = returnWidth + (addWidth || 10)
+							}
+
+							return returnWidth;
+
+						}(languageInputValue)
+
+						DexV2(".edit-menu-sites").nodes[0].style.setProperty("width", ((textWidth + 15) + "px"), "important");
+					}
+
+					if(app.edit.settings.data.opened){
+						DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("mousedown").trigger("mouseup");
+
+					}
+
+
+				})
+				.onAttribute("body", "data-langdisplayname", app.edit.resizeLanguageInput)
                 .onAttribute("#JahiaGxtContentPickerWindow .x-vsplitbar, #contentpicker .x-vsplitbar, #contentmanager .x-vsplitbar, #JahiaGxtContentPicker .x-vsplitbar", "style", app.picker.onResize)
                 .onAttribute(".x-vsplitbar", "style", app.picker.onResize)
 				.onOpen(".x-window", function(){

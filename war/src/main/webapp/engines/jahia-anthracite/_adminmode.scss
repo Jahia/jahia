@@ -127,8 +127,10 @@
  	               content: "";
  	           }
  	           body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
-					background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
-					background-size: 32px 32px;
+				   top: 40px;
+				   left: 20px;
+				   background-size: 42px;
+				   width: 54px !important;
  	           }
 
 				   .x-btn-mc {

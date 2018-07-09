@@ -190,12 +190,20 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 }
                 propertiesEditor = new PropertiesEditor(engine.getNodeTypes(), properties, dataType, engine) {
                     @Override
-                    public void copyToAllLanguages(GWTJahiaNodeProperty prop) {
+                    public void copyToAllLanguages(GWTJahiaNodeProperty prop, Field<?> remoteField) {
                         for (GWTJahiaLanguage jahiaLanguage : JahiaGWTParameters.getSiteLanguages()) {
                             String l = jahiaLanguage.getLanguage();
                             if (!l.equals(PropertiesTabItem.this.language)) {
+                                PropertiesEditor langPropEditor = langPropertiesEditorMap.get(l);
                                 if (langPropertiesEditorMap.containsKey(l)) {
-                                    Field<?> f = langPropertiesEditorMap.get(l).getFieldsMap().get(prop.getName()).getField();
+                                    if (langPropEditor.getFieldsMap().get(prop.getName()) == null) {
+                                        // if the property editor is set but the field is not present, create it ..
+                                        PropertyAdapterField remote = (PropertyAdapterField) remoteField;
+                                        PropertyAdapterField field = langPropEditor.getFieldsMap().get(remote.getDefinition().getName());
+                                        ((Field) (field.getField())).setValue(remote.getField().getValue());
+                                        langPropEditor.setExternalMixin(field, true);
+                                    }
+                                    Field<?> f = langPropEditor.getFieldsMap().get(prop.getName()).getField();
                                     FormFieldCreator.copyValue(prop, f);
                                 } else {
                                     if (!changedProperties.containsKey(l)) {

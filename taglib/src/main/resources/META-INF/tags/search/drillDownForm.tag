@@ -15,7 +15,7 @@
         <c:if test="${fn:startsWith(par.key, 'src_')}">
             <c:if test="${excludeParamsRegex == null || !functions:matches(excludeParamsRegex, par.key)}">
                 <c:set var="paramKey" value="${fn:escapeXml(par.key)}"/>
-                <c:forEach items="${par.value}" var="value">
+                <c:forEach items="${paramValues[par.key]}" var="value">
                     <input type="hidden" name="${paramKey}" value="${fn:escapeXml(value)}"/>
                 </c:forEach>
             </c:if>

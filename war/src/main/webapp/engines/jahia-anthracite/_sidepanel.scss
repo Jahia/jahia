@@ -533,7 +533,7 @@ body[indigo-dragging-panel] {
 				.x-tab-strip-spacer {
 					/* Close settings Button */
 					left: 48px;
-				    bottom: 40px;
+				    bottom: 30px;
 				    // background: url(./images/icons/icon-close-large.png) no-repeat center center !important;
 				    width: 50px;
 				    height: 50px;
@@ -593,7 +593,7 @@ body[indigo-dragging-panel] {
 			body[data-sitesettings="true"] .x-viewport-editmode & ,
 			.x-viewport-adminmode & {
 				margin-top: 52px;
-				height: calc(100% - 176px)!important;
+				height: calc(100% - 206px)!important;
 				overflow: auto;
 				overflow-x: hidden;
 				width: 100%!important;

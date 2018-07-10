@@ -3247,6 +3247,35 @@ if (!Element.prototype.matches) {
                 returnToEditEngine: false,
                 open: false
             },
+			resizeLanguageInput: function(){
+				var languageInput = DexV2(".toolbar-itemsgroup-languageswitcher input")
+
+				if(languageInput.nodes[0]){
+					var languageInputValue = DexV2(".toolbar-itemsgroup-languageswitcher input").nodes[0].value
+
+					var wideChars = "ABCDEFGHJKLMNOPQRSTUVWXYZ"
+					var mediumChars = "abcdefghkmnopqrstuvwxyzI"
+					var slimChars = "ijl"
+
+					var textWidth = function(languageInputValue){
+						var returnWidth = 0;
+
+						for(var char of languageInputValue){
+							var isWide = (wideChars.indexOf(char) > -1) ? 10 : 0;
+							var isMedium = (mediumChars.indexOf(char) > -1) ? 7 : 0;
+							var isSlim = (slimChars.indexOf(char) > -1) ? 5 : 0;
+							var addWidth = (isWide + isMedium + isSlim)
+
+							returnWidth = returnWidth + (addWidth || 10)
+						}
+
+						return returnWidth;
+
+					}(languageInputValue)
+
+					DexV2(".toolbar-itemsgroup-languageswitcher").nodes[0].style.setProperty("width", ((textWidth + 15) + "px"), "important");
+				}
+			},
             onOpen: function(){
 				app.dev.log("::: APP ::: ENGINE ::: ONOPEN");
 
@@ -5580,7 +5609,8 @@ if (!Element.prototype.matches) {
 						DexV2(".edit-menu-sites").nodes[0].style.setProperty("width", ((textWidth + 15) + "px"), "important");
 					}
 
-					if(app.edit.settings.data.opened){
+					if(DexV2.getCached("body").getAttribute("data-sitesettings") == "true"){
+						console.log("changing in site settings")
 						DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("mousedown").trigger("mouseup");
 
 					}

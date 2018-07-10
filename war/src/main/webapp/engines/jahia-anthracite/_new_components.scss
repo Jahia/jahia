@@ -42,7 +42,7 @@
 			display: block;
 			text-align: left!important;
 	        background: _property($MENU-OPENED--BG, $type);
-	        padding: 8px 9px !important;
+	        padding: 8px 9px 8px 24px !important;
 	        border: none;
 
 			&.x-menu-check-item {
@@ -58,6 +58,41 @@
 
 	        @include text(13px, _property($MENU-OPENED--COLOR, $type), $FONT--WEIGHT---LIGHT);
 
+			&.toolbar-item-editcontent {
+				background: url(./images/icons/context-menu/edit.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
+			&.toolbar-item-delete {
+				background: url(./images/icons/context-menu/delete.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
+			&.toolbar-item-copy {
+				background: url(./images/icons/context-menu/copy.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
+			&.toolbar-item-publishinalllanguages,
+			&.toolbar-item-publishall,
+			&.toolbar-item-publishallinalllanguages {
+				background: url(./images/icons/context-menu/publish.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
+			&.toolbar-item-lock {
+				background: url(./images/icons/context-menu/lock.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
+			&.toolbar-item-openincontentmanager-newtab {
+				background: url(./images/icons/context-menu/preview.svg) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
+			&.toolbar-item-export,
+			&.toolbar-item-import {
+				background: url(./images/icons/context-menu/import-export.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
+			&.toolbar-item-translatemenu {
+				background: url(./images/icons/context-menu/translate.png) _property($MENU-OPENED--BG, $type) left 5px top 7px no-repeat / 16px;
+			}
+
 		}
 
 		&.x-item-disabled  {
@@ -65,7 +100,7 @@
 				color: _property($MENU-OPENED--COLOR---DISABLED, $type)!important;
 		        font-style: italic;
 		        opacity: 1;
-				background: _property($MENU-OPENED--BG---DISABLED, $type);
+				background-color: _property($MENU-OPENED--BG---DISABLED, $type);
 		        display: none;
 
 				&.x-menu-check-item {
@@ -78,7 +113,7 @@
 		&.x-menu-item-active  {
 			.x-menu-item {
 				color: _property($MENU-OPENED--COLOR---HOVER, $type);
-				background: _property($MENU-OPENED--BG---HOVER, $type);
+				background-color: _property($MENU-OPENED--BG---HOVER, $type);
 
 				&.x-menu-item-arrow {
 					background-image: url(./images/icons/toggle-WE-white@X2.png);
@@ -507,7 +542,7 @@
 	box-sizing: border-box;
 	box-shadow: _property($INPUT--SHADOW, $type);
 
-	@include text(12px, _property($INPUT--COLOR, $type), $FONT--WEIGHT---SEMILIGHT);
+	@include text(13px, _property($INPUT--COLOR, $type), $FONT--WEIGHT---SEMILIGHT);
 
 	&:hover {
 		background: _property($INPUT--BG---HOVER, $type);

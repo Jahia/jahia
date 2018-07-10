@@ -533,7 +533,7 @@
         %CSS_BLOCK--FORM--TEXT_INPUT\:EDIT_ENGINE {
 			background: _property($INPUT--BG, $EDIT-ENGINE);
 
-            @include text(12px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
+            @include text(13px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
         }
 
         %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:EDIT_ENGINE {
@@ -548,7 +548,7 @@
 
         %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:EDIT_ENGINE {
 			background: _property($INPUT--BG---DISABLED, $EDIT-ENGINE);
-            @include text(12px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
+            @include text(13px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
         }
 
 	// SEARCH PANEL EXCEPTION
@@ -580,7 +580,7 @@
         border: 1px solid transparent !important;
         transition: none !important;
 
-        @include text(12px, _property($INPUT--COLOR, $APP), $FONT--WEIGHT---SEMILIGHT);
+        @include text(13px, _property($INPUT--COLOR, $APP), $FONT--WEIGHT---SEMILIGHT);
     }
 
 	%CSS_BLOCK--FORM--TEXT_AREA---HOVER {
@@ -600,14 +600,14 @@
         // border: 1px solid _property($INPUT--BORDER---DISABLED, $APP);
         transition: $DEFAULT--TRANSITION;
 
-        @include text(12px, _property($INPUT--COLOR---DISABLED, $APP), $FONT--WEIGHT---SEMILIGHT);
+        @include text(13px, _property($INPUT--COLOR---DISABLED, $APP), $FONT--WEIGHT---SEMILIGHT);
     }
 
 	// EDIT ENGINES EXCEPTION
 		%CSS_BLOCK--FORM--TEXT_AREA\:EDIT_ENGINE {
 			background: _property($INPUT--BG, $EDIT-ENGINE) !important;
 
-			@include text(12px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
+			@include text(13px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
 		}
 
 		%CSS_BLOCK--FORM--TEXT_AREA---HOVER\:EDIT_ENGINE {
@@ -622,7 +622,7 @@
 
 		%CSS_BLOCK--FORM--TEXT_AREA---DISABLED\:EDIT_ENGINE {
 			background: _property($INPUT--BG---DISABLED, $EDIT-ENGINE) !important;
-			@include text(12px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
+			@include text(13px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
 		}
 
 
@@ -631,7 +631,7 @@
         %CSS_BLOCK--FORM--TEXT_INPUT\:DUAL_LIST {
 			background: _property($INPUT--BG, $EDIT-ENGINE) !important;
 
-            @include text(12px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
+            @include text(13px, _property($INPUT--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---SEMILIGHT);
         }
 
         %CSS_BLOCK--FORM--TEXT_INPUT---HOVER\:DUAL_LIST {
@@ -646,7 +646,7 @@
 
         %CSS_BLOCK--FORM--TEXT_INPUT---DISABLED\:DUAL_LIST {
 			background: _property($INPUT--BG---DISABLED, $EDIT-ENGINE) !important;
-            @include text(12px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
+            @include text(13px, _property($INPUT--COLOR---DISABLED, $EDIT-ENGINE) !important, $FONT--WEIGHT---SEMILIGHT);
         }
 
 	// PICKER SEARCH

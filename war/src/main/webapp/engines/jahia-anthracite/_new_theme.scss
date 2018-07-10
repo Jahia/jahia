@@ -647,8 +647,8 @@ $INPUT--COLOR---DISABLED:(
 );
 
 $INPUT--BG---DISABLED:(
-	LIGHT: _theme-color(secondary, c),
-	DARK: _theme-color(secondary, c)
+	LIGHT: #BDBDBD,
+	DARK: #BDBDBD
 );
 
 $INPUT--BORDER---DISABLED:(
@@ -825,7 +825,7 @@ $MENU-SCROLL--BG:(
 // TITLE
 $MENU-TITLE--COLOR:(
 	LIGHT: _theme-color(secondary, c),
-	DARK: _theme-color(quinary, c),
+	DARK: #F5F5F5,
 );
 
 $MENU-TITLE--BG:(
@@ -1002,33 +1002,33 @@ $MENU-CLOSED--OPTIONS-BG---HOVER: (
 // OPENED UP
 $MENU-OPENED--COLOR:(
 	LIGHT: _theme-color(secondary, a),
-	DARK: _theme-color(senary)
+	DARK: white
 );
 
 $MENU-OPENED--BG:(
 	LIGHT: _theme-color(primary, g),
-	DARK: _theme-color(quinary),
+	DARK: #007cb0,
 );
 
 // OPENED HOVER
 $MENU-OPENED--COLOR---HOVER:(
 	LIGHT: _theme-color(senary),
-	DARK: _theme-color(senary),
+	DARK: white,
 );
 
 $MENU-OPENED--BG---HOVER:(
 	LIGHT: _theme-color(primary, f),
-	DARK: _theme-color(quinary, a),
+	DARK: lighten(#007cb0, 2%),
 );
 
 $MENU-OPENED--COLOR---DISABLED:(
 	LIGHT: _theme-color(white, b),
-	DARK: _theme-color(white, b),
+	DARK: rgba(255, 255, 255, 0.8),
 );
 
 $MENU-OPENED--BG---DISABLED:(
 	LIGHT: _theme-color(quinary, a),
-	DARK: _theme-color(quinary, a),
+	DARK: #007cb0,
 );
 
 

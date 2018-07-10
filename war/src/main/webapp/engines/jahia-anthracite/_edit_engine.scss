@@ -463,6 +463,12 @@ div.engine-window {
 		width: 100%!important;
 		min-width: 0;
 
+		&:nth-child(odd) {
+			background: linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%)!important;
+		}
+
+		border: none!important;
+
 		// &.x-panel-collapsed {
 		// 	.x-form-label-left {
 		// 		display: none;
@@ -3336,7 +3342,7 @@ body[data-indigo-add-visibility-condition="new"] {
 
 		.x-grid3-hh {
 			margin: 2px 2px 8px;
-			width: calc(100% - 167px) !important;
+			width: 100% !important;
 			border-bottom: 1px solid _theme-color(secondary, a);
 			text-transform: uppercase;
 			color: _theme-color(black, b);
@@ -3375,7 +3381,7 @@ body[data-indigo-add-visibility-condition="new"] {
 
 		> .x-grid3-body {
 			padding-bottom: 30px;
-			width: calc(100% - 180px) !important;
+			width: 100% !important;
 		}
 
 	}
@@ -3482,7 +3488,7 @@ body[data-indigo-add-visibility-condition="new"] {
 	.x-row-editor .x-btns {
 		background: transparent;
 		position: absolute;
-		right: -16px !important;
+		right: 235px !important;
 		top: 4px !important;
 		left: initial !important;
 

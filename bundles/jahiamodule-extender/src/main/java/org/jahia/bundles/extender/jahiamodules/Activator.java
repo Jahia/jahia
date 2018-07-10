@@ -55,6 +55,7 @@ import org.jahia.bundles.extender.jahiamodules.transform.ModuleDependencyURLStre
 import org.jahia.bundles.extender.jahiamodules.transform.ModuleUrlTransformer;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
+import org.jahia.data.templates.ModuleState.State;
 import org.jahia.osgi.BundleLifecycleUtils;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
@@ -147,6 +148,8 @@ public class Activator implements BundleActivator {
     private Map<Bundle, ModuleState> moduleStates;
     private FileInstallConfigurer fileInstallConfigurer;
     private PaxLoggingConfigurer log4jConfigurer;
+
+    private Boolean stopBundleWithErrorInRules;
 
     public Activator() {
         instance = this;
@@ -245,6 +248,8 @@ public class Activator implements BundleActivator {
 
         log4jConfigurer = new PaxLoggingConfigurer();
         log4jConfigurer.start(context);
+        
+        stopBundleWithErrorInRules = Boolean.valueOf(SettingsBean.getInstance().getString("jahia.modules.stopBundleWithErrorInRules", "true"));
 
         logger.info("== DX Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
     }
@@ -837,8 +842,20 @@ public class Activator implements BundleActivator {
         try {
             scannerAndObserver.getValue().addingEntries(bundle, foundURLs);
         }  catch (Exception e) {
-            logger.error("--- Error parsing rules for DX OSGi bundle " + jahiaTemplatesPackage.getId() + " v" + jahiaTemplatesPackage.getVersion(), e);
+            String bundleDisplayName = jahiaTemplatesPackage.getId() + " v" + jahiaTemplatesPackage.getVersion();
+            logger.error("--- Error parsing rules for DX OSGi bundle " + bundleDisplayName, e);
             setModuleState(bundle, ModuleState.State.ERROR_WITH_RULES, e);
+
+            if (stopBundleWithErrorInRules) {
+                logger.info("--- The DX OSGi bundle {} v{} will be stopped", jahiaTemplatesPackage.getId(),
+                        jahiaTemplatesPackage.getVersion());
+                try {
+                    bundle.stop();
+                    logger.info("...bundle {} stopped", bundleDisplayName);
+                } catch (BundleException be) {
+                    logger.error("Unable to stop bundle " + bundleDisplayName, e);
+                }
+            }
         }
     }
 
@@ -887,7 +904,9 @@ public class Activator implements BundleActivator {
         }
 
         logger.info("--- Stopping DX OSGi bundle {} --", getDisplayName(bundle));
-        setModuleState(bundle, ModuleState.State.STOPPING, null);
+        if (!keepPreviousStateOnStop(bundle)) {
+            setModuleState(bundle, ModuleState.State.STOPPING, null);
+        }
 
         long startTime = System.currentTimeMillis();
 
@@ -929,6 +948,11 @@ public class Activator implements BundleActivator {
 
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished stopping DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
+    }
+
+    private boolean keepPreviousStateOnStop(Bundle bundle) {
+        ModuleState moduleState = getModuleState(bundle);
+        return moduleState != null && (moduleState.getState() == State.SPRING_NOT_STARTED || moduleState.getState() == State.ERROR_WITH_RULES);
     }
 
     private static boolean isInvalid(ModuleState.State moduleState) {
@@ -997,7 +1021,9 @@ public class Activator implements BundleActivator {
             return;
         }
 
-        setModuleState(bundle, ModuleState.State.RESOLVED, null);
+        if (!keepPreviousStateOnStop(bundle)) {
+            setModuleState(bundle, ModuleState.State.RESOLVED, null);
+        }
     }
 
     private void registerHttpResources(final Bundle bundle) {

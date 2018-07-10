@@ -117,7 +117,7 @@ public class JahiaOsgiBundleApplicationContextListener implements
                 logger.info("Stopping module, no license");
                 try {
                     bundle.stop();
-                    logger.info("Stopping module, xtooped");
+                    logger.info("...bundle {} stopped", bundleDisplayName);
                 } catch (BundleException e) {
                     logger.error("Unable to stop bundle " + bundleDisplayName + " due to: " + e.getMessage(), e);
                 }

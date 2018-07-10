@@ -277,46 +277,42 @@ public class ModuleDeploymentTest {
 
     @Test
     public void testJarWithFailingRules() throws RepositoryException {
-        SettingsBean settingsBean = SettingsBean.getInstance();
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            @Override
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                File tmpFile = null;
+                try {
+                    tmpFile = File.createTempFile("module", ".jar");
+                    FileUtils.copyURLToFile(managerService.getTemplatePackageById("jahia-test-module")
+                            .getResource("dummy1-" + "1.0" + ".jar").getURL(), tmpFile);
+                    Map<String, String> env = new HashMap<>();
+                    env.put("create", "true");
+                    FileSystem fs = FileSystems.newFileSystem(URI.create("jar:" + tmpFile.toURI().toURL()), env);
+                    File droolsFile = File.createTempFile("rules", ".drl");
+                    FileUtils.writeStringToFile(droolsFile, "dummy text");
+                    Files.copy(droolsFile.toPath(), fs.getPath("/META-INF/rules.drl"),
+                            StandardCopyOption.REPLACE_EXISTING);
+                    FileUtils.deleteQuietly(droolsFile);
+                    fs.close();
 
-        File f = null;
-        try {
-            File tmpFile = File.createTempFile("module",".jar");
-            InputStream stream = managerService.getTemplatePackageById("jahia-test-module").getResource("dummy1-" + "1.0" + ".jar").getInputStream();
-            FileUtils.copyInputStreamToFile(stream,  tmpFile);
-            Map<String, String> env = new HashMap<>();
-            env.put("create", "true");
-            FileSystem fs = FileSystems.newFileSystem(URI.create("jar:" + tmpFile.toURI().toURL()), env);
-            File droolsFile = File.createTempFile("rules", ".drl");
-            FileUtils.writeStringToFile(droolsFile, "dummy text");
-            Files.copy(droolsFile.toPath(), fs.getPath("/META-INF/rules.drl"), StandardCopyOption.REPLACE_EXISTING);
-            fs.close();
+                    JahiaTemplatesPackage pack = managerService.deployModule(tmpFile, session);
 
-            FileUtils.copyFileToDirectory(tmpFile, new File(settingsBean.getJahiaModulesDiskPath()));
-            f = new File(settingsBean.getJahiaModulesDiskPath(), tmpFile.getName());
-
-            FileUtils.deleteQuietly(droolsFile);
-            FileUtils.deleteQuietly(tmpFile);
-
-            with().pollInterval(Duration.ONE_SECOND).await().atMost(20, SECONDS).until(isPackageDeployedAndServiceInstalled("dummy1"));
-
-            JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
-
-            assertNotNull(pack);
-            assertEquals("Module is not with invalid rule state", ModuleState.State.ERROR_WITH_RULES, pack.getState().getState());
-
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            fail(e.toString());
-        } finally {
-            FileUtils.deleteQuietly(f);
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                logger.error(e.getMessage(), e);
+                    // we expect the module to be in ERROR_WITH_RULES and the bundle in RESOLVED state after deployment
+                    with().pollInterval(Duration.ONE_SECOND).await().atMost(20, SECONDS).until(new Callable<Boolean>() {
+                        public Boolean call() throws Exception {
+                            return pack.getState().getState() == ModuleState.State.ERROR_WITH_RULES
+                                    && pack.getBundle().getState() == Bundle.RESOLVED;
+                        }
+                    });
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                    fail(e.toString());
+                } finally {
+                    FileUtils.deleteQuietly(tmpFile);
+                }
+                return null;
             }
-        }
-
+        });
     }
 
     private Callable<Boolean> isPackageDeployedAndServiceInstalled(final String packageId) {
@@ -328,7 +324,6 @@ public class ModuleDeploymentTest {
         };
     }
 
-    
     @Test
     public void testJarUndeploy() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {

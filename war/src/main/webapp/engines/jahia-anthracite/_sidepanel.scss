@@ -1288,13 +1288,13 @@ body[indigo-dragging-panel] {
 
 			.x-toolbar-right {
 				position: relative;
-				top: 6px;
+				top: 5px;
 			}
 
 			.x-toolbar-left {
 
 				position: absolute;
-    			top: 13px;
+    			top: 23px;
 
 
 				.x-toolbar-cell {
@@ -1421,9 +1421,11 @@ body[indigo-dragging-panel] {
 			// left: 539px;
 			text-align: center;
 
-			font-style: italic;
+			font-style: normal;
+			text-transform: uppercase;
+			cursor: default;
 
-			@include text(10px, rgba(_theme-color(secondary), 0.6), $FONT--WEIGHT---NORMAL);
+			@include text(9px, rgba(_theme-color(secondary), 0.6), $FONT--WEIGHT---BOLD);
 
 		}
 

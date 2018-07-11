@@ -4025,7 +4025,6 @@ if (!Element.prototype.matches) {
                 app.edit.sidepanel.initChannels();
 
 
-				console.log("Edit on open")
 				app.edit.resizeLanguageInput()
 
 
@@ -5578,7 +5577,6 @@ if (!Element.prototype.matches) {
         attach: function(){
 			DexV2("body")
 				.onAttribute("body", "data-sitekey", function(){
-					console.log("changed site settings(" + app.edit.settings.data.opened + ")")
 
 
 					var languageInput = DexV2(".edit-menu-sites input")
@@ -5610,7 +5608,6 @@ if (!Element.prototype.matches) {
 					}
 
 					if(DexV2.getCached("body").getAttribute("data-sitesettings") == "true"){
-						console.log("changing in site settings")
 						DexV2.id("JahiaGxtSidePanelTabs__JahiaGxtSettingsTab").trigger("mousedown").trigger("mouseup");
 
 					}
@@ -5916,22 +5913,22 @@ if (!Element.prototype.matches) {
                         var isTreeEntry = DexV2.node(this).parent().hasClass("results-column");
 
     					if(isTreeEntry){
-    						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
-    							DexV2.id("JahiaGxtCategoryBrowseTab").removeClass("show-results");
-
-    						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
-    							DexV2.id("JahiaGxtContentBrowseTab").removeClass("show-results");
-
-    						} else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
-    							DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
-
-    						}  else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
-    							DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
-
-    						}
-
-
-    						DexV2.getCached("body").removeClass("show-results");
+    						// if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
+    						// 	DexV2.id("JahiaGxtCategoryBrowseTab").removeClass("show-results");
+                            //
+    						// } else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtContentBrowseTab"){
+    						// 	DexV2.id("JahiaGxtContentBrowseTab").removeClass("show-results");
+                            //
+    						// } else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtSearchTab"){
+    						// 	DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
+                            //
+    						// }  else if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){
+    						// 	DexV2.id("JahiaGxtSearchTab").removeClass("show-results");
+                            //
+    						// }
+                            //
+                            //
+    						// DexV2.getCached("body").removeClass("show-results");
     					}
     				}
 
@@ -5944,7 +5941,7 @@ if (!Element.prototype.matches) {
 							app.edit.sidepanel.resizeSidePanel();
 						}
 
-    					if(isTreeEntry){
+    					if(isTreeEntry || 1 === 1){
 
 
     						if(app.edit.sidepanel.data.currentTab == "JahiaGxtSidePanelTabs__JahiaGxtCategoryBrowseTab"){

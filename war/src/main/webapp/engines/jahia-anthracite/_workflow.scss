@@ -315,12 +315,14 @@
 .publicationstatuswindow-card.engine-panel,
 .publicationstatuswindow-card.engine-window {
 
+    background: linear-gradient(to right bottom, #F5F5F5 50%, #e5e4e4 100%);
+
 	> div.x-panel-header {
 		pointer-events: none;
 	}
 
 	.x-toolbar-left {
-		bottom: 19px!important;
+		bottom: 10px!important;
 	}
 
 	.x-tab-strip {
@@ -331,20 +333,24 @@
 		box-shadow: inset 0 1px 2px 1px _theme-color(black, a);
 
 		width: 100% !important;
-		padding-top: 16px;
+		padding: 0;
 		margin-top: 8px;
-		height: calc(100% - 341px)!important;
+		height: calc(100% - 317px) !important;
+	    background: linear-gradient(to bottom, #DBDBDB 1%, #d5d5d5 100%);
 	}
 
 	> div.x-panel-header .x-panel-header-text {
-	    color: _property($SUBTITLE--COLOR, $EDIT-ENGINE);
+	    color: #007cb0;
 	    display: inline-block;
 	    position: fixed;
 	    width: 100%;
-			left: 30px;
-			top: 60px;
-			font-weight: 100;
-			max-width: calc(100% - 100px);
+		left: 6px;
+		top: 44px;
+		font-weight: 100;
+		max-width: calc(100% - 100px);
+		font-weight: 300;
+		font-size: 18px;
+
 
 			&:before {
 			    display: none;
@@ -352,7 +358,7 @@
 	}
 
 	> .x-panel-bwrap {
-	    margin-top: 96px;
+	    margin-top: 116px;
 
 			.x-panel-body.x-panel-body-noborder {
 			    overflow: hidden !important;
@@ -484,10 +490,15 @@
 .workflowactiondialog-ctn,
 .publicationstatuswindow-ctn {
 
+		fieldset.x-fieldset:nth-child(odd) {
+			background: none!important;
+		}
+
 
 		> .x-border-panel:first-child {
 			height: 150px !important;
 			width: 100% !important;
+			z-index: 9999999;
 		}
 
 		.x-border-panel:nth-child(2) .x-panel-body.x-panel-body-noheader.x-panel-body-noborder {
@@ -495,7 +506,7 @@
 		}
 
 		.x-border-panel > .x-panel-bwrap {
-			width: calc(100% - 162px) !important;
+			width: calc(100% - 16px) !important;
 			height: 100% !important;
 
 			&:only-child {
@@ -510,10 +521,18 @@
 		}
 
 		.x-grid3-body {
-			padding: 0 72px;
+			padding: 0 47px;
 		}
 
 		.workflow-action-dialog {
+
+			.x-tab-panel-header {
+				top: 284px !important;
+			    height: calc(100% - 338px) !important;
+			    padding-top: 30px!important;
+			    background: whitesmoke!important;
+			    box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.2), 0px 2px 3px rgba(0, 0, 0, 0.2)!important;
+			}
 
 			.x-grid3 .x-grid3-row-table .x-grid3-cell {
 				width: 25%!important;
@@ -543,17 +562,17 @@
 			}
 
 			.x-border-panel img.gwt-Image {
-				background: _theme-color(quaternary);
-				position: relative;
-				overflow: hidden;
-				width: 11px;
-				height: 11px;
-				padding: 11px 11px 0 0;
-				box-sizing: border-box;
-				border-radius: 50%;
-				margin-left: 4px;
-				margin-right: 4px;
-				margin-top: 1px;
+				// background: _theme-color(quaternary);
+				// position: relative;
+				// overflow: hidden;
+				// width: 11px;
+				// height: 11px;
+				// padding: 11px 11px 0 0;
+				// box-sizing: border-box;
+				// border-radius: 50%;
+				// margin-left: 4px;
+				// margin-right: 4px;
+				// margin-top: 1px;
 			}
 
 		}
@@ -645,8 +664,22 @@
 
 		.x-border-layout-ct:nth-child(1) > .x-border-panel {
 			//height: 24px !important;
-			margin-top: 14px;
+			// margin-top: 14px;
 			color: _property($SUBTITLE--COLOR, $EDIT-ENGINE);
+			padding-top: 20px;
+			height: calc(100% - 3px)!important;
+			margin: 0!important;
+			width: calc(100% - 30px)!important;
+
+			> table.x-component {
+				margin: 0 0 0 25px;
+			}
+
+			.x-component {
+				font-size: 14px;
+				color: #363636;
+				font-weight: 300;
+			}
 		}
 
 		.x-tab-panel-body {
@@ -660,8 +693,16 @@
 			.x-grid3-scroller .x-grid3-body {
 				overflow-x: hidden;
 				overflow-y: scroll;
-				width: calc(100% - 180px);
+				width: calc(100% - 14px);
 				padding-right: 10px;
+
+				> .x-grid-group {
+					padding-left: 20px;
+
+					&:nth-child(even) {
+						background: linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%);
+					}
+				}
 			}
 
 			.x-panel-fbar .x-btn.x-btn-noicon button {
@@ -672,16 +713,17 @@
 			}
 
 			.x-grid-group-hd {
-		    border-bottom-color: _theme-color(primary, d);
-		    border-width: 1px;
-		    border-bottom-style: dashed;
+		    // border-bottom-color: _theme-color(primary, d);
+		    // border-width: 1px;
+		    // border-bottom-style: dashed;
+			border:none;
 		    padding: 4px 0;
 		    padding-top: 8px;
 
 				.x-grid-group-div {
 					color: _property($FIELDSET--TITLE-COLOR, $EDIT-ENGINE);
-					font-weight: 500;
-					font-size: 14px;
+					font-weight: 300;
+					font-size: 18px;
 					font-family: "Nunito Sans", sans-serif;
 					padding-left: 11px;
 					background-image: url(./images/icons/icon-toggle-expanded-small-normal.png);
@@ -698,7 +740,9 @@
 			}
 
 			.x-grid3 .x-grid3-row-table .x-grid3-cell .x-grid3-cell-inner {
-				color: _property($ROW--COLOR--DIMMED, $EDIT-ENGINE);
+				font-size: 14px;
+				color: #363636;
+				font-weight: 300;
 			}
 
 		}
@@ -730,10 +774,16 @@
 						position: relative;
 						margin-bottom: 1px;
 						border: none!important;
-						background: url(./images/icons/speech-DARK@X2.png) no-repeat center left 10px _property($COMMENTS--BG, $EDIT-ENGINE) !important;
+						background: url(./images/icons/speech-DARK@X2.png) no-repeat center left 10px !important;
 						background-size: 29px!important;
 						padding: 7px 10px 7px 50px;
 					  box-sizing: border-box;
+					  margin-left: 2px;
+
+					  &:nth-child(even) {
+						  background: url(./images/icons/speech-DARK@X2.png) no-repeat center left 10px, linear-gradient(to right, #e3e2e2 50%, rgba(227, 226, 226, 0) 100%) !important;
+						background-size: 29px, 100% !important;
+					  }
 
 						> table {
 							width: 100%;
@@ -747,7 +797,7 @@
 									margin-top: 21px;
 
 									div {
-										@include text(14px, _property($COMMENTS--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+										@include text(14px, _property($COMMENTS--COLOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
 									}
 								}
 
@@ -762,14 +812,14 @@
 										&:nth-child(1) {
 											// Date
 											div {
-												@include text(11px, _property($COMMENTS--COLOR--DATE, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+												@include text(14px, _property($COMMENTS--COLOR--DATE, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
 											}
 										}
 
 										&:nth-child(2) {
 											// Author
 											div {
-												@include text(11px, _property($COMMENTS--COLOR--AUTHOR, $EDIT-ENGINE), $FONT--WEIGHT---EXTRALIGHT);
+												@include text(14px, _property($COMMENTS--COLOR--AUTHOR, $EDIT-ENGINE), $FONT--WEIGHT---LIGHT);
 											}
 										}
 									}
@@ -818,7 +868,7 @@
 					textarea {
 						@include _input($EDIT-ENGINE);
 						height: 100%!important;
-						width: calc(100% - 52px) !important;
+						width: calc(100% - 32px) !important;
 					}
 				}
 
@@ -834,7 +884,7 @@
 			form button.x-btn-text {
 				position: relative;
 				top: -42px;
-				left: 31px;
+				left: 41px;
 				color: _theme-color(secondary, g) !important;
 			}
 
@@ -847,6 +897,7 @@
 				overflow-x: hidden;
 				height: 87px !important;
 				padding: 2px;
+				width: 100%!important;
 			}
 
 		}

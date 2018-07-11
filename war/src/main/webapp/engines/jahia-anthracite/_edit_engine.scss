@@ -225,6 +225,7 @@ div.engine-window {
 			padding: 50px 20px 0 43px;
 			background: grey;
 		    top: 0;
+			left: 0;
 		    position: fixed;
 			box-shadow: 0px 2px 12px 0px rgba(58, 58, 58, 0.4);
 			background: linear-gradient(to right bottom, #F5F5F5 50%, #e5e4e4 100%);
@@ -444,8 +445,8 @@ div.engine-window {
 
 			display: block!important;
 			position: fixed!important;
-			top: 99px!important;
-			left: 72px!important;
+			top: 79px !important;
+		    left: 47px !important;
 			width: 250px!important;
 			overflow: hidden!important;
 			text-overflow: ellipsis!important;

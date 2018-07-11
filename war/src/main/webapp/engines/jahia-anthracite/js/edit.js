@@ -2008,6 +2008,7 @@ if (!Element.prototype.matches) {
 			},
 			repositionSidePanel: function(splitterLeft){
 				app.dev.log("::: APP ::: PICKER ::: REPOSITIONSIDEPANEL");
+                console.log("picker.repositionSidePanel(" + splitterLeft + ")")
 
                 var isNestedPicker = DexV2.getCached("body").getAttribute("data-indigo-sub-picker") == "open";
 
@@ -2120,6 +2121,7 @@ if (!Element.prototype.matches) {
 			},
 			onResize: function(attr, value){
 				app.dev.log("::: APP ::: PICKER ::: ONRESIZE");
+                console.log("picker.onResize(" + attr + ", " + value + ")", this)
 
 				// User has resized the left panel in a picker
 
@@ -5616,7 +5618,7 @@ if (!Element.prototype.matches) {
 				})
 				.onAttribute("body", "data-langdisplayname", app.edit.resizeLanguageInput)
                 .onAttribute("#JahiaGxtContentPickerWindow .x-vsplitbar, #contentpicker .x-vsplitbar, #contentmanager .x-vsplitbar, #JahiaGxtContentPicker .x-vsplitbar", "style", app.picker.onResize)
-                .onAttribute(".x-vsplitbar", "style", app.picker.onResize)
+                // .onAttribute(".x-vsplitbar", "style", app.picker.onResize)
 				.onOpen(".x-window", function(){
 
 					// Get close button

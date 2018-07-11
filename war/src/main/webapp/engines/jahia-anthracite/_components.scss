@@ -9,6 +9,26 @@
 	box-shadow: none;
 	background: transparent!important;
 
+	.x-date-hours-panel {
+		margin-top: 22px;
+
+		&:before {
+			content: $text_timepicker;
+			@include text(11px, _theme-color(secondary), $FONT--WEIGHT---NORMAL);
+			text-transform: uppercase;
+			bottom: 40px;
+			position: absolute;
+		}
+
+	}
+
+	&.x-menu {
+
+		body[data-indigo-styled-combos="true"] & {
+			z-index: 1068 !important;
+		}
+
+	}
 
 	td {
 		transition: all 0.15s ease-in 0s;

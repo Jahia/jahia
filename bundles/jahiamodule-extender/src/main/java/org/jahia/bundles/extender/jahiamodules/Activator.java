@@ -103,7 +103,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_DX;
 import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES;
@@ -150,6 +154,7 @@ public class Activator implements BundleActivator {
     private PaxLoggingConfigurer log4jConfigurer;
 
     private Boolean stopBundleWithErrorInRules;
+    private ExecutorService executorService;
 
     public Activator() {
         instance = this;
@@ -430,6 +435,7 @@ public class Activator implements BundleActivator {
 
         logger.info("== Stopping DX Extender ============================================================== ");
         long startTime = System.currentTimeMillis();
+        shutdownExecutorService(10);
 
         if (fileInstallConfigurer != null) {
             fileInstallConfigurer.stop();
@@ -847,14 +853,21 @@ public class Activator implements BundleActivator {
             setModuleState(bundle, ModuleState.State.ERROR_WITH_RULES, e);
 
             if (stopBundleWithErrorInRules) {
-                logger.info("--- The DX OSGi bundle {} v{} will be stopped", jahiaTemplatesPackage.getId(),
-                        jahiaTemplatesPackage.getVersion());
-                try {
-                    bundle.stop();
-                    logger.info("...bundle {} stopped", bundleDisplayName);
-                } catch (BundleException be) {
-                    logger.error("Unable to stop bundle " + bundleDisplayName, e);
-                }
+                // we execute bundle.stop() in another thread to prevent contention
+                getExecutorService().submit(new Callable<Object>() {
+                    @Override
+                    public Object call() throws Exception {
+                        logger.info("--- The DX OSGi bundle {} v{} will be stopped", jahiaTemplatesPackage.getId(),
+                                jahiaTemplatesPackage.getVersion());
+                        try {
+                            bundle.stop();
+                            logger.info("...bundle {} stopped", bundleDisplayName);
+                        } catch (BundleException be) {
+                            logger.error("Unable to stop bundle " + bundleDisplayName, e);
+                        }
+                        return null;
+                    }
+                });
             }
         }
     }
@@ -1130,5 +1143,29 @@ public class Activator implements BundleActivator {
                 && !pkg.getDepends().contains(JahiaTemplatesPackage.NAME_DEFAULT)
                 && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
                 .contains(pkg.getId());
+    }
+
+    private ExecutorService getExecutorService() {
+        if (executorService == null) {
+            executorService = Executors.newSingleThreadExecutor();
+        }
+
+        return executorService;
+    }
+
+    private void shutdownExecutorService(long maxSecondsToWait) {
+        if (executorService == null) {
+            return;
+        }
+        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(maxSecondsToWait, TimeUnit.SECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            // Ignore
+        }
+        
+        executorService = null;
     }
 }

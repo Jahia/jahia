@@ -490,6 +490,8 @@
 .workflowactiondialog-ctn,
 .publicationstatuswindow-ctn {
 
+	background: linear-gradient(to right bottom, whitesmoke 50%, #e5e4e4 100%)!important;
+
 		fieldset.x-fieldset:nth-child(odd) {
 			background: none!important;
 		}
@@ -749,8 +751,9 @@
 
 		.x-border-layout-ct:nth-child(2) {
 			width: 100%!important;
+			// display: block!important;
 
-			height: auto !important;
+			height: 100% !important;
 			> .x-border-panel {
 				position: initial !important;
 
@@ -939,17 +942,27 @@
 
 				div.x-tab-panel-body {
 					height: calc(100% - 163px) !important;
+
+					> div:not(.x-border-layout-ct) {
+						height: auto!important;
+
+						> div {
+							height: auto!important
+						}
+					}
 				}
 
 				.x-tab-strip.x-tab-strip-top {
 					margin-top: 20px!important;
 				}
 
-				margin-top: 96px;
+				margin-top: 274px;
+				background: linear-gradient(to bottom, #dbdbdb 1%, #d5d5d5 100%);
+				box-shadow: inset 0 1px 2px 1px rgba(0, 0, 0, 0.2);
 			}
 
 			.x-toolbar-left {
-				bottom: 19px!important;
+				bottom: 10px!important;
 			}
 
 			.x-tab-strip {
@@ -961,14 +974,15 @@
 			}
 
 			> div.x-panel-header .x-panel-header-text {
-				color: _property($SUBTITLE--COLOR, $EDIT-ENGINE);
+				color: #007cb0;
 		    display: inline-block;
 		    position: fixed;
 		    width: 100%;
-				left: 30px;
-				top: 60px;
-				font-weight: 100;
-				max-width: calc(100% - 100px);
+			left: 6px;
+		    top: 44px;
+		    font-weight: 100;
+		    max-width: calc(100% - 100px);
+		    font-size: 18px;
 
 				&:before {
 					content: "" !important;
@@ -979,10 +993,6 @@
 			> .x-panel-bwrap {
 
 				> .x-panel-bbar {
-					// background: #474a4c;
-					// width: 100% !important;
-					// position: fixed;
-					// height: 82px;
 					padding-bottom: 20px;
 
 					.x-toolbar-ct {
@@ -992,39 +1002,29 @@
 					.x-panel-fbar .x-toolbar-cell {
 
 						padding-bottom: 0!important;
-				    float: right;
-				    margin-left: 5px !important;
+					    float: right;
+					    margin-left: 5px !important;
 
-						button {
-							padding: 10px 20px !important;
-							background: _theme-color(secondary, a) !important;
-							font-family: $FONT--FAMILY---NUNITO;
-							font-size: 14px;
-							color: _theme-color(primary) !important;
-							font-weight: $FONT--WEIGHT---EXTRALIGHT;
+						> table:not(.button-cancel) {
+							button {
+								padding: 8px 15px !important;
+								background: #007cb0 !important;
+								font-family: $FONT--FAMILY---NUNITO;
+								font-size: 14px;
+								color: #F5F5F5 !important;
+								font-weight: $FONT--WEIGHT---EXTRALIGHT;
+								height: auto;
+							    width: auto!important;
 
-							img {
-								display: none;
+								img {
+									display: none;
+								}
 							}
 						}
 
-						&:first-child button {
-							background: _theme-color(tertiary) !important;
-							color: _theme-color(secondary) !important;
-							height: auto;
-						    width: auto!important;
 
-
-						}
 
 					}
-
-					// .x-btn.x-btn-noicon button {
-					// 	padding: 5px 10px;
-					// 	font-weight: 100;
-					// 	background: #a3a3a3 !important;
-					// 	font-size: 16px;
-					// }
 
 				}
 
@@ -1044,7 +1044,8 @@
 				}
 
 				> div:nth-child(1) {
-					overflow: hidden;
+					overflow: scroll;
+					height: calc(100% - 169px)!important;
 				}
 
 			}

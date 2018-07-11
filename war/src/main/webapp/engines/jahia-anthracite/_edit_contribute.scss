@@ -1268,6 +1268,10 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
     pointer-events: none;
     transition: all 0.3s ease-in 0s;
 
+    .x-item-disabled {
+      display: none;
+    }
+
     &::before {
 		content: $text_dxm;
 	    display: block;

@@ -1246,7 +1246,7 @@ body[data-indigo-app="contribute"] {
     &:before {
         content: "App Title";
         position: absolute;
-        bottom: 2vh;
+        bottom: 18px;
         text-align: center;
         text-indent: 0;
         left: 0;
@@ -1448,7 +1448,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
             content: $text_app_content_manager;
         }
         background: url(./images/icons_light/dashboard.svg) no-repeat #00a0e3 center top 30%!important;
-        background-size: 5vh!important;
+        background-size: 36% !important;
     }
 
     // Site Manager button ( Small )
@@ -1458,7 +1458,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
             content: $text_app_site_manager;
         }
         background: url(./images/logos/app-site.svg) no-repeat #00a0e3 center top 30%!important;
-		background-size: 5vh!important;
+		background-size: 36% !important;
     }
 
     // Repository Explorer button ( Small )
@@ -1468,7 +1468,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
             content: $text_app_repository;
         }
         background: url(./images/icons_light/repository.svg) no-repeat #00a0e3 center top 30%!important;
-		background-size: 5vh!important;
+		background-size: 36% !important;
     }
 
     // Category Manager button ( Small )
@@ -1478,7 +1478,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
             content: $text_app_categories;
         }
         background: url(./images/logos/app-category.svg) no-repeat #00a0e3 center top 30%!important;
-		background-size: 5vh!important;
+		background-size: 36% !important;
     }
 
     // Portlet Manager button ( Small )
@@ -1488,7 +1488,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
             content: $text_app_portlet_manager;
         }
         background: url(./images/logos/app-portlet.svg) no-repeat #00a0e3 center top 30%!important;
-		background-size: 5vh!important;
+		background-size: 36% !important;
     }
 
     // Documentation button ( Small )
@@ -1498,7 +1498,7 @@ div.x-menu.action-bar-menu.menu-editmode-managers-menu {
             content: $text_app_documentation;
         }
         background: url(./images/icons_light/documentation.svg) no-repeat #00a0e3 center top 30%!important;
-		background-size: 5vh!important;
+		background-size: 36% !important;
     }
 
     // Highlght the selected app button

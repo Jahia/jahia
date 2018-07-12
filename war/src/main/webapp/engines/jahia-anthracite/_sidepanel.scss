@@ -55,39 +55,39 @@ body[indigo-dragging-panel] {
 
 		body[data-sitesettings="true"][data-indigo-gwt-side-panel="open"] &,
 		body[data-sitesettings="true"][data-indigo-gwt-side-panel="open"][data-indigo-gwt-panel-tab="JahiaGxtSidePanelTabs__JahiaGxtPagesTab"] & {
-			// display: none;
-			display: block!important;
-			overflow: visible;
-		    z-index: 9;
-		    top: 29px!important;
-		    left: 76px!important;
-
-			.x-form-field-wrap {
-				// Need to resize this with JS
-				// width: 58px!important;
-			}
-
-			input[type="text"] {
-				// width: 123px;
-				box-shadow: none;
-				background: #fafafa;
-				width: 100%!important;
-				font-size: 14px;
-				padding: 0 16px 0 0!important;
-
-
-			}
-
-			img {
-				position: absolute;
-			    top: 0;
-			    right: 0;
-			    width: 15px !important;
-			    height: 100% !important;
-			    border: none !important;
-			    background: url(./images/expanded-black.png) no-repeat left center transparent !important;
-			    background-size: 14px!important;
-			}
+			display: none!important;
+			// display: block!important;
+			// overflow: visible;
+		    // z-index: 9;
+		    // top: 29px!important;
+		    // left: 76px!important;
+			//
+			// .x-form-field-wrap {
+			// 	// Need to resize this with JS
+			// 	// width: 58px!important;
+			// }
+			//
+			// input[type="text"] {
+			// 	// width: 123px;
+			// 	box-shadow: none;
+			// 	background: #fafafa;
+			// 	width: 100%!important;
+			// 	font-size: 14px;
+			// 	padding: 0 16px 0 0!important;
+			//
+			//
+			// }
+			//
+			// img {
+			// 	position: absolute;
+			//     top: 0;
+			//     right: 0;
+			//     width: 15px !important;
+			//     height: 100% !important;
+			//     border: none !important;
+			//     background: url(./images/expanded-black.png) no-repeat left center transparent !important;
+			//     background-size: 14px!important;
+			// }
 		}
 
 		position: fixed;

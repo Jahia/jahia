@@ -410,7 +410,7 @@ body[indigo-dragging-panel] {
       pointer-events: all;
 			outline: none;
 
-			.x-item-disabled {
+			&.x-item-disabled {
 				display: none;
 			}
 

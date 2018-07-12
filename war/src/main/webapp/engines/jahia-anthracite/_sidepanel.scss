@@ -2006,7 +2006,8 @@ $side_panel__tab_buttons: (
 
 #JahiaGxtSettingsTab {
 	body[data-sitesettings="true"] .x-viewport-editmode & ,
-	.x-viewport-adminmode & {
+	.x-viewport-adminmode &,
+	.x-viewport-dashboardmode & {
 		height: 100%!important;
 		width: calc(100% + 22px) !important;
 		left:5px;
@@ -2394,8 +2395,8 @@ body[data-indigo-gwt-side-panel="open"] .x-viewport-editmode #JahiaGxtSettingsTa
 
 		.x-viewport-dashboardmode & {
 			content: $text_home !important;
-
-			padding-left: 39px;
+			top: 40px;
+		    left: 75px;
 		}
 
 		/* END TEMP */

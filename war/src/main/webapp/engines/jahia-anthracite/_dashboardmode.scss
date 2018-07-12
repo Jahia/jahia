@@ -6,6 +6,17 @@
 
 .x-viewport-dashboardmode {
 
+	#JahiaGxtSidePanelTabs {
+		.x-tab-panel-body {
+			height: calc(100% - 206px) !important;
+			overflow: auto;
+			overflow-x: hidden;
+			width: 100% !important;
+			margin-top: 52px !important;
+		    padding: 20px 30px 0;
+		}
+	}
+
 	.editmode-managers-menu {
 		&.x-hide-display {
 			display: block!important;
@@ -34,7 +45,10 @@
 	   }
 	   body[data-INDIGO-GWT-SIDE-PANEL="open"] & {
 			background: url(./images/dx_logo_solid.png) no-repeat top 3px left 10px;
-			background-size: 32px 32px;
+			top: 40px;
+		    left: 20px;
+		    background-size: 42px;
+		    width: 54px !important;
 	   }
 
 		   .x-btn-mc {

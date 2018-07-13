@@ -855,7 +855,12 @@ div[role="combobox"] {
 		@include _combo(LIGHT);
 
 		body[data-indigo-picker-search="open"] & {
-			@include _combo(DARK);
+			@include _combo(LIGHT);
+
+			input {
+				background: #F5F5F5!important;
+			    box-shadow: none!important;
+			}
 
 		}
 

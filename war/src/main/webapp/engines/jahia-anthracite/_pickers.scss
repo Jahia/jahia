@@ -1313,9 +1313,9 @@ body[indigo-dragging-panel="true"] {
 								&:nth-child(3){
 									> table {
 										position: fixed;
-									    bottom: 5px;
-									    right: 10px;
-									    background: _theme-color(secondary, b);
+										top: 44px;
+									    right: 7px;
+									    background: #007cb0;
 									    padding: 6px 10px;
 
 										> tbody {
@@ -1325,7 +1325,7 @@ body[indigo-dragging-panel="true"] {
 										&::before {
 											content: $text_save_search_results;
 
-											@include text(12px, _theme-color(primary, g), $FONT--WEIGHT---EXTRALIGHT);
+											@include text(12px, #F5F5F5, $FONT--WEIGHT---EXTRALIGHT);
 										}
 									}
 								}
@@ -3011,7 +3011,7 @@ body[indigo-dragging-panel="true"] {
 	body[indigo-picker-display="thumbsview"] &,
 	body[indigo-picker-display="detailedview"] & {
 		// Header backgrounds: have to make the header in these views higher until we can get rid of the File menu
-		box-shadow: inset 0px 87px 0px _theme-color(primary, g), inset 0px 88px 7px #222222;
+		// box-shadow: inset 0px 87px 0px _theme-color(primary, g), inset 0px 88px 7px #222222;
 
 		// Shift the Slider down too
 		.thumb-size-slider {
@@ -3096,7 +3096,7 @@ body[indigo-dragging-panel="true"] {
 			&.toolbar-itemsgroup-languageswitcher {
 				top: 5px!important;
 				right: 95px!important;
-				@include _combo(DARK);
+				@include _combo(LIGHT);
 				transition: none;
 
 			}

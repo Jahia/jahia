@@ -160,6 +160,13 @@ public class FileServlet extends HttpServlet {
                     }
 
                     if (isNotModified(fileKey, lastModifiedEntry, req, res)) {
+                        if (n.hasProperty("jcr:title")) {
+                            res.setHeader(
+                                    "Content-Disposition",
+                                    "inline; filename=\""
+                                    + n.getProperty("jcr:title").getValue().getString() + "\"");
+                        }    
+                    
                         // resource is not changed
                         code = HttpServletResponse.SC_NOT_MODIFIED;
                         res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
@@ -196,12 +203,18 @@ public class FileServlet extends HttpServlet {
                     }
 
                     ranges = useRanges ? RangeUtils.parseRange(req, res, fileEntry.getETag(), fileEntry.getLastModified(), fileEntry.getContentLength()) : null;
-
-                    if (fileKey.getPath().indexOf('%', fileKey.getPath().lastIndexOf('/')) != -1) {
+                    
+                    final JCRNodeWrapper node = getNode(fileKey);
+                    if (node != null && node.hasProperty("jcr:title")) {
                         res.setHeader(
                                 "Content-Disposition",
                                 "inline; filename=\""
-                                        + JCRContentUtils.unescapeLocalNodeName(StringUtils
+                                + node.getProperty("jcr:title").getValue().getString() + "\"");
+                    } else if (fileKey.getPath().indexOf('%', fileKey.getPath().lastIndexOf('/')) != -1) {
+                        res.setHeader(
+                                "Content-Disposition",
+                                "inline; filename=\""
+                                + JCRContentUtils.unescapeLocalNodeName(StringUtils
                                         .substringAfterLast(fileKey.getPath(), "/")) + "\"");
                     }
                     res.setDateHeader("Last-Modified", fileEntry.getLastModified());

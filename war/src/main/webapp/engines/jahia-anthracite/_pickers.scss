@@ -602,6 +602,7 @@ body[indigo-dragging-panel="true"] {
 		img[src$="/jnt_page.png"] {
 			background-image: url(./images/tabs-pages-white@X2.png);
 		}
+
 	}
 
 	#JahiaGxtManagerTobTable {
@@ -777,7 +778,7 @@ body[indigo-dragging-panel="true"] {
 		// FOLDER ICON
 		img[src$="/jnt_contentFolder.png"],
 		img[src$="/jnt_folder.png"] {
-			background-image: url(./images/icons/tabs-files@X2.png);
+			background-image: url(./images/icons/tabs-files-dark@X2.png);
 			opacity: 0.8;
 		}
 
@@ -817,7 +818,8 @@ body[indigo-dragging-panel="true"] {
 		// FOLDER ICON
 		img[src$="/jnt_contentFolder.png"],
 		img[src$="/jnt_folder.png"] {
-			background-image: url(./images/icons/tabs-files@X2.png);
+			background-image: url(./images/icons/tabs-files@X2.png)!important;
+			opacity: 1!important;
 		}
 
 		// BOOTSTRAP COLUMNS
@@ -3295,6 +3297,7 @@ body[indigo-dragging-panel="true"] {
 
 			.x-grid3-col {
 				display: inline-block;
+				line-height: 20px;
 			}
 
 			// Checkbox holder

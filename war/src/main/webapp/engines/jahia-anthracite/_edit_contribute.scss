@@ -1018,6 +1018,13 @@ body[data-indigo-app="contribute"] {
 
   &::after {
       content: attr(data-indigo-label);
+	  display: block;
+	    width: 51px!important;
+	    margin-bottom: 5px!important;
+  }
+
+  &[job-in-progress="true"] {
+	  background-color: #E67D3A;
   }
 
 }

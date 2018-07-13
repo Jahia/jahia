@@ -4184,12 +4184,15 @@ if (!Element.prototype.matches) {
                                 // A job is active
 								activeJob = true;
 								jobTooltip = jobString;
+								DexV2(".toolbar-item-workinprogressadmin").setAttribute("job-in-progress", "true");
 								DexV2(".x-viewport-editmode .action-toolbar .x-toolbar-cell:nth-child(10)").addClass("indigo-job-running");
 
                             } else {
                                 // No Jobs active
 								activeJob = false;
 								jobTooltip = localisedStrings[app.data.UILanguage].jobs;
+
+								DexV2(".toolbar-item-workinprogressadmin").setAttribute("job-in-progress", "");
 
 								DexV2(".x-viewport-editmode .action-toolbar .x-toolbar-cell:nth-child(10)").removeClass("indigo-job-running");
 

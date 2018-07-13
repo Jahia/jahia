@@ -3343,6 +3343,8 @@ if (!Element.prototype.matches) {
 
                     // This fieldset HAS a toggle, so replace with our own ...
                     if(fieldsetInput.nodes.length > 0){
+						this.classList.add("contains-indigo-switch")
+						this.parentNode.classList.add("fieldset-contains-indigo-switch")
 
                         var switchHolder = document.createElement("div"),
                             switchRail = document.createElement("div"),

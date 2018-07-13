@@ -2715,7 +2715,6 @@ if (!Element.prototype.matches) {
 					});
 				},
 				openPreview: function(e){
-
 					if(app.data.HTTP.app == "manager"){
 
                         DexV2.node(this).parent().trigger("dblclick");
@@ -2782,19 +2781,19 @@ if (!Element.prototype.matches) {
 			},
 			previewButton: {
 				onMouseOver: function(){
-					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOVER");
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOVER", true);
 					DexV2.node(app.picker.data.currentItem)
 		                .addClass("x-view-over")
 		                .addClass("x-grid3-row-over");
 				},
 				onMouseOut: function(){
-					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOUT");
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONMOUSEOUT", true);
 					DexV2.node(app.picker.data.currentItem)
 		                .removeClass("x-view-over")
 		                .removeClass("x-grid3-row-over");
 				},
 				onClick: function(e){
-					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONCLICK");
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: ONCLICK", true);
 
 					if(e.detail.secondClick){
 						// Just set the good title
@@ -2822,7 +2821,7 @@ if (!Element.prototype.matches) {
 		            DexV2.class("toolbar-item-filepreview").setAttribute("indigo-preview-button", "hide");
 				},
 				reposition: function(node, offset){
-					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: REPOSITION");
+					app.dev.log("::: APP ::: PICKER ::: PREVIEWBUTTON ::: REPOSITION", true);
 					var offset = offset || {
 		                    left: 0,
 		                    top: 0
@@ -3232,15 +3231,21 @@ if (!Element.prototype.matches) {
 		},
 		imagePreview: {
 			onOpen: function(){
-				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONOPEN");
+				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONOPEN", true);
 				DexV2.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "open");
 
 				// Attribute used to display the friendly name in edit panel
 				DexV2(".engine-panel > div.x-panel-header .x-panel-header-text").setAttribute("data-friendly-name", "nodeDisplayName");
 			},
 			onClose: function(){
-				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONCLOSE");
+				app.dev.log("::: APP ::: PICKER ::: IMAGEPREVIEW ::: ONCLOSE", true);
 				DexV2.getCached("body").setAttribute("data-INDIGO-IMAGE-PREVIEW", "");
+				// DexV2.getCached("body").setAttribute("data-indigo-gwt-side-panel", "open")
+				var sidePanel = DexV2.id("JahiaGxtSidePanelTabs").nodes[0];
+
+				console.log("sidePanel:", sidePanel)
+
+				sidePanel.style.setProperty("width", "360px", "important");
 
 			}
 		},

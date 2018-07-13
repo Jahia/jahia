@@ -2878,6 +2878,31 @@ form,
 		// margin-top: calc(-50vh + 170px);
 		 z-index: 999910 !important;
 
+		 .indigo-modal-mask {
+			 background: linear-gradient(to right bottom, whitesmoke 50%, #e5e4e4 100%)!important;
+		 }
+
+		 .gwt-HTML {
+			 img {
+				 height: auto!important;
+			 }
+		 }
+
+		 .x-window-tl,
+		 .x-window-bwrap {
+			 width: auto!important;
+			 border: none!important;
+		    background: transparent!important;
+		 }
+
+		 .x-window-header {
+			 pointer-events: all;
+		 }
+
+		 .x-window-body {
+			 height: auto!important;
+		 }
+
 		.x-resizable-handle {
 			display: none;
 		}
@@ -2890,18 +2915,18 @@ form,
 			display: none!important;
 		}
 
-		&:before {
-			content: "Preview";
-			display: block;
-			width: 100%;
-			pointer-events: none;
-			position: absolute;;
-			z-index: 99;
-			top: 12px;
-			left: 73px;
-			@include text(36px, _theme-color(primary), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
-			z-index: 999;
-		}
+		// &:before {
+		// 	content: "Preview";
+		// 	display: block;
+		// 	width: 100%;
+		// 	pointer-events: none;
+		// 	position: absolute;;
+		// 	z-index: 99;
+		// 	top: 8px;
+		// 	@include text(36px, _theme-color(primary), $FONT--WEIGHT---LIGHT, $FONT--FAMILY---RALEWAY);
+		// 	z-index: 999;
+		// 	margin-left: 20px;
+		// }
 
 		&.x-window > .x-window-tl {
 			// position: absolute !important;
@@ -2909,20 +2934,33 @@ form,
 			// right: 41px;
 		}
 
-		.x-window-header .x-panel-toolbar {
-			display: block;
-			margin-top: 8px;
-			pointer-events: all;
-
-			table tbody tr td .x-tool-close {
-				background: url(./images/icons/icon-close-grey@X2.png) no-repeat center top;
-				background-size: 20px;
-				width: 25px;
-				height: 25px;
-				opacity: 0.8;
+		.x-window-header {
+			.x-panel-toolbar {
 				display: block;
-			}
 
+				.x-tool-close {
+					background: url(./images/icons/icon-close-grey@X2.png) no-repeat left top 2px;
+				    background-size: 14px;
+				    width: auto;
+				    height: 25px;
+				    opacity: 0.8;
+				    display: block;
+				    position: fixed;
+				    top: 20px;
+				    left: 20px;
+				    padding-left: 19px;
+
+					&:before {
+						content: "Close Preview";
+					    display: block;
+					    width: 100%;
+					    font-size: 14px;
+						color: #007cb0;
+					}
+
+
+				}
+			}
 		}
 
 		.x-window-bwrap {
